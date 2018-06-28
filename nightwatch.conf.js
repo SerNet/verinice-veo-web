@@ -23,12 +23,8 @@ module.exports = {
       "selenium_port"  : 443,
       "selenium_host"  : "selenium.cpmsys.io",
       "ssl": true,
-      "username": "markus@cpmsys.de",
-      "password": "ddwhxEai4EQsuC3mEB_a",
-      "credentials": {
-        "username": "admin",
-        "key": "secret"
-      },
+      "username": "gitlab-ci-token",
+      "password": process.env['CI_JOB_TOKEN'],
       'screenshots': {
         'enabled': true, // if you want to keep screenshots
         'path': SCREENSHOT_PATH, // save screenshots here
@@ -36,7 +32,7 @@ module.exports = {
       'globals': {
         'waitForConditionTimeout': 10000, // sometimes internet is slow so wait.
         'asyncHookTimeout': 60000,
-        'root_url': 'https://journme.cpmsys.io'
+        'root_url': process.env['CI_ENVIRONMENT_URL']
       },
       'desiredCapabilities': { // use Chrome as the default browser for tests
         'browserName': BROWSER,

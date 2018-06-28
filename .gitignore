@@ -14,8 +14,8 @@ dist
 
 static/sw.js
 
-screenshots
+/screenshots
 
-reports
+/reports
 
 .cache-loader
