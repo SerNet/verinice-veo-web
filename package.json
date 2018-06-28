@@ -1,0 +1,48 @@
+{
+  "name": "v2020-web",
+  "version": "1.0.0",
+  "description": "verinice.veo",
+  "author": "cpm systems <info@cpmsys.de>",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "HOST=0.0.0.0 PORT=5000 NODE_ENV=production nuxt start",
+    "generate": "SERVICE_MODE=php nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint",
+    "test:front:only": "NODE_ENV=testing NIGHTWATCH_SPEC=screenshots nightwatch"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "latest",
+    "@nuxtjs/proxy": "latest",
+    "@nuxtjs/pwa": "latest",
+    "babel-polyfill": "^6.26.0",
+    "lodash": "^4.17.10",
+    "material-design-icons-iconfont": "^3.0.3",
+    "moment": "^2.22.2",
+    "nuxt-edge": "latest",
+    "nuxt-i18n": "^4.1.0",
+    "roboto-fontface": "^0.9.0",
+    "url-parse": "^1.4.1",
+    "vue": "^2.5.16",
+    "vuetify": "^1.0.19",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^10.3.6",
+    "babel-eslint": "^8.2.1",
+    "css-loader": "^0.28.11",
+    "eslint": "^4.15.0",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-vue": "^4.0.0",
+    "nightwatch": "^1.0.6",
+    "style-loader": "^0.21.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "ts-loader": "^4.4.1",
+    "typescript": "^2.9.2",
+    "vue-loader-options-plugin": "^0.1.1"
+  }
+}

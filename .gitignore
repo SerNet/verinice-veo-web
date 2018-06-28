@@ -1,0 +1,21 @@
+.idea
+
+# dependencies
+node_modules
+
+# logs
+npm-debug.log
+
+# Nuxt build
+.nuxt
+
+# Nuxt generate
+dist
+
+static/sw.js
+
+screenshots
+
+reports
+
+.cache-loader
