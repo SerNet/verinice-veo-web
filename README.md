@@ -1,6 +1,6 @@
-# journme
+# v2020-web
 
-> JournMe
+> verinice.veo
 
 ## Build Setup
 
