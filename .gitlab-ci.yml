@@ -151,7 +151,7 @@ performance:
 
 screenshots:
   stage: performance
-  image: $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG
+  image: "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
   allow_failure: true
   script:
     - npm run screenshots
