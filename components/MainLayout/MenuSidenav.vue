@@ -28,11 +28,10 @@
 
   @Component
   export default class MenuSidenav extends Vue {
-    @store.Action('getItems') getNavigation: () => Promise<any>
-    @store.Getter('items') items: Array<NavItem>
+    @store.State('items') items: Array<NavItem>
     
     created() {
-      this.getNavigation()
+      
     }
   };
 </script>

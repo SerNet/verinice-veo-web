@@ -1,3 +1,3 @@
-export default ({store, route, router}) => {
+export default ({store, route, router, req}) => {
   //const metadata = route.meta[0];
 }

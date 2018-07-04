@@ -5,7 +5,6 @@
         "**/.DS_Store": true,    // this is a default value
 
     },
-    "npm-scripts.showStartNotification": false,
     "todo-tree.grouped": false,
     "todo-tree.flat": true,
     "todo-tree.expanded": true

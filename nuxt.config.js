@@ -17,8 +17,9 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
  plugins: [
-    "~/plugins/axios.js",
-    "~/plugins/router.js",
+   "~/plugins/error.js",
+   "~/plugins/axios.js",
+   "~/plugins/router.js",
     "~/plugins/vuetify.js",
     "~/plugins/directives.js",
   ],
@@ -80,44 +81,27 @@ module.exports = {
       "nuxt-i18n",
       {
         seo: false, //https://github.com/nuxt-community/nuxt-i18n/issues/100#issuecomment-398876743
+        lazy: true,
+        parsePages: false,
+        langDir: 'locales/',
         locales: [
-          //{
-          //  code: 'en',
-          //  iso: 'en-US',
-          //  name: 'English',
-          //},
+          {
+            code: 'en',
+            iso: 'en-US',
+            name: 'English',
+            file: 'en-US.js'
+          },
           {
             code: "de",
             iso: "de-DE",
-            name: "Deutsch"
+            name: "Deutsch",
+            file: 'de-DE.js'
           }
         ],
         defaultLocale: "de",
         noPrefixDefaultLocale: true,
         //redirectRootToLocale: 'de',
         vueI18n: {
-          messages: {
-            de: {
-              home: "Start",
-              about: "Über uns",
-              category: "Kategorie",
-              adult: "Erwachsene | Erwachsener | Erwachsene",
-              child: "Kinder | Kind | Kinder",
-              baby: "Babys | Baby | Babys",
-              days: "0 Tage | 1 Tag | {count} Tage",
-              error: "Fehler"
-            },
-            en: {
-              home: "Homepage",
-              about: "About us",
-              category: "Category",
-              adult: "Adults",
-              child: "Children",
-              baby: "Babies",
-              days: "Days | Day | Days",
-              error: "Error"
-            }
-          },
           numberFormats: {
             de: {
               currency: {

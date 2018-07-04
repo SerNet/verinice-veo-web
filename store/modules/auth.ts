@@ -14,25 +14,26 @@ const module: Module<AuthState, RootState> = {
   namespaced: true,
   state,
   mutations: {
-    setItems(state, value: any) {
+    setToken(state, value: any) {
       state.token = value;
-      
     }
   },
   getters: {
-    items: (state: any) => state.items
+    authorizationHeader: (state: any) => state.token
   },
   actions: {
-    async init({dispatch}, payload) {
-      return await dispatch('login');
+    async init({state, dispatch}, payload) {
+      if(!state.token)
+      return await dispatch('login', {username: 'admin', password: 'password'});
     },
-    async login(this: Vue, {state, rootState}, payload: {username: string, password: string}) {
+    async login(this: Vue, {commit}, payload: {username: string, password: string}) {
       try {
-        const repsonse = await this.$axios.post('/api/login', payload);
+        const response = await this.$axios.post('/api/login', payload);
+        commit('setToken', response.headers['authorization']);
       } catch(e) {
         if(e.response) {
           const {response} = e as AxiosError;
-          throw new VeoError('AUTH_LOGIN_FAILED');
+          throw new this.$error('AUTH_LOGIN_FAILED', {status: response!.status, cause: e});
         }
         throw e;
       }

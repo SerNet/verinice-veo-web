@@ -1,13 +1,13 @@
 <template>
-  <v-layout class="hidden-sm-and-down elevation-1" style="z-index: 2; min-width: 300px; max-width: 300px;">
+  <v-layout column class="hidden-sm-and-down elevation-1" style="z-index: 2;">
     <v-toolbar class="tree-toolbar" flat dense>
       <v-menu :nudge-width="100">
         <v-toolbar-title slot="activator">
-          <span>{{menuItems[1]}}</span>
+          <span>{{groups?groups[0]:'...'}}</span>
           <v-icon>arrow_drop_down</v-icon>
         </v-toolbar-title>
         <v-list>
-          <v-list-tile v-for="item in menuItems" :key="item">
+          <v-list-tile v-for="item in groups" :key="item">
             <v-list-tile-title v-text="item"/>
           </v-list-tile>
         </v-list>
@@ -20,7 +20,15 @@
         <v-icon>more_vert</v-icon>
       </v-btn>
     </v-toolbar>
-    <tree-view v-model="treeData" :treeTypes="treeTypes" :openAll="true"/>
+    <v-list style="overflow: auto">
+      <v-list-tile
+            v-for="item in items" :to="'items/'+item.id"
+            :key="item.id">
+        <v-list-tile-content>
+          <v-list-tile-title v-html="item.title"></v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list>
   </v-layout>
 </template>
 
@@ -28,7 +36,7 @@
 import { Component, Inject, Model, Prop, Vue, Watch } from 'nuxt-property-decorator'
 import { namespace } from 'nuxt-class-component'
 import TreeView from "~/components/TreeNav/TreeView.vue";
-const store = namespace('nav')
+const store = namespace('tree')
 
 @Component({
   components: {
@@ -38,7 +46,9 @@ const store = namespace('nav')
 export default class TreeNav extends Vue {
   treeData = []
   treeTypes = []
-  menuItems = ["Item", "Item"]
+
+  @Prop({type: Array}) items: any[]
+  @Prop({type: Array}) groups: any[]
 }
 </script>
 

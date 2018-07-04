@@ -1,24 +1,47 @@
 <template>
-  <v-layout column>
-    <v-flex xs12 sm8 md6 pa-3>
-          <v-layout align-center>
-            <v-flex>
-              <h3 class="display-2">Willkommen</h3>
-              <span class="subheading">Herzlich Willkommen auf der Startseite!</span>
-              <v-divider class="my-3"></v-divider>
-              <div class="title mb-3">Hier gibt es noch nicht viel zu sehen!</div>
-              <!--<v-btn large dark to="/offers" class="mx-0">Zu den Angeboten</v-btn>-->
-            </v-flex>
-          </v-layout>
+  <v-layout row>
+    <v-flex>
+      <tree-nav class="tree-nav" :groups="groups" :items="treeItems"></tree-nav>
+    </v-flex>
+    <v-flex xs12 style="margin-left: 300px;">
+      <veo-form></veo-form>
     </v-flex>
   </v-layout>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { Component, Inject, Model, Prop, Vue, Watch } from 'nuxt-property-decorator'
+import { namespace } from 'nuxt-class-component'
+import { Store } from 'vuex';
+import TreeNav from '~/components/TreeNav/TreeNav.vue';
+import Form from '~/components/Form.vue';
+
+const treeStore = namespace('tree');
+
+@Component({
+  components: {
+    TreeNav: TreeNav,
+    'VeoForm': Form
+  }
+})
+export default class extends Vue {
+  @treeStore.State('items') treeItems: any[];
+
+  groups: any[] = ['IT Baseline-Catalog', 'BSI Model']
+
+  async fetch({ store, params }: {store: Store<any>, params: Object}) {
+    await store.dispatch('tree/getItems');
+  }
 }
 </script>
 
-<style>
+<style lang="stylus" scoped>
+  .tree-nav {
+    position: fixed;
+    top: 64px;
+    left: 80px;
+    bottom: 0;
+    width: 300px;
 
+  }
 </style>
