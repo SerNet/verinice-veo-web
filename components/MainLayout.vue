@@ -5,6 +5,7 @@
                          :permanent="$vuetify.breakpoint.smAndUp" :clipped="$vuetify.breakpoint.smAndUp" app>
       <menu-sidenav/>
     </v-navigation-drawer>
+    
     <v-content>
       <v-container fluid pa-0>
         <v-layout>
@@ -20,6 +21,7 @@
     </v-content>
   </v-app>
 </template>
+
 <script lang="typescript">
 import { mapActions, mapGetters } from "vuex";
 import MainToolbar from "~/components/MainLayout/MainToolbar.vue";

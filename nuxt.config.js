@@ -79,7 +79,7 @@ module.exports = {
     [
       "nuxt-i18n",
       {
-        seo: false, //https://github.com/nuxt-community/nuxt-i18n/issues/100#issuecomment-398876743
+        seo: false, //see https://github.com/nuxt-community/nuxt-i18n/issues/100#issuecomment-398876743
         locales: [
           //{
           //  code: 'en',

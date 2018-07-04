@@ -12,26 +12,25 @@
   </v-list>
 </template>
 <style lang="stylus">
-
-  .main-sidenav-content {
-    .list-tile.active {
-      //border-left: 4px solid $vuetify.theme.primary;
-      background: #F0F0F0;
-    }
+.main-sidenav-content {
+  .list-tile.active {
+    // border-left: 4px solid $vuetify.theme.primary;
+    background: #F0F0F0;
   }
+}
 </style>
 <script lang="typescript">
-  import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
-  export default {
-    methods: mapActions({
-      getNavigation: 'nav/getItems'
-    }),
-    computed: mapGetters({
-      items: 'nav/items'
-    }),
-    created() {
-      this.getNavigation()
-    }
-  };
+export default {
+  methods: mapActions({
+    getNavigation: "nav/getItems"
+  }),
+  computed: mapGetters({
+    items: "nav/items"
+  }),
+  created() {
+    this.getNavigation();
+  }
+};
 </script>
