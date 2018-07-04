@@ -24,23 +24,22 @@
   </v-layout>
 </template>
 
-<script lang="typescript">
-import TreeView from "./TreeView.vue";
-import Vue from "vue";
+<script lang="ts">
+import { Component, Inject, Model, Prop, Vue, Watch } from 'nuxt-property-decorator'
+import { namespace } from 'nuxt-class-component'
+import TreeView from "~/components/TreeNav/TreeView.vue";
+const store = namespace('nav')
 
-export default Vue.extend({
-  name: "TreeNav",
+@Component({
   components: {
-    TreeView: TreeView
-  },
-  data() {
-    return {
-      treeData: [],
-      treeTypes: [],
-      menuItems: ["Item", "Item"]
-    };
+    TreeView
   }
-});
+})
+export default class TreeNav extends Vue {
+  treeData = []
+  treeTypes = []
+  menuItems = ["Item", "Item"]
+}
 </script>
 
 <style scoped>

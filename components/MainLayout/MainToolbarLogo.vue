@@ -58,13 +58,20 @@
     }
   }
 </style>
-<script lang="typescript">
+<script lang="ts">
+  import {
+    Component,
+    Inject,
+    Model,
+    Prop,
+    Vue,
+    Watch
+  } from "nuxt-property-decorator";
   /**
    * Documentation
    */
-  export default {
-    data() {
-      return {}
-    }
+  @Component
+  export default class MainToolbarLogo extends Vue {
+    
   };
 </script>

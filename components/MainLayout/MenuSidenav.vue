@@ -12,25 +12,27 @@
   </v-list>
 </template>
 <style lang="stylus">
-.main-sidenav-content {
-  .list-tile.active {
-    // border-left: 4px solid $vuetify.theme.primary;
-    background: #F0F0F0;
-  }
-}
-</style>
-<script lang="typescript">
-import { mapActions, mapGetters } from "vuex";
 
-export default {
-  methods: mapActions({
-    getNavigation: "nav/getItems"
-  }),
-  computed: mapGetters({
-    items: "nav/items"
-  }),
-  created() {
-    this.getNavigation();
+  .main-sidenav-content {
+    .list-tile.active {
+      //border-left: 4px solid $vuetify.theme.primary;
+      background: #F0F0F0;
+    }
   }
-};
+</style>
+<script lang="ts">
+  import { Component, Inject, Model, Prop, Vue, Watch } from 'nuxt-property-decorator'
+  import { namespace } from 'nuxt-class-component'
+  import { NavItem } from '~/store/modules/nav';
+  const store = namespace('nav')
+
+  @Component
+  export default class MenuSidenav extends Vue {
+    @store.Action('getItems') getNavigation: () => Promise<any>
+    @store.Getter('items') items: Array<NavItem>
+    
+    created() {
+      this.getNavigation()
+    }
+  };
 </script>

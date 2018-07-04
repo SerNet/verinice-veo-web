@@ -1,14 +1,15 @@
 <template>
-
+    <div></div>
 </template>
 
-<script lang="typescript">
-import Vue from "vue";
+<script lang="ts">
+import { Component, Inject, Model, Prop, Vue, Watch } from 'nuxt-property-decorator'
 
-export default Vue.extend({
-  name: "TreeView"
-});
+@Component
+export default class TreeView extends Vue {
+  
+};
 </script>
 
-<style scoped>
+<style lang="stylus" scoped>
 </style>

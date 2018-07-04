@@ -16,11 +16,11 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [
-    `~/plugins/axios.js`,
+ plugins: [
+    "~/plugins/axios.js",
     "~/plugins/router.js",
     "~/plugins/vuetify.js",
-    "~/plugins/directives.js"
+    "~/plugins/directives.js",
   ],
 
   /*
@@ -45,14 +45,14 @@ module.exports = {
     start_url: "/",
     display: "standalone",
     background_color: "#FFFFFF",
-    theme_color: "#FFB302",
+    theme_color: "#c62828",
     orientation: "portrait"
   },
   /*
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: "#FF8F00" },
+  loading: { color: "#FF8A80" },
 
   generate: {
     fallback: "404.html" // if you want to use '404.html'
@@ -79,7 +79,7 @@ module.exports = {
     [
       "nuxt-i18n",
       {
-        seo: false, //see https://github.com/nuxt-community/nuxt-i18n/issues/100#issuecomment-398876743
+        seo: false, //https://github.com/nuxt-community/nuxt-i18n/issues/100#issuecomment-398876743
         locales: [
           //{
           //  code: 'en',
@@ -206,7 +206,7 @@ module.exports = {
   },
 
   proxy: {
-    "/cgi-bin/": { target: "https://testservices.bosys.eu/" }
+    "/api/": { target: "https://v2020-rest.cpmsys.io/", pathRewrite: {'^/api/': ''} }
   },
 
   extensions: ["ts"],
@@ -217,6 +217,9 @@ module.exports = {
     cache: true, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
     //parallel: true, (thread-loader: https://github.com/webpack-contrib/thread-loader)
     watch: ['config'],
+    babel: {
+      plugins: ['transform-decorators-legacy', 'transform-class-properties']
+    },
     extend(config) {
       const $colors = coerce(colors.default || colors);
       const $theme = coerce(theme);

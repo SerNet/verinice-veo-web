@@ -1,25 +1,30 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
-import axios from 'axios';
+import {RootState} from '~/store/index'
+import { Module } from 'vuex';
 
-export default {
+const state = {
+  items: [] as any[]
+}
+
+export type TreeState = typeof state;
+
+const module: Module<TreeState, RootState> = {
   namespaced: true,
-  state: {
-    items: [],
-  },
+  state,
   mutations: {
-    setItems(state: any, value: any) {
+    setItems(state, value: any[]) {
       state.items = value;
     }
   },
   getters: {
-    items: (state: any) => state.items
+    items: (state) => state.items
   },
   actions: {
-    async getItems({commit}: any) {
-      const response = await axios.get('https://v2020-rest.cpmsys.io/elements/aac77d09-15e2-41ed-9faf-2cbc98ee3b51');
-      console.log(response);
+    async getItems(this: Vue, {commit}) {
+      const response = await this.$axios.get('/api/elements/aac77d09-15e2-41ed-9faf-2cbc98ee3b51');
       commit('setItems', response.data.properties);
-    },
+    }
   }
 };
+
+export default module;

@@ -17,24 +17,28 @@
   </v-toolbar>
 </template>
 
-<script>
+<script lang="ts">
 import MainToolbarLogo from "~/components/MainLayout/MainToolbarLogo.vue";
-import Vue from "vue";
+import {
+  Component,
+  Inject,
+  Model,
+  Prop,
+  Vue,
+  Watch
+} from "nuxt-property-decorator";
 
-export default Vue.extend({
-  data() {
-    return {};
-  },
+@Component({
   components: {
     MainToolbarLogo
   },
-  methods: {
-    toggleDrawer() {
-      this.$emit("click-side-icon");
-    }
-  },
   props: ["clipped", "value"]
-});
+})
+export default class MainToolbar extends Vue {
+  toggleDrawer() {
+    this.$emit("click-side-icon");
+  }
+}
 </script>
 
 <style lang="stylus" scoped>

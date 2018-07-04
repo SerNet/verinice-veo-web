@@ -1,6 +1,4 @@
-#IDE
 .idea
-.vscode
 
 # dependencies
 node_modules
@@ -15,7 +13,9 @@ npm-debug.log
 dist
 
 static/sw.js
+
 /screenshots
+
 /reports
+
 .cache-loader
-.DS_Store

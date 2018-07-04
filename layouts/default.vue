@@ -19,38 +19,35 @@
     </v-content>
   </v-app>
 </template>
-<script lang="typescript">
+<script lang="ts">
 import { mapActions, mapGetters } from "vuex";
 
 import MainToolbar from "~/components/MainLayout/MainToolbar.vue";
 import MenuSidenav from "~/components/MainLayout/MenuSidenav.vue";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
-import Vue from "vue";
+import { Component, Inject, Model, Prop, Vue, Watch } from 'nuxt-property-decorator'
+import { namespace } from 'nuxt-class-component'
+const treeStore = namespace('tree')
 
-export default Vue.extend({
-  name: "Main",
+@Component({
   components: {
     MainToolbar,
     MenuSidenav,
     TreeNav
-  },
-  /*methods: mapActions({
-      getItems: 'tree/getItems'
-    }),
-    computed: mapGetters({
-      items: 'tree/items'
-    }),*/
+  }
+})
+export default class DefaultLayout extends Vue {
+  @treeStore.Action getItems: () => Promise<any>
+
+  items = []
+  mainDrawer = null
+  msg = "Welcome to MY Vue.js App"
+
   created() {
     //this.getItems();
-  },
-  data() {
-    return {
-      items: [],
-      mainDrawer: null,
-      msg: "Welcome to MY Vue.js App"
-    };
+    this.getItems();
   }
-});
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
