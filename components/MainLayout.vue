@@ -5,8 +5,8 @@
                          :permanent="$vuetify.breakpoint.smAndUp" :clipped="$vuetify.breakpoint.smAndUp" app>
       <menu-sidenav/>
     </v-navigation-drawer>
+    
     <v-content>
-      
       <v-container fluid pa-0>
         <v-layout>
           <v-flex xs3>
@@ -21,45 +21,45 @@
     </v-content>
   </v-app>
 </template>
+
 <script lang="typescript">
-  import {mapActions, mapGetters} from "vuex";
+import { mapActions, mapGetters } from "vuex";
+import MainToolbar from "~/components/MainLayout/MainToolbar.vue";
+import MenuSidenav from "~/components/MainLayout/MenuSidenav.vue";
+import TreeNav from "~/components/TreeNav/TreeNav.vue";
 
-  import MainToolbar from '~/components/MainLayout/MainToolbar.vue';
-  import MenuSidenav from '~/components/MainLayout/MenuSidenav.vue';
-  import TreeNav from '~/components/TreeNav/TreeNav.vue';
-
-  export default {
-    name: 'Main',
-    components: {
-      MainToolbar, MenuSidenav, TreeNav
-    },
-    methods: mapActions({
-      getItems: 'tree/getItems'
-    }),
-    computed: mapGetters({
-      items: 'tree/items'
-    }),
-    created() {
-      this.getItems();
-    },
-    data() {
-      return {
-        mainDrawer: null,
-        msg: 'Welcome to MY Vue.js App'
-      };
-
-    }
-  };
+export default {
+  name: "Main",
+  components: {
+    MainToolbar,
+    MenuSidenav,
+    TreeNav
+  },
+  methods: mapActions({
+    getItems: "tree/getItems"
+  }),
+  computed: mapGetters({
+    items: "tree/items"
+  }),
+  created() {
+    this.getItems();
+  },
+  data() {
+    return {
+      mainDrawer: null,
+      msg: "Welcome to MY Vue.js App"
+    };
+  }
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
-  h1, h2 {
-    font-weight: normal;
-    background: $theme;
-  }
+h1, h2 {
+  font-weight: normal;
+  background: $theme;
+}
 
-  a {
-    color: #42b983;
-  }
+a {
+  color: #42b983;
+}
 </style>
