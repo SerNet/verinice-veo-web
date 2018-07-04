@@ -32,7 +32,7 @@ const module: Module<AuthState, RootState> = {
       } catch(e) {
         if(e.response) {
           const {response} = e as AxiosError;
-          throw new VeoError('Login fehlgeschlagen');
+          throw new VeoError('AUTH_LOGIN_FAILED');
         }
         throw e;
       }

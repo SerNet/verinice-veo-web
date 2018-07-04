@@ -149,24 +149,6 @@ performance:
     variables:
       - $PERFORMANCE_DISABLED
 
-screenshots:
-  stage: performance
-  image: "registry.git.cpmsys.de/$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
-  allow_failure: true
-  script:
-    - npm run screenshots
-  artifacts:
-    paths:
-    - reports/
-    - screenshots/
-  only:
-    refs:
-      - branches
-    kubernetes: active
-  except:
-    variables:
-      - $SCREENSHOTS_DISABLED
-
 sast:
   stage: test
   image: docker:stable
