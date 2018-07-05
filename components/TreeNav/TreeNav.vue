@@ -22,10 +22,12 @@
     </v-toolbar>
     <v-list style="overflow: auto">
       <v-list-tile
-            v-for="item in items" :to="'items/'+item.id"
+            v-for="item in items" :to="toPrefix+item.id"
             :key="item.id">
         <v-list-tile-content>
-          <v-list-tile-title v-html="item.title"></v-list-tile-title>
+          <v-list-tile-title>
+            {{item.title}} ({{item.id}})
+          </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
     </v-list>
@@ -47,6 +49,7 @@ export default class TreeNav extends Vue {
   treeData = []
   treeTypes = []
 
+  @Prop({type: String}) toPrefix: string
   @Prop({type: Array}) items: any[]
   @Prop({type: Array}) groups: any[]
 }

@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import auth from './modules/auth';
 import nav from './modules/nav';
 import tree from './modules/tree';
+import form from './modules/form';
 
 Vue.use(Vuex);
 
@@ -18,6 +19,7 @@ export default () => new Vuex.Store<RootState>({
     auth,
     nav,
     tree,
+    form
   },
   strict: debug,
   actions: {
