@@ -21,17 +21,13 @@ import {
 import { namespace } from "nuxt-class-component";
 import { Store } from "vuex";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
-import VeoForm from "~/components/VeoForm.vue";
-import VeoBreadcrumb from "~/components/VeoBreadcrumb.vue";
 
 const formStore = namespace("form");
 const treeStore = namespace("tree");
 
 @Component({
   components: {
-    TreeNav,
-    VeoForm,
-    VeoBreadcrumb
+    TreeNav
   }
 })
 export default class extends Vue {

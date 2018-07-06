@@ -17,7 +17,7 @@ import {
 import { namespace } from "nuxt-class-component";
 import { Store } from "vuex";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
-import VeoForm from "~/components/VeoForm.vue";
+import VeoForm from "~/components/Form/Form.vue";
 import VeoBreadcrumb from "~/components/VeoBreadcrumb.vue";
 
 const treeStore = namespace("tree");
@@ -42,11 +42,15 @@ export default class extends Vue {
       
   }
 
-  async fetch({ store, params }: { store: Store<any>; params: Object }) {
+  async fetch({ store, params }: { store: Store<any>; params: any }) {
     await store.dispatch("tree/getItems");
     if(params['id']) {
         await store.dispatch("form/load", params)
     }
+  }
+
+  validate({store, params}: { store: Store<any>; params: any }) {
+    return String(params.id || '').indexOf('.') === -1
   }
 }
 </script>

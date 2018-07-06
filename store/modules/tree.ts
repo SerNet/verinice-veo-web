@@ -30,11 +30,10 @@ const module: Module<TreeState, RootState> = {
       let parent: string|undefined = id;
       while(parent) {
         const node = state.items.find(item => item.id == parent);  
-        console.log('ID', node);
         parent = node && node.parent;
-        if(parent) path.push(parent);
+        if(parent) path.unshift(parent);
       }
-      return path.reverse();
+      return path;
     }
   },
   actions: {

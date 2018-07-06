@@ -16,10 +16,6 @@ import {
 import { namespace } from "nuxt-class-component";
 import { Store } from "vuex";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
-import VeoForm from "~/components/VeoForm.vue";
-import VeoBreadcrumb from "~/components/VeoBreadcrumb.vue";
-
-
 
 @Component({
   

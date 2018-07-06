@@ -3,7 +3,7 @@
     <v-toolbar class="tree-toolbar" flat dense>
       <v-menu :nudge-width="100">
         <v-toolbar-title slot="activator">
-          <span>{{groups?groups[0]:'...'}}</span>
+          <span class="group-title">{{groups?groups[0]:'...'}}</span>
           <v-icon>arrow_drop_down</v-icon>
         </v-toolbar-title>
         <v-list>
@@ -56,4 +56,8 @@ export default class TreeNav extends Vue {
 </script>
 
 <style scoped>
+.group-title {
+  font-size: 16px;
+  font-weight: normal;
+}
 </style>

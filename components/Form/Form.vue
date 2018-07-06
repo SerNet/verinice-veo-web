@@ -15,8 +15,9 @@
               </div>
               <v-card>
                 <v-card-text class="white lighten-3">
-                  <v-form>
-                    <v-text-field v-for="(item, key) in model" :key="key" :label="key" :value="item"/>
+                  <v-form v-if="schema && schema.properties">
+                    <!-- <v-text-field v-for="(item, key) in model" :key="key" :label="key" :value="item"/> -->
+                    <abstract-field v-for="(property, key) in schema.properties" :key="key" :name="key" :schema="property" :required="schema.required.includes(key)" :value="model[key]"/>
                     <!--<v-text-field label="Chapter" v-model="current.chapter" value="M 2.278" append-icon="visibility" :append-icon-cb="() => previewNav.open=true"/>
                     <v-text-field label="State" value="2014"/>
                     <v-text-field label="Title" value="Typische Einsatzszenarien von Routern und Switches"/>
@@ -63,8 +64,13 @@ import {
   Watch
 } from "nuxt-property-decorator";
 import { namespace } from "nuxt-class-component";
+import AbstractField from '~/components/Form/AbstractField.vue'
 
-@Component({})
+@Component({
+  components: {
+    AbstractField
+  }
+})
 export default class VeoForm extends Vue {
   current = {
     chapter: "TEST"
