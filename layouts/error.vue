@@ -16,12 +16,15 @@
 </template>
 
 <script>
+  const pkg = require('../package.json');
+
   export default {
     name: 'nuxt-error',
     props: ['error'],
     head() {
+
       return {
-        title: 'Urlaubsidee | '+this.message
+        title: pkg.name+' | '+this.message
       };
     },
     computed: {
@@ -58,6 +61,7 @@
 
   .__nuxt-error-page .error {
     max-width: 450px;
+    padding: 10px 20px;
   }
 
   .__nuxt-error-page .title {
