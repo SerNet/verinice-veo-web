@@ -1,6 +1,6 @@
 const pkg = require("./package");
 const path = require("path");
-const coerce = require('./modules/stylus-coerce');
+const coerce = require("./modules/stylus-coerce");
 import colors from "vuetify/es5/util/colors";
 import theme from "./config/theme";
 
@@ -16,12 +16,12 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
- plugins: [
-   "~/plugins/error.js",
-   "~/plugins/axios.js",
-   "~/plugins/router.js",
+  plugins: [
+    "~/plugins/error.js",
+    "~/plugins/axios.js",
+    "~/plugins/router.js",
     "~/plugins/vuetify.js",
-    "~/plugins/directives.js",
+    "~/plugins/directives.js"
   ],
 
   /*
@@ -76,26 +76,26 @@ module.exports = {
     // Doc: https://github.com/nuxt-community/axios-module#usage
     "@nuxtjs/axios",
     "@nuxtjs/pwa",
-    '~/modules/typescript',
+    "~/modules/typescript",
     [
       "nuxt-i18n",
       {
         seo: false, //https://github.com/nuxt-community/nuxt-i18n/issues/100#issuecomment-398876743
         lazy: true,
         parsePages: false,
-        langDir: 'locales/',
+        langDir: "locales/",
         locales: [
           {
-            code: 'en',
-            iso: 'en-US',
-            name: 'English',
-            file: 'en-US.js'
+            code: "en",
+            iso: "en-US",
+            name: "English",
+            file: "en-US.js"
           },
           {
             code: "de",
             iso: "de-DE",
             name: "Deutsch",
-            file: 'de-DE.js'
+            file: "de-DE.js"
           }
         ],
         defaultLocale: "de",
@@ -190,26 +190,33 @@ module.exports = {
   },
 
   proxy: {
-    "/api/": { target: "https://v2020-rest.cpmsys.io/", pathRewrite: {'^/api/': ''} }
+    "/api/": {
+      target: "https://v2020-rest.cpmsys.io/",
+      pathRewrite: { "^/api/": "" }
+    }
   },
 
   extensions: ["ts"],
   /*
   ** Build configuration
+
   */
   build: {
-    cache: true, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
-    //parallel: true, (thread-loader: https://github.com/webpack-contrib/thread-loader)
-    watch: ['config'],
+    cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
+    //parallel: false, //(thread-loader: https://github.com/webpack-contrib/thread-loader)
+    watch: ["config"],
     babel: {
-      plugins: ['transform-decorators-legacy', 'transform-class-properties']
+      plugins: ["transform-decorators-legacy", "transform-class-properties"]
     },
     extend(config) {
       const $colors = coerce(colors.default || colors);
       const $theme = coerce(theme);
       // Customize stylus loader
-      const stylusRules = config.module.rules.find(rule => rule.test.toString().indexOf("styl") > -1)
-      if(stylusRules && Array.isArray(stylusRules.oneOf)) {
+
+      const stylusRules = config.module.rules.find(
+        rule => rule.test.toString().indexOf("styl") > -1
+      );
+      if (stylusRules && Array.isArray(stylusRules.oneOf)) {
         stylusRules.oneOf.forEach(one => {
           if (Array.isArray(one.use)) {
             one.use.forEach(u => {
@@ -217,7 +224,7 @@ module.exports = {
                 const stylusOptions = u.options;
                 //Define your options here (stylusOptions.use, stylusOptions.import, ...)
                 //e.g. add a plugin:
-                const uses = stylusOptions.use = stylusOptions.use || [];
+                const uses = (stylusOptions.use = stylusOptions.use || []);
                 uses.push(function(style) {
                   style.define("colors", $colors, true);
                   style.define("theme", $theme, true);
