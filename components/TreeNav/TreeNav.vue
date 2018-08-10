@@ -8,7 +8,7 @@
         </v-toolbar-title>
         <v-list>
           <v-list-tile v-for="item in groups" :key="item">
-            <v-list-tile-title v-text="item"/>
+            <v-list-tile-title v-text="item" />
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -21,9 +21,7 @@
       </v-btn>
     </v-toolbar>
     <v-list style="overflow: auto">
-      <v-list-tile
-            v-for="item in items" :to="toPrefix+item.id"
-            :key="item.id">
+      <v-list-tile v-for="item in items" :to="toPrefix+item.id" :key="item.id">
         <v-list-tile-content>
           <v-list-tile-title>
             {{item.title}} ({{item.id}})
@@ -35,10 +33,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Inject, Model, Prop, Vue, Watch } from 'nuxt-property-decorator'
-import { namespace } from 'nuxt-class-component'
+import {
+  Component,
+  Inject,
+  Model,
+  Prop,
+  Vue,
+  Watch
+} from "nuxt-property-decorator";
+import { namespace } from "nuxt-class-component";
 import TreeView from "~/components/TreeNav/TreeView.vue";
-const store = namespace('tree')
+const store = namespace("tree");
 
 @Component({
   components: {
@@ -46,14 +51,22 @@ const store = namespace('tree')
   }
 })
 export default class TreeNav extends Vue {
-  treeData = []
-  treeTypes = []
+  treeData = [];
+  treeTypes = [];
 
-  @Prop({type: String}) toPrefix: string
-  @Prop({type: Array}) items: any[]
-  @Prop({type: Array}) groups: any[]
+  @Prop({ type: String })
+  toPrefix: string;
+  @Prop({ type: Array })
+  items: any[];
+  @Prop({ type: Array })
+  groups: any[];
+
+  @Watch("toPrefix", { immediate: true })
+  onPrefixChange(oldVal: string, newVal: string) {}
 }
 </script>
+
+
 
 <style scoped>
 .group-title {
