@@ -11,7 +11,8 @@
     "generate": "SERVICE_MODE=php nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
-    "screenshots": "NODE_ENV=testing NIGHTWATCH_SPEC=screenshots nightwatch"
+    "screenshots": "NODE_ENV=testing NIGHTWATCH_SPEC=screenshots nightwatch",
+    "fake": "node ./scripts/fake.js"
   },
   "dependencies": {
     "@nuxtjs/axios": "latest",
@@ -42,6 +43,8 @@
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.7.1",
     "eslint-plugin-vue": "^4.0.0",
+    "faker": "^4.1.0",
+    "json-schema-faker": "^0.5.0-rc15",
     "nightwatch": "^1.0.6",
     "style-loader": "^0.21.0",
     "stylus": "^0.54.5",
