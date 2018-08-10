@@ -2,8 +2,8 @@ const path = require("path");
 const config = require("../../../screenshots");
 
 function makeScreenshot(url, name) {
-  return function(browser) {
-    console.log(`Loading ${browser.globals.root_url+url}: ${name}.png`)
+  return function (browser) {
+    console.log(`Loading ${browser.globals.root_url + url}: ${name}.png`)
     browser
       .url(browser.globals.root_url + url)
       .waitForElementVisible("body", 5000)
@@ -12,4 +12,4 @@ function makeScreenshot(url, name) {
   };
 }
 
-module.exports = Object.keys(config).reduce((obj, key, i) => (obj[key]=makeScreenshot(config[key], `${i}_${key.replace(/\W+/g, "_")}`)) && obj, {});
+module.exports = Object.keys(config).reduce((obj, key, i) => (obj[key] = makeScreenshot(config[key], `${i}_${key.replace(/\W+/g, "_")}`)) && obj, {});

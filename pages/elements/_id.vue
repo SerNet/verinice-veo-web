@@ -38,29 +38,27 @@ export default class extends Vue {
 
   groups: any[] = ["IT Baseline-Catalog", "BSI Model"];
 
-  onBreadcrumbChange(item: string) {
-      
-  }
+  onBreadcrumbChange(item: string) {}
 
   async fetch({ store, params }: { store: Store<any>; params: any }) {
     await store.dispatch("tree/getItems");
-    if(params['id']) {
-        await store.dispatch("form/load", params)
+    if (params["id"]) {
+      await store.dispatch("form/load", params);
     }
   }
 
-  validate({store, params}: { store: Store<any>; params: any }) {
-    return String(params.id || '').indexOf('.') === -1
+  validate({ store, params }: { store: Store<any>; params: any }) {
+    return String(params.id || "").indexOf(".") === -1;
   }
 }
 </script>
 
 <style lang="stylus" scoped>
 .tree-nav {
-    position: fixed;
-    top: 64px;
-    left: 80px;
-    bottom: 0;
-    width: 300px;
+  position: fixed;
+  top: 64px;
+  left: 80px;
+  bottom: 0;
+  width: 300px;
 }
 </style>

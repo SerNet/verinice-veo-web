@@ -1,12 +1,11 @@
 <template>
-    <v-toolbar class="breadcrumb-toolbar" color="elevation-1" style="overflow: hidden;" dense>
+  <v-toolbar class="breadcrumb-toolbar" color="elevation-1" style="overflow: hidden;" dense>
     <v-breadcrumbs class="breadcrumbs" justify-start="" divider="&gt;">
-        <v-breadcrumbs-item class="breadcrumb-item" :to="'/elements/'+item" ripple v-for="item in items"
-                            :key="item">
+      <v-breadcrumbs-item class="breadcrumb-item" :to="'/elements/'+item" ripple v-for="item in items" :key="item">
         {{ item }}
-        </v-breadcrumbs-item>
+      </v-breadcrumbs-item>
     </v-breadcrumbs>
-    </v-toolbar>
+  </v-toolbar>
 </template>
 
 <script lang="ts">
@@ -22,14 +21,15 @@ import { namespace } from "nuxt-class-component";
 
 @Component({})
 export default class VeoBreadcrumb extends Vue {
-  @Prop({type: Array})
+  @Prop({ type: Array })
   items: any[];
 
   changeBreadcrumb(item: any) {
-    this.$emit('change', item);
+    this.$emit("change", item);
   }
 }
 </script>
+
 <style lang="stylus" scoped>
 .breadcrumb-toolbar {
   z-index: 1;

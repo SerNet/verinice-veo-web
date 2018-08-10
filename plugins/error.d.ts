@@ -1,4 +1,4 @@
-import {AxiosInstance} from 'axios';
+import { AxiosInstance } from 'axios';
 import VeoError from '~/models/VeoError';
 
 declare module 'vue/types/vue' {

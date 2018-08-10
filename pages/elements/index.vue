@@ -17,12 +17,8 @@ import { namespace } from "nuxt-class-component";
 import { Store } from "vuex";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
 
-@Component({
-  
-})
-export default class extends Vue {
-  
-}
+@Component({})
+export default class extends Vue {}
 </script>
 
 <style lang="stylus" scoped>

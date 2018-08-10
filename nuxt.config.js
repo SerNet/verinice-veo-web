@@ -66,7 +66,7 @@ module.exports = {
 
   router: {
     middleware: ["meta"],
-    extendRoutes(routes, resolve) {}
+    extendRoutes(routes, resolve) { }
   },
 
   /*
@@ -225,7 +225,7 @@ module.exports = {
                 //Define your options here (stylusOptions.use, stylusOptions.import, ...)
                 //e.g. add a plugin:
                 const uses = (stylusOptions.use = stylusOptions.use || []);
-                uses.push(function(style) {
+                uses.push(function (style) {
                   style.define("colors", $colors, true);
                   style.define("theme", $theme, true);
                 });

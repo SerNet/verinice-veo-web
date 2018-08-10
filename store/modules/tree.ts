@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import {RootState} from '~/store/index'
+import { RootState } from '~/store/index'
 import { Module } from 'vuex';
 
 const state = {
@@ -7,10 +7,10 @@ const state = {
 }
 
 export interface TreeItem {
-  id:string,
-  parent:string,
-  schema:string,
-  title:string
+  id: string,
+  parent: string,
+  schema: string,
+  title: string
 }
 
 export type TreeState = typeof state;
@@ -27,18 +27,18 @@ const module: Module<TreeState, RootState> = {
     items: (state) => state.items.filter(item => !item.parent),
     breadcrumbById: (state) => (id: string) => {
       const path = [id];
-      let parent: string|undefined = id;
-      while(parent) {
-        const node = state.items.find(item => item.id == parent);  
+      let parent: string | undefined = id;
+      while (parent) {
+        const node = state.items.find(item => item.id == parent);
         parent = node && node.parent;
-        if(parent) path.unshift(parent);
+        if (parent) path.unshift(parent);
       }
       return path;
     }
   },
   actions: {
-    async getItems(this: Vue, {state, commit}) {
-      if(state.items) return;
+    async getItems(this: Vue, { state, commit }) {
+      if (state.items) return;
       const response = await this.$axios.$get('/api/elements');
       commit('setItems', response);
     }

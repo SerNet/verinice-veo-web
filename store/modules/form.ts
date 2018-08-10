@@ -25,7 +25,7 @@ const module: Module<FormState, RootState> = {
     setSchema(state, value: {}) {
       state.schema = value;
     },
-    addSchema(state, {name, value}) {
+    addSchema(state, { name, value }) {
       state.schemaCache[name] = value;
     },
     setBreadcrumb(state, value) {
@@ -59,13 +59,13 @@ const module: Module<FormState, RootState> = {
     async loadSchema(this: Vue, { commit, getters }, { name }) {
       try {
         const existing = getters.schemaByName(name);
-        if(existing) {
+        if (existing) {
           commit('setSchema', existing);
           return existing;
         }
         const schema = await this.$axios.$get(`/api${name}`);
         commit('setSchema', schema);
-        commit('addSchema', {name: name, value: schema});
+        commit('addSchema', { name: name, value: schema });
       } catch (e) {
         if (e.response) {
           const { response } = e as AxiosError;

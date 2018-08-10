@@ -1,5 +1,5 @@
 <template>
-  <component :is="fieldComponent" v-bind="fieldOptions" :label="name" :placeholder="schema.title" :value="value"/>
+  <component :is="fieldComponent" v-bind="fieldOptions" :label="name" :placeholder="schema.title" :value="value" />
 </template>
 
 <script lang="ts">
@@ -12,47 +12,48 @@ import {
   Watch
 } from "nuxt-property-decorator";
 import { namespace } from "nuxt-class-component";
-import {JSONSchema6, JSONSchema6TypeName} from "json-schema";
+import { JSONSchema6, JSONSchema6TypeName } from "json-schema";
 
-interface IComponentDeclaration {
-  
-}
+interface IComponentDeclaration {}
 
-@Component({
-
-})
+@Component({})
 export default class AbstractField extends Vue {
-  @Prop({type: String})
-  name: String
+  @Prop({ type: String })
+  name: String;
 
-  @Prop({type: Object})
-  schema: JSONSchema6
+  @Prop({ type: Object })
+  schema: JSONSchema6;
 
-  @Prop({type: Boolean})
-  required: Boolean
+  @Prop({ type: Boolean })
+  required: Boolean;
 
   @Prop({})
-  value: any
+  value: any;
 
-  fieldComponent: string = 'v-text-field'
-  fieldOptions: any = {}
+  fieldComponent: string = "v-text-field";
+  fieldOptions: any = {};
 
+  static componentByType: {
+    [k in JSONSchema6TypeName]?: IComponentDeclaration
+  } = {
+    string: { id: "v-text-field" },
+    number: { id: "v-text-field" },
+    boolean: { id: "v-text-field" },
+    array: { id: "v-text-field" }
+  };
 
-  static componentByType: {[k in JSONSchema6TypeName]?: IComponentDeclaration} = {
-    'string': {id: 'v-text-field'},
-    'number': {id: 'v-text-field'},
-    'boolean': {id: 'v-text-field'},
-    'array': {id: 'v-text-field'},
-  }
-
-  @Watch('schema', {immediate: true})
+  @Watch("schema", { immediate: true })
   initComponent(schema: JSONSchema6) {
-    switch(schema.type) {
-      case 'string': this.fieldComponent = 'v-text-field'; break;
-      case 'number': this.fieldComponent = 'v-text-field'; break;
+    switch (schema.type) {
+      case "string":
+        this.fieldComponent = "v-text-field";
+        break;
+      case "number":
+        this.fieldComponent = "v-text-field";
+        break;
     }
-    if(schema.enum) {
-      this.fieldComponent = 'v-select';
+    if (schema.enum) {
+      this.fieldComponent = "v-select";
       this.fieldOptions.items = schema.enum;
     }
   }

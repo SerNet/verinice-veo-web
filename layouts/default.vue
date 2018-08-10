@@ -1,8 +1,7 @@
 <template>
   <v-app>
     <main-toolbar @click-side-icon="mainDrawer = !mainDrawer" :clipped="true"></main-toolbar>
-    <v-navigation-drawer v-model="mainDrawer" :mini-variant="$vuetify.breakpoint.smAndUp"
-                         :permanent="$vuetify.breakpoint.smAndUp" :clipped="$vuetify.breakpoint.smAndUp" app>
+    <v-navigation-drawer v-model="mainDrawer" :mini-variant="$vuetify.breakpoint.smAndUp" :permanent="$vuetify.breakpoint.smAndUp" :clipped="$vuetify.breakpoint.smAndUp" app>
       <menu-sidenav/>
     </v-navigation-drawer>
     <v-content>
@@ -18,8 +17,15 @@ import { mapActions, mapGetters } from "vuex";
 import MainToolbar from "~/components/MainLayout/MainToolbar.vue";
 import MenuSidenav from "~/components/MainLayout/MenuSidenav.vue";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
-import { Component, Inject, Model, Prop, Vue, Watch } from 'nuxt-property-decorator'
-import { namespace } from 'nuxt-class-component'
+import {
+  Component,
+  Inject,
+  Model,
+  Prop,
+  Vue,
+  Watch
+} from "nuxt-property-decorator";
+import { namespace } from "nuxt-class-component";
 
 @Component({
   components: {
@@ -29,21 +35,17 @@ import { namespace } from 'nuxt-class-component'
   }
 })
 export default class DefaultLayout extends Vue {
-
-  items = []
-  mainDrawer = null
-  msg = "Welcome to MY Vue.js App"
+  items = [];
+  mainDrawer = null;
+  msg = "Welcome to MY Vue.js App";
 
   created() {
     //this.getItems();
-    
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
-
 h1, h2 {
   font-weight: normal;
 }

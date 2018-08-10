@@ -1,11 +1,10 @@
 {
-    "gitlab.instanceUrl": "https://git.cpmsys.de",
-    "files.exclude": {
-        "**/.git": true,         // this is a default value
-        "**/.DS_Store": true,    // this is a default value
-
-    },
-    "todo-tree.grouped": false,
-    "todo-tree.flat": true,
-    "todo-tree.expanded": true
+  "gitlab.instanceUrl": "https://git.cpmsys.de",
+  "files.exclude": {
+    "**/.git": true, // this is a default value
+    "**/.DS_Store": true, // this is a default value
+  },
+  "todo-tree.grouped": false,
+  "todo-tree.flat": true,
+  "todo-tree.expanded": true
 }

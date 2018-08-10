@@ -23,7 +23,7 @@ export default () => new Vuex.Store<RootState>({
   },
   strict: debug,
   actions: {
-    async nuxtServerInit({dispatch}) {
+    async nuxtServerInit({ dispatch }) {
       await dispatch('auth/init')
     }
   }
