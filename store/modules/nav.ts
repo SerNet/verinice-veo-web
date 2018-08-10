@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import {RootState} from '~/store/index'
+import { RootState } from '~/store/index'
 import { Module } from 'vuex';
 
 export interface NavItem {

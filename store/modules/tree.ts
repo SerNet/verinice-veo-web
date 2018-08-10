@@ -1,7 +1,6 @@
 import Vue from "vue";
 import { RootState } from "~/store/index";
 import { Module } from "vuex";
-
 const state = {
   items: (<any>undefined) as TreeItem[],
   current_id: "" as string | null

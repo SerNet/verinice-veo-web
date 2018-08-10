@@ -1,5 +1,5 @@
 <template>
-    <div>Hello World</div>
+  <div>Hello World</div>
 </template>
 
 <script lang="ts">
@@ -19,6 +19,6 @@ export default class extends Vue {}
 
 <style lang="stylus" scoped>
 div {
-    padding: 10px;
+  padding: 10px;
 }
 </style>

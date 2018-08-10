@@ -1,13 +1,13 @@
 <template>
   <v-toolbar app color="primary" dark="" style="overflow:hidden" :clipped-left="clipped">
     <main-toolbar-logo/>
-    <v-toolbar-side-icon light class="hidden-md-and-up" @click.stop="toggleDrawer()"/>
+    <v-toolbar-side-icon light class="hidden-md-and-up" @click.stop="toggleDrawer()" />
     <v-layout class="hidden-sm-and-down" row justify-space-around style="margin-left: 200px;">
       <v-flex xs12 sm6>
-        <v-text-field solo light  single-line prepend-icon="search" label="In verinice suchen"/>
+        <v-text-field solo light single-line prepend-icon="search" label="In verinice suchen" />
       </v-flex>
     </v-layout>
-    <v-spacer class="hidden-md-and-up"/>
+    <v-spacer class="hidden-md-and-up" />
     <v-btn class="hidden-md-and-up" icon>
       <v-icon>search</v-icon>
     </v-btn>

@@ -3,7 +3,7 @@
  */
 // require('env2')('.env') // optionally store your Evironment Variables in .env
 const BROWSER = 'internet explorer';//process.env.BROWSER;
-const SCREENSHOT_PATH = './screenshots/'+BROWSER;
+const SCREENSHOT_PATH = './screenshots/' + BROWSER;
 
 const path = require('path');
 
@@ -20,8 +20,8 @@ module.exports = {
   },
   'test_settings': {
     'default': {
-      "selenium_port"  : 443,
-      "selenium_host"  : "selenium.cpmsys.io",
+      "selenium_port": 443,
+      "selenium_host": "selenium.cpmsys.io",
       "ssl": true,
       "username": "gitlab-ci-token",
       "password": process.env['CI_JOB_TOKEN'],

@@ -1,35 +1,34 @@
 <template>
-  <v-layout class="form-panels" style="overflow: auto !important;"
-                  column>
-          <!--<v-alert :dismissible="true" style="width: 100%;" type="basic" :value="true" icon="link">-->
-          <!--<span>This element is linked to <b>two</b> elements. <a href="#">View relations</a></span>-->
-          <!--</v-alert>-->
-          <v-expansion-panel class="px-3 " :inset="true" :expand="true">
-            <v-expansion-panel-content :value="true" class="grey lighten-3">
-              <div slot="header">
-                <v-icon>keyboard_arrow_up</v-icon>
-                <span style="margin-left: 6px">Basic</span>
-              </div>
-              <div slot="actions">
-                <v-icon>more_vert</v-icon>
-              </div>
-              <v-card>
-                <v-card-text class="white lighten-3">
-                  <v-form v-if="schema && schema.properties">
-                    <!-- <v-text-field v-for="(item, key) in model" :key="key" :label="key" :value="item"/> -->
-                    <abstract-field v-for="(property, key) in schema.properties" :key="key" :name="key" :schema="property" :required="schema.required.includes(key)" :value="model[key]"/>
-                    <!--<v-text-field label="Chapter" v-model="current.chapter" value="M 2.278" append-icon="visibility" :append-icon-cb="() => previewNav.open=true"/>
+  <v-layout class="form-panels" style="overflow: auto !important;" column>
+    <!--<v-alert :dismissible="true" style="width: 100%;" type="basic" :value="true" icon="link">-->
+    <!--<span>This element is linked to <b>two</b> elements. <a href="#">View relations</a></span>-->
+    <!--</v-alert>-->
+    <v-expansion-panel class="px-3 " :inset="true" :expand="true">
+      <v-expansion-panel-content :value="true" class="grey lighten-3">
+        <div slot="header">
+          <v-icon>keyboard_arrow_up</v-icon>
+          <span style="margin-left: 6px">Basic</span>
+        </div>
+        <div slot="actions">
+          <v-icon>more_vert</v-icon>
+        </div>
+        <v-card>
+          <v-card-text class="white lighten-3">
+            <v-form v-if="schema && schema.properties">
+              <!-- <v-text-field v-for="(item, key) in model" :key="key" :label="key" :value="item"/> -->
+              <abstract-field v-for="(property, key) in schema.properties" :key="key" :name="key" :schema="property" :required="schema.required.includes(key)" :value="model[key]" />
+              <!--<v-text-field label="Chapter" v-model="current.chapter" value="M 2.278" append-icon="visibility" :append-icon-cb="() => previewNav.open=true"/>
                     <v-text-field label="State" value="2014"/>
                     <v-text-field label="Title" value="Typische Einsatzszenarien von Routern und Switches"/>
                     <v-text-field label="Life cycle" value="Planung und Konzeption"/>
                     <v-text-field label="Importance" value="Ö" error-messages="Invalid importance level 'Ö'"/>
                     <v-text-field label="Document" value=""/>
                     <v-text-field label="Beschreibung" v-model="desc" multi-line="" rows="3"/>-->
-                  </v-form>
-                </v-card-text>
-              </v-card>
-            </v-expansion-panel-content>
-            <!-- <v-expansion-panel-content :value="true" class="grey lighten-3">
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-expansion-panel-content>
+      <!-- <v-expansion-panel-content :value="true" class="grey lighten-3">
               <div slot="header">
                 <v-icon>keyboard_arrow_up</v-icon>
                 <span style="margin-left: 6px">IT Baseline Audit</span>
@@ -50,8 +49,8 @@
                 </v-card-text>
               </v-card>
             </v-expansion-panel-content> -->
-          </v-expansion-panel>
-        </v-layout>
+    </v-expansion-panel>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -64,7 +63,7 @@ import {
   Watch
 } from "nuxt-property-decorator";
 import { namespace } from "nuxt-class-component";
-import AbstractField from '~/components/Form/AbstractField.vue'
+import AbstractField from "~/components/Form/AbstractField.vue";
 
 @Component({
   components: {
@@ -76,11 +75,11 @@ export default class VeoForm extends Vue {
     chapter: "TEST"
   };
 
-  @Prop({type: Object})
-  model: Object
+  @Prop({ type: Object })
+  model: Object;
 
-  @Prop({type: Object})
-  schema: Object
+  @Prop({ type: Object })
+  schema: Object;
 
   previewNav: { open: false };
   desc = "Lorem ipsum dolor sit amet, consectetur \n" +

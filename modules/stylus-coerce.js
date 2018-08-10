@@ -4,24 +4,24 @@ stylus = require('stylus');
 
 _ = require('lodash');
 
-parseUnit = function(value) {
+parseUnit = function (value) {
   var m;
   if (m = value.match(/^(-?\d+(?:\.\d+)?)(px|em|rem|pt|in|cm|mm|%)$/)) {
     return new stylus.nodes.Unit(parseFloat(m[1]), m[2]);
   }
 };
 
-parseColor = function(value) {
+parseColor = function (value) {
   var rgb, shorthand, _ref;
   if (value.substr(0, 1) === '#' && /^#(?:[0-9a-fA-F]{3}){1,2}$/.test(value)) {
     shorthand = value.length === 4;
     rgb = value.match(shorthand ? /\w/g : /\w{2}/g);
-    rgb = _.map(rgb, function(s) {
+    rgb = _.map(rgb, function (s) {
       return parseInt((shorthand ? s + s : s), 16);
     });
   } else if (value.substr(0, 3) === 'rgb') {
     rgb = value.match(/(\d+(?:\.\d+)?)/g);
-    rgb = _.map(rgb, function(s) {
+    rgb = _.map(rgb, function (s) {
       return parseFloat(s, 10);
     });
   } else if (value === 'transparent') {
@@ -34,7 +34,7 @@ parseColor = function(value) {
   }
 };
 
-coerce = function(value) {
+coerce = function (value) {
   switch (typeof value) {
     case 'string':
       return parseUnit(value) || parseColor(value) || new stylus.nodes.Literal(value);
@@ -51,16 +51,16 @@ coerce = function(value) {
   }
 };
 
-dasherize = function(string) {
-  return string.replace(/([A-Z])/g, function($1) {
+dasherize = function (string) {
+  return string.replace(/([A-Z])/g, function ($1) {
     return "-" + $1.toLowerCase();
   });
 };
 
-coerceObject = function(obj, options) {
+coerceObject = function (obj, options) {
   var node;
   node = new stylus.nodes.Object();
-  _.each(obj, function(value, property) {
+  _.each(obj, function (value, property) {
     return node.set(dasherize(property), coerce(value));
   });
   return node;

@@ -48,5 +48,6 @@ export default class extends Vue {
   left: 80px;
   bottom: 0;
   width: 300px;
+  /* TODO */
 }
 </style>
