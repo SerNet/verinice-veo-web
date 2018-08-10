@@ -1,0 +1,58 @@
+{
+  "_id": "_design/api",
+  "_rev": "5-113816e94e6a19d72d9d326f934588e9",
+  "views": {
+    "elements": {
+      "map": "function (doc) {\n if(doc.parent!==undefined) emit(doc._id, doc);\n}"
+    },
+    "elementByParent": {
+      "map": "function (doc) {\n if(doc.parent!==undefined) emit(doc.parent, doc);\n}"
+    },
+    "schemas": {
+      "map": "function (doc) {\n if(!doc.parent) {\n    emit(doc._id.split('/').pop(), doc);\n }\n}"
+    },
+    "schemasWithExtension": {
+      "map": "function (doc) {\n if(!doc.parent) {\n    var file = doc._id.split('/').pop();\n    emit(file, doc);\n    emit(file.split('.').shift(), doc);\n }\n}"
+    }
+  },
+  "lists": {
+    "index": "function(head, req) { \nsend('[');\n    row = getRow();\n    if (row){\n        send(toJSON(row.value));\n        while(row = getRow()){\n            send(',');\n            send(toJSON(row.value));\n        }\n    }\n    return ']';\n}",
+    "show": "function(head, req) { \n    row = getRow();\n    if (row){\n        return (toJSON(row.value));\n    } else {\n        return toJSON(req);\n    }\n}"
+  },
+  "rewrites": [
+    {
+      "from": "/schemas/",
+      "to": "/_list/index/schemas"
+    },
+    {
+      "from": "/schemas/:key",
+      "to": "/_list/show/schemasWithExtension",
+      "query": {
+        "key": ":key"
+      }
+    },
+    {
+      "from": "/elements",
+      "to": "/_list/index/elements"
+    },
+    {
+      "from": "/elements/parent/",
+      "to": "/_list/index/elementByParent",
+      "query": {
+        "key": null
+      }
+    },
+    {
+      "from": "/elements/parent/:key",
+      "to": "/_list/index/elementByParent",
+      "query": {
+        "key": ":key"
+      }
+    },
+    {
+      "from": "/elements/:key",
+      "to": "../../:key"
+    }
+  ],
+  "language": "javascript"
+}

@@ -35,7 +35,6 @@ export default class extends Vue {
 
   groups: any[] = ["IT Baseline-Catalog", "BSI Model"];
 
-
   async fetch({ store, params }: { store: Store<any>; params: Object }) {
     await store.dispatch("tree/getItems");
   }

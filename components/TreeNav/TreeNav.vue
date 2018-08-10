@@ -21,10 +21,10 @@
       </v-btn>
     </v-toolbar>
     <v-list style="overflow: auto">
-      <v-list-tile v-for="item in items" :to="toPrefix+item.id" :key="item.id">
+      <v-list-tile v-for="item in items" :to="toPrefix+item['$veo.id']" :key="item._id">
         <v-list-tile-content>
           <v-list-tile-title>
-            {{item.title}} ({{item.id}})
+            {{item['$veo.title']}} ({{item['$veo.id']}})
           </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
@@ -42,13 +42,11 @@ import {
   Watch
 } from "nuxt-property-decorator";
 import { namespace } from "nuxt-class-component";
-import TreeView from "~/components/TreeNav/TreeView.vue";
+
 const store = namespace("tree");
 
 @Component({
-  components: {
-    TreeView
-  }
+  components: {}
 })
 export default class TreeNav extends Vue {
   treeData = [];

@@ -190,8 +190,12 @@ module.exports = {
   },
 
   proxy: {
-    "/api/": {
+    /*"/api/": {
       target: "https://v2020-rest.cpmsys.io/",
+      pathRewrite: { "^/api/": "" }
+    }*/
+    "/api/": {
+      target: "http://couch.cpmsys.io/veo/_design/api/_rewrite/",
       pathRewrite: { "^/api/": "" }
     }
   },

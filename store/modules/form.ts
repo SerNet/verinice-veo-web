@@ -10,13 +10,15 @@ const state = {
   breadcrumb: []
 };
 
+const SCHEMA_FIELD = "$veo.type";
+
 export type FormState = typeof state;
 
 const module: Module<FormState, RootState> = {
   namespaced: true,
   state,
   getters: {
-    schemaByName: (state) => (name: string) => state.schemaCache[name]
+    schemaByName: state => (name: string) => state.schemaCache[name]
   },
   mutations: {
     setModel(state, value: {}) {
@@ -25,7 +27,7 @@ const module: Module<FormState, RootState> = {
     setSchema(state, value: {}) {
       state.schema = value;
     },
-    addSchema(state, {name, value}) {
+    addSchema(state, { name, value }) {
       state.schemaCache[name] = value;
     },
     setBreadcrumb(state, value) {
@@ -37,8 +39,8 @@ const module: Module<FormState, RootState> = {
       try {
         const response = await this.$axios.$get(`/api/elements/${id}`);
         commit("setModel", response);
-        if (response.schema) {
-          await dispatch("loadSchema", { name: response.schema });
+        if (response[SCHEMA_FIELD]) {
+          await dispatch("loadSchema", { name: response[SCHEMA_FIELD] });
         }
         commit("setBreadcrumb", rootGetters["tree/breadcrumbById"](id));
       } catch (e) {
@@ -59,13 +61,13 @@ const module: Module<FormState, RootState> = {
     async loadSchema(this: Vue, { commit, getters }, { name }) {
       try {
         const existing = getters.schemaByName(name);
-        if(existing) {
-          commit('setSchema', existing);
+        if (existing) {
+          commit("setSchema", existing);
           return existing;
         }
-        const schema = await this.$axios.$get(`/api${name}`);
-        commit('setSchema', schema);
-        commit('addSchema', {name: name, value: schema});
+        const schema = await this.$axios.$get(`/api/schemas/${name}`);
+        commit("setSchema", schema);
+        commit("addSchema", { name: name, value: schema });
       } catch (e) {
         if (e.response) {
           const { response } = e as AxiosError;
