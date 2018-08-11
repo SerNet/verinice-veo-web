@@ -66,7 +66,7 @@ module.exports = {
 
   router: {
     middleware: ["meta"],
-    extendRoutes(routes, resolve) { }
+    extendRoutes(routes, resolve) {}
   },
 
   /*
@@ -74,6 +74,7 @@ module.exports = {
   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
+    "~/modules/fakeserver",
     "@nuxtjs/axios",
     "@nuxtjs/pwa",
     "~/modules/typescript",
@@ -190,17 +191,14 @@ module.exports = {
   },
 
   proxy: {
-    /*"/api/": {
+    "/api": {
       target: "https://v2020-rest.cpmsys.io/",
-      pathRewrite: { "^/api/": "" }
-    }*/
-    "/api/": {
-      target: "http://couch.cpmsys.io/veo/_design/api/_rewrite/",
-      pathRewrite: { "^/api/": "" }
+      pathRewrite: { "^/api": "" }
     }
   },
 
   extensions: ["ts"],
+
   /*
   ** Build configuration
 
@@ -229,7 +227,7 @@ module.exports = {
                 //Define your options here (stylusOptions.use, stylusOptions.import, ...)
                 //e.g. add a plugin:
                 const uses = (stylusOptions.use = stylusOptions.use || []);
-                uses.push(function (style) {
+                uses.push(function(style) {
                   style.define("colors", $colors, true);
                   style.define("theme", $theme, true);
                 });

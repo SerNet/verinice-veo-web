@@ -41,7 +41,6 @@ export default class extends Vue {
   onBreadcrumbChange(item: string) {}
 
   async fetch({ store, params }: { store: Store<any>; params: any }) {
-    console.log("_ID", params);
     await store.dispatch("tree/getItems", params);
     if (params["id"]) {
       await store.dispatch("form/load", params);

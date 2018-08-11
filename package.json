@@ -45,6 +45,7 @@
     "eslint-plugin-vue": "^4.0.0",
     "faker": "^4.1.0",
     "json-schema-faker": "^0.5.0-rc15",
+    "json-server": "^0.14.0",
     "nightwatch": "^1.0.6",
     "style-loader": "^0.21.0",
     "stylus": "^0.54.5",
