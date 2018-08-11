@@ -17,42 +17,51 @@ const fakeTypes = {
   ["$veo.title"]: "company.companyName"
 };
 
+let fakeServer = null;
+
 module.exports = async function asyncModule() {
+  const options = this.options;
+
+  const showReady = this.nuxt.showReady;
+  this.nuxt.showReady = function(clear = true) {
+    if (!this.readyMessage) {
+      return;
+    }
+    const apiOption = options.proxy["/api"];
+
+    consola.ready({
+      message:
+        this.readyMessage +
+        ` (Using API at ${chalk.underline.blue(
+          (apiOption.target || apiOption) + "/api"
+        )})`,
+      badge: true,
+      clear
+    });
+  };
+
   const DB_FILE = path.join(this.options.buildDir, "db.json");
-  this.options.proxy["/api"] = {
+  options.proxy["/api"] = {
     target: "http://localhost:14242",
     pathRewrite: { "^/api": "" }
   };
-  const jsonServer = require("json-server");
-  const server = jsonServer.create();
 
   this.nuxt.hook("build:templates", async (nuxt, options) => {
-    await initServer();
-    //process.exit(0);
+    await fs.writeFile(
+      DB_FILE,
+      JSON.stringify(await generateData(), undefined, 2)
+    );
     consola.success("Database initialized");
+    await initServer(this.nuxt);
   });
 
   let app;
   this.nuxt.hook("listen", async nuxt => {
-    if (!app) {
-      app = server.listen(14242);
-    }
-
-    const nuxtListening = () => {
-      const apiOption = this.options.proxy["/api"];
-      this.nuxt.readyMessage += ` (Using API at ${chalk.underline.blue(
-        (apiOption.target || apiOption) + "/api"
-      )})`;
-    };
-    nuxtListening();
+    await initServer(this.nuxt);
   });
 
   this.nuxt.hook("close", async nuxt => {
-    if (app) {
-      app.stack.length = 0; //Remove existing middleware!
-      app.close();
-      app = null;
-    }
+    await closeServer(this.nuxt);
   });
 
   function toObject(arr) {
@@ -90,11 +99,10 @@ module.exports = async function asyncModule() {
     };
   }
 
-  async function initServer() {
-    await fs.writeFile(
-      DB_FILE,
-      JSON.stringify(await generateData(), undefined, 2)
-    );
+  async function initServer(nuxt) {
+    await closeServer(nuxt);
+    const jsonServer = require("json-server");
+    const server = jsonServer.create();
 
     const router = jsonServer.router(DB_FILE);
     const middlewares = jsonServer.defaults({ logger: false });
@@ -106,6 +114,15 @@ module.exports = async function asyncModule() {
       })
     );
     server.use(router);
+
+    return (fakeServer = server.listen(14242));
+  }
+
+  async function closeServer(nuxt) {
+    if (fakeServer) {
+      await new Promise(resolve => fakeServer.close(resolve));
+      fakeServer = null;
+    }
   }
 
   async function createFakeElements(schema, num) {

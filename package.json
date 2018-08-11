@@ -11,8 +11,7 @@
     "generate": "SERVICE_MODE=php nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "precommit": "npm run lint",
-    "screenshots": "NODE_ENV=testing NIGHTWATCH_SPEC=screenshots nightwatch",
-    "fake": "node ./scripts/fake.js"
+    "screenshots": "NODE_ENV=testing NIGHTWATCH_SPEC=screenshots nightwatch"
   },
   "dependencies": {
     "@nuxtjs/axios": "latest",
