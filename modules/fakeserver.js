@@ -5,6 +5,8 @@ const path = require("path");
 const consola = require("consola");
 var pluralize = require("pluralize");
 const jsf = require("json-schema-faker");
+const jwt = require("jsonwebtoken");
+
 jsf.extend("faker", function() {
   const faker = require("faker/locale/de");
   return faker;
@@ -108,11 +110,48 @@ module.exports = async function asyncModule() {
     const middlewares = jsonServer.defaults({ logger: false });
 
     server.use(middlewares);
+    server.post("/login", function(req, res) {
+      const payload = {
+        exp: 1534779266,
+        sub: "admin",
+        iss: "verinice.VEO",
+        iat: 1533915266,
+        aud: "verinice.REST clients",
+        profiles: ["export", "import", "tasks"]
+      };
+      const token = jwt.sign(payload, "veo");
+      res.header("Authorization", "Bearer " + token);
+      res.status(200).send("");
+    });
+
+    function isAuthorized(req) {
+      if (req.headers.authorization) {
+        const token = String(req.headers.authorization)
+          .split(/\s+/)
+          .pop();
+        try {
+          return jwt.verify(token, "veo");
+        } catch (err) {
+          return false;
+        }
+      }
+    }
+
+    server.use((req, res, next) => {
+      if (isAuthorized(req)) {
+        // add your authorization logic here
+        next(); // continue to JSON Server router
+      } else {
+        res.sendStatus(401);
+      }
+    });
+
     server.use(
       jsonServer.rewriter({
         "/schemas/:id.json": "/schemas/:id"
       })
     );
+
     server.use(router);
 
     return (fakeServer = server.listen(14242));

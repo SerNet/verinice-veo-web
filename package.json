@@ -19,6 +19,7 @@
     "@nuxtjs/pwa": "latest",
     "@types/json-schema": "^6.0.1",
     "babel-polyfill": "^6.26.0",
+    "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.10",
     "material-design-icons-iconfont": "^3.0.3",
     "moment": "^2.22.2",
