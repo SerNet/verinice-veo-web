@@ -30,6 +30,11 @@ const module: Module<TreeState, RootState> = {
     }
   },
   getters: {
+    root: state => {
+      return (
+        state.items && state.items.find(item => item[PARENT_FIELD] === null)
+      );
+    },
     items: state =>
       state.items.filter(
         item => item[PARENT_FIELD] === state.current_id || null

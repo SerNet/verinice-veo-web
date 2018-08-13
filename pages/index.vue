@@ -1,5 +1,9 @@
 <template>
-  <div>Hello World</div>
+  <div>
+    <v-tree-view class="tree-nav" :size="48" :root="root">
+
+    </v-tree-view>
+  </div>
 </template>
 
 <script lang="ts">
@@ -12,13 +16,27 @@ import {
   Watch
 } from "nuxt-property-decorator";
 import { namespace } from "nuxt-class-component";
+import { Store } from "vuex";
+import vTreeView from "~/components/TreeView/TreeView.vue";
 
-@Component({})
-export default class extends Vue {}
+const treeStore = namespace("tree");
+
+@Component({
+  components: {
+    vTreeView
+  }
+})
+export default class Index extends Vue {
+  @treeStore.Getter("root") root: any;
+}
 </script>
 
 <style lang="stylus" scoped>
-div {
-  padding: 10px;
+.tree-nav {
+  position: fixed;
+  top: 64px;
+  left: 80px;
+  bottom: 0;
+  width: 300px;
 }
 </style>

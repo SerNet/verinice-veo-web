@@ -72,6 +72,6 @@ export default class MainToolbar extends Vue {
 }
 
 .v-input >>> .v-input__slot {
-  margin-bottom: 0
+  margin-bottom: 0;
 }
 </style>
