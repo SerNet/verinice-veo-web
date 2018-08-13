@@ -4,8 +4,8 @@
       <v-checkbox class="checkbox" :indeterminate="checked === undefined" v-model="checked"></v-checkbox>
     </v-list-tile-action>
     <v-list-tile-action class="small-action" :style="{visibility: hasChildren?'visible':'hidden'}">
-      <v-btn icon @click="$emit('toggle')">
-        <v-icon class="chevron" :class="[open?'open':'']">chevron_right</v-icon>
+      <v-btn icon @click="$emit('change', {expanded: !expanded})">
+        <v-icon class="chevron" :class="[expanded?'open':'']">chevron_right</v-icon>
       </v-btn>
     </v-list-tile-action>
     <v-list-tile-content @click="()=>{}">
@@ -41,7 +41,7 @@ export default class TreeNode extends Vue {
   @Prop({ type: Number, default: 0 })
   level: number;
   @Prop({ type: Boolean, default: false })
-  open: Boolean;
+  expanded: Boolean;
 
   @Prop({ type: Array, default: () => [] })
   children: any[];
@@ -49,12 +49,11 @@ export default class TreeNode extends Vue {
   @Prop({ type: String, default: "" })
   title: String;
 
+  @Prop({ type: Boolean, default: false })
+  hasChildren: Boolean;
+
   get _indent() {
     return this.level * this.indent + "px";
-  }
-
-  get hasChildren() {
-    return this.children && this.children.length;
   }
 }
 </script>
