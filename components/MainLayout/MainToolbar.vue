@@ -1,19 +1,40 @@
 <template>
-  <v-toolbar app color="primary" dark="" style="overflow:hidden" :clipped-left="clipped">
-    <main-toolbar-logo/>
-    <v-toolbar-side-icon light class="hidden-md-and-up" @click.stop="toggleDrawer()" />
+  <v-toolbar app color="primary" dark="" style="overflow:hidden" :clipped-left="clipped" id="mainToolbar">
+    <main-toolbar-logo v-if="!showSearch" />
+    <v-toolbar-side-icon light class="hidden-sm-and-up" @click.stop="toggleDrawer()" v-if="!showSearch" style="color: #e53935" />
+    <!-- normale Suche -->
     <v-layout class="hidden-sm-and-down" row justify-space-around style="margin-left: 200px;">
-      <v-flex xs12 sm6>
-        <v-text-field solo light single-line prepend-icon="search" label="In verinice suchen" />
+      <v-flex xs12 sm6 align-content-center>
+        <v-text-field solo light single-line label="In verinice suchen" />
       </v-flex>
     </v-layout>
-    <v-spacer class="hidden-md-and-up" />
-    <v-btn class="hidden-md-and-up" icon>
-      <v-icon>search</v-icon>
-    </v-btn>
-    <v-btn icon>
-      <v-icon>more_vert</v-icon>
-    </v-btn>
+
+    <!-- mobile Suche -->
+    <v-layout class="hidden-md-and-up" row justify-space-around style="margin-left: 20px;">
+      <v-flex xs12>
+        <v-text-field solo light single-line label="In verinice suchen" v-if="showSearch" />
+      </v-flex>
+      <v-btn icon @click="toggleSearch()">
+        <v-icon>{{showSearch?'close':'search'}}</v-icon>
+      </v-btn>
+    </v-layout>
+
+    <v-menu offset-y v-if="!showSearch">
+      <v-btn slot="activator" color="primary" icon>
+        <v-icon>more_vert</v-icon>
+      </v-btn>
+      <v-list>
+        <v-list-tile>
+          <v-list-tile-title>Test 1</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile>
+          <v-list-tile-title>Test 2</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile>
+          <v-list-tile-title>Test 3</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
   </v-toolbar>
 </template>
 
@@ -38,12 +59,19 @@ export default class MainToolbar extends Vue {
   toggleDrawer() {
     this.$emit("click-side-icon");
   }
+  toggleSearch() {
+    this.showSearch = !this.showSearch;
+  }
+  showSearch = false;
 }
 </script>
 
 <style lang="stylus" scoped>
->>> .v-toolbar__content {
+#mainToolbar >>> .v-toolbar__content {
   padding-left: 0;
 }
-</style>
 
+.v-input >>> .v-input__slot {
+  margin-bottom: 0
+}
+</style>

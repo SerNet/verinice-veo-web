@@ -3,7 +3,7 @@
     <v-flex>
       <tree-nav class="tree-nav" :groups="groups" :items="treeItems" to-prefix="/elements/"></tree-nav>
     </v-flex>
-    <v-flex xs12 style="margin-left: 300px;">
+    <v-flex xs12 id="content">
       <nuxt-child></nuxt-child>
     </v-flex>
   </v-layout>
@@ -49,5 +49,15 @@ export default class extends Vue {
   bottom: 0;
   width: 300px;
   /* TODO */
+}
+
+#content {
+  margin-left: 300px;
+}
+
+@media only screen and (max-width: 599px /* 959 */) {
+  #content {
+    margin-left: 0;
+  }
 }
 </style>

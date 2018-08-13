@@ -11,6 +11,7 @@
     </v-content>
   </v-app>
 </template>
+
 <script lang="ts">
 import { mapActions, mapGetters } from "vuex";
 
