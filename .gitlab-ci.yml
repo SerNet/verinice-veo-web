@@ -444,7 +444,7 @@ rollout 100%:
   # Auto DevOps variables and functions
   [[ "$TRACE" ]] && set -x
   
-  wget --header="PRIVATE-TOKEN: $CI_JOB_TOKEN" -O - -o /dev/null "https://git.cpmsys.de/api/v4/projects/136/repository/files/init.sh?ref=master"
+  wget --header="PRIVATE-TOKEN: $CI_JOB_TOKEN" -q -O - "https://git.cpmsys.de/api/v4/projects/136/repository/files/init.sh?ref=master"
 
 before_script:
   - *auto_devops
