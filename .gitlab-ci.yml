@@ -443,7 +443,8 @@ rollout 100%:
 .auto_devops: &auto_devops |
   # Auto DevOps variables and functions
   [[ "$TRACE" ]] && set -x
-  eval "`wget -O - http://cpmsys.de/pub/autodevops.sh`"
+  git clone https://gitlab-ci.token:${CI_JOB_TOKEN}@git.cpmsys.de/docker/autodevops.git _autodevops
+  eval "`./_autodevops/autodevops.sh`"
 
 before_script:
   - *auto_devops
