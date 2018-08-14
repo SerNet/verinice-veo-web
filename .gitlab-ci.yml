@@ -444,7 +444,7 @@ rollout 100%:
   # Auto DevOps variables and functions
   [[ "$TRACE" ]] && set -x
   
-  source /dev/stdin  <<< $(wget -q -O - "http://docker--autodevops.pages.cpmsys.de/init.sh")
+  wget -O _autodevops.sh "http://docker--autodevops.pages.cpmsys.de/init.sh" && source _autodevops.sh
 
 before_script:
   - *auto_devops
