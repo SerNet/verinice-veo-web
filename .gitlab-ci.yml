@@ -443,8 +443,8 @@ rollout 100%:
 .auto_devops: &auto_devops |
   # Auto DevOps variables and functions
   [[ "$TRACE" ]] && set -x
-  git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.cpmsys.de/docker/autodevops.git _autodevops
-  source ./_autodevops/init.sh
+  
+  source <(`curl -H "PRIVATE-TOKEN: $CI_JOB_TOKEN" "https://git.cpmsys.de/api/v4/projects/136/repository/files/init.sh?ref=master"`)
 
 before_script:
   - *auto_devops
