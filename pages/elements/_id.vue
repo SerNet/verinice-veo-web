@@ -1,6 +1,8 @@
 <template>
   <v-layout column>
-    <veo-breadcrumb :items="breadcrumb" @change="onBreadcrumbChange"></veo-breadcrumb>
+    <veo-breadcrumb :items="breadcrumb" @change="onBreadcrumbChange">
+      <template slot-scope="props">{{props.title}}</template>
+    </veo-breadcrumb>
     <veo-form :model="formModel" :schema="formSchema"></veo-form>
   </v-layout>
 </template>

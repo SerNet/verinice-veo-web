@@ -1,7 +1,7 @@
 <template>
   <v-layout row>
     <v-flex>
-      <tree-nav class="tree-nav" :groups="groups" :items="treeItems" to-prefix="/elements/"></tree-nav>
+      <tree-nav class="tree-nav" :groups="groups" :items="items" @expand="expandItem" @check="checkItem" to-prefix="/elements/"></tree-nav>
     </v-flex>
     <v-flex xs12 id="content">
       <nuxt-child></nuxt-child>
@@ -21,6 +21,7 @@ import {
 import { namespace } from "nuxt-class-component";
 import { Store } from "vuex";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
+import { InternalTreeItem } from "~/store/modules/tree";
 
 const formStore = namespace("form");
 const treeStore = namespace("tree");
@@ -31,7 +32,9 @@ const treeStore = namespace("tree");
   }
 })
 export default class extends Vue {
-  @treeStore.Getter("items") treeItems: any[];
+  @treeStore.State("items") items: Object[];
+  @treeStore.Action("expand") expandItem: Function;
+  @treeStore.Action("check") checkItem: Function;
 
   groups: any[] = ["IT Baseline-Catalog", "BSI Model"];
 

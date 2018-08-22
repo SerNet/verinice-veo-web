@@ -1,6 +1,6 @@
 <template>
   <v-list class="main-sidenav-content">
-    <v-list-tile class="list-tile" v-for="(item, i) in items" :class="['item', item.active?'active':'inactive']" :key="i">
+    <v-list-tile class="list-tile" v-for="(item, i) in items" :class="['item', item.active?'active':'inactive']" :key="i" :to="item.to">
       <v-list-tile-action>
         <v-icon class="icon" v-html="item.icon" />
       </v-list-tile-action>

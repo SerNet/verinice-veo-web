@@ -108,14 +108,15 @@ module.exports = async function asyncModule() {
 
     const router = jsonServer.router(DB_FILE);
     const middlewares = jsonServer.defaults({ logger: false });
-
+    server.use(jsonServer.bodyParser);
     server.use(middlewares);
     server.post("/login", function(req, res) {
+      const now = Math.round(Date.now() / 1000);
       const payload = {
-        exp: 1534779266,
-        sub: "admin",
+        exp: now + 10 * 24 * 60 * 60,
+        sub: req.body.username,
         iss: "verinice.VEO",
-        iat: 1533915266,
+        iat: now,
         aud: "verinice.REST clients",
         profiles: ["export", "import", "tasks"]
       };
@@ -124,25 +125,23 @@ module.exports = async function asyncModule() {
       res.status(200).send("");
     });
 
-    function isAuthorized(req) {
+    async function isAuthorized(req) {
       if (req.headers.authorization) {
         const token = String(req.headers.authorization)
           .split(/\s+/)
           .pop();
-        try {
-          return jwt.verify(token, "veo");
-        } catch (err) {
-          return false;
-        }
+        return jwt.verify(token, "veo");
+      } else {
+        throw new Error("Authorization required");
       }
     }
 
-    server.use((req, res, next) => {
-      if (isAuthorized(req)) {
-        // add your authorization logic here
-        next(); // continue to JSON Server router
-      } else {
-        res.sendStatus(401);
+    server.use(async (req, res, next) => {
+      try {
+        await isAuthorized(req);
+        next();
+      } catch (e) {
+        res.status(401).send({ error: { message: e.message, code: e.code } });
       }
     });
 

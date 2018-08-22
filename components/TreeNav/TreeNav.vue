@@ -20,15 +20,10 @@
         <v-icon>more_vert</v-icon>
       </v-btn>
     </v-toolbar>
-    <v-list style="overflow: auto">
-      <v-list-tile v-for="item in items" :to="toPrefix+item['$veo.id']" :key="item._id">
-        <v-list-tile-content>
-          <v-list-tile-title>
-            {{item['$veo.title']}} ({{item['$veo.id']}})
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-    </v-list>
+    <v-tree-view class="tree-nav">
+      <v-tree-node v-for="item in items" :key="item.id" :expanded="item.expanded" @expand="$emit('expand', item)"
+       :checked="item.checked" :has-children="item.hasChildren" :level="item.level" :to="toPrefix+item.id" @check="$emit('check', item)">{{item.title}}</v-tree-node>
+    </v-tree-view>
   </v-layout>
 </template>
 
@@ -42,11 +37,16 @@ import {
   Watch
 } from "nuxt-property-decorator";
 import { namespace } from "nuxt-class-component";
+import vTreeView from "~/components/TreeView/TreeView.vue";
+import vTreeNode from "~/components/TreeView/TreeNode.vue";
 
 const store = namespace("tree");
 
 @Component({
-  components: {}
+  components: {
+    vTreeView,
+    vTreeNode
+  }
 })
 export default class TreeNav extends Vue {
   treeData = [];

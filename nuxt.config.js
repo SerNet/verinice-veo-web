@@ -23,7 +23,6 @@ module.exports = {
     "~/plugins/vuetify.js",
     "~/plugins/directives.js"
   ],
-
   /*
   ** Global CSS
   */
@@ -34,7 +33,6 @@ module.exports = {
     "~/assets/index.styl",
     "~/assets/print.styl"
   ],
-
   meta: {
     mobileAppIOS: true,
     nativeUI: true
