@@ -10,38 +10,32 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
-import { Store } from "vuex";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
-import { InternalTreeItem } from "~/store/modules/tree";
+import Vue from "vue";
+import { helpers as treeStore } from "~/store/modules/tree";
 
-const formStore = namespace("form");
-const treeStore = namespace("tree");
-
-@Component({
+export default Vue.extend({
   components: {
-    TreeNav
+    treeNav: TreeNav
+  },
+  data() {
+    return {
+      groups: ["IT Baseline-Catalog", "BSI Model"]
+    };
+  },
+  computed: {
+    ...treeStore.mapState({
+      items: "items"
+    })
+  },
+  methods: {
+    ...treeStore.mapActions({
+      expandItem: "expand",
+      checkItem: "check",
+      fetchItems: "fetchItems"
+    })
   }
-})
-export default class extends Vue {
-  @treeStore.State("items") items: Object[];
-  @treeStore.Action("expand") expandItem: Function;
-  @treeStore.Action("check") checkItem: Function;
-
-  groups: any[] = ["IT Baseline-Catalog", "BSI Model"];
-
-  async fetch({ store, params }: { store: Store<any>; params: Object }) {
-    await store.dispatch("tree/getItems");
-  }
-}
+});
 </script>
 
 <style lang="stylus" scoped>

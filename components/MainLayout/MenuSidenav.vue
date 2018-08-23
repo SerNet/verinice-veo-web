@@ -19,22 +19,13 @@
 }
 </style>
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
-import { NavItem } from "~/store/modules/nav";
-const store = namespace("nav");
+import Vue from "vue";
 
-@Component
-export default class MenuSidenav extends Vue {
-  @store.State("items") items: Array<NavItem>;
-
-  created() {}
-}
+export default Vue.extend({
+  props: {
+    items: {
+      type: Array
+    }
+  }
+});
 </script>

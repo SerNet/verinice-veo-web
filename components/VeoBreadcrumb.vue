@@ -1,7 +1,7 @@
 <template>
   <v-toolbar class="breadcrumb-toolbar" color="elevation-1" style="overflow: hidden;" dense>
     <v-breadcrumbs class="breadcrumbs" justify-start="" divider="&gt;">
-      <v-breadcrumbs-item class="breadcrumb-item" :to="'/elements/'+(item && item.id)" ripple v-for="item in items" :key="item">
+      <v-breadcrumbs-item class="breadcrumb-item" :to="'/elements/'+(item && item.id)" ripple v-for="item in items" :key="item.id">
         <slot v-bind="item"></slot>
       </v-breadcrumbs-item>
     </v-breadcrumbs>
@@ -9,25 +9,20 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
+import Vue from "vue";
 
-@Component({})
-export default class VeoBreadcrumb extends Vue {
-  @Prop({ type: Array })
-  items: any[];
-
-  changeBreadcrumb(item: any) {
-    this.$emit("change", item);
+export default Vue.extend({
+  props: {
+    items: {
+      type: Array
+    }
+  },
+  methods: {
+    changeBreadcrumb(item: any) {
+      this.$emit("change", item);
+    }
   }
-}
+});
 </script>
 
 <style lang="stylus" scoped>

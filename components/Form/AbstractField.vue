@@ -3,61 +3,60 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
+import Vue from "vue";
 import { JSONSchema6, JSONSchema6TypeName } from "json-schema";
 
 interface IComponentDeclaration {}
 
-@Component({})
-export default class AbstractField extends Vue {
-  @Prop({ type: String })
-  name: String;
+export const componentByType: {
+  [k in JSONSchema6TypeName]?: IComponentDeclaration
+} = {
+  string: { id: "v-text-field" },
+  number: { id: "v-text-field" },
+  boolean: { id: "v-text-field" },
+  array: { id: "v-text-field" }
+};
 
-  @Prop({ type: Object })
-  schema: JSONSchema6;
+export default Vue.extend({
+  props: {
+    name: { type: String },
+    schema: { type: Object },
+    required: { type: Boolean },
+    value: {}
+  },
 
-  @Prop({ type: Boolean })
-  required: Boolean;
+  data() {
+    return {
+      fieldComponent: "v-text-field",
+      fieldOptions: {} as any
+    };
+  },
 
-  @Prop({})
-  value: any;
-
-  fieldComponent: string = "v-text-field";
-  fieldOptions: any = {};
-
-  static componentByType: {
-    [k in JSONSchema6TypeName]?: IComponentDeclaration
-  } = {
-    string: { id: "v-text-field" },
-    number: { id: "v-text-field" },
-    boolean: { id: "v-text-field" },
-    array: { id: "v-text-field" }
-  };
-
-  @Watch("schema", { immediate: true })
-  initComponent(schema: JSONSchema6) {
-    switch (schema.type) {
-      case "string":
-        this.fieldComponent = "v-text-field";
-        break;
-      case "number":
-        this.fieldComponent = "v-text-field";
-        break;
+  methods: {
+    initComponent(schema: JSONSchema6) {
+      switch (schema.type) {
+        case "string":
+          this.fieldComponent = "v-text-field";
+          break;
+        case "number":
+          this.fieldComponent = "v-text-field";
+          break;
+      }
+      if (schema.enum) {
+        this.fieldComponent = "v-select";
+        this.fieldOptions.items = schema.enum;
+      }
     }
-    if (schema.enum) {
-      this.fieldComponent = "v-select";
-      this.fieldOptions.items = schema.enum;
+  },
+  watch: {
+    schema: {
+      immediate: true,
+      handler(schema) {
+        this.initComponent(schema);
+      }
     }
   }
-}
+});
 </script>
 <style lang="stylus">
 .form-panels {

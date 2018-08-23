@@ -21,47 +21,39 @@
       </v-btn>
     </v-toolbar>
     <v-tree-view class="tree-nav">
-      <v-tree-node v-for="item in items" :key="item.id" :expanded="item.expanded" @expand="$emit('expand', item)"
-       :checked="item.checked" :has-children="item.hasChildren" :level="item.level" :to="toPrefix+item.id" @check="$emit('check', item)">{{item.title}}</v-tree-node>
+      <v-tree-node v-for="item in items" :key="item.id" :expanded="item.expanded" @expand="$emit('expand', item)" :checked="item.checked" :has-children="item.hasChildren" :level="item.level" :to="toPrefix+item.id" @check="$emit('check', item)">{{item.title}}</v-tree-node>
     </v-tree-view>
   </v-layout>
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
+import Vue from "vue";
 import vTreeView from "~/components/TreeView/TreeView.vue";
 import vTreeNode from "~/components/TreeView/TreeNode.vue";
 
-const store = namespace("tree");
-
-@Component({
+export default Vue.extend({
   components: {
     vTreeView,
     vTreeNode
+  },
+  props: {
+    toPrefix: {
+      type: String
+    },
+    items: {
+      type: Array
+    },
+    groups: {
+      type: Array
+    }
+  },
+  watch: {
+    toPrefix: {
+      immediate: true,
+      handler(val) {}
+    }
   }
-})
-export default class TreeNav extends Vue {
-  treeData = [];
-  treeTypes = [];
-
-  @Prop({ type: String })
-  toPrefix: string;
-  @Prop({ type: Array })
-  items: any[];
-  @Prop({ type: Array })
-  groups: any[];
-
-  @Watch("toPrefix", { immediate: true })
-  onPrefixChange(oldVal: string, newVal: string) {}
-}
+});
 </script>
 
 

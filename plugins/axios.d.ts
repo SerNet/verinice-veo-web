@@ -1,10 +1,11 @@
-import { AxiosInstance } from 'axios';
-import VueI18n, { IVueI18n } from 'vue-i18n';
+import { AxiosInstance } from "axios";
+import VueI18n, { IVueI18n } from "vue-i18n";
+import Vue from "vue";
 
-declare module 'vue/types/vue' {
+declare module "vue/types/vue" {
   // 3. Declare augmentation for Vue
   interface Vue {
-    $axios: AxiosInstance
+    $axios: AxiosInstance;
     readonly i18n: VueI18n & IVueI18n;
     readonly $i18n: VueI18n & IVueI18n;
     $t: typeof VueI18n.prototype.t;
@@ -15,14 +16,26 @@ declare module 'vue/types/vue' {
   }
 }
 
-declare module 'axios' {
+declare module "axios" {
   export interface AxiosInstance {
     $request<T = any>(config: AxiosRequestConfig): Promise<T>;
     $get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
     $delete(url: string, config?: AxiosRequestConfig): Promise<void>;
     $head(url: string, config?: AxiosRequestConfig): Promise<void>;
-    $post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
-    $put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
-    $patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
+    $post<T = any>(
+      url: string,
+      data?: any,
+      config?: AxiosRequestConfig
+    ): Promise<T>;
+    $put<T = any>(
+      url: string,
+      data?: any,
+      config?: AxiosRequestConfig
+    ): Promise<T>;
+    $patch<T = any>(
+      url: string,
+      data?: any,
+      config?: AxiosRequestConfig
+    ): Promise<T>;
   }
 }

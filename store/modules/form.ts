@@ -2,6 +2,7 @@ import Vue from "vue";
 import { RootState } from "~/store/index";
 import { Module } from "vuex";
 import { AxiosError } from "axios";
+import { DefineModule, createNamespacedHelpers } from "vuex";
 
 const state = {
   model: {},
@@ -82,5 +83,7 @@ const module: Module<FormState, RootState> = {
     }
   }
 };
+
+export const helpers = createNamespacedHelpers("form");
 
 export default module;

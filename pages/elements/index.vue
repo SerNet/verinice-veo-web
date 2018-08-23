@@ -5,20 +5,9 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
-import { Store } from "vuex";
-import TreeNav from "~/components/TreeNav/TreeNav.vue";
+import Vue from "vue";
 
-@Component({})
-export default class extends Vue {}
+export default Vue.extend({});
 </script>
 
 <style lang="stylus" scoped>

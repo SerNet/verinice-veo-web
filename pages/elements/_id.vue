@@ -8,51 +8,49 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
-import { Store } from "vuex";
+import Vue from "vue";
+
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
 import VeoForm from "~/components/Form/Form.vue";
 import VeoBreadcrumb from "~/components/VeoBreadcrumb.vue";
 
-const treeStore = namespace("tree");
-const formStore = namespace("form");
+import { helpers as treeStore } from "~/store/modules/tree";
+import { helpers as formStore } from "~/store/modules/form";
 
-@Component({
+export default Vue.extend({
   components: {
     TreeNav,
     VeoForm,
     VeoBreadcrumb
-  }
-})
-export default class extends Vue {
-  @treeStore.State("items") treeItems: any[];
-  @formStore.State("model") formModel: Object;
-  @formStore.State("schema") formSchema: Object;
-  @formStore.State("breadcrumb") breadcrumb: string[];
+  },
+  data() {
+    return {
+      groups: ["IT Baseline-Catalog", "BSI Model"]
+    };
+  },
+  computed: {
+    ...treeStore.mapState({ treeItems: "items" }),
+    ...formStore.mapState({
+      formModel: "model",
+      formSchema: "schema",
+      breadcrumb: "breadcrumb"
+    })
+  },
+  methods: {
+    onBreadcrumbChange(item: string) {}
+  },
+  async fetch({ store, params }) {
+    await store.modules.tree.dispatch("getItems", params);
 
-  groups: any[] = ["IT Baseline-Catalog", "BSI Model"];
-
-  onBreadcrumbChange(item: string) {}
-
-  async fetch({ store, params }: { store: Store<any>; params: any }) {
-    await store.dispatch("tree/getItems", params);
+    //await store.dispatch("tree/getItems", params);
     if (params["id"]) {
       await store.dispatch("form/load", params);
     }
-  }
-
-  validate({ store, params }: { store: Store<any>; params: any }) {
+  },
+  validate({ store, params }) {
     return String(params.id || "").indexOf(".") === -1;
   }
-}
+});
 </script>
 
 <style lang="stylus" scoped>

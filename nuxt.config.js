@@ -206,7 +206,7 @@ module.exports = {
     //parallel: false, //(thread-loader: https://github.com/webpack-contrib/thread-loader)
     watch: ["config"],
     babel: {
-      plugins: ["transform-decorators-legacy", "transform-class-properties"]
+      //plugins: ["transform-decorators-legacy", "transform-class-properties"]
     },
     extend(config) {
       const $colors = coerce(colors.default || colors);

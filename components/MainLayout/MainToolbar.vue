@@ -39,31 +39,28 @@
 </template>
 
 <script lang="ts">
+import Vue from "vue";
 import MainToolbarLogo from "~/components/MainLayout/MainToolbarLogo.vue";
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
 
-@Component({
+export default Vue.extend({
   components: {
     MainToolbarLogo
   },
-  props: ["clipped", "value"]
-})
-export default class MainToolbar extends Vue {
-  toggleDrawer() {
-    this.$emit("click-side-icon");
+  data() {
+    return {
+      showSearch: false
+    };
+  },
+  props: ["clipped", "value"],
+  methods: {
+    toggleDrawer() {
+      this.$emit("click-side-icon");
+    },
+    toggleSearch() {
+      this.showSearch = !this.showSearch;
+    }
   }
-  toggleSearch() {
-    this.showSearch = !this.showSearch;
-  }
-  showSearch = false;
-}
+});
 </script>
 
 <style lang="stylus" scoped>

@@ -54,38 +54,34 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
+import Vue from "vue";
 import AbstractField from "~/components/Form/AbstractField.vue";
 
-@Component({
+export default Vue.extend({
   components: {
     AbstractField
+  },
+  data() {
+    return {
+      current: {
+        chapter: "TEST"
+      },
+      previewNav: { open: false },
+      desc:
+        "Lorem ipsum dolor sit amet, consectetur \n" +
+        "adipiscing elit. Nam gravida venenatis \n" +
+        "accumsan. In mi massa, tempus"
+    };
+  },
+  props: {
+    model: {
+      type: Object
+    },
+    schema: {
+      type: Object
+    }
   }
-})
-export default class VeoForm extends Vue {
-  current = {
-    chapter: "TEST"
-  };
-
-  @Prop({ type: Object })
-  model: Object;
-
-  @Prop({ type: Object })
-  schema: Object;
-
-  previewNav: { open: false };
-  desc = "Lorem ipsum dolor sit amet, consectetur \n" +
-    "adipiscing elit. Nam gravida venenatis \n" +
-    "accumsan. In mi massa, tempus";
-}
+});
 </script>
 <style lang="stylus">
 .form-panels {

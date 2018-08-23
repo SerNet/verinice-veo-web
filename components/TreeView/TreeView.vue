@@ -7,30 +7,24 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
+import Vue from "vue";
 import virtualList from "vue-virtual-scroll-list";
-
-@Component({
+export default Vue.extend({
   components: {
     virtualList
+  },
+  data() {
+    return {
+      remain: 10,
+      size: 48
+    };
+  },
+  methods: {
+    onResize() {
+      this.remain = Math.ceil(this.$el.clientHeight / 48) * 2;
+    }
   }
-})
-export default class TreeNode extends Vue {
-  remain = 10;
-  size = 48;
-
-  onResize() {
-    this.remain = Math.ceil(this.$el.clientHeight / 48) * 2;
-  }
-}
+});
 </script>
 
 

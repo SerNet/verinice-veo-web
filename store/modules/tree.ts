@@ -1,61 +1,63 @@
 import Vue from "vue";
-import { RootState } from "~/store/index";
-import { Module } from "vuex";
-import { TreeItem } from "~/store/modules/tree";
-
-const ID_FIELD = "$veo.id";
-const PARENT_FIELD = "parent";
-const TITLE_FIELD = "$veo.title";
+import { VeoItem } from "api";
+import { ID_FIELD, TITLE_FIELD, PARENT_FIELD } from "~/config/api";
+import { TreeItem } from "~/models/TreeItem";
+import { DefineModule, createNamespacedHelpers } from "vuex";
 
 type ValueMap = { [id: string]: boolean | undefined };
 
-export interface TreeItem {
-  [ID_FIELD]: string;
-  [PARENT_FIELD]: string;
-  [TITLE_FIELD]: string;
-  schema: string;
-  title: string;
+export interface State {
+  data: VeoItem[];
+  items: TreeItem[];
+  current_id: string | null;
 }
 
-export class InternalTreeItem {
-  id: string;
-  expanded: boolean = false;
-  checked: boolean | undefined = false;
-  parent: string;
-  title: string;
-
-  constructor(
-    public item: TreeItem,
-    public level = 0,
-    public hasChildren: boolean = false,
-    public children?: InternalTreeItem[]
-  ) {
-    this.id = item[ID_FIELD];
-    this.title = item[TITLE_FIELD];
-    this.parent = item[PARENT_FIELD];
-  }
+export interface Getters {
+  items: TreeItem[];
+  breadcrumbById: (id: string) => TreeItem[];
+  hasChildren: (id: string) => boolean;
 }
 
-const state = {
-  data: [] as TreeItem[],
-  items: (<any>undefined) as InternalTreeItem[],
-  current_id: "" as string | null
-};
+export interface Mutations {
+  setData: VeoItem[];
+  setItems: TreeItem[];
+  setExpand: { index: number; value: boolean };
+  setChecked: ValueMap;
+  addItems: { from: number; items: TreeItem[] };
+  removeItems: { from: number; to: number };
+}
 
-export type TreeState = typeof state;
+export interface Actions {
+  init: {};
+  addItems: { from?: number; items: VeoItem[]; level?: number };
+  fetchItems: {};
+  check: { id: string };
+  expand: { id: string };
+}
 
-const module: Module<TreeState, RootState> = {
+export const helpers = createNamespacedHelpers<
+  State,
+  Getters,
+  Mutations,
+  Actions
+>("tree");
+
+const module: DefineModule<State, Getters, Mutations, Actions> = {
   namespaced: true,
-  state,
+  state: {
+    data: [],
+    items: [],
+    current_id: ""
+  },
   getters: {
     items: state =>
       state.items &&
       state.items.filter(
         item => item[PARENT_FIELD] === state.current_id || null
       ),
-    breadcrumbById: state => (id: string) => {
+    breadcrumbById: state => id => {
       const path = [];
-      const items: InternalTreeItem[] = state.items;
+      const items: TreeItem[] = state.items;
       let parent: string | undefined = id;
       while (parent) {
         const node = items.find(item => item.id == parent);
@@ -71,27 +73,24 @@ const module: Module<TreeState, RootState> = {
     }
   },
   mutations: {
-    setData(state, value: TreeItem[]) {
-      state.data = value;
+    setData(state, payload) {
+      state.data = payload;
     },
-    setItems(state, value: InternalTreeItem[]) {
-      state.items = value;
+    setItems(state, payload) {
+      state.items = payload;
     },
-    setExpand(state, { index, value }: { index: number; value: boolean }) {
+    setExpand(state, { index, value }) {
       const item = state.items[index];
       return item && (item.expanded = value);
     },
-    setChecked(state, index: ValueMap) {
-      for (const i in index) {
-        if (index.hasOwnProperty(i)) {
-          state.items[i].checked = index[i];
+    setChecked(state, payload) {
+      for (const i in payload) {
+        if (payload.hasOwnProperty(i)) {
+          state.items[i].checked = payload[i];
         }
       }
     },
-    addItems(
-      state,
-      { from, items }: { from: number; items: InternalTreeItem[] }
-    ) {
+    addItems(state, { from, items }) {
       state.items.splice(from + 1, 0, ...items);
     },
     removeItems(state, { from, to }) {
@@ -99,19 +98,15 @@ const module: Module<TreeState, RootState> = {
     }
   },
   actions: {
-    async init(this: Vue, { state, commit }) {
-      //commit("setData", null);
+    async init(this: Vue, { dispatch, state, commit }, payload) {
+      await dispatch("fetchItems", {});
     },
-    async addItems(
-      this: Vue,
-      { state, commit, getters },
-      { from = 0, items, level = 0 }
-    ) {
+    async addItems({ state, commit, getters }, { items, from = 0, level = 0 }) {
       const parent = state.items[from];
       commit("addItems", {
         from,
-        items: items.map((v: TreeItem, i: number) => {
-          const model = new InternalTreeItem(
+        items: items.map(v => {
+          const model = new TreeItem(
             v,
             level,
             getters.hasChildren(v[ID_FIELD])
@@ -121,10 +116,9 @@ const module: Module<TreeState, RootState> = {
         })
       });
     },
-    async getItems(this: Vue, { state, commit, dispatch }, { id } = {}) {
-      //commit("setActive", id);
-      if (state.items) return;
-      const response: TreeItem[] = await this.$axios.$get("/api/elements");
+    async fetchItems(this: Vue, { commit, dispatch }, payload) {
+      console.log("fetchItems");
+      const response: VeoItem[] = await this.$axios.$get("/api/elements");
       commit("setData", response);
       commit("setItems", []);
       const root = response.find(v => v[PARENT_FIELD] == null);

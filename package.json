@@ -23,10 +23,8 @@
     "lodash": "^4.17.10",
     "material-design-icons-iconfont": "^3.0.3",
     "moment": "^2.22.2",
-    "nuxt-class-component": "^1.2.1",
-    "nuxt-edge": "^2.0.0-25513462.d31aeaa",
+    "nuxt-edge": "2.0.0-25582919.567dc86",
     "nuxt-i18n": "^4.1.0",
-    "nuxt-property-decorator": "^1.2.0",
     "roboto-fontface": "^0.9.0",
     "url-parse": "^1.4.3",
     "vue": "^2.5.17",
@@ -55,7 +53,6 @@
     "ts-loader": "^4.4.1",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2",
-    "vue-loader-options-plugin": "^0.1.1",
-    "vue-property-decorator": "^7.0.0"
+    "vue-loader-options-plugin": "^0.1.1"
   }
 }

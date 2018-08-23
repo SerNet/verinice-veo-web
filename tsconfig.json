@@ -1,17 +1,11 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "es2015"
-    ],
-    "typeRoots": [
-      "./node_modules/@types",
-      "./types/",
-    ],
+    "lib": ["dom", "es2015"],
+    "typeRoots": ["./types/", "./node_modules/@types"],
     "module": "es2015",
     "moduleResolution": "node",
-    "experimentalDecorators": true,
+    "experimentalDecorators": false,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strict": true,
@@ -21,36 +15,18 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "~/": [
-        "./"
-      ],
-      "~/assets/*": [
-        "./assets/*"
-      ],
-      "~/config/*": [
-        "./config/*"
-      ],
-      "~/components/*": [
-        "./components/*"
-      ],
-      "~/middleware/*": [
-        "./middleware/*"
-      ],
-      "~/models/*": [
-        "./models/*"
-      ],
-      "~/pages/*": [
-        "./pages/*"
-      ],
-      "~/plugins/*": [
-        "./plugins/*"
-      ],
-      "~/static/*": [
-        "./static/*"
-      ],
-      "~/store/*": [
-        "./store/*"
-      ]
+      "*": ["./*", "types/*"],
+      "~/": ["./"],
+      "~/assets/*": ["./assets/*"],
+      "~/config/*": ["./config/*"],
+      "~/components/*": ["./components/*"],
+      "~/middleware/*": ["./middleware/*"],
+      "~/models/*": ["./models/*"],
+      "~/pages/*": ["./pages/*"],
+      "~/plugins/*": ["./plugins/*"],
+      "~/static/*": ["./static/*"],
+      "~/store/*": ["./store/*"],
+      "~/types/*": ["./types/*"]
     }
   }
 }

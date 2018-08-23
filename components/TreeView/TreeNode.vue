@@ -17,37 +17,17 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
-import { namespace } from "nuxt-class-component";
-
-@Component({
-  components: {}
-})
-export default class TreeNode extends Vue {
-  @Prop({ type: Boolean, default: false })
-  checkable: Boolean;
-  @Prop({ type: Boolean, default: undefined })
-  checked?: Boolean;
-
-  @Prop({ type: Boolean, default: false })
-  expanded: Boolean;
-
-  @Prop({ type: Boolean, default: false })
-  hasChildren: Boolean;
-
-  @Prop({ type: Number, default: 0 })
-  level: number;
-
-  @Prop({ type: String })
-  to: string;
-}
+import Vue from "vue";
+export default Vue.extend({
+  props: {
+    checkable: { type: Boolean, default: false },
+    checked: { type: Boolean, default: undefined },
+    expanded: { type: Boolean, default: false },
+    hasChildren: { type: Boolean, default: false },
+    level: { type: Number, default: 0 },
+    to: { type: String }
+  }
+});
 </script>
 
 

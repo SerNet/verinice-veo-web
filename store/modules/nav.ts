@@ -1,6 +1,7 @@
 import Vue from "vue";
 import { RootState } from "~/store/index";
 import { Module } from "vuex";
+import { DefineModule, createNamespacedHelpers } from "vuex";
 
 export interface NavItem {
   active: boolean;
@@ -35,5 +36,7 @@ const module: Module<NavState, RootState> = {
     }
   }
 };
+
+export const helpers = createNamespacedHelpers("nav");
 
 export default module;

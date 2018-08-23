@@ -3,17 +3,9 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
+import Vue from "vue";
 
-@Component
-export default class TreeNavToolbar extends Vue {}
+export default Vue.extend({});
 </script>
 
 <style scoped lang="stylus">

@@ -15,17 +15,11 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Inject,
-  Model,
-  Prop,
-  Vue,
-  Watch
-} from "nuxt-property-decorator";
+import Vue from "vue";
 
-@Component
-export default class MainToolbarLogo extends Vue {}
+export default Vue.extend({
+  
+});
 </script>
 
 <style lang="stylus" scoped>
