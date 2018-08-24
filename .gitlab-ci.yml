@@ -338,6 +338,7 @@ canary:
     - delete canary
     - delete rollout
     - persist_environment_url
+    - sleep 20
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
@@ -385,6 +386,7 @@ production_manual:
     - scale stable $((100-ROLLOUT_PERCENTAGE))
     - delete canary
     - persist_environment_url
+    - sleep 20
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
