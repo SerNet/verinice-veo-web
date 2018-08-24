@@ -40,8 +40,6 @@ export default Vue.extend({
     onBreadcrumbChange(item: string) {}
   },
   async fetch({ store, params }) {
-    await store.modules.tree.dispatch("getItems", params);
-
     //await store.dispatch("tree/getItems", params);
     if (params["id"]) {
       await store.dispatch("form/load", params);

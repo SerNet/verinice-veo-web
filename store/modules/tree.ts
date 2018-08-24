@@ -121,10 +121,10 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       const response: VeoItem[] = await this.$axios.$get("/api/elements");
       commit("setData", response);
       commit("setItems", []);
-      const root = response.find(v => v[PARENT_FIELD] == null);
+      const roots = response.filter(v => v[PARENT_FIELD] == null);
 
-      if (root) {
-        await dispatch("addItems", { items: [root] });
+      if (roots) {
+        await dispatch("addItems", { items: roots });
       }
     },
     /**

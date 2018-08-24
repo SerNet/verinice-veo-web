@@ -66,7 +66,7 @@ const module: Module<FormState, RootState> = {
           commit("setSchema", existing);
           return existing;
         }
-        const schema = await this.$axios.$get(`/api/schemas/${name}`);
+        const schema = await this.$axios.$get(`/api/schemas/${name}.json`);
         commit("setSchema", schema);
         commit("addSchema", { name: name, value: schema });
       } catch (e) {

@@ -1,5 +1,5 @@
 <template>
-  <component :is="fieldComponent" v-bind="fieldOptions" :label="name" :placeholder="schema.title" :value="value" />
+  <component :is="fieldComponent" v-bind="fieldOptions" :label="nameMap[name] || schema.title || name" :placeholder="schema.title" :value="value">{{fieldValue}}</component>
 </template>
 
 <script lang="ts">
@@ -28,7 +28,13 @@ export default Vue.extend({
   data() {
     return {
       fieldComponent: "v-text-field",
-      fieldOptions: {} as any
+      fieldOptions: {} as any,
+      fieldValue: "",
+      nameMap: {
+        "$veo.id": "ID",
+        "$veo.type": "Type",
+        "$veo.title": "Title"
+      }
     };
   },
 
@@ -43,8 +49,26 @@ export default Vue.extend({
           break;
       }
       if (schema.enum) {
-        this.fieldComponent = "v-select";
-        this.fieldOptions.items = schema.enum;
+        if (schema.enum.length == 1) {
+          this.fieldComponent = "v-text-field";
+          this.fieldOptions.disabled = true;
+        } else {
+          this.fieldComponent = "v-select";
+          this.fieldOptions.items = schema.enum;
+        }
+      }
+
+      switch (this.name) {
+        case "$veo.id": {
+          this.fieldOptions.disabled = true;
+        }
+        case "parent": {
+          this.fieldOptions.readonly = true;
+          /*this.fieldOptions.class = ["link-field", "v-input--is-disabled"];
+          this.fieldOptions.to = "/elements/" + this.value;
+          this.fieldValue = <any>this.value;
+          this.fieldComponent = "v-text-field";*/
+        }
       }
     }
   },
@@ -58,7 +82,16 @@ export default Vue.extend({
   }
 });
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
+.link-field >>> input {
+  cursor: pointer;
+  color: #e53935;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .form-panels {
   ul.expansion-panel li {
     margin-top: 16px !important;

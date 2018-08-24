@@ -14,6 +14,7 @@
     "screenshots": "NODE_ENV=testing NIGHTWATCH_SPEC=screenshots nightwatch"
   },
   "dependencies": {
+    "@adonisjs/ace": "^5.0.4",
     "@nuxtjs/axios": "latest",
     "@nuxtjs/proxy": "latest",
     "@nuxtjs/pwa": "latest",

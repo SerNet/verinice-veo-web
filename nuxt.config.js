@@ -72,7 +72,7 @@ module.exports = {
   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
-    "~/modules/fakeserver",
+    //"~/modules/fakeserver",
     "@nuxtjs/axios",
     "@nuxtjs/pwa",
     "~/modules/typescript",

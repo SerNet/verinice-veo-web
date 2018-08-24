@@ -3,8 +3,8 @@
     <!--<v-alert :dismissible="true" style="width: 100%;" type="basic" :value="true" icon="link">-->
     <!--<span>This element is linked to <b>two</b> elements. <a href="#">View relations</a></span>-->
     <!--</v-alert>-->
-    <v-expansion-panel class="px-3 " :inset="true" :expand="true">
-      <v-expansion-panel-content :value="true" class="grey lighten-3">
+    <v-expansion-panel :value="[true]" class="px-3 " :inset="true" :expand="true">
+      <v-expansion-panel-content class="grey lighten-3">
         <div slot="header">
           <v-icon>keyboard_arrow_up</v-icon>
           <span style="margin-left: 6px">Basic</span>
