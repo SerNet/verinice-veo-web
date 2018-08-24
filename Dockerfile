@@ -1,6 +1,9 @@
 FROM node:alpine
 # Create app directory
 WORKDIR /usr/src/app
+# Install git
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
 # Install app dependencies
 COPY package.json .
 # For npm@5 or later, copy package-lock.json as well
