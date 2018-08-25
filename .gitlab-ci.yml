@@ -62,7 +62,9 @@ push-sernet:
   image: registry.git.cpmsys.de/markus/sernet-env/master:latest
   script:
     - apk add --update git openssh
-    - git remote add sernet ssh://git@git.verinice.org:7999/isms/verinice-veo-web.git
+    - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
+    - chmod -R 0400 /root/.ssh/*
+    - git remote add sernet ssh://git.verinice.org/isms/verinice-veo-web.git
     - git push -f sernet master
   only:
     - branches
