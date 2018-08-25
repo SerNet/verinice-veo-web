@@ -44,11 +44,11 @@ stages:
   - build
   - production
 
-build:
+.build:
   stage: build
   image: docker:git
   services:
-  - docker:dind
+    - docker:dind
   variables:
     DOCKER_DRIVER: overlay2
   script:
@@ -57,7 +57,17 @@ build:
   only:
     - branches
 
-production:
+push-sernet:
+  stage: build
+  image: registry.git.cpmsys.de/markus/sernet-env/master:latest
+  script:
+    - echo TEST
+  only:
+    - branches
+  tags:
+    - nas
+
+.production:
   stage: production
   script:
     - check_kube_domain
@@ -75,7 +85,7 @@ production:
     url: http://$DEVOPS_APP_NAME.$AUTO_DEVOPS_DOMAIN
   artifacts:
     paths: [environment_url.txt]
-#  when: manual
+  #  when: manual
   only:
     refs:
       - master
@@ -85,7 +95,7 @@ production:
 .auto_devops: &auto_devops |
   # Auto DevOps variables and functions
   [[ "$TRACE" ]] && set -x
-  
+
   wget -O ./_autodevops.sh "http://docker--autodevops.pages.cpmsys.de/init.sh" && source ./_autodevops.sh && rm ./_autodevops.sh
 
 before_script:
