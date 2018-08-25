@@ -61,6 +61,7 @@ push-sernet:
   stage: build
   image: registry.git.cpmsys.de/markus/sernet-env/master:latest
   script:
+    - ping git.verinice.org
     - apk add --update git openssh
     - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
     - chmod -R 0400 /root/.ssh/*
