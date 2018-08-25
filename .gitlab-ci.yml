@@ -66,8 +66,9 @@ push-sernet:
     - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
     - chmod -R 0400 ~/.ssh/*
     - mkdir /usr/src/git-export
-    - cp -R ./* /usr/src/git-export/
+    - cp -R * /usr/src/git-export/
     - cd /usr/src/git-export
+    - ls
     - rm .gitlab-ci.yml
     - git init
     - git remote add sernet ssh://git.verinice.org/isms/verinice-veo-web.git
