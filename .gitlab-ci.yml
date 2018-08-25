@@ -65,9 +65,9 @@ push-sernet:
     - apk add --update git openssh
     - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
     - chmod -R 0400 ~/.ssh/*
-    - git clone ssh://git.verinice.org/isms/verinice-veo-web.git verinice-export
-    - cp -Rf * ./verinice-export
-    - cd ./verinice-export
+    - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
+    - cp -Rf ./* /usr/src/verinice-export
+    - cd /usr/src/verinice-export
     - git add -A
     - git commit -am "Release"
     - git push -f origin master
