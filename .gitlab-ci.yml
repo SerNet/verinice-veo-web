@@ -44,7 +44,7 @@ stages:
   - build
   - production
 
-.build:
+build:
   stage: build
   image: docker:git
   services:
@@ -57,31 +57,7 @@ stages:
   only:
     - branches
 
-push-sernet:
-  stage: build
-  image: registry.git.cpmsys.de/markus/sernet-env/master:latest
-  script:
-    - echo 172.17.0.1 git.verinice.org >> /etc/hosts
-    - apk add --update git openssh
-    - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
-    - chmod -R 0400 ~/.ssh/*
-    - git config --global user.email "$GITLAB_USER_EMAIL"
-    - git config --global user.name "$GITLAB_USER_NAME"
-    - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
-    - cp -Rf ./* /usr/src/verinice-export
-    - cd /usr/src/verinice-export
-    - echo "${CI_COMMIT_REF_NAME}" > RELEASE.md
-    - git add -A
-    - git commit -am "Release ${CI_COMMIT_REF_NAME}"
-    - git tag -d "${CI_COMMIT_REF_NAME}" || true
-    - git tag -a "${CI_COMMIT_REF_NAME}" -m "Release ${CI_COMMIT_REF_NAME}"
-    - git push origin -f master --tags
-  only:
-    - tags
-  tags:
-    - nas
-
-.production:
+production:
   stage: production
   script:
     - check_kube_domain
@@ -104,6 +80,30 @@ push-sernet:
     refs:
       - master
     kubernetes: active
+
+release-sernet:
+  stage: production
+  image: registry.git.cpmsys.de/markus/sernet-env/master:latest
+  script:
+    - echo 172.17.0.1 git.verinice.org >> /etc/hosts
+    - apk add --update git openssh
+    - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
+    - chmod -R 0400 ~/.ssh/*
+    - git config --global user.email "$GITLAB_USER_EMAIL"
+    - git config --global user.name "$GITLAB_USER_NAME"
+    - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
+    - cp -Rf ./* /usr/src/verinice-export
+    - cd /usr/src/verinice-export
+    - echo "${CI_COMMIT_REF_NAME}" > RELEASE.md
+    - git add -A
+    - git commit -am "Release ${CI_COMMIT_REF_NAME}"
+    - git tag -d "${CI_COMMIT_REF_NAME}" || true
+    - git tag -a "${CI_COMMIT_REF_NAME}" -m "Release ${CI_COMMIT_REF_NAME}"
+    - git push origin -f master --tags
+  only:
+    - tags
+  tags:
+    - nas
 
 # ---------------------------------------------------------------------------
 .auto_devops: &auto_devops |
