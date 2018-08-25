@@ -75,7 +75,7 @@ push-sernet:
     # - git commit -am "Release"
     # - git push -f origin master
   only:
-    - branches
+    - tags
   tags:
     - nas
 
