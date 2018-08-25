@@ -73,6 +73,7 @@ push-sernet:
     - echo "${CI_COMMIT_REF_NAME}" > RELEASE.md
     - git add -A
     - git commit -am "Release ${CI_COMMIT_REF_NAME}"
+    - git tag -d "${CI_COMMIT_REF_NAME}" || true
     - git tag -a "${CI_COMMIT_REF_NAME}" -m "Release ${CI_COMMIT_REF_NAME}"
     - git push origin -f master --tags
   only:
