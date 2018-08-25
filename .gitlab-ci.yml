@@ -66,7 +66,7 @@ push-sernet:
     - chmod -R 0400 ~/.ssh/*
     - git remote add sernet ssh://git.verinice.org/isms/verinice-veo-web.git || true
     - git remote set-url sernet ssh://git.verinice.org/isms/verinice-veo-web.git
-    - git push -f sernet master
+    - git push --verbose -f sernet master
   only:
     - branches
   tags:
