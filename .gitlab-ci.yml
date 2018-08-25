@@ -69,7 +69,7 @@ push-sernet:
     - cp -R * /usr/src/git-export/
     - cd /usr/src/git-export
     - ls
-    - rm .gitlab-ci.yml
+    - rm -f ./.gitlab-ci.yml
     - git init
     - git remote add sernet ssh://git.verinice.org/isms/verinice-veo-web.git
     - git push --verbose -f sernet master
