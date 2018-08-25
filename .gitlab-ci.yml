@@ -61,23 +61,21 @@ push-sernet:
   stage: build
   image: registry.git.cpmsys.de/markus/sernet-env/master:latest
   script:
-    - apk add --update git openssh curl jq
-    - 'curl -H "PRIVATE-TOKEN: $CI_JOB_TOKEN" "https://git.cpmsys.de/api/v4/projects/131/repository/tags/v0.0.1"'
-    # - echo 172.17.0.1 git.verinice.org >> /etc/hosts
-    # - apk add --update git openssh
-    # - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
-    # - chmod -R 0400 ~/.ssh/*
-    # - git config --global user.email "$GITLAB_USER_EMAIL"
-    # - git config --global user.name "$GITLAB_USER_NAME"
-    # - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
-    # - cp -Rf ./* /usr/src/verinice-export
-    # - cd /usr/src/verinice-export
-    # - git add -A
-    # - git commit -am "Release"
-    # - git push -f origin master
+    - echo 172.17.0.1 git.verinice.org >> /etc/hosts
+    - apk add --update git openssh
+    - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
+    - chmod -R 0400 ~/.ssh/*
+    - git config --global user.email "$GITLAB_USER_EMAIL"
+    - git config --global user.name "$GITLAB_USER_NAME"
+    - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
+    - cp -Rf ./* /usr/src/verinice-export
+    - cd /usr/src/verinice-export
+    - git add -A
+    - git commit -am "Release ${CI_COMMIT_REF_NAME}"
+    - git tag -a "${CI_COMMIT_REF_NAME}" -m "Release ${CI_COMMIT_REF_NAME}"
+    - git push origin -f --tags
   only:
     - tags
-    - branches
   tags:
     - nas
 
