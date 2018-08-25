@@ -61,18 +61,19 @@ push-sernet:
   stage: build
   image: registry.git.cpmsys.de/markus/sernet-env/master:latest
   script:
-    - echo 172.17.0.1 git.verinice.org >> /etc/hosts
-    - apk add --update git openssh
-    - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
-    - chmod -R 0400 ~/.ssh/*
-    - git config --global user.email "$GITLAB_USER_EMAIL"
-    - git config --global user.name "$GITLAB_USER_NAME"
-    - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
-    - cp -Rf ./* /usr/src/verinice-export
-    - cd /usr/src/verinice-export
-    - git add -A
-    - git commit -am "Release"
-    - git push -f origin master
+    - printenv
+    # - echo 172.17.0.1 git.verinice.org >> /etc/hosts
+    # - apk add --update git openssh
+    # - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
+    # - chmod -R 0400 ~/.ssh/*
+    # - git config --global user.email "$GITLAB_USER_EMAIL"
+    # - git config --global user.name "$GITLAB_USER_NAME"
+    # - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
+    # - cp -Rf ./* /usr/src/verinice-export
+    # - cd /usr/src/verinice-export
+    # - git add -A
+    # - git commit -am "Release"
+    # - git push -f origin master
   only:
     - branches
   tags:
