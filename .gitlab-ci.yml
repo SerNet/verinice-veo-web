@@ -61,7 +61,7 @@ push-sernet:
   stage: build
   image: registry.git.cpmsys.de/markus/sernet-env/master:latest
   script:
-    - printenv
+    - curl -H "PRIVATE-TOKEN: $CI_JOB_TOKEN" "https://git.cpmsys.de/api/v4/projects/${CI_PROJECT_ID}/repository/tags/${CI_BUILD_TAG}
     # - echo 172.17.0.1 git.verinice.org >> /etc/hosts
     # - apk add --update git openssh
     # - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
