@@ -65,9 +65,12 @@ push-sernet:
     - apk add --update git openssh
     - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
     - chmod -R 0400 ~/.ssh/*
-    - ping git.verinice.org -c1
-    - git remote add sernet ssh://git.verinice.org/isms/verinice-veo-web.git || true
-    - git remote set-url sernet ssh://git.verinice.org/isms/verinice-veo-web.git
+    - mkdir /usr/src/git-export
+    - cp -R ./* /usr/src/git-export/
+    - cd /usr/src/git-export
+    - rm .gitlab-ci.yml
+    - git init
+    - git remote add sernet ssh://git.verinice.org/isms/verinice-veo-web.git
     - git push --verbose -f sernet master
   only:
     - branches
