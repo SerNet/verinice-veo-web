@@ -68,7 +68,7 @@ push-sernet:
     - ping git.verinice.org -c1
     - git remote add sernet ssh://git.verinice.org/isms/verinice-veo-web.git || true
     - git remote set-url sernet ssh://git.verinice.org/isms/verinice-veo-web.git
-    - git push -f sernet master
+    - git push --verbose -f sernet master
   only:
     - branches
   tags:
