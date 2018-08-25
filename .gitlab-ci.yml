@@ -70,6 +70,7 @@ push-sernet:
     - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
     - cp -Rf ./* /usr/src/verinice-export
     - cd /usr/src/verinice-export
+    - echo "${CI_COMMIT_REF_NAME}" > RELEASE.md
     - git add -A
     - git commit -am "Release ${CI_COMMIT_REF_NAME}"
     - git tag -a "${CI_COMMIT_REF_NAME}" -m "Release ${CI_COMMIT_REF_NAME}"
