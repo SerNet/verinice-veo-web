@@ -1,18 +1,37 @@
 <template>
   <v-list-tile class="tree-item" :style="{paddingLeft: level*20+'px'}" @click="()=>{}" :to="to">
-    <v-list-tile-action class="small-action">
-      <v-checkbox class="checkbox" :indeterminate="checked === undefined" :value="checked" :input-value="checked" @change="$emit('check')"></v-checkbox>
-    </v-list-tile-action>
     <v-list-tile-action class="small-action" :style="{visibility: hasChildren?'visible':'hidden'}">
       <v-btn icon @click="$emit('expand')">
         <v-icon class="chevron" :class="[expanded?'open':'']">chevron_right</v-icon>
       </v-btn>
+    </v-list-tile-action>
+    <v-list-tile-action class="small-action">
+      <v-checkbox class="checkbox" :indeterminate="checked === undefined" :value="checked" :input-value="checked" @change="$emit('check')"></v-checkbox>
     </v-list-tile-action>
     <v-list-tile-content @click="()=>{}">
       <v-list-tile-title>
         <slot></slot>
       </v-list-tile-title>
     </v-list-tile-content>
+    <v-spacer></v-spacer>
+    <v-list-tile-action style="min-width: 24px">
+      <v-menu>
+        <v-btn slot="activator" icon>
+          <v-icon>more_vert</v-icon>
+        </v-btn>
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-title>Test 1</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile>
+            <v-list-tile-title>Test 2</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile>
+            <v-list-tile-title>Test 3</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+    </v-list-tile-action>
   </v-list-tile>
 </template>
 

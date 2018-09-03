@@ -13,7 +13,6 @@
 <style lang="stylus">
 .main-sidenav-content {
   .list-tile.active {
-    // border-left: 4px solid $vuetify.theme.primary;
     background: #F0F0F0;
   }
 }

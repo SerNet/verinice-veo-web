@@ -4,7 +4,22 @@
       <v-expansion-panel-content class="grey lighten-3">
         <div slot="header">
           <span style="margin-left: 6px;">Basic</span>
-          <v-icon style="float:right;">more_vert</v-icon>
+          <v-menu style="float:right;">
+            <v-btn slot="activator" icon>
+              <v-icon>more_vert</v-icon>
+            </v-btn>
+            <v-list>
+              <v-list-tile>
+                <v-list-tile-title>Test 1</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-title>Test 2</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-title>Test 3</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
         </div>
         <v-card>
           <v-card-text class="white lighten-3">
