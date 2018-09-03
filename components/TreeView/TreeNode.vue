@@ -38,6 +38,10 @@ export default Vue.extend({
 
 .checkbox {
   zoom: 0.8;
+
+  >>> .v-input__slot {
+    margin-bottom: 0;
+  }
 }
 
 .chevron.open {
