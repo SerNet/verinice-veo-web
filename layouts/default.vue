@@ -33,7 +33,8 @@ export default Vue.extend({
       mainDrawer: null,
       msg: "Welcome to MY Vue.js App"
     };
-  }
+  },
+  async mounted() {}
 });
 </script>
 

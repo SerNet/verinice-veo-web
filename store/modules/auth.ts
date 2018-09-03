@@ -23,11 +23,11 @@ const module: Module<AuthState, RootState> = {
   },
   actions: {
     async init({ state, dispatch }, payload) {
-      if (!state.token)
+      if (state.token === null)
         return await dispatch("login", {
           username: "admin",
           password: "password"
-        }).catch(e => console.warn);
+        });
     },
     async login(
       this: Vue,

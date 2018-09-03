@@ -89,9 +89,8 @@ export default () => {
     strict: debug,
     plugins: [strictModules],
     actions: {
-      async nuxtServerInit(context) {
+      async nuxtServerInit(this: Vue, context) {
         await context.dispatch("auth/init");
-        await context.dispatch("tree/init");
       }
     }
   });

@@ -34,6 +34,9 @@ export default Vue.extend({
       checkItem: "check",
       fetchItems: "fetchItems"
     })
+  },
+  async fetch({ store }) {
+    await store.dispatch("tree/init");
   }
 });
 </script>
