@@ -1,54 +1,19 @@
 <template>
   <v-layout class="form-panels" style="overflow: auto !important;" column>
-    <!--<v-alert :dismissible="true" style="width: 100%;" type="basic" :value="true" icon="link">-->
-    <!--<span>This element is linked to <b>two</b> elements. <a href="#">View relations</a></span>-->
-    <!--</v-alert>-->
-    <v-expansion-panel :value="[true]" class="px-3 " :inset="true" :expand="true">
+    <v-expansion-panel :value="[true]" class="pa-3" :expand="true">
       <v-expansion-panel-content class="grey lighten-3">
         <div slot="header">
-          <v-icon>keyboard_arrow_up</v-icon>
-          <span style="margin-left: 6px">Basic</span>
-        </div>
-        <div slot="actions">
-          <v-icon>more_vert</v-icon>
+          <span style="margin-left: 6px;">Basic</span>
+          <v-icon style="float:right;">more_vert</v-icon>
         </div>
         <v-card>
           <v-card-text class="white lighten-3">
             <v-form v-if="schema && schema.properties">
-              <!-- <v-text-field v-for="(item, key) in model" :key="key" :label="key" :value="item"/> -->
               <abstract-field v-for="(property, key) in schema.properties" :key="key" :name="key" :schema="property" :required="schema.required.includes(key)" :value="model[key]" />
-              <!--<v-text-field label="Chapter" v-model="current.chapter" value="M 2.278" append-icon="visibility" :append-icon-cb="() => previewNav.open=true"/>
-                    <v-text-field label="State" value="2014"/>
-                    <v-text-field label="Title" value="Typische Einsatzszenarien von Routern und Switches"/>
-                    <v-text-field label="Life cycle" value="Planung und Konzeption"/>
-                    <v-text-field label="Importance" value="Ö" error-messages="Invalid importance level 'Ö'"/>
-                    <v-text-field label="Document" value=""/>
-                    <v-text-field label="Beschreibung" v-model="desc" multi-line="" rows="3"/>-->
             </v-form>
           </v-card-text>
         </v-card>
       </v-expansion-panel-content>
-      <!-- <v-expansion-panel-content :value="true" class="grey lighten-3">
-              <div slot="header">
-                <v-icon>keyboard_arrow_up</v-icon>
-                <span style="margin-left: 6px">IT Baseline Audit</span>
-              </div>
-              <div slot="actions">
-                <v-icon>more_vert</v-icon>
-              </div>
-              <v-card>
-                <v-card-text class="white">
-                  <v-form>
-                    <v-text-field label="Auditor"/>
-                    <v-text-field label="Auditee"/>
-                    <v-text-field label="Methods"/>
-                    <v-text-field label="Questions"/>
-                    <v-text-field label="Document" value=""/>
-                    <v-text-field label="Beschreibung" v-model="desc" multi-line="" rows="3"/>
-                  </v-form>
-                </v-card-text>
-              </v-card>
-            </v-expansion-panel-content> -->
     </v-expansion-panel>
   </v-layout>
 </template>
@@ -85,20 +50,21 @@ export default Vue.extend({
 </script>
 <style lang="stylus">
 .form-panels {
-  ul.expansion-panel li {
-    margin-top: 16px !important;
+  ul.v-expansion-panel li {
     max-width: 100% !important;
 
-    .expansion-panel__header {
+    .v-expansion-panel__header {
       padding: 12px;
+
+      div:not(.v-expansion-panel__header__icon) {
+        order: 2;
+      }
+
+      .v-expansion-panel__header__icon {
+        order: 1;
+      }
     }
   }
-}
-
-.alert.basic {
-  // color: $theme['secondary_text'];
-  background-color: #EEE !important;
-  border-color: #DDD !important;
 }
 
 .breadcrumb-toolbar {

@@ -61,7 +61,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: "#FF8A80" },
+  loading: { color: "#ff1400" },
 
   generate: {
     fallback: "404.html" // if you want to use '404.html'
@@ -76,7 +76,7 @@ module.exports = {
 
   router: {
     middleware: ["meta"],
-    extendRoutes(routes, resolve) {}
+    extendRoutes(routes, resolve) { }
   },
 
   /*
@@ -213,7 +213,7 @@ module.exports = {
 
   /*
   ** Build configuration
-  
+
   */
   build: {
     cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
@@ -239,7 +239,7 @@ module.exports = {
                 //Define your options here (stylusOptions.use, stylusOptions.import, ...)
                 //e.g. add a plugin:
                 const uses = (stylusOptions.use = stylusOptions.use || []);
-                uses.push(function(style) {
+                uses.push(function (style) {
                   style.define("colors", $colors, true);
                   style.define("theme", $theme, true);
                 });

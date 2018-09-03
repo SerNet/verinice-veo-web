@@ -19,6 +19,8 @@
       </v-btn>
     </v-layout>
 
+    <login-dialog v-if="!showSearch"></login-dialog>
+
     <v-menu offset-y v-if="!showSearch">
       <v-btn slot="activator" color="primary" icon>
         <v-icon>more_vert</v-icon>
@@ -41,10 +43,12 @@
 <script lang="ts">
 import Vue from "vue";
 import MainToolbarLogo from "~/components/MainLayout/MainToolbarLogo.vue";
+import LoginDialog from "~/components/MainLayout/LoginDialog.vue";
 
 export default Vue.extend({
   components: {
-    MainToolbarLogo
+    MainToolbarLogo,
+    LoginDialog
   },
   data() {
     return {
