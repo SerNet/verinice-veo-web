@@ -117,7 +117,6 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       });
     },
     async fetchItems(this: Vue, { commit, dispatch }, payload) {
-      console.log("fetchItems");
       const response: VeoItem[] = await this.$axios.$get("/api/elements");
       commit("setData", response);
       commit("setItems", []);

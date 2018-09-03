@@ -1,3 +1,13 @@
+require("dotenv").config();
+/*const HTTP_PROXY = process.env["HTTP_PROXY"];
+const HTTPS_PROXY = process.env["HTTPS_PROXY"];
+
+process.env["PROXY_HTTP"] = HTTP_PROXY;
+process.env["PROXY_HTTPS"] = HTTPS_PROXY;
+
+delete process.env["HTTP_PROXY"];
+delete process.env["HTTPS_PROXY"];*/
+
 const pkg = require("./package");
 const path = require("path");
 const coerce = require("./modules/stylus-coerce");
@@ -59,7 +69,9 @@ module.exports = {
 
   workbox: {
     // Workbox options
-    autoRegister: true
+    autoRegister: false,
+    enabled: false,
+    dev: false
   },
 
   router: {
@@ -84,12 +96,12 @@ module.exports = {
         parsePages: false,
         langDir: "locales/",
         locales: [
-          {
+          /*{
             code: "en",
             iso: "en-US",
             name: "English",
             file: "en-US.js"
-          },
+          },*/
           {
             code: "de",
             iso: "de-DE",
@@ -185,7 +197,9 @@ module.exports = {
     proxy: true,
     //prefix: '/cgi-bin/',
     credentials: true,
-    proxyHeaders: true
+    proxyHeaders: true,
+    retry: false,
+    timeout: 10000
   },
 
   proxy: {
@@ -204,7 +218,7 @@ module.exports = {
   build: {
     cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
     //parallel: false, //(thread-loader: https://github.com/webpack-contrib/thread-loader)
-    watch: ["config"],
+    watch: [".env", "config"],
     babel: {
       //plugins: ["transform-decorators-legacy", "transform-class-properties"]
     },

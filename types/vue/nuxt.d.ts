@@ -28,6 +28,7 @@ declare module "vue/types/options" {
     isHMR: boolean;
     route: Route;
     store: Store<S>;
+    $store: Store<S>;
     env: PropertyMap;
     params: PropertyMap;
     query: PropertyMap;

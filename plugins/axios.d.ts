@@ -18,6 +18,12 @@ declare module "vue/types/vue" {
 
 declare module "axios" {
   export interface AxiosInstance {
+    setToken(
+      token: string,
+      type: string,
+      scopes?: "common" | "get" | "post" | "delete" | "put" | "patch" | string
+    ): void;
+
     $request<T = any>(config: AxiosRequestConfig): Promise<T>;
     $get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
     $delete(url: string, config?: AxiosRequestConfig): Promise<void>;
