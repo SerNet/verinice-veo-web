@@ -7,6 +7,7 @@ export interface NavItem {
   active: boolean;
   icon: string;
   title: string;
+  to?: string;
 }
 
 const state = {
@@ -26,7 +27,8 @@ const state = {
     {
       active: false,
       icon: "settings",
-      title: "Einstellungen"
+      title: "Einstellungen",
+      to: "/settings"
     }
   ] as NavItem[]
 };
