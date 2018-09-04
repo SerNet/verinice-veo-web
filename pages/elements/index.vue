@@ -1,6 +1,6 @@
 <template>
   <v-layout row>
-    TEST
+    <v-flex class="pa-3">TEST</v-flex>
   </v-layout>
 </template>
 

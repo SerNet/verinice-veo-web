@@ -80,6 +80,7 @@ module.exports = {
     "@nuxtjs/axios",
     "@nuxtjs/pwa",
     "~/modules/typescript",
+    "cookie-universal-nuxt",
     [
       "nuxt-i18n",
       {

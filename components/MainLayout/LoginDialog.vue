@@ -7,18 +7,21 @@
         </v-avatar>
       </v-btn>
       <v-card>
-        <v-card-title class="headline grey lighten-2" primary-title>Login</v-card-title>
-        <v-card-text>
-          <v-text-field v-model="username" label="Benutzername" clearable></v-text-field>
-          <v-text-field v-model="password" label="Passwort" clearable type="password"></v-text-field>
-          <v-checkbox v-model="savePassword" :label="`Passwort speichern`"></v-checkbox>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" flat @click="dialog = false">Abbrechen</v-btn>
-          <v-btn color="primary" flat @click="login()">Login</v-btn>
-        </v-card-actions>
+        <v-form ref="form" @submit.prevent="login()">
+          <v-card-title class="headline grey lighten-2" primary-title>Login</v-card-title>
+          <v-card-text>
+            <v-text-field :error="!!error" v-model="username" label="Benutzername" clearable></v-text-field>
+            <v-text-field :error="!!error" v-model="password" label="Passwort" clearable type="password"></v-text-field>
+            <v-checkbox v-model="savePassword" :label="`Passwort speichern`"></v-checkbox>
+            <v-messages color="error" v-if="error" :value="[error]"></v-messages>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" flat @click="dialog = false">Abbrechen</v-btn>
+            <v-btn color="primary" type="submit" flat>Login</v-btn>
+          </v-card-actions>
+        </v-form>
       </v-card>
     </v-dialog>
   </div>
@@ -31,6 +34,7 @@ export default Vue.extend({
   components: {},
   data() {
     return {
+      valid: true,
       dialog: false,
       username: "",
       password: "",
@@ -38,12 +42,15 @@ export default Vue.extend({
     };
   },
   props: {
-    open: Boolean
+    error: String
   },
   methods: {
     login() {
-      this.dialog = false;
-      this.$emit("login", { username: this.username, password: this.password });
+      this.$emit("login", {
+        username: this.username,
+        password: this.password,
+        persist: this.savePassword
+      });
     }
   }
 });

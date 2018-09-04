@@ -44,8 +44,9 @@ export default (context, inject) => {
       delete config.headers.common["Authorization"];
     }
   });
-  /*
+
   $axios.onError(err => {
     err.message = `Error while requesting '${err.config.url}': ` + err.message;
-  });*/
+    store.dispatch("error/handle", err);
+  });
 };

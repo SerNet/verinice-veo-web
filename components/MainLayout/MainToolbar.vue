@@ -20,8 +20,8 @@
     </v-layout>
 
     <template v-if="!showSearch">
-      <account-btn :username="username" v-if="username" @logout="logout"></account-btn>
-      <login-dialog @login="login" :open="!username" :error="authError" v-else></login-dialog>
+      <account-btn v-if="username" :username="username" @logout="logout"></account-btn>
+      <login-dialog v-else @login="login" :error="authError"></login-dialog>
     </template>
 
     <v-menu offset-y v-if="!showSearch">
