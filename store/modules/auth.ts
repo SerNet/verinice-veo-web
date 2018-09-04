@@ -23,8 +23,8 @@ export interface Mutations {
 
 export interface Actions {
   init: {};
-  login: { username: string; password: string; persist?: Boolean };
-  useToken: string;
+  login: { username: string; password: string; persist?: boolean };
+  useToken: { token: string; persist?: boolean };
   logout: {};
 }
 
@@ -74,7 +74,7 @@ const module: DefineModule<
     async init(this: Vue, { state, dispatch, commit }, payload) {
       const token = this.$cookies.get("token");
       if (token) {
-        await dispatch("useToken", token);
+        await dispatch("useToken", { token });
       }
     },
     async login(
@@ -91,7 +91,7 @@ const module: DefineModule<
 
         const header = response.headers["authorization"];
         const [type, token] = header.split(/\s+/);
-        dispatch("useToken", token);
+        dispatch("useToken", { token, persist });
       } catch (e) {
         if (e.response) {
           const { response } = e as AxiosError;
@@ -105,14 +105,16 @@ const module: DefineModule<
         throw e;
       }
     },
-    async useToken(this: Vue, { commit, dispatch }, token) {
+    async useToken(this: Vue, { commit, dispatch }, { token, persist }) {
       commit("setToken", token);
       const user = jsonwebtoken.decode(token) as UserTokenPayload;
       commit("setTokenPayload", user);
-      this.$cookies.set("token", token, {
-        path: "/",
-        maxAge: user.exp - user.iat
-      });
+      if (persist) {
+        this.$cookies.set("token", token, {
+          path: "/",
+          maxAge: user.exp - user.iat
+        });
+      }
       await dispatch("init", {}, { root: true });
     },
     async logout(this: Vue, { commit, dispatch }) {
