@@ -6,7 +6,10 @@
       </v-btn>
     </v-list-tile-action>
     <v-list-tile-action class="small-action" @click.prevent>
-      <v-checkbox class="checkbox" :indeterminate="checked === undefined" :value="checked" :input-value="checked" @change="$emit('check')"></v-checkbox>
+      <!-- <v-checkbox class="checkbox" :indeterminate="checked === undefined" :value="checked" :input-value="checked" @change="$emit('check')"></v-checkbox> -->
+      <selection-icon :value="checked" :indeterminate="checked === undefined" :deep="checked && hasChildren" @change="$emit('check')">
+        <v-icon size="16">insert_drive_file</v-icon>
+      </selection-icon>
     </v-list-tile-action>
     <v-list-tile-content @click="()=>{}">
       <v-list-tile-title>
@@ -14,7 +17,7 @@
       </v-list-tile-title>
     </v-list-tile-content>
     <v-spacer></v-spacer>
-    <v-list-tile-action style="min-width: 24px">
+    <v-list-tile-action style="min-width: 24px" @click.prevent>
       <!-- click preventDefault: https://github.com/vuetifyjs/vuetify/issues/3333#issuecomment-389775441 -->
       <v-menu>
         <v-btn slot="activator" icon>
@@ -22,13 +25,13 @@
         </v-btn>
         <v-list>
           <v-list-tile>
-            <v-list-tile-title>Test 1</v-list-tile-title>
+            <v-list-tile-title>Aktion 1</v-list-tile-title>
           </v-list-tile>
           <v-list-tile>
-            <v-list-tile-title>Test 2</v-list-tile-title>
+            <v-list-tile-title>Aktion 2</v-list-tile-title>
           </v-list-tile>
           <v-list-tile>
-            <v-list-tile-title>Test 3</v-list-tile-title>
+            <v-list-tile-title>Aktion 3</v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -38,7 +41,12 @@
 
 <script lang="ts">
 import Vue from "vue";
+import SelectionIcon from "~/components/SelectionIcon.vue";
+
 export default Vue.extend({
+  components: {
+    SelectionIcon
+  },
   props: {
     checkable: { type: Boolean, default: false },
     checked: { type: Boolean, default: undefined },

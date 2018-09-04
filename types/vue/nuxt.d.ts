@@ -67,6 +67,7 @@ declare module "vue/types/vue" {
   interface Vue {
     $axios: AxiosInstance;
     $cookies: any;
+    $store: Store<any>;
     readonly i18n: VueI18n & IVueI18n;
     readonly $i18n: VueI18n & IVueI18n;
     $t: typeof VueI18n.prototype.t;

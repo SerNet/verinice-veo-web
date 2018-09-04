@@ -1,7 +1,8 @@
 <template>
   <v-layout row>
     <v-flex>
-      <tree-nav class="tree-nav" :groups="groups" :items="items" :error="error" @expand="expandItem" @check="checkItem" to-prefix="/elements/"></tree-nav>
+      <tree-nav class="tree-nav" :groups="groups" :items="items" :selection="selection" :error="error" @expand="expandItem" @check="checkItem" to-prefix="/elements/"></tree-nav>
+      <v-selection-snackbar style="width: 300px" :selection="selection" :actions="actions" @action="onActionClick"></v-selection-snackbar>
     </v-flex>
     <v-flex xs12 id="content">
       <nuxt-child></nuxt-child>
@@ -11,21 +12,36 @@
 
 <script lang="ts">
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
+import vSelectionSnackbar from "~/components/SelectionSnackbar.vue";
 import Vue from "vue";
 import { helpers as treeStore } from "~/store/modules/tree";
 
+interface ISelectionAction {
+  id: string;
+  title: string;
+}
+
 export default Vue.extend({
   components: {
-    treeNav: TreeNav
+    treeNav: TreeNav,
+    vSelectionSnackbar
   },
   data() {
     return {
-      groups: ["IT Baseline-Catalog", "BSI Model"]
+      groups: ["IT Baseline-Catalog", "BSI Model"],
+      actions: [
+        { title: "Löschen" },
+        { title: "Kopieren nach..." },
+        { title: "Verschieben nach..." },
+        { title: "Verknüpfen mit...", divide: true },
+        { id: "DESELECT_ALL", title: "Auswahl aufheben" }
+      ]
     };
   },
   computed: {
     ...treeStore.mapState({
       items: "items",
+      selection: "selection",
       error: "error"
     })
   },
@@ -33,8 +49,15 @@ export default Vue.extend({
     ...treeStore.mapActions({
       expandItem: "expand",
       checkItem: "check",
-      fetchItems: "fetchItems"
-    })
+      fetchItems: "fetchItems",
+      selectAll: "selectAll"
+    }),
+    onActionClick(action: ISelectionAction) {
+      switch (action.id) {
+        case "DESELECT_ALL":
+          return this.selectAll(false);
+      }
+    }
   },
   async fetch({ store }) {
     await store.dispatch("tree/init");

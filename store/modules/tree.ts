@@ -7,6 +7,7 @@ import { DefineModule, createNamespacedHelpers } from "vuex";
 type ValueMap = { [id: string]: boolean | undefined };
 
 export interface State {
+  selection: TreeItem[];
   error: string | null;
   data: VeoItem[];
   items: TreeItem[];
@@ -22,6 +23,7 @@ export interface Getters {
 export interface Mutations {
   setError: string;
   setData: VeoItem[];
+  setSelection: TreeItem[];
   setItems: TreeItem[];
   setExpand: { index: number; value: boolean };
   setChecked: ValueMap;
@@ -35,6 +37,7 @@ export interface Actions {
   fetchItems: {};
   check: { id: string };
   expand: { id: string };
+  selectAll: boolean;
 }
 
 export const helpers = createNamespacedHelpers<
@@ -47,6 +50,7 @@ export const helpers = createNamespacedHelpers<
 const module: DefineModule<State, Getters, Mutations, Actions> = {
   namespaced: true,
   state: {
+    selection: [],
     error: null,
     data: [],
     items: [],
@@ -89,10 +93,15 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       const item = state.items[index];
       return item && (item.expanded = value);
     },
+    setSelection(state, value) {
+      state.selection = value;
+    },
     setChecked(state, payload) {
       for (const i in payload) {
         if (payload.hasOwnProperty(i)) {
-          state.items[i].checked = payload[i];
+          const isChecked = payload[i];
+          const item = state.items[i];
+          item.checked = isChecked;
         }
       }
     },
@@ -180,6 +189,7 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       }
 
       commit("setChecked", changes);
+      commit("setSelection", items.filter(item => item.checked));
     },
     /**
      * Expand / collapse a given item
@@ -221,6 +231,14 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
           });
         }
       }
+    },
+    async selectAll(this: Vue, { state, dispatch, commit }, value) {
+      const changes = {};
+      state.items.forEach((item, idx) => {
+        if (item.checked) changes[idx] = false;
+      });
+      commit("setChecked", changes);
+      commit("setSelection", []);
     }
   }
 };
