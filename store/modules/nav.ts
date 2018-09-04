@@ -15,7 +15,7 @@ const state = {
       active: true,
       icon: "folder",
       title: "Beispieleintrag I",
-      to: "elements"
+      to: "/elements"
     },
     {
       active: false,

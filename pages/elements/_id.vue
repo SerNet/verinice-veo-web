@@ -42,6 +42,7 @@ export default Vue.extend({
   async fetch({ store, params }) {
     //await store.dispatch("tree/getItems", params);
     if (params["id"]) {
+      console.log("_id.vue", params);
       await store.dispatch("form/load", params);
     }
   },
