@@ -6,12 +6,5 @@
   },
   "todo-tree.grouped": false,
   "todo-tree.flat": true,
-  "todo-tree.expanded": true,
-  "spellright.language": "en",
-  "spellright.documentTypes": [
-    "markdown",
-    "latex",
-    "plaintext",
-    "typescript"
-  ]
+  "todo-tree.expanded": true
 }

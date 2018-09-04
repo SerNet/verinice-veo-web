@@ -15,9 +15,10 @@
     </v-list-tile-content>
     <v-spacer></v-spacer>
     <v-list-tile-action style="min-width: 24px">
+      <!-- click preventDefault: https://github.com/vuetifyjs/vuetify/issues/3333#issuecomment-389775441 -->
       <v-menu>
         <v-btn slot="activator" icon>
-          <v-icon>more_vert</v-icon>
+          <v-icon style="color: #aaa">more_vert</v-icon>
         </v-btn>
         <v-list>
           <v-list-tile>

@@ -4,7 +4,7 @@
       <v-expansion-panel-content class="grey lighten-3">
         <div slot="header">
           <span style="margin-left: 6px;">Basic</span>
-          <v-menu style="float:right;">
+          <v-menu style="float:right;" @click.native.stop>
             <v-btn slot="activator" icon>
               <v-icon>more_vert</v-icon>
             </v-btn>
