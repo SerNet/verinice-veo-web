@@ -14,8 +14,14 @@ const state = {
     {
       active: true,
       icon: "folder",
-      title: "Beispieleintrag I",
+      title: "Arbeitsbereich 1",
       to: "/elements"
+    },
+    {
+      active: false,
+      icon: "folder",
+      title: "Arbeitsbereich 2",
+      to: "/test"
     },
     {
       active: false,
