@@ -1,7 +1,5 @@
 const url = require("url");
-const tunnel = require("tunnel");
 const os = require("os");
-var HttpsProxyAgent = require("https-proxy-agent");
 
 const interfaces = os.networkInterfaces();
 const addresses = ["localhost"];
@@ -26,9 +24,10 @@ export default (context, inject) => {
 
   $axios.onRequest(config => {
     if (process.server || process.isServer) {
-      console.debug(
-        config.method.toUpperCase() + " " + config.baseURL + config.url
-      );
+      const consola = require("consola");
+      consola
+        .withScope("axios")
+        .debug(config.method.toUpperCase() + " " + config.url);
     }
 
     if (!useProxy(config)) {

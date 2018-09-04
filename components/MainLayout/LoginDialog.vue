@@ -2,7 +2,9 @@
   <div class="text-xs-center">
     <v-dialog v-model="dialog" width="500" id="loginDialog">
       <v-btn slot="activator" color="primary" icon>
-        <v-icon>person</v-icon>
+        <v-avatar size="32" color="#FFF">
+          <v-icon color="#888">person</v-icon>
+        </v-avatar>
       </v-btn>
       <v-card>
         <v-card-title class="headline grey lighten-2" primary-title>Login</v-card-title>
@@ -15,7 +17,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" flat @click="dialog = false">Abbrechen</v-btn>
-          <v-btn color="primary" flat @click="dialog = false">Login</v-btn>
+          <v-btn color="primary" flat @click="login()">Login</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -35,8 +37,15 @@ export default Vue.extend({
       savePassword: false
     };
   },
-  props: [],
-  methods: {}
+  props: {
+    open: Boolean
+  },
+  methods: {
+    login() {
+      this.dialog = false;
+      this.$emit("login", { username: this.username, password: this.password });
+    }
+  }
 });
 </script>
 

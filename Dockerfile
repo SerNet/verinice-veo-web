@@ -10,7 +10,10 @@ COPY package.json .
 COPY package-lock.json .
 RUN npm install
 # Bundle app source
+
 COPY . .
+COPY example.env .env
+
 ENV NODE_ENV production
 RUN npm run build
 

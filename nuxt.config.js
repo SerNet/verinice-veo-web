@@ -1,12 +1,4 @@
 require("dotenv").config();
-/*const HTTP_PROXY = process.env["HTTP_PROXY"];
-const HTTPS_PROXY = process.env["HTTPS_PROXY"];
-
-process.env["PROXY_HTTP"] = HTTP_PROXY;
-process.env["PROXY_HTTPS"] = HTTPS_PROXY;
-
-delete process.env["HTTP_PROXY"];
-delete process.env["HTTPS_PROXY"];*/
 
 const pkg = require("./package");
 const path = require("path");
@@ -76,7 +68,7 @@ module.exports = {
 
   router: {
     middleware: ["meta"],
-    extendRoutes(routes, resolve) { }
+    extendRoutes(routes, resolve) {}
   },
 
   /*
@@ -239,7 +231,7 @@ module.exports = {
                 //Define your options here (stylusOptions.use, stylusOptions.import, ...)
                 //e.g. add a plugin:
                 const uses = (stylusOptions.use = stylusOptions.use || []);
-                uses.push(function (style) {
+                uses.push(function(style) {
                   style.define("colors", $colors, true);
                   style.define("theme", $theme, true);
                 });

@@ -19,7 +19,10 @@
       </v-btn>
     </v-layout>
 
-    <login-dialog v-if="!showSearch"></login-dialog>
+    <template v-if="!showSearch">
+      <account-btn :username="username" v-if="username" @logout="logout"></account-btn>
+      <login-dialog @login="login" :open="!username" :error="authError" v-else></login-dialog>
+    </template>
 
     <v-menu offset-y v-if="!showSearch">
       <v-btn slot="activator" color="primary" icon>
@@ -43,17 +46,26 @@
 <script lang="ts">
 import Vue from "vue";
 import MainToolbarLogo from "~/components/MainLayout/MainToolbarLogo.vue";
+import AccountBtn from "~/components/MainLayout/AccountBtn.vue";
 import LoginDialog from "~/components/MainLayout/LoginDialog.vue";
+import { helpers as authStore } from "~/store/modules/auth";
 
 export default Vue.extend({
   components: {
     MainToolbarLogo,
+    AccountBtn,
     LoginDialog
   },
   data() {
     return {
       showSearch: false
     };
+  },
+  computed: {
+    ...authStore.mapState({
+      username: "username",
+      authError: "error"
+    })
   },
   props: ["clipped", "value"],
   methods: {
@@ -62,7 +74,11 @@ export default Vue.extend({
     },
     toggleSearch() {
       this.showSearch = !this.showSearch;
-    }
+    },
+    ...authStore.mapActions({
+      login: "login",
+      logout: "logout"
+    })
   }
 });
 </script>

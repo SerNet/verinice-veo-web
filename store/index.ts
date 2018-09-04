@@ -8,8 +8,6 @@ import { DefineModule, StrictCommit, StrictDispatch } from "../types/vuex";
 
 Vue.use(Vuex);
 
-const debug = process.env.NODE_ENV !== "production";
-
 const state = {
   version: "1.0.0"
 };
@@ -86,7 +84,7 @@ export default () => {
     RootState
   >({
     modules,
-    strict: debug,
+    strict: process.env.NODE_ENV !== "production",
     plugins: [strictModules],
     actions: {
       async nuxtServerInit(this: Vue, context) {

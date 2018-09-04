@@ -40,6 +40,7 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^7.2.8",
     "@types/lodash": "^4.14.116",
     "@types/node": "^10.3.6",
     "babel-eslint": "^8.2.1",
