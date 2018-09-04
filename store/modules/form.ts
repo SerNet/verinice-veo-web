@@ -57,7 +57,7 @@ const module: Module<FormState, RootState> = {
       }
     },
     /**
-     * Retrieve a schema from the webservice
+     * Retrieve a schema from the web service
      */
     async loadSchema(this: Vue, { commit, getters }, { name }) {
       try {

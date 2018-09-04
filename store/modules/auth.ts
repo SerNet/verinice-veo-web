@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { RootState } from "~/store/index";
+import { RootState, RootActions } from "~/store/index";
 import { Module } from "vuex";
 import { AxiosError } from "axios";
 import jsonwebtoken from "jsonwebtoken";
@@ -8,23 +8,23 @@ import { DefineModule, createNamespacedHelpers } from "vuex";
 export interface State {
   token: null | string;
   username: null | string;
-  error: null | Error;
+  error: null | string;
 }
 
 export interface Getters {
-  authorizationHeader: (state: any) => string;
-  errorMessage: string;
+  authorizationHeader: string;
 }
 
 export interface Mutations {
   setToken: string | null;
   setTokenPayload: UserTokenPayload | null;
-  setError: Error | null;
+  setError: string | null;
 }
 
 export interface Actions {
   init: {};
-  login: { username: string; password: string };
+  login: { username: string; password: string; persist?: Boolean };
+  useToken: string;
   logout: {};
 }
 
@@ -37,7 +37,19 @@ interface UserTokenPayload {
   profiles: string[];
 }
 
-const module: DefineModule<State, Getters, Mutations, Actions> = {
+const module: DefineModule<
+  State,
+  Getters,
+  Mutations,
+  Actions,
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  RootActions
+> = {
   namespaced: true,
   state: {
     token: null,
@@ -51,29 +63,35 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
     setTokenPayload(state, value) {
       state.username = value ? value.sub : "";
     },
-    setError(state, value) {}
+    setError(state, value) {
+      state.error = value;
+    }
   },
   getters: {
-    authorizationHeader: (state: any) => state.token,
-    errorMessage: (state: any) => (state.error && state.error.message) || ""
+    authorizationHeader: (state: any) => "Bearer " + state.token
   },
   actions: {
-    async init({ state, dispatch }, payload) {
-      if (!state.token)
-        return await dispatch("login", {
-          username: "admin",
-          password: "password"
-        });
+    async init(this: Vue, { state, dispatch, commit }, payload) {
+      const token = this.$cookies.get("token");
+      if (token) {
+        await dispatch("useToken", token);
+      }
     },
-    async login(this: Vue, { commit }, payload) {
+    async login(
+      this: Vue,
+      { commit, dispatch },
+      { username, password, persist }
+    ) {
       commit("setError", null);
       try {
-        const response = await this.$axios.post("/api/login", payload);
-        commit("setToken", response.headers["authorization"]);
+        const response = await this.$axios.post("/api/login", {
+          username,
+          password
+        });
+
         const header = response.headers["authorization"];
         const [type, token] = header.split(/\s+/);
-        const user = jsonwebtoken.decode(token) as UserTokenPayload;
-        commit("setTokenPayload", user);
+        dispatch("useToken", token);
       } catch (e) {
         if (e.response) {
           const { response } = e as AxiosError;
@@ -81,16 +99,27 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
             status: response!.status,
             cause: e
           });
-          commit("setError", err);
-          //throw err;
+          commit("setError", err.message);
           return false;
         }
         throw e;
       }
     },
-    async logout({ commit }) {
+    async useToken(this: Vue, { commit, dispatch }, token) {
+      commit("setToken", token);
+      const user = jsonwebtoken.decode(token) as UserTokenPayload;
+      commit("setTokenPayload", user);
+      this.$cookies.set("token", token, {
+        path: "/",
+        maxAge: user.exp - user.iat
+      });
+      await dispatch("init", {}, { root: true });
+    },
+    async logout(this: Vue, { commit, dispatch }) {
       commit("setToken", null);
       commit("setTokenPayload", null);
+      this.$cookies.remove("token");
+      await dispatch("init", {}, { root: true });
     }
   }
 };

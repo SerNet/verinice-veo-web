@@ -7,6 +7,7 @@ import { DefineModule, createNamespacedHelpers } from "vuex";
 type ValueMap = { [id: string]: boolean | undefined };
 
 export interface State {
+  error: string | null;
   data: VeoItem[];
   items: TreeItem[];
   current_id: string | null;
@@ -19,6 +20,7 @@ export interface Getters {
 }
 
 export interface Mutations {
+  setError: string;
   setData: VeoItem[];
   setItems: TreeItem[];
   setExpand: { index: number; value: boolean };
@@ -45,6 +47,7 @@ export const helpers = createNamespacedHelpers<
 const module: DefineModule<State, Getters, Mutations, Actions> = {
   namespaced: true,
   state: {
+    error: null,
     data: [],
     items: [],
     current_id: ""
@@ -75,6 +78,9 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
   mutations: {
     setData(state, payload) {
       state.data = payload;
+    },
+    setError(state, payload) {
+      state.error = payload;
     },
     setItems(state, payload) {
       state.items = payload;
@@ -117,13 +123,20 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       });
     },
     async fetchItems(this: Vue, { commit, dispatch }, payload) {
-      const response: VeoItem[] = await this.$axios.$get("/api/elements");
-      commit("setData", response);
-      commit("setItems", []);
-      const roots = response.filter(v => v[PARENT_FIELD] == null);
+      commit("setError", "");
+      try {
+        const response: VeoItem[] = await this.$axios.$get("/api/elements");
+        commit("setData", response);
+        commit("setItems", []);
+        const roots = response.filter(v => v[PARENT_FIELD] == null);
 
-      if (roots) {
-        await dispatch("addItems", { items: roots });
+        if (roots) {
+          await dispatch("addItems", { items: roots });
+        }
+      } catch (e) {
+        commit("setData", []);
+        commit("setItems", []);
+        commit("setError", e.message);
       }
     },
     /**

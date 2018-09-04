@@ -33,9 +33,10 @@
         </v-list>
       </v-menu>
     </v-toolbar>
-    <v-tree-view class="tree-nav">
+    <v-tree-view v-if="!error" class="tree-nav">
       <v-tree-node v-for="item in items" :key="item.id" :expanded="item.expanded" @expand="$emit('expand', item)" :checked="item.checked" :has-children="item.hasChildren" :level="item.level" :to="toPrefix+item.id" @check="$emit('check', item)">{{item.title}}</v-tree-node>
     </v-tree-view>
+    <v-messages class="pa-3" color="error" :value="[error]" v-else></v-messages>
   </v-layout>
 </template>
 
@@ -51,6 +52,9 @@ export default Vue.extend({
   },
   props: {
     toPrefix: {
+      type: String
+    },
+    error: {
       type: String
     },
     items: {

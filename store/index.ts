@@ -4,12 +4,14 @@ import auth from "./modules/auth";
 import nav from "./modules/nav";
 import tree from "./modules/tree";
 import form from "./modules/form";
+import error from "./modules/error";
 import { DefineModule, StrictCommit, StrictDispatch } from "../types/vuex";
 
 Vue.use(Vuex);
 
 const state = {
-  version: "1.0.0"
+  version: "1.0.0",
+  errors: []
 };
 export type RootState = typeof state;
 
@@ -17,7 +19,8 @@ const modules: any = {
   auth,
   nav,
   tree,
-  form
+  form,
+  error
 };
 
 type ModuleMap<State, Getters, Mutations, Actions> = {
@@ -79,6 +82,10 @@ function strictModules(s: any) {
   }
 }
 
+export interface RootActions {
+  init: {};
+}
+
 export default () => {
   const root: StrictStore<RootState, typeof modules> = new Vuex.Store<
     RootState
@@ -89,6 +96,10 @@ export default () => {
     actions: {
       async nuxtServerInit(this: Vue, context) {
         await context.dispatch("auth/init");
+        await context.dispatch("init");
+      },
+      async init(this: Vue, { dispatch }) {
+        await dispatch("tree/init");
       }
     }
   });

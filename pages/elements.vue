@@ -1,7 +1,7 @@
 <template>
   <v-layout row>
     <v-flex>
-      <tree-nav class="tree-nav" :groups="groups" :items="items" @expand="expandItem" @check="checkItem" to-prefix="/elements/"></tree-nav>
+      <tree-nav class="tree-nav" :groups="groups" :items="items" :error="error" @expand="expandItem" @check="checkItem" to-prefix="/elements/"></tree-nav>
     </v-flex>
     <v-flex xs12 id="content">
       <nuxt-child></nuxt-child>
@@ -25,7 +25,8 @@ export default Vue.extend({
   },
   computed: {
     ...treeStore.mapState({
-      items: "items"
+      items: "items",
+      error: "error"
     })
   },
   methods: {
