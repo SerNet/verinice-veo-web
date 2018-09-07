@@ -1,8 +1,8 @@
 <template>
-    <v-layout column>
-        <tree-nav class="tree-nav" :max-height="maxHeight-70" :groups="groups" :items="items" :selection="selection" :error="error" @expand="expandItem" @check="checkItem" to-prefix="/elements/"></tree-nav>
-        <v-selection-snackbar style="width: 300px" :selection="selection" :actions="actions" @action="onActionClick"></v-selection-snackbar>
-    </v-layout>
+  <v-layout column>
+    <tree-nav class="tree-nav" :max-height="maxHeight-70" :groups="groups" :items="items" :selection="selection" :error="error" @expand="expandItem" @check="checkItem" to-prefix="/elements/"></tree-nav>
+    <v-selection-snackbar style="width: 300px" :selection="selection" :actions="actions" @action="onActionClick"></v-selection-snackbar>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -33,7 +33,7 @@ export default Vue.extend({
       ID_FIELD,
       TITLE_FIELD,
       dialog: false,
-      groups: ["IT Baseline-Catalog", "BSI Model"],
+      groups: ["Model", "IT Baseline-Catalog", "BSI Model"],
       actions: [
         { id: "DELETE", title: "Löschen" },
         { title: "Kopieren nach..." },
@@ -97,20 +97,20 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 >>> .breadcrumb-item {
-    color: #AAA;
+  color: #AAA;
 
-    & + .breadcrumb-item:before {
-        content: ' > ';
-    }
+  & + .breadcrumb-item:before {
+    content: ' > ';
+  }
 }
 
 #content {
-    margin-left: 300px;
+  margin-left: 300px;
 }
 
 @media only screen and (max-width: 599px /* 959 */) {
-    #content {
-        margin-left: 0;
-    }
+  #content {
+    margin-left: 0;
+  }
 }
 </style>

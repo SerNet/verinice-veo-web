@@ -54,16 +54,16 @@ export default Vue.extend({
           i: "0",
           x: 0,
           y: 0,
-          w: 2,
+          w: 3,
           h: 12,
           caption: "Treeview",
           content: "Test 12"
         },
         {
           i: "1",
-          x: 2,
+          x: 3,
           y: 0,
-          w: 10,
+          w: 9,
           h: 12,
           caption: "Editor",
           content: "Test XYZ"

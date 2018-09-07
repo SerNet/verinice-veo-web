@@ -55,8 +55,12 @@ const module: DefineModule<
       await dispatch("fetch", {});
     },
     async fetch(this: Vue, { commit, dispatch }, payload) {
-      const response: any[] = await this.$axios.$get("/api/schemas");
-      commit("setSchemaNames", response);
+      try {
+        const response: any[] = await this.$axios.$get("/api/schemas");
+        commit("setSchemaNames", response);
+      } catch (e) {
+        commit("setSchemaNames", []);
+      }
     }
   }
 };
