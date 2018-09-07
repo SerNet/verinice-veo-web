@@ -1,5 +1,5 @@
 <template>
-  <v-layout column class="hidden-sm-and-down elevation-1" style="z-index: 2;">
+  <v-layout column class="hidden-sm-and-down elevation-0" style="z-index: 2;">
     <v-toolbar class="tree-toolbar" flat dense>
       <v-menu :nudge-width="100">
         <v-toolbar-title slot="activator">
@@ -33,7 +33,7 @@
         </v-list>
       </v-menu>
     </v-toolbar>
-    <v-tree-view v-if="!error" class="tree-nav">
+    <v-tree-view :max-height="maxHeight" v-if="!error" class="tree-nav">
       <v-tree-node v-for="item in items" :key="item.id" :expanded="item.expanded" @expand="$emit('expand', item)" :checked="item.checked" :has-children="item.hasChildren" :level="item.level" :to="toPrefix+item.id" @check="$emit('check', item)">{{item.title}}</v-tree-node>
     </v-tree-view>
     <v-messages class="pa-3" color="error" :value="[error]" v-else></v-messages>
@@ -69,6 +69,9 @@ export default Vue.extend({
     },
     actions: {
       type: Array
+    },
+    maxHeight: {
+      type: Number
     }
   },
   watch: {

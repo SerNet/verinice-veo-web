@@ -1,6 +1,6 @@
 <template>
-  <v-list class="pa-0" v-resize="onResize">
-    <virtual-list :size="48" :remain="remain" style="max-height: 100%">
+  <v-list class="pa-0 tree-view-list" fill-height v-resize="onResize">
+    <virtual-list :size="48" :style="{maxHeight: maxHeight+'px'}" :remain="remain">
       <slot></slot>
     </virtual-list>
   </v-list>
@@ -18,6 +18,9 @@ export default Vue.extend({
       remain: 10,
       size: 48
     };
+  },
+  props: {
+    maxHeight: Number
   },
   methods: {
     onResize() {

@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar class="breadcrumb-toolbar" color="elevation-1" style="overflow: hidden;" dense>
+  <v-toolbar class="breadcrumb-toolbar" color="elevation-0" style="overflow: hidden;" dense>
     <v-breadcrumbs class="breadcrumbs" justify-start="" divider="&gt;">
       <v-breadcrumbs-item class="breadcrumb-item" :to="'/elements/'+(item && item.id)" ripple v-for="item in items" :key="item.id">
         <slot v-bind="item"></slot>

@@ -1,6 +1,6 @@
 <template>
-  <v-layout fill-height column>
-    <veo-breadcrumb :items="breadcrumb" @change="onBreadcrumbChange">
+  <v-layout fill-height row>
+    <veo-breadcrumb class="breadcrumb" :items="breadcrumb" @change="onBreadcrumbChange">
       <template slot-scope="props">{{props.title}}</template>
     </veo-breadcrumb>
     <v-widget class="form-widget">
@@ -78,19 +78,18 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.tree-nav {
-  position: fixed;
-  top: 64px;
-  left: 80px;
-  bottom: 0;
-  width: 300px;
+.breadcrumb {
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0px;
 }
 
 .form-widget {
   position: absolute;
   bottom: 1px;
   right: 0;
-  left: 300px;
-  top: 48px;
+  left: 0;
+  top: 44px;
 }
 </style>

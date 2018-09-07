@@ -8,9 +8,14 @@
       <v-container pa-0 ma-0 ref="contentContainer" v-resize="onResize" style="width: 100%; position: absolute; top: 0; bottom: 0; max-width: 100%; overflow: hidden;">
         <no-ssr>
           <grid-layout :layout="layout" :col-num="gridOptions.colNum" :row-height="gridOptions.rowHeight" :max-rows="gridOptions.maxRows" :margin="[gridOptions.marginX, gridOptions.marginY]" :is-draggable="true" :is-resizable="true" :vertical-compact="true" :use-css-transforms="true">
-            <grid-item v-for="item in layout" :key="item.i" :x="item.x" :y="item.y" :w="item.w" :h="item.h" :i="item.i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
-              <v-toolbar class="widgetToolbar elevation-0">{{item.caption}}</v-toolbar>
-              <v-container>{{item.i}}: {{item.content}}</v-container>
+            <grid-item :x="layout[0].x" :y="layout[0].y" :w="layout[0].w" :h="layout[0].h" :i="layout[0].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
+              <tree-widget :max-height="treeMaxHeight"></tree-widget>
+            </grid-item>
+            <grid-item :x="layout[1].x" :y="layout[1].y" :w="layout[1].w" :h="layout[1].h" :i="layout[1].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
+              <v-toolbar class="widgetToolbar elevation-0">Editor</v-toolbar>
+              <v-container>
+                <nuxt></nuxt>
+              </v-container>
             </grid-item>
           </grid-layout>
         </no-ssr>
@@ -23,12 +28,14 @@
 import Vue from "vue";
 import MainToolbar from "~/components/MainLayout/MainToolbar.vue";
 import MenuSidenav from "~/components/MainLayout/MenuSidenav.vue";
+import TreeWidget from "~/widgets/Tree.vue";
 import { helpers as navStore } from "~/store/modules/nav";
 
 export default Vue.extend({
   components: {
     MainToolbar,
-    MenuSidenav
+    MenuSidenav,
+    TreeWidget
   },
   computed: {
     ...navStore.mapState({
@@ -41,6 +48,7 @@ export default Vue.extend({
   data() {
     return {
       mainDrawer: null,
+      treeMaxHeight: 0,
       layout: [
         {
           i: "0",
@@ -55,18 +63,9 @@ export default Vue.extend({
           i: "1",
           x: 2,
           y: 0,
-          w: 8,
-          h: 5,
+          w: 10,
+          h: 12,
           caption: "Editor",
-          content: "Test XYZ"
-        },
-        {
-          i: "2",
-          x: 10,
-          y: 0,
-          w: 2,
-          h: 6,
-          caption: "Preview",
           content: "Test XYZ"
         }
       ],
@@ -84,6 +83,7 @@ export default Vue.extend({
     onResize() {
       const elem = this.$refs["contentContainer"] as Element;
       this.gridHeight = elem.clientHeight + "px";
+      this.treeMaxHeight = elem.clientHeight;
       this.gridOptions.rowHeight =
         (elem.clientHeight -
           (this.gridOptions.maxRows + 1) * this.gridOptions.marginY) /
@@ -117,6 +117,10 @@ a {
 
 .vue-grid-layout {
   height: 100%;
+
+  >>> .v-toolbar__content {
+    height: 44px !important;
+  }
 }
 
 .vue-grid-item {

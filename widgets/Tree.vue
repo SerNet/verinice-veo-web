@@ -1,20 +1,8 @@
 <template>
-  <v-layout row>
-    <v-flex xs12 id="content">
-      <nuxt-child></nuxt-child>
-    </v-flex>
-    <add-dialog v-model="dialog" @save="addElement" :parents="parentItems" :types="schemaNames" :parent="$route.params.id" :parent-text="TITLE_FIELD" :parent-value="ID_FIELD">
-      <v-btn slot="activator" color="primary" dark fixed bottom right fab>
-        <v-icon>add</v-icon>
-      </v-btn>
-      <span slot="parent-item" slot-scope="{item}">
-        <div>{{item[TITLE_FIELD]}}</div>
-        <small>
-          <span class="breadcrumb-item" v-for="item in breadcrumb(item[ID_FIELD])" :key="item[ID_FIELD]">{{item[TITLE_FIELD]}}</span>
-        </small>
-      </span>
-    </add-dialog>
-  </v-layout>
+    <v-layout column>
+        <tree-nav class="tree-nav" :max-height="maxHeight-70" :groups="groups" :items="items" :selection="selection" :error="error" @expand="expandItem" @check="checkItem" to-prefix="/elements/"></tree-nav>
+        <v-selection-snackbar style="width: 300px" :selection="selection" :actions="actions" @action="onActionClick"></v-selection-snackbar>
+    </v-layout>
 </template>
 
 <script lang="ts">
@@ -36,6 +24,9 @@ export default Vue.extend({
     treeNav: TreeNav,
     AddDialog,
     vSelectionSnackbar
+  },
+  props: {
+    maxHeight: Number
   },
   data() {
     return {
@@ -105,26 +96,21 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
-.tree-nav {
-  position: fixed;
-  top: 64px;
-  left: 80px;
-  bottom: 0;
-  width: 300px;
-  /* TODO */
+>>> .breadcrumb-item {
+    color: #AAA;
+
+    & + .breadcrumb-item:before {
+        content: ' > ';
+    }
 }
 
->>> .breadcrumb-item {
-  color: #AAA;
-
-  & + .breadcrumb-item:before {
-    content: ' > ';
-  }
+#content {
+    margin-left: 300px;
 }
 
 @media only screen and (max-width: 599px /* 959 */) {
-  #content {
-    margin-left: 0;
-  }
+    #content {
+        margin-left: 0;
+    }
 }
 </style>
