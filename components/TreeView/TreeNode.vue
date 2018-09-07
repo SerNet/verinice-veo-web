@@ -19,22 +19,26 @@
     <v-spacer></v-spacer>
     <v-list-tile-action style="min-width: 24px" @click.prevent>
       <!-- click preventDefault: https://github.com/vuetifyjs/vuetify/issues/3333#issuecomment-389775441 -->
-      <v-menu>
+      <!-- <v-menu>
         <v-btn slot="activator" icon>
           <v-icon style="color: #aaa">more_vert</v-icon>
         </v-btn>
         <v-list>
-          <v-list-tile>
-            <v-list-tile-title>Aktion 1</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Aktion 2</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile>
-            <v-list-tile-title>Aktion 3</v-list-tile-title>
-          </v-list-tile>
+          <template v-for="action in actions">
+            <v-list-tile :key="action.id" @click="$emit('action', action)">
+              <v-list-tile-avatar v-if="action.icon">
+                <v-icon>{{ action.icon }}</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title>{{action.title}}</v-list-tile-title>
+                <v-list-tile-sub-title>{{action.description}}</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-divider v-if="action.divider" :key="action.id+'.divider'"></v-divider>
+          </template>
+
         </v-list>
-      </v-menu>
+      </v-menu> -->
     </v-list-tile-action>
   </v-list-tile>
 </template>
@@ -48,6 +52,7 @@ export default Vue.extend({
     SelectionIcon
   },
   props: {
+    //actions: { type: Array, default: [] },
     checkable: { type: Boolean, default: false },
     checked: { type: Boolean, default: undefined },
     expanded: { type: Boolean, default: false },
@@ -62,6 +67,11 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .small-action {
   min-width: 30px;
+}
+
+.v-list__tile__avatar {
+  min-width: 48px;
+  margin-left: -8px;
 }
 
 .checkbox {
