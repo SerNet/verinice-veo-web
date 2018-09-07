@@ -23,7 +23,8 @@ module.exports = {
     "~/plugins/axios.js",
     "~/plugins/router.js",
     "~/plugins/vuetify.js",
-    "~/plugins/directives.js"
+    "~/plugins/directives.js",
+    { src: '~/plugins/vue-grid.js', ssr: false }
   ],
   /*
   ** Global CSS
@@ -68,7 +69,7 @@ module.exports = {
 
   router: {
     middleware: ["meta"],
-    extendRoutes(routes, resolve) {}
+    extendRoutes(routes, resolve) { }
   },
 
   /*
@@ -232,7 +233,7 @@ module.exports = {
                 //Define your options here (stylusOptions.use, stylusOptions.import, ...)
                 //e.g. add a plugin:
                 const uses = (stylusOptions.use = stylusOptions.use || []);
-                uses.push(function(style) {
+                uses.push(function (style) {
                   style.define("colors", $colors, true);
                   style.define("theme", $theme, true);
                 });
