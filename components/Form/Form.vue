@@ -1,9 +1,12 @@
 <template>
-  <v-layout class="form-panels" style="overflow: auto !important;" column>
-    <v-expansion-panel :value="[true]" class="pa-3" :expand="false">
+  <v-layout class="form-panels pa-3" column>
+    <v-form>
+      <abstract-field v-for="property in properties" :key="property.key" :name="property.key" :schema="property" :required="schema.required.includes(property.key)" @input="onFieldChange(property, $event)" :value="model[property.key]" />
+    </v-form>
+    <!-- <v-expansion-panel class="elevation-0 ma-0" :value="[true, true]" :expand="true"> -->
 
-      <!-- Editor -->
-      <v-expansion-panel-content class="grey lighten-3 elevation-1">
+    <!-- Editor -->
+    <!-- <v-expansion-panel-content class="grey lighten-3 elevation-1">
         <div slot="header">
           <span style="margin-left: 6px;">Basic</span>
           <v-menu style="float:right;" @click.native.stop>
@@ -25,15 +28,13 @@
         </div>
         <v-card>
           <v-card-text class="white lighten-3">
-            <v-form v-if="schema && schema.properties">
-              <abstract-field v-for="(property, key) in schema.properties" :key="key" :name="key" :schema="property" :required="schema.required.includes(key)" :value="model[key]" />
-            </v-form>
+
           </v-card-text>
         </v-card>
-      </v-expansion-panel-content>
+      </v-expansion-panel-content> -->
 
-      <!-- Links -->
-      <v-expansion-panel-content class="grey lighten-3 elevation-1">
+    <!-- Links -->
+    <!-- <v-expansion-panel-content class="grey lighten-3 elevation-1">
         <div slot="header">
           <span style="margin-left: 6px;">Links</span>
           <v-menu style="float:right;" @click.native.stop>
@@ -63,14 +64,17 @@
 
           </v-card-text>
         </v-card>
-      </v-expansion-panel-content>
-    </v-expansion-panel>
+      </v-expansion-panel-content> -->
+    <!-- </v-expansion-panel> -->
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import AbstractField from "~/components/Form/AbstractField.vue";
+import { JSONSchema6, JSONSchema6TypeName } from "json-schema";
+
+export type JSONSchemaProperty = JSONSchema6 & { key: string };
 
 export default Vue.extend({
   components: {
@@ -78,6 +82,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      hiddenKeys: ["id", "parent", "type"],
       current: {
         chapter: "TEST"
       },
@@ -118,6 +123,28 @@ export default Vue.extend({
         }
       ]
     };
+  },
+  computed: {
+    id() {},
+    parent() {},
+    type() {},
+    properties(): Array<JSONSchemaProperty> {
+      const properties: { [k: string]: JSONSchema6 } =
+        this.schema && this.schema.properties;
+      const filterKeys = this.hiddenKeys;
+      return Object.keys(properties || {})
+        .filter(key => filterKeys.indexOf(key) === -1)
+        .map(key => ({
+          ...properties[key],
+          key
+        }));
+    }
+  },
+  methods: {
+    onFieldChange(property: JSONSchemaProperty, value: any) {
+      console.log(property, value);
+      this.$emit("input", { ...this.model, [property.key]: value });
+    }
   },
   props: {
     model: {

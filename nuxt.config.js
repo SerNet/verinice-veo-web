@@ -198,7 +198,11 @@ module.exports = {
 
   proxy: {
     "/api": {
+      headers: {
+        Origin: process.env["SERVER_URL"] || "https://v2020-rest.cpmsys.io/"
+      },
       target: process.env["SERVER_URL"] || "https://v2020-rest.cpmsys.io/",
+      //changeOrigin: true,
       pathRewrite: { "^/api": "" }
     }
   },

@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <main-toolbar @click-side-icon="mainDrawer = !mainDrawer" :clipped="true"></main-toolbar>
-    <v-navigation-drawer v-model="mainDrawer" :mini-variant="$vuetify.breakpoint.smAndUp" :permanent="$vuetify.breakpoint.smAndUp" :clipped="$vuetify.breakpoint.smAndUp" app>
+    <v-navigation-drawer v-model="mainDrawer" :mini-variant="true && $vuetify.breakpoint.smAndUp" :permanent="$vuetify.breakpoint.smAndUp" :clipped="$vuetify.breakpoint.smAndUp" app>
       <menu-sidenav :items="menuItems" />
     </v-navigation-drawer>
     <v-content>

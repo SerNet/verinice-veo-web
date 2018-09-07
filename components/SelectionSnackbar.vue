@@ -7,7 +7,7 @@
             </v-btn>
             <v-list>
                 <template v-for="(action, index) in actions">
-                    <v-list-tile @click="$emit('action',action)" :key="index">
+                    <v-list-tile @click="$emit('action',action)" :disabled="!action.id" :key="index">
                         <v-list-tile-title>{{ action.title }}</v-list-tile-title>
                     </v-list-tile>
                     <v-divider v-if="action.divide" :key="index+'.divide'"></v-divider>

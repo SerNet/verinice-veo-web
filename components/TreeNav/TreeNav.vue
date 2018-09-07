@@ -51,6 +51,9 @@ export default Vue.extend({
     vTreeView,
     vTreeNode
   },
+  data() {
+    return {};
+  },
   props: {
     toPrefix: {
       type: String
@@ -62,6 +65,9 @@ export default Vue.extend({
       type: Array
     },
     groups: {
+      type: Array
+    },
+    actions: {
       type: Array
     }
   },

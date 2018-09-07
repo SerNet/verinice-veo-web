@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { VeoItem } from "api";
-import { ID_FIELD, TITLE_FIELD, PARENT_FIELD } from "~/config/api";
+import { ID_FIELD, TITLE_FIELD, PARENT_FIELD, TYPE_FIELD } from "~/config/api";
 import { TreeItem } from "~/models/TreeItem";
 import { DefineModule, createNamespacedHelpers } from "vuex";
 
@@ -16,9 +16,12 @@ export interface State {
 
 export interface Getters {
   items: TreeItem[];
+  breadcrumb: (id: string) => VeoItem[];
   breadcrumbById: (id: string) => TreeItem[];
   hasChildren: (id: string) => boolean;
 }
+
+// /workspace/T:2342:
 
 export interface Mutations {
   setError: string;
@@ -34,9 +37,11 @@ export interface Mutations {
 export interface Actions {
   init: {};
   addItems: { from?: number; items: VeoItem[]; level?: number };
+  addItem: { parent: string; type: string };
   fetchItems: {};
   check: { id: string };
   expand: { id: string };
+  delete: string[];
   selectAll: boolean;
 }
 
@@ -62,6 +67,19 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       state.items.filter(
         item => item[PARENT_FIELD] === state.current_id || null
       ),
+    breadcrumb: state => id => {
+      const path = [];
+      const items: VeoItem[] = state.data;
+      let parent: string | undefined = id;
+      while (parent) {
+        const node = items.find(item => item[ID_FIELD] == parent);
+        if (node) {
+          path.unshift(node);
+        }
+        parent = node && node[PARENT_FIELD];
+      }
+      return path;
+    },
     breadcrumbById: state => id => {
       const path = [];
       const items: TreeItem[] = state.items;
@@ -124,11 +142,29 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
           const model = new TreeItem(
             v,
             level,
-            getters.hasChildren(v[ID_FIELD])
+            getters.hasChildren(v[ID_FIELD]!)
           );
           if (parent) model.checked = parent.checked;
           return model;
         })
+      });
+    },
+    async addItem(this: Vue, { state, commit, dispatch }, payload) {
+      const created = new TreeItem();
+      created.parent = payload.parent;
+      created.id = "";
+      created.type = payload.type;
+
+      const from = payload.parent
+        ? state.items.findIndex(item => item.id == payload.parent)
+        : 0;
+
+      console.log("from", state.items, from, payload);
+      const parent = from > 0 ? state.items[from] : null;
+      created.checked = parent ? parent.checked : false;
+      commit("addItems", {
+        from: from > 0 ? from : state.items.length - 1,
+        items: [created]
       });
     },
     async fetchItems(this: Vue, { commit, dispatch }, payload) {
@@ -231,6 +267,17 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
           });
         }
       }
+    },
+    async delete(this: Vue, { state, dispatch, commit }, ids) {
+      for (let i = 0; i < ids.length; i++) {
+        const id = ids[i];
+        await this.$axios.delete(`/api/elements/${id}`);
+      }
+      commit(
+        "setSelection",
+        state.selection.filter(item => ids.indexOf(item.id) == -1)
+      );
+      await dispatch("init", {});
     },
     async selectAll(this: Vue, { state, dispatch, commit }, value) {
       const changes = {};

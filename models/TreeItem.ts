@@ -1,5 +1,5 @@
 import { VeoItem } from "api";
-import { ID_FIELD, TITLE_FIELD, PARENT_FIELD } from "~/config/api";
+import { ID_FIELD, TITLE_FIELD, PARENT_FIELD, TYPE_FIELD } from "~/config/api";
 
 export class TreeItem {
   id: string;
@@ -7,14 +7,18 @@ export class TreeItem {
   checked: boolean | undefined = false;
   parent: string;
   title: string;
+  type: string;
 
   constructor(
-    public item: VeoItem,
+    public item?: VeoItem,
     public level = 0,
     public hasChildren: boolean = false
   ) {
-    this.id = item[ID_FIELD];
-    this.title = item[TITLE_FIELD];
-    this.parent = item[PARENT_FIELD];
+    if (item) {
+      this.id = item[ID_FIELD] || "";
+      this.title = item[TITLE_FIELD];
+      this.parent = item[PARENT_FIELD];
+      this.type = item[TYPE_FIELD];
+    }
   }
 }

@@ -1,17 +1,25 @@
 <template>
-  <v-layout column>
+  <v-layout fill-height column>
     <veo-breadcrumb :items="breadcrumb" @change="onBreadcrumbChange">
       <template slot-scope="props">{{props.title}}</template>
     </veo-breadcrumb>
-    <veo-form :model="formModel" :schema="formSchema"></veo-form>
+    <v-widget class="form-widget">
+      <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema"></veo-form>
+      <template slot="actions">
+        <v-btn flat to="/elements">Abbrechen</v-btn>
+        <v-btn color="primary darken-1" flat @click.native="save()">Speichern</v-btn>
+      </template>
+    </v-widget>
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
-import TreeNav from "~/components/TreeNav/TreeNav.vue";
 import VeoForm from "~/components/Form/Form.vue";
+import vWidget from "~/components/Widget.vue";
+import TreeNav from "~/components/TreeNav/TreeNav.vue";
+
 import VeoBreadcrumb from "~/components/VeoBreadcrumb.vue";
 
 import { helpers as treeStore } from "~/store/modules/tree";
@@ -20,12 +28,14 @@ import { helpers as formStore } from "~/store/modules/form";
 export default Vue.extend({
   components: {
     TreeNav,
-    VeoForm,
-    VeoBreadcrumb
+    VeoBreadcrumb,
+    vWidget,
+    VeoForm
   },
   data() {
     return {
-      groups: ["IT Baseline-Catalog", "BSI Model"]
+      groups: ["IT Baseline-Catalog", "BSI Model"],
+      form: {}
     };
   },
   computed: {
@@ -36,13 +46,29 @@ export default Vue.extend({
       breadcrumb: "breadcrumb"
     })
   },
-  methods: {
-    onBreadcrumbChange(item: string) {}
+  created() {
+    this.form = this.formModel;
   },
-  async fetch({ store, params }) {
+  methods: {
+    ...formStore.mapActions({
+      saveForm: "save"
+    }),
+    onBreadcrumbChange(item: string) {},
+    async save() {
+      const id = await this.saveForm(this.form);
+      if (id != this.$route.params.id) {
+        this.$router.push("/elements/" + id);
+      }
+    }
+  },
+  async fetch({ store, query: { type, parent }, params: { id } }) {
     //await store.dispatch("tree/getItems", params);
-    if (params["id"]) {
-      await store.dispatch("form/load", params);
+    if (id) {
+      if (id == "new") {
+        await store.dispatch("form/create", { type, parent });
+      } else {
+        await store.dispatch("form/load", { id });
+      }
     }
   },
   validate({ store, params }) {
@@ -58,5 +84,13 @@ export default Vue.extend({
   left: 80px;
   bottom: 0;
   width: 300px;
+}
+
+.form-widget {
+  position: absolute;
+  bottom: 1px;
+  right: 0;
+  left: 300px;
+  top: 48px;
 }
 </style>
