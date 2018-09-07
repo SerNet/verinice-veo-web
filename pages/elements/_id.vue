@@ -2,6 +2,11 @@
   <v-layout fill-height row>
     <veo-breadcrumb class="breadcrumb" :items="breadcrumb" @change="onBreadcrumbChange">
       <template slot-scope="props">{{props.title}}</template>
+      <template slot="tools">
+        <v-btn :to="'/history/'+$route.params.id" class="restore-btn" absolute right flat icon>
+          <v-icon>restore</v-icon>
+        </v-btn>
+      </template>
     </veo-breadcrumb>
     <v-widget class="form-widget">
       <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema"></veo-form>

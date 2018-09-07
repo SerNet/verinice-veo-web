@@ -1,7 +1,6 @@
 <template>
   <v-layout row>
-    <v-flex class="pa-3">TEST</v-flex>
-
+    Workspace 1
   </v-layout>
 </template>
 

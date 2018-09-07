@@ -5,6 +5,7 @@
         <slot v-bind="item"></slot>
       </v-breadcrumbs-item>
     </v-breadcrumbs>
+    <slot name="tools"></slot>
   </v-toolbar>
 </template>
 
@@ -14,7 +15,8 @@ import Vue from "vue";
 export default Vue.extend({
   props: {
     items: {
-      type: Array
+      type: Array as () => { id: string }[],
+      itemId: String
     }
   },
   methods: {
@@ -28,6 +30,12 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .breadcrumb-toolbar {
   z-index: 1;
+
+  .restore-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+  }
 
   .breadcrumbs {
     flex-wrap: nowrap;

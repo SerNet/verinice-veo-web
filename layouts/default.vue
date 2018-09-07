@@ -13,7 +13,7 @@
             </grid-item>
             <grid-item :x="layout[1].x" :y="layout[1].y" :w="layout[1].w" :h="layout[1].h" :i="layout[1].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
               <v-toolbar class="widgetToolbar elevation-0">Editor</v-toolbar>
-              <v-container>
+              <v-container fluid>
                 <nuxt></nuxt>
               </v-container>
             </grid-item>
