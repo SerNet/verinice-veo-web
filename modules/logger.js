@@ -7,9 +7,8 @@ module.exports = function() {
     this.addServerMiddleware(function(req, res, next) {
       const res_end = res.end;
       res.end = function() {
-        const ret = res_end.apply(this, arguments);
         log(req, res);
-        return ret;
+        return res_end.apply(this, arguments);
       };
       next();
     });
