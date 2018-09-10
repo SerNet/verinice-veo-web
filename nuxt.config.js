@@ -24,7 +24,7 @@ module.exports = {
     "~/plugins/router.js",
     "~/plugins/vuetify.js",
     "~/plugins/directives.js",
-    { src: '~/plugins/vue-grid.js', ssr: false }
+    { src: "~/plugins/vue-grid.js", ssr: false }
   ],
   /*
   ** Global CSS
@@ -69,15 +69,16 @@ module.exports = {
 
   router: {
     middleware: ["meta"],
-    extendRoutes(routes, resolve) { }
+    extendRoutes(routes, resolve) {}
   },
+
+  serverMiddleware: ["~/modules/basicauth"],
 
   /*
   ** Nuxt.js modules
   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
-    //"~/modules/fakeserver",
     "@nuxtjs/axios",
     "@nuxtjs/pwa",
     "~/modules/typescript",
@@ -237,7 +238,7 @@ module.exports = {
                 //Define your options here (stylusOptions.use, stylusOptions.import, ...)
                 //e.g. add a plugin:
                 const uses = (stylusOptions.use = stylusOptions.use || []);
-                uses.push(function (style) {
+                uses.push(function(style) {
                   style.define("colors", $colors, true);
                   style.define("theme", $theme, true);
                 });
