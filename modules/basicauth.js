@@ -22,7 +22,7 @@ module.exports = function() {
 
   this.addServerMiddleware(function(req, res, next) {
     const credentials = auth(req);
-    const clientIp = requestIp.getClientIp(req);
+    const clientIp = request.connection.remoteAddress;
     if (!AUTH_LOCAL && ip.isPrivate(clientIp)) return next();
 
     if (
