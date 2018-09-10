@@ -7,7 +7,9 @@ module.exports = (function() {
   const USERNAME = process.env["AUTH_USERNAME"];
   const PASSWORD = process.env["AUTH_PASSWORD"];
   const REALM = process.env["AUTH_REALM"];
-  const IGNORE = String(process.env["AUTH_IGNORE"] || "").split(/,\s*/);
+  const AUTH_LOCAL = !!String(process.env["AUTH_LOCAL"] || "").match(
+    /true|1|on/i
+  );
 
   if (!USERNAME || !PASSWORD || !REALM) {
     consola.warn(
@@ -21,8 +23,7 @@ module.exports = (function() {
   return function(req, res, next) {
     const credentials = auth(req);
     const clientIp = requestIp.getClientIp(req);
-    const isIgnore = IGNORE.find(item => ip.isEqual(item, clientIp));
-    if (isIgnore) return next();
+    if (!AUTH_LOCAL && ip.isPrivate(clientIp)) return next();
 
     if (
       !credentials ||
