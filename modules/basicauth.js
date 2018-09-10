@@ -3,7 +3,7 @@ const consola = require("consola");
 const requestIp = require("request-ip");
 const ip = require("ip");
 
-module.exports = (function() {
+module.exports = function() {
   const USERNAME = process.env["AUTH_USERNAME"];
   const PASSWORD = process.env["AUTH_PASSWORD"];
   const REALM = process.env["AUTH_REALM"];
@@ -20,7 +20,7 @@ module.exports = (function() {
     };
   }
 
-  return function(req, res, next) {
+  this.addServerMiddleware(function(req, res, next) {
     const credentials = auth(req);
     const clientIp = requestIp.getClientIp(req);
     if (!AUTH_LOCAL && ip.isPrivate(clientIp)) return next();
@@ -35,5 +35,5 @@ module.exports = (function() {
     } else {
       next();
     }
-  };
-})();
+  });
+};

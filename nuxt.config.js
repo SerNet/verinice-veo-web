@@ -72,13 +72,12 @@ module.exports = {
     extendRoutes(routes, resolve) {}
   },
 
-  serverMiddleware: ["~/modules/basicauth"],
-
   /*
   ** Nuxt.js modules
   */
   modules: [
     "~/modules/logger",
+    "~/modules/basicauth",
     // Doc: https://github.com/nuxt-community/axios-module#usage
     "@nuxtjs/axios",
     "@nuxtjs/pwa",
