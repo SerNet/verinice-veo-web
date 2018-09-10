@@ -1,9 +1,12 @@
 const auth = require("basic-auth");
 const consola = require("consola");
 const requestIp = require("request-ip");
+const publicIp = require("public-ip");
 const ip = require("ip");
 
-module.exports = function() {
+module.exports = async function() {
+  const pubIp = await publicIp.v4();
+
   const USERNAME = process.env["AUTH_USERNAME"];
   const PASSWORD = process.env["AUTH_PASSWORD"];
   const REALM = process.env["AUTH_REALM"];
@@ -21,10 +24,10 @@ module.exports = function() {
   }
 
   this.addServerMiddleware(function(req, res, next) {
-    console.log(req);
     const credentials = auth(req);
     const clientIp = requestIp.getClientIp(req);
-    if (!AUTH_LOCAL && ip.isPrivate(clientIp)) return next();
+    if (!AUTH_LOCAL && (ip.isPrivate(clientIp) || clientIp == pubIp))
+      return next();
 
     if (
       !credentials ||
