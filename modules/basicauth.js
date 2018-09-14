@@ -34,7 +34,7 @@ module.exports = async function() {
       !(credentials.name === USERNAME && credentials.pass === PASSWORD)
     ) {
       res.statusCode = 401;
-      res.setHeader("WWW-Authenticate", `Basic realm="${this.realm}"`);
+      res.setHeader("WWW-Authenticate", `Basic realm="${REALM}"`);
       res.end("Access denied");
     } else {
       next();
