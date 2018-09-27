@@ -24,6 +24,7 @@ module.exports = async function() {
   }
 
   this.addServerMiddleware(function(req, res, next) {
+    if (req.url && req.url.startsWith("/api")) return next();
     const credentials = auth(req);
     const clientIp = requestIp.getClientIp(req);
     if (!AUTH_LOCAL && (ip.isPrivate(clientIp) || clientIp == pubIp))
