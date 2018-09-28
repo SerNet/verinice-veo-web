@@ -1,25 +1,24 @@
 <template>
-    <v-layout row>
-        <div v-if="history.length">
-            <h2>History for element {{elementId}}</h2>
+  <v-layout row>
+    <div v-if="history.length">
+      <h2>History for element {{elementId}}</h2>
 
-            <v-data-table :items="history" :headers="tableHeaders">
-                <template slot="items" slot-scope="props">
-                    <td>
-                        {{toHumanReadable(props.item.timestamp)}}
-                    </td>
-                    <td>
-                        {{props.item.author}}
-                    </td>
-                    <td>
-                        <json-display :value="props.item.parsedData" :previousValue="props.index === 0 ? undefined : history[props.index-1].parsedData"></json-display>
-                    </td>
-                </template>
-            </v-data-table>
-        </div>
-        <h2 v-else>No history found for element {{elementId}}</h2>
-
-    </v-layout>
+      <v-data-table :items="history" :headers="tableHeaders">
+        <template slot="items" slot-scope="props">
+          <td>
+            {{toHumanReadable(props.item.timestamp)}}
+          </td>
+          <td>
+            {{props.item.author}}
+          </td>
+          <td>
+            <json-display :value="props.item.parsedData" :previousValue="props.index === 0 ? undefined : history[props.index-1].parsedData"></json-display>
+          </td>
+        </template>
+      </v-data-table>
+    </div>
+    <h2 v-else>No history found for element {{elementId}}</h2>
+  </v-layout>
 </template>
 
 <script lang="ts">

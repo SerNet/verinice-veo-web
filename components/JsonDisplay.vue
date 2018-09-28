@@ -1,10 +1,10 @@
 <template>
-    <dl>
-        <template v-for="key, index in allKeys">
-            <dt :class="changeTypes[index]">{{key}}</dt>
-            <dd :class="changeTypes[index]">{{getValue(key, index)}}</dd>
-        </template>
-    </dl>
+  <dl>
+    <template v-for="key, index in allKeys">
+      <dt :class="changeTypes[index]">{{key}}</dt>
+      <dd :class="changeTypes[index]">{{getValue(key, index)}}</dd>
+    </template>
+  </dl>
 
 </template>
 <script lang="ts">
@@ -67,38 +67,38 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 dl {
-    display: flex;
-    flex-flow: row;
-    flex-wrap: wrap;
-    width: 800px;
-    overflow: visible;
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  width: 800px;
+  overflow: visible;
 
-    > dt {
-        flex: 0 0 15%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        font-weight: bold;
-    }
+  > dt {
+    flex: 0 0 15%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-weight: bold;
+  }
 
-    > dd {
-        flex: 0 0 85%;
-        margin-left: auto;
-        text-align: left;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
+  > dd {
+    flex: 0 0 85%;
+    margin-left: auto;
+    text-align: left;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
 }
 
 .added {
-    color: green;
+  color: green;
 }
 
 .changed {
-    color: #c0c000;
+  color: #c0c000;
 }
 
 .removed {
-    color: red;
-    text-decoration: line-through;
+  color: red;
+  text-decoration: line-through;
 }
 </style>

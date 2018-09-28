@@ -12,9 +12,21 @@
               <tree-widget :max-height="treeMaxHeight"></tree-widget>
             </grid-item>
             <grid-item :x="layout[1].x" :y="layout[1].y" :w="layout[1].w" :h="layout[1].h" :i="layout[1].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
+              <v-toolbar class="widgetToolbar elevation-0">Header</v-toolbar>
+              <v-container fluid>
+                Dashboard
+              </v-container>
+            </grid-item>
+            <grid-item :x="layout[2].x" :y="layout[2].y" :w="layout[2].w" :h="layout[2].h" :i="layout[2].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
               <v-toolbar class="widgetToolbar elevation-0">Editor</v-toolbar>
               <v-container fluid>
                 <nuxt></nuxt>
+              </v-container>
+            </grid-item>
+            <grid-item :x="layout[3].x" :y="layout[3].y" :w="layout[3].w" :h="layout[3].h" :i="layout[3].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
+              <v-toolbar class="widgetToolbar elevation-0">Relations</v-toolbar>
+              <v-container fluid>
+                TEST
               </v-container>
             </grid-item>
           </grid-layout>
@@ -54,19 +66,37 @@ export default Vue.extend({
           i: "0",
           x: 0,
           y: 0,
-          w: 3,
+          w: 2,
           h: 12,
           caption: "Treeview",
           content: "Test 12"
         },
         {
           i: "1",
-          x: 3,
+          x: 2,
           y: 0,
-          w: 9,
-          h: 12,
+          w: 10,
+          h: 2,
+          caption: "Header",
+          content: "Dashboard"
+        },
+        {
+          i: "2",
+          x: 2,
+          y: 2,
+          w: 7,
+          h: 10,
           caption: "Editor",
           content: "Test XYZ"
+        },
+        {
+          i: "3",
+          x: 9,
+          y: 2,
+          w: 3,
+          h: 10,
+          caption: "Relations",
+          content: "Links"
         }
       ],
       gridHeight: "100%",
