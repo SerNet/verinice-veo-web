@@ -73,7 +73,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import VeoBreadCrumb from "~/components/VeoBreadCrumb.vue";
+import VeoBreadCrumb from "~/components/VeoBreadcrumb.vue";
 import CountButton from "~/components/CountButton.vue";
 
 export default Vue.extend({

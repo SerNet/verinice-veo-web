@@ -31,7 +31,7 @@ export default Vue.extend({});
 
   .inner {
     border-right: 10px solid gray;
-    background: #fafafa;
+    background: #fff;
     border-bottom: 1px solid #ccc;
     padding: 100px;
     transform: rotate(-20deg);
