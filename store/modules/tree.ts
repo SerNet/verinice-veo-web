@@ -6,6 +6,11 @@ import { DefineModule, createNamespacedHelpers } from "vuex";
 
 type ValueMap = { [id: string]: boolean | undefined };
 
+interface SimpleTreeItem {
+  id: string;
+  name: string;
+}
+
 export interface State {
   selection: TreeItem[];
   error: string | null;
@@ -16,9 +21,11 @@ export interface State {
 
 export interface Getters {
   items: TreeItem[];
+  tree: SimpleTreeItem[];
   breadcrumb: (id: string) => VeoItem[];
   breadcrumbById: (id: string) => TreeItem[];
   hasChildren: (id: string) => boolean;
+  treeChildren: (id?: string) => SimpleTreeItem[];
 }
 
 // /workspace/T:2342:
@@ -62,6 +69,18 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
     current_id: ""
   },
   getters: {
+    tree: (state, getters) =>
+      state.data.filter(item => !item.parent).map(item => ({
+        id: item["$veo.id"] || "NO_ID",
+        name: item["$veo.title"] || "Kein Text",
+        children: getters.treeChildren(item["$veo.id"])
+      })),
+    treeChildren: (state, getters) => id => {
+      return state.data.filter(item => item.parent == id).map(item => ({
+        id: item["$veo.id"] || "NO_ID",
+        name: item["$veo.title"] || "Kein Text"
+      }));
+    },
     items: state =>
       state.items &&
       state.items.filter(
