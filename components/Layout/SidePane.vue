@@ -10,6 +10,8 @@ export default Vue.extend({
   name: "SidePane",
   mixins: [Resizeable()],
   props: {
+    items: { type: Array, default: () => [] },
+    query: { type: String, default: "" },
     expanded: { type: Boolean, default: true }
   },
   computed: {
@@ -49,6 +51,8 @@ export default Vue.extend({
         SidePaneContent,
         {
           props: {
+            query: this["query"],
+            items: this["items"],
             right: this["right"],
             value: this["expanded"]
           },
