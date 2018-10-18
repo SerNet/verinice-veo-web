@@ -24,13 +24,15 @@ export default Vue.extend({});
 .toolbar-logo {
   margin-left: 0 !important;
   height: 64px;
+  top: 0;
   padding: 0 36px;
   position: absolute;
   overflow: hidden;
 
   .inner {
     border-right: 10px solid gray;
-    background: #fafafa;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
     padding: 100px;
     transform: rotate(-20deg);
     transform-origin: bottom left;

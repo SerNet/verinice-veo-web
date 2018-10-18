@@ -1,5 +1,5 @@
 <template>
-  <v-layout fill-height row>
+  <v-layout fill-height column>
     <!--veo-breadcrumb class="breadcrumb" :items="breadcrumb" @change="onBreadcrumbChange">
       <template slot-scope="props">{{props.title}}</template>
       <template slot="tools">
@@ -8,13 +8,14 @@
         </v-btn>
       </template>
     </veo-breadcrumb>-->
-    <v-widget class="form-widget">
-      <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema"></veo-form>
-      <template slot="actions">
-        <v-btn flat to="/elements">Abbrechen</v-btn>
-        <v-btn color="primary darken-1" flat @click.native="save()">Speichern</v-btn>
-      </template>
-    </v-widget>
+
+    <element-header></element-header>
+    <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema"></veo-form>
+    <template slot="actions">
+      <v-btn flat to="/elements">Abbrechen</v-btn>
+      <v-btn color="primary darken-1" flat @click.native="save()">Speichern</v-btn>
+    </template>
+
   </v-layout>
 </template>
 
@@ -22,10 +23,8 @@
 import Vue from "vue";
 
 import VeoForm from "~/components/Form/Form.vue";
-import vWidget from "~/components/Widget.vue";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
-
-//import VeoBreadcrumb from "~/components/VeoBreadcrumb.vue";
+import ElementHeader from "~/components/ElementHeader.vue";
 
 import { helpers as treeStore } from "~/store/modules/tree";
 import { helpers as formStore } from "~/store/modules/form";
@@ -33,8 +32,7 @@ import { helpers as formStore } from "~/store/modules/form";
 export default Vue.extend({
   components: {
     TreeNav,
-    //VeoBreadcrumb,
-    vWidget,
+    ElementHeader,
     VeoForm
   },
   data() {
@@ -88,13 +86,5 @@ export default Vue.extend({
   right: 0;
   left: 0;
   top: 0px;
-}
-
-.form-widget {
-  position: absolute;
-  bottom: 1px;
-  right: 0;
-  left: 0;
-  top: 44px;
 }
 </style>
