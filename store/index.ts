@@ -37,7 +37,8 @@ export default () => {
     strict: process.env.NODE_ENV !== "production",
     plugins: [strictModules],
     actions: {
-      async nuxtServerInit(this: Vue, context) {
+      async nuxtServerInit(this: Vue, context, { route }) {
+        route["TEXT"] = { asdf: 1 };
         await context.dispatch("auth/init");
         await context.dispatch("init");
       },

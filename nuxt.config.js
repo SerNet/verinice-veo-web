@@ -32,7 +32,6 @@ module.exports = {
   css: [
     "roboto-fontface/css/roboto/roboto-fontface.css",
     "material-design-icons-iconfont/dist/material-design-icons.css",
-    "~/assets/vuetify.styl",
     "~/assets/index.styl",
     "~/assets/print.styl"
   ],
@@ -215,38 +214,13 @@ module.exports = {
 
   */
   build: {
-    cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
+    transpile: [/^vuetify/],
+    extractCSS: true,
+    //cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
     //parallel: false, //(thread-loader: https://github.com/webpack-contrib/thread-loader)
     watch: [".env", "config"],
     babel: {
-      //plugins: ["transform-decorators-legacy", "transform-class-properties"]
-    },
-    extend(config) {
-      const $colors = coerce(colors.default || colors);
-      const $theme = coerce(theme);
-      // Customize stylus loader
-
-      const stylusRules = config.module.rules.find(
-        rule => rule.test.toString().indexOf("styl") > -1
-      );
-      if (stylusRules && Array.isArray(stylusRules.oneOf)) {
-        stylusRules.oneOf.forEach(one => {
-          if (Array.isArray(one.use)) {
-            one.use.forEach(u => {
-              if (u.loader == "stylus-loader") {
-                const stylusOptions = u.options;
-                //Define your options here (stylusOptions.use, stylusOptions.import, ...)
-                //e.g. add a plugin:
-                const uses = (stylusOptions.use = stylusOptions.use || []);
-                uses.push(function(style) {
-                  style.define("colors", $colors, true);
-                  style.define("theme", $theme, true);
-                });
-              }
-            });
-          }
-        });
-      }
+      babelrc: false
     }
   }
 };

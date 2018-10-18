@@ -1,37 +1,16 @@
 <template>
   <v-app>
-    <main-toolbar @click-side-icon="mainDrawer = !mainDrawer" :clipped="true"></main-toolbar>
-    <v-navigation-drawer v-model="mainDrawer" :mini-variant="true && $vuetify.breakpoint.smAndUp" :permanent="$vuetify.breakpoint.smAndUp" :clipped="$vuetify.breakpoint.smAndUp" app>
-      <menu-sidenav :items="menuItems" />
-    </v-navigation-drawer>
     <v-content>
-      <v-container pa-0 ma-0 ref="contentContainer" v-resize="onResize" style="width: 100%; position: absolute; top: 0; bottom: 0; max-width: 100%; overflow: hidden;">
-        <no-ssr>
-          <grid-layout :layout="layout" :col-num="gridOptions.colNum" :row-height="gridOptions.rowHeight" :max-rows="gridOptions.maxRows" :margin="[gridOptions.marginX, gridOptions.marginY]" :is-draggable="true" :is-resizable="true" :vertical-compact="true" :use-css-transforms="true">
-            <grid-item :x="layout[0].x" :y="layout[0].y" :w="layout[0].w" :h="layout[0].h" :i="layout[0].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
-              <tree-widget :max-height="treeMaxHeight"></tree-widget>
-            </grid-item>
-            <grid-item :x="layout[1].x" :y="layout[1].y" :w="layout[1].w" :h="layout[1].h" :i="layout[1].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
-              <v-toolbar class="widgetToolbar elevation-0">Header</v-toolbar>
-              <v-container fluid>
-                Dashboard
-              </v-container>
-            </grid-item>
-            <grid-item :x="layout[2].x" :y="layout[2].y" :w="layout[2].w" :h="layout[2].h" :i="layout[2].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
-              <v-toolbar class="widgetToolbar elevation-0">Editor</v-toolbar>
-              <v-container fluid>
-                <nuxt></nuxt>
-              </v-container>
-            </grid-item>
-            <grid-item :x="layout[3].x" :y="layout[3].y" :w="layout[3].w" :h="layout[3].h" :i="layout[3].i" :min-w="2" :min-h="2" @resize="resizeEvent" @move="moveEvent" drag-allow-from=".widgetToolbar" class="elevation-1">
-              <v-toolbar class="widgetToolbar elevation-0">Relations</v-toolbar>
-              <v-container fluid>
-                TEST
-              </v-container>
-            </grid-item>
-          </grid-layout>
-        </no-ssr>
+      <main-toolbar @click-side-icon="mainDrawer = !mainDrawer" :clipped="true"></main-toolbar>
+      <side-pane :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
+        <component :is="left"></component>
+      </side-pane>
+      <v-container>
+        <nuxt-child param="default"></nuxt-child>
       </v-container>
+      <side-pane :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
+        <component :is="right"></component>
+      </side-pane>
     </v-content>
   </v-app>
 </template>
@@ -40,97 +19,37 @@
 import Vue from "vue";
 import MainToolbar from "~/components/MainLayout/MainToolbar.vue";
 import MenuSidenav from "~/components/MainLayout/MenuSidenav.vue";
+import SidePane from "~/components/Layout/SidePane.vue";
+import SidePaneButtons from "~/components/Layout/SidePaneButtons.vue";
 import TreeWidget from "~/widgets/Tree.vue";
 import { helpers as navStore } from "~/store/modules/nav";
+import extendMatch from "~/lib/DynamicComponent";
 
 export default Vue.extend({
+  beforeCreate() {
+    this["left"] = extendMatch(this, this.$route.query["left"], {
+      side: "left"
+    });
+    this["right"] = extendMatch(this, this.$route.query["right"], {
+      side: "right"
+    });
+  },
   components: {
     MainToolbar,
     MenuSidenav,
-    TreeWidget
-  },
-  computed: {
-    ...navStore.mapState({
-      menuItems: "items"
-    })
-  },
-  mounted() {
-    this.onResize();
+    TreeWidget,
+    SidePane,
+    SidePaneButtons
   },
   data() {
     return {
-      mainDrawer: null,
-      treeMaxHeight: 0,
-      layout: [
-        {
-          i: "0",
-          x: 0,
-          y: 0,
-          w: 2,
-          h: 12,
-          caption: "Treeview",
-          content: "Test 12"
-        },
-        {
-          i: "1",
-          x: 2,
-          y: 0,
-          w: 10,
-          h: 2,
-          caption: "Header",
-          content: "Dashboard"
-        },
-        {
-          i: "2",
-          x: 2,
-          y: 2,
-          w: 7,
-          h: 10,
-          caption: "Editor",
-          content: "Test XYZ"
-        },
-        {
-          i: "3",
-          x: 9,
-          y: 2,
-          w: 3,
-          h: 10,
-          caption: "Relations",
-          content: "Links"
-        }
-      ],
-      gridHeight: "100%",
-      gridOptions: {
-        colNum: 12,
-        rowHeight: 44,
-        maxRows: 12,
-        marginX: 10,
-        marginY: 10
-      }
+      leftExpanded: true,
+      rightExpanded: true
     };
   },
   methods: {
-    onResize() {
-      const elem = this.$refs["contentContainer"] as Element;
-      this.gridHeight = elem.clientHeight + "px";
-      this.treeMaxHeight = elem.clientHeight;
-      this.gridOptions.rowHeight =
-        (elem.clientHeight -
-          (this.gridOptions.maxRows + 1) * this.gridOptions.marginY) /
-        this.gridOptions.maxRows;
-    },
-    resizeEvent(
-      i: string,
-      newH: number,
-      newW: number,
-      newHPx: number,
-      newWPx: number
-    ) {
-      console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW);
-      console.log(this.layout[i]);
-    },
-    moveEvent(i: string, newX: number, newY: number) {
-      console.log("MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
+    log(...args: any[]) {
+      console.log(...args);
     }
   }
 });

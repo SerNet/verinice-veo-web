@@ -52,7 +52,7 @@ declare module "vue/types/options" {
     middleware?: string[] | string;
     scrollToTop?: boolean;
     transition?: string | NuxtTransition | ((to: Route, from: Route) => string);
-    validate?<S = any>(context: NuxtContext<S>): boolean;
+    validate?<S = any>(context: NuxtContext<S>): boolean | Promise<boolean>;
     watchQuery?: Array<string>;
   }
 }

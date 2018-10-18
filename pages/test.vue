@@ -39,7 +39,7 @@ export default Vue.extend({
     }
   },
   async created() {
-    console.log("Test a");
+    console.log("test.vue", "created");
     const response = await axios("/api/elements", {
       headers: {
         Authorization:
@@ -50,10 +50,10 @@ export default Vue.extend({
     this.testItems = liste;
   },
   mounted() {
-    console.log("Ich bin sichtbar");
+    console.log("test.vue", "mounted");
   },
   async asyncData(context: any) {
-    console.log("ICH", context);
+    console.log("test.vue", "asyncData");
     return {
       testItems: await context.$axios.$get("/api/elements")
     };

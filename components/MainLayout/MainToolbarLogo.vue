@@ -17,9 +17,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-export default Vue.extend({
-  
-});
+export default Vue.extend({});
 </script>
 
 <style lang="stylus" scoped>
@@ -32,7 +30,7 @@ export default Vue.extend({
 
   .inner {
     border-right: 10px solid gray;
-    background: white;
+    background: #fafafa;
     padding: 100px;
     transform: rotate(-20deg);
     transform-origin: bottom left;
