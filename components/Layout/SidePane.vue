@@ -25,7 +25,7 @@ export default Vue.extend({
   },
   render(h) {
     const data = {
-      class: this["classes"],
+      class: { ...this["classes"], collapsed: !this["expanded"] },
       style: this["styles"],
       directives: this["genDirectives"](),
       on: {
@@ -59,12 +59,17 @@ export default Vue.extend({
           on: {
             input: ($event: Boolean) => {
               this.$emit("update:expanded", $event);
+              this.$nextTick(() => {
+                this["callUpdate"].call();
+              });
             }
           }
         },
         this.$slots.default
       ),
-      h("div", { class: "v-navigation-drawer__border" })
+      h("div", {
+        class: ["v-navigation-drawer__border"]
+      })
     ]);
   }
 });

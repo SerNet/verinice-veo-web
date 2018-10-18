@@ -14,7 +14,6 @@ export default function(instance: Vue, route: string, context: Object = {}) {
     if (instance && instance.$router && route) {
       const router = instance.$router;
       const matched = router.getMatchedComponents(route);
-      console.log(matched);
 
       if (matched && matched.length) {
         const first: any = matched[matched.length - 1];
