@@ -1,6 +1,6 @@
 <template>
   <v-container class="elementHeader" fluid>
-    <v-expansion-panel class="elevation-0">
+    <v-expansion-panel class="elevation-0" v-model="showHeader" expand>
       <v-expansion-panel-content>
         <div slot="header" class="expansionHeader">
           <v-layout row>
@@ -85,6 +85,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      showHeader: [true],
       items: [
         { title: "Click Me" },
         { title: "Click Me" },
@@ -103,6 +104,7 @@ export default Vue.extend({
   max-width: none;
   display: inline-block;
 
+  // height: 80px;
   .v-expansion-panel {
     >li {
       background-color: transparent;
