@@ -4,9 +4,9 @@
       <v-list class="pa-0 fill-height">
         <v-layout fill-height="" column>
           <v-flex shrink v-for="item in items" :key="item.title">
-            <v-list-tile class="tab" :class="{active: item.to[query] == currentQuery}" @click="open(item)">
+            <v-list-tile class="tab" :class="{active: item.to[right?'r':'l'] == query}" @click="open(item)">
               <v-list-tile-action>
-                <v-icon :color="( item.to[query] == currentQuery)?'primary':'grey'">{{item.icon}}</v-icon>
+                <v-icon :color="( item.to[right?'r':'l'] == query)?'primary':'grey'">{{item.icon}}</v-icon>
               </v-list-tile-action>
             </v-list-tile>
           </v-flex>
@@ -42,11 +42,6 @@ export default Vue.extend({
     if (this.$route.path.includes(".map")) return;
   },
   components: {},
-  computed: {
-    currentQuery(): string {
-      return this.$route.query[this.query];
-    }
-  },
   props: {
     items: Array,
     query: String,

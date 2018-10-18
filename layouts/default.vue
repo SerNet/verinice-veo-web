@@ -2,7 +2,7 @@
   <v-app>
     <v-content>
       <main-toolbar @click-side-icon="mainDrawer = !mainDrawer" :clipped="true"></main-toolbar>
-      <side-pane query="l" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
+      <side-pane :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
         <template>
           <keep-alive>
             <component :key="leftKey" :is="left"></component>
@@ -12,7 +12,7 @@
       <v-container style="border-top: 1px solid #E0E0E0">
         <nuxt-child></nuxt-child>
       </v-container>
-      <side-pane v-if="!rightOff" query="r" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
+      <side-pane v-if="!rightOff" :query="rightKey" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
         <keep-alive>
           <component :key="rightKey" :is="right"></component>
         </keep-alive>
@@ -41,10 +41,10 @@ export default Vue.extend({
   },
   computed: {
     leftKey(): string {
-      return this.$route.query["l"];
+      return this.$route.query["l"] || "tree";
     },
     rightKey(): string {
-      return this.$route.query["r"];
+      return this.$route.query["r"] || "history";
     },
     left(): any {
       return extendMatch(this, this.leftKey, {
