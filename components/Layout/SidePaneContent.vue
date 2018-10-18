@@ -107,6 +107,7 @@ export default Vue.extend({
 
   .sidepane-content {
     background: #FFF;
+    border-top: 1px solid #E0E0E0;
     width: 100%;
   }
 

@@ -9,8 +9,7 @@
           </keep-alive>
         </template>
       </side-pane>
-
-      <v-container>
+      <v-container style="border-top: 1px solid #E0E0E0">
         <nuxt-child></nuxt-child>
       </v-container>
       <side-pane v-if="!rightOff" query="r" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
@@ -101,23 +100,5 @@ h1, h2 {
 
 a {
   color: #42b983;
-}
-
-.vue-grid-layout {
-  height: 100%;
-
-  >>> .v-toolbar__content {
-    height: 44px !important;
-  }
-}
-
-.vue-grid-item {
-  background-color: white;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 </style>
