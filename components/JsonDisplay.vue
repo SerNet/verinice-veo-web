@@ -1,12 +1,13 @@
 <template>
   <dl>
-    <template v-for="key, index in allKeys">
-      <dt :class="changeTypes[index]">{{key}}</dt>
-      <dd :class="changeTypes[index]">{{getValue(key, index)}}</dd>
+    <template v-for="(key, index) in allKeys">
+      {{key}} {{index}}
+      <!--<dt :class="changeTypes[index]">{{key}}</dt>
+      <dd :class="changeTypes[index]">{{getValue(key, index)}}</dd>-->
     </template>
   </dl>
-
 </template>
+
 <script lang="ts">
 import Vue from "vue";
 import { union } from "lodash";
@@ -31,23 +32,12 @@ export default Vue.extend({
     changeTypes: function() {
       const { previousValue, previousKeys, value, keys } = this;
       const result = this.allKeys.map(function(key, index) {
-        if (previousValue === undefined) {
-          return "new";
-        }
-
-        if (previousKeys.indexOf(key) !== -1) {
-          if (keys.indexOf(key) === -1) {
-            return "removed";
-          } else if (previousValue[key] == value[key]) {
-            return "unchanged";
-          } else {
-            return "changed";
-          }
-        } else {
-          return "added";
-        }
+        if (previousValue === undefined) return "new";
+        if (previousKeys.indexOf(key) === -1) return "added";
+        if (keys.indexOf(key) === -1) return "removed";
+        if (previousValue[key] == value[key]) return "unchanged";
+        return "changed";
       });
-      console.log("Result: ", result);
       return result;
     }
   },

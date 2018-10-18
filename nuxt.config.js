@@ -212,7 +212,6 @@ module.exports = {
 
   /*
   ** Build configuration
-
   */
   build: {
     cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)

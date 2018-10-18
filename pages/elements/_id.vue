@@ -1,13 +1,13 @@
 <template>
   <v-layout fill-height row>
-    <veo-breadcrumb class="breadcrumb" :items="breadcrumb" @change="onBreadcrumbChange">
+    <!--veo-breadcrumb class="breadcrumb" :items="breadcrumb" @change="onBreadcrumbChange">
       <template slot-scope="props">{{props.title}}</template>
       <template slot="tools">
         <v-btn :to="'/history/'+$route.params.id" class="restore-btn" absolute right flat icon>
           <v-icon>restore</v-icon>
         </v-btn>
       </template>
-    </veo-breadcrumb>
+    </veo-breadcrumb>-->
     <v-widget class="form-widget">
       <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema"></veo-form>
       <template slot="actions">
@@ -25,7 +25,7 @@ import VeoForm from "~/components/Form/Form.vue";
 import vWidget from "~/components/Widget.vue";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
 
-import VeoBreadcrumb from "~/components/VeoBreadcrumb.vue";
+//import VeoBreadcrumb from "~/components/VeoBreadcrumb.vue";
 
 import { helpers as treeStore } from "~/store/modules/tree";
 import { helpers as formStore } from "~/store/modules/form";
@@ -33,7 +33,7 @@ import { helpers as formStore } from "~/store/modules/form";
 export default Vue.extend({
   components: {
     TreeNav,
-    VeoBreadcrumb,
+    //VeoBreadcrumb,
     vWidget,
     VeoForm
   },

@@ -1,9 +1,9 @@
 <template>
-    <v-btn class="btn ml-1 mr-2" :class="{selected: value!==false, indeterminate}" @click="$emit('change', !value)" icon dark small>
-        <slot></slot>
-        <v-icon :size="16" class="selection-icon">{{deep?'done_all':(indeterminate?'remove':'done')}}
-        </v-icon>
-    </v-btn>
+  <v-btn class="btn ml-1 mr-2" :class="{selected: value!==false, indeterminate}" @click="$emit('change', !value)" icon dark small>
+    <slot></slot>
+    <v-icon :size="16" class="selection-icon">{{deep?'done_all':(indeterminate?'remove':'done')}}
+    </v-icon>
+  </v-btn>
 </template>
 
 <script lang="ts">
@@ -26,30 +26,30 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .btn {
-    background-color: #DDD;
+  background-color: #DDD;
+
+  .selection-icon {
+    display: none;
+  }
+
+  &.indeterminate {
+    opacity: 0.3;
+  }
+
+  &.hover {
+    opacity: 0.5 !important;
+  }
+
+  &.selected, &:hover {
+    background-color: theme.primary;
+
+    >>> .v-icon {
+      display: none;
+    }
 
     .selection-icon {
-        display: none;
+      display: inline-flex !important;
     }
-
-    &.indeterminate {
-        opacity: 0.3;
-    }
-
-    &.hover {
-        opacity: 0.5 !important;
-    }
-
-    &.selected, &:hover {
-        background-color: theme.primary;
-
-        >>> .v-icon {
-            display: none;
-        }
-
-        .selection-icon {
-            display: inline-flex !important;
-        }
-    }
+  }
 }
 </style>

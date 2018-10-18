@@ -1,12 +1,13 @@
 <template>
-  <v-toolbar class="breadcrumb-toolbar" color="elevation-0" style="overflow: hidden;" dense>
+  <v-flex class="breadcrumb-toolbar" color="elevation-0" style="overflow: hidden;" shrink>
+    Breadcrumb
     <v-breadcrumbs class="breadcrumbs" justify-start="" divider="&gt;">
       <v-breadcrumbs-item class="breadcrumb-item" :to="'/elements/'+(item && item.id)" ripple v-for="item in items" :key="item.id">
         <slot v-bind="item"></slot>
       </v-breadcrumbs-item>
     </v-breadcrumbs>
     <slot name="tools"></slot>
-  </v-toolbar>
+  </v-flex>
 </template>
 
 <script lang="ts">
@@ -29,13 +30,8 @@ export default Vue.extend({
 
 <style lang="stylus" scoped>
 .breadcrumb-toolbar {
-  z-index: 1;
-
-  .restore-btn {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-  }
+  padding-bottom: 10px;
+  background-color: transparent;
 
   .breadcrumbs {
     flex-wrap: nowrap;
