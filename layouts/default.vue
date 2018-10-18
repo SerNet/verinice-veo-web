@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <v-content>
-      <main-toolbar @click-side-icon="mainDrawer = !mainDrawer" :clipped="true"></main-toolbar>
-      <side-pane :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
+      <main-toolbar v-if="!standalone" @click-side-icon="mainDrawer = !mainDrawer" :clipped="true"></main-toolbar>
+      <side-pane v-if="!standalone" :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
         <template>
           <keep-alive>
             <component :key="leftKey" :is="left"></component>
@@ -12,9 +12,9 @@
       <v-container>
         <nuxt></nuxt>
       </v-container>
-      <side-pane v-if="!rightOff" :query="rightKey" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
+      <side-pane v-if="!standalone && !rightOff" :query="rightKey" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
         <keep-alive>
-          <component v-if="right" :key="rightKey" :is="right"></component>
+          <component :key="rightKey" :is="right"></component>
         </keep-alive>
       </side-pane>
     </v-content>
@@ -40,6 +40,9 @@ export default Vue.extend({
     SidePaneButtons
   },
   computed: {
+    standalone(): boolean {
+      return !!this.$route.query["standalone"];
+    },
     leftKey(): string {
       return "/" + (this.$route.query["l"] || "tree");
     },
