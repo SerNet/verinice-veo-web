@@ -34,7 +34,7 @@ module.exports = function() {
           : "-") || "-";
       consola
         .withScope("http")
-        .info(
+        .debug(
           `${ip} - ${userID} [${cflDate}] "${req.method} ${req.url} ${
             req.connection.encrypted ? "HTTPS" : "HTTP"
           }/${req.httpVersion}" ${res.statusCode} ${res.getHeader(

@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar app color="primary" dark="" style="overflow:hidden" :clipped-left="clipped" id="mainToolbar">
+  <v-toolbar class="elevation-0" app color="primary" dark="" style="overflow:hidden;" :clipped-left="clipped" id="mainToolbar">
     <main-toolbar-logo v-if="!showSearch" />
     <v-toolbar-side-icon light class="hidden-sm-and-up" @click.stop="toggleDrawer()" v-if="!showSearch" style="color: #e53935" />
 
@@ -68,6 +68,11 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+.v-toolbar {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
 #mainToolbar >>> .v-toolbar__content {
   padding-left: 0;
 }

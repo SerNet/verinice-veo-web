@@ -1,5 +1,9 @@
 <template>
+<<<<<<< HEAD
   <v-btn class="btn ml-1 mr-2" :class="{selected: value!==false, indeterminate}" @click="$emit('change', !value)" icon dark small>
+=======
+  <v-btn class="btn ml-1 mr-2 primary" :class="{selected: value!==false, indeterminate}" @click="$emit('change', !value)" icon dark small>
+>>>>>>> bd5012bd7ebeaac596946c2bd45492fa4455cfd1
     <slot></slot>
     <v-icon :size="16" class="selection-icon">{{deep?'done_all':(indeterminate?'remove':'done')}}
     </v-icon>
@@ -31,6 +35,7 @@ export default Vue.extend({
   .selection-icon {
     display: none;
   }
+<<<<<<< HEAD
 
   &.indeterminate {
     opacity: 0.3;
@@ -43,6 +48,18 @@ export default Vue.extend({
   &.selected, &:hover {
     background-color: theme.primary;
 
+=======
+
+  &.indeterminate {
+    opacity: 0.3;
+  }
+
+  &.hover {
+    opacity: 0.5 !important;
+  }
+
+  &.selected, &:hover {
+>>>>>>> bd5012bd7ebeaac596946c2bd45492fa4455cfd1
     >>> .v-icon {
       display: none;
     }
