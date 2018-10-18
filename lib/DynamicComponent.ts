@@ -16,6 +16,7 @@ export default function(instance: Vue, route: string, context: Object = {}) {
 
     if (matched && matched.length && matched[0]) {
       const first: any = matched[0];
+
       const cmp: any = typeof first == "function" ? first() : first;
       if (cmp) {
         return toAsyncComponent(
@@ -43,11 +44,16 @@ export default function(instance: Vue, route: string, context: Object = {}) {
                     return { ...data, ...asyncData };
                   };
 
-                  return Vue.extend({ extends: l, data: patchedData });
+                  return Vue.extend({
+                    name: l.options.name,
+                    extends: l,
+                    data: patchedData
+                  });
                 }
               }
             }
-            return l;
+
+            return Vue.extend({ extends: l });
           })
         );
       }

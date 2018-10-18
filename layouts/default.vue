@@ -2,14 +2,21 @@
   <v-app>
     <v-content>
       <main-toolbar @click-side-icon="mainDrawer = !mainDrawer" :clipped="true"></main-toolbar>
-      <side-pane :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
-        <component :is="left"></component>
+      <side-pane query="l" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
+        <template>
+          <keep-alive>
+            <component :key="leftKey" :is="left"></component>
+          </keep-alive>
+        </template>
       </side-pane>
+
       <v-container>
-        <nuxt-child param="default"></nuxt-child>
+        <nuxt-child></nuxt-child>
       </v-container>
-      <side-pane :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
-        <component :is="right"></component>
+      <side-pane v-if="!rightOff" query="r" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
+        <keep-alive>
+          <component :key="rightKey" :is="right"></component>
+        </keep-alive>
       </side-pane>
     </v-content>
   </v-app>
@@ -26,14 +33,6 @@ import { helpers as navStore } from "~/store/modules/nav";
 import extendMatch from "~/lib/DynamicComponent";
 
 export default Vue.extend({
-  beforeCreate() {
-    this["left"] = extendMatch(this, this.$route.query["left"], {
-      side: "left"
-    });
-    this["right"] = extendMatch(this, this.$route.query["right"], {
-      side: "right"
-    });
-  },
   components: {
     MainToolbar,
     MenuSidenav,
@@ -41,8 +40,48 @@ export default Vue.extend({
     SidePane,
     SidePaneButtons
   },
+  computed: {
+    leftKey(): string {
+      return this.$route.query["l"];
+    },
+    rightKey(): string {
+      return this.$route.query["r"];
+    },
+    left(): any {
+      return extendMatch(this, this.leftKey, {
+        side: "left"
+      });
+    },
+    right(): any {
+      return extendMatch(this, this.rightKey, {
+        side: "right"
+      });
+    },
+    rightOff(): boolean {
+      return this.$route.query["r"] == "off";
+    }
+  },
+  watch: {
+    $route: {
+      handler(v) {},
+      immediate: true
+    }
+  },
   data() {
     return {
+      leftItems: [
+        { to: { l: "tree", $: "index", r: "history" }, icon: "folder" },
+        {
+          to: { l: "setup", $: "settings", r: "off" },
+          icon: "settings",
+          active: true
+        }
+      ],
+      rightItems: [
+        { to: { r: "history" }, icon: "history" },
+        { to: { r: "preview" }, icon: "collections" },
+        { to: { r: "links" }, icon: "link" }
+      ],
       leftExpanded: true,
       rightExpanded: true
     };
