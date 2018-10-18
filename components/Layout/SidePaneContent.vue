@@ -1,13 +1,12 @@
 <template>
   <v-layout class="sidepane" :class="{right}" row fill-height="">
-
     <v-flex class="tablist" shrink :order-xs2="right">
       <v-list class="pa-0 fill-height">
         <v-layout fill-height="" column>
           <v-flex shrink v-for="item in items" :key="item.title">
-            <v-list-tile class="tab" :class="{active: item.active}" @click.stop>
+            <v-list-tile class="tab" :class="{active: item.to[query] == currentQuery}" @click="open(item)">
               <v-list-tile-action>
-                <v-icon :color="item.active?'primary':'grey'">{{item.icon}}</v-icon>
+                <v-icon :color="( item.to[query] == currentQuery)?'primary':'grey'">{{item.icon}}</v-icon>
               </v-list-tile-action>
             </v-list-tile>
           </v-flex>
@@ -22,8 +21,8 @@
         </v-layout>
       </v-list>
     </v-flex>
-    <v-flex v-show="value" class="sidepane-content" :order-xs1="right" :class="{'text-xs-right': right}">
-      <div style="width: 100%; height: 100%;  position: relative">
+    <v-flex class="sidepane-content" :order-xs1="right" :class="{'text-xs-right': right}">
+      <div v-show="value" style="width: 100%; height: 100%;  position: relative">
         <slot></slot>
       </div>
     </v-flex>
@@ -31,30 +30,52 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import SidePaneView from "~/components/Layout/SidePaneView.vue";
+
+interface SidePaneTab {
+  to: { l?: string; r?: string; $?: string };
+  icon: string;
+  active: boolean;
+}
 
 export default Vue.extend({
   created() {
     if (this.$route.path.includes(".map")) return;
   },
-  components: {
-    SidePaneView
+  components: {},
+  computed: {
+    currentQuery(): string {
+      return this.$route.query[this.query];
+    }
   },
   props: {
+    items: Array,
+    query: String,
     value: Boolean,
     right: Boolean
   },
   data() {
     return {
-      items: [
-        { icon: "folder" },
-        { icon: "folder", active: true },
-        { icon: "folder" },
-        { icon: "folder" }
-      ]
+      hideContent: false
     };
   },
   methods: {
+    open(item: SidePaneTab) {
+      this.$emit("input", !this.value);
+      const route = this.$route;
+      const qry = { ...(item.to || {}) };
+
+      const path = qry.$ ? "/" + qry.$ : route.path;
+      delete qry.$;
+
+      this.$router.push({
+        path,
+        query: { ...route.query, ...(qry as any) }
+      });
+      setTimeout(() => {
+        console.log(this.value);
+        this.$emit("input", !this.value);
+      });
+    },
     toggleCollapse(this: Vue & { value: Boolean }) {
       this.$emit("input", !this.value);
     }
@@ -86,6 +107,7 @@ export default Vue.extend({
 
   .sidepane-content {
     background: #FFF;
+    border-top: 1px solid #E0E0E0;
     width: 100%;
   }
 
