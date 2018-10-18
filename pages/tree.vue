@@ -1,15 +1,18 @@
 <template>
-  <div class="d-block" style="width: 100%; height: 100%; overflow: auto">
-    <v-treeview v-model="tree" :open="open" :items="items" selectable="" selected-color="primary" activatable item-key="id" item-text="name">
-      <template slot="prepend" slot-scope="{ item, open, leaf }">
-        <v-icon v-if="!item.file">
-          {{ open ? 'folder_open' : 'folder' }}
-        </v-icon>
-        <v-icon v-else>
-          {{ files[item.file] }}
-        </v-icon>
-      </template>
-    </v-treeview>
+  <div style="width: 100%; height: 100%;">
+    <h3 class="grey--text pa-2">IT Grundschutz</h3>
+    <div style="position: absolute; top: 50px; left:0; right:0; bottom:0; overflow: auto">
+      <v-treeview v-model="tree" :open="open" :items="items" @update:active="onActive" selectable="" selected-color="primary" activatable item-key="id" item-text="name">
+        <template slot="prepend" slot-scope="{ item, open, leaf }">
+          <v-icon v-if="!item.file">
+            {{ open ? 'folder_open' : 'folder' }}
+          </v-icon>
+          <v-icon v-else>
+            {{ files[item.file] }}
+          </v-icon>
+        </template>
+      </v-treeview>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -35,7 +38,18 @@ export default Vue.extend({
       xls: "mdi-file-excel"
     },
     tree: []
-  })
+  }),
+  methods: {
+    onActive(items: string[]) {
+      if (items && items[0]) {
+        const item = items[0];
+        this.$router.push({
+          path: "/elements/" + item,
+          query: this.$route.query
+        });
+      }
+    }
+  }
 });
 </script>
 <style lang="stylus" scoped>

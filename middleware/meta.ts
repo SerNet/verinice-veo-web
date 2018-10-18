@@ -5,7 +5,7 @@ export default async function({ app, store, route, params }: NuxtContext<any>) {
   if (route.matched) {
     route.matched.forEach(match => {
       //console.log("CMP", match.components);
-      match.components["left"] = Vue.extend({ template: "<h1>TESTX</h1>" });
+      //match.components["left"] = Vue.extend({ template: "<h1>TESTX</h1>" });
       //match.components["left"] = null;
     });
   }

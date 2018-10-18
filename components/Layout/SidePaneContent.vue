@@ -4,9 +4,9 @@
       <v-list class="pa-0 fill-height">
         <v-layout fill-height="" column>
           <v-flex shrink v-for="item in items" :key="item.title">
-            <v-list-tile class="tab" :class="{active: item.to[right?'r':'l'] == query}" @click="open(item)">
+            <v-list-tile class="tab" :class="{active: '/'+item.to[right?'r':'l'] == query}" @click="open(item)">
               <v-list-tile-action>
-                <v-icon :color="( item.to[right?'r':'l'] == query)?'primary':'grey'">{{item.icon}}</v-icon>
+                <v-icon :color="( '/'+item.to[right?'r':'l'] == query)?'primary':'grey'">{{item.icon}}</v-icon>
               </v-list-tile-action>
             </v-list-tile>
           </v-flex>
@@ -55,7 +55,7 @@ export default Vue.extend({
   },
   methods: {
     open(item: SidePaneTab) {
-      this.$emit("input", !this.value);
+      //this.$emit("input", !this.value);
       const route = this.$route;
       const qry = { ...(item.to || {}) };
 
@@ -66,10 +66,10 @@ export default Vue.extend({
         path,
         query: { ...route.query, ...(qry as any) }
       });
-      setTimeout(() => {
+      /*setTimeout(() => {
         console.log(this.value);
         this.$emit("input", !this.value);
-      });
+      });*/
     },
     toggleCollapse(this: Vue & { value: Boolean }) {
       this.$emit("input", !this.value);

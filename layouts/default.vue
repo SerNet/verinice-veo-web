@@ -10,11 +10,11 @@
         </template>
       </side-pane>
       <v-container>
-        <nuxt-child></nuxt-child>
+        <nuxt></nuxt>
       </v-container>
       <side-pane v-if="!rightOff" :query="rightKey" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
         <keep-alive>
-          <component :key="rightKey" :is="right"></component>
+          <component v-if="right" :key="rightKey" :is="right"></component>
         </keep-alive>
       </side-pane>
     </v-content>
@@ -41,10 +41,10 @@ export default Vue.extend({
   },
   computed: {
     leftKey(): string {
-      return this.$route.query["l"] || "tree";
+      return "/" + (this.$route.query["l"] || "tree");
     },
     rightKey(): string {
-      return this.$route.query["r"] || "history";
+      return "/" + (this.$route.query["r"] || "history");
     },
     left(): any {
       return extendMatch(this, this.leftKey, {

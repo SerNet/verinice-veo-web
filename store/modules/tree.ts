@@ -78,7 +78,8 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
     treeChildren: (state, getters) => id => {
       return state.data.filter(item => item.parent == id).map(item => ({
         id: item["$veo.id"] || "NO_ID",
-        name: item["$veo.title"] || "Kein Text"
+        name: item["$veo.title"] || "Kein Text",
+        children: getters.treeChildren(item["$veo.id"])
       }));
     },
     items: state =>
