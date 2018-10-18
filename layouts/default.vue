@@ -9,7 +9,7 @@
           </keep-alive>
         </template>
       </side-pane>
-      <v-container style="border-top: 1px solid #E0E0E0">
+      <v-container>
         <nuxt-child></nuxt-child>
       </v-container>
       <side-pane v-if="!rightOff" query="r" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">

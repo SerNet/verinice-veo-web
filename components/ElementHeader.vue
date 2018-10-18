@@ -86,12 +86,7 @@ export default Vue.extend({
   data() {
     return {
       showHeader: [true],
-      items: [
-        { title: "Click Me" },
-        { title: "Click Me" },
-        { title: "Click Me" },
-        { title: "Click Me 2" }
-      ]
+      items: [{ title: "Neuen Link" }, { title: "Neues Unterelement" }]
     };
   }
 });
