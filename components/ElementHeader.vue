@@ -7,7 +7,7 @@
             <v-flex>
               <veo-bread-crumb></veo-bread-crumb>
             </v-flex>
-            <v-btn icon>
+            <v-btn icon target="_blank" href="?standalone=1">
               <v-icon>launch</v-icon>
             </v-btn>
           </v-layout>
@@ -99,7 +99,6 @@ export default Vue.extend({
   max-width: none;
   display: inline-block;
 
-  // height: 80px;
   .v-expansion-panel {
     >li {
       background-color: transparent;
