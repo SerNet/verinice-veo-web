@@ -77,7 +77,18 @@ export default Vue.extend({
   }
 });
 </script>
+
 <style lang="stylus" scoped>
+.collapsed {
+  .sidepane.right .tablist .tab.active {
+    border-left: 1px solid #e0e0e0;
+  }
+
+  .sidepane:not(.right) .tablist .tab.active {
+    border-right: 1px solid #e0e0e0;
+  }
+}
+
 .sidepane {
   width: 100%;
 
@@ -86,6 +97,11 @@ export default Vue.extend({
       .tab {
         border-left: 1px solid #E0E0E0;
         border-right-width: 0;
+
+        &.active {
+          border-right: 3px solid #e53935; // TODO
+          border-left-width: 0px;
+        }
       }
 
       &:before {
@@ -96,6 +112,17 @@ export default Vue.extend({
       .spacer {
         border-left: 1px solid #E0E0E0;
         border-right: none;
+      }
+    }
+  }
+
+  &:not(.right) {
+    .tablist {
+      .tab {
+        &.active {
+          border-left: 3px solid #e53935; // TODO
+          border-right-width: 0px;
+        }
       }
     }
   }
@@ -124,9 +151,9 @@ export default Vue.extend({
       &.active {
         border-top: 1px solid #E0E0E0;
         border-bottom: 1px solid #E0E0E0;
+        background: white;
         border-left-width: 0px;
         border-right-width: 0px;
-        background: white;
 
         >>> .v-list__tile {
           &:hover {
