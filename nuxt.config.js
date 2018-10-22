@@ -3,6 +3,8 @@ require("dotenv").config();
 const pkg = require("./package");
 const path = require("path");
 const coerce = require("./modules/stylus-coerce");
+import VuetifyLoaderPlugin from "vuetify-loader/lib/plugin";
+
 import colors from "vuetify/es5/util/colors";
 import theme from "./config/theme";
 
@@ -214,6 +216,7 @@ module.exports = {
   */
   build: {
     transpile: [/^vuetify/],
+    plugins: [new VuetifyLoaderPlugin()],
     extractCSS: true,
     //cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
     //parallel: false, //(thread-loader: https://github.com/webpack-contrib/thread-loader)
