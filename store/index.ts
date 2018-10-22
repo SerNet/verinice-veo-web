@@ -3,6 +3,7 @@ import Vuex, { Store, Dispatch, Commit, Module } from "vuex";
 import auth from "./modules/auth";
 import nav from "./modules/nav";
 import tree from "./modules/tree";
+import elements from "./modules/elements";
 import schema from "./modules/schema";
 import form from "./modules/form";
 import error from "./modules/error";
@@ -21,6 +22,7 @@ const modules: any = {
   nav,
   schema,
   tree,
+  elements,
   form,
   error
 };
@@ -37,14 +39,15 @@ export default () => {
     strict: process.env.NODE_ENV !== "production",
     plugins: [strictModules],
     actions: {
-      async nuxtServerInit(this: Vue, context, { route }) {
+      async nuxtServerInit(this: Vue, context, { route, req }) {
+        if (req && req.url && req.url.indexOf(".") > -1) return;
         route["TEXT"] = { asdf: 1 };
         await context.dispatch("auth/init");
         await context.dispatch("init");
       },
       async init(this: Vue, { dispatch }) {
         await dispatch("schema/init");
-        await dispatch("tree/init");
+        await dispatch("elements/init");
       }
     }
   });

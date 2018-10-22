@@ -12,6 +12,7 @@ interface SimpleTreeItem {
 }
 
 export interface State {
+  active: string;
   selection: TreeItem[];
   error: string | null;
   data: VeoItem[];
@@ -26,6 +27,7 @@ export interface Getters {
   breadcrumbById: (id: string) => TreeItem[];
   hasChildren: (id: string) => boolean;
   treeChildren: (id?: string) => SimpleTreeItem[];
+  treeBreadcrumb: SimpleTreeItem[];
 }
 
 // /workspace/T:2342:
@@ -38,6 +40,7 @@ export interface Mutations {
   setExpand: { index: number; value: boolean };
   setChecked: ValueMap;
   addItems: { from: number; items: TreeItem[] };
+  setActiveItem: string;
   removeItems: { from: number; to: number };
 }
 
@@ -46,6 +49,7 @@ export interface Actions {
   addItems: { from?: number; items: VeoItem[]; level?: number };
   addItem: { parent: string; type: string };
   fetchItems: {};
+  open: string;
   check: { id: string };
   expand: { id: string };
   delete: string[];
@@ -62,6 +66,7 @@ export const helpers = createNamespacedHelpers<
 const module: DefineModule<State, Getters, Mutations, Actions> = {
   namespaced: true,
   state: {
+    active: "",
     selection: [],
     error: null,
     data: [],
@@ -71,16 +76,32 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
   getters: {
     tree: (state, getters) =>
       state.data.filter(item => !item.parent).map(item => ({
-        id: item["$veo.id"] || "NO_ID",
-        name: item["$veo.title"] || "Kein Text",
+        id: item[ID_FIELD] || "NO_ID",
+        name: item[TITLE_FIELD] || "Kein Text",
         children: getters.treeChildren(item["$veo.id"])
       })),
     treeChildren: (state, getters) => id => {
       return state.data.filter(item => item.parent == id).map(item => ({
-        id: item["$veo.id"] || "NO_ID",
-        name: item["$veo.title"] || "Kein Text",
+        id: item[ID_FIELD] || "NO_ID",
+        name: item[TITLE_FIELD] || "Kein Text",
         children: getters.treeChildren(item["$veo.id"])
       }));
+    },
+    treeBreadcrumb: (state, getters) => {
+      const path: SimpleTreeItem[] = [];
+      const items: VeoItem[] = state.data;
+      let parent: string | undefined = state.active;
+      while (parent) {
+        const node = items.find(item => item[ID_FIELD] == parent);
+        if (node) {
+          path.unshift({
+            id: node[ID_FIELD] || "",
+            name: node[TITLE_FIELD]
+          });
+        }
+        parent = node && node[PARENT_FIELD];
+      }
+      return path;
     },
     items: state =>
       state.items &&
@@ -143,6 +164,9 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
         }
       }
     },
+    setActiveItem(state, id) {
+      state.active = id;
+    },
     addItems(state, { from, items }) {
       state.items.splice(from + 1, 0, ...items);
     },
@@ -153,6 +177,9 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
   actions: {
     async init(this: Vue, { dispatch, state, commit }, payload) {
       await dispatch("fetchItems", {});
+    },
+    async open(this: Vue, { commit }, id) {
+      await commit("setActiveItem", id);
     },
     async addItems({ state, commit, getters }, { items, from = 0, level = 0 }) {
       const parent = state.items[from];
