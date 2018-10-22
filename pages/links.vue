@@ -1,6 +1,6 @@
 <template>
   <v-flex text-xs-left style="max-width: 100%; position: absolute;">
-    <v-subheader>Links</v-subheader>
+    <h3 class="grey--text pa-2">Links</h3>
     <v-list two-line>
       <template v-for="(item, index) in items">
         <v-divider v-if="item.divider" :inset="item.inset" :key="index"></v-divider>
