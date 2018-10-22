@@ -41,9 +41,12 @@ export default () => {
     actions: {
       async nuxtServerInit(this: Vue, context, { route, req }) {
         if (req && req.url && req.url.indexOf(".") > -1) return;
-        route["TEXT"] = { asdf: 1 };
-        await context.dispatch("auth/init");
-        await context.dispatch("init");
+        try {
+          await context.dispatch("auth/init");
+          await context.dispatch("init");
+        } catch (e) {
+          console.error(e);
+        }
       },
       async init(this: Vue, { dispatch }) {
         await dispatch("schema/init");
