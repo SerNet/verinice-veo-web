@@ -10,7 +10,9 @@
     </veo-breadcrumb>-->
 
     <element-header></element-header>
-    <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema"></veo-form>
+
+    <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema" style="background-color: white; margin-top: 10px;"></veo-form>
+
     <template slot="actions">
       <v-btn flat to="/elements">Abbrechen</v-btn>
       <v-btn color="primary darken-1" flat @click.native="save()">Speichern</v-btn>

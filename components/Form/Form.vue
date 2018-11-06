@@ -1,5 +1,7 @@
 <template>
   <v-layout class="form-panels pa-3" column>
+    <h2 class="pb-3">Editor</h2>
+
     <v-form>
       <abstract-field v-for="property in properties" :key="property.key" :name="property.key" :schema="property" :required="schema.required.includes(property.key)" @input="onFieldChange(property, $event)" :value="model[property.key]" />
     </v-form>
