@@ -1,5 +1,5 @@
 <template>
-  <v-flex text-xs-left style="max-width: 100%; position: absolute;">
+  <v-flex text-xs-left style="max-width: 100%;">
     <h3 class="grey--text pa-2">History</h3>
     <v-list two-line>
       <template v-for="(item, index) in items">

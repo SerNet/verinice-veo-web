@@ -21,6 +21,12 @@ declare module "vue/types/options" {
     leaveActiveClass?: string;
   }
 
+  interface RedirectFunction {
+    (status: number, path: string, query?: PropertyMap): void;
+    (path: string, query?: PropertyMap): void;
+    (...args: any[]): void;
+  }
+
   type NuxtContext<S> = {
     app: Vue;
     isClient: boolean;
@@ -36,7 +42,7 @@ declare module "vue/types/options" {
     query: PropertyMap;
     req: Request;
     res: Response;
-    redirect: (status: number, path: string, query: PropertyMap) => void;
+    redirect: RedirectFunction;
     error: (params: { statusCode: number; message: string }) => void;
     nuxtState: Object;
     beforeNuxtRender: (

@@ -1,23 +1,25 @@
 <template>
   <v-app>
+    <main-toolbar app v-if="!standalone" @click-side-icon="mainDrawer = !mainDrawer" :clipped="true" :clipped-left="false"></main-toolbar>
+
+    <side-pane v-if="!standalone" :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
+      <template>
+        <keep-alive>
+          <component :key="leftKey" :is="left"></component>
+        </keep-alive>
+      </template>
+    </side-pane>
     <v-content>
-      <main-toolbar v-if="!standalone" @click-side-icon="mainDrawer = !mainDrawer" :clipped="true"></main-toolbar>
-      <side-pane v-if="!standalone" :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
-        <template>
-          <keep-alive>
-            <component :key="leftKey" :is="left"></component>
-          </keep-alive>
-        </template>
-      </side-pane>
       <v-container>
         <nuxt></nuxt>
       </v-container>
-      <side-pane v-if="!standalone && !rightOff" :query="rightKey" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
-        <keep-alive>
-          <component :key="rightKey" :is="right"></component>
-        </keep-alive>
-      </side-pane>
     </v-content>
+    <side-pane v-if="!standalone && !rightOff" :query="rightKey" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
+      <keep-alive>
+        <component :key="rightKey" :is="right"></component>
+      </keep-alive>
+    </side-pane>
+
   </v-app>
 </template>
 

@@ -48,9 +48,11 @@ export default () => {
           console.error(e);
         }
       },
-      async init(this: Vue, { dispatch }) {
-        await dispatch("schema/init");
-        await dispatch("elements/init");
+      async init(this: Vue, { getters, dispatch }) {
+        if (getters["auth/isAuthorized"]) {
+          await dispatch("schema/init");
+          await dispatch("elements/init");
+        }
       }
     }
   });

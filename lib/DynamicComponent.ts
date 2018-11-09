@@ -32,7 +32,10 @@ export default function(instance: Vue, route: string, context: Object = {}) {
                 };
 
                 if (typeof options.validate == "function") {
-                  await options.validate(_context);
+                  const validateResult = await options.validate(_context);
+                  if (validateResult === false) {
+                    return NuxtError;
+                  }
                 }
                 if (typeof options.fetch == "function") {
                   await options.fetch(_context);

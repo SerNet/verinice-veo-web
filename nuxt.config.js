@@ -11,15 +11,15 @@ import theme from "./config/theme";
 module.exports = {
   mode: "universal",
   /*
-  ** Headers of the page
-  */
+   ** Headers of the page
+   */
   head: {
     title: pkg.description
   },
 
   /*
-  ** Plugins to load before mounting the App
-  */
+   ** Plugins to load before mounting the App
+   */
   plugins: [
     "~/plugins/error.js",
     "~/plugins/axios.js",
@@ -29,8 +29,8 @@ module.exports = {
     { src: "~/plugins/vue-grid.js", ssr: false }
   ],
   /*
-  ** Global CSS
-  */
+   ** Global CSS
+   */
   css: [
     "roboto-fontface/css/roboto/roboto-fontface.css",
     "material-design-icons-iconfont/dist/material-design-icons.css",
@@ -69,13 +69,13 @@ module.exports = {
   },
 
   router: {
-    middleware: ["meta"],
+    middleware: ["auth"],
     extendRoutes(routes, resolve) {}
   },
 
   /*
-  ** Nuxt.js modules
-  */
+   ** Nuxt.js modules
+   */
   modules: [
     "~/modules/logger",
     "~/modules/basicauth",
@@ -186,8 +186,8 @@ module.exports = {
   ],
 
   /*
-  ** Axios module configuration
-  */
+   ** Axios module configuration
+   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
     proxy: true,
@@ -212,8 +212,8 @@ module.exports = {
   extensions: ["ts"],
 
   /*
-  ** Build configuration
-  */
+   ** Build configuration
+   */
   build: {
     transpile: [/^vuetify/],
     plugins: [new VuetifyLoaderPlugin()],

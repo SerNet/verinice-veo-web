@@ -78,6 +78,7 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .v-navigation-drawer {
   transition: none;
+  background-color: red !important;
 }
 </style>
 

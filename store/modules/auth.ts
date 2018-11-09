@@ -9,14 +9,17 @@ export interface State {
   token: null | string;
   username: null | string;
   error: null | string;
+  redirection: Redirection | null;
 }
 
 export interface Getters {
+  isAuthorized: boolean;
   authorizationHeader: string;
 }
 
 export interface Mutations {
   setToken: string | null;
+  setRedirection: Redirection | null;
   setTokenPayload: UserTokenPayload | null;
   setError: string | null;
 }
@@ -25,7 +28,12 @@ export interface Actions {
   init: {};
   login: { username: string; password: string; persist?: boolean };
   useToken: { token: string; persist?: boolean };
+  redirect: { path: string };
   logout: {};
+}
+
+interface Redirection {
+  path: string;
 }
 
 interface UserTokenPayload {
@@ -54,7 +62,8 @@ const module: DefineModule<
   state: {
     token: null,
     username: null,
-    error: null
+    error: null,
+    redirection: null
   },
   mutations: {
     setToken(state, value) {
@@ -65,9 +74,13 @@ const module: DefineModule<
     },
     setError(state, value) {
       state.error = value;
+    },
+    setRedirection(state, value) {
+      state.redirection = value;
     }
   },
   getters: {
+    isAuthorized: (state: any) => !!state.token,
     authorizationHeader: (state: any) => "Bearer " + state.token
   },
   actions: {
@@ -91,7 +104,8 @@ const module: DefineModule<
 
         const header = response.headers["authorization"];
         const [type, token] = header.split(/\s+/);
-        dispatch("useToken", { token, persist });
+        await dispatch("useToken", { token, persist });
+        return token;
       } catch (e) {
         if (e.response) {
           const { response } = e as AxiosError;
@@ -116,6 +130,9 @@ const module: DefineModule<
         });
       }
       await dispatch("init", {}, { root: true });
+    },
+    async redirect(this: Vue, { commit }, { path }) {
+      commit("setRedirection", { path });
     },
     async logout(this: Vue, { commit, dispatch }) {
       commit("setToken", null);

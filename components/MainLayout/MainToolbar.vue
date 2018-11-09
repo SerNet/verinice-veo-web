@@ -1,17 +1,17 @@
 <template>
-  <v-toolbar class="elevation-0" app color="primary" dark="" style="overflow:hidden;" :clipped-left="clipped" id="mainToolbar">
+  <v-toolbar app class="elevation-0" color="primary" dark="" style="overflow:hidden;" :clipped-left="clipped" id="mainToolbar">
     <main-toolbar-logo v-if="!showSearch" />
     <v-toolbar-side-icon light class="hidden-sm-and-up" @click.stop="toggleDrawer()" v-if="!showSearch" style="color: #e53935" />
 
     <!-- normale Suche -->
     <v-layout class="hidden-sm-and-down" row justify-space-around style="margin-left: 200px;">
-      <v-flex xs12 sm6 align-content-center>
+      <v-flex v-if="search" xs12 sm6 align-content-center>
         <v-text-field solo light single-line label="In verinice suchen" />
       </v-flex>
     </v-layout>
 
     <!-- mobile Suche -->
-    <v-layout class="hidden-md-and-up" row justify-space-around style="margin-left: 20px;">
+    <v-layout v-if="search" class="hidden-md-and-up" row justify-space-around style="margin-left: 20px;">
       <v-flex xs12>
         <v-text-field solo light single-line label="In verinice suchen" v-if="showSearch" />
       </v-flex>
@@ -21,8 +21,7 @@
     </v-layout>
 
     <template v-if="!showSearch">
-      <account-btn v-if="username" :username="username" @logout="logout"></account-btn>
-      <login-dialog v-else @login="login" :error="authError"></login-dialog>
+      <account-btn v-if="username" :username="username" @logout="onLogout"></account-btn>
     </template>
   </v-toolbar>
 </template>
@@ -42,7 +41,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      showSearch: false
+      showSearch: !!this.search
     };
   },
   computed: {
@@ -51,7 +50,10 @@ export default Vue.extend({
       authError: "error"
     })
   },
-  props: ["clipped", "value"],
+  props: {
+    clipped: { type: Boolean },
+    search: { type: Boolean }
+  },
   methods: {
     toggleDrawer() {
       this.$emit("click-side-icon");
@@ -62,7 +64,11 @@ export default Vue.extend({
     ...authStore.mapActions({
       login: "login",
       logout: "logout"
-    })
+    }),
+    async onLogout() {
+      await this.logout({});
+      this.$router.go(this.$router.currentRoute as any);
+    }
   }
 });
 </script>

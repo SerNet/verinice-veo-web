@@ -93,7 +93,8 @@ export default Vue.extend({
       }
     }
   },
-  async validate({ params }) {
+  async validate({ store, params }) {
+    if (!store.getters["auth/isAuthorized"]) return false;
     if (params.id && String(params.id).indexOf(".") !== -1) return false;
     return true;
   },
