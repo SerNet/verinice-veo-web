@@ -3,7 +3,7 @@
     <div>
       <span>{{count}}</span>
     </div>
-    <v-btn flat class="ma-0" :href="href">
+    <v-btn flat class="ma-0" :to="to">
       <v-icon>{{icon}}</v-icon>
       <span>{{text}}</span>
     </v-btn>
@@ -18,7 +18,7 @@ export default Vue.extend({
     count: Number,
     icon: String,
     text: String,
-    href: String
+    to: String
   },
   methods: {}
 });
@@ -27,6 +27,11 @@ export default Vue.extend({
 <style lang="stylus" scoped>
 .countButton {
   margin: 5px;
+
+  &:last-child {
+    margin: 0;
+  }
+
   display: inline-block;
   border-radius: 2px;
   border: 1px solid #ccc;

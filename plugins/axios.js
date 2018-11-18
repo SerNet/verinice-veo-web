@@ -25,9 +25,7 @@ export default (context, inject) => {
   $axios.onRequest(config => {
     if (process.server || process.isServer) {
       const consola = require("consola");
-      consola
-        .withScope("axios")
-        .debug(config.method.toUpperCase() + " " + config.url);
+      consola.withScope("axios").debug(config.method.toUpperCase() + " " + config.url);
     }
 
     if (!useProxy(config)) {
@@ -46,6 +44,9 @@ export default (context, inject) => {
   });
 
   $axios.onError(err => {
+    if (err.config && typeof err.config.error == "object") {
+      throw err.config.error;
+    }
     err.message = `Error while requesting '${err.config.url}': ` + err.message;
     store.dispatch("error/handle", err);
   });

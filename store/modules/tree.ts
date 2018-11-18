@@ -1,8 +1,8 @@
 import Vue from "vue";
-import { VeoItem } from "api";
-import { ID_FIELD, TITLE_FIELD, PARENT_FIELD, TYPE_FIELD } from "~/config/api";
+import { createNamespacedHelpers, DefineModule } from "vuex";
+import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import { TreeItem } from "~/models/TreeItem";
-import { DefineModule, createNamespacedHelpers } from "vuex";
+import { VeoItem } from "~/types/api";
 
 type ValueMap = { [id: string]: boolean | undefined };
 
@@ -56,12 +56,7 @@ export interface Actions {
   selectAll: boolean;
 }
 
-export const helpers = createNamespacedHelpers<
-  State,
-  Getters,
-  Mutations,
-  Actions
->("tree");
+export const helpers = createNamespacedHelpers<State, Getters, Mutations, Actions>("tree");
 
 const module: DefineModule<State, Getters, Mutations, Actions> = {
   namespaced: true,
@@ -75,17 +70,21 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
   },
   getters: {
     tree: (state, getters) =>
-      state.data.filter(item => !item.parent).map(item => ({
-        id: item[ID_FIELD] || "NO_ID",
-        name: item[TITLE_FIELD] || "Kein Text",
-        children: getters.treeChildren(item["$veo.id"])
-      })),
+      state.data
+        .filter(item => !item.parent)
+        .map(item => ({
+          id: item[ID_FIELD] || "NO_ID",
+          name: item[TITLE_FIELD] || "Kein Text",
+          children: getters.treeChildren(item["$veo.id"])
+        })),
     treeChildren: (state, getters) => id => {
-      return state.data.filter(item => item.parent == id).map(item => ({
-        id: item[ID_FIELD] || "NO_ID",
-        name: item[TITLE_FIELD] || "Kein Text",
-        children: getters.treeChildren(item["$veo.id"])
-      }));
+      return state.data
+        .filter(item => item.parent == id)
+        .map(item => ({
+          id: item[ID_FIELD] || "NO_ID",
+          name: item[TITLE_FIELD] || "Kein Text",
+          children: getters.treeChildren(item["$veo.id"])
+        }));
     },
     treeBreadcrumb: (state, getters) => {
       const path: SimpleTreeItem[] = [];
@@ -103,13 +102,9 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       }
       return path;
     },
-    items: state =>
-      state.items &&
-      state.items.filter(
-        item => item[PARENT_FIELD] === state.current_id || null
-      ),
+    items: state => state.items && state.items.filter(item => item[PARENT_FIELD] === state.current_id || null),
     breadcrumb: state => id => {
-      const path = [];
+      const path: VeoItem[] = [];
       const items: VeoItem[] = state.data;
       let parent: string | undefined = id;
       while (parent) {
@@ -122,7 +117,7 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       return path;
     },
     breadcrumbById: state => id => {
-      const path = [];
+      const path: TreeItem[] = [];
       const items: TreeItem[] = state.items;
       let parent: string | undefined = id;
       while (parent) {
@@ -186,11 +181,7 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       commit("addItems", {
         from,
         items: items.map(v => {
-          const model = new TreeItem(
-            v,
-            level,
-            getters.hasChildren(v[ID_FIELD]!)
-          );
+          const model = new TreeItem(v, level, getters.hasChildren(v[ID_FIELD]!));
           if (parent) model.checked = parent.checked;
           return model;
         })
@@ -202,9 +193,7 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       created.id = "";
       created.type = payload.type;
 
-      const from = payload.parent
-        ? state.items.findIndex(item => item.id == payload.parent)
-        : 0;
+      const from = payload.parent ? state.items.findIndex(item => item.id == payload.parent) : 0;
 
       console.log("from", state.items, from, payload);
       const parent = from > 0 ? state.items[from] : null;
@@ -255,9 +244,7 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
       }
 
       //Do all items at the same level have an equal state?
-      const isConsistentState = !items.find(
-        v => v.level == item.level && v.checked != value
-      );
+      const isConsistentState = !items.find(v => v.level == item.level && v.checked != value);
 
       const parentValue = isConsistentState ? value : undefined;
       //Set all parent items to appropriate value
@@ -277,11 +264,7 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
     /**
      * Expand / collapse a given item
      */
-    async expand(
-      this: Vue,
-      { state, dispatch, commit },
-      { id }: { id: string }
-    ) {
+    async expand(this: Vue, { state, dispatch, commit }, { id }: { id: string }) {
       const { data, items } = state;
 
       const itemPos = items.findIndex(v => v.id == id);
@@ -302,9 +285,7 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
           });
         } else {
           //Find number of items after item with higher level
-          const nextItemPos = items
-            .slice(itemPos + 1)
-            .findIndex(v => v.level == item.level);
+          const nextItemPos = items.slice(itemPos + 1).findIndex(v => v.level == item.level);
           //Set item to collapsed
           commit("setExpand", { index: itemPos, value: false });
           //Remove items after item from list
@@ -320,10 +301,7 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
         const id = ids[i];
         await this.$axios.delete(`/api/elements/${id}`);
       }
-      commit(
-        "setSelection",
-        state.selection.filter(item => ids.indexOf(item.id) == -1)
-      );
+      commit("setSelection", state.selection.filter(item => ids.indexOf(item.id) == -1));
       await dispatch("init", {});
     },
     async selectAll(this: Vue, { state, dispatch, commit }, value) {

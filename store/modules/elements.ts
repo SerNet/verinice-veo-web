@@ -1,7 +1,7 @@
-import { DefineModule, createNamespacedHelpers } from "vuex";
+import { VeoItem } from "~/types/api";
+import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import Vue from "vue";
-import { ID_FIELD, TITLE_FIELD, PARENT_FIELD, TYPE_FIELD } from "~/config/api";
-import { VeoItem } from "api";
+import { createNamespacedHelpers, DefineModule } from "vuex";
 
 type ItemID = string;
 
@@ -25,6 +25,7 @@ export interface State {
 
 export interface Getters {
   breadcrumbById: (id: string) => string[];
+  childrenById: (id: string) => ItemID[];
 }
 
 // /workspace/T:2342:
@@ -41,12 +42,7 @@ export interface Actions {
   fetchItems: {};
 }
 
-export const helpers = createNamespacedHelpers<
-  State,
-  Getters,
-  Mutations,
-  Actions
->("elements");
+export const helpers = createNamespacedHelpers<State, Getters, Mutations, Actions>("elements");
 
 const module: DefineModule<State, Getters, Mutations, Actions> = {
   namespaced: true,
@@ -58,7 +54,7 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
   },
   getters: {
     breadcrumbById: state => (id: string) => {
-      const path = [];
+      const path: string[] = [];
       const itemMap = state.items;
       let parent = id;
       while (parent) {
@@ -69,6 +65,9 @@ const module: DefineModule<State, Getters, Mutations, Actions> = {
         parent = node && node.parent;
       }
       return path;
+    },
+    childrenById: state => (id: string) => {
+      return state.children[id];
     }
   },
   mutations: {

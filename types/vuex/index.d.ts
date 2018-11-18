@@ -7,20 +7,9 @@ import _Vue, { WatchOptions } from "vue";
 // augment typings of Vue.js
 import "./vue";
 
-export {
-  mapState,
-  mapGetters,
-  mapActions,
-  mapMutations,
-  createNamespacedHelpers
-} from "./helpers";
+export { mapState, mapGetters, mapActions, mapMutations, createNamespacedHelpers } from "./helpers";
 
-export {
-  DefineModule,
-  DefineGetters,
-  DefineMutations,
-  DefineActions
-} from "./utils";
+export { DefineModule, DefineGetters, DefineMutations, DefineActions } from "./utils";
 
 export declare class Store<S> {
   constructor(options: StoreOptions<S>);
@@ -33,28 +22,16 @@ export declare class Store<S> {
   dispatch: Dispatch;
   commit: Commit;
 
-  subscribe<P extends MutationPayload>(
-    fn: (mutation: P, state: S) => any
-  ): () => void;
-  subscribeAction<P extends ActionPayload>(
-    fn: (action: P, state: S) => any
-  ): () => void;
+  subscribe<P extends MutationPayload>(fn: (mutation: P, state: S) => any): () => void;
+  subscribeAction<P extends ActionPayload>(fn: (action: P, state: S) => any): () => void;
   watch<T>(
     getter: (state: S, getters: any) => T,
     cb: (value: T, oldValue: T) => void,
     options?: WatchOptions
   ): () => void;
 
-  registerModule<T>(
-    path: string,
-    module: Module<T, S>,
-    options?: ModuleOptions
-  ): void;
-  registerModule<T>(
-    path: string[],
-    module: Module<T, S>,
-    options?: ModuleOptions
-  ): void;
+  registerModule<T>(path: string, module: Module<T, S>, options?: ModuleOptions): void;
+  registerModule<T>(path: string[], module: Module<T, S>, options?: ModuleOptions): void;
 
   unregisterModule(path: string): void;
   unregisterModule(path: string[]): void;
@@ -74,26 +51,14 @@ export declare function install(Vue: typeof _Vue): void;
  */
 export interface StrictDispatch<Actions, RootActions> {
   // Local
-  <K extends keyof Actions>(
-    type: K,
-    payload: Actions[K],
-    options?: LocalDispatchOptions
-  ): Promise<any>;
-  <K extends keyof Actions>(
-    payloadWithType: InputPayload<K, Actions>,
-    options?: LocalDispatchOptions
-  ): Promise<any>;
+  <K extends keyof Actions>(type: K, payload: Actions[K], options?: LocalDispatchOptions): Promise<any>;
+  <K extends keyof Actions>(payloadWithType: InputPayload<K, Actions>, options?: LocalDispatchOptions): Promise<any>;
 
   // Root
-  <K extends keyof RootActions>(
-    type: K,
-    payload: RootActions[K],
-    options: RootDispatchOptions
-  ): Promise<any>;
-  <K extends keyof RootActions>(
-    payloadWithType: InputPayload<K, RootActions>,
-    options: RootDispatchOptions
-  ): Promise<any>;
+  <K extends keyof RootActions>(type: K, payload: RootActions[K], options: RootDispatchOptions): Promise<any>;
+  <K extends keyof RootActions>(payloadWithType: InputPayload<K, RootActions>, options: RootDispatchOptions): Promise<
+    any
+  >;
 }
 
 /**
@@ -101,36 +66,20 @@ export interface StrictDispatch<Actions, RootActions> {
  */
 export interface StrictCommit<Mutations, RootMutations> {
   // Local
-  <K extends keyof Mutations>(
-    type: K,
-    payload: Mutations[K],
-    options?: LocalCommitOptions
-  ): void;
-  <K extends keyof Mutations>(
-    payloadWithType: InputPayload<K, Mutations>,
-    options?: LocalCommitOptions
-  ): void;
+  <K extends keyof Mutations>(type: K, payload: Mutations[K], options?: LocalCommitOptions): void;
+  <K extends keyof Mutations>(payloadWithType: InputPayload<K, Mutations>, options?: LocalCommitOptions): void;
 
   // Root
-  <K extends keyof RootMutations>(
-    type: K,
-    payload: RootMutations[K],
-    options: RootCommitOptions
-  ): void;
-  <K extends keyof RootMutations>(
-    payloadWithType: InputPayload<K, RootMutations>,
-    options: RootCommitOptions
-  ): void;
+  <K extends keyof RootMutations>(type: K, payload: RootMutations[K], options: RootCommitOptions): void;
+  <K extends keyof RootMutations>(payloadWithType: InputPayload<K, RootMutations>, options: RootCommitOptions): void;
 }
 
 /**
  * Loose dispatch type. It can omit a payload and may throw in run time
  * since type checker cannot detect whether omitting payload is safe or not.
  */
-export interface Dispatch<
-  Actions = Record<string, any>,
-  RootActions = Record<string, any>
-> extends StrictDispatch<Actions, RootActions> {
+export interface Dispatch<Actions = Record<string, any>, RootActions = Record<string, any>>
+  extends StrictDispatch<Actions, RootActions> {
   <K extends keyof Actions>(type: K): Promise<any>;
 }
 
@@ -138,10 +87,8 @@ export interface Dispatch<
  * Loose commit type. It can omit a payload and may throw in run time
  * since type checker cannot detect whether omitting payload is safe or not.
  */
-export interface Commit<
-  Mutations = Record<string, any>,
-  RootMutations = Record<string, any>
-> extends StrictCommit<Mutations, RootMutations> {
+export interface Commit<Mutations = Record<string, any>, RootMutations = Record<string, any>>
+  extends StrictCommit<Mutations, RootMutations> {
   <K extends keyof Mutations>(type: K): void;
 }
 
@@ -223,12 +170,7 @@ interface ActionObject<S, R> {
   handler: ActionHandler<S, R>;
 }
 
-export type Getter<S, R> = (
-  state: S,
-  getters: any,
-  rootState: R,
-  rootGetters: any
-) => any;
+export type Getter<S, R> = (state: S, getters: any, rootState: R, rootGetters: any) => any;
 export type Action<S, R> = ActionHandler<S, R> | ActionObject<S, R>;
 export type Mutation<S> = (state: S, payload: any) => any;
 export type Plugin<S> = (store: Store<S>) => any;

@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
+    "jsx": "preserve",
     "target": "es5",
     "lib": ["dom", "es2015"],
     "typeRoots": ["./types/", "./node_modules/@types"],
     "module": "esNext",
     "moduleResolution": "node",
-    "experimentalDecorators": false,
-    "noImplicitAny": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": false,
     "noImplicitThis": true,
     "strict": true,
+    "inlineSourceMap": true,
     "strictPropertyInitialization": false,
     "removeComments": true,
     "suppressImplicitAnyIndexErrors": true,
@@ -16,20 +18,8 @@
     "baseUrl": ".",
     "paths": {
       "*": ["./*", "types/*"],
-      "~/": ["./"],
-      "~/assets/*": ["./assets/*"],
-      "~/config/*": ["./config/*"],
-      "~/components/*": ["./components/*"],
-      "~/widgets/*": ["./widgets/*"],
-      "~/lib/*": ["./lib/*"],
-      "~/middleware/*": ["./middleware/*"],
-      "~/mixins/*": ["./mixins/*"],
-      "~/models/*": ["./models/*"],
-      "~/pages/*": ["./pages/*"],
-      "~/plugins/*": ["./plugins/*"],
-      "~/static/*": ["./static/*"],
-      "~/store/*": ["./store/*"],
-      "~/types/*": ["./types/*"]
+      "~/*": ["./*"],
+      "@/*": ["./*"]
     }
   }
 }

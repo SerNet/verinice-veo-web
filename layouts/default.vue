@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <main-toolbar app v-if="!standalone" @click-side-icon="mainDrawer = !mainDrawer" :clipped="true" :clipped-left="false"></main-toolbar>
-
     <side-pane v-if="!standalone" :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
       <template>
         <keep-alive>
@@ -10,7 +9,7 @@
       </template>
     </side-pane>
     <v-content>
-      <v-container>
+      <v-container class="pa-0">
         <nuxt></nuxt>
       </v-container>
     </v-content>
@@ -74,17 +73,22 @@ export default Vue.extend({
   data() {
     return {
       leftItems: [
-        { to: { l: "tree", $: "index", r: "history" }, icon: "folder" },
+        {
+          to: { l: "tree", $: "index", r: "history" },
+          icon: "folder",
+          title: "Einträge"
+        },
         {
           to: { l: "setup", $: "settings", r: "off" },
           icon: "settings",
-          active: true
+          active: true,
+          title: "Einstellungen"
         }
       ],
       rightItems: [
-        { to: { r: "history" }, icon: "history" },
-        { to: { r: "preview" }, icon: "collections" },
-        { to: { r: "links" }, icon: "link" }
+        { to: { r: "history" }, icon: "history", title: "Änderungen" },
+        { to: { r: "preview" }, icon: "collections", title: "Vorschau" },
+        { to: { r: "links" }, icon: "link", title: "Links" }
       ],
       leftExpanded: true,
       rightExpanded: true

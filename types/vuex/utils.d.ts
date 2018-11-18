@@ -54,13 +54,7 @@ export interface DefineModule<
  * `ExtraGetters` is like `Getters` type but will be not defined in the infered getters object.
  * `RootState` and `RootGetters` are the root module's state and getters type.
  */
-export type DefineGetters<
-  Getters,
-  State,
-  ExtraGetters = {},
-  RootState = {},
-  RootGetters = {}
-> = {
+export type DefineGetters<Getters, State, ExtraGetters = {}, RootState = {}, RootGetters = {}> = {
   [K in keyof Getters]: (
     state: State,
     getters: Getters & ExtraGetters,

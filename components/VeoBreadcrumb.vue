@@ -1,10 +1,7 @@
 <template>
   <v-flex class="breadcrumb-toolbar" color="elevation-0" style="overflow: hidden;" shrink>
-    Breadcrumb
-    <v-breadcrumbs class="breadcrumbs" justify-start="" divider="&gt;">
-      <v-breadcrumbs-item class="breadcrumb-item" :to="'/elements/'+(item && item.id)" ripple v-for="item in items" :key="item.id">
-        <slot v-bind="item"></slot>
-      </v-breadcrumbs-item>
+    <v-breadcrumbs :items="value" class="breadcrumbs" justify-start="" divider="&gt;">
+      <slot slot="item" slot-scope="item" v-bind="item"></slot>
     </v-breadcrumbs>
     <slot name="tools"></slot>
   </v-flex>
@@ -15,9 +12,8 @@ import Vue from "vue";
 
 export default Vue.extend({
   props: {
-    items: {
-      type: Array as () => { id: string }[],
-      itemId: String
+    value: {
+      type: Array as () => { id: string }[]
     }
   },
   methods: {

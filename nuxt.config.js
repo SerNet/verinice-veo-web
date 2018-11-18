@@ -1,12 +1,7 @@
 require("dotenv").config();
 
 const pkg = require("./package");
-const path = require("path");
-const coerce = require("./modules/stylus-coerce");
 import VuetifyLoaderPlugin from "vuetify-loader/lib/plugin";
-
-import colors from "vuetify/es5/util/colors";
-import theme from "./config/theme";
 
 module.exports = {
   mode: "universal",
@@ -21,8 +16,8 @@ module.exports = {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    "~/plugins/error.js",
     "~/plugins/axios.js",
+    { src: "~/plugins/i18n-error.js", ssr: false },
     "~/plugins/router.js",
     "~/plugins/vuetify.js",
     "~/plugins/directives.js",
@@ -72,17 +67,18 @@ module.exports = {
     middleware: ["auth"],
     extendRoutes(routes, resolve) {}
   },
-
   /*
    ** Nuxt.js modules
    */
   modules: [
+    "~/modules/error",
     "~/modules/logger",
     "~/modules/basicauth",
     // Doc: https://github.com/nuxt-community/axios-module#usage
     "@nuxtjs/axios",
     "@nuxtjs/pwa",
-    "~/modules/typescript",
+    //"~/modules/typescript",
+    "nuxt-typescript",
     "cookie-universal-nuxt",
     [
       "nuxt-i18n",
@@ -102,7 +98,7 @@ module.exports = {
             code: "de",
             iso: "de-DE",
             name: "Deutsch",
-            file: "de-DE.js"
+            file: "de-DE.ts"
           }
         ],
         defaultLocale: "de",
@@ -185,6 +181,13 @@ module.exports = {
     ]
   ],
 
+  typescript: {
+    checker: false,
+    babel: {
+      sourceMaps: "both"
+    }
+  },
+
   /*
    ** Axios module configuration
    */
@@ -218,11 +221,14 @@ module.exports = {
     transpile: [/^vuetify/],
     plugins: [new VuetifyLoaderPlugin()],
     extractCSS: true,
-    //cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
-    //parallel: false, //(thread-loader: https://github.com/webpack-contrib/thread-loader)
+    cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
+    parallel: false, //(thread-loader: https://github.com/webpack-contrib/thread-loader)
     watch: [".env", "config"],
     babel: {
       babelrc: false
+    },
+    extend(config, { isDev, isClient }) {
+      if (isClient && isDev) config.devtool = "eval-source-map";
     }
   }
 };

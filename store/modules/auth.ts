@@ -4,6 +4,7 @@ import { Module } from "vuex";
 import { AxiosError } from "axios";
 import jsonwebtoken from "jsonwebtoken";
 import { DefineModule, createNamespacedHelpers } from "vuex";
+import HTTPError from "../../exceptions/HTTPError";
 
 export interface State {
   token: null | string;
@@ -45,19 +46,7 @@ interface UserTokenPayload {
   profiles: string[];
 }
 
-const module: DefineModule<
-  State,
-  Getters,
-  Mutations,
-  Actions,
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  RootActions
-> = {
+const module: DefineModule<State, Getters, Mutations, Actions, {}, {}, {}, {}, {}, {}, RootActions> = {
   namespaced: true,
   state: {
     token: null,
@@ -90,34 +79,20 @@ const module: DefineModule<
         await dispatch("useToken", { token });
       }
     },
-    async login(
-      this: Vue,
-      { commit, dispatch },
-      { username, password, persist }
-    ) {
-      commit("setError", null);
-      try {
-        const response = await this.$axios.post("/api/login", {
+    async login(this: Vue, { commit, dispatch }, { username, password, persist }) {
+      const response = await this.$axios
+        .post("/api/login", {
           username,
           password
+        })
+        .catch(e => {
+          throw new HTTPError("AUTH_LOGIN_FAILED", e);
         });
 
-        const header = response.headers["authorization"];
-        const [type, token] = header.split(/\s+/);
-        await dispatch("useToken", { token, persist });
-        return token;
-      } catch (e) {
-        if (e.response) {
-          const { response } = e as AxiosError;
-          const err = new this.$error("AUTH_LOGIN_FAILED", {
-            status: response!.status,
-            cause: e
-          });
-          commit("setError", err.message);
-          return false;
-        }
-        throw e;
-      }
+      const header = response.headers["authorization"];
+      const [type, token] = header.split(/\s+/);
+      await dispatch("useToken", { token, persist });
+      return token;
     },
     async useToken(this: Vue, { commit, dispatch }, { token, persist }) {
       commit("setToken", token);
@@ -143,11 +118,6 @@ const module: DefineModule<
   }
 };
 
-export const helpers = createNamespacedHelpers<
-  State,
-  Getters,
-  Mutations,
-  Actions
->("auth");
+export const helpers = createNamespacedHelpers<State, Getters, Mutations, Actions>("auth");
 
 export default module;

@@ -8,3 +8,10 @@ export interface VeoItem {
   schema?: string;
   title?: string;
 }
+
+export interface VeoLink {
+  id: string;
+  source: string;
+  target: string;
+  schema: string;
+}

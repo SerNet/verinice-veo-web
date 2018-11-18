@@ -1,18 +1,7 @@
 <template>
-  <v-layout fill-height column>
-    <!--veo-breadcrumb class="breadcrumb" :items="breadcrumb" @change="onBreadcrumbChange">
-      <template slot-scope="props">{{props.title}}</template>
-      <template slot="tools">
-        <v-btn :to="'/history/'+$route.params.id" class="restore-btn" absolute right flat icon>
-          <v-icon>restore</v-icon>
-        </v-btn>
-      </template>
-    </veo-breadcrumb>-->
-
-    <element-header></element-header>
-
-    <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema" style="background-color: white; margin-top: 10px;"></veo-form>
-
+  <v-layout class="ml-3 mr-3" fill-height column>
+    <element-header :id="$route.params.id" :breadcrumb="breadcrumb" v-model="headerOpen" :num-attrbutes="numAttributes" :num-children="numChildren" :num-links="numLinks"></element-header>
+    <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema" style="background-color: white; margin: 10px;"></veo-form>
     <template slot="actions">
       <v-btn flat to="/elements">Abbrechen</v-btn>
       <v-btn color="primary darken-1" flat @click.native="save()">Speichern</v-btn>
@@ -28,7 +17,7 @@ import VeoForm from "~/components/Form/Form.vue";
 import TreeNav from "~/components/TreeNav/TreeNav.vue";
 import ElementHeader from "~/components/ElementHeader.vue";
 
-import { helpers as treeStore } from "~/store/modules/tree";
+import { helpers as elementsStore } from "~/store/modules/elements";
 import { helpers as formStore } from "~/store/modules/form";
 
 export default Vue.extend({
@@ -39,17 +28,45 @@ export default Vue.extend({
   },
   data() {
     return {
+      headerOpen: true,
       groups: ["IT Baseline-Catalog", "BSI Model"],
       form: {}
     };
   },
   computed: {
-    ...treeStore.mapState({ treeItems: "items" }),
+    ...elementsStore.mapState({
+      elements: "items"
+    }),
+    ...elementsStore.mapGetters({
+      childrenById: "childrenById",
+      breadcrumbById: "breadcrumbById"
+    }),
     ...formStore.mapState({
       formModel: "model",
       formSchema: "schema",
-      breadcrumb: "breadcrumb"
-    })
+      links: "links"
+    }),
+    breadcrumb(): any[] {
+      const id = this.$route.params.id;
+      const items: any[] = this.breadcrumbById(id) || [];
+      return items.map(id => this.elements[id]);
+    },
+    numAttributes() {
+      if (this.formModel) {
+        return Object.keys(this.formModel).length;
+      }
+      return 0;
+    },
+    numChildren(): number {
+      const children = this.childrenById(this.$route.params.id);
+      if (children) {
+        return children.length;
+      }
+      return 0;
+    },
+    numLinks(): number {
+      return this.links && this.links.length;
+    }
   },
   created() {
     this.form = this.formModel;

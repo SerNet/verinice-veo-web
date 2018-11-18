@@ -4,11 +4,14 @@
       <v-list class="pa-0 fill-height">
         <v-layout fill-height="" column>
           <v-flex shrink v-for="item in items" :key="item.title">
-            <v-list-tile class="tab" :class="{active: '/'+item.to[right?'r':'l'] == query}" @click="open(item)">
-              <v-list-tile-action>
-                <v-icon :color="( '/'+item.to[right?'r':'l'] == query)?'primary':'grey'">{{item.icon}}</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
+            <v-tooltip :left="right" :right="!right">
+              <v-list-tile slot="activator" class="tab" :class="{active: '/'+item.to[right?'r':'l'] == query}" @click="open(item)">
+                <v-list-tile-action>
+                  <v-icon :color="( '/'+item.to[right?'r':'l'] == query)?'primary':'grey'">{{item.icon}}</v-icon>
+                </v-list-tile-action>
+              </v-list-tile>
+              <span>{{item.title}}</span>
+            </v-tooltip>
           </v-flex>
           <v-spacer></v-spacer>
           <v-flex shrink justify-end="">
@@ -22,9 +25,9 @@
       </v-list>
     </v-flex>
     <v-flex class="sidepane-content" :order-xs1="right" :class="{'text-xs-right': right}">
-      <div v-show="value" style="width: 100%; height: 100%;  position: relative">
+      <v-container class="pa-0" v-show="value" style="width: 100%; height: 100%;  position: relative">
         <slot></slot>
-      </div>
+      </v-container>
     </v-flex>
   </v-layout>
 </template>
@@ -59,7 +62,7 @@ export default Vue.extend({
       const route = this.$route;
       const qry = { ...(item.to || {}) };
 
-      const path = qry.$ ? "/" + qry.$ : route.path;
+      const path = qry.$ ? "/" + (qry.$ == "index" ? "" : qry.$) : route.path;
       delete qry.$;
 
       this.$router.push({
