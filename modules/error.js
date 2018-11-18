@@ -1,4 +1,4 @@
-import Vue from "Vue";
+import Vue from "vue";
 
 module.exports = function() {
   this.nuxt.hook("render:errorMiddleware", app =>
