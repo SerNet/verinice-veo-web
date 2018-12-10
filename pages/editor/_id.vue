@@ -1,6 +1,14 @@
 <template>
   <v-layout class="ml-3 mr-3" fill-height column>
-    <element-header :id="$route.params.id" :breadcrumb="breadcrumb" v-model="headerOpen" :num-attrbutes="numAttributes" :num-children="numChildren" :num-links="numLinks"></element-header>
+    <element-header
+      :id="$route.params.id"
+      :title="title"
+      :breadcrumb="breadcrumb"
+      v-model="headerOpen"
+      :num-attrbutes="numAttributes"
+      :num-children="numChildren"
+      :num-links="numLinks"
+    ></element-header>
     <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema" style="background-color: white; margin: 10px;"></veo-form>
     <template slot="actions">
       <v-btn flat to="/elements">Abbrechen</v-btn>
@@ -46,6 +54,12 @@ export default Vue.extend({
       const id = this.$route.params.id;
       const items: any[] = this.breadcrumbById(id) || [];
       return items.map(id => this.elements[id]);
+    },
+    title() {
+      if (this.formModel && this.formModel["$veo.title"]) {
+        return this.formModel["$veo.title"];
+      }
+      return null;
     },
     numAttributes() {
       if (this.formModel) {

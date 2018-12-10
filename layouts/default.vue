@@ -68,7 +68,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      mainDrawer: false,
+      mainDrawer: true,
       leftItems: [
         {
           to: { l: "tree", $: "index", r: "history" },

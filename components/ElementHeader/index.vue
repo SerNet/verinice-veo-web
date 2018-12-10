@@ -18,12 +18,12 @@
           </v-layout>
         </div>
         <v-layout row wrap>
-          <v-flex v-if="false">
+          <v-flex>
             <v-container class="pl-0">
               <v-avatar size="32" color="grey">
-                <span class="white--text headline">A</span>
+                <span class="white--text headline">{{title&&title[0]?title[0]:""}}</span>
               </v-avatar>
-              <span class="ml-2">Titel</span>
+              <span class="ml-2">{{title}}</span>
             </v-container>
           </v-flex>
           <v-spacer></v-spacer>
@@ -38,7 +38,7 @@
         </v-layout>
         <v-layout row wrap>
           <v-flex shrink>
-            <count-button class="ml-0" :count="numAttrbutes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
+            <count-button :count="numAttrbutes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
             <count-button :count="numChildren" icon="format_align_right" text="Unterelemente" :to="'/browser/'+id"></count-button>
             <v-menu offset-y class="element_add_menu hidden-xs-only">
               <v-btn slot="activator" class="elevation-0 ma-0 pa-0">
@@ -46,7 +46,7 @@
                 <v-icon>arrow_drop_down</v-icon>
               </v-btn>
               <v-list>
-                <v-list-tile v-for="(item, index) in items" :key="index">
+                <v-list-tile v-for="(item, index) in menuItems" :key="index">
                   <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
@@ -55,14 +55,14 @@
           <v-spacer></v-spacer>
           <v-flex shrink>
             <count-button :count="numHistory" icon="history" text="Änderungen" right :to="'/history/'+id"></count-button>
-            <count-button class="mr-0" :count="numLinks" icon="link" text="Links" right :to="'/links/'+id"></count-button>
+            <count-button :count="numLinks" icon="link" text="Links" right :to="'/links/'+id"></count-button>
             <v-menu offset-y class="element_add_menu hidden-sm-and-up">
               <v-btn slot="activator" class="elevation-0 ma-0 pa-0">
                 <v-icon>add</v-icon>
                 <v-icon>arrow_drop_down</v-icon>
               </v-btn>
               <v-list>
-                <v-list-tile v-for="(item, index) in items" :key="index">
+                <v-list-tile v-for="(item, index) in menuItems" :key="index">
                   <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
@@ -85,6 +85,7 @@ export default Vue.extend({
     numChildren: { type: Number, default: 0 },
     numHistory: { type: Number, default: 0 },
     numLinks: { type: Number, default: 0 },
+    title: { type: String },
     breadcrumb: { type: Array },
     id: { type: String },
     value: { type: Boolean }
@@ -99,7 +100,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      items: [{ title: "Neuen Link" }, { title: "Neues Unterelement" }]
+      menuItems: [{ title: "Neuen Link" }, { title: "Neues Unterelement" }]
     };
   },
   computed: {
