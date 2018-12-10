@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <main-toolbar app v-if="!standalone" @click-side-icon="mainDrawer = !mainDrawer" :clipped="true" :clipped-left="false"></main-toolbar>
-    <side-pane v-if="!standalone" :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
+    <side-pane v-if="!standalone" v-model="mainDrawer" :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
       <template>
         <keep-alive>
           <component :key="leftKey" :is="left"></component>
@@ -68,6 +68,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      mainDrawer: false,
       leftItems: [
         {
           to: { l: "tree", $: "index", r: "history" },
