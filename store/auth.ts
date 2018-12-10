@@ -1,7 +1,7 @@
 import jsonwebtoken from "jsonwebtoken";
 import HTTPError from "~/exceptions/HTTPError";
 import Vue from "vue";
-import { createNamespacedHelpers, MutationTree, GetterTree, ActionTree } from "vuex/types/index";
+import { createNamespacedHelpers, MutationTree, GetterTree, ActionTree } from "vuex";
 import { RootState } from "~/store/index";
 import { VeoUserTokenPayload } from "~/types/api";
 
