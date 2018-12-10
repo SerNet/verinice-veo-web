@@ -22,6 +22,7 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import Vue from "vue";
 import { Item, helpers as elements } from "~/store/elements";
@@ -113,6 +114,7 @@ export default Vue.extend({
   }
 });
 </script>
+
 <style lang="stylus" scoped>
 >>> .v-treeview-node--active {
   background-color: #ffeaee !important;

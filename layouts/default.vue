@@ -27,7 +27,6 @@ import MainToolbar from "~/components/Layout/MainToolbar.vue";
 import MenuSidenav from "~/components/Layout/MenuSidenav.vue";
 import SidePane from "~/components/Layout/SidePane.vue";
 import SidePaneButtons from "~/components/Layout/SidePaneButtons.vue";
-import { helpers as navStore } from "~/store/modules/nav";
 import extendMatch from "~/lib/DynamicComponent";
 
 export default Vue.extend({

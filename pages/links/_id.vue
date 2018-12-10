@@ -8,12 +8,10 @@
           <v-list-tile :key="item.title" avatar @click.stop>
             <v-badge :color="inbound?'green':'blue'" right bottom overlap>
               <v-icon slot="badge" dark small>{{item.inbound?'arrow_forward':'arrow_back'}}</v-icon>
-
               <v-list-tile-avatar class="avatar-with-badge" color="grey">
                 <span class="white--text headline">L</span>
               </v-list-tile-avatar>
             </v-badge>
-
             <v-list-tile-content class="list-item-content">
               <v-list-tile-title v-html="item.title"></v-list-tile-title>
               <v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>

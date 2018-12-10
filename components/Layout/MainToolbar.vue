@@ -4,25 +4,22 @@
     <v-toolbar-side-icon light class="hidden-sm-and-up" @click.stop="toggleDrawer()" v-if="!showSearch" style="color: #e53935"/>
 
     <!-- normale Suche -->
-    <v-layout class="hidden-sm-and-down" row justify-space-around style="margin-left: 200px;">
+    <!--<v-layout class="hidden-sm-and-down" row justify-space-around style="margin-left: 200px;">
       <v-flex v-if="search" xs12 sm6 align-content-center>
         <v-text-field solo light single-line label="In verinice suchen"/>
       </v-flex>
-    </v-layout>
-
+    </v-layout>-->
     <!-- mobile Suche -->
-    <v-layout v-if="search" class="hidden-md-and-up" row justify-space-around style="margin-left: 20px;">
+    <!--<v-layout v-if="search" class="hidden-md-and-up" row justify-space-around style="margin-left: 20px;">
       <v-flex xs12>
         <v-text-field solo light single-line label="In verinice suchen" v-if="showSearch"/>
       </v-flex>
       <v-btn icon @click="toggleSearch()">
         <v-icon>{{showSearch?'close':'search'}}</v-icon>
       </v-btn>
-    </v-layout>
-
-    <template v-if="!showSearch">
-      <account-btn v-if="username" :username="username" @logout="onLogout"></account-btn>
-    </template>
+    </v-layout>-->
+    <v-spacer></v-spacer>
+    <account-btn v-if="username && !showSearch" :username="username" @logout="onLogout"></account-btn>
   </v-toolbar>
 </template>
 
