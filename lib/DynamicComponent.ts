@@ -1,4 +1,5 @@
 import Vue from "vue";
+//@ts-ignore
 import NuxtError from "~/components/Error.vue";
 
 function toAsyncComponent(component: any) {
@@ -68,5 +69,6 @@ export default function(instance: Vue, route: string, context: Object = {}) {
     console.error("FEHLER");
   }
   //throw new Error(`Could not find route "${route}"`);
-  return toAsyncComponent(import("~/components/" + "Error.vue"));
+  //@ts-ignore
+  return toAsyncComponent(import("~/components/Error.vue"));
 }

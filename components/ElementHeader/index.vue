@@ -71,15 +71,13 @@
         </v-layout>
       </v-expansion-panel-content>
     </v-expansion-panel>
-
   </v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
-import VeoBreadcrumb from "~/components/VeoBreadcrumb.vue";
-import CountButton from "~/components/CountButton.vue";
+import CountButton from "~/components/ElementHeader/CountButton.vue";
 
 export default Vue.extend({
   props: {
@@ -97,7 +95,6 @@ export default Vue.extend({
     }
   },
   components: {
-    VeoBreadcrumb,
     CountButton
   },
   data() {

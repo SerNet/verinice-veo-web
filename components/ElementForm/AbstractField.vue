@@ -1,5 +1,12 @@
 <template>
-  <component :is="fieldComponent" v-bind="fieldOptions" :label="nameMap[name] || schema.title || name" :placeholder="schema.title" :value="value" @input="$emit('input', $event)">{{fieldValue}}</component>
+  <component
+    :is="fieldComponent"
+    v-bind="fieldOptions"
+    :label="nameMap[name] || schema.title || name"
+    :placeholder="schema.title"
+    :value="value"
+    @input="$emit('input', $event)"
+  >{{fieldValue}}</component>
 </template>
 
 <script lang="ts">

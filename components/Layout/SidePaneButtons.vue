@@ -13,9 +13,7 @@
         <v-icon>more_vert</v-icon>
       </v-btn>
       <v-list dense>
-        <v-list-tile @click.stop="">
-          Langer Text abcdef
-        </v-list-tile>
+        <v-list-tile @click.stop>Langer Text abcdef</v-list-tile>
       </v-list>
     </v-menu>
   </v-bottom-nav>

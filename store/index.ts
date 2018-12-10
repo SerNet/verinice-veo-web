@@ -1,8 +1,6 @@
 import Vue from "vue";
 import Vuex, { Store, Dispatch, Commit, Module } from "vuex";
 import auth from "./modules/auth";
-import nav from "./modules/nav";
-import tree from "./modules/tree";
 import elements from "./modules/elements";
 import schema from "./modules/schema";
 import form from "./modules/form";
@@ -19,9 +17,7 @@ export type RootState = typeof state;
 
 const modules: any = {
   auth,
-  nav,
   schema,
-  tree,
   elements,
   form,
   error
@@ -32,9 +28,7 @@ export interface RootActions {
 }
 
 export default () => {
-  const root: StrictStore<RootState, typeof modules> = new Vuex.Store<
-    RootState
-  >({
+  const root: StrictStore<RootState, typeof modules> = new Vuex.Store<RootState>({
     modules,
     strict: process.env.NODE_ENV !== "production",
     plugins: [strictModules],

@@ -1,8 +1,8 @@
 <template>
-  <v-layout class="sidepane" :class="{right}" row fill-height="">
+  <v-layout class="sidepane" :class="{right}" row fill-height>
     <v-flex class="tablist" shrink :order-xs2="right">
       <v-list class="pa-0 fill-height">
-        <v-layout fill-height="" column>
+        <v-layout fill-height column>
           <v-flex shrink v-for="item in items" :key="item.title">
             <v-tooltip :left="right" :right="!right">
               <v-list-tile slot="activator" class="tab" :class="{active: '/'+item.to[right?'r':'l'] == query}" @click="open(item)">
@@ -14,7 +14,7 @@
             </v-tooltip>
           </v-flex>
           <v-spacer></v-spacer>
-          <v-flex shrink justify-end="">
+          <v-flex shrink justify-end>
             <v-list-tile class="tab bottom" @click="toggleCollapse">
               <v-list-tile-action>
                 <v-icon color="grey">{{(value?right:!right)?'chevron_right':'chevron_left'}}</v-icon>

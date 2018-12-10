@@ -3,10 +3,17 @@
     <h2 class="pb-3">Editor</h2>
 
     <v-form>
-      <abstract-field v-for="property in properties" :key="property.key" :name="property.key" :schema="property" :required="schema.required.includes(property.key)" @input="onFieldChange(property, $event)" :value="model[property.key]" />
+      <abstract-field
+        v-for="property in properties"
+        :key="property.key"
+        :name="property.key"
+        :schema="property"
+        :required="schema.required.includes(property.key)"
+        @input="onFieldChange(property, $event)"
+        :value="model[property.key]"
+      />
     </v-form>
     <!-- <v-expansion-panel class="elevation-0 ma-0" :value="[true, true]" :expand="true"> -->
-
     <!-- Editor -->
     <!-- <v-expansion-panel-content class="grey lighten-3 elevation-1">
         <div slot="header">
@@ -33,8 +40,7 @@
 
           </v-card-text>
         </v-card>
-      </v-expansion-panel-content> -->
-
+    </v-expansion-panel-content>-->
     <!-- Links -->
     <!-- <v-expansion-panel-content class="grey lighten-3 elevation-1">
         <div slot="header">
@@ -66,14 +72,14 @@
 
           </v-card-text>
         </v-card>
-      </v-expansion-panel-content> -->
+    </v-expansion-panel-content>-->
     <!-- </v-expansion-panel> -->
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import AbstractField from "~/components/Form/AbstractField.vue";
+import AbstractField from "~/components/ElementForm/AbstractField.vue";
 import { JSONSchema6, JSONSchema6TypeName } from "json-schema";
 
 export type JSONSchemaProperty = JSONSchema6 & { key: string };

@@ -2,14 +2,21 @@
   <div style="width: 100%; height: 100%;">
     <h3 class="grey--text pa-2">IT Grundschutz</h3>
     <div style="position: absolute; top: 50px; left:0; right:0; bottom:0; overflow: auto">
-      <v-treeview v-model="selected" :open="open" @update:open="onOpen" :items="items" @update:active="onActive" selectable="" selected-color="primary" activatable item-key="id" item-text="title">
+      <v-treeview
+        v-model="selected"
+        :open="open"
+        @update:open="onOpen"
+        :items="items"
+        @update:active="onActive"
+        selectable
+        selected-color="primary"
+        activatable
+        item-key="id"
+        item-text="title"
+      >
         <template slot="prepend" slot-scope="{ item, open, leaf }">
-          <v-icon v-if="!item.file">
-            {{ open ? 'folder_open' : 'folder' }}
-          </v-icon>
-          <v-icon v-else>
-            {{ files[item.file] }}
-          </v-icon>
+          <v-icon v-if="!item.file">{{ open ? 'folder_open' : 'folder' }}</v-icon>
+          <v-icon v-else>{{ files[item.file] }}</v-icon>
         </template>
       </v-treeview>
     </div>

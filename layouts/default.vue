@@ -18,17 +18,15 @@
         <component :key="rightKey" :is="right"></component>
       </keep-alive>
     </side-pane>
-
   </v-app>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import MainToolbar from "~/components/MainLayout/MainToolbar.vue";
-import MenuSidenav from "~/components/MainLayout/MenuSidenav.vue";
+import MainToolbar from "~/components/Layout/MainToolbar.vue";
+import MenuSidenav from "~/components/Layout/MenuSidenav.vue";
 import SidePane from "~/components/Layout/SidePane.vue";
 import SidePaneButtons from "~/components/Layout/SidePaneButtons.vue";
-import TreeWidget from "~/widgets/Tree.vue";
 import { helpers as navStore } from "~/store/modules/nav";
 import extendMatch from "~/lib/DynamicComponent";
 
@@ -36,7 +34,6 @@ export default Vue.extend({
   components: {
     MainToolbar,
     MenuSidenav,
-    TreeWidget,
     SidePane,
     SidePaneButtons
   },

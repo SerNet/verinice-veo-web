@@ -50,11 +50,7 @@ module.exports = class Cmd extends RestCommand {
 
   async handle({ schema, root }, { N }) {
     await this.authorize();
-    this.info(
-      `Creating ${N} elements of type ${schema}${
-        root ? ` (parent: ${root})` : ""
-      }...`
-    );
+    this.info(`Creating ${N} elements of type ${schema}${root ? ` (parent: ${root})` : ""}...`);
     await this.insert(schema, root, N);
   }
 };

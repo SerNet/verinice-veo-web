@@ -1,19 +1,19 @@
 <template>
-  <v-toolbar app class="elevation-0" color="primary" dark="" style="overflow:hidden;" :clipped-left="clipped" id="mainToolbar">
-    <main-toolbar-logo v-if="!showSearch" />
-    <v-toolbar-side-icon light class="hidden-sm-and-up" @click.stop="toggleDrawer()" v-if="!showSearch" style="color: #e53935" />
+  <v-toolbar app class="elevation-0" color="primary" dark style="overflow:hidden;" :clipped-left="clipped" id="mainToolbar">
+    <main-toolbar-logo v-if="!showSearch"/>
+    <v-toolbar-side-icon light class="hidden-sm-and-up" @click.stop="toggleDrawer()" v-if="!showSearch" style="color: #e53935"/>
 
     <!-- normale Suche -->
     <v-layout class="hidden-sm-and-down" row justify-space-around style="margin-left: 200px;">
       <v-flex v-if="search" xs12 sm6 align-content-center>
-        <v-text-field solo light single-line label="In verinice suchen" />
+        <v-text-field solo light single-line label="In verinice suchen"/>
       </v-flex>
     </v-layout>
 
     <!-- mobile Suche -->
     <v-layout v-if="search" class="hidden-md-and-up" row justify-space-around style="margin-left: 20px;">
       <v-flex xs12>
-        <v-text-field solo light single-line label="In verinice suchen" v-if="showSearch" />
+        <v-text-field solo light single-line label="In verinice suchen" v-if="showSearch"/>
       </v-flex>
       <v-btn icon @click="toggleSearch()">
         <v-icon>{{showSearch?'close':'search'}}</v-icon>
@@ -28,9 +28,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import MainToolbarLogo from "~/components/MainLayout/MainToolbarLogo.vue";
-import AccountBtn from "~/components/MainLayout/AccountBtn.vue";
-import LoginDialog from "~/components/MainLayout/LoginDialog.vue";
+import MainToolbarLogo from "~/components/Layout/MainToolbarLogo.vue";
+import AccountBtn from "~/components/Layout/AccountBtn.vue";
+import LoginDialog from "~/components/Layout/LoginDialog.vue";
 import { helpers as authStore } from "~/store/modules/auth";
 
 export default Vue.extend({

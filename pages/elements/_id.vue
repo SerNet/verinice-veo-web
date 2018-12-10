@@ -6,23 +6,20 @@
       <v-btn flat to="/elements">Abbrechen</v-btn>
       <v-btn color="primary darken-1" flat @click.native="save()">Speichern</v-btn>
     </template>
-
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
-import VeoForm from "~/components/Form/Form.vue";
-import TreeNav from "~/components/TreeNav/TreeNav.vue";
-import ElementHeader from "~/components/ElementHeader.vue";
+import VeoForm from "~/components/ElementForm/index.vue";
+import ElementHeader from "~/components/ElementHeader/index.vue";
 
 import { helpers as elementsStore } from "~/store/modules/elements";
 import { helpers as formStore } from "~/store/modules/form";
 
 export default Vue.extend({
   components: {
-    TreeNav,
     ElementHeader,
     VeoForm
   },

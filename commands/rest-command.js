@@ -13,6 +13,7 @@ module.exports = class Cmd extends Command {
   static get VEO_TYPE() {
     return "$veo.type";
   }
+
   static get VEO_PARENT() {
     return "parent";
   }
