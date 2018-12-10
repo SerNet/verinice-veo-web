@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Item, helpers as elements } from "~/store/modules/elements";
+import { Item, helpers as elements } from "~/store/elements";
 
 type TreeItem = Item & { children?: TreeItem[] };
 

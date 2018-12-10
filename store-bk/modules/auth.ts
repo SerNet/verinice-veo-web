@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { RootState, RootActions } from "~/store/index";
+import { RootState, RootActions } from "~/store-bk/index";
 import { Module } from "vuex";
 import { AxiosError } from "axios";
 import jsonwebtoken from "jsonwebtoken";

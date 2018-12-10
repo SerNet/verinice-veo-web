@@ -45,9 +45,7 @@ declare module "vue/types/options" {
     redirect: RedirectFunction;
     error: (params: { statusCode: number; message: string }) => void;
     nuxtState: Object;
-    beforeNuxtRender: (
-      fn: (params: { Components: PropertyMap; nuxtState: PropertyMap }) => any
-    ) => void;
+    beforeNuxtRender: (fn: (params: { Components: PropertyMap; nuxtState: PropertyMap }) => any) => void;
   };
 
   export interface ComponentOptions<V extends Vue> {
@@ -81,5 +79,20 @@ declare module "vue/types/vue" {
     $te: typeof VueI18n.prototype.te;
     $d: typeof VueI18n.prototype.d;
     $n: typeof VueI18n.prototype.n;
+  }
+}
+
+declare module "vuex/types/index" {
+  export type ActionHandler<S, R> = (
+    this: Vue & { $axios: AxiosInstance },
+    injectee: ActionContext<S, R>,
+    payload: any
+  ) => any;
+  export interface ActionObject<S, R> {
+    root?: boolean;
+    handler: ActionHandler<S, R>;
+  }
+  export interface ActionTree<S, R> {
+    [key: string]: Action<S, R>;
   }
 }

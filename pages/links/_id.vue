@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { helpers as formStore } from "~/store/modules/form";
-import { helpers as elementsStore } from "~/store/modules/elements";
+import { helpers as formHelpers } from "~/store/form";
+import { helpers as elementHelpers } from "~/store/elements";
 import { VeoLink } from "api";
 
 export default Vue.extend({
@@ -35,10 +35,10 @@ export default Vue.extend({
   methods: {},
   components: {},
   computed: {
-    ...elementsStore.mapState({
+    ...elementHelpers.mapState({
       elements: "items"
     }),
-    ...formStore.mapState({
+    ...formHelpers.mapState({
       links: "links"
     }),
     items(): any[] {
