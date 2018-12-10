@@ -15,3 +15,12 @@ export interface VeoLink {
   target: string;
   schema: string;
 }
+
+export interface VeoUserTokenPayload {
+  exp: number;
+  sub: string;
+  iss: string;
+  iat: number;
+  aud: string;
+  profiles: string[];
+}

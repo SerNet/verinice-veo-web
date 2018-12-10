@@ -3,7 +3,7 @@
     "jsx": "preserve",
     "target": "es5",
     "lib": ["dom", "es2015"],
-    "typeRoots": ["./types/", "./node_modules/@types"],
+    "typeRoots": ["./types", "./node_modules/@types"],
     "module": "esNext",
     "moduleResolution": "node",
     "experimentalDecorators": true,
@@ -17,7 +17,7 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "*": ["./*", "types/*"],
+      "*": ["./*"],
       "~/*": ["./*"],
       "@/*": ["./*"]
     }

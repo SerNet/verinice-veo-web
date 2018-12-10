@@ -31,7 +31,7 @@ import Vue from "vue";
 import MainToolbarLogo from "~/components/Layout/MainToolbarLogo.vue";
 import AccountBtn from "~/components/Layout/AccountBtn.vue";
 import LoginDialog from "~/components/Layout/LoginDialog.vue";
-import { helpers as authStore } from "~/store/modules/auth";
+import { helpers as authHelpers } from "~/store/auth";
 
 export default Vue.extend({
   components: {
@@ -45,7 +45,7 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...authStore.mapState({
+    ...authHelpers.mapState({
       username: "username",
       authError: "error"
     })
@@ -61,7 +61,7 @@ export default Vue.extend({
     toggleSearch() {
       this.showSearch = !this.showSearch;
     },
-    ...authStore.mapActions({
+    ...authHelpers.mapActions({
       login: "login",
       logout: "logout"
     }),

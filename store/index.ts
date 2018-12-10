@@ -1,55 +1,27 @@
-import Vue from "vue";
-import Vuex, { Store, Dispatch, Commit, Module } from "vuex";
-import auth from "./modules/auth";
-import elements from "./modules/elements";
-import schema from "./modules/schema";
-import form from "./modules/form";
-import error from "./modules/error";
-import { StrictStore, strictModules } from "./helpers/StrictStore";
+import { createNamespacedHelpers, MutationTree, GetterTree, ActionTree } from "vuex";
 
-Vue.use(Vuex);
-
-const state = {
-  version: "1.0.0",
-  errors: []
-};
-export type RootState = typeof state;
-
-const modules: any = {
-  auth,
-  schema,
-  elements,
-  form,
-  error
-};
-
-export interface RootActions {
-  init: {};
+export interface RootState {
+  version: string;
+  errors: any[];
 }
 
-export default () => {
-  const root: StrictStore<RootState, typeof modules> = new Vuex.Store<RootState>({
-    modules,
-    strict: process.env.NODE_ENV !== "production",
-    plugins: [strictModules],
-    actions: {
-      async nuxtServerInit(this: Vue, context, { route, req }) {
-        if (req && req.url && req.url.indexOf(".") > -1) return;
-        try {
-          await context.dispatch("auth/init");
-          await context.dispatch("init");
-        } catch (e) {
-          console.error(e);
-        }
-      },
-      async init(this: Vue, { getters, dispatch }) {
-        if (getters["auth/isAuthorized"]) {
-          await dispatch("schema/init");
-          await dispatch("elements/init");
-        }
-      }
-    }
-  });
+export const state = () => ({ version: "1.0.0", errors: [] } as RootState);
 
-  return root;
+export const actions: ActionTree<RootState, RootState> = {
+  async nuxtServerInit({ dispatch }, { route, req }) {
+    if (req && req.url && req.url.indexOf(".") > -1) return;
+    try {
+      await dispatch("auth/init");
+      await dispatch("init");
+    } catch (e) {
+      console.error(e);
+    }
+  },
+
+  async init({ getters, dispatch }) {
+    if (getters["auth/isAuthorized"]) {
+      await dispatch("schema/init");
+      await dispatch("elements/init");
+    }
+  }
 };

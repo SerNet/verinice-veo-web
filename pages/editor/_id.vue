@@ -14,9 +14,8 @@ import Vue from "vue";
 
 import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
-
-import { helpers as elementsStore } from "~/store/modules/elements";
-import { helpers as formStore } from "~/store/modules/form";
+import { helpers as formHelpers } from "~/store/form";
+import { helpers as elementsHelpers } from "~/store/elements";
 
 export default Vue.extend({
   components: {
@@ -31,14 +30,14 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...elementsStore.mapState({
+    ...elementsHelpers.mapState({
       elements: "items"
     }),
-    ...elementsStore.mapGetters({
+    ...elementsHelpers.mapGetters({
       childrenById: "childrenById",
       breadcrumbById: "breadcrumbById"
     }),
-    ...formStore.mapState({
+    ...formHelpers.mapState({
       formModel: "model",
       formSchema: "schema",
       links: "links"
@@ -69,7 +68,7 @@ export default Vue.extend({
     this.form = this.formModel;
   },
   methods: {
-    ...formStore.mapActions({
+    ...formHelpers.mapActions({
       saveForm: "save"
     }),
     onBreadcrumbChange(item: string) {},

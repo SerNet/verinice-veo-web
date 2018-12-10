@@ -2,9 +2,7 @@
   <v-container class="text-xs-center">
     <v-layout row>
       <v-flex xs12 lg4 offset-lg4>
-
         <v-form ref="form" @submit.prevent="submit()">
-
           <v-text-field :error="!!error" v-model="username" label="Benutzername" clearable></v-text-field>
           <v-text-field :error="!!error" v-model="password" label="Passwort" clearable type="password"></v-text-field>
           <v-checkbox v-model="savePassword" :label="`Passwort speichern`"></v-checkbox>
@@ -16,7 +14,6 @@
           <v-btn color="primary" flat to="/">Abbrechen</v-btn>
           <v-btn color="primary" type="submit" flat>Login</v-btn>
         </v-form>
-
       </v-flex>
     </v-layout>
   </v-container>
@@ -24,13 +21,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { helpers as authStore } from "~/store/modules/auth";
+import { helpers as authHelpers } from "~/store/auth";
 
 export default Vue.extend({
   layout: "login",
   components: {},
   computed: {
-    ...authStore.mapState({
+    ...authHelpers.mapState({
       authError: "error"
     })
   },
@@ -47,7 +44,7 @@ export default Vue.extend({
     error: String
   },
   methods: {
-    ...authStore.mapActions({
+    ...authHelpers.mapActions({
       login: "login",
       logout: "logout"
     }),

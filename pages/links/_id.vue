@@ -5,7 +5,7 @@
       <v-list two-line v-if="items && items.length > 0">
         <template v-for="(item, index) in items">
           <v-divider v-if="index!=0" inset :key="index"></v-divider>
-          <v-list-tile :key="item.title" avatar @click.stop="">
+          <v-list-tile :key="item.title" avatar @click.stop>
             <v-badge :color="inbound?'green':'blue'" right bottom overlap>
               <v-icon slot="badge" dark small>{{item.inbound?'arrow_forward':'arrow_back'}}</v-icon>
 
@@ -21,17 +21,15 @@
           </v-list-tile>
         </template>
       </v-list>
-      <div class="ma-3 text-xs-center" style="color: #333" v-else>
-        Es sind keine Links vorhanden.
-      </div>
+      <div class="ma-3 text-xs-center" style="color: #333" v-else>Es sind keine Links vorhanden.</div>
     </v-flex>
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { helpers as formStore } from "~/store/modules/form";
-import { helpers as elementsStore } from "~/store/modules/elements";
+import { helpers as formHelpers } from "~/store/form";
+import { helpers as elementHelpers } from "~/store/elements";
 import { VeoLink } from "api";
 
 export default Vue.extend({
@@ -39,10 +37,10 @@ export default Vue.extend({
   methods: {},
   components: {},
   computed: {
-    ...elementsStore.mapState({
+    ...elementHelpers.mapState({
       elements: "items"
     }),
-    ...formStore.mapState({
+    ...formHelpers.mapState({
       links: "links"
     }),
     items(): any[] {
