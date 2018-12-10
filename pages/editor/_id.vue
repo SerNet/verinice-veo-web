@@ -12,7 +12,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import VeoForm from "~/components/ElementForm/index.vue";
+import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
 
 import { helpers as elementsStore } from "~/store/modules/elements";

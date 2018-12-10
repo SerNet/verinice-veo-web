@@ -38,7 +38,7 @@
         </v-layout>
         <v-layout row wrap>
           <v-flex shrink>
-            <count-button class="ml-0" :count="numAttrbutes" icon="list" text="Attribute" :to="'/elements/'+id"></count-button>
+            <count-button class="ml-0" :count="numAttrbutes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
             <count-button :count="numChildren" icon="format_align_right" text="Unterelemente" :to="'/browser/'+id"></count-button>
             <v-menu offset-y class="element_add_menu hidden-xs-only">
               <v-btn slot="activator" class="elevation-0 ma-0 pa-0">
@@ -110,7 +110,7 @@ export default Vue.extend({
       const id = this.$route.params.id;
       return this.breadcrumb.map((item: any) => ({
         disabled: item.id == id,
-        to: "/elements/" + item.id,
+        to: "/editor/" + item.id,
         text: item.title
       }));
     }

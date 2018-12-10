@@ -94,7 +94,7 @@ export default Vue.extend({
       if (items && items[0]) {
         const item = items[0];
         this.$router.push({
-          path: "/elements/" + item,
+          path: "/editor/" + item,
           query: this.$route.query
         });
       }

@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import AbstractField from "~/components/ElementForm/AbstractField.vue";
+import AbstractField from "~/components/Editor/AbstractField.vue";
 import { JSONSchema6, JSONSchema6TypeName } from "json-schema";
 
 export type JSONSchemaProperty = JSONSchema6 & { key: string };
