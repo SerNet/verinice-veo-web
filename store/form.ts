@@ -1,8 +1,8 @@
-import { createNamespacedHelpers, MutationTree, GetterTree, ActionTree } from "vuex";
-import { RootState } from "~/store/index";
 import { VeoItem, VeoLink } from "~/types/api";
 import HTTPError from "~/exceptions/HTTPError";
 import { ID_FIELD, TITLE_FIELD, PARENT_FIELD, TYPE_FIELD } from "~/config/api";
+import { RootDefined } from "~/store/index";
+import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
 
 export interface State {
   model: any;
@@ -19,15 +19,25 @@ export const state = () =>
     schemaCache: {}
   } as State);
 
-export const getters: GetterTree<State, RootState> = {
-  schemaByName: state => (name: string) => state.schemaCache[name]
-};
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+interface Getters {
+  schemaByName(name: string): any;
+}
 
-export const mutations: MutationTree<State> = {
+export const getters: RootDefined.Getters<Getters, State> = { schemaByName: state => name => state.schemaCache[name] };
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+interface Mutations {
+  setModel: any;
+  setLinks: VeoLink[];
+  setSchema: any;
+  addSchema: { name: string; value: string };
+}
+
+export const mutations: DefineMutations<Mutations, State> = {
   setModel(state, value: {}) {
     state.model = value;
   },
-  setLinks(state, value: []) {
+  setLinks(state, value) {
     state.links = value;
   },
   setSchema(state, value: {}) {
@@ -37,16 +47,21 @@ export const mutations: MutationTree<State> = {
     state.schemaCache[name] = value;
   }
 };
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+interface Actions {
+  create: { type: string; parent: string };
+  load: { id: string };
+  loadElement: { id: string };
+  loadLinks: { id: string };
+  loadSchema: { name: string };
+  save: { [ID_FIELD]: string };
+}
 
-export const actions: ActionTree<State, RootState> = {
+export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
   async create({ dispatch, rootGetters, commit }, { type, parent }) {
     try {
       const title = "Neues Element";
-      const response: VeoItem = {
-        [TITLE_FIELD]: title,
-        [PARENT_FIELD]: parent,
-        [TYPE_FIELD]: type
-      };
+      const response: VeoItem = { [TITLE_FIELD]: title, [PARENT_FIELD]: parent, [TYPE_FIELD]: type };
       commit("setModel", response);
       if (response[TYPE_FIELD]) {
         await dispatch("loadSchema", { name: response[TYPE_FIELD] });
@@ -59,7 +74,6 @@ export const actions: ActionTree<State, RootState> = {
     const model = await dispatch("loadElement", { id });
     if (model[TYPE_FIELD]) await dispatch("loadSchema", { name: model[TYPE_FIELD] });
   },
-
   async loadElement({ dispatch, rootGetters, commit }, { id }) {
     const response = await this.$axios.$get(`/api/elements/${id}`).catch(e => {
       throw new HTTPError("FORM_GET_ELEMENT_FAILED", { id }, e);
@@ -73,8 +87,7 @@ export const actions: ActionTree<State, RootState> = {
   },
   /**
    * Retrieve a schema from the web service
-   */
-  async loadSchema({ commit, getters }, { name }) {
+   */ async loadSchema({ commit, getters }, { name }) {
     const existing = getters.schemaByName(name);
     if (existing) {
       commit("setSchema", existing);
@@ -106,5 +119,5 @@ export const actions: ActionTree<State, RootState> = {
     return id;
   }
 };
-
-export const helpers = createNamespacedHelpers("form");
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+export const helpers = createNamespace<State, Getters, Mutations, Actions>("form");

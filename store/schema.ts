@@ -1,15 +1,19 @@
-import { createNamespacedHelpers, MutationTree, GetterTree, ActionTree } from "vuex";
-import { RootState } from "~/store/index";
+import { RootDefined } from "~/store/index";
+import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
 
 export interface State {
   schemaNames: string[];
 }
 
 export const state = () => ({ schemaNames: [] } as State);
-
-export const getters: GetterTree<State, RootState> = {};
-
-export const mutations: MutationTree<State> = {
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+interface Getters {}
+export const getters: RootDefined.Getters<Getters, State> = {};
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+interface Mutations {
+  setSchemaNames: string[];
+}
+export const mutations: DefineMutations<Mutations, State> = {
   setSchemaNames(state, value) {
     state.schemaNames = value
       .map(val =>
@@ -21,8 +25,12 @@ export const mutations: MutationTree<State> = {
       .sort();
   }
 };
-
-export const actions: ActionTree<State, RootState> = {
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+interface Actions {
+  init: {};
+  fetch: {};
+}
+export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
   async init({ state, dispatch, commit }, payload) {
     await dispatch("fetch", {});
   },
@@ -35,5 +43,5 @@ export const actions: ActionTree<State, RootState> = {
     }
   }
 };
-
-export const helpers = createNamespacedHelpers("schema");
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+export const helpers = createNamespace<State, Getters, Mutations, Actions>("schema");

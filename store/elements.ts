@@ -1,7 +1,7 @@
-import { createNamespacedHelpers, MutationTree, GetterTree, ActionTree } from "vuex";
-import { RootState } from "~/store/index";
 import { VeoItem } from "~/types/api";
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
+import { RootDefined } from "~/store/index";
+import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
 
 type ItemID = string;
 
@@ -15,7 +15,7 @@ export interface Item {
 
 type ItemMap = Record<ItemID, Item>;
 type ItemIDMap = Record<ItemID, ItemID[]>;
-
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
   active: ItemID[];
   items: ItemMap;
@@ -24,9 +24,14 @@ export interface State {
 }
 
 export const state = () => ({ active: [], items: {}, roots: [], children: {} } as State);
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+interface Getters {
+  breadcrumbById(id: string): string[];
+  childrenById(id: string): ItemID[];
+}
 
-export const getters: GetterTree<State, RootState> = {
-  breadcrumbById: state => (id: string) => {
+export const getters: RootDefined.Getters<Getters, State> = {
+  breadcrumbById: state => id => {
     const path: string[] = [];
     const itemMap = state.items;
     let parent = id;
@@ -43,8 +48,15 @@ export const getters: GetterTree<State, RootState> = {
     return state.children[id];
   }
 };
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+interface Mutations {
+  setItems: ItemMap;
+  setActive: ItemID[];
+  setRoots: ItemID[];
+  setChildren: ItemIDMap;
+}
 
-export const mutations: MutationTree<State> = {
+export const mutations: DefineMutations<Mutations, State> = {
   setItems(state, value) {
     state.items = value;
   },
@@ -58,8 +70,13 @@ export const mutations: MutationTree<State> = {
     state.children = value;
   }
 };
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+interface Actions {
+  init: {};
+  fetchItems: {};
+}
 
-export const actions: ActionTree<State, RootState> = {
+export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
   async init({ dispatch }) {
     await dispatch("fetchItems", {});
   },
@@ -88,13 +105,7 @@ export const actions: ActionTree<State, RootState> = {
         childrenOf.push(id);
       }
 
-      itemMap[id] = {
-        id,
-        title: item[TITLE_FIELD],
-        parent: item[PARENT_FIELD],
-        type: item[TYPE_FIELD],
-        data: item
-      };
+      itemMap[id] = { id, title: item[TITLE_FIELD], parent: item[PARENT_FIELD], type: item[TYPE_FIELD], data: item };
       return itemMap;
     }, itemMap);
     commit("setRoots", roots);
@@ -103,4 +114,5 @@ export const actions: ActionTree<State, RootState> = {
   }
 };
 
-export const helpers = createNamespacedHelpers("elements");
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+export const helpers = createNamespace<State, Getters, Mutations, Actions>("elements");

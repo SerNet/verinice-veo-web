@@ -52,7 +52,7 @@ export default Vue.extend({
     }),
     breadcrumb(): any[] {
       const id = this.$route.params.id;
-      const items: any[] = this.breadcrumbById(id) || [];
+      const items = this.breadcrumbById(id) || [];
       return items.map(id => this.elements[id]);
     },
     title() {
