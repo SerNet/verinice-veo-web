@@ -1,8 +1,10 @@
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 
+export type ItemId = string;
+
 export interface VeoItem {
-  [ID_FIELD]?: string;
-  [PARENT_FIELD]: string;
+  [ID_FIELD]?: ItemId;
+  [PARENT_FIELD]: ItemId;
   [TITLE_FIELD]: string;
   [TYPE_FIELD]: string;
   schema?: string;

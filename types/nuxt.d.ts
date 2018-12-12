@@ -27,7 +27,7 @@ declare module "vue/types/options" {
     (...args: any[]): void;
   }
 
-  type NuxtContext<S> = {
+  type NuxtContext<S = any> = {
     app: Vue;
     isClient: boolean;
     isServer: boolean;

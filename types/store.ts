@@ -48,12 +48,18 @@ type ActionMethod<P, Type extends MethodType> = {
  */
 interface MapGetters<Getters> {
   <Key extends keyof Getters>(map: Key[]): { [K in Key]: Computed<Getters[K]> };
-  <Map extends Record<keyof Map, keyof Getters>>(map: Map): { [K in keyof Map]: Computed<Getters[Map[K]]> };
+
+  <Map extends Record<string, keyof Getters>>(map: Map): {
+    //@ts-ignore
+    [K in keyof Map]: Computed<Getters[Map[K]]>
+  };
 }
 
 interface RootMapGetters<Getters> extends MapGetters<Getters> {
   <Key extends keyof Getters>(namespace: string, map: Key[]): { [K in Key]: Computed<Getters[K]> };
-  <Map extends Record<keyof Map, keyof Getters>>(namespace: string, map: Map): {
+
+  <Map extends Record<string, keyof Getters>>(namespace: string, map: Map): {
+    //@ts-ignore
     [K in keyof Map]: Computed<Getters[Map[K]]>
   };
 }
@@ -63,13 +69,19 @@ interface RootMapGetters<Getters> extends MapGetters<Getters> {
  */
 interface MapState<State, Getters> {
   <Key extends keyof State>(map: Key[]): { [K in Key]: Computed<State[K]> };
-  <Map extends Record<keyof Map, keyof State>>(map: Map): { [K in keyof Map]: Computed<State[Map[K]]> };
+
+  <Map extends Record<string, keyof State>>(map: Map): {
+    //@ts-ignore
+    [K in keyof Map]: Computed<State[Map[K]]>
+  };
   <Map extends BaseStateMap<State, Getters>>(map: Map): { [K in keyof Map]: Computed<any> };
 }
 
 interface RootMapState<State, Getters> extends MapState<State, Getters> {
   <Key extends keyof State>(namespace: string, map: Key[]): { [K in Key]: Computed<State[K]> };
-  <Map extends Record<keyof Map, keyof State>>(namespace: string, map: Map): {
+
+  <Map extends Record<string, keyof State>>(namespace: string, map: Map): {
+    //@ts-ignore
     [K in keyof Map]: Computed<State[Map[K]]>
   };
   <Map extends BaseStateMap<State, Getters>>(namespace: string, map: Map): { [K in keyof Map]: Computed<any> };
@@ -80,7 +92,9 @@ interface RootMapState<State, Getters> extends MapState<State, Getters> {
  */
 interface MapMutations<Mutations, Type extends MethodType> {
   <Key extends keyof Mutations>(map: Key[]): { [K in Key]: MutationMethod<Mutations[K], Type> };
-  <Map extends Record<keyof Map, keyof Mutations>>(map: Map): {
+
+  <Map extends Record<string, keyof Mutations>>(map: Map): {
+    //@ts-ignore
     [K in keyof Map]: MutationMethod<Mutations[Map[K]], Type>
   };
   <Map extends BaseMethodMap<Commit<Mutations>>>(map: Map): { [K in keyof Map]: Method<any> };
@@ -88,7 +102,9 @@ interface MapMutations<Mutations, Type extends MethodType> {
 
 interface RootMapMutations<Mutations, Type extends MethodType> extends MapMutations<Mutations, Type> {
   <Key extends keyof Mutations>(namespace: string, map: Key[]): { [K in Key]: MutationMethod<Mutations[K], Type> };
-  <Map extends Record<keyof Map, keyof Mutations>>(namespace: string, map: Map): {
+
+  <Map extends Record<string, keyof Mutations>>(namespace: string, map: Map): {
+    //@ts-ignore
     [K in keyof Map]: MutationMethod<Mutations[Map[K]], Type>
   };
   <Map extends BaseMethodMap<Commit<Mutations>>>(namespace: string, map: Map): { [K in keyof Map]: Method<any> };
@@ -99,28 +115,22 @@ interface RootMapMutations<Mutations, Type extends MethodType> extends MapMutati
  */
 interface MapActions<Actions, Type extends MethodType> {
   <Key extends keyof Actions>(map: Key[]): { [K in Key]: ActionMethod<Actions[K], Type> };
-  <Map extends Record<keyof Map, keyof Actions>>(map: Map): { [K in keyof Map]: ActionMethod<Actions[Map[K]], Type> };
+
+  <Map extends Record<string, keyof Actions>>(map: Map): {
+    //@ts-ignore
+    [K in keyof Map]: ActionMethod<Actions[Map[K]], Type>
+  };
   <Map extends BaseMethodMap<Dispatch<Actions>>>(map: Map): { [K in keyof Map]: Method<any> };
 }
 
 interface RootMapActions<Actions, Type extends MethodType> extends MapActions<Actions, Type> {
   <Key extends keyof Actions>(namespace: string, map: Key[]): { [K in Key]: ActionMethod<Actions[K], Type> };
-  <Map extends Record<keyof Map, keyof Actions>>(namespace: string, map: Map): {
+
+  <Map extends Record<string, keyof Actions>>(namespace: string, map: Map): {
+    //@ts-ignore
     [K in keyof Map]: ActionMethod<Actions[Map[K]], Type>
   };
   <Map extends BaseMethodMap<Dispatch<Actions>>>(namespace: string, map: Map): { [K in keyof Map]: Method<any> };
-}
-
-export function createNamespace<State, Getters, Mutations, Actions>(
-  this: any,
-  namespace?: string
-): NamespacedMappers<State, Getters, Mutations, Actions, "normal"> & { dispatch: StrictDispatch<Actions, any> } {
-  const helpers = createNamespacedHelpers(namespace as string) as any;
-  helpers.dispatch = function(fn: string) {
-    //console.log(this.mapActions({ fn: namespace + "/" + fn }).fn());
-    //return $store.dispatch(namespace + "/" + fn);
-  };
-  return helpers;
 }
 
 /**
@@ -291,6 +301,8 @@ export declare class Store<S> {
   }): void;
 }
 
+
+
 export declare function install(Vue: typeof _Vue): void;
 */
 /**
@@ -306,6 +318,9 @@ export interface StrictDispatch<Actions, RootActions> {
   <K extends keyof RootActions>(payloadWithType: InputPayload<K, RootActions>, options: RootDispatchOptions): Promise<
     any
   >;
+
+  // Namespaced
+  (type: ActionPath, payload?: any, options?: RootDispatchOptions): Promise<any>;
 }
 
 /**
@@ -319,6 +334,9 @@ export interface StrictCommit<Mutations, RootMutations> {
   // Root
   <K extends keyof RootMutations>(type: K, payload: RootMutations[K], options: RootCommitOptions): void;
   <K extends keyof RootMutations>(payloadWithType: InputPayload<K, RootMutations>, options: RootCommitOptions): void;
+
+  // Namespaced
+  (type: MutationPath, payload: any, options?: RootDispatchOptions): void;
 }
 
 /**
@@ -420,7 +438,7 @@ interface ActionObject<S, R> {
 export type Getter<S, R> = (state: S, getters: any, rootState: R, rootGetters: any) => any;
 export type Action<S, R> = ActionHandler<S, R> | ActionObject<S, R>;
 export type Mutation<S> = (state: S, payload: any) => any;
-export type Plugin<S> = (store: Store<S>) => any;
+export type Plugin<S> = (store: any) => any;
 
 export interface Module<S, R> {
   namespaced?: boolean;
@@ -458,3 +476,66 @@ declare const _default: {
 };
 export default _default;
 */
+
+type StatePath = "state.path";
+type GetterPath = "getter/path";
+type MutationPath = "mutation/path";
+type ActionPath = "action/path";
+/**
+ * Erweitert die Standard-Helper um dispatch, commit und getters
+ */
+export function createNamespace<State, Getters, Mutations, Actions>(
+  this: any,
+  ...namespaces: string[]
+): NamespacedMappers<State, Getters, Mutations, Actions, "normal"> & {
+  state<K extends keyof State>(child?: K): StatePath;
+  getter<K extends keyof Getters>(child?: K): GetterPath;
+  mutation<K extends keyof Mutations>(child?: K): MutationPath;
+  action<K extends keyof Actions>(child?: K): ActionPath;
+  commit: StrictCommit<Mutations, any>;
+  dispatch: StrictDispatch<Actions, any>;
+  getters: Getters;
+  name: string;
+} {
+  const namespace = namespaces.join("/");
+  const helpers = createNamespacedHelpers(namespace) as any;
+
+  if (!namespaces.length) return helpers;
+  helpers.getter = helpers.mutation = helpers.action = function(p: string) {
+    return p ? namespace + "/" + p : namespace;
+  };
+  helpers.state = function(p: string) {
+    return helpers.getter(p).replace(/\//g, ".");
+  };
+  helpers.name = namespace;
+  //Dispatch:
+  helpers.dispatch = function(fn: string, payload?: any) {
+    const $store = _Vue.prototype.$nuxt.$store;
+    return $store.dispatch(namespace + "/" + fn, payload);
+  };
+  //Commit:
+  helpers.commit = function(fn: string, value: any) {
+    const $store = _Vue.prototype.$nuxt.$store;
+    return $store.commit(namespace + "/" + fn, value);
+  };
+  //Getters:
+  Object.defineProperty(helpers, "getters", {
+    get() {
+      const $store = _Vue.prototype.$nuxt.$store;
+      return Object.defineProperties(
+        {},
+        Object.keys($store.getters)
+          .filter(key => key.startsWith(namespace + "/"))
+          .reduce((out, key) => {
+            out[key.substr(namespace.length + 1)] = {
+              get() {
+                return $store.getters[key];
+              }
+            };
+            return out;
+          }, {})
+      );
+    }
+  });
+  return helpers;
+}

@@ -22,8 +22,7 @@ export const actions: DefineActions<RootActions, RootState, RootMutations, RootA
   async nuxtServerInit({ dispatch }, { route, req }) {
     if (req && req.url && req.url.indexOf(".") > -1) return;
     try {
-      //auth.dispatch("init", {});
-      await dispatch("auth/init");
+      await dispatch("auth/init" as any);
       await dispatch("init", {});
     } catch (e) {
       console.error(e);
@@ -31,21 +30,27 @@ export const actions: DefineActions<RootActions, RootState, RootMutations, RootA
   },
   async init({ getters, dispatch }) {
     if (getters["auth/isAuthorized"]) {
-      await dispatch("schema/init");
+      //await dispatch("schema/init");
       await dispatch("elements/init");
     }
   }
 };
 
 export namespace RootDefined {
-  export type Getters<Getters, State> = DefineGetters<Getters, State, {}, RootState, RootGetters>;
+  export type Getters<Getters, State, ExtraGetters = {}> = DefineGetters<
+    Getters,
+    State,
+    ExtraGetters,
+    RootState,
+    RootGetters
+  >;
 
-  export type Actions<Actions, State, Getters, Mutations> = DefineActions<
+  export type Actions<Actions, State, Getters, Mutations, ExtraActions = {}> = DefineActions<
     Actions,
     State,
     Getters,
     Mutations,
-    {},
+    ExtraActions,
     RootState,
     RootGetters,
     RootMutations,
