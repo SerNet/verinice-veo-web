@@ -9,21 +9,22 @@
       :num-children="numChildren"
       :num-links="numLinks"
     ></element-header>
-    <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema" style="background-color: white; margin: 10px;"></veo-form>
-    <v-layout>
-      <v-btn flat to="/">Abbrechen</v-btn>
-      <v-btn color="primary" flat @click.native="save()">Speichern</v-btn>
-    </v-layout>
+    <veo-form slot="content" :model="formModel.data" @input="form = $event" :schema="formSchema" style="background-color: white; margin: 10px;"></veo-form>
+    <template slot="actions">
+      <v-btn flat to="/elements">Abbrechen</v-btn>
+      <v-btn color="primary darken-1" flat @click.native="save()">Speichern</v-btn>
+    </template>
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-
+import { Element } from "~/types/app";
 import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
-import { helpers as formHelpers } from "~/store/form";
-import { helpers as elementsHelpers } from "~/store/elements";
+import { helpers as formStore } from "~/store/form";
+import { helpers as elementsStore } from "~/store/elements";
+import { helpers as activeElement } from "~/store/elements/active";
 
 export default Vue.extend({
   components: {
@@ -34,32 +35,21 @@ export default Vue.extend({
     return {
       headerOpen: true,
       groups: ["IT Baseline-Catalog", "BSI Model"],
-      form: {}
+      form: {} as Element
     };
   },
   computed: {
-    ...elementsHelpers.mapState({
+    ...elementsStore.mapGetters({
       elements: "items"
     }),
-    ...elementsHelpers.mapGetters({
-      childrenById: "childrenById",
-      breadcrumbById: "breadcrumbById"
-    }),
-    ...formHelpers.mapState({
-      formModel: "model",
+    ...activeElement.mapGetters({
+      breadcrumb: "breadcrumb",
+      formModel: "item",
       formSchema: "schema",
       links: "links"
     }),
-    breadcrumb(): any[] {
-      const id = this.$route.params.id;
-      const items = this.breadcrumbById(id) || [];
-      return items.map(id => this.elements[id]);
-    },
-    title() {
-      if (this.formModel && this.formModel["$veo.title"]) {
-        return this.formModel["$veo.title"];
-      }
-      return null;
+    title(): string {
+      return this.formModel ? this.formModel.title : "";
     },
     numAttributes() {
       if (this.formModel) {
@@ -68,10 +58,6 @@ export default Vue.extend({
       return 0;
     },
     numChildren(): number {
-      const children = this.childrenById(this.$route.params.id);
-      if (children) {
-        return children.length;
-      }
       return 0;
     },
     numLinks(): number {
@@ -79,27 +65,29 @@ export default Vue.extend({
     }
   },
   created() {
-    this.form = this.formModel;
+    if (this.formModel) {
+      this.form = this.formModel;
+    }
   },
   methods: {
-    ...formHelpers.mapActions({
+    ...formStore.mapActions({
       saveForm: "save"
     }),
     onBreadcrumbChange(item: string) {},
     async save() {
-      const id = await this.saveForm(this.form);
+      const id = await this.saveForm(this.form as any);
       if (id != this.$route.params.id) {
         this.$router.push("/elements/" + id);
       }
     }
   },
   async fetch({ store, query: { type, parent }, params: { id } }) {
-    //await store.dispatch("tree/getItems", params);
     if (id) {
       if (id == "new") {
-        await store.dispatch("form/create", { type, parent });
+        //await formStore.dispatch("create", { type, parent });
       } else {
-        await store.dispatch("form/load", { id });
+        await activeElement.dispatch("fetchItem", { id });
+        //await formStore.dispatch("load", { id });
       }
     }
   },

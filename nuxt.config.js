@@ -15,14 +15,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [
-    "~/plugins/axios.js",
-    { src: "~/plugins/i18n-error.js", ssr: false },
-    "~/plugins/router.js",
-    "~/plugins/vuetify.js",
-    "~/plugins/directives.js",
-    { src: "~/plugins/vue-grid.js", ssr: false }
-  ],
+  plugins: ["~/plugins/axios.js", { src: "~/plugins/i18n-error.js", ssr: false }, "~/plugins/vuetify.js"],
   /*
    ** Global CSS
    */
@@ -204,9 +197,9 @@ module.exports = {
   proxy: {
     "/api": {
       headers: {
-        Origin: process.env["SERVER_URL"] || "https://v2020-rest.cpmsys.io/"
+        Origin: process.env["SERVER_URL"] || "https://veo-api.cfapps.io/"
       },
-      target: process.env["SERVER_URL"] || "https://v2020-rest.cpmsys.io/",
+      target: process.env["SERVER_URL"] || "https://veo-api.cfapps.io/",
       //changeOrigin: true,
       pathRewrite: { "^/api": "" }
     }

@@ -5,9 +5,9 @@
       <v-treeview
         v-model="selected"
         :open="open"
-        @update:open="onOpen"
         :items="items"
         @update:active="onActive"
+        :load-children="loadChildren"
         selectable
         selected-color="primary"
         activatable
@@ -25,92 +25,76 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Item, helpers as elements } from "~/store/elements";
+import { Element } from "~/types/app";
+import { helpers as elements } from "~/store/elements";
+import { helpers as activeElement } from "~/store/elements/active";
+import { ItemId } from "~/types/api";
+import { union } from "lodash";
 
-type TreeItem = Item & { children?: TreeItem[] };
+type ElementWithChildren = Element & { children: Element[] };
 
 export default Vue.extend({
   computed: {
-    ...elements.mapState({
+    ...elements.mapGetters({
+      childMap: "children",
       itemMap: "items",
-      children: "children",
       roots: "roots"
-    })
-  },
-  data: () => ({
-    open: [] as string[],
-    items: [] as TreeItem[],
-    files: {
-      html: "mdi-language-html5",
-      js: "mdi-nodejs",
-      json: "mdi-json",
-      md: "mdi-markdown",
-      pdf: "mdi-file-pdf",
-      png: "mdi-file-image",
-      txt: "mdi-file-document-outline",
-      xls: "mdi-file-excel"
-    },
-    selected: []
-  }),
-  watch: {
-    roots: {
-      handler(val) {
-        this.computeItems(this.open);
-      },
-      immediate: true
+    }),
+    ...activeElement.mapGetters({
+      breadcrumb: "breadcrumb"
+    }),
+    items(): Element[] {
+      const openIds = this.open;
+      const itemMap = this.itemMap;
+      const items = this.roots.concat();
+      const createChildren = (item: Element): ElementWithChildren => {
+        const children = this.childMap[item.id];
+        return {
+          ...item,
+          children: children
+            ? children.map(id => createChildren(this.itemMap[id]))
+            : []
+        };
+      };
+      return items.map(item => createChildren(item));
     }
   },
+  data() {
+    return {
+      open: [] as ItemId[],
+      files: {
+        html: "mdi-language-html5",
+        js: "mdi-nodejs",
+        json: "mdi-json",
+        md: "mdi-markdown",
+        pdf: "mdi-file-pdf",
+        png: "mdi-file-image",
+        txt: "mdi-file-document-outline",
+        xls: "mdi-file-excel"
+      },
+      selected: []
+    };
+  },
   methods: {
-    computeItems(open: string[]) {
-      const isOpen = (id: string) => {
-        if (!id) return true;
-        return this.open.indexOf(id) !== -1;
-      };
-      //Add children to item:
-      const children: (id: string) => TreeItem = id => {
-        const item = this.itemMap[id];
-
-        if (!id || !item) return item;
-        if (isOpen(id) || isOpen(item.parent)) {
-          const _childs = this.children[id];
-          const childs = _childs && _childs.map(children);
-          return { ...item, children: childs };
-        } else {
-          return item;
-        }
-      };
-
-      return (this.items = this.roots.map(children));
-    },
-    onOpen(open: string[]) {
-      //TODO: Infinite loop when removing items from tree after closing them, waiting for vuetify fix?
-      const hash = String(open);
-      if (hash != this["_lastHash"]) {
-        this.computeItems(open);
-        this["_lashHash"] = hash;
-      }
-      this.open = open;
-    },
-    onActive(items: string[]) {
-      if (items && items[0]) {
-        const item = items[0];
+    ...elements.mapActions({
+      fetchChildren: "fetchChildren"
+    }),
+    onActive(ids: string[]) {
+      if (ids.length)
         this.$router.push({
-          path: "/editor/" + item,
+          path: "/editor/" + ids.shift(),
           query: this.$route.query
         });
-      }
+    },
+    async loadChildren(item: Element): Promise<any> {
+      console.log("open children", item);
+      await this.fetchChildren({ id: item.id });
     }
   },
   async validate({ store, params }) {
     if (!store.getters["auth/isAuthorized"]) return false;
     if (params.id && String(params.id).indexOf(".") !== -1) return false;
     return true;
-  },
-  async asyncData({ store, params }) {
-    const breadcrumbById = store.getters["elements/breadcrumbById"];
-    return {
-      open: params.id ? breadcrumbById(params.id) : []
-    };
   }
 });
 </script>

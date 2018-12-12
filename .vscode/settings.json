@@ -17,5 +17,14 @@
       "singleQuote": false // Prefer double quotes over single quotes
     }
   },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "spellright.language": [
+    "de",
+    "en"
+  ],
+  "spellright.documentTypes": [
+    "markdown",
+    "latex",
+    "plaintext"
+  ]
 }
