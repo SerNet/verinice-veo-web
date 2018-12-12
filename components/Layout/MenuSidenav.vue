@@ -2,10 +2,10 @@
   <v-list class="main-sidenav-content">
     <v-list-tile class="list-tile" v-for="(item, i) in items" :class="['item', item.active?'active':'inactive']" :key="i" :to="item.to">
       <v-list-tile-action>
-        <v-icon class="icon" v-html="item.icon" />
+        <v-icon class="icon" v-html="item.icon"/>
       </v-list-tile-action>
       <v-list-tile-content>
-        <v-list-tile-title v-text="item.title" />
+        <v-list-tile-title v-text="item.title"/>
       </v-list-tile-content>
     </v-list-tile>
   </v-list>

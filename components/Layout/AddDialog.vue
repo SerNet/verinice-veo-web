@@ -1,27 +1,26 @@
 <template>
-    <v-dialog :value="value" @input="$emit('input', $event)" max-width="600">
-        <template slot="activator">
-            <slot name="activator"></slot>
-        </template>
-        <v-form>
-            <v-card>
-                <v-card-text>
-                    <v-autocomplete label="Übergeordnetes Element" :value="parent" @input="onChangeParent" :items="parents" :item-text="[parentText]" :item-value="[parentValue]" clearable>
-                        <template slot="item" slot-scope="scope">
-                            <slot name="parent-item" v-bind="scope"></slot>
-                        </template>
-                    </v-autocomplete>
-                    <v-autocomplete label="Typ" @input="onChangeType" :items="types" :value="type" clearable>
-                    </v-autocomplete>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn flat @click.native="$emit('input', false)">Abbrechen</v-btn>
-                    <v-btn color="primary" flat @click.native="save()">Anlegen</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-form>
-    </v-dialog>
+  <v-dialog :value="value" @input="$emit('input', $event)" max-width="600">
+    <template slot="activator">
+      <slot name="activator"></slot>
+    </template>
+    <v-form>
+      <v-card>
+        <v-card-text>
+          <v-autocomplete label="Übergeordnetes Element" :value="parent" @input="onChangeParent" :items="parents" :item-text="[parentText]" :item-value="[parentValue]" clearable>
+            <template slot="item" slot-scope="scope">
+              <slot name="parent-item" v-bind="scope"></slot>
+            </template>
+          </v-autocomplete>
+          <v-autocomplete label="Typ" @input="onChangeType" :items="types" :value="type" clearable></v-autocomplete>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click.native="$emit('input', false)">Abbrechen</v-btn>
+          <v-btn color="primary" flat @click.native="save()">Anlegen</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-form>
+  </v-dialog>
 </template>
 
 <script lang="ts">

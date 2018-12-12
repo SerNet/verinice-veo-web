@@ -9,32 +9,24 @@
       :num-children="numChildren"
       :num-links="numLinks"
     ></element-header>
-    <veo-form slot="content" :model="formModel" @input="form = $event" :schema="formSchema" style="background-color: white; margin: 10px;"></veo-form>
-    <v-layout>
-      <v-btn flat to="/">Abbrechen</v-btn>
-      <v-btn color="primary" flat @click.native="save()">Speichern</v-btn>
-    </v-layout>
+    <span>BROWSER</span>
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 
-import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
 import { helpers as formHelpers } from "~/store/form";
 import { helpers as elementsHelpers } from "~/store/elements";
 
 export default Vue.extend({
   components: {
-    ElementHeader,
-    VeoForm
+    ElementHeader
   },
   data() {
     return {
-      headerOpen: true,
-      groups: ["IT Baseline-Catalog", "BSI Model"],
-      form: {}
+      headerOpen: true
     };
   },
   computed: {
@@ -78,20 +70,8 @@ export default Vue.extend({
       return this.links && this.links.length;
     }
   },
-  created() {
-    this.form = this.formModel;
-  },
   methods: {
-    ...formHelpers.mapActions({
-      saveForm: "save"
-    }),
-    onBreadcrumbChange(item: string) {},
-    async save() {
-      const id = await this.saveForm(this.form);
-      if (id != this.$route.params.id) {
-        this.$router.push("/elements/" + id);
-      }
-    }
+    onBreadcrumbChange(item: string) {}
   },
   async fetch({ store, query: { type, parent }, params: { id } }) {
     //await store.dispatch("tree/getItems", params);
@@ -102,9 +82,6 @@ export default Vue.extend({
         await store.dispatch("form/load", { id });
       }
     }
-  },
-  validate({ store, params }) {
-    return String(params.id || "").indexOf(".") === -1;
   }
 });
 </script>

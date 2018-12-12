@@ -84,8 +84,8 @@ export default Vue.extend({
       ],
       rightItems: [
         { to: { r: "history" }, icon: "history", title: "Änderungen" },
-        { to: { r: "preview" }, icon: "collections", title: "Vorschau" },
-        { to: { r: "links" }, icon: "link", title: "Links" }
+        { to: { r: "links" }, icon: "link", title: "Links" },
+        { to: { r: "preview" }, icon: "collections", title: "Vorschau" }
       ],
       leftExpanded: true,
       rightExpanded: true

@@ -31,7 +31,7 @@
             <v-container class="pr-0" text-xs-right>
               <span class="mr-2">Zuletzt geändert von Markus Werner vor 12 Stunden</span>
               <v-avatar size="32" color="grey">
-                <span class="white--text headline">B</span>
+                <span class="white--text">MW</span>
               </v-avatar>
             </v-container>
           </v-flex>
