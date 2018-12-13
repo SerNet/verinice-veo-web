@@ -57,6 +57,7 @@ export default Vue.extend({
     }
   },
   async fetch({ store, query: { type, parent }, params: { id } }) {
+    console.log("FETCH", id);
     if (id) {
       if (id == "new") {
         //await formStore.dispatch("create", { type, parent });
