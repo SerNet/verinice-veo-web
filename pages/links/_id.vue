@@ -2,14 +2,13 @@
   <v-layout row fill-height>
     <v-flex text-xs-left class="pa-2">
       <h3 class="grey--text mb-2">Links</h3>
-      <v-list two-line v-if="links">
-        <template v-for="(link, index) in links" v-if="links.length > 0">
+      <v-list two-line v-if="links && links.length > 0">
+        <template v-for="(link, index) in links">
           <link-list-item :key="link.id" :element="item" :link="link" :index="index"></link-list-item>
         </template>
-
-        <div class="ma-3 text-xs-center" style="color: #333" v-else>Es sind keine Links vorhanden.</div>
       </v-list>
-      <div class="ma-3 text-xs-center" style="color: #333" v-else>Links werden geladen...</div>
+      <div class="ma-3 text-xs-center" style="color: #333" v-else-if="links && links.length == 0">Es sind keine Links vorhanden.</div>
+      <div class="ma-3 text-xs-center" style="color: #999" v-else>Links werden geladen...</div>
     </v-flex>
   </v-layout>
 </template>
