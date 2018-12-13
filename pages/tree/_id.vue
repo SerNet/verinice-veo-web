@@ -1,7 +1,9 @@
 <template>
-  <div style="width: 100%; height: 100%;">
-    <h3 class="grey--text pa-2">Baum</h3>
-    <div style="position: absolute; top: 50px; left:0; right:0; bottom:0; overflow: auto">
+  <v-layout column fill-height>
+    <v-flex shrink>
+      <h3 class="grey--text pa-2">Baum</h3>
+    </v-flex>
+    <v-flex>
       <v-treeview
         v-model="selected"
         :active="active"
@@ -20,8 +22,8 @@
           <v-icon v-else>{{ files[item.file] }}</v-icon>
         </template>
       </v-treeview>
-    </div>
-  </div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -77,21 +79,13 @@ export default Vue.extend({
     console.log("Tree deactiviated");
   },
   created() {
-    this.open = this.breadcrumb.map(item => item.id);
-    if (this.item) {
-      this.active = [this.item.id];
-    }
+    this.selectActiveItem();
   },
   watch: {
     async $route(v: Route, o: Route) {
-      console.log(v.path, o.path);
       if (v.path != o.path) {
         await elements.dispatch("fetchTree", { id: v.params.id });
-        const breadcrumbIds = this.breadcrumb.map(item => item.id);
-        this.open = union(this.open || [], breadcrumbIds);
-        if (this.item) {
-          this.active = [this.item.id];
-        }
+        this.selectActiveItem();
       }
     }
   },
@@ -116,6 +110,13 @@ export default Vue.extend({
     ...elements.mapActions({
       fetchChildren: "fetchChildren"
     }),
+    selectActiveItem() {
+      const breadcrumbIds = this.breadcrumb.map(item => item.id).slice(0, -1);
+      this.open = union(this.open || [], breadcrumbIds);
+      if (this.item) {
+        this.active = [this.item.id];
+      }
+    },
     onActive(ids: string[]) {
       if (ids.length)
         this.$router.push({
@@ -139,7 +140,21 @@ export default Vue.extend({
 </script>
 
 <style lang="stylus" scoped>
+>>> .v-treeview-node__content {
+  padding: 5px;
+}
+
 >>> .v-treeview-node--active {
-  background-color: #ffeaee !important;
+  background-color: transparent !important;
+
+  > .v-treeview-node__root {
+    .v-treeview-node__content {
+      background-color: #ffeaee !important;
+      vertical-align: middle;
+      flex-grow: 0;
+      flex-shrink: 0;
+      border-radius: 5px;
+    }
+  }
 }
 </style>
