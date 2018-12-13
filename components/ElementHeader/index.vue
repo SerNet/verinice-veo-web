@@ -31,7 +31,7 @@
               <span class="mr-2">
                 Zuletzt geändert von
                 <span class="font-weight-bold">{{lastChange.author}}</span>
-                <span class="font-weight-bold">{{lastChange.timestamp | relative }}</span>
+                <span class="font-weight-bold">{{lastChange.timestamp | relativeDate }}</span>
               </span>
               <v-avatar size="32" color="grey">
                 <span class="white--text">{{lastChange.author[0]}}</span>
@@ -105,7 +105,8 @@ export default Vue.extend({
       breadcrumb: "breadcrumb",
       element: "item",
       links: "links",
-      history: "history"
+      history: "history",
+      children: "children"
     }),
     showHeader(): boolean[] {
       return [this.value];
@@ -132,8 +133,7 @@ export default Vue.extend({
       return this.links ? this.links.length : 0;
     },
     numChildren(): number {
-      //TODO
-      return 0;
+      return this.children ? this.children.length : 0;
     },
     numHistory(): number {
       return this.history ? this.history.length : 0;
@@ -151,7 +151,7 @@ export default Vue.extend({
     }
   },
   filters: {
-    relative: function(date) {
+    relativeDate: function(date) {
       moment.locale("de");
       return moment(date).fromNow();
     }

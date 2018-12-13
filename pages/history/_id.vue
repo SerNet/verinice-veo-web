@@ -4,8 +4,7 @@
       <h3 class="grey--text mb-2">Änderungen</h3>
       <v-list two-line v-if="history && history.length > 0">
         <template v-for="(version, index) in history">
-          <!--<version-list-item :key="version.id" :element="item" :version="version" :index="index"></version-list-item>-->
-          {{version}}
+          <history-list-item :key="version.id" :version="version" :index="index"></history-list-item>
         </template>
       </v-list>
       <div class="ma-3 text-xs-center" style="color: #333" v-else>Es sind keine Änderungen vorhanden.</div>
@@ -19,10 +18,14 @@ import { helpers as formHelpers } from "~/store/form";
 import { helpers as elementsStore } from "~/store/elements";
 import { helpers as activeElement } from "~/store/elements/active";
 
+import HistoryListItem from "~/components/History/HistoryListItem.vue";
+
 export default Vue.extend({
   props: {},
   methods: {},
-  components: {},
+  components: {
+    HistoryListItem
+  },
   computed: {
     ...activeElement.mapGetters({
       item: "item",
@@ -30,7 +33,9 @@ export default Vue.extend({
     })
   },
   async fetch({ store, query: { type, parent }, params: { id } }) {
-    await activeElement.dispatch("fetchItem", { id });
+    if (id) {
+      await activeElement.dispatch("fetchItem", { id });
+    }
   }
 });
 </script>

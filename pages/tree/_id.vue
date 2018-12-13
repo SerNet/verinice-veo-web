@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%; height: 100%;">
-    <h3 class="grey--text pa-2">IT Grundschutz</h3>
+    <h3 class="grey--text pa-2">Baum</h3>
     <div style="position: absolute; top: 50px; left:0; right:0; bottom:0; overflow: auto">
       <v-treeview
         v-model="selected"
