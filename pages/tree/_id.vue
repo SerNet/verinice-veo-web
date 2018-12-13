@@ -26,17 +26,21 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { Route } from "vue-router";
 import { AppElement } from "~/types/app";
 import { helpers as elements } from "~/store/elements";
 import { helpers as activeElement } from "~/store/elements/active";
 import { UUID } from "~/types/api";
 import { union } from "lodash";
 
-type AppElementWithChildren = AppElement & { children: AppElement[] };
+type AppElementWithChildren = AppElement & { children?: AppElement[] };
 
 export default Vue.extend({
   name: "tree",
   computed: {
+    ...elements.mapState({
+      leafs: "leafs"
+    }),
     ...elements.mapGetters({
       childMap: "children",
       itemMap: "items",
@@ -52,12 +56,16 @@ export default Vue.extend({
       const items = this.roots.concat();
       const createChildren = (item: AppElement): AppElementWithChildren => {
         const children = this.childMap[item.id];
-        return {
-          ...item,
-          children: children
-            ? children.map(id => createChildren(this.itemMap[id]))
-            : []
-        };
+        if (this.leafs.indexOf(item.id) > -1) {
+          return item;
+        } else {
+          return {
+            ...item,
+            children: children
+              ? children.map(id => createChildren(this.itemMap[id]))
+              : []
+          };
+        }
       };
       return items.map(item => createChildren(item));
     }
@@ -72,6 +80,19 @@ export default Vue.extend({
     this.open = this.breadcrumb.map(item => item.id);
     if (this.item) {
       this.active = [this.item.id];
+    }
+  },
+  watch: {
+    async $route(v: Route, o: Route) {
+      console.log(v.path, o.path);
+      if (v.path != o.path) {
+        await elements.dispatch("fetchTree", { id: v.params.id });
+        const breadcrumbIds = this.breadcrumb.map(item => item.id);
+        this.open = union(this.open || [], breadcrumbIds);
+        if (this.item) {
+          this.active = [this.item.id];
+        }
+      }
     }
   },
   data() {
@@ -103,7 +124,6 @@ export default Vue.extend({
         });
     },
     async loadChildren(item: Element): Promise<any> {
-      console.log("open children", item);
       await this.fetchChildren({ id: item.id });
     }
   },
