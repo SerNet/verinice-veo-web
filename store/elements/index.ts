@@ -65,11 +65,12 @@ export const mutations: DefineMutations<Mutations, State> = {
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Actions {
   init: {};
-  fetchItem: { id: ItemId };
+  fetchItem: { id: ItemId; refresh?: boolean };
   fetchRoots: {};
   fetchChildren: { id: ItemId };
   fetchTree: { id?: ItemId };
   addData: VeoItem[];
+  removeItems: ItemId[];
 }
 
 export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
@@ -82,10 +83,24 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     });
     commit("addData", uniqueData);
   },
+  async removeItems({ state, commit, getters }, ids) {
+    commit(
+      "setData",
+      state.data.filter(item => {
+        if (item[ID_FIELD]) {
+          return ids.indexOf(item[ID_FIELD] as string) === -1;
+        } else {
+          return false;
+        }
+      })
+    );
+  },
   /**
    * Fetch entry from Server
-   */
-  async fetchItem({ commit, dispatch, getters }, { id }) {
+   */ async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
+    if (refresh) {
+      await dispatch("removeItems", [id]);
+    }
     const items = getters.items;
     if (items[id]) {
       return items[id];
@@ -104,15 +119,13 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
   },
   /**
    * Fetch children
-   */
-  async fetchChildren({ commit, getters, dispatch }, { id }) {
+   */ async fetchChildren({ commit, getters, dispatch }, { id }) {
     const response: VeoItem[] = await this.$axios.$get(`/api/elements/${id}/children`);
     await dispatch("addData", response);
   },
   /**
    * Fetch all elements in tree including element[id] going upwards to tree root(s)
-   */
-  async fetchTree({ commit, getters, dispatch }, { id }) {
+   */ async fetchTree({ commit, getters, dispatch }, { id }) {
     await dispatch("fetchRoots", {});
     const pChildren: Promise<any>[] = [];
     if (id) {

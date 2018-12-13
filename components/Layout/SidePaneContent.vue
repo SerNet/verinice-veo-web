@@ -1,6 +1,6 @@
 <template>
   <v-layout class="sidepane" :class="{right}" row fill-height>
-    <v-flex class="tablist" shrink :order-xs2="right">
+    <v-flex class="tablist" :order-xs2="right">
       <v-list class="pa-0 fill-height">
         <v-layout fill-height column>
           <v-flex shrink v-for="item in items" :key="item.title">
@@ -24,8 +24,8 @@
         </v-layout>
       </v-list>
     </v-flex>
-    <v-flex class="sidepane-content" :order-xs1="right" :class="{'text-xs-right': right}">
-      <v-container class="pa-0" v-show="value" style="width: 100%; height: 100%;  position: relative">
+    <v-flex class="sidepane-content" style="max-width: calc(100% - 64px)" :order-xs1="right" :class="{'text-xs-right': right}">
+      <v-container class="pa-0" v-show="value" style="width: 100%; height: 100%; overflow: hidden; position: relative">
         <slot></slot>
       </v-container>
     </v-flex>

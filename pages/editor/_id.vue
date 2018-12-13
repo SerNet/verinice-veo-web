@@ -11,10 +11,10 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { VeoItem } from "~/types/api";
 import { Element } from "~/types/app";
 import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
-import { helpers as formStore } from "~/store/form";
 import { helpers as elementsStore } from "~/store/elements";
 import { helpers as activeElement } from "~/store/elements/active";
 
@@ -27,7 +27,7 @@ export default Vue.extend({
     return {
       headerOpen: true,
       groups: ["IT Baseline-Catalog", "BSI Model"],
-      form: {} as Element
+      form: {} as VeoItem
     };
   },
   computed: {
@@ -42,16 +42,16 @@ export default Vue.extend({
   },
   created() {
     if (this.formModel) {
-      this.form = this.formModel;
+      this.form = this.formModel.data;
     }
   },
   methods: {
-    ...formStore.mapActions({
+    ...activeElement.mapActions({
       saveForm: "save"
     }),
     onBreadcrumbChange(item: string) {},
     async save() {
-      const id = await this.saveForm(this.form as any);
+      const id = await this.saveForm(this.form);
       if (id != this.$route.params.id) {
         this.$router.push("/elements/" + id);
       }

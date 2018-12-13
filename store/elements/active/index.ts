@@ -1,4 +1,4 @@
-import { VeoItem, ItemId } from "~/types/api";
+import { VeoItem, VeoLink, ItemId } from "~/types/api";
 import { Element, ElementMap, ElementsMap } from "~/types/app";
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import { RootDefined } from "~/store/index";
@@ -27,7 +27,7 @@ interface Getters {
   breadcrumb: Element[];
   schemaName?: string;
   schema?: any;
-  links: [];
+  links: VeoLink[] | undefined;
   history: any;
 }
 
@@ -55,7 +55,7 @@ export const getters: RootDefined.Getters<Getters, State> = {
 interface Mutations {
   setItem: VeoItem;
   setSchema: any;
-  setLinks: any;
+  setLinks: VeoLink[] | undefined;
   setHistory: any;
 }
 
@@ -76,17 +76,20 @@ export const mutations: DefineMutations<Mutations, State> = {
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Actions {
   init: {};
-  fetchItem: { id: ItemId };
+  fetchItem: { id: ItemId; refresh?: boolean };
   fetchLinks: { id: ItemId };
   fetchHistory: { id: ItemId };
   fetchSchema: { name: string };
+  save: VeoItem;
 }
 
 export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
   async init({ dispatch }) {},
-  async fetchItem({ commit, dispatch, getters }, { id }) {
-    const response: VeoItem = await this.$axios.$get(`/api/elements/${id}`);
+  async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
+    const item = await dispatch(parent.action("fetchItem"), { id, refresh }, { root: true });
+    const response: VeoItem = item.data;
     commit("setItem", response);
+    commit("setLinks", undefined);
     const schemaName = getters.schemaName;
     let pSchema, pLinks, pHistory;
     if (schemaName) {
@@ -113,6 +116,20 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     if (response) {
       commit("setHistory", response);
     }
+  },
+  async save({ commit, dispatch }, payload) {
+    let id = payload[ID_FIELD];
+
+    if (id) {
+      await this.$axios.$put(`/api/elements/${id}`, payload);
+    } else {
+      const response = await this.$axios.post(`/api/elements`, payload);
+      const location = response.headers.location || "";
+      id = location.split("/").pop();
+    }
+
+    id && (await dispatch("fetchItem", { id, refresh: true }));
+    return id;
   }
 };
 
