@@ -1,9 +1,7 @@
 <template>
   <v-container class="elementHeader" fluid>
-    <!--
-      // TODO: Waiting for Fix: https://github.com/vuetifyjs/vuetify/issues/5580
-    -->
     <v-expansion-panel class="elevation-0" :value="showHeader" @input="changeExpand" expand>
+      <!-- TODO: expand funktioniert gerade nicht -->
       <v-expansion-panel-content>
         <div slot="header" class="expansionHeader">
           <v-layout row>
@@ -29,6 +27,7 @@
           <v-spacer></v-spacer>
           <v-flex>
             <v-container class="pr-0" text-xs-right>
+              <!-- TODO -->
               <span class="mr-2">Zuletzt geändert von Markus Werner vor 12 Stunden</span>
               <v-avatar size="32" color="grey">
                 <span class="white--text">MW</span>
@@ -38,7 +37,7 @@
         </v-layout>
         <v-layout row wrap>
           <v-flex shrink>
-            <count-button :count="numAttrbutes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
+            <count-button :count="numAttributes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
             <count-button :count="numChildren" icon="format_align_right" text="Unterelemente" :to="'/browser/'+id"></count-button>
             <v-menu offset-y class="element_add_menu hidden-xs-only">
               <v-btn slot="activator" class="elevation-0 ma-0 pa-0">
@@ -46,7 +45,7 @@
                 <v-icon>arrow_drop_down</v-icon>
               </v-btn>
               <v-list>
-                <v-list-tile v-for="(item, index) in menuItems" :key="index">
+                <v-list-tile v-for="(item, index) in createMenu" :key="index">
                   <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
@@ -62,7 +61,7 @@
                 <v-icon>arrow_drop_down</v-icon>
               </v-btn>
               <v-list>
-                <v-list-tile v-for="(item, index) in menuItems" :key="index">
+                <v-list-tile v-for="(item, index) in createMenu" :key="index">
                   <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
@@ -76,44 +75,63 @@
 
 <script lang="ts">
 import Vue from "vue";
-
+import { helpers as activeElement } from "~/store/elements/active";
 import CountButton from "~/components/ElementHeader/CountButton.vue";
 
 export default Vue.extend({
   props: {
-    numAttrbutes: { type: Number, default: 0 },
-    numChildren: { type: Number, default: 0 },
-    numHistory: { type: Number, default: 0 },
-    numLinks: { type: Number, default: 0 },
-    title: { type: String },
-    breadcrumb: { type: Array },
-    id: { type: String },
     value: { type: Boolean }
+  },
+  components: {
+    CountButton
   },
   methods: {
     changeExpand(values: boolean[]) {
       this.$emit("input", values[0]);
     }
   },
-  components: {
-    CountButton
-  },
   data() {
     return {
-      menuItems: [{ title: "Neuen Link" }, { title: "Neues Unterelement" }]
+      createMenu: [{ title: "Neuen Link" }, { title: "Neues Unterelement" }]
     };
   },
   computed: {
+    ...activeElement.mapGetters({
+      breadcrumb: "breadcrumb",
+      element: "item",
+      links: "links",
+      history: "history"
+    }),
     showHeader(): boolean[] {
       return [this.value];
     },
     breadcrumbItems(): any[] {
       const id = this.$route.params.id;
-      return this.breadcrumb.map((item: any) => ({
+      const bc = this.breadcrumb.map((item: any) => ({
         disabled: item.id == id,
         to: "/editor/" + item.id,
         text: item.title
       }));
+      return bc;
+    },
+    id() {
+      return this.element ? this.element["id"] : "";
+    },
+    title(): string {
+      return this.element ? this.element.title : "test";
+    },
+    numAttributes() {
+      return this.element ? Object.keys(this.element).length : 0;
+    },
+    numLinks(): number {
+      return this.links ? this.links.length : 0;
+    },
+    numChildren(): number {
+      //TODO
+      return 0;
+    },
+    numHistory(): number {
+      return this.history ? this.history.length : 0;
     }
   }
 });

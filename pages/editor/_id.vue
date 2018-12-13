@@ -1,19 +1,11 @@
 <template>
   <v-layout class="ml-3 mr-3" fill-height column>
-    <element-header
-      :id="$route.params.id"
-      :title="title"
-      :breadcrumb="breadcrumb"
-      v-model="headerOpen"
-      :num-attrbutes="numAttributes"
-      :num-children="numChildren"
-      :num-links="numLinks"
-    ></element-header>
+    <element-header v-model="headerOpen"></element-header>
     <veo-form slot="content" :model="formModel.data" @input="form = $event" :schema="formSchema" style="background-color: white; margin: 10px;"></veo-form>
-    <template slot="actions">
+    <v-flex>
       <v-btn flat to="/elements">Abbrechen</v-btn>
-      <v-btn color="primary darken-1" flat @click.native="save()">Speichern</v-btn>
-    </template>
+      <v-btn color="primary" flat @click.native="save()">Speichern</v-btn>
+    </v-flex>
   </v-layout>
 </template>
 
@@ -43,26 +35,10 @@ export default Vue.extend({
       elements: "items"
     }),
     ...activeElement.mapGetters({
-      breadcrumb: "breadcrumb",
       formModel: "item",
       formSchema: "schema",
       links: "links"
-    }),
-    title(): string {
-      return this.formModel ? this.formModel.title : "";
-    },
-    numAttributes() {
-      if (this.formModel) {
-        return Object.keys(this.formModel).length;
-      }
-      return 0;
-    },
-    numChildren(): number {
-      return 0;
-    },
-    numLinks(): number {
-      return this.links && this.links.length;
-    }
+    })
   },
   created() {
     if (this.formModel) {

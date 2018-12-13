@@ -13,67 +13,6 @@
         :value="model[property.key]"
       />
     </v-form>
-    <!-- <v-expansion-panel class="elevation-0 ma-0" :value="[true, true]" :expand="true"> -->
-    <!-- Editor -->
-    <!-- <v-expansion-panel-content class="grey lighten-3 elevation-1">
-        <div slot="header">
-          <span style="margin-left: 6px;">Basic</span>
-          <v-menu style="float:right;" @click.native.stop>
-            <v-btn slot="activator" icon style="margin: 0; height: 24px; width: 24px;">
-              <v-icon>more_vert</v-icon>
-            </v-btn>
-            <v-list>
-              <v-list-tile>
-                <v-list-tile-title>Test 1</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-title>Test 2</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-title>Test 3</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
-        </div>
-        <v-card>
-          <v-card-text class="white lighten-3">
-
-          </v-card-text>
-        </v-card>
-    </v-expansion-panel-content>-->
-    <!-- Links -->
-    <!-- <v-expansion-panel-content class="grey lighten-3 elevation-1">
-        <div slot="header">
-          <span style="margin-left: 6px;">Links</span>
-          <v-menu style="float:right;" @click.native.stop>
-            <v-btn slot="activator" icon style="margin: 0; height: 24px; width: 24px;">
-              <v-icon>more_vert</v-icon>
-            </v-btn>
-            <v-list>
-              <v-list-tile>
-                <v-list-tile-title>Test 1</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
-        </div>
-        <v-card>
-          <v-card-text class="white lighten-3">
-
-            <v-data-table :headers="headers" :items="links" v-model="selected" item-key="name" select-all>
-              <template slot="items" slot-scope="link">
-                <td>
-                  <v-checkbox v-model="link.selected" primary hide-details></v-checkbox>
-                </td>
-                <td>{{ link.item.from }}</td>
-                <td>{{ link.item.desc }}</td>
-                <td>{{ link.item.to }}</td>
-              </template>
-            </v-data-table>
-
-          </v-card-text>
-        </v-card>
-    </v-expansion-panel-content>-->
-    <!-- </v-expansion-panel> -->
   </v-layout>
 </template>
 

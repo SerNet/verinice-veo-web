@@ -1,24 +1,19 @@
 <template>
   <v-layout class="ml-3 mr-3" fill-height column>
-    <element-header
-      :id="$route.params.id"
-      :title="title"
-      :breadcrumb="breadcrumb"
-      v-model="headerOpen"
-      :num-attrbutes="numAttributes"
-      :num-children="numChildren"
-      :num-links="numLinks"
-    ></element-header>
+    <element-header v-model="headerOpen"></element-header>
     <span>BROWSER</span>
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-
+import { Element } from "~/types/app";
+import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
-import { helpers as formHelpers } from "~/store/form";
-import { helpers as elementsHelpers } from "~/store/elements";
+
+import { helpers as formStore } from "~/store/form";
+import { helpers as elementsStore } from "~/store/elements";
+import { helpers as activeElement } from "~/store/elements/active";
 
 export default Vue.extend({
   components: {
@@ -30,58 +25,27 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...elementsHelpers.mapState({
+    ...elementsStore.mapGetters({
       elements: "items"
     }),
-    ...elementsHelpers.mapGetters({
-      childrenById: "childrenById",
-      breadcrumbById: "breadcrumbById"
-    }),
-    ...formHelpers.mapState({
-      formModel: "model",
-      formSchema: "schema",
-      links: "links"
-    }),
-    breadcrumb(): any[] {
-      const id = this.$route.params.id;
-      const items = this.breadcrumbById(id) || [];
-      return items.map(id => this.elements[id]);
-    },
-    title() {
-      if (this.formModel && this.formModel["$veo.title"]) {
-        return this.formModel["$veo.title"];
-      }
-      return null;
-    },
-    numAttributes() {
-      if (this.formModel) {
-        return Object.keys(this.formModel).length;
-      }
-      return 0;
-    },
-    numChildren(): number {
-      const children = this.childrenById(this.$route.params.id);
-      if (children) {
-        return children.length;
-      }
-      return 0;
-    },
-    numLinks(): number {
-      return this.links && this.links.length;
-    }
+    ...activeElement.mapGetters({
+      breadcrumb: "breadcrumb",
+      element: "item"
+    })
   },
-  methods: {
-    onBreadcrumbChange(item: string) {}
-  },
+  methods: {},
   async fetch({ store, query: { type, parent }, params: { id } }) {
-    //await store.dispatch("tree/getItems", params);
     if (id) {
       if (id == "new") {
-        await store.dispatch("form/create", { type, parent });
+        //await formStore.dispatch("create", { type, parent });
       } else {
-        await store.dispatch("form/load", { id });
+        await activeElement.dispatch("fetchItem", { id });
+        //await formStore.dispatch("load", { id });
       }
     }
+  },
+  validate({ store, params }) {
+    return String(params.id || "").indexOf(".") === -1;
   }
 });
 </script>

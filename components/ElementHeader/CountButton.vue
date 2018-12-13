@@ -15,7 +15,7 @@ import Vue from "vue";
 
 export default Vue.extend({
   props: {
-    count: Number,
+    count: { type: Number, default: 0 },
     icon: String,
     text: String,
     to: String
