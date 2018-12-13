@@ -11,8 +11,9 @@ import { helpers as active } from "./active";
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
   data: ApiItem[];
+  leafs: UUID[]; //Items with no children
 }
-export const state = () => ({ data: [] } as State);
+export const state = () => ({ data: [], leafs: [] } as State);
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface Getters {
   items: AppElementMap;
@@ -31,7 +32,7 @@ export const getters: RootDefined.Getters<Getters, State> = {
     return state.data
       .concat()
       .sort((a, b) => String(a[TITLE_FIELD]).localeCompare(b[TITLE_FIELD]))
-      .filter(item => item[PARENT_FIELD])
+      .filter(item => item[PARENT_FIELD]) //nur Element mit Parent
       .reduce((itemMap, item) => {
         const id = item[ID_FIELD];
         const parent = item[PARENT_FIELD];
@@ -50,6 +51,7 @@ export const getters: RootDefined.Getters<Getters, State> = {
 interface Mutations {
   setData: ApiItem[];
   addData: ApiItem[];
+  addLeaf: UUID;
 }
 
 export const mutations: DefineMutations<Mutations, State> = {
@@ -58,6 +60,9 @@ export const mutations: DefineMutations<Mutations, State> = {
   },
   addData(state, value) {
     state.data = state.data.concat(value);
+  },
+  addLeaf(state, value) {
+    state.leafs.push(value);
   }
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -127,7 +132,13 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
    * Fetch children
    */ async fetchChildren({ commit, getters, dispatch }, { id }) {
     const response: ApiItem[] = await this.$axios.$get(`/api/elements/${id}/children`);
-    await dispatch("addData", { data: response });
+    if (response) {
+      if (response.length === 0) {
+        commit("addLeaf", id);
+      } else {
+        await dispatch("addData", { data: response });
+      }
+    }
   },
   /**
    * Fetch all elements in tree including element[id] going upwards to tree root(s)

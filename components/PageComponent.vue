@@ -89,11 +89,6 @@ export default Vue.extend({
         this.loadComponent();
       },
       immediate: true
-    },
-    "$route.path": {
-      handler(v) {
-        //console.log(this.context, this.$refs["view"]);
-      }
     }
   },
   render(h): VNode {

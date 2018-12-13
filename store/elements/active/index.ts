@@ -111,13 +111,14 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     commit("setItem", response);
     commit("setLinks", undefined);
     const schemaName = getters.schemaName;
-    let pSchema, pLinks, pHistory;
+    let pSchema, pLinks, pHistory, pChildren;
     if (schemaName) {
       pSchema = dispatch("fetchSchema", { name: schemaName });
     }
     pLinks = dispatch("fetchLinks", { id });
     pHistory = dispatch("fetchHistory", { id });
-    await Promise.all([pSchema, pLinks, pHistory]);
+    pChildren = dispatch(parent.action("fetchChildren"), { id }, { root: true });
+    await Promise.all([pSchema, pLinks, pHistory, pChildren]);
   },
   async fetchSchema({ commit }, { name }) {
     const response: any = await this.$axios.$get(`/api/schemas/${name}.json`);
