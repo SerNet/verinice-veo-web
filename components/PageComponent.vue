@@ -93,7 +93,9 @@ export default Vue.extend({
   },
   render(h): VNode {
     if (this.loading) {
-      return h("div", this.$slots.loading || "Loading...");
+      return this.$slots.loading
+        ? this.$slots.loading[0]
+        : h("div", "Loading...");
     } else {
       if (this.error) {
         return h(ErrorComponent, { props: { error: this.error } });
