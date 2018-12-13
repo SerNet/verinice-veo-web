@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { helpers as formHelpers } from "~/store/form";
 import { helpers as elementsStore } from "~/store/elements";
 import { helpers as activeElement } from "~/store/elements/active";
 
