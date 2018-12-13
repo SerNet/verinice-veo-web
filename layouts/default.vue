@@ -11,7 +11,7 @@
         <nuxt></nuxt>
       </v-container>
     </v-content>
-    <side-pane v-if="!standalone && !rightOff" :query="rightKey" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
+    <side-pane v-if="!standalone && !rightOff" :query="rightKey" :items="rightItems" :expanded.sync="rightExpanded" :min-width="300" :width="364" app clipped :right="true">
       <page-component :route="rightKey" :context="{side: 'right'}">
         <loading-component slot="loading"></loading-component>
       </page-component>
