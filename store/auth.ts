@@ -72,12 +72,7 @@ export const actions: DefineActions<
   RootMutations,
   RootActions
 > = {
-  async init({ state, dispatch, commit }, payload) {
-    const token = this.$cookies.get("token");
-    if (token) {
-      await dispatch("useToken", { token });
-    }
-  },
+  async init({ state, dispatch, commit }, payload) {},
   async login({ commit, dispatch }, { username, password, persist }) {
     const response = await this.$axios.post("/api/login", { username, password }).catch(e => {
       throw new HTTPError("AUTH_LOGIN_FAILED", e);
@@ -92,9 +87,9 @@ export const actions: DefineActions<
     commit("setToken", token);
     const user = jsonwebtoken.decode(token) as VeoUserTokenPayload;
     commit("setTokenPayload", user);
-    if (persist) {
+    /*if (persist) {
       this.$cookies.set("token", token, { path: "/", maxAge: user.exp - user.iat });
-    }
+    }*/
     await dispatch("init", {}, { root: true });
   },
   async redirect(this: Vue, { commit }, { path }) {

@@ -2,11 +2,9 @@
   <v-app>
     <main-toolbar app v-if="!standalone" @click-side-icon="mainDrawer = !mainDrawer" :clipped="true" :clipped-left="false"></main-toolbar>
     <side-pane v-if="!standalone" v-model="mainDrawer" :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
-      <template>
-        <keep-alive>
-          <component :key="leftKey" :is="left"></component>
-        </keep-alive>
-      </template>
+      <page-component :route="leftKey" :context="{side: 'left'}">
+        <loading-component slot="loading"></loading-component>
+      </page-component>
     </side-pane>
     <v-content>
       <v-container class="pa-0">
@@ -14,9 +12,9 @@
       </v-container>
     </v-content>
     <side-pane v-if="!standalone && !rightOff" :query="rightKey" :items="rightItems" :expanded.sync="rightExpanded" :width="364" app clipped :right="true">
-      <keep-alive>
-        <component :key="rightKey" :is="right"></component>
-      </keep-alive>
+      <page-component :route="rightKey" :context="{side: 'right'}">
+        <loading-component slot="loading"></loading-component>
+      </page-component>
     </side-pane>
   </v-app>
 </template>
@@ -27,6 +25,8 @@ import MainToolbar from "~/components/Layout/MainToolbar.vue";
 import MenuSidenav from "~/components/Layout/MenuSidenav.vue";
 import SidePane from "~/components/Layout/SidePane.vue";
 import SidePaneButtons from "~/components/Layout/SidePaneButtons.vue";
+import LoadingComponent from "~/components/LoadingComponent.vue";
+import PageComponent from "~/components/PageComponent.vue";
 import extendMatch from "~/lib/DynamicComponent";
 
 export default Vue.extend({
@@ -34,19 +34,24 @@ export default Vue.extend({
     MainToolbar,
     MenuSidenav,
     SidePane,
-    SidePaneButtons
+    SidePaneButtons,
+    PageComponent,
+    LoadingComponent
   },
   computed: {
     standalone(): boolean {
       return !!this.$route.query["standalone"];
+    },
+    rightOff(): boolean {
+      return this.$route.query["r"] == "off";
     },
     leftKey(): string {
       return "/" + (this.$route.query["l"] || "tree");
     },
     rightKey(): string {
       return "/" + (this.$route.query["r"] || "history");
-    },
-    left(): any {
+    }
+    /*left(): any {
       return extendMatch(this, this.leftKey, {
         side: "left"
       });
@@ -55,15 +60,13 @@ export default Vue.extend({
       return extendMatch(this, this.rightKey, {
         side: "right"
       });
-    },
-    rightOff(): boolean {
-      return this.$route.query["r"] == "off";
-    }
+    }*/
   },
   watch: {
-    $route: {
-      handler(v) {},
-      immediate: true
+    "$route.query.l": {
+      handler(v, o) {
+        console.log("$route.query.l", v, o);
+      }
     }
   },
   data() {

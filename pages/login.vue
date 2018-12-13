@@ -21,13 +21,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { helpers as authHelpers } from "~/store/auth";
+import { helpers as auth } from "~/store/auth";
 
 export default Vue.extend({
   layout: "login",
   components: {},
   computed: {
-    ...authHelpers.mapState({
+    ...auth.mapState({
       authError: "error"
     })
   },
@@ -44,7 +44,7 @@ export default Vue.extend({
     error: String
   },
   methods: {
-    ...authHelpers.mapActions({
+    ...auth.mapActions({
       login: "login",
       logout: "logout"
     }),

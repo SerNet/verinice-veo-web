@@ -88,11 +88,13 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     const response: VeoItem = await this.$axios.$get(`/api/elements/${id}`);
     commit("setItem", response);
     const schemaName = getters.schemaName;
+    let pSchema, pLinks, pHistory;
     if (schemaName) {
-      await dispatch("fetchSchema", { name: schemaName });
+      pSchema = dispatch("fetchSchema", { name: schemaName });
     }
-    await dispatch("fetchLinks", { id });
-    await dispatch("fetchHistory", { id });
+    pLinks = dispatch("fetchLinks", { id });
+    pHistory = dispatch("fetchHistory", { id });
+    await Promise.all([pSchema, pLinks, pHistory]);
   },
   async fetchSchema({ commit }, { name }) {
     const response: any = await this.$axios.$get(`/api/schemas/${name}.json`);

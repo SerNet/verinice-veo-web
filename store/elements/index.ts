@@ -65,28 +65,69 @@ export const mutations: DefineMutations<Mutations, State> = {
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Actions {
   init: {};
-  fetchItems: {};
+  fetchItem: { id: ItemId };
+  fetchRoots: {};
   fetchChildren: { id: ItemId };
+  fetchTree: { id?: ItemId };
+  addData: VeoItem[];
 }
 
 export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
-  async init({ dispatch }) {
-    await dispatch("fetchItems", {});
+  async init({ dispatch }) {},
+  async addData({ commit, getters }, data: VeoItem[]) {
+    const items = getters.items;
+    const uniqueData = data.filter(item => {
+      const id = item[ID_FIELD];
+      return id ? !items[id] : false;
+    });
+    commit("addData", uniqueData);
   },
   /**
-   * Fetch entries from Server
+   * Fetch entry from Server
    */
-  async fetchItems({ commit, dispatch }, payload) {
-    //TODO: Use /api/elements?parent=null to only query root nodes
-    const response: VeoItem[] = await this.$axios.$get("/api/elements");
+  async fetchItem({ commit, dispatch, getters }, { id }) {
+    const items = getters.items;
+    if (items[id]) {
+      return items[id];
+    } else {
+      const response: VeoItem = await this.$axios.$get(`/api/elements/${id}`);
+      await dispatch("addData", [response]);
+      return getters.items[id];
+    }
+  },
+  /**
+   * Fetch root nodes
+   */ async fetchRoots({ commit, dispatch }, payload) {
+    const response: VeoItem[] = await this.$axios.$get("/api/elements?parent=null");
     //TODO: Remove emulation of root node query (filter)
     commit("setData", response.filter(item => !item[PARENT_FIELD]));
   },
-  async fetchChildren({ commit, getters }, { id }) {
+  /**
+   * Fetch children
+   */
+  async fetchChildren({ commit, getters, dispatch }, { id }) {
     const response: VeoItem[] = await this.$axios.$get(`/api/elements/${id}/children`);
-    const items = getters.items;
-    //Filter response to add only unique items
-    commit("addData", response.filter(item => !items[item[ID_FIELD]!]));
+    await dispatch("addData", response);
+  },
+  /**
+   * Fetch all elements in tree including element[id] going upwards to tree root(s)
+   */
+  async fetchTree({ commit, getters, dispatch }, { id }) {
+    await dispatch("fetchRoots", {});
+    const pChildren: Promise<any>[] = [];
+    if (id) {
+      //Load initial item
+      let item = await dispatch("fetchItem", { id });
+      //Until no more parent items exist:
+      while (item.parent) {
+        //Do not wait for children to be fetched
+        pChildren.push(dispatch("fetchChildren", { id: item.parent }));
+        //Load parent of child
+        item = await dispatch("fetchItem", { id: item.parent });
+      }
+      //Wait for all children requests to be performed
+      await pChildren;
+    }
   }
 };
 
