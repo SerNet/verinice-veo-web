@@ -19,7 +19,7 @@
           <v-flex>
             <v-container class="pl-0">
               <v-avatar size="32" color="grey">
-                <span class="white--text headline">{{title&&title[0]?title[0]:""}}</span>
+                <span class="white--text headline">{{title?title.substr(0,1).toUpperCase():""}}</span>
               </v-avatar>
               <span class="ml-2">{{title}}</span>
             </v-container>
@@ -34,7 +34,7 @@
                 <span class="font-weight-bold">{{lastChange.timestamp | relativeDate }}</span>
               </span>
               <v-avatar size="32" color="grey">
-                <span class="white--text">{{lastChange.author[0]}}</span>
+                <span class="white--text">{{lastChange.author.substr(0,1).toUpperCase()}}</span>
               </v-avatar>
             </v-container>
           </v-flex>

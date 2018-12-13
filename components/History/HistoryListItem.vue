@@ -5,7 +5,7 @@
       <v-badge :color="type?'green':'blue'" right bottom overlap>
         <v-icon slot="badge" dark small>{{type?'arrow_forward':'arrow_back'}}</v-icon>
         <v-list-tile-avatar class="avatar-with-badge" color="grey">
-          <span class="white--text headline">V</span>
+          <span class="white--text headline">{{title.substr(0,1).toUpperCase()}}</span>
           <!-- TODO -->
         </v-list-tile-avatar>
       </v-badge>
