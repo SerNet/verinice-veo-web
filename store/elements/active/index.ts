@@ -1,17 +1,17 @@
-import { VeoItem, VeoLink, ItemId } from "~/types/api";
-import { Element, ElementMap, ElementsMap } from "~/types/app";
+import { ApiItem, ApiLink, UUID } from "~/types/api";
+import { AppElement, AppLink } from "~/types/app";
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import { RootDefined } from "~/store/index";
 import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
 import { helpers as parent } from "~/store/elements";
-import { veoItemToElement } from "~/store/elements/utils";
-
+import { veoItemToElement, veoLinkToLink } from "~/store/elements/utils";
+import { uniq } from "lodash";
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
   /**
    * Currently selected item id
    */
-  data?: VeoItem;
+  data?: ApiItem;
   schema?: any;
   links?: any;
   history?: any;
@@ -23,13 +23,13 @@ interface Getters {
   /**
    * Currently selected item
    */
-  item?: Element;
-  breadcrumb: Element[];
+  item?: AppElement;
+  breadcrumb: AppElement[];
   schemaName?: string;
   schema?: any;
-  links: VeoLink[] | undefined;
+  links: AppLink[] | undefined;
   history: any;
-  children: Element[];
+  children: AppElement[];
 }
 
 export const getters: RootDefined.Getters<Getters, State> = {
@@ -38,12 +38,24 @@ export const getters: RootDefined.Getters<Getters, State> = {
   schema: state => {
     return state.schema;
   },
-  links: state => state.links,
+  links: (state, getters, rootState, rootGetters) => {
+    const links = state.links;
+    const itemMap = rootGetters[parent.getter("items")];
+    return (
+      links &&
+      links.map(data => {
+        const item = veoLinkToLink(data);
+        item.source = itemMap[item.sourceId];
+        item.target = itemMap[item.targetId];
+        return item;
+      })
+    );
+  },
   history: state => state.history,
   breadcrumb: (state, getters, rootState, rootGetters) => {
     const items = rootGetters[parent.getter("items")];
     let item = getters.item;
-    const path: Element[] = [];
+    const path: AppElement[] = [];
     while (item) {
       path.unshift(item);
       const parent = item.parent;
@@ -55,15 +67,15 @@ export const getters: RootDefined.Getters<Getters, State> = {
     const items = rootGetters[parent.getter("items")];
     const item = getters.item;
     const childMap = rootGetters[parent.getter("children")];
-    const childs: ItemId[] = (item && childMap[item.id]) || [];
+    const childs: UUID[] = (item && childMap[item.id]) || [];
     return childs.map(id => items[id]);
   }
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Mutations {
-  setItem: VeoItem;
+  setItem: ApiItem;
   setSchema: any;
-  setLinks: VeoLink[] | undefined;
+  setLinks: ApiLink[] | undefined;
   setHistory: any;
 }
 
@@ -84,18 +96,18 @@ export const mutations: DefineMutations<Mutations, State> = {
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Actions {
   init: {};
-  fetchItem: { id: ItemId; refresh?: boolean };
-  fetchLinks: { id: ItemId };
-  fetchHistory: { id: ItemId };
+  fetchItem: { id: UUID; refresh?: boolean };
+  fetchLinks: { id: UUID };
+  fetchHistory: { id: UUID };
   fetchSchema: { name: string };
-  save: VeoItem;
+  save: ApiItem;
 }
 
 export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
   async init({ dispatch }) {},
   async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
     const item = await dispatch(parent.action("fetchItem"), { id, refresh }, { root: true });
-    const response: VeoItem = item.data;
+    const response: ApiItem = item.data;
     commit("setItem", response);
     commit("setLinks", undefined);
     const schemaName = getters.schemaName;
@@ -113,10 +125,23 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
       commit("setSchema", response);
     }
   },
-  async fetchLinks({ commit }, { id }) {
+  async fetchLinks({ commit, getters, dispatch }, { id }) {
     const response: any = await this.$axios.$get(`/api/elements/${id}/links`);
     if (response) {
       commit("setLinks", response);
+      const links = getters.links;
+      if (links) {
+        const FETCH_ITEMS = parent.action("fetchItems");
+        const ids = links.reduce(
+          (out, link) => {
+            out.push(link.sourceId);
+            out.push(link.targetId);
+            return out;
+          },
+          [] as UUID[]
+        );
+        await dispatch(FETCH_ITEMS, { id: uniq(ids) }, { root: true });
+      }
     }
   },
   async fetchHistory({ commit }, { id }) {

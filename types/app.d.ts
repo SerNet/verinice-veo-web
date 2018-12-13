@@ -1,12 +1,22 @@
-import { VeoItem, ItemId } from "~/types/api";
+import { ApiItem, UUID } from "~/types/api";
 
-export interface Element {
-  id: ItemId;
+export interface AppElement {
+  id: UUID;
   title: string;
-  parent?: ItemId;
+  parent?: UUID;
   type: string;
-  data: VeoItem;
+  data: ApiItem;
 }
 
-export type ElementMap = Record<ItemId, Element>;
-export type ElementsMap = Record<ItemId, Element[]>;
+export interface AppLink {
+  id: UUID;
+  type: string;
+  sourceId: UUID;
+  targetId: UUID;
+  source?: AppElement;
+  target?: AppElement;
+}
+
+export type AppElementMap = Record<UUID, AppElement>;
+export type AppElementsMap = Record<UUID, AppElement[]>;
+export type UUIDsMap = Record<UUID, UUID[]>;

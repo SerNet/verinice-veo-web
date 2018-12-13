@@ -4,7 +4,7 @@
       <h3 class="grey--text mb-2">Links</h3>
       <v-list two-line v-if="links">
         <template v-for="(link, index) in links" v-if="links.length > 0">
-          <link-list-item :key="link['$veo.id']" :element="item" :link="link" :index="index"></link-list-item>
+          <link-list-item :key="link.id" :element="item" :link="link" :index="index"></link-list-item>
         </template>
 
         <div class="ma-3 text-xs-center" style="color: #333" v-else>Es sind keine Links vorhanden.</div>
@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { helpers as formHelpers } from "~/store/form";
 import { helpers as elementsStore } from "~/store/elements";
 import { helpers as activeElement } from "~/store/elements/active";
 
@@ -35,7 +34,10 @@ export default Vue.extend({
     })
   },
   async fetch({ store, query: { type, parent }, params: { id } }) {
-    await activeElement.dispatch("fetchItem", { id });
+    if (id) {
+      //TODO: When opened standalone, item might not have been loaded
+      await activeElement.dispatch("fetchLinks", { id });
+    }
   }
 });
 </script>

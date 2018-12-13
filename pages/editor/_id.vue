@@ -10,8 +10,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { VeoItem } from "~/types/api";
-import { Element } from "~/types/app";
+import { ApiItem } from "~/types/api";
 import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
 import { helpers as elementsStore } from "~/store/elements";
@@ -26,7 +25,7 @@ export default Vue.extend({
     return {
       headerOpen: true,
       groups: ["IT Baseline-Catalog", "BSI Model"],
-      form: {} as VeoItem
+      form: {} as ApiItem
     };
   },
   computed: {
@@ -57,7 +56,6 @@ export default Vue.extend({
     }
   },
   async fetch({ store, query: { type, parent }, params: { id } }) {
-    console.log("FETCH", id);
     if (id) {
       if (id == "new") {
         //await formStore.dispatch("create", { type, parent });

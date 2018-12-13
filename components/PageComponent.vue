@@ -90,9 +90,9 @@ export default Vue.extend({
       },
       immediate: true
     },
-    $route: {
+    "$route.path": {
       handler(v) {
-        console.log(this.context, "ROUTE Changed");
+        //console.log(this.context, this.$refs["view"]);
       }
     }
   },
@@ -103,7 +103,7 @@ export default Vue.extend({
       if (this.error) {
         return h(ErrorComponent, { props: { error: this.error } });
       } else {
-        return h(this.getComponent());
+        return h(this.getComponent(), { ref: "view" });
       }
     }
   }
