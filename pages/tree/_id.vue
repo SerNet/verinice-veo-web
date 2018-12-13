@@ -113,6 +113,7 @@ export default Vue.extend({
     return true;
   },
   async fetch({ store, params: { id } }) {
+    console.log("FETCH Tree", id);
     await elements.dispatch("fetchTree", { id });
   }
 });

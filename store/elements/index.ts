@@ -4,19 +4,15 @@ import { Element, ElementMap, ElementIdsMap } from "~/store/elements/index.d.ts"
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import { RootDefined } from "~/store/index";
 import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
-import { uniqueId } from "lodash";
+import { uniqueId, unionWith } from "lodash";
+import { veoItemToElement } from "~/store/elements/utils";
 import { helpers as active } from "./active";
-
-export function veoItemToElement(item: VeoItem): Element {
-  const id = item[ID_FIELD] || uniqueId("element_");
-  return { id, title: item[TITLE_FIELD], parent: item[PARENT_FIELD], type: item[TYPE_FIELD], data: item };
-}
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
   data: VeoItem[];
 }
-export const state = () => ({ activeId: undefined, data: [], roots: [], children: {} } as State);
+export const state = () => ({ data: [] } as State);
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface Getters {
   items: ElementMap;
@@ -33,6 +29,8 @@ export const getters: RootDefined.Getters<Getters, State> = {
   },
   children(state, getters) {
     return state.data
+      .concat()
+      .sort((a, b) => String(a[TITLE_FIELD]).localeCompare(b[TITLE_FIELD]))
       .filter(item => item[PARENT_FIELD])
       .reduce((itemMap, item) => {
         const id = item[ID_FIELD];
@@ -69,19 +67,24 @@ interface Actions {
   fetchRoots: {};
   fetchChildren: { id: ItemId };
   fetchTree: { id?: ItemId };
-  addData: VeoItem[];
+  addData: { data: VeoItem[]; refresh?: boolean };
   removeItems: ItemId[];
 }
 
 export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
   async init({ dispatch }) {},
-  async addData({ commit, getters }, data: VeoItem[]) {
+  async addData({ state, commit, getters }, { data, refresh }) {
     const items = getters.items;
-    const uniqueData = data.filter(item => {
-      const id = item[ID_FIELD];
-      return id ? !items[id] : false;
-    });
-    commit("addData", uniqueData);
+    if (refresh) {
+      const union = unionWith(data, state.data, (a, b) => a[ID_FIELD] == b[ID_FIELD]);
+      commit("setData", union);
+    } else {
+      const uniqueData = data.filter(item => {
+        const id = item[ID_FIELD];
+        return id ? !items[id] : false;
+      });
+      commit("addData", uniqueData);
+    }
   },
   async removeItems({ state, commit, getters }, ids) {
     commit(
@@ -98,15 +101,12 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
   /**
    * Fetch entry from Server
    */ async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
-    if (refresh) {
-      await dispatch("removeItems", [id]);
-    }
     const items = getters.items;
-    if (items[id]) {
+    if (!refresh && items[id]) {
       return items[id];
     } else {
       const response: VeoItem = await this.$axios.$get(`/api/elements/${id}`);
-      await dispatch("addData", [response]);
+      await dispatch("addData", { data: [response], refresh });
       return getters.items[id];
     }
   },
@@ -121,7 +121,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
    * Fetch children
    */ async fetchChildren({ commit, getters, dispatch }, { id }) {
     const response: VeoItem[] = await this.$axios.$get(`/api/elements/${id}/children`);
-    await dispatch("addData", response);
+    await dispatch("addData", { data: response });
   },
   /**
    * Fetch all elements in tree including element[id] going upwards to tree root(s)

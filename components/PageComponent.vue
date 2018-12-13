@@ -89,6 +89,11 @@ export default Vue.extend({
         this.loadComponent();
       },
       immediate: true
+    },
+    $route: {
+      handler(v) {
+        console.log(this.context, "ROUTE Changed");
+      }
     }
   },
   render(h): VNode {

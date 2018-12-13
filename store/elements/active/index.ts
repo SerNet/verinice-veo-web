@@ -3,8 +3,8 @@ import { Element, ElementMap, ElementsMap } from "~/types/app";
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import { RootDefined } from "~/store/index";
 import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
-import { uniqueId } from "lodash";
-import { helpers as parent, veoItemToElement } from "~/store/elements";
+import { helpers as parent } from "~/store/elements";
+import { veoItemToElement } from "~/store/elements/utils";
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
@@ -29,6 +29,7 @@ interface Getters {
   schema?: any;
   links: VeoLink[] | undefined;
   history: any;
+  children: Element[];
 }
 
 export const getters: RootDefined.Getters<Getters, State> = {
@@ -49,6 +50,13 @@ export const getters: RootDefined.Getters<Getters, State> = {
       item = parent ? items[parent] : undefined;
     }
     return path;
+  },
+  children: (state, getters, rootState, rootGetters) => {
+    const items = rootGetters[parent.getter("items")];
+    const item = getters.item;
+    const childMap = rootGetters[parent.getter("children")];
+    const childs: ItemId[] = (item && childMap[item.id]) || [];
+    return childs.map(id => items[id]);
   }
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
