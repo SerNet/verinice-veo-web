@@ -4,6 +4,7 @@
     <div style="position: absolute; top: 50px; left:0; right:0; bottom:0; overflow: auto">
       <v-treeview
         v-model="selected"
+        :active="active"
         :open="open"
         :items="items"
         @update:active="onActive"
@@ -34,6 +35,7 @@ import { union } from "lodash";
 type ElementWithChildren = Element & { children: Element[] };
 
 export default Vue.extend({
+  name: "tree",
   computed: {
     ...elements.mapGetters({
       childMap: "children",
@@ -41,6 +43,7 @@ export default Vue.extend({
       roots: "roots"
     }),
     ...activeElement.mapGetters({
+      item: "item",
       breadcrumb: "breadcrumb"
     }),
     items(): Element[] {
@@ -59,8 +62,21 @@ export default Vue.extend({
       return items.map(item => createChildren(item));
     }
   },
+  activated() {
+    console.log("Tree activated");
+  },
+  deactivated() {
+    console.log("Tree deactiviated");
+  },
+  created() {
+    this.open = this.breadcrumb.map(item => item.id);
+    if (this.item) {
+      this.active = [this.item.id];
+    }
+  },
   data() {
     return {
+      active: [] as ItemId[],
       open: [] as ItemId[],
       files: {
         html: "mdi-language-html5",
@@ -72,7 +88,7 @@ export default Vue.extend({
         txt: "mdi-file-document-outline",
         xls: "mdi-file-excel"
       },
-      selected: []
+      selected: [] as ItemId[]
     };
   },
   methods: {
@@ -95,6 +111,9 @@ export default Vue.extend({
     if (!store.getters["auth/isAuthorized"]) return false;
     if (params.id && String(params.id).indexOf(".") !== -1) return false;
     return true;
+  },
+  async fetch({ store, params: { id } }) {
+    await elements.dispatch("fetchTree", { id });
   }
 });
 </script>

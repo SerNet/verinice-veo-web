@@ -22,16 +22,14 @@ export const actions: DefineActions<RootActions, RootState, RootMutations, RootA
   async nuxtServerInit({ dispatch }, { route, req }) {
     if (req && req.url && req.url.indexOf(".") > -1) return;
     try {
-      await dispatch("auth/init" as any);
-      await dispatch("init", {});
+      //await dispatch("auth/init" as any);
+      //await dispatch("init", {});
     } catch (e) {
       console.error(e);
     }
   },
   async init({ getters, dispatch }) {
     if (getters["auth/isAuthorized"]) {
-      //await dispatch("schema/init");
-      await dispatch("elements/init");
     }
   }
 };

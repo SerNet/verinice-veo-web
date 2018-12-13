@@ -15,7 +15,12 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/axios.js", { src: "~/plugins/i18n-error.js", ssr: false }, "~/plugins/vuetify.js"],
+  plugins: [
+    "~/plugins/axios.js",
+    { src: "~/plugins/i18n-error.js", ssr: false },
+    "~/plugins/vuetify.js",
+    "~/plugins/persistedstate.js"
+  ],
   /*
    ** Global CSS
    */
@@ -72,7 +77,7 @@ module.exports = {
     "@nuxtjs/pwa",
     //"~/modules/typescript",
     "nuxt-typescript",
-    "cookie-universal-nuxt",
+    ["cookie-universal-nuxt", { parseJSON: false }],
     [
       "nuxt-i18n",
       {
