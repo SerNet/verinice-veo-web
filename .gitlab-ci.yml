@@ -29,7 +29,7 @@ image: alpine:latest
 variables:
   # AUTO_DEVOPS_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
   AUTO_DEVOPS_DOMAIN: cpmsys.io
-  DEVOPS_APP_NAME: v2020-web
+  DEVOPS_APP_NAME: veo-web
 
   POSTGRES_USER: verinice
   POSTGRES_PASSWORD: verinice
