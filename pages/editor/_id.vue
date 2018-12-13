@@ -3,7 +3,6 @@
     <element-header v-model="headerOpen"></element-header>
     <veo-form slot="content" :model="formModel.data" @input="form = $event" :schema="formSchema" style="background-color: white; margin: 10px;"></veo-form>
     <v-flex>
-      <v-btn flat to="/elements">Abbrechen</v-btn>
       <v-btn color="primary" flat @click.native="save()">Speichern</v-btn>
     </v-flex>
   </v-layout>

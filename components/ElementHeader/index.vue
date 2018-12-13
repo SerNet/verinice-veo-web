@@ -25,12 +25,16 @@
             </v-container>
           </v-flex>
           <v-spacer></v-spacer>
-          <v-flex>
+          <v-flex v-if="lastChange && lastChange.author && lastChange.timestamp">
             <v-container class="pr-0" text-xs-right>
               <!-- TODO -->
-              <span class="mr-2">Zuletzt geändert von Markus Werner vor 12 Stunden</span>
+              <span class="mr-2">
+                Zuletzt geändert von
+                <span class="font-weight-bold">{{lastChange.author}}</span>
+                <span class="font-weight-bold">{{lastChange.timestamp | relative }}</span>
+              </span>
               <v-avatar size="32" color="grey">
-                <span class="white--text">MW</span>
+                <span class="white--text">{{lastChange.author[0]}}</span>
               </v-avatar>
             </v-container>
           </v-flex>
@@ -75,6 +79,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import moment from "moment";
 import { helpers as activeElement } from "~/store/elements/active";
 import CountButton from "~/components/ElementHeader/CountButton.vue";
 
@@ -132,6 +137,23 @@ export default Vue.extend({
     },
     numHistory(): number {
       return this.history ? this.history.length : 0;
+    },
+    lastChange(): any {
+      if (this.history.length > 0) {
+        const last = this.history[0];
+        if (last && last.author && last.timestamp) {
+          return {
+            author: last.author,
+            timestamp: last.timestamp
+          };
+        }
+      }
+    }
+  },
+  filters: {
+    relative: function(date) {
+      moment.locale("de");
+      return moment(date).fromNow();
     }
   }
 });
