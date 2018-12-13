@@ -26,13 +26,13 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { Element } from "~/types/app";
+import { AppElement } from "~/types/app";
 import { helpers as elements } from "~/store/elements";
 import { helpers as activeElement } from "~/store/elements/active";
-import { ItemId } from "~/types/api";
+import { UUID } from "~/types/api";
 import { union } from "lodash";
 
-type ElementWithChildren = Element & { children: Element[] };
+type AppElementWithChildren = AppElement & { children: AppElement[] };
 
 export default Vue.extend({
   name: "tree",
@@ -46,11 +46,11 @@ export default Vue.extend({
       item: "item",
       breadcrumb: "breadcrumb"
     }),
-    items(): Element[] {
+    items(): AppElement[] {
       const openIds = this.open;
       const itemMap = this.itemMap;
       const items = this.roots.concat();
-      const createChildren = (item: Element): ElementWithChildren => {
+      const createChildren = (item: AppElement): AppElementWithChildren => {
         const children = this.childMap[item.id];
         return {
           ...item,
@@ -76,8 +76,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      active: [] as ItemId[],
-      open: [] as ItemId[],
+      active: [] as UUID[],
+      open: [] as UUID[],
       files: {
         html: "mdi-language-html5",
         js: "mdi-nodejs",
@@ -88,7 +88,7 @@ export default Vue.extend({
         txt: "mdi-file-document-outline",
         xls: "mdi-file-excel"
       },
-      selected: [] as ItemId[]
+      selected: [] as UUID[]
     };
   },
   methods: {
@@ -113,7 +113,6 @@ export default Vue.extend({
     return true;
   },
   async fetch({ store, params: { id } }) {
-    console.log("FETCH Tree", id);
     await elements.dispatch("fetchTree", { id });
   }
 });

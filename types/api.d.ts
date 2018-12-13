@@ -1,24 +1,24 @@
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 
-export type ItemId = string;
+export type UUID = string;
 
-export interface VeoItem {
-  [ID_FIELD]?: ItemId;
-  [PARENT_FIELD]: ItemId;
+export interface ApiItem {
+  [ID_FIELD]?: UUID;
+  [PARENT_FIELD]: UUID;
   [TITLE_FIELD]: string;
   [TYPE_FIELD]: string;
   schema?: string;
   title?: string;
 }
 
-export interface VeoLink {
+export interface ApiLink {
   id: string;
   source: string;
   target: string;
   schema: string;
 }
 
-export interface VeoUserTokenPayload {
+export interface ApiUserTokenPayload {
   exp: number;
   sub: string;
   iss: string;

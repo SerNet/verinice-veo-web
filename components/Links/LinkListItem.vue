@@ -19,26 +19,33 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { Prop } from "vue/types/options";
+import { AppElement, AppLink } from "~/types/app";
 
 export default Vue.extend({
   props: {
-    element: { type: Object },
-    link: { type: Object, default: {} },
+    element: { type: Object as Prop<AppElement> },
+    link: { type: Object as Prop<AppLink>, default: {} as AppLink },
     index: { type: Number }
   },
   methods: {},
   computed: {
     title(): string {
-      return this.inbound ? this.link.source : this.link.target;
+      const link = this.link;
+      return this.inbound
+        ? link.source
+          ? link.source.title
+          : link.sourceId
+        : (link.target ? link.target.title : link.targetId) || "";
     },
     subtitle(): string {
-      return this.link["$veo.type"];
+      return this.link.type;
     },
     inbound(): boolean {
-      return this.element.id == this.link.target;
+      return this.element.id == this.link.targetId;
     },
     to(): string {
-      const toId = this.inbound ? this.link.source : this.link.target;
+      const toId = this.inbound ? this.link.sourceId : this.link.targetId;
       return "/editor/" + toId;
     }
   }

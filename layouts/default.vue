@@ -27,7 +27,6 @@ import SidePane from "~/components/Layout/SidePane.vue";
 import SidePaneButtons from "~/components/Layout/SidePaneButtons.vue";
 import LoadingComponent from "~/components/LoadingComponent.vue";
 import PageComponent from "~/components/PageComponent.vue";
-import extendMatch from "~/lib/DynamicComponent";
 
 export default Vue.extend({
   components: {

@@ -1,5 +1,5 @@
-import { ItemId, VeoItem } from "~/types/api";
-import { Element, ElementMap, ElementIdsMap } from "~/store/elements/index.d.ts";
+import { UUID, ApiItem } from "~/types/api";
+import { AppElement, AppElementMap, UUIDsMap } from "~/types/app";
 
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import { RootDefined } from "~/store/index";
@@ -10,14 +10,14 @@ import { helpers as active } from "./active";
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
-  data: VeoItem[];
+  data: ApiItem[];
 }
 export const state = () => ({ data: [] } as State);
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface Getters {
-  items: ElementMap;
-  children: ElementIdsMap;
-  roots: Element[];
+  items: AppElementMap;
+  children: UUIDsMap;
+  roots: AppElement[];
 }
 
 export const getters: RootDefined.Getters<Getters, State> = {
@@ -48,8 +48,8 @@ export const getters: RootDefined.Getters<Getters, State> = {
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Mutations {
-  setData: VeoItem[];
-  addData: VeoItem[];
+  setData: ApiItem[];
+  addData: ApiItem[];
 }
 
 export const mutations: DefineMutations<Mutations, State> = {
@@ -63,12 +63,13 @@ export const mutations: DefineMutations<Mutations, State> = {
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Actions {
   init: {};
-  fetchItem: { id: ItemId; refresh?: boolean };
+  fetchItem: { id: UUID; refresh?: boolean };
+  fetchItems: { id: UUID[]; refresh?: boolean };
   fetchRoots: {};
-  fetchChildren: { id: ItemId };
-  fetchTree: { id?: ItemId };
-  addData: { data: VeoItem[]; refresh?: boolean };
-  removeItems: ItemId[];
+  fetchChildren: { id: UUID };
+  fetchTree: { id?: UUID };
+  addData: { data: ApiItem[]; refresh?: boolean };
+  removeItems: UUID[];
 }
 
 export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
@@ -105,22 +106,27 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     if (!refresh && items[id]) {
       return items[id];
     } else {
-      const response: VeoItem = await this.$axios.$get(`/api/elements/${id}`);
+      const response: ApiItem = await this.$axios.$get(`/api/elements/${id}`);
       await dispatch("addData", { data: [response], refresh });
       return getters.items[id];
     }
   },
   /**
+   * Fetch multiple entries from Server
+   */ async fetchItems({ commit, dispatch, getters }, { id, refresh }) {
+    await Promise.all(id.map(id => dispatch("fetchItem", { id })));
+  },
+  /**
    * Fetch root nodes
    */ async fetchRoots({ commit, dispatch }, payload) {
-    const response: VeoItem[] = await this.$axios.$get("/api/elements?parent=null");
+    const response: ApiItem[] = await this.$axios.$get("/api/elements?parent=null");
     //TODO: Remove emulation of root node query (filter)
-    commit("setData", response.filter(item => !item[PARENT_FIELD]));
+    await dispatch("addData", { data: response.filter(item => !item[PARENT_FIELD]) });
   },
   /**
    * Fetch children
    */ async fetchChildren({ commit, getters, dispatch }, { id }) {
-    const response: VeoItem[] = await this.$axios.$get(`/api/elements/${id}/children`);
+    const response: ApiItem[] = await this.$axios.$get(`/api/elements/${id}/children`);
     await dispatch("addData", { data: response });
   },
   /**
@@ -139,7 +145,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
         item = await dispatch("fetchItem", { id: item.parent });
       }
       //Wait for all children requests to be performed
-      await pChildren;
+      await Promise.all(pChildren);
     }
   }
 };
