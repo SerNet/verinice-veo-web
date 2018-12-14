@@ -1,7 +1,11 @@
 import LocalizedError from "./LocalizedError";
 import { AxiosError } from "axios";
+type ProjectLocaleErrorKey = keyof ProjectLocaleErrors;
 
-export default class HTTPError extends LocalizedError<AxiosError> {
+export default class HTTPError<
+  K extends ProjectLocaleErrorKey,
+  Vars extends ProjectLocaleVariables[K]
+> extends LocalizedError<AxiosError, K, Vars> {
   get response() {
     const cause = this.cause;
     return cause && cause.response;

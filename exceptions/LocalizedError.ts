@@ -1,8 +1,14 @@
 type ProjectLocaleErrorKey = keyof ProjectLocaleErrors;
-type LocalePlaceholders = Record<string, any>;
 
-export default class LocalizedError<E extends Error> extends Error {
-  constructor(public code: ProjectLocaleErrorKey, protected _args: LocalePlaceholders = {}, protected _cause?: E) {
+export default class LocalizedError<
+  E extends Error,
+  K extends ProjectLocaleErrorKey,
+  Vars extends ProjectLocaleVariables[K]
+> extends Error {
+  constructor(code: K, _cause?: E);
+  constructor(code: K, _args: Vars, _cause?: E);
+
+  constructor(public code: K, protected _args?: Vars, protected _cause?: E) {
     super(code);
     Object.setPrototypeOf(this, new.target.prototype);
     this.name = new.target.name;
@@ -17,7 +23,10 @@ export default class LocalizedError<E extends Error> extends Error {
     return this._cause;
   }
 
-  static caught<E extends Error>(code: ProjectLocaleErrorKey, args?: LocalePlaceholders) {
+  static caught<E extends Error, K extends ProjectLocaleErrorKey, Vars extends ProjectLocaleVariables[K]>(
+    code: K,
+    args?: Vars
+  ) {
     return (error: E) => Promise.reject(new this(code, args, error));
   }
 }

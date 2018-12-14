@@ -7,6 +7,7 @@ import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "
 import { uniqueId, unionWith } from "lodash";
 import { veoItemToElement } from "~/store/elements/utils";
 import { helpers as active } from "./active";
+import HTTPError from "~/exceptions/HTTPError";
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
@@ -111,7 +112,9 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     if (!refresh && items[id]) {
       return items[id];
     } else {
-      const response: ApiItem = await this.$axios.$get(`/api/elements/${id}`);
+      const response: ApiItem = await this.$axios.$get(`/api/elements/${id}`).catch(e => {
+        throw new HTTPError("FETCH_ELEMENT_FAILED", e);
+      });
       await dispatch("addData", { data: [response], refresh });
       return getters.items[id];
     }
@@ -124,14 +127,18 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
   /**
    * Fetch root nodes
    */ async fetchRoots({ commit, dispatch }, payload) {
-    const response: ApiItem[] = await this.$axios.$get("/api/elements?parent=null");
+    const response: ApiItem[] = await this.$axios.$get("/api/elements?parent=null").catch(e => {
+      throw new HTTPError("FETCH_ROOT_ELEMENTS_FAILED", e);
+    });
     //TODO: Remove emulation of root node query (filter)
     await dispatch("addData", { data: response.filter(item => !item[PARENT_FIELD]) });
   },
   /**
    * Fetch children
    */ async fetchChildren({ commit, getters, dispatch }, { id }) {
-    const response: ApiItem[] = await this.$axios.$get(`/api/elements/${id}/children`);
+    const response: ApiItem[] = await this.$axios.$get(`/api/elements/${id}/children`).catch(e => {
+      throw new HTTPError("FETCH_CHILD_ELEMENTS_FAILED", e);
+    });
     if (response) {
       if (response.length === 0) {
         commit("addLeaf", id);

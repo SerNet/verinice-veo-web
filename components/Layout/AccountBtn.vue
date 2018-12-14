@@ -1,5 +1,5 @@
 <template>
-  <v-menu v-model="value" :close-on-content-click="false" offset-y origin="top right">
+  <v-menu v-model="value" :close-on-content-click="false" min-width="200" nudge-bottom="5" offset-y origin="top right">
     <v-btn icon slot="activator" dark>
       <v-avatar size="32" color="secondary">
         <span class="white--text headline">{{username.substr(0,1).toUpperCase()}}</span>
@@ -11,7 +11,6 @@
           <v-list-tile-avatar color="secondary">
             <span class="white--text headline">{{username.substr(0,1).toUpperCase()}}</span>
           </v-list-tile-avatar>
-
           <v-list-tile-content>
             <v-list-tile-title>{{username}}</v-list-tile-title>
           </v-list-tile-content>

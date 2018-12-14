@@ -2,9 +2,16 @@ interface ProjectLocale {
   errors: ProjectLocaleErrors;
 }
 
-interface ProjectLocaleErrors {
-  AUTH_LOGIN_FAILED: string;
-  FORM_GET_ELEMENT_FAILED: string;
-  FORM_SAVE_ELEMENT_FAILED: string;
-  FORM_GET_SCHEMA_FAILED: string;
+interface ProjectLocaleVariables {
+  AUTH_LOGIN_FAILED: any;
+  FETCH_ELEMENT_FAILED: { id: string };
+  FETCH_ROOT_ELEMENTS_FAILED: any;
+  FETCH_CHILD_ELEMENTS_FAILED: any;
+  FETCH_LINKS_FAILED: any;
+  FETCH_HISTORY_FAILED: any;
+  CREATE_ELEMENT_FAILED: any;
+  UPDATE_ELEMENT_FAILED: any;
+  FETCH_SCHEMA_FAILED: any;
 }
+
+type ProjectLocaleErrors = Record<keyof ProjectLocaleVariables, string>;

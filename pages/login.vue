@@ -5,7 +5,7 @@
         <v-form ref="form" @submit.prevent="submit()">
           <v-text-field :error="!!error" v-model="username" label="Benutzername" clearable></v-text-field>
           <v-text-field :error="!!error" v-model="password" label="Passwort" clearable type="password"></v-text-field>
-          <v-checkbox v-model="savePassword" :label="`Passwort speichern`"></v-checkbox>
+          <v-checkbox v-model="persist" :label="`Eingeloggt bleiben`"></v-checkbox>
           <v-messages color="error" v-if="error" :value="[error]"></v-messages>
 
           <v-divider></v-divider>
@@ -37,7 +37,7 @@ export default Vue.extend({
       dialog: false,
       username: "",
       password: "",
-      savePassword: false
+      persist: true
     };
   },
   props: {
@@ -52,14 +52,21 @@ export default Vue.extend({
       const result = await this.login({
         username: this.username,
         password: this.password,
-        persist: this.savePassword
+        persist: this.persist
       });
       if (result) {
         const redir = this.$store.state.auth.redirection;
         if (redir) {
           this.$router.push(redir);
+        } else {
+          this.$router.push("/");
         }
       }
+    }
+  },
+  async fetch({ store, redirect }) {
+    if (auth.getters.isAuthorized) {
+      redirect("/");
     }
   }
 });

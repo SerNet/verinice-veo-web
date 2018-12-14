@@ -9,7 +9,8 @@ export default ({ store, app }) => {
       setItem: (key, value) => {
         const existing = app.$cookies.get(key);
         if (existing != value) {
-          app.$cookies.set(key, value, { secure: false, path: "/", maxAge: 24 * 60 * 1000 });
+          const persist = store.state.auth.persist;
+          app.$cookies.set(key, value, { secure: false, path: "/", maxAge: persist ? 24 * 60 * 1000 : 0 });
         }
       },
       removeItem: key => {

@@ -1,55 +1,59 @@
 import jsonwebtoken from "jsonwebtoken";
 import HTTPError from "~/exceptions/HTTPError";
 import Vue from "vue";
-import { VeoUserTokenPayload } from "~/types/api";
+import { ApiUserTokenPayload } from "~/types/api";
 import { RootState, RootGetters, RootMutations, RootActions } from "~/store/index";
 import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
 
 export interface State {
   token: null | string;
-  username: null | string;
   error: null | string;
   redirection: { path: string } | null;
+  persist: boolean;
 }
 
 export const state = () =>
   ({
     token: null,
-    username: null,
     error: null,
-    redirection: null
+    redirection: null,
+    persist: false
   } as State);
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Getters {
   isAuthorized: boolean;
   authorizationHeader: string;
+  payload?: ApiUserTokenPayload;
+  username?: string;
 }
 
 export const getters: DefineGetters<Getters, State> = {
   isAuthorized: state => !!state.token,
-  authorizationHeader: state => "Bearer " + state.token
+  authorizationHeader: state => "Bearer " + state.token,
+  payload: state => (state.token && <ApiUserTokenPayload>jsonwebtoken.decode(state.token)) || undefined,
+  username: (state, getters) => getters.payload && getters.payload.sub
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Mutations {
   setToken: string | null;
-  setTokenPayload: VeoUserTokenPayload | null;
   setError: string;
   setRedirection: { path: string };
+  setPersist: boolean;
 }
 
 export const mutations: DefineMutations<Mutations, State> = {
   setToken(state, value) {
     state.token = value;
   },
-  setTokenPayload(state, value) {
-    state.username = value ? value.sub : "";
-  },
   setError(state, value) {
     state.error = value;
   },
   setRedirection(state, value) {
     state.redirection = value;
+  },
+  setPersist(state, value) {
+    state.persist = value;
   }
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -84,12 +88,8 @@ export const actions: DefineActions<
     return token;
   },
   async useToken(this: Vue, { commit, dispatch }, { token, persist }) {
+    commit("setPersist", persist || false);
     commit("setToken", token);
-    const user = jsonwebtoken.decode(token) as VeoUserTokenPayload;
-    commit("setTokenPayload", user);
-    /*if (persist) {
-      this.$cookies.set("token", token, { path: "/", maxAge: user.exp - user.iat });
-    }*/
     await dispatch("init", {}, { root: true });
   },
   async redirect(this: Vue, { commit }, { path }) {
@@ -97,8 +97,6 @@ export const actions: DefineActions<
   },
   async logout(this: Vue, { commit, dispatch }) {
     commit("setToken", null);
-    commit("setTokenPayload", null);
-    this.$cookies.remove("token");
     await dispatch("init", {}, { root: true });
   }
 };

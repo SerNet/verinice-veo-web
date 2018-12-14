@@ -42,8 +42,10 @@ export default Vue.extend({
     };
   },
   computed: {
+    ...authHelpers.mapGetters({
+      username: "username"
+    }),
     ...authHelpers.mapState({
-      username: "username",
       authError: "error"
     })
   },

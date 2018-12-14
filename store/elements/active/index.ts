@@ -6,6 +6,7 @@ import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "
 import { helpers as parent } from "~/store/elements";
 import { veoItemToElement, veoLinkToLink } from "~/store/elements/utils";
 import { uniq } from "lodash";
+import HTTPError from "~/exceptions/HTTPError";
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
   /**
@@ -121,13 +122,17 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     await Promise.all([pSchema, pLinks, pHistory, pChildren]);
   },
   async fetchSchema({ commit }, { name }) {
-    const response: any = await this.$axios.$get(`/api/schemas/${name}.json`);
+    const response: any = await this.$axios.$get(`/api/schemas/${name}.json`).catch(e => {
+      throw new HTTPError("FETCH_SCHEMA_FAILED", e);
+    });
     if (response) {
       commit("setSchema", response);
     }
   },
   async fetchLinks({ commit, getters, dispatch }, { id }) {
-    const response: any = await this.$axios.$get(`/api/elements/${id}/links`);
+    const response: any = await this.$axios.$get(`/api/elements/${id}/links`).catch(e => {
+      throw new HTTPError("FETCH_LINKS_FAILED", e);
+    });
     if (response) {
       commit("setLinks", response);
       const links = getters.links;
@@ -146,7 +151,9 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     }
   },
   async fetchHistory({ commit }, { id }) {
-    const response: any = await this.$axios.$get(`/api/elements/${id}/history`);
+    const response: any = await this.$axios.$get(`/api/elements/${id}/history`).catch(e => {
+      throw new HTTPError("FETCH_HISTORY_FAILED", e);
+    });
     if (response) {
       commit("setHistory", response);
     }
@@ -155,9 +162,13 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     let id = payload[ID_FIELD];
 
     if (id) {
-      await this.$axios.$put(`/api/elements/${id}`, payload);
+      await this.$axios.$put(`/api/elements/${id}`, payload).catch(e => {
+        throw new HTTPError("UPDATE_ELEMENT_FAILED", e);
+      });
     } else {
-      const response = await this.$axios.post(`/api/elements`, payload);
+      const response = await this.$axios.post(`/api/elements`, payload).catch(e => {
+        throw new HTTPError("CREATE_ELEMENT_FAILED", e);
+      });
       const location = response.headers.location || "";
       id = location.split("/").pop();
     }
