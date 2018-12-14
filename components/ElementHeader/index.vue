@@ -1,16 +1,15 @@
 <template>
   <v-container class="elementHeader" fluid>
-    <v-expansion-panel class="elevation-0" :value="showHeader" @input="changeExpand" expand>
-      <!-- TODO: expand funktioniert gerade nicht -->
+    <v-expansion-panel class="elevation-0" ref="panels" :value="showHeader" @input="changeExpand" expand>
       <v-expansion-panel-content>
         <div slot="header" class="expansionHeader">
-          <v-layout row>
-            <v-flex>
-              <v-breadcrumbs :items="breadcrumbItems">
+          <v-layout row @click.stop.prevent>
+            <v-flex @click.stop.prevent>
+              <v-breadcrumbs @click.stop.prevent :items="breadcrumbItems">
                 <v-icon slot="divider">chevron_right</v-icon>
               </v-breadcrumbs>
             </v-flex>
-            <v-btn icon target="_blank" href="?standalone=1">
+            <v-btn @click.stop.prevent icon target="_blank" href="?standalone=1">
               <v-icon>launch</v-icon>
             </v-btn>
           </v-layout>
@@ -82,6 +81,7 @@ import Vue from "vue";
 import moment from "moment";
 import { helpers as activeElement } from "~/store/elements/active";
 import CountButton from "~/components/ElementHeader/CountButton.vue";
+import { VExpansionPanel } from "vuetify/lib";
 
 export default Vue.extend({
   props: {
@@ -99,6 +99,20 @@ export default Vue.extend({
     return {
       createMenu: [{ title: "Neuen Link" }, { title: "Neues Unterelement" }]
     };
+  },
+  mounted() {
+    //TODO: Remove Fix when vuetifyjs/vuetify#5795 is fixed
+    //Fix for #22
+    try {
+      const panels = this.$refs["panels"] as VExpansionPanel;
+      if (this.value && panels && panels.$el.clientHeight < 100) {
+        console.log("FIX!");
+        panels.updateFromValue([]);
+        this.$nextTick(() => {
+          panels.updateFromValue([this.value]);
+        });
+      }
+    } catch (e) {}
   },
   computed: {
     ...activeElement.mapGetters({
@@ -139,7 +153,7 @@ export default Vue.extend({
       return this.history ? this.history.length : 0;
     },
     lastChange(): any {
-      if (this.history.length > 0) {
+      if (this.history && this.history.length > 0) {
         const last = this.history[0];
         if (last && last.author && last.timestamp) {
           return {
