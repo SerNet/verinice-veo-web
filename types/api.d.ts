@@ -18,6 +18,13 @@ export interface ApiLink {
   schema: string;
 }
 
+export interface ApiHistory {
+  author: string;
+  data: string;
+  dataId: string;
+  timestamp: string;
+}
+
 export interface ApiUserTokenPayload {
   exp: number;
   sub: string;

@@ -1,11 +1,11 @@
 <template>
   <v-flex class="historyListItem" shrink>
     <v-divider v-if="index!=0" inset :key="index"></v-divider>
-    <v-list-tile :key="version.timestamp" avatar :to="to">
+    <v-list-tile avatar :to="to">
       <!--<v-badge :color="type?'green':'blue'" right bottom overlap>
       <v-icon slot="badge" dark small>{{type?'arrow_forward':'arrow_back'}}</v-icon>-->
       <v-list-tile-avatar class="avatar-with-badge" color="grey">
-        <span class="white--text headline">{{title.substr(0,1).toUpperCase()}}</span>
+        <span class="white--text headline">{{subtitle.substr(0,1).toUpperCase()}}</span>
         <!-- TODO -->
       </v-list-tile-avatar>
       <!--</v-badge>-->
@@ -20,39 +20,34 @@
 <script lang="ts">
 import Vue from "vue";
 import moment from "moment";
+import { AppHistory } from "types/app";
 
 export default Vue.extend({
   props: {
-    version: { type: Object, default: {} },
-    index: { type: Number }
+    value: { type: Object as () => AppHistory, default: {} as AppHistory },
+    index: { type: Number },
+    to: { type: String }
   },
   methods: {},
   computed: {
     title(): string {
-      return "title";
+      const t = moment(this.time);
+      return t.format("DD.MM.YYYY") + ", " + t.format("HH:mm:ss");
     },
     subtitle(): string {
-      return (
-        this.version.author +
-        ", " +
-        moment(this.version.timestamp).format("DD.MM.YYYY HH:mm:ss")
-      );
+      return this.value.author;
     },
     type(): string {
       return "";
-    },
-    to(): string {
-      const toId = "test";
-      return "/diff/" + toId;
     },
     data(): object {
       return {};
     },
     author(): string {
-      return this.version.author;
+      return this.value.author;
     },
     time(): string {
-      return this.version.timestamp;
+      return this.value.timestamp;
     }
   }
 });

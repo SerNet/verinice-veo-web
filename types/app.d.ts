@@ -17,6 +17,13 @@ export interface AppLink {
   target?: AppElement;
 }
 
+export interface AppHistory {
+  id: number;
+  author: string;
+  timestamp: string;
+  data: string;
+}
+
 export type AppElementMap = Record<UUID, AppElement>;
 export type AppElementsMap = Record<UUID, AppElement[]>;
 export type UUIDsMap = Record<UUID, UUID[]>;

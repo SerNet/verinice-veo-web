@@ -1,5 +1,5 @@
-import { ApiItem, ApiLink, UUID } from "~/types/api";
-import { AppElement, AppLink } from "~/types/app";
+import { ApiItem, ApiLink, ApiHistory, UUID } from "~/types/api";
+import { AppElement, AppHistory, AppLink } from "~/types/app";
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import { RootDefined } from "~/store/index";
 import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
@@ -7,6 +7,8 @@ import { helpers as parent } from "~/store/elements";
 import { veoItemToElement, veoLinkToLink } from "~/store/elements/utils";
 import { uniq } from "lodash";
 import HTTPError from "~/exceptions/HTTPError";
+import moment from "moment";
+import { stat } from "fs";
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
   /**
@@ -14,8 +16,8 @@ export interface State {
    */
   data?: ApiItem;
   schema?: any;
-  links?: any;
-  history?: any;
+  links?: ApiLink[];
+  history?: ApiHistory[];
 }
 
 export const state = () => ({ data: undefined, schema: undefined } as State);
@@ -29,7 +31,7 @@ interface Getters {
   schemaName?: string;
   schema?: any;
   links: AppLink[] | undefined;
-  history: any;
+  history?: AppHistory[] | undefined;
   children: AppElement[];
 }
 
@@ -52,7 +54,13 @@ export const getters: RootDefined.Getters<Getters, State> = {
       })
     );
   },
-  history: state => state.history,
+  history: state => {
+    return state.history
+      ? state.history.map(item => {
+          return { id: moment(item.timestamp).unix(), author: item.author, timestamp: item.timestamp, data: item.data };
+        })
+      : undefined;
+  },
   breadcrumb: (state, getters, rootState, rootGetters) => {
     const items = rootGetters[parent.getter("items")];
     let item = getters.item;
@@ -110,7 +118,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     const item = await dispatch(parent.action("fetchItem"), { id, refresh }, { root: true });
     const response: ApiItem = item.data;
     commit("setItem", response);
-    commit("setLinks", undefined);
+
     const schemaName = getters.schemaName;
     let pSchema, pLinks, pHistory, pChildren;
     if (schemaName) {
