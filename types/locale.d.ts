@@ -3,15 +3,15 @@ interface ProjectLocale {
 }
 
 interface ProjectLocaleVariables {
-  AUTH_LOGIN_FAILED: any;
+  AUTH_LOGIN_FAILED: {};
   FETCH_ELEMENT_FAILED: { id: string };
-  FETCH_ROOT_ELEMENTS_FAILED: any;
-  FETCH_CHILD_ELEMENTS_FAILED: any;
-  FETCH_LINKS_FAILED: any;
-  FETCH_HISTORY_FAILED: any;
-  CREATE_ELEMENT_FAILED: any;
-  UPDATE_ELEMENT_FAILED: any;
-  FETCH_SCHEMA_FAILED: any;
+  FETCH_ROOT_ELEMENTS_FAILED: {};
+  FETCH_CHILD_ELEMENTS_FAILED: { id: string };
+  FETCH_LINKS_FAILED: { id: string };
+  FETCH_HISTORY_FAILED: { id: string };
+  CREATE_ELEMENT_FAILED: {};
+  UPDATE_ELEMENT_FAILED: { id: string };
+  FETCH_SCHEMA_FAILED: { name: string };
 }
 
 type ProjectLocaleErrors = Record<keyof ProjectLocaleVariables, string>;

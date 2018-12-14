@@ -123,7 +123,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
   },
   async fetchSchema({ commit }, { name }) {
     const response: any = await this.$axios.$get(`/api/schemas/${name}.json`).catch(e => {
-      throw new HTTPError("FETCH_SCHEMA_FAILED", e);
+      throw new HTTPError("FETCH_SCHEMA_FAILED", { name }, e);
     });
     if (response) {
       commit("setSchema", response);
@@ -131,7 +131,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
   },
   async fetchLinks({ commit, getters, dispatch }, { id }) {
     const response: any = await this.$axios.$get(`/api/elements/${id}/links`).catch(e => {
-      throw new HTTPError("FETCH_LINKS_FAILED", e);
+      throw new HTTPError("FETCH_LINKS_FAILED", { id }, e);
     });
     if (response) {
       commit("setLinks", response);
@@ -152,7 +152,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
   },
   async fetchHistory({ commit }, { id }) {
     const response: any = await this.$axios.$get(`/api/elements/${id}/history`).catch(e => {
-      throw new HTTPError("FETCH_HISTORY_FAILED", e);
+      throw new HTTPError("FETCH_HISTORY_FAILED", { id }, e);
     });
     if (response) {
       commit("setHistory", response);
@@ -163,7 +163,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
 
     if (id) {
       await this.$axios.$put(`/api/elements/${id}`, payload).catch(e => {
-        throw new HTTPError("UPDATE_ELEMENT_FAILED", e);
+        throw new HTTPError("UPDATE_ELEMENT_FAILED", { id: id || "?" }, e);
       });
     } else {
       const response = await this.$axios.post(`/api/elements`, payload).catch(e => {

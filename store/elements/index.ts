@@ -8,6 +8,7 @@ import { uniqueId, unionWith } from "lodash";
 import { veoItemToElement } from "~/store/elements/utils";
 import { helpers as active } from "./active";
 import HTTPError from "~/exceptions/HTTPError";
+import LocalizedError from "~/exceptions/LocalizedError";
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
@@ -112,8 +113,8 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     if (!refresh && items[id]) {
       return items[id];
     } else {
-      const response: ApiItem = await this.$axios.$get(`/api/elements/${id}`).catch(e => {
-        throw new HTTPError("FETCH_ELEMENT_FAILED", e);
+      const response: ApiItem = await this.$axios.$get<ApiItem>(`/api/elements/${id}`).catch(e => {
+        throw new LocalizedError("FETCH_ELEMENT_FAILED", { id }, e);
       });
       await dispatch("addData", { data: [response], refresh });
       return getters.items[id];
@@ -137,7 +138,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
    * Fetch children
    */ async fetchChildren({ commit, getters, dispatch }, { id }) {
     const response: ApiItem[] = await this.$axios.$get(`/api/elements/${id}/children`).catch(e => {
-      throw new HTTPError("FETCH_CHILD_ELEMENTS_FAILED", e);
+      throw new HTTPError("FETCH_CHILD_ELEMENTS_FAILED", { id }, e);
     });
     if (response) {
       if (response.length === 0) {
