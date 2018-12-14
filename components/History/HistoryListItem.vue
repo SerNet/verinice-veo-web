@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import moment from "moment";
 
 export default Vue.extend({
   props: {
@@ -31,7 +32,11 @@ export default Vue.extend({
       return "title";
     },
     subtitle(): string {
-      return "subtitle";
+      return (
+        this.version.author +
+        ", " +
+        moment(this.version.timestamp).format("DD.MM.YYYY HH:mm:ss")
+      );
     },
     type(): string {
       return "";
