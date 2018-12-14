@@ -31,7 +31,7 @@ interface Getters {
 export const getters: DefineGetters<Getters, State> = {
   isAuthorized: state => !!state.token,
   authorizationHeader: state => "Bearer " + state.token,
-  payload: state => (state.token && <ApiUserTokenPayload>jsonwebtoken.decode(state.token)) || undefined,
+  payload: state => (state.token && (jsonwebtoken.decode(state.token) as ApiUserTokenPayload)) || undefined,
   username: (state, getters) => getters.payload && getters.payload.sub
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
