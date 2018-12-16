@@ -9,6 +9,7 @@ import { veoItemToElement } from "~/store/elements/utils";
 import { helpers as active } from "./active";
 import HTTPError from "~/exceptions/HTTPError";
 import LocalizedError from "~/exceptions/LocalizedError";
+import NumericStringComparator from "~/lib/NumericStringComparator";
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
@@ -31,9 +32,10 @@ export const getters: RootDefined.Getters<Getters, State> = {
     }, {});
   },
   children(state, getters) {
+    const comparator = new NumericStringComparator();
     return state.data
       .concat()
-      .sort((a, b) => String(a[TITLE_FIELD]).localeCompare(b[TITLE_FIELD]))
+      .sort((a, b) => comparator.compare(a[TITLE_FIELD], b[TITLE_FIELD]))
       .filter(item => item[PARENT_FIELD]) //nur Element mit Parent
       .reduce((itemMap, item) => {
         const id = item[ID_FIELD];
