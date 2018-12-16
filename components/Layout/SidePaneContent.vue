@@ -69,10 +69,6 @@ export default Vue.extend({
         path,
         query: { ...route.query, ...(qry as any) }
       });
-      /*setTimeout(() => {
-        console.log(this.value);
-        this.$emit("input", !this.value);
-      });*/
     },
     toggleCollapse(this: Vue & { value: Boolean }) {
       this.$emit("input", !this.value);

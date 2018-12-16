@@ -72,12 +72,6 @@ export default Vue.extend({
       return items.map(item => createChildren(item));
     }
   },
-  activated() {
-    console.log("Tree activated");
-  },
-  deactivated() {
-    console.log("Tree deactiviated");
-  },
   created() {
     this.selectActiveItem();
   },

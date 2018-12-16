@@ -61,13 +61,6 @@ export default Vue.extend({
       });
     }*/
   },
-  watch: {
-    "$route.query.l": {
-      handler(v, o) {
-        console.log("$route.query.l", v, o);
-      }
-    }
-  },
   data() {
     return {
       mainDrawer: true,

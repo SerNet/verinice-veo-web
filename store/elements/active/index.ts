@@ -16,11 +16,11 @@ export interface State {
    */
   data?: ApiItem;
   schema?: any;
-  links?: ApiLink[];
-  history?: ApiHistory[];
+  links: ApiLink[];
+  history: ApiHistory[];
 }
 
-export const state = () => ({ data: undefined, schema: undefined } as State);
+export const state = () => ({ data: undefined, schema: undefined, links: [], history: [] } as State);
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Getters {
   /**
@@ -84,8 +84,8 @@ export const getters: RootDefined.Getters<Getters, State> = {
 interface Mutations {
   setItem: ApiItem;
   setSchema: any;
-  setLinks: ApiLink[] | undefined;
-  setHistory: any;
+  setLinks: ApiLink[];
+  setHistory: ApiHistory[];
 }
 
 export const mutations: DefineMutations<Mutations, State> = {
@@ -115,19 +115,24 @@ interface Actions {
 export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
   async init({ dispatch }) {},
   async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
+    const currentItem = getters.item;
+    if (currentItem && currentItem.id == id) {
+      return; //already loaded
+    }
+    commit("setItem", undefined);
     const item = await dispatch(parent.action("fetchItem"), { id, refresh }, { root: true });
     const response: ApiItem = item.data;
     commit("setItem", response);
 
     const schemaName = getters.schemaName;
-    //let pSchema, pLinks, pHistory, pChildren;
+    let pSchema, pLinks, pHistory, pChildren;
     if (schemaName) {
-      await dispatch("fetchSchema", { name: schemaName });
+      pSchema = dispatch("fetchSchema", { name: schemaName });
     }
-    await dispatch("fetchLinks", { id });
-    await dispatch("fetchHistory", { id });
-    await dispatch(parent.action("fetchChildren"), { id }, { root: true });
-    //await Promise.all([pSchema, pLinks, pHistory, pChildren]);
+    pLinks = dispatch("fetchLinks", { id });
+    pHistory = dispatch("fetchHistory", { id });
+    pChildren = dispatch(parent.action("fetchChildren"), { id }, { root: true });
+    await Promise.all([pSchema, pLinks, pHistory, pChildren]);
   },
   async fetchSchema({ commit }, { name }) {
     const response: any = await this.$axios.$get(`/api/schemas/${name}.json`).catch(e => {
@@ -138,6 +143,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     }
   },
   async fetchLinks({ commit, getters, dispatch }, { id }) {
+    commit("setLinks", []);
     const response: any = await this.$axios.$get(`/api/elements/${id}/links`).catch(e => {
       throw new HTTPError("FETCH_LINKS_FAILED", { id }, e);
     });

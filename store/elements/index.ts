@@ -127,7 +127,8 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
   },
   /**
    * Fetch root nodes
-   */ async fetchRoots({ commit, dispatch }, payload) {
+   */ async fetchRoots({ commit, dispatch, getters }, payload) {
+    if (getters.roots.length > 0) return;
     const response: ApiItem[] = await this.$axios.$get("/api/elements?parent=null").catch(e => {
       throw new HTTPError("FETCH_ROOT_ELEMENTS_FAILED", e);
     });
@@ -157,7 +158,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
       //Load initial item
       let item = await dispatch("fetchItem", { id });
       //Until no more parent items exist:
-      while (item.parent) {
+      while (item.parent && !getters.items[item.parent]) {
         //Do not wait for children to be fetched
         pChildren.push(dispatch("fetchChildren", { id: item.parent }));
         //Load parent of child

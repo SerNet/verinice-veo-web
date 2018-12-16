@@ -106,7 +106,6 @@ export default Vue.extend({
     try {
       const panels = this.$refs["panels"] as VExpansionPanel;
       if (this.value && panels && panels.$el.clientHeight < 100) {
-        console.log("FIX!");
         panels.updateFromValue([]);
         this.$nextTick(() => {
           panels.updateFromValue([this.value]);
