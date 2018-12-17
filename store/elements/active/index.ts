@@ -4,23 +4,26 @@ import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import { RootDefined } from "~/store/index";
 import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
 import { helpers as parent } from "~/store/elements";
+import { helpers as error } from "~/store/error";
 import { veoItemToElement, veoLinkToLink } from "~/store/elements/utils";
 import { uniq } from "lodash";
 import HTTPError from "~/exceptions/HTTPError";
 import moment from "moment";
-import { stat } from "fs";
+import NumericStringComparator from "~/lib/NumericStringComparator";
+import { JSONSchema6, JSONSchema6TypeName } from "json-schema";
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
   /**
    * Currently selected item id
    */
   data?: ApiItem;
-  schema?: any;
+  schema?: JSONSchema6;
   links: ApiLink[];
   history: ApiHistory[];
 }
 
-export const state = () => ({ data: undefined, schema: undefined, links: [], history: [] } as State);
+export const state = () => ({ data: undefined, schema: undefined, errors: [], links: [], history: [] } as State);
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Getters {
   /**
@@ -29,7 +32,7 @@ interface Getters {
   item?: AppElement;
   breadcrumb: AppElement[];
   schemaName?: string;
-  schema?: any;
+  schema?: JSONSchema6;
   links: AppLink[] | undefined;
   history?: AppHistory[] | undefined;
   children: AppElement[];
@@ -42,16 +45,19 @@ export const getters: RootDefined.Getters<Getters, State> = {
     return state.schema;
   },
   links: (state, getters, rootState, rootGetters) => {
+    const comparator = new NumericStringComparator();
     const links = state.links;
     const itemMap = rootGetters[parent.getter("items")];
     return (
       links &&
-      links.map(data => {
-        const item = veoLinkToLink(data);
-        item.source = itemMap[item.sourceId];
-        item.target = itemMap[item.targetId];
-        return item;
-      })
+      links
+        .map(data => {
+          const item = veoLinkToLink(data);
+          item.source = itemMap[item.sourceId];
+          item.target = itemMap[item.targetId];
+          return item;
+        })
+        .sort((a, b) => comparator.compare(a.source && a.source.title, b.source && b.source.title))
     );
   },
   history: state => {
@@ -124,17 +130,14 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     const response: ApiItem = item.data;
     commit("setItem", response);
 
-    const schemaName = getters.schemaName;
-    let pSchema, pLinks, pHistory, pChildren;
-    if (schemaName) {
-      pSchema = dispatch("fetchSchema", { name: schemaName });
-    }
+    let pLinks, pHistory, pChildren;
     pLinks = dispatch("fetchLinks", { id });
     pHistory = dispatch("fetchHistory", { id });
     pChildren = dispatch(parent.action("fetchChildren"), { id }, { root: true });
-    await Promise.all([pSchema, pLinks, pHistory, pChildren]);
+    await Promise.all([pLinks, pHistory, pChildren]);
+    return item;
   },
-  async fetchSchema({ commit }, { name }) {
+  async fetchSchema({ commit, dispatch }, { name }) {
     const response: any = await this.$axios.$get(`/api/schemas/${name}.json`).catch(e => {
       throw new HTTPError("FETCH_SCHEMA_FAILED", { name }, e);
     });

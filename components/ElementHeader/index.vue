@@ -39,7 +39,7 @@
         </v-layout>
         <v-layout row wrap>
           <v-flex shrink>
-            <count-button :count="numElementAttributes" :countAll="numSchemaAttributes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
+            <count-button :count="numElementAttributes" :count-all="numSchemaAttributes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
             <count-button :count="numChildren" icon="format_align_right" text="Unterelemente" :to="'/browser/'+id"></count-button>
             <v-menu offset-y class="element_add_menu hidden-xs-only">
               <v-btn slot="activator" class="elevation-0 ma-0 pa-0">

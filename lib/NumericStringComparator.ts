@@ -8,7 +8,10 @@ export default class {
   /**
    * Bound function to use in .sort(...)
    */
-  public compare = (a: string, b: string): number => {
+  public compare = (a?: string, b?: string): number => {
+    if (!a && !b) return 0;
+    if (!a) return -1;
+    if (!b) return 1;
     //If a string contains a zero:
     if (a.indexOf("0") > -1 || b.indexOf("0") > -1) {
       const withoutZero = (_: string) => _.replace(/0+/g, "");

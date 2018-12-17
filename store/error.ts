@@ -1,5 +1,7 @@
 import { RootDefined } from "~/store/index";
 import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
+import LocalizedError from "~/exceptions/LocalizedError";
+import Vue from "vue";
 
 export interface State {
   items: string[];
@@ -21,7 +23,7 @@ export const mutations: DefineMutations<Mutations, State> = {
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Actions {
-  handle: Error;
+  handle: Error | LocalizedError<Error, any>;
 }
 
 export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {

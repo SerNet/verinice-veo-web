@@ -160,7 +160,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
       //Load initial item
       let item = await dispatch("fetchItem", { id });
       //Until no more parent items exist:
-      while (item.parent && !getters.items[item.parent]) {
+      while (item.parent) {
         //Do not wait for children to be fetched
         pChildren.push(dispatch("fetchChildren", { id: item.parent }));
         //Load parent of child

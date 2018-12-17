@@ -74,6 +74,7 @@ declare module "vue/types/vue" {
     $store: Store<any>;
     readonly i18n: VueI18n & IVueI18n;
     readonly $i18n: VueI18n & IVueI18n;
+    $i18nError(error: Error): string;
     $t: typeof VueI18n.prototype.t;
     $tc: typeof VueI18n.prototype.tc;
     $te: typeof VueI18n.prototype.te;

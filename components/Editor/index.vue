@@ -1,19 +1,24 @@
 <template>
-  <v-layout class="form-panels pa-3" column>
-    <h2 class="pb-3">Editor</h2>
-
-    <v-form>
-      <abstract-field
-        v-for="property in properties"
-        :key="property.key"
-        :name="property.key"
-        :schema="property"
-        :required="schema.required.includes(property.key)"
-        @input="onFieldChange(property, $event)"
-        :value="model[property.key]"
-      />
-    </v-form>
-  </v-layout>
+  <v-card flat style="border: 1px solid #CCC; margin: 15px">
+    <v-card-title>
+      <h2 class="title">Editor</h2>
+    </v-card-title>
+    <v-card-text>
+      <v-form>
+        <v-layout row wrap class="form-panels">
+          <v-flex xs12 v-for="property in properties" :key="property.key">
+            <abstract-field
+              :name="property.key"
+              :schema="property"
+              :required="required.includes(property.key)"
+              @input="onFieldChange(property, $event)"
+              :value="model[property.key]"
+            />
+          </v-flex>
+        </v-layout>
+      </v-form>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -78,13 +83,38 @@ export default Vue.extend({
     properties(): Array<JSONSchemaProperty> {
       const properties: { [k: string]: JSONSchema6 } =
         this.schema && this.schema.properties;
-      const filterKeys = this.hiddenKeys;
-      return Object.keys(properties || {})
-        .filter(key => filterKeys.indexOf(key) === -1)
-        .map(key => ({
-          ...properties[key],
-          key
-        }));
+      if (properties) {
+        const filterKeys = this.hiddenKeys;
+        return Object.keys(properties || {})
+          .filter(key => filterKeys.indexOf(key) === -1)
+          .map(key => ({
+            ...properties[key],
+            key
+          }));
+      } else {
+        return (
+          this.model &&
+          Object.keys(this.model)
+            .sort()
+            .map(
+              key =>
+                ({
+                  key,
+                  type: "string",
+                  title: String(key).replace(/(?:^|\s+)\w/, m =>
+                    m.toUpperCase()
+                  )
+                } as JSONSchemaProperty)
+            )
+        );
+      }
+    },
+    required(): string[] {
+      if (this.schema) {
+        return this.schema.required;
+      } else {
+        return Object.keys(this.model);
+      }
     }
   },
   methods: {
