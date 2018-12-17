@@ -3,9 +3,9 @@
     <v-expansion-panel class="elevation-0" ref="panels" :value="showHeader" @input="changeExpand" expand>
       <v-expansion-panel-content>
         <div slot="header" class="expansionHeader">
-          <v-layout row @click.stop.prevent>
+          <v-layout align-center row @click.stop.prevent>
             <v-flex @click.stop.prevent>
-              <v-breadcrumbs @click.stop.prevent :items="breadcrumbItems">
+              <v-breadcrumbs class="pl-1" @click.stop.prevent :items="breadcrumbItems">
                 <v-icon slot="divider">chevron_right</v-icon>
               </v-breadcrumbs>
             </v-flex>
@@ -14,9 +14,10 @@
             </v-btn>
           </v-layout>
         </div>
+
         <v-layout row wrap>
           <v-flex>
-            <v-container class="pl-0">
+            <v-container class="px-2">
               <v-avatar size="32" color="grey">
                 <span class="white--text headline">{{title?title.substr(0,1).toUpperCase():""}}</span>
               </v-avatar>
@@ -84,7 +85,8 @@ import { VExpansionPanel } from "vuetify/lib";
 
 export default Vue.extend({
   props: {
-    value: { type: Boolean }
+    visible: { type: Boolean },
+    value: { type: Object }
   },
   components: {
     CountButton
@@ -104,10 +106,10 @@ export default Vue.extend({
     //Fix for #22
     try {
       const panels = this.$refs["panels"] as VExpansionPanel;
-      if (this.value && panels && panels.$el.clientHeight < 100) {
+      if (this.visible && panels && panels.$el.clientHeight < 100) {
         panels.updateFromValue([]);
         this.$nextTick(() => {
-          panels.updateFromValue([this.value]);
+          panels.updateFromValue([this.visible]);
         });
       }
     } catch (e) {}
@@ -121,8 +123,11 @@ export default Vue.extend({
       children: "children",
       schema: "schema"
     }),
+    data(): Object {
+      return this.value || (this.element && this.element.data);
+    },
     showHeader(): boolean[] {
-      return [this.value];
+      return [this.visible];
     },
     breadcrumbItems(): any[] {
       const id = this.$route.params.id;
@@ -133,17 +138,19 @@ export default Vue.extend({
       }));
       return bc;
     },
-    id() {
+    id(): string {
       return this.element ? this.element["id"] : "";
     },
     title(): string {
       return this.element ? this.element.title : "test";
     },
-    numElementAttributes() {
-      return this.element ? Object.keys(this.element).length : 0;
+    numElementAttributes(): number {
+      return this.element ? Object.keys(this.data).length : 0;
     },
-    numSchemaAttributes() {
-      return this.schema ? Object.keys(this.schema).length : 0;
+    numSchemaAttributes(): number {
+      return this.schema
+        ? Object.keys(this.schema!.properties || {}).length
+        : 0;
     },
     numLinks(): number {
       return this.links ? this.links.length : 0;
@@ -185,11 +192,11 @@ export default Vue.extend({
   .v-expansion-panel {
     >li {
       background-color: transparent;
-      padding: 10px 10px 0 10px;
+      padding: 0px 10px 0 10px;
 
       >>> .v-expansion-panel__header {
         padding: 0;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 
         .expansionHeader {
         }

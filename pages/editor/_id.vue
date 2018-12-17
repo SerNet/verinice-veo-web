@@ -1,28 +1,10 @@
 <template>
-  <!-- <v-layout class="ml-3 mr-3" fill-height column>
-    <element-header v-model="headerOpen"></element-header>
-    <v-flex ma-3 xs12>
-      <v-alert outline :value="true" type="error" v-if="!formSchema">
-        Das zugehörige Schema
-        <q>{{schemaName}}</q> konnte nicht abgerufen werden. Die Daten können daher nicht bearbeitet werden.
-      </v-alert>
-    </v-flex>
-    <v-flex grow xs12>
-      <veo-form slot="content" :model="formModel.data" @input="form = $event" :schema="formSchema" style="background-color: white; margin: 10px;"></veo-form>
-    </v-flex>
-    <v-spacer></v-spacer>
-    <v-flex xs12 shrink>
-      <v-toolbar flat>
-        <v-btn color="primary" flat @click.native="save()">Speichern</v-btn>
-      </v-toolbar>
-    </v-flex>
-  </v-layout>-->
   <v-layout column fill-height>
     <v-flex d-flex grow>
-      <element-header v-model="headerOpen"></element-header>
+      <element-header :value="form" :visible="headerOpen"></element-header>
     </v-flex>
     <v-flex fill-height d-flex xs12 style="overflow: auto;">
-      <veo-form slot="content" :model="formModel.data" @input="form = $event" :schema="formSchema"></veo-form>
+      <veo-form slot="content" :model="formModel.data" @input="onFormChange" :schema="formSchema"></veo-form>
     </v-flex>
     <v-flex d-flex style="min-height: 64px;">
       <v-toolbar dense class="bottom-toolbar px-3" color="transparent" flat>
@@ -80,6 +62,15 @@ export default Vue.extend({
       if (id != this.$route.params.id) {
         this.$router.push("/elements/" + id);
       }
+    },
+    onFormChange(form: Object) {
+      const frm: any = {};
+      for (const key in form) {
+        if (form[key] !== null) {
+          frm[key] = form[key];
+        }
+      }
+      this.form = frm;
     }
   },
   async asyncData({ store, query: { type, parent }, params: { id } }) {

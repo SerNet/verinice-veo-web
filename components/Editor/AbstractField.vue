@@ -4,7 +4,8 @@
     v-bind="fieldOptions"
     :label="nameMap[name] || schema.title || name"
     :placeholder="schema.title"
-    :value="value"
+    :value="value===''?' ':value"
+    :clearable="value!==undefined"
     @input="$emit('input', $event)"
   >{{fieldValue}}</component>
 </template>

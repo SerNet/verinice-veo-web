@@ -3,10 +3,16 @@
     <v-card-title>
       <h2 class="title">Editor</h2>
     </v-card-title>
-    <v-card-text>
+    <v-card-text class="pt-0">
       <v-form>
         <v-layout row wrap class="form-panels">
-          <v-flex xs12 v-for="property in properties" :key="property.key">
+          <v-flex xs12 v-if="!schema">
+            <v-alert outline :value="true" type="error">
+              Das zugehörige Schema
+              <q>{{model["$veo.type"]}}</q> konnte nicht abgerufen werden. Die Daten können daher nicht bearbeitet werden.
+            </v-alert>
+          </v-flex>
+          <v-flex class="pt-2" xs12 v-for="property in properties" :key="property.key">
             <abstract-field
               :name="property.key"
               :schema="property"
@@ -85,12 +91,14 @@ export default Vue.extend({
         this.schema && this.schema.properties;
       if (properties) {
         const filterKeys = this.hiddenKeys;
-        return Object.keys(properties || {})
-          .filter(key => filterKeys.indexOf(key) === -1)
-          .map(key => ({
-            ...properties[key],
-            key
-          }));
+        return (
+          Object.keys(properties || {})
+            //.filter(key => filterKeys.indexOf(key) === -1)
+            .map(key => ({
+              ...properties[key],
+              key
+            }))
+        );
       } else {
         return (
           this.model &&
@@ -119,7 +127,6 @@ export default Vue.extend({
   },
   methods: {
     onFieldChange(property: JSONSchemaProperty, value: any) {
-      console.log(property, value);
       this.$emit("input", { ...this.model, [property.key]: value });
     }
   },

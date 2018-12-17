@@ -122,7 +122,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
   async init({ dispatch }) {},
   async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
     const currentItem = getters.item;
-    if (currentItem && currentItem.id == id) {
+    if (currentItem && currentItem.id == id && !refresh) {
       return; //already loaded
     }
     commit("setItem", undefined);
@@ -138,6 +138,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     return item;
   },
   async fetchSchema({ commit, dispatch }, { name }) {
+    commit("setSchema", null);
     const response: any = await this.$axios.$get(`/api/schemas/${name}.json`).catch(e => {
       throw new HTTPError("FETCH_SCHEMA_FAILED", { name }, e);
     });
