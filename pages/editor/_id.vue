@@ -1,18 +1,16 @@
 <template>
-  <v-layout column fill-height>
-    <v-flex d-flex grow>
+  <v-layout justify-start fill-height column>
+    <v-flex shrink>
       <element-header :value="form" :visible="headerOpen"></element-header>
     </v-flex>
-    <v-flex d-flex shrink xs12 style="overflow: auto;">
+    <v-flex>
       <veo-form slot="content" :model="formModel.data" @input="onFormChange" :schema="formSchema"></veo-form>
     </v-flex>
-    <v-flex d-flex style="min-height: 64px;">
-      <v-toolbar dense class="bottom-toolbar px-3" color="transparent" flat>
-        <v-spacer></v-spacer>
-        <v-btn :disabled="!formSchema || !formModel || !formModel.data" flat @click.native="save()">Löschen</v-btn>
-        <v-btn :disabled="!formSchema || !formModel || !formModel.data" color="primary" @click.native="save()">Speichern</v-btn>
-      </v-toolbar>
-    </v-flex>
+    <v-spacer></v-spacer>
+    <footer-toolbar>
+      <v-btn flat>Zurücksetzen</v-btn>
+      <v-btn class="ma-3" :disabled="!formSchema || !formModel || !formModel.data" color="primary" @click.native="save()">Speichern</v-btn>
+    </footer-toolbar>
   </v-layout>
 </template>
 
@@ -21,13 +19,15 @@ import Vue from "vue";
 import { ApiItem } from "~/types/api";
 import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
+import FooterToolbar from "~/components/Editor/FooterToolbar.vue";
 import { helpers as elementsStore } from "~/store/elements";
 import { helpers as activeElement } from "~/store/elements/active";
 
 export default Vue.extend({
   components: {
     ElementHeader,
-    VeoForm
+    VeoForm,
+    FooterToolbar
   },
   data() {
     return {

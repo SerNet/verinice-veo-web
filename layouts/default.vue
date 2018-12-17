@@ -1,12 +1,12 @@
 <template>
-  <v-app>
+  <v-app fill-height>
     <main-toolbar app v-if="!standalone" @click-side-icon="mainDrawer = !mainDrawer" :clipped="true" :clipped-left="false"></main-toolbar>
     <side-pane v-if="!standalone" v-model="mainDrawer" :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
       <page-component :route="leftKey" :context="{side: 'left'}">
         <loading-component slot="loading"></loading-component>
       </page-component>
     </side-pane>
-    <v-content>
+    <v-content fill-height>
       <v-container class="pa-0" fill-height>
         <nuxt></nuxt>
       </v-container>

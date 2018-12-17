@@ -1,31 +1,35 @@
 <template>
-  <v-card flat style="border: 1px solid #CCC; margin: 15px">
-    <v-card-title>
-      <h2 class="title">Editor</h2>
-    </v-card-title>
-    <v-card-text class="pt-0">
-      <v-form>
-        <v-layout row wrap class="form-panels">
-          <v-flex xs12 v-if="schema===null">
-            <v-alert outline :value="true" type="error">
-              Das zugehörige Schema
-              <q>{{model["$veo.type"]}}</q> konnte nicht abgerufen werden. Die Daten können daher nicht bearbeitet werden.
-            </v-alert>
-          </v-flex>
-          <v-flex class="pt-2" xs12 v-for="property in properties" :key="property.key">
-            <abstract-field
-              :name="property.key"
-              :schema="property"
-              :disabled="!schema || disabledKeys.includes(property.key)"
-              :required="required.includes(property.key)"
-              @input="onFieldChange(property, $event)"
-              :value="model[property.key]"
-            />
-          </v-flex>
-        </v-layout>
-      </v-form>
-    </v-card-text>
-  </v-card>
+  <v-layout fill-height column>
+    <v-flex>
+      <v-card style="height: 100%; border: 1px solid #CCC; margin: 15px" flat>
+        <v-card-title>
+          <h2 class="title">Editor</h2>
+        </v-card-title>
+        <v-card-text class="pt-0" style="overflow: auto;">
+          <v-form>
+            <v-layout row wrap class="form-panels">
+              <v-flex xs12 v-if="schema===null">
+                <v-alert outline :value="true" type="error">
+                  Das zugehörige Schema
+                  <q>{{model["$veo.type"]}}</q> konnte nicht abgerufen werden. Die Daten können daher nicht bearbeitet werden.
+                </v-alert>
+              </v-flex>
+              <v-flex class="pt-2" xs12 v-for="property in properties" :key="property.key">
+                <abstract-field
+                  :name="property.key"
+                  :schema="property"
+                  :disabled="!schema || disabledKeys.includes(property.key)"
+                  :required="required.includes(property.key)"
+                  @input="onFieldChange(property, $event)"
+                  :value="model[property.key]"
+                />
+              </v-flex>
+            </v-layout>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">
