@@ -1,6 +1,7 @@
 <template>
   <component
     :is="fieldComponent"
+    :disabled="disabled"
     v-bind="fieldOptions"
     :label="nameMap[name] || schema.title || name"
     :placeholder="schema.title"
@@ -38,6 +39,7 @@ export default Vue.extend({
     name: { type: String },
     schema: { type: Object },
     required: { type: Boolean },
+    disabled: { type: Boolean, default: false },
     value: {}
   },
 

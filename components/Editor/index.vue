@@ -6,7 +6,7 @@
     <v-card-text class="pt-0">
       <v-form>
         <v-layout row wrap class="form-panels">
-          <v-flex xs12 v-if="!schema">
+          <v-flex xs12 v-if="schema===null">
             <v-alert outline :value="true" type="error">
               Das zugehörige Schema
               <q>{{model["$veo.type"]}}</q> konnte nicht abgerufen werden. Die Daten können daher nicht bearbeitet werden.
@@ -16,6 +16,7 @@
             <abstract-field
               :name="property.key"
               :schema="property"
+              :disabled="!schema"
               :required="required.includes(property.key)"
               @input="onFieldChange(property, $event)"
               :value="model[property.key]"

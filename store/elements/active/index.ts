@@ -32,7 +32,7 @@ interface Getters {
   item?: AppElement;
   breadcrumb: AppElement[];
   schemaName?: string;
-  schema?: JSONSchema6;
+  schema: JSONSchema6 | null | undefined;
   links: AppLink[] | undefined;
   history?: AppHistory[] | undefined;
   children: AppElement[];
@@ -138,8 +138,9 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     return item;
   },
   async fetchSchema({ commit, dispatch }, { name }) {
-    commit("setSchema", null);
+    commit("setSchema", undefined);
     const response: any = await this.$axios.$get(`/api/schemas/${name}.json`).catch(e => {
+      commit("setSchema", null);
       throw new HTTPError("FETCH_SCHEMA_FAILED", { name }, e);
     });
     if (response) {

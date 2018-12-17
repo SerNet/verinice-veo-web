@@ -3,7 +3,7 @@
     <v-flex d-flex grow>
       <element-header :value="form" :visible="headerOpen"></element-header>
     </v-flex>
-    <v-flex fill-height d-flex xs12 style="overflow: auto;">
+    <v-flex d-flex shrink xs12 style="overflow: auto;">
       <veo-form slot="content" :model="formModel.data" @input="onFormChange" :schema="formSchema"></veo-form>
     </v-flex>
     <v-flex d-flex style="min-height: 64px;">
