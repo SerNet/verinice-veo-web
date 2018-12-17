@@ -43,9 +43,9 @@
             <count-button :count="numElementAttributes" :count-all="numSchemaAttributes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
             <count-button :count="numChildren" icon="format_align_right" text="Unterelemente" :to="'/browser/'+id"></count-button>
             <v-menu offset-y class="element_add_menu hidden-xs-only">
-              <v-btn slot="activator" class="elevation-0 ma-0 pa-0">
-                <v-icon>add</v-icon>
-                <v-icon>arrow_drop_down</v-icon>
+              <v-btn flat outline dark color="#CCC" slot="activator" class="ma-0 pa-0">
+                <v-icon color="primary">add</v-icon>
+                <v-icon color="primary">arrow_drop_down</v-icon>
               </v-btn>
               <v-list>
                 <v-list-tile v-for="(item, index) in createMenu" :key="index">
@@ -210,8 +210,6 @@ export default Vue.extend({
   padding: 0;
 
   .v-btn {
-    background-color: #fafafa !important;
-    border: 1px solid #ccc;
     min-width: 58px;
   }
 }
