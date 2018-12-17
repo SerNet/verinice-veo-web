@@ -1,7 +1,7 @@
 <template>
   <v-flex class="countButton" shrink>
     <div>
-      <span>{{count}}</span>
+      <span>{{count}}{{countAll?'/'+countAll:''}}</span>
     </div>
     <v-btn flat class="ma-0" :to="to">
       <v-icon>{{icon}}</v-icon>
@@ -16,6 +16,7 @@ import Vue from "vue";
 export default Vue.extend({
   props: {
     count: { type: Number, default: 0 },
+    countAll: { type: Number },
     icon: String,
     text: String,
     to: String

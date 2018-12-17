@@ -26,7 +26,6 @@
           <v-spacer></v-spacer>
           <v-flex v-if="lastChange && lastChange.author && lastChange.timestamp">
             <v-container class="pr-0" text-xs-right>
-              <!-- TODO -->
               <span class="mr-2">
                 Zuletzt geändert von
                 <span class="font-weight-bold">{{lastChange.author}}</span>
@@ -40,7 +39,7 @@
         </v-layout>
         <v-layout row wrap>
           <v-flex shrink>
-            <count-button :count="numAttributes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
+            <count-button :count="numElementAttributes" :countAll="numSchemaAttributes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
             <count-button :count="numChildren" icon="format_align_right" text="Unterelemente" :to="'/browser/'+id"></count-button>
             <v-menu offset-y class="element_add_menu hidden-xs-only">
               <v-btn slot="activator" class="elevation-0 ma-0 pa-0">
@@ -119,7 +118,8 @@ export default Vue.extend({
       element: "item",
       links: "links",
       history: "history",
-      children: "children"
+      children: "children",
+      schema: "schema"
     }),
     showHeader(): boolean[] {
       return [this.value];
@@ -139,8 +139,11 @@ export default Vue.extend({
     title(): string {
       return this.element ? this.element.title : "test";
     },
-    numAttributes() {
+    numElementAttributes() {
       return this.element ? Object.keys(this.element).length : 0;
+    },
+    numSchemaAttributes() {
+      return this.schema ? Object.keys(this.schema).length : 0;
     },
     numLinks(): number {
       return this.links ? this.links.length : 0;
