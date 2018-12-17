@@ -16,7 +16,7 @@
             <abstract-field
               :name="property.key"
               :schema="property"
-              :disabled="!schema"
+              :disabled="!schema || disabledKeys.includes(property.key)"
               :required="required.includes(property.key)"
               @input="onFieldChange(property, $event)"
               :value="model[property.key]"
@@ -41,7 +41,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      hiddenKeys: ["id", "parent", "type"],
+      disabledKeys: ["$veo.id", "parent", "$veo.type"],
       current: {
         chapter: "TEST"
       },
@@ -91,15 +91,10 @@ export default Vue.extend({
       const properties: { [k: string]: JSONSchema6 } =
         this.schema && this.schema.properties;
       if (properties) {
-        const filterKeys = this.hiddenKeys;
-        return (
-          Object.keys(properties || {})
-            //.filter(key => filterKeys.indexOf(key) === -1)
-            .map(key => ({
-              ...properties[key],
-              key
-            }))
-        );
+        return Object.keys(properties || {}).map(key => ({
+          ...properties[key],
+          key
+        }));
       } else {
         return (
           this.model &&
