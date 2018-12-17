@@ -62,9 +62,16 @@ export const getters: RootDefined.Getters<Getters, State> = {
   },
   history: state => {
     return state.history
-      ? state.history.map(item => {
-          return { id: moment(item.timestamp).unix(), author: item.author, timestamp: item.timestamp, data: item.data };
-        })
+      ? state.history
+          .map(item => {
+            return {
+              id: moment(item.timestamp).unix(),
+              author: item.author,
+              timestamp: item.timestamp,
+              data: item.data
+            };
+          })
+          .sort((a, b) => b.id - a.id)
       : undefined;
   },
   breadcrumb: (state, getters, rootState, rootGetters) => {
