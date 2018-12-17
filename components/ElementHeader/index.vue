@@ -21,7 +21,7 @@
               <v-avatar size="32" color="grey">
                 <span class="white--text headline">{{title?title.substr(0,1).toUpperCase():""}}</span>
               </v-avatar>
-              <span class="ml-2">{{title}}</span>
+              <span class="ml-2 font-weight-bold">{{title}}</span>
             </v-container>
           </v-flex>
           <v-spacer></v-spacer>

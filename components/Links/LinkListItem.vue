@@ -12,6 +12,18 @@
         <v-list-tile-title>{{title}}</v-list-tile-title>
         <v-list-tile-sub-title>{{subtitle}}</v-list-tile-sub-title>
       </v-list-tile-content>
+      <v-list-tile-action>
+        <v-menu offset-x offset-y>
+          <v-btn slot="activator" icon ripple @click.prevent>
+            <v-icon color="grey lighten-1">more_vert</v-icon>
+          </v-btn>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-title @click="deleteLink">Link löschen</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </v-list-tile-action>
     </v-list-tile>
   </v-flex>
 </template>
@@ -27,7 +39,11 @@ export default Vue.extend({
     link: { type: Object as Prop<AppLink>, default: {} as AppLink },
     index: { type: Number }
   },
-  methods: {},
+  methods: {
+    deleteLink() {
+      console.log("Delete Link " + this.link.id);
+    }
+  },
   computed: {
     title(): string {
       const link = this.link;
@@ -58,5 +74,9 @@ export default Vue.extend({
 
 .list-item-content {
   margin-left: 16px;
+}
+
+>>> .v-list .v-list__tile {
+  cursor: pointer;
 }
 </style>
