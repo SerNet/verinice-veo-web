@@ -8,8 +8,10 @@
     </v-flex>
     <v-spacer></v-spacer>
     <footer-toolbar>
+      <v-btn flat color="primary">Löschen</v-btn>
+      <v-spacer></v-spacer>
       <v-btn flat>Zurücksetzen</v-btn>
-      <v-btn class="ma-3" :disabled="!formSchema || !formModel || !formModel.data" color="primary" @click.native="save()">Speichern</v-btn>
+      <v-btn :disabled="!formSchema || !formModel || !formModel.data" color="primary" @click.native="save()">Speichern</v-btn>
     </footer-toolbar>
   </v-layout>
 </template>

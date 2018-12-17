@@ -7,7 +7,7 @@
       </page-component>
     </side-pane>
     <v-content fill-height>
-      <v-container class="pa-0" fill-height>
+      <v-container fluid class="pa-0" fill-height>
         <nuxt></nuxt>
       </v-container>
     </v-content>

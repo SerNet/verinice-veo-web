@@ -1,6 +1,6 @@
 <template>
-  <v-footer class="main-footer" v-scroll="onScroll" style="pointer-events: none" color="transparent" inset app fixed height="auto">
-    <v-spacer></v-spacer>
+  <v-footer class="main-footer" v-scroll="onScroll" v-height="onScroll" color="transparent" inset app fixed height="auto">
+    <v-spacer v-if="isFab"></v-spacer>
     <v-fade-transition origin="center center" hide-on-leave>
       <v-speed-dial right :direction="$vuetify.breakpoint.xs?'top':'left'" key="sd" v-if="isFab">
         <v-btn color="primary" slot="activator" fab class="ma-3">
@@ -8,26 +8,34 @@
         </v-btn>
         <slot></slot>
       </v-speed-dial>
-      <div key="group" v-else>
+      <v-layout class="ma-2" align-center row key="group" v-else>
         <slot></slot>
-      </div>
+      </v-layout>
     </v-fade-transition>
   </v-footer>
 </template>
 <script lang="ts">
-import { Scroll } from "vuetify/lib/directives";
+import { Scroll, Resize } from "vuetify/lib/directives";
+import Height from "~/directives/height";
 import Vue from "vue";
 export default Vue.extend({
   data() {
     return {
-      isFab: false
+      isFab: true
     };
   },
   directives: {
-    Scroll
+    Scroll,
+    Resize,
+    Height
   },
   mounted() {
     this.onScroll();
+  },
+  computed: {
+    docHeight() {
+      return document.documentElement.offsetHeight;
+    }
   },
   methods: {
     onScroll(e?: Event) {
@@ -42,7 +50,9 @@ export default Vue.extend({
 </script>
 <style lang="stylus" scoped>
 .main-footer {
-  .v-speed-dial, .v-btn {
+  pointer-events: none;
+
+  >>> .v-speed-dial, >>> .v-btn {
     pointer-events: auto;
   }
 
