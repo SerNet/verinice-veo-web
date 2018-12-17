@@ -6,7 +6,7 @@
     :label="nameMap[name] || schema.title || name"
     :placeholder="schema.title"
     :value="value===''?' ':value"
-    :clearable="value!==undefined"
+    :clearable="!disabled && value!==undefined"
     @input="$emit('input', $event)"
   >{{fieldValue}}</component>
 </template>

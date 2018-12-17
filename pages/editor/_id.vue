@@ -9,8 +9,8 @@
     <v-flex d-flex style="min-height: 64px;">
       <v-toolbar dense class="bottom-toolbar px-3" color="transparent" flat>
         <v-spacer></v-spacer>
-        <v-btn flat @click.native="save()">Löschen</v-btn>
-        <v-btn color="primary" @click.native="save()">Speichern</v-btn>
+        <v-btn :disabled="!formSchema || !formModel || !formModel.data" flat @click.native="save()">Löschen</v-btn>
+        <v-btn :disabled="!formSchema || !formModel || !formModel.data" color="primary" @click.native="save()">Speichern</v-btn>
       </v-toolbar>
     </v-flex>
   </v-layout>
