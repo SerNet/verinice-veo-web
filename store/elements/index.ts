@@ -95,6 +95,7 @@ export const mutations: DefineMutations<Mutations, State> = {
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Actions {
   init: {};
+  createItem: { parent?: UUID; type: string };
   fetchItem: { id: UUID; refresh?: boolean };
   fetchItems: { id: UUID[]; refresh?: boolean };
   fetchAll: { refresh?: boolean };
@@ -103,10 +104,22 @@ interface Actions {
   fetchTree: { id?: UUID };
   addData: { data: ApiItem[]; refresh?: boolean };
   removeItems: UUID[];
+  searchItems: { q: string; maxResults?: number };
 }
 
 export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
   async init({ dispatch }) {},
+  async createItem({ dispatch }, { parent, type }) {
+    const response = await this.$axios.post<ApiItem>(`/api/elements`, {
+      [PARENT_FIELD]: parent,
+      [TYPE_FIELD]: type,
+      [TITLE_FIELD]: "Neues Unterelement"
+    });
+    await dispatch("fetchAll", { refresh: true });
+    return String(response.headers["location"])
+      .split("/")
+      .pop();
+  },
   async addData({ state, commit, getters }, { data, refresh }) {
     const items = getters.items;
     if (refresh) {
@@ -119,6 +132,18 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
       });
       commit("addData", uniqueData);
     }
+  },
+  async searchItems({ state, getters }, { q, maxResults = 10 }) {
+    const items = getters.items;
+    const s = q && new RegExp(q, "i");
+    const results: AppElement[] = [];
+    for (let i = 0; i < state.data.length && results.length < maxResults; i++) {
+      const item = state.data[i];
+      if (item[TITLE_FIELD] && s ? s.test(item[TITLE_FIELD]) : true) {
+        results.push(items[item[ID_FIELD]!]);
+      }
+    }
+    return results;
   },
   /**
    * Fetch entry from Server

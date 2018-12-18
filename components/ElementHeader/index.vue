@@ -41,33 +41,13 @@
           <v-flex shrink>
             <count-button :count="numElementAttributes" :count-all="numSchemaAttributes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
             <count-button :count="numChildren" icon="format_align_right" text="Unterelemente" :to="'/browser/'+id"></count-button>
-            <v-menu offset-y class="element_add_menu hidden-xs-only">
-              <v-btn flat outline dark color="#CCC" slot="activator" class="ma-0 pa-0 add-button">
-                <v-icon color="primary">add</v-icon>
-                <v-icon color="primary">arrow_drop_down</v-icon>
-              </v-btn>
-              <v-list>
-                <v-list-tile v-for="(item, index) in createMenu" :key="index">
-                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-menu>
+            <create-menu class="hidden-xs-only"></create-menu>
           </v-flex>
           <v-spacer></v-spacer>
           <v-flex shrink>
             <count-button :count="numHistory" icon="history" text="Änderungen" right :to="'/history/'+id"></count-button>
             <count-button :count="numLinks" icon="link" text="Links" right :to="'/links/'+id"></count-button>
-            <v-menu offset-y class="element_add_menu hidden-sm-and-up">
-              <v-btn slot="activator" class="elevation-0 ma-0 pa-0">
-                <v-icon>add</v-icon>
-                <v-icon>arrow_drop_down</v-icon>
-              </v-btn>
-              <v-list>
-                <v-list-tile v-for="(item, index) in createMenu" :key="index">
-                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-menu>
+            <create-menu class="hidden-sm-and-up"></create-menu>
           </v-flex>
         </v-layout>
       </v-expansion-panel-content>
@@ -80,6 +60,7 @@ import Vue from "vue";
 import moment from "moment";
 import { helpers as activeElement } from "~/store/elements/active";
 import CountButton from "~/components/ElementHeader/CountButton.vue";
+import CreateMenu from "~/components/ElementHeader/CreateMenu.vue";
 import { VExpansionPanel } from "vuetify/lib";
 
 export default Vue.extend({
@@ -88,7 +69,8 @@ export default Vue.extend({
     value: { type: Object }
   },
   components: {
-    CountButton
+    CountButton,
+    CreateMenu
   },
   methods: {
     changeExpand(values: boolean[]) {
@@ -96,9 +78,7 @@ export default Vue.extend({
     }
   },
   data() {
-    return {
-      createMenu: [{ title: "Neuen Link" }, { title: "Neues Unterelement" }]
-    };
+    return {};
   },
   mounted() {
     //TODO: Remove Fix when vuetifyjs/vuetify#5795 is fixed
@@ -201,15 +181,6 @@ export default Vue.extend({
         }
       }
     }
-  }
-}
-
-.element_add_menu {
-  margin: 5px;
-  padding: 0;
-
-  .v-btn {
-    min-width: 58px;
   }
 }
 </style>
