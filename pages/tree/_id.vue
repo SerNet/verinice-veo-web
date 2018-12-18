@@ -40,13 +40,11 @@ type AppElementWithChildren = AppElement & { children?: AppElement[] };
 export default Vue.extend({
   name: "tree",
   computed: {
-    ...elements.mapState({
-      leafs: "leafs"
-    }),
     ...elements.mapGetters({
       childMap: "children",
       itemMap: "items",
-      roots: "roots"
+      roots: "roots",
+      childCount: "childCount"
     }),
     ...activeElement.mapGetters({
       item: "item",
@@ -58,7 +56,7 @@ export default Vue.extend({
       const items = this.roots.concat();
       const createChildren = (item: AppElement): AppElementWithChildren => {
         const children = this.childMap[item.id];
-        if (this.leafs.indexOf(item.id) > -1) {
+        if (this.childCount(item.id) < 1) {
           return item;
         } else {
           return {

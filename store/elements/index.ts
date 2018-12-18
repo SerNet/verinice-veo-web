@@ -13,15 +13,18 @@ import NumericStringComparator from "~/lib/NumericStringComparator";
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
+  fetchedAll: boolean;
   data: ApiItem[];
-  leafs: UUID[]; //Items with no children
+  childCount: Record<UUID, number>; //Used to detect leafs and yet loaded children
 }
-export const state = () => ({ data: [], leafs: [] } as State);
+export const state = () => ({ data: [], childCount: {}, fetchedAll: false } as State);
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface Getters {
   items: AppElementMap;
   children: UUIDsMap;
   roots: AppElement[];
+  knowsChildren: (id: UUID) => boolean;
+  childCount: (id: UUID) => number;
 }
 
 export const getters: RootDefined.Getters<Getters, State> = {
@@ -49,13 +52,30 @@ export const getters: RootDefined.Getters<Getters, State> = {
   roots(state, getters) {
     const items = getters.items;
     return state.data.filter(item => !item[PARENT_FIELD]).map(item => items[item[ID_FIELD]!]);
+  },
+  knowsChildren: (state, getters) => id => {
+    if (state.fetchedAll) return true;
+    return state.childCount[id] !== undefined;
+  },
+  childCount: (state, getters) => id => {
+    const stateCount = state.childCount[id];
+    if (stateCount !== undefined) {
+      return stateCount;
+    } else {
+      const children = getters.children[id];
+      if (children) {
+        return children.length;
+      }
+    }
+    return -1;
   }
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 interface Mutations {
   setData: ApiItem[];
   addData: ApiItem[];
-  addLeaf: UUID;
+  setChildCount: { id: UUID; count: number };
+  setFetchedAll: boolean;
 }
 
 export const mutations: DefineMutations<Mutations, State> = {
@@ -65,8 +85,11 @@ export const mutations: DefineMutations<Mutations, State> = {
   addData(state, value) {
     state.data = state.data.concat(value);
   },
-  addLeaf(state, value) {
-    state.leafs.push(value);
+  setChildCount(state, { id, count }) {
+    state.childCount[id] = count;
+  },
+  setFetchedAll(state, value) {
+    state.fetchedAll = value;
   }
 };
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -74,6 +97,7 @@ interface Actions {
   init: {};
   fetchItem: { id: UUID; refresh?: boolean };
   fetchItems: { id: UUID[]; refresh?: boolean };
+  fetchAll: { refresh?: boolean };
   fetchRoots: {};
   fetchChildren: { id: UUID };
   fetchTree: { id?: UUID };
@@ -96,21 +120,10 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
       commit("addData", uniqueData);
     }
   },
-  async removeItems({ state, commit, getters }, ids) {
-    commit(
-      "setData",
-      state.data.filter(item => {
-        if (item[ID_FIELD]) {
-          return ids.indexOf(item[ID_FIELD] as string) === -1;
-        } else {
-          return false;
-        }
-      })
-    );
-  },
   /**
    * Fetch entry from Server
-   */ async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
+   */
+  async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
     const items = getters.items;
     if (!refresh && items[id]) {
       return items[id];
@@ -123,13 +136,40 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     }
   },
   /**
+   * Remove entry from server
+   */
+  async removeItems({ commit, dispatch, getters }, ids) {
+    const promises = ids.map(id =>
+      this.$axios.$delete(`/api/elements/${id}`).catch(e => {
+        throw new LocalizedError("REMOVE_ELEMENT_FAILED", { id }, e);
+      })
+    );
+    await Promise.all(promises);
+    await dispatch("fetchAll", { refresh: true });
+  },
+  /**
    * Fetch multiple entries from Server
-   */ async fetchItems({ commit, dispatch, getters }, { id, refresh }) {
+   */
+  async fetchItems({ commit, dispatch, getters }, { id, refresh }) {
     await Promise.all(id.map(id => dispatch("fetchItem", { id })));
   },
   /**
+   * Fetch all nodes
+   */
+  async fetchAll({ state, commit, dispatch, getters }, { refresh }) {
+    if (state.fetchedAll && !refresh) return;
+    const response: ApiItem[] = await this.$axios.$get("/api/elements").catch(e => {
+      throw new HTTPError("FETCH_ELEMENTS_FAILED", e);
+    });
+    commit("setFetchedAll", true);
+    await commit("setData", response);
+  },
+  /**
    * Fetch root nodes
-   */ async fetchRoots({ commit, dispatch, getters }, payload) {
+   */
+  async fetchRoots({ commit, dispatch, getters }, payload) {
+    //TODO: Dont fetch whole tree
+    return await dispatch("fetchAll", {});
     if (getters.roots.length > 0) return;
     const response: ApiItem[] = await this.$axios.$get("/api/elements?parent=null").catch(e => {
       throw new HTTPError("FETCH_ROOT_ELEMENTS_FAILED", e);
@@ -139,21 +179,23 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
   },
   /**
    * Fetch children
-   */ async fetchChildren({ commit, getters, dispatch }, { id }) {
+   */
+  async fetchChildren({ commit, getters, dispatch }, { id }) {
+    if (getters.knowsChildren(id)) return;
     const response: ApiItem[] = await this.$axios.$get(`/api/elements/${id}/children`).catch(e => {
       throw new HTTPError("FETCH_CHILD_ELEMENTS_FAILED", { id }, e);
     });
     if (response) {
-      if (response.length === 0) {
-        commit("addLeaf", id);
-      } else {
+      commit("setChildCount", { id, count: response.length });
+      if (response.length > 0) {
         await dispatch("addData", { data: response });
       }
     }
   },
   /**
    * Fetch all elements in tree including element[id] going upwards to tree root(s)
-   */ async fetchTree({ commit, getters, dispatch }, { id }) {
+   */
+  async fetchTree({ commit, getters, dispatch }, { id }) {
     await dispatch("fetchRoots", {});
     const pChildren: Promise<any>[] = [];
     if (id) {
