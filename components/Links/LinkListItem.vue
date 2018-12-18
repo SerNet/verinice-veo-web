@@ -18,13 +18,16 @@
             <v-icon color="grey lighten-1">more_vert</v-icon>
           </v-btn>
           <v-list>
-            <v-list-tile>
-              <v-list-tile-title @click="showDialog = true">Link löschen</v-list-tile-title>
+            <v-list-tile ripple to="#">
+              <v-list-tile-title>Link anzeigen</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile ripple @click="showDeleteDialog = true">
+              <v-list-tile-title>Link löschen</v-list-tile-title>
             </v-list-tile>
           </v-list>
         </v-menu>
       </v-list-tile-action>
-      <v-dialog v-model="showDialog" max-width="600">
+      <v-dialog v-model="showDeleteDialog" max-width="600">
         <v-card>
           <v-card-text>
             Soll die Verknüpfung
@@ -34,7 +37,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn flat @click.native="showDialog=false">Abbrechen</v-btn>
+            <v-btn flat @click.native="showDeleteDialog=false">Abbrechen</v-btn>
             <v-btn color="primary" flat @click.native="removeLink">Verknüpfung aufheben</v-btn>
           </v-card-actions>
         </v-card>
@@ -57,13 +60,12 @@ export default Vue.extend({
   components: {},
   methods: {
     removeLink(ev) {
-      this.showDialog = false;
-      //TODO
+      this.showDeleteDialog = false;
     }
   },
   data() {
     return {
-      showDialog: false,
+      showDeleteDialog: false,
       showMenu: false
     };
   },

@@ -12,12 +12,16 @@
         <v-card>
           <v-card-text>
             Soll das Element
-            <span class="font-weight-bold">{{formModel.data["$veo.title"]}}</span> werden?
+            <span class="font-weight-bold">{{formModel.data["$veo.title"]}}</span>
+            zusammen mit
+            <span class="font-italic">{{numLinks}} Verknüpfung{{numLinks==1?'':'en'}}</span> und
+            <span class="font-italic">{{numChildren}} Unterelement{{numChildren==1?'':'en'}}</span>
+            gelöscht werden?
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn flat @click.native="showDeleteDialog = false">Abbrechen</v-btn>
-            <v-btn color="primary" flat @click.native="deleteElement">Löschen</v-btn>
+            <v-btn color="primary" flat @click.native="showDeleteDialog = false; deleteElement()">Löschen</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -49,7 +53,6 @@ export default Vue.extend({
     return {
       showDeleteDialog: false,
       headerOpen: true,
-      groups: ["IT Baseline-Catalog", "BSI Model"],
       form: {} as ApiItem
     };
   },
@@ -61,8 +64,15 @@ export default Vue.extend({
       schemaName: "schemaName",
       formModel: "item",
       formSchema: "schema",
-      links: "links"
-    })
+      links: "links",
+      children: "children"
+    }),
+    numLinks(): number {
+      return this.links ? this.links.length : 0;
+    },
+    numChildren(): number {
+      return this.children ? this.children.length : 0;
+    }
   },
   created() {
     if (this.formModel) {
@@ -73,11 +83,24 @@ export default Vue.extend({
     ...activeElement.mapActions({
       saveForm: "save"
     }),
+    ...elementsStore.mapActions({
+      removeItems: "removeItems"
+    }),
     onBreadcrumbChange(item: string) {},
     async save() {
       const id = await this.saveForm(this.form);
       if (id != this.$route.params.id) {
-        this.$router.push("/elements/" + id);
+        this.$router.push("/editor/" + id);
+      }
+    },
+    async deleteElement() {
+      const id = this.formModel && this.formModel.id;
+      const parent =
+        this.formModel && this.formModel.parent ? this.formModel.parent : "";
+
+      if (id) {
+        await this.removeItems([id]);
+        this.$router.push("/editor/" + parent);
       }
     },
     onFormChange(form: Object) {
@@ -88,10 +111,6 @@ export default Vue.extend({
         }
       }
       this.form = frm;
-    },
-    deleteElement() {
-      this.showDeleteDialog = false;
-      //TODO
     }
   },
   async asyncData({ store, query: { type, parent }, params: { id } }) {
