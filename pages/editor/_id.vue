@@ -8,7 +8,21 @@
     </v-flex>
     <v-spacer></v-spacer>
     <footer-toolbar>
-      <v-btn flat color="primary">Löschen</v-btn>
+      <v-dialog v-model="showDeleteDialog" max-width="600">
+        <v-card>
+          <v-card-text>
+            Soll das Element
+            <span class="font-weight-bold">{{formModel.data["$veo.title"]}}</span> werden?
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn flat @click.native="showDeleteDialog = false">Abbrechen</v-btn>
+            <v-btn color="primary" flat @click.native="deleteElement">Löschen</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-btn flat color="primary" @click="showDeleteDialog = true">Löschen</v-btn>
       <v-spacer></v-spacer>
       <v-btn flat>Zurücksetzen</v-btn>
       <v-btn :disabled="!formSchema || !formModel || !formModel.data" color="primary" @click.native="save()">Speichern</v-btn>
@@ -33,6 +47,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      showDeleteDialog: false,
       headerOpen: true,
       groups: ["IT Baseline-Catalog", "BSI Model"],
       form: {} as ApiItem
@@ -73,6 +88,10 @@ export default Vue.extend({
         }
       }
       this.form = frm;
+    },
+    deleteElement() {
+      this.showDeleteDialog = false;
+      //TODO
     }
   },
   async asyncData({ store, query: { type, parent }, params: { id } }) {

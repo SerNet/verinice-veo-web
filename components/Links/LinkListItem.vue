@@ -13,17 +13,32 @@
         <v-list-tile-sub-title>{{subtitle}}</v-list-tile-sub-title>
       </v-list-tile-content>
       <v-list-tile-action>
-        <v-menu offset-x offset-y>
+        <v-menu offset-x offset-y v-model="showMenu">
           <v-btn slot="activator" icon ripple @click.prevent>
             <v-icon color="grey lighten-1">more_vert</v-icon>
           </v-btn>
           <v-list>
             <v-list-tile>
-              <v-list-tile-title @click="deleteLink">Link löschen</v-list-tile-title>
+              <v-list-tile-title @click="showDialog = true">Link löschen</v-list-tile-title>
             </v-list-tile>
           </v-list>
         </v-menu>
       </v-list-tile-action>
+      <v-dialog v-model="showDialog" max-width="600">
+        <v-card>
+          <v-card-text>
+            Soll die Verknüpfung
+            <span class="font-italic">{{link.id}}</span> zwischen
+            <span class="font-weight-black">{{link.source.title}}</span> und
+            <span class="font-weight-black">{{link.target.title}}</span> aufgehoben werden?
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn flat @click.native="showDialog=false">Abbrechen</v-btn>
+            <v-btn color="primary" flat @click.native="removeLink">Verknüpfung aufheben</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-list-tile>
   </v-flex>
 </template>
@@ -39,10 +54,18 @@ export default Vue.extend({
     link: { type: Object as Prop<AppLink>, default: {} as AppLink },
     index: { type: Number }
   },
+  components: {},
   methods: {
-    deleteLink() {
-      console.log("Delete Link " + this.link.id);
+    removeLink(ev) {
+      this.showDialog = false;
+      //TODO
     }
+  },
+  data() {
+    return {
+      showDialog: false,
+      showMenu: false
+    };
   },
   computed: {
     title(): string {
