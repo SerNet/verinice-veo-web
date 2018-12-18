@@ -3,7 +3,7 @@
     <div>
       <span>{{count}}{{countAll?'/'+countAll:''}}</span>
     </div>
-    <v-btn flat class="ma-0" :to="to">
+    <v-btn flat class="ma-0" :exact="exact" :to="to">
       <v-icon>{{icon}}</v-icon>
       <span>{{text}}</span>
     </v-btn>
@@ -19,7 +19,8 @@ export default Vue.extend({
     countAll: { type: Number },
     icon: String,
     text: String,
-    to: String
+    exact: Boolean,
+    to: [String, Object]
   },
   methods: {}
 });

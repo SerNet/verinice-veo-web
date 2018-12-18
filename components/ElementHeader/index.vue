@@ -45,8 +45,8 @@
           </v-flex>
           <v-spacer></v-spacer>
           <v-flex shrink>
-            <count-button :count="numHistory" icon="history" text="Änderungen" right :to="'/history/'+id"></count-button>
-            <count-button :count="numLinks" icon="link" text="Links" right :to="'/links/'+id"></count-button>
+            <count-button :count="numHistory" icon="history" text="Änderungen" right exact :to="{path: '/history/'+id, prefer: 'right'}"></count-button>
+            <count-button :count="numLinks" icon="link" text="Links" right exact :to="{path: '/links/'+id, prefer: 'right'}"></count-button>
             <create-menu class="hidden-sm-and-up"></create-menu>
           </v-flex>
         </v-layout>

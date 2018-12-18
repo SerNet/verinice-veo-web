@@ -1,8 +1,9 @@
 import Vue from "vue";
 import { Store } from "vuex";
-import { Route } from "vue-router";
+import VueRouter, { Route } from "vue-router";
 import { AxiosInstance } from "axios";
 import VueI18n, { IVueI18n } from "vue-i18n";
+import { EventEmitter } from "events";
 
 declare module "vue/types/options" {
   type PropertyMap = { [key: string]: string };
@@ -28,7 +29,7 @@ declare module "vue/types/options" {
   }
 
   type NuxtContext<S = any> = {
-    app: Vue;
+    app: Vue & { router: VueRouter };
     isClient: boolean;
     isServer: boolean;
     isStatic: boolean;

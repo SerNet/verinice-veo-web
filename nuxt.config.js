@@ -15,7 +15,13 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ["~/plugins/axios.js", "~/plugins/i18n-error.ts", "~/plugins/vuetify.js", "~/plugins/persistedstate.js"],
+  plugins: [
+    "~/plugins/axios.js",
+    "~/plugins/i18n-error.ts",
+    "~/plugins/vuetify.js",
+    { src: "~/plugins/routing.ts", ssr: false },
+    "~/plugins/persistedstate.js"
+  ],
   /*
    ** Global CSS
    */
