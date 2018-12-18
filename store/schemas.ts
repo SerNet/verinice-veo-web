@@ -55,7 +55,8 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
       return schema;
     }
   },
-  async fetchSchemas({ commit }, {}) {
+  async fetchSchemas({ state, commit }, {}) {
+    if (state.items.length > 0) return;
     //Fetch list of schema files
     const response: string[] = await this.$axios.$get(`/api/schemas`).catch(e => {
       throw new HTTPError("FETCH_SCHEMAS_FAILED", {}, e);

@@ -119,6 +119,7 @@ export const mutations: DefineMutations<Mutations, State> = {
 interface Actions {
   init: {};
   fetchItem: { id: UUID; refresh?: boolean };
+  fetchBreadcrumb: { id: UUID };
   fetchLinks: { id: UUID };
   fetchHistory: { id: UUID };
   fetchSchema: { name: string };
@@ -137,12 +138,17 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     const response: ApiItem = item.data;
     commit("setItem", response);
 
-    let pLinks, pHistory, pChildren;
+    let pLinks, pHistory, pChildren, pBreadcrumbs;
+
     pLinks = dispatch("fetchLinks", { id });
     pHistory = dispatch("fetchHistory", { id });
     pChildren = dispatch(parent.action("fetchChildren"), { id }, { root: true });
-    await Promise.all([pLinks, pHistory, pChildren]);
+    pBreadcrumbs = dispatch("fetchBreadcrumb", { id });
+    await Promise.all([pLinks, pHistory, pChildren, pBreadcrumbs]);
     return item;
+  },
+  async fetchBreadcrumb({ commit, dispatch }, { id }) {
+    await dispatch(parent.action("fetchTree"), { id }, { root: true });
   },
   async fetchSchema({ commit, dispatch }, { name }) {
     const schema = await dispatch(schemas.action("fetchSchema"), { name }, { root: true });

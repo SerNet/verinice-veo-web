@@ -9,7 +9,7 @@
                 <v-icon slot="divider">chevron_right</v-icon>
               </v-breadcrumbs>
             </v-flex>
-            <v-btn @click.stop.prevent icon target="_blank" href="?standalone=1">
+            <v-btn @click.stop icon target="_blank" href="?standalone=1">
               <v-icon>launch</v-icon>
             </v-btn>
           </v-layout>
