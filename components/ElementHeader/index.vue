@@ -14,7 +14,6 @@
             </v-btn>
           </v-layout>
         </div>
-
         <v-layout row wrap>
           <v-flex>
             <v-container class="px-2">
@@ -43,7 +42,7 @@
             <count-button :count="numElementAttributes" :count-all="numSchemaAttributes" icon="list" text="Attribute" :to="'/editor/'+id"></count-button>
             <count-button :count="numChildren" icon="format_align_right" text="Unterelemente" :to="'/browser/'+id"></count-button>
             <v-menu offset-y class="element_add_menu hidden-xs-only">
-              <v-btn flat outline dark color="#CCC" slot="activator" class="ma-0 pa-0">
+              <v-btn flat outline dark color="#CCC" slot="activator" class="ma-0 pa-0 add-button">
                 <v-icon color="primary">add</v-icon>
                 <v-icon color="primary">arrow_drop_down</v-icon>
               </v-btn>

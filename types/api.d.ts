@@ -1,4 +1,5 @@
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
+import { JSONSchema6 } from "json-schema";
 
 export type UUID = string;
 
@@ -33,3 +34,5 @@ export interface ApiUserTokenPayload {
   aud: string;
   profiles: string[];
 }
+
+export interface ApiSchema extends JSONSchema6 {}

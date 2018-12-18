@@ -1,6 +1,6 @@
 <template>
-  <div class="error-page">
-    <div class="error">
+  <v-layout align-center fill-height row justify-center class="error-page">
+    <v-flex class="error">
       <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" fill="#DBE1EC" viewBox="0 0 48 48">
         <path
           d="M22 30h4v4h-4zm0-16h4v12h-4zm1.99-10C12.94 4 4 12.95 4 24s8.94 20 19.99 20S44 35.05 44 24 35.04 4 23.99 4zM24 40c-8.84 0-16-7.16-16-16S15.16 8 24 8s16 7.16 16 16-7.16 16-16 16z"
@@ -8,18 +8,25 @@
       </svg>
 
       <div class="title">{{ message }}</div>
-    </div>
-  </div>
+      <p class="description" v-if="statusCode === 404">
+        <nuxt-link class="error-link" to="/">Zurück zur Startseite</nuxt-link>
+      </p>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
+import { sep } from "path";
 
 export default Vue.extend({
   props: {
     error: {
       type: [Object, Error],
-      default: () => ({ statusCode: 500, message: "Error loading component" })
+      default: () => ({
+        statusCode: 500,
+        message: "Fehler beim Laden der Komponente"
+      })
     }
   },
   computed: {
@@ -27,7 +34,13 @@ export default Vue.extend({
       return (this.error && this.error.statusCode) || 500;
     },
     message(): string {
-      return this.error.message || `<%= messages.client_error %>`;
+      const msg = this.error.message || `<%= messages.client_error %>`;
+      switch (msg) {
+        case "This page could not be found":
+          return "Die angeforderte Seite konnte nicht gefunden werden.";
+        default:
+          return msg;
+      }
     }
   }
 });
@@ -36,23 +49,14 @@ export default Vue.extend({
 <style scoped>
 .error-page {
   padding: 1rem;
-  background: #fff;
   color: #47494e;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+
   font-family: sans-serif;
   font-weight: 100 !important;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 }
 .error-page .error {
   max-width: 450px;

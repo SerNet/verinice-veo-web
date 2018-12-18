@@ -12,6 +12,7 @@ interface ProjectLocaleVariables {
   CREATE_ELEMENT_FAILED: {};
   UPDATE_ELEMENT_FAILED: { id: string };
   FETCH_SCHEMA_FAILED: { name: string };
+  FETCH_SCHEMAS_FAILED: {};
 }
 
 type ProjectLocaleErrors = Record<keyof ProjectLocaleVariables, string>;

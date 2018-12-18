@@ -320,7 +320,7 @@ export interface StrictDispatch<Actions, RootActions> {
   >;
 
   // Namespaced
-  (type: ActionPath, payload?: any, options?: RootDispatchOptions): Promise<any>;
+  (type: ActionPath, payload: any, options: RootDispatchOptions): Promise<any>;
 }
 
 /**

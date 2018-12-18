@@ -4,13 +4,13 @@ import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
 import { RootDefined } from "~/store/index";
 import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
 import { helpers as parent } from "~/store/elements";
-import { helpers as error } from "~/store/error";
+import { helpers as schemas } from "~/store/schemas";
 import { veoItemToElement, veoLinkToLink } from "~/store/elements/utils";
 import { uniq } from "lodash";
 import HTTPError from "~/exceptions/HTTPError";
 import moment from "moment";
 import NumericStringComparator from "~/lib/NumericStringComparator";
-import { JSONSchema6, JSONSchema6TypeName } from "json-schema";
+import { JSONSchema6 } from "json-schema";
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export interface State {
@@ -145,14 +145,8 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     return item;
   },
   async fetchSchema({ commit, dispatch }, { name }) {
-    commit("setSchema", undefined);
-    const response: any = await this.$axios.$get(`/api/schemas/${name}.json`).catch(e => {
-      commit("setSchema", null);
-      throw new HTTPError("FETCH_SCHEMA_FAILED", { name }, e);
-    });
-    if (response) {
-      commit("setSchema", response);
-    }
+    const schema = await dispatch(schemas.action("fetchSchema"), { name }, { root: true });
+    commit("setSchema", schema);
   },
   async fetchLinks({ commit, getters, dispatch }, { id }) {
     commit("setLinks", []);
