@@ -82,7 +82,7 @@
     "tslint": "^5.11.0",
     "typescript": "^3.2.2",
     "vue-loader-options-plugin": "^0.1.1",
-    "vuetify-loader": "^1.0.6"
+    "vuetify-loader": "^1.1.1"
   },
   "ava": {
     "compileEnhancements": false,

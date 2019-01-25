@@ -4,10 +4,26 @@
       <element-header :visible="headerOpen"></element-header>
     </v-flex>
     <v-flex class="ma-3">
-      <v-list>
-        <v-list-tile>
-
+      <v-list class="ma-0 pa-0" style="border: 1px solid #CCC;">
+        <v-list-tile class="grey--text" v-show="element.parent" avatar :to="'/browser/'+element.parent">
+          <v-list-tile-avatar>
+            <v-icon>arrow_upward</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>Übergeordnetes Element öffnen</v-list-tile-title>
+          </v-list-tile-content>
         </v-list-tile>
+        <template v-if="children && children.length > 0">
+          <v-list-tile v-for="item in children" :key="item.id" avatar :to="'/browser/'+item.id">
+            <v-list-tile-avatar>
+              <v-icon>folder</v-icon>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              <v-list-tile-sub-title>Typ: {{ item.type }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </template>
       </v-list>
     </v-flex>
   </v-layout>
@@ -33,13 +49,15 @@ export default Vue.extend({
   },
   computed: {
     ...elementsStore.mapGetters({
-      elements: "items"
+      itemMap: "items",
+      childCount: "childCount"
     }),
     ...activeElement.mapGetters({
       breadcrumb: "breadcrumb",
       element: "item",
       children: "children"
-    })
+    }),
+    items() {}
   },
   methods: {},
   async fetch({ store, query: { type, parent }, params: { id } }) {

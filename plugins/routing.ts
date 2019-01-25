@@ -40,11 +40,11 @@ export default ({ app }: NuxtContext, inject) => {
   };
 };
 
-declare module "vue-router" {
+declare module "vue-router/types/router" {
   export interface Route {
-    prefer: "left" | "right";
+    prefer?: "left" | "right";
   }
   export interface Location {
-    prefer: "left" | "right";
+    prefer?: "left" | "right";
   }
 }

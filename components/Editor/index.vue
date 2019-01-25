@@ -2,9 +2,9 @@
   <v-layout fill-height column>
     <v-flex>
       <v-card style="height: 100%; border: 1px solid #CCC; margin: 15px" flat>
-        <v-card-title>
+        <!-- <v-card-title>
           <h2 class="title">Editor</h2>
-        </v-card-title>
+        </v-card-title>-->
         <v-card-text class="pt-0" style="overflow: auto;">
           <v-form>
             <v-layout row wrap class="form-panels">

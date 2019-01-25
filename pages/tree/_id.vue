@@ -6,7 +6,7 @@
     <v-flex>
       <v-treeview
         v-model="selected"
-        :active="active"
+        :active.sync="active"
         @click.native="onClick"
         :open="open"
         :items="items"
@@ -111,7 +111,17 @@ export default Vue.extend({
         this.active = [this.item.id];
       }
     },
-    onClick() {},
+    onClick($event) {
+      const id = this.active.concat().shift();
+      if (id && this.$route.params.id != id) {
+        this.$router.push({
+          path: this.$route.params.id
+            ? this.$route.path.replace(this.$route.params.id, id)
+            : `/editor/${id}`,
+          query: this.$route.query
+        });
+      }
+    },
     async onOpen(ids: string[]) {
       //No items expanded: Check root nodes
       if (ids.length == 0 && this.roots) {
@@ -135,11 +145,11 @@ export default Vue.extend({
       );
     },
     onActive(ids: string[]) {
-      if (ids.length)
+      /*if (ids.length)
         this.$router.push({
           path: "/editor/" + ids.shift(),
-          query: (this.$route as any).query
-        });
+          query: this.$route.query
+        });*/
     },
     async loadChildren(item: Element): Promise<any> {
       await this.fetchChildren({ id: item.id });
