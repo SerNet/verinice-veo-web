@@ -111,9 +111,7 @@ export default Vue.extend({
         this.active = [this.item.id];
       }
     },
-    onClick() {
-      console.log("CLICK");
-    },
+    onClick() {},
     async onOpen(ids: string[]) {
       //No items expanded: Check root nodes
       if (ids.length == 0 && this.roots) {
