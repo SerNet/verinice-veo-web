@@ -7,9 +7,11 @@
       <v-treeview
         v-model="selected"
         :active="active"
+        @click.native="onClick"
         :open="open"
         :items="items"
         @update:active="onActive"
+        @update:open="onOpen"
         :load-children="loadChildren"
         selectable
         selected-color="primary"
@@ -109,11 +111,36 @@ export default Vue.extend({
         this.active = [this.item.id];
       }
     },
+    onClick() {
+      console.log("CLICK");
+    },
+    async onOpen(ids: string[]) {
+      //No items expanded: Check root nodes
+      if (ids.length == 0 && this.roots) {
+        return await Promise.all(
+          this.roots.map(root => this.fetchChildren(root))
+        );
+      }
+      //Load children of open ids
+      return await Promise.all(
+        ids.reduce(
+          (promises, id) => {
+            const children = this.childMap[id] || [];
+            return promises.concat(
+              children.map(id => {
+                return this.fetchChildren({ id });
+              })
+            );
+          },
+          [] as Promise<any>[]
+        )
+      );
+    },
     onActive(ids: string[]) {
       if (ids.length)
         this.$router.push({
           path: "/editor/" + ids.shift(),
-          query: this.$route.query
+          query: (this.$route as any).query
         });
     },
     async loadChildren(item: Element): Promise<any> {

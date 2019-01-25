@@ -1,17 +1,24 @@
 <template>
-  <v-layout class="ml-3 mr-3" fill-height column>
-    <element-header v-model="headerOpen"></element-header>
-    <span>BROWSER</span>
+  <v-layout fill-height column>
+    <v-flex shrink>
+      <element-header :visible="headerOpen"></element-header>
+    </v-flex>
+    <v-flex class="ma-3">
+      <v-list>
+        <v-list-tile>
+
+        </v-list-tile>
+      </v-list>
+    </v-flex>
   </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { Element } from "~/types/app";
+
 import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
 
-import { helpers as formStore } from "~/store/form";
 import { helpers as elementsStore } from "~/store/elements";
 import { helpers as activeElement } from "~/store/elements/active";
 
@@ -30,7 +37,8 @@ export default Vue.extend({
     }),
     ...activeElement.mapGetters({
       breadcrumb: "breadcrumb",
-      element: "item"
+      element: "item",
+      children: "children"
     })
   },
   methods: {},
