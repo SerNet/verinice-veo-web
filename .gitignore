@@ -82,3 +82,5 @@ jspm_packages/
 
 api/database/development.sqlite
 tmp
+
+.history

@@ -219,7 +219,7 @@ module.exports = {
   build: {
     transpile: [/^vuetify/],
     plugins: [new VuetifyLoaderPlugin()],
-    extractCSS: true,
+    //extractCSS: true,
     cache: false, //(cache-loader: https://github.com/webpack-contrib/cache-loader)
     parallel: false, //(thread-loader: https://github.com/webpack-contrib/thread-loader)
     watch: [".env", "config"],

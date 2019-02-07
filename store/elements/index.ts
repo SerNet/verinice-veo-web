@@ -193,14 +193,13 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
    * Fetch root nodes
    */
   async fetchRoots({ commit, dispatch, getters }, payload) {
-    //TODO: Dont fetch whole tree
-    return await dispatch("fetchAll", {});
+    //return await dispatch("fetchAll", {});
     if (getters.roots.length > 0) return;
-    const response: ApiItem[] = await this.$axios.$get("/api/elements?parent=null").catch(e => {
+    const roots: ApiItem[] = await this.$axios.$get("/api/elements?parent=").catch(e => {
       throw new HTTPError("FETCH_ROOT_ELEMENTS_FAILED", e);
     });
-    //TODO: Remove emulation of root node query (filter)
-    await dispatch("addData", { data: response.filter(item => !item[PARENT_FIELD]) });
+
+    await dispatch("addData", { data: roots });
   },
   /**
    * Fetch children
