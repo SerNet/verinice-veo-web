@@ -11,6 +11,7 @@ export default {
     FETCH_SCHEMA_FAILED: 'Das Schema "{name}" konnten nicht geladen werden! (Status: {status})',
     FETCH_SCHEMAS_FAILED: "Die verfügbaren Schemata konnten nicht geladen werden! (Status: {status})",
     REMOVE_ELEMENT_FAILED: "Das Element {id} konnte nicht entfernt werden! (Status: {status})",
+    REMOVE_LINK_FAILED: "Die Verknüpfung {id} konnte nicht entfernt werden! (Status: {status})",
     UPDATE_ELEMENT_FAILED: "Die Daten des Elements {id} konnten nicht gespeichert werden (Status: {status})!"
   }
 } as ProjectLocale;

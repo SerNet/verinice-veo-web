@@ -155,7 +155,7 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
     commit("setSchema", schema);
   },
   async fetchLinks({ commit, getters, dispatch }, { id }) {
-    commit("setLinks", []);
+    //commit("setLinks", []);
     const response: any = await this.$axios.$get(`/api/elements/${id}/links`).catch(e => {
       throw new HTTPError("FETCH_LINKS_FAILED", { id }, e);
     });

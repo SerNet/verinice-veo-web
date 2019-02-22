@@ -14,6 +14,7 @@ interface ProjectLocaleVariables {
   FETCH_SCHEMA_FAILED: { name: string };
   FETCH_SCHEMAS_FAILED: {};
   REMOVE_ELEMENT_FAILED: { id: string };
+  REMOVE_LINK_FAILED: { id: string };
   UPDATE_ELEMENT_FAILED: { id: string };
 }
 

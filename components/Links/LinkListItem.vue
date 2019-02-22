@@ -61,6 +61,7 @@ export default Vue.extend({
   methods: {
     removeLink(ev) {
       this.showDeleteDialog = false;
+      this.$emit("remove", ev);
     }
   },
   data() {

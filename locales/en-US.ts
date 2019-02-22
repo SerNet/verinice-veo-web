@@ -10,7 +10,8 @@ export default {
     FETCH_ROOT_ELEMENTS_FAILED: "The root nodes for the tree could not be loaded (status: {status})!",
     FETCH_SCHEMA_FAILED: "The scheme {name} could not be loaded! (status: {status})",
     FETCH_SCHEMAS_FAILED: "The list of available schemes could not be loaded! (Status: {status})",
-    REMOVE_ELEMENT_FAILED: "The element {id} could not be deleted! (Status: {status})",
+    REMOVE_ELEMENT_FAILED: "The element {id} could not be removed! (Status: {status})",
+    REMOVE_LINK_FAILED: "The link {id} could not be removed! (Status: {status})",
     UPDATE_ELEMENT_FAILED: "The element {id} could not be updated (status: {status})!"
   }
 } as ProjectLocale;
