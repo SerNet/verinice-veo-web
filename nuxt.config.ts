@@ -17,7 +17,7 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    "~/plugins/axios.js",
+    "~/plugins/axios.ts",
     "~/plugins/store.ts",
     //"~/plugins/i18n-error.ts",
     //"~/plugins/vuetify.js",
