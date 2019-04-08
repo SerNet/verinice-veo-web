@@ -1,5 +1,5 @@
-import { AxiosInstance } from "axios";
+import { NuxtAxiosInstance } from "@nuxtjs/axios";
 
 export default class BaseStore {
-  protected $axios!: AxiosInstance;
+  protected $axios!: NuxtAxiosInstance;
 }
