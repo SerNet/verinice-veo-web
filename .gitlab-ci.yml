@@ -2,7 +2,6 @@ include:
   - template: Auto-DevOps.gitlab-ci.yml
 
 variables:
-  # AUTO_DEVOPS_DOMAIN is the application deployment domain and should be set as a variable at the group or project level.
   KUBE_INGRESS_BASE_DOMAIN: cpmsys.io
   DEVOPS_APP_NAME: veo-web
 
@@ -20,10 +19,6 @@ variables:
   PERFORMANCE_DISABLED: 'true'
 
   CI_PROJECT_PATH_SLUG: 'veo-web'
-
-stages:
-  - build
-  - production
 
 push-sernet:
   stage: production
