@@ -18,18 +18,18 @@ export default Vue.extend({
     previousValue: { type: Object }
   },
   computed: {
-    previousKeys: function() {
+    previousKeys(): string[] {
       return this.previousValue !== undefined
         ? Object.keys(this.previousValue)
         : [];
     },
-    keys: function() {
+    keys(): string[] {
       return this.value !== undefined ? Object.keys(this.value) : [];
     },
-    allKeys: function() {
+    allKeys(): string[] {
       return union(this.keys, this.previousKeys).sort();
     },
-    changeTypes: function() {
+    changeTypes(): string[] {
       const { previousValue, previousKeys, value, keys } = this;
       const result = this.allKeys.map(function(key, index) {
         if (previousValue === undefined) return "new";
@@ -42,7 +42,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    getValue: function(key: string, index: number) {
+    getValue(key: string, index: number): string {
       const { changeTypes, value, previousValue } = this;
       const changeType = changeTypes[index];
       if (changeType == "changed") {

@@ -1,35 +1,17 @@
-import { RootDefined } from "~/store/index";
-import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
+import { createModule, useStore, Mutation } from "vuex-typesafe-class";
+import BaseStore from "~/lib/BaseStore";
 import LocalizedError from "~/exceptions/LocalizedError";
-import Vue from "vue";
 
-export interface State {
-  items: string[];
-}
+class ErrorStore extends BaseStore {
+  items: string[] = [];
 
-export const state = () => ({ items: [] } as State);
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Getters {}
-export const getters: RootDefined.Getters<Getters, State> = {};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Mutations {
-  addError: string;
-}
-
-export const mutations: DefineMutations<Mutations, State> = {
-  addError(state, value) {
-    state.items.push(value);
+  set nextError(value: string) {
+    this.items.push(value);
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Actions {
-  handle: Error | LocalizedError<Error, any>;
+
+  async handle(error: Error | LocalizedError<Error, any>) {
+    this.nextError = error.message;
+  }
 }
 
-export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
-  async handle({ commit }, error) {
-    commit("addError", error.message);
-  }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export const helpers = createNamespace<State, Getters, Mutations, Actions>("error");
+export default createModule(ErrorStore, "error");

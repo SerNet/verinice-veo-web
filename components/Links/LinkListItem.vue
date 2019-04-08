@@ -32,8 +32,8 @@
           <v-card-text>
             Soll die Verknüpfung
             <span class="font-italic">{{link.id}}</span> zwischen
-            <span class="font-weight-black">{{link.source.title}}</span> und
-            <span class="font-weight-black">{{link.target.title}}</span> aufgehoben werden?
+            <span class="font-weight-black">{{linkSourceTitle}}</span> und
+            <span class="font-weight-black">{{linkTargetTitle}}</span> aufgehoben werden?
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -59,7 +59,7 @@ export default Vue.extend({
   },
   components: {},
   methods: {
-    removeLink(ev) {
+    removeLink(ev: MouseEvent) {
       this.showDeleteDialog = false;
       this.$emit("remove", ev);
     }
@@ -83,11 +83,23 @@ export default Vue.extend({
       return this.link.type;
     },
     inbound(): boolean {
-      return this.element.id == this.link.targetId;
+      return this.element ? this.element.id == this.link.targetId : false;
     },
     to(): string {
       const toId = this.inbound ? this.link.sourceId : this.link.targetId;
       return "/editor/" + toId;
+    },
+    linkSource(): AppElement | undefined {
+      return this.link && this.link.source;
+    },
+    linkTarget(): AppElement | undefined {
+      return this.link && this.link.target;
+    },
+    linkSourceTitle(): string | undefined {
+      return this.linkSource && this.linkSource.title;
+    },
+    linkTargetTitle(): string | undefined {
+      return this.linkTarget && this.linkTarget.title;
     }
   }
 });

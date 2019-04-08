@@ -25,15 +25,22 @@
 <script lang="ts">
 import Vue from "vue";
 import AddDialog from "~/components/ElementHeader/AddDialog.vue";
-import { helpers as elements } from "~/store/elements";
-import { helpers as active } from "~/store/elements/active";
+
+import elementsStore from "~/store/elements";
+import activeElementStore from "~/store/elements/active";
+import {
+  mapState,
+  mapGetters,
+  mapActions,
+  useStore
+} from "vuex-typesafe-class";
 
 export default Vue.extend({
   components: {
     AddDialog
   },
   computed: {
-    ...active.mapGetters({
+    ...mapGetters(activeElementStore, {
       activeItem: "item"
     }),
     activeId(): string {
@@ -51,7 +58,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    ...elements.mapActions({
+    ...mapActions(elementsStore, {
       createItem: "createItem"
     }),
     async createElement() {

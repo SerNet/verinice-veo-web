@@ -1,10 +1,9 @@
 import { AxiosInstance } from "axios";
-import VueI18n, { IVueI18n } from "vue-i18n";
 import Vue from "vue";
 
 declare module "axios" {
   export interface AxiosResponsePromise<T = void> extends AxiosPromise<T> {
-    catch(callback: (e: AxiosError) => any);
+    catch<T>(callback: (e: AxiosError) => T): never;
   }
 
   export interface AxiosInstance {

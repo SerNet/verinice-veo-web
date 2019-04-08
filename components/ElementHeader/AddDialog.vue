@@ -31,9 +31,15 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { helpers as elements } from "~/store/elements";
-import { helpers as active } from "~/store/elements/active";
-import { helpers as schemas } from "~/store/schemas";
+import elementsStore from "~/store/elements";
+import schemasStore from "~/store/schemas";
+import activeElementStore from "~/store/elements/active";
+import {
+  mapState,
+  mapGetters,
+  mapActions,
+  useStore
+} from "vuex-typesafe-class";
 import { AppElement } from "~/types/app";
 
 export default Vue.extend({
@@ -68,10 +74,10 @@ export default Vue.extend({
     this.selectedParent = this.selectedParent;
   },
   computed: {
-    ...schemas.mapState({
-      types: "items"
+    ...mapState(schemasStore, {
+      types: "names"
     }),
-    ...elements.mapGetters({
+    ...mapGetters(elementsStore, {
       elements: "items"
     })
   },
@@ -93,8 +99,8 @@ export default Vue.extend({
     }
   },
   methods: {
-    ...elements.mapActions({ searchItems: "searchItems" }),
-    ...schemas.mapActions({ fetchSchemas: "fetchSchemas" }),
+    ...mapActions(elementsStore, { searchItems: "searchItems" }),
+    ...mapActions(schemasStore, { fetchSchemas: "fetchSchemas" }),
     async queryParents() {
       this.loadingParents = true;
       this.parents = (this.selectedParent && this.elements[this.selectedParent]
@@ -126,6 +132,5 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="stylus" scoped>
-</style>
+<style lang="stylus" scoped></style>
 

@@ -1,6 +1,6 @@
 export default {
   errors: {
-    AUTH_LOGIN_FAILED: "Der Login ist fehlgeschlagen (Status: {status})!",
+    AUTH_LOGIN_FAILED: `Der Login ist fehlgeschlagen (Status: {status})!`,
     CREATE_ELEMENT_FAILED: "Das Element konnte nicht gespeichert werden (Status: {status})!",
     FETCH_CHILD_ELEMENTS_FAILED: "Die Unterelemente des Elements {id} konnten nicht geladen werden (Status: {status})!",
     FETCH_ELEMENT_FAILED: "Die Daten des Elements {id} konnten nicht geladen werden (Status: {status})!",

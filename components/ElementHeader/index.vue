@@ -58,7 +58,14 @@
 <script lang="ts">
 import Vue from "vue";
 import moment from "moment";
-import { helpers as activeElement } from "~/store/elements/active";
+
+import activeElementStore from "~/store/elements/active";
+import {
+  mapState,
+  mapGetters,
+  mapActions,
+  useStore
+} from "vuex-typesafe-class";
 import CountButton from "~/components/ElementHeader/CountButton.vue";
 import CreateMenu from "~/components/ElementHeader/CreateMenu.vue";
 import { VExpansionPanel } from "vuetify/lib";
@@ -84,17 +91,17 @@ export default Vue.extend({
     //TODO: Remove Fix when vuetifyjs/vuetify#5795 is fixed
     //Fix for #22
     try {
-      const panels = this.$refs["panels"] as VExpansionPanel;
+      const panels = this.$refs["panels"] as any;
       if (this.visible && panels && panels.$el.clientHeight < 100) {
         panels.updateFromValue([]);
         this.$nextTick(() => {
-          panels.updateFromValue([this.visible]);
+          panels.updateFromValue([this.visible ? 1 : 0]);
         });
       }
     } catch (e) {}
   },
   computed: {
-    ...activeElement.mapGetters({
+    ...mapGetters(activeElementStore, {
       breadcrumb: "breadcrumb",
       element: "item",
       links: "links",
@@ -153,7 +160,7 @@ export default Vue.extend({
     }
   },
   filters: {
-    relativeDate: function(date) {
+    relativeDate: function(date: moment.MomentInput) {
       moment.locale("de");
       return moment(date).fromNow();
     }

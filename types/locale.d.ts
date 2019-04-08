@@ -18,4 +18,6 @@ interface ProjectLocaleVariables {
   UPDATE_ELEMENT_FAILED: { id: string };
 }
 
-type ProjectLocaleErrors = { [P in keyof ProjectLocaleVariables]: NonNullable<String> };
+type ProjectLocaleErrors = {
+  [P in keyof ProjectLocaleVariables]: ((context: ProjectLocaleVariables[P]) => NonNullable<string>) | string
+};

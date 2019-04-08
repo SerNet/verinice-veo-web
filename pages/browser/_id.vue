@@ -35,8 +35,14 @@ import Vue from "vue";
 import VeoForm from "~/components/Editor/index.vue";
 import ElementHeader from "~/components/ElementHeader/index.vue";
 
-import { helpers as elementsStore } from "~/store/elements";
-import { helpers as activeElement } from "~/store/elements/active";
+import elementsStore from "~/store/elements";
+import activeElementStore from "~/store/elements/active";
+import {
+  mapState,
+  mapGetters,
+  mapActions,
+  useStore
+} from "vuex-typesafe-class";
 
 export default Vue.extend({
   components: {
@@ -48,11 +54,11 @@ export default Vue.extend({
     };
   },
   computed: {
-    ...elementsStore.mapGetters({
+    ...mapGetters(elementsStore, {
       itemMap: "items",
-      childCount: "childCount"
+      childCount: "countChildren"
     }),
-    ...activeElement.mapGetters({
+    ...mapGetters(activeElementStore, {
       breadcrumb: "breadcrumb",
       element: "item",
       children: "children"
@@ -60,12 +66,12 @@ export default Vue.extend({
     items() {}
   },
   methods: {},
-  async fetch({ store, query: { type, parent }, params: { id } }) {
-    if (id) {
-      if (id == "new") {
+  async fetch({ store, query, params }) {
+    if (params.id) {
+      if (params.id == "new") {
         //await formStore.dispatch("create", { type, parent });
       } else {
-        await activeElement.dispatch("fetchItem", { id });
+        await useStore(activeElementStore, store).fetchItem({ id: params.id });
         //await formStore.dispatch("load", { id });
       }
     }

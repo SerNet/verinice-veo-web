@@ -2,6 +2,8 @@
 import Vue, { VNode, Component, ComponentOptions } from "vue";
 import ErrorComponent from "~/components/Error.vue";
 
+type ComponentWithOptions = Component & { options: ComponentOptions<any> };
+
 export default Vue.extend({
   props: {
     route: String,
@@ -10,14 +12,18 @@ export default Vue.extend({
       type: Object
     }
   },
-  data() {
+  data(): {
+    loading: boolean;
+    error: Error | undefined;
+    cmp?: ComponentWithOptions;
+  } {
     return {
       loading: false,
-      error: undefined as Error | undefined
+      error: undefined
     };
   },
   methods: {
-    async loadMatchedComponent(): Promise<Component> {
+    async loadMatchedComponent(): Promise<ComponentWithOptions> {
       const router = this.$router;
       const matched = router.getMatchedComponents(this.route);
       if (matched && matched.length) {
@@ -34,16 +40,16 @@ export default Vue.extend({
     },
     getContext() {
       return {
-        ...this["$nuxt"].$options.context,
+        ...(this.$nuxt.$options as any).context,
         ...this.context
       };
     },
     async loadComponent() {
       this.loading = true;
       try {
-        const cmp = (this["cmp"] = await this.loadMatchedComponent());
-        if (cmp && cmp["options"]) {
-          const options: ComponentOptions<Vue> = cmp["options"];
+        const cmp = (this.cmp = await this.loadMatchedComponent());
+        if (cmp && cmp.options) {
+          const options: ComponentOptions<Vue> = cmp.options;
           const context = this.getContext();
           //Check validate function:
           if (typeof options.validate == "function") {

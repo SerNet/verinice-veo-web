@@ -6,7 +6,7 @@
           <v-text-field :error="!!error" v-model="username" label="Benutzername" clearable></v-text-field>
           <v-text-field :error="!!error" v-model="password" label="Passwort" clearable type="password"></v-text-field>
           <v-checkbox v-model="persist" :label="`Eingeloggt bleiben`"></v-checkbox>
-          <v-messages color="error" v-if="error" :value="[error]"></v-messages>
+          <v-messages color="error" v-if="error" :value="errorMessages"></v-messages>
 
           <v-divider></v-divider>
 
@@ -21,15 +21,23 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { helpers as auth } from "~/store/auth";
+import auth from "~/store/auth";
+import { mapState, mapActions, useStore } from "vuex-typesafe-class";
 
 export default Vue.extend({
   layout: "login",
+  props: {
+    error: String
+  },
   components: {},
   computed: {
-    ...auth.mapState({
-      authError: "error"
-    })
+    ...mapState(auth, {
+      authError: "error",
+      redirection: "redirection"
+    }),
+    errorMessage(): string[] {
+      return [this.error];
+    }
   },
   data() {
     return {
@@ -40,11 +48,8 @@ export default Vue.extend({
       persist: true
     };
   },
-  props: {
-    error: String
-  },
   methods: {
-    ...auth.mapActions({
+    ...mapActions(auth, {
       login: "login",
       logout: "logout"
     }),
@@ -54,8 +59,9 @@ export default Vue.extend({
         password: this.password,
         persist: this.persist
       });
+
       if (result) {
-        const redir = this.$store.state.auth.redirection;
+        const redir = this.redirection;
         if (redir) {
           this.$router.push(redir);
         } else {
@@ -65,7 +71,8 @@ export default Vue.extend({
     }
   },
   async fetch({ store, redirect }) {
-    if (auth.getters.isAuthorized) {
+    const $auth = useStore(auth, store);
+    if ($auth.isAuthorized) {
       redirect("/");
     }
   }

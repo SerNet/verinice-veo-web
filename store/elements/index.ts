@@ -1,242 +1,231 @@
-import { UUID, ApiItem } from "~/types/api";
-import { AppElement, AppElementMap, UUIDsMap } from "~/types/app";
-
+import { keyBy, unionWith } from "lodash";
+import { createModule } from "vuex-typesafe-class";
 import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
-import { RootDefined } from "~/store/index";
-import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
-import { uniqueId, unionWith } from "lodash";
-import { veoItemToElement } from "~/store/elements/utils";
-import { helpers as active } from "./active";
 import HTTPError from "~/exceptions/HTTPError";
 import LocalizedError from "~/exceptions/LocalizedError";
+import BaseStore from "~/lib/BaseStore";
 import NumericStringComparator from "~/lib/NumericStringComparator";
+import { veoItemToElement } from "~/lib/utils";
+import { ApiItem, UUID } from "~/types/api";
+import { AppElement } from "~/types/app";
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export interface State {
-  fetchedAll: boolean;
-  data: ApiItem[];
-  childCount: Record<UUID, number>; //Used to detect leafs and yet loaded children
-}
-export const state = () => ({ data: [], childCount: {}, fetchedAll: false } as State);
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export interface Getters {
-  items: AppElementMap;
-  children: UUIDsMap;
-  roots: AppElement[];
-  knowsChildren: (id: UUID) => boolean;
-  childCount: (id: UUID) => number;
-}
+class ElementsStore extends BaseStore {
+  fetchedAll: boolean = false;
+  data: ApiItem[] = [];
 
-export const getters: RootDefined.Getters<Getters, State> = {
-  items(state, getters) {
-    return state.data.map(veoItemToElement).reduce((itemMap, item) => {
-      itemMap[item.id] = item;
-      return itemMap;
-    }, {});
-  },
-  children(state, getters) {
+  /**
+   * Used to detect leafs and yet loaded children
+   */
+  childCount: Record<UUID, number> = {};
+
+  /**
+   * Record of element ids and app elements
+   */
+  get items(): Record<UUID, AppElement> {
+    return keyBy(this.data.map(veoItemToElement), "id");
+  }
+
+  /**
+   * Record of parent ids and their corresponding child ids
+   */
+  get children(): Record<UUID, UUID[]> {
     const comparator = new NumericStringComparator();
-    return state.data
+    return this.data
       .concat()
       .sort((a, b) => comparator.compare(a[TITLE_FIELD], b[TITLE_FIELD]))
       .filter(item => item[PARENT_FIELD]) //nur Element mit Parent
-      .reduce((itemMap, item) => {
-        const id = item[ID_FIELD];
-        const parent = item[PARENT_FIELD];
-        const children = (itemMap[parent] = itemMap[parent] || []);
-        children.push(id);
-        itemMap[parent] = children;
-        return itemMap;
-      }, {});
-  },
-  roots(state, getters) {
-    const items = getters.items;
-    return state.data.filter(item => !item[PARENT_FIELD]).map(item => items[item[ID_FIELD]!]);
-  },
-  knowsChildren: (state, getters) => id => {
-    if (state.fetchedAll) return true;
-    return state.childCount[id] !== undefined;
-  },
-  childCount: (state, getters) => id => {
-    const stateCount = state.childCount[id];
-    if (stateCount !== undefined) {
-      return stateCount;
-    } else {
-      const children = getters.children[id];
-      if (children) {
-        return children.length;
+      .reduce(
+        (itemMap, item) => {
+          const id = item[ID_FIELD];
+          const parent = item[PARENT_FIELD];
+          const children = (itemMap[parent] = itemMap[parent] || []);
+          if (id) children.push(id);
+          itemMap[parent] = children;
+          return itemMap;
+        },
+        {} as Record<UUID, UUID[]>
+      );
+  }
+
+  /**
+   * Array of root items
+   */
+  get roots(): AppElement[] {
+    return this.data.filter(item => !item[PARENT_FIELD]).map(item => this.items[item[ID_FIELD]!]);
+  }
+
+  get knowsChildren() {
+    return (id: UUID) => {
+      if (this.fetchedAll) return true;
+      return this.childCount[id] !== undefined;
+    };
+  }
+
+  get countChildren() {
+    return (id: UUID) => {
+      const stateCount = this.childCount[id];
+      if (stateCount !== undefined) {
+        return stateCount;
+      } else {
+        const children = this.children[id];
+        if (children) {
+          return children.length;
+        }
       }
-    }
-    return -1;
+      return -1;
+    };
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Mutations {
-  setData: ApiItem[];
-  addData: ApiItem[];
-  setChildCount: { id: UUID; count: number };
-  setFetchedAll: boolean;
-}
 
-export const mutations: DefineMutations<Mutations, State> = {
-  setData(state, value) {
-    state.data = value;
-  },
-  addData(state, value) {
-    state.data = state.data.concat(value);
-  },
-  setChildCount(state, { id, count }) {
-    state.childCount[id] = count;
-  },
-  setFetchedAll(state, value) {
-    state.fetchedAll = value;
+  set setData(value: ApiItem[]) {
+    this.data = value;
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Actions {
-  init: {};
-  createItem: { parent?: UUID; type: string };
-  fetchItem: { id: UUID; refresh?: boolean };
-  fetchItems: { id: UUID[]; refresh?: boolean };
-  fetchAll: { refresh?: boolean };
-  fetchRoots: {};
-  fetchChildren: { id: UUID };
-  fetchTree: { id?: UUID };
-  addData: { data: ApiItem[]; refresh?: boolean };
-  removeItems: UUID[];
-  searchItems: { q: string; maxResults?: number };
-}
 
-export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
-  async init({ dispatch }) {},
-  async createItem({ dispatch }, { parent, type }) {
+  set nextData(value: ApiItem[]) {
+    this.data = this.data.concat(value);
+  }
+
+  set setChildCount({ id, count }: { id: UUID; count: number }) {
+    this.childCount[id] = count;
+  }
+
+  set setFetchedAll(value: boolean) {
+    this.fetchedAll = value;
+  }
+
+  async init() {}
+
+  async createItem({ parent, type }: { parent?: UUID; type: string }) {
     const response = await this.$axios.post<ApiItem>(`/api/elements`, {
       [PARENT_FIELD]: parent,
       [TYPE_FIELD]: type,
       [TITLE_FIELD]: "Neues Unterelement"
     });
-    await dispatch("fetchAll", { refresh: true });
+    await this.fetchAll({ refresh: true });
+
     return String(response.headers["location"])
       .split("/")
       .pop();
-  },
-  async addData({ state, commit, getters }, { data, refresh }) {
-    const items = getters.items;
+  }
+
+  async addData({ data, refresh }: { data: ApiItem[]; refresh?: boolean }) {
+    const items = this.items;
     if (refresh) {
-      const union = unionWith(data, state.data, (a, b) => a[ID_FIELD] == b[ID_FIELD]);
-      commit("setData", union);
+      const union = unionWith(data, this.data, (a, b) => a[ID_FIELD] == b[ID_FIELD]);
+
+      this.setData = union;
     } else {
       const uniqueData = data.filter(item => {
         const id = item[ID_FIELD];
         return id ? !items[id] : false;
       });
-      commit("addData", uniqueData);
+      this.nextData = uniqueData;
     }
-  },
-  async searchItems({ state, getters }, { q, maxResults = 10 }) {
-    const items = getters.items;
+  }
+
+  async searchItems({ q, maxResults = 10 }: { q: string; maxResults?: number }) {
+    const items = this.items;
     const s = q && new RegExp(q, "i");
     const results: AppElement[] = [];
-    for (let i = 0; i < state.data.length && results.length < maxResults; i++) {
-      const item = state.data[i];
+    for (let i = 0; i < this.data.length && results.length < maxResults; i++) {
+      const item = this.data[i];
       if (item[TITLE_FIELD] && s ? s.test(item[TITLE_FIELD]) : true) {
         results.push(items[item[ID_FIELD]!]);
       }
     }
     return results;
-  },
+  }
   /**
    * Fetch entry from Server
    */
-  async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
-    const items = getters.items;
+  async fetchItem({ id, refresh }: { id: UUID; refresh?: boolean }) {
+    const items = this.items;
     if (!refresh && items[id]) {
       return items[id];
     } else {
       const response: ApiItem = await this.$axios.$get<ApiItem>(`/api/elements/${id}`).catch(e => {
         throw new LocalizedError("FETCH_ELEMENT_FAILED", { id }, e);
       });
-      await dispatch("addData", { data: [response], refresh });
-      return getters.items[id];
+      await this.addData({ data: [response], refresh });
+      return this.items[id];
     }
-  },
+  }
   /**
    * Remove entry from server
    */
-  async removeItems({ commit, dispatch, getters }, ids) {
+  async removeItems(ids: UUID[]) {
     const promises = ids.map(id =>
       this.$axios.$delete(`/api/elements/${id}`).catch(e => {
         throw new LocalizedError("REMOVE_ELEMENT_FAILED", { id }, e);
       })
     );
     await Promise.all(promises);
-    await dispatch("fetchAll", { refresh: true });
-  },
+    await this.fetchAll({ refresh: true });
+  }
   /**
    * Fetch multiple entries from Server
    */
-  async fetchItems({ commit, dispatch, getters }, { id, refresh }) {
-    await Promise.all(id.map(id => dispatch("fetchItem", { id })));
-  },
+  async fetchItems({ id, refresh }: { id: UUID[]; refresh?: boolean }) {
+    await Promise.all(id.map(id => this.fetchItem({ id })));
+  }
   /**
    * Fetch all nodes
    */
-  async fetchAll({ state, commit, dispatch, getters }, { refresh }) {
-    if (state.fetchedAll && !refresh) return;
+  async fetchAll({ refresh }: { refresh?: boolean }) {
+    if (this.fetchedAll && !refresh) return;
     const response: ApiItem[] = await this.$axios.$get("/api/elements").catch(e => {
       throw new HTTPError("FETCH_ELEMENTS_FAILED", e);
     });
-    commit("setFetchedAll", true);
-    await commit("setData", response);
-  },
+    this.setFetchedAll = true;
+    this.setData = response;
+  }
   /**
    * Fetch root nodes
    */
-  async fetchRoots({ commit, dispatch, getters }, payload) {
+  async fetchRoots(payload: {}) {
     //return await dispatch("fetchAll", {});
-    if (getters.roots.length > 0) return;
+    if (this.roots.length > 0) return;
     const roots: ApiItem[] = await this.$axios.$get("/api/elements?parent=").catch(e => {
       throw new HTTPError("FETCH_ROOT_ELEMENTS_FAILED", e);
     });
 
-    await dispatch("addData", { data: roots });
-  },
+    await this.addData({ data: roots });
+  }
   /**
    * Fetch children
    */
-  async fetchChildren({ commit, getters, dispatch }, { id }) {
-    if (getters.knowsChildren(id)) return;
+  async fetchChildren({ id }: { id: UUID }) {
+    if (this.knowsChildren(id)) return;
     const response: ApiItem[] = await this.$axios.$get(`/api/elements/${id}/children`).catch(e => {
       throw new HTTPError("FETCH_CHILD_ELEMENTS_FAILED", { id }, e);
     });
     if (response) {
-      commit("setChildCount", { id, count: response.length });
+      this.setChildCount = { id, count: response.length };
+
       if (response.length > 0) {
-        await dispatch("addData", { data: response });
+        await this.addData({ data: response });
       }
     }
-  },
+  }
   /**
    * Fetch all elements in tree including element[id] going upwards to tree root(s)
    */
-  async fetchTree({ commit, getters, dispatch }, { id }) {
-    await dispatch("fetchRoots", {});
+  async fetchTree({ id }: { id?: UUID }) {
+    await this.fetchRoots({});
     const pChildren: Promise<any>[] = [];
     if (id) {
       //Load initial item
-      let item = await dispatch("fetchItem", { id });
+      let item = await this.fetchItem({ id });
       //Until no more parent items exist:
       while (item.parent) {
         //Do not wait for children to be fetched
-        pChildren.push(dispatch("fetchChildren", { id: item.parent }));
+        pChildren.push(this.fetchChildren({ id: item.parent }));
         //Load parent of child
-        item = await dispatch("fetchItem", { id: item.parent });
+        item = await this.fetchItem({ id: item.parent });
       }
       //Wait for all children requests to be performed
       await Promise.all(pChildren);
     }
   }
-};
+}
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export const helpers = createNamespace<State, Getters, Mutations, Actions>("elements");
+export default createModule(ElementsStore, "elements");

@@ -1,83 +1,68 @@
+<template>
+  <v-navigation-drawer
+    :value="value"
+    @input="$emit('input', $event)"
+    :mini-variant="!expanded"
+    :mini-variant-width="64"
+    :width="width"
+    app
+    v-resizeable="364"
+    @resize="$emit('update:width', $event.width)"
+    :right="right"
+    :touchless="touchless"
+    :class="{collapsed: !expanded}"
+    clipped
+  >
+    <side-pane-content :value="expanded" @input="$emit('update:expanded', $event)" :query="route" :items="items" :right="right">
+      <page-component :route="route" :context="{side: right?'right':'left'}">
+        <loading-component slot="loading"></loading-component>
+      </page-component>
+    </side-pane-content>
+  </v-navigation-drawer>
+</template>
 <script lang="ts">
-import Vue, { VNode } from "vue";
-//@ts-ignore
-import VNavigationDrawer from "vuetify/es5/components/VNavigationDrawer";
-import Resizeable from "~/mixins/Resizeable";
+import Vue from "vue";
 import SidePaneContent from "~/components/Layout/SidePaneContent.vue";
+import LoadingComponent from "~/components/LoadingComponent.vue";
+import PageComponent from "~/components/PageComponent.vue";
+import Resizeable from "~/directives/resizeable.ts";
 
 export default Vue.extend({
-  extends: VNavigationDrawer as any,
-  name: "SidePane",
-  mixins: [Resizeable()],
-  props: {
-    items: { type: Array, default: () => [] },
-    query: { type: String, default: "" },
-    expanded: { type: Boolean, default: true }
+  components: {
+    SidePaneContent,
+    LoadingComponent,
+    PageComponent
   },
-  computed: {
-    calculatedWidth(this: any) {
-      if (!this.expanded) return 64;
-      return (
-        this.resizeWidth ||
-        VNavigationDrawer.computed.calculatedWidth.apply(this, arguments)
-      );
+  directives: {
+    Resizeable
+  },
+  props: {
+    right: {
+      type: Boolean,
+      default: false
+    },
+    route: {
+      type: String
+    },
+    items: {
+      type: Array
+    },
+    width: {
+      type: Number
+    },
+    expanded: {
+      type: Boolean
+    },
+    value: {
+      type: Boolean,
+      default: true
+    },
+    touchless: {
+      type: Boolean
     }
   },
-  render(h) {
-    const data = {
-      class: { ...this["classes"], collapsed: !this["expanded"] },
-      style: this["styles"],
-      directives: this["genDirectives"](),
-      on: {
-        click: () => {
-          if (!this["miniVariant"]) return;
-
-          this.$emit("update:miniVariant", false);
-        },
-        transitionend: (e: Event) => {
-          if (e.target !== e.currentTarget) return;
-          this.$emit("transitionend", e);
-
-          // IE11 does not support new Event('resize')
-          const resizeEvent = document.createEvent("UIEvents");
-          resizeEvent.initUIEvent("resize", true, false, window, 0);
-          window.dispatchEvent(resizeEvent);
-        }
-      }
-    };
-
-    return h("aside", data, [
-      h(
-        SidePaneContent,
-        {
-          props: {
-            query: this["query"],
-            items: this["items"],
-            right: this["right"],
-            value: this["expanded"]
-          },
-          on: {
-            input: ($event: Boolean) => {
-              this.$emit("update:expanded", $event);
-              this.$nextTick(() => {
-                this["callUpdate"].call();
-              });
-            }
-          }
-        },
-        this.$slots.default
-      ),
-      h("div", {
-        class: ["v-navigation-drawer__border"]
-      })
-    ]);
+  data() {
+    return {};
   }
 });
 </script>
-
-<style lang="stylus" scoped>
-.v-navigation-drawer {
-  transition: none;
-}
-</style>
-

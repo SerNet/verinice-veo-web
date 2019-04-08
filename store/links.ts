@@ -1,31 +1,13 @@
-import { RootDefined } from "~/store/index";
-import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
-import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
+import { createModule, useStore, Mutation } from "vuex-typesafe-class";
+import BaseStore from "~/lib/BaseStore";
 import HTTPError from "~/exceptions/HTTPError";
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export interface State {}
-export const state = () => ({} as State);
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export interface Getters {}
-
-export const getters: RootDefined.Getters<Getters, State> = {};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Mutations {}
-
-export const mutations: DefineMutations<Mutations, State> = {};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Actions {
-  remove: { id: string };
-}
-
-export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
-  async remove({}, { id }) {
+class LinksStore extends BaseStore {
+  async remove({ id }: { id: string }) {
     await this.$axios.$delete(`/api/links/${id}`).catch(e => {
       throw new HTTPError("REMOVE_LINK_FAILED", { id }, e);
     });
   }
-};
+}
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export const helpers = createNamespace<State, Getters, Mutations, Actions>("links");
+export default createModule(LinksStore, "links");

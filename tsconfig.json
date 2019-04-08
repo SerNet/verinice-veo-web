@@ -1,25 +1,25 @@
 {
+  "exclude": [".nuxt", ".vscode", "dist", "dist.js", "node_modules", "store_bk"],
+
   "compilerOptions": {
-    "jsx": "preserve",
-    "target": "es5",
-    "lib": ["dom", "es2015"],
-    "typeRoots": ["./node_modules/@types"],
-    "module": "esNext",
+    "target": "esnext",
+    "module": "esnext",
+    "skipLibCheck": true,
     "moduleResolution": "node",
+    "lib": ["esnext", "esnext.asynciterable", "dom"],
+    "esModuleInterop": true,
     "experimentalDecorators": true,
-    "noImplicitAny": false,
-    "noImplicitThis": true,
+    "allowJs": true,
+    "sourceMap": true,
     "strict": true,
-    "inlineSourceMap": true,
-    "strictPropertyInitialization": true,
-    "removeComments": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "*": ["./*"],
       "~/*": ["./*"],
       "@/*": ["./*"]
-    }
+    },
+    "typeRoots": ["node_modules/@types", "types"],
+    "types": ["vuetify", "vuetify/types/index", "@types/node", "@nuxt/vue-app", "types/nuxt"]
   }
 }

@@ -9,5 +9,14 @@
 
 <script lang="ts">
 import Vue from "vue";
+
+import {
+  mapState,
+  mapGetters,
+  mapMutations,
+  mapActions,
+  useStore
+} from "vuex-typesafe-class";
+
 export default Vue.extend({});
 </script>

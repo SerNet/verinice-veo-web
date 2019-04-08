@@ -2,10 +2,12 @@ import Vue from "vue";
 import { DirectiveOptions } from "vue/types/options";
 import ResizeObserver from "resize-observer-polyfill";
 
+type HTMLElementWithObserver = HTMLElement & { _ro?: ResizeObserver };
+
 const directive: DirectiveOptions = {
-  inserted: (el, binding, vnode) => {
+  inserted: (el: HTMLElementWithObserver, binding, vnode) => {
     const callback = binding.value!;
-    const ro = (el["_ro"] = new ResizeObserver((entries, observer) => {
+    const ro = (el._ro = new ResizeObserver((entries, observer) => {
       let h = 0;
       for (const entry of entries) {
         const { height } = entry.contentRect;
@@ -16,9 +18,9 @@ const directive: DirectiveOptions = {
 
     ro.observe(document.body);
   },
-  unbind: (el, binding, vnode) => {
+  unbind: (el: HTMLElementWithObserver, binding, vnode) => {
     if (el) {
-      const ro: ResizeObserver = el["_ro"];
+      const ro = el._ro;
       if (ro) {
         ro.unobserve(document.body);
       }

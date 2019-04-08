@@ -13,8 +13,6 @@ const compare = (t: ExecutionContext, a: string, b: string, expected: number) =>
   }
 };
 
-let i = 0;
-
 test("German Umlaut O: 1", compare, "öffi", "Peter", -1);
 test("German Umlaut O: 2", compare, "Oben", "öffi", -1);
 test("German Umlaut A: 1", compare, "Ähem", "Beer", -1);

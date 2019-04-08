@@ -1,32 +1,14 @@
 <template>
   <v-app fill-height>
     <main-toolbar app v-if="!standalone" @click-side-icon="mainDrawer = !mainDrawer" :clipped="true" :clipped-left="false"></main-toolbar>
-    <side-pane v-if="!standalone" v-model="mainDrawer" :query="leftKey" :items="leftItems" :expanded.sync="leftExpanded" :min-width="300" :width="364" app clipped>
-      <page-component :route="leftKey" :context="{side: 'left'}">
-        <loading-component slot="loading"></loading-component>
-      </page-component>
-    </side-pane>
+    <side-pane v-if="!standalone" v-model="mainDrawer" :items="left.items" :width.sync="left.width" :expanded.sync="left.expanded" :route="leftKey"></side-pane>
+
     <v-content fill-height>
       <v-container fluid class="pa-0" fill-height>
         <nuxt></nuxt>
       </v-container>
     </v-content>
-    <side-pane
-      v-if="!standalone && !rightOff"
-      :query="rightKey"
-      touchless
-      :items="rightItems"
-      :expanded.sync="rightExpanded"
-      :min-width="300"
-      :width="364"
-      app
-      clipped
-      :right="true"
-    >
-      <page-component :route="rightKey" :context="{side: 'right'}">
-        <loading-component slot="loading"></loading-component>
-      </page-component>
-    </side-pane>
+    <side-pane v-if="!standalone" :items="right.items" :width.sync="right.width" :expanded.sync="right.expanded" :route="rightKey" right touchless></side-pane>
   </v-app>
 </template>
 
@@ -35,18 +17,12 @@ import Vue from "vue";
 import MainToolbar from "~/components/Layout/MainToolbar.vue";
 import MenuSidenav from "~/components/Layout/MenuSidenav.vue";
 import SidePane from "~/components/Layout/SidePane.vue";
-import SidePaneButtons from "~/components/Layout/SidePaneButtons.vue";
-import LoadingComponent from "~/components/LoadingComponent.vue";
-import PageComponent from "~/components/PageComponent.vue";
 
 export default Vue.extend({
   components: {
     MainToolbar,
     MenuSidenav,
-    SidePane,
-    SidePaneButtons,
-    PageComponent,
-    LoadingComponent
+    SidePane
   },
   computed: {
     standalone(): boolean {
@@ -61,40 +37,39 @@ export default Vue.extend({
     rightKey(): string {
       return "/" + (this.$route.query["r"] || "history");
     }
-    /*left(): any {
-      return extendMatch(this, this.leftKey, {
-        side: "left"
-      });
-    },
-    right(): any {
-      return extendMatch(this, this.rightKey, {
-        side: "right"
-      });
-    }*/
   },
   data() {
     return {
       mainDrawer: true,
-      leftItems: [
-        {
-          to: { l: "tree", $: "index", r: "history" },
-          icon: "folder",
-          title: "Einträge"
-        },
-        {
-          to: { l: "setup", $: "settings", r: "off" },
-          icon: "settings",
-          active: true,
-          title: "Einstellungen"
-        }
-      ],
-      rightItems: [
-        { to: { r: "history" }, icon: "history", title: "Änderungen" },
-        { to: { r: "links" }, icon: "link", title: "Links" },
-        { to: { r: "preview" }, icon: "collections", title: "Vorschau" }
-      ],
-      leftExpanded: true,
-      rightExpanded: true
+
+      left: {
+        expanded: true,
+        context: { side: "left" },
+        width: 364,
+        items: [
+          {
+            to: { l: "tree", $: "index", r: "history" },
+            icon: "folder",
+            title: "Einträge"
+          },
+          {
+            to: { l: "setup", $: "settings", r: "off" },
+            icon: "settings",
+            active: true,
+            title: "Einstellungen"
+          }
+        ]
+      },
+
+      right: {
+        expanded: true,
+        width: 364,
+        items: [
+          { to: { r: "history" }, icon: "history", title: "Änderungen" },
+          { to: { r: "links" }, icon: "link", title: "Links" },
+          { to: { r: "preview" }, icon: "collections", title: "Vorschau" }
+        ]
+      }
     };
   },
   methods: {
@@ -112,5 +87,9 @@ h1, h2 {
 
 a {
   color: #42b983;
+}
+
+>>> .v-navigation-drawer {
+  transition: none;
 }
 </style>

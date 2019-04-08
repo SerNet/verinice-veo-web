@@ -15,7 +15,8 @@
   </v-footer>
 </template>
 <script lang="ts">
-import { Scroll, Resize } from "vuetify/lib/directives";
+//@ts-ignore
+//import { Scroll, Resize } from "vuetify/lib/directives";
 import Height from "~/directives/height";
 import Vue from "vue";
 export default Vue.extend({
@@ -25,8 +26,8 @@ export default Vue.extend({
     };
   },
   directives: {
-    Scroll,
-    Resize,
+    //Scroll,
+    //Resize,
     Height
   },
   mounted() {

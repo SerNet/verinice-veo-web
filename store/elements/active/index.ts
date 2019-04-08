@@ -1,53 +1,55 @@
 import { ApiItem, ApiLink, ApiHistory, UUID } from "~/types/api";
 import { AppElement, AppHistory, AppLink } from "~/types/app";
-import { ID_FIELD, PARENT_FIELD, TITLE_FIELD, TYPE_FIELD } from "~/config/api";
-import { RootDefined } from "~/store/index";
-import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
-import { helpers as parent } from "~/store/elements";
-import { helpers as schemas } from "~/store/schemas";
-import { veoItemToElement, veoLinkToLink } from "~/store/elements/utils";
-import { uniq } from "lodash";
-import HTTPError from "~/exceptions/HTTPError";
-import moment from "moment";
-import NumericStringComparator from "~/lib/NumericStringComparator";
 import { JSONSchema6 } from "json-schema";
+import { createModule, useStore } from "vuex-typesafe-class";
+import NumericStringComparator from "~/lib/NumericStringComparator";
+import { uniq } from "lodash";
+import BaseStore from "~/lib/BaseStore";
+import { veoItemToElement, veoLinkToLink } from "~/lib/utils";
+import ElementsStore from "../index";
+import SchemasStore from "~/store/schemas";
+import moment from "moment";
+import HTTPError from "~/exceptions/HTTPError";
+import { ID_FIELD } from "~/config/api";
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export interface State {
-  /**
-   * Currently selected item id
-   */
+class ActiveElementsStore extends BaseStore {
   data?: ApiItem;
-  schema?: JSONSchema6;
-  links: ApiLink[];
-  history: ApiHistory[];
-}
+  schemaData?: JSONSchema6;
+  linksData: ApiLink[] = [];
+  historyData: ApiHistory[] = [];
 
-export const state = () => ({ data: undefined, schema: undefined, errors: [], links: [], history: [] } as State);
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Getters {
-  /**
-   * Currently selected item
-   */
-  item?: AppElement;
-  breadcrumb: AppElement[];
-  schemaName?: string;
-  schema: JSONSchema6 | null | undefined;
-  links: AppLink[] | undefined;
-  history?: AppHistory[] | undefined;
-  children: AppElement[];
-}
+  get $parent() {
+    return useStore(ElementsStore, this);
+  }
 
-export const getters: RootDefined.Getters<Getters, State> = {
-  item: state => (state.data ? veoItemToElement(state.data) : undefined),
-  schemaName: (state, getters) => getters.item && getters.item.type,
-  schema: state => {
-    return state.schema;
-  },
-  links: (state, getters, rootState, rootGetters) => {
+  get $schemas() {
+    return useStore(SchemasStore, this);
+  }
+
+  get schema() {
+    return this.schemaData;
+  }
+  get item(): AppElement | undefined {
+    return this.data && veoItemToElement(this.data);
+  }
+  get breadcrumb(): AppElement[] {
+    const items = this.$parent.items;
+    let item = this.item;
+    const path: AppElement[] = [];
+    while (item) {
+      path.unshift(item);
+      const parent = item.parent;
+      item = parent ? items[parent] : undefined;
+    }
+    return path;
+  }
+  get schemaName(): string | undefined {
+    return this.item && this.item.type;
+  }
+  get links(): AppLink[] | undefined {
     const comparator = new NumericStringComparator();
-    const links = state.links;
-    const itemMap = rootGetters[parent.getter("items")];
+    const links = this.linksData;
+    const itemMap = this.$parent.items;
     return (
       links &&
       links
@@ -59,10 +61,10 @@ export const getters: RootDefined.Getters<Getters, State> = {
         })
         .sort((a, b) => comparator.compare(a.source && a.source.title, b.source && b.source.title))
     );
-  },
-  history: state => {
-    return state.history
-      ? state.history
+  }
+  get history(): AppHistory[] | undefined {
+    return this.historyData
+      ? this.historyData
           .map(item => {
             return {
               id: moment(item.timestamp).unix(),
@@ -73,97 +75,63 @@ export const getters: RootDefined.Getters<Getters, State> = {
           })
           .sort((a, b) => b.id - a.id)
       : undefined;
-  },
-  breadcrumb: (state, getters, rootState, rootGetters) => {
-    const items = rootGetters[parent.getter("items")];
-    let item = getters.item;
-    const path: AppElement[] = [];
-    while (item) {
-      path.unshift(item);
-      const parent = item.parent;
-      item = parent ? items[parent] : undefined;
-    }
-    return path;
-  },
-  children: (state, getters, rootState, rootGetters) => {
-    const items = rootGetters[parent.getter("items")];
-    const item = getters.item;
-    const childMap = rootGetters[parent.getter("children")];
+  }
+  get children(): AppElement[] {
+    const items = this.$parent.items;
+    const item = this.item;
+    const childMap = this.$parent.children;
     const childs: UUID[] = (item && childMap[item.id]) || [];
     return childs.map(id => items[id]);
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Mutations {
-  setItem: ApiItem;
-  setSchema: any;
-  setLinks: ApiLink[];
-  setHistory: ApiHistory[];
-}
 
-export const mutations: DefineMutations<Mutations, State> = {
-  setItem(state, value) {
-    state.data = value;
-  },
-  setSchema(state, value) {
-    state.schema = value;
-  },
-  setLinks(state, value) {
-    state.links = value;
-  },
-  setHistory(state, value) {
-    state.history = value;
+  set setItem(value: ApiItem | undefined) {
+    this.data = value;
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Actions {
-  init: {};
-  fetchItem: { id: UUID; refresh?: boolean };
-  fetchBreadcrumb: { id: UUID };
-  fetchLinks: { id: UUID };
-  fetchHistory: { id: UUID };
-  fetchSchema: { name: string };
-  save: ApiItem;
-}
+  set setSchema(value: JSONSchema6) {
+    this.schemaData = value;
+  }
+  set setLinks(value: ApiLink[]) {
+    this.linksData = value;
+  }
+  set setHistory(value: ApiHistory[]) {
+    this.historyData = value;
+  }
 
-export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
-  async init({ dispatch }) {},
-  async fetchItem({ commit, dispatch, getters }, { id, refresh }) {
-    const currentItem = getters.item;
+  async fetchItem({ id, refresh }: { id: UUID; refresh?: boolean }) {
+    const currentItem = this.item;
     if (currentItem && currentItem.id == id && !refresh) {
       return; //already loaded
     }
-    commit("setItem", undefined);
-    const item = await dispatch(parent.action("fetchItem"), { id, refresh }, { root: true });
+    this.setItem = undefined;
+    const item = await this.$parent.fetchItem({ id, refresh });
     const response: ApiItem = item.data;
-    commit("setItem", response);
+    this.setItem = response;
 
     let pLinks, pHistory, pChildren, pBreadcrumbs;
 
-    pLinks = dispatch("fetchLinks", { id });
-    pHistory = dispatch("fetchHistory", { id });
-    pChildren = dispatch(parent.action("fetchChildren"), { id }, { root: true });
-    pBreadcrumbs = dispatch("fetchBreadcrumb", { id });
+    pLinks = this.fetchLinks({ id });
+    pHistory = this.fetchHistory({ id });
+    pChildren = this.$parent.fetchChildren({ id });
+    pBreadcrumbs = this.fetchBreadcrumb({ id });
     await Promise.all([pLinks, pHistory, pChildren, pBreadcrumbs]);
     return item;
-  },
-  async fetchBreadcrumb({ commit, dispatch }, { id }) {
-    await dispatch(parent.action("fetchTree"), { id }, { root: true });
-  },
-  async fetchSchema({ commit, dispatch }, { name }) {
-    const schema = await dispatch(schemas.action("fetchSchema"), { name }, { root: true });
-    commit("setSchema", schema);
-  },
-  async fetchLinks({ commit, getters, dispatch }, { id }) {
+  }
+  async fetchBreadcrumb({ id }: { id: UUID }) {
+    await this.$parent.fetchTree({ id });
+  }
+  async fetchSchema({ name }: { name: string }) {
+    const schema = await this.$schemas.fetchSchema({ name });
+    this.setSchema = schema;
+  }
+  async fetchLinks({ id }: { id: UUID }) {
     //commit("setLinks", []);
     const response: any = await this.$axios.$get(`/api/elements/${id}/links`).catch(e => {
       throw new HTTPError("FETCH_LINKS_FAILED", { id }, e);
     });
     if (response) {
-      commit("setLinks", response);
-      const links = getters.links;
+      this.setLinks = response;
+      const links = this.links;
       if (links) {
-        const FETCH_ITEMS = parent.action("fetchItems");
         const ids = links.reduce(
           (out, link) => {
             out.push(link.sourceId);
@@ -172,19 +140,19 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
           },
           [] as UUID[]
         );
-        await dispatch(FETCH_ITEMS, { id: uniq(ids) }, { root: true });
+        await this.$parent.fetchItems({ id: uniq(ids) });
       }
     }
-  },
-  async fetchHistory({ commit }, { id }) {
+  }
+  async fetchHistory({ id }: { id: UUID }) {
     const response: any = await this.$axios.$get(`/api/elements/${id}/history`).catch(e => {
       throw new HTTPError("FETCH_HISTORY_FAILED", { id }, e);
     });
     if (response) {
-      commit("setHistory", response);
+      this.setHistory = response;
     }
-  },
-  async save({ commit, dispatch }, payload) {
+  }
+  async save(payload: ApiItem) {
     let id = payload[ID_FIELD];
 
     if (id) {
@@ -199,10 +167,9 @@ export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = 
       id = location.split("/").pop();
     }
 
-    id && (await dispatch("fetchItem", { id, refresh: true }));
+    id && (await this.fetchItem({ id, refresh: true }));
     return id;
   }
-};
+}
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export const helpers = createNamespace<State, Getters, Mutations, Actions>(parent.name, "active");
+export default createModule(ActiveElementsStore, "elements/active");

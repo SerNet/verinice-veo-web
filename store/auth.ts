@@ -1,104 +1,66 @@
+import { createModule, useStore } from "vuex-typesafe-class";
+
 import jsonwebtoken from "jsonwebtoken";
-import HTTPError from "~/exceptions/HTTPError";
-import Vue from "vue";
 import { ApiUserTokenPayload } from "~/types/api";
-import { RootState, RootGetters, RootMutations, RootActions } from "~/store/index";
-import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
 
-export interface State {
-  token: null | string;
-  error: null | string;
-  redirection: { path: string } | null;
-  persist: boolean;
-}
+import HTTPError from "~/exceptions/HTTPError";
+import root from "~/store/index";
+import BaseStore from "~/lib/BaseStore";
 
-export const state = () =>
-  ({
-    token: null,
-    error: null,
-    redirection: null,
-    persist: false
-  } as State);
+class Auth extends BaseStore {
+  token?: string;
+  error?: string;
+  redirection?: string;
+  persist: boolean = false;
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Getters {
-  isAuthorized: boolean;
-  authorizationHeader: string;
-  payload?: ApiUserTokenPayload;
-  username?: string;
-}
-
-export const getters: DefineGetters<Getters, State> = {
-  isAuthorized: state => !!state.token,
-  authorizationHeader: state => "Bearer " + state.token,
-  payload: state => (state.token && (jsonwebtoken.decode(state.token) as ApiUserTokenPayload)) || undefined,
-  username: (state, getters) => getters.payload && getters.payload.sub
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Mutations {
-  setToken: string | null;
-  setError: string;
-  setRedirection: { path: string };
-  setPersist: boolean;
-}
-
-export const mutations: DefineMutations<Mutations, State> = {
-  setToken(state, value) {
-    state.token = value;
-  },
-  setError(state, value) {
-    state.error = value;
-  },
-  setRedirection(state, value) {
-    state.redirection = value;
-  },
-  setPersist(state, value) {
-    state.persist = value;
+  get isAuthorized() {
+    return !!this.token;
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Actions {
-  init: {};
-  login: { username: string; password: string; persist: boolean };
-  useToken: { token: string; persist?: boolean };
-  redirect: { path: string };
-  logout: {};
-}
 
-export const actions: DefineActions<
-  Actions,
-  State,
-  Getters,
-  Mutations,
-  {},
-  RootState,
-  RootGetters,
-  RootMutations,
-  RootActions
-> = {
-  async init({ state, dispatch, commit }, payload) {},
-  async login({ commit, dispatch }, { username, password, persist }) {
+  get authorizationHeader() {
+    return "Bearer " + this.token;
+  }
+
+  get payload() {
+    return (this.token && (jsonwebtoken.decode(this.token) as ApiUserTokenPayload)) || undefined;
+  }
+
+  get username() {
+    return this.payload && this.payload.sub;
+  }
+
+  set setToken(value: string | undefined) {
+    this.token = value;
+  }
+  set setError(value: string | undefined) {
+    this.error = value;
+  }
+  set setRedirection(path: string) {
+    this.redirection = path;
+  }
+  set setPersist(value: boolean) {
+    this.persist = value;
+  }
+
+  async login({ username, password, persist }: { username: string; password: string; persist?: boolean }) {
     const response = await this.$axios.post("/api/login", { username, password }).catch(e => {
       throw new HTTPError("AUTH_LOGIN_FAILED", e);
     });
 
     const header = response.headers["authorization"];
-    const [type, token] = header.split(/\s+/);
-    await dispatch("useToken", { token, persist });
+    const [, token] = header.split(/\s+/);
+    await this.useToken({ token, persist });
     return token;
-  },
-  async useToken(this: Vue, { commit, dispatch }, { token, persist }) {
-    commit("setPersist", persist || false);
-    commit("setToken", token);
-    await dispatch("init", {}, { root: true });
-  },
-  async redirect(this: Vue, { commit }, { path }) {
-    commit("setRedirection", { path });
-  },
-  async logout(this: Vue, { commit, dispatch }) {
-    commit("setToken", null);
-    await dispatch("init", {}, { root: true });
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export const helpers = createNamespace<State, Getters, Mutations, Actions>("auth");
+  async useToken({ token, persist }: { token: string; persist?: boolean }) {
+    this.setPersist = persist || false;
+    this.setToken = token;
+  }
+  async redirect({ path }: { path: string }) {
+    this.setRedirection = path;
+  }
+  async logout() {
+    this.setToken = undefined;
+  }
+}
+export default createModule(Auth, "auth");

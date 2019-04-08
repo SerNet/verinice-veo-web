@@ -1,7 +1,7 @@
 import { Route, RawLocation } from "vue-router";
-import { NuxtContext } from "vue/types/options";
+import { Context, InjectFunction } from "~/types/nuxt";
 
-export default ({ app }: NuxtContext, inject) => {
+export default ({ app }: Context, inject: InjectFunction) => {
   const _resolve = app.router.resolve;
   app.router.resolve = function(to: RawLocation, current?: Route, append?: boolean) {
     const isStandalone = (current && current.query && current.query.standalone !== undefined) || false;
@@ -16,8 +16,7 @@ export default ({ app }: NuxtContext, inject) => {
 
     if (typeof to == "object") {
       if ("prefer" in to) {
-        const $nuxt = window["$nuxt"];
-        const isMobile = $nuxt.$vuetify.breakpoint.xs;
+        const isMobile = window.$nuxt.$vuetify.breakpoint.xs;
         if (isMobile || isStandalone) {
           return resolved;
         } else {

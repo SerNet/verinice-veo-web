@@ -11,11 +11,12 @@
               <v-flex xs12 v-if="schema===null">
                 <v-alert outline :value="true" type="error">
                   Das zugehörige Schema
-                  <q>{{model["$veo.type"]}}</q> konnte nicht abgerufen werden. Die Daten können daher nicht bearbeitet werden.
+                  <q>{{type}}</q> konnte nicht abgerufen werden. Die Daten können daher nicht bearbeitet werden.
                 </v-alert>
               </v-flex>
               <v-flex class="pt-2" xs12 v-for="property in properties" :key="property.key">
                 <abstract-field
+                  v-if="model"
                   :name="property.key"
                   :schema="property"
                   :disabled="!schema || disabledKeys.includes(property.key)"
@@ -36,12 +37,25 @@
 import Vue from "vue";
 import AbstractField from "~/components/Editor/AbstractField.vue";
 import { JSONSchema6, JSONSchema6TypeName } from "json-schema";
+import { Prop } from "vue/types/options";
+import { AppElement } from "../../types/app";
 
 export type JSONSchemaProperty = JSONSchema6 & { key: string };
+export interface Events {
+  input: AppElement;
+}
 
 export default Vue.extend({
   components: {
     AbstractField
+  },
+  props: {
+    model: {
+      type: Object as Prop<AppElement>
+    },
+    schema: {
+      type: Object
+    }
   },
   data() {
     return {
@@ -90,7 +104,9 @@ export default Vue.extend({
   computed: {
     id() {},
     parent() {},
-    type() {},
+    type(): string {
+      return this.model.type;
+    },
     properties(): Array<JSONSchemaProperty> {
       const properties: { [k: string]: JSONSchema6 } =
         this.schema && this.schema.properties;
@@ -127,15 +143,10 @@ export default Vue.extend({
   },
   methods: {
     onFieldChange(property: JSONSchemaProperty, value: any) {
-      this.$emit("input", { ...this.model, [property.key]: value });
-    }
-  },
-  props: {
-    model: {
-      type: Object
-    },
-    schema: {
-      type: Object
+      this.$emit("input", {
+        ...this.model,
+        [property.key]: value
+      } as Events["input"]);
     }
   }
 });

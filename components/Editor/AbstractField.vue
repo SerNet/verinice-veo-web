@@ -15,9 +15,7 @@
 import Vue from "vue";
 import { JSONSchema6, JSONSchema6TypeName } from "json-schema";
 
-//! Explicitly import components (Vuetify-loader)
-//@ts-ignore
-import { VTextField, VSelect } from "vuetify/lib";
+//import { VTextField, VSelect } from "vuetify/lib";
 
 interface IComponentDeclaration {}
 
@@ -31,10 +29,10 @@ export const componentByType: {
 };
 
 export default Vue.extend({
-  components: {
+  /*components: {
     VTextField,
     VSelect
-  },
+  },*/
   props: {
     name: { type: String },
     schema: { type: Object },

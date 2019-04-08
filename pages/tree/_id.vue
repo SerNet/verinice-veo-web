@@ -19,7 +19,7 @@
         item-key="id"
         item-text="title"
       >
-        <template slot="prepend" slot-scope="{ item, open, leaf }">
+        <template slot="prepend" slot-scope="{ item, open }">
           <v-icon v-if="!item.file">{{ open ? 'folder_open' : 'folder' }}</v-icon>
           <v-icon v-else>{{ files[item.file] }}</v-icon>
         </template>
@@ -32,23 +32,30 @@
 import Vue from "vue";
 import { Route } from "vue-router";
 import { AppElement } from "~/types/app";
-import { helpers as elements } from "~/store/elements";
-import { helpers as activeElement } from "~/store/elements/active";
 import { UUID } from "~/types/api";
 import { union } from "lodash";
+
+import authStore from "~/store/auth";
+import elementsStore from "~/store/elements";
+import activeElementStore from "~/store/elements/active";
+import {
+  mapState,
+  mapGetters,
+  mapActions,
+  useStore
+} from "vuex-typesafe-class";
 
 type AppElementWithChildren = AppElement & { children?: AppElement[] };
 
 export default Vue.extend({
-  name: "tree",
   computed: {
-    ...elements.mapGetters({
+    ...mapGetters(elementsStore, {
       childMap: "children",
       itemMap: "items",
       roots: "roots",
-      childCount: "childCount"
+      childCount: "countChildren"
     }),
-    ...activeElement.mapGetters({
+    ...mapGetters(activeElementStore, {
       item: "item",
       breadcrumb: "breadcrumb"
     }),
@@ -78,7 +85,7 @@ export default Vue.extend({
   watch: {
     async $route(v: Route, o: Route) {
       if (v.path != o.path) {
-        await elements.dispatch("fetchTree", { id: v.params.id });
+        await useStore(elementsStore, this).fetchTree({ id: v.params.id });
         this.selectActiveItem();
       }
     }
@@ -101,7 +108,7 @@ export default Vue.extend({
     };
   },
   methods: {
-    ...elements.mapActions({
+    ...mapActions(elementsStore, {
       fetchChildren: "fetchChildren"
     }),
     selectActiveItem() {
@@ -111,7 +118,7 @@ export default Vue.extend({
         this.active = [this.item.id];
       }
     },
-    onClick($event) {
+    onClick($event: MouseEvent) {
       const id = this.active.concat().shift();
       if (id && this.$route.params.id != id) {
         this.$router.push({
@@ -155,20 +162,22 @@ export default Vue.extend({
       await this.fetchChildren({ id: item.id });
     }
   },
-  async validate({ store, params }) {
-    if (!store.getters["auth/isAuthorized"]) return false;
+  /*async validate({ store, params }) {
+    const $auth = useStore(authStore, store);
+    if (!$auth.isAuthorized) return false;
     if (params.id && String(params.id).indexOf(".") !== -1) return false;
     return true;
-  },
-  async fetch({ store, params: { id } }) {
-    await elements.dispatch("fetchTree", { id });
+  },*/
+  async fetch({ store, params }) {
+    await useStore(elementsStore, store).fetchTree({ id: params.id });
   }
 });
 </script>
 
 <style lang="stylus" scoped>
->>> .v-treeview-node__content {
+>>> .v-treeview-node__label {
   padding: 5px;
+  cursor: pointer;
 }
 
 >>> .v-treeview-node--active {

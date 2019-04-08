@@ -1,16 +1,12 @@
-import { NuxtContext, Component } from "vue/types/options";
-import Vue from "vue";
+import { Context } from "~/types/nuxt";
+import { useStore } from "vuex-typesafe-class";
+import authStore from "~/store/auth";
 
-export default async function({
-  app,
-  store,
-  route,
-  params,
-  redirect
-}: NuxtContext<any>) {
+export default async function({ app, store, route, params, redirect }: Context) {
+  const $auth = useStore(authStore, store);
   if (route.path.indexOf(".") === -1 && !route.path.startsWith("/login")) {
-    if (!store.getters["auth/isAuthorized"]) {
-      await store.dispatch("auth/redirect", route);
+    if (!$auth.isAuthorized) {
+      await $auth.redirect(route);
       redirect("/login");
     }
   }

@@ -15,9 +15,17 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { helpers as elementsStore } from "~/store/elements";
-import { helpers as activeElement } from "~/store/elements/active";
-import { helpers as linksStore } from "~/store/links";
+
+import elementsStore from "~/store/elements";
+import linksStore from "~/store/links";
+import activeElementStore from "~/store/elements/active";
+import {
+  mapState,
+  mapGetters,
+  mapActions,
+  useStore
+} from "vuex-typesafe-class";
+import { UUID } from "~/types/api";
 
 import LinkListItem from "~/components/Links/LinkListItem.vue";
 
@@ -27,19 +35,19 @@ export default Vue.extend({
     LinkListItem
   },
   computed: {
-    ...activeElement.mapGetters({
+    ...mapGetters(activeElementStore, {
       item: "item",
       links: "links"
     })
   },
   methods: {
-    ...activeElement.mapActions({ _fetchLinks: "fetchLinks" }),
-    ...linksStore.mapActions({ _removeLink: "remove" }),
+    ...mapActions(activeElementStore, { _fetchLinks: "fetchLinks" }),
+    ...mapActions(linksStore, { _removeLink: "remove" }),
     async fetchLinks() {
       const id = this.$route.params.id;
       return await this._fetchLinks({ id });
     },
-    async removeLink({ id }) {
+    async removeLink({ id }: { id: UUID }) {
       try {
         await this._removeLink({ id });
       } finally {
@@ -47,14 +55,13 @@ export default Vue.extend({
       }
     }
   },
-  async fetch({ store, query: { type, parent }, params: { id } }) {
-    if (id) {
+  async fetch({ store, query, params }) {
+    if (params.id) {
       //TODO: When opened standalone, item might not have been loaded
-      await activeElement.dispatch("fetchLinks", { id });
+      await useStore(activeElementStore, store).fetchLinks({ id: params.id });
     }
   }
 });
 </script>
 
-<style lang="stylus" scoped>
-</style>
+<style lang="stylus" scoped></style>

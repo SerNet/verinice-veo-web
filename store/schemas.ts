@@ -1,70 +1,50 @@
-import { RootDefined } from "~/store/index";
-import { createNamespace, DefineGetters, DefineMutations, DefineActions } from "~/types/store";
-import { ApiSchema } from "~/types/api";
+import { createModule, useStore, Mutation } from "vuex-typesafe-class";
+import BaseStore from "~/lib/BaseStore";
 import HTTPError from "~/exceptions/HTTPError";
-import Vue from "vue";
+import { ApiSchema } from "~/types/api";
 
-export interface State {
-  items: string[];
-  schemas: Record<string, ApiSchema>;
-}
+class SchemasStore extends BaseStore {
+  names: string[] = [];
+  schemas: Record<string, ApiSchema> = {};
 
-export const state = () => ({ items: [], schemas: {} } as State);
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Getters {
-  index: Record<string, ApiSchema>;
-  items: ApiSchema[];
-}
-export const getters: RootDefined.Getters<Getters, State> = {
-  index(state) {
-    return state.schemas;
-  },
-  items(state) {
-    return state.items.map(name => state.schemas[name]);
+  get index() {
+    return this.schemas;
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Mutations {
-  setItems: string[];
-  setSchema: { name: string; schema: ApiSchema };
-}
 
-export const mutations: DefineMutations<Mutations, State> = {
-  setItems(state, value) {
-    state.items = value;
-  },
-  setSchema(state, value) {
-    state.schemas[value.name] = value.schema;
+  get items() {
+    return this.names.map(name => this.schemas[name]);
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Actions {
-  fetchSchema: { name: string; refresh?: boolean };
-  fetchSchemas: {};
-}
 
-export const actions: RootDefined.Actions<Actions, State, Getters, Mutations> = {
-  async fetchSchema({ commit, dispatch, getters }, { name, refresh }) {
-    const existing = getters.index[name];
+  set setItems(value: string[]) {
+    this.names = value;
+  }
+
+  set setSchema(value: { name: string; schema: ApiSchema }) {
+    this.schemas[value.name] = value.schema;
+  }
+
+  async fetchSchema({ name }: { name: string; refresh?: boolean }) {
+    const existing = this.index[name];
     if (existing) return existing;
     const schema: any = await this.$axios.$get(`/api/schemas/${name}.json`).catch(e => {
       throw new HTTPError("FETCH_SCHEMA_FAILED", { name }, e);
     });
     if (schema) {
-      commit("setSchema", { name, schema });
+      this.setSchema = { name, schema };
       return schema;
     }
-  },
-  async fetchSchemas({ state, commit }, {}) {
-    if (state.items.length > 0) return;
+  }
+
+  async fetchSchemas({}) {
+    if (this.items.length > 0) return;
     //Fetch list of schema files
     const response: string[] = await this.$axios.$get(`/api/schemas`).catch(e => {
       throw new HTTPError("FETCH_SCHEMAS_FAILED", {}, e);
     });
     //Save name list without extension
-    commit("setItems", response.map(name => String(name).replace(/\.json$/i, "")));
+    this.setItems = response.map(name => String(name).replace(/\.json$/i, ""));
     return response;
   }
-};
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-export const helpers = createNamespace<State, Getters, Mutations, Actions>("schemas");
+}
+
+export default createModule(SchemasStore, "schemas");
