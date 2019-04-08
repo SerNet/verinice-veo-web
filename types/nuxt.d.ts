@@ -1,11 +1,11 @@
 import Vue from "vue";
 import { Store } from "vuex";
 import VueRouter, { Route } from "vue-router";
-import { AxiosInstance } from "axios";
+
 import { Context as NuxtContext } from "@nuxt/vue-app/types";
 import { EventEmitter } from "events";
 
-import { NuxtApp } from "@nuxt/vue-app/types";
+import { NuxtApp } from "@nuxt/vue-app";
 import { VuetifyObject } from "vuetify/types";
 
 declare global {
@@ -56,7 +56,6 @@ declare module "*.vue" {
 declare module "vue/types/vue" {
   // 3. Declare augmentation for Vue
   interface Vue {
-    $axios: AxiosInstance;
     $cookies: any;
     $store: Store<any>;
   }

@@ -5,6 +5,7 @@
     "target": "esnext",
     "module": "esnext",
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "lib": ["esnext", "esnext.asynciterable", "dom"],
     "esModuleInterop": true,
@@ -19,7 +20,14 @@
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "typeRoots": ["node_modules/@types", "types"],
-    "types": ["vuetify", "vuetify/types/index", "@types/node", "@nuxt/vue-app", "types/nuxt"]
+    "types": [
+      "vuetify",
+      "vuetify/types/index",
+      "@types/node",
+      "@nuxt/vue-app",
+      "types/nuxt",
+      "@nuxtjs/axios/types",
+      "axios-retry/index"
+    ]
   }
 }
