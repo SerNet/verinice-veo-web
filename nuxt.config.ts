@@ -17,12 +17,10 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
+    "~/plugins/persistedstate.ts",
     "~/plugins/axios.ts",
     "~/plugins/store.ts",
-    //"~/plugins/i18n-error.ts",
-    //"~/plugins/vuetify.js",
-    { src: "~/plugins/routing.ts", ssr: false },
-    "~/plugins/persistedstate.js"
+    { src: "~/plugins/routing.ts", ssr: false }
   ],
   /*
    ** Global CSS

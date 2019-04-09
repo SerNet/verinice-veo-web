@@ -8,9 +8,9 @@ import root from "~/store/index";
 import BaseStore from "~/lib/BaseStore";
 
 class Auth extends BaseStore {
-  token?: string;
-  error?: string;
-  redirection?: string;
+  token: string | undefined = undefined;
+  error: string | undefined = undefined;
+  redirection: string | undefined = undefined;
   persist: boolean = false;
 
   get isAuthorized() {
@@ -29,10 +29,10 @@ class Auth extends BaseStore {
     return this.payload && this.payload.sub;
   }
 
-  set setToken(value: string | undefined) {
+  set setToken(value: string) {
     this.token = value;
   }
-  set setError(value: string | undefined) {
+  set setError(value: string) {
     this.error = value;
   }
   set setRedirection(path: string) {
@@ -60,7 +60,7 @@ class Auth extends BaseStore {
     this.setRedirection = path;
   }
   async logout() {
-    this.setToken = undefined;
+    this.setToken = "";
   }
 }
 export default createModule(Auth, "auth");

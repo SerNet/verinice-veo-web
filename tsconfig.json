@@ -27,7 +27,8 @@
       "@nuxt/vue-app",
       "types/nuxt",
       "@nuxtjs/axios/types",
-      "axios-retry/index"
+      "axios-retry/index",
+      "cookie-universal-nuxt/types/index"
     ]
   }
 }

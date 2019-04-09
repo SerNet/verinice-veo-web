@@ -3,6 +3,9 @@ import os from "os";
 
 import { Middleware } from "@nuxt/vue-app";
 import { AxiosRequestConfig } from "axios";
+import { useStore } from "vuex-typesafe-class";
+import auth from "~/store/auth";
+import error from "~/store/error";
 
 const interfaces = os.networkInterfaces();
 const addresses = ["localhost"];
@@ -22,6 +25,8 @@ function useProxy(config: AxiosRequestConfig) {
 
 const plugin: Middleware = (context, inject) => {
   const { $axios, store } = context;
+  const authStore = useStore(auth, store);
+  const errorStore = useStore(error, store);
 
   $axios.setHeader("Content-Type", "application/json", ["post"]);
 
@@ -38,7 +43,8 @@ const plugin: Middleware = (context, inject) => {
     //config.retry = false;
 
     //Authorization:
-    const authorizationHeader = store.getters["auth/authorizationHeader"];
+
+    const authorizationHeader = authStore.authorizationHeader;
     if (authorizationHeader) {
       config.headers.common["Authorization"] = authorizationHeader;
     } else {
@@ -46,12 +52,12 @@ const plugin: Middleware = (context, inject) => {
     }
   });
 
-  $axios.onError(err => {
+  $axios.onError(async err => {
     /* if (err.config && typeof err.config.error == "object") {
       throw err.config.error;
     }*/
     err.message = `Error while requesting '${err.config.url}': ` + err.message;
-    store.dispatch("error/handle", err);
+    await errorStore.handle(err);
   });
 };
 
