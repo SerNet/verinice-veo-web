@@ -22,6 +22,8 @@ build:
   services:
     - docker:stable-dind
   script:
+    - cat /build/build.sh
+    - exit 1
     - /build/build.sh
   only:
     - branches
