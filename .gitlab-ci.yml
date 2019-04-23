@@ -18,7 +18,7 @@ variables:
 
 build:
   stage: build
-  image: "registry.git.cpmsys.de/docker/auto-build-image/master:latest"
+  image: "registry.git.cpmsys.de/docker/auto-build-image/master:stable"
   services:
     - docker:stable-dind
   script:
