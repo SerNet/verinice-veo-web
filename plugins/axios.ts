@@ -53,11 +53,12 @@ const plugin: Middleware = (context, inject) => {
   });
 
   $axios.onError(async err => {
-    /* if (err.config && typeof err.config.error == "object") {
-      throw err.config.error;
-    }*/
+    if (err.config && "error" in err.config && typeof err.config["error"] == "object") {
+      throw err.config["error"];
+    }
     err.message = `Error while requesting '${err.config.url}': ` + err.message;
     await errorStore.handle(err);
+    throw err;
   });
 };
 

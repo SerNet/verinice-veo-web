@@ -13,8 +13,8 @@ import HTTPError from "~/exceptions/HTTPError";
 import { ID_FIELD } from "~/config/api";
 
 class ActiveElementsStore extends BaseStore {
-  data?: ApiItem;
-  schemaData?: JSONSchema6;
+  data?: ApiItem = undefined;
+  schemaData?: JSONSchema6 = undefined;
   linksData: ApiLink[] = [];
   historyData: ApiHistory[] = [];
 
@@ -104,6 +104,7 @@ class ActiveElementsStore extends BaseStore {
     }
     this.setItem = undefined;
     const item = await this.$parent.fetchItem({ id, refresh });
+
     const response: ApiItem = item.data;
     this.setItem = response;
 

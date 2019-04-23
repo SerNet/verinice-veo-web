@@ -5,7 +5,7 @@
     </v-flex>
     <v-flex class="ma-3">
       <v-list class="ma-0 pa-0" style="border: 1px solid #CCC;">
-        <v-list-tile class="grey--text" v-show="element.parent" avatar :to="'/browser/'+element.parent">
+        <v-list-tile class="grey--text" v-if="element && element.parent" avatar :to="'/browser/'+element.parent">
           <v-list-tile-avatar>
             <v-icon>arrow_upward</v-icon>
           </v-list-tile-avatar>

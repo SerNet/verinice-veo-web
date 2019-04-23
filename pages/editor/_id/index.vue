@@ -4,7 +4,7 @@
       <element-header :value="form" :visible="headerOpen"></element-header>
     </v-flex>
     <v-flex>
-      <veo-editor slot="content" :model="formModelData" @input="onFormChange" :schema="formSchema"></veo-editor>
+      <veo-editor slot="content" :model="formModelData" :diff="diff" @input="onFormChange" :schema="formSchema"></veo-editor>
     </v-flex>
     <v-spacer></v-spacer>
     <footer-toolbar>
@@ -72,7 +72,8 @@ export default Vue.extend({
     return {
       showDeleteDialog: false,
       headerOpen: true,
-      form: {} as ApiItem
+      form: {} as ApiItem,
+      diff: undefined
     };
   },
   computed: {
@@ -94,6 +95,7 @@ export default Vue.extend({
     },
     formModelData(): ApiItem | undefined {
       const fm = this.formModel;
+
       return fm && fm.data;
     },
     formModelTitle(): string | undefined {
@@ -141,6 +143,7 @@ export default Vue.extend({
         //await formStore.dispatch("create", { type, parent });
       } else {
         await $activeElement.fetchItem({ id: params.id });
+
         try {
           if ($activeElement.schemaName) {
             await $activeElement.fetchSchema({
