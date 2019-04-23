@@ -16,7 +16,7 @@ variables:
 
   CI_PROJECT_PATH_SLUG: 'veo-web'
 
-build:
+.build:
   stage: build
   image: "registry.git.cpmsys.de/docker/auto-build-image/master:fc4d80ad584cada59aca117f9a9f5e2cfd5a6cfb"
   services:
