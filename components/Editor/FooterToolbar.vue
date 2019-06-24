@@ -2,10 +2,12 @@
   <v-footer class="main-footer" v-scroll="onScroll" v-height="onScroll" color="transparent" inset app fixed height="auto">
     <v-spacer v-if="isFab"></v-spacer>
     <v-fade-transition origin="center center" hide-on-leave>
-      <v-speed-dial right :direction="$vuetify.breakpoint.xs?'top':'left'" key="sd" v-if="isFab">
-        <v-btn color="primary" slot="activator" fab class="ma-3">
-          <v-icon>more_vert</v-icon>
-        </v-btn>
+      <v-speed-dial v-model="fab" right :direction="$vuetify.breakpoint.xs?'top':'left'" key="sd" v-if="isFab">
+        <template v-slot:activator>
+          <v-btn color="primary" fab class="ma-3">
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </template>
         <slot></slot>
       </v-speed-dial>
       <v-layout class="ma-2" align-center row key="group" v-else>
@@ -22,6 +24,7 @@ import Vue from "vue";
 export default Vue.extend({
   data() {
     return {
+      fab: false,
       isFab: true
     };
   },
