@@ -14,18 +14,7 @@ variables:
   CODE_QUALITY_DISABLED: 'true'
   PERFORMANCE_DISABLED: 'true'
 
-  CI_PROJECT_PATH_SLUG: 'veo-web'
-
-.build:
-  stage: build
-  image: "registry.git.cpmsys.de/docker/auto-build-image/master:fc4d80ad584cada59aca117f9a9f5e2cfd5a6cfb"
-  services:
-    - docker:stable-dind
-  script:
-    - /build/build.sh
-  only:
-    - branches
-    - tags
+  PRODUCTION_ADDITIONAL_HOSTS: 'veo-web.cpmsys.io'
 
 push-sernet:
   stage: production
