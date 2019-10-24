@@ -15,6 +15,7 @@ variables:
   PERFORMANCE_DISABLED: 'true'
 
   PRODUCTION_ADDITIONAL_HOSTS: 'veo-web.cpmsys.io'
+  AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host'
 
 push-sernet:
   stage: production
