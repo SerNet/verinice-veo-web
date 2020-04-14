@@ -42,7 +42,7 @@ export class Auth {
 export default (async function({ $axios, isDev, route }, inject) {
   if (route.name !== 'sso') {
     const $auth = new Auth({
-      url: 'http://34.96.120.192/auth', realm: 'veo-staging', clientId: 'veo-web-app'
+      url: 'https://veo-keycloak.cpmsys.io/auth', realm: 'veo-staging', clientId: 'veo-web-app'
     })
     await $auth.init()
     inject('auth', $auth)
