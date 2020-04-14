@@ -1,7 +1,7 @@
 <template>
   <v-col cols="12" style="margin: auto;">
-    <v-card class="pa-4 text-center">
-      I am the settings page
+    <v-card elevation="0" class="pa-4 text-center">
+      Navigation
     </v-card>
   </v-col>
 </template>
@@ -12,13 +12,14 @@ import Vue from 'vue'
 export default Vue.extend({
   components: {},
   props: {},
+  fetch({ app }) {},
   data() {
     return {}
   },
   methods: {},
   head() {
     return {
-      title: 'Einstellungen'
+      title: 'Willkommen'
     }
   }
 })

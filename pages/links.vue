@@ -1,7 +1,7 @@
 <template>
   <v-col cols="12" style="margin: auto;">
-    <v-card class="pa-4 text-center">
-      I am the settings page
+    <v-card elevation="0" class="pa-4 text-center">
+      Links
     </v-card>
   </v-col>
 </template>
@@ -18,7 +18,7 @@ export default Vue.extend({
   methods: {},
   head() {
     return {
-      title: 'Einstellungen'
+      title: 'Links'
     }
   }
 })

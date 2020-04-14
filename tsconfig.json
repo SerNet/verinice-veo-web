@@ -1,34 +1,23 @@
 {
-  "exclude": [".nuxt", ".vscode", "dist", "dist.js", "node_modules", "store_bk"],
-
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es2018",
     "module": "esnext",
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
+    "declaration": false,
     "moduleResolution": "node",
     "lib": ["esnext", "esnext.asynciterable", "dom"],
     "esModuleInterop": true,
-    "experimentalDecorators": true,
     "allowJs": true,
+    "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "noImplicitAny": true,
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"],
       "@/*": ["./*"]
     },
-    "types": [
-      "vuetify",
-      "vuetify/types/index",
-      "@types/node",
-      "@nuxt/vue-app",
-      "types/nuxt",
-      "@nuxtjs/axios/types",
-      "axios-retry/index",
-      "cookie-universal-nuxt/types/index"
-    ]
-  }
+    "typeRoots": [],
+    "types": ["mocha", "@types/node", "@types/lodash", "@types/jest", "@nuxtjs/axios", "@nuxt/types", "./types/context", "vuetify/types"]
+  },
+  "exclude": ["coverage",".nuxt", ".gitlab", "dist", "test/e2e"]
 }

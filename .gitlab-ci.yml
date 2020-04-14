@@ -2,63 +2,12 @@ include:
   - template: Auto-DevOps.gitlab-ci.yml
 
 variables:
-  KUBE_INGRESS_BASE_DOMAIN: cpmsys.io
-  DEVOPS_APP_NAME: veo-web
-
-  POSTGRES_USER: verinice
-  POSTGRES_PASSWORD: verinice
+  CODE_QUALITY_DISABLED: "true"
   POSTGRES_ENABLED: "false"
-  POSTGRES_DB: v2020
+  PERFORMANCE_DISABLED: "true"
+  TEST_DISABLED: "true"
+  AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: "--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA"
 
-  TEST_DISABLED: 'true'
-  CODE_QUALITY_DISABLED: 'true'
-  PERFORMANCE_DISABLED: 'true'
-
-  PRODUCTION_ADDITIONAL_HOSTS: 'veo-web.cpmsys.io'
-  AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host'
-
-push-sernet:
-  stage: production
-  image: registry.git.cpmsys.de/markus/sernet-env/master:latest
-  script:
-    - echo 172.17.0.1 git.verinice.org >> /etc/hosts
-    - apk add --update git openssh
-    - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
-    - chmod -R 0400 ~/.ssh/*
-    - git config --global user.email "$GITLAB_USER_EMAIL"
-    - git config --global user.name "$GITLAB_USER_NAME"
-    - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
-    - cp -Rf ./* /usr/src/verinice-export
-    - cd /usr/src/verinice-export
-    - git add -A
-    - git commit -am "${CI_COMMIT_TITLE}"
-    - git push origin -f master
-  except:
-    - tags
-  when: manual
-  tags:
-    - nas
-
-release-sernet:
-  stage: production
-  image: registry.git.cpmsys.de/markus/sernet-env/master:latest
-  script:
-    - echo 172.17.0.1 git.verinice.org >> /etc/hosts
-    - apk add --update git openssh
-    - mkdir -p ~/.ssh && cp /usr/src/app/ssh/* ~/.ssh/
-    - chmod -R 0400 ~/.ssh/*
-    - git config --global user.email "$GITLAB_USER_EMAIL"
-    - git config --global user.name "$GITLAB_USER_NAME"
-    - git clone ssh://git.verinice.org/isms/verinice-veo-web.git /usr/src/verinice-export
-    - cp -Rf ./* /usr/src/verinice-export
-    - cd /usr/src/verinice-export
-    - echo "${CI_COMMIT_REF_NAME}" > RELEASE.md
-    - git add -A
-    - git commit -am "Release ${CI_COMMIT_REF_NAME}"
-    - git tag -d "${CI_COMMIT_REF_NAME}" || true
-    - git tag -a "${CI_COMMIT_REF_NAME}" -m "Release ${CI_COMMIT_REF_NAME}"
-    - git push origin -f master --tags
-  only:
-    - tags
-  tags:
-    - nas
+review:
+  environment:
+    auto_stop_in: 4 week

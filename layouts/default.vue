@@ -1,95 +1,71 @@
 <template>
-  <v-app fill-height>
-    <main-toolbar app v-if="!standalone" @click-side-icon="mainDrawer = !mainDrawer" :clipped="true" :clipped-left="false"></main-toolbar>
-    <side-pane v-if="!standalone" v-model="mainDrawer" :items="left.items" :width.sync="left.width" :expanded.sync="left.expanded" :route="leftKey"></side-pane>
-
-    <v-content fill-height>
-      <v-container fluid class="pa-0" fill-height>
-        <nuxt></nuxt>
-      </v-container>
+  <v-app id="inspire">
+    <v-app-bar class="app-bar" app clipped-left clipped-right flat border color="primary" dark>
+      <AppBarLogo />
+      <v-spacer />
+      <AppAccountBtn
+        v-if="$auth.profile"
+        :username="$auth.profile.username"
+        :prename="$auth.profile.firstName"
+        :lastname="$auth.profile.lastName"
+        :email="$auth.profile.email"
+        @logout="$auth.logout()"
+      />
+    </v-app-bar>
+    <AppSideBar v-if="!standalone" :items="itemsLeft" param="left" />
+    <AppSideBar v-if="!standalone" :items="$navigation.data.right" param="right" right />
+    <v-content>
+      <nuxt />
     </v-content>
-    <side-pane v-if="!standalone" :items="right.items" :width.sync="right.width" :expanded.sync="right.expanded" :route="rightKey" right touchless></side-pane>
   </v-app>
 </template>
-
 <script lang="ts">
-import Vue from "vue";
-import MainToolbar from "~/components/Layout/MainToolbar.vue";
-import MenuSidenav from "~/components/Layout/MenuSidenav.vue";
-import SidePane from "~/components/Layout/SidePane.vue";
+import Vue from 'vue'
+
+import AppBarLogo from '~/components/layout/AppBarLogo.vue'
+import AppSideBar from '~/components/layout/AppSideBar.vue'
+import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
+import { IItem } from '~/plugins/navigation'
 
 export default Vue.extend({
   components: {
-    MainToolbar,
-    MenuSidenav,
-    SidePane
-  },
-  computed: {
-    standalone(): boolean {
-      return !!this.$route.query["standalone"];
-    },
-    rightOff(): boolean {
-      return this.$route.query["r"] == "off";
-    },
-    leftKey(): string {
-      return "/" + (this.$route.query["l"] || "tree");
-    },
-    rightKey(): string {
-      return "/" + (this.$route.query["r"] || "history");
-    }
+    AppBarLogo,
+    AppSideBar,
+    AppAccountBtn
   },
   data() {
     return {
-      mainDrawer: true,
-
-      left: {
-        expanded: true,
-        context: { side: "left" },
-        width: 364,
-        items: [
-          {
-            to: { l: "tree", $: "index", r: "history" },
-            icon: "folder",
-            title: "Einträge"
-          },
-          {
-            to: { l: "setup", $: "settings", r: "off" },
-            icon: "settings",
-            active: true,
-            title: "Einstellungen"
-          }
-        ]
-      },
-
-      right: {
-        expanded: true,
-        width: 364,
-        items: [
-          { to: { r: "history" }, icon: "history", title: "Änderungen" },
-          { to: { r: "links" }, icon: "link", title: "Links" },
-          { to: { r: "preview" }, icon: "collections", title: "Vorschau" }
-        ]
-      }
-    };
+      drawer: undefined as boolean | undefined,
+      itemsLeft: [
+        {
+          name: 'browser',
+          icon: 'mdi-folder',
+          to: '/'
+        },
+        {
+          name: 'settings',
+          icon: 'mdi-cog',
+          to: '/settings'
+        }
+      ] as IItem[],
+      itemsRight: [] as IItem[]
+    }
   },
-  methods: {
-    log(...args: any[]) {
-      console.log(...args);
+  computed: {
+    standalone() {
+      if (this.$vuetify.breakpoint.xs) {
+        return true
+      }
+      return (
+        'standalone' in this.$route.query &&
+        !/false|0|off/i.test(String(this.$route.query.standalone))
+      )
     }
   }
-});
+})
 </script>
-
-<style lang="stylus" scoped>
-h1, h2 {
-  font-weight: normal;
-}
-
-a {
-  color: #42b983;
-}
-
->>> .v-navigation-drawer {
-  transition: none;
+<style lang="scss" scoped>
+::v-deep .v-content__wrap {
+  border-top: 1px solid #e0e0e0;
 }
 </style>
