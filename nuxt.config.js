@@ -39,12 +39,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [
-    '~/plugins/logger',
-    '~/plugins/auth',
-    '~/plugins/api',
-    '~/plugins/navigation'
-  ],
+  plugins: ['~/plugins/logger', '~/plugins/auth', '~/plugins/api', '~/plugins/navigation', '~/plugins/veoform'],
 
   /*
    ** Icon options
