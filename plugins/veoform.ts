@@ -1,4 +1,4 @@
-import Vue from 'vue'
-import VeoForm from '@cpmsys/veo-forms'
+// import Vue from 'vue'
+// import VeoForm from '@cpmsys/veo-forms'
 
-Vue.use(VeoForm)
+// Vue.use(VeoForm)

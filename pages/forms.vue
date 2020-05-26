@@ -6,12 +6,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-// import BLA, { VeoForm } from '@cpmsys/veo-forms'
+import { VeoForm } from '@cpmsys/veo-forms'
 
 export default Vue.extend({
   name: 'Forms',
   components: {
-    // VeoForm: Vue.extend(VeoForm)
+    VeoForm
   },
   data() {
     return {
