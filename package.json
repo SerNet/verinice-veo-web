@@ -37,7 +37,6 @@
     "roboto-fontface": "^0.10.0",
     "sass-loader": "^8.0.2",
     "vee-validate": "^3.3.2",
-    "veo-forms": "git+https://git.cpmsys.de/sernet/verinice/veo-forms.git",
     "vue-json-pointer": "^0.6.2"
   },
   "devDependencies": {
