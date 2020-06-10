@@ -1,17 +1,17 @@
 <template>
   <div>
-    <VeoForm v-model="form.value" :schema="form.schema" :ui="form.ui" />
+    <!-- <VeoForm v-model="form.value" :schema="form.schema" :ui="form.ui" /> -->
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { VeoForm } from '@cpmsys/veo-forms'
+// import { VeoForm } from '@cpmsys/veo-forms'
 
 export default Vue.extend({
   name: 'Forms',
   components: {
-    VeoForm
+    // VeoForm
   },
   data() {
     return {
