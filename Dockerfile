@@ -1,6 +1,7 @@
 # FROM tarampampam/node:13-alpine
 FROM node:12-alpine
 RUN apk --no-cache add git
+RUN git --version
 # Create app directory
 WORKDIR /usr/src/app
 # Install app dependencies
