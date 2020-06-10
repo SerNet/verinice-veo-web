@@ -6,6 +6,7 @@ COPY package.json .
 # For npm@5 or later, copy package-lock.json as well
 COPY package-lock.json .
 RUN npm install
+RUN npm install git+https://veo-forms-package:AXMyChASHaLt16sPVmnF@git.cpmsys.de/sernet/verinice/veo-forms#41-veo-forms-als-plugin
 # Bundle app source
 COPY . .
 
