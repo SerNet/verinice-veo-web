@@ -1,4 +1,5 @@
-FROM tarampampam/node:13-alpine
+# FROM tarampampam/node:13-alpine
+FROM node:12-alpine
 # Create app directory
 WORKDIR /usr/src/app
 # Install app dependencies
