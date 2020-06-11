@@ -12,6 +12,7 @@ export class Auth {
       try {
         const success = await this.keycloak.updateToken(3600)
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.log('logged out')
         await this.init()
       }

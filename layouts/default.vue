@@ -64,6 +64,7 @@ export default Vue.extend({
   }
 })
 </script>
+
 <style lang="scss" scoped>
 ::v-deep .v-content__wrap {
   border-top: 1px solid #e0e0e0;

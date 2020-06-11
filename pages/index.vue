@@ -1,6 +1,6 @@
 <template>
   <v-col style="margin: auto;">
-    <p>Welcome!</p>
+    <p>{{ $t('welcome') }}!</p>
     <p v-if="state">{{ state }}</p>
     <p v-if="schemas">
       <ul>
@@ -17,8 +17,8 @@ export default Vue.extend({
   components: {},
   props: {},
   async fetch() {
-    this.$navigation.defaults({ left: 'tree', right: 'history' })
-    this.$navigation.rightItems({
+    await this.$navigation.defaults({ left: 'tree', right: 'history' })
+    await this.$navigation.rightItems({
       name: 'history',
       icon: 'mdi-history',
       to: '/history'

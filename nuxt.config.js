@@ -1,6 +1,11 @@
 require('dotenv').config()
+
 module.exports = {
+  /**
+   *
+   */
   mode: 'spa',
+
   /**
    *
    */
@@ -39,7 +44,13 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/logger', '~/plugins/auth', '~/plugins/api', '~/plugins/navigation', '~/plugins/veoform'],
+  plugins: [
+    '~/plugins/logger',
+    '~/plugins/auth',
+    '~/plugins/api',
+    '~/plugins/navigation',
+    '~/plugins/veoform'
+  ],
 
   /*
    ** Icon options
@@ -82,9 +93,41 @@ module.exports = {
     '@nuxtjs/proxy',
     '@nuxtjs/pwa',
     ['cookie-universal-nuxt', { parseJSON: false }],
-    'nuxt-polyfill'
+    'nuxt-polyfill',
+    'nuxt-i18n'
   ],
 
+  /**
+   * nuxt-i18n config
+   */
+  i18n: {
+    strategy: 'no_prefix',
+    locales: [
+      { code: 'en', file: 'en.ts', name: 'English' },
+      { code: 'de', file: 'de.ts', name: 'Deutsch' }
+    ],
+    detectBrowserLanguage: {
+      // If enabled, a cookie is set once a user has been redirected to his
+      // preferred language to prevent subsequent redirections
+      // Set to false to redirect every time
+      useCookie: true,
+      // Set to override the default domain of the cookie. Defaults to host of the site.
+      cookieDomain: null,
+      // Cookie name
+      cookieKey: 'i18n_redirected',
+      // Set to always redirect to value stored in the cookie, not just once
+      alwaysRedirect: false,
+      // If no locale for the browsers locale is a match, use this one as a fallback
+      fallbackLocale: 'en'
+    },
+    defaultLocale: 'en',
+    lazy: true,
+    langDir: 'locales/'
+  },
+
+  /**
+   *
+   */
   polyfill: {
     features: [
       {
@@ -97,22 +140,32 @@ module.exports = {
   /*
    ** Nuxt.js build modules
    */
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
+  buildModules: [
+    '@nuxt/typescript-build',
+    '@nuxtjs/vuetify'
+  ],
 
+  /**
+   *
+   */
   vuetify: {
     defaultAssets: false,
     treeShake: true, // needed for IE11 -> transpile: vuetify/lib
     optionsPath: '~/plugins/vuetify.options.ts'
   },
 
-  css: ['~/assets/vuetify.scss'],
+  /**
+   *
+   */
+  css: [
+    '~/assets/vuetify.scss'
+  ],
 
   /*
    ** Axios module configuration
    */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    // prefix: '/cgi-bin/',
     credentials: true,
     proxyHeaders: true,
     retry: false,
@@ -143,6 +196,9 @@ module.exports = {
     transpile: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-flag-icon/]
   },
 
+  /**
+   *
+   */
   proxy: {
     '/api': { target: 'https://veo-api.cfapps.io/', pathRewrite: { '^/api': '' } }
   }
