@@ -1,6 +1,9 @@
 <template>
   <div>
     <VeoForm v-model="form.value" :schema="form.schema" :ui="form.ui" />
+    <div class="mx-auto" style="width:800px">
+      <pre>{{ JSON.stringify(form.value, null, 4) }}</pre>
+    </div>
   </div>
 </template>
 
