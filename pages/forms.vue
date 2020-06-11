@@ -2,7 +2,16 @@
   <div>
     <VeoForm v-model="form.value" :schema="form.schema" :ui="form.ui" />
     <div class="mx-auto" style="width:800px">
-      <pre>{{ JSON.stringify(form.value, null, 4) }}</pre>
+      <v-expansion-panels v-model="panel">
+        <v-expansion-panel>
+          <v-expansion-panel-header>Generated Data</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <code>
+              <pre>{{ JSON.stringify(form.value, null, 4) }}</pre>
+            </code>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </div>
   </div>
 </template>
@@ -18,6 +27,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      panel: true,
       schema: {
         type: 'string'
       },
@@ -30,8 +40,7 @@ export default Vue.extend({
           required: ['name', 'description', 'orderMulti'],
           properties: {
             name: {
-              type: 'string',
-              minLength: 1
+              type: 'string'
             },
             description: {
               type: 'string'
@@ -49,7 +58,7 @@ export default Vue.extend({
               type: 'Control',
               scope: '#/properties/name',
               options: {
-                label: 'Input Text'
+                label: 'Name'
               }
             },
             {
@@ -76,4 +85,9 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+code {
+  padding: 20px;
+  width: 100%;
+}
+</style>
