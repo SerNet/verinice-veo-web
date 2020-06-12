@@ -85,7 +85,7 @@ export default Vue.extend({
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 code {
   padding: 20px;
   width: 100%;

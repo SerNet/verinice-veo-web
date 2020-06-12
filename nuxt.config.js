@@ -52,36 +52,11 @@ module.exports = {
     '~/plugins/veoform'
   ],
 
-  /*
-   ** Icon options
-   ** https://pwa.nuxtjs.org/modules/icon
-   */
-  icon: {
-    sizes: [16, 120, 144, 152, 192, 384, 512]
-  },
-
-  /**
-   *
-   */
-  meta: {
-    mobileAppIOS: true,
-    nativeUI: true,
-    favicon: true
-  },
-
   /**
    *
    */
   generate: {
     fallback: '404.html' // if you want to use '404.html'
-  },
-
-  /**
-   *
-   */
-  workbox: {
-    autoRegister: true,
-    dev: false
   },
 
   /*
@@ -98,6 +73,28 @@ module.exports = {
   ],
 
   /**
+   * PWA configuration
+   */
+  pwa: {
+    workbox: {
+      autoRegister: true,
+      dev: false
+    },
+    meta: {
+      mobileAppIOS: true,
+      nativeUI: true,
+      favicon: true
+    },
+    icon: {
+      sizes: [16, 120, 144, 152, 192, 384, 512]
+    },
+    manifest: {
+      name: 'verinice veo',
+      lang: 'en'
+    }
+  },
+
+  /**
    * nuxt-i18n config
    */
   i18n: {
@@ -107,17 +104,10 @@ module.exports = {
       { code: 'de', file: 'de.ts', name: 'Deutsch' }
     ],
     detectBrowserLanguage: {
-      // If enabled, a cookie is set once a user has been redirected to his
-      // preferred language to prevent subsequent redirections
-      // Set to false to redirect every time
       useCookie: true,
-      // Set to override the default domain of the cookie. Defaults to host of the site.
       cookieDomain: null,
-      // Cookie name
       cookieKey: 'i18n_redirected',
-      // Set to always redirect to value stored in the cookie, not just once
       alwaysRedirect: false,
-      // If no locale for the browsers locale is a match, use this one as a fallback
       fallbackLocale: 'en'
     },
     defaultLocale: 'en',
@@ -191,7 +181,6 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    extractCSS: true,
     publicPath: process.env.NUXT_PUBLIC_PATH || '/_nuxt/',
     transpile: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-flag-icon/]
   },
