@@ -1,55 +1,152 @@
+import defaultsDeep from 'lodash/defaultsDeep'
 import { Plugin, Context } from '@nuxt/types'
-import mapValues from 'lodash/mapValues'
-import axios, { AxiosRequestConfig } from 'axios'
-import { hashObj } from '~/lib/utils'
 
-export class API extends Client({ }) {
-  protected $url = process.server ? process.env._AXIOS_BASE_URL_ + 'api' : '/api'
+import { VeoError, VeoErrorTypes } from '~/types/VeoError'
 
-  constructor(protected $context: Context) {
-    super()
-  }
+import asset from '~/plugins/api/asset'
+import control from '~/plugins/api/control'
+import group from '~/plugins/api/group'
+import person from '~/plugins/api/person'
+import process from '~/plugins/api/process'
+import schema from '~/plugins/api/schema'
+import translation from '~/plugins/api/translation'
+import unit from '~/plugins/api/unit'
 
-  public $log = this.$context.app.$logger.withTag('api')
-
-  public request<T>(options: AxiosRequestConfig) {
-    return axios.request<T>(options)
-  }
+export function createAPI(context: Context) {
+  return Client.create(context, { asset, control, group, person, process, schema, translation, unit })
 }
 
-type ReturnFunction = (...args: any[]) => any
+export interface IAPIClient {
+  (api: Client): Object
+}
 
-function Client<Methods extends Record<string, ReturnFunction>>(methods: Methods) {
-  class Base {
-    public $cache = new Map<string, Promise<any>>()
-    public withCache = mapValues(methods, (value) => {
-      return (...args: Parameters<typeof value>): ReturnType<typeof value> => {
-        const key = hashObj(args)
-        const cached = this.$cache.get(key)
-        if (cached) {
-          return cached as any
-        } else {
-          const promise = value.apply(this, args)
-          this.$cache.set(key, promise)
-          promise.catch(() => this.$cache.delete(key))
-          return promise
-        }
+export class Client {
+  public build: string
+  public version: string
+  public baseURL: string
+  // public sentry: any
+
+  static create<T extends Record<keyof T, IAPIClient>>(
+    context: Context,
+    namespaces: T
+  ): Client & { [K in keyof T]: ReturnType<T[K]> } {
+    const instance: any = new this(context)
+    for (const key in namespaces) {
+      instance[key] = namespaces[key](instance)
+    }
+    return instance
+  }
+
+  constructor(protected context: Context) {
+    this.build = context.env.CI_COMMIT_SHA
+    this.version = context.env.CI_COMMIT_REF_NAME
+    this.baseURL = '/api'
+    // this.sentry = context.app.$sentry
+  }
+
+  public getURL(url: string) {
+    const _url = String(url).replace(/^\/api/, this.baseURL)
+    if (_url.startsWith('/')) {
+      const loc = window.location
+      return `${loc.protocol}//${loc.host}${_url}`
+    }
+    return _url
+  }
+
+  /**
+   * Basic request function used by all api namespaces
+   */
+  public async req<T = any>(url: string, options: RequestOptions = {}): Promise<T> {
+    const $user = this.context.app.$auth
+
+    const defaults = {
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + $user.getToken(),
+        'x-client-build': this.build,
+        'x-client-version': this.version
+      } as Record<string, string>,
+      method: 'GET',
+      mode: 'cors'
+    }
+
+    if (options.json) {
+      options.body = JSON.stringify(options.json)
+      defaults.method = 'POST'
+      defaults.headers['Content-Type'] = 'application/json'
+    }
+
+    /*
+    if (options.retry === undefined) {
+      options.retry = true
+    }
+    */
+
+    const combinedOptions = defaultsDeep(options, defaults)
+    combinedOptions.headers.Authorization = defaults.headers.Authorization
+
+    let queryString = ''
+    if (options.params !== undefined) {
+      for (const key in options.params) {
+        queryString += '&' + key + '=' + options.params[key]
       }
-    }) as { [K in keyof Methods]: (...args: Parameters<Methods[K]>) => ReturnType<Methods[K]> }
+    }
+    const combinedUrl = queryString === '' ? url : url + '?' + queryString.substr(1)
+
+    try {
+      const reqURL = combinedUrl.replace(/^\/api/, this.baseURL)
+      const res = await fetch(reqURL, combinedOptions)
+      if (Number(res.status) === 401) {
+        /* if (options.retry) {
+          if (await $user.refreshSession()) {
+            return this.req(url, { ...options, retry: false })
+          }
+        } */
+        // await $user.logout()
+        return Promise.reject(new Error('invalid jwt'))
+      } else {
+        return await this.parseResponse(reqURL, res)
+      }
+    } catch (e) {
+      // this.sentry.setTag('error_level', 'warning')
+      // this.sentry.captureException(e)
+      return Promise.reject(e)
+    }
   }
 
-  Object.assign(Base.prototype, methods)
-  return Base as { new (): (Methods & Base) }
+  async parseResponse<T>(url: string, res: Response): Promise<T> {
+    const raw = await res.text()
+
+    let parsed
+    try {
+      parsed = JSON.parse(raw)
+    } catch (e) {
+      throw new VeoError('Non JSON response')
+    }
+    if (parsed) {
+      if (res.status >= 200 && res.status <= 300) {
+        return parsed
+      } else if (parsed.code) {
+        throw new VeoError(parsed.code, VeoErrorTypes.VEO_ERROR_COMMON)
+      } else {
+        const e = new Error(`Error ${res.status || '?'} while accessing ${url}`)
+        e.name = 'API_EXCEPTION'
+        throw e
+      }
+    } else {
+      throw new VeoError('Invalid response')
+    }
+  }
 }
 
-export class AppError extends Error {
-  constructor(public action: string, public description: string, public code?: string, public request?: any, public response?: any) {
-    super(description)
-    this.name = `${action} Error ${code}`
-  }
+interface RequestOptions extends RequestInit {
+  params?: Record<string, string | number>
+  json?: any
+  retry?: boolean
 }
 
 export default (function(context, inject) {
-  const api = new API(context)
-  inject('api', api)
+  inject('api', createAPI(context))
 } as Plugin)
+
+export type Injection = ReturnType<typeof createAPI>

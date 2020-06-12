@@ -73,7 +73,7 @@ module.exports = {
   ],
 
   /**
-   * PWA configuration
+   * module: nuxt-pwa configuration
    */
   pwa: {
     workbox: {
@@ -136,7 +136,7 @@ module.exports = {
   ],
 
   /**
-   *
+   * Vuetify configuration
    */
   vuetify: {
     defaultAssets: false,
@@ -186,7 +186,7 @@ module.exports = {
   },
 
   /**
-   *
+   * Proxy configuration
    */
   proxy: {
     '/api': { target: 'https://veo-api.cfapps.io/', pathRewrite: { '^/api': '' } }

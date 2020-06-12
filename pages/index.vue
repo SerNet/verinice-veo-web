@@ -38,7 +38,7 @@ export default Vue.extend({
   async created() {
     this.state = 'Loading available schemas...'
     try {
-      this.schemas = await this.$axios.$get('/api/schemas', { headers: { Authorization: `Bearer ${this.$auth.getToken()}` } }).then(data => data.knownSchemas)
+      this.schemas = await this.$api.schema.fetchSchemas().then(data => data.knownSchemas)
       this.state = ''
     } catch (e) {
       this.state = `Loading available schemas... FAILED: ${String(e)}`
