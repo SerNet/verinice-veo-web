@@ -49,7 +49,7 @@ module.exports = {
     '~/plugins/auth',
     '~/plugins/api',
     '~/plugins/navigation',
-    '~/plugins/veoform'
+    '~/plugins/veo-forms'
   ],
 
   /*
