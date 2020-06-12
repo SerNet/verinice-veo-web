@@ -18,13 +18,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { VeoForm } from '@cpmsys/veo-forms'
 
 export default Vue.extend({
   name: 'Forms',
-  components: {
-    VeoForm
-  },
   data() {
     return {
       panel: true,
