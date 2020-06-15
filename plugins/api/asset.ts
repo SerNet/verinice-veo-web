@@ -7,31 +7,44 @@ export default function(api: Client) {
      * @param parent
      */
     fetchAll(parent?: string) {
-      return api.req('/api/assets')
+      return api.req('/api/assets', {
+        params: { parent }
+      })
     },
+
     /**
      * Creates an asset
-     * @param body
+     * @param asset
      */
-    create(asset: Object) {},
+    create(asset: Object) {
+      api.req('/api/assets', {
+        json: asset
+      })
+    },
+
     /**
       * Load an asset
       * @param id
       */
-    fetchByUuid(uuid: string) {
-      return api.req(`/api/assets/${uuid}`)
+    fetch(id: string) {
+      return api.req(`/api/assets/${id}`)
     },
+
     /**
      * Updates an asset
+     * @param id
+     * @param asset
      */
-    update(uuid: string) {
-      return api.req(`/api/assets/${uuid}`)
-    },
+    // update(id: string) {},
+
     /**
      * Deletes an asset
+     * @param id
      */
-    delete(uuid: string) {
-      return api.req(`/api/assets/${uuid}`)
+    delete(id: string) {
+      return api.req(`/api/assets/${id}`, {
+        method: 'DELETE'
+      })
     }
   }
 }

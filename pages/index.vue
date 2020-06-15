@@ -38,14 +38,14 @@ export default Vue.extend({
   async created() {
     this.state = 'Loading available schemas...'
     try {
-      this.schemas = await this.$api.schema.fetchSchemas().then(data => data.knownSchemas)
+      this.schemas = await this.$api.schema.fetchAll().then(data => data.knownSchemas)
       this.state = ''
     } catch (e) {
       this.state = `Loading available schemas... FAILED: ${String(e)}`
     }
   },
   methods: {},
-  head() {
+  head():any {
     return {
       title: 'Willkommen'
     }

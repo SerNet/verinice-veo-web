@@ -2,11 +2,69 @@ import { Client } from '~/plugins/api'
 
 export default function(api: Client) {
   return {
-    fetchAll(parent?: string) {
-      return api.req('/api/groups')
+    /**
+     * Loads all Groups
+     * @param parent
+     * @param type
+     */
+    fetchAll(type: GroupType, parent?: string) {
+      return api.req('/api/groups', {
+        params: { parent, type }
+      })
     },
-    fetchByUuid(uuid: string) {
-      return api.req(`/api/groups/${uuid}`)
+
+    /**
+     * Creates a group
+     * @param group
+     */
+    create(group: Object) {
+      api.req('/api/groups', {
+        json: group
+      })
+    },
+
+    /**
+     * Loads one Group by id
+     * @param id
+     * @param type
+     */
+    fetch(id: string, type: GroupType) {
+      return api.req(`/api/groups/${id}`, {
+        params: { type }
+      })
+    },
+
+    /**
+     * Updates a group
+     * @param id
+     * @param group
+     * @param type
+     */
+    // update() {},
+
+    /**
+     * Deletes a group
+     * @param id
+     * @param type
+     */
+    delete(id: string, type: GroupType) {
+      return api.req(`/api/group/${id}`, {
+        method: 'DELETE',
+        params: { type }
+      })
+    },
+
+    /**
+     * Loads the members of a group
+     * @param id
+     * @param type
+     */
+    fetchGroupMembers(id: string, type: GroupType) {
+      return api.req(`/api/groups/${id}/members`, {
+        params: { type }
+      })
     }
   }
 }
+
+export type GroupType = 'Asset' | 'Control' | 'Document' | 'Person' | 'Process' | 'Risk'

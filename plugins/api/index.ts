@@ -76,11 +76,9 @@ export class Client {
       defaults.headers['Content-Type'] = 'application/json'
     }
 
-    /*
     if (options.retry === undefined) {
-      options.retry = true
+      // options.retry = true
     }
-    */
 
     const combinedOptions = defaultsDeep(options, defaults)
     combinedOptions.headers.Authorization = defaults.headers.Authorization
@@ -88,7 +86,10 @@ export class Client {
     let queryString = ''
     if (options.params !== undefined) {
       for (const key in options.params) {
-        queryString += '&' + key + '=' + options.params[key]
+        const value = options.params[key]
+        if (value !== undefined) {
+          queryString += '&' + key + '=' + encodeURIComponent(value)
+        }
       }
     }
     const combinedUrl = queryString === '' ? url : url + '?' + queryString.substr(1)
@@ -140,7 +141,7 @@ export class Client {
 }
 
 interface RequestOptions extends RequestInit {
-  params?: Record<string, string | number>
+  params?: Record<string, string | number | undefined>
   json?: any
   retry?: boolean
 }
@@ -150,3 +151,4 @@ export default (function(context, inject) {
 } as Plugin)
 
 export type Injection = ReturnType<typeof createAPI>
+export type API = Injection
