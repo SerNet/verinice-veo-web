@@ -35,14 +35,19 @@ export default function(api: Client) {
      * @param id
      * @param person
      */
-    // update() {},
+    update(id: string, person: Object) {
+      return api.req(`/api/persons/${id}`, {
+        method: 'PUT',
+        json: person
+      })
+    },
 
     /**
      * Deletes a person
      * @param id
      */
     delete(id: string) {
-      return api.req(`/api/assets/${id}`, {
+      return api.req(`/api/person/${id}`, {
         method: 'DELETE'
       })
     }

@@ -13,7 +13,7 @@ export default function(api: Client) {
     },
 
     /**
-     * Creates an asset
+     * Creates a control
      * @param control
      */
     create(control: Object) {
@@ -35,7 +35,12 @@ export default function(api: Client) {
      * @param id
      * @param control
      */
-    // update() {},
+    update(id: string, control: Object) {
+      return api.req(`/api/controls/${id}`, {
+        method: 'PUT',
+        json: control
+      })
+    },
 
     /**
      * Deletes a control

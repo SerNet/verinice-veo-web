@@ -37,10 +37,16 @@ export default function(api: Client) {
     /**
      * Updates a group
      * @param id
-     * @param group
      * @param type
+     * @param group
      */
-    // update() {},
+    update(id: string, type: GroupType, group: Object) {
+      return api.req(`/api/groups/${id}`, {
+        method: 'PUT',
+        params: { type },
+        json: group
+      })
+    },
 
     /**
      * Deletes a group

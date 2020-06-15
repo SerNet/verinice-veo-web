@@ -35,7 +35,12 @@ export default function(api: Client) {
      * @param id
      * @param unit
      */
-    // update() {},
+    update(id: string, unit: Object) {
+      return api.req(`/api/units/${id}`, {
+        method: 'PUT',
+        json: unit
+      })
+    },
 
     /**
      * Deletes a Unit

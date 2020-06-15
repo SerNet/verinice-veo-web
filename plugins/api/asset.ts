@@ -35,7 +35,12 @@ export default function(api: Client) {
      * @param id
      * @param asset
      */
-    // update(id: string) {},
+    update(id: string, asset: Object) {
+      return api.req(`/api/assets/${id}`, {
+        method: 'PUT',
+        json: asset
+      })
+    },
 
     /**
      * Deletes an asset

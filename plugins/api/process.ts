@@ -23,7 +23,7 @@ export default function(api: Client) {
     },
 
     /**
-     * Loads one Process by id
+     * Loads a Process by id
      * @param id
      */
     fetch(id: string) {
