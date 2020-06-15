@@ -54,7 +54,7 @@ export default function(api: Client) {
      * @param type
      */
     delete(id: string, type: GroupType) {
-      return api.req(`/api/group/${id}`, {
+      return api.req(`/api/groups/${id}`, {
         method: 'DELETE',
         params: { type }
       })

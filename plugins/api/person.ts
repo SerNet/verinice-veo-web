@@ -47,7 +47,7 @@ export default function(api: Client) {
      * @param id
      */
     delete(id: string) {
-      return api.req(`/api/person/${id}`, {
+      return api.req(`/api/persons/${id}`, {
         method: 'DELETE'
       })
     }
