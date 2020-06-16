@@ -29,10 +29,10 @@ export class Navigation {
       }
     }
     if (changed) {
-    this.context.app.router?.replace({
-      path: this.context.route.path,
-      query: { ...query, ...this.context.route.query }
-    })
+      this.context.app.router?.replace({
+        path: this.context.route.path,
+        query: { ...query, ...this.context.route.query }
+      })
     }
   }
 

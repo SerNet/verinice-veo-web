@@ -16,6 +16,7 @@
     </v-tabs>
   </v-navigation-drawer>
 </template>
+
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
 import { Component } from 'vue-router/types/router'
@@ -53,8 +54,8 @@ export default Vue.extend({
   }
 })
 </script>
-<style lang="scss" scoped>
 
+<style lang="scss" scoped>
 .v-application--is-rtl {
   ::v-deep .v-tabs-bar {
     transform: scaleX(-1);

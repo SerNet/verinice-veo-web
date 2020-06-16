@@ -12,13 +12,16 @@
         @logout="$auth.logout()"
       />
     </v-app-bar>
+
     <AppSideBar v-if="!standalone" :items="itemsLeft" param="left" />
     <AppSideBar v-if="!standalone" :items="$navigation.data.right" param="right" right />
+
     <v-content>
       <nuxt />
     </v-content>
   </v-app>
 </template>
+
 <script lang="ts">
 import Vue from 'vue'
 

@@ -116,7 +116,7 @@ module.exports = {
   },
 
   /**
-   *
+   * Polyfill configuration
    */
   polyfill: {
     features: [

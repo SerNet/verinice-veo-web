@@ -23,7 +23,7 @@ export default function(api: Client) {
     },
 
     /**
-     * Loads an Unit by ID
+     * Loads an Unit
      * @param id
      */
     fetch(id: string) {
