@@ -14,7 +14,7 @@ export default function(api: Client) {
      * @param type
      */
     fetch(type: string) {
-      return api.req(`/api/schemas/${type}`)
+      return api.req(`/api/schemas/${type}?domains=GDPR%2CISO_27001`)
     }
   }
 }
