@@ -53,10 +53,13 @@ export class Client {
     return _url
   }
 
+  public async req(url: string, options: RequestOptions & {method: 'DELETE'}): Promise<void>
+  public async req<T = any>(url: string, options?: RequestOptions): Promise<T>
+
   /**
    * Basic request function used by all api namespaces
    */
-  public async req<T = any>(url: string, options: RequestOptions = {}): Promise<T> {
+  public async req(url: string, options: RequestOptions = {}) {
     const $user = this.context.app.$auth
 
     const defaults = {
@@ -105,6 +108,8 @@ export class Client {
         } */
         // await $user.logout()
         return Promise.reject(new Error('invalid jwt'))
+      } else if (options.method === 'DELETE') {
+        return Promise.resolve()
       } else {
         return await this.parseResponse(reqURL, res)
       }
@@ -143,7 +148,8 @@ export class Client {
 interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | undefined>
   json?: any
-  retry?: boolean
+  retry?: boolean,
+  method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS'
 }
 
 export default (function(context, inject) {
