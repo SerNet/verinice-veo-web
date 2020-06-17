@@ -1,12 +1,8 @@
 <template>
   <v-col style="margin: auto;">
-    <p>{{ $t('welcome') }}!</p>
-    <p v-if="schemaState">{{ schemaState }}</p>
-    <p v-if="schemas">
-      <span>Schemas:</span>
-      <ul>
-        <li v-for="(schema, index) in schemas" :key="index">{{ schema }}</li>
-      </ul>
+    <p v-if="process">
+      <span>veo.data: {{ process.name }} ({{ process.id }})</span>
+      <pre>{{ process }}</pre>
     </p>
   </v-col>
 </template>
@@ -32,23 +28,21 @@ export default Vue.extend({
   },
   data() {
     return {
-      schemaState: '',
-      schemas: undefined as string[] | undefined
+      process: undefined as Object | undefined
     }
   },
   async created() {
-    this.schemaState = 'Loading available schemas...'
     try {
-      this.schemas = await this.$api.schema.fetchAll().then(data => data.knownSchemas)
-      this.schemaState = ''
+      this.process = await this.$api.process.fetch(this.$route.params.id)
     } catch (e) {
-      this.schemaState = `Loading available schemas... FAILED: ${String(e)}`
+      // eslint-disable-next-line no-console
+      console.error(e)
     }
   },
   methods: {},
   head():any {
     return {
-      title: 'Willkommen'
+      title: 'veo.data'
     }
   }
 })
