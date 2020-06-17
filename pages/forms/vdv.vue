@@ -2,6 +2,20 @@
   <div>
     <div class="d-flex flex-row">
       <div class="d-flex flex-column flex-grow-1 pa-6">
+        <div class="mx-auto" style="width:800px">
+          <NuxtLink to="/forms/vdv">/</NuxtLink>
+          <NuxtLink to="/forms/vdv/111">111</NuxtLink>
+          <NuxtLink to="/forms/vdv/222">222</NuxtLink>
+          <NuxtLink to="/forms/vdv/333">333</NuxtLink>
+          {{ $route.params.process }}
+
+          <NuxtChild :key="$route.params.process" />
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-row">
+      <div class="d-flex flex-column flex-grow-1 pa-6">
         <div class="text-center my-6">
           <v-btn dark class="ma-1" @click="activeLanguage = 'en'">English</v-btn>
           <v-btn dark class="ma-1" @click="activeLanguage = 'de'">Deutsch</v-btn>
@@ -34,6 +48,11 @@ import Vue from 'vue'
 
 export default Vue.extend({
   name: 'Forms',
+  async asyncData(context) {
+    const schema = await context.app.$api.schema.fetch('process')
+    const translation = await context.app.$api.translation.fetch(['de', 'en'])
+    return { schema, lang: translation.lang }
+  },
   data() {
     return {
       panel: true,
@@ -539,6 +558,9 @@ export default Vue.extend({
         value: {}
       }
     }
+  },
+  async created() {
+    await this.$api.schema.fetch('process')
   },
   methods: {},
   head() {
