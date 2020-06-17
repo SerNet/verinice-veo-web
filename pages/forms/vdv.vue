@@ -45,13 +45,24 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import JsonPointer from 'json-ptr'
+
+const preprocessSchemaForTranslation = (schema: any) => {
+  schema.$schema = 'http://json-schema.org/draft-07/schema#'
+  JsonPointer.list(schema, '#')
+    .filter((obj: any) => /\/(?<!type\/)enum\/\d+$/gi.test(obj.fragmentId))
+    .forEach((obj: any) => {
+      JsonPointer.set(schema, obj.fragmentId, `#lang/${obj.value}`)
+    })
+  return schema
+}
 
 export default Vue.extend({
   name: 'Forms',
   async asyncData(context) {
-    const schema = await context.app.$api.schema.fetch('process')
-    schema.$schema = 'http://json-schema.org/draft-07/schema#'
-    const translation = await context.app.$api.translation.fetch(['de', 'en'])
+    const schema = preprocessSchemaForTranslation(await context.app.$api.schema.fetch('process'))
+    // const translation = await context.app.$api.translation.fetch(['de', 'en'])
+    const translation = await require('./Translations.json')
     return { schema, lang: translation.lang }
   },
   data() {
@@ -103,7 +114,7 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessDsgvoCommons/properties/processStellungnahmedsbPbdaten',
+                  scope: '#/properties/customAspects/properties/ProcessDsgvoCommons/properties/attributes/properties/processStellungnahmedsbPbdaten',
                   options: {
                     label: '#lang/processStellungnahmedsbPbdaten'
                   }
@@ -125,14 +136,14 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaExternalProcessor',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/attributes/properties/processVaExternalProcessor',
                   options: {
                     label: '#lang/processVaExternalProcessor'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaArt',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/attributes/properties/processVaArt',
                   options: {
                     label: '#lang/processVaArt',
                     format: 'autocomplete'
@@ -140,7 +151,7 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaOrt',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/attributes/properties/processVaOrt',
                   options: {
                     label: '#lang/processVaOrt',
                     format: 'radio',
@@ -149,21 +160,21 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaStadium',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/attributes/properties/processVaStadium',
                   options: {
                     label: '#lang/processVaStadium'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaAnzMa',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/attributes/properties/processVaAnzMa',
                   options: {
                     label: '#lang/processVaAnzMa'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaOrtBem',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/attributes/properties/processVaOrtBem',
                   options: {
                     label: '#lang/processVaOrtBem',
                     format: 'multiline'
@@ -171,7 +182,7 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaInterviewedOn',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/attributes/properties/processVaInterviewedOn',
                   options: {
                     label: '#lang/processVaInterviewedOn'
                   }
@@ -193,7 +204,7 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerant',
+                  scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/attributes/properties/processVaGemenVerant',
                   options: {
                     label: '#lang/processVaGemenVerant'
                   }
@@ -214,21 +225,21 @@ export default Vue.extend({
                     // },
                     {
                       type: 'Control',
-                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantStrass',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/attributes/properties/processVaGemenVerantStrass',
                       options: {
                         label: '#lang/processVaGemenVerantStrass'
                       }
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantPlz',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/attributes/properties/processVaGemenVerantPlz',
                       options: {
                         label: '#lang/processVaGemenVerantPlz'
                       }
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantOrt',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/attributes/properties/processVaGemenVerantOrt',
                       options: {
                         label: '#lang/processVaGemenVerantOrt'
                       }
@@ -242,21 +253,21 @@ export default Vue.extend({
                     // },
                     {
                       type: 'Control',
-                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantAnsprech',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/attributes/properties/processVaGemenVerantAnsprech',
                       options: {
                         label: '#lang/processVaGemenVerantAnsprech'
                       }
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantTel',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/attributes/properties/processVaGemenVerantTel',
                       options: {
                         label: '#lang/processVaGemenVerantTel'
                       }
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantEmail',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/attributes/properties/processVaGemenVerantEmail',
                       options: {
                         label: '#lang/processVaGemenVerantEmail'
                       }
@@ -287,7 +298,7 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessZbGroup/properties/processZbZweck',
+                  scope: '#/properties/customAspects/properties/ProcessZbGroup/properties/attributes/properties/processZbZweck',
                   options: {
                     label: '#lang/processZbZweck',
                     format: 'multiline'
@@ -310,28 +321,28 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvRechtsgrundlage',
+                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/attributes/properties/processDvRechtsgrundlage',
                   options: {
                     label: '#lang/processDvRechtsgrundlage'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvVorrVorschr',
+                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/attributes/properties/processDvVorrVorschr',
                   options: {
                     label: '#lang/processDvVorrVorschr'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvRechtsgrundlageSonst',
+                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/attributes/properties/processDvRechtsgrundlageSonst',
                   options: {
                     label: '#lang/processDvRechtsgrundlageSonst'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvRechtsgrundlageErl',
+                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/attributes/properties/processDvRechtsgrundlageErl',
                   options: {
                     label: '#lang/processDvRechtsgrundlageErl',
                     format: 'multiline'
@@ -344,9 +355,6 @@ export default Vue.extend({
         value: {}
       }
     }
-  },
-  async created() {
-    await this.$api.schema.fetch('process')
   },
   methods: {},
   head() {
