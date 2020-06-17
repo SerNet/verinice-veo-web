@@ -230,14 +230,14 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessVaGroup.properties.processVaExternalProcessor',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaExternalProcessor',
                   options: {
                     label: '#lang/verarbeitungsAngaben/verarbeitungAlsAuftraarbeiter'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessVaGroup.properties.processVaArt',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaArt',
                   options: {
                     label: '#lang/verarbeitungsAngaben/artDerVerarbeitung/label',
                     format: 'autocomplete'
@@ -245,7 +245,7 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessVaGroup.properties.processVaOrt',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaOrt',
                   options: {
                     label: '#lang/verarbeitungsAngaben/ortDerDatenverabeitung/label',
                     format: 'radio',
@@ -254,21 +254,21 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessVaGroup.properties.processVaStadium',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaStadium',
                   options: {
                     label: '#lang/verarbeitungsAngaben/betriebsstadium/label'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessVaGroup.properties.processVaAnzMa',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaAnzMa',
                   options: {
                     label: '#lang/verarbeitungsAngaben/anzahlMitarbeiter'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessVaGroup.properties.processVaOrtBem',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaOrtBem',
                   options: {
                     label: '#lang/verarbeitungsAngaben/bemerkungen',
                     format: 'multiline'
@@ -276,7 +276,7 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessVaGroup.properties.processVaInterviewedOn',
+                  scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaInterviewedOn',
                   options: {
                     label: '#lang/verarbeitungsAngaben/befragungDurchgefuehrtAm'
                   }
@@ -298,7 +298,7 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessVaGemensemVerantwortliche.properties.processVaGemenVerant',
+                  scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerant',
                   options: {
                     label: '#lang/gemeinsameVerantwortliche/gemeinsamFuerDieVerarbeitungVerantwortliche'
                   }
@@ -319,21 +319,21 @@ export default Vue.extend({
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties.customAspects.properties.ProcessVaGemensemVerantwortliche.properties.processVaGemenVerantStrass',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantStrass',
                       options: {
                         label: '#lang/gemeinsameVerantwortliche/strasse'
                       }
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties.customAspects.properties.ProcessVaGemensemVerantwortliche.properties.processVaGemenVerantPlz',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantPlz',
                       options: {
                         label: '#lang/gemeinsameVerantwortliche/postleitzahl'
                       }
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties.customAspects.properties.ProcessVaGemensemVerantwortliche.properties.processVaGemenVerantOrt',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantOrt',
                       options: {
                         label: '#lang/gemeinsameVerantwortliche/ort'
                       }
@@ -347,21 +347,21 @@ export default Vue.extend({
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties.customAspects.properties.ProcessVaGemensemVerantwortliche.properties.processVaGemenVerantAnsprech',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantAnsprech',
                       options: {
                         label: '#lang/gemeinsameVerantwortliche/ansprechpartner'
                       }
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties.customAspects.properties.ProcessVaGemensemVerantwortliche.properties.processVaGemenVerantTel',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantTel',
                       options: {
                         label: '#lang/gemeinsameVerantwortliche/telefon'
                       }
                     },
                     {
                       type: 'Control',
-                      scope: '#/properties.customAspects.properties.ProcessVaGemensemVerantwortliche.properties.processVaGemenVerantEmail',
+                      scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantEmail',
                       options: {
                         label: '#lang/gemeinsameVerantwortliche/eMail'
                       }
@@ -392,7 +392,7 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessZbGroup.properties.processZbZweck',
+                  scope: '#/properties/customAspects/properties/ProcessZbGroup/properties/processZbZweck',
                   options: {
                     label: '#lang/zweckbestimmung/zweckDerVerarbeitung',
                     format: 'multiline'
@@ -415,28 +415,28 @@ export default Vue.extend({
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessDvGroupRechtsgrundlage.properties.processDvRechtsgrundlage',
+                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvRechtsgrundlage',
                   options: {
                     label: '#lang/rechtsgrundlage/label' // ?
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessDvGroupRechtsgrundlage.properties.processDvVorrVorschr',
+                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvVorrVorschr',
                   options: {
                     label: '#lang/rechtsgrundlage/vorrangigeRechtsvorschriften'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessDvGroupRechtsgrundlage.properties.processDvRechtsgrundlageSonst',
+                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvRechtsgrundlageSonst',
                   options: {
                     label: '#lang/rechtsgrundlage/sonstigeRechtsgrundlagen'
                   }
                 },
                 {
                   type: 'Control',
-                  scope: '#/properties.customAspects.properties.ProcessDvGroupRechtsgrundlage.properties.processDvRechtsgrundlageErl',
+                  scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvRechtsgrundlageErl',
                   options: {
                     label: '#lang/rechtsgrundlage/erlaeuterungen',
                     format: 'multiline'
