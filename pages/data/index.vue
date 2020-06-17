@@ -1,11 +1,10 @@
 <template>
   <v-col style="margin: auto;">
     <p>{{ $t('welcome') }}!</p>
-    <p v-if="schemaState">{{ schemaState }}</p>
-    <p v-if="schemas">
-      <span>Schemas:</span>
+    <p v-if="processes">
+      <span>VDV (Prozesse):</span>
       <ul>
-        <li v-for="(schema, index) in schemas" :key="index">{{ schema }}</li>
+        <li v-for="(process, index) in processes" :key="index"><nuxt-link :to="`/data/process/${process.id}`">{{ `${process.name} (${process.id})` }}</nuxt-link></li>
       </ul>
     </p>
   </v-col>
@@ -32,23 +31,21 @@ export default Vue.extend({
   },
   data() {
     return {
-      schemaState: '',
-      schemas: undefined as string[] | undefined
+      processes: undefined as Object[] | undefined
     }
   },
   async created() {
-    this.schemaState = 'Loading available schemas...'
     try {
-      this.schemas = await this.$api.schema.fetchAll().then(data => data.knownSchemas)
-      this.schemaState = ''
+      this.processes = await this.$api.process.fetchAll()
     } catch (e) {
-      this.schemaState = `Loading available schemas... FAILED: ${String(e)}`
+      // eslint-disable-next-line no-console
+      console.error(e)
     }
   },
   methods: {},
   head():any {
     return {
-      title: 'Willkommen'
+      title: 'veo.data'
     }
   }
 })

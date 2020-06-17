@@ -41,9 +41,14 @@ export default Vue.extend({
       drawer: undefined as boolean | undefined,
       itemsLeft: [
         {
-          name: 'browser',
-          icon: 'mdi-folder',
+          name: 'dashboard',
+          icon: 'mdi-home',
           to: '/'
+        },
+        {
+          name: 'veo.data',
+          icon: 'mdi-folder',
+          to: '/data'
         },
         {
           name: 'settings',
