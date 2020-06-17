@@ -20,7 +20,7 @@
           <v-btn dark class="ma-1" @click="activeLanguage = 'en'">English</v-btn>
           <v-btn dark class="ma-1" @click="activeLanguage = 'de'">Deutsch</v-btn>
         </div>
-        <veo-form v-model="form.value" :schema="form.schema" :ui="form.ui" :lang="form['lang'][activeLanguage]" />
+        <veo-form v-model="form.value" :schema="schema" :ui="form.ui" :lang="lang[activeLanguage]" />
       </div>
     </div>
 
@@ -50,6 +50,7 @@ export default Vue.extend({
   name: 'Forms',
   async asyncData(context) {
     const schema = await context.app.$api.schema.fetch('process')
+    schema.$schema = 'http://json-schema.org/draft-07/schema#'
     const translation = await context.app.$api.translation.fetch(['de', 'en'])
     return { schema, lang: translation.lang }
   },
@@ -58,112 +59,6 @@ export default Vue.extend({
       panel: true,
       activeLanguage: 'de',
       form: {
-        schema: {
-          type: 'object',
-          required: ['abkuerzung', 'name', 'befragungDurchgefuehrtAm'],
-          properties: {
-            abkuerzung: {
-              type: 'string'
-            },
-            name: {
-              type: 'string'
-            },
-            beschreibung: {
-              type: 'string'
-            },
-            personenbezogeneDaten: {
-              type: 'boolean'
-            },
-            verarbeitungAlsAuftraarbeiter: {
-              type: 'boolean'
-            },
-            artDerVerarbeitung: {
-              type: 'array',
-              items: {
-                enum: [
-                  '#lang/verarbeitungsAngaben/artDerVerarbeitung/enum/0',
-                  '#lang/verarbeitungsAngaben/artDerVerarbeitung/enum/1',
-                  '#lang/verarbeitungsAngaben/artDerVerarbeitung/enum/2'
-                ]
-              }
-            },
-            ortDerDatenverabeitung: {
-              type: 'string',
-              enum: ['#lang/verarbeitungsAngaben/ortDerDatenverabeitung/enum/0', '#lang/verarbeitungsAngaben/ortDerDatenverabeitung/enum/1']
-            },
-            betriebsstadium: {
-              type: 'string',
-              enum: [
-                '#lang/verarbeitungsAngaben/betriebsstadium/enum/0',
-                '#lang/verarbeitungsAngaben/betriebsstadium/enum/1',
-                '#lang/verarbeitungsAngaben/betriebsstadium/enum/2',
-                '#lang/verarbeitungsAngaben/betriebsstadium/enum/3'
-              ]
-            },
-            anzahlMitarbeiter: {
-              type: 'integer'
-            },
-            bemerkungen: {
-              type: 'string'
-            },
-            befragungDurchgefuehrtAm: {
-              type: 'string',
-              format: 'date'
-            },
-            gemeinsamFuerDieVerarbeitungVerantwortliche: {
-              type: 'boolean'
-            },
-            organisation: {
-              type: 'string' // missing
-            },
-            strasse: {
-              type: 'string'
-            },
-            postleitzahl: {
-              type: 'string'
-            },
-            ort: {
-              type: 'string'
-            },
-            land: {
-              type: 'string' // missing
-            },
-            ansprechpartner: {
-              type: 'string'
-            },
-            telefon: {
-              type: 'string'
-            },
-            eMail: {
-              type: 'string'
-            },
-            zweckDerVerarbeitung: {
-              type: 'string'
-            },
-            rechtsgrundlage: {
-              type: 'array',
-              items: {
-                type: 'string',
-                enum: [
-                  '#lang/rechtsgrundlage/rechtsgrundlage/enum/0',
-                  '#lang/rechtsgrundlage/rechtsgrundlage/enum/1',
-                  '#lang/rechtsgrundlage/rechtsgrundlage/enum/2',
-                  '#lang/rechtsgrundlage/rechtsgrundlage/enum/3',
-                  '#lang/rechtsgrundlage/rechtsgrundlage/enum/4'
-                ]
-              }
-            },
-            vorrangigeRechtsvorschriften: {
-              type: 'string'
-            },
-            sonstigeRechtsgrundlagen: {
-              type: 'string'
-            },
-            erlaeuterungen: {
-              type: 'string'
-            }
-          }
-        },
         ui: {
           type: 'Layout',
           options: {
@@ -179,7 +74,7 @@ export default Vue.extend({
               elements: [
                 {
                   type: 'Label',
-                  text: '#lang/verarbeitungstaetigkeit/label',
+                  text: '', // Translation?
                   options: {
                     class: 'display-1'
                   }
@@ -188,21 +83,21 @@ export default Vue.extend({
                   type: 'Control',
                   scope: '#/properties/abbreviation',
                   options: {
-                    label: '#lang/verarbeitungstaetigkeit/abkuerzung'
+                    label: 'Abkürzung' // Translation?
                   }
                 },
                 {
                   type: 'Control',
                   scope: '#/properties/name',
                   options: {
-                    label: '#lang/verarbeitungstaetigkeit/name'
+                    label: 'Name' // Translation?
                   }
                 },
                 {
                   type: 'Control',
                   scope: '#/properties/description',
                   options: {
-                    label: '#lang/verarbeitungstaetigkeit/beschreibung',
+                    label: 'Beschreibung', // Translation?
                     format: 'multiline'
                   }
                 },
@@ -210,7 +105,7 @@ export default Vue.extend({
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessDsgvoCommons/properties/processStellungnahmedsbPbdaten',
                   options: {
-                    label: '#lang/verarbeitungstaetigkeit/personenbezogeneDaten'
+                    label: '#lang/processStellungnahmedsbPbdaten'
                   }
                 }
               ]
@@ -223,7 +118,7 @@ export default Vue.extend({
               elements: [
                 {
                   type: 'Label',
-                  text: '#lang/verarbeitungsAngaben/label',
+                  text: '', // Translation?
                   options: {
                     class: 'display-1'
                   }
@@ -232,14 +127,14 @@ export default Vue.extend({
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaExternalProcessor',
                   options: {
-                    label: '#lang/verarbeitungsAngaben/verarbeitungAlsAuftraarbeiter'
+                    label: '#lang/processVaExternalProcessor'
                   }
                 },
                 {
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaArt',
                   options: {
-                    label: '#lang/verarbeitungsAngaben/artDerVerarbeitung/label',
+                    label: '#lang/processVaArt',
                     format: 'autocomplete'
                   }
                 },
@@ -247,7 +142,7 @@ export default Vue.extend({
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaOrt',
                   options: {
-                    label: '#lang/verarbeitungsAngaben/ortDerDatenverabeitung/label',
+                    label: '#lang/processVaOrt',
                     format: 'radio',
                     direction: 'horizontal'
                   }
@@ -256,21 +151,21 @@ export default Vue.extend({
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaStadium',
                   options: {
-                    label: '#lang/verarbeitungsAngaben/betriebsstadium/label'
+                    label: '#lang/processVaStadium'
                   }
                 },
                 {
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaAnzMa',
                   options: {
-                    label: '#lang/verarbeitungsAngaben/anzahlMitarbeiter'
+                    label: '#lang/processVaAnzMa'
                   }
                 },
                 {
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaOrtBem',
                   options: {
-                    label: '#lang/verarbeitungsAngaben/bemerkungen',
+                    label: '#lang/processVaOrtBem',
                     format: 'multiline'
                   }
                 },
@@ -278,7 +173,7 @@ export default Vue.extend({
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessVaGroup/properties/processVaInterviewedOn',
                   options: {
-                    label: '#lang/verarbeitungsAngaben/befragungDurchgefuehrtAm'
+                    label: '#lang/processVaInterviewedOn'
                   }
                 }
               ]
@@ -291,7 +186,7 @@ export default Vue.extend({
               elements: [
                 {
                   type: 'Label',
-                  text: '#lang/gemeinsameVerantwortliche/label',
+                  text: '', // Translation?
                   options: {
                     class: 'display-1'
                   }
@@ -300,7 +195,7 @@ export default Vue.extend({
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerant',
                   options: {
-                    label: '#lang/gemeinsameVerantwortliche/gemeinsamFuerDieVerarbeitungVerantwortliche'
+                    label: '#lang/processVaGemenVerant'
                   }
                 },
                 {
@@ -310,70 +205,70 @@ export default Vue.extend({
                     format: 'group'
                   },
                   elements: [
-                    {
-                      type: 'Control',
-                      scope: '#/properties/organisation', // missing
-                      options: {
-                        label: '#lang/gemeinsameVerantwortliche/organisation'
-                      }
-                    },
+                    // {
+                    //   type: 'Control',
+                    //   scope: '#/properties/organisation', // missing
+                    //   options: {
+                    //     label: 'Test'
+                    //   }
+                    // },
                     {
                       type: 'Control',
                       scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantStrass',
                       options: {
-                        label: '#lang/gemeinsameVerantwortliche/strasse'
+                        label: '#lang/processVaGemenVerantStrass'
                       }
                     },
                     {
                       type: 'Control',
                       scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantPlz',
                       options: {
-                        label: '#lang/gemeinsameVerantwortliche/postleitzahl'
+                        label: '#lang/processVaGemenVerantPlz'
                       }
                     },
                     {
                       type: 'Control',
                       scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantOrt',
                       options: {
-                        label: '#lang/gemeinsameVerantwortliche/ort'
+                        label: '#lang/processVaGemenVerantOrt'
                       }
                     },
-                    {
-                      type: 'Control',
-                      scope: '#/properties/land', // missing
-                      options: {
-                        label: '#lang/gemeinsameVerantwortliche/land'
-                      }
-                    },
+                    // {
+                    //   type: 'Control',
+                    //   scope: '#/properties/land', // missing
+                    //   options: {
+                    //     label: 'Test'
+                    //   }
+                    // },
                     {
                       type: 'Control',
                       scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantAnsprech',
                       options: {
-                        label: '#lang/gemeinsameVerantwortliche/ansprechpartner'
+                        label: '#lang/processVaGemenVerantAnsprech'
                       }
                     },
                     {
                       type: 'Control',
                       scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantTel',
                       options: {
-                        label: '#lang/gemeinsameVerantwortliche/telefon'
+                        label: '#lang/processVaGemenVerantTel'
                       }
                     },
                     {
                       type: 'Control',
                       scope: '#/properties/customAspects/properties/ProcessVaGemensemVerantwortliche/properties/processVaGemenVerantEmail',
                       options: {
-                        label: '#lang/gemeinsameVerantwortliche/eMail'
+                        label: '#lang/processVaGemenVerantEmail'
                       }
                     }
-                  ],
-                  rule: {
-                    effect: 'HIDE',
-                    condition: {
-                      scope: '#/properties/gemeinsamFuerDieVerarbeitungVerantwortliche',
-                      schema: { anyOf: [{ const: false }, { const: null }] }
-                    }
-                  }
+                  ]
+                  // rule: {
+                  //   effect: 'HIDE',
+                  //   condition: {
+                  //     scope: '#/properties/gemeinsamFuerDieVerarbeitungVerantwortliche',
+                  //     schema: { anyOf: [{ const: false }, { const: null }] }
+                  //   }
+                  // }
                 }
               ]
             },
@@ -385,7 +280,7 @@ export default Vue.extend({
               elements: [
                 {
                   type: 'Label',
-                  text: '#lang/zweckbestimmung/label',
+                  text: '', // Translation?
                   options: {
                     class: 'display-1'
                   }
@@ -394,7 +289,7 @@ export default Vue.extend({
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessZbGroup/properties/processZbZweck',
                   options: {
-                    label: '#lang/zweckbestimmung/zweckDerVerarbeitung',
+                    label: '#lang/processZbZweck',
                     format: 'multiline'
                   }
                 }
@@ -408,7 +303,7 @@ export default Vue.extend({
               elements: [
                 {
                   type: 'Label',
-                  text: '#lang/rechtsgrundlage/label',
+                  text: '', // Translation?
                   options: {
                     class: 'display-1'
                   }
@@ -417,150 +312,34 @@ export default Vue.extend({
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvRechtsgrundlage',
                   options: {
-                    label: '#lang/rechtsgrundlage/label' // ?
+                    label: '#lang/processDvRechtsgrundlage'
                   }
                 },
                 {
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvVorrVorschr',
                   options: {
-                    label: '#lang/rechtsgrundlage/vorrangigeRechtsvorschriften'
+                    label: '#lang/processDvVorrVorschr'
                   }
                 },
                 {
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvRechtsgrundlageSonst',
                   options: {
-                    label: '#lang/rechtsgrundlage/sonstigeRechtsgrundlagen'
+                    label: '#lang/processDvRechtsgrundlageSonst'
                   }
                 },
                 {
                   type: 'Control',
                   scope: '#/properties/customAspects/properties/ProcessDvGroupRechtsgrundlage/properties/processDvRechtsgrundlageErl',
                   options: {
-                    label: '#lang/rechtsgrundlage/erlaeuterungen',
+                    label: '#lang/processDvRechtsgrundlageErl',
                     format: 'multiline'
                   }
                 }
               ]
             }
           ]
-        },
-        lang: {
-          en: {
-            verarbeitungstaetigkeit: {
-              label: '',
-              abkuerzung: '',
-              name: '',
-              beschreibung: '',
-              personenbezogeneDaten: ''
-            },
-            verarbeitungsAngaben: {
-              label: '',
-              verarbeitungAlsAuftraarbeiter: '',
-              artDerVerarbeitung: {
-                label: '',
-                enum: ['', '', '']
-              },
-              ortDerDatenverabeitung: {
-                label: '',
-                enum: ['', '']
-              },
-              betriebsstadium: {
-                label: '',
-                enum: ['', '', '', '']
-              },
-              anzahlMitarbeiter: '',
-              bemerkungen: '',
-              befragungDurchgefuehrtAm: ''
-            },
-            gemeinsameVerantwortliche: {
-              label: '',
-              gemeinsamFuerDieVerarbeitungVerantwortliche: '',
-              organisation: '',
-              strasse: '',
-              postleitzahl: '',
-              ort: '',
-              land: '',
-              ansprechpartner: '',
-              telefon: '',
-              eMail: ''
-            },
-            zweckbestimmung: {
-              label: '',
-              zweckDerVerarbeitung: ''
-            },
-            rechtsgrundlage: {
-              label: '',
-              rechtsgrundlage: {
-                label: '',
-                enum: ['', '', '', '', '']
-              },
-              vorrangigeRechtsvorschriften: '',
-              sonstigeRechtsgrundlagen: '',
-              erlaeuterungen: ''
-            }
-          },
-          de: {
-            verarbeitungstaetigkeit: {
-              label: 'Verarbeitungstätigkeit',
-              abkuerzung: 'Abkürzung*',
-              name: 'Name*',
-              beschreibung: 'Beschreibung',
-              personenbezogeneDaten: 'Personenbezogene Daten'
-            },
-            verarbeitungsAngaben: {
-              label: 'Verarbeitungsangaben',
-              verarbeitungAlsAuftraarbeiter: 'Verarbeitung als Auftragsverarbeiter nach Art. 30 II DS-GVO',
-              artDerVerarbeitung: {
-                label: 'Art der Verarbeitung',
-                enum: ['Ersterhebung', 'Neue Verarbeitung', 'Änderung einer Verarbeitung']
-              },
-              ortDerDatenverabeitung: {
-                label: 'Ort der Datenverarbeitung',
-                enum: ['Intern', 'Extern']
-              },
-              betriebsstadium: {
-                label: 'Betriebsstadium',
-                enum: ['Planung', 'Test', 'Roll-Out', 'Betrieb']
-              },
-              anzahlMitarbeiter: 'Anzahl Mitarbeiter',
-              bemerkungen: 'Bemerkungen',
-              befragungDurchgefuehrtAm: 'Befragung durchgeführt am'
-            },
-            gemeinsameVerantwortliche: {
-              label: 'Gemeinsame Verantwortliche',
-              gemeinsamFuerDieVerarbeitungVerantwortliche: 'Gemeinsam für die Verarbeitung Verantwortliche',
-              organisation: 'Organisation',
-              strasse: 'Straße',
-              postleitzahl: 'Postleitzahl',
-              ort: 'Ort',
-              land: 'Land',
-              ansprechpartner: 'Ansprechpartner',
-              telefon: 'Telefon',
-              eMail: 'E-Mail'
-            },
-            zweckbestimmung: {
-              label: 'Zweckbestimmung',
-              zweckDerVerarbeitung: 'Zweck der Verarbeitung'
-            },
-            rechtsgrundlage: {
-              label: 'Rechtsgrundlage',
-              rechtsgrundlage: {
-                label: 'Rechtsgrundlage',
-                enum: [
-                  'Rechtsvorschriften aus DS-GVO',
-                  'Ergänzende nationale Regelungen',
-                  'Einwilligung des Betroffenen',
-                  'Vorrangige Rechtsvorschriften (s.u.)',
-                  'Sonstige Rechtsgrundlagen'
-                ]
-              },
-              vorrangigeRechtsvorschriften: 'Vorrangige Rechtsvorschriften',
-              sonstigeRechtsgrundlagen: 'Sonstige Rechtsgrundlagen',
-              erlaeuterungen: 'Erläuterungen'
-            }
-          }
         },
         value: {}
       }
