@@ -19,6 +19,8 @@
 import Vue from 'vue'
 import AppSideBar from '~/components/layout/AppSideBar.vue'
 
+type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
+
 export default Vue.extend({
   validate({ params }) {
     return ['asset', 'control', 'group', 'person', 'process', 'unit'].includes(params.type)
@@ -48,8 +50,8 @@ export default Vue.extend({
     }
   },
   computed: {
-    objectType(): string {
-      return this.$route.params.type
+    objectType(): APIGroup {
+      return this.$route.params.type as APIGroup
     }
   },
   async created() {

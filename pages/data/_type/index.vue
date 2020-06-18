@@ -16,15 +16,18 @@
 <script lang="ts">
 import Vue from 'vue'
 
+type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
+
 export default Vue.extend({
   validate({ params }) {
-    return ['asset', 'control', 'group', 'person', 'process', 'unit'].includes(params.type)
+    return ['asset', 'control', 'person', 'process', 'unit'].includes(params.type)
   },
   components: {},
   props: {},
   async fetch() {
     this.objects = []
     this.objects = await this.$api[this.objectType].fetchAll()
+    // Group erstmal deaktiviert, weil das bei fetchAll noch einen type-param benötigt
   },
   data() {
     return {
@@ -32,8 +35,8 @@ export default Vue.extend({
     }
   },
   computed: {
-    objectType(): string {
-      return this.$route.params.type
+    objectType(): APIGroup {
+      return this.$route.params.type as APIGroup
     }
   },
   watch: {
