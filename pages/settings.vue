@@ -1,8 +1,6 @@
 <template>
-  <v-col cols="12" style="margin: auto;">
-    <v-card class="pa-4 text-center">
-      I am the settings page
-    </v-card>
+  <v-col cols="12">
+    Settings
   </v-col>
 </template>
 

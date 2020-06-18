@@ -48,7 +48,6 @@ module.exports = {
     '~/plugins/logger',
     '~/plugins/auth',
     '~/plugins/api',
-    '~/plugins/navigation',
     '~/plugins/veo-forms'
   ],
 

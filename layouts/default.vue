@@ -1,7 +1,9 @@
 <template>
   <v-app id="inspire">
     <v-app-bar class="app-bar" app clipped-left clipped-right flat border color="primary" dark>
-      <AppBarLogo />
+      <AppBarLogo>
+        <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
+      </AppBarLogo>
       <v-spacer />
       <AppAccountBtn
         v-if="$auth.profile"
@@ -13,8 +15,7 @@
       />
     </v-app-bar>
 
-    <AppSideBar v-if="!standalone" :items="itemsLeft" param="left" />
-    <AppSideBar v-if="!standalone" :items="$navigation.data.right" param="right" right />
+    <AppSideBar :items="nav" :drawer.sync="drawer" />
 
     <v-content>
       <nuxt />
@@ -28,7 +29,6 @@ import Vue from 'vue'
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
 import AppSideBar from '~/components/layout/AppSideBar.vue'
 import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
-import { IItem } from '~/plugins/navigation'
 
 export default Vue.extend({
   components: {
@@ -38,8 +38,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      drawer: undefined as boolean | undefined,
-      itemsLeft: [
+      drawer: false as boolean,
+      nav: [
         {
           name: 'dashboard',
           icon: 'mdi-home',
@@ -51,25 +51,19 @@ export default Vue.extend({
           to: '/data'
         },
         {
+          name: 'veo.forms',
+          icon: 'mdi-format-list-checks',
+          to: '/forms'
+        },
+        {
           name: 'settings',
           icon: 'mdi-cog',
           to: '/settings'
         }
-      ] as IItem[],
-      itemsRight: [] as IItem[]
+      ]
     }
   },
-  computed: {
-    standalone() {
-      if (this.$vuetify.breakpoint.xs) {
-        return true
-      }
-      return (
-        'standalone' in this.$route.query &&
-        !/false|0|off/i.test(String(this.$route.query.standalone))
-      )
-    }
-  }
+  computed: {}
 })
 </script>
 

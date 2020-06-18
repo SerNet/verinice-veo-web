@@ -1,8 +1,6 @@
 <template>
-  <v-col cols="12" style="margin: auto;">
-    <v-card elevation="0" class="pa-4 text-center">
-      Links
-    </v-card>
+  <v-col cols="12">
+    History
   </v-col>
 </template>
 
@@ -15,12 +13,7 @@ export default Vue.extend({
   data() {
     return {}
   },
-  methods: {},
-  head() {
-    return {
-      title: 'Links'
-    }
-  }
+  methods: {}
 })
 </script>
 

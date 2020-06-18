@@ -6,7 +6,6 @@ declare module 'vue/types/vue' {
   interface Vue {
     $api: API
     $auth: Auth
-    $navigation: Navigation
   }
 }
 
@@ -14,6 +13,5 @@ declare module '@nuxt/types/app' {
   interface NuxtAppOptions {
     $api: API
     $auth: Auth
-    $navigation: Navigation
   }
 }

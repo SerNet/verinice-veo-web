@@ -1,6 +1,7 @@
 <template>
-  <v-col style="margin: auto;">
+  <v-col>
     <p>{{ $t('welcome') }}!</p>
+    <p>Hier wird ein Dashboard erstellt</p>
     <p v-if="schemaState">{{ schemaState }}</p>
     <p v-if="schemas">
       <span>Schemas:</span>
@@ -17,19 +18,7 @@ import Vue from 'vue'
 export default Vue.extend({
   components: {},
   props: {},
-  async fetch() {
-    await this.$navigation.defaults({ left: 'tree', right: 'history' })
-    await this.$navigation.rightItems({
-      name: 'history',
-      icon: 'mdi-history',
-      to: '/history'
-    },
-    {
-      name: 'links',
-      icon: 'mdi-link',
-      to: '/links'
-    })
-  },
+  async fetch() {},
   data() {
     return {
       schemaState: '',

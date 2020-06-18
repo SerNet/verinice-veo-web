@@ -1,12 +1,9 @@
 <template>
-  <v-col style="margin: auto;">
-    <p>{{ $t('welcome') }}!</p>
-    <p v-if="processes">
-      <span>VDV (Prozesse):</span>
-      <ul>
-        <li v-for="(process, index) in processes" :key="index"><nuxt-link :to="`/data/process/${process.id}`">{{ `${process.name} (${process.id})` }}</nuxt-link></li>
-      </ul>
+  <v-col>
+    <p>
+      {{ $t('welcome') }}!
     </p>
+    veo.Data Startseite
   </v-col>
 </template>
 
@@ -17,17 +14,6 @@ export default Vue.extend({
   components: {},
   props: {},
   async fetch() {
-    await this.$navigation.defaults({ left: 'tree', right: 'history' })
-    await this.$navigation.rightItems({
-      name: 'history',
-      icon: 'mdi-history',
-      to: '/history'
-    },
-    {
-      name: 'links',
-      icon: 'mdi-link',
-      to: '/links'
-    })
   },
   data() {
     return {

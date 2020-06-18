@@ -1,43 +1,58 @@
 <template>
-  <v-col style="margin: auto;">
-    <p v-if="process">
-      <span>veo.data: {{ process.name }} ({{ process.id }})</span>
-      <pre>{{ process }}</pre>
-    </p>
-  </v-col>
+  <div>
+    <v-col cols="9">
+      <p v-if="object">
+        <span>veo.data: {{ object.name }} ({{ object.id }})</span>
+        <pre>{{ object }}</pre>
+      </p>
+    </v-col>
+
+    <v-col cols="3">
+      <nuxt-child />
+    </v-col>
+
+    <AppSideBar :items="navItems" :drawer="true" right />
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import AppSideBar from '~/components/layout/AppSideBar.vue'
 
 export default Vue.extend({
-  components: {},
+  validate({ params }) {
+    return ['asset', 'control', 'group', 'person', 'process', 'unit'].includes(params.type)
+  },
+  components: {
+    AppSideBar
+  },
   props: {},
   async fetch() {
-    await this.$navigation.defaults({ left: 'tree', right: 'history' })
-    await this.$navigation.rightItems({
-      name: 'history',
-      icon: 'mdi-history',
-      to: '/history'
-    },
-    {
-      name: 'links',
-      icon: 'mdi-link',
-      to: '/links'
-    })
+    this.object = await this.$api[this.objectType].fetch(this.$route.params.id)
   },
   data() {
     return {
-      process: undefined as Object | undefined
+      object: undefined as Object | undefined,
+      navItems: [
+        {
+          name: 'Links',
+          icon: 'mdi-link',
+          to: '/data/' + this.$route.params.type + '/' + this.$route.params.id + '/links'
+        },
+        {
+          name: 'History',
+          icon: 'mdi-history',
+          to: '/data/' + this.$route.params.type + '/' + this.$route.params.id + '/history'
+        }
+      ]
+    }
+  },
+  computed: {
+    objectType(): string {
+      return this.$route.params.type
     }
   },
   async created() {
-    try {
-      this.process = await this.$api.process.fetch(this.$route.params.id)
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e)
-    }
   },
   methods: {},
   head():any {
