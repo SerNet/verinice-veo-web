@@ -17,7 +17,7 @@ export default function(api: Client) {
      * @param unit
      */
     create(unit: Object) {
-      api.req('/api/units', {
+      return api.req('/api/units', {
         json: unit
       })
     },

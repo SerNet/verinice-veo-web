@@ -17,7 +17,7 @@ export default function(api: Client) {
      * @param process
      */
     create(process: Object) {
-      api.req('/api/processes', {
+      return api.req('/api/processes', {
         json: process
       })
     },

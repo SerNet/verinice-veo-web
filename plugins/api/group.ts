@@ -18,7 +18,7 @@ export default function(api: Client) {
      * @param group
      */
     create(group: Object) {
-      api.req('/api/groups', {
+      return api.req('/api/groups', {
         json: group
       })
     },

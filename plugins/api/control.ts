@@ -17,7 +17,7 @@ export default function(api: Client) {
      * @param control
      */
     create(control: Object) {
-      api.req('/api/controls', {
+      return api.req('/api/controls', {
         json: control
       })
     },

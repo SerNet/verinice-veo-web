@@ -17,7 +17,7 @@ export default function(api: Client) {
      * @param asset
      */
     create(asset: Object) {
-      api.req('/api/assets', {
+      return api.req('/api/assets', {
         json: asset
       })
     },
