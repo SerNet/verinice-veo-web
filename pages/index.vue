@@ -1,8 +1,10 @@
 <template>
-  <v-col style="margin: auto;">
-    <p>Welcome!</p>
-    <p v-if="state">{{ state }}</p>
+  <v-col>
+    <p>{{ $t('welcome') }}!</p>
+    <p>Hier wird ein Dashboard erstellt</p>
+    <p v-if="schemaState">{{ schemaState }}</p>
     <p v-if="schemas">
+      <span>Schemas:</span>
       <ul>
         <li v-for="(schema, index) in schemas" :key="index">{{ schema }}</li>
       </ul>
@@ -16,36 +18,24 @@ import Vue from 'vue'
 export default Vue.extend({
   components: {},
   props: {},
-  async fetch() {
-    this.$navigation.defaults({ left: 'tree', right: 'history' })
-    this.$navigation.rightItems({
-      name: 'history',
-      icon: 'mdi-history',
-      to: '/history'
-    },
-    {
-      name: 'links',
-      icon: 'mdi-link',
-      to: '/links'
-    })
-  },
+  async fetch() {},
   data() {
     return {
-      state: '',
+      schemaState: '',
       schemas: undefined as string[] | undefined
     }
   },
   async created() {
-    this.state = 'Loading available schemas...'
+    this.schemaState = 'Loading available schemas...'
     try {
-      this.schemas = await this.$axios.$get('/api/schemas', { headers: { Authorization: `Bearer ${this.$auth.getToken()}` } }).then(data => data.knownSchemas)
-      this.state = ''
+      this.schemas = await this.$api.schema.fetchAll().then(data => data.knownSchemas)
+      this.schemaState = ''
     } catch (e) {
-      this.state = `Loading available schemas... FAILED: ${String(e)}`
+      this.schemaState = `Loading available schemas... FAILED: ${String(e)}`
     }
   },
   methods: {},
-  head() {
+  head():any {
     return {
       title: 'Willkommen'
     }

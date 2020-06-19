@@ -1,9 +1,15 @@
 <template>
-  <v-col cols="12" style="margin: auto;">
-    <v-card elevation="0" class="pa-4 text-center">
-      Navigation
-    </v-card>
-  </v-col>
+  <v-row>
+    <v-col cols="2">
+      veo.forms Navigation
+      <ul>
+        <li><nuxt-link to="/forms/vdv">VDV</nuxt-link></li>
+      </ul>
+    </v-col>
+    <v-col cols="10">
+      <nuxt-child />
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

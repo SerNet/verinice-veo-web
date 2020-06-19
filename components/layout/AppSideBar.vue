@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-if="route || items.length > 0" v-model="drawer" :class="{'v-application--is-rtl': right}" :right="right" :floating="!route" :width="route?width:64" permanent clipped app>
+  <v-navigation-drawer v-if="items.length > 0" v-model="drawer" :class="{'v-application--is-rtl': right}" :right="right" :floating="true" width="64" :permanent="!$vuetify.breakpoint.xs" clipped app>
     <v-tabs
       class="nav-tabs"
       active-class="nav-tab-active"
@@ -10,27 +10,20 @@
       <v-tab v-for="item in items" :key="item.name" class="nav-tab" :title="item.name" :to="item.to" :exact="item.exact">
         <v-icon v-if="item.icon" v-text="item.icon">mdi-folder</v-icon>
       </v-tab>
-      <v-tabs-items>
-        <component :is="route" v-if="route" />
-      </v-tabs-items>
     </v-tabs>
+    drawer{{ drawer }}
   </v-navigation-drawer>
 </template>
+
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
-import { Component } from 'vue-router/types/router'
-import { IItem } from '~/plugins/navigation'
 
 export default Vue.extend({
   props: {
-    param: {
-      type: String,
-      required: true
-    },
     items: {
       type: Array,
       default: () => []
-    } as PropOptions<IItem[]>,
+    } as PropOptions,
     right: {
       type: Boolean,
       default: false
@@ -38,23 +31,20 @@ export default Vue.extend({
     width: {
       type: Number,
       default: 360
+    },
+    drawer: {
+      type: Boolean,
+      default: undefined
     }
   },
   data() {
-    return {
-      drawer: undefined as boolean | undefined
-    }
+    return {}
   },
-  computed: {
-    route(): Component | undefined {
-      const routeName = String(this.$route.query[this.param])
-      return (routeName && this.$router.resolve(routeName).resolved.matched[0]?.components.default) || undefined
-    }
-  }
+  computed: {}
 })
 </script>
-<style lang="scss" scoped>
 
+<style lang="scss" scoped>
 .v-application--is-rtl {
   ::v-deep .v-tabs-bar {
     transform: scaleX(-1);

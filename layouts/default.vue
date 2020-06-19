@@ -1,7 +1,9 @@
 <template>
   <v-app id="inspire">
     <v-app-bar class="app-bar" app clipped-left clipped-right flat border color="primary" dark>
-      <AppBarLogo />
+      <AppBarLogo>
+        <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
+      </AppBarLogo>
       <v-spacer />
       <AppAccountBtn
         v-if="$auth.profile"
@@ -12,20 +14,21 @@
         @logout="$auth.logout()"
       />
     </v-app-bar>
-    <AppSideBar v-if="!standalone" :items="itemsLeft" param="left" />
-    <AppSideBar v-if="!standalone" :items="$navigation.data.right" param="right" right />
+
+    <AppSideBar :items="nav" :drawer.sync="drawer" />
+
     <v-content>
       <nuxt />
     </v-content>
   </v-app>
 </template>
+
 <script lang="ts">
 import Vue from 'vue'
 
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
 import AppSideBar from '~/components/layout/AppSideBar.vue'
 import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
-import { IItem } from '~/plugins/navigation'
 
 export default Vue.extend({
   components: {
@@ -35,35 +38,35 @@ export default Vue.extend({
   },
   data() {
     return {
-      drawer: undefined as boolean | undefined,
-      itemsLeft: [
+      drawer: false as boolean,
+      nav: [
         {
-          name: 'browser',
-          icon: 'mdi-folder',
+          name: 'dashboard',
+          icon: 'mdi-home',
           to: '/'
+        },
+        {
+          name: 'veo.data',
+          icon: 'mdi-folder',
+          to: '/data'
+        },
+        {
+          name: 'veo.forms',
+          icon: 'mdi-format-list-checks',
+          to: '/forms'
         },
         {
           name: 'settings',
           icon: 'mdi-cog',
           to: '/settings'
         }
-      ] as IItem[],
-      itemsRight: [] as IItem[]
+      ]
     }
   },
-  computed: {
-    standalone() {
-      if (this.$vuetify.breakpoint.xs) {
-        return true
-      }
-      return (
-        'standalone' in this.$route.query &&
-        !/false|0|off/i.test(String(this.$route.query.standalone))
-      )
-    }
-  }
+  computed: {}
 })
 </script>
+
 <style lang="scss" scoped>
 ::v-deep .v-content__wrap {
   border-top: 1px solid #e0e0e0;

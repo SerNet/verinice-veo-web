@@ -17,7 +17,17 @@
       "@/*": ["./*"]
     },
     "typeRoots": [],
-    "types": ["mocha", "@types/node", "@types/lodash", "@types/jest", "@nuxtjs/axios", "@nuxt/types", "./types/context", "vuetify/types"]
+    "types": [
+      "mocha",
+      "@types/node",
+      "@types/lodash",
+      "@types/jest",
+      "@nuxtjs/axios",
+      "@nuxt/types",
+      "nuxt-i18n/types",
+      "./types/context",
+      "vuetify/types"
+    ]
   },
   "exclude": ["coverage",".nuxt", ".gitlab", "dist", "test/e2e"]
 }

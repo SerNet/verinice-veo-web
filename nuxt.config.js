@@ -1,6 +1,11 @@
 require('dotenv').config()
+
 module.exports = {
+  /**
+   *
+   */
   mode: 'spa',
+
   /**
    *
    */
@@ -43,39 +48,14 @@ module.exports = {
     '~/plugins/logger',
     '~/plugins/auth',
     '~/plugins/api',
-    '~/plugins/navigation'
+    '~/plugins/veo-forms'
   ],
-
-  /*
-   ** Icon options
-   ** https://pwa.nuxtjs.org/modules/icon
-   */
-  icon: {
-    sizes: [16, 120, 144, 152, 192, 384, 512]
-  },
-
-  /**
-   *
-   */
-  meta: {
-    mobileAppIOS: true,
-    nativeUI: true,
-    favicon: true
-  },
 
   /**
    *
    */
   generate: {
     fallback: '404.html' // if you want to use '404.html'
-  },
-
-  /**
-   *
-   */
-  workbox: {
-    autoRegister: true,
-    dev: false
   },
 
   /*
@@ -87,9 +67,56 @@ module.exports = {
     '@nuxtjs/proxy',
     '@nuxtjs/pwa',
     ['cookie-universal-nuxt', { parseJSON: false }],
-    'nuxt-polyfill'
+    'nuxt-polyfill',
+    'nuxt-i18n'
   ],
 
+  /**
+   * module: nuxt-pwa configuration
+   */
+  pwa: {
+    workbox: {
+      autoRegister: true,
+      dev: false
+    },
+    meta: {
+      mobileAppIOS: true,
+      nativeUI: true,
+      favicon: true
+    },
+    icon: {
+      sizes: [16, 120, 144, 152, 192, 384, 512]
+    },
+    manifest: {
+      name: 'verinice veo',
+      lang: 'en'
+    }
+  },
+
+  /**
+   * nuxt-i18n config
+   */
+  i18n: {
+    strategy: 'no_prefix',
+    locales: [
+      { code: 'en', file: 'en.ts', name: 'English' },
+      { code: 'de', file: 'de.ts', name: 'Deutsch' }
+    ],
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieDomain: null,
+      cookieKey: 'i18n_redirected',
+      alwaysRedirect: false,
+      fallbackLocale: 'en'
+    },
+    defaultLocale: 'en',
+    lazy: true,
+    langDir: 'locales/'
+  },
+
+  /**
+   * Polyfill configuration
+   */
   polyfill: {
     features: [
       {
@@ -102,22 +129,32 @@ module.exports = {
   /*
    ** Nuxt.js build modules
    */
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/vuetify'],
+  buildModules: [
+    '@nuxt/typescript-build',
+    '@nuxtjs/vuetify'
+  ],
 
+  /**
+   * Vuetify configuration
+   */
   vuetify: {
     defaultAssets: false,
     treeShake: true, // needed for IE11 -> transpile: vuetify/lib
     optionsPath: '~/plugins/vuetify.options.ts'
   },
 
-  css: ['~/assets/vuetify.scss'],
+  /**
+   *
+   */
+  css: [
+    '~/assets/vuetify.scss'
+  ],
 
   /*
    ** Axios module configuration
    */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    // prefix: '/cgi-bin/',
     credentials: true,
     proxyHeaders: true,
     retry: false,
@@ -143,12 +180,21 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    extractCSS: true,
     publicPath: process.env.NUXT_PUBLIC_PATH || '/_nuxt/',
     transpile: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-flag-icon/]
   },
 
+  /**
+   * Proxy configuration
+   */
   proxy: {
-    '/api': { target: 'https://veo-api.cfapps.io/', pathRewrite: { '^/api': '' } }
+    '/api': {
+      target: 'https://veo-api.cfapps.io/',
+      pathRewrite: { '^/api': '' },
+      // TODO: Remove when #VEO-80 is fixed
+      onProxyReq(proxyReq) {
+        proxyReq.removeHeader('Origin')
+      }
+    }
   }
 }

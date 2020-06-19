@@ -1,4 +1,6 @@
 FROM node:12-alpine
+# Install Git
+RUN apk --no-cache add git
 # Create app directory
 WORKDIR /usr/src/app
 # Install app dependencies

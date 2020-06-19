@@ -10,5 +10,6 @@ export default (function({ isDev }, inject) {
 
     }
   }).withTag('app')
+
   inject('logger', logger)
 } as Plugin)
