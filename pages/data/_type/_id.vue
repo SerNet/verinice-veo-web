@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters>
-    <v-col cols="8" class="mx-0">
+    <v-col class="flex-shrink-0 flex-grow-1">
       <p v-if="object">
         <span>veo.data: {{ object.name }} ({{ object.id }})</span>
         <pre>{{ object }}</pre>
@@ -27,11 +27,10 @@
         </v-card>
       </v-dialog>
     </v-col>
-    <v-col cols="4">
-      <AppSideContainer>
-        <nuxt-child />
-      </AppSideContainer>
-    </v-col>
+
+    <AppSideContainer>
+      <nuxt-child />
+    </AppSideContainer>
 
     <AppTabBar :items="navItems" :drawer="true" right />
   </v-row>
@@ -47,7 +46,8 @@ type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
 
 export default Vue.extend({
   validate({ params }) {
-    return ['asset', 'control', 'group', 'person', 'process', 'unit'].includes(params.type)
+    return ['asset', 'control', 'person', 'process', 'unit'].includes(params.type)
+    // group muss noch wieder eingefügt werden
   },
   components: {
     AppTabBar,

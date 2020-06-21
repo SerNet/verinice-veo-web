@@ -1,8 +1,9 @@
 <template>
-  <div class="sideContainer" :class="side">
-    <!--  :style="{width: `${width}px`}" -->
-    <slot />
-  </div>
+  <v-col class="flex-shrink-1 flex-grow-0">
+    <div class="sideContainer" :class="side" :style="{width: `${width}px`}">
+      <slot />
+    </div>
+  </v-col>
 </template>
 
 <script lang="ts">

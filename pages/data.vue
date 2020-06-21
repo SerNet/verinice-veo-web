@@ -1,8 +1,8 @@
 <template>
-  <v-container fill-height fluid class="ma-0 pa-0">
-    <v-row align-content="start" align="stretch" no-gutters>
-      <v-col cols="3">
-        <AppSideContainer side="left">
+  <v-container fill-height fluid class="ma-0 pa-0" align-start>
+    <v-row no-gutters>
+      <AppSideContainer side="left" width="350">
+        <v-col>
           veo.data Navigation
           <ul>
             <li><nuxt-link to="/data/asset">Assets</nuxt-link></li>
@@ -13,9 +13,10 @@
             <li><nuxt-link to="/data/process">Processes</nuxt-link></li>
             <li><nuxt-link to="/data/unit">Units</nuxt-link></li>
           </ul>
-        </AppSideContainer>
-      </v-col>
-      <v-col cols="9">
+        </v-col>
+      </AppSideContainer>
+
+      <v-col class="flex-shrink-0 flex-grow-1">
         <nuxt-child />
       </v-col>
     </v-row>

@@ -3,7 +3,7 @@
     <p>
       {{ $t('welcome') }}!
     </p>
-    <p>veo.Data: {{ objectType }}</p>
+    <p>veo.data: {{ objectType }}</p>
 
     <p v-if="$fetchState.pending">Lädt ... </p>
 
@@ -17,10 +17,12 @@
 import Vue from 'vue'
 
 type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
+// group muss noch wieder eingefügt werden
 
 export default Vue.extend({
   validate({ params }) {
     return ['asset', 'control', 'person', 'process', 'unit'].includes(params.type)
+    // group muss noch wieder eingefügt werden
   },
   components: {},
   props: {},
