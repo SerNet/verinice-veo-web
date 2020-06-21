@@ -106,7 +106,7 @@ export class Client {
             return this.req(url, { ...options, retry: false })
           }
         } */
-        // await $user.logout()
+        await $user.logout()
         return Promise.reject(new Error('invalid jwt'))
       } else if (options.method === 'DELETE') {
         return Promise.resolve()

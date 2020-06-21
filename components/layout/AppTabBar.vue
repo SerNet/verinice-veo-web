@@ -11,7 +11,6 @@
         <v-icon v-if="item.icon" v-text="item.icon">mdi-folder</v-icon>
       </v-tab>
     </v-tabs>
-    drawer{{ drawer }}
   </v-navigation-drawer>
 </template>
 

@@ -15,7 +15,7 @@
       />
     </v-app-bar>
 
-    <AppSideBar :items="nav" :drawer.sync="drawer" />
+    <AppTabBar :items="nav" :drawer.sync="drawer" />
 
     <v-content>
       <nuxt />
@@ -27,13 +27,13 @@
 import Vue from 'vue'
 
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
-import AppSideBar from '~/components/layout/AppSideBar.vue'
+import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
 
 export default Vue.extend({
   components: {
     AppBarLogo,
-    AppSideBar,
+    AppTabBar,
     AppAccountBtn
   },
   data() {
