@@ -53,18 +53,20 @@ const preprocessSchemaForTranslation = (schema: any) => {
 
 export default Vue.extend({
   name: 'Forms',
-  async asyncData(context) {
-    const objectSchema = preprocessSchemaForTranslation(await context.app.$api.schema.fetch('process'))
+  async asyncData({ app, params }) {
+    // TODO "process" muss überall ersetzt werden durch das Objekt, welches im formSchema als ziel Objekt vorgegeben wird
+    const objectSchema = preprocessSchemaForTranslation(await app.$api.schema.fetch('process'))
     // const translation = await context.app.$api.translation.fetch(['de', 'en'])
-    const formSchema = await require(`./${context.route.params.form}.json`)
+    const formSchema = await require(`./${params.form}.json`)
     const translation = await require('./../Translations.json')
-    const value = await context.app.$api.process.fetch(context.route.params.object)
+    const value = await app.$api.process.fetch(params.object)
     return { objectSchema, formSchema, lang: translation.lang, value }
   },
   data() {
     return {
       panel: true,
-      activeLanguage: 'de'
+      activeLanguage: 'de',
+      value: undefined as any | undefined
     }
   },
   methods: {
