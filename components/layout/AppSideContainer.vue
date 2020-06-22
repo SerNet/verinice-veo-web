@@ -38,11 +38,11 @@ export default Vue.extend({
 }
 
 .left {
-  border-right: 1px solid black
+  border-right: 1px solid #e0e0e0
 }
 
 .right {
-  border-left: 1px solid black
+  border-left: 1px solid #e0e0e0
 }
 
 </style>
