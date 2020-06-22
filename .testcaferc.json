@@ -1,0 +1,6 @@
+{
+  "tsConfigPath": "./test/e2e/tsconfig.json",
+  "src": [
+    "./test/e2e/**/*.ts"
+  ]
+}

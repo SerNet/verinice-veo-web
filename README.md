@@ -1,6 +1,6 @@
 # veo-web
 
-> verinice.veo
+> Veo Web Frontend
 
 ## Build Setup
 
@@ -20,7 +20,3 @@ $ npm run generate
 ```
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
-
-## Vuex
-
-This module uses [vuex-typesafe-class](https://github.com/cpmsys/vuex-typesafe-class).
