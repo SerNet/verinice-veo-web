@@ -1,17 +1,18 @@
 <template>
   <v-container fill-height fluid class="ma-0 pa-0" align-start>
     <v-row no-gutters>
-      <AppSideContainer side="left" width="350">
-        <v-col>
+      <AppSideContainer side="left" :width="350">
+        <v-col cols="12">
           veo.data Navigation
           <ul>
-            <li><nuxt-link to="/data/asset">Assets</nuxt-link></li>
-            <li><nuxt-link to="/data/control">Controls</nuxt-link></li>
-            <!--<li><nuxt-link to="/data/group">Groups</nuxt-link></li>
-            // Group erstmal deaktiviert, weil das bei fetchAll noch einen type-param benötigt-->
-            <li><nuxt-link to="/data/person">Persons</nuxt-link></li>
-            <li><nuxt-link to="/data/process">Processes</nuxt-link></li>
-            <li><nuxt-link to="/data/unit">Units</nuxt-link></li>
+            <li v-for="(object, i) in objects" :key="i">
+              <nuxt-link :to="`/data/${object.type}/-/`">{{ object.name }}</nuxt-link>
+              <ul v-if="object.groups">
+                <li v-for="(group, k) in object.groups" :key="k">
+                  <nuxt-link :to="`/data/${object.type}/${group.id}/`">{{ group.name }}</nuxt-link>
+                </li>
+              </ul>
+            </li>
           </ul>
         </v-col>
       </AppSideContainer>
@@ -26,22 +27,43 @@
 <script lang="ts">
 import Vue from 'vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
+// import { GroupType } from '~/plugins/api/group'
 
 export default Vue.extend({
   components: {
     AppSideContainer
   },
   props: {},
-  fetch({ app }) {},
-  data() {
-    return {}
+  fetch() {
+    this.objects = [
+      {
+        type: 'asset',
+        name: 'Assets',
+        groups: [] // await this.$api.group.fetchAll('Asset')
+      },
+      {
+        type: 'control',
+        name: 'Controls',
+        groups: [] // await this.$api.group.fetchAll('Control')
+      },
+      {
+        type: 'person',
+        name: 'Persons',
+        groups: [] // await this.$api.group.fetchAll('Person')
+      },
+      {
+        type: 'process',
+        name: 'Processes',
+        groups: [] // await this.$api.group.fetchAll('Process')
+      }
+    ]
   },
-  methods: {},
-  head() {
+  data() {
     return {
-      title: 'Willkommen'
+      objects: [] as any[]
     }
-  }
+  },
+  methods: {}
 })
 </script>
 

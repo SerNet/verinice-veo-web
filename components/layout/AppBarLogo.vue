@@ -70,7 +70,7 @@ export default Vue.extend({})
 
 @media only screen and (max-width: 599px /* 959 */) {
   .toolbar-logo {
-    padding-left: 70px;
+    padding-left: 50px;
 
     .inner {
       padding: 60px;
@@ -78,7 +78,7 @@ export default Vue.extend({})
     }
 
     svg {
-      left: 70px;
+      left: 55px;
       top: 20px;
       width: 25px;
       height: 22px;

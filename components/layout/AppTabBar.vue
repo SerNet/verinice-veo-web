@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-if="items.length > 0" v-model="drawer" :class="{'v-application--is-rtl': right}" :right="right" :floating="true" width="64" :permanent="!$vuetify.breakpoint.xs" clipped app>
+  <v-navigation-drawer v-if="items.length > 0" :value="drawer" :class="{'v-application--is-rtl': right}" :right="right" :floating="true" width="64" :permanent="!$vuetify.breakpoint.xs" clipped app @input="$emit('update:drawer', $event)">
     <v-tabs
       class="nav-tabs"
       active-class="nav-tab-active"

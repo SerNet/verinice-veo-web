@@ -4,6 +4,19 @@
       <AppBarLogo>
         <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
       </AppBarLogo>
+      <v-select
+        class="domain-select"
+        :items="domains"
+        :value="domains[0]"
+        hide-details
+        flat
+        light
+        :prepend-inner-icon="!$vuetify.breakpoint.xs?'mdi-domain':''"
+        dense
+        label="Domain"
+        solo
+      />
+
       <v-spacer />
       <AppAccountBtn
         v-if="$auth.profile"
@@ -39,6 +52,7 @@ export default Vue.extend({
   data() {
     return {
       drawer: false as boolean,
+      domains: ['Datenschutz', 'ISO 27001'],
       nav: [
         {
           name: 'dashboard',
@@ -70,5 +84,20 @@ export default Vue.extend({
 <style lang="scss" scoped>
 ::v-deep .v-content__wrap {
   border-top: 1px solid #e0e0e0;
+}
+
+.domain-select {
+  position: absolute;
+  width: 190px; // Workaround bis sich das Select automatisch verkleinern lässt
+  left: 220px;
+  top: 13px;
+}
+
+@media only screen and (max-width: 599px /* 959 */) {
+  .domain-select {
+    left: 120px;
+    top: 8px;
+    width: 152px;// Workaround bis sich das Select automatisch verkleinern lässt
+  }
 }
 </style>

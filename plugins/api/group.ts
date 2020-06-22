@@ -73,4 +73,4 @@ export default function(api: Client) {
   }
 }
 
-export type GroupType = 'Asset' | 'Control' | 'Document' | 'Person' | 'Process' | 'Risk'
+export type GroupType = 'Asset' | 'Control' | 'Person' | 'Process' // | 'Document' | 'Risk'
