@@ -2,10 +2,10 @@
   <div>
     <div class="d-flex flex-row">
       <div class="d-flex flex-column flex-grow-1 pa-6">
-        <!-- <div class="text-center my-6">
+        <div class="text-center my-6">
           <v-btn dark class="ma-1" @click="activeLanguage = 'en'">English</v-btn>
           <v-btn dark class="ma-1" @click="activeLanguage = 'de'">Deutsch</v-btn>
-        </div> -->
+        </div>
         <veo-form v-model="value" :schema="objectSchema" :ui="formSchema" :lang="lang[activeLanguage]" />
       </div>
     </div>
