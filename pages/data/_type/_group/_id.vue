@@ -1,6 +1,7 @@
 <template>
   <v-row no-gutters>
     <v-col class="flex-shrink-0 flex-grow-1 pa-3">
+      <p v-if="$fetchState.pending">Lädt ... </p>
       <p v-if="object">
         <v-btn color="primary" :to="linkToLinks" dark>Links</v-btn>
         <v-btn color="primary" :to="linkToHistory" dark>History</v-btn>
