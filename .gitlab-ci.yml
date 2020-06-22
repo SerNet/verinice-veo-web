@@ -6,6 +6,7 @@ variables:
   POSTGRES_ENABLED: "false"
   PERFORMANCE_DISABLED: "true"
   TEST_DISABLED: "true"
+  PRODUCTION_ADDITIONAL_HOSTS: "veo-web.cpmsys.io"
   AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: "--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA"
 
 review:
