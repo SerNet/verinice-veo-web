@@ -1,5 +1,5 @@
 {
-  "objectSchema": "process",
+  "objectSchemaName": "process",
   "type": "Layout",
   "options": {
     "direction": "vertical",

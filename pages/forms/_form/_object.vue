@@ -37,7 +37,8 @@
       <div class="d-flex flex-row">
         <div class="d-flex flex-column flex-grow-1 pa-6">
           <div class="mx-auto" style="width:800px">
-            <v-btn color="primary" block @click="save">Speichern</v-btn>
+            <v-btn color="primary" :loading="state === 'loading'" block @click="save">Speichern</v-btn>
+            <AppStateAlert v-model="state" state-after-alert="start" />
           </div>
         </div>
       </div>
@@ -48,15 +49,20 @@
 <script lang="ts">
 import Vue from 'vue'
 import { preprocessSchemaForTranslation, IForm } from '@/lib/utils'
+import AppStateAlert from '@/components/AppStateAlert.vue'
 
 interface IData {
   panel: boolean
   activeLanguage: string
   form: IForm
+  state: string
 }
 
 export default Vue.extend({
   name: 'Forms',
+  components: {
+    AppStateAlert
+  },
   async fetch() {
     // TODO "process" muss überall ersetzt werden durch das Objekt, welches im formSchema als ziel Objekt vorgegeben wird
     const objectSchema = preprocessSchemaForTranslation(await this.$api.schema.fetch('process'))
@@ -80,22 +86,23 @@ export default Vue.extend({
         formSchema: {},
         value: {},
         lang: {}
-      }
+      },
+      state: 'start'
     }
   },
   methods: {
     async save() {
+      this.state = 'loading'
       try {
         // TODO: find better solution
         //  Add Keys and IDs manually
         Object.keys(this.form.value.customAspects).forEach((key: string) => {
           this.form.value.customAspects[key] = { ...this.form.value.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
         })
-        // this.value.customAspects = {}
-        console.log(this.form.value)
         await this.$api.process.update(this.$route.params.object, this.form.value)
+        this.state = 'success'
       } catch (e) {
-        console.error(e)
+        this.state = 'error'
       }
     }
   },
