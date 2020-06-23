@@ -119,7 +119,7 @@ export default Vue.extend({
   },
   computed: {
     createdObjectURL(): string {
-      return this.createdObjectUUID ? `${window.location}${this.createdObjectUUID}` : ''
+      return this.createdObjectUUID ? `${window.location.origin}/forms/${this.$route.params.form}/${this.createdObjectUUID}` : ''
     }
   },
   methods: {
