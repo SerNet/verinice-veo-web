@@ -25,7 +25,7 @@ export default Vue.extend({
   },
   watch: {
     value: {
-      intemediate: true,
+      immediate: true,
       handler(newState) {
         if (['success', 'error'].includes(newState)) {
           setTimeout(() => {
