@@ -136,7 +136,7 @@ export default Vue.extend({
           this.state = 'success'
         }
       } catch (error) {
-        this.state = 'success'
+        this.state = 'error'
       }
     }
   },
