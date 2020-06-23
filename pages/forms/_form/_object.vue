@@ -47,16 +47,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import JsonPointer from 'json-ptr'
+import { preprocessSchemaForTranslation, IForm } from '@/lib/utils'
 
-const preprocessSchemaForTranslation = (schema: any) => {
-  schema.$schema = 'http://json-schema.org/draft-07/schema#'
-  JsonPointer.list(schema, '#')
-    .filter((obj: any) => /\/(?<!type\/)enum\/\d+$/gi.test(obj.fragmentId))
-    .forEach((obj: any) => {
-      JsonPointer.set(schema, obj.fragmentId, `#lang/${obj.value}`)
-    })
-  return schema
+interface IData {
+  panel: boolean
+  activeLanguage: string
+  form: IForm
 }
 
 export default Vue.extend({
@@ -75,7 +71,7 @@ export default Vue.extend({
       lang
     }
   },
-  data() {
+  data(): IData {
     return {
       panel: true,
       activeLanguage: 'de',
