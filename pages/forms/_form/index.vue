@@ -126,6 +126,7 @@ export default Vue.extend({
     async create() {
       this.state = 'loading'
       try {
+        console.log(await this.$api.unit.fetchAll())
         if (!this.objectSchemaName) {
           const { objectSchemaName } = await require(`./${this.$route.params.form}.json`)
           this.objectSchemaName = objectSchemaName
