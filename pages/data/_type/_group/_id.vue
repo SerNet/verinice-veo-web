@@ -88,6 +88,9 @@ export default Vue.extend({
     objectType(): APIGroup {
       return this.$route.params.type as APIGroup
     },
+    objectGroup(): String {
+      return this.$route.params.group
+    },
     linkToLinks(): String {
       return '/data/' + this.$route.params.type + '/' + this.$route.params.group + '/' + this.$route.params.id + '/links'
     },
@@ -100,7 +103,7 @@ export default Vue.extend({
     async deleteObject() {
       this.deleteDialog = false
       await this.$api[this.objectType].delete(this.$route.params.id)
-      // redirect('/data/' + this.$route.params.type)
+      this.$router.push({ path: `/data/${this.objectType}/${this.objectGroup}/` })
     }
   },
   head():any {
