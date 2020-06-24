@@ -3,13 +3,18 @@
     <p>
       {{ $t('welcome') }}!
     </p>
-    <p>veo.data: {{ objectType }}</p>
+    <p>
+      veo.data<br>
+      type: {{ objectType }}<br>
+      group: {{ objectGroup }}
+    </p>
 
     <p v-if="$fetchState.pending">Lädt ... </p>
 
     <ul>
-      <li v-for="(object, index) in objects" :key="index"><nuxt-link :to="`/data/${objectType}/-/${object.id}`">{{ `${object.name} (${object.id})` }}</nuxt-link></li>
+      <li v-for="(object, index) in objects" :key="index"><nuxt-link :to="`/data/${objectType}/${objectGroup}/${object.id}`">{{ `${object.name} (${object.id})` }}</nuxt-link></li>
     </ul>
+    <p v-if="!$fetchState.pending && objects.length === 0">keine Objekte vorhanden</p>
   </v-col>
 </template>
 
@@ -44,10 +49,14 @@ export default Vue.extend({
   computed: {
     objectType(): APIGroup {
       return this.$route.params.type as APIGroup
+    },
+    objectGroup(): String {
+      return this.$route.params.group
     }
   },
   watch: {
-    '$route.params.type': '$fetch'
+    '$route.params.type': '$fetch',
+    '$route.params.group': '$fetch'
   },
   async created() {},
   methods: {

@@ -4,6 +4,7 @@
       <AppSideContainer side="left" :width="350">
         <v-col cols="12">
           veo.data Navigation
+          <p v-if="$fetchState.pending">Lädt ... </p>
           <ul>
             <li v-for="(object, i) in objects" :key="i">
               <nuxt-link :to="`/data/${object.type}/-/`">{{ object.name }}</nuxt-link>
@@ -34,27 +35,28 @@ export default Vue.extend({
     AppSideContainer
   },
   props: {},
-  fetch() {
+  async fetch() {
+    // const assetGroups = await this.$api.group.fetchAll('Asset')
     this.objects = [
       {
         type: 'asset',
         name: 'Assets',
-        groups: [] // await this.$api.group.fetchAll('Asset')
+        groups: await this.$api.group.fetchAll('Asset')
       },
       {
         type: 'control',
         name: 'Controls',
-        groups: [] // await this.$api.group.fetchAll('Control')
+        groups: await this.$api.group.fetchAll('Control')
       },
       {
         type: 'person',
         name: 'Persons',
-        groups: [] // await this.$api.group.fetchAll('Person')
+        groups: await this.$api.group.fetchAll('Person')
       },
       {
         type: 'process',
         name: 'Processes',
-        groups: [] // await this.$api.group.fetchAll('Process')
+        groups: await this.$api.group.fetchAll('Process')
       }
     ]
   },
