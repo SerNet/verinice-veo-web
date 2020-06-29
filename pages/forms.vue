@@ -5,6 +5,7 @@
         <v-col cols="12">
           veo.forms Navigation
           <ul>
+            <li><nuxt-link to="/forms/">FORMS</nuxt-link></li>
             <li><nuxt-link to="/forms/07b57947-6259-471e-95cf-5970a40fac3f/">VDV</nuxt-link></li>
           </ul>
         </v-col>
@@ -26,10 +27,6 @@ export default Vue.extend({
     AppSideContainer
   },
   props: {},
-  fetch() {},
-  data() {
-    return {}
-  },
   methods: {},
   head() {
     return {
@@ -39,6 +36,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
