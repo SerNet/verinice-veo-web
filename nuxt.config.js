@@ -189,7 +189,7 @@ module.exports = {
    */
   proxy: {
     '/api': {
-      target: 'https://veo-api.cfapps.io/',
+      target: process.env.VEO_API_HOST || 'https://veo-api.cfapps.io/',
       pathRewrite: { '^/api': '' },
       // TODO: Remove when #VEO-80 is fixed
       onProxyReq(proxyReq) {

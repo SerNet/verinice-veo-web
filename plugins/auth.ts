@@ -43,7 +43,7 @@ export class Auth {
 export default (async function({ $axios, isDev, route }, inject) {
   if (route.name !== 'sso') {
     const $auth = new Auth({
-      url: 'https://auth-staging.verinice.com/auth', realm: 'veo-staging', clientId: 'veo-development-client'
+      url: 'https://keycloak.staging.verinice.com/auth', realm: 'verinice-veo', clientId: 'veo-development-client'
     })
     await $auth.init()
     inject('auth', $auth)
