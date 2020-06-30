@@ -197,4 +197,12 @@ module.exports = {
       }
     }
   }
+
+  veo: {
+    oidc: {
+      host: process.env.VEO_OIDC_HOST || 'https://auth-staging.verinice.com/auth',
+      realm: process.env.VEO_OIDC_REALM || 'veo-staging',
+      client: process.env.VEO_OIDC_CLIENT || 'veo-development-client',
+    }
+  }
 }
