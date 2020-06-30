@@ -38,7 +38,10 @@ module.exports = {
    */
   env: {
     CI_COMMIT_REF_NAME: process.env.CI_COMMIT_REF_NAME,
-    CI_COMMIT_SHA: process.env.CI_COMMIT_SHA
+    CI_COMMIT_SHA: process.env.CI_COMMIT_SHA,
+    VEO_OIDC_HOST: process.env.VEO_OIDC_HOST || 'https://auth-staging.verinice.com/auth',
+    VEO_OIDC_REALM: process.env.VEO_OIDC_REALM || 'veo-staging',
+    VEO_OIDC_CLIENT: process.env.VEO_OIDC_CLIENT || 'veo-development-client'
   },
 
   /*
@@ -195,14 +198,6 @@ module.exports = {
       onProxyReq(proxyReq) {
         proxyReq.removeHeader('Origin')
       }
-    }
-  }
-
-  veo: {
-    oidc: {
-      host: process.env.VEO_OIDC_HOST || 'https://auth-staging.verinice.com/auth',
-      realm: process.env.VEO_OIDC_REALM || 'veo-staging',
-      client: process.env.VEO_OIDC_CLIENT || 'veo-development-client',
     }
   }
 }
