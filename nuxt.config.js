@@ -36,12 +36,13 @@ module.exports = {
   /**
    *
    */
-  env: {
-    CI_COMMIT_REF_NAME: process.env.CI_COMMIT_REF_NAME,
-    CI_COMMIT_SHA: process.env.CI_COMMIT_SHA,
-    VEO_OIDC_HOST: process.env.VEO_OIDC_HOST || 'https://auth-staging.verinice.com/auth',
-    VEO_OIDC_REALM: process.env.VEO_OIDC_REALM || 'veo-staging',
-    VEO_OIDC_CLIENT: process.env.VEO_OIDC_CLIENT || 'veo-development-client'
+  publicRuntimeConfig: {
+    version: process.env.CI_COMMIT_REF_NAME || 'latest',
+    build: process.env.CI_COMMIT_SHA || '0000000',
+    apiHost: process.env.VEO_API_HOST || 'https://veo-api.cfapps.io/',
+    oidcHost: process.env.VEO_OIDC_HOST || 'https://auth-staging.verinice.com/auth',
+    oidcRealm: process.env.VEO_OIDC_REALM || 'veo-staging',
+    oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client'
   },
 
   /*
@@ -194,8 +195,11 @@ module.exports = {
     '/api': {
       target: process.env.VEO_API_HOST || 'https://veo-api.cfapps.io/',
       pathRewrite: { '^/api': '' },
-      // TODO: Remove when #VEO-80 is fixed
+      /**
+       * @param {import('http').ClientRequest} proxyReq
+       */
       onProxyReq(proxyReq) {
+        // TODO: Remove when #VEO-80 is fixed
         proxyReq.removeHeader('Origin')
       }
     }

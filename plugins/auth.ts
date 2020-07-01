@@ -40,12 +40,12 @@ export class Auth {
   }
 }
 
-export default (async function({ route, env }, inject) {
+export default (async function({ route, $config }, inject) {
   if (route.name !== 'sso') {
     const $auth = new Auth({
-      url: env.VEO_OIDC_HOST,
-      realm: env.VEO_OIDC_REALM,
-      clientId: env.VEO_OIDC_CLIENT
+      url: $config.oidcHost,
+      realm: $config.oidcRealm,
+      clientId: $config.oidcClient
     })
     await $auth.init()
     inject('auth', $auth)

@@ -1,6 +1,7 @@
 <template>
   <v-col cols="12">
-    Settings
+    Version: {{ $config.version }}<br>
+    Build: {{ $config.build }}
   </v-col>
 </template>
 
