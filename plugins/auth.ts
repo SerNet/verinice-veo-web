@@ -40,10 +40,12 @@ export class Auth {
   }
 }
 
-export default (async function({ $axios, isDev, route }, inject) {
+export default (async function({ route, env }, inject) {
   if (route.name !== 'sso') {
     const $auth = new Auth({
-      url: 'https://auth-staging.verinice.com/auth', realm: 'veo-staging', clientId: 'veo-development-client'
+      url: env.VEO_OIDC_HOST,
+      realm: env.VEO_OIDC_REALM,
+      clientId: env.VEO_OIDC_CLIENT
     })
     await $auth.init()
     inject('auth', $auth)
