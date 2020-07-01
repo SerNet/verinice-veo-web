@@ -26,10 +26,6 @@ export default Vue.extend({
     AppSideContainer
   },
   props: {},
-  fetch() {},
-  data() {
-    return {}
-  },
   methods: {},
   head() {
     return {
@@ -39,6 +35,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
