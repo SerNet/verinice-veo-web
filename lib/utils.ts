@@ -97,11 +97,16 @@ export function hashObj(data: any, opts: IHashOpts | ICmpFunction = {}): string 
 
 export function preprocessSchemaForTranslation(schema: JSONSchema7): JSONSchema7 {
   schema.$schema = 'http://json-schema.org/draft-07/schema#'
+
   JsonPointer.list(schema, '#')
-    .filter((obj: any) => /\/(?<!type\/)enum\/\d+$/gi.test(obj.fragmentId))
+    .filter((obj: any) => {
+      const lastThreeProperties = obj.fragmentId.split('/').slice(-3)
+      return lastThreeProperties[0] !== 'type' && lastThreeProperties[1] === 'enum' && !isNaN(lastThreeProperties[2])
+    })
     .forEach((obj: any) => {
       JsonPointer.set(schema, obj.fragmentId, `#lang/${obj.value}`)
     })
+
   return schema
 }
 
