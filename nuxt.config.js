@@ -186,24 +186,24 @@ module.exports = {
   build: {
     publicPath: process.env.NUXT_PUBLIC_PATH || '/_nuxt/',
     transpile: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-flag-icon/]
-  },
+  }
 
   /**
    * Proxy configuration
    */
-  proxy: {
-    '/api': {
-      target: process.env.VEO_API_HOST || 'https://veo.staging.cpmsys.io/',
-      pathRewrite: { '^/api': '' },
-      /**
-       * @param {import('http').ClientRequest} proxyReq
-       * @param {import('http').ClientRequest} req
-       * @param {import('http').ServerResponse} res
-       */
-      onProxyReq(proxyReq, req, res) {
-        // TODO: Remove when #VEO-80 is fixed
-        proxyReq.removeHeader('Origin')
-      }
-    }
-  }
+  // proxy: {
+  //   '/api': {
+  //     target: process.env.VEO_API_HOST || 'https://veo.staging.cpmsys.io/',
+  //     pathRewrite: { '^/api': '' },
+  //     /**
+  //      * @param {import('http').ClientRequest} proxyReq
+  //      * @param {import('http').ClientRequest} req
+  //      * @param {import('http').ServerResponse} res
+  //      */
+  //     onProxyReq(proxyReq, req, res) {
+  //       // TODO: Remove when #VEO-80 is fixed
+  //       proxyReq.removeHeader('Origin')
+  //     }
+  //   }
+  // }
 }

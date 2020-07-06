@@ -38,9 +38,9 @@ export class Client {
   }
 
   constructor(protected context: Context) {
-    this.build = context.env.CI_COMMIT_SHA
-    this.version = context.env.CI_COMMIT_REF_NAME
-    this.baseURL = '/api'
+    this.build = context.$config.build
+    this.version = context.$config.version
+    this.baseURL = `${context.$config.apiHost}`.replace(/\/$/, '')
     // this.sentry = context.app.$sentry
   }
 
