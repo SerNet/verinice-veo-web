@@ -4,7 +4,7 @@
       <AppSideContainer side="left" :width="350">
         <v-col cols="12">
           veo.data Navigation
-          <p v-if="$fetchState.pending">Lädt ... </p>
+          <p v-if="$fetchState.pending">Lädt ...</p>
           <ul>
             <li v-for="(object, i) in objects" :key="i">
               <nuxt-link :to="`/data/${object.type}/-/`">{{ object.name }}</nuxt-link>
@@ -19,6 +19,7 @@
       </AppSideContainer>
 
       <v-col class="flex-shrink-0 flex-grow-1">
+        <v-breadcrumbs :items="breadcrumbItems" class="text-capitalize" />
         <nuxt-child />
       </v-col>
     </v-row>
@@ -27,6 +28,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { IBaseObject } from '../lib/utils'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 // import { GroupType } from '~/plugins/api/group'
 
@@ -65,10 +67,22 @@ export default Vue.extend({
       objects: [] as any[]
     }
   },
+  computed: {
+    breadcrumbItems(): IBaseObject[] {
+      const pathArray: string[] = this.$route.path.split('/').filter((el: string) => el !== '')
+      return [
+        { text: 'dashboard', to: '/', exact: true, disabled: false },
+        ...pathArray.map((el: string, i: number) => ({
+          text: el,
+          to: `/${pathArray.slice(0, i + 1).join('/')}/`,
+          exact: true,
+          disabled: false
+        }))
+      ]
+    }
+  },
   methods: {}
 })
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
