@@ -5,7 +5,7 @@
         <v-col cols="12">
           veo.forms Navigation
           <ul>
-            <li><nuxt-link to="/forms/07b57947-6259-471e-95cf-5970a40fac3f/">VDV</nuxt-link></li>
+            <li><nuxt-link to="/forms/07b57947-6259-471e-95cf-5970a40fac3f/">Neu</nuxt-link></li>
           </ul>
         </v-col>
       </AppSideContainer>
