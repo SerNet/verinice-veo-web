@@ -14,7 +14,12 @@
             <v-btn dark class="ma-1" @click="activeLanguage = 'de'">Deutsch</v-btn>
             <v-btn dark class="ma-1" @click="form.value.customAspects = {}">customAspects leeren</v-btn>
           </div>
-          <veo-form v-if="!$fetchState.pending" v-model="form.value" :schema="form.objectSchema" :ui="form.formSchema" :lang="form.lang[activeLanguage]" />
+
+          <div class="mx-auto pa-3" style="width:800px">
+            <div class="display-1">{{ form.value.name }}</div>
+          </div>
+
+          <veo-form v-if="!$fetchState.pending" v-model="form.value" :schema="form.objectSchema" :ui="form.formSchema" :lang="form.lang && form.lang[activeLanguage]" />
         </div>
       </div>
 
