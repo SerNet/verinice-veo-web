@@ -6,22 +6,25 @@
       </div>
     </template>
 
-    <div v-if="processes.length > 0" style="max-width: 800px">
-      <div class="display-1 px-4 pt-4 pb-0">Verzeichnis der Verarbeitungstätigkeiten</div>
-      <v-list two-line max-width="500">
-        <v-list-item-group color="primary">
-          <v-list-item v-for="process in processes" :key="process.id" :to="`/forms/07b57947-6259-471e-95cf-5970a40fac3f/${process.id}`">
-            <v-list-item-avatar>
-              <v-icon dark class="primary">mdi-clipboard-text</v-icon>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title class="primary--text text-uppercase font-weight-medium" v-text="process.name" />
-              <v-list-item-subtitle v-text="process.id" />
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </div>
+    <v-col>
+      <div class="display-1 pt-4 pb-0">Verzeichnis der Verarbeitungstätigkeiten</div>
+      <v-btn to="/forms/07b57947-6259-471e-95cf-5970a40fac3f/" color="primary" class="mt-4">Verarbeitungstätigkeit erstellen</v-btn>
+      <div v-if="processes.length > 0" style="max-width: 800px">
+        <v-list two-line max-width="500">
+          <v-list-item-group color="primary">
+            <v-list-item v-for="process in processes" :key="process.id" :to="`/forms/07b57947-6259-471e-95cf-5970a40fac3f/${process.id}`">
+              <v-list-item-avatar>
+                <v-icon dark class="primary">mdi-clipboard-text</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title class="primary--text text-uppercase font-weight-medium" v-text="process.name" />
+                <v-list-item-subtitle v-text="process.id" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </div>
+    </v-col>
   </div>
 </template>
 
