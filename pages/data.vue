@@ -59,7 +59,7 @@ export default Vue.extend({
       {
         type: 'control',
         name: 'Controls',
-        groups: [{ name: 'asdadasd', id: '-' }]
+        groups: await this.$api.group.fetchAll('Control')
       },
       {
         type: 'person',
