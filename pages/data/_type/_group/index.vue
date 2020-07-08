@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { IBaseObject } from '../../../../lib/utils'
+import { IBaseObject } from '@/lib/utils'
 import { GroupType } from '~/plugins/api/group'
 
 type APIGroup = 'asset' | 'control' | 'person' | 'process'

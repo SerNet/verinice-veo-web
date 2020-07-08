@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { IBaseObject } from '../lib/utils'
+import { IBaseObject } from '@/lib/utils'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 
 interface IData {
