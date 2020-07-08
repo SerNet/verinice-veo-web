@@ -43,6 +43,10 @@ import { IBaseObject } from '../lib/utils'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 // import { GroupType } from '~/plugins/api/group'
 
+interface IData {
+  objects: IBaseObject[]
+}
+
 export default Vue.extend({
   components: {
     AppSideContainer
@@ -73,9 +77,9 @@ export default Vue.extend({
       }
     ]
   },
-  data() {
+  data(): IData {
     return {
-      objects: [] as any[]
+      objects: []
     }
   },
   computed: {
