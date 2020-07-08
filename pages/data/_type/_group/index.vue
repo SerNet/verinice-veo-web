@@ -1,22 +1,13 @@
 <template>
   <v-col>
-    <p>
-      veo.data<br>
-      type: {{ objectType }}<br>
-      group: {{ objectGroup }}
-    </p>
+    <div class="display-1 mb-3">veo.data</div>
+    <div class="display">Type: {{ objectType }}</div>
+    <div class="display mb-3">Group: {{ objectGroup }}</div>
 
     <p>
       <v-dialog v-model="createDialog" persistent max-width="800">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="primary"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            {{ objectType }} erstellen
-          </v-btn>
+          <v-btn color="primary" dark v-bind="attrs" v-on="on"> {{ objectType }} erstellen </v-btn>
         </template>
         <v-card>
           <v-card-title class="headline" />
@@ -36,12 +27,24 @@
       </v-dialog>
     </p>
 
-    <p v-if="$fetchState.pending">Lädt ... </p>
+    <p v-if="$fetchState.pending">Lädt ...</p>
 
-    <ul>
-      <li v-for="(object, index) in objects" :key="index"><nuxt-link :to="`/data/${objectType}/${objectGroup}/${object.id}`">{{ `${object.name} (${object.id})` }}</nuxt-link></li>
-    </ul>
-    <p v-if="!$fetchState.pending && objects.length === 0">keine Objekte vorhanden</p>
+    <div v-if="objects.length > 0" style="max-width: 800px">
+      <v-list two-line max-width="500">
+        <v-list-item-group color="primary">
+          <v-list-item v-for="object in objects" :key="object.id" :to="`/data/${objectType}/${objectGroup}/${object.id}`">
+            <v-list-item-avatar>
+              <v-icon dark class="primary">mdi-link</v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title class="primary--text text-uppercase font-weight-medium" v-text="object.name" />
+              <v-list-item-subtitle v-text="object.id" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </div>
+    <div v-else class="display">Keine Objekte vorhanden</div>
   </v-col>
 </template>
 
@@ -64,7 +67,7 @@ export default Vue.extend({
       this.objects = await this.$api[this.objectType].fetchAll()
     } else {
       let groupType = this.$route.params.type as GroupType
-      groupType = groupType.charAt(0).toUpperCase() + groupType.slice(1) as GroupType
+      groupType = (groupType.charAt(0).toUpperCase() + groupType.slice(1)) as GroupType
       this.objects = await this.$api.group.fetchGroupMembers(this.$route.params.group, groupType)
     }
   },
@@ -125,11 +128,10 @@ export default Vue.extend({
           const unit = await this.$api.unit.create({ name: 'cpmsys test Unit' })
           this.unitUUID = unit.resourceId
         }
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   },
-  head():any {
+  head(): any {
     return {
       title: 'veo.data'
     }
@@ -137,6 +139,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

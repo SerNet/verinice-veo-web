@@ -8,7 +8,7 @@
       </p>
       <p v-if="object">
         <span>veo.data: {{ object.name }} ({{ object.id }})</span>
-        <pre>{{ object }}</pre>
+        <pre><code class="language-json" v-html="objectHighlighted" /></pre>
       </p>
       <v-dialog v-if="object" v-model="deleteDialog" persistent max-width="290">
         <template v-slot:activator="{ on, attrs }">
@@ -43,8 +43,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
+// @ts-ignore
+import hljs from 'highlight.js/lib/core'
+// @ts-ignore
+import json from 'highlight.js/lib/languages/json'
+import 'highlight.js/styles/github.css'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
+
+hljs.registerLanguage('json', json)
 
 type APIGroup = 'asset' | 'control' | 'person' | 'process'
 
@@ -96,6 +103,9 @@ export default Vue.extend({
     },
     linkToHistory(): String {
       return '/data/' + this.$route.params.type + '/' + this.$route.params.group + '/' + this.$route.params.id + '/history'
+    },
+    objectHighlighted():String {
+      return hljs.highlight('json', JSON.stringify(this.object, null, 2)).value
     }
   },
   async created() {},
@@ -115,5 +125,9 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-
+.v-application code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+ }
 </style>
