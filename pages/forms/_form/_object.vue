@@ -82,6 +82,7 @@ export default Vue.extend({
       value,
       lang
     }
+    console.log(this.form)
   },
   data(): IData {
     return {
@@ -95,6 +96,9 @@ export default Vue.extend({
       },
       state: 'start'
     }
+  },
+  watch: {
+    '$route.query': '$fetch'
   },
   methods: {
     async save() {
