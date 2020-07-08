@@ -34,7 +34,7 @@
         <v-list-item-group color="primary">
           <v-list-item v-for="object in objects" :key="object.id" :to="`/data/${objectType}/${objectGroup}/${object.id}`">
             <v-list-item-avatar>
-              <v-icon dark class="primary">mdi-link</v-icon>
+              <v-icon dark class="primary">mdi-file</v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title class="primary--text text-uppercase font-weight-medium" v-text="object.name" />
