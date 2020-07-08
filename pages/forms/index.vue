@@ -1,7 +1,7 @@
 <template>
   <v-col cols="12">
     <div class="display-1 pt-4 pb-0">Verzeichnis der Verarbeitungstätigkeiten</div>
-    <v-btn to="/forms/07b57947-6259-471e-95cf-5970a40fac3f/" color="primary" class="mt-4">Verarbeitungstätigkeit erstellen</v-btn>
+    <v-btn to="/forms/07b57947-6259-471e-95cf-5970a40fac3f/" color="primary" class="mt-12">Verarbeitungstätigkeit erstellen</v-btn>
     <div v-if="$fetchState.pending">
       <div class="text-center ma-12">
         <v-progress-circular indeterminate color="primary" size="50" />
