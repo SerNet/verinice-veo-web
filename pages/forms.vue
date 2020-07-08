@@ -2,7 +2,7 @@
   <v-container fill-height fluid class="ma-0 pa-0" align-start>
     <v-row no-gutters>
       <AppSideContainer side="left" :width="350">
-        <v-col cols="12 pa-0">
+        <v-col cols="12" class="pa-0">
           <div v-if="$fetchState.pending">
             <div class="text-center mt-6">
               <v-progress-circular indeterminate color="primary" />
@@ -10,13 +10,11 @@
           </div>
           <div v-else>
             <v-list dense>
-              <v-list-item-group>
-                <v-list-item v-for="process in processes" :key="process.id" :to="`/forms/07b57947-6259-471e-95cf-5970a40fac3f/${process.id}/`">
-                  <v-list-item-content>
-                    <v-list-item-title class="primary--text text-uppercase" v-text="process.name" />
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
+              <v-list-item v-for="process in processes" :key="process.id" :to="`/forms/07b57947-6259-471e-95cf-5970a40fac3f/${process.id}/`">
+                <v-list-item-content>
+                  <v-list-item-title v-text="process.name" />
+                </v-list-item-content>
+              </v-list-item>
             </v-list>
           </div>
         </v-col>

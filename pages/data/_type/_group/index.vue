@@ -27,33 +27,44 @@
       </v-dialog>
     </p>
 
-    <p v-if="$fetchState.pending">Lädt ...</p>
+    <div v-if="$fetchState.pending">
+      <div class="text-center ma-12">
+        <v-progress-circular indeterminate color="primary" size="50" />
+      </div>
+    </div>
 
-    <div v-if="objects.length > 0" style="max-width: 800px">
+    <div v-else>
       <v-list two-line max-width="500">
-        <v-list-item-group color="primary">
-          <v-list-item v-for="object in objects" :key="object.id" :to="`/data/${objectType}/${objectGroup}/${object.id}`">
-            <v-list-item-avatar>
-              <v-icon dark class="primary">mdi-file</v-icon>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title class="primary--text text-uppercase font-weight-medium" v-text="object.name" />
-              <v-list-item-subtitle v-text="object.id" />
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
+        <v-list-item v-for="object in objects" :key="object.id" :to="`/data/${objectType}/${objectGroup}/${object.id}`">
+          <v-list-item-avatar>
+            <v-icon dark class="primary">mdi-file</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title class="primary--text text-uppercase font-weight-medium" v-text="object.name" />
+            <v-list-item-subtitle v-text="object.id" />
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </div>
-    <div v-else class="display">Keine Objekte vorhanden</div>
+    <div v-if="objects.length === 0" class="display">Keine Objekte vorhanden</div>
   </v-col>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { IBaseObject } from '../../../../lib/utils'
 import { GroupType } from '~/plugins/api/group'
 
 type APIGroup = 'asset' | 'control' | 'person' | 'process'
 
+interface IData {
+  objects: IBaseObject[]
+  objectName: string
+  createDialog: boolean
+  createdObjectUUID: string
+  unitUUID: string
+  state: string
+}
 export default Vue.extend({
   validate({ params }) {
     return ['asset', 'control', 'person', 'process'].includes(params.type)
@@ -71,9 +82,9 @@ export default Vue.extend({
       this.objects = await this.$api.group.fetchGroupMembers(this.$route.params.group, groupType)
     }
   },
-  data() {
+  data(): IData {
     return {
-      objects: [] as Object[],
+      objects: [],
       objectName: '',
       createDialog: false,
       createdObjectUUID: '',
