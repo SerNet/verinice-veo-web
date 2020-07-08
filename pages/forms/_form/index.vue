@@ -171,7 +171,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 code {
-  padding: 20px;
+  padding: 0;
   width: 100%;
+  display: block;
 }
 </style>
