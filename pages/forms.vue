@@ -2,11 +2,21 @@
   <v-container fill-height fluid class="ma-0 pa-0" align-start>
     <v-row no-gutters>
       <AppSideContainer side="left" :width="350">
-        <v-col cols="12">
-          veo.forms Navigation
-          <ul>
-            <li><nuxt-link to="/forms/07b57947-6259-471e-95cf-5970a40fac3f/">VDV</nuxt-link></li>
-          </ul>
+        <v-col cols="12" class="pa-0">
+          <div v-if="$fetchState.pending">
+            <div class="text-center mt-6">
+              <v-progress-circular indeterminate color="primary" />
+            </div>
+          </div>
+          <div v-else>
+            <v-list dense>
+              <v-list-item v-for="process in processes" :key="process.id" :to="`/forms/07b57947-6259-471e-95cf-5970a40fac3f/${process.id}/`">
+                <v-list-item-content>
+                  <v-list-item-title v-text="process.name" />
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </div>
         </v-col>
       </AppSideContainer>
 
@@ -19,13 +29,26 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { IBaseObject } from '@/lib/utils'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
+
+interface IData {
+  processes: IBaseObject[]
+}
 
 export default Vue.extend({
   components: {
     AppSideContainer
   },
   props: {},
+  async fetch() {
+    this.processes = await this.$api.process.fetchAll()
+  },
+  data(): IData {
+    return {
+      processes: []
+    }
+  },
   methods: {},
   head() {
     return {

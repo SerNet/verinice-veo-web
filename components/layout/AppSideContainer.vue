@@ -29,7 +29,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .sideContainer {
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
   display: block;
   top:0;
   bottom: 0;

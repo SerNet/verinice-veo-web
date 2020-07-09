@@ -84,6 +84,10 @@ export default Vue.extend({
       min-width: 64px;
     }
 
+    .v-tabs-slider-wrapper {
+      height: 48px !important
+    }
+
     .v-window {
       border-top: 1px solid #e0e0e0
     }

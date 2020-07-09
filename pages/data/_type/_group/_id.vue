@@ -1,23 +1,20 @@
 <template>
   <v-row no-gutters>
     <v-col class="flex-shrink-0 flex-grow-1 pa-3">
-      <p v-if="$fetchState.pending">Lädt ... </p>
+      <p v-if="$fetchState.pending">Lädt ...</p>
       <p v-if="object">
         <v-btn color="primary" :to="linkToLinks" dark>Links</v-btn>
         <v-btn color="primary" :to="linkToHistory" dark>History</v-btn>
       </p>
-      <p v-if="object">
-        <span>veo.data: {{ object.name }} ({{ object.id }})</span>
-        <pre>{{ object }}</pre>
-      </p>
+      <div v-if="object">
+        <div class="display">Name: {{ object.name }}</div>
+        <div class="display mb-3">UUID: {{ object.id }}</div>
+        <pre class="mb-3"><code class="language-json" v-html="objectHighlighted" /></pre>
+      </div>
+
       <v-dialog v-if="object" v-model="deleteDialog" persistent max-width="290">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="primary"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
+          <v-btn color="primary" dark v-bind="attrs" v-on="on">
             Löschen
           </v-btn>
         </template>
@@ -43,10 +40,24 @@
 
 <script lang="ts">
 import Vue from 'vue'
+// @ts-ignore
+import hljs from 'highlight.js/lib/core'
+// @ts-ignore
+import json from 'highlight.js/lib/languages/json'
+import 'highlight.js/styles/github.css'
+import { IBaseObject } from '@/lib/utils'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 
+hljs.registerLanguage('json', json)
+
 type APIGroup = 'asset' | 'control' | 'person' | 'process'
+
+interface IData {
+  object: IBaseObject | undefined
+  deleteDialog: boolean
+  navItems: IBaseObject[]
+}
 
 export default Vue.extend({
   middleware({ route, params, redirect }) {
@@ -66,10 +77,10 @@ export default Vue.extend({
   async fetch() {
     this.object = await this.$api[this.objectType].fetch(this.$route.params.id)
   },
-  data() {
+  data(): IData {
     return {
-      object: undefined as Object | undefined,
-      deleteDialog: false as Boolean,
+      object: undefined,
+      deleteDialog: false,
       navItems: [
         {
           name: 'Links',
@@ -96,6 +107,9 @@ export default Vue.extend({
     },
     linkToHistory(): String {
       return '/data/' + this.$route.params.type + '/' + this.$route.params.group + '/' + this.$route.params.id + '/history'
+    },
+    objectHighlighted(): String {
+      return hljs.highlight('json', JSON.stringify(this.object, null, 2)).value
     }
   },
   async created() {},
@@ -106,7 +120,7 @@ export default Vue.extend({
       this.$router.push({ path: `/data/${this.objectType}/${this.objectGroup}/` })
     }
   },
-  head():any {
+  head(): any {
     return {
       title: 'veo.data'
     }
@@ -115,5 +129,9 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-
+.v-application code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+}
 </style>

@@ -1,14 +1,16 @@
 <template>
   <v-col>
-    <p>{{ $t('welcome') }}!</p>
-    <p>Hier wird ein Dashboard erstellt</p>
-    <p v-if="schemaState">{{ schemaState }}</p>
-    <p v-if="schemas">
-      <span>Schemas:</span>
-      <ul>
-        <li v-for="(schema, index) in schemas" :key="index">{{ schema }}</li>
-      </ul>
-    </p>
+    <div class="display-1 mb-10">Willkommen!</div>
+    <div class="pt-6">
+      <v-btn large color="primary" to="/data">
+        <v-icon left>mdi-folder</v-icon>
+        veo.data
+      </v-btn>
+      <v-btn class="ml-1" large color="primary" to="/forms">
+        <v-icon left>mdi-format-list-checks</v-icon>
+        veo.forms
+      </v-btn>
+    </div>
   </v-col>
 </template>
 
@@ -19,23 +21,8 @@ export default Vue.extend({
   components: {},
   props: {},
   async fetch() {},
-  data() {
-    return {
-      schemaState: '',
-      schemas: undefined as string[] | undefined
-    }
-  },
-  async created() {
-    this.schemaState = 'Loading available schemas...'
-    try {
-      this.schemas = await this.$api.schema.fetchAll().then(data => data.knownSchemas)
-      this.schemaState = ''
-    } catch (e) {
-      this.schemaState = `Loading available schemas... FAILED: ${String(e)}`
-    }
-  },
   methods: {},
-  head():any {
+  head(): any {
     return {
       title: 'Willkommen'
     }
@@ -43,6 +30,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
