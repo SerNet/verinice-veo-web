@@ -18,6 +18,12 @@
                   </v-list-item-content>
                 </template>
 
+                <v-list-item :to="`/data/${object.type}/-/`">
+                  <v-list-item-content>
+                    <v-list-item-title>Objekte ohne Gruppe</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+
                 <v-list-item v-for="group in object.groups" :key="group.id" :to="`/data/${object.type}/${group.id}/`">
                   <v-list-item-content>
                     <v-list-item-title v-text="group.name" />
