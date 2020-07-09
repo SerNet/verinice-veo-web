@@ -92,7 +92,6 @@ export default Vue.extend({
     breadcrumbItems(): IBaseObject[] {
       const pathArray: string[] = this.$route.path.split('/').filter((el: string) => el !== '')
       return [
-        { text: 'dashboard', to: '/', exact: true, disabled: false },
         ...pathArray.map((el: string, i: number) => ({
           text: el,
           to: `/${pathArray.slice(0, i + 1).join('/')}/`,

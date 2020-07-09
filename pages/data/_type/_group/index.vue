@@ -81,6 +81,7 @@ export default Vue.extend({
       groupType = (groupType.charAt(0).toUpperCase() + groupType.slice(1)) as GroupType
       this.objects = await this.$api.group.fetchGroupMembers(this.$route.params.group, groupType)
     }
+    await this.fetchUnit()
   },
   data(): IData {
     return {
@@ -111,9 +112,6 @@ export default Vue.extend({
   watch: {
     '$route.params': '$fetch',
     createdObjectUUID: '$fetch'
-  },
-  async created() {
-    await this.fetchUnit()
   },
   methods: {
     async createObject() {
