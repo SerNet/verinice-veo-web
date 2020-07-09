@@ -30,9 +30,9 @@
 
     <AppTabBar :items="nav" :drawer.sync="drawer" />
 
-    <v-content>
+    <v-main>
       <nuxt />
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
@@ -82,7 +82,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-::v-deep .v-content__wrap {
+::v-deep .v-main__wrap {
   border-top: 1px solid #e0e0e0;
 }
 
