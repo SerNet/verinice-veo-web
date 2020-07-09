@@ -39,8 +39,8 @@ module.exports = {
   publicRuntimeConfig: {
     version: process.env.CI_COMMIT_REF_NAME || 'latest',
     build: process.env.CI_COMMIT_SHA || '0000000',
-    apiHost: process.env.VEO_API_HOST || 'https://veo.staging.cpmsys.io/',
-    oidcHost: process.env.VEO_OIDC_HOST || 'https://veo-keycloak.staging.cpmsys.io/auth',
+    apiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/api' : (process.env.VEO_API_URL || 'https://veo.staging.cpmsys.io/'),
+    oidcUrl: process.env.VEO_OIDC_URL || 'https://veo-keycloak.staging.cpmsys.io/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
     oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client'
   },
@@ -186,24 +186,24 @@ module.exports = {
   build: {
     publicPath: process.env.NUXT_PUBLIC_PATH || '/_nuxt/',
     transpile: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-flag-icon/]
-  }
+  },
 
   /**
    * Proxy configuration
    */
-  // proxy: {
-  //   '/api': {
-  //     target: process.env.VEO_API_HOST || 'https://veo.staging.cpmsys.io/',
-  //     pathRewrite: { '^/api': '' },
-  //     /**
-  //      * @param {import('http').ClientRequest} proxyReq
-  //      * @param {import('http').ClientRequest} req
-  //      * @param {import('http').ServerResponse} res
-  //      */
-  //     onProxyReq(proxyReq, req, res) {
-  //       // TODO: Remove when #VEO-80 is fixed
-  //       proxyReq.removeHeader('Origin')
-  //     }
-  //   }
-  // }
+  proxy: process.env.VEO_API_USE_PROXY !== 'false' ? {
+    '/api': {
+      target: process.env.VEO_API_URL || 'https://veo.staging.cpmsys.io/',
+      pathRewrite: { '^/api': '' },
+      /**
+       * @param {import('http').ClientRequest} proxyReq
+       * @param {import('http').ClientRequest} req
+       * @param {import('http').ServerResponse} res
+       */
+      onProxyReq(proxyReq, req, res) {
+        // TODO: Remove when #VEO-80 is fixed
+        proxyReq.removeHeader('Origin')
+      }
+    }
+  } : {}
 }

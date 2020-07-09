@@ -40,7 +40,7 @@ export class Client {
   constructor(protected context: Context) {
     this.build = context.$config.build
     this.version = context.$config.version
-    this.baseURL = `${context.$config.apiHost}`.replace(/\/$/, '')
+    this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '')
     // this.sentry = context.app.$sentry
   }
 

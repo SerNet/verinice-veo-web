@@ -43,7 +43,7 @@ export class Auth {
 export default (async function({ route, $config }, inject) {
   if (route.name !== 'sso') {
     const $auth = new Auth({
-      url: $config.oidcHost,
+      url: $config.oidcUrl,
       realm: $config.oidcRealm,
       clientId: $config.oidcClient
     })
