@@ -40,6 +40,7 @@ module.exports = {
     version: process.env.CI_COMMIT_REF_NAME || 'latest',
     build: process.env.CI_COMMIT_SHA || '0000000',
     apiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/api' : (process.env.VEO_API_URL || 'https://veo.staging.cpmsys.io/'),
+    formsApiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/api' : (process.env.VEO_FORMS_API_URL || 'https://veo-forms.staging.cpmsys.io/'),
     oidcUrl: process.env.VEO_OIDC_URL || 'https://veo-keycloak.staging.cpmsys.io/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
     oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client'

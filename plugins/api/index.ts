@@ -5,6 +5,7 @@ import { VeoError, VeoErrorTypes } from '~/types/VeoError'
 
 import asset from '~/plugins/api/asset'
 import control from '~/plugins/api/control'
+import form from '~/plugins/api/form'
 import group from '~/plugins/api/group'
 import person from '~/plugins/api/person'
 import process from '~/plugins/api/process'
@@ -13,7 +14,7 @@ import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
 
 export function createAPI(context: Context) {
-  return Client.create(context, { asset, control, group, person, process, schema, translation, unit })
+  return Client.create(context, { asset, control, form, group, person, process, schema, translation, unit })
 }
 
 export interface IAPIClient {
@@ -24,6 +25,7 @@ export class Client {
   public build: string
   public version: string
   public baseURL: string
+  public baseFormURL: string
   // public sentry: any
 
   static create<T extends Record<keyof T, IAPIClient>>(
@@ -41,11 +43,12 @@ export class Client {
     this.build = context.$config.build
     this.version = context.$config.version
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '')
+    this.baseFormURL = `${context.$config.formsApiUrl}`.replace(/\/$/, '')
     // this.sentry = context.app.$sentry
   }
 
   public getURL(url: string) {
-    const _url = String(url).replace(/^\/api/, this.baseURL)
+    const _url = String(url).replace(/^\/api\/forms/, this.baseFormURL).replace(/^\/api/, this.baseURL)
     if (_url.startsWith('/')) {
       const loc = window.location
       return `${loc.protocol}//${loc.host}${_url}`
@@ -53,7 +56,7 @@ export class Client {
     return _url
   }
 
-  public async req(url: string, options: RequestOptions & {method: 'DELETE'}): Promise<void>
+  public async req(url: string, options: RequestOptions & { method: 'DELETE' }): Promise<void>
   public async req<T = any>(url: string, options?: RequestOptions): Promise<T>
 
   /**
@@ -98,7 +101,7 @@ export class Client {
     const combinedUrl = queryString === '' ? url : url + '?' + queryString.substr(1)
 
     try {
-      const reqURL = combinedUrl.replace(/^\/api/, this.baseURL)
+      const reqURL = this.getURL(combinedUrl)
       const res = await fetch(reqURL, combinedOptions)
       if (Number(res.status) === 401) {
         /* if (options.retry) {
@@ -125,7 +128,7 @@ export class Client {
 
     let parsed
     try {
-      parsed = JSON.parse(raw)
+      parsed = raw ? JSON.parse(raw) : true
     } catch (e) {
       throw new VeoError('Non JSON response')
     }
