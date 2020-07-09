@@ -72,7 +72,9 @@ export default Vue.extend({
     // TODO "process" muss überall ersetzt werden durch das Objekt, welches im formSchema als ziel Objekt vorgegeben wird
     const objectSchema = preprocessSchemaForTranslation(await this.$api.schema.fetch('process'))
     // const translation = await context.app.$api.translation.fetch(['de', 'en'])
+    // TODO load formSchema from WebService
     const formSchema = await require(`./${this.$route.params.form}.json`)
+    // TODO load translations from WebService
     const { lang } = await require('./../Translations.json')
     const value = await this.$api.process.fetch(this.$route.params.object)
     this.form = {

@@ -128,6 +128,7 @@ export default Vue.extend({
       try {
         await this.fetchUnit()
         if (!this.objectSchemaName) {
+          // TODO load formSchema from WebService
           const { objectSchemaName } = await require(`./${this.$route.params.form}.json`)
           this.objectSchemaName = objectSchemaName
         }
