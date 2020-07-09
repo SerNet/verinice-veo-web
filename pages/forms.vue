@@ -10,9 +10,9 @@
           </div>
           <div v-else>
             <v-list dense>
-              <v-list-item v-for="process in processes" :key="process.id" :to="`/forms/07b57947-6259-471e-95cf-5970a40fac3f/${process.id}/`">
+              <v-list-item v-for="form in forms" :key="form.id" :to="`/forms/${form.id}/`">
                 <v-list-item-content>
-                  <v-list-item-title v-text="process.name" />
+                  <v-list-item-title v-text="form.name" />
                 </v-list-item-content>
               </v-list-item>
             </v-list>
@@ -33,7 +33,7 @@ import { IBaseObject } from '@/lib/utils'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 
 interface IData {
-  processes: IBaseObject[]
+  forms: IBaseObject[]
 }
 
 export default Vue.extend({
@@ -42,11 +42,16 @@ export default Vue.extend({
   },
   props: {},
   async fetch() {
-    this.processes = await this.$api.process.fetchAll()
+    // this.forms = [] //await this.$api.process.fetchAll()
   },
   data(): IData {
     return {
-      processes: []
+      forms: [
+        {
+          id: '07b57947-6259-471e-95cf-5970a40fac3f',
+          name: 'Verarbeitungstätigkeiten'
+        }
+      ]
     }
   },
   methods: {},
