@@ -59,6 +59,7 @@ import AppStateAlert from '@/components/AppStateAlert.vue'
 interface IData {
   panel: boolean
   activeLanguage: string
+  objectType: string
   form: IForm
   state: string
 }
@@ -70,12 +71,12 @@ export default Vue.extend({
   },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.$route.params.form)
-    const objectType = formSchema.modelType.toLowerCase()
-    const objectSchema = preprocessSchemaForTranslation(await this.$api.schema.fetch(objectType))
+    this.objectType = formSchema.modelType.toLowerCase()
+    const objectSchema = preprocessSchemaForTranslation(await this.$api.schema.fetch(this.objectType))
     // TODO fehlende Translations, deshalb wieder auf Translation.json umgestellt
     // const { lang } = await this.$api.translation.fetch(['de', 'en'])
     const { lang } = await require('./../Translations.json')
-    const value = await this.$api[objectType].fetch(this.$route.params.object)
+    const value = await this.$api[this.objectType].fetch(this.$route.params.object)
     this.form = {
       objectSchema,
       formSchema,
@@ -87,6 +88,7 @@ export default Vue.extend({
     return {
       panel: true,
       activeLanguage: 'de',
+      objectType: '',
       form: {
         objectSchema: {},
         formSchema: {},
@@ -108,9 +110,7 @@ export default Vue.extend({
         Object.keys(this.form.value.customAspects).forEach((key: string) => {
           this.form.value.customAspects[key] = { ...this.form.value.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
         })
-
-        // TODO muss noch generisch vom process entkoppelt werden und auf [objectType] umgestellt werden
-        await this.$api.process.update(this.$route.params.object, this.form.value)
+        await this.$api[this.objectType].update(this.$route.params.object, this.form.value)
         this.state = 'success'
       } catch (e) {
         this.state = 'error'
