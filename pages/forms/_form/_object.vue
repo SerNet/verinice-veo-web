@@ -18,7 +18,7 @@
             <div class="display-1">{{ form.value.name }}</div>
           </div>
 
-          <veo-form v-if="!$fetchState.pending" v-model="form.value" :schema="form.objectSchema" :ui="form.formSchema" :lang="form.lang && form.lang[activeLanguage]" />
+          <veo-form v-if="!$fetchState.pending" v-model="form.value" :schema="form.objectSchema" :ui="form.formSchema.content" :lang="form.lang && form.lang[activeLanguage]" />
         </div>
       </div>
 
@@ -59,6 +59,7 @@ import AppStateAlert from '@/components/AppStateAlert.vue'
 interface IData {
   panel: boolean
   activeLanguage: string
+  objectType: string
   form: IForm
   state: string
 }
@@ -69,12 +70,13 @@ export default Vue.extend({
     AppStateAlert
   },
   async fetch() {
-    // TODO "process" muss überall ersetzt werden durch das Objekt, welches im formSchema als ziel Objekt vorgegeben wird
-    const objectSchema = preprocessSchemaForTranslation(await this.$api.schema.fetch('process'))
-    // const translation = await context.app.$api.translation.fetch(['de', 'en'])
-    const formSchema = await require(`./${this.$route.params.form}.json`)
+    const formSchema = await this.$api.form.fetch(this.$route.params.form)
+    this.objectType = formSchema.modelType.toLowerCase()
+    const objectSchema = preprocessSchemaForTranslation(await this.$api.schema.fetch(this.objectType))
+    // TODO fehlende Translations, deshalb wieder auf Translation.json umgestellt
+    // const { lang } = await this.$api.translation.fetch(['de', 'en'])
     const { lang } = await require('./../Translations.json')
-    const value = await this.$api.process.fetch(this.$route.params.object)
+    const value = await this.$api[this.objectType].fetch(this.$route.params.object)
     this.form = {
       objectSchema,
       formSchema,
@@ -86,6 +88,7 @@ export default Vue.extend({
     return {
       panel: true,
       activeLanguage: 'de',
+      objectType: '',
       form: {
         objectSchema: {},
         formSchema: {},
@@ -107,7 +110,7 @@ export default Vue.extend({
         Object.keys(this.form.value.customAspects).forEach((key: string) => {
           this.form.value.customAspects[key] = { ...this.form.value.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
         })
-        await this.$api.process.update(this.$route.params.object, this.form.value)
+        await this.$api[this.objectType].update(this.$route.params.object, this.form.value)
         this.state = 'success'
       } catch (e) {
         this.state = 'error'

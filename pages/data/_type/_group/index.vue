@@ -45,8 +45,8 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <div v-if="objects.length === 0" class="display">Keine Objekte vorhanden</div>
     </div>
-    <div v-if="objects.length === 0" class="display">Keine Objekte vorhanden</div>
   </v-col>
 </template>
 

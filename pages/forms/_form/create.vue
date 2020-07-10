@@ -48,7 +48,7 @@ type ObjectSchemaName = 'asset' | 'control' | 'person' | 'process' | undefined
 interface IData {
   panel: boolean
   form: IForm
-  objectSchemaName: ObjectSchemaName
+  objectType: ObjectSchemaName
   createdObjectUUID: string
   unitUUID: string
   state: string
@@ -111,7 +111,7 @@ export default Vue.extend({
         },
         value: {}
       },
-      objectSchemaName: undefined,
+      objectType: undefined,
       createdObjectUUID: '',
       unitUUID: '',
       state: 'start'
@@ -127,12 +127,12 @@ export default Vue.extend({
       this.state = 'loading'
       try {
         await this.fetchUnit()
-        if (!this.objectSchemaName) {
-          const { objectSchemaName } = await require(`./${this.$route.params.form}.json`)
-          this.objectSchemaName = objectSchemaName
+        if (!this.objectType) {
+          const formSchema = await this.$api.form.fetch(this.$route.params.form)
+          this.objectType = formSchema.modelType.toLowerCase()
         }
-        if (this.objectSchemaName) {
-          const res = await this.$api[this.objectSchemaName].create({
+        if (this.objectType) {
+          const res = await this.$api[this.objectType].create({
             ...this.form.value,
             owner: {
               href: `/units/${this.unitUUID}`

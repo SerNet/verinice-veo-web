@@ -42,16 +42,11 @@ export default Vue.extend({
   },
   props: {},
   async fetch() {
-    // this.forms = [] //await this.$api.process.fetchAll()
+    this.forms = await this.$api.form.fetchAll()
   },
   data(): IData {
     return {
-      forms: [
-        {
-          id: '07b57947-6259-471e-95cf-5970a40fac3f',
-          name: 'Verarbeitungstätigkeiten'
-        }
-      ]
+      forms: []
     }
   },
   methods: {},
