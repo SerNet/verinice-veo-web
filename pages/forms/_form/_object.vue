@@ -18,7 +18,7 @@
             <div class="display-1">{{ form.value.name }}</div>
           </div>
 
-          <veo-form v-if="!$fetchState.pending" v-model="form.value" :schema="form.objectSchema" :ui="form.formSchema" :lang="form.lang && form.lang[activeLanguage]" />
+          <veo-form v-if="!$fetchState.pending" v-model="form.value" :schema="form.objectSchema" :ui="form.formSchema.content" :lang="form.lang && form.lang[activeLanguage]" />
         </div>
       </div>
 
@@ -69,14 +69,13 @@ export default Vue.extend({
     AppStateAlert
   },
   async fetch() {
-    // TODO "process" muss überall ersetzt werden durch das Objekt, welches im formSchema als ziel Objekt vorgegeben wird
-    const objectSchema = preprocessSchemaForTranslation(await this.$api.schema.fetch('process'))
-    // const translation = await context.app.$api.translation.fetch(['de', 'en'])
-    // TODO load formSchema from WebService
-    const formSchema = await require(`./${this.$route.params.form}.json`)
-    // TODO load translations from WebService
+    const formSchema = await this.$api.form.fetch(this.$route.params.form)
+    const objectType = formSchema.modelType.toLowerCase()
+    const objectSchema = preprocessSchemaForTranslation(await this.$api.schema.fetch(objectType))
+    // TODO fehlende Translations, deshalb wieder auf Translation.json umgestellt
+    // const { lang } = await this.$api.translation.fetch(['de', 'en'])
     const { lang } = await require('./../Translations.json')
-    const value = await this.$api.process.fetch(this.$route.params.object)
+    const value = await this.$api[objectType].fetch(this.$route.params.object)
     this.form = {
       objectSchema,
       formSchema,

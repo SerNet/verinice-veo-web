@@ -35,8 +35,9 @@ interface IData {
 export default Vue.extend({
   name: 'Forms',
   async fetch() {
-    // TODO API call vom formSchema>modelType abhängig machen
-    this.objects = await this.$api.process.fetchAll()
+    const formSchema = await this.$api.form.fetch(this.$route.params.form)
+    const objectType = formSchema.modelType.toLowerCase()
+    this.objects = await this.$api[objectType].fetchAll()
   },
   data(): IData {
     return {
