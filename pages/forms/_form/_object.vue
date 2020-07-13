@@ -99,7 +99,7 @@ export default Vue.extend({
     }
   },
   watch: {
-    '$route.query': '$fetch'
+    '$route.params': '$fetch'
   },
   methods: {
     async save() {

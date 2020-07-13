@@ -20,7 +20,7 @@
         </v-list-item>
       </v-list>
     </div>
-    <div v-if="objects.length === 0" class="display">Keine Verarbeitungstätigkeiten vorhanden</div>
+    <div v-if="!$fetchState.pending && objects.length === 0" class="display">Keine Verarbeitungstätigkeiten vorhanden</div>
   </v-col>
 </template>
 
@@ -48,6 +48,9 @@ export default Vue.extend({
     formId() {
       return this.$route.params.form
     }
+  },
+  watch: {
+    '$route.params': '$fetch'
   },
   head() {
     return {
