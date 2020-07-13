@@ -35,7 +35,7 @@
 
     <div v-else>
       <v-list two-line max-width="500">
-        <v-list-item v-for="object in objects" :key="object.id" :to="`/data/${objectType}/${objectGroup}/${object.id}`">
+        <v-list-item v-for="object in objects" :key="object.id" :to="`/${unit}/data/${objectType}/${objectGroup}/${object.id}`">
           <v-list-item-avatar>
             <v-icon dark class="primary">mdi-file</v-icon>
           </v-list-item-avatar>
@@ -62,7 +62,6 @@ interface IData {
   objectName: string
   createDialog: boolean
   createdObjectUUID: string
-  unitUUID: string
   state: string
 }
 export default Vue.extend({
@@ -81,7 +80,6 @@ export default Vue.extend({
       groupType = (groupType.charAt(0).toUpperCase() + groupType.slice(1)) as GroupType
       this.objects = await this.$api.group.fetchGroupMembers(this.$route.params.group, groupType)
     }
-    await this.fetchUnit()
   },
   data(): IData {
     return {
@@ -89,7 +87,6 @@ export default Vue.extend({
       objectName: '',
       createDialog: false,
       createdObjectUUID: '',
-      unitUUID: '',
       state: ''
     }
   },
@@ -100,11 +97,14 @@ export default Vue.extend({
     objectGroup(): String {
       return this.$route.params.group
     },
+    unit(): String {
+      return this.$route.params.unit
+    },
     newObject(): Object {
       return {
         name: this.objectName,
         owner: {
-          href: `/units/${this.unitUUID}`
+          href: `/units/${this.unit}`
         }
       }
     }
@@ -127,17 +127,6 @@ export default Vue.extend({
       } catch (error) {
         this.state = 'error: ' + error
       }
-    },
-    async fetchUnit() {
-      try {
-        const units = await this.$api.unit.fetchAll()
-        if (Array.isArray(units) && units.length > 0) {
-          this.unitUUID = units[0].id
-        } else {
-          const unit = await this.$api.unit.create({ name: 'cpmsys test Unit' })
-          this.unitUUID = unit.resourceId
-        }
-      } catch (error) {}
     }
   },
   head(): any {

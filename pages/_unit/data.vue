@@ -5,7 +5,7 @@
         <v-col cols="12" class="pa-0">
           <v-list dense>
             <template v-for="(object, index) in objects">
-              <v-list-item v-if="object.groups.length === 0" :key="index" :to="`/data/${object.type}/-/`">
+              <v-list-item v-if="object.groups.length === 0" :key="index" :to="`/${unit}/data/${object.type}/-/`">
                 <v-list-item-content>
                   <v-list-item-title v-text="object.name" />
                 </v-list-item-content>
@@ -18,13 +18,13 @@
                   </v-list-item-content>
                 </template>
 
-                <v-list-item :to="`/data/${object.type}/-/`">
+                <v-list-item :to="`/${unit}/data/${object.type}/-/`">
                   <v-list-item-content>
                     <v-list-item-title>Objekte ohne Gruppe</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
 
-                <v-list-item v-for="group in object.groups" :key="group.id" :to="`/data/${object.type}/${group.id}/`">
+                <v-list-item v-for="group in object.groups" :key="group.id" :to="`/${unit}/data/${object.type}/${group.id}/`">
                   <v-list-item-content>
                     <v-list-item-title v-text="group.name" />
                   </v-list-item-content>
@@ -59,7 +59,6 @@ export default Vue.extend({
   },
   props: {},
   async fetch() {
-    // const assetGroups = await this.$api.group.fetchAll('Asset')
     this.objects = [
       {
         type: 'asset',
@@ -94,6 +93,9 @@ export default Vue.extend({
     }
   },
   computed: {
+    unit(): string {
+      return this.$route.params.unit
+    },
     breadcrumbItems(): IBaseObject[] {
       const pathArray: string[] = this.$route.path.split('/').filter((el: string) => el !== '')
       return [

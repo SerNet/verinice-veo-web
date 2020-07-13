@@ -50,7 +50,6 @@ interface IData {
   form: IForm
   objectType: ObjectSchemaName
   createdObjectUUID: string
-  unitUUID: string
   state: string
 }
 
@@ -113,20 +112,21 @@ export default Vue.extend({
       },
       objectType: undefined,
       createdObjectUUID: '',
-      unitUUID: '',
       state: 'start'
     }
   },
   computed: {
     createdObjectURL(): string {
-      return this.createdObjectUUID ? `${window.location.origin}/forms/${this.$route.params.form}/${this.createdObjectUUID}` : ''
+      return this.createdObjectUUID ? `${window.location.origin}/${this.unit}/forms/${this.$route.params.form}/${this.createdObjectUUID}` : ''
+    },
+    unit(): string {
+      return this.$route.params.unit
     }
   },
   methods: {
     async create() {
       this.state = 'loading'
       try {
-        await this.fetchUnit()
         if (!this.objectType) {
           const formSchema = await this.$api.form.fetch(this.$route.params.form)
           this.objectType = formSchema.modelType.toLowerCase()
@@ -135,7 +135,7 @@ export default Vue.extend({
           const res = await this.$api[this.objectType].create({
             ...this.form.value,
             owner: {
-              href: `/units/${this.unitUUID}`
+              href: `/units/${this.unit}`
             }
           })
           this.createdObjectUUID = res.resourceId
@@ -144,21 +144,6 @@ export default Vue.extend({
       } catch (error) {
         this.state = 'error'
       }
-    },
-    async fetchUnit() {
-      try {
-        const units = await this.$api.unit.fetchAll()
-        if (Array.isArray(units) && units.length > 0) {
-          // if unit exists, use the first unit
-          this.unitUUID = units[0].id
-        } else {
-          // if units do not exist, create new one and use it
-          const unit = await this.$api.unit.create({
-            name: 'cpmsys test Unit'
-          })
-          this.unitUUID = unit.resourceId
-        }
-      } catch (error) {}
     }
   },
   head() {

@@ -10,7 +10,7 @@
           </div>
           <div v-else>
             <v-list dense>
-              <v-list-item v-for="form in forms" :key="form.id" :to="`/forms/${form.id}/`">
+              <v-list-item v-for="form in forms" :key="form.id" :to="`/${$route.params.unit}/forms/${form.id}/`">
                 <v-list-item-content>
                   <v-list-item-title v-text="form.name" />
                 </v-list-item-content>
