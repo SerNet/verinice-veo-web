@@ -51,7 +51,7 @@ import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 
 hljs.registerLanguage('json', json)
 
-type APIGroup = 'asset' | 'control' | 'person' | 'process'
+type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
 
 interface IData {
   object: IBaseObject | undefined
@@ -67,7 +67,7 @@ export default Vue.extend({
     }
   },
   validate({ params }) {
-    return ['asset', 'control', 'person', 'process'].includes(params.type)
+    return ['asset', 'control', 'person', 'process', 'unit'].includes(params.type)
   },
   components: {
     AppTabBar,

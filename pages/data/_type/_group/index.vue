@@ -55,7 +55,7 @@ import Vue from 'vue'
 import { IBaseObject } from '@/lib/utils'
 import { GroupType } from '~/plugins/api/group'
 
-type APIGroup = 'asset' | 'control' | 'person' | 'process'
+type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
 
 interface IData {
   objects: IBaseObject[]
@@ -67,7 +67,7 @@ interface IData {
 }
 export default Vue.extend({
   validate({ params }) {
-    return ['asset', 'control', 'person', 'process'].includes(params.type)
+    return ['asset', 'control', 'person', 'process', 'unit'].includes(params.type)
   },
   components: {},
   props: {},
