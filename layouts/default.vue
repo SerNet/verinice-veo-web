@@ -1,10 +1,10 @@
 <template>
-  <v-app id="inspire">
+  <v-app>
     <v-app-bar class="app-bar" app clipped-left clipped-right flat border color="primary" dark>
       <AppBarLogo>
         <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
       </AppBarLogo>
-      <v-select
+      <!--<v-select
         class="domain-select"
         :items="domains"
         :value="domains[0]"
@@ -15,9 +15,26 @@
         dense
         label="Domain"
         solo
+      />-->
+
+      <v-select
+        class="unit-select"
+        :items="units"
+        item-text="name"
+        item-value="id"
+        :value="unit"
+        hide-details
+        flat
+        light
+        dense
+        label="Unit"
+        solo
+        @change="changeUnit"
       />
+      <!--:prepend-inner-icon="!$vuetify.breakpoint.xs?'mdi-domain':''"-->
 
       <v-spacer />
+
       <AppAccountBtn
         v-if="$auth.profile"
         :username="$auth.profile.username"
@@ -49,35 +66,51 @@ export default Vue.extend({
     AppTabBar,
     AppAccountBtn
   },
+  async fetch() {
+    this.units = await this.$api.unit.fetchAll()
+  },
   data() {
     return {
       drawer: false as boolean,
       domains: ['Datenschutz', 'ISO 27001'],
-      nav: [
+      units: []
+    }
+  },
+  computed: {
+    unit():string|undefined {
+      return this.$route.params.unit || undefined
+    },
+    nav(): Array<any> {
+      return [
         {
           name: 'dashboard',
           icon: 'mdi-home',
-          to: '/'
+          exact: true,
+          to: `/${this.unit}/`
         },
         {
           name: 'veo.data',
           icon: 'mdi-folder',
-          to: '/data'
+          to: `/${this.unit}/data`
         },
         {
           name: 'veo.forms',
           icon: 'mdi-format-list-checks',
-          to: '/forms'
+          to: `/${this.unit}/forms`
         },
         {
           name: 'settings',
           icon: 'mdi-cog',
-          to: '/settings'
+          to: `/${this.unit}/settings`
         }
       ]
     }
   },
-  computed: {}
+  methods: {
+    changeUnit(e: string) {
+      this.$router.push('/' + e)
+    }
+  }
 })
 </script>
 
@@ -86,15 +119,27 @@ export default Vue.extend({
   border-top: 1px solid #e0e0e0;
 }
 
-.domain-select {
+/*.domain-select {
   position: absolute;
-  width: 190px; // Workaround bis sich das Select automatisch verkleinern lässt
   left: 220px;
   top: 13px;
+  width: 190px; // Workaround bis sich das Select automatisch verkleinern lässt
+}*/
+
+.unit-select {
+  position: absolute;
+  left: 220px;
+  top: 13px;
+  width: 190px; // Workaround bis sich das Select automatisch verkleinern lässt
 }
 
 @media only screen and (max-width: 599px /* 959 */) {
-  .domain-select {
+  /*.domain-select {
+    left: 120px;
+    top: 8px;
+    width: 152px;// Workaround bis sich das Select automatisch verkleinern lässt
+  }*/
+  .unit-select {
     left: 120px;
     top: 8px;
     width: 152px;// Workaround bis sich das Select automatisch verkleinern lässt

@@ -51,23 +51,22 @@ import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 
 hljs.registerLanguage('json', json)
 
-type APIGroup = 'asset' | 'control' | 'person' | 'process'
+type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
 
 interface IData {
   object: IBaseObject | undefined
   deleteDialog: boolean
-  navItems: IBaseObject[]
 }
 
 export default Vue.extend({
   middleware({ route, params, redirect }) {
     // TODO Nur weiterleiten, wenn Desktop
     if (route.name === 'data-type-group-id') {
-      return redirect(`/data/${params.type}/${params.group}/${params.id}/links`)
+      return redirect(`/${params.unit}/data/${params.type}/${params.group}/${params.id}/links`)
     }
   },
   validate({ params }) {
-    return ['asset', 'control', 'person', 'process'].includes(params.type)
+    return ['asset', 'control', 'person', 'process', 'unit'].includes(params.type)
   },
   components: {
     AppTabBar,
@@ -80,44 +79,51 @@ export default Vue.extend({
   data(): IData {
     return {
       object: undefined,
-      deleteDialog: false,
-      navItems: [
-        {
-          name: 'Links',
-          icon: 'mdi-link',
-          to: '/data/' + this.$route.params.type + '/' + this.$route.params.group + '/' + this.$route.params.id + '/links'
-        },
-        {
-          name: 'History',
-          icon: 'mdi-history',
-          to: '/data/' + this.$route.params.type + '/' + this.$route.params.group + '/' + this.$route.params.id + '/history'
-        }
-      ]
+      deleteDialog: false
     }
   },
   computed: {
     objectType(): APIGroup {
       return this.$route.params.type as APIGroup
     },
-    objectGroup(): String {
+    objectGroup(): string {
       return this.$route.params.group
     },
-    linkToLinks(): String {
-      return '/data/' + this.$route.params.type + '/' + this.$route.params.group + '/' + this.$route.params.id + '/links'
+    objectId(): string {
+      return this.$route.params.id
     },
-    linkToHistory(): String {
-      return '/data/' + this.$route.params.type + '/' + this.$route.params.group + '/' + this.$route.params.id + '/history'
+    unit(): String {
+      return this.$route.params.unit
     },
-    objectHighlighted(): String {
+    linkToLinks(): string {
+      return `/${this.unit}/data/${this.objectType}/${this.objectGroup}/${this.objectId}/links`
+    },
+    linkToHistory(): string {
+      return `/${this.unit}/data/${this.objectType}/${this.objectGroup}/${this.objectId}/history`
+    },
+    navItems(): Array<Object> {
+      return [
+        {
+          name: 'Links',
+          icon: 'mdi-link',
+          to: this.linkToLinks
+        },
+        {
+          name: 'History',
+          icon: 'mdi-history',
+          to: this.linkToHistory
+        }
+      ]
+    },
+    objectHighlighted(): string {
       return hljs.highlight('json', JSON.stringify(this.object, null, 2)).value
     }
   },
-  async created() {},
   methods: {
     async deleteObject() {
       this.deleteDialog = false
       await this.$api[this.objectType].delete(this.$route.params.id)
-      this.$router.push({ path: `/data/${this.objectType}/${this.objectGroup}/` })
+      this.$router.push({ path: `/${this.unit}/data/${this.objectType}/${this.objectGroup}/` })
     }
   },
   head(): any {
