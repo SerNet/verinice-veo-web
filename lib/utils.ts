@@ -1,7 +1,4 @@
 import castArray from 'lodash/castArray'
-
-import JsonPointer from 'json-ptr'
-
 import { JSONSchema7 } from 'json-schema'
 
 interface ICmpFunction {
@@ -93,21 +90,6 @@ export function hashObj(data: any, opts: IHashOpts | ICmpFunction = {}): string 
     seen.splice(seenIndex, 1)
     return '{' + out + '}'
   })(data)
-}
-
-export function preprocessSchemaForTranslation(schema: JSONSchema7): JSONSchema7 {
-  schema.$schema = 'http://json-schema.org/draft-07/schema#'
-
-  JsonPointer.list(schema, '#')
-    .filter((obj: any) => {
-      const lastThreeProperties = obj.fragmentId.split('/').slice(-3)
-      return lastThreeProperties[0] !== 'type' && lastThreeProperties[1] === 'enum' && !isNaN(lastThreeProperties[2])
-    })
-    .forEach((obj: any) => {
-      JsonPointer.set(schema, obj.fragmentId, `#lang/${obj.value}`)
-    })
-
-  return schema
 }
 
 export interface IBaseObject {

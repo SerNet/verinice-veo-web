@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { preprocessSchemaForTranslation, IForm } from '@/lib/utils'
+import { IForm } from '@/lib/utils'
 import AppStateAlert from '@/components/AppStateAlert.vue'
 
 interface IData {
@@ -72,10 +72,10 @@ export default Vue.extend({
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.$route.params.form)
     this.objectType = formSchema.modelType.toLowerCase()
-    const objectSchema = preprocessSchemaForTranslation(await this.$api.schema.fetch(this.objectType))
+    const objectSchema = await this.$api.schema.fetch(this.objectType)
     // TODO fehlende Translations, deshalb wieder auf Translation.json umgestellt
     // const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const { lang } = await require('./../Translations.json')
+    const { lang } = await this.$api.translation.fetch(['de', 'en'])
     const value = await this.$api[this.objectType].fetch(this.$route.params.object)
     this.form = {
       objectSchema,
