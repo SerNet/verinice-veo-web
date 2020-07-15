@@ -12,7 +12,7 @@
       </v-btn>
     </div>
     <div class="pt-6">
-      <b>Ideen:</b>
+      <h2>Ideen:</h2>
       <ul>
         <li>Widget mit Darstellung aller Objekte passend zu einem Formular (Formular Auswahl via Select darüber)</li>
         <li>Widget mit Informationen zur ausgewählten Unit</li>

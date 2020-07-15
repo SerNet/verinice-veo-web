@@ -73,8 +73,6 @@ export default Vue.extend({
     const formSchema = await this.$api.form.fetch(this.$route.params.form)
     this.objectType = formSchema.modelType.toLowerCase()
     const objectSchema = await this.$api.schema.fetch(this.objectType)
-    // TODO fehlende Translations, deshalb wieder auf Translation.json umgestellt
-    // const { lang } = await this.$api.translation.fetch(['de', 'en'])
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
     const value = await this.$api[this.objectType].fetch(this.$route.params.object)
     this.form = {
