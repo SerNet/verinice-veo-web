@@ -61,7 +61,7 @@ interface IData {
 export default Vue.extend({
   middleware({ route, params, redirect }) {
     // TODO Nur weiterleiten, wenn Desktop
-    if (route.name === 'data-type-group-id') {
+    if (route.name === 'unit-data-type-group-id') {
       return redirect(`/${params.unit}/data/${params.type}/${params.group}/${params.id}/links`)
     }
   },
