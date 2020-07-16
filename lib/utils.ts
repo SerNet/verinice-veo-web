@@ -98,7 +98,7 @@ export interface IBaseObject {
 
 export interface IForm {
   objectSchema: JSONSchema7
-  formSchema: IBaseObject
-  value: IBaseObject
+  formSchema?: IBaseObject
+  objectData: IBaseObject
   lang?: IBaseObject
 }

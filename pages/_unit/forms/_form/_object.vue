@@ -15,10 +15,16 @@
           </div>
 
           <div class="mx-auto pa-3" style="width:800px">
-            <div class="display-1">{{ form.value.name }}</div>
+            <div class="display-1">{{ form.objectData.name }}</div>
           </div>
 
-          <veo-form v-if="!$fetchState.pending" v-model="form.value" :schema="form.objectSchema" :ui="form.formSchema.content" :lang="form.lang && form.lang[activeLanguage]" />
+          <veo-form
+            v-if="!$fetchState.pending"
+            v-model="form.objectData"
+            :schema="form.objectSchema"
+            :ui="form.formSchema && form.formSchema.content"
+            :lang="form.lang && form.lang[activeLanguage]"
+          />
         </div>
       </div>
 
@@ -30,7 +36,7 @@
                 <v-expansion-panel-header>Generated Data</v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <code>
-                    <pre>{{ JSON.stringify(form.value, null, 4) }}</pre>
+                    <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
                   </code>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -74,11 +80,11 @@ export default Vue.extend({
     this.objectType = formSchema.modelType.toLowerCase()
     const objectSchema = await this.$api.schema.fetch(this.objectType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const value = await this.$api[this.objectType].fetch(this.$route.params.object)
+    const objectData = await this.$api[this.objectType].fetch(this.$route.params.object)
     this.form = {
       objectSchema,
       formSchema,
-      value,
+      objectData,
       lang
     }
   },
@@ -89,8 +95,8 @@ export default Vue.extend({
       objectType: '',
       form: {
         objectSchema: {},
+        objectData: {},
         formSchema: {},
-        value: {},
         lang: {}
       },
       state: 'start'
@@ -105,10 +111,10 @@ export default Vue.extend({
       try {
         // TODO: find better solution
         //  Add Keys and IDs manually
-        Object.keys(this.form.value.customAspects).forEach((key: string) => {
-          this.form.value.customAspects[key] = { ...this.form.value.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
+        Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
+          this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
         })
-        await this.$api[this.objectType].update(this.$route.params.object, this.form.value)
+        await this.$api[this.objectType].update(this.$route.params.object, this.form.objectData)
         this.state = 'success'
       } catch (e) {
         this.state = 'error'
