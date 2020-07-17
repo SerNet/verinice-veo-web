@@ -1,33 +1,56 @@
 <template>
   <v-row no-gutters>
     <v-col class="flex-shrink-0 flex-grow-1 pa-3">
-      <p v-if="$fetchState.pending">Lädt ...</p>
-      <p v-if="object">
-        <v-btn color="primary" :to="linkToLinks" dark>Links</v-btn>
-        <v-btn color="primary" :to="linkToHistory" dark>History</v-btn>
-      </p>
-      <div v-if="object">
-        <div class="display">Name: {{ object.name }}</div>
-        <div class="display mb-3">UUID: {{ object.id }}</div>
-        <pre class="mb-3"><code class="language-json" v-html="objectHighlighted" /></pre>
+      <div v-if="$fetchState.pending" class="text-center ma-12">
+        <v-progress-circular indeterminate color="primary" size="50" />
       </div>
+      <div v-if="!$fetchState.pending && form.objectData">
+        <div class="my-3">
+          <v-btn color="primary" :to="linkToLinks" dark>Links</v-btn>
+          <v-btn color="primary" :to="linkToHistory" dark>History</v-btn>
+        </div>
 
-      <v-dialog v-if="object" v-model="deleteDialog" persistent max-width="290">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn color="primary" dark v-bind="attrs" v-on="on">
-            Löschen
-          </v-btn>
-        </template>
-        <v-card>
-          <v-card-title class="headline" />
-          <v-card-text>Soll das Objekt {{ object.name }} ({{ object.id }}) wirklich gelöscht werden?</v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text @click="deleteDialog = false">Abbrechen</v-btn>
-            <v-btn text @click="deleteObject()">Löschen</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+        <div class="my-3">
+          <div class="display-1">{{ form.objectData.name }}</div>
+          <div class="display mb-3">{{ form.objectData.id }}</div>
+        </div>
+
+        <!-- <pre class="mb-3"><code class="language-json" v-html="" /></pre> -->
+        <veo-form v-if="!$fetchState.pending" v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" />
+
+        <div style="width:800px">
+          <v-expansion-panels v-model="panel" class="my-3">
+            <v-expansion-panel>
+              <v-expansion-panel-header>Generated Data</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <code>
+                  <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
+                </code>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+
+          <v-btn color="primary" :loading="saveBtnLoading" @click="save">Speichern</v-btn>
+          <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark :loading="deleteBtnLoading" v-bind="attrs" v-on="on">
+                Löschen
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="headline" />
+              <v-card-text>Soll das Objekt {{ form.objectData.name }} ({{ form.objectData.id }}) wirklich gelöscht werden?</v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text @click="deleteDialog = false">Abbrechen</v-btn>
+                <v-btn text @click="deleteObject">Löschen</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <AppStateAlert v-model="state" state-after-alert="start" />
+        </div>
+      </div>
     </v-col>
 
     <AppSideContainer :width="350">
@@ -40,22 +63,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
-// @ts-ignore
-import hljs from 'highlight.js/lib/core'
-// @ts-ignore
-import json from 'highlight.js/lib/languages/json'
-import 'highlight.js/styles/github.css'
-import { IBaseObject } from '@/lib/utils'
+import { IBaseObject, IForm } from '@/lib/utils'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
-
-hljs.registerLanguage('json', json)
+import AppStateAlert from '@/components/AppStateAlert.vue'
 
 type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
 
 interface IData {
-  object: IBaseObject | undefined
+  panel: boolean
   deleteDialog: boolean
+  form: IForm
+  state: string
+  saveBtnLoading: boolean
+  deleteBtnLoading: boolean
 }
 
 export default Vue.extend({
@@ -70,16 +91,32 @@ export default Vue.extend({
   },
   components: {
     AppTabBar,
-    AppSideContainer
+    AppSideContainer,
+    AppStateAlert
   },
   props: {},
   async fetch() {
-    this.object = await this.$api[this.objectType].fetch(this.$route.params.id)
+    const objectSchema = await this.$api.schema.fetch(this.objectType)
+    const { lang } = await this.$api.translation.fetch(['de', 'en'])
+    const objectData = await this.$api[this.objectType].fetch(this.objectId)
+    this.form = {
+      objectSchema,
+      objectData,
+      lang
+    }
   },
   data(): IData {
     return {
-      object: undefined,
-      deleteDialog: false
+      panel: true,
+      deleteDialog: false,
+      form: {
+        objectSchema: {},
+        objectData: {},
+        lang: {}
+      },
+      state: 'start',
+      saveBtnLoading: false,
+      deleteBtnLoading: false
     }
   },
   computed: {
@@ -114,16 +151,35 @@ export default Vue.extend({
           to: this.linkToHistory
         }
       ]
-    },
-    objectHighlighted(): string {
-      return hljs.highlight('json', JSON.stringify(this.object, null, 2)).value
     }
   },
   methods: {
     async deleteObject() {
       this.deleteDialog = false
-      await this.$api[this.objectType].delete(this.$route.params.id)
-      this.$router.push({ path: `/${this.unit}/data/${this.objectType}/${this.objectGroup}/` })
+      this.deleteBtnLoading = true
+      try {
+        await this.$api[this.objectType].delete(this.$route.params.id)
+        this.state = 'success'
+        this.$router.push({ path: `/${this.unit}/data/${this.objectType}/${this.objectGroup}/` })
+      } catch (e) {
+        this.state = 'error'
+      }
+      this.deleteBtnLoading = false
+    },
+    async save() {
+      this.saveBtnLoading = true
+      try {
+        // TODO: find better solution
+        //  Add Keys and IDs manually
+        Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
+          this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
+        })
+        await this.$api[this.objectType].update(this.$route.params.object, this.form.objectData)
+        this.state = 'success'
+      } catch (e) {
+        this.state = 'error'
+      }
+      this.saveBtnLoading = false
     }
   },
   head(): any {
@@ -135,9 +191,14 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.v-application code {
-  background-color: transparent;
-  color: inherit;
+code {
   padding: 0;
+  width: 100%;
+  display: block;
+}
+::v-deep {
+  .vf-wrapper.flex-column > .vf-layout.mx-auto {
+    margin: 0 !important;
+  }
 }
 </style>
