@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex flex-row">
       <div class="d-flex flex-column flex-grow-1 pa-6">
-        <veo-form v-model="form.value" :schema="form.objectSchema" :ui="form.formSchema" />
+        <veo-form v-model="form.objectData" :schema="form.objectSchema" :ui="form.formSchema" />
       </div>
     </div>
 
@@ -14,7 +14,7 @@
               <v-expansion-panel-header>Generated Data</v-expansion-panel-header>
               <v-expansion-panel-content>
                 <code>
-                  <pre>{{ JSON.stringify(form.value, null, 4) }}</pre>
+                  <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
                 </code>
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -28,7 +28,7 @@
         <div class="mx-auto" style="width:800px">
           <v-btn color="primary" :loading="state === 'loading'" block @click="create">Objekt erstellen</v-btn>
           <div v-if="createdObjectURL">
-            <br>Bearbeitungs Link für das Objekt:<br>
+            <br />Bearbeitungs Link für das Objekt:<br />
             {{ createdObjectURL }}
           </div>
           <AppStateAlert v-model="state" state-after-alert="start" />
@@ -108,7 +108,7 @@ export default Vue.extend({
             }
           ]
         },
-        value: {}
+        objectData: {}
       },
       objectType: undefined,
       createdObjectUUID: '',
@@ -133,7 +133,7 @@ export default Vue.extend({
         }
         if (this.objectType) {
           const res = await this.$api[this.objectType].create({
-            ...this.form.value,
+            ...this.form.objectData,
             owner: {
               href: `/units/${this.unit}`
             }
