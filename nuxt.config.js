@@ -195,7 +195,7 @@ module.exports = {
    */
   proxy: process.env.VEO_API_USE_PROXY !== 'false' ? {
     '/api': {
-      target: process.env.VEO_API_URL,
+      target: process.env.VEO_API_URL || 'https://veo.staging.verinice.com/',
       pathRewrite: { '^/api': '' },
       /**
        * @param {import('http').ClientRequest} proxyReq
@@ -208,7 +208,7 @@ module.exports = {
       }
     },
     '/formsapi': {
-      target: process.env.VEO_FORMS_API_URL,
+      target: process.env.VEO_FORMS_API_URL || 'https://veo-forms.staging.verinice.com/',
       pathRewrite: { '^/formsapi': '' },
       /**
        * @param {import('http').ClientRequest} proxyReq
