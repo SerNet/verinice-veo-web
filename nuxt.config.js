@@ -40,7 +40,7 @@ module.exports = {
     version: process.env.CI_COMMIT_REF_NAME || 'latest',
     build: process.env.CI_COMMIT_SHA || '0000000',
     apiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/api' : (process.env.VEO_API_URL || 'https://veo.staging.cpmsys.io/'),
-    formsApiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/api' : (process.env.VEO_FORMS_API_URL || 'https://veo-forms.staging.cpmsys.io/'),
+    formsApiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/formsapi' : (process.env.VEO_FORMS_API_URL || 'https://veo-forms.staging.cpmsys.io/'),
     oidcUrl: process.env.VEO_OIDC_URL || 'https://veo-keycloak.staging.cpmsys.io/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
     oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client'
@@ -191,11 +191,25 @@ module.exports = {
 
   /**
    * Proxy configuration
+   * ONLY FOR SERNET Deployment
    */
   proxy: process.env.VEO_API_USE_PROXY !== 'false' ? {
     '/api': {
-      target: process.env.VEO_API_URL || 'https://veo.staging.cpmsys.io/',
+      target: process.env.VEO_API_URL,
       pathRewrite: { '^/api': '' },
+      /**
+       * @param {import('http').ClientRequest} proxyReq
+       * @param {import('http').ClientRequest} req
+       * @param {import('http').ServerResponse} res
+       */
+      onProxyReq(proxyReq, req, res) {
+        // TODO: Remove when #VEO-80 is fixed
+        proxyReq.removeHeader('Origin')
+      }
+    },
+    '/formsapi': {
+      target: process.env.VEO_FORMS_API_URL,
+      pathRewrite: { '^/formsapi': '' },
       /**
        * @param {import('http').ClientRequest} proxyReq
        * @param {import('http').ClientRequest} req
