@@ -14,12 +14,7 @@ export default BaseObjectForm.extend({
     async onClick() {
       this.btnLoading = true
       try {
-        if (this.form.objectData.customAspects) {
-          Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
-            this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
-          })
-        }
-
+        this.formatObjectData()
         if (this.objectType) {
           const createdObjectUUID = await this.create(this.objectType)
           if (createdObjectUUID) {

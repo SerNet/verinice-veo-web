@@ -122,14 +122,7 @@ export default Vue.extend({
     async onClick() {
       this.btnLoading = true
       try {
-        // TODO: find better solution
-        //  Add Keys and IDs manually
-        if (this.form.objectData.customAspects) {
-          Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
-            this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
-          })
-        }
-
+        this.formatObjectData()
         if (this.objectType) {
           await this.save(this.objectType)
         } else {
@@ -145,6 +138,15 @@ export default Vue.extend({
     },
     async save(objectType: ObjectSchemaNames) {
       await this.$api[objectType].update(this.$route.params.object, this.form.objectData)
+    },
+    formatObjectData() {
+      // TODO: find better solution
+      //  Add Keys and IDs manually
+      if (this.form.objectData.customAspects) {
+        Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
+          this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
+        })
+      }
     }
   },
   head() {
