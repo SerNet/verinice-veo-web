@@ -158,10 +158,10 @@ export default Vue.extend({
       try {
         // TODO: find better solution
         //  Add Keys and IDs manually
-        Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
-          this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
-        })
-        await this.$api[this.objectType].update(this.$route.params.object, this.form.objectData)
+        // Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
+        //   this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
+        // })
+        await this.$api[this.objectType].update(this.objectId, this.form.objectData)
         this.state = 'success'
       } catch (e) {
         this.state = 'error'
