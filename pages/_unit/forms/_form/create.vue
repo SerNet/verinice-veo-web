@@ -55,11 +55,3 @@ export default BaseObjectForm.extend({
   }
 })
 </script>
-
-<style lang="scss" scoped>
-code {
-  padding: 0;
-  width: 100%;
-  display: block;
-}
-</style>
