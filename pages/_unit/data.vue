@@ -79,11 +79,6 @@ export default Vue.extend({
         type: 'process',
         name: 'Processes',
         groups: await this.$api.group.fetchAll('Process')
-      },
-      {
-        type: 'unit',
-        name: 'Units',
-        groups: []
       }
     ]
   },
