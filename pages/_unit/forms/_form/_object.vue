@@ -31,23 +31,6 @@
       <div class="d-flex flex-row">
         <div class="d-flex flex-column flex-grow-1 pa-6">
           <div class="mx-auto" style="width:800px">
-            <v-expansion-panels v-model="panel">
-              <v-expansion-panel>
-                <v-expansion-panel-header>Generated Data</v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <code>
-                    <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
-                  </code>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </div>
-        </div>
-      </div>
-
-      <div class="d-flex flex-row">
-        <div class="d-flex flex-column flex-grow-1 pa-6">
-          <div class="mx-auto" style="width:800px">
             <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
             <AppStateAlert v-model="state" state-after-alert="start" />
           </div>
@@ -70,7 +53,6 @@ export enum ObjectSchemaNames {
 }
 
 interface IData {
-  panel: boolean
   activeLanguage: string
   objectType: ObjectSchemaNames | undefined
   form: IForm
@@ -102,7 +84,6 @@ export default Vue.extend({
   },
   data(): IData {
     return {
-      panel: true,
       activeLanguage: 'de',
       objectType: undefined,
       form: {

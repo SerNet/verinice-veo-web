@@ -19,17 +19,6 @@
         <veo-form v-if="!$fetchState.pending" v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" />
 
         <div style="width:800px">
-          <v-expansion-panels v-model="panel" class="my-3">
-            <v-expansion-panel>
-              <v-expansion-panel-header>Generated Data</v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <code>
-                  <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
-                </code>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
           <v-btn color="primary" :loading="saveBtnLoading" @click="save">Speichern</v-btn>
           <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
             <template v-slot:activator="{ on, attrs }">
@@ -71,7 +60,6 @@ import AppStateAlert from '@/components/AppStateAlert.vue'
 type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
 
 interface IData {
-  panel: boolean
   deleteDialog: boolean
   form: IForm
   state: string
@@ -107,7 +95,6 @@ export default Vue.extend({
   },
   data(): IData {
     return {
-      panel: true,
       deleteDialog: false,
       form: {
         objectSchema: {},
