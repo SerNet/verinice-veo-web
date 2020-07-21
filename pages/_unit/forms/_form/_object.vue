@@ -61,7 +61,7 @@ interface IData {
 }
 
 export default Vue.extend({
-  name: 'Forms',
+  name: 'veo.forms objectData update',
   components: {
     AppStateAlert
   },
@@ -105,7 +105,7 @@ export default Vue.extend({
       try {
         this.formatObjectData()
         if (this.objectType) {
-          await this.save(this.objectType)
+          await this.action(this.objectType)
         } else {
           throw new Error('Object Type is not defined in FormSchema')
         }
@@ -116,6 +116,9 @@ export default Vue.extend({
       } finally {
         this.btnLoading = false
       }
+    },
+    async action(objectType: ObjectSchemaNames) {
+      await this.save(objectType)
     },
     async save(objectType: ObjectSchemaNames) {
       await this.$api[objectType].update(this.$route.params.object, this.form.objectData)
@@ -132,7 +135,7 @@ export default Vue.extend({
   },
   head() {
     return {
-      title: 'Form'
+      title: 'veo.forms'
     }
   }
 })
