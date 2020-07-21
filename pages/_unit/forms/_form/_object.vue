@@ -62,7 +62,7 @@ import Vue from 'vue'
 import { IForm } from '@/lib/utils'
 import AppStateAlert from '@/components/AppStateAlert.vue'
 
-enum ObjectSchemaNames {
+export enum ObjectSchemaNames {
   asset = 'asset',
   control = 'control',
   person = 'person',
