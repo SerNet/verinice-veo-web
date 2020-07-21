@@ -56,7 +56,7 @@ interface IData {
 }
 
 export default Vue.extend({
-  name: 'veo.forms objectData update',
+  name: 'veo-forms-objectData-update',
   components: {
     AppStateAlert
   },
