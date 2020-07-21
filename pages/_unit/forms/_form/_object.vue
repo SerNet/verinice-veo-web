@@ -9,11 +9,6 @@
     <template v-else>
       <div class="d-flex flex-row">
         <div class="d-flex flex-column flex-grow-1 pa-6">
-          <div class="text-center my-6">
-            <v-btn dark class="ma-1" @click="activeLanguage = 'en'">English</v-btn>
-            <v-btn dark class="ma-1" @click="activeLanguage = 'de'">Deutsch</v-btn>
-          </div>
-
           <div class="mx-auto pa-3" style="width:800px">
             <div class="display-1">{{ form.objectData.name }}</div>
           </div>
