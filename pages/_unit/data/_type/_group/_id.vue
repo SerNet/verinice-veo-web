@@ -57,7 +57,7 @@ import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 import AppStateAlert from '@/components/AppStateAlert.vue'
 
-type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
+type APIGroup = 'asset' | 'control' | 'person' | 'process'
 
 interface IData {
   deleteDialog: boolean
@@ -75,7 +75,7 @@ export default Vue.extend({
     }
   },
   validate({ params }) {
-    return ['asset', 'control', 'person', 'process', 'unit'].includes(params.type)
+    return ['asset', 'control', 'person', 'process'].includes(params.type)
   },
   components: {
     AppTabBar,

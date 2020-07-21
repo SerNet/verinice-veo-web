@@ -4,29 +4,6 @@
     <div class="display">Type: {{ objectType }}</div>
     <div class="display mb-3">Group: {{ objectGroup }}</div>
 
-    <p>
-      <v-dialog v-model="createDialog" persistent max-width="800">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn color="primary" dark v-bind="attrs" v-on="on"> {{ objectType }} erstellen </v-btn>
-        </template>
-        <v-card>
-          <v-card-title class="headline" />
-          <v-card-text>
-            <v-text-field v-model="objectName" label="Objektname" />
-
-            Preview des Objects:
-            <pre>{{ newObject }}</pre>
-            <p>{{ state }}</p>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text @click="createDialog = false">Abbrechen</v-btn>
-            <v-btn text @click="createObject()">Erstellen</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </p>
-
     <div v-if="$fetchState.pending">
       <div class="text-center ma-12">
         <v-progress-circular indeterminate color="primary" size="50" />
@@ -55,18 +32,16 @@ import Vue from 'vue'
 import { IBaseObject } from '@/lib/utils'
 import { GroupType } from '~/plugins/api/group'
 
-type APIGroup = 'asset' | 'control' | 'person' | 'process' | 'unit'
+type APIGroup = 'asset' | 'control' | 'person' | 'process'
 
 interface IData {
   objects: IBaseObject[]
   objectName: string
-  createDialog: boolean
-  createdObjectUUID: string
   state: string
 }
 export default Vue.extend({
   validate({ params }) {
-    return ['asset', 'control', 'person', 'process', 'unit'].includes(params.type)
+    return ['asset', 'control', 'person', 'process'].includes(params.type)
   },
   components: {},
   props: {},
@@ -85,8 +60,6 @@ export default Vue.extend({
     return {
       objects: [],
       objectName: '',
-      createDialog: false,
-      createdObjectUUID: '',
       state: ''
     }
   },
@@ -99,36 +72,13 @@ export default Vue.extend({
     },
     unit(): String {
       return this.$route.params.unit
-    },
-    newObject(): Object {
-      return {
-        name: this.objectName,
-        owner: {
-          href: `/units/${this.unit}`
-        }
-      }
     }
   },
   watch: {
     '$route.params': '$fetch',
     createdObjectUUID: '$fetch'
   },
-  methods: {
-    async createObject() {
-      this.state = 'loading'
-      try {
-        if (this.objectType) {
-          const res = await this.$api[this.objectType].create(this.newObject)
-          this.createdObjectUUID = res.resourceId
-          this.state = ''
-          this.objectName = ''
-          this.createDialog = false
-        }
-      } catch (error) {
-        this.state = 'error: ' + error
-      }
-    }
-  },
+  methods: {},
   head(): any {
     return {
       title: 'veo.data'

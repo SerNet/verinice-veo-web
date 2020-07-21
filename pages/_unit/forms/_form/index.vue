@@ -1,7 +1,7 @@
 <template>
   <v-col cols="12">
-    <div class="display-1 pt-4 pb-0">Verzeichnis der Verarbeitungstätigkeiten</div>
-    <v-btn :to="`/${unit}/forms/${formId}/create`" color="primary" class="mt-12">Verarbeitungstätigkeit erstellen</v-btn>
+    <div class="display-1 pt-4 pb-0">{{ formSchema.name }}</div>
+    <v-btn :to="`/${unit}/forms/${formId}/create`" color="primary" class="mt-12">{{ objectType }} erstellen</v-btn>
     <div v-if="$fetchState.pending">
       <div class="text-center ma-12">
         <v-progress-circular indeterminate color="primary" size="50" />
@@ -29,18 +29,22 @@ import Vue from 'vue'
 import { IBaseObject } from '@/lib/utils'
 
 interface IData {
+  formSchema: IBaseObject
+  objectType: string
   objects: IBaseObject[]
 }
 
 export default Vue.extend({
   name: 'Forms',
   async fetch() {
-    const formSchema = await this.$api.form.fetch(this.$route.params.form)
-    const objectType = formSchema.modelType.toLowerCase()
-    this.objects = await this.$api[objectType].fetchAll()
+    this.formSchema = await this.$api.form.fetch(this.$route.params.form)
+    this.objectType = this.formSchema.modelType.toLowerCase()
+    this.objects = await this.$api[this.objectType].fetchAll()
   },
   data(): IData {
     return {
+      formSchema: {},
+      objectType: '',
       objects: []
     }
   },
