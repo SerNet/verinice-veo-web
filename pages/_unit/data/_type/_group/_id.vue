@@ -1,24 +1,24 @@
 <template>
   <v-row no-gutters>
-    <v-col class="flex-shrink-0 flex-grow-1 pa-3">
-      <div v-if="$fetchState.pending" class="text-center ma-12">
-        <v-progress-circular indeterminate color="primary" size="50" />
-      </div>
-      <div v-if="!$fetchState.pending && form.objectData">
-        <div class="my-3">
+    <v-col class="pa-3">
+      <template v-if="$fetchState.pending">
+        <div class="text-center ma-12">
+          <v-progress-circular indeterminate color="primary" size="50" />
+        </div>
+      </template>
+
+      <template v-if="!$fetchState.pending && form.objectData">
+        <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
           <v-btn color="primary" :to="linkToLinks" dark>Links</v-btn>
           <v-btn color="primary" :to="linkToHistory" dark>History</v-btn>
-        </div>
 
-        <div class="my-3">
-          <div class="display-1">{{ form.objectData.name }}</div>
+          <div class="display-1 mt-3">{{ form.objectData.name }}</div>
           <div class="display mb-3">{{ form.objectData.id }}</div>
         </div>
 
-        <!-- <pre class="mb-3"><code class="language-json" v-html="" /></pre> -->
-        <veo-form v-if="!$fetchState.pending" v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" />
+        <veo-form v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" />
 
-        <div style="width:800px">
+        <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
           <v-btn color="primary" :loading="saveBtnLoading" @click="save">Speichern</v-btn>
           <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
             <template v-slot:activator="{ on, attrs }">
@@ -39,7 +39,7 @@
 
           <AppStateAlert v-model="state" state-after-alert="start" />
         </div>
-      </div>
+      </template>
     </v-col>
 
     <AppSideContainer :width="350">
@@ -82,7 +82,6 @@ export default Vue.extend({
     AppSideContainer,
     AppStateAlert
   },
-  props: {},
   async fetch() {
     const objectSchema = await this.$api.schema.fetch(this.objectType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
@@ -177,15 +176,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-code {
-  padding: 0;
-  width: 100%;
-  display: block;
-}
-::v-deep {
-  .vf-wrapper.flex-column > .vf-layout.mx-auto {
-    margin: 0 !important;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

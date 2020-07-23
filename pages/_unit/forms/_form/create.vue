@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import BaseObjectForm, { ObjectSchemaNames } from '@/pages/_unit/forms/_form/_object.vue'
 
+export { ObjectSchemaNames }
 export default BaseObjectForm.extend({
   name: 'veo-forms-objectData-create',
   computed: {

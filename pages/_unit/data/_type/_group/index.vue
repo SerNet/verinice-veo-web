@@ -2,7 +2,7 @@
   <v-col>
     <div class="display-1 mb-3">veo.data</div>
     <div class="display">Type: {{ objectType }}</div>
-    <div class="display mb-3">Group: {{ objectGroup }}</div>
+    <div class="display">Group: {{ objectGroup }}</div>
 
     <div v-if="$fetchState.pending">
       <div class="text-center ma-12">
@@ -11,6 +11,7 @@
     </div>
 
     <div v-else>
+      <v-btn :to="`/${unit}/data/${objectType}/${objectGroup}/create`" color="primary" class="mt-6">{{ objectType }} erstellen</v-btn>
       <v-list two-line max-width="500">
         <v-list-item v-for="object in objects" :key="object.id" :to="`/${unit}/data/${objectType}/${objectGroup}/${object.id}`">
           <v-list-item-avatar>
