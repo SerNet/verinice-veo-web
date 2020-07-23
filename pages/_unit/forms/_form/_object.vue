@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-col>
     <template v-if="$fetchState.pending">
       <div class="text-center ma-12">
         <v-progress-circular indeterminate color="primary" size="50" />
@@ -7,54 +7,18 @@
     </template>
 
     <template v-else>
-      <div class="d-flex flex-row">
-        <div class="d-flex flex-column flex-grow-1 pa-6">
-          <div class="text-center my-6">
-            <v-btn dark class="ma-1" @click="activeLanguage = 'en'">English</v-btn>
-            <v-btn dark class="ma-1" @click="activeLanguage = 'de'">Deutsch</v-btn>
-          </div>
-
-          <div class="mx-auto pa-3" style="width:800px">
-            <div class="display-1">{{ form.objectData.name }}</div>
-          </div>
-
-          <veo-form
-            v-if="!$fetchState.pending"
-            v-model="form.objectData"
-            :schema="form.objectSchema"
-            :ui="form.formSchema && form.formSchema.content"
-            :lang="form.lang && form.lang[activeLanguage]"
-          />
-        </div>
+      <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+        <div class="display-1">{{ form.objectData.name }}</div>
       </div>
 
-      <div class="d-flex flex-row">
-        <div class="d-flex flex-column flex-grow-1 pa-6">
-          <div class="mx-auto" style="width:800px">
-            <v-expansion-panels v-model="panel">
-              <v-expansion-panel>
-                <v-expansion-panel-header>Generated Data</v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <code>
-                    <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
-                  </code>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </div>
-        </div>
-      </div>
+      <veo-form v-model="form.objectData" :schema="form.objectSchema" :ui="form.formSchema && form.formSchema.content" :lang="form.lang && form.lang[activeLanguage]" />
 
-      <div class="d-flex flex-row">
-        <div class="d-flex flex-column flex-grow-1 pa-6">
-          <div class="mx-auto" style="width:800px">
-            <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
-            <AppStateAlert v-model="state" state-after-alert="start" />
-          </div>
-        </div>
+      <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+        <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
+        <AppStateAlert v-model="state" state-after-alert="start" />
       </div>
     </template>
-  </div>
+  </v-col>
 </template>
 
 <script lang="ts">
@@ -70,7 +34,6 @@ export enum ObjectSchemaNames {
 }
 
 interface IData {
-  panel: boolean
   activeLanguage: string
   objectType: ObjectSchemaNames | undefined
   form: IForm
@@ -79,7 +42,7 @@ interface IData {
 }
 
 export default Vue.extend({
-  name: 'Forms',
+  name: 'veo-forms-objectData-update',
   components: {
     AppStateAlert
   },
@@ -102,7 +65,6 @@ export default Vue.extend({
   },
   data(): IData {
     return {
-      panel: true,
       activeLanguage: 'de',
       objectType: undefined,
       form: {
@@ -122,16 +84,9 @@ export default Vue.extend({
     async onClick() {
       this.btnLoading = true
       try {
-        // TODO: find better solution
-        //  Add Keys and IDs manually
-        if (this.form.objectData.customAspects) {
-          Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
-            this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
-          })
-        }
-
+        this.formatObjectData()
         if (this.objectType) {
-          await this.save(this.objectType)
+          await this.action(this.objectType)
         } else {
           throw new Error('Object Type is not defined in FormSchema')
         }
@@ -143,22 +98,28 @@ export default Vue.extend({
         this.btnLoading = false
       }
     },
+    async action(objectType: ObjectSchemaNames) {
+      await this.save(objectType)
+    },
     async save(objectType: ObjectSchemaNames) {
       await this.$api[objectType].update(this.$route.params.object, this.form.objectData)
+    },
+    formatObjectData() {
+      // TODO: find better solution
+      //  Add Keys and IDs manually
+      if (this.form.objectData.customAspects) {
+        Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
+          this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
+        })
+      }
     }
   },
   head() {
     return {
-      title: 'Form'
+      title: 'veo.forms'
     }
   }
 })
 </script>
 
-<style lang="scss" scoped>
-code {
-  padding: 0;
-  width: 100%;
-  display: block;
-}
-</style>
+<style lang="scss" scoped></style>

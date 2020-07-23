@@ -35,8 +35,8 @@
         </v-col>
       </AppSideContainer>
 
-      <v-col class="flex-shrink-0 flex-grow-1">
-        <v-breadcrumbs :items="breadcrumbItems" class="text-capitalize" />
+      <v-col>
+        <v-breadcrumbs :items="breadcrumbItems" class="pa-3 text-capitalize" />
         <nuxt-child />
       </v-col>
     </v-row>
