@@ -11,13 +11,7 @@
         <div class="display-1">{{ form.objectData.name }}</div>
       </div>
 
-      <veo-form
-        v-if="!$fetchState.pending"
-        v-model="form.objectData"
-        :schema="form.objectSchema"
-        :ui="form.formSchema && form.formSchema.content"
-        :lang="form.lang && form.lang[activeLanguage]"
-      />
+      <veo-form v-model="form.objectData" :schema="form.objectSchema" :ui="form.formSchema && form.formSchema.content" :lang="form.lang && form.lang[activeLanguage]" />
 
       <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
         <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
@@ -128,10 +122,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-code {
-  padding: 0;
-  width: 100%;
-  display: block;
-}
-</style>
+<style lang="scss" scoped></style>
