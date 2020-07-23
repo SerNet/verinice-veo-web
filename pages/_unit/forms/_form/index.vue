@@ -1,13 +1,14 @@
 <template>
   <v-col cols="12">
     <div class="display-1 pt-4 pb-0">{{ formSchema.name }}</div>
-    <v-btn :to="`/${unit}/forms/${formId}/create`" color="primary" class="mt-12">{{ objectType }} erstellen</v-btn>
-    <div v-if="$fetchState.pending">
+    <template v-if="$fetchState.pending">
       <div class="text-center ma-12">
         <v-progress-circular indeterminate color="primary" size="50" />
       </div>
-    </div>
-    <div v-else>
+    </template>
+
+    <template v-else>
+      <v-btn :to="`/${unit}/forms/${formId}/create`" color="primary" class="mt-6">{{ objectType }} erstellen</v-btn>
       <v-list two-line max-width="500">
         <v-list-item v-for="object in objects" :key="object.id" :to="`/${unit}/forms/${formId}/${object.id}`">
           <v-list-item-avatar>
@@ -19,7 +20,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </div>
+    </template>
     <div v-if="!$fetchState.pending && objects.length === 0" class="display">Keine Verarbeitungstätigkeiten vorhanden</div>
   </v-col>
 </template>
