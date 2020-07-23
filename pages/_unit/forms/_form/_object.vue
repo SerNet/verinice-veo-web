@@ -7,26 +7,22 @@
     </template>
 
     <template v-else>
-      <v-row no-gutters>
-        <v-col>
-          <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
-            <div class="display-1">{{ form.objectData.name }}</div>
-          </div>
+      <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+        <div class="display-1">{{ form.objectData.name }}</div>
+      </div>
 
-          <veo-form
-            v-if="!$fetchState.pending"
-            v-model="form.objectData"
-            :schema="form.objectSchema"
-            :ui="form.formSchema && form.formSchema.content"
-            :lang="form.lang && form.lang[activeLanguage]"
-          />
+      <veo-form
+        v-if="!$fetchState.pending"
+        v-model="form.objectData"
+        :schema="form.objectSchema"
+        :ui="form.formSchema && form.formSchema.content"
+        :lang="form.lang && form.lang[activeLanguage]"
+      />
 
-          <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
-            <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
-            <AppStateAlert v-model="state" state-after-alert="start" />
-          </div>
-        </v-col>
-      </v-row>
+      <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+        <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
+        <AppStateAlert v-model="state" state-after-alert="start" />
+      </div>
     </template>
   </v-col>
 </template>
