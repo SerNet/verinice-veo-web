@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-col>
     <template v-if="$fetchState.pending">
       <div class="text-center ma-12">
         <v-progress-circular indeterminate color="primary" size="50" />
@@ -7,9 +7,9 @@
     </template>
 
     <template v-else>
-      <div class="d-flex flex-row">
-        <div class="d-flex flex-column flex-grow-1 pa-6">
-          <div class="mx-auto pa-3" style="width:800px">
+      <v-row no-gutters>
+        <v-col>
+          <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
             <div class="display-1">{{ form.objectData.name }}</div>
           </div>
 
@@ -20,19 +20,15 @@
             :ui="form.formSchema && form.formSchema.content"
             :lang="form.lang && form.lang[activeLanguage]"
           />
-        </div>
-      </div>
 
-      <div class="d-flex flex-row">
-        <div class="d-flex flex-column flex-grow-1 pa-6">
-          <div class="mx-auto" style="width:800px">
+          <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
             <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
             <AppStateAlert v-model="state" state-after-alert="start" />
           </div>
-        </div>
-      </div>
+        </v-col>
+      </v-row>
     </template>
-  </div>
+  </v-col>
 </template>
 
 <script lang="ts">
