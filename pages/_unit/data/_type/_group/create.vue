@@ -3,7 +3,7 @@ import Vue from 'vue'
 import BaseObjectFormCreate, { ObjectSchemaNames } from '@/pages/_unit/forms/_form/create.vue'
 
 export default BaseObjectFormCreate.extend({
-  name: 'veo-forms-objectData-create',
+  name: 'veo-data-objectData-create',
   async fetch() {
     this.objectType = this.$route.params.type as ObjectSchemaNames
     const formSchema = undefined
