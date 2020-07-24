@@ -70,7 +70,7 @@ export default Vue.extend({
       form: {
         objectSchema: {},
         objectData: {},
-        formSchema: {},
+        formSchema: undefined,
         lang: {}
       },
       state: 'start',

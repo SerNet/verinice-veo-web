@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12">
-    <div class="display-1 pt-4 pb-0">{{ formSchema.name }}</div>
+    <div class="display-1 pt-4 pb-0">{{ formSchema && formSchema.name }}</div>
     <template v-if="$fetchState.pending">
       <div class="text-center ma-12">
         <v-progress-circular indeterminate color="primary" size="50" />
@@ -28,10 +28,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { IBaseObject } from '@/lib/utils'
+import { FormSchema } from '~/types/FormSchema'
 
 interface IData {
-  formSchema: IBaseObject
-  objectType: string
+  formSchema: FormSchema | undefined
+  objectType: string | undefined
   objects: IBaseObject[]
 }
 
@@ -39,12 +40,12 @@ export default Vue.extend({
   name: 'Forms',
   async fetch() {
     this.formSchema = await this.$api.form.fetch(this.$route.params.form)
-    this.objectType = this.formSchema.modelType.toLowerCase()
-    this.objects = await this.$api[this.objectType].fetchAll()
+    this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
+    this.objects = this.objectType && (await this.$api[this.objectType].fetchAll())
   },
   data(): IData {
     return {
-      formSchema: {},
+      formSchema: undefined,
       objectType: '',
       objects: []
     }

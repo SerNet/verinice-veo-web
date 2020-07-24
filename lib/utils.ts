@@ -1,5 +1,6 @@
 import castArray from 'lodash/castArray'
 import { JSONSchema7 } from 'json-schema'
+import { FormSchema } from '~/types/FormSchema'
 
 interface ICmpFunction {
   (a: any, b: any): number
@@ -98,7 +99,7 @@ export interface IBaseObject {
 
 export interface IForm {
   objectSchema: JSONSchema7
-  formSchema?: IBaseObject
+  formSchema?: FormSchema
   objectData: IBaseObject
   lang?: IBaseObject
 }

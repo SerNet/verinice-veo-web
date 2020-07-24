@@ -29,11 +29,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { IBaseObject } from '@/lib/utils'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
+import { FormSchemaMetas } from '~/types/FormSchema'
 
 interface IData {
-  forms: IBaseObject[]
+  forms: FormSchemaMetas
 }
 
 export default Vue.extend({
