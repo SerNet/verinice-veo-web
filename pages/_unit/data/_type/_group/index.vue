@@ -10,6 +10,10 @@
       </div>
     </div>
 
+    <div v-else-if="$fetchState.error">
+      Fehler beim Abruf
+    </div>
+
     <div v-else>
       <v-btn :to="`/${unit}/data/${objectType}/${objectGroup}/create`" color="primary" class="mt-6">{{ objectType }} erstellen</v-btn>
       <v-list two-line max-width="500">
