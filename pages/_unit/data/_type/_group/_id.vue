@@ -52,10 +52,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { IBaseObject, IForm } from '@/lib/utils'
+import { IBaseObject, IForm } from '~/lib/utils'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
-import AppStateAlert from '@/components/AppStateAlert.vue'
+import AppStateAlert from '~/components/AppStateAlert.vue'
 
 type APIGroup = 'asset' | 'control' | 'person' | 'process'
 

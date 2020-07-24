@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { IBaseObject } from '@/lib/utils'
+import { IBaseObject } from '~/lib/utils'
 import { FormSchema } from '~/types/FormSchema'
 
 interface IData {

@@ -23,8 +23,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { IForm } from '@/lib/utils'
-import AppStateAlert from '@/components/AppStateAlert.vue'
+import { IForm } from '~/lib/utils'
+import AppStateAlert from '~/components/AppStateAlert.vue'
 
 export enum ObjectSchemaNames {
   asset = 'asset',
