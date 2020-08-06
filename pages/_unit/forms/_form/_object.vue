@@ -11,9 +11,33 @@
         <div class="display-1">{{ form.objectData.name }}</div>
       </div>
 
-      <veo-form v-model="form.objectData" :schema="form.objectSchema" :ui="form.formSchema && form.formSchema.content" :lang="form.lang && form.lang[activeLanguage]" />
+      <veo-form
+        v-model="form.objectData"
+        :schema="form.objectSchema"
+        :ui="form.formSchema && form.formSchema.content"
+        :lang="form.lang && form.lang[activeLanguage]"
+        :is-valid.sync="isValid"
+        :error-messages.sync="errorMessages"
+      />
 
       <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+        <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
+          <v-expansion-panel>
+            <v-expansion-panel-header>objectData</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <v-expansion-panel-header>Validation logs</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div>isValid: {{ isValid }}</div>
+              <div>Error Messages:</div>
+              <pre>{{ errorMessages }}</pre>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+
         <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
         <AppStateAlert v-model="state" state-after-alert="start" />
       </div>
@@ -33,10 +57,18 @@ export enum ObjectSchemaNames {
   process = 'process'
 }
 
+export interface IValidationErrorMessage {
+  pointer: string
+  message: string
+}
+
 interface IData {
+  panel: number[]
   activeLanguage: string
   objectType: ObjectSchemaNames | undefined
   form: IForm
+  isValid: boolean
+  errorMessages: IValidationErrorMessage[]
   state: string
   btnLoading: boolean
 }
@@ -65,6 +97,7 @@ export default Vue.extend({
   },
   data(): IData {
     return {
+      panel: [],
       activeLanguage: 'de',
       objectType: undefined,
       form: {
@@ -73,6 +106,8 @@ export default Vue.extend({
         formSchema: undefined,
         lang: {}
       },
+      isValid: true,
+      errorMessages: [],
       state: 'start',
       btnLoading: false
     }
