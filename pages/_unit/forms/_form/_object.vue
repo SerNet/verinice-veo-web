@@ -24,13 +24,13 @@
         <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
           <v-expansion-panel>
             <v-expansion-panel-header>objectData</v-expansion-panel-header>
-            <v-expansion-panel-content>
+            <v-expansion-panel-content style="overflow:auto">
               <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
             </v-expansion-panel-content>
           </v-expansion-panel>
           <v-expansion-panel>
             <v-expansion-panel-header>Validation logs</v-expansion-panel-header>
-            <v-expansion-panel-content>
+            <v-expansion-panel-content style="overflow:auto">
               <div>isValid: {{ isValid }}</div>
               <div>Error Messages:</div>
               <pre>{{ errorMessages }}</pre>
