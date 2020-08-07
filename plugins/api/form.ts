@@ -1,4 +1,5 @@
 import { Client } from '~/plugins/api'
+import { FormSchema, FormSchemaMetas } from '~/types/FormSchema'
 
 export default function(api: Client) {
   return {
@@ -6,7 +7,7 @@ export default function(api: Client) {
      * Loads all Forms
      * @param parent
      */
-    fetchAll(parent?: string) {
+    fetchAll(parent?: string): Promise<FormSchemaMetas> {
       return api.req('/api/forms', {
         params: { parent }
       })
@@ -16,7 +17,7 @@ export default function(api: Client) {
      * Creates a form
      * @param form
      */
-    create(form: Object) {
+    create(form: FormSchema) {
       return api.req('/api/forms', {
         json: form
       })
@@ -31,7 +32,7 @@ export default function(api: Client) {
      * Loads a forml by id
      * @param id
      */
-    fetch(id: string) {
+    fetch(id: string): Promise<FormSchema> {
       return api.req(`/api/forms/${id}`)
     },
 
@@ -40,7 +41,7 @@ export default function(api: Client) {
      * @param id
      * @param form
      */
-    update(id: string, form: Object) {
+    update(id: string, form: FormSchema) {
       return api.req(`/api/forms/${id}`, {
         method: 'PUT',
         json: form

@@ -16,9 +16,26 @@
           <div class="display mb-3">{{ form.objectData.id }}</div>
         </div>
 
-        <veo-form v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" />
+        <veo-form v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" :is-valid.sync="isValid" :error-messages.sync="errorMessages" />
 
         <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+          <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
+            <v-expansion-panel>
+              <v-expansion-panel-header>objectData</v-expansion-panel-header>
+              <v-expansion-panel-content style="overflow:auto">
+                <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+              <v-expansion-panel-header>Validation logs</v-expansion-panel-header>
+              <v-expansion-panel-content style="overflow:auto">
+                <div>isValid: {{ isValid }}</div>
+                <div>Error Messages:</div>
+                <pre>{{ errorMessages }}</pre>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+
           <v-btn color="primary" :loading="saveBtnLoading" @click="save">Speichern</v-btn>
           <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
             <template v-slot:activator="{ on, attrs }">
@@ -52,16 +69,20 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { IBaseObject, IForm } from '@/lib/utils'
+import { IBaseObject, IForm } from '~/lib/utils'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
-import AppStateAlert from '@/components/AppStateAlert.vue'
+import AppStateAlert from '~/components/AppStateAlert.vue'
+import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
 
 type APIGroup = 'asset' | 'control' | 'person' | 'process'
 
 interface IData {
+  panel: number[]
   deleteDialog: boolean
   form: IForm
+  isValid: boolean
+  errorMessages: IValidationErrorMessage[]
   state: string
   saveBtnLoading: boolean
   deleteBtnLoading: boolean
@@ -94,12 +115,15 @@ export default Vue.extend({
   },
   data(): IData {
     return {
+      panel: [],
       deleteDialog: false,
       form: {
         objectSchema: {},
         objectData: {},
         lang: {}
       },
+      isValid: true,
+      errorMessages: [],
       state: 'start',
       saveBtnLoading: false,
       deleteBtnLoading: false
