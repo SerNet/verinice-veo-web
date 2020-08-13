@@ -17,23 +17,26 @@
         solo
       />-->
 
-      <v-select
-        class="unit-select"
-        :items="units"
-        item-text="name"
-        item-value="id"
-        :value="unit"
-        hide-details
-        flat
-        light
-        dense
-        label="Unit"
-        solo
-        @change="changeUnit"
-      />
+      <v-select class="unit-select" :items="units" item-text="name" item-value="id" :value="unit" hide-details flat light dense label="Unit" solo @change="changeUnit" />
       <!--:prepend-inner-icon="!$vuetify.breakpoint.xs?'mdi-domain':''"-->
 
       <v-spacer />
+
+      <v-overflow-btn
+        :value="$i18n.locale"
+        :items="langs"
+        class="language-btn"
+        color="primary"
+        label="Languages"
+        flat
+        dense
+        solo
+        outlined
+        hide-details
+        background-color="transparent"
+        style="max-width:150px;"
+        @input="$i18n.setLocale($event)"
+      ></v-overflow-btn>
 
       <AppAccountBtn
         v-if="$auth.profile"
@@ -73,11 +76,15 @@ export default Vue.extend({
     return {
       drawer: false as boolean,
       domains: ['Datenschutz', 'ISO 27001'],
-      units: []
+      units: [],
+      langs: [
+        { value: 'en', text: 'English' },
+        { value: 'de', text: 'Deutsch' }
+      ]
     }
   },
   computed: {
-    unit():string|undefined {
+    unit(): string | undefined {
       return this.$route.params.unit || undefined
     },
     nav(): Array<any> {
@@ -119,6 +126,13 @@ export default Vue.extend({
   border-top: 1px solid #e0e0e0;
 }
 
+::v-deep .language-btn input {
+  min-width: 1px !important;
+}
+::v-deep .language-btn .v-select__selection.v-select__selection--comma {
+  margin: 0 !important;
+}
+
 /*.domain-select {
   position: absolute;
   left: 220px;
@@ -142,7 +156,7 @@ export default Vue.extend({
   .unit-select {
     left: 120px;
     top: 8px;
-    width: 152px;// Workaround bis sich das Select automatisch verkleinern lässt
+    width: 152px; // Workaround bis sich das Select automatisch verkleinern lässt
   }
 }
 </style>
