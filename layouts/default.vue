@@ -34,7 +34,6 @@
         outlined
         hide-details
         background-color="transparent"
-        style="max-width:150px;"
         @input="$i18n.setLocale($event)"
       ></v-overflow-btn>
 
@@ -126,8 +125,15 @@ export default Vue.extend({
   border-top: 1px solid #e0e0e0;
 }
 
+.language-btn {
+  max-width: 120px;
+}
+::v-deep .language-btn .v-input__control div[role='combobox'].v-input__slot {
+  padding-right: 0;
+}
 ::v-deep .language-btn input {
   min-width: 1px !important;
+  margin: 0 !important;
 }
 ::v-deep .language-btn .v-select__selection.v-select__selection--comma {
   margin: 0 !important;
