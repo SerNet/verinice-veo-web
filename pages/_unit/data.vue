@@ -63,22 +63,22 @@ export default Vue.extend({
       {
         type: 'asset',
         name: 'Assets',
-        groups: await this.$api.group.fetchAll('Asset')
+        groups: await this.$api.group.fetchAll({ type: 'Asset' })
       },
       {
         type: 'control',
         name: 'Controls',
-        groups: await this.$api.group.fetchAll('Control')
+        groups: await this.$api.group.fetchAll({ type: 'Control' })
       },
       {
         type: 'person',
         name: 'Persons',
-        groups: await this.$api.group.fetchAll('Person')
+        groups: await this.$api.group.fetchAll({ type: 'Person' })
       },
       {
         type: 'process',
         name: 'Processes',
-        groups: await this.$api.group.fetchAll('Process')
+        groups: await this.$api.group.fetchAll({ type: 'Process' })
       }
     ]
   },
