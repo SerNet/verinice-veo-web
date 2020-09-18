@@ -7,9 +7,9 @@ export default function(api: Client) {
      * @param parent
      * @param type
      */
-    fetchAll(type: GroupType, parent?: string) {
+    fetchAll(params?: Record<string, string>) {
       return api.req('/api/groups', {
-        params: { parent, type }
+        params
       })
     },
 

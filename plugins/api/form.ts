@@ -7,9 +7,9 @@ export default function(api: Client) {
      * Loads all Forms
      * @param parent
      */
-    fetchAll(parent?: string): Promise<FormSchemaMetas> {
+    fetchAll(params?: Record<string, string>): Promise<FormSchemaMetas> {
       return api.req('/api/forms', {
-        params: { parent }
+        params
       })
     },
 

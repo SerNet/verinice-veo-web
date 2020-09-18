@@ -6,9 +6,9 @@ export default function(api: Client) {
      * Loads all Procces
      * @param parent
      */
-    fetchAll(parent?: string) {
+    fetchAll(params?: Record<string, string>) {
       return api.req('/api/processes', {
-        params: { parent }
+        params
       })
     },
 

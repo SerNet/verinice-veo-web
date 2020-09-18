@@ -6,9 +6,9 @@ export default function(api: Client) {
      * Loads all Controls
      * @param parent
      */
-    fetchAll(parent?: string) {
+    fetchAll(params?: Record<string, string>) {
       return api.req('/api/controls', {
-        params: { parent }
+        params
       })
     },
 
