@@ -16,6 +16,7 @@
         :schema="form.objectSchema"
         :ui="form.formSchema && form.formSchema.content"
         :lang="form.lang && form.lang[activeLanguage]"
+        :api="dynamicAPI"
         :is-valid.sync="isValid"
         :error-messages.sync="errorMessages"
       />
@@ -115,6 +116,35 @@ export default Vue.extend({
   watch: {
     '$route.params': '$fetch'
   },
+  computed: {
+    unit(): string {
+      return this.$route.params.unit
+    },
+    dynamicAPI(): any {
+      // TODO: adjust this dynamicAPI so that it provided directly by $api
+      return {
+        fetchAll: async (objectType: string, searchParams?: any) => {
+          return this.$api[objectType].fetchAll(searchParams)
+        },
+        create: async (objectType: string, createdObjectData: any) => {
+          const res = await this.$api[objectType].create({
+            ...createdObjectData,
+            owner: {
+              targetUri: `/units/${this.unit}`
+            }
+          })
+          // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
+          return this.$api[objectType].fetch(res.resourceId)
+        },
+        update: async (objectType: string, updatedObjectData: any) => {
+          return this.$api[objectType].update(updatedObjectData)
+        },
+        delete: async (objectType: string, id: string) => {
+          this.$api[objectType].delete(id)
+        }
+      }
+    }
+  },
   methods: {
     async onClick() {
       this.btnLoading = true
@@ -145,6 +175,18 @@ export default Vue.extend({
       if (this.form.objectData.customAspects) {
         Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
           this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
+        })
+      }
+
+      if (this.form.objectData.links) {
+        Object.keys(this.form.objectData.links).forEach((key: string) => {
+          // this.form.objectData.links[key] = { ...this.form.objectData.links[key], type: key }
+          this.form.objectData.links[key] = this.form.objectData.links[key].map((el: any) => {
+            console.log(el)
+            el.target.type = el.target.type.replace(/^\w/, (c: any) => c.toUpperCase())
+            el.type = key
+            return el
+          })
         })
       }
     }
