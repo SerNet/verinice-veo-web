@@ -24,7 +24,7 @@ export default BaseObjectForm.extend({
       const res = await this.$api[objectType].create({
         ...this.form.objectData,
         owner: {
-          href: `/units/${this.unit}`
+          targetUri: `/units/${this.unit}`
         }
       })
       return res.resourceId
