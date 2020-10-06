@@ -75,7 +75,7 @@ interface IData {
 }
 
 export default Vue.extend({
-  name: 'veo-forms-objectData-update',
+  name: 'VeoFormsObjectDataUpdate',
   components: {
     AppStateAlert
   },
@@ -113,9 +113,6 @@ export default Vue.extend({
       btnLoading: false
     }
   },
-  watch: {
-    '$route.params': '$fetch'
-  },
   computed: {
     unit(): string {
       return this.$route.params.unit
@@ -123,10 +120,10 @@ export default Vue.extend({
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
-        fetchAll: async (objectType: string, searchParams?: any) => {
+        fetchAll: async(objectType: string, searchParams?: any) => {
           return this.$api[objectType].fetchAll(searchParams)
         },
-        create: async (objectType: string, createdObjectData: any) => {
+        create: async(objectType: string, createdObjectData: any) => {
           const res = await this.$api[objectType].create({
             ...createdObjectData,
             owner: {
@@ -136,14 +133,17 @@ export default Vue.extend({
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
           return this.$api[objectType].fetch(res.resourceId)
         },
-        update: async (objectType: string, updatedObjectData: any) => {
+        update: async(objectType: string, updatedObjectData: any) => {
           return this.$api[objectType].update(updatedObjectData)
         },
-        delete: async (objectType: string, id: string) => {
+        delete: async(objectType: string, id: string) => {
           this.$api[objectType].delete(id)
         }
       }
     }
+  },
+  watch: {
+    '$route.params': '$fetch'
   },
   methods: {
     async onClick() {
@@ -183,7 +183,7 @@ export default Vue.extend({
           // this.form.objectData.links[key] = { ...this.form.objectData.links[key], type: key }
           this.form.objectData.links[key] = this.form.objectData.links[key].map((el: any) => {
             console.log(el)
-            el.target.type = el.target.type.replace(/^\w/, (c: any) => c.toUpperCase())
+            el.target.type = el.target.type?.replace(/^\w/, (c: any) => c.toUpperCase())
             el.type = key
             return el
           })
