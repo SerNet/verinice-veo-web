@@ -4,7 +4,8 @@
       Erfolgreich durchgeführt!
     </v-alert>
     <v-alert :value="value === 'error'" dense dark transition="slide-y-transition" type="error" class="mt-5">
-      Error aufgetreten!
+      <span v-if="error" v-text="error" />
+      <span v-else>Error aufgetreten!</span>
     </v-alert>
   </div>
 </template>
@@ -16,6 +17,7 @@ export default Vue.extend({
   name: 'AppStateAlert',
   props: {
     value: { type: String, default: '' },
+    error: { type: [Error, Object, Boolean], default: undefined },
     stateAfterAlert: { type: String, default: '' }
   },
   data() {

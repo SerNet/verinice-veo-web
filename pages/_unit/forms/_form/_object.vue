@@ -40,7 +40,13 @@
         </v-expansion-panels>
 
         <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
-        <AppStateAlert v-model="state" state-after-alert="start" />
+        <AppStateAlert v-model="state" :error="error || $fetchState.error" state-after-alert="start" />
+        <AppStateDialog v-if="error && error.status == 412" :value="!!error" title="Fehler" @input="error = undefined" @yes="$fetch">
+          <template v-if="error">
+            <span v-if="error && error.status == 412">Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?</span>
+            <span v-else v-text="error" />
+          </template>
+        </AppStateDialog>
       </div>
     </template>
   </v-col>
@@ -50,6 +56,7 @@
 import Vue from 'vue'
 import { IForm } from '~/lib/utils'
 import AppStateAlert from '~/components/AppStateAlert.vue'
+import AppStateDialog from '~/components/AppStateDialog.vue'
 
 export enum ObjectSchemaNames {
   asset = 'asset',
@@ -71,13 +78,15 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   state: string
+  error?: Error & { status?: number },
   btnLoading: boolean
 }
 
 export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
   components: {
-    AppStateAlert
+    AppStateAlert,
+    AppStateDialog
   },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.$route.params.form)
@@ -110,6 +119,7 @@ export default Vue.extend({
       isValid: true,
       errorMessages: [],
       state: 'start',
+      error: undefined,
       btnLoading: false
     }
   },
@@ -120,7 +130,7 @@ export default Vue.extend({
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
-        fetchAll: async(objectType: string, searchParams?: any) => {
+        fetchAll: (objectType: string, searchParams?: any) => {
           return this.$api[objectType].fetchAll(searchParams)
         },
         create: async(objectType: string, createdObjectData: any) => {
@@ -133,10 +143,10 @@ export default Vue.extend({
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
           return this.$api[objectType].fetch(res.resourceId)
         },
-        update: async(objectType: string, updatedObjectData: any) => {
+        update: (objectType: string, updatedObjectData: any) => {
           return this.$api[objectType].update(updatedObjectData)
         },
-        delete: async(objectType: string, id: string) => {
+        delete: (objectType: string, id: string) => {
           this.$api[objectType].delete(id)
         }
       }
@@ -148,6 +158,7 @@ export default Vue.extend({
   methods: {
     async onClick() {
       this.btnLoading = true
+      this.error = undefined
       try {
         this.formatObjectData()
         if (this.objectType) {
@@ -158,6 +169,7 @@ export default Vue.extend({
         this.state = 'success'
       } catch (e) {
         this.state = 'error'
+        this.error = e
         console.error(e)
       } finally {
         this.btnLoading = false

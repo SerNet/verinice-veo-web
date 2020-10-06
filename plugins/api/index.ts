@@ -77,6 +77,9 @@ export class Client {
     }
 
     if (options.json) {
+      if ('$etag' in options.json) {
+        defaults.headers['If-Match'] = options.json.$etag?.replace(/^W\/"|"$/gi, '')
+      }
       options.body = JSON.stringify(options.json)
       defaults.method = 'POST'
       defaults.headers['Content-Type'] = 'application/json'
@@ -99,10 +102,11 @@ export class Client {
       }
     }
     const combinedUrl = queryString === '' ? url : url + '?' + queryString.substr(1)
-
+    let status = 0
     try {
       const reqURL = this.getURL(combinedUrl)
       const res = await fetch(reqURL, combinedOptions)
+      status = res.status
       if (Number(res.status) === 401) {
         /* if (options.retry) {
           if (await $user.refreshSession()) {
@@ -119,16 +123,21 @@ export class Client {
     } catch (e) {
       // this.sentry.setTag('error_level', 'warning')
       // this.sentry.captureException(e)
-      return Promise.reject(e)
+      return Promise.reject(Object.assign(e, { status }))
     }
   }
 
-  async parseResponse<T>(url: string, res: Response): Promise<T> {
+  async parseResponse<T>(url: string, res: Response): Promise<T & {$etag?: string}> {
     const raw = await res.text()
+
+    const etag = res.headers.get('etag')
 
     let parsed
     try {
       parsed = raw ? JSON.parse(raw) : true
+      if (typeof parsed === 'object' && etag) {
+        Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag })
+      }
     } catch (e) {
       throw new VeoError('Non JSON response')
     }
