@@ -196,6 +196,7 @@ export default Vue.extend({
           this.form.objectData.links[key] = this.form.objectData.links[key].map((el: any) => {
             console.log(el)
             el.target.type = el.target.type?.replace(/^\w/, (c: any) => c.toUpperCase())
+            el.name = key
             el.type = key
             return el
           })
