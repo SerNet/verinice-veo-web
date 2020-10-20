@@ -17,9 +17,7 @@
         solo
       />-->
 
-      <v-select class="unit-select" :items="units" item-text="name" item-value="id" :value="unit" hide-details flat light dense label="Unit" solo @change="changeUnit" />
-      <!--:prepend-inner-icon="!$vuetify.breakpoint.xs?'mdi-domain':''"-->
-
+      <portal-target name="toolbar" />
       <v-spacer />
 
       <v-overflow-btn
@@ -35,7 +33,7 @@
         hide-details
         background-color="transparent"
         @input="$i18n.setLocale($event)"
-      ></v-overflow-btn>
+      />
 
       <AppAccountBtn
         v-if="$auth.profile"
@@ -68,53 +66,52 @@ export default Vue.extend({
     AppTabBar,
     AppAccountBtn
   },
-  async fetch() {
-    this.units = await this.$api.unit.fetchAll()
-  },
   data() {
     return {
       drawer: false as boolean,
       domains: ['Datenschutz', 'ISO 27001'],
-      units: [],
       langs: [
         { value: 'en', text: 'English' },
         { value: 'de', text: 'Deutsch' }
       ]
     }
   },
+  head() {
+    return {
+      title: 'vernice.veo'
+    }
+  },
   computed: {
-    unit(): string | undefined {
-      return this.$route.params.unit || undefined
-    },
     nav(): Array<any> {
       return [
         {
           name: 'dashboard',
           icon: 'mdi-home',
           exact: true,
-          to: `/${this.unit}/`
+          to: `/${this.$route.params.unit}/`
         },
         {
           name: 'veo.data',
           icon: 'mdi-folder',
-          to: `/${this.unit}/data`
+          to: `/${this.$route.params.unit}/data`
         },
         {
           name: 'veo.forms',
           icon: 'mdi-format-list-checks',
-          to: `/${this.unit}/forms`
+          to: `/${this.$route.params.unit}/forms`
         },
         {
           name: 'settings',
           icon: 'mdi-cog',
-          to: `/${this.unit}/settings`
+          to: `/${this.$route.params.unit}/settings`
+        },
+        {
+          name: 'help',
+          icon: 'mdi-help',
+          to: '/help',
+          visible: true // this.$route.path.startsWith('/help')
         }
       ]
-    }
-  },
-  methods: {
-    changeUnit(e: string) {
-      this.$router.push('/' + e)
     }
   }
 })
@@ -146,23 +143,4 @@ export default Vue.extend({
   width: 190px; // Workaround bis sich das Select automatisch verkleinern lässt
 }*/
 
-.unit-select {
-  position: absolute;
-  left: 220px;
-  top: 13px;
-  width: 190px; // Workaround bis sich das Select automatisch verkleinern lässt
-}
-
-@media only screen and (max-width: 599px /* 959 */) {
-  /*.domain-select {
-    left: 120px;
-    top: 8px;
-    width: 152px;// Workaround bis sich das Select automatisch verkleinern lässt
-  }*/
-  .unit-select {
-    left: 120px;
-    top: 8px;
-    width: 152px; // Workaround bis sich das Select automatisch verkleinern lässt
-  }
-}
 </style>

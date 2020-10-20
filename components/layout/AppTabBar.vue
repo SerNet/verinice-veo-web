@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-if="items.length > 0" :value="drawer" :class="{'v-application--is-rtl': right}" :right="right" :floating="true" width="64" :permanent="!$vuetify.breakpoint.xs" clipped app @input="$emit('update:drawer', $event)">
+  <v-navigation-drawer v-if="filteredItems.length > 0" :value="drawer" :class="{'v-application--is-rtl': right}" :right="right" :floating="true" width="64" :permanent="!$vuetify.breakpoint.xs" clipped app @input="$emit('update:drawer', $event)">
     <v-tabs
       class="nav-tabs"
       active-class="nav-tab-active"
@@ -7,7 +7,7 @@
       background-color="#fafafa"
       vertical
     >
-      <v-tab v-for="item in items" :key="item.name" class="nav-tab" :title="item.name" :to="item.to" :exact="item.exact">
+      <v-tab v-for="item in filteredItems" :key="item.name" class="nav-tab" :title="item.name" :to="item.to" :exact="item.exact">
         <v-icon v-if="item.icon" v-text="item.icon">mdi-folder</v-icon>
       </v-tab>
     </v-tabs>
@@ -17,12 +17,19 @@
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
 
+interface INavItem {
+  name: string,
+  icon: string,
+  to: string,
+  visible?: boolean
+}
+
 export default Vue.extend({
   props: {
     items: {
       type: Array,
       default: () => []
-    } as PropOptions,
+    } as PropOptions<INavItem[]>,
     right: {
       type: Boolean,
       default: false
@@ -39,7 +46,11 @@ export default Vue.extend({
   data() {
     return {}
   },
-  computed: {}
+  computed: {
+    filteredItems(): INavItem[] {
+      return this.items.filter(item => item.visible !== false)
+    }
+  }
 })
 </script>
 

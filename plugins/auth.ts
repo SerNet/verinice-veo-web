@@ -1,5 +1,5 @@
 import { Plugin } from '@nuxt/types'
-
+import { Route } from 'vue-router'
 import Keycloak from 'keycloak-js'
 
 export class Auth {
@@ -10,7 +10,7 @@ export class Auth {
     this.keycloak = Keycloak(config)
     this.keycloak.onTokenExpired = async() => {
       try {
-        const success = await this.keycloak.updateToken(3600)
+        await this.keycloak.updateToken(3600)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log('logged out')
@@ -36,18 +36,42 @@ export class Auth {
   }
 
   logout() {
-    return this.keycloak.logout()
+    try {
+      return this.keycloak.logout()
+    } catch (e) {
+
+    }
   }
 }
 
-export default (async function({ route, $config }, inject) {
-  if (route.name !== 'sso') {
-    const $auth = new Auth({
-      url: $config.oidcUrl,
-      realm: $config.oidcRealm,
-      clientId: $config.oidcClient
-    })
-    await $auth.init()
-    inject('auth', $auth)
+export default (async function({ route, $config, app }, inject) {
+  const $auth = new Auth({
+    url: $config.oidcUrl,
+    realm: $config.oidcRealm,
+    clientId: $config.oidcClient
+  })
+
+  async function checkRoute(r: Route) {
+    const excluded = /^\/help\/?/
+    if (r.name !== 'sso') {
+      if (!excluded.test(r.path)) {
+        await $auth.init()
+      }
+    }
   }
+
+  app.router?.beforeEach(async(to, from, next) => {
+    try {
+      if (!$auth.profile) {
+        await checkRoute(to)
+      }
+    } finally {
+      next()
+    }
+  })
+
+  console.log('CHECK ROUTE')
+  await checkRoute(route)
+
+  inject('auth', $auth)
 } as Plugin)

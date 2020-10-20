@@ -55,6 +55,7 @@ module.exports = {
    */
   plugins: [
     '~/plugins/vee-validate',
+    '~/plugins/portal-vue',
     '~/plugins/logger',
     '~/plugins/auth',
     '~/plugins/api'
@@ -157,6 +158,7 @@ module.exports = {
    *
    */
   css: [
+    '~/assets/main.scss',
     '~/assets/vuetify.scss'
   ],
 
