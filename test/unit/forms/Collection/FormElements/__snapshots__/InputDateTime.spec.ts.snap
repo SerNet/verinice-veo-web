@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputDateTime.vue should render input-date-time element for date-times: Initial render 1`] = `
+<div
+  class="vf-wrapper d-flex flex-column"
+>
+  <div
+    class="vf-layout vf-group d-flex mx-auto flex-column"
+    style="max-width: 800px; width: 100%;"
+  >
+    <div
+      class="vf-control col"
+    >
+      <div>
+        <span>
+          <div
+            class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field"
+          >
+            <div
+              class="v-input__prepend-outer"
+            >
+              <div
+                class="v-input__icon v-input__icon--prepend"
+              >
+                <i
+                  aria-hidden="true"
+                  class="v-icon notranslate mdi mdi-calendar theme--light"
+                />
+              </div>
+            </div>
+            <div
+              class="v-input__control"
+            >
+              <div
+                class="v-input__slot"
+              >
+                <div
+                  class="v-text-field__slot"
+                >
+                  <label
+                    class="v-label v-label--active theme--light"
+                    for="input-10"
+                    style="left: 0px; position: absolute;"
+                  >
+                    Due Date-Time
+                  </label>
+                  <input
+                    id="input-10"
+                    type="text"
+                  />
+                </div>
+                <div
+                  class="v-input__append-inner"
+                >
+                  <div
+                    class="v-input__icon v-input__icon--clear"
+                  >
+                    <button
+                      aria-label="clear icon"
+                      class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                      type="button"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="v-text-field__details"
+              >
+                <div
+                  class="v-messages theme--light"
+                >
+                  <div
+                    class="v-messages__wrapper"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+        <div
+          class="v-menu"
+        >
+          <!---->
+        </div>
+      </div>
+    </div>
+  </div>
+   
+  <!---->
+</div>
+`;
+
+exports[`InputDateTime.vue should render input-date-time element for date-times: Updated DateTime 1`] = `
+<div
+  class="vf-wrapper d-flex flex-column"
+>
+  <div
+    class="vf-layout vf-group d-flex mx-auto flex-column"
+    style="max-width: 800px; width: 100%;"
+  >
+    <div
+      class="vf-control col"
+    >
+      <div>
+        <span>
+          <div
+            class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field"
+          >
+            <div
+              class="v-input__prepend-outer"
+            >
+              <div
+                class="v-input__icon v-input__icon--prepend"
+              >
+                <i
+                  aria-hidden="true"
+                  class="v-icon notranslate mdi mdi-calendar theme--light"
+                />
+              </div>
+            </div>
+            <div
+              class="v-input__control"
+            >
+              <div
+                class="v-input__slot"
+              >
+                <div
+                  class="v-text-field__slot"
+                >
+                  <label
+                    class="v-label v-label--active theme--light"
+                    for="input-10"
+                    style="left: 0px; position: absolute;"
+                  >
+                    Due Date-Time
+                  </label>
+                  <input
+                    id="input-10"
+                    type="text"
+                  />
+                </div>
+                <div
+                  class="v-input__append-inner"
+                >
+                  <div
+                    class="v-input__icon v-input__icon--clear"
+                  >
+                    <button
+                      aria-label="clear icon"
+                      class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                      type="button"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="v-text-field__details"
+              >
+                <div
+                  class="v-messages theme--light"
+                >
+                  <div
+                    class="v-messages__wrapper"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </span>
+        <div
+          class="v-menu"
+        >
+          <!---->
+        </div>
+      </div>
+    </div>
+  </div>
+   
+  <!---->
+</div>
+`;

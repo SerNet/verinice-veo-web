@@ -16,7 +16,7 @@
           <div class="display mb-3">{{ form.objectData.id }}</div>
         </div>
 
-        <veo-form v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" :is-valid.sync="isValid" :error-messages.sync="errorMessages" />
+        <VeoForm v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" :is-valid.sync="isValid" :error-messages.sync="errorMessages" />
 
         <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
           <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
@@ -38,7 +38,7 @@
 
           <v-btn color="primary" :loading="saveBtnLoading" @click="save">Speichern</v-btn>
           <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-btn color="primary" dark :loading="deleteBtnLoading" v-bind="attrs" v-on="on">
                 Löschen
               </v-btn>
@@ -74,6 +74,7 @@ import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 import AppStateAlert from '~/components/AppStateAlert.vue'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
+import VeoForm from '~/components/forms/VeoForm.vue'
 
 type APIGroup = 'asset' | 'control' | 'person' | 'process'
 
@@ -89,6 +90,12 @@ interface IData {
 }
 
 export default Vue.extend({
+  components: {
+    AppTabBar,
+    AppSideContainer,
+    AppStateAlert,
+    VeoForm
+  },
   middleware({ route, params, redirect }) {
     // TODO Nur weiterleiten, wenn Desktop
     if (route.name === 'unit-data-type-group-id') {
@@ -97,21 +104,6 @@ export default Vue.extend({
   },
   validate({ params }) {
     return ['asset', 'control', 'person', 'process'].includes(params.type)
-  },
-  components: {
-    AppTabBar,
-    AppSideContainer,
-    AppStateAlert
-  },
-  async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.objectType)
-    const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api[this.objectType].fetch(this.objectId)
-    this.form = {
-      objectSchema,
-      objectData,
-      lang
-    }
   },
   data(): IData {
     return {
@@ -127,6 +119,21 @@ export default Vue.extend({
       state: 'start',
       saveBtnLoading: false,
       deleteBtnLoading: false
+    }
+  },
+  async fetch() {
+    const objectSchema = await this.$api.schema.fetch(this.objectType)
+    const { lang } = await this.$api.translation.fetch(['de', 'en'])
+    const objectData = await this.$api[this.objectType].fetch(this.objectId)
+    this.form = {
+      objectSchema,
+      objectData,
+      lang
+    }
+  },
+  head(): any {
+    return {
+      title: 'veo.data'
     }
   },
   computed: {
@@ -190,11 +197,6 @@ export default Vue.extend({
         this.state = 'error'
       }
       this.saveBtnLoading = false
-    }
-  },
-  head(): any {
-    return {
-      title: 'veo.data'
     }
   }
 })

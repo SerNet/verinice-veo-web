@@ -11,7 +11,7 @@
         <div class="display-1">{{ form.objectData.name }}</div>
       </div>
 
-      <veo-form
+      <VeoForm
         v-model="form.objectData"
         :schema="form.objectSchema"
         :ui="form.formSchema && form.formSchema.content"
@@ -57,6 +57,7 @@ import Vue from 'vue'
 import { IForm } from '~/lib/utils'
 import AppStateAlert from '~/components/AppStateAlert.vue'
 import AppStateDialog from '~/components/AppStateDialog.vue'
+import VeoForm from '~/components/forms/VeoForm.vue'
 
 export enum ObjectSchemaNames {
   asset = 'asset',
@@ -86,7 +87,26 @@ export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
   components: {
     AppStateAlert,
-    AppStateDialog
+    AppStateDialog,
+    VeoForm
+  },
+  data(): IData {
+    return {
+      panel: [],
+      activeLanguage: 'de',
+      objectType: undefined,
+      form: {
+        objectSchema: {},
+        objectData: {},
+        formSchema: undefined,
+        lang: {}
+      },
+      isValid: true,
+      errorMessages: [],
+      state: 'start',
+      error: undefined,
+      btnLoading: false
+    }
   },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.$route.params.form)
@@ -105,22 +125,9 @@ export default Vue.extend({
       throw new Error('Object Type is not defined in FormSchema')
     }
   },
-  data(): IData {
+  head() {
     return {
-      panel: [],
-      activeLanguage: 'de',
-      objectType: undefined,
-      form: {
-        objectSchema: {},
-        objectData: {},
-        formSchema: undefined,
-        lang: {}
-      },
-      isValid: true,
-      errorMessages: [],
-      state: 'start',
-      error: undefined,
-      btnLoading: false
+      title: 'veo.forms'
     }
   },
   computed: {
@@ -202,11 +209,6 @@ export default Vue.extend({
           })
         })
       }
-    }
-  },
-  head() {
-    return {
-      title: 'veo.forms'
     }
   }
 })

@@ -1,10 +1,8 @@
-require('dotenv').config()
-
 module.exports = {
   /**
    *
    */
-  mode: 'spa',
+  ssr: false,
 
   /**
    *
@@ -34,6 +32,12 @@ module.exports = {
   },
 
   /**
+   * Enable nuxt/components
+   * @see https://github.com/nuxt/components
+   */
+  components: true,
+
+  /**
    *
    */
   publicRuntimeConfig: {
@@ -50,10 +54,10 @@ module.exports = {
    ** Plugins to load before mounting the App
    */
   plugins: [
+    '~/plugins/vee-validate',
     '~/plugins/logger',
     '~/plugins/auth',
-    '~/plugins/api',
-    '~/plugins/veo-forms'
+    '~/plugins/api'
   ],
 
   /**
@@ -136,6 +140,7 @@ module.exports = {
    */
   buildModules: [
     '@nuxt/typescript-build',
+    '@nuxtjs/composition-api',
     '@nuxtjs/vuetify'
   ],
 
