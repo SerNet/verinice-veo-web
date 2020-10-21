@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="fill-height">
     <portal to="toolbar">
       <v-select
         v-if="$auth.profile"
@@ -29,7 +29,7 @@ import { validate } from 'uuid'
 export default Vue.extend({
   components: {},
   validate({ params, redirect }) {
-    if (String(params.unit) === 'undefined' || validate(params.unit)) {
+    if (validate(params.unit)) {
       return true
     } else {
       redirect('/')

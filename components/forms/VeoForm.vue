@@ -217,8 +217,10 @@ export default Vue.extend({
       Object.keys(this.value.customAspects)
         .filter(property => typeof this.value.customAspects[property].type === 'undefined')
         .forEach((property) => {
-          const type = customAspectsProperties[property].properties.type.enum[0]
-          vjp.set(this.value, `/customAspects/${property}/type`, type)
+          const type = customAspectsProperties?.[property]?.properties?.type?.enum?.[0]
+          if (type) {
+            vjp.set(this.value, `/customAspects/${property}/type`, type)
+          }
         })
     }
   },

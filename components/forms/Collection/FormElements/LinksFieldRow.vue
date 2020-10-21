@@ -130,7 +130,7 @@
             color="primary"
             :loading="dialogLoading"
             text
-            :disabled="!itemInDialog.name"
+            :disabled="!(itemInDialog && itemInDialog.name)"
             @click="onDialogAcceptUpdate"
           >
             Speichern
@@ -142,7 +142,7 @@
         <v-card-title>Objekt Löschen</v-card-title>
         <!-- TODO: change name with displayName after it is implemented -->
         <v-card-text>
-          Sind sie sicher, dass das Objekt "{{ itemInDialog.name }}" gelöscht
+          Sind sie sicher, dass das Objekt "{{ itemInDialog && itemInDialog.name }}" gelöscht
           werden soll?
         </v-card-text>
         <v-card-actions>
@@ -165,9 +165,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
-import { JSONSchema7, JSONSchema7Type } from 'json-schema'
+import Vue, { PropOptions } from 'vue'
+import { JSONSchema7 } from 'json-schema'
 import vjp from 'vue-json-pointer'
 import { UISchema } from '@/types/UISchema'
 import {
@@ -177,10 +176,6 @@ import {
   linksFieldDialogObjectSchema,
   linksFieldDialogFormSchema
 } from '~/components/forms/utils'
-import {
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
 
 interface ITarget {
   targetUri: string | undefined
@@ -198,11 +193,7 @@ interface IItem {
   [key: string]: any
 }
 
-enum DialogEnum {
-  CREATE = 'DIALOG_CREATE',
-  UPDATE = 'DIALOG_UPDATE',
-  DELETE = 'DIALOG_DELETE',
-}
+type DialogEnum = 'DIALOG_CREATE' | 'DIALOG_UPDATE' | 'DIALOG_DELETE'
 
 interface IData {
   dialog: DialogEnum | false
@@ -225,19 +216,17 @@ export default Vue.extend({
     VeoForm: async() => (await import('~/components/forms/VeoForm.vue')).default
   },
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
-    elements: Array,
-    validation: Object,
-    value: {
-      type: Object as Prop<BaseObject>
-    },
+    name: { type: String, default: '' },
+    schema: { type: Object, default: undefined } as PropOptions<JSONSchema7>,
+    lang: { type: Object, default: undefined } as PropOptions<BaseObject>,
+    options: { type: Object, default: undefined },
+    elements: { type: Array, default: undefined },
+    validation: { type: Object, default: undefined },
+    value: { type: Object, default: undefined } as PropOptions<BaseObject>,
     disabled: Boolean,
     visible: Boolean,
-    api: Object as Prop<IApi>,
-    index: Number
+    api: { type: Object, default: undefined } as PropOptions<IApi>,
+    index: { type: Number, default: undefined }
   },
   data(): IData {
     return {
@@ -289,17 +278,13 @@ export default Vue.extend({
       return {
         targetUri: this.targetUri,
         type: this.targetType
+        // TODO: Missing name?
       }
     },
     selected: {
       get() {
-        let id =
-          this.value &&
-          this.value.target &&
-          this.value.target.targetUri &&
-          this.value.target.targetUri.split('/')
-        id = id && id.length > 0 ? id.pop() : undefined
-        return id || undefined
+        const selected = this.value?.target?.targetUri?.split('/')?.pop()
+        return selected || undefined
       },
       set(val: string | undefined) {
         this.onInputAutocomplete(val)
@@ -307,21 +292,40 @@ export default Vue.extend({
     }
   },
   watch: {
-    async search(val: string | undefined | null) {
-      if (val) {
-        const item = this.items.find(el => el.name === val)
-        //  TODO: change name with displayName after it is implemented
-        if (!item || (item && item.id !== this.selected)) {
-          this.loading = true
-          this.items = (await this.api.fetchAll(this.targetType, {
-            displayName: val
-          })) as any
-          this.loading = false
+    value: {
+      async handler(v: BaseObject) {
+        const displayName = v?.target?.displayName
+        await this.fetchItems(displayName)
+      },
+      immediate: true
+    },
+    search: {
+      async handler(val: string | undefined | null) {
+        if (val) {
+          const item = this.items.find(el => el.name === val)
+          //  TODO: change name with displayName after it is implemented
+          if (!item || (item && item.id !== this.selected)) {
+            await this.fetchItems(val)
+          }
+        } else {
+          await this.fetchItems()
         }
-      }
+      },
+      immediate: true
     }
   },
   methods: {
+    async fetchItems(filter?: string) {
+      this.loading = true
+      try {
+        const displayFilter = filter ? { displayName: filter } : undefined
+        // TODO: Limit result count with pagination API
+        const items = await this.api.fetchAll(this.targetType, displayFilter) as IItem[]
+        this.items = items.slice(0, 100)
+      } finally {
+        this.loading = false
+      }
+    },
     onInput(event: any) {
       this.$emit('input', event)
     },

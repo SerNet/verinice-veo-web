@@ -1,6 +1,6 @@
 <template>
   <v-container fill-height fluid class="ma-0 pa-0" align-start>
-    <v-row no-gutters>
+    <v-row class="fill-height" no-gutters>
       <AppSideContainer side="left" :width="350">
         <v-col cols="12" class="pa-0">
           <v-list dense>
@@ -12,7 +12,7 @@
               </v-list-item>
 
               <v-list-group v-else :key="index" v-model="object.active" no-action>
-                <template v-slot:activator>
+                <template #activator>
                   <v-list-item-content>
                     <v-list-item-title v-text="object.name" />
                   </v-list-item-content>
@@ -58,6 +58,11 @@ export default Vue.extend({
     AppSideContainer
   },
   props: {},
+  data(): IData {
+    return {
+      objects: []
+    }
+  },
   async fetch() {
     this.objects = [
       {
@@ -81,11 +86,6 @@ export default Vue.extend({
         groups: await this.$api.group.fetchAll({ type: 'Process' })
       }
     ]
-  },
-  data(): IData {
-    return {
-      objects: []
-    }
   },
   computed: {
     unit(): string {

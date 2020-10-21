@@ -1,6 +1,6 @@
 <template>
   <v-container fill-height fluid class="ma-0 pa-0" align-start>
-    <v-row no-gutters>
+    <v-row class="fill-height" no-gutters>
       <AppSideContainer side="left" :width="350">
         <v-col cols="12" class="pa-0">
           <div v-if="$fetchState.pending">
@@ -19,7 +19,6 @@
           </div>
         </v-col>
       </AppSideContainer>
-
       <v-col class="flex-shrink-0 flex-grow-1">
         <nuxt-child />
       </v-col>
@@ -41,20 +40,20 @@ export default Vue.extend({
     AppSideContainer
   },
   props: {},
-  async fetch() {
-    this.forms = await this.$api.form.fetchAll()
-  },
   data(): IData {
     return {
       forms: []
     }
   },
-  methods: {},
+  async fetch() {
+    this.forms = await this.$api.form.fetchAll()
+  },
   head() {
     return {
       title: 'Willkommen'
     }
-  }
+  },
+  methods: {}
 })
 </script>
 

@@ -9,9 +9,9 @@
       {{ options && options.label }}
     </div>
     <div v-for="(val, i) in value" :key="i" class="d-flex flex-row">
-      <links-field-row
-        :index="i"
+      <LinksFieldRow
         :key="i"
+        :index="i"
         :name="name"
         :selected.sync="selected[i]"
         :schema="schema"
@@ -24,13 +24,13 @@
         :visible="visible"
         :api="api"
         @input="onInput"
-      >
-      </links-field-row>
+      />
       <v-btn
         dark
         fab
+        elevation="0"
         x-small
-        color="pink"
+        color="primary"
         class="vf-btn-remove ma-5 mt-4"
         @click="removeRow(i)"
       >
@@ -38,7 +38,7 @@
       </v-btn>
     </div>
 
-    <v-btn color="primary" class="vf-btn-add mt-1" @click="addRow">Add</v-btn>
+    <v-btn small elevation="0" color="primary" class="vf-btn-add mt-1" @click="addRow">Add link</v-btn>
   </div>
 </template>
 
@@ -49,7 +49,7 @@ import { JSONSchema7 } from 'json-schema'
 import {
   calculateConditionsScore,
   FormElementProps,
-  Helpful,
+  Helpful
 } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
@@ -62,7 +62,7 @@ interface IData {
 export default Vue.extend({
   name: 'LinksField',
   components: {
-    LinksFieldRow,
+    LinksFieldRow
   },
   props: {
     name: String,
@@ -72,21 +72,21 @@ export default Vue.extend({
     elements: Array,
     validation: Object,
     value: {
-      type: Array as Prop<BaseObject[]>,
+      type: Array as Prop<BaseObject[]>
     },
     disabled: Boolean,
     visible: Boolean,
-    api: Object as Prop<IApi>,
+    api: Object as Prop<IApi>
   },
   data(): IData {
     return {
-      selected: [],
+      selected: []
     }
   },
   computed: {
     rowToAdd(): any {
       return {}
-    },
+    }
   },
   methods: {
     addRow() {
@@ -101,8 +101,8 @@ export default Vue.extend({
     },
     onInput(event: any) {
       this.$emit('input', this.value)
-    },
-  },
+    }
+  }
 })
 
 export const helpers: Helpful<FormElementProps> = {
@@ -118,9 +118,9 @@ export const helpers: Helpful<FormElementProps> = {
     return calculateConditionsScore([
       props.schema.type === 'array',
       typeof props.elements !== 'undefined',
-      isTarget,
+      isTarget
     ])
-  },
+  }
 }
 </script>
 
