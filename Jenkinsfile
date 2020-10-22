@@ -39,7 +39,6 @@ pipeline {
                             dockerImage.push("build-${env.BUILD_NUMBER}")
                         } else if (env.GIT_BRANCH == 'develop') {
                             dockerImage.push("develop")
-                            dockerImage.push("build-${env.BUILD_NUMBER}")
                         }
                     }
                 }
