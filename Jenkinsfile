@@ -37,6 +37,9 @@ pipeline {
                         if (env.GIT_BRANCH == 'master') {
                             dockerImage.push("latest")
                             dockerImage.push("build-${env.BUILD_NUMBER}")
+                        } else if (env.GIT_BRANCH == 'develop') {
+                            dockerImage.push("develop")
+                            dockerImage.push("build-${env.BUILD_NUMBER}")
                         }
                     }
                 }
@@ -45,10 +48,10 @@ pipeline {
         stage('Trigger Deployment') {
             agent any
             when {
-                branch 'master'
+                anyOf { branch 'master'; branch 'develop' }
             }
             steps {
-                build job: 'verinice-veo-deployment/master'
+                build job: 'verinice-veo-deployment/master', parameters: [string(name: 'environment', value: ['master':'k8s', 'develop':'k8s-develop'][env.GIT_BRANCH])]
             }
         }
     }
