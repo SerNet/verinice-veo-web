@@ -1,7 +1,7 @@
 <template>
   <v-col cols="12">
     <div style="max-width: 640px">
-      <div class="body-1 mb-4">Bitte wählen Sie eine Unit:</div>
+      <div class="body-1 mb-4">{{ $t('page.index.chooseunit') }}:</div>
       <v-data-iterator :search="search" :items="units" item-key="id">
         <template #header>
           <v-text-field v-model="search"
@@ -11,7 +11,7 @@
                         solo-inverted
                         hide-details
                         prepend-inner-icon="mdi-magnify"
-                        label="Nach einer Unit suchen..."
+                        :label="$t('page.index.chooseunitplaceholder')"
           />
         </template>
         <template #default="{ items }">
@@ -35,6 +35,10 @@ import Vue from 'vue'
 export default Vue.extend({
   components: {},
   props: {},
+  async fetch() {
+    const units = await this.$api.unit.fetchAll()
+    this.units = units
+  },
   data() {
     return {
       search: '',
@@ -42,16 +46,12 @@ export default Vue.extend({
       units: []
     }
   },
-  async fetch() {
-    const units = await this.$api.unit.fetchAll()
-    this.units = units
-  },
+  methods: {},
   head() {
     return {
       // title: ''
     }
-  },
-  methods: {}
+  }
 })
 </script>
 

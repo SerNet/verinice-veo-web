@@ -1,0 +1,8 @@
+html {
+    overflow-y: hidden !important;
+}
+
+.fullsize-col {
+    height: calc(100vh - 64px) !important;
+    overflow-y: auto !important;
+}

@@ -1,3 +1,42 @@
 export default {
-  welcome: 'Welcome'
+  welcome: 'Welcome',
+
+  'global.appstate.alert.success': 'Action successfull!',
+  'global.appstate.alert.error': 'An error occured!',
+  'global.button.cancel': 'Cancel',
+  'global.button.delete': 'Delete',
+  'global.button.no': 'No',
+  'global.button.ok': 'Okay',
+  'global.button.save': 'Save',
+  'global.button.yes': 'Yes',
+  'global.error.fetching': 'An error occured while fetching the resource',
+  'global.logout': 'Logout',
+
+  'page.index.nounit': 'Please choose a unit from the dropdown menu.',
+
+  'page.settings.title': 'Settings',
+  'page.settings.language': 'Preferred Language',
+  'page.settings.version': 'Version',
+  'page.settings.build': 'Build',
+
+  'unit.data.createobject': 'Create {type}',
+  'unit.data.deleteobject': 'Do you really want to delete {object}?',
+  'unit.data.errormessages': 'Error Messages',
+  'unit.data.group': 'Group',
+  'unit.data.history': 'History',
+  'unit.data.links': 'Links',
+  'unit.data.nogroup': 'Objekt without group',
+  'unit.data.noobjects': 'No Objects found',
+  'unit.data.objectdata': 'objectData',
+  'unit.data.type': 'Type',
+  'unit.data.type.asset': 'Asset',
+  'unit.data.type.control': 'Controls',
+  'unit.data.type.person': 'Persons',
+  'unit.data.type.process': 'Processes',
+  'unit.data.valid': 'isValid',
+  'unit.data.validationlogs': 'Validation logs',
+  'unit.forms.create': 'Create {type}',
+  'unit.forms.noprocesses': 'No processes found',
+  'unit.forms.nrr': 'This dataset has been edited by another user. Do you want to load the changes?',
+  'unit.index.title': 'Dashboard'
 }

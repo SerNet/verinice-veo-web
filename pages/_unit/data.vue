@@ -2,7 +2,7 @@
   <v-container fill-height fluid class="ma-0 pa-0" align-start>
     <v-row class="fill-height" no-gutters>
       <AppSideContainer side="left" :width="350">
-        <v-col cols="12" class="pa-0">
+        <v-col cols="12" class="pa-0 fullsize-col">
           <v-list dense>
             <template v-for="(object, index) in objects">
               <v-list-item v-if="object.groups.length === 0" :key="index" :to="`/${unit}/data/${object.type}/-/`">
@@ -20,7 +20,7 @@
 
                 <v-list-item :to="`/${unit}/data/${object.type}/-/`">
                   <v-list-item-content>
-                    <v-list-item-title>Objekte ohne Gruppe</v-list-item-title>
+                    <v-list-item-title>{{ $t('unit.data.nogroup') }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
 
@@ -67,22 +67,22 @@ export default Vue.extend({
     this.objects = [
       {
         type: 'asset',
-        name: 'Assets',
+        name: this.$t('unit.data.type.asset'),
         groups: await this.$api.group.fetchAll({ type: 'Asset' })
       },
       {
         type: 'control',
-        name: 'Controls',
+        name: this.$t('unit.data.type.control'),
         groups: await this.$api.group.fetchAll({ type: 'Control' })
       },
       {
         type: 'person',
-        name: 'Persons',
+        name: this.$t('unit.data.type.person'),
         groups: await this.$api.group.fetchAll({ type: 'Person' })
       },
       {
         type: 'process',
-        name: 'Processes',
+        name: this.$t('unit.data.type.process'),
         groups: await this.$api.group.fetchAll({ type: 'Process' })
       }
     ]

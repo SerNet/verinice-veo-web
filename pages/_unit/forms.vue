@@ -2,7 +2,7 @@
   <v-container fill-height fluid class="ma-0 pa-0" align-start>
     <v-row class="fill-height" no-gutters>
       <AppSideContainer side="left" :width="350">
-        <v-col cols="12" class="pa-0">
+        <v-col cols="12" class="pa-0 fullsize-col">
           <div v-if="$fetchState.pending">
             <div class="text-center mt-6">
               <v-progress-circular indeterminate color="primary" />

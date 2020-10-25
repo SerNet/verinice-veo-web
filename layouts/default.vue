@@ -19,22 +19,6 @@
 
       <portal-target name="toolbar" />
       <v-spacer />
-
-      <v-overflow-btn
-        :value="$i18n.locale"
-        :items="langs"
-        class="language-btn"
-        color="primary"
-        label="Languages"
-        flat
-        dense
-        solo
-        outlined
-        hide-details
-        background-color="transparent"
-        @input="$i18n.setLocale($event)"
-      />
-
       <AppAccountBtn
         v-if="$auth.profile"
         :username="$auth.profile.username"
@@ -47,7 +31,7 @@
 
     <AppTabBar :items="nav" :drawer.sync="drawer" />
 
-    <v-main>
+    <v-main style="height: 100vh; overflow: hidden;">
       <nuxt />
     </v-main>
   </v-app>
@@ -70,15 +54,7 @@ export default Vue.extend({
     return {
       drawer: false as boolean,
       domains: ['Datenschutz', 'ISO 27001'],
-      langs: [
-        { value: 'en', text: 'English' },
-        { value: 'de', text: 'Deutsch' }
-      ]
-    }
-  },
-  head() {
-    return {
-      title: 'vernice.veo'
+      units: []
     }
   },
   computed: {
@@ -113,6 +89,11 @@ export default Vue.extend({
         }
       ]
     }
+  },
+  head() {
+    return {
+      title: 'vernice.veo'
+    }
   }
 })
 </script>
@@ -120,10 +101,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 ::v-deep .v-main__wrap {
   border-top: 1px solid #e0e0e0;
-}
-
-.language-btn {
-  max-width: 120px;
 }
 ::v-deep .language-btn .v-input__control div[role='combobox'].v-input__slot {
   padding-right: 0;
