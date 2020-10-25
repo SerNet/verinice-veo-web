@@ -52,9 +52,9 @@ export default (async function({ route, $config, app }, inject) {
   })
 
   async function checkRoute(r: Route) {
-    const excluded = /^\/help\/?/
+    const excluded = [/^\/help\/?/, /^\/login\/?/]
     if (r.name !== 'sso') {
-      if (!excluded.test(r.path)) {
+      if (!excluded.some((entry: RegExp) => entry.test(r.path))) {
         await $auth.init()
       }
     }
