@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters>
-    <v-col class="pa-3 fullsize-col">
+    <v-col class="pa-3">
       <template v-if="$fetchState.pending">
         <div class="text-center ma-12">
           <v-progress-circular indeterminate color="primary" size="50" />
@@ -59,7 +59,7 @@
       </template>
     </v-col>
 
-    <AppSideContainer :width="350" class="fullsize-col">
+    <AppSideContainer :width="350">
       <nuxt-child />
     </AppSideContainer>
 
@@ -105,6 +105,16 @@ export default Vue.extend({
   validate({ params }) {
     return ['asset', 'control', 'person', 'process'].includes(params.type)
   },
+  async fetch() {
+    const objectSchema = await this.$api.schema.fetch(this.objectType)
+    const { lang } = await this.$api.translation.fetch(['de', 'en'])
+    const objectData = await this.$api[this.objectType].fetch(this.objectId)
+    this.form = {
+      objectSchema,
+      objectData,
+      lang
+    }
+  },
   data(): IData {
     return {
       panel: [],
@@ -119,21 +129,6 @@ export default Vue.extend({
       state: 'start',
       saveBtnLoading: false,
       deleteBtnLoading: false
-    }
-  },
-  async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.objectType)
-    const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api[this.objectType].fetch(this.objectId)
-    this.form = {
-      objectSchema,
-      objectData,
-      lang
-    }
-  },
-  head(): any {
-    return {
-      title: 'veo.data'
     }
   },
   computed: {
@@ -197,6 +192,11 @@ export default Vue.extend({
         this.state = 'error'
       }
       this.saveBtnLoading = false
+    }
+  },
+  head(): any {
+    return {
+      title: 'veo.data'
     }
   }
 })

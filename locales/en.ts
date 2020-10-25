@@ -12,7 +12,8 @@ export default {
   'global.error.fetching': 'An error occured while fetching the resource',
   'global.logout': 'Logout',
 
-  'page.index.nounit': 'Please choose a unit from the dropdown menu.',
+  'page.index.chooseunit': 'Please choose a Unit',
+  'page.index.chooseunitplaceholder': 'Search for a unit...',
 
   'page.settings.title': 'Settings',
   'page.settings.language': 'Preferred Language',

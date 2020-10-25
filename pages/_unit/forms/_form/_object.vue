@@ -1,5 +1,5 @@
 <template>
-  <v-col class="fullsize-col">
+  <v-col>
     <template v-if="$fetchState.pending">
       <div class="text-center ma-12">
         <v-progress-circular indeterminate color="primary" size="50" />
@@ -90,24 +90,6 @@ export default Vue.extend({
     AppStateDialog,
     VeoForm
   },
-  data(): IData {
-    return {
-      panel: [],
-      activeLanguage: 'de',
-      objectType: undefined,
-      form: {
-        objectSchema: {},
-        objectData: {},
-        formSchema: undefined,
-        lang: {}
-      },
-      isValid: true,
-      errorMessages: [],
-      state: 'start',
-      error: undefined,
-      btnLoading: false
-    }
-  },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.$route.params.form)
     this.objectType = formSchema.modelType && formSchema.modelType.toLowerCase()
@@ -125,9 +107,22 @@ export default Vue.extend({
       throw new Error('Object Type is not defined in FormSchema')
     }
   },
-  head() {
+  data(): IData {
     return {
-      title: 'veo.forms'
+      panel: [],
+      activeLanguage: 'de',
+      objectType: undefined,
+      form: {
+        objectSchema: {},
+        objectData: {},
+        formSchema: undefined,
+        lang: {}
+      },
+      isValid: true,
+      errorMessages: [],
+      state: 'start',
+      error: undefined,
+      btnLoading: false
     }
   },
   computed: {
@@ -209,6 +204,11 @@ export default Vue.extend({
           })
         })
       }
+    }
+  },
+  head() {
+    return {
+      title: 'veo.forms'
     }
   }
 })

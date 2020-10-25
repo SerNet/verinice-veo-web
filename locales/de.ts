@@ -12,7 +12,8 @@ export default {
   'global.error.fetching': 'Fehler beim Abruf',
   'global.logout': 'Logout',
 
-  'page.index.nounit': 'Bitte wählen Sie eine Unit aus dem Dropdown Menü aus.',
+  'page.index.chooseunit': 'Bitte wählen Sie eine Unit',
+  'page.index.chooseunitplaceholder': 'Nach einer Unit suchen...',
 
   'page.settings.title': 'Einstellungen',
   'page.settings.language': 'Bevorzugte Sprache',

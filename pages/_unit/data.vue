@@ -2,7 +2,7 @@
   <v-container fill-height fluid class="ma-0 pa-0" align-start>
     <v-row class="fill-height" no-gutters>
       <AppSideContainer side="left" :width="350">
-        <v-col cols="12" class="pa-0 fullsize-col">
+        <v-col cols="12" class="pa-0">
           <v-list dense>
             <template v-for="(object, index) in objects">
               <v-list-item v-if="object.groups.length === 0" :key="index" :to="`/${unit}/data/${object.type}/-/`">
@@ -58,11 +58,6 @@ export default Vue.extend({
     AppSideContainer
   },
   props: {},
-  data(): IData {
-    return {
-      objects: []
-    }
-  },
   async fetch() {
     this.objects = [
       {
@@ -86,6 +81,11 @@ export default Vue.extend({
         groups: await this.$api.group.fetchAll({ type: 'Process' })
       }
     ]
+  },
+  data(): IData {
+    return {
+      objects: []
+    }
   },
   computed: {
     unit(): string {

@@ -1,5 +1,5 @@
 <template>
-  <v-col class="fullsize-col">
+  <v-col>
     <div class="display-1 mb-3">veo.data</div>
     <div class="display">{{ $t('unit.data.type') }}: {{ objectType }}</div>
     <div class="display">{{ $t('unit.data.group') }}: {{ objectGroup }}</div>
