@@ -12,39 +12,17 @@
       </svg>
     </v-col>
     <v-col cols="10" md="8" lg="6">
-      <v-card>
-        <v-card-text>
-          <v-window v-model="mode">
-            <v-window-item value="login">
-              <v-card-title>
-                Anmelden
-              </v-card-title>
-              <v-card-text>
-                <v-form>
-                  <v-text-field v-model="mail" name="mail" outlined placeholder="E-Mail" />
-                  <v-text-field v-model="password" name="password" outlined type="password" label="Passwort" />
-                  <v-btn color="primary">Anmelden</v-btn>
-                  <p class="mt-2"><v-btn text class="text--blackpx-1 font-weight-bold" @click="mode = 'register'">Account erstellen!</v-btn></p>
-                </v-form>
-              </v-card-text>
-            </v-window-item>
-            <v-window-item value="register">
-              <v-card-title>
-                Registrieren
-              </v-card-title>
-              <v-card-text>
-                <v-form>
-                  <v-text-field v-model="mail" name="mail" outlined placeholder="E-Mail" />
-                  <v-text-field v-model="password" name="password" outlined type="password" label="Passwort" />
-                  <v-text-field v-model="passwordRepeat" name="password_repeat" outlined type="password" label="Passwort wiederholen" />
-                  <v-btn color="primary">Registrieren</v-btn>
-                  <p class="mt-2"><v-btn text class="text--black px-1 font-weight-bold" @click="mode = 'login'">Ich besitze bereits einen Account</v-btn></p>
-                </v-form>
-              </v-card-text>
-            </v-window-item>
-          </v-window>
-        </v-card-text>
-      </v-card>
+      <v-row class="text-center">
+        <v-col>
+          <p class="mb-2 font-weight-bold"><br>Account vorhanden?</p>
+          <v-btn x-large color="primary">Anmelden</v-btn>
+        </v-col>
+        <v-spacer />
+        <v-col>
+          <p class="mb-2">Noch kein Account?<br><b>Account erstellen!</b></p>
+          <v-btn x-large>Registrieren</v-btn>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>
@@ -54,17 +32,9 @@ import Vue from 'vue'
 
 export default Vue.extend({
   layout: 'plain',
-  data() {
-    return {
-      mode: 'login' as string,
-      mail: '' as string,
-      password: '' as string,
-      passwordRepeat: '' as string
-    }
-  },
   head(): any {
     return {
-      title: 'Anmelden'
+      title: 'verinice.veo'
     }
   }
 })
