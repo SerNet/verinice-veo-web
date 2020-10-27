@@ -14,11 +14,11 @@ import 'prismjs/components/prism-json'
 export default Vue.extend({
   name: 'PrimsHighlighter',
   props: {
-    text: String
+    text: { type: String, default: '' }
   },
   computed: {
     textAsHighlighterHTML(): string {
-      return Prism.highlight(this.text, Prism.languages.json, 'json')
+      return this.text ? Prism.highlight(String(this.text || ''), Prism.languages.json, 'json') : ''
     }
   }
 })

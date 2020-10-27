@@ -17,6 +17,7 @@
     "webpack": "nuxt webpack"
   },
   "dependencies": {
+    "@codemirror/next": "^0.14.0",
     "@mdi/font": "^5.7.55",
     "@nuxtjs/axios": "5.12.2",
     "@nuxtjs/composition-api": "^0.13.5",

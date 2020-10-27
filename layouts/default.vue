@@ -18,6 +18,7 @@
       />-->
 
       <portal-target name="toolbar" />
+
       <v-spacer />
 
       <v-overflow-btn
@@ -45,11 +46,15 @@
       />
     </v-app-bar>
 
-    <AppTabBar :items="nav" :drawer.sync="drawer" />
+    <AppTabBar :offset="$vuetify.application.top" :items="nav" :drawer.sync="drawer" />
 
     <v-main>
       <nuxt />
     </v-main>
+
+    <v-footer app padless inset outlined>
+      <portal-target style="width: 100%" name="footer" />
+    </v-footer>
   </v-app>
 </template>
 
@@ -134,6 +139,12 @@ export default Vue.extend({
 }
 ::v-deep .language-btn .v-select__selection.v-select__selection--comma {
   margin: 0 !important;
+}
+
+.v-footer {
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
 }
 
 /*.domain-select {
