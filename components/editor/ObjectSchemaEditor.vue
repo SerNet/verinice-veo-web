@@ -6,33 +6,54 @@
     </div>
     <v-expansion-panels accordion multiple :value="[0, 1, 2]" flat>
       <v-expansion-panel>
-        <v-expansion-panel-header class="overline">Basic properties ({{ basicProps.length }})</v-expansion-panel-header>
+        <v-expansion-panel-header class="overline">
+          Basic properties ({{ basicProps.length }})
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-card outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListItem v-for="child in basicProps" :key="child.id" v-bind="child" two-line @click="editItem(item.path)" />
+              <v-listitem />
+              <ObjectSchemaListItem v-for="child in basicProps" :key="child.id" v-bind="child" two-line @click="editItem(item)" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
       </v-expansion-panel>
       <v-expansion-panel>
-        <v-expansion-panel-header class="overline">Custom Aspects ({{ customAspects.length }})</v-expansion-panel-header>
+        <v-expansion-panel-header class="overline">
+          Custom Aspects ({{ customAspects.length }})
+          <div class="d-flex">
+            <v-spacer />
+            <v-btn small text color="primary" @click.stop>
+              <v-icon small>mdi-plus</v-icon>
+              <span>Add custom aspect</span>
+            </v-btn>
+          </div>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-card v-for="item in customAspects" v-show="!hideEmptyAspects || item.children.length > 0" :key="item.id" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="item" @click="editItem(item.path)" />
-              <ObjectSchemaListItem v-for="child in item.children" :key="child.id" v-bind="child" two-line @click="editItem(item.path)" />
+              <ObjectSchemaListHeader v-bind="item" @click="editItem(item)" />
+              <ObjectSchemaListItem v-for="child in item.children" :key="child.id" v-bind="child" two-line @click="editItem(item)" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
       </v-expansion-panel>
       <v-expansion-panel>
-        <v-expansion-panel-header class="overline">Custom Links ({{ customLinks.length }})</v-expansion-panel-header>
+        <v-expansion-panel-header class="overline">
+          Custom Links ({{ customLinks.length }})
+          <div class="d-flex">
+            <v-spacer />
+            <v-btn small text color="primary" @click.stop>
+              <v-icon small>mdi-plus</v-icon>
+              <span>Add custom link</span>
+            </v-btn>
+          </div>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-card v-for="item in customLinks" :key="item.id" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="item" @click="editItem(item.path)" />
-              <ObjectSchemaListItem v-for="child in item.children" :key="child.id" v-bind="child" two-line @click="editItem(item.path)" />
+              <ObjectSchemaListHeader v-bind="item" @click="editItem(item)" />
+              <ObjectSchemaListItem v-for="child in item.children" :key="child.id" v-bind="child" two-line @click="editItem(item)" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
