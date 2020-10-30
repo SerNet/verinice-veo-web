@@ -20,7 +20,7 @@
       </v-tab-item>
       <v-tab-item value="form-schema">
         <v-col class="pa-0" :style="{ maxHeight }" style="overflow: auto" cols="12" lg="6">
-          <FormSchemaEditor v-model="schema" />
+          <FormSchemaEditor :objectSchema="schema" />
         </v-col>
         <v-col class="pa-0 fill-height" :style="{ maxHeight }" style="overflow: auto;" cols="12" lg="6">
           <!-- <CodeEditor v-model="code" /> -->
@@ -64,7 +64,7 @@ export default Vue.extend({
       }
     }
   },
-  methods: {}
+  methods: {},
 })
 </script>
 

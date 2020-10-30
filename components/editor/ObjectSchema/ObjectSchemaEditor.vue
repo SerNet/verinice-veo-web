@@ -12,7 +12,7 @@
         <v-expansion-panel-content>
           <v-card outlined>
             <v-list class="py-0" dense>
-              <v-listitem />
+              <v-list-item />
               <ObjectSchemaListItem v-for="child in basicProps" :key="child.id" v-bind="child" two-line @click="editItem(item)" />
             </v-list>
           </v-card>
