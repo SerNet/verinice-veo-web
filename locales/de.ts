@@ -1,6 +1,15 @@
 export default {
   welcome: 'Willkommen',
 
+  'forms.input.linkadd': 'Link hinzufügen',
+  'forms.input.link.targetObject': 'Target Objekt',
+  'forms.input.link.targetObject.change.headline': 'Objekt ändern',
+  'forms.input.link.targetObject.create': 'Erstellen',
+  'forms.input.link.targetObject.create.headline': 'Ein neues Objekt anlegen',
+  'forms.input.link.targetObject.delete.headline': 'Objekt löschen',
+  'forms.input.link.targetObject.delete.text': 'Sind sie sicher, dass das Objekt "{object}" gelöscht werden soll?',
+  'forms.input.link.targetObject.notFound': 'Nicht gefunden',
+
   'global.appstate.alert.success': 'Erfolgreich durchgeführt!',
   'global.appstate.alert.error': 'Ein Fehler ist aufgetreten!',
   'global.button.cancel': 'Abbrechen',

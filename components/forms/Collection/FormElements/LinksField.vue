@@ -38,7 +38,7 @@
       </v-btn>
     </div>
 
-    <v-btn small elevation="0" color="primary" class="vf-btn-add mt-1" @click="addRow">Add link</v-btn>
+    <v-btn small elevation="0" color="primary" class="vf-btn-add mt-1" @click="addRow">{{ $t('forms.input.linkadd') }}</v-btn>
   </div>
 </template>
 

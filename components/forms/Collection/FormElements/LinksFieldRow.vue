@@ -17,7 +17,7 @@
       item-text="name"
       item-value="id"
       :search-input.sync="search"
-      label="Target Objekt"
+      :label="$t('forms.input.link.targetObject')"
       clearable
     >
       <template #prepend-item>
@@ -28,14 +28,14 @@
           tile
           @click.stop="onDialogOpen('DIALOG_CREATE')"
         >
-          Erstellen
+          {{ $t('forms.input.link.targetObject.create') }}
         </v-btn>
         <v-divider />
       </template>
       <template #no-data>
         <v-list-item>
           <v-list-item-title>
-            Nicht gefunden!
+            {{ $t('forms.input.link.targetObject.notFound') }}
           </v-list-item-title>
         </v-list-item>
       </template>
@@ -81,7 +81,7 @@
       @input="dialog = !$event ? false : dialog"
     >
       <v-card v-if="dialog === 'DIALOG_CREATE'">
-        <v-card-title class="headline">Ein neues Objekt anlegen</v-card-title>
+        <v-card-title class="headline">{{ $t('forms.input.link.targetObject.create.headline') }}</v-card-title>
         <v-card-text>
           <VeoForm
             v-model="newObject"
@@ -94,7 +94,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" text @click="onDialogCancel">
-            Abbrechen
+            {{ $t('global.button.cancel') }}
           </v-btn>
           <v-btn
             color="primary"
@@ -103,13 +103,13 @@
             :disabled="!newObject || !newObject.name"
             @click="onDialogAcceptCreate"
           >
-            Speichern
+            {{ $t('global.button.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
 
       <v-card v-else-if="dialog === 'DIALOG_UPDATE'">
-        <v-card-title class="headline">Das Objekt ändern</v-card-title>
+        <v-card-title class="headline">{{ $t('forms.input.link.targetObject.change.headline') }}</v-card-title>
         <v-card-text>
           <!-- TODO: ObjectSchema and FormSchema for Dialog must come from Server (Person) -->
           <VeoForm
@@ -123,7 +123,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" text @click="onDialogCancel">
-            Abbrechen
+            {{ $t('global.button.cancel') }}
           </v-btn>
           <!-- TODO: change name with displayName after it is implemented -->
           <v-btn
@@ -133,22 +133,21 @@
             :disabled="!(itemInDialog && itemInDialog.name)"
             @click="onDialogAcceptUpdate"
           >
-            Speichern
+            {{ $t('global.button.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
 
       <v-card v-else-if="dialog === 'DIALOG_DELETE'">
-        <v-card-title>Objekt Löschen</v-card-title>
+        <v-card-title>{{ $t('forms.input.link.targetObject.delete.headline') }}</v-card-title>
         <!-- TODO: change name with displayName after it is implemented -->
         <v-card-text>
-          Sind sie sicher, dass das Objekt "{{ itemInDialog && itemInDialog.name }}" gelöscht
-          werden soll?
+          {{ $t('forms.input.link.targetObject.delete.text', { object: itemInDialog && itemInDialog.name }) }}
         </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" text @click="onDialogCancel">
-            Abbrechen
+            {{ $t('global.button.cancel') }}
           </v-btn>
           <v-btn
             color="primary"
@@ -156,7 +155,7 @@
             text
             @click="onDialogAcceptDelete"
           >
-            Bestätigen
+            {{ $t('global.button.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
