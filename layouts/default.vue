@@ -41,7 +41,7 @@
         :prename="$auth.profile.firstName"
         :lastname="$auth.profile.lastName"
         :email="$auth.profile.email"
-        @logout="$auth.logout()"
+        @logout="$auth.logout('/')"
       />
     </v-app-bar>
 
@@ -112,6 +112,11 @@ export default Vue.extend({
           visible: true // this.$route.path.startsWith('/help')
         }
       ]
+    }
+  },
+  methods: {
+    logout() {
+      // this.$router.push(this.$auth.logoutUrl)
     }
   }
 })

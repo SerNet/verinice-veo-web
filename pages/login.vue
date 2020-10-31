@@ -15,12 +15,12 @@
       <v-row class="text-center">
         <v-col>
           <p class="mb-2 font-weight-bold"><br>Account vorhanden?</p>
-          <v-btn x-large color="primary">Anmelden</v-btn>
+          <v-btn x-large color="primary" @click="$auth.login('/')">Anmelden</v-btn>
         </v-col>
         <v-spacer />
         <v-col>
           <p class="mb-2">Noch kein Account?<br><b>Account erstellen!</b></p>
-          <v-btn x-large>Registrieren</v-btn>
+          <v-btn x-large @click="$auth.register('/')">Registrieren</v-btn>
         </v-col>
       </v-row>
     </v-col>
