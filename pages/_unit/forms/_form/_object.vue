@@ -24,26 +24,26 @@
       <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
         <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
           <v-expansion-panel>
-            <v-expansion-panel-header>objectData</v-expansion-panel-header>
+            <v-expansion-panel-header>{{ $t('unit.data.objectdata') }}</v-expansion-panel-header>
             <v-expansion-panel-content style="overflow:auto">
               <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
             </v-expansion-panel-content>
           </v-expansion-panel>
           <v-expansion-panel>
-            <v-expansion-panel-header>Validation logs</v-expansion-panel-header>
+            <v-expansion-panel-header>{{ $t('unit.data.validationlogs') }}</v-expansion-panel-header>
             <v-expansion-panel-content style="overflow:auto">
-              <div>isValid: {{ isValid }}</div>
-              <div>Error Messages:</div>
+              <div>{{ $t('unit.data.valid') }}: {{ isValid }}</div>
+              <div>{{ $t('unit.data.errormessages') }}:</div>
               <pre>{{ errorMessages }}</pre>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
 
-        <v-btn color="primary" :loading="btnLoading" block @click="onClick">Speichern</v-btn>
+        <v-btn color="primary" :loading="btnLoading" block @click="onClick">{{ $t('global.button.save') }}</v-btn>
         <AppStateAlert v-model="state" :error="error || $fetchState.error" state-after-alert="start" />
         <AppStateDialog v-if="error && error.status == 412" :value="!!error" title="Fehler" @input="error = undefined" @yes="$fetch">
           <template v-if="error">
-            <span v-if="error && error.status == 412">Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?</span>
+            <span v-if="error && error.status == 412">{{ $t('unit.forms.nrr') }}</span>
             <span v-else v-text="error" />
           </template>
         </AppStateDialog>
@@ -90,24 +90,6 @@ export default Vue.extend({
     AppStateDialog,
     VeoForm
   },
-  data(): IData {
-    return {
-      panel: [],
-      activeLanguage: 'de',
-      objectType: undefined,
-      form: {
-        objectSchema: {},
-        objectData: {},
-        formSchema: undefined,
-        lang: {}
-      },
-      isValid: true,
-      errorMessages: [],
-      state: 'start',
-      error: undefined,
-      btnLoading: false
-    }
-  },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.$route.params.form)
     this.objectType = formSchema.modelType && formSchema.modelType.toLowerCase()
@@ -125,9 +107,22 @@ export default Vue.extend({
       throw new Error('Object Type is not defined in FormSchema')
     }
   },
-  head() {
+  data(): IData {
     return {
-      title: 'veo.forms'
+      panel: [],
+      activeLanguage: 'de',
+      objectType: undefined,
+      form: {
+        objectSchema: {},
+        objectData: {},
+        formSchema: undefined,
+        lang: {}
+      },
+      isValid: true,
+      errorMessages: [],
+      state: 'start',
+      error: undefined,
+      btnLoading: false
     }
   },
   computed: {
@@ -209,6 +204,11 @@ export default Vue.extend({
           })
         })
       }
+    }
+  },
+  head() {
+    return {
+      title: 'veo.forms'
     }
   }
 })

@@ -20,12 +20,17 @@ import Vue, { PropOptions } from 'vue'
 interface INavItem {
   name: string,
   icon: string,
+  exact?: boolean,
   to: string,
   visible?: boolean
 }
 
 export default Vue.extend({
   props: {
+    offset: {
+      type: [Number, String],
+      default: 0
+    },
     items: {
       type: Array,
       default: () => []
@@ -44,7 +49,8 @@ export default Vue.extend({
     }
   },
   data() {
-    return {}
+    return {
+    }
   },
   computed: {
     filteredItems(): INavItem[] {
@@ -62,6 +68,10 @@ export default Vue.extend({
       transform: scaleX(-1);
     }
   }
+}
+
+.v-navigation-drawer.theme--light {
+  background-color: #FAFAFA;
 }
 
 .nav-tabs {

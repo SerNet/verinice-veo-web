@@ -18,23 +18,8 @@
       />-->
 
       <portal-target name="toolbar" />
+
       <v-spacer />
-
-      <v-overflow-btn
-        :value="$i18n.locale"
-        :items="langs"
-        class="language-btn"
-        color="primary"
-        label="Languages"
-        flat
-        dense
-        solo
-        outlined
-        hide-details
-        background-color="transparent"
-        @input="$i18n.setLocale($event)"
-      />
-
       <AppAccountBtn
         v-if="$auth.profile"
         :username="$auth.profile.username"
@@ -45,11 +30,15 @@
       />
     </v-app-bar>
 
-    <AppTabBar :items="nav" :drawer.sync="drawer" />
+    <AppTabBar :offset="$vuetify.application.top" :items="nav" :drawer.sync="drawer" />
 
-    <v-main>
+    <v-main style="height: 100vh; overflow: hidden;">
       <nuxt />
     </v-main>
+
+    <v-footer app padless inset outlined>
+      <portal-target style="width: 100%" name="footer" />
+    </v-footer>
   </v-app>
 </template>
 
@@ -70,15 +59,7 @@ export default Vue.extend({
     return {
       drawer: false as boolean,
       domains: ['Datenschutz', 'ISO 27001'],
-      langs: [
-        { value: 'en', text: 'English' },
-        { value: 'de', text: 'Deutsch' }
-      ]
-    }
-  },
-  head() {
-    return {
-      title: 'vernice.veo'
+      units: []
     }
   },
   computed: {
@@ -126,10 +107,6 @@ export default Vue.extend({
 ::v-deep .v-main__wrap {
   border-top: 1px solid #e0e0e0;
 }
-
-.language-btn {
-  max-width: 120px;
-}
 ::v-deep .language-btn .v-input__control div[role='combobox'].v-input__slot {
   padding-right: 0;
 }
@@ -139,6 +116,12 @@ export default Vue.extend({
 }
 ::v-deep .language-btn .v-select__selection.v-select__selection--comma {
   margin: 0 !important;
+}
+
+.v-footer {
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
 }
 
 /*.domain-select {

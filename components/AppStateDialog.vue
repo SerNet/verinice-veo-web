@@ -15,19 +15,12 @@
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
 
-const BUTTON_MAP = {
-  yes: 'Ja',
-  no: 'Nein',
-  ok: 'OK',
-  cancel: 'Abbrechen'
-}
-
 interface IButton {
   id: string
   text: string
 }
 
-type Btn = keyof typeof BUTTON_MAP | IButton
+type Btn = 'yes' | 'no' | 'ok' | 'cancel' | IButton
 
 export default Vue.extend({
   props: {
@@ -39,7 +32,7 @@ export default Vue.extend({
   computed: {
     btns(): any {
       return this.buttons.map((btn) => {
-        return typeof btn === 'object' ? btn : { id: btn, text: BUTTON_MAP[btn] }
+        return typeof btn === 'object' ? btn : { id: btn, text: this.$t(`global.button.${String(btn)}`) }
       })
     }
   },
