@@ -1,8 +1,8 @@
 <template>
   <v-col>
     <div class="display-1 mb-3">veo.data</div>
-    <div class="display">Type: {{ objectType }}</div>
-    <div class="display">Group: {{ objectGroup }}</div>
+    <div class="display">{{ $t('unit.data.type') }}: {{ objectType }}</div>
+    <div class="display">{{ $t('unit.data.group') }}: {{ objectGroup }}</div>
 
     <div v-if="$fetchState.pending">
       <div class="text-center ma-12">
@@ -11,11 +11,11 @@
     </div>
 
     <div v-else-if="$fetchState.error">
-      Fehler beim Abruf
+      {{ $t('global.error.fetching') }}
     </div>
 
     <div v-else>
-      <v-btn :to="`/${unit}/data/${objectType}/${objectGroup}/create`" color="primary" class="mt-6">{{ objectType }} erstellen</v-btn>
+      <v-btn :to="`/${unit}/data/${objectType}/${objectGroup}/create`" color="primary" class="mt-6">{{ $t('unit.data.createobject', { type: objectType }) }}</v-btn>
       <v-list two-line max-width="500">
         <v-list-item v-for="object in objects" :key="object.id" :to="`/${unit}/data/${objectType}/${objectGroup}/${object.id}`">
           <v-list-item-avatar>
@@ -27,7 +27,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <div v-if="objects.length === 0" class="display">Keine Objekte vorhanden</div>
+      <div v-if="objects.length === 0" class="display">{{ $t('unit.data.noobjects') }}</div>
     </div>
   </v-col>
 </template>

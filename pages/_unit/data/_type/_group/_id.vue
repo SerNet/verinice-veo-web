@@ -9,8 +9,8 @@
 
       <template v-if="!$fetchState.pending && form.objectData">
         <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
-          <v-btn color="primary" :to="linkToLinks" dark>Links</v-btn>
-          <v-btn color="primary" :to="linkToHistory" dark>History</v-btn>
+          <v-btn color="primary" :to="linkToLinks" dark>{{ $t('unit.data.links') }}</v-btn>
+          <v-btn color="primary" :to="linkToHistory" dark>{{ $t('unit.data.history') }}</v-btn>
 
           <div class="display-1 mt-3">{{ form.objectData.name }}</div>
           <div class="display mb-3">{{ form.objectData.id }}</div>
@@ -21,35 +21,35 @@
         <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
           <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
             <v-expansion-panel>
-              <v-expansion-panel-header>objectData</v-expansion-panel-header>
+              <v-expansion-panel-header>{{ $t('unit.data.objectdata') }}</v-expansion-panel-header>
               <v-expansion-panel-content style="overflow:auto">
                 <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
               </v-expansion-panel-content>
             </v-expansion-panel>
             <v-expansion-panel>
-              <v-expansion-panel-header>Validation logs</v-expansion-panel-header>
+              <v-expansion-panel-header>{{ $t('unit.data.validationlogs') }}</v-expansion-panel-header>
               <v-expansion-panel-content style="overflow:auto">
-                <div>isValid: {{ isValid }}</div>
-                <div>Error Messages:</div>
+                <div>{{ $t('unit.data.valid') }}: {{ isValid }}</div>
+                <div>{{ $t('unit.data.errormessages') }}:</div>
                 <pre>{{ errorMessages }}</pre>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
 
-          <v-btn color="primary" :loading="saveBtnLoading" @click="save">Speichern</v-btn>
+          <v-btn color="primary" :loading="saveBtnLoading" @click="save">{{ $t('global.button.save') }}</v-btn>
           <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
             <template #activator="{ on, attrs }">
               <v-btn color="primary" dark :loading="deleteBtnLoading" v-bind="attrs" v-on="on">
-                Löschen
+                {{ $t('global.button.delete') }}
               </v-btn>
             </template>
             <v-card>
               <v-card-title class="headline" />
-              <v-card-text>Soll das Objekt {{ form.objectData.name }} ({{ form.objectData.id }}) wirklich gelöscht werden?</v-card-text>
+              <v-card-text>{{ $t('unit.data.deleteobject', {object: `${form.objectData.name} ${form.objectData.id}`}) }}</v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn text @click="deleteDialog = false">Abbrechen</v-btn>
-                <v-btn text @click="deleteObject">Löschen</v-btn>
+                <v-btn text @click="deleteDialog = false">{{ $t('global.button.cancel') }}</v-btn>
+                <v-btn text @click="deleteObject">{{ $t('global.button.delete') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -105,6 +105,16 @@ export default Vue.extend({
   validate({ params }) {
     return ['asset', 'control', 'person', 'process'].includes(params.type)
   },
+  async fetch() {
+    const objectSchema = await this.$api.schema.fetch(this.objectType)
+    const { lang } = await this.$api.translation.fetch(['de', 'en'])
+    const objectData = await this.$api[this.objectType].fetch(this.objectId)
+    this.form = {
+      objectSchema,
+      objectData,
+      lang
+    }
+  },
   data(): IData {
     return {
       panel: [],
@@ -119,21 +129,6 @@ export default Vue.extend({
       state: 'start',
       saveBtnLoading: false,
       deleteBtnLoading: false
-    }
-  },
-  async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.objectType)
-    const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api[this.objectType].fetch(this.objectId)
-    this.form = {
-      objectSchema,
-      objectData,
-      lang
-    }
-  },
-  head(): any {
-    return {
-      title: 'veo.data'
     }
   },
   computed: {
@@ -197,6 +192,11 @@ export default Vue.extend({
         this.state = 'error'
       }
       this.saveBtnLoading = false
+    }
+  },
+  head(): any {
+    return {
+      title: 'veo.data'
     }
   }
 })

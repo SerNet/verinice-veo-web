@@ -1,6 +1,6 @@
 <template>
   <v-col>
-    <h1>Dashboard</h1>
+    <h1>{{ $t('unit.index.title') }}</h1>
     <div class="pt-6">
       <v-btn large color="primary" :to="`/${unit.id}/data`">
         <v-icon left>mdi-folder</v-icon>
@@ -47,7 +47,7 @@ export default Vue.extend({
   methods: {},
   head(): any {
     return {
-      title: 'Willkommen'
+      title: this.$t('welcome')
     }
   }
 })

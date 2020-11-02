@@ -20,7 +20,7 @@
 
                 <v-list-item :to="`/${unit}/data/${object.type}/-/`">
                   <v-list-item-content>
-                    <v-list-item-title>Objekte ohne Gruppe</v-list-item-title>
+                    <v-list-item-title>{{ $t('unit.data.nogroup') }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
 
@@ -58,34 +58,34 @@ export default Vue.extend({
     AppSideContainer
   },
   props: {},
-  data(): IData {
-    return {
-      objects: []
-    }
-  },
   async fetch() {
     this.objects = [
       {
         type: 'asset',
-        name: 'Assets',
+        name: this.$t('unit.data.type.asset'),
         groups: await this.$api.group.fetchAll({ type: 'Asset' })
       },
       {
         type: 'control',
-        name: 'Controls',
+        name: this.$t('unit.data.type.control'),
         groups: await this.$api.group.fetchAll({ type: 'Control' })
       },
       {
         type: 'person',
-        name: 'Persons',
+        name: this.$t('unit.data.type.person'),
         groups: await this.$api.group.fetchAll({ type: 'Person' })
       },
       {
         type: 'process',
-        name: 'Processes',
+        name: this.$t('unit.data.type.process'),
         groups: await this.$api.group.fetchAll({ type: 'Process' })
       }
     ]
+  },
+  data(): IData {
+    return {
+      objects: []
+    }
   },
   computed: {
     unit(): string {
