@@ -32,7 +32,7 @@
 
     <AppTabBar :offset="$vuetify.application.top" :items="nav" :drawer.sync="drawer" />
 
-    <v-main style="height: 100vh; overflow: hidden;">
+    <v-main>
       <nuxt />
     </v-main>
 
