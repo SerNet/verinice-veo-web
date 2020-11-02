@@ -14,13 +14,13 @@
     <v-col cols="10" md="8" lg="6">
       <v-row class="text-center">
         <v-col>
-          <p class="mb-2 font-weight-bold"><br>Account vorhanden?</p>
-          <v-btn x-large color="primary" @click="$auth.login('/')">Anmelden</v-btn>
+          <p class="mb-2 font-weight-bold" v-html="$t('page.login.text.login')" />
+          <v-btn x-large color="primary" @click="$auth.login('/')">{{ $t('page.login.button.login') }}</v-btn>
         </v-col>
         <v-spacer />
         <v-col>
-          <p class="mb-2">Noch kein Account?<br><b>Account erstellen!</b></p>
-          <v-btn x-large @click="$auth.register('/')">Registrieren</v-btn>
+          <p class="mb-2" v-html="$t('page.login.text.register')" />
+          <v-btn x-large @click="$auth.register('/')">{{ $t('page.login.button.register') }}</v-btn>
         </v-col>
       </v-row>
     </v-col>

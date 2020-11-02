@@ -24,6 +24,11 @@ export default {
   'page.index.chooseunit': 'Please choose a Unit',
   'page.index.chooseunitplaceholder': 'Search for a unit...',
 
+  'page.login.button.login': 'Login',
+  'page.login.button.register': 'Register',
+  'page.login.text.login': 'Already have an account?',
+  'page.login.text.register': '<b>Create account!</b>',
+
   'page.settings.title': 'Settings',
   'page.settings.language': 'Preferred Language',
   'page.settings.version': 'Version',
