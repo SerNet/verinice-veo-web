@@ -8,7 +8,7 @@
     <!-- <draggable v-model="myArray" group="people" @start="drag = true" @end="drag = false">
       <div v-for="element in myArray" :key="element.id">{{ element.name }}</div>
     </draggable> -->
-    <nested-draggable :tasks="list" />
+    <nested-draggable :tasks="list" :level="level" />
   </div>
 </template>
 
@@ -28,6 +28,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      level: 1,
       list: [
         {
           name: 'task 1',
