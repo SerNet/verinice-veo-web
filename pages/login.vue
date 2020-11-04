@@ -1,7 +1,7 @@
 <template>
   <v-row class="flex-column align-center justify-center wrapper">
     <v-col cols="10" md="8" lg="6" class="mb-5">
-      <svg viewBox="0 0 300 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 155 30" version="1.1" xmlns="http://www.w3.org/2000/svg" style="transform: scale(0.6)">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <path
             id="verinice."
@@ -17,7 +17,6 @@
           <p class="mb-2 font-weight-bold" v-html="$t('page.login.text.login')" />
           <v-btn x-large color="primary" @click="$auth.login('/')">{{ $t('page.login.button.login') }}</v-btn>
         </v-col>
-        <v-spacer />
         <v-col>
           <p class="mb-2" v-html="$t('page.login.text.register')" />
           <v-btn x-large @click="$auth.register('/')">{{ $t('page.login.button.register') }}</v-btn>
