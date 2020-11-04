@@ -19,11 +19,8 @@
         </v-row>
       </v-tab-item>
       <v-tab-item value="form-schema">
-        <v-col class="pa-0" :style="{ maxHeight }" style="overflow: auto" cols="12" lg="6">
+        <v-col class="pa-0" :style="{ maxHeight }" style="overflow: auto" cols="12" lg="12">
           <FormSchemaEditor :objectSchema="schema" />
-        </v-col>
-        <v-col class="pa-0 fill-height" :style="{ maxHeight }" style="overflow: auto;" cols="12" lg="6">
-          <!-- <CodeEditor v-model="code" /> -->
         </v-col>
       </v-tab-item>
     </v-tabs-items>
@@ -39,7 +36,7 @@ export default Vue.extend({
   props: {},
   data() {
     return {
-      tab: 'object-schema',
+      tab: 'form-schema',
       schema
     }
   },
@@ -64,7 +61,7 @@ export default Vue.extend({
       }
     }
   },
-  methods: {},
+  methods: {}
 })
 </script>
 
