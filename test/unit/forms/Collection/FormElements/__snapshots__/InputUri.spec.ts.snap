@@ -4,6 +4,8 @@ exports[`InputUri.vue should be rendered InputUri field: Initial render 1`] = `
 <div
   class="vf-wrapper d-flex flex-column"
 >
+  <!---->
+   
   <div
     class="vf-control col"
   >
