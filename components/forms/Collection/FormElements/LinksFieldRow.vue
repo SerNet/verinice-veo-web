@@ -96,7 +96,7 @@
             {{ $t('global.button.cancel') }}
           </v-btn>
           <v-btn color="primary" :loading="dialogLoading" text @click="onDialogAcceptDelete">
-            {{ $t('global.button.save') }}
+            {{ $t('global.button.delete') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -147,7 +147,7 @@ export default Vue.extend({
   name: 'LinksFieldRow',
   components: {
     // !!!IMPORTANT: this line makes sure, that VeoForm.vue component properly works in the project and in Rollup bundle
-    VeoForm: async () => (await import('~/components/forms/VeoForm.vue')).default
+    VeoForm: async() => (await import('~/components/forms/VeoForm.vue')).default
   },
   props: {
     name: { type: String, default: '' },
