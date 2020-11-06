@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar class="app-bar" app clipped-left clipped-right flat border color="primary" dark>
+    <v-app-bar class="app-bar pl-0" app clipped-left clipped-right flat border color="primary" dark>
       <AppBarLogo>
         <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
       </AppBarLogo>
@@ -16,6 +16,8 @@
         label="Domain"
         solo
       />-->
+
+      <AppUnitSelection />
 
       <portal-target name="toolbar" />
 
@@ -48,12 +50,14 @@ import Vue from 'vue'
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
+import AppUnitSelection from '~/components/layout/AppUnitSelection.vue'
 
 export default Vue.extend({
   components: {
     AppBarLogo,
     AppTabBar,
-    AppAccountBtn
+    AppAccountBtn,
+    AppUnitSelection
   },
   data() {
     return {
@@ -89,15 +93,9 @@ export default Vue.extend({
         {
           name: 'help',
           icon: 'mdi-help',
-          to: '/help',
-          visible: true // this.$route.path.startsWith('/help')
+          to: `/${this.$route.params.unit}/help`
         }
       ]
-    }
-  },
-  methods: {
-    logout() {
-      // this.$router.push(this.$auth.logoutUrl)
     }
   }
 })
@@ -122,6 +120,10 @@ export default Vue.extend({
   border-right: none;
   border-bottom: none;
   border-left: none;
+}
+
+.app-bar {
+  overflow: hidden;
 }
 
 /*.domain-select {
