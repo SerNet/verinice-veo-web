@@ -26,13 +26,6 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.unit-select {
-  position: absolute;
-  left: 220px;
-  top: 13px;
-  width: 190px; // Workaround bis sich das Select automatisch verkleinern lässt
-}
-
 @media only screen and (max-width: 599px /* 959 */) {
   /*.domain-select {
     left: 120px;

@@ -48,16 +48,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .unit-selection-wrapper {
-    .unit-select {
-        width: 152px; // Workaround bis sich das Select automatisch verkleinern lässt
-    }
-
-    .add-unit {
-        background: white;
-
-        i {
-            font-size: 2rem;
-        }
-    }
+  .unit-select {
+      width: 152px; // Workaround bis sich das Select automatisch verkleinern lässt
+  }
 }
 </style>
