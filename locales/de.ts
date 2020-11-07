@@ -34,6 +34,8 @@ export default {
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 
+  'unit.create': 'Neue Unit erstellen',
+  'unit.created': 'Unit wurde erstellt',
   'unit.data.createobject': '{type} erstellen',
   'unit.data.deleteobject': 'Soll das Objekt {object} wirklich gelöscht werden?',
   'unit.data.errormessages': 'Fehlermeldungen',
@@ -50,6 +52,9 @@ export default {
   'unit.data.type.process': 'Prozesse',
   'unit.data.valid': 'isValid',
   'unit.data.validationlogs': 'Validation logs',
+  'unit.details.name': 'Name der Unit',
+  'unit.details.name.required': 'Bitte trage einen Unit Namen ein.',
+  'unit.details.parents': 'Übergeordnete Units',
   'unit.forms.create': '{type} erstellen',
   'unit.forms.noprocesses': 'Keine Verarbeitungstätigkeiten vorhanden',
   'unit.forms.nrr': 'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',

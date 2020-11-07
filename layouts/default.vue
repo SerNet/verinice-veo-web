@@ -17,7 +17,7 @@
         solo
       />-->
 
-      <AppUnitSelection />
+      <AppUnitSelection @create-unit="createUnit" />
 
       <portal-target name="toolbar" />
 
@@ -38,9 +38,13 @@
       <nuxt />
     </v-main>
 
+    <VeoNewUnitDialog v-model="newUnitCreation" :persistent="newUnitPersistent" />
+
     <v-footer app padless inset outlined>
       <portal-target style="width: 100%" name="footer" />
     </v-footer>
+
+    <VeoSnackbar />
   </v-app>
 </template>
 
@@ -51,19 +55,25 @@ import AppBarLogo from '~/components/layout/AppBarLogo.vue'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
 import AppUnitSelection from '~/components/layout/AppUnitSelection.vue'
+import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
+import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
 
 export default Vue.extend({
   components: {
     AppBarLogo,
     AppTabBar,
     AppAccountBtn,
-    AppUnitSelection
+    AppUnitSelection,
+    VeoNewUnitDialog,
+    VeoSnackbar
   },
   data() {
     return {
       drawer: false as boolean,
       domains: ['Datenschutz', 'ISO 27001'],
-      units: []
+      units: [],
+      newUnitCreation: false as boolean,
+      newUnitPersistent: false as boolean
     }
   },
   computed: {
@@ -96,6 +106,12 @@ export default Vue.extend({
           to: `/${this.$route.params.unit}/help`
         }
       ]
+    }
+  },
+  methods: {
+    createUnit(persistent: boolean = false) {
+      this.newUnitCreation = true
+      this.newUnitPersistent = persistent
     }
   }
 })

@@ -35,10 +35,6 @@ import Vue from 'vue'
 export default Vue.extend({
   components: {},
   props: {},
-  async fetch() {
-    const units = await this.$api.unit.fetchAll()
-    this.units = units
-  },
   data() {
     return {
       search: '',
@@ -46,7 +42,10 @@ export default Vue.extend({
       units: []
     }
   },
-  methods: {},
+  async fetch() {
+    const units = await this.$api.unit.fetchAll()
+    this.units = units
+  },
   head() {
     return {
       // title: ''

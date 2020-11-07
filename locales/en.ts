@@ -34,6 +34,8 @@ export default {
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 
+  'unit.create': 'Create new unit',
+  'unit.created': 'Unit was created',
   'unit.data.createobject': 'Create {type}',
   'unit.data.deleteobject': 'Do you really want to delete {object}?',
   'unit.data.errormessages': 'Error Messages',
@@ -50,6 +52,9 @@ export default {
   'unit.data.type.process': 'Processes',
   'unit.data.valid': 'isValid',
   'unit.data.validationlogs': 'Validation logs',
+  'unit.details.name': 'Unit name',
+  'unit.details.name.required': 'A unit name is required!',
+  'unit.details.parents': 'Parent units',
   'unit.forms.create': 'Create {type}',
   'unit.forms.noprocesses': 'No processes found',
   'unit.forms.nrr': 'This dataset has been edited by another user. Do you want to load the changes?',
