@@ -15,7 +15,7 @@
       solo
       @change="changeUnit"
     />
-    <v-btn x-small fab elevation="0" class="ml-4 primary--text" color="white">
+    <v-btn x-small fab elevation="0" class="ml-4 primary--text" color="white" @click="createUnit()">
       <v-icon>mdi-plus</v-icon>
     </v-btn>
   </div>
@@ -31,6 +31,9 @@ export default Vue.extend({
   async fetch() {
     if (this.$auth.profile) {
       this.units = await this.$api.unit.fetchAll()
+      if (this.units.length === 0) {
+        this.createUnit(true)
+      }
     }
   },
   computed: {
@@ -41,6 +44,9 @@ export default Vue.extend({
   methods: {
     changeUnit(e: string) {
       this.$router.push('/' + e)
+    },
+    createUnit(persistent: boolean = false) {
+      this.$emit('create-unit', persistent)
     }
   }
 })
