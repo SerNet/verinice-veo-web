@@ -1,16 +1,12 @@
 <template>
-  <v-col class="vf-label">
-    <div>
-      <div
-        v-if="visible"
-        class="vf-label-text"
-        :class="options && options.class"
-        :style="options && options.style"
-      >
-        {{ text }}
-      </div>
-    </div>
-  </v-col>
+  <div
+    v-if="visible"
+    class="vf-label-text py-2"
+    :class="options && options.class"
+    :style="options && options.style"
+  >
+    {{ text }}
+  </div>
 </template>
 
 <script lang="ts">
