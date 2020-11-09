@@ -34,6 +34,8 @@ export default {
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 
+  'unit.create': 'Create new unit',
+  'unit.created': 'Unit was created',
   'unit.data.createobject': 'Create {type}',
   'unit.data.deleteobject': 'Do you really want to delete {object}?',
   'unit.data.errormessages': 'Error Messages',
