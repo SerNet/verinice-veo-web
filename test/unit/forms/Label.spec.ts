@@ -11,7 +11,7 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify()
 
 describe('Label.vue', () => {
-  it('should render label component for static text', async() => {
+  it('should render label component for static text', async () => {
     const form: Renderable = {
       schema: {},
       ui: {
@@ -42,15 +42,13 @@ describe('Label.vue', () => {
 
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
     expect(layoutWrapper.find('.vf-label').exists()).toBe(true)
-    expect(
-      layoutWrapper.find('.vf-label > div > .vf-label-text').exists()
-    ).toBe(true)
-    expect(layoutWrapper.find('.vf-label > div > .vf-label-text').text()).toBe(
+    expect(layoutWrapper.find('.vf-label').exists()).toBe(true)
+    expect(layoutWrapper.find('.vf-label').text()).toBe(
       'This is a Label text. \nYou can write here any static text!!!'
     )
   })
 
-  it("should add classes to label component in all 3 vue format: {}, [], '' ", async() => {
+  it("should add classes to label component in all 3 vue format: {}, [], '' ", async () => {
     const form1: Renderable = {
       schema: {},
       ui: {
@@ -131,9 +129,7 @@ describe('Label.vue', () => {
     await wrapper.vm.$nextTick()
 
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
-    const labelTextElement = layoutWrapper.find(
-      '.vf-label > div > .vf-label-text'
-    )
+    const labelTextElement = layoutWrapper.find('.vf-label')
     expect(labelTextElement.classes()).toContain('display')
     expect(labelTextElement.classes()).toContain('text-right')
     wrapper.setProps({ ...form2 })
@@ -146,7 +142,7 @@ describe('Label.vue', () => {
     expect(labelTextElement.classes()).toContain('text-left')
   })
 
-  it("should add style to label component in all 3 vue format: {}, [], '' ", async() => {
+  it("should add style to label component in all 3 vue format: {}, [], '' ", async () => {
     const form1: Renderable = {
       schema: {},
       ui: {
@@ -227,9 +223,7 @@ describe('Label.vue', () => {
     await wrapper.vm.$nextTick()
 
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
-    const labelTextElement = layoutWrapper.find(
-      '.vf-label > div > .vf-label-text'
-    )
+    const labelTextElement = layoutWrapper.find('.vf-label')
     expect(labelTextElement.attributes().style).toContain('font-size: 14px;')
     expect(labelTextElement.attributes().style).toContain('text-align: right;')
     wrapper.setProps({ ...form2 })
