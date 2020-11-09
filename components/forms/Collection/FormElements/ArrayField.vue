@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="visible"
-    class="vf-array-field"
+    class="vf-array-field pb-2"
     :class="options && options.class"
     :style="options && options.style"
   >
