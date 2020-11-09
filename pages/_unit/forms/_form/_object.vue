@@ -90,6 +90,24 @@ export default Vue.extend({
     AppStateDialog,
     VeoForm
   },
+  data(): IData {
+    return {
+      panel: [],
+      activeLanguage: 'de',
+      objectType: undefined,
+      form: {
+        objectSchema: {},
+        objectData: {},
+        formSchema: undefined,
+        lang: {}
+      },
+      isValid: true,
+      errorMessages: [],
+      state: 'start',
+      error: undefined,
+      btnLoading: false
+    }
+  },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.$route.params.form)
     this.objectType = formSchema.modelType && formSchema.modelType.toLowerCase()
@@ -107,22 +125,9 @@ export default Vue.extend({
       throw new Error('Object Type is not defined in FormSchema')
     }
   },
-  data(): IData {
+  head() {
     return {
-      panel: [],
-      activeLanguage: 'de',
-      objectType: undefined,
-      form: {
-        objectSchema: {},
-        objectData: {},
-        formSchema: undefined,
-        lang: {}
-      },
-      isValid: true,
-      errorMessages: [],
-      state: 'start',
-      error: undefined,
-      btnLoading: false
+      title: 'veo.forms'
     }
   },
   computed: {
@@ -169,6 +174,7 @@ export default Vue.extend({
           throw new Error('Object Type is not defined in FormSchema')
         }
         this.state = 'success'
+        this.$fetch()
       } catch (e) {
         this.state = 'error'
         this.error = e
@@ -204,11 +210,6 @@ export default Vue.extend({
           })
         })
       }
-    }
-  },
-  head() {
-    return {
-      title: 'veo.forms'
     }
   }
 })
