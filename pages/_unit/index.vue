@@ -1,55 +1,54 @@
 <template>
-  <v-col>
-    <h1>{{ $t('unit.index.title') }}</h1>
-    <div class="pt-6">
-      <v-btn large color="primary" :to="`/${unit.id}/data`">
-        <v-icon left>mdi-folder</v-icon>
-        veo.data
-      </v-btn>
-      <v-btn class="ml-1" large color="primary" :to="`/${unit.id}/forms`">
-        <v-icon left>mdi-format-list-checks</v-icon>
-        veo.forms
-      </v-btn>
-    </div>
-    <div class="pt-6">
-      <h2>Ideen:</h2>
-      <ul>
-        <li>Widget mit Darstellung aller Objekte passend zu einem Formular (Formular Auswahl via Select darüber)</li>
-        <li>Widget mit Informationen zur ausgewählten Unit</li>
-        <li>Widget mit Informationen zu allen gespeicherten Objekten in dieser Unit (Type: Anzahl)</li>
-      </ul>
-    </div>
-    <div>
-      <h2>Unit:</h2>
-      <pre>{{ unit }}</pre>
-    </div>
-  </v-col>
+  <v-row class="align-center pa-4">
+    <template v-if="$fetchState.pending">
+      <v-progress-circular size="64" color="primary" indeterminate />
+    </template>
+    <template v-else>
+      <v-col :cols="12" sm="6" lg="4">
+        <VeoUnitWidget :unit="unit" />
+      </v-col>
+      <v-col :cols="12" sm="6" lg="4">
+        <VeoUnitFormsWidget :unit="unit" />
+      </v-col>
+      <v-col :cols="12" sm="6" lg="4">
+        <VeoUnitObjectWidget :unit="unit" />
+      </v-col>
+    </template>
+  </v-row>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
+import VeoUnitWidget from '~/components/widgets/VeoUnitWidget.vue'
+import VeoUnitFormsWidget from '~/components/widgets/VeoUnitFormsWidget.vue'
+import VeoUnitObjectWidget from '~/components/widgets/VeoUnitObjectWidget.vue'
+
 export default Vue.extend({
-  components: {},
-  props: {},
-  async fetch() {
-    this.unit = await this.$api.unit.fetch(this.$route.params.unit)
+  components: {
+    VeoUnitWidget,
+    VeoUnitFormsWidget,
+    VeoUnitObjectWidget
   },
+  props: {},
   data() {
     return {
       unit: {}
     }
   },
-  computed: {},
-  watch: {
-    '$route.params': '$fetch'
+  async fetch() {
+    this.unit = await this.$api.unit.fetch(this.$route.params.unit)
+    console.log(this.unit)
   },
-  methods: {},
   head(): any {
     return {
       title: this.$t('welcome')
     }
-  }
+  },
+  watch: {
+    '$route.params': '$fetch'
+  },
+  methods: {}
 })
 </script>
 
