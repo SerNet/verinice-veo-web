@@ -7,7 +7,7 @@
     </template>
 
     <template v-else>
-      <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+      <div class="mx-auto" style="max-width:800px; width:100%;">
         <div class="display-1">{{ form.objectData.name }}</div>
       </div>
 
@@ -21,7 +21,7 @@
         :error-messages.sync="errorMessages"
       />
 
-      <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+      <div class="mx-auto" style="max-width:800px; width:100%;">
         <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
           <v-expansion-panel>
             <v-expansion-panel-header>{{ $t('unit.data.objectdata') }}</v-expansion-panel-header>
