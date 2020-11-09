@@ -7,7 +7,7 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
   <!---->
    
   <div
-    class="vf-layout vf-group d-flex mx-auto flex-column"
+    class="vf-layout vf-group d-flex mx-auto flex-column highlight"
     style="max-width: 800px; width: 100%;"
   >
     <div
@@ -99,7 +99,7 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
   <!---->
    
   <div
-    class="vf-layout vf-group d-flex mx-auto flex-column"
+    class="vf-layout vf-group d-flex mx-auto flex-column highlight"
     style="max-width: 800px; width: 100%;"
   >
     <div

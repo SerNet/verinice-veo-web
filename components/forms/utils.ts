@@ -31,15 +31,15 @@ export interface ISearchParams {
 export interface IApi {
   fetchAll(
     objectType: string,
-    searchParams?: ISearchParams,
+    searchParams?: ISearchParams
   ): Promise<BaseObject[]>
   create(
     objectType: string,
-    createdObjectData: ILinksFieldDialogNewObject,
+    createdObjectData: ILinksFieldDialogNewObject
   ): Promise<BaseObject>
   update(
     objectType: string,
-    updatedObjectData: ILinksFieldDialogUpdatedObject,
+    updatedObjectData: ILinksFieldDialogUpdatedObject
   ): Promise<void>
   delete(objectType: string, id: string): Promise<void>
 }
@@ -75,7 +75,8 @@ export const linksFieldDialogFormSchema: UISchema = {
   type: 'Layout',
   options: {
     format: 'group',
-    direction: 'vertical'
+    direction: 'vertical',
+    highlight: false
   },
   elements: [
     {

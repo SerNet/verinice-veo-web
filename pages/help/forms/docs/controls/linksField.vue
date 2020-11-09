@@ -281,18 +281,28 @@ export default Vue.extend({
           }
         },
         formSchema: {
-          type: 'Control',
-          scope: '#/properties/links/properties/process_ResponsibleDepartment',
+          type: 'Layout',
           options: {
-            label: 'Verantwortlicher Fachbereich'
+            direction: 'vertical',
+            format: 'group',
+            highlight: false
           },
           elements: [
             {
               type: 'Control',
-              scope: '#/properties/attributes/properties/testAttribute',
+              scope: '#/properties/links/properties/process_ResponsibleDepartment',
               options: {
-                label: 'Test Attribute'
-              }
+                label: 'Verantwortlicher Fachbereich'
+              },
+              elements: [
+                {
+                  type: 'Control',
+                  scope: '#/properties/attributes/properties/testAttribute',
+                  options: {
+                    label: 'Test Attribute'
+                  }
+                }
+              ]
             }
           ]
         },
