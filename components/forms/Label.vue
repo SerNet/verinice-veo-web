@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="visible"
-    class="vf-label-text py-2"
+    class="vf-label"
     :class="options && options.class"
     :style="options && options.style"
   >
@@ -21,3 +21,9 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.vf-label {
+  margin-bottom: 10px !important;
+}
+</style>
