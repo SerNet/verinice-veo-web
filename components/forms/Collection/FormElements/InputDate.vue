@@ -20,6 +20,8 @@
             :label="options && options.label"
             prepend-icon="mdi-calendar"
             hint="DD.MM.YYYY"
+            dense
+            hide-details="auto"
             clearable
             :error-messages="errors[0]"
             @input="setTempInputValue"

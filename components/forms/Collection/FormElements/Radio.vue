@@ -16,6 +16,8 @@
         :error-messages="errors[0]"
         :class="options && options.class"
         :style="options && options.style"
+        dense
+        hide-details="auto"
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
       >

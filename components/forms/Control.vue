@@ -55,3 +55,31 @@ export default Vue.extend({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+::v-deep {
+  .v-input--selection-controls {
+    margin-top: 0 !important;
+  }
+  .vf-autocomplete,
+  .vf-input-date,
+  .vf-input-date-time,
+  .vf-input-number,
+  .vf-input-text,
+  .vf-input-text-multiline,
+  .vf-input-uri,
+  .vf-markdown-editor,
+  .vf-select,
+  .vf-tags {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .vf-array-field,
+  .vf-checkbox,
+  .vf-links-field,
+  .vf-radio {
+    margin-bottom: 10px;
+  }
+}
+</style>

@@ -14,6 +14,8 @@
         :style="options && options.style"
         :indeterminate="indeterminate"
         color="primary"
+        dense
+        hide-details="auto"
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
       >

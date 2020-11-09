@@ -13,6 +13,8 @@
         type="number"
         :class="options && options.class"
         :style="options && options.style"
+        dense
+        hide-details="auto"
         clearable
         @input="onInput($event)"
         @change="onInput($event)"

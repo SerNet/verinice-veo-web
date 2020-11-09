@@ -1,11 +1,11 @@
 <template>
   <div
     v-if="visible"
-    class="vf-array-field pb-2"
+    class="vf-array-field mb-2"
     :class="options && options.class"
     :style="options && options.style"
   >
-    <div v-if="options && options.label" class="subtitle-1 mb-2">
+    <div v-if="options && options.label" class="subtitle-1">
       {{ options && options.label }}
     </div>
     <div

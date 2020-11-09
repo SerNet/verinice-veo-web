@@ -21,6 +21,8 @@
             :disabled="disabled"
             prepend-icon="mdi-calendar"
             hint="DD.MM.YYYY HH:MM"
+            dense
+            hide-details="auto"
             clearable
             :error-messages="errors[0]"
             @input="setTempInputValue"

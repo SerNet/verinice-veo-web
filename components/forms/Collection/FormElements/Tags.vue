@@ -16,6 +16,8 @@
         chips
         deletable-chips
         multiple
+        dense
+        hide-details="auto"
         clearable
         :return-object="false"
         @input="$emit('input', $event)"

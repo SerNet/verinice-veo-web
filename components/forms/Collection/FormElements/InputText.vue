@@ -12,6 +12,8 @@
         :label="options && options.label"
         :class="options && options.class"
         :style="options && options.style"
+        dense
+        hide-details="auto"
         clearable
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
