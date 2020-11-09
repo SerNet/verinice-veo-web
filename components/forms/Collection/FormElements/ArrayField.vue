@@ -53,7 +53,8 @@ export default Vue.extend({
   name: 'ArrayField',
   components: {
     // !!!IMPORTANT: this line makes sure, that VeoForm.vue component properly works in the project and in Rollup bundle
-    VeoForm: async() => (await import('~/components/forms/VeoForm.vue')).default
+    VeoForm: async () =>
+      (await import('~/components/forms/VeoForm.vue')).default
   },
   props: {
     name: String,

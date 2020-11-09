@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-autocomplete">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-autocomplete
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :error-messages="errors[0]"

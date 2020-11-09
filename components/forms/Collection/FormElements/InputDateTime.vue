@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-input-date-time">
     <v-menu
       v-model="menu"
       :close-on-content-click="false"
@@ -18,13 +18,14 @@
           <v-text-field
             :value="formattedDateTime"
             :label="options && options.label"
+            :disabled="disabled"
             prepend-icon="mdi-calendar"
             hint="DD.MM.YYYY HH:MM"
             clearable
             :error-messages="errors[0]"
             @input="setTempInputValue"
             @click:clear="clear"
-            @blur="formattedDateTime = tempInputValue"
+            @blur="onBlur"
             v-on="on"
           />
         </ValidationProvider>
@@ -49,12 +50,7 @@
           />
         </v-tab-item>
         <v-tab-item value="tab-2">
-          <v-time-picker
-            ref="timer"
-            v-model="time"
-            format="24hr"
-            full-width
-          />
+          <v-time-picker ref="timer" v-model="time" format="24hr" full-width />
         </v-tab-item>
       </v-tabs-items>
     </v-menu>
@@ -100,7 +96,7 @@ export default (Vue as VueConstructor<Vue & { $refs: { timer: any } }>).extend({
       return moment(this.value, this.dateTimeFormatISO, true)
     },
     formattedDateTime: {
-      get(): string {
+      get(): string | undefined {
         return this.momentDate.isValid()
           ? this.momentDate.format(this.dateTimeFormatInput)
           : this.value
@@ -170,6 +166,9 @@ export default (Vue as VueConstructor<Vue & { $refs: { timer: any } }>).extend({
       if (this.$refs.timer) {
         this.$refs.timer.selectingHour = true
       }
+    },
+    onBlur() {
+      this.formattedDateTime = this.tempInputValue
     }
   }
 })

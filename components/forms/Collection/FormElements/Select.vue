@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-select">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-select
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :error-messages="errors[0]"

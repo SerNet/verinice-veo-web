@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-input-text-multiline">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-textarea
-        v-if="visible"
         ref="textarea"
         :disabled="disabled"
         :value="value"
@@ -63,9 +62,9 @@ export default (Vue as VueConstructor<
       const lineHeightNumber = parseFloat(lineHeight)
       return lineHeightNumber
         ? {
-          value: lineHeightNumber,
-          unit: lineHeight.replace(lineHeightNumber.toString(), '')
-        }
+            value: lineHeightNumber,
+            unit: lineHeight.replace(lineHeightNumber.toString(), '')
+          }
         : undefined
     },
     paddingHeight(): number {

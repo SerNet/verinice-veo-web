@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-radio">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
@@ -9,7 +9,6 @@
         {{ options && options.label }}
       </div>
       <v-radio-group
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :column="isDirectionVertical"
@@ -27,11 +26,7 @@
           :key="i"
           :name="item.value.toString()"
         >
-          <v-radio
-            :value="item.value"
-            :label="item.text"
-            color="primary"
-          />
+          <v-radio :value="item.value" :label="item.text" color="primary" />
         </ValidationProvider>
         <div slot="append">
           <v-icon @click="clear">mdi-close</v-icon>
