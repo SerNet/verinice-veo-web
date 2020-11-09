@@ -1,12 +1,25 @@
 <template>
   <v-card>
-    <v-card-title>{{ unit.name }}</v-card-title>
+    <v-card-title :class="unit.parent ? 'pb-1' : 'pb-2'" style="font-size: 1.7rem">{{ unit.name }}</v-card-title>
     <v-card-text>
-      <p>{{ $t('unit.details.parents') }}:</p>
-      <ul v-if="unit.units.length > 0">
-        <li v-for="parent of units" :key="parent.id"><nuxt-link :to="`/${parent.id}`">{{ parent.name }}</nuxt-link></li>
+      <div v-if="!unit.parent" class="mb-3">
+        <p style="font-size: 1.1rem; font-weight: bold;">{{ $t('unit.details.noparent') }}</p>
+      </div>
+      <p>
+        <span v-if="unit.description">{{ unit.description }}</span>
+        <i v-else>{{ $t('unit.details.nodescription') }}</i>
+      </p>
+      <br>
+      <div v-if="unit.parent" class="mb-3">
+        <b>{{ $t('unit.details.parent') }}</b>: <nuxt-link :to="`/${unit.parent.resourcesUri}`">{{ unit.parent.displayName }}</nuxt-link>
+      </div>
+      <b>{{ $t('unit.details.children') }}</b>
+      <ul>
+        <template v-if="unit.units.length > 0">
+          <li v-for="parent of unit.units" :key="parent.id"><nuxt-link :to="`/${parent.id}`">{{ parent.name }}</nuxt-link></li>
+        </template>
+        <span v-else>{{ $t('unit.details.nochild') }}</span>
       </ul>
-      <p v-else class="ml-2">{{ $t('unit.details.noparent') }}</p>
     </v-card-text>
   </v-card>
 </template>
