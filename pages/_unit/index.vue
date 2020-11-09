@@ -1,5 +1,5 @@
 <template>
-  <v-row class="align-center pa-4">
+  <v-row class="pa-4">
     <template v-if="$fetchState.pending">
       <v-progress-circular size="64" color="primary" indeterminate />
     </template>
@@ -38,7 +38,6 @@ export default Vue.extend({
   },
   async fetch() {
     this.unit = await this.$api.unit.fetch(this.$route.params.unit)
-    console.log(this.unit)
   },
   head(): any {
     return {
