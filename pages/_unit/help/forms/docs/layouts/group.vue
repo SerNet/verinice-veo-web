@@ -5,25 +5,41 @@
         <page-header>Group</page-header>
       </v-col>
       <v-col cols="12">
-        <v-switch
-          v-model="isHorizontal"
-          label="Horizontal"
-          hide-details
-          color="primary"
-        ></v-switch>
+        <v-row>
+          <v-col cols="2">
+            <v-switch
+              v-model="direction"
+              :label="`Direction: ${this.direction}`"
+              hide-details
+              color="primary"
+              false-value="vertical"
+              true-value="horizontal"
+            ></v-switch>
+          </v-col>
+          <v-col cols="2">
+            <v-switch
+              v-model="highlight"
+              :label="`Highlight: ${this.highlight}`"
+              hide-details
+              color="primary"
+              :false-value="true"
+              :true-value="false"
+            ></v-switch>
+          </v-col>
+        </v-row>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <veo-form
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
-          v-model="dynamicForm.data"
+          :schema="form.objectSchema"
+          :ui="form.formSchema"
+          v-model="form.data"
         />
       </v-col>
     </v-row>
     <form-description
-      :objectSchema="dynamicForm.objectSchema"
-      :formSchema="dynamicForm.formSchema"
-      :data="dynamicForm.data"
+      :objectSchema="form.objectSchema"
+      :formSchema="form.formSchema"
+      :data="form.data"
     ></form-description>
   </v-container>
 </template>
@@ -34,11 +50,13 @@ import VeoForm from '~/components/forms/VeoForm.vue'
 import FormDescription from '~/components/help/FormDescription.vue'
 import PageHeader from '~/components/help/PageHeader.vue'
 
+import vjp from 'vue-json-pointer'
+
 export default Vue.extend({
   components: {
     VeoForm,
     FormDescription,
-    PageHeader,
+    PageHeader
   },
   data() {
     return {
@@ -47,94 +65,65 @@ export default Vue.extend({
           type: 'object',
           properties: {
             inputText: {
-              type: 'string',
+              type: 'string'
             },
             select: {
               type: 'string',
-              enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
-            },
-          },
+              enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3']
+            }
+          }
         },
         formSchema: {
           type: 'Layout',
           options: {
-            format: 'group',
-            direction: 'vertical',
+            format: 'group'
           },
           elements: [
             {
               type: 'Control',
               scope: '#/properties/inputText',
               options: {
-                label: 'Input Text',
-              },
+                label: 'Input Text'
+              }
             },
             {
               type: 'Control',
               scope: '#/properties/select',
               options: {
-                label: 'Select',
-              },
-            },
-          ],
+                label: 'Select'
+              }
+            }
+          ]
         },
         data: {
           inputText: 'Beispiel',
-          select: 'Beispiel-1',
-        },
+          select: 'Beispiel-1'
+        }
       },
-      formHorizontal: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            inputText: {
-              type: 'string',
-            },
-            select: {
-              type: 'string',
-              enum: ['Beispiel-1', 'Beispiel-2', 'Beispiel-3'],
-            },
-          },
-        },
-        formSchema: {
-          type: 'Layout',
-          options: {
-            format: 'group',
-            direction: 'horizontal',
-          },
-          elements: [
-            {
-              type: 'Control',
-              scope: '#/properties/inputText',
-              options: {
-                label: 'Input Text',
-              },
-            },
-            {
-              type: 'Control',
-              scope: '#/properties/select',
-              options: {
-                label: 'Select',
-              },
-            },
-          ],
-        },
-        data: {
-          inputText: 'Beispiel',
-          select: 'Beispiel-1',
-        },
-      },
-      isHorizontal: false,
+      direction: 'vertical',
+      highlight: true
     }
   },
-  computed: {
-    dynamicForm(): any {
-      if (this.isHorizontal) {
-        return this.formHorizontal
+  watch: {
+    direction: {
+      immediate: true,
+      handler() {
+        this.update(this.form.formSchema, '/options/direction', this.direction)
       }
-      return this.form
     },
+    highlight: {
+      immediate: true,
+      handler() {
+        this.update(this.form.formSchema, '/options/highlight', this.highlight)
+      }
+    }
   },
+  methods: {
+    update(object: any, jsonPointer: string, value: any): void {
+      vjp.set(this.form.formSchema, jsonPointer, value)
+      this.form.formSchema = { ...this.form.formSchema }
+    }
+  }
 })
 </script>
 

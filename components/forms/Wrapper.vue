@@ -1,8 +1,8 @@
 <template>
   <div class="vf-wrapper d-flex flex-column">
-    <v-pagination v-if="length > 1" :value="page" :length="length" :total-visible="7" @input="onPageChange" class="mt-3" />
+    <v-pagination v-if="length > 1" :value="page" :length="length" :total-visible="7" @input="onPageChange" class="my-3" />
     <slot />
-    <v-pagination v-if="length > 1" :value="page" :length="length" :total-visible="7" @input="onPageChange" />
+    <v-pagination v-if="length > 1" :value="page" :length="length" :total-visible="7" @input="onPageChange" class="my-3" />
   </div>
 </template>
 

@@ -24,12 +24,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import VeoForm from '~/components/forms/VeoForm.vue'
 
 export default Vue.extend({
   name: 'Docs',
   data() {
-    const HELP_ROOT = '/help/forms'
+    const HELP_ROOT = `/${this.$route.params.unit}/help/forms`
     return {
       docs: [
         {

@@ -12,7 +12,7 @@
           item-text="name"
           item-value="id"
           :value="newUnit.units"
-          :label="$t('unit.details.parents')"
+          :label="$t('unit.details.children')"
         />
       </v-form>
     </template>

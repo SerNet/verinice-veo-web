@@ -83,7 +83,8 @@ export default Vue.extend({
             this.options && this.options.direction === 'vertical'
               ? 'vertical'
               : 'horizontal',
-          format: 'group'
+          format: 'group',
+          highlight: false
         },
         elements: this.elements
       }
