@@ -36,7 +36,7 @@
             </v-expansion-panel>
           </v-expansion-panels>
 
-          <v-btn color="primary" :loading="saveBtnLoading" @click="save">{{ $t('global.button.save') }}</v-btn>
+          <v-btn color="primary" :loading="saveBtnLoading" @click="onClick">{{ $t('global.button.save') }}</v-btn>
           <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
             <template #activator="{ on, attrs }">
               <v-btn color="primary" dark :loading="deleteBtnLoading" v-bind="attrs" v-on="on">
@@ -54,7 +54,13 @@
             </v-card>
           </v-dialog>
 
-          <AppStateAlert v-model="state" state-after-alert="start" />
+          <AppStateAlert v-model="state" :error="error || $fetchState.error" state-after-alert="start" />
+          <AppStateDialog v-if="error && error.status == 412" :value="!!error" title="Fehler" @input="error = undefined" @yes="$fetch">
+            <template v-if="error">
+              <span v-if="error && error.status == 412">{{ $t('unit.forms.nrr') }}</span>
+              <span v-else v-text="error" />
+            </template>
+          </AppStateDialog>
         </div>
       </template>
     </v-col>
@@ -86,7 +92,9 @@ interface IData {
   errorMessages: IValidationErrorMessage[]
   state: string
   saveBtnLoading: boolean
-  deleteBtnLoading: boolean
+  deleteBtnLoading: boolean,
+  error?: Error & { status?: number },
+  btnLoading: boolean
 }
 
 export default Vue.extend({
@@ -105,16 +113,6 @@ export default Vue.extend({
   validate({ params }) {
     return ['asset', 'control', 'person', 'process'].includes(params.type)
   },
-  async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.objectType)
-    const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api[this.objectType].fetch(this.objectId)
-    this.form = {
-      objectSchema,
-      objectData,
-      lang
-    }
-  },
   data(): IData {
     return {
       panel: [],
@@ -128,7 +126,24 @@ export default Vue.extend({
       errorMessages: [],
       state: 'start',
       saveBtnLoading: false,
-      deleteBtnLoading: false
+      deleteBtnLoading: false,
+      error: undefined,
+      btnLoading: false
+    }
+  },
+  async fetch() {
+    const objectSchema = await this.$api.schema.fetch(this.objectType)
+    const { lang } = await this.$api.translation.fetch(['de', 'en'])
+    const objectData = await this.$api[this.objectType].fetch(this.objectId)
+    this.form = {
+      objectSchema,
+      objectData,
+      lang
+    }
+  },
+  head(): any {
+    return {
+      title: 'veo.data'
     }
   },
   computed: {
@@ -166,6 +181,32 @@ export default Vue.extend({
     }
   },
   methods: {
+    async onClick() {
+      this.btnLoading = true
+      this.error = undefined
+      try {
+        this.formatObjectData()
+        if (this.objectType) {
+          await this.action(this.objectType)
+        } else {
+          throw new Error('Object Type is not defined in FormSchema')
+        }
+        this.state = 'success'
+        this.$fetch()
+      } catch (e) {
+        this.state = 'error'
+        this.error = e
+        console.error(e)
+      } finally {
+        this.btnLoading = false
+      }
+    },
+    async action(objectType: APIGroup) {
+      await this.save(objectType)
+    },
+    async save(objectType: APIGroup) {
+      await this.$api[objectType].update(this.objectId, this.form.objectData)
+    },
     async deleteObject() {
       this.deleteDialog = false
       this.deleteBtnLoading = true
@@ -178,25 +219,14 @@ export default Vue.extend({
       }
       this.deleteBtnLoading = false
     },
-    async save() {
-      this.saveBtnLoading = true
-      try {
-        // TODO: find better solution
-        //  Add Keys and IDs manually
+    formatObjectData() {
+      // TODO: find better solution
+      //  Add Keys and IDs manually
+      if (this.form.objectData.customAspects) {
         Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
           this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
         })
-        await this.$api[this.objectType].update(this.objectId, this.form.objectData)
-        this.state = 'success'
-      } catch (e) {
-        this.state = 'error'
       }
-      this.saveBtnLoading = false
-    }
-  },
-  head(): any {
-    return {
-      title: 'veo.data'
     }
   }
 })
