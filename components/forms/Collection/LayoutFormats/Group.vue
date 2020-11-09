@@ -29,19 +29,23 @@ export default Vue.extend({
   },
   computed: {
     directionClass(): string {
-      if (
-        this.options &&
-        this.options.direction &&
-        this.options.direction === 'horizontal'
-      ) {
+      if (this.options && this.options.direction === 'horizontal') {
         return 'flex-row'
       } else {
         return 'flex-column'
       }
     },
+    highlightClass() {
+      if (this.options && this.options.highlight === false) {
+        return 'no-highlight'
+      } else {
+        return 'highlight'
+      }
+    },
     dynamicClasses(): string[] {
       return [
         this.directionClass,
+        this.highlightClass,
         this.options && this.options.class ? this.options.class : ''
       ]
     }
@@ -52,11 +56,26 @@ export const helpers: Helpful<LayoutProps> = {
   matchingScore(props) {
     return calculateConditionsScore(
       [
-        typeof props.options !== 'undefined' &&
-          props.options.format === 'group'
+        typeof props.options !== 'undefined' && props.options.format === 'group'
       ],
       Number.EPSILON
     )
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.vf-layout.vf-group.highlight {
+  border-radius: 5px !important;
+  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+    0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12) !important;
+  padding: 10px;
+}
+
+.vf-layout.vf-group.highlight + .vf-layout.vf-group.highlight {
+  margin-top: 16px;
+}
+
+.vf-layout.vf-group.no-highlight {
+}
+</style>
