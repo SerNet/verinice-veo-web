@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="ml-0">
     <v-row>
       <v-col cols="12">
         <div class="display-1 font-weight-bold">Dokumentation</div>

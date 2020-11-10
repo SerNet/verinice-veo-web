@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="ml-0">
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Hide</PageHeader>

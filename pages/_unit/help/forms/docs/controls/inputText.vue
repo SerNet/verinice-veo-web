@@ -1,22 +1,22 @@
 <template>
-  <v-container>
+  <v-container class="ml-0">
     <v-row justify="center">
       <v-col cols="12">
-        <page-header>Input Text</page-header>
+        <PageHeader>Input Text</PageHeader>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
-        <veo-form
+        <VeoForm
+          v-model="form.data"
           :schema="form.objectSchema"
           :ui="form.formSchema"
-          v-model="form.data"
         />
       </v-col>
     </v-row>
-    <form-description
-      :objectSchema="form.objectSchema"
-      :formSchema="form.formSchema"
+    <FormDescription
+      :object-schema="form.objectSchema"
+      :form-schema="form.formSchema"
       :data="form.data"
-    ></form-description>
+    />
   </v-container>
 </template>
 
@@ -30,7 +30,7 @@ export default Vue.extend({
   components: {
     VeoForm,
     FormDescription,
-    PageHeader,
+    PageHeader
   },
   data() {
     return {
@@ -39,23 +39,23 @@ export default Vue.extend({
           type: 'object',
           properties: {
             inputText: {
-              type: 'string',
-            },
-          },
+              type: 'string'
+            }
+          }
         },
         formSchema: {
           type: 'Control',
           scope: '#/properties/inputText',
           options: {
-            label: 'Input Text',
-          },
+            label: 'Input Text'
+          }
         },
         data: {
-          inputText: 'Beispiel',
-        },
-      },
+          inputText: 'Beispiel'
+        }
+      }
     }
-  },
+  }
 })
 </script>
 

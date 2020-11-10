@@ -1,30 +1,30 @@
 <template>
-  <v-container>
+  <v-container class="ml-0">
     <v-row justify="center">
       <v-col cols="12">
-        <page-header>Class</page-header>
+        <PageHeader>Class</PageHeader>
       </v-col>
       <v-col cols="12">
         <v-select
-          label="Definiert als"
           v-model="definition.value"
+          label="Definiert als"
           :items="definition.items"
           style="max-width:400px"
-        ></v-select>
+        />
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector d-flex justify-center">
-        <veo-form
+        <VeoForm
+          v-model="dynamicForm.data"
           :schema="dynamicForm.objectSchema"
           :ui="dynamicForm.formSchema"
-          v-model="dynamicForm.data"
         />
       </v-col>
     </v-row>
-    <form-description
-      :objectSchema="dynamicForm.objectSchema"
-      :formSchema="dynamicForm.formSchema"
+    <FormDescription
+      :object-schema="dynamicForm.objectSchema"
+      :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
-    ></form-description>
+    />
   </v-container>
 </template>
 
@@ -38,7 +38,7 @@ export default Vue.extend({
   components: {
     VeoForm,
     FormDescription,
-    PageHeader,
+    PageHeader
   },
   data() {
     return {
@@ -48,10 +48,10 @@ export default Vue.extend({
           type: 'Label',
           text: 'Beispiel Text',
           options: {
-            class: 'display-2 font-weight-bold font-italic',
-          },
+            class: 'display-2 font-weight-bold font-italic'
+          }
         },
-        data: {},
+        data: {}
       },
       formObject: {
         objectSchema: {},
@@ -62,11 +62,11 @@ export default Vue.extend({
             class: {
               'display-2': true,
               'font-weight-bold': true,
-              'font-italic': true,
-            },
-          },
+              'font-italic': true
+            }
+          }
         },
-        data: {},
+        data: {}
       },
       formArray: {
         objectSchema: {},
@@ -74,12 +74,12 @@ export default Vue.extend({
           type: 'Label',
           text: 'Beispiel Text',
           options: {
-            class: ['display-2', 'font-weight-bold', 'font-italic'],
-          },
+            class: ['display-2', 'font-weight-bold', 'font-italic']
+          }
         },
-        data: {},
+        data: {}
       },
-      definition: { value: 'String', items: ['String', 'Object', 'Array'] },
+      definition: { value: 'String', items: ['String', 'Object', 'Array'] }
     }
   },
   computed: {
@@ -91,8 +91,8 @@ export default Vue.extend({
         return this.formArray
       }
       return this.form
-    },
-  },
+    }
+  }
 })
 </script>
 

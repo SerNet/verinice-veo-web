@@ -1,8 +1,8 @@
 <template>
-  <v-container>
+  <v-container class="ml-0">
     <v-row justify="center">
       <v-col cols="12">
-        <page-header>Group</page-header>
+        <PageHeader>Group</PageHeader>
       </v-col>
       <v-col cols="12">
         <v-row>
@@ -14,7 +14,7 @@
               color="primary"
               false-value="vertical"
               true-value="horizontal"
-            ></v-switch>
+            />
           </v-col>
           <v-col cols="2">
             <v-switch
@@ -24,33 +24,32 @@
               color="primary"
               :false-value="true"
               :true-value="false"
-            ></v-switch>
+            />
           </v-col>
         </v-row>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
-        <veo-form
+        <VeoForm
+          v-model="form.data"
           :schema="form.objectSchema"
           :ui="form.formSchema"
-          v-model="form.data"
         />
       </v-col>
     </v-row>
-    <form-description
-      :objectSchema="form.objectSchema"
-      :formSchema="form.formSchema"
+    <FormDescription
+      :object-schema="form.objectSchema"
+      :form-schema="form.formSchema"
       :data="form.data"
-    ></form-description>
+    />
   </v-container>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import vjp from 'vue-json-pointer'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import FormDescription from '~/components/help/FormDescription.vue'
 import PageHeader from '~/components/help/PageHeader.vue'
-
-import vjp from 'vue-json-pointer'
 
 export default Vue.extend({
   components: {

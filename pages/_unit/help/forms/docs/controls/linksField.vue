@@ -1,11 +1,11 @@
 <template>
-  <v-container>
+  <v-container class="ml-0">
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Links Field</PageHeader>
       </v-col>
       <v-col cols="12">
-        <v-switch v-model="isVertical" label="Vertical" hide-details color="primary"></v-switch>
+        <v-switch v-model="isVertical" label="Vertical" hide-details color="primary" />
       </v-col>
       <v-col cols="auto" class="docs-form-sector">
         <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" :lang="dynamicForm.lang['de']" :api="api" />
@@ -496,10 +496,10 @@ export default Vue.extend({
       return new Promise((resolve, reject) => {
         const res = searchParams
           ? this.items.filter((el: any) =>
-              // TODO:change name with displayName after it is implemented
-              // el.displayName.toLowerCase().includes(searchParams.displayName.toLowerCase()),
-              el.name.toLowerCase().includes(searchParams.displayName.toLowerCase())
-            )
+          // TODO:change name with displayName after it is implemented
+          // el.displayName.toLowerCase().includes(searchParams.displayName.toLowerCase()),
+            el.name.toLowerCase().includes(searchParams.displayName.toLowerCase())
+          )
           : this.items
         if (res) {
           resolve(res)
@@ -553,7 +553,7 @@ export default Vue.extend({
     },
     async delete(objectType: string, id: string): Promise<void> {
       await this.delay(2000)
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const itemIndex = this.items.findIndex(item => item.id === id)
         this.items.splice(itemIndex, 1)
         resolve()
