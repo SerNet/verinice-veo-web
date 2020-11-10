@@ -18,7 +18,7 @@ import {
   calculateConditionsScore,
   Helpful,
   LayoutProps
-} from '~/components/forms/Collection/utils/helpers'
+} from '~/components/editor/FormSchema/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'Group',
@@ -64,7 +64,7 @@ export const helpers: Helpful<LayoutProps> = {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .vf-layout.vf-group.highlight {
   border-radius: 5px !important;
   box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
@@ -77,56 +77,5 @@ export const helpers: Helpful<LayoutProps> = {
 }
 
 .vf-layout.vf-group.no-highlight {
-}
-
-.direction-vertical > .vf-control {
-  ::v-deep {
-    & > .vf-autocomplete,
-    & > .vf-input-date,
-    & > .vf-input-date-time,
-    & > .vf-input-number,
-    & > .vf-input-text,
-    & > .vf-input-text-multiline,
-    & > .vf-input-uri,
-    & > .vf-markdown-editor,
-    & > .vf-select,
-    & > .vf-tags {
-      margin-top: 12px !important;
-      margin-bottom: 12px !important;
-    }
-
-    & > .vf-array-field,
-    & > .vf-checkbox,
-    & > .vf-links-field,
-    & > .vf-radio {
-      margin-bottom: 12px !important;
-    }
-  }
-}
-
-.direction-horizontal > .vf-control {
-  ::v-deep {
-    & > .vf-autocomplete,
-    & > .vf-input-date,
-    & > .vf-input-date-time,
-    & > .vf-input-number,
-    & > .vf-input-text,
-    & > .vf-input-text-multiline,
-    & > .vf-input-uri,
-    & > .vf-markdown-editor,
-    & > .vf-select,
-    & > .vf-tags {
-      margin-top: 12px !important;
-      margin-bottom: 12px !important;
-    }
-
-    & > .vf-array-field,
-    & > .vf-checkbox,
-    & > .vf-links-field,
-    & > .vf-radio {
-      margin-top: 12px !important;
-      margin-bottom: 12px !important;
-    }
-  }
 }
 </style>

@@ -189,7 +189,7 @@ import {
   ILinksFieldDialogNewObject,
   linksFieldDialogObjectSchema,
   linksFieldDialogFormSchema
-} from '~/components/forms/utils'
+} from '~/components/editor/FormSchema/forms/utils'
 
 interface ITarget {
   targetUri: string | undefined
@@ -228,7 +228,7 @@ export default Vue.extend({
   components: {
     // !!!IMPORTANT: this line makes sure, that VeoForm.vue component properly works in the project and in Rollup bundle
     VeoForm: async () =>
-      (await import('~/components/forms/VeoForm.vue')).default
+      (await import('~/components/editor/FormSchema/forms/VeoForm.vue')).default
   },
   props: {
     name: { type: String, default: '' },
