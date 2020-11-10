@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-radio vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
@@ -9,7 +9,6 @@
         {{ options && options.label }}
       </div>
       <v-radio-group
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :column="isDirectionVertical"
@@ -17,6 +16,8 @@
         :error-messages="errors[0]"
         :class="options && options.class"
         :style="options && options.style"
+        dense
+        hide-details="auto"
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
       >
@@ -27,11 +28,7 @@
           :key="i"
           :name="item.value.toString()"
         >
-          <v-radio
-            :value="item.value"
-            :label="item.text"
-            color="primary"
-          />
+          <v-radio :value="item.value" :label="item.text" color="primary" />
         </ValidationProvider>
         <div slot="append">
           <v-icon @click="clear">mdi-close</v-icon>
@@ -141,4 +138,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-radio {
+  display: inline-block;
+}
+</style>

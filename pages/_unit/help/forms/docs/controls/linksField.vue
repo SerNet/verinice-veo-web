@@ -4,29 +4,14 @@
       <v-col cols="12">
         <PageHeader>Links Field</PageHeader>
       </v-col>
-      <!-- <v-col cols="12">
-        <v-switch
-          v-model="isVertical"
-          label="Vertical"
-          hide-details
-          color="primary"
-        ></v-switch>
-      </v-col> -->
+      <v-col cols="12">
+        <v-switch v-model="isVertical" label="Vertical" hide-details color="primary"></v-switch>
+      </v-col>
       <v-col cols="auto" class="docs-form-sector">
-        <VeoForm
-          v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
-          :lang="dynamicForm.lang['de']"
-          :api="api"
-        />
+        <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" :lang="dynamicForm.lang['de']" :api="api" />
       </v-col>
     </v-row>
-    <FormDescription
-      :object-schema="dynamicForm.objectSchema"
-      :form-schema="dynamicForm.formSchema"
-      :data="dynamicForm.data"
-    />
+    <FormDescription :object-schema="dynamicForm.objectSchema" :form-schema="dynamicForm.formSchema" :data="dynamicForm.data" />
   </v-container>
 </template>
 
@@ -36,13 +21,7 @@ import { v4 as uuidv4 } from 'uuid'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import FormDescription from '~/components/help/FormDescription.vue'
 import PageHeader from '~/components/help/PageHeader.vue'
-import {
-  BaseObject,
-  IApi,
-  ILinksFieldDialogNewObject,
-  ILinksFieldDialogUpdatedObject,
-  ISearchParams
-} from '~/components/forms/utils'
+import { BaseObject, IApi, ILinksFieldDialogNewObject, ILinksFieldDialogUpdatedObject, ISearchParams } from '~/components/forms/utils'
 
 export default Vue.extend({
   components: {
@@ -208,8 +187,7 @@ export default Vue.extend({
                         type: 'string',
                         title: 'The UUID to identify the element',
                         format: 'regex',
-                        pattern:
-                          '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+                        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
                       },
                       applicableTo: {
                         type: 'array',
@@ -218,27 +196,23 @@ export default Vue.extend({
                         }
                       },
                       type: {
-                        description:
-                          'The name of the type described by this schema.',
+                        description: 'The name of the type described by this schema.',
                         enum: ['process_ResponsibleDepartment']
                       },
                       domains: {
                         type: 'array',
-                        title:
-                          'The list of domains in which this element is present.',
+                        title: 'The list of domains in which this element is present.',
                         description: 'The ids of elements of the type domain.',
                         items: {
                           type: 'object',
                           properties: {
                             displayName: {
                               type: 'string',
-                              description:
-                                'A friendly human readable title of the referenced domain.'
+                              description: 'A friendly human readable title of the referenced domain.'
                             },
                             targetUri: {
                               type: 'string',
-                              description:
-                                'The resource URL of the referenced domain.'
+                              description: 'The resource URL of the referenced domain.'
                             }
                           },
                           required: ['targetUri']
@@ -251,13 +225,11 @@ export default Vue.extend({
                           properties: {
                             displayName: {
                               type: 'string',
-                              description:
-                                'A friendly human readable title of the referenced object.'
+                              description: 'A friendly human readable title of the referenced object.'
                             },
                             targetUri: {
                               type: 'string',
-                              description:
-                                'The resource URL of the referenced object.'
+                              description: 'The resource URL of the referenced object.'
                             }
                           },
                           required: ['targetUri']
@@ -309,18 +281,28 @@ export default Vue.extend({
           }
         },
         formSchema: {
-          type: 'Control',
-          scope: '#/properties/links/properties/process_ResponsibleDepartment',
+          type: 'Layout',
           options: {
-            label: 'Verantwortlicher Fachbereich'
+            direction: 'vertical',
+            format: 'group',
+            highlight: false
           },
           elements: [
             {
               type: 'Control',
-              scope: '#/properties/attributes/properties/testAttribute',
+              scope: '#/properties/links/properties/process_ResponsibleDepartment',
               options: {
-                label: 'Test Attribute'
-              }
+                label: 'Verantwortlicher Fachbereich'
+              },
+              elements: [
+                {
+                  type: 'Control',
+                  scope: '#/properties/attributes/properties/testAttribute',
+                  options: {
+                    label: 'Test Attribute'
+                  }
+                }
+              ]
             }
           ]
         },
@@ -358,8 +340,7 @@ export default Vue.extend({
                         type: 'string',
                         title: 'The UUID to identify the element',
                         format: 'regex',
-                        pattern:
-                          '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+                        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
                       },
                       applicableTo: {
                         type: 'array',
@@ -368,27 +349,23 @@ export default Vue.extend({
                         }
                       },
                       type: {
-                        description:
-                          'The name of the type described by this schema.',
+                        description: 'The name of the type described by this schema.',
                         enum: ['process_ResponsibleDepartment']
                       },
                       domains: {
                         type: 'array',
-                        title:
-                          'The list of domains in which this element is present.',
+                        title: 'The list of domains in which this element is present.',
                         description: 'The ids of elements of the type domain.',
                         items: {
                           type: 'object',
                           properties: {
                             displayName: {
                               type: 'string',
-                              description:
-                                'A friendly human readable title of the referenced domain.'
+                              description: 'A friendly human readable title of the referenced domain.'
                             },
                             targetUri: {
                               type: 'string',
-                              description:
-                                'The resource URL of the referenced domain.'
+                              description: 'The resource URL of the referenced domain.'
                             }
                           },
                           required: ['targetUri']
@@ -401,13 +378,11 @@ export default Vue.extend({
                           properties: {
                             displayName: {
                               type: 'string',
-                              description:
-                                'A friendly human readable title of the referenced object.'
+                              description: 'A friendly human readable title of the referenced object.'
                             },
                             targetUri: {
                               type: 'string',
-                              description:
-                                'The resource URL of the referenced object.'
+                              description: 'The resource URL of the referenced object.'
                             }
                           },
                           required: ['targetUri']
@@ -516,20 +491,15 @@ export default Vue.extend({
     delay(ms: number): Promise<void> {
       return new Promise(resolve => setTimeout(resolve, ms))
     },
-    async fetchAll(
-      objectType: string,
-      searchParams?: ISearchParams
-    ): Promise<BaseObject[]> {
+    async fetchAll(objectType: string, searchParams?: ISearchParams): Promise<BaseObject[]> {
       await this.delay(2000)
       return new Promise((resolve, reject) => {
         const res = searchParams
           ? this.items.filter((el: any) =>
-          // TODO:change name with displayName after it is implemented
-          // el.displayName.toLowerCase().includes(searchParams.displayName.toLowerCase()),
-            el.name
-              .toLowerCase()
-              .includes(searchParams.displayName.toLowerCase())
-          )
+              // TODO:change name with displayName after it is implemented
+              // el.displayName.toLowerCase().includes(searchParams.displayName.toLowerCase()),
+              el.name.toLowerCase().includes(searchParams.displayName.toLowerCase())
+            )
           : this.items
         if (res) {
           resolve(res)
@@ -538,10 +508,7 @@ export default Vue.extend({
         }
       })
     },
-    async create(
-      objectType: string,
-      createdObjectData: ILinksFieldDialogNewObject
-    ): Promise<BaseObject> {
+    async create(objectType: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject> {
       await this.delay(2000)
       return new Promise((resolve, reject) => {
         if (createdObjectData.name) {
@@ -570,16 +537,11 @@ export default Vue.extend({
         }
       })
     },
-    async update(
-      objectType: string,
-      updatedObjectData: ILinksFieldDialogUpdatedObject
-    ): Promise<void> {
+    async update(objectType: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void> {
       await this.delay(2000)
       return new Promise((resolve, reject) => {
         if (updatedObjectData.name) {
-          const itemIndex = this.items.findIndex(
-            item => item.id === updatedObjectData.id
-          )
+          const itemIndex = this.items.findIndex(item => item.id === updatedObjectData.id)
           // TODO:uncomment the line below after displayName is implemented
           // updatedObjectData.displayName = updatedObjectData.name
           this.items[itemIndex] = updatedObjectData as any
@@ -591,7 +553,7 @@ export default Vue.extend({
     },
     async delete(objectType: string, id: string): Promise<void> {
       await this.delay(2000)
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const itemIndex = this.items.findIndex(item => item.id === id)
         this.items.splice(itemIndex, 1)
         resolve()

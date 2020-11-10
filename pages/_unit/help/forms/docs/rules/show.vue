@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12">
-        <PageHeader>Hide</PageHeader>
+        <PageHeader>Show</PageHeader>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <VeoForm
@@ -22,8 +22,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import PageHeader from '~/components/help/PageHeader.vue'
 import FormDescription from '~/components/help/FormDescription.vue'
+import PageHeader from '~/components/help/PageHeader.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
 
 export default Vue.extend({
@@ -51,7 +51,8 @@ export default Vue.extend({
           type: 'Layout',
           options: {
             format: 'group',
-            direction: 'vertical'
+            direction: 'vertical',
+            highlight: false
           },
           elements: [
             {
@@ -61,7 +62,7 @@ export default Vue.extend({
                 label: 'Input Text'
               },
               rule: {
-                effect: 'HIDE',
+                effect: 'SHOW',
                 condition: {
                   scope: '#/properties/select',
                   schema: { const: 'Beispiel-3' }

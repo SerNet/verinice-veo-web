@@ -1,11 +1,11 @@
 <template>
   <div>
     <v-alert :value="value === 'success'" dense dark transition="slide-y-transition" type="success" class="mt-5">
-      Erfolgreich durchgeführt!
+      {{ $t('global.appstate.alert.success') }}
     </v-alert>
     <v-alert :value="value === 'error'" dense dark transition="slide-y-transition" type="error" class="mt-5">
       <span v-if="error" v-text="error" />
-      <span v-else>Error aufgetreten!</span>
+      <span v-else>{{ $t('global.appstate.alert.error') }}</span>
     </v-alert>
   </div>
 </template>

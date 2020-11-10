@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar class="app-bar" app clipped-left clipped-right flat border color="primary" dark>
+    <v-app-bar class="app-bar pl-0" app clipped-left clipped-right flat border color="primary" dark>
       <AppBarLogo>
         <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
       </AppBarLogo>
@@ -17,32 +17,18 @@
         solo
       />-->
 
+      <AppUnitSelection @create-unit="createUnit" />
+
       <portal-target name="toolbar" />
 
       <v-spacer />
-
-      <v-overflow-btn
-        :value="$i18n.locale"
-        :items="langs"
-        class="language-btn"
-        color="primary"
-        label="Languages"
-        flat
-        dense
-        solo
-        outlined
-        hide-details
-        background-color="transparent"
-        @input="$i18n.setLocale($event)"
-      />
-
       <AppAccountBtn
         v-if="$auth.profile"
         :username="$auth.profile.username"
         :prename="$auth.profile.firstName"
         :lastname="$auth.profile.lastName"
         :email="$auth.profile.email"
-        @logout="$auth.logout()"
+        @logout="$auth.logout('/')"
       />
     </v-app-bar>
 
@@ -52,9 +38,13 @@
       <nuxt />
     </v-main>
 
+    <VeoNewUnitDialog v-model="newUnitCreation" :persistent="newUnitPersistent" />
+
     <v-footer app padless inset outlined>
       <portal-target style="width: 100%" name="footer" />
     </v-footer>
+
+    <VeoSnackbar />
   </v-app>
 </template>
 
@@ -64,26 +54,26 @@ import Vue from 'vue'
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
+import AppUnitSelection from '~/components/layout/AppUnitSelection.vue'
+import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
+import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
 
 export default Vue.extend({
   components: {
     AppBarLogo,
     AppTabBar,
-    AppAccountBtn
+    AppAccountBtn,
+    AppUnitSelection,
+    VeoNewUnitDialog,
+    VeoSnackbar
   },
   data() {
     return {
       drawer: false as boolean,
       domains: ['Datenschutz', 'ISO 27001'],
-      langs: [
-        { value: 'en', text: 'English' },
-        { value: 'de', text: 'Deutsch' }
-      ]
-    }
-  },
-  head() {
-    return {
-      title: 'vernice.veo'
+      units: [],
+      newUnitCreation: false as boolean,
+      newUnitPersistent: false as boolean
     }
   },
   computed: {
@@ -113,10 +103,15 @@ export default Vue.extend({
         {
           name: 'help',
           icon: 'mdi-help',
-          to: '/help',
-          visible: true // this.$route.path.startsWith('/help')
+          to: `/${this.$route.params.unit}/help`
         }
       ]
+    }
+  },
+  methods: {
+    createUnit(persistent: boolean = false) {
+      this.newUnitCreation = true
+      this.newUnitPersistent = persistent
     }
   }
 })
@@ -125,10 +120,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 ::v-deep .v-main__wrap {
   border-top: 1px solid #e0e0e0;
-}
-
-.language-btn {
-  max-width: 120px;
 }
 ::v-deep .language-btn .v-input__control div[role='combobox'].v-input__slot {
   padding-right: 0;
@@ -145,6 +136,10 @@ export default Vue.extend({
   border-right: none;
   border-bottom: none;
   border-left: none;
+}
+
+.app-bar {
+  overflow: hidden;
 }
 
 /*.domain-select {

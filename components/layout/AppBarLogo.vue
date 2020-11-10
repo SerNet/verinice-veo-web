@@ -34,13 +34,10 @@ export default Vue.extend({})
 
 <style lang="scss" scoped>
 .toolbar-logo {
-  position: absolute;
-  margin-left: 0 !important;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  padding: 0 36px;
+  height: calc(100% + 8px); /* +8px because toolbar padding is 4px top and bottom */
+  margin-left: -16px; /* -16px because toolbar padding on the left is 16px */
   overflow: hidden;
+  position: relative;
 
   .icon {
     position: absolute;
@@ -57,6 +54,7 @@ export default Vue.extend({})
     padding: 100px;
     transform: rotate(-20deg);
     transform-origin: bottom left;
+    margin-left: 36px;
   }
 
   svg {

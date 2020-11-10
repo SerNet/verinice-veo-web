@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12">
-        <PageHeader>Disable</PageHeader>
+        <PageHeader>Hide</PageHeader>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <VeoForm
@@ -51,7 +51,8 @@ export default Vue.extend({
           type: 'Layout',
           options: {
             format: 'group',
-            direction: 'vertical'
+            direction: 'vertical',
+            highlight: false
           },
           elements: [
             {
@@ -61,7 +62,7 @@ export default Vue.extend({
                 label: 'Input Text'
               },
               rule: {
-                effect: 'DISABLE',
+                effect: 'HIDE',
                 condition: {
                   scope: '#/properties/select',
                   schema: { const: 'Beispiel-3' }

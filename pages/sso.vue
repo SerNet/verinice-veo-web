@@ -6,8 +6,8 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-  layout: 'plain',
   components: {},
+  layout: 'none',
   props: {},
   mounted() {
     parent.postMessage(location.href, location.origin)

@@ -1,13 +1,5 @@
 <template>
-  <div class="d-flex">
-    <VeoForm
-      :schema="schema.items"
-      :ui="ui"
-      :value="value"
-      :lang="lang"
-      :api="api"
-      @input="onInput"
-    />
+  <div class="d-flex" :class="directionClass">
     <!-- TODO: change name with displayName after it is implemented -->
     <v-autocomplete
       :key="index"
@@ -17,7 +9,11 @@
       item-text="name"
       item-value="id"
       :search-input.sync="search"
-      label="Target Objekt"
+      :label="$t('forms.input.link.targetObject')"
+      class="links-field-row-autocomplete"
+      style="padding-right: 5px; width: 250px;"
+      dense
+      hide-details="auto"
       clearable
     >
       <template #prepend-item>
@@ -28,14 +24,14 @@
           tile
           @click.stop="onDialogOpen('DIALOG_CREATE')"
         >
-          Erstellen
+          {{ $t('forms.input.link.targetObject.create') }}
         </v-btn>
         <v-divider />
       </template>
       <template #no-data>
         <v-list-item>
           <v-list-item-title>
-            Nicht gefunden!
+            {{ $t('forms.input.link.targetObject.notFound') }}
           </v-list-item-title>
         </v-list-item>
       </template>
@@ -74,6 +70,15 @@
       </template>
     </v-autocomplete>
 
+    <VeoForm
+      :schema="schema.items"
+      :ui="ui"
+      :value="value"
+      :lang="lang"
+      :api="api"
+      @input="onInput"
+    />
+
     <v-dialog
       :value="!!dialog"
       persistent
@@ -81,7 +86,9 @@
       @input="dialog = !$event ? false : dialog"
     >
       <v-card v-if="dialog === 'DIALOG_CREATE'">
-        <v-card-title class="headline">Ein neues Objekt anlegen</v-card-title>
+        <v-card-title class="headline">{{
+          $t('forms.input.link.targetObject.create.headline')
+        }}</v-card-title>
         <v-card-text>
           <VeoForm
             v-model="newObject"
@@ -94,7 +101,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" text @click="onDialogCancel">
-            Abbrechen
+            {{ $t('global.button.cancel') }}
           </v-btn>
           <v-btn
             color="primary"
@@ -103,13 +110,15 @@
             :disabled="!newObject || !newObject.name"
             @click="onDialogAcceptCreate"
           >
-            Speichern
+            {{ $t('global.button.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
 
       <v-card v-else-if="dialog === 'DIALOG_UPDATE'">
-        <v-card-title class="headline">Das Objekt ändern</v-card-title>
+        <v-card-title class="headline">{{
+          $t('forms.input.link.targetObject.change.headline')
+        }}</v-card-title>
         <v-card-text>
           <!-- TODO: ObjectSchema and FormSchema for Dialog must come from Server (Person) -->
           <VeoForm
@@ -123,7 +132,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" text @click="onDialogCancel">
-            Abbrechen
+            {{ $t('global.button.cancel') }}
           </v-btn>
           <!-- TODO: change name with displayName after it is implemented -->
           <v-btn
@@ -133,22 +142,27 @@
             :disabled="!(itemInDialog && itemInDialog.name)"
             @click="onDialogAcceptUpdate"
           >
-            Speichern
+            {{ $t('global.button.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
 
       <v-card v-else-if="dialog === 'DIALOG_DELETE'">
-        <v-card-title>Objekt Löschen</v-card-title>
+        <v-card-title>{{
+          $t('forms.input.link.targetObject.delete.headline')
+        }}</v-card-title>
         <!-- TODO: change name with displayName after it is implemented -->
         <v-card-text>
-          Sind sie sicher, dass das Objekt "{{ itemInDialog && itemInDialog.name }}" gelöscht
-          werden soll?
+          {{
+            $t('forms.input.link.targetObject.delete.text', {
+              object: itemInDialog && itemInDialog.name
+            })
+          }}
         </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" text @click="onDialogCancel">
-            Abbrechen
+            {{ $t('global.button.cancel') }}
           </v-btn>
           <v-btn
             color="primary"
@@ -156,7 +170,7 @@
             text
             @click="onDialogAcceptDelete"
           >
-            Bestätigen
+            {{ $t('global.button.delete') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -213,7 +227,8 @@ export default Vue.extend({
   name: 'LinksFieldRow',
   components: {
     // !!!IMPORTANT: this line makes sure, that VeoForm.vue component properly works in the project and in Rollup bundle
-    VeoForm: async() => (await import('~/components/forms/VeoForm.vue')).default
+    VeoForm: async () =>
+      (await import('~/components/forms/VeoForm.vue')).default
   },
   props: {
     name: { type: String, default: '' },
@@ -249,6 +264,11 @@ export default Vue.extend({
     }
   },
   computed: {
+    directionClass(): string {
+      return this.options && this.options.direction === 'vertical'
+        ? 'flex-column direction-vertical'
+        : 'flex-row direction-horizontal'
+    },
     ui() {
       return {
         type: 'Layout',
@@ -257,7 +277,8 @@ export default Vue.extend({
             this.options && this.options.direction === 'vertical'
               ? 'vertical'
               : 'horizontal',
-          format: 'group'
+          format: 'group',
+          highlight: false
         },
         elements: this.elements
       }
@@ -320,7 +341,10 @@ export default Vue.extend({
       try {
         const displayFilter = filter ? { displayName: filter } : undefined
         // TODO: Limit result count with pagination API
-        const items = await this.api.fetchAll(this.targetType, displayFilter) as IItem[]
+        const items = (await this.api.fetchAll(
+          this.targetType,
+          displayFilter
+        )) as IItem[]
         this.items = items.slice(0, 100)
       } finally {
         this.loading = false
@@ -405,5 +429,13 @@ export default Vue.extend({
 
 ::v-deep .autcomplete-list-item:hover .autocomplete-list-item-action-buttons {
   opacity: 1;
+}
+
+.vf-links-field .direction-vertical > .links-field-row-autocomplete {
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
+}
+.vf-links-field .direction-horizontal > .links-field-row-autocomplete {
+  margin-top: 12px !important;
 }
 </style>

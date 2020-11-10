@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12">
-        <PageHeader>Show</PageHeader>
+        <PageHeader>Page</PageHeader>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <VeoForm
@@ -22,9 +22,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import FormDescription from '~/components/help/FormDescription.vue'
 import PageHeader from '~/components/help/PageHeader.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
+import FormDescription from '~/components/help/FormDescription.vue'
 
 export default Vue.extend({
   components: {
@@ -51,29 +51,39 @@ export default Vue.extend({
           type: 'Layout',
           options: {
             format: 'group',
-            direction: 'vertical'
+            direction: 'vertical',
+            highlight: false
           },
           elements: [
             {
-              type: 'Control',
-              scope: '#/properties/inputText',
+              type: 'Layout',
               options: {
-                label: 'Input Text'
+                format: 'page'
               },
-              rule: {
-                effect: 'SHOW',
-                condition: {
-                  scope: '#/properties/select',
-                  schema: { const: 'Beispiel-3' }
+              elements: [
+                {
+                  type: 'Control',
+                  scope: '#/properties/inputText',
+                  options: {
+                    label: 'Input Text'
+                  }
                 }
-              }
+              ]
             },
             {
-              type: 'Control',
-              scope: '#/properties/select',
+              type: 'Layout',
               options: {
-                label: 'Select'
-              }
+                format: 'page'
+              },
+              elements: [
+                {
+                  type: 'Control',
+                  scope: '#/properties/select',
+                  options: {
+                    label: 'Select'
+                  }
+                }
+              ]
             }
           ]
         },
