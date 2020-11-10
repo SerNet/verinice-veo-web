@@ -11,10 +11,16 @@
       </v-card-title>
       <v-card-text>
         <v-container>
-          <v-row>
+          <v-row v-for="child of aspect.children" :key="child.id">
             <v-col cols="12" sm="6" md="4">
-              <v-text-field label="Feld 1" required />
+              <v-text-field v-model="child.name" label="Type" />:
             </v-col>
+            <v-col>
+              Type: <v-select v-model="child.type" label="Type" :items="objectTypes" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-btn color="primary">Add Property</v-btn>
           </v-row>
         </v-container>
         <small>* required field</small>
@@ -34,18 +40,22 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
 interface IProps {
-  value: boolean
+  value: boolean,
+  aspect: any
 }
 
 export default defineComponent<IProps>({
   props: {
-    value: { type: Boolean, required: true }
+    value: { type: Boolean, required: true },
+    aspect: { type: Object, required: true }
   },
   setup(props, context) {
     const dialog = ref(props.value)
+    const objectTypes = ref(['boolean', 'string', 'enum', 'array'])
 
     watch(() => props.value, (val: boolean) => {
       dialog.value = val
+      console.log('1', props.aspect)
     })
 
     watch(dialog, (val: boolean) => {
@@ -54,7 +64,7 @@ export default defineComponent<IProps>({
       }
     })
 
-    return { dialog }
+    return { dialog, objectTypes }
   }
 })
 </script>

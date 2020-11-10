@@ -59,7 +59,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <ObjectSchemaDialog v-model="showObjectSchemaDialog" />
+    <ObjectSchemaDialog v-model="objectSchemaDialog.value" :aspect="objectSchemaDialog.aspect" />
   </div>
 </template>
 
@@ -88,7 +88,7 @@ export default defineComponent<IProps>({
 
     const search = ref('')
     const hideEmptyAspects = ref(true)
-    const showObjectSchemaDialog = ref(false)
+    const objectSchemaDialog = ref({ value: false, aspect: {} as any })
 
     const typeMap: Record<JSONSchema7TypeName | 'enum' | 'default', ITypeInfo> = {
       string: { icon: 'mdi-alphabetical-variant', name: 'string', color: 'red' },
@@ -149,8 +149,8 @@ export default defineComponent<IProps>({
     }
 
     function editItem(keys: string[]) {
-      showObjectSchemaDialog.value = true
-      console.log('ITEM', keys)
+      objectSchemaDialog.value.value = true
+      objectSchemaDialog.value.aspect = keys
     }
 
     const basicProps = computed(() => {
@@ -171,7 +171,7 @@ export default defineComponent<IProps>({
       }))
     )
 
-    return { showObjectSchemaDialog, hideEmptyAspects, search, basicProps, customAspects, customLinks, editItem }
+    return { objectSchemaDialog, hideEmptyAspects, search, basicProps, customAspects, customLinks, editItem }
   }
 })
 </script>
