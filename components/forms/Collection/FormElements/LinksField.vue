@@ -8,7 +8,12 @@
     <div v-if="options && options.label" class="subtitle-1 mb-2">
       {{ options && options.label }}
     </div>
-    <div v-for="(val, i) in value" :key="i" class="d-flex flex-row">
+    <div v-for="(val, i) in value" :key="i" class="d-flex flex-row align-center">
+      <div class="d-inline-block" style="width: 32px">
+        <v-btn v-if="i === value.length - 1" elevation="0" x-small text fab color="primary" @click="addRow">
+          <v-icon>mdi-plus-circle-outline</v-icon>
+        </v-btn>
+      </div>
       <LinksFieldRow
         :key="i"
         :index="i"
@@ -32,22 +37,11 @@
         text
         fab
         color="primary"
-        class="vf-btn-remove ma-0"
-        style="margin-top: 10px !important; margin-bottom: 10px !important;"
         @click="removeRow(i)"
       >
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </div>
-
-    <v-btn
-      small
-      elevation="0"
-      color="primary"
-      class="vf-btn-add mt-1"
-      @click="addRow"
-      >{{ $t('forms.input.linkadd') }}</v-btn
-    >
   </div>
 </template>
 
@@ -95,6 +89,11 @@ export default Vue.extend({
   computed: {
     rowToAdd(): any {
       return {}
+    }
+  },
+  mounted() {
+    if (!this.value || this.value.length === 0) {
+      this.addRow()
     }
   },
   methods: {
