@@ -6,10 +6,11 @@ module.exports = {
     },
     NODE_ENV: 'test'
   },
-  testRegex: '(/__tests__/.*|/test/jest/.*\\.(test|spec))\\.(ts|tsx)$',
+  testRegex: '(/__tests__/.*|/test/unit/.*\\.(test|spec))\\.(ts|tsx)$',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^~/(.*)$': '<rootDir>/$1',
+    '@nuxtjs/composition-api': '@nuxtjs/composition-api/lib/entrypoint.js',
     '^vuetify/lib$': 'vuetify'
   },
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],

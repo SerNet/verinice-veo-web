@@ -1,4 +1,4 @@
-import { UISchema } from '@cpmsys/veo-forms/lib/types/UISchema'
+import { UISchema } from '~/types/UISchema'
 
 enum ObjectSchemaNames {
   asset = 'asset',

@@ -114,7 +114,7 @@ export class Client {
           }
         } */
         await $user.logout()
-        return Promise.reject(new Error('invalid jwt'))
+        return Promise.reject(new Error(`Invalid JWT: ${combinedOptions.method || 'GET'} ${reqURL}`))
       } else if (options.method === 'DELETE') {
         return Promise.resolve()
       } else {
@@ -147,7 +147,7 @@ export class Client {
       } else if (parsed.code) {
         throw new VeoError(parsed.code, VeoErrorTypes.VEO_ERROR_COMMON)
       } else {
-        const e = new Error(`Error ${res.status || '?'} while accessing ${url}`)
+        const e = new Error(`Error ${res.status || '?'} while accessing ${url}: ${parsed.name}`)
         e.name = 'API_EXCEPTION'
         throw e
       }

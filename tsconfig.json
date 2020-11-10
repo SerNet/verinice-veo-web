@@ -7,6 +7,8 @@
     "lib": ["esnext", "esnext.asynciterable", "dom"],
     "esModuleInterop": true,
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
@@ -26,7 +28,8 @@
       "@nuxt/types",
       "nuxt-i18n/types",
       "./types/context",
-      "vuetify/types"
+      "vuetify/types",
+      "./types/vue-json-pointer"
     ]
   },
   "exclude": ["coverage",".nuxt", ".gitlab", "dist", "test/e2e"]

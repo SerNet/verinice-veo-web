@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputUri.vue should be rendered InputUri field: Initial render 1`] = `
+<div
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+   
+  <div
+    class="vf-control"
+  >
+    <div
+      class="vf-input-uri vf-form-element"
+    >
+      <span>
+        <div
+          class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field"
+        >
+          <div
+            class="v-input__control"
+          >
+            <div
+              class="v-input__slot"
+            >
+              <div
+                class="v-text-field__slot"
+              >
+                <label
+                  class="v-label v-label--active theme--light"
+                  for="input-7"
+                  style="left: 0px; position: absolute;"
+                >
+                  Input URI
+                </label>
+                <input
+                  id="input-7"
+                  type="text"
+                />
+              </div>
+              <div
+                class="v-input__append-inner"
+              >
+                <div
+                  class="v-input__icon v-input__icon--clear"
+                >
+                  <button
+                    aria-label="clear icon"
+                    class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                    type="button"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="v-input__append-outer"
+          >
+            <a
+              class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--small"
+              href="https://verinice.com/"
+              target="_blank"
+            >
+              <span
+                class="v-btn__content"
+              >
+                <i
+                  aria-hidden="true"
+                  class="v-icon notranslate mdi mdi-open-in-new theme--light"
+                />
+              </span>
+            </a>
+          </div>
+        </div>
+      </span>
+    </div>
+  </div>
+   
+  <!---->
+</div>
+`;

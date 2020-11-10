@@ -1,28 +1,36 @@
 <template>
-  <nuxt-child />
+  <div class="fill-height">
+    <nuxt-child v-if="hasUnit" />
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { validate } from 'uuid'
 
 export default Vue.extend({
   validate({ params, redirect }) {
-    // TODO intelligentere Überprüfung ob params.unit einer echten uuid einer unit entspricht
-    if (['undefined', 'data', 'forms', 'settings'].includes(params.unit)) {
+    if (validate(params.unit)) {
+      return true
+    } else {
       redirect('/')
+      return false
     }
-    return true
   },
-  components: {},
-  props: {},
-  async fetch() {},
-  data() {
-    return {}
-  },
-  methods: {}
+  computed: {
+    hasUnit() {
+      return String(this.$route.params.unit) !== 'undefined'
+    }
+  }
 })
 </script>
 
-<style lang="sass" scoped>
-
+<style lang="scss" scoped>
+@media only screen and (max-width: 599px /* 959 */) {
+  /*.domain-select {
+    left: 120px;
+    top: 8px;
+    width: 152px;// Workaround bis sich das Select automatisch verkleinern lässt
+  }*/
+}
 </style>

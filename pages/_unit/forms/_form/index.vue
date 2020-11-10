@@ -1,6 +1,5 @@
 <template>
   <v-col cols="12">
-    <div class="display-1 pt-4 pb-0">{{ formSchema && formSchema.name }}</div>
     <template v-if="$fetchState.pending">
       <div class="text-center ma-12">
         <v-progress-circular indeterminate color="primary" size="50" />
@@ -8,7 +7,7 @@
     </template>
 
     <template v-else>
-      <v-btn :to="`/${unit}/forms/${formId}/create`" color="primary" class="mt-6">{{ objectType }} erstellen</v-btn>
+      <v-btn :to="`/${unit}/forms/${formId}/create`" color="primary" class="mt-6">{{ $t('unit.forms.create', { type: objectType }) }}</v-btn>
       <v-list two-line max-width="500">
         <v-list-item v-for="object in objects" :key="object.id" :to="`/${unit}/forms/${formId}/${object.id}`">
           <v-list-item-avatar>
@@ -21,7 +20,7 @@
         </v-list-item>
       </v-list>
     </template>
-    <div v-if="!$fetchState.pending && objects.length === 0" class="display">Keine Verarbeitungstätigkeiten vorhanden</div>
+    <div v-if="!$fetchState.pending && objects.length === 0" class="display">{{ $t('unit.forms.noprocesses') }}</div>
   </v-col>
 </template>
 
@@ -38,16 +37,21 @@ interface IData {
 
 export default Vue.extend({
   name: 'Forms',
-  async fetch() {
-    this.formSchema = await this.$api.form.fetch(this.$route.params.form)
-    this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
-    this.objects = this.objectType && (await this.$api[this.objectType].fetchAll())
-  },
   data(): IData {
     return {
       formSchema: undefined,
       objectType: '',
       objects: []
+    }
+  },
+  async fetch() {
+    this.formSchema = await this.$api.form.fetch(this.$route.params.form)
+    this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
+    this.objects = this.objectType && (await this.$api[this.objectType].fetchAll())
+  },
+  head() {
+    return {
+      title: 'Forms'
     }
   },
   computed: {
@@ -60,11 +64,6 @@ export default Vue.extend({
   },
   watch: {
     '$route.params': '$fetch'
-  },
-  head() {
-    return {
-      title: 'Forms'
-    }
   }
 })
 </script>
