@@ -147,7 +147,7 @@ export class Client {
       } else if (parsed.code) {
         throw new VeoError(parsed.code, VeoErrorTypes.VEO_ERROR_COMMON)
       } else {
-        const e = new Error(`Error ${res.status || '?'} while accessing ${url}`)
+        const e = new Error(`Error ${res.status || '?'} while accessing ${url}: ${parsed.name}`)
         e.name = 'API_EXCEPTION'
         throw e
       }

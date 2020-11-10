@@ -2,9 +2,8 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-  validate({ redirect }) {
-    redirect('/help/forms/docs')
-    return false
+  middleware({ redirect, route }) {
+    redirect(`${route.path}/forms/docs`)
   }
 })
 </script>

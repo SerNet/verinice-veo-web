@@ -51,7 +51,8 @@ export default Vue.extend({
           type: 'Layout',
           options: {
             format: 'group',
-            direction: 'vertical'
+            direction: 'vertical',
+            highlight: false
           },
           elements: [
             {

@@ -1,18 +1,19 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-input-text vf-form-element">
     <ValidationProvider
       :name="options && options.label"
       :rules="validation"
       v-slot="{ errors }"
     >
       <v-text-field
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :error-messages="errors[0]"
         :label="options && options.label"
         :class="options && options.class"
         :style="options && options.style"
+        dense
+        hide-details="auto"
         clearable
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
@@ -29,7 +30,7 @@ import { JSONSchema7 } from 'json-schema'
 import {
   calculateConditionsScore,
   FormElementProps,
-  Helpful,
+  Helpful
 } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
@@ -44,15 +45,15 @@ export default Vue.extend({
     validation: Object,
     disabled: Boolean,
     visible: Boolean,
-    api: Object as Prop<IApi>,
+    api: Object as Prop<IApi>
   },
   methods: {
     clear() {
       // TODO: it needs two nested $nextTick()-s to work properly and update value to undefined.
       // Check if there is other easier way. This function is implemented  in all other FormElements. Check them also.
       this.$nextTick(() => this.$nextTick(() => this.$emit('input', undefined)))
-    },
-  },
+    }
+  }
 })
 
 export const helpers: Helpful<FormElementProps> = {
@@ -63,10 +64,14 @@ export const helpers: Helpful<FormElementProps> = {
 
     return calculateConditionsScore(
       [props.schema.type === 'string'],
-      Number.EPSILON,
+      Number.EPSILON
     )
-  },
+  }
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-input-text {
+  width: 250px;
+}
+</style>

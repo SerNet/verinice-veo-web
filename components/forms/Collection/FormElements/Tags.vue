@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-tags vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-combobox
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :error-messages="errors[0]"
@@ -17,6 +16,8 @@
         chips
         deletable-chips
         multiple
+        dense
+        hide-details="auto"
         clearable
         :return-object="false"
         @input="$emit('input', $event)"
@@ -123,10 +124,17 @@ export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
     return calculateConditionsScore([
       props.schema.type === 'array',
-      typeof props.options !== 'undefined' && props.options.format === 'tags'
+      !!props.schema.items,
+      props.schema.items instanceof Object &&
+        !Array.isArray(props.schema.items) &&
+        typeof props.schema.items.anyOf !== 'undefined'
     ])
   }
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-tags {
+  width: 250px;
+}
+</style>

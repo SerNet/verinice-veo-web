@@ -2,7 +2,7 @@
   <v-container>
     <v-row justify="center">
       <v-col cols="12">
-        <PageHeader>Page</PageHeader>
+        <PageHeader>Disable</PageHeader>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
         <VeoForm
@@ -23,8 +23,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import PageHeader from '~/components/help/PageHeader.vue'
-import VeoForm from '~/components/forms/VeoForm.vue'
 import FormDescription from '~/components/help/FormDescription.vue'
+import VeoForm from '~/components/forms/VeoForm.vue'
 
 export default Vue.extend({
   components: {
@@ -51,38 +51,30 @@ export default Vue.extend({
           type: 'Layout',
           options: {
             format: 'group',
-            direction: 'vertical'
+            direction: 'vertical',
+            highlight: false
           },
           elements: [
             {
-              type: 'Layout',
+              type: 'Control',
+              scope: '#/properties/inputText',
               options: {
-                format: 'page'
+                label: 'Input Text'
               },
-              elements: [
-                {
-                  type: 'Control',
-                  scope: '#/properties/inputText',
-                  options: {
-                    label: 'Input Text'
-                  }
+              rule: {
+                effect: 'DISABLE',
+                condition: {
+                  scope: '#/properties/select',
+                  schema: { const: 'Beispiel-3' }
                 }
-              ]
+              }
             },
             {
-              type: 'Layout',
+              type: 'Control',
+              scope: '#/properties/select',
               options: {
-                format: 'page'
-              },
-              elements: [
-                {
-                  type: 'Control',
-                  scope: '#/properties/select',
-                  options: {
-                    label: 'Select'
-                  }
-                }
-              ]
+                label: 'Select'
+              }
             }
           ]
         },

@@ -68,6 +68,9 @@ module.exports = {
     fallback: '404.html' // if you want to use '404.html'
   },
 
+  router: {
+    middleware: ['authentication']
+  },
   /*
    ** Nuxt.js modules
    */

@@ -40,20 +40,20 @@ export default Vue.extend({
     AppSideContainer
   },
   props: {},
+  async fetch() {
+    this.forms = await this.$api.form.fetchAll()
+  },
   data(): IData {
     return {
       forms: []
     }
   },
-  async fetch() {
-    this.forms = await this.$api.form.fetchAll()
-  },
+  methods: {},
   head() {
     return {
       title: 'Willkommen'
     }
-  },
-  methods: {}
+  }
 })
 </script>
 

@@ -1,5 +1,9 @@
 <template>
-  <div class="vf-markdown-editor" :class="{ 'is-disabled': disabled }">
+  <div
+    v-if="visible"
+    class="vf-markdown-editor vf-form-element"
+    :class="{ 'is-disabled': disabled }"
+  >
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
