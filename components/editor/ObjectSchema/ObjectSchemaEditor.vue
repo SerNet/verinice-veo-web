@@ -13,7 +13,7 @@
           <v-card outlined>
             <v-list class="py-0" dense>
               <v-list-item />
-              <ObjectSchemaListItem v-for="child in basicProps" :key="child.id" v-bind="child" two-line @click="editItem(item)" />
+              <ObjectSchemaListItem v-for="child in basicProps" :key="child.id" v-bind="child" two-line @click="editItem(child)" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -59,11 +59,12 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+    <ObjectSchemaDialog v-model="showObjectSchemaDialog" />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, reactive } from '@nuxtjs/composition-api'
 import { JSONSchema7, JSONSchema7Object, JSONSchema7TypeName } from 'json-schema'
 
 interface ITypeInfo {
@@ -87,6 +88,7 @@ export default defineComponent<IProps>({
 
     const search = ref('')
     const hideEmptyAspects = ref(true)
+    const showObjectSchemaDialog = ref(false)
 
     const typeMap: Record<JSONSchema7TypeName | 'enum' | 'default', ITypeInfo> = {
       string: { icon: 'mdi-alphabetical-variant', name: 'string', color: 'red' },
@@ -147,6 +149,7 @@ export default defineComponent<IProps>({
     }
 
     function editItem(keys: string[]) {
+      showObjectSchemaDialog.value = true
       console.log('ITEM', keys)
     }
 
@@ -168,7 +171,7 @@ export default defineComponent<IProps>({
       }))
     )
 
-    return { hideEmptyAspects, search, basicProps, customAspects, customLinks, editItem }
+    return { showObjectSchemaDialog, hideEmptyAspects, search, basicProps, customAspects, customLinks, editItem }
   }
 })
 </script>

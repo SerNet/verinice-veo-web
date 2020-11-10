@@ -7,7 +7,7 @@
     </template>
     <v-card>
       <v-card-title>
-        <span class="headline">Noch nicht fertig</span>
+        <span class="headline">CustomAspect bearbeiten</span>
       </v-card-title>
       <v-card-text>
         <v-container>
@@ -32,14 +32,28 @@
   </v-dialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
 interface IProps {
-
+  value: boolean
 }
 
 export default defineComponent<IProps>({
-  setup() {
-    const dialog = ref(false)
+  props: {
+    value: { type: Boolean, required: true }
+  },
+  setup(props, context) {
+    const dialog = ref(props.value)
+
+    watch(() => props.value, (val: boolean) => {
+      dialog.value = val
+    })
+
+    watch(dialog, (val: boolean) => {
+      if (!val) {
+        context.emit('input', val)
+      }
+    })
+
     return { dialog }
   }
 })
