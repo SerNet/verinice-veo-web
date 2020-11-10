@@ -10,7 +10,9 @@
       item-value="id"
       :search-input.sync="search"
       :label="$t('forms.input.link.targetObject')"
-      style="padding-right: 5px;"
+      style="padding-right: 5px; margin-top: 10px !important; margin-bottom:10px !important;"
+      dense
+      hide-details="auto"
       clearable
     >
       <template #prepend-item>

@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-input-number">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-text-field
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :error-messages="errors[0]"
@@ -14,6 +13,8 @@
         type="number"
         :class="options && options.class"
         :style="options && options.style"
+        dense
+        hide-details="auto"
         clearable
         @input="onInput($event)"
         @change="onInput($event)"

@@ -1,18 +1,19 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-input-uri">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-text-field
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :error-messages="errors[0]"
         :label="options && options.label"
         :class="options && options.class"
         :style="options && options.style"
+        dense
+        hide-details="auto"
         clearable
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
@@ -60,9 +61,11 @@ export default Vue.extend({
   },
   computed: {
     isValidUrl(): boolean {
-      return !(this.validation &&
+      return !(
+        this.validation &&
         this.validation.objectSchema &&
-        this.validation.objectSchema.errorMsg)
+        this.validation.objectSchema.errorMsg
+      )
     }
   },
   methods: {

@@ -7,12 +7,14 @@ exports[`InputUri.vue should be rendered InputUri field: Initial render 1`] = `
   <!---->
    
   <div
-    class="vf-control col"
+    class="vf-control"
   >
-    <div>
+    <div
+      class="vf-input-uri"
+    >
       <span>
         <div
-          class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field"
+          class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field"
         >
           <div
             class="v-input__control"
@@ -47,17 +49,6 @@ exports[`InputUri.vue should be rendered InputUri field: Initial render 1`] = `
                     type="button"
                   />
                 </div>
-              </div>
-            </div>
-            <div
-              class="v-text-field__details"
-            >
-              <div
-                class="v-messages theme--light"
-              >
-                <div
-                  class="v-messages__wrapper"
-                />
               </div>
             </div>
           </div>

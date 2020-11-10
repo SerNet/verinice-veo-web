@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-input-date">
     <v-menu
       v-model="menu"
       :close-on-content-click="false"
@@ -16,23 +16,22 @@
         >
           <v-text-field
             :value="formattedDate"
+            :disabled="disabled"
             :label="options && options.label"
             prepend-icon="mdi-calendar"
             hint="DD.MM.YYYY"
+            dense
+            hide-details="auto"
             clearable
             :error-messages="errors[0]"
             @input="setTempInputValue"
             @click:clear="clear"
-            @blur="formattedDate = tempInputValue"
+            @blur="onBlur"
             v-on="on"
           />
         </ValidationProvider>
       </template>
-      <v-date-picker
-        v-model="date"
-        no-title
-        @input="menu = false"
-      />
+      <v-date-picker v-model="date" no-title @input="menu = false" />
     </v-menu>
   </div>
 </template>
@@ -74,7 +73,7 @@ export default Vue.extend({
       return moment(this.value, this.dateFormatISO, true)
     },
     formattedDate: {
-      get(): string {
+      get(): string | undefined {
         return this.momentDate.isValid()
           ? this.momentDate.format(this.dateFormatInput)
           : this.value
@@ -118,6 +117,9 @@ export default Vue.extend({
         : date
       this.$emit('input', formattedDate)
       this.$emit('change', formattedDate)
+    },
+    onBlur() {
+      this.formattedDate = this.tempInputValue
     }
   }
 })

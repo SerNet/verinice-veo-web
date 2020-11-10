@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-checkbox">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-checkbox
-        v-if="visible"
         :input-value="value"
         :error-messages="errors[0]"
         :disabled="disabled"
@@ -15,6 +14,8 @@
         :style="options && options.style"
         :indeterminate="indeterminate"
         color="primary"
+        dense
+        hide-details="auto"
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
       >
