@@ -27,11 +27,13 @@
       />
       <v-btn
         dark
-        fab
         elevation="0"
         x-small
+        text
+        fab
         color="primary"
-        class="vf-btn-remove ma-5 mt-4"
+        class="vf-btn-remove ma-0"
+        style="margin-top: 10px !important; margin-bottom: 10px !important;"
         @click="removeRow(i)"
       >
         <v-icon>mdi-delete</v-icon>
