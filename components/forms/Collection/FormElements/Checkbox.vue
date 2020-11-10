@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="vf-checkbox">
+  <div v-if="visible" class="vf-checkbox vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
@@ -77,4 +77,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-checkbox {
+  display: inline-block;
+}
+</style>

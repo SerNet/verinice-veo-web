@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="vf-radio">
+  <div v-if="visible" class="vf-radio vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
@@ -138,4 +138,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-radio {
+  display: inline-block;
+}
+</style>

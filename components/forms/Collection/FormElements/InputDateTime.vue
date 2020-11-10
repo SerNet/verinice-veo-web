@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="vf-input-date-time">
+  <div v-if="visible" class="vf-input-date-time vf-form-element">
     <v-menu
       v-model="menu"
       :close-on-content-click="false"
@@ -185,4 +185,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-input-date-time {
+  width: 250px;
+}
+</style>

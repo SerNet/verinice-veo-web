@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="vf-input-number">
+  <div v-if="visible" class="vf-input-number vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
@@ -68,4 +68,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-input-number {
+  width: 250px;
+}
+</style>

@@ -7,14 +7,14 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
   <!---->
    
   <div
-    class="vf-layout vf-group d-flex mx-auto flex-column highlight"
+    class="vf-layout vf-group d-flex mx-auto flex-column direction-vertical highlight"
     style="max-width: 800px; width: 100%;"
   >
     <div
       class="vf-control"
     >
       <div
-        class="vf-input-date"
+        class="vf-input-date vf-form-element"
       >
         <span>
           <div
@@ -90,14 +90,14 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
   <!---->
    
   <div
-    class="vf-layout vf-group d-flex mx-auto flex-column highlight"
+    class="vf-layout vf-group d-flex mx-auto flex-column direction-vertical highlight"
     style="max-width: 800px; width: 100%;"
   >
     <div
       class="vf-control"
     >
       <div
-        class="vf-input-date"
+        class="vf-input-date vf-form-element"
       >
         <span>
           <div
