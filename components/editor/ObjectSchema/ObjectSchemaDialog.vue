@@ -12,11 +12,11 @@
       <v-card-text>
         <v-container>
           <v-row v-for="child of aspect.children" :key="child.id">
-            <v-col cols="12" sm="6" md="4">
-              <v-text-field v-model="child.name" label="Type" />:
-            </v-col>
             <v-col>
-              Type: <v-select v-model="child.type" label="Type" :items="objectTypes" />
+              <v-text-field v-model="child.name" label="Property name" />
+            </v-col>
+            <v-col :cols="4">
+              <v-select v-model="child.type" label="Type" :items="objectTypes" />
             </v-col>
           </v-row>
           <v-row>
