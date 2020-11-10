@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="vf-input-date">
+  <div v-if="visible" class="vf-input-date vf-form-element">
     <v-menu
       v-model="menu"
       :close-on-content-click="false"

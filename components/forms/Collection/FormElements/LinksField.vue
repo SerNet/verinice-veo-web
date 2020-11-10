@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="visible"
-    class="vf-links-field"
+    class="vf-links-field vf-form-element"
     :class="options && options.class"
     :style="options && options.style"
   >

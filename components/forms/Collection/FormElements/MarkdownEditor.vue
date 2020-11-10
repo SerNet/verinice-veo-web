@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="visible"
-    class="vf-markdown-editor"
+    class="vf-markdown-editor vf-form-element"
     :class="{ 'is-disabled': disabled }"
   >
     <ValidationProvider

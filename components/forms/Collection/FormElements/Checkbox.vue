@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="vf-checkbox">
+  <div v-if="visible" class="vf-checkbox vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"

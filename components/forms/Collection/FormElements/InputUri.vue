@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="vf-input-uri">
+  <div v-if="visible" class="vf-input-uri vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
