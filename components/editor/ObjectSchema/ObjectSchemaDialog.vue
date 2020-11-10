@@ -1,10 +1,5 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="600px">
-    <template #activator="{ on, attrs }">
-      <v-btn color="primary" dark v-bind="attrs" v-on="on">
-        Edit Dialog
-      </v-btn>
-    </template>
     <v-card>
       <v-card-title>
         <span class="headline">CustomAspect bearbeiten</span>
