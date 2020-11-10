@@ -134,4 +134,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-autocomplete {
+  width: 250px;
+}
+</style>

@@ -61,25 +61,17 @@ export default Vue.extend({
   .v-input--selection-controls {
     margin-top: 0 !important;
   }
-  .vf-autocomplete,
-  .vf-input-date,
-  .vf-input-date-time,
-  .vf-input-number,
-  .vf-input-text,
-  .vf-input-text-multiline,
-  .vf-input-uri,
-  .vf-markdown-editor,
-  .vf-select,
-  .vf-tags {
-    margin-top: 10px !important;
-    margin-bottom: 10px !important;
+  .vf-form-element .mdi-close {
+    opacity: 0;
+  }
+  .vf-form-element:not(.vf-array-field):not(.vf-links-field):hover .mdi-close {
+    opacity: 1;
   }
 
-  .vf-array-field,
-  .vf-checkbox,
-  .vf-links-field,
-  .vf-radio {
-    margin-bottom: 10px;
+  .vf-form-element .mdi-close.primary--text,
+  .vf-form-element .mdi-close.error--text {
+    color: rgba(0, 0, 0, 0.54) !important;
+    caret-color: rgba(0, 0, 0, 0.54) !important;
   }
 }
 </style>

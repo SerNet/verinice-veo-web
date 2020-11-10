@@ -125,7 +125,10 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.vf-input-text-multiline {
+  width: 250px;
+}
 .v-text-field >>> .v-input__control > .v-input__slot:after,
 .v-text-field >>> .v-input__control > .v-input__slot:before {
   /* width: calc(100% - 30px); */

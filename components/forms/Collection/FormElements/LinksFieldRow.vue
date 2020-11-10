@@ -10,7 +10,8 @@
       item-value="id"
       :search-input.sync="search"
       :label="$t('forms.input.link.targetObject')"
-      style="padding-right: 5px; margin-top: 10px !important; margin-bottom:10px !important;"
+      class="links-field-row-autocomplete"
+      style="padding-right: 5px; width: 250px;"
       dense
       hide-details="auto"
       clearable
@@ -265,8 +266,8 @@ export default Vue.extend({
   computed: {
     directionClass(): string {
       return this.options && this.options.direction === 'vertical'
-        ? 'flex-column'
-        : 'flex-row'
+        ? 'flex-column direction-vertical'
+        : 'flex-row direction-horizontal'
     },
     ui() {
       return {
@@ -428,5 +429,13 @@ export default Vue.extend({
 
 ::v-deep .autcomplete-list-item:hover .autocomplete-list-item-action-buttons {
   opacity: 1;
+}
+
+.vf-links-field .direction-vertical > .links-field-row-autocomplete {
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
+}
+.vf-links-field .direction-horizontal > .links-field-row-autocomplete {
+  margin-top: 12px !important;
 }
 </style>

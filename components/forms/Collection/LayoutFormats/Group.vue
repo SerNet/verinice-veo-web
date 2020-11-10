@@ -30,9 +30,9 @@ export default Vue.extend({
   computed: {
     directionClass(): string {
       if (this.options && this.options.direction === 'horizontal') {
-        return 'flex-row'
+        return 'flex-row direction-horizontal'
       } else {
-        return 'flex-column'
+        return 'flex-column direction-vertical'
       }
     },
     highlightClass() {
@@ -77,5 +77,54 @@ export const helpers: Helpful<LayoutProps> = {
 }
 
 .vf-layout.vf-group.no-highlight {
+}
+
+.direction-vertical > .vf-control {
+  ::v-deep {
+    & > .vf-autocomplete,
+    & > .vf-input-date,
+    & > .vf-input-date-time,
+    & > .vf-input-number,
+    & > .vf-input-text,
+    & > .vf-input-text-multiline,
+    & > .vf-input-uri,
+    & > .vf-markdown-editor,
+    & > .vf-select,
+    & > .vf-tags {
+      margin-top: 12px !important;
+      margin-bottom: 12px !important;
+    }
+
+    & > .vf-array-field,
+    & > .vf-checkbox,
+    & > .vf-links-field,
+    & > .vf-radio {
+      margin-bottom: 12px !important;
+    }
+  }
+}
+
+.direction-horizontal > .vf-control {
+  ::v-deep {
+    & > .vf-autocomplete,
+    & > .vf-input-date,
+    & > .vf-input-date-time,
+    & > .vf-input-number,
+    & > .vf-input-text,
+    & > .vf-input-text-multiline,
+    & > .vf-input-uri,
+    & > .vf-markdown-editor,
+    & > .vf-select,
+    & > .vf-tags {
+      margin-top: 12px !important;
+    }
+
+    & > .vf-array-field,
+    & > .vf-checkbox,
+    & > .vf-links-field,
+    & > .vf-radio {
+      margin-top: 12px !important;
+    }
+  }
 }
 </style>

@@ -70,4 +70,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-input-text {
+  width: 250px;
+}
+</style>
