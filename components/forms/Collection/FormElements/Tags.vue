@@ -1,5 +1,5 @@
 <template>
-  <div v-if="visible" class="vf-tags">
+  <div v-if="visible" class="vf-tags vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
@@ -124,7 +124,10 @@ export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
     return calculateConditionsScore([
       props.schema.type === 'array',
-      typeof props.options !== 'undefined' && props.options.format === 'tags'
+      !!props.schema.items,
+      props.schema.items instanceof Object &&
+        !Array.isArray(props.schema.items) &&
+        typeof props.schema.items.anyOf !== 'undefined'
     ])
   }
 }
