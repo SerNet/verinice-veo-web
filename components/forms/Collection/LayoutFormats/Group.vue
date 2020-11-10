@@ -117,6 +117,7 @@ export const helpers: Helpful<LayoutProps> = {
     & > .vf-select,
     & > .vf-tags {
       margin-top: 12px !important;
+      margin-bottom: 12px !important;
     }
 
     & > .vf-array-field,
@@ -124,6 +125,7 @@ export const helpers: Helpful<LayoutProps> = {
     & > .vf-links-field,
     & > .vf-radio {
       margin-top: 12px !important;
+      margin-bottom: 12px !important;
     }
   }
 }

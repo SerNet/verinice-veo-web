@@ -437,5 +437,6 @@ export default Vue.extend({
 }
 .vf-links-field .direction-horizontal > .links-field-row-autocomplete {
   margin-top: 12px !important;
+  margin-bottom: 12px !important;
 }
 </style>
