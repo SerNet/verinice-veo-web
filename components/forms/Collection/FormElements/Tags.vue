@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-tags">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-combobox
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :error-messages="errors[0]"
@@ -17,6 +16,8 @@
         chips
         deletable-chips
         multiple
+        dense
+        hide-details="auto"
         clearable
         :return-object="false"
         @input="$emit('input', $event)"

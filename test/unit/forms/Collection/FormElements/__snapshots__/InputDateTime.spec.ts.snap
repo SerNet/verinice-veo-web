@@ -11,12 +11,14 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
     style="max-width: 800px; width: 100%;"
   >
     <div
-      class="vf-control col"
+      class="vf-control"
     >
-      <div>
+      <div
+        class="vf-input-date"
+      >
         <span>
           <div
-            class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field"
+            class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field"
           >
             <div
               class="v-input__prepend-outer"
@@ -63,17 +65,6 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
                       type="button"
                     />
                   </div>
-                </div>
-              </div>
-              <div
-                class="v-text-field__details"
-              >
-                <div
-                  class="v-messages theme--light"
-                >
-                  <div
-                    class="v-messages__wrapper"
-                  />
                 </div>
               </div>
             </div>
@@ -103,12 +94,14 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
     style="max-width: 800px; width: 100%;"
   >
     <div
-      class="vf-control col"
+      class="vf-control"
     >
-      <div>
+      <div
+        class="vf-input-date"
+      >
         <span>
           <div
-            class="v-input v-input--is-label-active v-input--is-dirty theme--light v-text-field"
+            class="v-input v-input--hide-details v-input--is-label-active v-input--is-dirty v-input--dense theme--light v-text-field"
           >
             <div
               class="v-input__prepend-outer"
@@ -155,17 +148,6 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
                       type="button"
                     />
                   </div>
-                </div>
-              </div>
-              <div
-                class="v-text-field__details"
-              >
-                <div
-                  class="v-messages theme--light"
-                >
-                  <div
-                    class="v-messages__wrapper"
-                  />
                 </div>
               </div>
             </div>

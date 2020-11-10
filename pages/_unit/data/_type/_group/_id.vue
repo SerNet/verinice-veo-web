@@ -8,7 +8,7 @@
       </template>
 
       <template v-if="!$fetchState.pending && form.objectData">
-        <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+        <div class="mx-auto" style="max-width:800px; width:100%;">
           <v-btn color="primary" :to="linkToLinks" dark>{{ $t('unit.data.links') }}</v-btn>
           <v-btn color="primary" :to="linkToHistory" dark>{{ $t('unit.data.history') }}</v-btn>
 
@@ -18,7 +18,7 @@
 
         <VeoForm v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" :is-valid.sync="isValid" :error-messages.sync="errorMessages" />
 
-        <div class="mx-auto pa-3" style="max-width:800px; width:100%;">
+        <div class="mx-auto" style="max-width:800px; width:100%;">
           <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
             <v-expansion-panel>
               <v-expansion-panel-header>{{ $t('unit.data.objectdata') }}</v-expansion-panel-header>
