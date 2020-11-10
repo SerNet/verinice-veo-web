@@ -31,7 +31,7 @@
         @input="onInput"
       />
       <v-btn
-        dark
+        :disabled="!value || value.length <= 1"
         elevation="0"
         x-small
         text
