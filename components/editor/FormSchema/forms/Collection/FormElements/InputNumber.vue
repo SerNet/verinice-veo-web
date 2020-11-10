@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-input-number vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-text-field
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :error-messages="errors[0]"
@@ -14,6 +13,8 @@
         type="number"
         :class="options && options.class"
         :style="options && options.style"
+        dense
+        hide-details="auto"
         clearable
         @input="onInput($event)"
         @change="onInput($event)"
@@ -32,7 +33,7 @@ import {
   calculateConditionsScore,
   FormElementProps,
   Helpful
-} from '~/components/editor/FormSchema/forms/Collection/utils/helpers.ts'
+} from '~/components/editor/FormSchema/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'InputNumber',
@@ -67,4 +68,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-input-number {
+  width: 250px;
+}
+</style>

@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-checkbox vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-checkbox
-        v-if="visible"
         :input-value="value"
         :error-messages="errors[0]"
         :disabled="disabled"
@@ -15,6 +14,8 @@
         :style="options && options.style"
         :indeterminate="indeterminate"
         color="primary"
+        dense
+        hide-details="auto"
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
       >
@@ -35,7 +36,7 @@ import {
   calculateConditionsScore,
   FormElementProps,
   Helpful
-} from '~/components/editor/FormSchema/forms/Collection/utils/helpers.ts'
+} from '~/components/editor/FormSchema/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'Checkbox',
@@ -76,4 +77,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-checkbox {
+  display: inline-block;
+}
+</style>

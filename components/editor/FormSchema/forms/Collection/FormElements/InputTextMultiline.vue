@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-input-text-multiline vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-textarea
-        v-if="visible"
         ref="textarea"
         :disabled="disabled"
         :value="value"
@@ -14,6 +13,8 @@
         :label="options && options.label"
         :class="options && options.class"
         :style="options && options.style"
+        dense
+        hide-details="auto"
         clearable
         auto-grow
         rows="1"
@@ -34,7 +35,7 @@ import {
   calculateConditionsScore,
   FormElementProps,
   Helpful
-} from '~/components/editor/FormSchema/forms/Collection/utils/helpers.ts'
+} from '~/components/editor/FormSchema/forms/Collection/utils/helpers'
 
 export default (Vue as VueConstructor<
   Vue & { $refs: { textarea: any } }
@@ -63,9 +64,9 @@ export default (Vue as VueConstructor<
       const lineHeightNumber = parseFloat(lineHeight)
       return lineHeightNumber
         ? {
-          value: lineHeightNumber,
-          unit: lineHeight.replace(lineHeightNumber.toString(), '')
-        }
+            value: lineHeightNumber,
+            unit: lineHeight.replace(lineHeightNumber.toString(), '')
+          }
         : undefined
     },
     paddingHeight(): number {
@@ -124,7 +125,10 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.vf-input-text-multiline {
+  width: 250px;
+}
 .v-text-field >>> .v-input__control > .v-input__slot:after,
 .v-text-field >>> .v-input__control > .v-input__slot:before {
   /* width: calc(100% - 30px); */

@@ -1,11 +1,11 @@
 <template>
   <div
     v-if="visible"
-    class="vf-array-field"
+    class="vf-array-field vf-form-element mb-2"
     :class="options && options.class"
     :style="options && options.style"
   >
-    <div v-if="options && options.label" class="subtitle-1 mb-2">
+    <div v-if="options && options.label" class="subtitle-1">
       {{ options && options.label }}
     </div>
     <div
@@ -53,7 +53,8 @@ export default Vue.extend({
   name: 'ArrayField',
   components: {
     // !!!IMPORTANT: this line makes sure, that VeoForm.vue component properly works in the project and in Rollup bundle
-    VeoForm: async () => (await import('~/components/editor/FormSchema/forms/VeoForm.vue')).default
+    VeoForm: async () =>
+      (await import('~/components/editor/FormSchema/forms/VeoForm.vue')).default
   },
   props: {
     name: String,
@@ -83,7 +84,8 @@ export default Vue.extend({
             this.options && this.options.direction === 'vertical'
               ? 'vertical'
               : 'horizontal',
-          format: 'group'
+          format: 'group',
+          highlight: false
         },
         elements: this.elements
       }

@@ -6,7 +6,7 @@ import { UISchemaElement } from '@/types/UISchema'
 
 import * as Group from './Group.vue'
 import * as Page from './Page.vue'
-import { ContextListener } from '~/components/editor/FormSchema/forms/Collection/utils/helpers.ts'
+import { ContextListener } from '~/components/editor/FormSchema/forms/Collection/utils/helpers'
 
 const components = [Group, Page]
 

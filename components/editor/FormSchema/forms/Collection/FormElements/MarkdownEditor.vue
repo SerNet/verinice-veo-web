@@ -1,5 +1,9 @@
 <template>
-  <div class="vf-markdown-editor" :class="{ 'is-disabled': disabled }">
+  <div
+    v-if="visible"
+    class="vf-markdown-editor vf-form-element"
+    :class="{ 'is-disabled': disabled }"
+  >
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
@@ -34,7 +38,7 @@ import {
   calculateConditionsScore,
   FormElementProps,
   Helpful
-} from '~/components/editor/FormSchema/forms/Collection/utils/helpers.ts'
+} from '~/components/editor/FormSchema/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/editor/FormSchema/forms/utils'
 
 export default (Vue as VueConstructor<

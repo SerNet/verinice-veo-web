@@ -1,12 +1,11 @@
 <template>
-  <div>
+  <div v-if="visible" class="vf-autocomplete vf-form-element">
     <ValidationProvider
       v-slot="{ errors }"
       :name="options && options.label"
       :rules="validation"
     >
       <v-autocomplete
-        v-if="visible"
         :disabled="disabled"
         :value="value"
         :error-messages="errors[0]"
@@ -15,6 +14,8 @@
         :class="options && options.class"
         :style="options && options.style"
         :multiple="multiple"
+        dense
+        hide-details="auto"
         clearable
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
@@ -34,7 +35,7 @@ import {
   calculateConditionsScore,
   FormElementProps,
   Helpful
-} from '~/components/editor/FormSchema/forms/Collection/utils/helpers.ts'
+} from '~/components/editor/FormSchema/forms/Collection/utils/helpers'
 
 interface IItem {
   value: string | number | boolean
@@ -133,4 +134,8 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.vf-autocomplete {
+  width: 250px;
+}
+</style>

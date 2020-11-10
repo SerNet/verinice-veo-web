@@ -1,18 +1,37 @@
 <template>
-  <div class="d-flex">
-    <VeoForm :schema="schema.items" :ui="ui" :value="value" :lang="lang" :api="api" @input="onInput" />
+  <div class="d-flex" :class="directionClass">
     <!-- TODO: change name with displayName after it is implemented -->
-    <v-autocomplete :key="index" v-model="selected" :loading="loading" :items="items" item-text="name" item-value="id" :search-input.sync="search" label="Target Objekt" clearable>
+    <v-autocomplete
+      :key="index"
+      v-model="selected"
+      :loading="loading"
+      :items="items"
+      item-text="name"
+      item-value="id"
+      :search-input.sync="search"
+      :label="$t('forms.input.link.targetObject')"
+      class="links-field-row-autocomplete"
+      style="padding-right: 5px; width: 250px;"
+      dense
+      hide-details="auto"
+      clearable
+    >
       <template #prepend-item>
-        <v-btn color="primary" block text tile @click.stop="onDialogOpen('DIALOG_CREATE')">
-          Erstellen
+        <v-btn
+          color="primary"
+          block
+          text
+          tile
+          @click.stop="onDialogOpen('DIALOG_CREATE')"
+        >
+          {{ $t('forms.input.link.targetObject.create') }}
         </v-btn>
         <v-divider />
       </template>
       <template #no-data>
         <v-list-item>
           <v-list-item-title>
-            Nicht gefunden!
+            {{ $t('forms.input.link.targetObject.notFound') }}
           </v-list-item-title>
         </v-list-item>
       </template>
@@ -25,10 +44,24 @@
           </v-list-item-content>
           <v-list-item-action>
             <div class="autocomplete-list-item-action-buttons">
-              <v-btn icon x-small text color="primary" class="mr-2" @click.stop="onDialogOpen('DIALOG_UPDATE', item)">
+              <v-btn
+                icon
+                x-small
+                text
+                color="primary"
+                class="mr-2"
+                @click.stop="onDialogOpen('DIALOG_UPDATE', item)"
+              >
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
-              <v-btn icon x-small text color="primary" class="mr-2" @click.stop="onDialogOpen('DIALOG_DELETE', item)">
+              <v-btn
+                icon
+                x-small
+                text
+                color="primary"
+                class="mr-2"
+                @click.stop="onDialogOpen('DIALOG_DELETE', item)"
+              >
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </div>
@@ -37,52 +70,107 @@
       </template>
     </v-autocomplete>
 
-    <v-dialog :value="!!dialog" persistent max-width="500" @input="dialog = !$event ? false : dialog">
+    <VeoForm
+      :schema="schema.items"
+      :ui="ui"
+      :value="value"
+      :lang="lang"
+      :api="api"
+      @input="onInput"
+    />
+
+    <v-dialog
+      :value="!!dialog"
+      persistent
+      max-width="500"
+      @input="dialog = !$event ? false : dialog"
+    >
       <v-card v-if="dialog === 'DIALOG_CREATE'">
-        <v-card-title class="headline">Ein neues Objekt anlegen</v-card-title>
+        <v-card-title class="headline">{{
+          $t('forms.input.link.targetObject.create.headline')
+        }}</v-card-title>
         <v-card-text>
-          <VeoForm v-model="newObject" :schema="linksFieldDialogObjectSchema" :ui="linksFieldDialogFormSchema" :lang="lang" :api="api" />
+          <VeoForm
+            v-model="newObject"
+            :schema="linksFieldDialogObjectSchema"
+            :ui="linksFieldDialogFormSchema"
+            :lang="lang"
+            :api="api"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" text @click="onDialogCancel">
-            Abbrechen
+            {{ $t('global.button.cancel') }}
           </v-btn>
-          <v-btn color="primary" :loading="dialogLoading" text :disabled="!newObject || !newObject.name" @click="onDialogAcceptCreate">
-            Speichern
+          <v-btn
+            color="primary"
+            :loading="dialogLoading"
+            text
+            :disabled="!newObject || !newObject.name"
+            @click="onDialogAcceptCreate"
+          >
+            {{ $t('global.button.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
 
       <v-card v-else-if="dialog === 'DIALOG_UPDATE'">
-        <v-card-title class="headline">Das Objekt ändern</v-card-title>
+        <v-card-title class="headline">{{
+          $t('forms.input.link.targetObject.change.headline')
+        }}</v-card-title>
         <v-card-text>
           <!-- TODO: ObjectSchema and FormSchema for Dialog must come from Server (Person) -->
-          <VeoForm v-model="itemInDialog" :schema="linksFieldDialogObjectSchema" :ui="linksFieldDialogFormSchema" :lang="lang" :api="api" />
+          <VeoForm
+            v-model="itemInDialog"
+            :schema="linksFieldDialogObjectSchema"
+            :ui="linksFieldDialogFormSchema"
+            :lang="lang"
+            :api="api"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" text @click="onDialogCancel">
-            Abbrechen
+            {{ $t('global.button.cancel') }}
           </v-btn>
           <!-- TODO: change name with displayName after it is implemented -->
-          <v-btn color="primary" :loading="dialogLoading" text :disabled="!(itemInDialog && itemInDialog.name)" @click="onDialogAcceptUpdate">
-            Speichern
+          <v-btn
+            color="primary"
+            :loading="dialogLoading"
+            text
+            :disabled="!(itemInDialog && itemInDialog.name)"
+            @click="onDialogAcceptUpdate"
+          >
+            {{ $t('global.button.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
 
       <v-card v-else-if="dialog === 'DIALOG_DELETE'">
-        <v-card-title>Objekt Löschen</v-card-title>
+        <v-card-title>{{
+          $t('forms.input.link.targetObject.delete.headline')
+        }}</v-card-title>
         <!-- TODO: change name with displayName after it is implemented -->
-        <v-card-text> Sind sie sicher, dass das Objekt "{{ itemInDialog && itemInDialog.name }}" gelöscht werden soll? </v-card-text>
+        <v-card-text>
+          {{
+            $t('forms.input.link.targetObject.delete.text', {
+              object: itemInDialog && itemInDialog.name
+            })
+          }}
+        </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" text @click="onDialogCancel">
-            Abbrechen
+            {{ $t('global.button.cancel') }}
           </v-btn>
-          <v-btn color="primary" :loading="dialogLoading" text @click="onDialogAcceptDelete">
-            Bestätigen
+          <v-btn
+            color="primary"
+            :loading="dialogLoading"
+            text
+            @click="onDialogAcceptDelete"
+          >
+            {{ $t('global.button.delete') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -95,7 +183,13 @@ import Vue, { PropOptions } from 'vue'
 import { JSONSchema7 } from 'json-schema'
 import vjp from 'vue-json-pointer'
 import { UISchema } from '@/types/UISchema'
-import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/editor/FormSchema/forms/utils'
+import {
+  BaseObject,
+  IApi,
+  ILinksFieldDialogNewObject,
+  linksFieldDialogObjectSchema,
+  linksFieldDialogFormSchema
+} from '~/components/editor/FormSchema/forms/utils'
 
 interface ITarget {
   targetUri: string | undefined
@@ -133,7 +227,8 @@ export default Vue.extend({
   name: 'LinksFieldRow',
   components: {
     // !!!IMPORTANT: this line makes sure, that VeoForm.vue component properly works in the project and in Rollup bundle
-    VeoForm: async () => (await import('~/components/editor/FormSchema/forms/VeoForm.vue')).default
+    VeoForm: async () =>
+      (await import('~/components/editor/FormSchema/forms/VeoForm.vue')).default
   },
   props: {
     name: { type: String, default: '' },
@@ -169,24 +264,36 @@ export default Vue.extend({
     }
   },
   computed: {
+    directionClass(): string {
+      return this.options && this.options.direction === 'vertical'
+        ? 'flex-column direction-vertical'
+        : 'flex-row direction-horizontal'
+    },
     ui() {
       return {
         type: 'Layout',
         options: {
-          direction: this.options && this.options.direction === 'vertical' ? 'vertical' : 'horizontal',
-          format: 'group'
+          direction:
+            this.options && this.options.direction === 'vertical'
+              ? 'vertical'
+              : 'horizontal',
+          format: 'group',
+          highlight: false
         },
         elements: this.elements
       }
     },
     targetUri(): string | undefined {
-      return this.targetId ? `/${this.objectTypePluralMap[this.targetType]}/${this.targetId}` : undefined
+      return this.targetId
+        ? `/${this.objectTypePluralMap[this.targetType]}/${this.targetId}`
+        : undefined
     },
     targetType(): string {
       // TODO: replace this function by the line below, after target.type in ObjectSchema is replaced by "person", "process", etc
       // return (this.schema.items as any).properties.target.properties
       //   .type.enum[0]
-      return (this.schema.items as any).properties.target.properties.type.enum[0].toLowerCase()
+      return (this.schema
+        .items as any).properties.target.properties.type.enum[0].toLowerCase()
     },
     target(): ITarget | undefined {
       return {
@@ -234,7 +341,10 @@ export default Vue.extend({
       try {
         const displayFilter = filter ? { displayName: filter } : undefined
         // TODO: Limit result count with pagination API
-        const items = (await this.api.fetchAll(this.targetType, displayFilter)) as IItem[]
+        const items = (await this.api.fetchAll(
+          this.targetType,
+          displayFilter
+        )) as IItem[]
         this.items = items.slice(0, 100)
       } finally {
         this.loading = false
@@ -258,7 +368,10 @@ export default Vue.extend({
     async onDialogAcceptCreate() {
       this.dialogLoading = true
       if (this.newObject) {
-        const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem
+        const createItem = (await this.api.create(
+          this.targetType,
+          this.newObject
+        )) as IItem
         this.items.push(createItem)
         this.selected = createItem.id
       }
@@ -270,7 +383,9 @@ export default Vue.extend({
       this.dialogLoading = true
       if (this.itemInDialog) {
         await this.api.update(this.targetType, this.itemInDialog)
-        const itemIndex = this.items.findIndex(item => this.itemInDialog && item.id === this.itemInDialog.id)
+        const itemIndex = this.items.findIndex(
+          item => this.itemInDialog && item.id === this.itemInDialog.id
+        )
         this.items.splice(itemIndex, 1, this.itemInDialog)
       }
       this.dialogLoading = false
@@ -281,7 +396,9 @@ export default Vue.extend({
       this.dialogLoading = true
       if (this.itemInDialog) {
         await this.api.delete(this.targetType, this.itemInDialog.id)
-        const itemIndex = this.items.findIndex(item => this.itemInDialog && item.id === this.itemInDialog.id)
+        const itemIndex = this.items.findIndex(
+          item => this.itemInDialog && item.id === this.itemInDialog.id
+        )
         this.items.splice(itemIndex, 1)
       }
       this.dialogLoading = false
@@ -312,5 +429,14 @@ export default Vue.extend({
 
 ::v-deep .autcomplete-list-item:hover .autocomplete-list-item-action-buttons {
   opacity: 1;
+}
+
+.vf-links-field .direction-vertical > .links-field-row-autocomplete {
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
+}
+.vf-links-field .direction-horizontal > .links-field-row-autocomplete {
+  margin-top: 12px !important;
+  margin-bottom: 12px !important;
 }
 </style>

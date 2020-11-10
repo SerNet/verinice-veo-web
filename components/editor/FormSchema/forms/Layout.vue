@@ -1,6 +1,10 @@
 <template>
-  <LayoutFormat v-bind="$props" @input="$emit('input', $event)" @change="$emit('input', $event)">
-    <Draggable class="dragArea" tag="div" :list="elements" group="dragelements" style="padding: 25px;">
+  <LayoutFormat
+    v-bind="$props"
+    @input="$emit('input', $event)"
+    @change="$emit('input', $event)"
+  >
+    <Draggable class="dragArea" tag="div" :list="elements" group="dragelements" style="padding: 8px;">
       <slot />
     </Draggable>
   </LayoutFormat>
@@ -25,4 +29,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss"></style>
+<style lang="scss" scoped></style>

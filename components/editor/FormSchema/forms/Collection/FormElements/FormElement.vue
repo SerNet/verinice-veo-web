@@ -18,7 +18,7 @@ import * as MarkdownEditor from './MarkdownEditor.vue'
 import * as InputUri from './InputUri.vue'
 import * as InputDateTime from './InputDateTime.vue'
 import * as LinksField from './LinksField.vue'
-import { ContextListener } from '~/components/editor/FormSchema/forms/Collection/utils/helpers.ts'
+import { ContextListener } from '~/components/editor/FormSchema/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/editor/FormSchema/forms/utils'
 
 const components = [

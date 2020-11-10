@@ -18,7 +18,7 @@ import {
   calculateConditionsScore,
   Helpful,
   LayoutProps
-} from '~/components/editor/FormSchema/forms/Collection/utils/helpers.ts'
+} from '~/components/editor/FormSchema/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'Page',
