@@ -20,7 +20,7 @@
             {{ type.name }}:
           </td>
           <td class="text-right">
-            <nuxt-link :to="`forms/${type.id}`"><b>{{ type.items }}</b></nuxt-link>
+            <nuxt-link :to="`/${$route.params.unit}/forms/${type.id}`"><b>{{ type.items }}</b></nuxt-link>
           </td>
         </tr>
       </table>
