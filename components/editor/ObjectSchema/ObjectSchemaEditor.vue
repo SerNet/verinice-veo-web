@@ -32,8 +32,8 @@
         <v-expansion-panel-content>
           <v-card v-for="(aspect, index) of customAspects" v-show="!hideEmptyAspects || aspect.item.attributes.length > 0" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="aspect" @click="showEditAspect(aspect)" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditAspect(aspect)" />
+              <ObjectSchemaListHeader v-bind="aspect" @click="showEditAspect(aspect.item)" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditAspect(aspect.item)" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -59,7 +59,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <ObjectSchemaDialog v-model="objectSchemaDialog.value" :aspect="objectSchemaDialog.aspect" :mode="objectSchemaDialog.mode" :type-map="typeMap" @create-node="doAddAspect" @save-node="doEditAspect" />
+    <ObjectSchemaDialog v-bind="objectSchemaDialog" :type-map="typeMap" @create-node="doAddAspect" @save-node="doEditAspect" />
   </div>
 </template>
 

@@ -7,8 +7,8 @@
             <v-text-field v-model="createForm.name" label="Title" :rules="createForm.rules.name" />
           </v-form>
         </v-window-item>
-        <v-window-item v-if="_aspect && _aspect.attributes" value="edit">
-          <v-form v-model="editForm.valid" @submit.prevent="saveNode()">
+        <v-window-item value="edit">
+          <v-form v-if="_aspect && _aspect.attributes" v-model="editForm.valid" @submit.prevent="saveNode()">
             <v-list dense class="py-0">
               <v-list-item v-for="(attribute, index) of _aspect.attributes" :key="index" class="veo-attribute-list-attribute my-2">
                 <v-list-item-content>

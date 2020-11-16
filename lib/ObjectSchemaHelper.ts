@@ -52,7 +52,7 @@ const CUSTOM_PROPERTIES: Record<string, string> = {
  * @returns Returns the cleaned string ready to be used as a key.
  */
 function cleanName(string: string): string {
-  return replace(string, ' ', '_')
+  return replace(string, / /g, '_')
 }
 
 /**
@@ -447,6 +447,7 @@ export function updateAspectAttributes(schema: VEOObjectSchemaRAW, aspect: VEOCu
     throw new Error(`ObjectSchemaHelper::updateAspectAttributes: Aspect ${aspectName} not found!`)
   }
 
+  schema.properties[OPTIONS.customProperties.customAspects].properties[aspectName].properties.attributes.properties = {}
   for (const attribute of attributes) {
     addAttributeToAspect(schema, aspectName, attribute)
   }
