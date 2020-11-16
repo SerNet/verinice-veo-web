@@ -6,15 +6,15 @@
           <v-form v-model="createForm.valid" @submit.prevent="createNode()">
             <v-row>
               <v-col>
-                <v-text-field v-model="createForm.name" label="Title" required :rules="createForm.rules.name" />
+                <v-text-field v-model="createForm.name" label="Title *" required :rules="createForm.rules.name" />
               </v-col>
             </v-row>
             <v-row v-if="type === 'link'">
               <v-col class="py-0">
-                <v-text-field v-model="createForm.targetDescription" label="Target description" required :rules="createForm.rules.targetDescription" />
+                <v-text-field v-model="createForm.targetDescription" label="Target description *" required :rules="createForm.rules.targetDescription" />
               </v-col>
               <v-col :cols="4" class="py-0">
-                <v-select v-model="createForm.targetType" label="Target type" :items="types" required :rules="createForm.rules.targetType" />
+                <v-select v-model="createForm.targetType" label="Target type" :items="types" />
               </v-col>
             </v-row>
           </v-form>
@@ -26,7 +26,7 @@
                 <v-list-item-content>
                   <v-row>
                     <v-col class="py-0">
-                      <v-text-field v-model="attribute.title" label="Property name" :rules="editForm.rules.title" :prefix="_aspect.title +'_'" />
+                      <v-text-field v-model="attribute.title" label="Property name *" :rules="editForm.rules.title" :prefix="_aspect.title +'_'" />
                     </v-col>
                     <v-col :cols="4" class="py-0">
                       <v-select v-model="attribute.type" label="Type" :items="types" />
@@ -58,6 +58,7 @@
           </v-form>
         </v-window-item>
       </v-window>
+      <small>* required field</small>
     </template>
     <template v-if="dialog.mode === 'create'" #dialog-options>
       <v-spacer />
@@ -143,7 +144,6 @@ export default defineComponent<IProps>({
       targetDescription: '' as string,
       rules: {
         name: [(input: string) => trim(input).length > 0],
-        targetType: [(input: string) => trim(input).length > 0],
         targetDescription: [(input: string) => trim(input).length > 0]
       }
     })
