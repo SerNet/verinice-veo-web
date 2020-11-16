@@ -18,10 +18,10 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 import { ITypeInfo } from './ObjectSchemaEditor.vue'
-import { VEOBasicProperty, VEOCustomAspect, VEOCustomLink } from '~/lib/ObjectSchemaHelper'
+import { IVEOBasicProperty, IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
 
 interface IProps {
-  item: VEOCustomAspect | VEOCustomLink | VEOBasicProperty
+  item: IVEOCustomAspect | IVEOCustomLink | IVEOBasicProperty
   styling: ITypeInfo
 }
 

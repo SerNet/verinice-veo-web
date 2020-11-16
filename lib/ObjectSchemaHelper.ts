@@ -2,37 +2,37 @@
 import { isObject, replace } from 'lodash'
 import { VEOCustomAspectRAW, VEOObjectSchemaRAW, VEOAttributeRAW, VEOCustomLinkRAW, VEOTypeRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
 
-export interface ObjectSchemaHelperOptions {
+export interface IObjectSchemaHelperOptions {
   customProperties?: Record<string, string>
 }
 
-export interface VEOAttribute {
+export interface IVEOAttribute {
   raw?: VEOAttributeRAW
   type: VEOTypeRAW
   title: string
   description: string
 }
 
-export interface VEOCustomAspect {
+export interface IVEOCustomAspect {
   raw?: VEOCustomAspectRAW,
-  attributes: VEOAttribute[]
+  attributes: IVEOAttribute[]
   title: string
 }
 
-export interface VEOCustomLink {
+export interface IVEOCustomLink {
   raw?: VEOCustomLinkRAW
-  attributes: VEOAttribute[]
+  attributes: IVEOAttribute[]
   title: string
 }
 
-export interface VEOBasicProperty {
+export interface IVEOBasicProperty {
   raw?: any
   title: string
   type: VEOTypeNameRAW
   description: string
 }
 
-interface HelperOptions {
+interface IHelperOptions {
   customProperties: Record<string, string>
 }
 
@@ -61,8 +61,8 @@ function cleanName(string: string): string {
  *
  * @param options The custom options array to apply.
  */
-function mergeWithDefaultOptions(options?: ObjectSchemaHelperOptions): HelperOptions {
-  const _options: HelperOptions = {
+function mergeWithDefaultOptions(options?: IObjectSchemaHelperOptions): IHelperOptions {
+  const _options: IHelperOptions = {
     customProperties: CUSTOM_PROPERTIES
   }
 
@@ -175,8 +175,8 @@ export function generateSchema(): VEOObjectSchemaRAW {
  * @returns Returns the basic property. The developer has to specify the type by using the VEOObjectSchema.
  * @throws Throws an error if the property doesn't exist.
  */
-export function getBasicProperty(schema: VEOObjectSchemaRAW, property: string, options?: ObjectSchemaHelperOptions): VEOBasicProperty {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function getBasicProperty(schema: VEOObjectSchemaRAW, property: string, options?: IObjectSchemaHelperOptions): IVEOBasicProperty {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   if (!schema.properties[property] || OPTIONS.customProperties?.[property]) {
     throw new Error(`ObjectSchemaHelper::getBasicProperty: Property ${property} not found or not a basic property!`)
@@ -198,10 +198,10 @@ export function getBasicProperty(schema: VEOObjectSchemaRAW, property: string, o
  *
  * @returns Returns an array containg all basic properties. The developer has to specify the type by using the VEOObjectSchema.
  */
-export function getBasicProperties(schema: VEOObjectSchemaRAW, options?: ObjectSchemaHelperOptions): VEOBasicProperty[] {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function getBasicProperties(schema: VEOObjectSchemaRAW, options?: IObjectSchemaHelperOptions): IVEOBasicProperty[] {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  const values: VEOBasicProperty[] = []
+  const values: IVEOBasicProperty[] = []
   for (const property in schema.properties) {
     // If the property is included in the custom properties object, it isn't basic so we ignore it.
     if (!OPTIONS.customProperties?.[property]) {
@@ -226,8 +226,8 @@ export function getBasicProperties(schema: VEOObjectSchemaRAW, options?: ObjectS
  * @returns Returns the aspect.
  * @throws Throws an error if the aspect couldn't be found.
  */
-export function getAspect(schema: VEOObjectSchemaRAW, name: string, options?: ObjectSchemaHelperOptions): VEOCustomAspect {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function getAspect(schema: VEOObjectSchemaRAW, name: string, options?: IObjectSchemaHelperOptions): IVEOCustomAspect {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   if (schema.properties[OPTIONS.customProperties.customAspects].properties[name]) {
     return {
@@ -245,10 +245,10 @@ export function getAspect(schema: VEOObjectSchemaRAW, name: string, options?: Ob
  * @param schema The schema to fetch the custom aspects from.
  * @param options Optional object to override default options.
  */
-export function getAspects(schema: VEOObjectSchemaRAW, options?: ObjectSchemaHelperOptions): VEOCustomAspect[] {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function getAspects(schema: VEOObjectSchemaRAW, options?: IObjectSchemaHelperOptions): IVEOCustomAspect[] {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  const values: VEOCustomAspect[] = []
+  const values: IVEOCustomAspect[] = []
   for (const aspect in schema.properties[OPTIONS.customProperties.customAspects].properties) {
     values.push(getAspect(schema, aspect))
   }
@@ -262,14 +262,14 @@ export function getAspects(schema: VEOObjectSchemaRAW, options?: ObjectSchemaHel
  * @param aspect The custom aspect to fetch the attributes from.
  * @param options Optional object to override default options.
  */
-export function getAspectAttributes(schema: VEOObjectSchemaRAW | undefined, aspect: VEOCustomAspectRAW | string, options?: ObjectSchemaHelperOptions): VEOAttribute[] {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function getAspectAttributes(schema: VEOObjectSchemaRAW | undefined, aspect: VEOCustomAspectRAW | string, options?: IObjectSchemaHelperOptions): IVEOAttribute[] {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   if (!schema && !isObject(aspect)) {
     throw new Error('ObjectSchemaHelper::getAspectAttributes: If no schema is passed, a custom aspect has to be the second parameter!')
   }
 
-  const values: VEOAttribute[] = []
+  const values: IVEOAttribute[] = []
 
   // If the schema is set and the aspect is a string, we access it in the schema, else we already have the aspect object and don't need to do anything.
   if (schema && !isObject(aspect)) {
@@ -370,8 +370,8 @@ export function generateAspect(name: string): VEOCustomAspectRAW {
  *
  * @throws Throws an error if the custom aspect already exists. Use updateAspectInSchema in this case.
  */
-export function addAspectToSchema(schema: VEOObjectSchemaRAW, aspect: VEOCustomAspectRAW, options?: ObjectSchemaHelperOptions): void {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function addAspectToSchema(schema: VEOObjectSchemaRAW, aspect: VEOCustomAspectRAW, options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   if (schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.properties.type.enum[0]]) {
     throw new Error(`ObjectSchemaHelper::addAspectToSchema: Aspect ${aspect.properties.type.enum[0]} already exists!`)
@@ -388,8 +388,8 @@ export function addAspectToSchema(schema: VEOObjectSchemaRAW, aspect: VEOCustomA
  *
  * @throws Throws an error if the custom aspect isn't existing.
  */
-export function updateAspectInSchema(schema: VEOObjectSchemaRAW, aspect: VEOCustomAspect, options?: ObjectSchemaHelperOptions): void {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function updateAspectInSchema(schema: VEOObjectSchemaRAW, aspect: IVEOCustomAspect, options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   if (!schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.title]) {
     throw new Error(`ObjectSchemaHelper::updateAspectInSchema: Aspect ${aspect.title} not found!`)
@@ -408,8 +408,8 @@ export function updateAspectInSchema(schema: VEOObjectSchemaRAW, aspect: VEOCust
  *
  * @throws Throws an error if the custom aspect couldn't be found.
  */
-export function addAttributeToAspect(schema: VEOObjectSchemaRAW, aspect: VEOCustomAspect | string, attribute: VEOAttribute, options?: ObjectSchemaHelperOptions): void {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function addAttributeToAspect(schema: VEOObjectSchemaRAW, aspect: IVEOCustomAspect | string, attribute: IVEOAttribute, options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   const aspectName = (isObject(aspect)) ? aspect.title : aspect
   const attributeName = aspectName + '_' + cleanName(attribute.title)
@@ -438,8 +438,8 @@ export function addAttributeToAspect(schema: VEOObjectSchemaRAW, aspect: VEOCust
  *
  * @throws Throws an error  if the custom aspect to update the attributes of couldn't be found.
  */
-export function updateAspectAttributes(schema: VEOObjectSchemaRAW, aspect: VEOCustomAspect | string, attributes: VEOAttribute[], options?: ObjectSchemaHelperOptions): void {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function updateAspectAttributes(schema: VEOObjectSchemaRAW, aspect: IVEOCustomAspect | string, attributes: IVEOAttribute[], options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   const aspectName = (isObject(aspect)) ? aspect.title : aspect
 
@@ -463,8 +463,8 @@ export function updateAspectAttributes(schema: VEOObjectSchemaRAW, aspect: VEOCu
  * @returns Returns the link.
  * @throws Throws an error if the custom link couldn't be found.
  */
-export function getLink(schema: VEOObjectSchemaRAW, name: string, options?: ObjectSchemaHelperOptions): VEOCustomLink {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function getLink(schema: VEOObjectSchemaRAW, name: string, options?: IObjectSchemaHelperOptions): IVEOCustomLink {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   if (schema.properties[OPTIONS.customProperties.links].properties[name]) {
     return {
@@ -482,10 +482,10 @@ export function getLink(schema: VEOObjectSchemaRAW, name: string, options?: Obje
  * @param schema The schema to fetch the custom links for.
  * @param options Optional object to override default options.
  */
-export function getLinks(schema: VEOObjectSchemaRAW, options?: ObjectSchemaHelperOptions): VEOCustomLink[] {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function getLinks(schema: VEOObjectSchemaRAW, options?: IObjectSchemaHelperOptions): IVEOCustomLink[] {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  const values: VEOCustomLink[] = []
+  const values: IVEOCustomLink[] = []
   for (const link in schema.properties[OPTIONS.customProperties.links].properties) {
     values.push(getLink(schema, link))
   }
@@ -499,14 +499,14 @@ export function getLinks(schema: VEOObjectSchemaRAW, options?: ObjectSchemaHelpe
  * @param link The custom link to fetch the attributes from.
  * @param options Optional object to override default options.
  */
-export function getLinkAttributes(schema: VEOObjectSchemaRAW | undefined, link: VEOCustomLinkRAW | string, options?: ObjectSchemaHelperOptions): VEOAttribute[] {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function getLinkAttributes(schema: VEOObjectSchemaRAW | undefined, link: VEOCustomLinkRAW | string, options?: IObjectSchemaHelperOptions): IVEOAttribute[] {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   if (!schema && !isObject(link)) {
     throw new Error('ObjectSchemaHelper::getLinkAttributes: If no schema is passed, a custom link has to be the second parameter!')
   }
 
-  const values: VEOAttribute[] = []
+  const values: IVEOAttribute[] = []
 
   // If the schema is set and the link is a string, we access it in the schema, else we already have the link object and don't need to do anything.
   if (schema && !isObject(link)) {
@@ -640,8 +640,8 @@ export function generateLink(name: string, target: string): VEOCustomLinkRAW {
  *
  * @throws Throws an error if the custom link already exists. Use updateLinkInSchema in this case.
  */
-export function addLinkToSchema(schema: VEOObjectSchemaRAW, link: VEOCustomLinkRAW, options?: ObjectSchemaHelperOptions): void {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function addLinkToSchema(schema: VEOObjectSchemaRAW, link: VEOCustomLinkRAW, options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   if (schema.properties[OPTIONS.customProperties.links].properties[link.items.properties.type.enum[0]]) {
     throw new Error(`ObjectSchemaHelper::addLinkToSchema: Link ${link.items.properties.type.enum[0]} already exists!`)
@@ -658,8 +658,8 @@ export function addLinkToSchema(schema: VEOObjectSchemaRAW, link: VEOCustomLinkR
  *
  * @throws Throws an error if the custom link isn't existing.
  */
-export function updateLinkInSchema(schema: VEOObjectSchemaRAW, link: VEOCustomLink, options?: ObjectSchemaHelperOptions): void {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function updateLinkInSchema(schema: VEOObjectSchemaRAW, link: IVEOCustomLink, options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   if (!schema.properties[OPTIONS.customProperties.links].properties[link.title]) {
     throw new Error(`ObjectSchemaHelper::updateLinkInSchema: Link ${link.title} not found!`)
@@ -678,8 +678,8 @@ export function updateLinkInSchema(schema: VEOObjectSchemaRAW, link: VEOCustomLi
  *
  * @throws Throws an error if the custom link couldn't be found.
  */
-export function addAttributeToLink(schema: VEOObjectSchemaRAW, link: VEOCustomLink | string, attribute: VEOAttribute, options?: ObjectSchemaHelperOptions): void {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function addAttributeToLink(schema: VEOObjectSchemaRAW, link: IVEOCustomLink | string, attribute: IVEOAttribute, options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   const linkName = (isObject(link)) ? link.title : link
   const attributeName = linkName + '_' + cleanName(attribute.title)
@@ -706,8 +706,8 @@ export function addAttributeToLink(schema: VEOObjectSchemaRAW, link: VEOCustomLi
  *
  * @throws Throws an error if the custom link to update the attributes of couldn't be found.
  */
-export function updateLinkAttributes(schema: VEOObjectSchemaRAW, link: VEOCustomLink | string, attributes: VEOAttribute[], options?: ObjectSchemaHelperOptions): void {
-  const OPTIONS: HelperOptions = mergeWithDefaultOptions(options)
+export function updateLinkAttributes(schema: VEOObjectSchemaRAW, link: IVEOCustomLink | string, attributes: IVEOAttribute[], options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
   const linkName = (isObject(link)) ? link.title : link
 

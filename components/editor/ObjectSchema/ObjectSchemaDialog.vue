@@ -80,12 +80,12 @@ import { defineComponent, ref, watch, computed } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 
 import { VEOTypeNameRAW } from 'veo-objectschema-7'
-import { VEOCustomAspect } from '~/lib/ObjectSchemaHelper'
+import { IVEOCustomAspect } from '~/lib/ObjectSchemaHelper'
 import { ITypeInfo } from '~/components/editor/ObjectSchema/ObjectSchemaEditor.vue'
 
 interface IProps {
   value: boolean,
-  aspect: VEOCustomAspect | undefined,
+  aspect: IVEOCustomAspect | undefined,
   mode: string,
   type: 'aspect' | 'link'
   typeMap: Record<VEOTypeNameRAW, ITypeInfo>
@@ -163,7 +163,7 @@ export default defineComponent<IProps>({
     })
 
     const _aspect = ref(props.aspect)
-    watch(() => props.aspect, (val: VEOCustomAspect | undefined) => {
+    watch(() => props.aspect, (val: IVEOCustomAspect | undefined) => {
       _aspect.value = val
     })
 

@@ -67,7 +67,7 @@
 import { computed, ComputedRef, defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
 import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
-import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, VEOCustomLink, VEOCustomAspect, VEOBasicProperty, getAspect } from '~/lib/ObjectSchemaHelper'
+import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect } from '~/lib/ObjectSchemaHelper'
 
 export interface ITypeInfo {
   name: string
@@ -80,7 +80,7 @@ interface IProps {
 }
 
 interface EditorPropertyItem {
-  item: VEOCustomLink | VEOCustomAspect | VEOBasicProperty
+  item: IVEOCustomLink | IVEOCustomAspect | IVEOBasicProperty
   styling?: ITypeInfo
 }
 
@@ -118,7 +118,7 @@ export default defineComponent<IProps>({
     }, { deep: true })
 
     const customAspects: ComputedRef<EditorPropertyItem[]> = computed(() => {
-      return getAspects(schema.value).map((entry: VEOCustomAspect) => {
+      return getAspects(schema.value).map((entry: IVEOCustomAspect) => {
         return {
           item: entry,
           styling: undefined
@@ -126,7 +126,7 @@ export default defineComponent<IProps>({
       })
     })
     const customLinks: ComputedRef<EditorPropertyItem[]> = computed(() => {
-      return getLinks(schema.value).map((entry: VEOCustomLink) => {
+      return getLinks(schema.value).map((entry: IVEOCustomLink) => {
         return {
           item: entry,
           styling: undefined
@@ -134,7 +134,7 @@ export default defineComponent<IProps>({
       })
     })
     const basicProps: ComputedRef<EditorPropertyItem[]> = computed(() => {
-      return getBasicProperties(schema.value).map((entry: VEOBasicProperty) => {
+      return getBasicProperties(schema.value).map((entry: IVEOBasicProperty) => {
         return {
           item: entry,
           styling: typeMap.value[entry.type]
@@ -162,14 +162,14 @@ export default defineComponent<IProps>({
       showEditDialog(objectSchemaDialog.value.aspect, objectSchemaDialog.value.type)
     }
 
-    function showEditDialog(aspect: VEOCustomAspect, type: 'aspect' | 'link') {
+    function showEditDialog(aspect: IVEOCustomAspect, type: 'aspect' | 'link') {
       objectSchemaDialog.value.mode = 'edit'
       objectSchemaDialog.value.aspect = aspect
       objectSchemaDialog.value.value = true
       objectSchemaDialog.value.type = type
     }
 
-    function doEditAspect(_aspect: VEOCustomAspect) {
+    function doEditAspect(_aspect: IVEOCustomAspect) {
       updateAspectAttributes(schema.value, _aspect, _aspect.attributes)
       objectSchemaDialog.value.value = false
       context.emit('schema-updated', schema.value)

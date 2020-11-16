@@ -20,10 +20,10 @@
 <script lang="ts">
 import { defineComponent, computed } from '@nuxtjs/composition-api'
 import { ITypeInfo } from './ObjectSchemaEditor.vue'
-import { VEOCustomAspect, VEOCustomLink } from '~/lib/ObjectSchemaHelper'
+import { IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
 
 interface IProps {
-  item: VEOCustomAspect | VEOCustomLink
+  item: IVEOCustomAspect | IVEOCustomLink
   styling: ITypeInfo
 }
 
