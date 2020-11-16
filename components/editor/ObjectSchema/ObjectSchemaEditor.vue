@@ -13,7 +13,7 @@
           <v-card outlined>
             <v-list class="py-0" dense>
               <v-list-item />
-              <ObjectSchemaListItem v-for="child in basicProps" :key="child.id" v-bind="child" two-line @click="editItem(child)" />
+              <ObjectSchemaListItem v-for="(child, index) of basicProps" :key="index" v-bind="child" two-line />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -23,17 +23,17 @@
           Custom Aspects ({{ customAspects.length }})
           <div class="d-flex">
             <v-spacer />
-            <v-btn small text color="primary" @click.stop>
+            <v-btn small text color="primary" @click.stop="showAddAspect()">
               <v-icon small>mdi-plus</v-icon>
               <span>Add custom aspect</span>
             </v-btn>
           </div>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <v-card v-for="item in customAspects" v-show="!hideEmptyAspects || item.children.length > 0" :key="item.id" class="mb-2" outlined>
+          <v-card v-for="(aspect, index) of customAspects" v-show="!hideEmptyAspects || aspect.item.attributes.length > 0" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="item" @click="editItem(item)" />
-              <ObjectSchemaListItem v-for="child in item.children" :key="child.id" v-bind="child" two-line @click="editItem(item)" />
+              <ObjectSchemaListHeader v-bind="aspect" @click="showEditAspect(aspect)" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditAspect(aspect)" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -50,47 +50,52 @@
           </div>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <v-card v-for="item in customLinks" :key="item.id" class="mb-2" outlined>
+          <v-card v-for="(link, index) of customLinks" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="item" @click="editItem(item)" />
-              <ObjectSchemaListItem v-for="child in item.children" :key="child.id" v-bind="child" two-line @click="editItem(item)" />
+              <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @click="showEditAspect(link)" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditAspect(link)" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <ObjectSchemaDialog v-model="objectSchemaDialog.value" :aspect="objectSchemaDialog.aspect" />
+    <ObjectSchemaDialog v-model="objectSchemaDialog.value" :aspect="objectSchemaDialog.aspect" :mode="objectSchemaDialog.mode" :type-map="typeMap" @create-node="doAddAspect" @save-node="doEditAspect" />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, reactive } from '@nuxtjs/composition-api'
-import { JSONSchema7, JSONSchema7Object, JSONSchema7TypeName } from 'json-schema'
+import { computed, ComputedRef, defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
-interface ITypeInfo {
+import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
+import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, VEOCustomLink, VEOCustomAspect, VEOBasicProperty, getAspect } from '~/lib/ObjectSchemaHelper'
+
+export interface ITypeInfo {
   name: string
   color: string
   icon: string
 }
 
 interface IProps {
-  value: JSONSchema7
+  value: VEOObjectSchemaRAW
+}
+
+interface EditorPropertyItem {
+  item: VEOCustomLink | VEOCustomAspect | VEOBasicProperty
+  styling?: ITypeInfo
 }
 
 export default defineComponent<IProps>({
   props: {
     value: { type: Object, required: true }
   },
-  setup(props) {
-    const CUSTOM_ASPECTS_NAME = 'customAspects'
-    const CUSTOM_ASPECT_ATTRIBUTES = 'attributes'
-    const CUSTOM_LINKS_NAME = 'links'
-
+  setup(props, context) {
+    /**
+     * UI stuff
+     */
     const search = ref('')
     const hideEmptyAspects = ref(true)
-    const objectSchemaDialog = ref({ value: false, aspect: {} as any })
 
-    const typeMap: Record<JSONSchema7TypeName | 'enum' | 'default', ITypeInfo> = {
+    const typeMap: Ref<Record<VEOTypeNameRAW, ITypeInfo>> = ref({
       string: { icon: 'mdi-alphabetical-variant', name: 'string', color: 'red' },
       boolean: { icon: 'mdi-check-box-outline', name: 'boolean', color: 'teal' },
       object: { icon: 'mdi-file-tree', name: 'object', color: 'indigo' },
@@ -100,78 +105,75 @@ export default defineComponent<IProps>({
       enum: { icon: 'mdi-label-multiple', name: 'enum', color: 'light-green' },
       null: { icon: 'mdi-cancel', name: 'null', color: 'blue-grey' },
       default: { icon: 'mdi-help-box', name: 'unknown', color: 'grey' }
-    }
-
-    function parseProperties(obj: JSONSchema7) {
-      const props = (obj.properties || {}) as Record<string, any>
-      return Object.keys(props).map((attr) => {
-        const attrib = props[attr as keyof typeof props] as JSONSchema7
-        const type = attrib?.type || (attrib?.enum ? 'enum' : 'default')
-        const typeName = typeof type === 'string' ? type : 'default'
-        const t = typeMap[typeName]
-        return {
-          id: attr,
-          name: attr,
-          color: t?.color,
-          type: t?.name,
-          icon: t?.icon,
-          title: attrib?.title,
-          description: attrib?.description,
-          labels: typeMap[typeName] ? [typeMap[typeName]] : []
-        }
-      })
-    }
-
-    function createCaseInsensitiveMatcher(needle: string) {
-      const lc = String(needle || '').toLowerCase()
-      return function(haystack: string) {
-        return String(haystack || '')
-          .toLowerCase()
-          .includes(lc)
-      }
-    }
-
-    function extractAttributes(treeName: string, nodeName: string = 'attributes', treeAttrs?: (node: JSONSchema7) => object) {
-      const customAspects = props.value.properties?.[treeName] as JSONSchema7
-      const aspects = customAspects?.properties || {}
-      const matcher = createCaseInsensitiveMatcher(search.value)
-      return Object.keys(aspects).map((k) => {
-        const aspect = (aspects[k] as JSONSchema7) || {}
-        const props = aspect?.properties || {}
-        const attribs = (props?.[nodeName] as JSONSchema7) || {}
-        return {
-          id: k,
-          name: k,
-          ...treeAttrs?.(aspect),
-          children: parseProperties(attribs).filter(p => matcher(p.id))
-        }
-      })
-    }
-
-    function editItem(keys: string[]) {
-      objectSchemaDialog.value.value = true
-      objectSchemaDialog.value.aspect = keys
-    }
-
-    const basicProps = computed(() => {
-      const matcher = createCaseInsensitiveMatcher(search.value)
-      return parseProperties(props.value)
-        .filter(p => ![CUSTOM_ASPECTS_NAME, CUSTOM_LINKS_NAME].includes(p.id) && matcher(p.id))
-        .map(p => ({ ...p, path: [p.id] }))
     })
 
-    const customAspects = computed(() =>
-      extractAttributes(CUSTOM_ASPECTS_NAME, CUSTOM_ASPECT_ATTRIBUTES, (node: any) => ({
-        labels: []
-      })).map(p => ({ ...p, path: [CUSTOM_ASPECTS_NAME, p.id] }))
-    )
-    const customLinks = computed(() =>
-      extractAttributes(CUSTOM_LINKS_NAME, CUSTOM_ASPECT_ATTRIBUTES, (node: any) => ({
-        labels: [{ name: '→ ' + node?.items?.properties?.target?.properties?.type?.enum?.[0], color: 'black' }]
-      }))
-    )
+    /**
+     * schema related stuff
+     */
+    // @ts-ignore
+    const schema: Ref<VEOObjectSchemaRAW> = ref(props.value)
 
-    return { objectSchemaDialog, hideEmptyAspects, search, basicProps, customAspects, customLinks, editItem }
+    watch(() => props.value, (val: VEOObjectSchemaRAW) => {
+      schema.value = val
+    }, { deep: true })
+
+    const customAspects: ComputedRef<EditorPropertyItem[]> = computed(() => {
+      return getAspects(schema.value).map((entry: VEOCustomAspect) => {
+        return {
+          item: entry,
+          styling: undefined
+        }
+      })
+    })
+    const customLinks: ComputedRef<EditorPropertyItem[]> = computed(() => {
+      return getLinks(schema.value).map((entry: VEOCustomLink) => {
+        return {
+          item: entry,
+          styling: undefined
+        }
+      })
+    })
+    const basicProps: ComputedRef<EditorPropertyItem[]> = computed(() => {
+      return getBasicProperties(schema.value).map((entry: VEOBasicProperty) => {
+        return {
+          item: entry,
+          styling: typeMap.value[entry.type]
+        }
+      })
+    })
+
+    /**
+     * Editing customAspects
+     */
+    const objectSchemaDialog = ref({ value: false, aspect: {} as any, mode: ('create' || 'edit') })
+
+    function showAddAspect() {
+      objectSchemaDialog.value.mode = 'create'
+      objectSchemaDialog.value.value = true
+      objectSchemaDialog.value.aspect = undefined
+    }
+
+    function doAddAspect(form: { name: string }) {
+      const newAspect = generateAspect(form.name)
+      addAspectToSchema(schema.value, newAspect)
+
+      objectSchemaDialog.value.aspect = getAspect(schema.value, newAspect.properties.type.enum[0])
+      showEditAspect(objectSchemaDialog.value.aspect)
+    }
+
+    function showEditAspect(aspect: VEOCustomAspect) {
+      objectSchemaDialog.value.mode = 'edit'
+      objectSchemaDialog.value.aspect = aspect
+      objectSchemaDialog.value.value = true
+    }
+
+    function doEditAspect(_aspect: VEOCustomAspect) {
+      updateAspectAttributes(schema.value, _aspect, _aspect.attributes)
+      objectSchemaDialog.value.value = false
+      context.emit('schema-updated', schema.value)
+    }
+
+    return { hideEmptyAspects, search, objectSchemaDialog, showAddAspect, doAddAspect, showEditAspect, doEditAspect, typeMap, basicProps, customAspects, customLinks }
   }
 })
 </script>
