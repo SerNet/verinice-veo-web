@@ -5,7 +5,7 @@
         <span>{{ headline }}</span>
         <v-spacer />
         <v-btn :disabled="closeDisabled" fab elevation="0" class="close-button">
-          <v-icon color="white" @click="dialog = false">mdi-close</v-icon>
+          <v-icon color="white" @click="closeDialog()">mdi-close</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-4" style="position: relative;">
@@ -74,6 +74,11 @@ export default Vue.extend({
     this.noWatch = true
     this.dialog = this.value
     this.noWatch = false
+  },
+  methods: {
+    closeDialog() {
+      this.$emit('input', false)
+    }
   }
 })
 </script>

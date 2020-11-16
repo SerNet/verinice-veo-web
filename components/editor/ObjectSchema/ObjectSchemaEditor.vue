@@ -23,7 +23,7 @@
           Custom Aspects ({{ customAspects.length }})
           <div class="d-flex">
             <v-spacer />
-            <v-btn small text color="primary" @click.stop="showAddAspect()">
+            <v-btn small text color="primary" @click.stop="showAddDialog('aspect')">
               <v-icon small>mdi-plus</v-icon>
               <span>Add custom aspect</span>
             </v-btn>
@@ -32,8 +32,8 @@
         <v-expansion-panel-content>
           <v-card v-for="(aspect, index) of customAspects" v-show="!hideEmptyAspects || aspect.item.attributes.length > 0" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="aspect" @click="showEditAspect(aspect.item)" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditAspect(aspect.item)" />
+              <ObjectSchemaListHeader v-bind="aspect" @click="showEditDialog(aspect.item, 'aspect')" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(aspect.item, 'aspect')" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -43,7 +43,7 @@
           Custom Links ({{ customLinks.length }})
           <div class="d-flex">
             <v-spacer />
-            <v-btn small text color="primary" @click.stop>
+            <v-btn small text color="primary" @click.stop="showAddDialog('link')">
               <v-icon small>mdi-plus</v-icon>
               <span>Add custom link</span>
             </v-btn>
@@ -52,14 +52,14 @@
         <v-expansion-panel-content>
           <v-card v-for="(link, index) of customLinks" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @click="showEditAspect(link)" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditAspect(link)" />
+              <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @click="showEditDialog(link.item, 'link')" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(link.item, 'link')" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <ObjectSchemaDialog v-bind="objectSchemaDialog" :type-map="typeMap" @create-node="doAddAspect" @save-node="doEditAspect" />
+    <ObjectSchemaDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :type-map="typeMap" @create-node="doAddAspect" @save-node="doEditAspect" />
   </div>
 </template>
 
@@ -145,12 +145,13 @@ export default defineComponent<IProps>({
     /**
      * Editing customAspects
      */
-    const objectSchemaDialog = ref({ value: false, aspect: {} as any, mode: ('create' || 'edit') })
+    const objectSchemaDialog = ref({ value: false, aspect: {} as any, mode: 'create' as ('create' | 'edit'), type: 'aspect' as ('aspect' | 'link') })
 
-    function showAddAspect() {
+    function showAddDialog(type: 'aspect' | 'link') {
       objectSchemaDialog.value.mode = 'create'
       objectSchemaDialog.value.value = true
       objectSchemaDialog.value.aspect = undefined
+      objectSchemaDialog.value.type = type
     }
 
     function doAddAspect(form: { name: string }) {
@@ -158,13 +159,14 @@ export default defineComponent<IProps>({
       addAspectToSchema(schema.value, newAspect)
 
       objectSchemaDialog.value.aspect = getAspect(schema.value, newAspect.properties.type.enum[0])
-      showEditAspect(objectSchemaDialog.value.aspect)
+      showEditDialog(objectSchemaDialog.value.aspect, objectSchemaDialog.value.type)
     }
 
-    function showEditAspect(aspect: VEOCustomAspect) {
+    function showEditDialog(aspect: VEOCustomAspect, type: 'aspect' | 'link') {
       objectSchemaDialog.value.mode = 'edit'
       objectSchemaDialog.value.aspect = aspect
       objectSchemaDialog.value.value = true
+      objectSchemaDialog.value.type = type
     }
 
     function doEditAspect(_aspect: VEOCustomAspect) {
@@ -173,7 +175,7 @@ export default defineComponent<IProps>({
       context.emit('schema-updated', schema.value)
     }
 
-    return { hideEmptyAspects, search, objectSchemaDialog, showAddAspect, doAddAspect, showEditAspect, doEditAspect, typeMap, basicProps, customAspects, customLinks }
+    return { hideEmptyAspects, search, objectSchemaDialog, showAddDialog, doAddAspect, showEditDialog, doEditAspect, typeMap, basicProps, customAspects, customLinks }
   }
 })
 </script>

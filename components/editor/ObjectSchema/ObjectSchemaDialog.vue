@@ -4,7 +4,19 @@
       <v-window v-model="dialog.mode">
         <v-window-item value="create">
           <v-form v-model="createForm.valid" @submit.prevent="createNode()">
-            <v-text-field v-model="createForm.name" label="Title" :rules="createForm.rules.name" />
+            <v-row>
+              <v-col>
+                <v-text-field v-model="createForm.name" label="Title" required :rules="createForm.rules.name" />
+              </v-col>
+            </v-row>
+            <v-row v-if="type === 'link'">
+              <v-col class="py-0">
+                <v-text-field v-model="createForm.targetDescription" label="Target description" required :rules="createForm.rules.targetDescription" />
+              </v-col>
+              <v-col :cols="4" class="py-0">
+                <v-select v-model="createForm.targetType" label="Target type" :items="types" required :rules="createForm.rules.targetType" />
+              </v-col>
+            </v-row>
           </v-form>
         </v-window-item>
         <v-window-item value="edit">
@@ -74,6 +86,7 @@ interface IProps {
   value: boolean,
   aspect: VEOCustomAspect | undefined,
   mode: string,
+  type: 'aspect' | 'link'
   typeMap: Record<VEOTypeNameRAW, ITypeInfo>
 }
 
@@ -83,6 +96,7 @@ export default defineComponent<IProps>({
     // eslint-disable-next-line
     aspect: { required: true }, // No type to avoid checking for invalid prop (aspect can either be undefined or VEOCustomAspect)
     mode: { type: String, default: 'create' },
+    type: { type: String, required: true },
     typeMap: { type: Object, required: true }
   },
   setup(props, context) {
@@ -125,8 +139,12 @@ export default defineComponent<IProps>({
     const createForm = ref({
       valid: false,
       name: '',
+      targetType: '' as string,
+      targetDescription: '' as string,
       rules: {
-        name: [(input: string) => trim(input).length > 0]
+        name: [(input: string) => trim(input).length > 0],
+        targetType: [(input: string) => trim(input).length > 0],
+        targetDescription: [(input: string) => trim(input).length > 0]
       }
     })
 
