@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mx-5 my-4">
+    <div class="px-5 py-4 veo-editor-header">
       <v-text-field v-model="search" dense clearable flat solo-inverted hide-details prepend-inner-icon="mdi-magnify" label="Nach einer Eigenschaft suchen..." />
       <v-checkbox v-model="hideEmptyAspects" class="caption" dense hide-details label="Leere Aspekte ausblenden" />
     </div>
@@ -197,6 +197,8 @@ export default defineComponent<IProps>({
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
 .v-expansion-panel-header {
   min-height: auto !important;
   padding: 8px 24px !important;
@@ -209,5 +211,13 @@ export default defineComponent<IProps>({
   ::v-deep .language-json {
     margin: 0 !important;
   }
+}
+
+.veo-editor-header {
+  background-color: white;
+  border-bottom: 2px solid $grey;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 </style>
