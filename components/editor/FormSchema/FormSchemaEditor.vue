@@ -1,42 +1,8 @@
 <template>
   <div>
     <v-row>
-      <v-col>
-        <div class="mx-5 my-4" style="max-width:800px;">
-          <v-select
-            :items="items"
-            v-model="layout"
-            label="Layout Style"
-            style="width:200px;"
-          ></v-select>
-          <VeoForm
-            v-model="objectData"
-            :schema="objectSchema"
-            :ui="formSchema"
-            :is-valid.sync="isValid"
-            :error-messages.sync="errorMessages"
-          /></div
-      ></v-col>
-      <!-- <v-col>
-        <div style="max-width:500px;">
-          <pre>{{ JSON.stringify(formSchema, null, 2) }}</pre>
-        </div>
-      </v-col> -->
+      <v-col></v-col>
     </v-row>
-
-    <!-- <draggable v-model="myArray" group="people" @start="drag = true" @end="drag = false">
-      <div v-for="element in myArray" :key="element.id">{{ element.name }}</div>
-    </draggable> -->
-    <!-- <div>
-      <v-row>
-        <v-col>
-          <nested-draggable :tasks="list" :level="level" />
-        </v-col>
-        <v-col>
-          <pre>{{ JSON.stringify(list, null, 2) }}</pre>
-        </v-col>
-      </v-row>
-    </div> -->
   </div>
 </template>
 
@@ -44,15 +10,10 @@
 import Vue from 'vue'
 // import draggable from 'vuedraggable'
 // import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
-import VeoForm from '~/components/editor/FormSchema/forms/VeoForm.vue'
 
 export default Vue.extend({
   name: 'FormSchemaEditor',
-  components: {
-    // draggable
-    // NestedDraggable,
-    VeoForm
-  },
+  components: {},
   props: {
     objectSchema: Object
   },
