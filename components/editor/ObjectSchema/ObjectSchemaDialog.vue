@@ -26,7 +26,7 @@
                 <v-list-item-content>
                   <v-row>
                     <v-col class="py-0">
-                      <v-text-field v-model="attribute.title" :label="`${$t(`editor.dialog.editform.${type}.title`)} *`" required :rules="editForm.rules.title" :prefix="_item.title +'_'" />
+                      <v-text-field v-model="attribute.title" :label="`${$t(`editor.dialog.editform.${type}.title`)} *`" required :rules="editForm.rules.title" :prefix="_item.title +'_'" @input="checkForDuplicate()" />
                     </v-col>
                     <v-col :cols="4" class="py-0">
                       <v-select v-model="attribute.type" :label="$t(`editor.dialog.editform.${type}.type`)" :items="types" />
@@ -56,6 +56,12 @@
               </v-list-item>
             </v-list>
           </v-form>
+          <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
+            <span>Es kann immer nur ein Attribut mit den folgende(n) Titel(n) existieren:</span>
+            <ul>
+              <li v-for="duplicate of duplicates" :key="duplicate">{{ duplicate }}</li>
+            </ul>
+          </v-alert>
         </v-window-item>
       </v-window>
       <small>{{ $t('editor.dialog.requiredfields') }}</small>
@@ -69,18 +75,18 @@
       <v-btn text color="primary" @click="close()">
         {{ $t('global.button.close') }}
       </v-btn>
-      <v-btn text color="primary" :disabled="!editForm.valid" @click="saveNode()">
+      <v-btn text color="primary" :disabled="!editForm.valid || duplicates.length > 0" @click="saveNode()">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@nuxtjs/composition-api'
+import { defineComponent, ref, watch, computed, Ref } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 
 import { VEOTypeNameRAW } from 'veo-objectschema-7'
-import { IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
+import { IVEOAttribute, IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
 import { ITypeInfo } from '~/components/editor/ObjectSchema/ObjectSchemaEditor.vue'
 import { ObjectSchemaNames } from '~/types/FormSchema'
 
@@ -152,6 +158,16 @@ export default defineComponent<IProps>({
       }
     })
 
+    // Generate an array containing all object types as defined in the ObjectSchemaNames enum.
+    const objectTypes = computed(() => {
+      return Object.keys(ObjectSchemaNames).map((value: string) => {
+        return {
+          text: context.root.$t(`unit.data.type.${value}`),
+          value
+        }
+      })
+    })
+
     function clearCreationForm() {
       createForm.value = {
         valid: false,
@@ -180,6 +196,16 @@ export default defineComponent<IProps>({
       }
     })
 
+    // Generate an array containing all type names from the type map.
+    const types = computed(() => {
+      const dummy: string[] = []
+      for (const entry in props.typeMap) {
+        // @ts-ignore
+        dummy.push(props.typeMap[entry].name)
+      }
+      return dummy
+    })
+
     const _item = ref(props.item)
     watch(() => props.item, (val: IVEOCustomAspect | IVEOCustomLink | undefined) => {
       if (val) {
@@ -204,26 +230,23 @@ export default defineComponent<IProps>({
       _item.value?.attributes.splice(index, 1)
     }
 
-    // Generate an array containing all type names from the type map.
-    const types = computed(() => {
-      const dummy: string[] = []
-      for (const entry in props.typeMap) {
-        // @ts-ignore
-        dummy.push(props.typeMap[entry].name)
+    // Aspect ID's have to be unique in a custom aspect/link
+    const duplicates: Ref<string[]> = ref([])
+    function checkForDuplicate() {
+      duplicates.value = []
+      if (_item.value) {
+        (_item.value as IVEOCustomAspect | IVEOCustomLink).attributes.forEach((attribute1: IVEOAttribute) => {
+          if ((_item.value as IVEOCustomAspect | IVEOCustomLink).attributes.filter((attribute2: IVEOAttribute) => attribute2.title.toLowerCase() === attribute1.title.toLowerCase()).length > 1) {
+            const duplicateTitle = attribute1.title.toLowerCase()
+            if (!duplicates.value.includes(duplicateTitle)) {
+              duplicates.value.push(duplicateTitle)
+            }
+          }
+        })
       }
-      return dummy
-    })
+    }
 
-    const objectTypes = computed(() => {
-      return Object.keys(ObjectSchemaNames).map((value: string) => {
-        return {
-          text: context.root.$t(`unit.data.type.${value}`),
-          value
-        }
-      })
-    })
-
-    return { dialog, createForm, editForm, types, objectTypes, createNode, saveNode, _item, addAttribute, removeAttribute, headline, close }
+    return { dialog, createForm, editForm, checkForDuplicate, duplicates, types, objectTypes, createNode, saveNode, _item, addAttribute, removeAttribute, headline, close }
   }
 })
 </script>
