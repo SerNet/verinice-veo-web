@@ -2,6 +2,7 @@
   <v-col class="pa-0 fill-height overflow-hidden" style="max-height: calc(100vh - 70px);" cols="12">
     <v-row class="fill-height ma-0">
       <v-col class="pa-0" :style="{ maxHeight }" style="overflow: auto" cols="12" lg="6">
+        <h1 class="ml-4 mt-2">Objektschema Editor</h1>
         <ObjectSchemaEditor v-if="schema" v-model="schema" @schema-updated="updateSchema" />
       </v-col>
       <v-col class="pa-0 fill-height" :style="{ maxHeight }" style="overflow: auto;" cols="12" lg="6">
