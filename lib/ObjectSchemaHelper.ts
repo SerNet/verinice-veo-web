@@ -529,10 +529,11 @@ export function getLinkAttributes(schema: VEOObjectSchemaRAW | undefined, link: 
  *
  * @param name The name of the new custom link.
  * @param target The target of the link
+ * @param description The target description of the link
  *
  * @returns Returns the custom link to be further modified.
  */
-export function generateLink(name: string, target: string): VEOCustomLinkRAW {
+export function generateLink(name: string, target: string, description: string): VEOCustomLinkRAW {
   const linkName = cleanName(name)
 
   return {
@@ -609,7 +610,7 @@ export function generateLink(name: string, target: string): VEOCustomLinkRAW {
         },
         target: {
           type: 'object',
-          title: 'id of the Person',
+          title: description,
           properties: {
             targetUri: {
               type: 'string',
@@ -688,7 +689,9 @@ export function addAttributeToLink(schema: VEOObjectSchemaRAW, link: IVEOCustomL
     throw new Error(`ObjectSchemaHelper::addAttributeToLink: Link ${linkName} not found!`)
   }
 
-  // Unset properties specifically created for VEOCustomLink that don't belong to the json schema.
+  // Overwrite the title of the attribute with the description (the title only gets used as a key)
+  attribute.title = attribute.description
+  // Unset properties specifically created for VEOCustomAspect that don't belong to the json schema.
   delete (attribute as any).raw
   delete (attribute as any).description
 
@@ -715,6 +718,7 @@ export function updateLinkAttributes(schema: VEOObjectSchemaRAW, link: IVEOCusto
     throw new Error(`ObjectSchemaHelper::updateLinkAttributes: Link ${linkName} not found!`)
   }
 
+  schema.properties[OPTIONS.customProperties.links].properties[linkName].items.properties.attributes.properties = {}
   for (const attribute of attributes) {
     addAttributeToLink(schema, linkName, attribute)
   }

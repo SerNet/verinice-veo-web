@@ -20,13 +20,13 @@
           </v-form>
         </v-window-item>
         <v-window-item value="edit">
-          <v-form v-if="_aspect && _aspect.attributes" v-model="editForm.valid" @submit.prevent="saveNode()">
+          <v-form v-if="_item && _item.attributes" v-model="editForm.valid" @submit.prevent="saveNode()">
             <v-list dense class="py-0">
-              <v-list-item v-for="(attribute, index) of _aspect.attributes" :key="index" class="veo-attribute-list-attribute my-2">
+              <v-list-item v-for="(attribute, index) of _item.attributes" :key="index" class="veo-attribute-list-attribute my-2">
                 <v-list-item-content>
                   <v-row>
                     <v-col class="py-0">
-                      <v-text-field v-model="attribute.title" label="Property name *" :rules="editForm.rules.title" :prefix="_aspect.title +'_'" />
+                      <v-text-field v-model="attribute.title" label="Property name *" :rules="editForm.rules.title" :prefix="_item.title +'_'" />
                     </v-col>
                     <v-col :cols="4" class="py-0">
                       <v-select v-model="attribute.type" label="Type" :items="types" />
@@ -42,8 +42,8 @@
                   <v-btn fab depressed text color="black" @click="removeAttribute(index)"><v-icon>mdi-delete</v-icon></v-btn>
                 </v-list-item-action>
               </v-list-item>
-              <v-list-item v-if="_aspect.attributes.length === 0">
-                <v-list-item-content class="veo-attribute-list-no-content justify-center">This aspect has no properties</v-list-item-content>
+              <v-list-item v-if="_item.attributes.length === 0">
+                <v-list-item-content class="veo-attribute-list-no-content justify-center">This Item has no properties</v-list-item-content>
               </v-list-item>
               <v-list-item class="veo-attribute-list-add-button">
                 <v-list-item-action>
@@ -80,12 +80,12 @@ import { defineComponent, ref, watch, computed } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 
 import { VEOTypeNameRAW } from 'veo-objectschema-7'
-import { IVEOCustomAspect } from '~/lib/ObjectSchemaHelper'
+import { IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
 import { ITypeInfo } from '~/components/editor/ObjectSchema/ObjectSchemaEditor.vue'
 
 interface IProps {
   value: boolean,
-  aspect: IVEOCustomAspect | undefined,
+  item: IVEOCustomAspect | IVEOCustomLink | undefined,
   mode: string,
   type: 'aspect' | 'link'
   typeMap: Record<VEOTypeNameRAW, ITypeInfo>
@@ -95,7 +95,7 @@ export default defineComponent<IProps>({
   props: {
     value: { type: Boolean, required: true },
     // eslint-disable-next-line
-    aspect: { required: true }, // No type to avoid checking for invalid prop (aspect can either be undefined or VEOCustomAspect)
+    item: { required: true }, // No type to avoid checking for invalid prop (item can either be undefined, IVEOCustomLink or IVEOCustomAspect)
     mode: { type: String, default: 'create' },
     type: { type: String, required: true },
     typeMap: { type: Object, required: true }
@@ -122,11 +122,11 @@ export default defineComponent<IProps>({
 
     const headline = computed(() => {
       if (dialog.value.mode === 'create') {
-        return 'CustomAspect erstellen'
-      } else if (props.aspect?.title) {
-        return `CustomAspect "${props.aspect?.title}" bearbeiten`
+        return (props.type === 'link') ? 'CustomLink erstellen' : 'CustomAspect erstellen'
+      } else if (props.item?.title) {
+        return (props.type === 'link') ? `CustomLink "${props.item?.title}" bearbeiten` : `CustomAspect "${props.item?.title}" bearbeiten`
       } else {
-        return 'CustomAspect bearbeiten'
+        return (props.type === 'link') ? 'CustomLink bearbeiten' : 'CustomAspect bearbeiten'
       }
     })
 
@@ -135,7 +135,7 @@ export default defineComponent<IProps>({
     }
 
     /**
-     * Create customAspect stuff
+     * Create item stuff
      */
     const createForm = ref({
       valid: false,
@@ -153,7 +153,7 @@ export default defineComponent<IProps>({
     }
 
     /**
-     * Edit customAspect stuff
+     * Edit item stuff
      */
     const editForm = ref({
       valid: false,
@@ -162,21 +162,21 @@ export default defineComponent<IProps>({
       }
     })
 
-    const _aspect = ref(props.aspect)
-    watch(() => props.aspect, (val: IVEOCustomAspect | undefined) => {
-      _aspect.value = val
+    const _item = ref(props.item)
+    watch(() => props.item, (val: IVEOCustomAspect | IVEOCustomLink | undefined) => {
+      _item.value = val
     })
 
     function saveNode() {
-      context.emit('save-node', _aspect.value)
+      context.emit('save-node', _item.value)
     }
 
     function addAttribute() {
-      _aspect.value?.attributes.push({ type: 'string', title: '', description: '' })
+      _item.value?.attributes.push({ type: 'string', title: '', description: '' })
     }
 
     function removeAttribute(index: number) {
-      _aspect.value?.attributes.splice(index, 1)
+      _item.value?.attributes.splice(index, 1)
     }
 
     // Generate an array containing all type names from the type map.
@@ -189,7 +189,7 @@ export default defineComponent<IProps>({
       return dummy
     })
 
-    return { dialog, createForm, editForm, types, createNode, saveNode, _aspect, addAttribute, removeAttribute, headline, close }
+    return { dialog, createForm, editForm, types, createNode, saveNode, _item, addAttribute, removeAttribute, headline, close }
   }
 })
 </script>

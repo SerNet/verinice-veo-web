@@ -59,7 +59,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <ObjectSchemaDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :type-map="typeMap" @create-node="doAddAspect" @save-node="doEditAspect" />
+    <ObjectSchemaDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :type-map="typeMap" @create-node="doAddItem" @save-node="doEditItem" />
   </div>
 </template>
 
@@ -67,7 +67,7 @@
 import { computed, ComputedRef, defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
 import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
-import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect } from '~/lib/ObjectSchemaHelper'
+import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes } from '~/lib/ObjectSchemaHelper'
 
 export interface ITypeInfo {
   name: string
@@ -143,39 +143,48 @@ export default defineComponent<IProps>({
     })
 
     /**
-     * Editing customAspects
+     * Editing customAspects and customLinks
      */
-    const objectSchemaDialog = ref({ value: false, aspect: {} as any, mode: 'create' as ('create' | 'edit'), type: 'aspect' as ('aspect' | 'link') })
+    const objectSchemaDialog = ref({ value: false, item: {} as any, mode: 'create' as ('create' | 'edit'), type: 'aspect' as ('aspect' | 'link') })
 
     function showAddDialog(type: 'aspect' | 'link') {
       objectSchemaDialog.value.mode = 'create'
       objectSchemaDialog.value.value = true
-      objectSchemaDialog.value.aspect = undefined
+      objectSchemaDialog.value.item = undefined
       objectSchemaDialog.value.type = type
     }
 
-    function doAddAspect(form: { name: string }) {
-      const newAspect = generateAspect(form.name)
-      addAspectToSchema(schema.value, newAspect)
-
-      objectSchemaDialog.value.aspect = getAspect(schema.value, newAspect.properties.type.enum[0])
-      showEditDialog(objectSchemaDialog.value.aspect, objectSchemaDialog.value.type)
+    function doAddItem(form: { name: string, targetType?: string, targetDescription?: string }) {
+      if (objectSchemaDialog.value.type === 'aspect') {
+        const newAspect = generateAspect(form.name)
+        addAspectToSchema(schema.value, newAspect)
+        objectSchemaDialog.value.item = getAspect(schema.value, newAspect.properties.type.enum[0])
+      } else {
+        const newLink = generateLink(form.name, form.targetType || '', form.targetDescription || '')
+        addLinkToSchema(schema.value, newLink)
+        objectSchemaDialog.value.item = getLink(schema.value, newLink.items.properties.type.enum[0])
+      }
+      showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
     }
 
-    function showEditDialog(aspect: IVEOCustomAspect, type: 'aspect' | 'link') {
+    function showEditDialog(aspect: IVEOCustomAspect | IVEOCustomLink, type: 'aspect' | 'link') {
       objectSchemaDialog.value.mode = 'edit'
-      objectSchemaDialog.value.aspect = aspect
+      objectSchemaDialog.value.item = aspect
       objectSchemaDialog.value.value = true
       objectSchemaDialog.value.type = type
     }
 
-    function doEditAspect(_aspect: IVEOCustomAspect) {
-      updateAspectAttributes(schema.value, _aspect, _aspect.attributes)
+    function doEditItem(item: IVEOCustomAspect | IVEOCustomLink) {
+      if (objectSchemaDialog.value.type === 'aspect') {
+        updateAspectAttributes(schema.value, item as IVEOCustomAspect, item.attributes)
+      } else {
+        updateLinkAttributes(schema.value, item as IVEOCustomLink, item.attributes)
+      }
       objectSchemaDialog.value.value = false
       context.emit('schema-updated', schema.value)
     }
 
-    return { hideEmptyAspects, search, objectSchemaDialog, showAddDialog, doAddAspect, showEditDialog, doEditAspect, typeMap, basicProps, customAspects, customLinks }
+    return { hideEmptyAspects, search, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, basicProps, customAspects, customLinks }
   }
 })
 </script>
