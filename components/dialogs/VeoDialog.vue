@@ -4,8 +4,8 @@
       <v-card-title class="headline" :class="large ? '' : 'pl-4 pr-0 py-0'">
         <span>{{ headline }}</span>
         <v-spacer />
-        <v-btn :disabled="closeDisabled" fab elevation="0" class="close-button">
-          <v-icon color="white" @click="closeDialog()">mdi-close</v-icon>
+        <v-btn :disabled="closeDisabled" icon large class="close-button" @click="closeDialog()">
+          <v-icon color="white">mdi-close</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-4" style="position: relative;">

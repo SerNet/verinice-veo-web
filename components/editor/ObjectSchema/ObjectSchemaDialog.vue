@@ -48,9 +48,9 @@
               <v-list-item class="veo-attribute-list-add-button">
                 <v-list-item-action>
                   <v-spacer />
-                  <v-btn color="primary" text>
+                  <v-btn color="primary" text @click="addAttribute()">
                     <v-icon>mdi-plus-circle-outline</v-icon>
-                    <span class="ml-2" @click="addAttribute()">{{ $t(`editor.dialog.editform.${type}.addproperty`) }}</span>
+                    <span class="ml-2">{{ $t(`editor.dialog.editform.${type}.addproperty`) }}</span>
                   </v-btn>
                 </v-list-item-action>
               </v-list-item>
