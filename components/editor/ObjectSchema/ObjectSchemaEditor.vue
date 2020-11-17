@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="px-5 py-4 veo-editor-header">
-      <v-text-field v-model="search" dense clearable flat solo-inverted hide-details prepend-inner-icon="mdi-magnify" label="Nach einer Eigenschaft suchen..." />
-      <v-checkbox v-model="hideEmptyAspects" class="caption" dense hide-details label="Leere Aspekte ausblenden" />
+      <v-text-field v-model="search" dense clearable flat solo-inverted hide-details prepend-inner-icon="mdi-magnify" :label="$t('editor.search.label')" />
+      <v-checkbox v-model="hideEmptyAspects" class="caption" dense hide-details :label="$t('editor.hideemptyaspects')" />
     </div>
     <v-expansion-panels accordion multiple :value="[0, 1, 2]" flat>
       <v-expansion-panel>
         <v-expansion-panel-header class="overline">
-          Basic properties ({{ basicProps.length }})
+          {{ $t('editor.basicproperties') }} ({{ basicProps.length }})
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-card outlined>
@@ -19,12 +19,12 @@
       </v-expansion-panel>
       <v-expansion-panel>
         <v-expansion-panel-header class="overline">
-          Custom Aspects ({{ customAspects.length }})
+          {{ $t('editor.customaspects') }} ({{ customAspects.length }})
           <div class="d-flex">
             <v-spacer />
             <v-btn small text color="primary" @click.stop="showAddDialog('aspect')">
               <v-icon small>mdi-plus</v-icon>
-              <span>Add custom aspect</span>
+              <span>{{ $t('editor.customaspects.add') }}</span>
             </v-btn>
           </div>
         </v-expansion-panel-header>
@@ -39,12 +39,12 @@
       </v-expansion-panel>
       <v-expansion-panel>
         <v-expansion-panel-header class="overline">
-          Custom Links ({{ customLinks.length }})
+          {{ $t('editor.customlinks') }} ({{ customLinks.length }})
           <div class="d-flex">
             <v-spacer />
             <v-btn small text color="primary" @click.stop="showAddDialog('link')">
               <v-icon small>mdi-plus</v-icon>
-              <span>Add custom link</span>
+              <span>{{ $t('editor.customlinks.add') }}</span>
             </v-btn>
           </div>
         </v-expansion-panel-header>

@@ -6,15 +6,15 @@
           <v-form v-model="createForm.valid" @submit.prevent="createNode()">
             <v-row>
               <v-col>
-                <v-text-field v-model="createForm.name" label="Title *" required :rules="createForm.rules.name" />
+                <v-text-field v-model="createForm.name" :label="`${$t('editor.dialog.createform.title')} *`" required :rules="createForm.rules.name" />
               </v-col>
             </v-row>
             <v-row v-if="type === 'link'">
               <v-col class="py-0">
-                <v-text-field v-model="createForm.targetDescription" label="Target description *" required :rules="createForm.rules.targetDescription" />
+                <v-text-field v-model="createForm.targetDescription" :label="`${$t('editor.dialog.createform.linkdescription')} *`" required :rules="createForm.rules.targetDescription" />
               </v-col>
               <v-col :cols="4" class="py-0">
-                <v-select v-model="createForm.targetType" label="Target type" :items="types" />
+                <v-select v-model="createForm.targetType" :label="`${$t('editor.dialog.createform.linktype')}`" :items="types" />
               </v-col>
             </v-row>
           </v-form>
@@ -26,15 +26,15 @@
                 <v-list-item-content>
                   <v-row>
                     <v-col class="py-0">
-                      <v-text-field v-model="attribute.title" label="Property name *" :rules="editForm.rules.title" :prefix="_item.title +'_'" />
+                      <v-text-field v-model="attribute.title" :label="`${$t(`editor.dialog.editform.${type}.title`)} *`" required :rules="editForm.rules.title" :prefix="_item.title +'_'" />
                     </v-col>
                     <v-col :cols="4" class="py-0">
-                      <v-select v-model="attribute.type" label="Type" :items="types" />
+                      <v-select v-model="attribute.type" :label="$t(`editor.dialog.editform.${type}.type`)" :items="types" />
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col class="py-0">
-                      <v-text-field v-model="attribute.description" label="Property description" />
+                      <v-text-field v-model="attribute.description" :label="$t(`editor.dialog.editform.${type}.description`)" />
                     </v-col>
                   </v-row>
                 </v-list-item-content>
@@ -43,14 +43,14 @@
                 </v-list-item-action>
               </v-list-item>
               <v-list-item v-if="_item.attributes.length === 0">
-                <v-list-item-content class="veo-attribute-list-no-content justify-center">This Item has no properties</v-list-item-content>
+                <v-list-item-content class="veo-attribute-list-no-content justify-center">{{ $t(`editor.dialog.editform.${type}.noproperties`) }}</v-list-item-content>
               </v-list-item>
               <v-list-item class="veo-attribute-list-add-button">
                 <v-list-item-action>
                   <v-spacer />
                   <v-btn color="primary" text>
                     <v-icon>mdi-plus-circle-outline</v-icon>
-                    <span class="ml-2" @click="addAttribute()">Add attribute</span>
+                    <span class="ml-2" @click="addAttribute()">{{ $t(`editor.dialog.editform.${type}.addproperty`) }}</span>
                   </v-btn>
                 </v-list-item-action>
               </v-list-item>
@@ -58,19 +58,19 @@
           </v-form>
         </v-window-item>
       </v-window>
-      <small>* required field</small>
+      <small>{{ $t('editor.dialog.requiredfields') }}</small>
     </template>
     <template v-if="dialog.mode === 'create'" #dialog-options>
       <v-spacer />
-      <v-btn text :disabled="!createForm.valid" color="black" @click="createNode()">Weiter</v-btn>
+      <v-btn text :disabled="!createForm.valid" color="black" @click="createNode()">{{ $t('global.button.next') }}</v-btn>
     </template>
     <template v-else #dialog-options>
       <v-spacer />
       <v-btn text color="primary" @click="close()">
-        Close
+        {{ $t('global.button.close') }}
       </v-btn>
       <v-btn text color="primary" :disabled="!editForm.valid" @click="saveNode()">
-        Save
+        {{ $t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
@@ -126,11 +126,9 @@ export default defineComponent<IProps>({
 
     const headline = computed(() => {
       if (dialog.value.mode === 'create') {
-        return (props.type === 'link') ? 'CustomLink erstellen' : 'CustomAspect erstellen'
-      } else if (props.item?.title) {
-        return (props.type === 'link') ? `CustomLink "${props.item?.title}" bearbeiten` : `CustomAspect "${props.item?.title}" bearbeiten`
+        return context.root.$t(`editor.dialog.headline.${props.type}.create`)
       } else {
-        return (props.type === 'link') ? 'CustomLink bearbeiten' : 'CustomAspect bearbeiten'
+        return context.root.$t(`editor.dialog.headline.${props.type}.edit`, { title: (props.item?.title) ? `"${props.item?.title}"` : '' })
       }
     })
 
