@@ -6,35 +6,35 @@
           <v-form v-model="createForm.valid" @submit.prevent="createNode()">
             <v-row>
               <v-col>
-                <v-text-field v-model="createForm.name" label="Title *" required :rules="createForm.rules.name" />
+                <v-text-field v-model="createForm.name" :label="`${$t('editor.dialog.createform.title')} *`" required :rules="createForm.rules.name" />
               </v-col>
             </v-row>
             <v-row v-if="type === 'link'">
               <v-col class="py-0">
-                <v-text-field v-model="createForm.targetDescription" label="Target description *" required :rules="createForm.rules.targetDescription" />
+                <v-text-field v-model="createForm.targetDescription" :label="`${$t('editor.dialog.createform.linkdescription')} *`" required :rules="createForm.rules.targetDescription" />
               </v-col>
               <v-col :cols="4" class="py-0">
-                <v-select v-model="createForm.targetType" label="Target type" :items="types" />
+                <v-select v-model="createForm.targetType" :label="`${$t('editor.dialog.createform.linktype')} *`" :items="objectTypes" required :rules="createForm.rules.linkType" />
               </v-col>
             </v-row>
           </v-form>
         </v-window-item>
         <v-window-item value="edit">
-          <v-form v-if="_aspect && _aspect.attributes" v-model="editForm.valid" @submit.prevent="saveNode()">
+          <v-form v-if="_item && _item.attributes" v-model="editForm.valid" @submit.prevent="saveNode()">
             <v-list dense class="py-0">
-              <v-list-item v-for="(attribute, index) of _aspect.attributes" :key="index" class="veo-attribute-list-attribute my-2">
+              <v-list-item v-for="(attribute, index) of _item.attributes" :key="index" class="veo-attribute-list-attribute my-2">
                 <v-list-item-content>
                   <v-row>
                     <v-col class="py-0">
-                      <v-text-field v-model="attribute.title" label="Property name *" :rules="editForm.rules.title" :prefix="_aspect.title +'_'" />
+                      <v-text-field v-model="attribute.title" :label="`${$t(`editor.dialog.editform.${type}.title`)} *`" required :rules="editForm.rules.title" :prefix="_item.title +'_'" />
                     </v-col>
                     <v-col :cols="4" class="py-0">
-                      <v-select v-model="attribute.type" label="Type" :items="types" />
+                      <v-select v-model="attribute.type" :label="$t(`editor.dialog.editform.${type}.type`)" :items="types" />
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col class="py-0">
-                      <v-text-field v-model="attribute.description" label="Property description" />
+                      <v-text-field v-model="attribute.description" :label="$t(`editor.dialog.editform.${type}.description`)" />
                     </v-col>
                   </v-row>
                 </v-list-item-content>
@@ -42,15 +42,15 @@
                   <v-btn fab depressed text color="black" @click="removeAttribute(index)"><v-icon>mdi-delete</v-icon></v-btn>
                 </v-list-item-action>
               </v-list-item>
-              <v-list-item v-if="_aspect.attributes.length === 0">
-                <v-list-item-content class="veo-attribute-list-no-content justify-center">This aspect has no properties</v-list-item-content>
+              <v-list-item v-if="_item.attributes.length === 0">
+                <v-list-item-content class="veo-attribute-list-no-content justify-center">{{ $t(`editor.dialog.editform.${type}.noproperties`) }}</v-list-item-content>
               </v-list-item>
               <v-list-item class="veo-attribute-list-add-button">
                 <v-list-item-action>
                   <v-spacer />
                   <v-btn color="primary" text>
                     <v-icon>mdi-plus-circle-outline</v-icon>
-                    <span class="ml-2" @click="addAttribute()">Add attribute</span>
+                    <span class="ml-2" @click="addAttribute()">{{ $t(`editor.dialog.editform.${type}.addproperty`) }}</span>
                   </v-btn>
                 </v-list-item-action>
               </v-list-item>
@@ -58,19 +58,19 @@
           </v-form>
         </v-window-item>
       </v-window>
-      <small>* required field</small>
+      <small>{{ $t('editor.dialog.requiredfields') }}</small>
     </template>
     <template v-if="dialog.mode === 'create'" #dialog-options>
       <v-spacer />
-      <v-btn text :disabled="!createForm.valid" color="black" @click="createNode()">Weiter</v-btn>
+      <v-btn text :disabled="!createForm.valid" color="black" @click="createNode()">{{ $t('global.button.next') }}</v-btn>
     </template>
     <template v-else #dialog-options>
       <v-spacer />
       <v-btn text color="primary" @click="close()">
-        Close
+        {{ $t('global.button.close') }}
       </v-btn>
       <v-btn text color="primary" :disabled="!editForm.valid" @click="saveNode()">
-        Save
+        {{ $t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
@@ -80,12 +80,13 @@ import { defineComponent, ref, watch, computed } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 
 import { VEOTypeNameRAW } from 'veo-objectschema-7'
-import { VEOCustomAspect } from '~/lib/ObjectSchemaHelper'
+import { IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
 import { ITypeInfo } from '~/components/editor/ObjectSchema/ObjectSchemaEditor.vue'
+import { ObjectSchemaNames } from '~/types/FormSchema'
 
 interface IProps {
   value: boolean,
-  aspect: VEOCustomAspect | undefined,
+  item: IVEOCustomAspect | IVEOCustomLink | undefined,
   mode: string,
   type: 'aspect' | 'link'
   typeMap: Record<VEOTypeNameRAW, ITypeInfo>
@@ -95,7 +96,7 @@ export default defineComponent<IProps>({
   props: {
     value: { type: Boolean, required: true },
     // eslint-disable-next-line
-    aspect: { required: true }, // No type to avoid checking for invalid prop (aspect can either be undefined or VEOCustomAspect)
+    item: { required: true }, // No type to avoid checking for invalid prop (item can either be undefined, IVEOCustomLink or IVEOCustomAspect)
     mode: { type: String, default: 'create' },
     type: { type: String, required: true },
     typeMap: { type: Object, required: true }
@@ -108,6 +109,10 @@ export default defineComponent<IProps>({
 
     watch(() => props.value, (val: boolean) => {
       dialog.value.value = val
+
+      if (val) {
+        clearCreationForm()
+      }
     })
 
     watch(() => dialog.value.value, (val: boolean) => {
@@ -122,11 +127,9 @@ export default defineComponent<IProps>({
 
     const headline = computed(() => {
       if (dialog.value.mode === 'create') {
-        return 'CustomAspect erstellen'
-      } else if (props.aspect?.title) {
-        return `CustomAspect "${props.aspect?.title}" bearbeiten`
+        return context.root.$t(`editor.dialog.headline.${props.type}.create`)
       } else {
-        return 'CustomAspect bearbeiten'
+        return context.root.$t(`editor.dialog.headline.${props.type}.edit`, { title: (props.item?.title) ? `"${props.item?.title}"` : '' })
       }
     })
 
@@ -135,7 +138,7 @@ export default defineComponent<IProps>({
     }
 
     /**
-     * Create customAspect stuff
+     * Create item stuff
      */
     const createForm = ref({
       valid: false,
@@ -144,16 +147,31 @@ export default defineComponent<IProps>({
       targetDescription: '' as string,
       rules: {
         name: [(input: string) => trim(input).length > 0],
-        targetDescription: [(input: string) => trim(input).length > 0]
+        targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+        linktype: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
       }
     })
+
+    function clearCreationForm() {
+      createForm.value = {
+        valid: false,
+        name: '',
+        targetType: '' as string,
+        targetDescription: '' as string,
+        rules: {
+          name: [(input: string) => trim(input).length > 0],
+          targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+          linktype: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
+        }
+      }
+    }
 
     function createNode() {
       context.emit('create-node', createForm.value)
     }
 
     /**
-     * Edit customAspect stuff
+     * Edit item stuff
      */
     const editForm = ref({
       valid: false,
@@ -162,21 +180,21 @@ export default defineComponent<IProps>({
       }
     })
 
-    const _aspect = ref(props.aspect)
-    watch(() => props.aspect, (val: VEOCustomAspect | undefined) => {
-      _aspect.value = val
+    const _item = ref(props.item)
+    watch(() => props.item, (val: IVEOCustomAspect | IVEOCustomLink | undefined) => {
+      _item.value = val
     })
 
     function saveNode() {
-      context.emit('save-node', _aspect.value)
+      context.emit('save-node', _item.value)
     }
 
     function addAttribute() {
-      _aspect.value?.attributes.push({ type: 'string', title: '', description: '' })
+      _item.value?.attributes.push({ type: 'string', title: '', description: '' })
     }
 
     function removeAttribute(index: number) {
-      _aspect.value?.attributes.splice(index, 1)
+      _item.value?.attributes.splice(index, 1)
     }
 
     // Generate an array containing all type names from the type map.
@@ -189,7 +207,16 @@ export default defineComponent<IProps>({
       return dummy
     })
 
-    return { dialog, createForm, editForm, types, createNode, saveNode, _aspect, addAttribute, removeAttribute, headline, close }
+    const objectTypes = computed(() => {
+      return Object.keys(ObjectSchemaNames).map((value: string) => {
+        return {
+          text: context.root.$t(`unit.data.type.${value}`),
+          value
+        }
+      })
+    })
+
+    return { dialog, createForm, editForm, types, objectTypes, createNode, saveNode, _item, addAttribute, removeAttribute, headline, close }
   }
 })
 </script>

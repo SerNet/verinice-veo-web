@@ -30,6 +30,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { TranslateResult } from 'vue-i18n/types/index'
+
+import { ObjectSchemaNames } from '~/types/FormSchema'
 
 export default Vue.extend({
   props: {
@@ -40,35 +43,19 @@ export default Vue.extend({
   },
   data() {
     return {
-      objects: [
-        {
-          title: this.$t('unit.details.objects.asset'),
-          items: 0,
-          link: 'data/asset'
-        },
-        {
-          title: this.$t('unit.details.objects.control'),
-          items: 0,
-          link: 'data/control'
-        },
-        {
-          title: this.$t('unit.details.objects.person'),
-          items: 0,
-          link: 'data/person'
-        },
-        {
-          title: this.$t('unit.details.objects.process'),
-          items: 0,
-          link: 'data/process'
-        }
-      ]
+      objects: [] as { title: TranslateResult, link: string, items: number }[]
     }
   },
   async fetch() {
-    this.objects[0].items = (await this.$api.asset.fetchAll({ unit: this.unit.id })).length
-    this.objects[1].items = (await this.$api.control.fetchAll({ control: this.unit.id })).length
-    this.objects[2].items = (await this.$api.person.fetchAll({ person: this.unit.id })).length
-    this.objects[3].items = (await this.$api.process.fetchAll({ process: this.unit.id })).length
+    const keys = Object.keys(ObjectSchemaNames)
+    for await (const key of keys) {
+      this.objects.push({
+        title: this.$t(`unit.data.type.${key}`),
+        link: `data/${key}`,
+        // @ts-ignore
+        items: (await this.$api[key].fetchAll({ unit: this.unit.id })).length
+      })
+    }
   }
 })
 </script>
