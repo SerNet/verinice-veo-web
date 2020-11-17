@@ -182,7 +182,14 @@ export default defineComponent<IProps>({
 
     const _item = ref(props.item)
     watch(() => props.item, (val: IVEOCustomAspect | IVEOCustomLink | undefined) => {
-      _item.value = val
+      if (val) {
+        _item.value = JSON.parse(JSON.stringify(val)) // Deep copy to avoid mutating the object passed by the prop (else we couldn't abort editing)
+        if (_item.value) { // Remove the prefix (id of the custom aspect/property) from the title of each attribute, as it will get added back on saving.
+          for (const attribute of _item.value.attributes || []) {
+            attribute.title = attribute.title.replace(`${_item.value.title}_`, '')
+          }
+        }
+      }
     })
 
     function saveNode() {

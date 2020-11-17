@@ -52,7 +52,7 @@ const CUSTOM_PROPERTIES: Record<string, string> = {
  * @returns Returns the cleaned string ready to be used as a key.
  */
 function cleanName(string: string): string {
-  return replace(string, / /g, '_')
+  return replace(string.toLowerCase(), / /g, '_')
 }
 
 /**
