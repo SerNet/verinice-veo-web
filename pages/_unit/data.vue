@@ -45,46 +45,30 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { TranslateResult } from 'vue-i18n/types/index'
 import { IBaseObject } from '~/lib/utils'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
-// import { GroupType } from '~/plugins/api/group'
-
-interface IData {
-  objects: IBaseObject[]
-}
+import { ObjectSchemaNames } from '~/types/FormSchema'
 
 export default Vue.extend({
   components: {
     AppSideContainer
   },
   props: {},
-  async fetch() {
-    this.objects = [
-      {
-        type: 'asset',
-        name: this.$t('unit.data.type.asset'),
-        groups: await this.$api.group.fetchAll({ type: 'Asset' })
-      },
-      {
-        type: 'control',
-        name: this.$t('unit.data.type.control'),
-        groups: await this.$api.group.fetchAll({ type: 'Control' })
-      },
-      {
-        type: 'person',
-        name: this.$t('unit.data.type.person'),
-        groups: await this.$api.group.fetchAll({ type: 'Person' })
-      },
-      {
-        type: 'process',
-        name: this.$t('unit.data.type.process'),
-        groups: await this.$api.group.fetchAll({ type: 'Process' })
-      }
-    ]
-  },
-  data(): IData {
+  data() {
     return {
-      objects: []
+      objects: [] as { type: string, name: TranslateResult, groups: any, active: any }[]
+    }
+  },
+  async fetch() {
+    const keys = Object.keys(ObjectSchemaNames)
+    for await (const key of keys) {
+      this.objects.push({
+        type: key,
+        name: this.$t(`unit.data.type.${key}`),
+        groups: await this.$api.group.fetchAll({ type: this.capitalize(key) }),
+        active: undefined
+      })
     }
   },
   computed: {
@@ -103,7 +87,11 @@ export default Vue.extend({
       ]
     }
   },
-  methods: {}
+  methods: {
+    capitalize(string: string): string {
+      return string.charAt(0).toUpperCase() + string.slice(1)
+    }
+  }
 })
 </script>
 

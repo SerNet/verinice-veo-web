@@ -14,7 +14,7 @@
                 <v-text-field v-model="createForm.targetDescription" :label="`${$t('editor.dialog.createform.linkdescription')} *`" required :rules="createForm.rules.targetDescription" />
               </v-col>
               <v-col :cols="4" class="py-0">
-                <v-select v-model="createForm.targetType" :label="`${$t('editor.dialog.createform.linktype')}`" :items="types" />
+                <v-select v-model="createForm.targetType" :label="`${$t('editor.dialog.createform.linktype')} *`" :items="objectTypes" required :rules="createForm.rules.linkType" />
               </v-col>
             </v-row>
           </v-form>
@@ -82,6 +82,7 @@ import { trim } from 'lodash'
 import { VEOTypeNameRAW } from 'veo-objectschema-7'
 import { IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
 import { ITypeInfo } from '~/components/editor/ObjectSchema/ObjectSchemaEditor.vue'
+import { ObjectSchemaNames } from '~/types/FormSchema'
 
 interface IProps {
   value: boolean,
@@ -146,7 +147,8 @@ export default defineComponent<IProps>({
       targetDescription: '' as string,
       rules: {
         name: [(input: string) => trim(input).length > 0],
-        targetDescription: [(input: string) => trim(input).length > 0]
+        targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+        linktype: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
       }
     })
 
@@ -158,7 +160,8 @@ export default defineComponent<IProps>({
         targetDescription: '' as string,
         rules: {
           name: [(input: string) => trim(input).length > 0],
-          targetDescription: [(input: string) => trim(input).length > 0]
+          targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+          linktype: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
         }
       }
     }
@@ -204,7 +207,16 @@ export default defineComponent<IProps>({
       return dummy
     })
 
-    return { dialog, createForm, editForm, types, createNode, saveNode, _item, addAttribute, removeAttribute, headline, close }
+    const objectTypes = computed(() => {
+      return Object.keys(ObjectSchemaNames).map((value: string) => {
+        return {
+          text: context.root.$t(`unit.data.type.${value}`),
+          value
+        }
+      })
+    })
+
+    return { dialog, createForm, editForm, types, objectTypes, createNode, saveNode, _item, addAttribute, removeAttribute, headline, close }
   }
 })
 </script>
