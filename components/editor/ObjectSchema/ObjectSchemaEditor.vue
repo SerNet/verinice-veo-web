@@ -12,7 +12,6 @@
         <v-expansion-panel-content>
           <v-card outlined>
             <v-list class="py-0" dense>
-              <v-list-item />
               <ObjectSchemaListItem v-for="(child, index) of basicProps" :key="index" v-bind="child" two-line />
             </v-list>
           </v-card>
@@ -30,10 +29,10 @@
           </div>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <v-card v-for="(aspect, index) of customAspects" v-show="!hideEmptyAspects || aspect.item.attributes.length > 0" :key="index" class="mb-2" outlined>
+          <v-card v-for="(aspect, index) of customAspects" v-show="(!hideEmptyAspects || aspect.item.attributes.length > 0) && itemContainsAttributeTitle(aspect, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
               <ObjectSchemaListHeader v-bind="aspect" @click="showEditDialog(aspect.item, 'aspect')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(aspect.item, 'aspect')" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(aspect.item, 'aspect')" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -50,10 +49,10 @@
           </div>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <v-card v-for="(link, index) of customLinks" :key="index" class="mb-2" outlined>
+          <v-card v-for="(link, index) of customLinks" v-show="itemContainsAttributeTitle(link, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
               <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @click="showEditDialog(link.item, 'link')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(link.item, 'link')" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(link.item, 'link')" />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -67,7 +66,7 @@
 import { computed, ComputedRef, defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
 import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
-import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes } from '~/lib/ObjectSchemaHelper'
+import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute } from '~/lib/ObjectSchemaHelper'
 
 export interface ITypeInfo {
   name: string
@@ -106,6 +105,14 @@ export default defineComponent<IProps>({
       null: { icon: 'mdi-cancel', name: 'null', color: 'blue-grey' },
       default: { icon: 'mdi-help-box', name: 'unknown', color: 'grey' }
     })
+
+    function itemContainsAttributeTitle(item: EditorPropertyItem, title: string): boolean {
+      return !title || title.length === 0 || item.item.title.toLowerCase().includes(title.toLowerCase()) || (item.item as IVEOCustomAspect | IVEOCustomLink).attributes.some((attribute: IVEOAttribute) => attributeContainsTitle(attribute, title))
+    }
+
+    function attributeContainsTitle(property: IVEOAttribute, title: string) {
+      return !title || title.length === 0 || (property.title && property.title.toLowerCase().includes(title.toLowerCase()))
+    }
 
     /**
      * schema related stuff
@@ -184,7 +191,7 @@ export default defineComponent<IProps>({
       context.emit('schema-updated', schema.value)
     }
 
-    return { hideEmptyAspects, search, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, basicProps, customAspects, customLinks }
+    return { hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, basicProps, customAspects, customLinks }
   }
 })
 </script>

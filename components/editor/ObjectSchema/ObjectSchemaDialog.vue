@@ -108,6 +108,10 @@ export default defineComponent<IProps>({
 
     watch(() => props.value, (val: boolean) => {
       dialog.value.value = val
+
+      if (val) {
+        clearCreationForm()
+      }
     })
 
     watch(() => dialog.value.value, (val: boolean) => {
@@ -147,6 +151,19 @@ export default defineComponent<IProps>({
         targetDescription: [(input: string) => trim(input).length > 0]
       }
     })
+
+    function clearCreationForm() {
+      createForm.value = {
+        valid: false,
+        name: '',
+        targetType: '' as string,
+        targetDescription: '' as string,
+        rules: {
+          name: [(input: string) => trim(input).length > 0],
+          targetDescription: [(input: string) => trim(input).length > 0]
+        }
+      }
+    }
 
     function createNode() {
       context.emit('create-node', createForm.value)
