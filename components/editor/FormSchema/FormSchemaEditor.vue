@@ -36,23 +36,97 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </div>
-    <div style="height: 5000px;"></div>
+    <div class="veo-editor-body" style="height: 5000px;">
+      <v-card
+        v-for="(el, i) in list"
+        :key="i"
+        width="300"
+        outlined
+        elevation="2"
+        color="grey lighten-4"
+        class="ma-2"
+      >
+        <v-row no-gutters>
+          <v-col>
+            <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
+            {{ el }}
+          </v-col>
+          <v-spacer></v-spacer>
+          <v-col class="text-right">
+            <v-btn icon>
+              <v-icon dense small class="pa-2">mdi-pencil</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
+      <v-card
+        min-width="300"
+        min-height="100"
+        outlined
+        elevation="2"
+        color="grey lighten-4"
+        class="ma-2"
+      >
+        <v-row no-gutters>
+          <v-col>
+            <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
+          </v-col>
+          <v-spacer></v-spacer>
+          <v-col class="text-right">
+            <v-btn icon>
+              <v-icon dense small class="pa-2">mdi-pencil</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col>
+            <v-card
+              v-for="(el, i) in list"
+              :key="i"
+              width="300"
+              outlined
+              elevation="2"
+              color="grey lighten-4"
+              class="ma-2"
+            >
+              <v-row no-gutters>
+                <v-col>
+                  <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
+                  {{ el }}
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col class="text-right">
+                  <v-btn icon>
+                    <v-icon dense small class="pa-2">mdi-pencil</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-// import draggable from 'vuedraggable'
+import Draggable from 'vuedraggable'
 // import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
 
 export default Vue.extend({
   name: 'FormSchemaEditor',
-  components: {},
+  components: {
+    Draggable
+  },
   props: {
     objectSchema: Object
   },
   data() {
-    return {}
+    return {
+      list: [1, 2, 3],
+      list2: []
+    }
   }
 })
 </script>
@@ -66,7 +140,7 @@ export default Vue.extend({
   position: sticky;
   top: 0;
   z-index: 2;
-  max-height: 150px;
+  max-height: 200px;
   overflow: auto;
 }
 
@@ -78,5 +152,9 @@ export default Vue.extend({
   .v-expansion-panel--active
   > .v-expansion-panel-header {
   min-height: auto;
+}
+
+.veo-editor-body ::v-deep .v-card {
+  border: 1px solid $grey-darken-2 !important;
 }
 </style>
