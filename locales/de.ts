@@ -2,6 +2,8 @@ export default {
   welcome: 'Willkommen',
 
   'editor.basicproperties': 'Standardattribute',
+  'editor.code.save.error': 'Das Schema konnte nicht aktualisiert werden',
+  'editor.code.save.success': 'Schema wurde aktualisiert!',
   'editor.customaspects': 'Individuelle Aspekte',
   'editor.customaspects.add': 'Aspekte hinzufügen',
   'editor.customlinks': 'Individuelle Links',

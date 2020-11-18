@@ -1,6 +1,13 @@
 <template>
-  <div class="editor" :style="{ resize: 'vertical' }">
-    <div ref="editor" @keydown.meta.enter="$emit('submit', $event)" />
+  <div class="fill-height d-flex flex-column">
+    <div style="max-height: 100%; overflow: auto;">
+      <div class="editor" :style="{ resize: 'vertical' }">
+        <div ref="editor" @keydown.meta.enter="$emit('submit', $event)" @keydown.exact="codeModified()" />
+      </div>
+    </div>
+    <div class="veo-editor-save-button">
+      <v-btn class="mx-4 my-2" color="primary" :disabled="saveButtonDisabled" @click="updateSchema()">Speichern</v-btn>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -9,7 +16,7 @@ import { keymap, highlightSpecialChars, indentOnInput } from '@codemirror/next/v
 import { startCompletion, autocompletion, completionKeymap } from '@codemirror/next/autocomplete'
 import { json } from '@codemirror/next/lang-json'
 import { setDiagnostics, lintKeymap } from '@codemirror/next/lint'
-import { TransactionSpec, tagExtension, StateField, EditorSelection, SelectionRange } from '@codemirror/next/state'
+import { TransactionSpec, tagExtension, StateField, EditorSelection } from '@codemirror/next/state'
 
 import { history, historyKeymap } from '@codemirror/next/history'
 import { foldGutter, foldKeymap } from '@codemirror/next/fold'
@@ -24,7 +31,8 @@ import { rectangularSelection } from '@codemirror/next/rectangular-selection'
 import { gotoLineKeymap } from '@codemirror/next/goto-line'
 import { highlightSelectionMatches } from '@codemirror/next/highlight-selection'
 import { defaultHighlighter } from '@codemirror/next/highlight'
-import { defineComponent, nextTick, onMounted, ref, watch, watchEffect } from '@nuxtjs/composition-api'
+import { defineComponent, onMounted, ref, watchEffect } from '@nuxtjs/composition-api'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 const languageTag = Symbol('language')
 
@@ -109,6 +117,23 @@ export default defineComponent<Props>({
       }
     }
 
+    const saveButtonDisabled = ref(true)
+    function codeModified() {
+      saveButtonDisabled.value = false
+    }
+
+    function updateSchema() {
+      let updatedSchema
+      try {
+        updatedSchema = JSON.parse($editor.state.toJSON().doc)
+        context.emit('schema-updated', updatedSchema)
+        context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, context.root.$i18n.t('editor.code.save.success'))
+      } catch (e) {
+        context.root.$emit(VeoEvents.SNACKBAR_ERROR, `${context.root.$i18n.t('editor.code.save.error')}: ${e}`)
+      }
+      saveButtonDisabled.value = true
+    }
+
     onMounted(() => {
       const updateExtension = StateField.define({
         create() {
@@ -117,7 +142,7 @@ export default defineComponent<Props>({
         update(value: any, tr) {
           if (tr.docChanged) {
             context.emit('update:error', undefined)
-            context.emit('input', tr.state.doc.toString())
+            // context.emit('input', tr.state.doc.toString())
           }
           return tr.docChanged ? value : value
         }
@@ -190,7 +215,10 @@ export default defineComponent<Props>({
         context.root.$nextTick(() => {
           $editor.focus()
         })
-      }
+      },
+      codeModified,
+      saveButtonDisabled,
+      updateSchema
     }
   }
 })
@@ -198,10 +226,10 @@ export default defineComponent<Props>({
 
 <style lang="scss" scoped>
 .editor {
-  font-size: 13px;
-  padding: 0;
-  margin: 0;
   display: inline-block;
+  font-size: 13px;
+  margin: 0;
+  padding: 0;
   padding-right: 2px;
   vertical-align: top;
 }
@@ -210,5 +238,9 @@ export default defineComponent<Props>({
   ::v-deep .cm-focused {
     outline: none !important;
   }
+}
+
+.veo-editor-save-button {
+  background-color: rgb(245, 245, 245);
 }
 </style>

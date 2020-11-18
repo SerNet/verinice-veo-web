@@ -17,8 +17,8 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col v-if="!collapsed" class="pa-0 fill-height" :style="{ maxHeight }" style="overflow: auto;" cols="12" lg="6">
-        <CodeEditor v-model="code" />
+      <v-col v-if="!collapsed" class="pa-0 fill-height" :style="{ maxHeight }" cols="12" lg="6">
+        <CodeEditor v-model="code" @schema-updated="updateSchema" />
       </v-col>
     </v-row>
   </v-col>
