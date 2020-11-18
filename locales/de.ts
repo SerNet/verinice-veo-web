@@ -28,6 +28,11 @@ export default {
   'editor.dialog.requiredfields': '* Pflichtfelder',
   'editor.hideemptyaspects': 'Leere Aspekte ausblenden',
   'editor.itemlist.attributecount': 'Keine Attribute | {n} Attribut | {n} Attribute',
+  'editor.objectschema.create.description': 'Beschreibung',
+  'editor.objectschema.create.description.text': 'Beschreibung des Schemas',
+  'editor.objectschema.create.headline': 'Neues Objektschema erstellen',
+  'editor.objectschema.create.type': 'Schema-Typ',
+  'editor.objectschema.create.type.text': 'Wähle den Typ des neuen Schemas',
   'editor.search.label': 'Nach einer Eigenschaft suchen...',
 
   'forms.input.linkadd': 'Link hinzufügen',

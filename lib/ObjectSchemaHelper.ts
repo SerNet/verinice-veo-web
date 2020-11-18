@@ -75,7 +75,7 @@ function mergeWithDefaultOptions(options?: IObjectSchemaHelperOptions): IHelperO
  *
  * @returns Returns the basic schema to be modified further.
  */
-export function generateSchema(): VEOObjectSchemaRAW {
+export function generateSchema(type: string, description?: string): VEOObjectSchemaRAW {
   return {
     $schema: 'http://json-schema.org/draft-07/schema#',
     type: 'object',
@@ -160,8 +160,8 @@ export function generateSchema(): VEOObjectSchemaRAW {
       }
     },
     required: ['name', 'owner'],
-    title: 'Process',
-    description: 'Schema for Process'
+    title: type,
+    description: description || ''
   }
 }
 

@@ -4,7 +4,7 @@
       <v-card-title class="headline" :class="large ? '' : 'pl-4 pr-0 py-0'">
         <span>{{ headline }}</span>
         <v-spacer />
-        <v-btn :disabled="closeDisabled" icon large class="close-button" @click="closeDialog()">
+        <v-btn v-if="!closeHidden" :disabled="closeDisabled" icon large class="close-button" @click="closeDialog()">
           <v-icon color="white">mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -39,6 +39,10 @@ export default Vue.extend({
       default: false
     },
     closeDisabled: {
+      type: Boolean,
+      default: false
+    },
+    closeHidden: {
       type: Boolean,
       default: false
     }

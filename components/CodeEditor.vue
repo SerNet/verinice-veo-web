@@ -1,6 +1,6 @@
 <template>
   <div class="fill-height d-flex flex-column">
-    <div style="max-height: 100%; overflow: auto;">
+    <div style="height: 100%; overflow: auto;">
       <div class="editor" :style="{ resize: 'vertical' }">
         <div ref="editor" @keydown.meta.enter="$emit('submit', $event)" @keydown.exact="codeModified()" />
       </div>
@@ -228,6 +228,7 @@ export default defineComponent<Props>({
 .editor {
   display: inline-block;
   font-size: 13px;
+  height: 100%;
   margin: 0;
   padding: 0;
   padding-right: 2px;
