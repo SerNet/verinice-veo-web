@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
+import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
 import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
 import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute } from '~/lib/ObjectSchemaHelper'
@@ -121,42 +121,37 @@ export default defineComponent<IProps>({
     // @ts-ignore
     const schema: Ref<VEOObjectSchemaRAW> = ref(props.value)
 
-    let forceRecompute: number = 0 // We can change this variables name in order to recompute all properties (else sometimes schema changes won't be registered.)
+    const customAspects: Ref<EditorPropertyItem[]> = ref([])
+    const customLinks: Ref<EditorPropertyItem[]> = ref([])
+    const basicProps: Ref<EditorPropertyItem[]> = ref([])
 
+    computeProperties()
     watch(() => props.value, (val: VEOObjectSchemaRAW) => {
       schema.value = val
-    }, { deep: true })
+      computeProperties()
+    })
 
-    const customAspects: ComputedRef<EditorPropertyItem[]> = computed(() => {
-      console.log('Blub1')
-      forceRecompute
-      return getAspects(schema.value).map((entry: IVEOCustomAspect) => {
+    // Sadly computed refs wouldn't catch schema updates, so we have to deal with it on our own.
+    function computeProperties() {
+      customAspects.value = getAspects(schema.value).map((entry: IVEOCustomAspect) => {
         return {
           item: entry,
           styling: undefined
         }
       })
-    })
-    const customLinks: ComputedRef<EditorPropertyItem[]> = computed(() => {
-      console.log('Blub2')
-      forceRecompute
-      return getLinks(schema.value).map((entry: IVEOCustomLink) => {
+      customLinks.value = getLinks(schema.value).map((entry: IVEOCustomLink) => {
         return {
           item: entry,
           styling: undefined
         }
       })
-    })
-    const basicProps: ComputedRef<EditorPropertyItem[]> = computed(() => {
-      console.log('Blub3')
-      forceRecompute
-      return getBasicProperties(schema.value).map((entry: IVEOBasicProperty) => {
+      basicProps.value = getBasicProperties(schema.value).map((entry: IVEOBasicProperty) => {
         return {
           item: entry,
           styling: typeMap.value[entry.type]
         }
       })
-    })
+    }
 
     /**
      * Editing customAspects and customLinks
@@ -182,6 +177,7 @@ export default defineComponent<IProps>({
           objectSchemaDialog.value.item = getLink(schema.value, newLink.items.properties.type.enum[0])
         }
         showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
+        computeProperties()
       } catch (e) {
         context.root.$emit(VeoEvents.SNACKBAR_ERROR, `${context.root.$i18n.t('editor.dialog.createform.error')}: ${e}`)
       }
@@ -202,7 +198,7 @@ export default defineComponent<IProps>({
       }
       objectSchemaDialog.value.value = false
       context.emit('schema-updated', schema.value)
-      forceRecompute = Math.random()
+      computeProperties()
     }
 
     return { hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, basicProps, customAspects, customLinks }
