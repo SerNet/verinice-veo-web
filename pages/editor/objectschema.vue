@@ -23,7 +23,7 @@
     </v-row>
     <VeoDialog v-else v-model="showCreationDialog" large :headline="$t('editor.objectschema.create.headline')" close-hidden>
       <template #default>
-        <v-form v-model="createForm.valid">
+        <v-form v-model="createForm.valid" @submit.prevent="createSchema()">
           <v-row no-guters class="align-center mt-6">
             <v-col :cols="12" :md="5">
               <span style="font-size: 1.2rem;">{{ $t('editor.objectschema.create.type.text') }}:</span>
@@ -44,7 +44,7 @@
       </template>
       <template #dialog-options>
         <v-spacer />
-        <v-btn color="primary" :disabled="!createForm.valid" @click="createSchema()">
+        <v-btn color="primary" role="submit" type="submit" :disabled="!createForm.valid" @click="createSchema()">
           {{ $t('global.button.next') }}
         </v-btn>
       </template>

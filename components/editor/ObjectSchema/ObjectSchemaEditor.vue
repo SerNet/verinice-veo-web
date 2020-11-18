@@ -67,6 +67,7 @@ import { computed, ComputedRef, defineComponent, ref, Ref, watch } from '@nuxtjs
 
 import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
 import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute } from '~/lib/ObjectSchemaHelper'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 export interface ITypeInfo {
   name: string
@@ -120,11 +121,15 @@ export default defineComponent<IProps>({
     // @ts-ignore
     const schema: Ref<VEOObjectSchemaRAW> = ref(props.value)
 
+    let forceRecompute: number = 0 // We can change this variables name in order to recompute all properties (else sometimes schema changes won't be registered.)
+
     watch(() => props.value, (val: VEOObjectSchemaRAW) => {
       schema.value = val
     }, { deep: true })
 
     const customAspects: ComputedRef<EditorPropertyItem[]> = computed(() => {
+      console.log('Blub1')
+      forceRecompute
       return getAspects(schema.value).map((entry: IVEOCustomAspect) => {
         return {
           item: entry,
@@ -133,6 +138,8 @@ export default defineComponent<IProps>({
       })
     })
     const customLinks: ComputedRef<EditorPropertyItem[]> = computed(() => {
+      console.log('Blub2')
+      forceRecompute
       return getLinks(schema.value).map((entry: IVEOCustomLink) => {
         return {
           item: entry,
@@ -141,6 +148,8 @@ export default defineComponent<IProps>({
       })
     })
     const basicProps: ComputedRef<EditorPropertyItem[]> = computed(() => {
+      console.log('Blub3')
+      forceRecompute
       return getBasicProperties(schema.value).map((entry: IVEOBasicProperty) => {
         return {
           item: entry,
@@ -162,16 +171,20 @@ export default defineComponent<IProps>({
     }
 
     function doAddItem(form: { name: string, targetType?: string, targetDescription?: string }) {
-      if (objectSchemaDialog.value.type === 'aspect') {
-        const newAspect = generateAspect(form.name)
-        addAspectToSchema(schema.value, newAspect)
-        objectSchemaDialog.value.item = getAspect(schema.value, newAspect.properties.type.enum[0])
-      } else {
-        const newLink = generateLink(form.name, form.targetType || '', form.targetDescription || '')
-        addLinkToSchema(schema.value, newLink)
-        objectSchemaDialog.value.item = getLink(schema.value, newLink.items.properties.type.enum[0])
+      try {
+        if (objectSchemaDialog.value.type === 'aspect') {
+          const newAspect = generateAspect(form.name)
+          addAspectToSchema(schema.value, newAspect)
+          objectSchemaDialog.value.item = getAspect(schema.value, newAspect.properties.type.enum[0])
+        } else {
+          const newLink = generateLink(form.name, form.targetType || '', form.targetDescription || '')
+          addLinkToSchema(schema.value, newLink)
+          objectSchemaDialog.value.item = getLink(schema.value, newLink.items.properties.type.enum[0])
+        }
+        showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
+      } catch (e) {
+        context.root.$emit(VeoEvents.SNACKBAR_ERROR, `${context.root.$i18n.t('editor.dialog.createform.error')}: ${e}`)
       }
-      showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
     }
 
     function showEditDialog(aspect: IVEOCustomAspect | IVEOCustomLink, type: 'aspect' | 'link') {
@@ -189,6 +202,7 @@ export default defineComponent<IProps>({
       }
       objectSchemaDialog.value.value = false
       context.emit('schema-updated', schema.value)
+      forceRecompute = Math.random()
     }
 
     return { hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, basicProps, customAspects, customLinks }

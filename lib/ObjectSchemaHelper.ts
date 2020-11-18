@@ -70,6 +70,10 @@ function mergeWithDefaultOptions(options?: IObjectSchemaHelperOptions): IHelperO
   return _options
 }
 
+export function prefixedAspectName(schema: VEOObjectSchemaRAW, aspectName: string): string {
+  return `${schema.title}_${aspectName}`
+}
+
 /**
  * Generates the basic VEOObjectSchema to which custom links and custom aspects can get added.
  *
@@ -236,7 +240,7 @@ export function getAspect(schema: VEOObjectSchemaRAW, name: string, options?: IO
       attributes: getAspectAttributes(undefined, schema.properties[OPTIONS.customProperties.customAspects].properties[name])
     }
   }
-  throw new Error('ObjectSchemaHelper::getAspect: Aspect not found!')
+  throw new Error(`ObjectSchemaHelper::getAspect: ${name} Aspect not found!`)
 }
 
 /**
@@ -372,11 +376,16 @@ export function generateAspect(name: string): VEOCustomAspectRAW {
  */
 export function addAspectToSchema(schema: VEOObjectSchemaRAW, aspect: VEOCustomAspectRAW, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
+  const aspectId = prefixedAspectName(schema, aspect.properties.type.enum[0])
 
-  if (schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.properties.type.enum[0]]) {
-    throw new Error(`ObjectSchemaHelper::addAspectToSchema: Aspect ${aspect.properties.type.enum[0]} already exists!`)
+  if (schema.properties[OPTIONS.customProperties.customAspects].properties[aspectId]) {
+    throw new Error(`ObjectSchemaHelper::addAspectToSchema: Aspect ${aspectId} already exists!`)
   }
-  schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.properties.type.enum[0]] = aspect
+
+  // Overwriting the default title to fit it to the naming convention.
+  aspect.properties.type.enum[0] = aspectId
+
+  schema.properties[OPTIONS.customProperties.customAspects].properties[aspectId] = aspect
 }
 
 /**
@@ -643,11 +652,16 @@ export function generateLink(name: string, target: string, description: string):
  */
 export function addLinkToSchema(schema: VEOObjectSchemaRAW, link: VEOCustomLinkRAW, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
+  const linkId = prefixedAspectName(schema, link.items.properties.type.enum[0])
 
-  if (schema.properties[OPTIONS.customProperties.links].properties[link.items.properties.type.enum[0]]) {
-    throw new Error(`ObjectSchemaHelper::addLinkToSchema: Link ${link.items.properties.type.enum[0]} already exists!`)
+  if (schema.properties[OPTIONS.customProperties.links].properties[linkId]) {
+    throw new Error(`ObjectSchemaHelper::addLinkToSchema: Link ${linkId} already exists!`)
   }
-  schema.properties[OPTIONS.customProperties.links].properties[link.items.properties.type.enum[0]] = link
+
+  // Overwriting the default title to fit it to the naming convention.
+  link.items.properties.type.enum[0] = linkId
+
+  schema.properties[OPTIONS.customProperties.links].properties[linkId] = link
 }
 
 /**
