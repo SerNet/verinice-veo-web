@@ -46,12 +46,19 @@
         class="ma-2"
       >
         <v-row no-gutters>
-          <v-col>
+          <v-col cols="auto">
             <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
-            {{ el }}
+          </v-col>
+          <v-col cols="auto">
+            <div style="max-width: 220px;">
+              <div class="text-caption text-truncate">{{ el }}</div>
+              <div class="text-caption text-truncate">
+                Control (InputText)
+              </div>
+            </div>
           </v-col>
           <v-spacer></v-spacer>
-          <v-col class="text-right">
+          <v-col cols="auto" class="text-right">
             <v-btn icon>
               <v-icon dense small class="pa-2">mdi-pencil</v-icon>
             </v-btn>
@@ -171,7 +178,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      list: [1, 2, 3],
+      list: ['Title 1', 'Title 2', 'Title 3'],
       list2: []
     }
   }
