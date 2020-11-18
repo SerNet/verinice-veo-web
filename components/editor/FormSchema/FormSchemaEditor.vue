@@ -42,7 +42,6 @@
         :key="i"
         width="300"
         outlined
-        elevation="2"
         color="grey lighten-4"
         class="ma-2"
       >
@@ -59,11 +58,11 @@
           </v-col>
         </v-row>
       </v-card>
+
       <v-card
         min-width="300"
         min-height="100"
         outlined
-        elevation="2"
         color="grey lighten-4"
         class="ma-2"
       >
@@ -80,28 +79,76 @@
         </v-row>
         <v-row no-gutters>
           <v-col>
-            <v-card
-              v-for="(el, i) in list"
-              :key="i"
-              width="300"
-              outlined
-              elevation="2"
-              color="grey lighten-4"
-              class="ma-2"
-            >
-              <v-row no-gutters>
-                <v-col>
-                  <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
-                  {{ el }}
-                </v-col>
-                <v-spacer></v-spacer>
-                <v-col class="text-right">
-                  <v-btn icon>
-                    <v-icon dense small class="pa-2">mdi-pencil</v-icon>
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-card>
+            <div class="d-flex flex-column">
+              <v-card
+                v-for="(el, i) in list"
+                :key="i"
+                width="300"
+                outlined
+                color="grey lighten-4"
+                class="ma-2"
+              >
+                <v-row no-gutters>
+                  <v-col>
+                    <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
+                    {{ el }}
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col class="text-right">
+                    <v-btn icon>
+                      <v-icon dense small class="pa-2">mdi-pencil</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </div>
+          </v-col>
+        </v-row>
+      </v-card>
+
+      <v-card
+        min-width="300"
+        min-height="100"
+        outlined
+        color="grey lighten-4"
+        class="ma-2"
+      >
+        <v-row no-gutters>
+          <v-col>
+            <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
+          </v-col>
+          <v-spacer></v-spacer>
+          <v-col class="text-right">
+            <v-btn icon>
+              <v-icon dense small class="pa-2">mdi-pencil</v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col>
+            <div class="d-flex flex-row">
+              <v-card
+                v-for="(el, i) in list"
+                :key="i"
+                width="300"
+                outlined
+                color="grey lighten-4"
+                class="ma-2"
+              >
+                <v-row no-gutters>
+                  <v-col>
+                    <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
+                    {{ el }}
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col class="text-right">
+                    <v-btn icon>
+                      <v-icon dense small class="pa-2">mdi-pencil</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </div>
           </v-col>
         </v-row>
       </v-card>
