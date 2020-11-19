@@ -138,7 +138,7 @@ export default Vue.extend({
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
         fetchAll: (objectType: string, searchParams?: any) => {
-          return this.$api[objectType].fetchAll(searchParams)
+          return this.$api[objectType].fetchAll({ ...searchParams, unit: this.$route.params.unit })
         },
         create: async(objectType: string, createdObjectData: any) => {
           const res = await this.$api[objectType].create({

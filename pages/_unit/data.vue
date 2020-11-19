@@ -66,7 +66,7 @@ export default Vue.extend({
       this.objects.push({
         type: key,
         name: this.$t(`unit.data.type.${key}`),
-        groups: await this.$api.group.fetchAll({ type: this.capitalize(key) }),
+        groups: await this.$api.group.fetchAll({ type: this.capitalize(key), unit: this.$route.params.unit }),
         active: undefined
       })
     }

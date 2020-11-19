@@ -47,7 +47,7 @@ export default Vue.extend({
   async fetch() {
     this.formSchema = await this.$api.form.fetch(this.$route.params.form)
     this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
-    this.objects = this.objectType && (await this.$api[this.objectType].fetchAll())
+    this.objects = this.objectType && (await this.$api[this.objectType].fetchAll({ unit: this.$route.params.unit }))
   },
   head() {
     return {
