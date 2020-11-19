@@ -28,6 +28,7 @@
         :disabled="disabled"
         :visible="visible"
         :api="api"
+        style="flex-basis: 0"
         @input="onInput"
       />
       <v-btn
