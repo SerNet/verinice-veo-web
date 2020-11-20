@@ -19,9 +19,16 @@
     </v-row>
     <v-row no-gutters>
       <v-col>
-        <div class="d-flex" :class="dynamicClasses">
+        <Draggable
+          class="dragArea d-flex"
+          tag="div"
+          style="overflow: auto;"
+          :list="formSchema.elements"
+          :class="dynamicClasses"
+          :group="{ name: 'g1' }"
+        >
           <slot />
-        </div>
+        </Draggable>
       </v-col>
     </v-row>
   </v-card>
@@ -36,11 +43,16 @@ import {
   Helpful,
   LayoutProps
 } from '~/components/forms/Collection/utils/helpers'
+import Draggable from 'vuedraggable'
 
 export default Vue.extend({
   name: 'FseGroup',
+  components: {
+    Draggable
+  },
   props: {
     options: Object,
+    formSchema: Object,
     disabled: Boolean,
     visible: Boolean
   },

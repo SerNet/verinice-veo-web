@@ -113,13 +113,14 @@ export default Vue.extend({
         case 'Layout':
           return h(
             FseLayout,
-            { props: { options: element.options } },
+            { props: { options: element.options, formSchema: element } },
             createChildren()
           )
         case 'Control': {
           let partOfProps: { [key: string]: any } = {
             name: undefined,
             schema: {},
+            formSchema: element,
             lang: {}
           }
 
@@ -166,6 +167,7 @@ export default Vue.extend({
           return h(FseLabel, {
             props: {
               options: element.options,
+              formSchema: element,
               text: element.text
             }
           })

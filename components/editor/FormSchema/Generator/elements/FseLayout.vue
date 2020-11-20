@@ -18,6 +18,7 @@ export default Vue.extend({
   },
   props: {
     options: { type: Object, default: undefined },
+    formSchema: { type: Object, default: undefined },
     disabled: Boolean,
     visible: Boolean
   }

@@ -15,6 +15,7 @@ export default Vue.extend({
   functional: true,
   props: {
     options: Object,
+    formSchema: Object,
     disabled: Boolean,
     visible: Boolean
   },
