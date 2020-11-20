@@ -1,5 +1,5 @@
 <template>
-  <v-list-item two-line @click="$emit('click', $event)">
+  <v-list-item two-line>
     <v-list-item-avatar size="32">
       <v-icon v-if="styling" small :class="styling.color" color="white" outlined dark v-text="styling.icon" />
     </v-list-item-avatar>
@@ -23,12 +23,19 @@ import { IVEOBasicProperty, IVEOCustomAspect, IVEOCustomLink } from '~/lib/Objec
 interface IProps {
   item: IVEOCustomAspect | IVEOCustomLink | IVEOBasicProperty
   styling: ITypeInfo
+  disabled: boolean
 }
 
 export default defineComponent<IProps>({
   props: {
-    item: { type: Object, required: true },
-    styling: { type: Object, default: () => {} }
+    item: {
+      type: Object,
+      required: true
+    },
+    styling: {
+      type: Object,
+      default: () => {}
+    }
   }
 })
 </script>

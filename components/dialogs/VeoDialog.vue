@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" max-width="80%" :persistent="persistent" :width="large ? '900px' : '450px'">
     <v-card>
-      <v-card-title class="headline" :class="large ? '' : 'pl-4 pr-0 py-0'">
+      <v-card-title class="headline" :class="large ? '' : 'pl-4 pr-0 py-0'" :style="fixedHeader ? 'position: sticky; top: 0; z-index: 1;' : ''">
         <span>{{ headline }}</span>
         <v-spacer />
         <v-btn v-if="!closeHidden" :disabled="closeDisabled" icon large class="close-button" @click="closeDialog()">
@@ -43,6 +43,10 @@ export default Vue.extend({
       default: false
     },
     closeHidden: {
+      type: Boolean,
+      default: false
+    },
+    fixedHeader: {
       type: Boolean,
       default: false
     }

@@ -21,78 +21,31 @@
         <CodeEditor v-model="code" @schema-updated="updateSchema" />
       </v-col>
     </v-row>
-    <VeoDialog v-else v-model="showCreationDialog" large :headline="$t('editor.objectschema.create.headline')" close-hidden>
-      <template #default>
-        <v-form v-model="createForm.valid" @submit.prevent="createSchema()">
-          <v-row no-guters class="align-center mt-6">
-            <v-col :cols="12" :md="5">
-              <span style="font-size: 1.2rem;">{{ $t('editor.objectschema.create.type.text') }}:</span>
-            </v-col>
-            <v-col :cols="12" :md="5">
-              <v-select v-model="createForm.type" :label="$t('editor.objectschema.create.type')" :items="objectTypes" :rules="createForm.rules.type" required />
-            </v-col>
-          </v-row>
-          <v-row no-gutters class="align-center mt-6">
-            <v-col :cols="12" :md="5">
-              <span style="font-size: 1.2rem;">{{ $t('editor.objectschema.create.description.text') }}:</span>
-            </v-col>
-            <v-col :cols="12" :md="5">
-              <v-text-field v-model="createForm.description" :label="$t('editor.objectschema.create.description')" :rules="createForm.rules.description" required />
-            </v-col>
-          </v-row>
-        </v-form>
-      </template>
-      <template #dialog-options>
-        <v-spacer />
-        <v-btn color="primary" role="submit" type="submit" :disabled="!createForm.valid" @click="createSchema()">
-          {{ $t('global.button.next') }}
-        </v-btn>
-      </template>
-    </VeoDialog>
+    <OSWizardDialog v-model="showCreationDialog" @schema="setSchema" />
   </v-col>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { trim } from 'lodash'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 
-import { generateSchema } from '~/lib/ObjectSchemaHelper'
-import { ObjectSchemaNames } from '~/types/FormSchema'
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
+import OSWizardDialog from '~/components/dialogs/SchemaEditors/OSWizardDialog.vue'
 
 export default Vue.extend({
   components: {
-    VeoDialog
+    OSWizardDialog
   },
   data() {
     return {
       collapsed: false as boolean,
       showCreationDialog: false as boolean,
       tab: 'form-schema',
-      schema: undefined as VEOObjectSchemaRAW | undefined,
-      createForm: {
-        type: '' as string,
-        description: '' as string,
-        valid: false,
-        rules: {
-          type: [(input: string) => trim(input).length > 0],
-          description: [(input: string) => trim(input).length > 0]
-        }
-      }
+      schema: undefined as VEOObjectSchemaRAW | undefined
     }
   },
   computed: {
     maxHeight(): string {
       return 'calc(100vh - ' + this.$vuetify.application.top + 'px)'
-    },
-    objectTypes(): {text: string, value: string}[] { // Generate an array containing all object types as defined in the ObjectSchemaNames enum.
-      return Object.keys(ObjectSchemaNames).map((value: string) => {
-        return {
-          text: this.$t(`unit.data.type.${value}`) as string,
-          value
-        }
-      })
     },
     code: {
       get(): string {
@@ -113,8 +66,9 @@ export default Vue.extend({
       this.schema = undefined // We have to set it to undefined first, else the editor won't pick up the change.
       this.schema = schema
     },
-    createSchema() {
-      this.schema = generateSchema(this.createForm.type, this.createForm.description)
+    setSchema(schema: VEOObjectSchemaRAW) {
+      this.schema = schema
+      this.showCreationDialog = false
     }
   }
 })

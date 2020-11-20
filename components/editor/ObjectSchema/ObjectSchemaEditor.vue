@@ -11,7 +11,7 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-card outlined>
-            <v-list class="py-0" dense>
+            <v-list class="py-0" dense disabled>
               <ObjectSchemaListItem v-for="(child, index) of basicProps" :key="index" v-bind="child" two-line />
             </v-list>
           </v-card>
@@ -31,8 +31,8 @@
         <v-expansion-panel-content>
           <v-card v-for="(aspect, index) of customAspects" v-show="(!hideEmptyAspects || aspect.item.attributes.length > 0) && itemContainsAttributeTitle(aspect, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="aspect" @click="showEditDialog(aspect.item, 'aspect')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(aspect.item, 'aspect')" />
+              <ObjectSchemaListHeader v-bind="aspect" @edit-item="showEditDialog(aspect.item, 'aspect')" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -51,8 +51,8 @@
         <v-expansion-panel-content>
           <v-card v-for="(link, index) of customLinks" v-show="itemContainsAttributeTitle(link, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @click="showEditDialog(link.item, 'link')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(link.item, 'link')" />
+              <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @edit-item="showEditDialog(link.item, 'link')" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -93,7 +93,7 @@ export default defineComponent<IProps>({
      * UI stuff
      */
     const search = ref('')
-    const hideEmptyAspects = ref(true)
+    const hideEmptyAspects = ref(false)
 
     const typeMap: Ref<Record<VEOTypeNameRAW, ITypeInfo>> = ref({
       string: { icon: 'mdi-alphabetical-variant', name: 'string', color: 'red' },

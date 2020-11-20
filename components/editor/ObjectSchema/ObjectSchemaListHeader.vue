@@ -1,5 +1,5 @@
 <template>
-  <v-list-item style="background-color: #FAFAFA" two-line @click="$emit('click', $event)">
+  <v-list-item style="background-color: #FAFAFA" two-line>
     <v-list-item-content>
       <v-list-item-title class="body-1 font-weight-bold" v-text="item.title" />
       <v-list-item-subtitle v-text="$tc('editor.itemlist.attributecount', item.attributes.length || 0)" />
@@ -9,9 +9,9 @@
     </v-list-item-action>
 
     <v-list-item-action class="ml-0">
-      <v-btn icon>
+      <v-btn icon @click="$emit('edit-item', $event)">
         <v-icon>
-          mdi-chevron-right
+          mdi-pencil
         </v-icon>
       </v-btn>
     </v-list-item-action>

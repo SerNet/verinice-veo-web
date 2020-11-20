@@ -68,7 +68,7 @@
     </template>
     <template v-if="dialog.mode === 'create'" #dialog-options>
       <v-spacer />
-      <v-btn text :disabled="!createForm.valid" color="black" @click="createNode()">{{ $t('global.button.next') }}</v-btn>
+      <v-btn text color="primary" :disabled="!createForm.valid" @click="createNode()">{{ $t('global.button.next') }}</v-btn>
     </template>
     <template v-else #dialog-options>
       <v-spacer />
