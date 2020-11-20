@@ -1,11 +1,5 @@
 <template>
-  <v-card
-    min-width="300"
-    min-height="100"
-    outlined
-    color="grey lighten-4"
-    class="vf-layout vf-group  ma-2"
-  >
+  <v-card outlined color="grey lighten-4" class="vf-layout vf-group  ma-2">
     <v-row no-gutters>
       <v-col>
         <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
@@ -22,7 +16,7 @@
         <Draggable
           class="dragArea d-flex"
           tag="div"
-          style="overflow: auto;"
+          style="overflow: auto; min-width:300; min-height:100px"
           :list="formSchema.elements"
           :class="dynamicClasses"
           :group="{ name: 'g1' }"
