@@ -7,15 +7,13 @@
             Unused Aspects
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet,
+            ___
             <br />
-            consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat.
+            ___
+            <br />
+            ___
+            <br />
+            ___
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
@@ -23,15 +21,13 @@
             Unused Links
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet,
+            ___
             <br />
-            consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat.
+            ___
+            <br />
+            ___
+            <br />
+            ___
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
