@@ -33,11 +33,7 @@
       </v-expansion-panels>
     </div>
     <div class="veo-editor-body" style="height: 5000px;">
-      <FseGenerator
-        :schema="objectSchema"
-        :value="value.content"
-        @input="$emit('input', $event)"
-      />
+      <FseGenerator :schema="objectSchema" :value="value.content" />
     </div>
   </div>
 </template>

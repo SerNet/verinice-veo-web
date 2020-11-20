@@ -41,8 +41,8 @@ export default Vue.extend({
   },
   computed: {
     pages(): UISchemaElement[] | undefined {
-      if (this.localUI && this.localUI.elements) {
-        return this.localUI.elements
+      if (this.value && this.value.elements) {
+        return this.value.elements
           .filter(
             el =>
               el.type === 'Layout' && el.options && el.options.format === 'page'
@@ -65,14 +65,6 @@ export default Vue.extend({
         // IMPORTANT! This is needed to update localSchema when schema is updated
         // Else it cannot detect updated object of schema and does not update veo-form
         this.localSchema = JSON.parse(JSON.stringify(this.schema))
-      }
-    },
-    value: {
-      immediate: true,
-      handler() {
-        if (this.value) {
-          this.localUI = JSON.parse(JSON.stringify(this.value))
-        }
       }
     },
     lang: {
@@ -174,18 +166,18 @@ export default Vue.extend({
       }
     }
 
-    if (!this.localUI) {
-      this.localUI = {
+    if (!this.value) {
+      this.$emit('input', {
         type: 'Layout',
         options: {
           format: 'group',
           direction: 'vertical',
           highlight: false
         }
-      }
+      })
     }
 
-    return createComponent(this.localUI)
+    return createComponent(this.value)
   }
 })
 </script>
