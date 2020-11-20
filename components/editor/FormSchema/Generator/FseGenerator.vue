@@ -211,7 +211,7 @@ export default Vue.extend({
   min-height: auto;
 }
 
-.veo-editor-body ::v-deep .v-card {
-  border: 1px solid $grey-darken-2 !important;
-}
+// .veo-editor-body ::v-deep .v-card {
+//   border: 1px solid $grey-darken-2 !important;
+// }
 </style>

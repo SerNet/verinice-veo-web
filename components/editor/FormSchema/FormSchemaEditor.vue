@@ -214,6 +214,32 @@ export default Vue.extend({
 }
 
 .veo-editor-body ::v-deep .v-card {
-  border: 1px solid $grey-darken-2 !important;
+  border: 1px solid black !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-string {
+  border: 1px solid $color-string !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-boolean {
+  border: 1px solid $color-boolean !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-number {
+  border: 1px solid $color-number !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-integer {
+  border: 1px solid $color-integer !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-object {
+  border: 1px solid $color-object !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-array {
+  border: 1px solid $color-array !important;
+}
+// TODO: Type: "enum" does not exist in JsonSchema Standard
+.veo-editor-body ::v-deep .v-card.fse-os-enum {
+  border: 1px solid $color-enum !important;
+}
+// TODO: Type: "enum" does not exist in JsonSchema Standard
+.veo-editor-body ::v-deep .v-card.fse-os-null {
+  border: 1px solid $color-null !important;
 }
 </style>

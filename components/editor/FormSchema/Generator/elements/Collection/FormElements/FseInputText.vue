@@ -3,7 +3,7 @@
     width="300"
     outlined
     color="grey lighten-4"
-    class="vf-input-text vf-form-element ma-2"
+    class="vf-input-text vf-form-element fse-os-string ma-2"
   >
     <v-row no-gutters>
       <v-col cols="auto">
