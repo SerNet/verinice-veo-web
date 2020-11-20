@@ -34,6 +34,40 @@
     </div>
     <div class="veo-editor-body" style="height: 5000px;">
       <FseGenerator :schema="objectSchema" :value="value.content" />
+      <v-speed-dial
+        v-model="fab"
+        bottom
+        absolute
+        right
+        direction="top"
+        :open-on-hover="true"
+        transition="scale-transition"
+        fixed
+        style="right: 50%;"
+      >
+        <template v-slot:activator>
+          <v-btn v-model="fab" color="primary" dark small fab>
+            <v-icon v-if="fab">
+              mdi-close
+            </v-icon>
+            <v-icon v-else>
+              mdi-plus
+            </v-icon>
+          </v-btn>
+        </template>
+        <v-btn fab dark x-small color="light-blue darken-2">
+          <v-icon>mdi-format-text</v-icon>
+        </v-btn>
+        <v-btn fab dark x-small color="deep-purple darken-2">
+          <v-icon>mdi-form-textbox-password</v-icon>
+        </v-btn>
+        <v-btn fab dark x-small color="green darken-3">
+          <v-icon>mdi-form-select</v-icon>
+        </v-btn>
+        <v-btn fab dark x-small color="blue-grey darken-2">
+          <v-icon>mdi-book-open-page-variant</v-icon>
+        </v-btn>
+      </v-speed-dial>
     </div>
   </div>
 </template>
@@ -56,8 +90,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      list: ['Title 1', 'Title 2', 'Title 3'],
-      list2: []
+      fab: false
     }
   }
 })
