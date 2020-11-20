@@ -159,6 +159,12 @@
           </v-col>
         </v-row>
       </v-card>
+
+      <FseGenerator
+        :schema="objectSchema"
+        :value="value.content"
+        @input="$emit('input', $event)"
+      />
     </div>
   </div>
 </template>
@@ -167,14 +173,17 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 // import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
+import FseGenerator from './Generator/FseGenerator.vue'
 
 export default Vue.extend({
   name: 'FormSchemaEditor',
   components: {
-    Draggable
+    Draggable,
+    FseGenerator
   },
   props: {
-    objectSchema: Object
+    objectSchema: Object,
+    value: Object
   },
   data() {
     return {

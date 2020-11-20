@@ -9,25 +9,21 @@ import Ajv, { RequiredParams } from 'ajv'
 import { chunk, merge } from 'lodash'
 import { UISchema, UISchemaElement, UIRule } from '~/types/UISchema'
 import { BaseObject, IApi } from '~/components/forms/utils'
-import FormSchemaEditorLabel from '~/components/forms/FormSchemaEditorLabel.vue'
-import FormSchemaEditorControl from '~/components/forms/FormSchemaEditorControl.vue'
-import FormSchemaEditorLayout from '~/components/forms/FormSchemaEditorLayout.vue'
-import Wrapper from '~/components/forms/Wrapper.vue'
+import FseLabel from './elements/FseLabel.vue'
+import FseControl from './elements/FseControl.vue'
+import FseLayout from './elements/FseLayout.vue'
+// import Wrapper from '~/components/forms/Wrapper.vue'
 
 import Draggable from 'vuedraggable'
 
 export default Vue.extend({
-  name: 'FormSchemaEditorGenerator',
+  name: 'FseGenerator',
   props: {
-    value: {
-      type: Object,
-      default: () => ({})
-    },
     schema: {
       type: Object,
       required: true
     } as PropOptions<JSONSchema7>,
-    ui: {
+    value: {
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
@@ -40,7 +36,7 @@ export default Vue.extend({
     return {
       page: 1,
       localSchema: this.schema,
-      localUI: this.ui
+      localUI: this.value
     }
   },
   computed: {
@@ -71,11 +67,11 @@ export default Vue.extend({
         this.localSchema = JSON.parse(JSON.stringify(this.schema))
       }
     },
-    ui: {
+    value: {
       immediate: true,
       handler() {
-        if (this.ui) {
-          this.localUI = JSON.parse(JSON.stringify(this.ui))
+        if (this.value) {
+          this.localUI = JSON.parse(JSON.stringify(this.value))
         }
       }
     },
@@ -116,7 +112,7 @@ export default Vue.extend({
       switch (element.type) {
         case 'Layout':
           return h(
-            FormSchemaEditorLayout,
+            FseLayout,
             { props: { options: element.options } },
             createChildren()
           )
@@ -152,7 +148,7 @@ export default Vue.extend({
               // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug
             }
           }
-          return h(FormSchemaEditorControl, {
+          return h(FseControl, {
             props: {
               elements: element.elements,
               options: element.options,
@@ -167,7 +163,7 @@ export default Vue.extend({
           })
         }
         case 'Label':
-          return h(FormSchemaEditorLabel, {
+          return h(FseLabel, {
             props: {
               options: element.options,
               text: element.text
@@ -175,6 +171,18 @@ export default Vue.extend({
           })
       }
     }
+
+    if (!this.localUI) {
+      this.localUI = {
+        type: 'Layout',
+        options: {
+          format: 'group',
+          direction: 'vertical',
+          highlight: false
+        }
+      }
+    }
+
     return createComponent(this.localUI)
   }
 })

@@ -13,7 +13,11 @@
         lg="6"
       >
         <h1 class="ml-4 mt-2">Form Schema Editor</h1>
-        <FormSchemaEditor :object-schema="objectSchema" v-model="formSchema" />
+        <FormSchemaEditor
+          v-if="!$fetchState.pending"
+          :object-schema="objectSchema"
+          v-model="formSchema"
+        />
       </v-col>
       <v-col
         class="pa-0 fill-height"
@@ -81,7 +85,7 @@ export default Vue.extend({
           type: 'Layout',
           options: {
             format: 'group',
-            direction: 'vertical'
+            direction: 'horizontal'
           },
           elements: [
             {
