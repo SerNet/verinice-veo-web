@@ -11,7 +11,9 @@
       </v-col>
       <v-col cols="auto">
         <div style="max-width: 220px;">
-          <div class="text-caption text-truncate">{{ name }}</div>
+          <div class="text-caption text-truncate">
+            {{ options && options.label }}
+          </div>
           <div class="text-caption text-truncate">
             Control (InputText)
           </div>
