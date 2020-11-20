@@ -19,6 +19,7 @@
           style="overflow: auto; min-width:300; min-height:100px"
           :list="formSchema.elements"
           :class="dynamicClasses"
+          handle=".handle"
           :group="{ name: 'g1' }"
         >
           <slot />
