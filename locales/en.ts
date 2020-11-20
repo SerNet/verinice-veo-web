@@ -27,6 +27,7 @@ export default {
   'editor.dialog.headline.link.create': 'Create custom link',
   'editor.dialog.headline.link.edit': 'Edit custom link {title}',
   'editor.dialog.requiredfields': '* Required fields',
+  'editor.editor.button.save': 'Apply code changes',
   'editor.hideemptyaspects': 'Hide empty aspects',
   'editor.itemlist.attributecount': 'No attributes | {n} attribute | {n} attributes',
   'editor.objectschema.create.description': 'Description',

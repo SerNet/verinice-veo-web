@@ -21,7 +21,7 @@
         <CodeEditor v-model="code" @schema-updated="updateSchema" />
       </v-col>
     </v-row>
-    <OSWizardDialog v-model="showCreationDialog" @schema="setSchema" />
+    <VEOOSEWizardDialog v-model="showCreationDialog" @schema="setSchema" />
   </v-col>
 </template>
 
@@ -29,11 +29,11 @@
 import Vue from 'vue'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 
-import OSWizardDialog from '~/components/dialogs/SchemaEditors/OSWizardDialog.vue'
+import VEOOSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOOSEWizardDialog.vue'
 
 export default Vue.extend({
   components: {
-    OSWizardDialog
+    VEOOSEWizardDialog
   },
   data() {
     return {

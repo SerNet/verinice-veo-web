@@ -58,7 +58,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <ObjectSchemaDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :type-map="typeMap" @create-node="doAddItem" @save-node="doEditItem" />
+    <VEOOSECustomPropertiesDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :type-map="typeMap" @create-node="doAddItem" @save-node="doEditItem" />
   </div>
 </template>
 
@@ -68,6 +68,8 @@ import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
 import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute } from '~/lib/ObjectSchemaHelper'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
+
+import VEOOSECustomPropertiesDialog from '~/components/dialogs/SchemaEditors/VEOOSECustomPropertiesDialog.vue'
 
 export interface ITypeInfo {
   name: string
@@ -85,6 +87,9 @@ interface EditorPropertyItem {
 }
 
 export default defineComponent<IProps>({
+  components: {
+    VEOOSECustomPropertiesDialog
+  },
   props: {
     value: { type: Object, required: true }
   },

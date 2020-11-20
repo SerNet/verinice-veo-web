@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="veo-editor-save-button">
-      <v-btn class="mx-4 my-2" color="primary" :disabled="saveButtonDisabled" @click="updateSchema()">Speichern</v-btn>
+      <v-btn class="mx-4 my-2" color="primary" :disabled="saveButtonDisabled" @click="updateSchema()">{{ $t('editor.editor.button.save') }}</v-btn>
     </div>
   </div>
 </template>

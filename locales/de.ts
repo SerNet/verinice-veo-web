@@ -27,6 +27,7 @@ export default {
   'editor.dialog.headline.link.create': 'Individuellen Link erstellen',
   'editor.dialog.headline.link.edit': 'Link {title} bearbeiten',
   'editor.dialog.requiredfields': '* Pflichtfelder',
+  'editor.editor.button.save': 'Codeänderungen übernehmen',
   'editor.hideemptyaspects': 'Leere Aspekte ausblenden',
   'editor.itemlist.attributecount': 'Keine Attribute | {n} Attribut | {n} Attribute',
   'editor.objectschema.create.description': 'Beschreibung',

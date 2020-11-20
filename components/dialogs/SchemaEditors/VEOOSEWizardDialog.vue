@@ -1,5 +1,5 @@
 <template>
-  <VeoDialog v-model="dialog" large :headline="$t('editor.objectschema.headline')" close-hidden persistent fixed-header>
+  <VeoDialog v-model="dialog" large :headline="$t('editor.objectschema.headline')" close-hidden persistent fixed-header fixed-footer>
     <template #default>
       <v-window v-model="state">
         <v-window-item value="start" class="py-8">
@@ -90,7 +90,7 @@ export default Vue.extend({
           description: [(input: string) => trim(input).length > 0]
         }
       },
-      code: '' as any
+      code: '\n\n\n\n\n' as string
     }
   },
   computed: {
@@ -119,7 +119,7 @@ export default Vue.extend({
     },
     state(newValue) {
       if (newValue === 'start') {
-        this.code = {}
+        this.code = ''
         this.clearCreateForm()
       }
     }

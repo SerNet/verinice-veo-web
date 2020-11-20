@@ -11,7 +11,7 @@
       <v-card-text class="pa-4" style="position: relative;">
         <slot />
       </v-card-text>
-      <v-card-actions v-if="hasActions" class="pb-3 px-4">
+      <v-card-actions v-if="hasActions" class="pb-3 px-4" :style="fixedFooter ? 'position: sticky; bottom: 0; z-index: 1;' : ''">
         <slot name="dialog-options" />
       </v-card-actions>
     </v-card>
@@ -47,6 +47,10 @@ export default Vue.extend({
       default: false
     },
     fixedHeader: {
+      type: Boolean,
+      default: false
+    },
+    fixedFooter: {
       type: Boolean,
       default: false
     }
@@ -92,6 +96,10 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
+
+.v-card__actions {
+  background: white;
+}
 
 .headline {
   background-color: $primary;
