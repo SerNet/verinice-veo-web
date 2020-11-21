@@ -56,29 +56,15 @@
           </v-btn>
         </template>
 
-        <div class="fse-create-element">
+        <div
+          v-for="element in createElementActions"
+          :key="element.name"
+          class="fse-create-element"
+        >
           <v-btn fab x-small>
-            <v-icon>mdi-format-text</v-icon>
+            <v-icon>{{ element.icon }}</v-icon>
           </v-btn>
-          <span class="fse-create-element-caption">Label</span>
-        </div>
-        <div class="fse-create-element">
-          <v-btn fab x-small>
-            <v-icon>mdi-form-textbox-password</v-icon>
-          </v-btn>
-          <span class="fse-create-element-caption">Control</span>
-        </div>
-        <div class="fse-create-element">
-          <v-btn fab x-small>
-            <v-icon>mdi-form-select</v-icon>
-          </v-btn>
-          <span class="fse-create-element-caption">Layout</span>
-        </div>
-        <div class="fse-create-element">
-          <v-btn fab x-small>
-            <v-icon>mdi-book-open-page-variant</v-icon>
-          </v-btn>
-          <span class="fse-create-element-caption">Page</span>
+          <span class="fse-create-element-caption">{{ element.name }}</span>
         </div>
       </v-speed-dial>
     </div>
@@ -103,7 +89,13 @@ export default Vue.extend({
   },
   data() {
     return {
-      fab: false
+      fab: false,
+      createElementActions: [
+        { name: 'Label', icon: 'mdi-format-text' },
+        { name: 'Control', icon: 'mdi-form-textbox-password' },
+        { name: 'Layout', icon: 'mdi-form-select' },
+        { name: 'Page', icon: 'mdi-book-open-page-variant' }
+      ]
     }
   }
 })
