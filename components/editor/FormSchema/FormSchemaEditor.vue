@@ -45,7 +45,7 @@
         fixed
         style="right: 50%;"
       >
-        <template v-slot:activator>
+        <template #activator>
           <v-btn v-model="fab" color="primary" dark small fab>
             <v-icon v-if="fab">
               mdi-close
