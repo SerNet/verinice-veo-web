@@ -40,7 +40,7 @@
         absolute
         right
         direction="top"
-        :open-on-hover="true"
+        open-on-hover
         transition="scale-transition"
         fixed
         style="right: 50%;"
