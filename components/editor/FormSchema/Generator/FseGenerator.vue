@@ -90,6 +90,15 @@ export default Vue.extend({
         vjp.set(this.value, this.propertyPath(scope).replace('#/', '/'), v)
         this.$emit('input', this.value)
       }
+    },
+    onDelete(event: any, formSchemaPointer: string): void {
+      let vjpPointer = formSchemaPointer.replace('#', '')
+      // Not allowed to make changes on the root object
+      if (formSchemaPointer !== '#') {
+        vjp.remove(this.value, vjpPointer)
+      } else {
+        this.$emit('delete', undefined)
+      }
     }
   },
   render(h): VNode {
@@ -118,16 +127,7 @@ export default Vue.extend({
                 formSchemaPointer
               },
               on: {
-                delete: (v: any) => {
-                  let vjpPointer = formSchemaPointer.replace('#', '')
-
-                  // Not allowed to make changes on the root object
-                  if (formSchemaPointer !== '#') {
-                    vjp.remove(this.value, vjpPointer)
-                  } else {
-                    this.$emit('delete', undefined)
-                  }
-                }
+                delete: (event: any) => this.onDelete(event, formSchemaPointer)
               }
             },
             createChildren()
