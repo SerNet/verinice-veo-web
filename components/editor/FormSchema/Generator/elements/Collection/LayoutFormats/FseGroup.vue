@@ -30,10 +30,22 @@
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
       <template #default>
         <v-autocomplete
-          label="Direction"
-          :items="dialog.data.directionList"
           v-model="dialog.data.direction"
+          :items="dialog.data.directionList"
+          label="Direction"
         ></v-autocomplete>
+        <v-combobox
+          v-model="dialog.data.class"
+          label="Class"
+          multiple
+          chips
+        ></v-combobox>
+        <v-combobox
+          v-model="dialog.data.style"
+          label="Style"
+          multiple
+          chips
+        ></v-combobox>
       </template>
       <template #dialog-options>
         <v-spacer />
@@ -59,6 +71,7 @@ import {
 } from '~/components/forms/Collection/utils/helpers'
 import Draggable from 'vuedraggable'
 import vjp from 'vue-json-pointer'
+import { JsonPointer } from 'json-ptr'
 
 export default Vue.extend({
   name: 'FseGroup',
@@ -77,7 +90,9 @@ export default Vue.extend({
         open: false,
         data: {
           directionList: ['horizontal', 'vertical'],
-          direction: 'vertical'
+          direction: 'vertical',
+          class: [] as string[],
+          style: [] as string[]
         }
       }
     }
@@ -100,22 +115,60 @@ export default Vue.extend({
     dynamicClasses(): string[] {
       return [
         this.directionClass,
-        this.highlightClass,
-        this.options && this.options.class ? this.options.class : ''
+        this.highlightClass
+        // this.options && this.options.class ? this.options.class : ''
       ]
     }
   },
   methods: {
     open() {
       this.dialog.open = true
-      this.dialog.data.direction = vjp.get(
-        this.formSchema,
-        '/options/direction'
+
+      this.dialog.data.direction = this.getValue('#/options/direction')
+      this.dialog.data.class = this.stringToArray(
+        this.getValue('#/options/class'),
+        ' '
+      )
+      this.dialog.data.style = this.stringToArray(
+        this.getValue('#/options/style'),
+        ';'
       )
     },
     save() {
-      vjp.set(this.formSchema, '/options/direction', this.dialog.data.direction)
+      this.setValue('#/options/direction', this.dialog.data.direction)
+      console.log(this.dialog.data.class)
+      this.setValue(
+        '#/options/class',
+        this.arrayToString(this.dialog.data.class, ' ')
+      )
+      this.setValue(
+        '#/options/style',
+        this.arrayToString(this.dialog.data.style, ';')
+      )
+
       this.dialog.open = false
+    },
+    stringToArray(string: string | undefined, separator: string): string[] {
+      if (string) {
+        let split = string.split(separator)
+        return split.filter(el => !!el)
+      } else {
+        return []
+      }
+    },
+    arrayToString(array: string[], separator: string): string {
+      return array.join(separator)
+    },
+    getValue(pointer: string): any {
+      return JsonPointer.get(this.formSchema, pointer)
+    },
+    setValue(pointer: string, value: any): void {
+      const vjpPointer = pointer.replace('#/', '/')
+      if (!!value || value === 0 || value === false) {
+        vjp.set(this.formSchema, vjpPointer, value)
+      } else {
+        vjp.remove(this.formSchema, vjpPointer)
+      }
     }
   }
 })
