@@ -55,18 +55,31 @@
             </v-icon>
           </v-btn>
         </template>
-        <v-btn fab dark x-small color="light-blue darken-2">
-          <v-icon>mdi-format-text</v-icon>
-        </v-btn>
-        <v-btn fab dark x-small color="deep-purple darken-2">
-          <v-icon>mdi-form-textbox-password</v-icon>
-        </v-btn>
-        <v-btn fab dark x-small color="green darken-3">
-          <v-icon>mdi-form-select</v-icon>
-        </v-btn>
-        <v-btn fab dark x-small color="blue-grey darken-2">
-          <v-icon>mdi-book-open-page-variant</v-icon>
-        </v-btn>
+
+        <div class="fse-create-element">
+          <v-btn fab x-small>
+            <v-icon>mdi-format-text</v-icon>
+          </v-btn>
+          <span class="fse-create-element-caption">Label</span>
+        </div>
+        <div class="fse-create-element">
+          <v-btn fab x-small>
+            <v-icon>mdi-form-textbox-password</v-icon>
+          </v-btn>
+          <span class="fse-create-element-caption">Control</span>
+        </div>
+        <div class="fse-create-element">
+          <v-btn fab x-small>
+            <v-icon>mdi-form-select</v-icon>
+          </v-btn>
+          <span class="fse-create-element-caption">Layout</span>
+        </div>
+        <div class="fse-create-element">
+          <v-btn fab x-small>
+            <v-icon>mdi-book-open-page-variant</v-icon>
+          </v-btn>
+          <span class="fse-create-element-caption">Page</span>
+        </div>
       </v-speed-dial>
     </div>
   </div>
@@ -147,5 +160,23 @@ export default Vue.extend({
 // TODO: Type: "enum" does not exist in JsonSchema Standard
 .veo-editor-body ::v-deep .v-card.fse-os-null {
   border: 1px solid $color-null !important;
+}
+
+.fse-create-element {
+  align-items: center;
+  display: flex;
+  position: relative;
+
+  .fse-create-element-caption {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.87);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    position: absolute;
+    right: 52px; /* 40px is the width of the button next to it, 3*4px the offset. */
+    white-space: nowrap;
+  }
 }
 </style>
