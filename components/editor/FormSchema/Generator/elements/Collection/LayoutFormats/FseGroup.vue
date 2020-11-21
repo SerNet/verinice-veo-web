@@ -6,7 +6,7 @@
       </v-col>
       <v-spacer></v-spacer>
       <v-col class="text-right">
-        <v-btn icon>
+        <v-btn icon @click="open">
           <v-icon dense small class="pa-2">mdi-pencil</v-icon>
         </v-btn>
       </v-col>
@@ -26,6 +26,25 @@
         </Draggable>
       </v-col>
     </v-row>
+
+    <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
+      <template #default>
+        <v-autocomplete
+          label="Direction"
+          :items="dialog.data.directionList"
+          v-model="dialog.data.direction"
+        ></v-autocomplete>
+      </template>
+      <template #dialog-options>
+        <v-spacer />
+        <v-btn text color="primary" @click="dialog.open = false">
+          {{ $t('global.button.close') }}
+        </v-btn>
+        <v-btn text color="primary" @click="save">
+          {{ $t('global.button.save') }}
+        </v-btn>
+      </template>
+    </VeoDialog>
   </v-card>
 </template>
 
@@ -39,6 +58,7 @@ import {
   LayoutProps
 } from '~/components/forms/Collection/utils/helpers'
 import Draggable from 'vuedraggable'
+import vjp from 'vue-json-pointer'
 
 export default Vue.extend({
   name: 'FseGroup',
@@ -50,6 +70,17 @@ export default Vue.extend({
     formSchema: Object,
     disabled: Boolean,
     visible: Boolean
+  },
+  data() {
+    return {
+      dialog: {
+        open: false,
+        data: {
+          directionList: ['horizontal', 'vertical'],
+          direction: 'vertical'
+        }
+      }
+    }
   },
   computed: {
     directionClass(): string {
@@ -72,6 +103,19 @@ export default Vue.extend({
         this.highlightClass,
         this.options && this.options.class ? this.options.class : ''
       ]
+    }
+  },
+  methods: {
+    open() {
+      this.dialog.open = true
+      this.dialog.data.direction = vjp.get(
+        this.formSchema,
+        '/options/direction'
+      )
+    },
+    save() {
+      vjp.set(this.formSchema, '/options/direction', this.dialog.data.direction)
+      this.dialog.open = false
     }
   }
 })
