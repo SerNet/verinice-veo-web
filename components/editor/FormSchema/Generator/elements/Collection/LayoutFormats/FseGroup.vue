@@ -30,22 +30,22 @@
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
       <template #default>
         <v-autocomplete
-          v-model="dialog.data.direction"
+          v-model="dialog.data.direction.value"
           :items="dialog.data.directionList"
           label="Direction"
         ></v-autocomplete>
         <v-checkbox
-          v-model="dialog.data.highlight"
+          v-model="dialog.data.highlight.value"
           label="Highlight"
         ></v-checkbox>
         <v-combobox
-          v-model="dialog.data.class"
+          v-model="dialog.data.class.value"
           label="Class"
           multiple
           chips
         ></v-combobox>
         <v-combobox
-          v-model="dialog.data.style"
+          v-model="dialog.data.style.value"
           label="Style"
           multiple
           chips
@@ -94,10 +94,10 @@ export default Vue.extend({
         open: false,
         data: {
           directionList: ['horizontal', 'vertical'],
-          direction: 'vertical',
-          highlight: false,
-          class: [] as string[],
-          style: [] as string[]
+          direction: { default: 'vertical', value: undefined },
+          highlight: { default: true, value: undefined },
+          class: { default: undefined, value: [] as string[] },
+          style: { default: undefined, value: [] as string[] }
         }
       }
     }
@@ -129,27 +129,43 @@ export default Vue.extend({
     open() {
       this.dialog.open = true
 
-      this.dialog.data.direction = this.getValue('#/options/direction')
-      this.dialog.data.direction = this.getValue('#/options/highlight')
-      this.dialog.data.class = this.stringToArray(
-        this.getValue('#/options/class'),
+      this.dialog.data.direction.value = this.getValue(
+        '#/options/direction',
+        this.dialog.data.direction.default
+      )
+      this.dialog.data.highlight.value = this.getValue(
+        '#/options/highlight',
+        this.dialog.data.highlight.default
+      )
+      this.dialog.data.class.value = this.stringToArray(
+        this.getValue('#/options/class', this.dialog.data.class.default),
         ' '
       )
-      this.dialog.data.style = this.stringToArray(
-        this.getValue('#/options/style'),
+      this.dialog.data.style.value = this.stringToArray(
+        this.getValue('#/options/style', this.dialog.data.style.default),
         ';'
       )
     },
     save() {
-      this.setValue('#/options/direction', this.dialog.data.direction)
-      this.setValue('#/options/highlight', this.dialog.data.highlight)
+      this.setValue(
+        '#/options/direction',
+        this.dialog.data.direction.value,
+        this.dialog.data.direction.default
+      )
+      this.setValue(
+        '#/options/highlight',
+        this.dialog.data.highlight.value,
+        this.dialog.data.highlight.default
+      )
       this.setValue(
         '#/options/class',
-        this.arrayToString(this.dialog.data.class, ' ')
+        this.arrayToString(this.dialog.data.class.value, ' '),
+        this.dialog.data.class.default
       )
       this.setValue(
         '#/options/style',
-        this.arrayToString(this.dialog.data.style, ';')
+        this.arrayToString(this.dialog.data.style.value, ';'),
+        this.dialog.data.style.default
       )
 
       this.dialog.open = false
@@ -162,15 +178,21 @@ export default Vue.extend({
         return []
       }
     },
-    arrayToString(array: string[], separator: string): string {
-      return array.join(separator)
+    arrayToString(array: string[], separator: string): string | undefined {
+      const string = array.join(separator)
+      return !!string ? string : undefined
     },
-    getValue(pointer: string): any {
-      return JsonPointer.get(this.formSchema, pointer)
+    getValue(pointer: string, defaultValue: any): any {
+      const elValue = JsonPointer.get(this.formSchema, pointer)
+      // Default values are not set mostly in FormSchema, therefore in this case return defaultValue, otherwise the real value
+      return typeof elValue === 'undefined' || elValue === defaultValue
+        ? defaultValue
+        : elValue
     },
-    setValue(pointer: string, value: any): void {
+    setValue(pointer: string, value: any, defaultValue: any): void {
       const vjpPointer = pointer.replace('#/', '/')
-      if (!!value || value === 0 || value === false) {
+      // Only values should be set, which are not default in FormSchema (e.g. highlight: false)
+      if (value !== defaultValue) {
         vjp.set(this.formSchema, vjpPointer, value)
       } else {
         vjp.remove(this.formSchema, vjpPointer)
