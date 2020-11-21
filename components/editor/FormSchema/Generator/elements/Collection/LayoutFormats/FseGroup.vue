@@ -135,6 +135,9 @@ export default Vue.extend({
     }
   },
   methods: {
+    onDelete() {
+      this.$emit('delete', this.formSchemaPointer)
+    },
     open() {
       this.dialog.open = true
 
@@ -178,9 +181,6 @@ export default Vue.extend({
       )
 
       this.dialog.open = false
-    },
-    onDelete() {
-      this.$emit('delete', this.formSchemaPointer)
     },
     stringToArray(string: string | undefined, separator: string): string[] {
       if (string) {
