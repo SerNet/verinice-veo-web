@@ -9,6 +9,9 @@
         <v-btn icon @click="open">
           <v-icon dense small class="pa-2">mdi-pencil</v-icon>
         </v-btn>
+        <v-btn icon @click="onDelete">
+          <v-icon dense small class="pa-2">mdi-delete</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
     <v-row no-gutters>
@@ -85,6 +88,7 @@ export default Vue.extend({
   props: {
     options: Object,
     formSchema: Object,
+    formSchemaPointer: String,
     disabled: Boolean,
     visible: Boolean
   },
@@ -169,6 +173,9 @@ export default Vue.extend({
       )
 
       this.dialog.open = false
+    },
+    onDelete() {
+      this.$emit('delete', this.formSchemaPointer)
     },
     stringToArray(string: string | undefined, separator: string): string[] {
       if (string) {

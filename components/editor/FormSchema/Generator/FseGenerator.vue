@@ -78,7 +78,7 @@ export default Vue.extend({
       // TODO: Better translation from #/properties/name to #/name for values
       return String(path || '').replace(/\/properties\//g, '/')
     },
-    setValue(scope: string, v: any) {
+    setValue(scope: string, v: any): any {
       if (scope) {
         // TODO: Here was changed JsonPointer with Vue.set() because of reactivity
         // Investigate how to work with it JsonPointer, because of JsonPaths
@@ -93,11 +93,17 @@ export default Vue.extend({
     }
   },
   render(h): VNode {
-    const createComponent = (element: UISchemaElement): VNode => {
+    const createComponent = (
+      element: UISchemaElement,
+      formSchemaPointer: string
+    ): VNode => {
+      // Create children of layout "elements"
       const createChildren = () => {
         return (
           element.elements &&
-          element.elements.map(elem => createComponent(elem))
+          element.elements.map((elem, index) =>
+            createComponent(elem, `${formSchemaPointer}/elements/${index}`)
+          )
         )
       }
 
@@ -105,7 +111,25 @@ export default Vue.extend({
         case 'Layout':
           return h(
             FseLayout,
-            { props: { options: element.options, formSchema: element } },
+            {
+              props: {
+                options: element.options,
+                formSchema: element,
+                formSchemaPointer
+              },
+              on: {
+                delete: (v: any) => {
+                  let vjpPointer = formSchemaPointer.replace('#', '')
+
+                  // Not allowed to make changes on the root object
+                  if (formSchemaPointer !== '#') {
+                    vjp.remove(this.value, vjpPointer)
+                  } else {
+                    this.$emit('delete', undefined)
+                  }
+                }
+              }
+            },
             createChildren()
           )
         case 'Control': {
@@ -167,17 +191,12 @@ export default Vue.extend({
     }
 
     if (!this.value) {
-      this.$emit('input', {
-        type: 'Layout',
-        options: {
-          format: 'group',
-          direction: 'vertical',
-          highlight: false
-        }
-      })
+      // If value (FormSchema) is not defined, "<!-- -->" will rendered
+      // TODO: null causes problems with VNode type without "as any". Look for other solutions if possible
+      return null as any
     }
 
-    return createComponent(this.value)
+    return createComponent(this.value, '#')
   }
 })
 </script>

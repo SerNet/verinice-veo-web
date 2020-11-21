@@ -33,7 +33,11 @@
       </v-expansion-panels>
     </div>
     <div class="veo-editor-body" style="height: 5000px;">
-      <FseGenerator :schema="objectSchema" :value="value.content" />
+      <FseGenerator
+        :schema="objectSchema"
+        :value="value.content"
+        @delete="onDelete"
+      />
       <v-speed-dial
         v-model="fab"
         bottom
@@ -76,6 +80,7 @@ import Vue from 'vue'
 import Draggable from 'vuedraggable'
 // import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
 import FseGenerator from './Generator/FseGenerator.vue'
+import vjp from 'vue-json-pointer'
 
 export default Vue.extend({
   name: 'FormSchemaEditor',
@@ -96,6 +101,11 @@ export default Vue.extend({
         { name: 'Layout', icon: 'mdi-form-select' },
         { name: 'Page', icon: 'mdi-book-open-page-variant' }
       ]
+    }
+  },
+  methods: {
+    onDelete(event: any) {
+      vjp.remove(this.value, '/content')
     }
   }
 })
