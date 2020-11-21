@@ -34,6 +34,10 @@
           :items="dialog.data.directionList"
           label="Direction"
         ></v-autocomplete>
+        <v-checkbox
+          v-model="dialog.data.highlight"
+          label="Highlight"
+        ></v-checkbox>
         <v-combobox
           v-model="dialog.data.class"
           label="Class"
@@ -91,6 +95,7 @@ export default Vue.extend({
         data: {
           directionList: ['horizontal', 'vertical'],
           direction: 'vertical',
+          highlight: false,
           class: [] as string[],
           style: [] as string[]
         }
@@ -125,6 +130,7 @@ export default Vue.extend({
       this.dialog.open = true
 
       this.dialog.data.direction = this.getValue('#/options/direction')
+      this.dialog.data.direction = this.getValue('#/options/highlight')
       this.dialog.data.class = this.stringToArray(
         this.getValue('#/options/class'),
         ' '
@@ -136,7 +142,7 @@ export default Vue.extend({
     },
     save() {
       this.setValue('#/options/direction', this.dialog.data.direction)
-      console.log(this.dialog.data.class)
+      this.setValue('#/options/highlight', this.dialog.data.highlight)
       this.setValue(
         '#/options/class',
         this.arrayToString(this.dialog.data.class, ' ')
