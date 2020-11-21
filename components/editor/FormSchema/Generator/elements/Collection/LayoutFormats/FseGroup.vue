@@ -1,8 +1,13 @@
 <template>
   <v-card outlined color="grey lighten-4" class="vf-layout vf-group  ma-2">
     <v-row no-gutters>
-      <v-col>
+      <v-col cols="auto">
         <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
+      </v-col>
+      <v-col cols="auto">
+        <div class="text-caption text-truncate pa-1">
+          Layout (Group)
+        </div>
       </v-col>
       <v-spacer></v-spacer>
       <v-col class="text-right">
