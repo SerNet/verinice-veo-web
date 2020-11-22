@@ -7,13 +7,17 @@
             Unused Aspects
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            ___
-            <br />
-            ___
-            <br />
-            ___
-            <br />
-            ___
+            <Draggable
+              class="dragArea"
+              tag="div"
+              style="overflow: auto; min-width:300; min-height:100px"
+              :list="unusedProperties"
+              :group="{ name: 'g1', put: false }"
+            >
+              <div v-for="(el, i) in unusedProperties" :key="i">
+                {{ el.scope }}
+              </div>
+            </Draggable>
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
@@ -95,7 +99,16 @@ export default Vue.extend({
   },
   data() {
     return {
-      fab: false
+      fab: false,
+      unusedProperties: [
+        {
+          type: 'Control',
+          scope: '#/properties/abbreviation',
+          options: {
+            label: 'abbreviation'
+          }
+        }
+      ]
     }
   },
   computed: {
