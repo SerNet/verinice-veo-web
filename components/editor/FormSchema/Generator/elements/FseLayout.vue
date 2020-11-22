@@ -3,6 +3,7 @@
     v-bind="$props"
     @input="$emit('input', $event)"
     @change="$emit('input', $event)"
+    @delete="$emit('delete', $event)"
   >
     <slot />
   </FseLayoutFormat>
@@ -18,6 +19,8 @@ export default Vue.extend({
   },
   props: {
     options: { type: Object, default: undefined },
+    formSchema: { type: Object, default: undefined },
+    formSchemaPointer: String,
     disabled: Boolean,
     visible: Boolean
   }

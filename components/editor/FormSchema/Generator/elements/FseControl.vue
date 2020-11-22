@@ -4,6 +4,7 @@
       v-bind="$props"
       @input="$emit('input', $event)"
       @change="$emit('input', $event)"
+      @delete="$emit('delete', $event)"
     />
   </div>
 </template>
@@ -38,6 +39,11 @@ export default Vue.extend({
       type: Object,
       default: () => undefined
     },
+    value: {
+      type: Object,
+      default: () => undefined
+    },
+    formSchemaPointer: String,
     disabled: Boolean,
     visible: Boolean
   }

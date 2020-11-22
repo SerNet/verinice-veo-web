@@ -47,11 +47,13 @@ export default Vue.extend({
     lang: Object as Prop<BaseObject>,
     options: Object,
     elements: Array as Prop<UISchemaElement[]>,
-    value: {},
-    validation: Object,
+    value: {
+      type: Object,
+      default: () => undefined
+    },
+    formSchemaPointer: String,
     disabled: Boolean,
-    visible: Boolean,
-    api: Object as Prop<IApi>
+    visible: Boolean
   },
   render(h, context) {
     const props = context.props
@@ -81,6 +83,9 @@ export default Vue.extend({
           },
           change: (event: any): void => {
             ;(context.listeners.change as ContextListener)(event)
+          },
+          delete: (event: any): void => {
+            ;(context.listeners.delete as ContextListener)(event)
           }
         }
       },

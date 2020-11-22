@@ -15,6 +15,8 @@ export default Vue.extend({
   functional: true,
   props: {
     options: Object,
+    formSchema: Object,
+    formSchemaPointer: String,
     disabled: Boolean,
     visible: Boolean
   },
@@ -46,6 +48,9 @@ export default Vue.extend({
           },
           change: (event: any): void => {
             ;(context.listeners.change as ContextListener)(event)
+          },
+          delete: (event: any): void => {
+            ;(context.listeners.delete as ContextListener)(event)
           }
         }
       },

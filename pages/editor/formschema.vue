@@ -41,7 +41,7 @@
         <v-tabs-items v-model="tab">
           <v-tab-item value="tab-1">
             <v-card class="pa-3 ma-1" outlined>
-              <CodeEditor v-model="code" />
+              <CodeEditor v-model="code" @schema-updated="updateSchema" />
             </v-card>
           </v-tab-item>
           <v-tab-item value="tab-2">
@@ -85,24 +85,58 @@ export default Vue.extend({
           type: 'Layout',
           options: {
             format: 'group',
-            direction: 'horizontal'
+            direction: 'vertical'
           },
           elements: [
             {
-              type: 'Control',
-              scope: '#/properties/name',
+              type: 'Layout',
               options: {
-                label: 'Name'
-              }
+                format: 'group',
+                direction: 'horizontal'
+              },
+              elements: [
+                {
+                  type: 'Control',
+                  scope: '#/properties/name',
+                  options: {
+                    label: 'Name'
+                  }
+                },
+                {
+                  type: 'Control',
+                  scope:
+                    '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_comment',
+                  options: {
+                    format: 'multiline',
+                    label: 'process_SensitiveData_comment'
+                  }
+                }
+              ]
             },
             {
-              type: 'Control',
-              scope:
-                '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_comment',
+              type: 'Layout',
               options: {
-                format: 'multiline',
-                label: 'process_SensitiveData_comment'
-              }
+                format: 'group',
+                direction: 'horizontal'
+              },
+              elements: [
+                {
+                  type: 'Control',
+                  scope: '#/properties/name',
+                  options: {
+                    label: 'Name'
+                  }
+                },
+                {
+                  type: 'Control',
+                  scope:
+                    '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_comment',
+                  options: {
+                    format: 'multiline',
+                    label: 'process_SensitiveData_comment'
+                  }
+                }
+              ]
             }
           ]
         }
@@ -126,6 +160,11 @@ export default Vue.extend({
           this.formSchema = JSON.parse(v)
         } catch (e) {}
       }
+    }
+  },
+  methods: {
+    updateSchema(formSchema: any) {
+      this.formSchema = JSON.parse(JSON.stringify(formSchema))
     }
   }
 })

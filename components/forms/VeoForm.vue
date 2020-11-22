@@ -168,6 +168,9 @@ export default Vue.extend({
     },
     ui: {
       immediate: true,
+      // TODO: deep property is important to check for changes in FormSchema to update the form (import for live updates in FormSchemaEditor).
+      // if it causes problems or performance issues, should be removed and another solution found
+      deep: true,
       handler() {
         if (this.ui) {
           this.localUI = this.translate<UISchema>(this.ui)

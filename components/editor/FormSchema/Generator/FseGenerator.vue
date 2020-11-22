@@ -36,13 +36,23 @@ export default Vue.extend({
     return {
       page: 1,
       localSchema: this.schema,
-      localUI: this.value
+      localUI: this.value,
+      flattenedSchema: [] as any[],
+      schemaProperties: {
+        standard: [
+          '#/properties/name',
+          '#/properties/abbreviation',
+          '#/properties/description'
+        ],
+        regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/i,
+        regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/i
+      }
     }
   },
   computed: {
     pages(): UISchemaElement[] | undefined {
-      if (this.localUI && this.localUI.elements) {
-        return this.localUI.elements
+      if (this.value && this.value.elements) {
+        return this.value.elements
           .filter(
             el =>
               el.type === 'Layout' && el.options && el.options.format === 'page'
@@ -61,18 +71,21 @@ export default Vue.extend({
   watch: {
     schema: {
       immediate: true,
+      deep: true,
       handler() {
         // IMPORTANT! This is needed to update localSchema when schema is updated
         // Else it cannot detect updated object of schema and does not update veo-form
         this.localSchema = JSON.parse(JSON.stringify(this.schema))
-      }
-    },
-    value: {
-      immediate: true,
-      handler() {
-        if (this.value) {
-          this.localUI = JSON.parse(JSON.stringify(this.value))
-        }
+        this.flattenedSchema = JsonPointer.listFragmentIds(this.schema)
+          .map(obj => obj.fragmentId)
+          .filter(el => {
+            return (
+              this.schemaProperties.standard.includes(el) ||
+              this.schemaProperties.regexAspectsAttributes.test(el) ||
+              this.schemaProperties.regexLinksAttributes.test(el)
+            )
+          })
+        console.log(this.flattenedSchema)
       }
     },
     lang: {
@@ -86,7 +99,7 @@ export default Vue.extend({
       // TODO: Better translation from #/properties/name to #/name for values
       return String(path || '').replace(/\/properties\//g, '/')
     },
-    setValue(scope: string, v: any) {
+    setValue(scope: string, v: any): any {
       if (scope) {
         // TODO: Here was changed JsonPointer with Vue.set() because of reactivity
         // Investigate how to work with it JsonPointer, because of JsonPaths
@@ -98,14 +111,29 @@ export default Vue.extend({
         vjp.set(this.value, this.propertyPath(scope).replace('#/', '/'), v)
         this.$emit('input', this.value)
       }
+    },
+    onDelete(event: any, formSchemaPointer: string): void {
+      let vjpPointer = formSchemaPointer.replace('#', '')
+      // Not allowed to make changes on the root object
+      if (formSchemaPointer !== '#') {
+        vjp.remove(this.value, vjpPointer)
+      } else {
+        this.$emit('delete', undefined)
+      }
     }
   },
   render(h): VNode {
-    const createComponent = (element: UISchemaElement): VNode => {
+    const createComponent = (
+      element: UISchemaElement,
+      formSchemaPointer: string
+    ): VNode => {
+      // Create children of layout "elements"
       const createChildren = () => {
         return (
           element.elements &&
-          element.elements.map(elem => createComponent(elem))
+          element.elements.map((elem, index) =>
+            createComponent(elem, `${formSchemaPointer}/elements/${index}`)
+          )
         )
       }
 
@@ -113,13 +141,24 @@ export default Vue.extend({
         case 'Layout':
           return h(
             FseLayout,
-            { props: { options: element.options } },
+            {
+              props: {
+                options: element.options,
+                formSchema: element,
+                formSchemaPointer
+              },
+              on: {
+                delete: (event: any) => this.onDelete(event, formSchemaPointer)
+              }
+            },
             createChildren()
           )
         case 'Control': {
           let partOfProps: { [key: string]: any } = {
             name: undefined,
             schema: {},
+            formSchema: element,
+            formSchemaPointer,
             lang: {}
           }
 
@@ -155,10 +194,7 @@ export default Vue.extend({
               ...partOfProps
             },
             on: {
-              input: (v: any) =>
-                element.scope && this.setValue(element.scope, v),
-              change: (v: any) =>
-                element.scope && this.setValue(element.scope, v)
+              delete: (event: any) => this.onDelete(event, formSchemaPointer)
             }
           })
         }
@@ -166,24 +202,20 @@ export default Vue.extend({
           return h(FseLabel, {
             props: {
               options: element.options,
+              formSchema: element,
               text: element.text
             }
           })
       }
     }
 
-    if (!this.localUI) {
-      this.localUI = {
-        type: 'Layout',
-        options: {
-          format: 'group',
-          direction: 'vertical',
-          highlight: false
-        }
-      }
+    if (!this.value) {
+      // If value (FormSchema) is not defined, "<!-- -->" will rendered
+      // TODO: null causes problems with VNode type without "as any". Look for other solutions if possible
+      return null as any
     }
 
-    return createComponent(this.localUI)
+    return createComponent(this.value, '#')
   }
 })
 </script>
@@ -211,7 +243,7 @@ export default Vue.extend({
   min-height: auto;
 }
 
-.veo-editor-body ::v-deep .v-card {
-  border: 1px solid $grey-darken-2 !important;
-}
+// .veo-editor-body ::v-deep .v-card {
+//   border: 1px solid $grey-darken-2 !important;
+// }
 </style>

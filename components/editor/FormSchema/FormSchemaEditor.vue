@@ -7,13 +7,17 @@
             Unused Aspects
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            ___
-            <br />
-            ___
-            <br />
-            ___
-            <br />
-            ___
+            <Draggable
+              class="dragArea"
+              tag="div"
+              style="overflow: auto; min-width:300; min-height:100px"
+              :list="unusedProperties"
+              :group="{ name: 'g1', put: false }"
+            >
+              <div v-for="(el, i) in unusedProperties" :key="i">
+                {{ el.scope }}
+              </div>
+            </Draggable>
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
@@ -33,134 +37,44 @@
       </v-expansion-panels>
     </div>
     <div class="veo-editor-body" style="height: 5000px;">
-      <v-card
-        v-for="(el, i) in list"
-        :key="i"
-        width="300"
-        outlined
-        color="grey lighten-4"
-        class="ma-2"
-      >
-        <v-row no-gutters>
-          <v-col cols="auto">
-            <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
-          </v-col>
-          <v-col cols="auto">
-            <div style="max-width: 220px;">
-              <div class="text-caption text-truncate">{{ el }}</div>
-              <div class="text-caption text-truncate">
-                Control (InputText)
-              </div>
-            </div>
-          </v-col>
-          <v-spacer></v-spacer>
-          <v-col cols="auto" class="text-right">
-            <v-btn icon>
-              <v-icon dense small class="pa-2">mdi-pencil</v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-card>
-
-      <v-card
-        min-width="300"
-        min-height="100"
-        outlined
-        color="grey lighten-4"
-        class="ma-2"
-      >
-        <v-row no-gutters>
-          <v-col>
-            <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
-          </v-col>
-          <v-spacer></v-spacer>
-          <v-col class="text-right">
-            <v-btn icon>
-              <v-icon dense small class="pa-2">mdi-pencil</v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <v-col>
-            <div class="d-flex flex-column">
-              <v-card
-                v-for="(el, i) in list"
-                :key="i"
-                width="300"
-                outlined
-                color="grey lighten-4"
-                class="ma-2"
-              >
-                <v-row no-gutters>
-                  <v-col>
-                    <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
-                    {{ el }}
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col class="text-right">
-                    <v-btn icon>
-                      <v-icon dense small class="pa-2">mdi-pencil</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </div>
-          </v-col>
-        </v-row>
-      </v-card>
-
-      <v-card
-        min-width="300"
-        min-height="100"
-        outlined
-        color="grey lighten-4"
-        class="ma-2"
-      >
-        <v-row no-gutters>
-          <v-col>
-            <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
-          </v-col>
-          <v-spacer></v-spacer>
-          <v-col class="text-right">
-            <v-btn icon>
-              <v-icon dense small class="pa-2">mdi-pencil</v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <v-col>
-            <div class="d-flex flex-row">
-              <v-card
-                v-for="(el, i) in list"
-                :key="i"
-                width="300"
-                outlined
-                color="grey lighten-4"
-                class="ma-2"
-              >
-                <v-row no-gutters>
-                  <v-col>
-                    <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
-                    {{ el }}
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col class="text-right">
-                    <v-btn icon>
-                      <v-icon dense small class="pa-2">mdi-pencil</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </div>
-          </v-col>
-        </v-row>
-      </v-card>
-
       <FseGenerator
         :schema="objectSchema"
         :value="value.content"
-        @input="$emit('input', $event)"
+        @delete="onDelete"
       />
+      <v-speed-dial
+        v-model="fab"
+        bottom
+        absolute
+        right
+        direction="top"
+        open-on-hover
+        transition="scale-transition"
+        fixed
+        style="right: 50%;"
+      >
+        <template #activator>
+          <v-btn v-model="fab" color="primary" dark small fab>
+            <v-icon v-if="fab">
+              mdi-close
+            </v-icon>
+            <v-icon v-else>
+              mdi-plus
+            </v-icon>
+          </v-btn>
+        </template>
+
+        <div
+          v-for="element in createElementActions"
+          :key="element.name"
+          class="fse-create-element"
+        >
+          <v-btn fab x-small @click="element.action">
+            <v-icon>{{ element.icon }}</v-icon>
+          </v-btn>
+          <span class="fse-create-element-caption">{{ element.name }}</span>
+        </div>
+      </v-speed-dial>
     </div>
   </div>
 </template>
@@ -170,6 +84,8 @@ import Vue from 'vue'
 import Draggable from 'vuedraggable'
 // import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
 import FseGenerator from './Generator/FseGenerator.vue'
+import vjp from 'vue-json-pointer'
+import { JsonPointer } from 'json-ptr'
 
 export default Vue.extend({
   name: 'FormSchemaEditor',
@@ -183,8 +99,72 @@ export default Vue.extend({
   },
   data() {
     return {
-      list: ['Title 1', 'Title 2', 'Title 3'],
-      list2: []
+      fab: false,
+      unusedProperties: [
+        {
+          type: 'Control',
+          scope: '#/properties/abbreviation',
+          options: {
+            label: 'abbreviation'
+          }
+        }
+      ]
+    }
+  },
+  computed: {
+    createElementActions(): any {
+      return [
+        { name: 'Label', icon: 'mdi-format-text', action: this.onCreateLabel },
+        {
+          name: 'Control',
+          icon: 'mdi-form-textbox-password',
+          action: this.onCreateControl
+        },
+        {
+          name: 'Layout',
+          icon: 'mdi-form-select',
+          action: this.onCreateLayout
+        },
+        {
+          name: 'Page',
+          icon: 'mdi-book-open-page-variant',
+          action: this.onCreatePage
+        }
+      ]
+    }
+  },
+  methods: {
+    onDelete(event: any): void {
+      vjp.remove(this.value, '/content')
+    },
+    onCreateLabel() {
+      console.log('Create Label')
+    },
+    onCreateControl() {
+      console.log('Create Control')
+    },
+    onCreateLayout() {
+      const topLevelElements: any = JsonPointer.get(
+        this.value,
+        '#/content/elements'
+      )
+
+      const initialLayout = {
+        type: 'Layout',
+        options: {
+          format: 'group'
+        },
+        elements: []
+      }
+
+      if (Array.isArray(topLevelElements)) {
+        topLevelElements.push(initialLayout)
+      } else {
+        vjp.set(this.value, '/content', initialLayout)
+      }
+    },
+    onCreatePage() {
+      console.log('Create Page')
     }
   }
 })
@@ -214,6 +194,50 @@ export default Vue.extend({
 }
 
 .veo-editor-body ::v-deep .v-card {
-  border: 1px solid $grey-darken-2 !important;
+  border: 1px solid black !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-string {
+  border: 1px solid $color-string !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-boolean {
+  border: 1px solid $color-boolean !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-number {
+  border: 1px solid $color-number !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-integer {
+  border: 1px solid $color-integer !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-object {
+  border: 1px solid $color-object !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-array {
+  border: 1px solid $color-array !important;
+}
+// TODO: Type: "enum" does not exist in JsonSchema Standard
+.veo-editor-body ::v-deep .v-card.fse-os-enum {
+  border: 1px solid $color-enum !important;
+}
+// TODO: Type: "enum" does not exist in JsonSchema Standard
+.veo-editor-body ::v-deep .v-card.fse-os-null {
+  border: 1px solid $color-null !important;
+}
+
+.fse-create-element {
+  align-items: center;
+  display: flex;
+  position: relative;
+
+  .fse-create-element-caption {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.87);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    position: absolute;
+    right: 52px; /* 40px is the width of the button next to it, 3*4px the offset. */
+    white-space: nowrap;
+  }
 }
 </style>
