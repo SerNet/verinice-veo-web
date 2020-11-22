@@ -58,7 +58,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <VEOOSECustomPropertiesDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :type-map="typeMap" @create-node="doAddItem" @save-node="doEditItem" />
+    <VEOOSECustomPropertiesDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :type-map="newItemTypes" @create-node="doAddItem" @save-node="doEditItem" />
   </div>
 </template>
 
@@ -170,6 +170,11 @@ export default defineComponent<IProps>({
       objectSchemaDialog.value.type = type
     }
 
+    // Removing types from the new item type selection as they are purely used as a fallback.
+    const newItemTypes = ref(typeMap) as any
+    delete newItemTypes.value.default
+    delete newItemTypes.value.null
+
     function doAddItem(form: { name: string, targetType?: string, targetDescription?: string }) {
       try {
         if (objectSchemaDialog.value.type === 'aspect') {
@@ -206,7 +211,7 @@ export default defineComponent<IProps>({
       computeProperties()
     }
 
-    return { hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, basicProps, customAspects, customLinks }
+    return { hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, newItemTypes, basicProps, customAspects, customLinks }
   }
 })
 </script>
