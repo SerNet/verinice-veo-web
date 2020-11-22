@@ -21,15 +21,15 @@
           <v-form v-model="createForm.valid" @submit.prevent="createSchema()">
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;">{{ $t('editor.objectschema.create.type.text') }}:</span>
+                <span style="font-size: 1.2rem;">{{ $t('editor.objectschema.create.type.text') }}*:</span>
               </v-col>
               <v-col :cols="12" :md="5">
-                <v-select v-model="createForm.type" :label="$t('editor.objectschema.create.type')" :items="objectTypes" :rules="createForm.rules.type" required />
+                <v-text-field v-model="createForm.type" :label="$t('editor.objectschema.create.type')" :rules="createForm.rules.type" required />
               </v-col>
             </v-row>
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;">{{ $t('editor.objectschema.create.description.text') }}:</span>
+                <span style="font-size: 1.2rem;">{{ $t('editor.objectschema.create.description.text') }}*:</span>
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-text-field v-model="createForm.description" :label="$t('editor.objectschema.create.description')" :rules="createForm.rules.description" required />
@@ -61,7 +61,6 @@ import Vue from 'vue'
 import { trim } from 'lodash'
 
 import { generateSchema } from '~/lib/ObjectSchemaHelper'
-import { ObjectSchemaNames } from '~/types/FormSchema'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import CodeEditor from '~/components/CodeEditor.vue'
 
@@ -93,16 +92,6 @@ export default Vue.extend({
       code: '\n\n\n\n\n' as string
     }
   },
-  computed: {
-    objectTypes(): {text: string, value: string}[] { // Generate an array containing all object types as defined in the ObjectSchemaNames enum.
-      return Object.keys(ObjectSchemaNames).map((value: string) => {
-        return {
-          text: this.$t(`unit.data.type.${value}`) as string,
-          value
-        }
-      })
-    }
-  },
   watch: {
     dialog(newValue: boolean) {
       if (newValue) {
@@ -130,7 +119,7 @@ export default Vue.extend({
   methods: {
     createSchema(_schema?: any) {
       if (this.state === 'create') {
-        const schema = generateSchema(this.createForm.type, this.createForm.description)
+        const schema = generateSchema(this.createForm.type.toLowerCase(), this.createForm.description)
         this.$emit('schema', schema)
       } else {
         this.$emit('schema', _schema)
