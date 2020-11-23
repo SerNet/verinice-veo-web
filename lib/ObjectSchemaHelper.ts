@@ -23,6 +23,10 @@ export interface IVEOCustomLink {
   raw?: VEOCustomLinkRAW
   attributes: IVEOAttribute[]
   title: string
+  target: {
+    type: string,
+    description: string
+  }
 }
 
 export interface IVEOBasicProperty {
@@ -71,7 +75,11 @@ function mergeWithDefaultOptions(options?: IObjectSchemaHelperOptions): IHelperO
 }
 
 export function prefixedAspectName(schema: VEOObjectSchemaRAW, aspectName: string): string {
-  return `${schema.title}_${aspectName}`
+  return `${cleanName(schema.title)}_${cleanName(aspectName)}`
+}
+
+export function prefixedAttributeName(schema: VEOObjectSchemaRAW, aspectName: string): string {
+  return `${prefixedAspectName(schema, aspectName)}_`
 }
 
 /**
@@ -408,6 +416,22 @@ export function updateAspectInSchema(schema: VEOObjectSchemaRAW, aspect: IVEOCus
 }
 
 /**
+ * Deletes an aspect from the schema.
+ *
+ * @param schema The schema to delete the aspect from.
+ * @param aspect The id of the aspect to delete.
+ * @param options Optional object to override default options.
+ */
+export function deleteAspect(schema: VEOObjectSchemaRAW, aspect: string, options?: IObjectSchemaHelperOptions) {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
+
+  if (!schema.properties[OPTIONS.customProperties.customAspects].properties[aspect]) {
+    throw new Error(`ObjectSchemaHelper::deleteAspect: Aspect ${aspect} not found!`)
+  }
+  delete schema.properties[OPTIONS.customProperties.customAspects].properties[aspect]
+}
+
+/**
  * Adds an attribute to an existing custom aspect in a given schema.
  *
  * @param schema The schema to edit.
@@ -463,6 +487,28 @@ export function updateAspectAttributes(schema: VEOObjectSchemaRAW, aspect: IVEOC
 }
 
 /**
+ * Renames an aspect
+ *
+ * @param schema The schema to rename the aspect in.
+ * @param link The aspect to rename.
+ * @param newTitle The new title of the aspect.
+ * @param options Optional object to override default options.
+ *
+ * @throws Throws an error if the old aspect couldn't be found.
+ */
+export function renameAspect(schema: VEOObjectSchemaRAW, aspect: IVEOCustomAspect, newTitle: string, options?: IObjectSchemaHelperOptions):void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
+
+  if (!schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.title]) {
+    throw new Error(`ObjectSchemaHelper::renameAspect: Old aspect ${aspect.title} not found!`)
+  }
+
+  schema.properties[OPTIONS.customProperties.customAspects].properties[newTitle] = schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.title]
+  schema.properties[OPTIONS.customProperties.customAspects].properties[newTitle].properties.type.enum[0] = newTitle
+  delete schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.title]
+}
+
+/**
  * Returns a custom link from the schema.
  *
  * @param schema The schema to retrieve the custom link from.
@@ -479,7 +525,11 @@ export function getLink(schema: VEOObjectSchemaRAW, name: string, options?: IObj
     return {
       raw: schema.properties[OPTIONS.customProperties.links].properties[name],
       title: schema.properties[OPTIONS.customProperties.links].properties[name].items.properties.type.enum[0],
-      attributes: getLinkAttributes(undefined, schema.properties[OPTIONS.customProperties.links].properties[name])
+      attributes: getLinkAttributes(undefined, schema.properties[OPTIONS.customProperties.links].properties[name]),
+      target: {
+        type: schema.properties[OPTIONS.customProperties.links].properties[name].items.properties.target.properties.type.enum[0],
+        description: schema.properties[OPTIONS.customProperties.links].properties[name].items.properties.target.title
+      }
     }
   }
   throw new Error('ObjectSchemaHelper::getLink: Link not found!')
@@ -684,6 +734,22 @@ export function updateLinkInSchema(schema: VEOObjectSchemaRAW, link: IVEOCustomL
 }
 
 /**
+ * Deletes a link from the schema.
+ *
+ * @param schema The schema to delete the link from.
+ * @param link The id of the link to delete.
+ * @param options Optional object to override default options.
+ */
+export function deleteLink(schema: VEOObjectSchemaRAW, link: string, options?: IObjectSchemaHelperOptions) {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
+
+  if (!schema.properties[OPTIONS.customProperties.links].properties[link]) {
+    throw new Error(`ObjectSchemaHelper::deleteLink: Link ${link} not found!`)
+  }
+  delete schema.properties[OPTIONS.customProperties.links].properties[link]
+}
+
+/**
  * Adds an attribute to an existing custom link in a given schema.
  *
  * @param schema The schema to edit.
@@ -736,4 +802,33 @@ export function updateLinkAttributes(schema: VEOObjectSchemaRAW, link: IVEOCusto
   for (const attribute of attributes) {
     addAttributeToLink(schema, linkName, attribute)
   }
+}
+
+/**
+ * Renames a link
+ *
+ * @param schema The schema to rename the link in.
+ * @param link The link to rename.
+ * @param newTitle The new title of the link.
+ * @param options Optional object to override default options.
+ *
+ * @throws Throws an error if the old link couldn't be found.
+ */
+export function renameLink(schema: VEOObjectSchemaRAW, link: IVEOCustomLink, newTitle: string, options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
+
+  if (!schema.properties[OPTIONS.customProperties.links].properties[link.title]) {
+    throw new Error(`ObjectSchemaHelper::renameLink: Old link ${link.title} not found!`)
+  }
+
+  schema.properties[OPTIONS.customProperties.links].properties[newTitle] = schema.properties[OPTIONS.customProperties.links].properties[link.title]
+  schema.properties[OPTIONS.customProperties.links].properties[newTitle].items.properties.type.enum[0] = newTitle
+  delete schema.properties[OPTIONS.customProperties.links].properties[link.title]
+}
+
+export function updateLinkDetails(schema: VEOObjectSchemaRAW, link: IVEOCustomLink, target: { type: string, description: string }, options?: IObjectSchemaHelperOptions): void {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
+
+  schema.properties[OPTIONS.customProperties.links].properties[link.title].items.properties.target.title = target.description
+  schema.properties[OPTIONS.customProperties.links].properties[link.title].items.properties.target.properties.type.enum[0] = target.type
 }

@@ -63,7 +63,7 @@ export default Vue.extend({
   },
   methods: {
     updateSchema(schema: VEOObjectSchemaRAW) {
-      this.schema = undefined // We have to set it to undefined first, else the editor won't pick up the change.
+      this.schema = undefined // We have to set schema to undefined first, else changes wouldn't get picked up.
       this.schema = schema
     },
     setSchema(schema: VEOObjectSchemaRAW) {
