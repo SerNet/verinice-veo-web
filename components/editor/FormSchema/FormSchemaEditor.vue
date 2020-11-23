@@ -219,8 +219,15 @@ export interface IObjectSchemaProperties {
 }
 
 export interface IUsedAndUnusedObjectSchemaProperties {
-  unused: IObjectSchemaProperties
   used: IObjectSchemaProperties
+  unused: IObjectSchemaProperties
+}
+
+type UsedUnused = 'unused' | 'used'
+
+interface IFromTo {
+  from: UsedUnused
+  to: UsedUnused
 }
 
 export default Vue.extend({
@@ -236,6 +243,10 @@ export default Vue.extend({
   data() {
     return {
       fab: false,
+      move: [
+        { from: 'unused', to: 'used' },
+        { from: 'used', to: 'unused' }
+      ] as IFromTo[],
       objectSchemaProperties: {
         unused: {
           basics: [],
@@ -428,108 +439,63 @@ export default Vue.extend({
           used: propertiesFlattened.used.map(([key, scope]) => scope as string)
         }
 
-        const propertiesMoveToUsed = usedScopes
-          .filter(scope => !propertiesFlattenedScopes.used.includes(scope))
-          .filter((el: string, i, arr) => arr.indexOf(el) === i)
+        const propertiesMoveTo = {
+          used: usedScopes
+            .filter(scope => !propertiesFlattenedScopes.used.includes(scope))
+            .filter((el: string, i, arr) => arr.indexOf(el) === i),
+          unused: propertiesFlattenedScopes.used
+            .filter(scope => !usedScopes.includes(scope))
+            .filter((el: string, i, arr) => arr.indexOf(el) === i)
+        }
 
-        const propertiesMoveToUnused = propertiesFlattenedScopes.used
-          .filter(scope => !usedScopes.includes(scope))
-          .filter((el: string, i, arr) => arr.indexOf(el) === i)
-
-        // Move every object which should be moved from "unused" to "used"
-        propertiesMoveToUsed.forEach(scopeToMove => {
-          // Get the key and scope pair to be able to find the pointer(key) of the object in unused ObjectSchemaProperties
-          const keyScopePair = propertiesFlattened.unused.find(
-            ([key, scope]) => scope === scopeToMove
-          )
-
-          if (keyScopePair) {
-            const objectPointer = keyScopePair[0].replace('/scope', '')
-            const arrayPointer = objectPointer
-              .split('/')
-              .slice(0, -1)
-              .join('/')
-
-            const objectToMove = JsonPointer.get(
-              this.objectSchemaProperties.unused,
-              objectPointer
+        this.move.forEach(({ from, to }) => {
+          propertiesMoveTo[to].forEach(scopeToMove => {
+            // Get the key and scope pair in "from" to be able to find the the same pointer(key) of the object in "to" ObjectSchemaProperties
+            const keyScopePair = propertiesFlattened[from].find(
+              ([key, scope]) => scope === scopeToMove
             )
-            const indexInNewArray = (JsonPointer.get(
-              this.objectSchemaProperties.used,
-              arrayPointer
-            ) as any[]).length
 
-            const vjpPointerInNewArray = `${arrayPointer.replace(
-              '#',
-              ''
-            )}/${indexInNewArray}`
-            const vjpObjectPointer = objectPointer.replace('#', '')
+            if (keyScopePair) {
+              // Get the Object Pointer in ObjectSchemaProperties
+              const objectPointer = keyScopePair[0].replace('/scope', '')
+              // Get the Array Pointer which contains the object
+              const arrayPointer = objectPointer
+                .split('/')
+                .slice(0, -1)
+                .join('/')
 
-            // Set the Object in the "used" array
-            vjp.set(
-              this.objectSchemaProperties.used,
-              vjpPointerInNewArray,
-              objectToMove
-            )
-            // Remove the Object from the "unused" array
-            vjp.remove(this.objectSchemaProperties.unused, vjpObjectPointer)
-          } else {
-            console.warn('No KeyScopePair found')
-          }
+              // Get the value of "from" Object which should be moved in "to" ObjectSchemaProperties
+              const objectToMove = JsonPointer.get(
+                this.objectSchemaProperties[from],
+                objectPointer
+              )
+              // Get the last index (free) for the moving object in "to" ObjectSchemaProperties
+              const indexInNewArray = (JsonPointer.get(
+                this.objectSchemaProperties[to],
+                arrayPointer
+              ) as any[]).length
+
+              // Get the pointer for free index of the moving object in the "to" array
+              const vjpPointerInNewArray = `${arrayPointer.replace(
+                '#',
+                ''
+              )}/${indexInNewArray}`
+
+              const vjpObjectPointer = objectPointer.replace('#', '')
+
+              // Set the Object in the "to" array (move)
+              vjp.set(
+                this.objectSchemaProperties[to],
+                vjpPointerInNewArray,
+                objectToMove
+              )
+              // Remove the Object from the "from" array
+              vjp.remove(this.objectSchemaProperties[from], vjpObjectPointer)
+            }
+          })
         })
 
-        // Move every object which should be moved from "used" to "unused"
-        propertiesMoveToUnused.forEach(scopeToMove => {
-          // Get the key and scope pair to be able to find the pointer(key) of the object in unused ObjectSchemaProperties
-          const keyScopePair = propertiesFlattened.used.find(
-            ([key, scope]) => scope === scopeToMove
-          )
-
-          if (keyScopePair) {
-            // Get the Object Pointer in ObjectSchemaProperties
-            const objectPointer = keyScopePair[0].replace('/scope', '')
-            // Get the Array Pointer which contains the object
-            const arrayPointer = objectPointer
-              .split('/')
-              .slice(0, -1)
-              .join('/')
-
-            // Get the value of "used" Object which should be moved in "unused" ObjectSchemaProperties
-            const objectToMove = JsonPointer.get(
-              this.objectSchemaProperties.used,
-              objectPointer
-            )
-            // Get the last index (free) for the moving object in "unused" ObjectSchemaProperties
-            const indexInNewArray = (JsonPointer.get(
-              this.objectSchemaProperties.unused,
-              arrayPointer
-            ) as any[]).length
-
-            // Get the pointer for free index of the moving object in the "unused" array
-            const vjpPointerInNewArray = `${arrayPointer.replace(
-              '#',
-              ''
-            )}/${indexInNewArray}`
-
-            const vjpObjectPointer = objectPointer.replace('#', '')
-
-            // Set the Object in the "unused" array (move)
-            vjp.set(
-              this.objectSchemaProperties.unused,
-              vjpPointerInNewArray,
-              objectToMove
-            )
-            // Remove the Object from the "used" array
-            vjp.remove(this.objectSchemaProperties.used, vjpObjectPointer)
-          }
-        })
-
-        console.log(
-          'propertiesMoveToUsed: ',
-          propertiesMoveToUsed,
-          'propertiesMoveToUnused: ',
-          propertiesMoveToUnused
-        )
+        console.log('Properties Move to: ', propertiesMoveTo)
       }
     }
   },
