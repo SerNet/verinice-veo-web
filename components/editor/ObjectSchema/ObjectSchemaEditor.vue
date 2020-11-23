@@ -31,7 +31,7 @@
         <v-expansion-panel-content>
           <v-card v-for="(aspect, index) of customAspects" v-show="(!hideEmptyAspects || aspect.item.attributes.length > 0) && itemContainsAttributeTitle(aspect, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="aspect" @edit-item="showEditDialog(aspect.item, 'aspect')" />
+              <ObjectSchemaListHeader v-bind="aspect" @edit-item="showEditDialog(aspect.item, 'aspect')" @delete-item="showDeleteDialog(aspect.item, 'aspect')" />
               <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line />
             </v-list>
           </v-card>
@@ -51,7 +51,7 @@
         <v-expansion-panel-content>
           <v-card v-for="(link, index) of customLinks" v-show="itemContainsAttributeTitle(link, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @edit-item="showEditDialog(link.item, 'link')" />
+              <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @edit-item="showEditDialog(link.item, 'link')" @delete-item="showDeleteDialog(link.item, 'link')" />
               <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line />
             </v-list>
           </v-card>
@@ -59,6 +59,7 @@
       </v-expansion-panel>
     </v-expansion-panels>
     <VEOOSECustomPropertiesDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :schema="schema" :type-map="newItemTypes" @create-node="doAddItem" @save-node="doEditItem" />
+    <VEOOSEDeleteCustomPropertyDialog v-model="deleteDialog.value" v-bind="deleteDialog" @delete-item="doDeleteItem()" />
   </div>
 </template>
 
@@ -66,10 +67,11 @@
 import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
 import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
-import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute, renameAspect, renameLink, updateLinkDetails } from '~/lib/ObjectSchemaHelper'
+import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute, renameAspect, renameLink, updateLinkDetails, deleteAspect, deleteLink } from '~/lib/ObjectSchemaHelper'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 import VEOOSECustomPropertiesDialog from '~/components/dialogs/SchemaEditors/VEOOSECustomPropertiesDialog.vue'
+import VEOOSEDeleteCustomPropertyDialog from '~/components/dialogs/SchemaEditors/VEOOSEDeleteCustomPropertyDialog.vue'
 
 export interface ITypeInfo {
   name: string
@@ -88,7 +90,8 @@ interface EditorPropertyItem {
 
 export default defineComponent<IProps>({
   components: {
-    VEOOSECustomPropertiesDialog
+    VEOOSECustomPropertiesDialog,
+    VEOOSEDeleteCustomPropertyDialog
   },
   props: {
     value: { type: Object, required: true }
@@ -227,7 +230,28 @@ export default defineComponent<IProps>({
       computeProperties()
     }
 
-    return { schema, hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, newItemTypes, basicProps, customAspects, customLinks }
+    /**
+     * Deleting items
+     */
+    const deleteDialog = ref({ value: false, title: '', type: 'aspect' as 'link' | 'aspect' })
+    function showDeleteDialog(item: IVEOCustomAspect | IVEOCustomLink, type: 'aspect' | 'link') {
+      deleteDialog.value.type = type
+      deleteDialog.value.title = item.title
+      deleteDialog.value.value = true
+    }
+
+    function doDeleteItem() {
+      if (deleteDialog.value.type === 'aspect') {
+        deleteAspect(schema.value, deleteDialog.value.title)
+      } else {
+        deleteLink(schema.value, deleteDialog.value.title)
+      }
+      deleteDialog.value.value = false
+      context.emit('schema-updated', schema.value)
+      computeProperties()
+    }
+
+    return { schema, hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, newItemTypes, basicProps, customAspects, customLinks, deleteDialog, showDeleteDialog, doDeleteItem }
   }
 })
 </script>
