@@ -112,31 +112,6 @@ export default Vue.extend({
                   }
                 }
               ]
-            },
-            {
-              type: 'Layout',
-              options: {
-                format: 'group',
-                direction: 'horizontal'
-              },
-              elements: [
-                {
-                  type: 'Control',
-                  scope: '#/properties/name',
-                  options: {
-                    label: 'Name'
-                  }
-                },
-                {
-                  type: 'Control',
-                  scope:
-                    '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_comment',
-                  options: {
-                    format: 'multiline',
-                    label: 'process_SensitiveData_comment'
-                  }
-                }
-              ]
             }
           ]
         }

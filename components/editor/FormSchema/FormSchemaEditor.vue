@@ -11,13 +11,13 @@
               class="drag-unused-basic-properties"
               tag="div"
               style="overflow: auto; min-width:300;"
-              :list="objectSchemaProperties.basics"
+              :list="objectSchemaProperties.basics.unused"
               :group="{ name: 'g1', put: false }"
               :sort="false"
             >
               <v-card
                 class="ma-1 pa-1"
-                v-for="(el, i) in objectSchemaProperties.basics"
+                v-for="(el, i) in objectSchemaProperties.basics.unused"
                 flat
                 :key="i"
               >
@@ -56,13 +56,13 @@
               class="drag-unused-aspects"
               tag="div"
               style="overflow: auto; min-width:300;"
-              :list="objectSchemaProperties.aspects"
+              :list="objectSchemaProperties.aspects.unused"
               :group="{ name: 'g1', put: false }"
               :sort="false"
             >
               <v-card
                 class="ma-1 pa-1"
-                v-for="(el, i) in objectSchemaProperties.aspects"
+                v-for="(el, i) in objectSchemaProperties.aspects.unused"
                 flat
                 :key="i"
               >
@@ -101,13 +101,13 @@
               class="drag-unused-links"
               tag="div"
               style="overflow: auto; min-width:300;"
-              :list="objectSchemaProperties.links"
+              :list="objectSchemaProperties.links.unused"
               :group="{ name: 'g1', put: false }"
               :sort="false"
             >
               <v-card
                 class="ma-1 pa-1"
-                v-for="(el, i) in objectSchemaProperties.links"
+                v-for="(el, i) in objectSchemaProperties.links.unused"
                 flat
                 :key="i"
               >
@@ -143,6 +143,7 @@
       <FseGenerator
         :schema="objectSchema"
         :value="value.content"
+        :objectSchemaProperties.sync="objectSchemaProperties"
         @delete="onDelete"
       />
       <v-speed-dial
@@ -207,14 +208,19 @@ interface IControl {
   label: string
 }
 
-interface IControlLink extends IControl {
+export interface IControlLink extends IControl {
   elements: IControl[]
 }
 
-interface IObjectSchemaProperties {
-  basics: IControl[]
-  aspects: IControl[]
-  links: IControlLink[]
+export interface IUsedAndUnusedProperties<T> {
+  unused: T
+  used: T
+}
+
+export interface IObjectSchemaProperties {
+  basics: IUsedAndUnusedProperties<IControl[]>
+  aspects: IUsedAndUnusedProperties<IControl[]>
+  links: IUsedAndUnusedProperties<IControlLink[]>
 }
 
 export default Vue.extend({
@@ -231,9 +237,9 @@ export default Vue.extend({
     return {
       fab: false,
       objectSchemaProperties: {
-        basics: [],
-        aspects: [],
-        links: []
+        basics: { unused: [], used: [] },
+        aspects: { unused: [], used: [] },
+        links: { unused: [], used: [] }
       } as IObjectSchemaProperties,
       objectSchemaPropertiesPatterns: {
         standard: [
@@ -369,9 +375,56 @@ export default Vue.extend({
           }
         })
 
-        this.objectSchemaProperties = { ...properties }
+        this.objectSchemaProperties = {
+          basics: { unused: properties.basics, used: [] },
+          aspects: { unused: properties.aspects, used: [] },
+          links: { unused: properties.links, used: [] }
+        }
 
         console.log(flattenedSchema, properties)
+      }
+    },
+    'value.content': {
+      immediate: true,
+      deep: true,
+      handler() {
+        const usedScopes = Object.entries(
+          JsonPointer.flatten(this.value.content, true)
+        )
+          .filter(([key, value]) => /\/scope$/i.test(key))
+          .map(([key, value]) => value)
+
+        const objectSchemaPropertiesPointers = Object.entries(
+          JsonPointer.flatten(this.objectSchemaProperties, true)
+        )
+          .filter(([key, value]) => /#\/\w+\/unused\/.*\/scope$/i.test(key))
+          .filter(([key, value]) => usedScopes.includes(value))
+
+        objectSchemaPropertiesPointers.forEach(([key, value]) => {
+          const pointerToObject = key.replace('/scope', '')
+          const unusedObject = JsonPointer.get(
+            this.objectSchemaProperties,
+            pointerToObject
+          )
+
+          vjp.set(
+            this.objectSchemaProperties,
+            pointerToObject.replace('#', '').replace('/unused/', '/used/'),
+            unusedObject
+          )
+
+          vjp.remove(
+            this.objectSchemaProperties,
+            pointerToObject.replace('#', '')
+          )
+        })
+
+        console.log(
+          'Change Content',
+          usedScopes,
+          objectSchemaPropertiesPointers,
+          this.objectSchemaProperties
+        )
       }
     }
   },
