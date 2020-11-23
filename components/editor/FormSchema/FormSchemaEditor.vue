@@ -38,7 +38,7 @@
                   </v-col>
                   <v-spacer></v-spacer>
                   <v-col cols="auto">
-                    <v-chip color="primary" outlined label pill>
+                    <v-chip :color="typeMap[el.type].color" outlined label pill>
                       {{ el.type }}
                     </v-chip>
                   </v-col>
@@ -83,7 +83,7 @@
                   </v-col>
                   <v-spacer></v-spacer>
                   <v-col cols="auto">
-                    <v-chip color="primary" outlined label pill>
+                    <v-chip :color="typeMap[el.type].color" outlined label pill>
                       {{ el.type }}
                     </v-chip>
                   </v-col>
@@ -128,7 +128,7 @@
                   </v-col>
                   <v-spacer></v-spacer>
                   <v-col cols="auto">
-                    <v-chip color="primary" outlined label pill>
+                    <v-chip :color="typeMap[el.type].color" outlined label pill>
                       {{ el.type }}
                     </v-chip>
                   </v-col>
