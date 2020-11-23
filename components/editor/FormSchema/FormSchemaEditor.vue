@@ -4,19 +4,91 @@
       <v-expansion-panels accordion>
         <v-expansion-panel>
           <v-expansion-panel-header class="pa-2">
+            Unused Basic Properties
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <Draggable
+              class="drag-unused-basic-properties"
+              tag="div"
+              style="overflow: auto; min-width:300;"
+              :list="unusedProperties.basic"
+              :group="{ name: 'g1', put: false }"
+              :sort="false"
+            >
+              <v-card
+                class="ma-1 pa-1"
+                v-for="(el, i) in unusedProperties.basic"
+                flat
+                :key="i"
+              >
+                <v-row no-gutters>
+                  <v-col cols="auto">
+                    <v-avatar
+                      :color="typeMap[el.type].color"
+                      size="32"
+                      class="mr-2"
+                    >
+                      <v-icon small dark>
+                        {{ typeMap[el.type].icon }}
+                      </v-icon>
+                    </v-avatar>
+                  </v-col>
+                  <v-col cols="auto">
+                    {{ el.label }}
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col cols="auto">
+                    <v-chip color="primary" outlined label pill>
+                      {{ el.type }}
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </Draggable>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header class="pa-2">
             Unused Aspects
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <Draggable
-              class="dragArea"
+              class="drag-unused-aspects"
               tag="div"
-              style="overflow: auto; min-width:300; min-height:100px"
-              :list="unusedProperties"
+              style="overflow: auto; min-width:300;"
+              :list="unusedProperties.aspects"
               :group="{ name: 'g1', put: false }"
+              :sort="false"
             >
-              <div v-for="(el, i) in unusedProperties" :key="i">
-                {{ el.scope }}
-              </div>
+              <v-card
+                class="ma-1 pa-1"
+                v-for="(el, i) in unusedProperties.aspects"
+                flat
+                :key="i"
+              >
+                <v-row no-gutters>
+                  <v-col cols="auto">
+                    <v-avatar
+                      :color="typeMap[el.type].color"
+                      size="32"
+                      class="mr-2"
+                    >
+                      <v-icon small dark>
+                        {{ typeMap[el.type].icon }}
+                      </v-icon>
+                    </v-avatar>
+                  </v-col>
+                  <v-col cols="auto">
+                    {{ el.label }}
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col cols="auto">
+                    <v-chip color="primary" outlined label pill>
+                      {{ el.type }}
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card>
             </Draggable>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -25,13 +97,44 @@
             Unused Links
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            ___
-            <br />
-            ___
-            <br />
-            ___
-            <br />
-            ___
+            <Draggable
+              class="drag-unused-links"
+              tag="div"
+              style="overflow: auto; min-width:300;"
+              :list="unusedProperties.links"
+              :group="{ name: 'g1', put: false }"
+              :sort="false"
+            >
+              <v-card
+                class="ma-1 pa-1"
+                v-for="(el, i) in unusedProperties.links"
+                flat
+                :key="i"
+              >
+                <v-row no-gutters>
+                  <v-col cols="auto">
+                    <v-avatar
+                      :color="typeMap[el.type].color"
+                      size="32"
+                      class="mr-2"
+                    >
+                      <v-icon small dark>
+                        {{ typeMap[el.type].icon }}
+                      </v-icon>
+                    </v-avatar>
+                  </v-col>
+                  <v-col cols="auto">
+                    {{ el.label }}
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col cols="auto">
+                    <v-chip color="primary" outlined label pill>
+                      {{ el.type }}
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </Draggable>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -100,15 +203,63 @@ export default Vue.extend({
   data() {
     return {
       fab: false,
-      unusedProperties: [
-        {
-          type: 'Control',
-          scope: '#/properties/abbreviation',
-          options: {
-            label: 'abbreviation'
+      unusedProperties: {
+        basic: [
+          {
+            scope: '#/properties/name',
+            label: 'name',
+            type: 'string'
+          },
+          {
+            scope: '#/properties/description',
+            label: 'description',
+            type: 'string'
+          },
+          {
+            scope: '#/properties/abbreviation',
+            label: 'abbreviation',
+            type: 'string'
           }
-        }
-      ]
+        ],
+        aspects: [
+          {
+            scope:
+              '#/properties/customAspects/properties/process_AccessAuthorization/properties/attributes/properties/process_AccessAuthorization_description',
+            label: 'process_ProcessingDetails_operationalStage',
+            type: 'string'
+          },
+          {
+            scope:
+              '#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_intendedPurpose',
+            label: 'process_ProcessingDetails_intendedPurpose',
+            type: 'string'
+          }
+        ],
+        links: []
+      },
+      typeMap: {
+        string: {
+          icon: 'mdi-alphabetical-variant',
+          name: 'string',
+          color: 'red'
+        },
+        boolean: {
+          icon: 'mdi-check-box-outline',
+          name: 'boolean',
+          color: 'teal'
+        },
+        object: { icon: 'mdi-file-tree', name: 'object', color: 'indigo' },
+        number: { icon: 'mdi-decimal', name: 'number', color: 'light-blue' },
+        integer: { icon: 'mdi-numeric', name: 'integer', color: 'green' },
+        array: { icon: 'mdi-view-list', name: 'array', color: 'amber' },
+        enum: {
+          icon: 'mdi-label-multiple',
+          name: 'enum',
+          color: 'light-green'
+        },
+        null: { icon: 'mdi-cancel', name: 'null', color: 'blue-grey' },
+        default: { icon: 'mdi-help-box', name: 'unknown', color: 'grey' }
+      }
     }
   },
   computed: {
@@ -165,6 +316,15 @@ export default Vue.extend({
     },
     onCreatePage() {
       console.log('Create Page')
+    },
+    onDragRemove(arg1: any, arg2: any, arg3: any) {
+      console.log(
+        'REMOVED DRAG ELEMENT',
+        this.unusedProperties,
+        arg1,
+        arg2,
+        arg3
+      )
     }
   }
 })
@@ -192,8 +352,11 @@ export default Vue.extend({
   > .v-expansion-panel-header {
   min-height: auto;
 }
+.veo-editor-header ::v-deep .v-expansion-panel-content__wrap {
+  padding: 0 0 8px 0;
+}
 
-.veo-editor-body ::v-deep .v-card {
+.veo-editor-body ::v-deep .v-card.vf-layout {
   border: 1px solid black !important;
 }
 .veo-editor-body ::v-deep .v-card.fse-os-string {

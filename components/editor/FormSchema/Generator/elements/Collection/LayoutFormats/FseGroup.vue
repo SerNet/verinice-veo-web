@@ -29,6 +29,7 @@
           :class="dynamicClasses"
           handle=".handle"
           :group="{ name: 'g1' }"
+          @add="onAdd"
         >
           <slot />
         </Draggable>
@@ -208,6 +209,23 @@ export default Vue.extend({
         vjp.set(this.formSchema, vjpPointer, value)
       } else {
         vjp.remove(this.formSchema, vjpPointer)
+      }
+    },
+    onAdd(event: any) {
+      if (
+        ['drag-unused-basic-properties', 'drag-unused-aspects'].includes(
+          event.from.className
+        )
+      ) {
+        console.log(event, event.from.className)
+        const oldElement = this.formSchema.elements[event.newIndex]
+        this.formSchema.elements.splice(event.newIndex, 1, {
+          type: 'Control',
+          scope: oldElement.scope,
+          options: {
+            label: oldElement.label
+          }
+        })
       }
     }
   }
