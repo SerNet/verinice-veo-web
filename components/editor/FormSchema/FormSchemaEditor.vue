@@ -11,13 +11,13 @@
               class="drag-unused-basic-properties"
               tag="div"
               style="overflow: auto; min-width:300;"
-              :list="objectSchemaProperties.basics.unused"
-              :group="{ name: 'g1', put: false }"
+              :list="objectSchemaProperties.unused.basics"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
               :sort="false"
             >
               <v-card
                 class="ma-1 pa-1"
-                v-for="(el, i) in objectSchemaProperties.basics.unused"
+                v-for="(el, i) in objectSchemaProperties.unused.basics"
                 flat
                 :key="i"
               >
@@ -56,13 +56,13 @@
               class="drag-unused-aspects"
               tag="div"
               style="overflow: auto; min-width:300;"
-              :list="objectSchemaProperties.aspects.unused"
-              :group="{ name: 'g1', put: false }"
+              :list="objectSchemaProperties.unused.aspects"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
               :sort="false"
             >
               <v-card
                 class="ma-1 pa-1"
-                v-for="(el, i) in objectSchemaProperties.aspects.unused"
+                v-for="(el, i) in objectSchemaProperties.unused.aspects"
                 flat
                 :key="i"
               >
@@ -101,13 +101,13 @@
               class="drag-unused-links"
               tag="div"
               style="overflow: auto; min-width:300;"
-              :list="objectSchemaProperties.links.unused"
-              :group="{ name: 'g1', put: false }"
+              :list="objectSchemaProperties.unused.links"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
               :sort="false"
             >
               <v-card
                 class="ma-1 pa-1"
-                v-for="(el, i) in objectSchemaProperties.links.unused"
+                v-for="(el, i) in objectSchemaProperties.unused.links"
                 flat
                 :key="i"
               >
@@ -212,15 +212,15 @@ export interface IControlLink extends IControl {
   elements: IControl[]
 }
 
-export interface IUsedAndUnusedProperties<T> {
-  unused: T
-  used: T
+export interface IObjectSchemaProperties {
+  basics: IControl[]
+  aspects: IControl[]
+  links: IControlLink[]
 }
 
-export interface IObjectSchemaProperties {
-  basics: IUsedAndUnusedProperties<IControl[]>
-  aspects: IUsedAndUnusedProperties<IControl[]>
-  links: IUsedAndUnusedProperties<IControlLink[]>
+export interface IUsedAndUnusedObjectSchemaProperties {
+  unused: IObjectSchemaProperties
+  used: IObjectSchemaProperties
 }
 
 export default Vue.extend({
@@ -237,10 +237,17 @@ export default Vue.extend({
     return {
       fab: false,
       objectSchemaProperties: {
-        basics: { unused: [], used: [] },
-        aspects: { unused: [], used: [] },
-        links: { unused: [], used: [] }
-      } as IObjectSchemaProperties,
+        unused: {
+          basics: [],
+          aspects: [],
+          links: []
+        },
+        used: {
+          basics: [],
+          aspects: [],
+          links: []
+        }
+      } as IUsedAndUnusedObjectSchemaProperties,
       objectSchemaPropertiesPatterns: {
         standard: [
           '#/properties/name',
@@ -376,12 +383,17 @@ export default Vue.extend({
         })
 
         this.objectSchemaProperties = {
-          basics: { unused: properties.basics, used: [] },
-          aspects: { unused: properties.aspects, used: [] },
-          links: { unused: properties.links, used: [] }
+          unused: {
+            basics: properties.basics,
+            aspects: properties.aspects,
+            links: properties.links
+          },
+          used: {
+            basics: [],
+            aspects: [],
+            links: []
+          }
         }
-
-        console.log(flattenedSchema, properties)
       }
     },
     'value.content': {
@@ -392,38 +404,131 @@ export default Vue.extend({
           JsonPointer.flatten(this.value.content, true)
         )
           .filter(([key, value]) => /\/scope$/i.test(key))
-          .map(([key, value]) => value)
+          .map(([key, value]) => value as string)
 
-        const objectSchemaPropertiesPointers = Object.entries(
-          JsonPointer.flatten(this.objectSchemaProperties, true)
-        )
-          .filter(([key, value]) => /#\/\w+\/unused\/.*\/scope$/i.test(key))
-          .filter(([key, value]) => usedScopes.includes(value))
+        const propertiesFlattened = {
+          unused: Object.entries(
+            JsonPointer.flatten(
+              this.objectSchemaProperties.unused,
+              true
+            ) as Record<string, any>
+          ).filter(([key, value]) => /\/scope$/i.test(key)),
+          used: Object.entries(
+            JsonPointer.flatten(
+              this.objectSchemaProperties.used,
+              true
+            ) as Record<string, any>
+          ).filter(([key, value]) => /\/scope$/i.test(key))
+        }
 
-        objectSchemaPropertiesPointers.forEach(([key, value]) => {
-          const pointerToObject = key.replace('/scope', '')
-          const unusedObject = JsonPointer.get(
-            this.objectSchemaProperties,
-            pointerToObject
+        const propertiesFlattenedScopes = {
+          unused: propertiesFlattened.unused.map(
+            ([key, scope]) => scope as string
+          ),
+          used: propertiesFlattened.used.map(([key, scope]) => scope as string)
+        }
+
+        const propertiesMoveToUsed = usedScopes
+          .filter(scope => !propertiesFlattenedScopes.used.includes(scope))
+          .filter((el: string, i, arr) => arr.indexOf(el) === i)
+
+        const propertiesMoveToUnused = propertiesFlattenedScopes.used
+          .filter(scope => !usedScopes.includes(scope))
+          .filter((el: string, i, arr) => arr.indexOf(el) === i)
+
+        // Move every object which should be moved from "unused" to "used"
+        propertiesMoveToUsed.forEach(scopeToMove => {
+          // Get the key and scope pair to be able to find the pointer(key) of the object in unused ObjectSchemaProperties
+          const keyScopePair = propertiesFlattened.unused.find(
+            ([key, scope]) => scope === scopeToMove
           )
 
-          vjp.set(
-            this.objectSchemaProperties,
-            pointerToObject.replace('#', '').replace('/unused/', '/used/'),
-            unusedObject
+          if (keyScopePair) {
+            const objectPointer = keyScopePair[0].replace('/scope', '')
+            const arrayPointer = objectPointer
+              .split('/')
+              .slice(0, -1)
+              .join('/')
+
+            const objectToMove = JsonPointer.get(
+              this.objectSchemaProperties.unused,
+              objectPointer
+            )
+            const indexInNewArray = (JsonPointer.get(
+              this.objectSchemaProperties.used,
+              arrayPointer
+            ) as any[]).length
+
+            const vjpPointerInNewArray = `${arrayPointer.replace(
+              '#',
+              ''
+            )}/${indexInNewArray}`
+            const vjpObjectPointer = objectPointer.replace('#', '')
+
+            // Set the Object in the "used" array
+            vjp.set(
+              this.objectSchemaProperties.used,
+              vjpPointerInNewArray,
+              objectToMove
+            )
+            // Remove the Object from the "unused" array
+            vjp.remove(this.objectSchemaProperties.unused, vjpObjectPointer)
+          } else {
+            console.warn('No KeyScopePair found')
+          }
+        })
+
+        // Move every object which should be moved from "used" to "unused"
+        propertiesMoveToUnused.forEach(scopeToMove => {
+          // Get the key and scope pair to be able to find the pointer(key) of the object in unused ObjectSchemaProperties
+          const keyScopePair = propertiesFlattened.used.find(
+            ([key, scope]) => scope === scopeToMove
           )
 
-          vjp.remove(
-            this.objectSchemaProperties,
-            pointerToObject.replace('#', '')
-          )
+          if (keyScopePair) {
+            // Get the Object Pointer in ObjectSchemaProperties
+            const objectPointer = keyScopePair[0].replace('/scope', '')
+            // Get the Array Pointer which contains the object
+            const arrayPointer = objectPointer
+              .split('/')
+              .slice(0, -1)
+              .join('/')
+
+            // Get the value of "used" Object which should be moved in "unused" ObjectSchemaProperties
+            const objectToMove = JsonPointer.get(
+              this.objectSchemaProperties.used,
+              objectPointer
+            )
+            // Get the last index (free) for the moving object in "unused" ObjectSchemaProperties
+            const indexInNewArray = (JsonPointer.get(
+              this.objectSchemaProperties.unused,
+              arrayPointer
+            ) as any[]).length
+
+            // Get the pointer for free index of the moving object in the "unused" array
+            const vjpPointerInNewArray = `${arrayPointer.replace(
+              '#',
+              ''
+            )}/${indexInNewArray}`
+
+            const vjpObjectPointer = objectPointer.replace('#', '')
+
+            // Set the Object in the "unused" array (move)
+            vjp.set(
+              this.objectSchemaProperties.unused,
+              vjpPointerInNewArray,
+              objectToMove
+            )
+            // Remove the Object from the "used" array
+            vjp.remove(this.objectSchemaProperties.used, vjpObjectPointer)
+          }
         })
 
         console.log(
-          'Change Content',
-          usedScopes,
-          objectSchemaPropertiesPointers,
-          this.objectSchemaProperties
+          'propertiesMoveToUsed: ',
+          propertiesMoveToUsed,
+          'propertiesMoveToUnused: ',
+          propertiesMoveToUnused
         )
       }
     }

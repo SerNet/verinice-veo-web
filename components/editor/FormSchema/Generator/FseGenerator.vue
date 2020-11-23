@@ -12,7 +12,7 @@ import { BaseObject, IApi } from '~/components/forms/utils'
 import FseLabel from './elements/FseLabel.vue'
 import FseControl from './elements/FseControl.vue'
 import FseLayout from './elements/FseLayout.vue'
-import { IObjectSchemaProperties } from '../FormSchemaEditor.vue'
+import { IUsedAndUnusedObjectSchemaProperties } from '../FormSchemaEditor.vue'
 // import Wrapper from '~/components/forms/Wrapper.vue'
 
 import Draggable from 'vuedraggable'
@@ -34,7 +34,7 @@ export default Vue.extend({
     } as PropOptions<BaseObject>,
     objectSchemaProperties: {
       type: Object
-    } as PropOptions<IObjectSchemaProperties>
+    } as PropOptions<IUsedAndUnusedObjectSchemaProperties>
   },
   data() {
     return {

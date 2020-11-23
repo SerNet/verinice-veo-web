@@ -217,7 +217,6 @@ export default Vue.extend({
           event.from.className
         )
       ) {
-        console.log(event, event.from.className)
         const oldElement = this.formSchema.elements[event.newIndex]
         this.formSchema.elements.splice(event.newIndex, 1, {
           type: 'Control',
