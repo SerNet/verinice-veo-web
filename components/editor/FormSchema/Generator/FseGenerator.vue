@@ -37,16 +37,6 @@ export default Vue.extend({
       page: 1,
       localSchema: this.schema,
       localUI: this.value,
-      flattenedSchema: [] as any[],
-      schemaProperties: {
-        standard: [
-          '#/properties/name',
-          '#/properties/abbreviation',
-          '#/properties/description'
-        ],
-        regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/i,
-        regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/i
-      }
     }
   },
   computed: {
@@ -76,16 +66,6 @@ export default Vue.extend({
         // IMPORTANT! This is needed to update localSchema when schema is updated
         // Else it cannot detect updated object of schema and does not update veo-form
         this.localSchema = JSON.parse(JSON.stringify(this.schema))
-        this.flattenedSchema = JsonPointer.listFragmentIds(this.schema)
-          .map(obj => obj.fragmentId)
-          .filter(el => {
-            return (
-              this.schemaProperties.standard.includes(el) ||
-              this.schemaProperties.regexAspectsAttributes.test(el) ||
-              this.schemaProperties.regexLinksAttributes.test(el)
-            )
-          })
-        console.log(this.flattenedSchema)
       }
     },
     lang: {

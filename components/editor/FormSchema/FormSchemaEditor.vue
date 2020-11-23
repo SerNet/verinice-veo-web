@@ -11,13 +11,13 @@
               class="drag-unused-basic-properties"
               tag="div"
               style="overflow: auto; min-width:300;"
-              :list="unusedProperties.basic"
+              :list="objectSchemaProperties.basics"
               :group="{ name: 'g1', put: false }"
               :sort="false"
             >
               <v-card
                 class="ma-1 pa-1"
-                v-for="(el, i) in unusedProperties.basic"
+                v-for="(el, i) in objectSchemaProperties.basics"
                 flat
                 :key="i"
               >
@@ -56,13 +56,13 @@
               class="drag-unused-aspects"
               tag="div"
               style="overflow: auto; min-width:300;"
-              :list="unusedProperties.aspects"
+              :list="objectSchemaProperties.aspects"
               :group="{ name: 'g1', put: false }"
               :sort="false"
             >
               <v-card
                 class="ma-1 pa-1"
-                v-for="(el, i) in unusedProperties.aspects"
+                v-for="(el, i) in objectSchemaProperties.aspects"
                 flat
                 :key="i"
               >
@@ -101,13 +101,13 @@
               class="drag-unused-links"
               tag="div"
               style="overflow: auto; min-width:300;"
-              :list="unusedProperties.links"
+              :list="objectSchemaProperties.links"
               :group="{ name: 'g1', put: false }"
               :sort="false"
             >
               <v-card
                 class="ma-1 pa-1"
-                v-for="(el, i) in unusedProperties.links"
+                v-for="(el, i) in objectSchemaProperties.links"
                 flat
                 :key="i"
               >
@@ -190,6 +190,33 @@ import FseGenerator from './Generator/FseGenerator.vue'
 import vjp from 'vue-json-pointer'
 import { JsonPointer } from 'json-ptr'
 
+interface IControl {
+  scope: string
+  // TODO: These types are assumed for us to describe easily property type, however e.g. "type: enum" does not exist in JSONSchema standard
+  // Therefore, "type: enum", describes the JSONSchema element, which includes "enum: []"
+  type:
+    | 'string'
+    | 'boolean'
+    | 'object'
+    | 'number'
+    | 'integer'
+    | 'array'
+    | 'enum'
+    | 'null'
+    | 'default'
+  label: string
+}
+
+interface IControlLink extends IControl {
+  elements: IControl[]
+}
+
+interface IObjectSchemaProperties {
+  basics: IControl[]
+  aspects: IControl[]
+  links: IControlLink[]
+}
+
 export default Vue.extend({
   name: 'FormSchemaEditor',
   components: {
@@ -203,39 +230,19 @@ export default Vue.extend({
   data() {
     return {
       fab: false,
-      unusedProperties: {
-        basic: [
-          {
-            scope: '#/properties/name',
-            label: 'name',
-            type: 'string'
-          },
-          {
-            scope: '#/properties/description',
-            label: 'description',
-            type: 'string'
-          },
-          {
-            scope: '#/properties/abbreviation',
-            label: 'abbreviation',
-            type: 'string'
-          }
-        ],
-        aspects: [
-          {
-            scope:
-              '#/properties/customAspects/properties/process_AccessAuthorization/properties/attributes/properties/process_AccessAuthorization_description',
-            label: 'process_ProcessingDetails_operationalStage',
-            type: 'string'
-          },
-          {
-            scope:
-              '#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_intendedPurpose',
-            label: 'process_ProcessingDetails_intendedPurpose',
-            type: 'string'
-          }
-        ],
+      objectSchemaProperties: {
+        basics: [],
+        aspects: [],
         links: []
+      } as IObjectSchemaProperties,
+      objectSchemaPropertiesPatterns: {
+        standard: [
+          '#/properties/name',
+          '#/properties/abbreviation',
+          '#/properties/description'
+        ],
+        regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/i,
+        regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/i
       },
       typeMap: {
         string: {
@@ -284,6 +291,90 @@ export default Vue.extend({
       ]
     }
   },
+  watch: {
+    objectSchema: {
+      immediate: true,
+      deep: true,
+      handler() {
+        const flattenedSchema = Object.entries(
+          JsonPointer.flatten(this.objectSchema, true) as Record<string, any>
+        )
+          .filter(([key, value]) => {
+            return (
+              this.objectSchemaPropertiesPatterns.standard.includes(key) ||
+              this.objectSchemaPropertiesPatterns.regexAspectsAttributes.test(
+                key
+              ) ||
+              this.objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)
+            )
+          })
+          .map(([key, value]) => {
+            if (Array.isArray(value.enum)) {
+              return {
+                scope: key,
+                type: 'enum',
+                label: key.split('/').slice(-1)[0]
+              }
+            } else {
+              return {
+                scope: key,
+                type: value.type,
+                label: key.split('/').slice(-1)[0]
+              }
+            }
+          })
+
+        const properties = { basics: [], aspects: [], links: [] } as {
+          basics: any[]
+          aspects: any[]
+          links: any[]
+        }
+
+        flattenedSchema.forEach(obj => {
+          if (obj.scope.includes('#/properties/customAspects')) {
+            properties.aspects.push(obj)
+          } else if (obj.scope.includes('#/properties/links')) {
+            properties.links.push(obj)
+          } else {
+            properties.basics.push(obj)
+          }
+        })
+
+        // Get unique links
+        const linksScopes = properties.links
+          .map(obj =>
+            obj.scope
+              .split('/')
+              .slice(0, 5)
+              .join('/')
+          )
+          .filter((el: string, i, arr) => arr.indexOf(el) === i)
+
+        // Wrap link attributes with their parent Links
+        properties.links = linksScopes.map((linksScope: string) => {
+          // all links attributes
+          return {
+            scope: linksScope,
+            type: 'array',
+            label: linksScope.split('/').slice(-1)[0],
+            elements: properties.links
+              .filter(obj => obj.scope.includes(linksScope))
+              .map(obj => ({
+                ...obj,
+                scope: `#/${obj.scope
+                  .split('/')
+                  .slice(6)
+                  .join('/')}`
+              }))
+          }
+        })
+
+        this.objectSchemaProperties = { ...properties }
+
+        console.log(flattenedSchema, properties)
+      }
+    }
+  },
   methods: {
     onDelete(event: any): void {
       vjp.remove(this.value, '/content')
@@ -316,15 +407,6 @@ export default Vue.extend({
     },
     onCreatePage() {
       console.log('Create Page')
-    },
-    onDragRemove(arg1: any, arg2: any, arg3: any) {
-      console.log(
-        'REMOVED DRAG ELEMENT',
-        this.unusedProperties,
-        arg1,
-        arg2,
-        arg3
-      )
     }
   }
 })
