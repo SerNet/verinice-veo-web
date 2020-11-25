@@ -11,7 +11,7 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-card outlined>
-            <v-list class="py-0" dense>
+            <v-list class="py-0" dense disabled>
               <ObjectSchemaListItem v-for="(child, index) of basicProps" :key="index" v-bind="child" two-line />
             </v-list>
           </v-card>
@@ -31,8 +31,8 @@
         <v-expansion-panel-content>
           <v-card v-for="(aspect, index) of customAspects" v-show="(!hideEmptyAspects || aspect.item.attributes.length > 0) && itemContainsAttributeTitle(aspect, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="aspect" @click="showEditDialog(aspect.item, 'aspect')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(aspect.item, 'aspect')" />
+              <ObjectSchemaListHeader v-bind="aspect" @edit-item="showEditDialog(aspect.item, 'aspect')" @delete-item="showDeleteDialog(aspect.item, 'aspect')" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -51,22 +51,27 @@
         <v-expansion-panel-content>
           <v-card v-for="(link, index) of customLinks" v-show="itemContainsAttributeTitle(link, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @click="showEditDialog(link.item, 'link')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line @click="showEditDialog(link.item, 'link')" />
+              <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @edit-item="showEditDialog(link.item, 'link')" @delete-item="showDeleteDialog(link.item, 'link')" />
+              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <ObjectSchemaDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :type-map="typeMap" @create-node="doAddItem" @save-node="doEditItem" />
+    <VEOOSECustomPropertiesDialog v-model="objectSchemaDialog.value" v-bind="objectSchemaDialog" :schema="schema" :type-map="newItemTypes" @create-node="doAddItem" @save-node="doEditItem" />
+    <VEOOSEDeleteCustomPropertyDialog v-model="deleteDialog.value" v-bind="deleteDialog" @delete-item="doDeleteItem()" />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
+import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
 import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
-import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute } from '~/lib/ObjectSchemaHelper'
+import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute, renameAspect, renameLink, updateLinkDetails, deleteAspect, deleteLink } from '~/lib/ObjectSchemaHelper'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
+
+import VEOOSECustomPropertiesDialog from '~/components/dialogs/SchemaEditors/VEOOSECustomPropertiesDialog.vue'
+import VEOOSEDeleteCustomPropertyDialog from '~/components/dialogs/SchemaEditors/VEOOSEDeleteCustomPropertyDialog.vue'
 
 export interface ITypeInfo {
   name: string
@@ -84,6 +89,10 @@ interface EditorPropertyItem {
 }
 
 export default defineComponent<IProps>({
+  components: {
+    VEOOSECustomPropertiesDialog,
+    VEOOSEDeleteCustomPropertyDialog
+  },
   props: {
     value: { type: Object, required: true }
   },
@@ -92,7 +101,7 @@ export default defineComponent<IProps>({
      * UI stuff
      */
     const search = ref('')
-    const hideEmptyAspects = ref(true)
+    const hideEmptyAspects = ref(false)
 
     const typeMap: Ref<Record<VEOTypeNameRAW, ITypeInfo>> = ref({
       string: { icon: 'mdi-alphabetical-variant', name: 'string', color: 'red' },
@@ -120,34 +129,38 @@ export default defineComponent<IProps>({
     // @ts-ignore
     const schema: Ref<VEOObjectSchemaRAW> = ref(props.value)
 
+    const customAspects: Ref<EditorPropertyItem[]> = ref([])
+    const customLinks: Ref<EditorPropertyItem[]> = ref([])
+    const basicProps: Ref<EditorPropertyItem[]> = ref([])
+
+    computeProperties()
     watch(() => props.value, (val: VEOObjectSchemaRAW) => {
       schema.value = val
-    }, { deep: true })
+      computeProperties()
+    })
 
-    const customAspects: ComputedRef<EditorPropertyItem[]> = computed(() => {
-      return getAspects(schema.value).map((entry: IVEOCustomAspect) => {
+    // Sadly computed refs wouldn't catch schema updates, so we have to deal with it on our own.
+    function computeProperties() {
+      const _schema = JSON.parse(JSON.stringify(schema.value))
+      customAspects.value = getAspects(_schema).map((entry: IVEOCustomAspect) => {
         return {
           item: entry,
           styling: undefined
         }
       })
-    })
-    const customLinks: ComputedRef<EditorPropertyItem[]> = computed(() => {
-      return getLinks(schema.value).map((entry: IVEOCustomLink) => {
+      customLinks.value = getLinks(_schema).map((entry: IVEOCustomLink) => {
         return {
           item: entry,
           styling: undefined
         }
       })
-    })
-    const basicProps: ComputedRef<EditorPropertyItem[]> = computed(() => {
-      return getBasicProperties(schema.value).map((entry: IVEOBasicProperty) => {
+      basicProps.value = getBasicProperties(_schema).map((entry: IVEOBasicProperty) => {
         return {
           item: entry,
           styling: typeMap.value[entry.type]
         }
       })
-    })
+    }
 
     /**
      * Editing customAspects and customLinks
@@ -161,17 +174,28 @@ export default defineComponent<IProps>({
       objectSchemaDialog.value.type = type
     }
 
+    // Removing types from the new item type selection as they are purely used as a fallback.
+    const newItemTypes = ref(typeMap) as any
+    delete newItemTypes.value.default
+    delete newItemTypes.value.null
+
     function doAddItem(form: { name: string, targetType?: string, targetDescription?: string }) {
-      if (objectSchemaDialog.value.type === 'aspect') {
-        const newAspect = generateAspect(form.name)
-        addAspectToSchema(schema.value, newAspect)
-        objectSchemaDialog.value.item = getAspect(schema.value, newAspect.properties.type.enum[0])
-      } else {
-        const newLink = generateLink(form.name, form.targetType || '', form.targetDescription || '')
-        addLinkToSchema(schema.value, newLink)
-        objectSchemaDialog.value.item = getLink(schema.value, newLink.items.properties.type.enum[0])
+      try {
+        if (objectSchemaDialog.value.type === 'aspect') {
+          const newAspect = generateAspect(form.name)
+          addAspectToSchema(schema.value, newAspect)
+          objectSchemaDialog.value.item = getAspect(schema.value, newAspect.properties.type.enum[0])
+        } else {
+          const newLink = generateLink(form.name, form.targetType || '', form.targetDescription || '')
+          addLinkToSchema(schema.value, newLink)
+          objectSchemaDialog.value.item = getLink(schema.value, newLink.items.properties.type.enum[0])
+        }
+        showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
+        context.emit('schema-updated', schema.value)
+        computeProperties()
+      } catch (e) {
+        context.root.$emit(VeoEvents.SNACKBAR_ERROR, `${context.root.$i18n.t('editor.dialog.createform.error')}: ${e}`)
       }
-      showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
     }
 
     function showEditDialog(aspect: IVEOCustomAspect | IVEOCustomLink, type: 'aspect' | 'link') {
@@ -181,17 +205,53 @@ export default defineComponent<IProps>({
       objectSchemaDialog.value.type = type
     }
 
-    function doEditItem(item: IVEOCustomAspect | IVEOCustomLink) {
-      if (objectSchemaDialog.value.type === 'aspect') {
-        updateAspectAttributes(schema.value, item as IVEOCustomAspect, item.attributes)
-      } else {
-        updateLinkAttributes(schema.value, item as IVEOCustomLink, item.attributes)
+    function doEditItem(object: { item: IVEOCustomAspect | IVEOCustomLink, id: string }) {
+      if (object.item.title !== object.id) {
+        const newTitle = object.item.title
+        object.item.title = object.id
+
+        if (objectSchemaDialog.value.type === 'aspect') {
+          renameAspect(schema.value, object.item as IVEOCustomAspect, newTitle)
+        } else {
+          renameLink(schema.value, object.item as IVEOCustomLink, newTitle)
+        }
+        object.item.title = newTitle
       }
+
+      if (objectSchemaDialog.value.type === 'aspect') {
+        updateAspectAttributes(schema.value, object.item as IVEOCustomAspect, object.item.attributes)
+      } else {
+        updateLinkAttributes(schema.value, object.item as IVEOCustomLink, object.item.attributes)
+        updateLinkDetails(schema.value, object.item as IVEOCustomLink, { type: (object.item as IVEOCustomLink).target.type, description: (object.item as IVEOCustomLink).target.description })
+      }
+
       objectSchemaDialog.value.value = false
       context.emit('schema-updated', schema.value)
+      computeProperties()
     }
 
-    return { hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, basicProps, customAspects, customLinks }
+    /**
+     * Deleting items
+     */
+    const deleteDialog = ref({ value: false, title: '', type: 'aspect' as 'link' | 'aspect' })
+    function showDeleteDialog(item: IVEOCustomAspect | IVEOCustomLink, type: 'aspect' | 'link') {
+      deleteDialog.value.type = type
+      deleteDialog.value.title = item.title
+      deleteDialog.value.value = true
+    }
+
+    function doDeleteItem() {
+      if (deleteDialog.value.type === 'aspect') {
+        deleteAspect(schema.value, deleteDialog.value.title)
+      } else {
+        deleteLink(schema.value, deleteDialog.value.title)
+      }
+      deleteDialog.value.value = false
+      context.emit('schema-updated', schema.value)
+      computeProperties()
+    }
+
+    return { schema, hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, newItemTypes, basicProps, customAspects, customLinks, deleteDialog, showDeleteDialog, doDeleteItem }
   }
 })
 </script>

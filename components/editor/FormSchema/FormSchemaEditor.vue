@@ -1,371 +1,630 @@
 <template>
   <div>
-    <v-row>
-      <v-col>
-        <div class="mx-5 my-4" style="max-width:800px;">
-          <v-select
-            :items="items"
-            v-model="layout"
-            label="Layout Style"
-            style="width:200px;"
-          ></v-select>
-          <VeoForm
-            v-model="objectData"
-            :schema="objectSchema"
-            :ui="formSchema"
-            :is-valid.sync="isValid"
-            :error-messages.sync="errorMessages"
-          /></div
-      ></v-col>
-      <!-- <v-col>
-        <div style="max-width:500px;">
-          <pre>{{ JSON.stringify(formSchema, null, 2) }}</pre>
-        </div>
-      </v-col> -->
-    </v-row>
+    <div class="px-5 py-4 veo-editor-header">
+      <v-expansion-panels accordion>
+        <v-expansion-panel>
+          <v-expansion-panel-header class="pa-2">
+            Unused Basic Properties
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <Draggable
+              class="drag-unused-basic-properties"
+              tag="div"
+              style="overflow: auto; min-width:300;"
+              :list="objectSchemaProperties.unused.basics"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
+              :sort="false"
+            >
+              <v-card
+                class="ma-1 pa-1"
+                v-for="(el, i) in objectSchemaProperties.unused.basics"
+                flat
+                :key="i"
+              >
+                <v-row no-gutters>
+                  <v-col cols="auto">
+                    <v-avatar
+                      :color="typeMap[el.type].color"
+                      size="32"
+                      class="mr-2"
+                    >
+                      <v-icon small dark>
+                        {{ typeMap[el.type].icon }}
+                      </v-icon>
+                    </v-avatar>
+                  </v-col>
+                  <v-col cols="auto">
+                    {{ el.label }}
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col cols="auto">
+                    <v-chip :color="typeMap[el.type].color" outlined label pill>
+                      {{ el.type }}
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </Draggable>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header class="pa-2">
+            Unused Aspects
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <Draggable
+              class="drag-unused-aspects"
+              tag="div"
+              style="overflow: auto; min-width:300;"
+              :list="objectSchemaProperties.unused.aspects"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
+              :sort="false"
+            >
+              <v-card
+                class="ma-1 pa-1"
+                v-for="(el, i) in objectSchemaProperties.unused.aspects"
+                flat
+                :key="i"
+              >
+                <v-row no-gutters>
+                  <v-col cols="auto">
+                    <v-avatar
+                      :color="typeMap[el.type].color"
+                      size="32"
+                      class="mr-2"
+                    >
+                      <v-icon small dark>
+                        {{ typeMap[el.type].icon }}
+                      </v-icon>
+                    </v-avatar>
+                  </v-col>
+                  <v-col cols="auto">
+                    {{ el.label }}
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col cols="auto">
+                    <v-chip :color="typeMap[el.type].color" outlined label pill>
+                      {{ el.type }}
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </Draggable>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header class="pa-2">
+            Unused Links
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <Draggable
+              class="drag-unused-links"
+              tag="div"
+              style="overflow: auto; min-width:300;"
+              :list="objectSchemaProperties.unused.links"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
+              :sort="false"
+            >
+              <v-card
+                class="ma-1 pa-1"
+                v-for="(el, i) in objectSchemaProperties.unused.links"
+                flat
+                :key="i"
+              >
+                <v-row no-gutters>
+                  <v-col cols="auto">
+                    <v-avatar
+                      :color="typeMap[el.type].color"
+                      size="32"
+                      class="mr-2"
+                    >
+                      <v-icon small dark>
+                        {{ typeMap[el.type].icon }}
+                      </v-icon>
+                    </v-avatar>
+                  </v-col>
+                  <v-col cols="auto">
+                    {{ el.label }}
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col cols="auto">
+                    <v-chip :color="typeMap[el.type].color" outlined label pill>
+                      {{ el.type }}
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </Draggable>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </div>
+    <div class="veo-editor-body" style="height: 5000px;">
+      <FseGenerator
+        :schema="objectSchema"
+        :value="value.content"
+        :objectSchemaProperties.sync="objectSchemaProperties"
+        @delete="onDelete"
+      />
+      <v-speed-dial
+        v-model="fab"
+        bottom
+        absolute
+        right
+        direction="top"
+        open-on-hover
+        transition="scale-transition"
+        fixed
+        style="right: 50%;"
+      >
+        <template #activator>
+          <v-btn v-model="fab" color="primary" dark small fab>
+            <v-icon v-if="fab">
+              mdi-close
+            </v-icon>
+            <v-icon v-else>
+              mdi-plus
+            </v-icon>
+          </v-btn>
+        </template>
 
-    <!-- <draggable v-model="myArray" group="people" @start="drag = true" @end="drag = false">
-      <div v-for="element in myArray" :key="element.id">{{ element.name }}</div>
-    </draggable> -->
-    <!-- <div>
-      <v-row>
-        <v-col>
-          <nested-draggable :tasks="list" :level="level" />
-        </v-col>
-        <v-col>
-          <pre>{{ JSON.stringify(list, null, 2) }}</pre>
-        </v-col>
-      </v-row>
-    </div> -->
+        <div
+          v-for="element in createElementActions"
+          :key="element.name"
+          class="fse-create-element"
+        >
+          <v-btn fab x-small @click="element.action">
+            <v-icon>{{ element.icon }}</v-icon>
+          </v-btn>
+          <span class="fse-create-element-caption">{{ element.name }}</span>
+        </div>
+      </v-speed-dial>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-// import draggable from 'vuedraggable'
+import Draggable from 'vuedraggable'
 // import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
-import VeoForm from '~/components/editor/FormSchema/forms/VeoForm.vue'
+import FseGenerator from './Generator/FseGenerator.vue'
+import vjp from 'vue-json-pointer'
+import { JsonPointer } from 'json-ptr'
+
+interface IControl {
+  scope: string
+  // TODO: These types are assumed for us to describe easily property type, however e.g. "type: enum" does not exist in JSONSchema standard
+  // Therefore, "type: enum", describes the JSONSchema element, which includes "enum: []"
+  type:
+    | 'string'
+    | 'boolean'
+    | 'object'
+    | 'number'
+    | 'integer'
+    | 'array'
+    | 'enum'
+    | 'null'
+    | 'default'
+  label: string
+}
+
+export interface IControlLink extends IControl {
+  elements: IControl[]
+}
+
+export interface IObjectSchemaProperties {
+  basics: IControl[]
+  aspects: IControl[]
+  links: IControlLink[]
+}
+
+export interface IUsedAndUnusedObjectSchemaProperties {
+  used: IObjectSchemaProperties
+  unused: IObjectSchemaProperties
+}
+
+type UsedUnused = 'unused' | 'used'
+
+interface IFromTo {
+  from: UsedUnused
+  to: UsedUnused
+}
 
 export default Vue.extend({
   name: 'FormSchemaEditor',
   components: {
-    // draggable
-    // NestedDraggable,
-    VeoForm
+    Draggable,
+    FseGenerator
   },
   props: {
-    objectSchema: Object
+    objectSchema: Object,
+    value: Object
   },
   data() {
     return {
-      level: 1,
-      layout: 'long',
-      items: [
+      fab: false,
+      move: [
+        { from: 'unused', to: 'used' },
+        { from: 'used', to: 'unused' }
+      ] as IFromTo[],
+      objectSchemaProperties: {
+        unused: {
+          basics: [],
+          aspects: [],
+          links: []
+        },
+        used: {
+          basics: [],
+          aspects: [],
+          links: []
+        }
+      } as IUsedAndUnusedObjectSchemaProperties,
+      objectSchemaPropertiesPatterns: {
+        standard: [
+          '#/properties/name',
+          '#/properties/abbreviation',
+          '#/properties/description'
+        ],
+        regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/i,
+        regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/i
+      },
+      typeMap: {
+        string: {
+          icon: 'mdi-alphabetical-variant',
+          name: 'string',
+          color: 'red'
+        },
+        boolean: {
+          icon: 'mdi-check-box-outline',
+          name: 'boolean',
+          color: 'teal'
+        },
+        object: { icon: 'mdi-file-tree', name: 'object', color: 'indigo' },
+        number: { icon: 'mdi-decimal', name: 'number', color: 'light-blue' },
+        integer: { icon: 'mdi-numeric', name: 'integer', color: 'green' },
+        array: { icon: 'mdi-view-list', name: 'array', color: 'amber' },
+        enum: {
+          icon: 'mdi-label-multiple',
+          name: 'enum',
+          color: 'light-green'
+        },
+        null: { icon: 'mdi-cancel', name: 'null', color: 'blue-grey' },
+        default: { icon: 'mdi-help-box', name: 'unknown', color: 'grey' }
+      }
+    }
+  },
+  computed: {
+    createElementActions(): any {
+      return [
+        { name: 'Label', icon: 'mdi-format-text', action: this.onCreateLabel },
         {
-          text: 'Durchgehend',
-          value: 'long'
+          name: 'Control',
+          icon: 'mdi-form-textbox-password',
+          action: this.onCreateControl
         },
         {
-          text: 'Seiten',
-          value: 'page'
+          name: 'Layout',
+          icon: 'mdi-form-select',
+          action: this.onCreateLayout
+        },
+        {
+          name: 'Page',
+          icon: 'mdi-book-open-page-variant',
+          action: this.onCreatePage
         }
-      ],
-      objectData: {},
-      isValid: undefined,
-      errorMessages: undefined,
-      formSchema: {
-        type: 'Layout',
-        options: { direction: 'vertical', format: 'group' },
-        elements: [
-          {
-            type: 'Control',
-            scope: '#/properties/abbreviation',
-            options: { label: 'abbreviation' }
-          },
-          {
-            type: 'Control',
-            scope: '#/properties/description',
-            options: { label: 'description' }
-          },
-          {
-            type: 'Control',
-            scope: '#/properties/name',
-            options: { label: 'name' }
-          },
-          {
-            type: 'Layout',
-            options: { type: 'group', direction: 'vertical' },
-            elements: [
-              {
-                type: 'Label',
-                text: 'process_SensitiveData',
-                options: { class: 'display', style: 'color: #8c8c8c' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_SensitiveData',
-                options: { label: 'process_SensitiveData_SensitiveData' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_comment',
-                options: { label: 'process_SensitiveData_comment' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_notification3343GDPR',
-                options: { label: 'process_SensitiveData_notification3343GDPR' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_secrecy203STGB',
-                options: { label: 'process_SensitiveData_secrecy203STGB' }
+      ]
+    }
+  },
+  watch: {
+    objectSchema: {
+      immediate: true,
+      deep: true,
+      handler() {
+        const flattenedSchema = Object.entries(
+          JsonPointer.flatten(this.objectSchema, true) as Record<string, any>
+        )
+          .filter(([key, value]) => {
+            return (
+              this.objectSchemaPropertiesPatterns.standard.includes(key) ||
+              this.objectSchemaPropertiesPatterns.regexAspectsAttributes.test(
+                key
+              ) ||
+              this.objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)
+            )
+          })
+          .map(([key, value]) => {
+            if (Array.isArray(value.enum)) {
+              return {
+                scope: key,
+                type: 'enum',
+                label: key.split('/').slice(-1)[0]
               }
-            ]
-          },
-          {
-            type: 'Layout',
-            options: { type: 'group', direction: 'vertical' },
-            elements: [
-              {
-                type: 'Label',
-                text: 'process_GeneralInformation',
-                options: { class: 'display', style: 'color: #8c8c8c' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_GeneralInformation/properties/attributes/properties/process_GeneralInformation_tags',
-                options: { label: 'process_GeneralInformation_tags' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_GeneralInformation/properties/attributes/properties/process_GeneralInformation_document',
-                options: { label: 'process_GeneralInformation_document' }
+            } else {
+              return {
+                scope: key,
+                type: value.type,
+                label: key.split('/').slice(-1)[0]
               }
-            ]
-          },
-          {
-            type: 'Layout',
-            options: { type: 'group', direction: 'vertical' },
-            elements: [
-              {
-                type: 'Label',
-                text: 'process_AccessAuthorization',
-                options: { class: 'display', style: 'color: #8c8c8c' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_AccessAuthorization/properties/attributes/properties/process_AccessAuthorization_authorizationConcept',
-                options: {
-                  label: 'process_AccessAuthorization_authorizationConcept'
-                }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_AccessAuthorization/properties/attributes/properties/process_AccessAuthorization_description',
-                options: { label: 'process_AccessAuthorization_description' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_AccessAuthorization/properties/attributes/properties/process_AccessAuthorization_Document',
-                options: { label: 'process_AccessAuthorization_Document' }
-              }
-            ]
-          },
-          {
-            type: 'Layout',
-            options: { type: 'group', direction: 'vertical' },
-            elements: [
-              {
-                type: 'Label',
-                text: 'process_InternalRecipient',
-                options: { class: 'display', style: 'color: #8c8c8c' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_InternalRecipient/properties/attributes/properties/process_InternalRecipient_InternalRecipient',
-                options: {
-                  label: 'process_InternalRecipient_InternalRecipient'
-                }
-              }
-            ]
-          },
-          {
-            type: 'Layout',
-            options: { type: 'group', direction: 'vertical' },
-            elements: [
-              {
-                type: 'Label',
-                text: 'process_ProcessingDetails',
-                options: { class: 'display', style: 'color: #8c8c8c' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_intendedPurpose',
-                options: { label: 'process_ProcessingDetails_intendedPurpose' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_typeOfSurvey',
-                options: { label: 'process_ProcessingDetails_typeOfSurvey' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_operationalStage',
-                options: { label: 'process_ProcessingDetails_operationalStage' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_comment',
-                options: { label: 'process_ProcessingDetails_comment' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_surveyConductedOn',
-                options: {
-                  label: 'process_ProcessingDetails_surveyConductedOn'
-                }
-              }
-            ]
-          },
-          {
-            type: 'Layout',
-            options: { type: 'group', direction: 'vertical' },
-            elements: [
-              {
-                type: 'Label',
-                text: 'process_InformationObligations',
-                options: { class: 'display', style: 'color: #8c8c8c' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_InformationObligations/properties/attributes/properties/process_InformationObligations_informationObligations',
-                options: {
-                  label: 'process_InformationObligations_informationObligations'
-                }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_InformationObligations/properties/attributes/properties/process_InformationObligations_explanation',
-                options: { label: 'process_InformationObligations_explanation' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_InformationObligations/properties/attributes/properties/process_InformationObligations_document',
-                options: { label: 'process_InformationObligations_document' }
-              }
-            ]
-          },
-          {
-            type: 'Layout',
-            options: { type: 'group', direction: 'vertical' },
-            elements: [
-              {
-                type: 'Label',
-                text: 'process_ExternalRecipient',
-                options: { class: 'display', style: 'color: #8c8c8c' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_ExternalRecipient/properties/attributes/properties/process_ExternalRecipient_ExternalRecipient',
-                options: {
-                  label: 'process_ExternalRecipient_ExternalRecipient'
-                }
-              }
-            ]
-          },
-          {
-            type: 'Layout',
-            options: { type: 'group', direction: 'vertical' },
-            elements: [
-              {
-                type: 'Label',
-                text: 'process_JointControllership',
-                options: { class: 'display', style: 'color: #8c8c8c' }
-              },
-              {
-                type: 'Control',
-                scope:
-                  '#/properties/customAspects/properties/process_JointControllership/properties/attributes/properties/process_JointControllership_jointResponsiblePersons',
-                options: {
-                  label: 'process_JointControllership_jointResponsiblePersons'
-                }
-              }
-            ]
+            }
+          })
+
+        const properties = { basics: [], aspects: [], links: [] } as {
+          basics: any[]
+          aspects: any[]
+          links: any[]
+        }
+
+        flattenedSchema.forEach(obj => {
+          if (obj.scope.includes('#/properties/customAspects')) {
+            properties.aspects.push(obj)
+          } else if (obj.scope.includes('#/properties/links')) {
+            properties.links.push(obj)
+          } else {
+            properties.basics.push(obj)
           }
-        ]
+        })
+
+        // Get unique links
+        const linksScopes = properties.links
+          .map(obj =>
+            obj.scope
+              .split('/')
+              .slice(0, 5)
+              .join('/')
+          )
+          .filter((el: string, i, arr) => arr.indexOf(el) === i)
+
+        // Wrap link attributes with their parent Links
+        properties.links = linksScopes.map((linksScope: string) => {
+          // all links attributes
+          return {
+            scope: linksScope,
+            type: 'array',
+            label: linksScope.split('/').slice(-1)[0],
+            elements: properties.links
+              .filter(obj => obj.scope.includes(linksScope))
+              .map(obj => ({
+                ...obj,
+                scope: `#/${obj.scope
+                  .split('/')
+                  .slice(6)
+                  .join('/')}`
+              }))
+          }
+        })
+
+        this.objectSchemaProperties = {
+          unused: {
+            basics: properties.basics,
+            aspects: properties.aspects,
+            links: properties.links
+          },
+          used: {
+            basics: [],
+            aspects: [],
+            links: []
+          }
+        }
       }
+    },
+    'value.content': {
+      immediate: true,
+      deep: true,
+      handler() {
+        const usedScopes = Object.entries(
+          JsonPointer.flatten(this.value.content, true)
+        )
+          .filter(([key, value]) => /\/scope$/i.test(key))
+          .map(([key, value]) => value as string)
+
+        const propertiesFlattened = {
+          unused: Object.entries(
+            JsonPointer.flatten(
+              this.objectSchemaProperties.unused,
+              true
+            ) as Record<string, any>
+          ).filter(([key, value]) => /\/scope$/i.test(key)),
+          used: Object.entries(
+            JsonPointer.flatten(
+              this.objectSchemaProperties.used,
+              true
+            ) as Record<string, any>
+          ).filter(([key, value]) => /\/scope$/i.test(key))
+        }
+
+        const propertiesFlattenedScopes = {
+          unused: propertiesFlattened.unused.map(
+            ([key, scope]) => scope as string
+          ),
+          used: propertiesFlattened.used.map(([key, scope]) => scope as string)
+        }
+
+        const propertiesMoveTo = {
+          used: usedScopes
+            .filter(scope => !propertiesFlattenedScopes.used.includes(scope))
+            .filter((el: string, i, arr) => arr.indexOf(el) === i),
+          unused: propertiesFlattenedScopes.used
+            .filter(scope => !usedScopes.includes(scope))
+            .filter((el: string, i, arr) => arr.indexOf(el) === i)
+        }
+
+        this.move.forEach(({ from, to }) => {
+          propertiesMoveTo[to].forEach(scopeToMove => {
+            // Get the key and scope pair in "from" to be able to find the the same pointer(key) of the object in "to" ObjectSchemaProperties
+            const keyScopePair = propertiesFlattened[from].find(
+              ([key, scope]) => scope === scopeToMove
+            )
+
+            if (keyScopePair) {
+              // Get the Object Pointer in ObjectSchemaProperties
+              const objectPointer = keyScopePair[0].replace('/scope', '')
+              // Get the Array Pointer which contains the object
+              const arrayPointer = objectPointer
+                .split('/')
+                .slice(0, -1)
+                .join('/')
+
+              // Get the value of "from" Object which should be moved in "to" ObjectSchemaProperties
+              const objectToMove = JsonPointer.get(
+                this.objectSchemaProperties[from],
+                objectPointer
+              )
+              // Get the last index (free) for the moving object in "to" ObjectSchemaProperties
+              const indexInNewArray = (JsonPointer.get(
+                this.objectSchemaProperties[to],
+                arrayPointer
+              ) as any[]).length
+
+              // Get the pointer for free index of the moving object in the "to" array
+              const vjpPointerInNewArray = `${arrayPointer.replace(
+                '#',
+                ''
+              )}/${indexInNewArray}`
+
+              const vjpObjectPointer = objectPointer.replace('#', '')
+
+              // Set the Object in the "to" array (move)
+              vjp.set(
+                this.objectSchemaProperties[to],
+                vjpPointerInNewArray,
+                objectToMove
+              )
+              // Remove the Object from the "from" array
+              vjp.remove(this.objectSchemaProperties[from], vjpObjectPointer)
+            }
+          })
+        })
+
+        console.log('Properties Move to: ', propertiesMoveTo)
+      }
+    }
+  },
+  methods: {
+    onDelete(event: any): void {
+      vjp.remove(this.value, '/content')
+    },
+    onCreateLabel() {
+      const topLevelElements: any = JsonPointer.get(
+        this.value,
+        '#/content/elements'
+      )
+
+      const initialLayout = {
+        type: 'Label',
+        text: 'Text',
+        options: {}
+      }
+
+      if (Array.isArray(topLevelElements)) {
+        topLevelElements.push(initialLayout)
+      } else {
+        vjp.set(this.value, '/content', initialLayout)
+      }
+    },
+    onCreateControl() {
+      console.log('Create Control')
+    },
+    onCreateLayout() {
+      const topLevelElements: any = JsonPointer.get(
+        this.value,
+        '#/content/elements'
+      )
+
+      const initialLayout = {
+        type: 'Layout',
+        options: {
+          format: 'group'
+        },
+        elements: []
+      }
+
+      if (Array.isArray(topLevelElements)) {
+        topLevelElements.push(initialLayout)
+      } else {
+        vjp.set(this.value, '/content', initialLayout)
+      }
+    },
+    onCreatePage() {
+      console.log('Create Page')
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-::v-deep {
-  .direction-vertical .vf-control {
-    .vf-autocomplete,
-    .vf-input-date,
-    .vf-input-date-time,
-    .vf-input-number,
-    .vf-input-text,
-    .vf-input-text-multiline,
-    .vf-input-uri,
-    .vf-markdown-editor,
-    .vf-select,
-    .vf-tags {
-      margin-top: 12px !important;
-      margin-bottom: 12px !important;
-    }
+@import '~/assets/vuetify.scss';
 
-    .vf-array-field,
-    .vf-checkbox,
-    .vf-links-field,
-    .vf-radio {
-      margin-bottom: 12px !important;
-    }
-  }
+.veo-editor-header {
+  background-color: white;
+  border-bottom: 2px solid $grey;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  max-height: 200px;
+  overflow: auto;
+}
 
-  .direction-horizontal .vf-control {
-    .vf-autocomplete,
-    .vf-input-date,
-    .vf-input-date-time,
-    .vf-input-number,
-    .vf-input-text,
-    .vf-input-text-multiline,
-    .vf-input-uri,
-    .vf-markdown-editor,
-    .vf-select,
-    .vf-tags {
-      margin-top: 12px !important;
-      margin-bottom: 12px !important;
-    }
+.veo-editor-header ::v-deep .v-expansion-panel-header {
+  min-height: auto;
+}
+.veo-editor-header
+  ::v-deep
+  .v-expansion-panel--active
+  > .v-expansion-panel-header {
+  min-height: auto;
+}
+.veo-editor-header ::v-deep .v-expansion-panel-content__wrap {
+  padding: 0 0 8px 0;
+}
 
-    .vf-array-field,
-    .vf-checkbox,
-    .vf-links-field,
-    .vf-radio {
-      margin-top: 12px !important;
-      margin-bottom: 12px !important;
-    }
+.veo-editor-body ::v-deep .v-card.vf-layout {
+  border: 1px solid black !important;
+}
+.veo-editor-body ::v-deep .v-card.vf-label {
+  border: 1px solid black !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-string {
+  border: 1px solid $color-string !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-boolean {
+  border: 1px solid $color-boolean !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-number {
+  border: 1px solid $color-number !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-integer {
+  border: 1px solid $color-integer !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-object {
+  border: 1px solid $color-object !important;
+}
+.veo-editor-body ::v-deep .v-card.fse-os-array {
+  border: 1px solid $color-array !important;
+}
+// TODO: Type: "enum" does not exist in JsonSchema Standard
+.veo-editor-body ::v-deep .v-card.fse-os-enum {
+  border: 1px solid $color-enum !important;
+}
+// TODO: Type: "enum" does not exist in JsonSchema Standard
+.veo-editor-body ::v-deep .v-card.fse-os-null {
+  border: 1px solid $color-null !important;
+}
+
+.fse-create-element {
+  align-items: center;
+  display: flex;
+  position: relative;
+
+  .fse-create-element-caption {
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.87);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    position: absolute;
+    right: 52px; /* 40px is the width of the button next to it, 3*4px the offset. */
+    white-space: nowrap;
   }
 }
 </style>
