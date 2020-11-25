@@ -57,7 +57,7 @@ export default Vue.extend({
     this.objects = []
 
     if (this.$route.params.group === '-') {
-      this.objects = await this.$api[this.objectType].fetchAll()
+      this.objects = await this.$api[this.objectType].fetchAll({ unit: this.$route.params.unit })
     } else {
       let groupType = this.$route.params.type as GroupType
       groupType = (groupType.charAt(0).toUpperCase() + groupType.slice(1)) as GroupType

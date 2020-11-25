@@ -5,6 +5,8 @@
       <v-alert v-if="error.value" type="error">{{ error.content }}</v-alert>
       <v-form v-model="valid" class="new-unit-form">
         <v-text-field v-model="newUnit.name" :rules="rules.name" required :label="$t('unit.details.name')" />
+        <v-text-field v-model="newUnit.description" :rules="rules.description" required :label="$t('unit.details.description')" />
+        <!-- VEO-78: Unit Hierarchien deaktiviert, da im Backend nicht implementiert
         <v-select
           class="unit-select flex-grow-0"
           multiple
@@ -14,6 +16,7 @@
           :value="newUnit.units"
           :label="$t('unit.details.children')"
         />
+        -->
       </v-form>
     </template>
     <template #dialog-options>
@@ -48,11 +51,14 @@ export default Vue.extend({
       dialog: false as boolean,
       noWatch: false as boolean,
       units: [] as Array<any>,
-      newUnit: {} as { units: string[], name: string },
+      newUnit: {} as { units: string[], name: string, description: string },
       valid: false as boolean,
       rules: {
         name: [
           (v: string) => !!v || this.$t('unit.details.name.required')
+        ],
+        description: [
+          (v: string) => !!v || this.$t('unit.details.description.required')
         ]
       },
       error: {
@@ -63,9 +69,9 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    if (this.$auth.profile) {
+    /* if (this.$auth.profile) {
       this.units = await this.$api.unit.fetchAll()
-    }
+    } */
   },
   watch: {
     value(newValue) {

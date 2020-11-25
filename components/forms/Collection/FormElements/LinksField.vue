@@ -28,10 +28,11 @@
         :disabled="disabled"
         :visible="visible"
         :api="api"
+        style="flex-basis: 0"
         @input="onInput"
       />
       <v-btn
-        :disabled="!value || value.length <= 1"
+        :disabled="!value"
         elevation="0"
         x-small
         text
@@ -103,11 +104,19 @@ export default Vue.extend({
       this.$emit('input', value)
     },
     removeRow(rowIndex: number) {
-      this.selected.splice(rowIndex, 1)
-      this.value.splice(rowIndex, 1)
-      this.$emit('input', this.value)
+      let _value = this.value
+
+      // If only one link exists, empty it instead of deleting it.
+      if (_value.length === 1) {
+        this.selected = []
+        _value = [{ ...this.rowToAdd }]
+      } else {
+        this.selected.splice(rowIndex, 1)
+        _value.splice(rowIndex, 1)
+      }
+      this.$emit('input', _value)
     },
-    onInput(event: any) {
+    onInput() {
       this.$emit('input', this.value)
     }
   }
