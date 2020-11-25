@@ -1,66 +1,54 @@
 <template>
-  <v-card
-    width="300"
-    outlined
-    color="grey lighten-4"
-    class="vf-input-text vf-form-element fse-os-string ma-2 px-1"
-  >
-    <v-row no-gutters>
-      <v-col cols="auto">
-        <v-icon small class="handle pr-1">mdi-menu</v-icon>
-      </v-col>
-      <v-col cols="auto">
-        <div style="max-width: 220px; padding-top: 2px">
-          <div class="text-caption text-truncate">
-            Control (InputText)
+  <v-card rounded elevation="0" class="fse-input mx-3 my-2">
+    <v-card-text class="pa-0">
+      <v-row no-gutters>
+        <v-col cols="auto" class="text-right px-1 fse-input-dragbar">
+          <v-icon class="handle">mdi-menu</v-icon>
+        </v-col>
+        <v-col class="px-2">
+          <div style="white-space: nowrap">
+            <span class="fse-input-title">{{ options && options.label }}</span>
+            <span class="fse-input-type">InputTextMultiline</span>
           </div>
-        </div>
-      </v-col>
-      <v-spacer></v-spacer>
-      <v-col cols="auto" class="text-right">
-        <v-btn icon x-small @click="open">
-          <v-icon dense small>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn icon x-small @click="onDelete">
-          <v-icon dense small>mdi-delete</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col cols="auto">
-        <div class="text-caption text-truncate">
-          {{ options && options.label }}
-        </div>
-      </v-col>
-    </v-row>
+        </v-col>
+        <v-col cols="auto" class="text-right">
+          <v-btn icon x-small @click="open">
+            <v-icon dense small>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn icon x-small @click="onDelete">
+            <v-icon dense small>mdi-delete</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-card-text>
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
       <template #default>
         <v-autocomplete
           v-model="dialog.data.scope.value"
           :items="dialog.data.scopeList"
           label="Scope"
-        ></v-autocomplete>
+        />
         <v-autocomplete
           v-model="dialog.data.direction.value"
           :items="dialog.data.directionList"
           label="Direction"
-        ></v-autocomplete>
+        />
         <v-checkbox
           v-model="dialog.data.highlight.value"
           label="Highlight"
-        ></v-checkbox>
+        />
         <v-combobox
           v-model="dialog.data.class.value"
           label="Class"
           multiple
           chips
-        ></v-combobox>
+        />
         <v-combobox
           v-model="dialog.data.style.value"
           label="Style"
           multiple
           chips
-        ></v-combobox>
+        />
       </template>
       <template #dialog-options>
         <v-spacer />
@@ -79,14 +67,14 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
+import vjp from 'vue-json-pointer'
+import { JsonPointer } from 'json-ptr'
 import {
   calculateConditionsScore,
   FormElementProps,
   Helpful
 } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
-import vjp from 'vue-json-pointer'
-import { JsonPointer } from 'json-ptr'
 
 export default Vue.extend({
   name: 'InputText',
@@ -168,7 +156,7 @@ export default Vue.extend({
     },
     stringToArray(string: string | undefined, separator: string): string[] {
       if (string) {
-        let split = string.split(separator)
+        const split = string.split(separator)
         return split.filter(el => !!el)
       } else {
         return []
@@ -176,7 +164,7 @@ export default Vue.extend({
     },
     arrayToString(array: string[], separator: string): string | undefined {
       const string = array.join(separator)
-      return !!string ? string : undefined
+      return string || undefined
     },
     getValue(pointer: string, defaultValue: any): any {
       const elValue = JsonPointer.get(this.value, pointer)
@@ -211,4 +199,38 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
+.fse-input {
+  border: 2px solid $grey;
+  min-width: 300px;
+  overflow: hidden;
+
+  .row {
+    flex-wrap: nowrap;
+
+    .col {
+      align-items: center;
+      display: flex;
+      height: 36px;
+    }
+  }
+}
+
+.fse-input-title {
+  color: black;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding-right: 4px;
+}
+
+.fse-input-dragbar {
+  background-color: $color-string;
+  color: white;
+
+  i {
+    color: white;
+  }
+}
+</style>

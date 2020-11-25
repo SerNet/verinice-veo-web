@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined color="grey lighten-4" class="vf-layout vf-group  ma-2">
+  <v-card elevation="0" class="vf-group ma-2 fse-group">
     <v-row no-gutters>
       <v-col cols="auto">
         <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
@@ -9,7 +9,7 @@
           Layout (Group)
         </div>
       </v-col>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-col class="text-right">
         <v-btn icon @click="open">
           <v-icon dense small class="pa-2">mdi-pencil</v-icon>
@@ -42,23 +42,23 @@
           v-model="dialog.data.direction.value"
           :items="dialog.data.directionList"
           label="Direction"
-        ></v-autocomplete>
+        />
         <v-checkbox
           v-model="dialog.data.highlight.value"
           label="Highlight"
-        ></v-checkbox>
+        />
         <v-combobox
           v-model="dialog.data.class.value"
           label="Class"
           multiple
           chips
-        ></v-combobox>
+        />
         <v-combobox
           v-model="dialog.data.style.value"
           label="Style"
           multiple
           chips
-        ></v-combobox>
+        />
       </template>
       <template #dialog-options>
         <v-spacer />
@@ -77,14 +77,14 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
+import Draggable from 'vuedraggable'
+import vjp from 'vue-json-pointer'
+import { JsonPointer } from 'json-ptr'
 import {
   calculateConditionsScore,
   Helpful,
   LayoutProps
 } from '~/components/forms/Collection/utils/helpers'
-import Draggable from 'vuedraggable'
-import vjp from 'vue-json-pointer'
-import { JsonPointer } from 'json-ptr'
 
 export default Vue.extend({
   name: 'FseGroup',
@@ -185,7 +185,7 @@ export default Vue.extend({
     },
     stringToArray(string: string | undefined, separator: string): string[] {
       if (string) {
-        let split = string.split(separator)
+        const split = string.split(separator)
         return split.filter(el => !!el)
       } else {
         return []
@@ -193,7 +193,7 @@ export default Vue.extend({
     },
     arrayToString(array: string[], separator: string): string | undefined {
       const string = array.join(separator)
-      return !!string ? string : undefined
+      return string || undefined
     },
     getValue(pointer: string, defaultValue: any): any {
       const elValue = JsonPointer.get(this.formSchema, pointer)
@@ -242,4 +242,10 @@ export const helpers: Helpful<LayoutProps> = {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
+.fse-group {
+  border: 2px solid $grey;
+}
+</style>
