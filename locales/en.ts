@@ -62,7 +62,6 @@ export default {
   'global.button.no': 'No',
   'global.button.ok': 'Okay',
   'global.button.previous': 'Previous',
-  'global.button.next': 'Next',
   'global.button.save': 'Save',
   'global.button.yes': 'Yes',
   'global.error.fetching': 'An error occured while fetching the resource',
