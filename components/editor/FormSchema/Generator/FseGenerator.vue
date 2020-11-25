@@ -186,7 +186,7 @@ export default Vue.extend({
           return h(FseLabel, {
             props: {
               options: element.options,
-              formSchema: element,
+              value: element,
               text: element.text
             }
           })

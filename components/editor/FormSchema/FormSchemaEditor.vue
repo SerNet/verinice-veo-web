@@ -504,7 +504,22 @@ export default Vue.extend({
       vjp.remove(this.value, '/content')
     },
     onCreateLabel() {
-      console.log('Create Label')
+      const topLevelElements: any = JsonPointer.get(
+        this.value,
+        '#/content/elements'
+      )
+
+      const initialLayout = {
+        type: 'Label',
+        text: 'Text',
+        options: {}
+      }
+
+      if (Array.isArray(topLevelElements)) {
+        topLevelElements.push(initialLayout)
+      } else {
+        vjp.set(this.value, '/content', initialLayout)
+      }
     },
     onCreateControl() {
       console.log('Create Control')
@@ -563,6 +578,9 @@ export default Vue.extend({
 }
 
 .veo-editor-body ::v-deep .v-card.vf-layout {
+  border: 1px solid black !important;
+}
+.veo-editor-body ::v-deep .v-card.vf-label {
   border: 1px solid black !important;
 }
 .veo-editor-body ::v-deep .v-card.fse-os-string {
