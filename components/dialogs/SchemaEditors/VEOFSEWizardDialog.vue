@@ -1,18 +1,18 @@
 <template>
-  <VeoDialog v-model="dialog" large :headline="$t('editor.objectschema.headline')" close-hidden persistent fixed-header fixed-footer>
+  <VeoDialog v-model="dialog" large :headline="$t('editor.formschema.headline')" close-hidden persistent fixed-header fixed-footer>
     <template #default>
       <v-window v-model="state">
         <v-window-item value="start" class="py-8">
-          <h2 class="text-center my-8">{{ $t('editor.objectschema.wizard.start.title') }}</h2>
+          <h2 class="text-center my-8">{{ $t('editor.formschema.wizard.start.title') }}</h2>
           <v-row class="text-center">
             <v-col>
               <v-btn color="primary" @click="state = 'create'">
-                {{ $t('editor.objectschema.wizard.create') }}
+                {{ $t('editor.formschema.wizard.create') }}
               </v-btn>
             </v-col>
             <v-col>
               <v-btn color="primary" @click="state = 'import'">
-                {{ $t('editor.objectschema.wizard.import') }}
+                {{ $t('editor.formschema.wizard.import') }}
               </v-btn>
             </v-col>
           </v-row>
@@ -21,18 +21,10 @@
           <v-form v-model="createForm.valid" @submit.prevent="createSchema()">
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;">{{ $t('editor.objectschema.create.type.text') }}*:</span>
+                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.title') }}*:</span>
               </v-col>
               <v-col :cols="12" :md="5">
-                <v-text-field v-model="createForm.type" :label="$t('editor.objectschema.create.type')" :rules="createForm.rules.type" required />
-              </v-col>
-            </v-row>
-            <v-row no-gutters class="align-center mt-4">
-              <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;">{{ $t('editor.objectschema.create.description.text') }}*:</span>
-              </v-col>
-              <v-col :cols="12" :md="5">
-                <v-text-field v-model="createForm.description" :label="$t('editor.objectschema.create.description')" :rules="createForm.rules.description" required />
+                <v-text-field v-model="createForm.title" :label="$t('editor.formschema.create.title')" :rules="createForm.rules.title" required />
               </v-col>
             </v-row>
           </v-form>
@@ -40,8 +32,8 @@
         </v-window-item>
         <v-window-item value="import" class="px-4">
           <v-tabs v-model="activeTab">
-            <v-tab>{{ $t('editor.objectschema.wizard.import.file') }}</v-tab>
-            <v-tab>{{ $t('editor.objectschema.wizard.import.code') }}</v-tab>
+            <v-tab>{{ $t('editor.formschema.wizard.import.file') }}</v-tab>
+            <v-tab>{{ $t('editor.formschema.wizard.import.code') }}</v-tab>
           </v-tabs>
           <v-tabs-items v-model="activeTab">
             <v-tab-item>
@@ -56,7 +48,7 @@
                   dense
                   outlined
                   show-size
-                  :label="`${ $t('editor.objectschema.wizard.upload')} (.json)`"
+                  :label="`${ $t('editor.formschema.wizard.upload')} (.json)`"
                   :disabled="uploading"
                 />
                 <v-row class="ml-6">
@@ -67,7 +59,7 @@
                       color="primary"
                       :disabled="uploading || !file"
                     >
-                      {{ $t('editor.objectschema.wizard.import') }}
+                      {{ $t('editor.formschema.wizard.import') }}
                     </v-btn>
                   </v-col>
                   <v-col cols="auto">
@@ -127,12 +119,10 @@ export default Vue.extend({
       noWatch: false as boolean,
       state: 'start' as 'start' | 'import' | 'create',
       createForm: {
-        type: '' as string,
-        description: '' as string,
+        title: '' as string,
         valid: false,
         rules: {
-          type: [(input: string) => trim(input).length > 0],
-          description: [(input: string) => trim(input).length > 0]
+          title: [(input: string) => trim(input).length > 0]
         }
       },
       code: '\n\n\n\n\n' as string,
@@ -176,12 +166,10 @@ export default Vue.extend({
     },
     clearCreateForm() {
       this.createForm = {
-        type: '' as string,
-        description: '' as string,
+        title: '' as string,
         valid: false,
         rules: {
-          type: [(input: string) => trim(input).length > 0],
-          description: [(input: string) => trim(input).length > 0]
+          title: [(input: string) => trim(input).length > 0]
         }
       }
     },
@@ -199,7 +187,7 @@ export default Vue.extend({
           this.uploading = false
         }
         fr.onerror = (_) => {
-          this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('editor.objectschema.wizard.upload.error')}: ${fr.error}`)
+          this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('editor.formschema.wizard.upload.error')}: ${fr.error}`)
           this.uploading = false
         }
 

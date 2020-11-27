@@ -52,7 +52,6 @@ export default Vue.extend({
     return {
       collapsed: false as boolean,
       showCreationDialog: false as boolean,
-      tab: 'form-schema',
       schema: undefined as VEOObjectSchemaRAW | undefined
     }
   },

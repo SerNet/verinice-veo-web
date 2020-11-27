@@ -4,7 +4,7 @@
     style="max-height: calc(100vh - 70px);"
     cols="12"
   >
-    <v-row class="fill-height ma-0">
+    <v-row v-if="formSchema" class="fill-height ma-0">
       <v-col
         class="pa-0"
         :style="{ maxHeight }"
@@ -70,21 +70,26 @@
         </v-tabs-items>
       </v-col>
     </v-row>
+    <VEOFSEWizardDialog v-model="showCreationDialog" @objectSchema="setObjectSchema" @formSchema="setFormSchema" />
   </v-col>
 </template>
 
 <script lang="ts">
+import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
+import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
 
 export default Vue.extend({
   components: {
-    VeoForm
+    VeoForm,
+    VEOFSEWizardDialog
   },
   data() {
     return {
       tab: 'form-schema',
+      showCreationDialog: false as boolean,
       objectSchema: {},
       formSchema: {
         name: 'Verarbeitungstätigkeiten',
@@ -149,9 +154,20 @@ export default Vue.extend({
       }
     }
   },
+  mounted() {
+    this.showCreationDialog = this.objectSchema === undefined
+  },
   methods: {
     updateSchema(formSchema: any) {
       this.formSchema = JSON.parse(JSON.stringify(formSchema))
+    },
+    setFormSchema(schema: any) {
+      this.formSchema = schema
+      this.showCreationDialog = !this.objectSchema || false
+    },
+    setObjectSchema(schema: VEOObjectSchemaRAW) {
+      this.objectSchema = schema
+      this.showCreationDialog = !this.formSchema || false
     },
     updateSchemaName() {
       if (this.formSchema) {
