@@ -157,12 +157,12 @@ export default Vue.extend({
   },
   methods: {
     createSchema(_schema?: any) {
-      if (this.state === 'create') {
+      /* if (this.state === 'create') {
         const schema = generateSchema(this.createForm.type.toLowerCase(), this.createForm.description)
         this.$emit('schema', schema)
       } else {
         this.$emit('schema', _schema)
-      }
+      } */
     },
     clearCreateForm() {
       this.createForm = {
