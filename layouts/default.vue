@@ -101,9 +101,10 @@ export default Vue.extend({
           to: `/${this.$route.params.unit}/settings`
         },
         {
-          name: 'help',
-          icon: 'mdi-help',
-          to: `/${this.$route.params.unit}/help`
+          name: 'Editor',
+          icon: 'mdi-application-cog',
+          to: '/editor',
+          exact: true
         }
       ]
     }

@@ -7,7 +7,7 @@
       background-color="#fafafa"
       vertical
     >
-      <v-tab v-for="item in filteredItems" :key="item.name" class="nav-tab" :title="item.name" :to="item.to" :exact="item.exact" :disabled="$route.params.unit === undefined">
+      <v-tab v-for="item in filteredItems" :key="item.name" class="nav-tab" :title="item.name" :to="item.to" :exact="item.exact" :disabled="$route.params.unit === undefined && item.name !== 'Editor'">
         <v-icon v-if="item.icon" v-text="item.icon">mdi-folder</v-icon>
       </v-tab>
     </v-tabs>
