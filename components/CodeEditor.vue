@@ -198,6 +198,17 @@ export default defineComponent<Props>({
 
       setText(props.value)
       // setError(props.error)
+
+      // Registering event hooks
+      $editor.dom.onpaste = () => {
+        codeModified()
+      }
+
+      $editor.dom.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.key === 'z') {
+          codeModified()
+        }
+      })
     })
 
     return {
