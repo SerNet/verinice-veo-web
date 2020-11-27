@@ -12,11 +12,14 @@
         cols="12"
         lg="6"
       >
-        <h1 class="ml-4 mt-2">Form Schema Editor</h1>
+        <h1 class="ml-4 mt-2">{{ $t('editor.formschema.headline') }}</h1>
+        <v-row class="mx-4">
+          <v-col cols="12" lg="4"><v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" /></v-col>
+        </v-row>
         <FormSchemaEditor
           v-if="!$fetchState.pending"
-          :object-schema="objectSchema"
           v-model="formSchema"
+          :object-schema="objectSchema"
         />
       </v-col>
       <v-col
@@ -27,7 +30,7 @@
         lg="6"
       >
         <v-tabs v-model="tab">
-          <v-tabs-slider></v-tabs-slider>
+          <v-tabs-slider />
 
           <v-tab href="#tab-1">
             Code
@@ -47,11 +50,11 @@
           <v-tab-item value="tab-2">
             <v-card class="pa-3 ma-1" outlined>
               <VeoForm
+                v-model="objectData"
                 :schema="objectSchema"
                 :ui="formSchema.content"
                 :lang="lang"
                 :api="{}"
-                v-model="objectData"
               />
             </v-card>
           </v-tab-item>
@@ -69,10 +72,6 @@ import VeoForm from '~/components/forms/VeoForm.vue'
 export default Vue.extend({
   components: {
     VeoForm
-  },
-  async fetch() {
-    const objectSchema = await this.$api.schema.fetch('process')
-    this.objectSchema = objectSchema
   },
   data() {
     return {
@@ -120,6 +119,10 @@ export default Vue.extend({
       objectData: {}
     }
   },
+  async fetch() {
+    const objectSchema = await this.$api.schema.fetch('process')
+    this.objectSchema = objectSchema
+  },
   computed: {
     maxHeight(): string {
       return 'calc(100vh - ' + this.$vuetify.application.top + 'px)'
@@ -140,6 +143,11 @@ export default Vue.extend({
   methods: {
     updateSchema(formSchema: any) {
       this.formSchema = JSON.parse(JSON.stringify(formSchema))
+    },
+    updateSchemaName() {
+      if (this.formSchema) {
+        this.formSchema.name = this.formSchema.name.toLowerCase()
+      }
     }
   }
 })
