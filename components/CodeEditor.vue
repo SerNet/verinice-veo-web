@@ -1,7 +1,7 @@
 <template>
   <div class="fill-height d-flex flex-column">
     <div style="height: 100%; overflow: auto;">
-      <div class="editor" :style="{ resize: 'vertical' }">
+      <div class="editor" :style="{ resize: 'vertical', width: '100%' }">
         <div ref="editor" @keydown.meta.enter="$emit('submit', $event)" @keydown.exact="codeModified()" />
       </div>
     </div>
