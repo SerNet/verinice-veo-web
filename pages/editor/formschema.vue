@@ -12,7 +12,16 @@
         cols="12"
         lg="6"
       >
-        <h1 class="ml-4 mt-2">{{ $t('editor.formschema.headline') }}</h1>
+        <v-row dense class="align-center">
+          <v-col cols="auto"><h1 class="ml-4 mt-2">{{ $t('editor.formschema.headline') }}</h1></v-col>
+          <v-col cols="auto">
+            <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
+              <v-btn icon large color="primary">
+                <v-icon>mdi-download</v-icon>
+              </v-btn>
+            </a>
+          </v-col>
+        </v-row>
         <v-row class="mx-4">
           <v-col cols="12" lg="4"><v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" /></v-col>
         </v-row>
@@ -147,6 +156,13 @@ export default Vue.extend({
     updateSchemaName() {
       if (this.formSchema) {
         this.formSchema.name = this.formSchema.name.toLowerCase()
+      }
+    },
+    downloadSchema() {
+      if (this.$refs.downloadButton) {
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.formSchema))}`;
+        (this.$refs.downloadButton as any).href = data;
+        (this.$refs.downloadButton as any).download = `fs_${this.formSchema?.name || 'download'}.json`
       }
     }
   }
