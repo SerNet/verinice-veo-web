@@ -24,11 +24,6 @@
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
       <template #default>
         <v-autocomplete
-          v-model="dialog.data.scope.value"
-          :items="dialog.data.scopeList"
-          label="Scope"
-        />
-        <v-autocomplete
           v-model="dialog.data.direction.value"
           :items="dialog.data.directionList"
           label="Direction"
@@ -96,7 +91,6 @@ export default Vue.extend({
       dialog: {
         open: false,
         data: {
-          scope: { default: undefined, value: undefined },
           directionList: ['horizontal', 'vertical'],
           direction: { default: 'vertical', value: undefined },
           highlight: { default: true, value: undefined },

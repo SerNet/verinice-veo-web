@@ -8,7 +8,7 @@
         <v-col class="px-2">
           <div style="white-space: nowrap">
             <span class="fse-input-title">{{ options && options.label }}</span>
-            <span class="fse-input-type">InputTextMultiline</span>
+            <span class="fse-input-type">InputText</span>
           </div>
         </v-col>
         <v-col cols="auto" class="text-right">
@@ -24,19 +24,11 @@
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
       <template #default>
         <v-autocomplete
-          v-model="dialog.data.scope.value"
-          :items="dialog.data.scopeList"
-          label="Scope"
-        />
-        <v-autocomplete
           v-model="dialog.data.direction.value"
           :items="dialog.data.directionList"
           label="Direction"
         />
-        <v-checkbox
-          v-model="dialog.data.highlight.value"
-          label="Highlight"
-        />
+        <v-checkbox v-model="dialog.data.highlight.value" label="Highlight" />
         <v-combobox
           v-model="dialog.data.class.value"
           label="Class"
@@ -96,7 +88,6 @@ export default Vue.extend({
       dialog: {
         open: false,
         data: {
-          scope: { default: undefined, value: undefined },
           directionList: ['horizontal', 'vertical'],
           direction: { default: 'vertical', value: undefined },
           highlight: { default: true, value: undefined },
