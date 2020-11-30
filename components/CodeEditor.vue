@@ -1,7 +1,7 @@
 <template>
   <div class="fill-height d-flex flex-column">
     <div style="height: 100%; overflow: auto;">
-      <div class="editor" :style="{ resize: 'vertical' }">
+      <div class="editor" :style="{ resize: 'vertical', width: '100%' }">
         <div ref="editor" @keydown.meta.enter="$emit('submit', $event)" @keydown.exact="codeModified()" />
       </div>
     </div>
@@ -198,6 +198,17 @@ export default defineComponent<Props>({
 
       setText(props.value)
       // setError(props.error)
+
+      // Registering event hooks
+      $editor.dom.onpaste = () => {
+        codeModified()
+      }
+
+      $editor.dom.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.key === 'z') {
+          codeModified()
+        }
+      })
     })
 
     return {

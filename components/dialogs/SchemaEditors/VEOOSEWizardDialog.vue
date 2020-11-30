@@ -38,8 +38,8 @@
           </v-form>
           <small>{{ $t('editor.dialog.requiredfields') }}</small>
         </v-window-item>
-        <v-window-item value="import">
-          <CodeEditor v-model="code" @schema-updated="createSchema" />
+        <v-window-item value="import" class="px-4">
+          <VEOEditorFileUpload :code="code" @schema-uploaded="createSchema" />
         </v-window-item>
       </v-window>
     </template>
@@ -62,12 +62,12 @@ import { trim } from 'lodash'
 
 import { generateSchema } from '~/lib/ObjectSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import CodeEditor from '~/components/CodeEditor.vue'
+import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 
 export default Vue.extend({
   components: {
     VeoDialog,
-    CodeEditor
+    VEOEditorFileUpload
   },
   props: {
     value: {

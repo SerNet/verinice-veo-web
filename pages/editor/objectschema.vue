@@ -10,7 +10,20 @@
         </div>
         <v-row no-gutters class="flex-column align-center">
           <v-col :cols="collapsed ? 8 : 12">
-            <h1 class="ml-4 mt-2">Objektschema Editor</h1>
+            <v-row dense class="align-center">
+              <v-col cols="auto"><h1 class="ml-4 mt-2">{{ $t('editor.objectschema.headline') }}</h1></v-col>
+              <v-col cols="auto">
+                <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
+                  <v-btn icon large color="primary">
+                    <v-icon>mdi-download</v-icon>
+                  </v-btn>
+                </a>
+              </v-col>
+            </v-row>
+            <v-row class="mx-4">
+              <v-col cols="12" lg="4"><v-text-field v-model="schema.title" dense hide-details flat :label="$t('editor.objectschema.objectschema')" @input="updateSchemaName()" /></v-col>
+              <v-col cols="12" lg="8"><v-text-field v-model="schema.description" dense hide-details :label="$t('editor.objectschema.create.description')" /></v-col>
+            </v-row>
           </v-col>
           <v-col :cols="collapsed ? 8 : 12">
             <ObjectSchemaEditor v-model="schema" @schema-updated="updateSchema" />
@@ -39,7 +52,6 @@ export default Vue.extend({
     return {
       collapsed: false as boolean,
       showCreationDialog: false as boolean,
-      tab: 'form-schema',
       schema: undefined as VEOObjectSchemaRAW | undefined
     }
   },
@@ -69,6 +81,18 @@ export default Vue.extend({
     setSchema(schema: VEOObjectSchemaRAW) {
       this.schema = schema
       this.showCreationDialog = false
+    },
+    updateSchemaName() {
+      if (this.schema) {
+        this.schema.title = this.schema.title.toLowerCase()
+      }
+    },
+    downloadSchema() {
+      if (this.$refs.downloadButton) {
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.schema))}`;
+        (this.$refs.downloadButton as any).href = data;
+        (this.$refs.downloadButton as any).download = `os_${this.schema?.title || 'download'}.json`
+      }
     }
   }
 })

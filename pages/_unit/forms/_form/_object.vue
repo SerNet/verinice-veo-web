@@ -22,23 +22,6 @@
       />
 
       <div class="mx-auto" style="max-width:800px; width:100%;">
-        <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
-          <v-expansion-panel>
-            <v-expansion-panel-header>{{ $t('unit.data.objectdata') }}</v-expansion-panel-header>
-            <v-expansion-panel-content style="overflow:auto">
-              <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-header>{{ $t('unit.data.validationlogs') }}</v-expansion-panel-header>
-            <v-expansion-panel-content style="overflow:auto">
-              <div>{{ $t('unit.data.valid') }}: {{ isValid }}</div>
-              <div>{{ $t('unit.data.errormessages') }}:</div>
-              <pre>{{ errorMessages }}</pre>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-
         <v-btn color="primary" :loading="btnLoading" block @click="onClick">{{ $t('global.button.save') }}</v-btn>
         <AppStateDialog v-if="error && error.status == 412" :value="!!error" title="Fehler" @input="error = undefined" @yes="$fetch">
           <template v-if="error">

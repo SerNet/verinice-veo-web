@@ -188,6 +188,9 @@ export default Vue.extend({
               options: element.options,
               value: element,
               text: element.text
+            },
+            on: {
+              delete: (event: any) => this.onDelete(event, formSchemaPointer)
             }
           })
       }

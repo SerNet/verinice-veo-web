@@ -4,19 +4,31 @@
     style="max-height: calc(100vh - 70px);"
     cols="12"
   >
-    <v-row class="fill-height ma-0">
+    <v-row v-if="formSchema" class="fill-height ma-0">
       <v-col
         class="pa-0"
         :style="{ maxHeight }"
         style="overflow: auto"
         cols="12"
-        lg="6"
+        lg="8"
       >
-        <h1 class="ml-4 mt-2">Form Schema Editor</h1>
+        <v-row dense class="align-center">
+          <v-col cols="auto"><h1 class="ml-4 mt-2">{{ $t('editor.formschema.headline') }}</h1></v-col>
+          <v-col cols="auto">
+            <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
+              <v-btn icon large color="primary">
+                <v-icon>mdi-download</v-icon>
+              </v-btn>
+            </a>
+          </v-col>
+        </v-row>
+        <v-row class="mx-4">
+          <v-col cols="12" lg="4" class="pl-0"><v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" /></v-col>
+        </v-row>
         <FormSchemaEditor
           v-if="!$fetchState.pending"
-          :object-schema="objectSchema"
           v-model="formSchema"
+          :object-schema="objectSchema"
         />
       </v-col>
       <v-col
@@ -24,10 +36,10 @@
         :style="{ maxHeight }"
         style="overflow: auto;"
         cols="12"
-        lg="6"
+        lg="4"
       >
         <v-tabs v-model="tab">
-          <v-tabs-slider></v-tabs-slider>
+          <v-tabs-slider />
 
           <v-tab href="#tab-1">
             Code
@@ -47,77 +59,48 @@
           <v-tab-item value="tab-2">
             <v-card class="pa-3 ma-1" outlined>
               <VeoForm
+                v-model="objectData"
                 :schema="objectSchema"
                 :ui="formSchema.content"
                 :lang="lang"
                 :api="{}"
-                v-model="objectData"
               />
             </v-card>
           </v-tab-item>
         </v-tabs-items>
       </v-col>
     </v-row>
+    <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
   </v-col>
 </template>
 
 <script lang="ts">
+import { IVEOFormSchema, VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
+import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
+import { generateSchema } from '~/lib/FormSchemaHelper'
 
 export default Vue.extend({
   components: {
-    VeoForm
-  },
-  async fetch() {
-    const objectSchema = await this.$api.schema.fetch('process')
-    this.objectSchema = objectSchema
+    VeoForm,
+    VEOFSEWizardDialog
   },
   data() {
     return {
       tab: 'form-schema',
-      objectSchema: {},
-      formSchema: {
-        name: 'Verarbeitungstätigkeiten',
-        modelType: 'Process',
-        content: {
-          type: 'Layout',
-          options: {
-            format: 'group',
-            direction: 'vertical'
-          },
-          elements: [
-            {
-              type: 'Layout',
-              options: {
-                format: 'group',
-                direction: 'horizontal'
-              },
-              elements: [
-                {
-                  type: 'Control',
-                  scope: '#/properties/name',
-                  options: {
-                    label: 'Name'
-                  }
-                },
-                {
-                  type: 'Control',
-                  scope:
-                    '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_comment',
-                  options: {
-                    format: 'multiline',
-                    label: 'process_SensitiveData_comment'
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      },
+      showCreationDialog: false as boolean,
+      objectSchema: undefined as VEOObjectSchemaRAW | undefined,
+      formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
       objectData: {}
+    }
+  },
+  async fetch() {
+    const objectSchema = await this.$api.schema.fetch('process')
+    if (!this.$route.query.wizard) {
+      this.objectSchema = objectSchema
     }
   },
   computed: {
@@ -137,9 +120,35 @@ export default Vue.extend({
       }
     }
   },
+  mounted() {
+    if (!this.$route.query.wizard) {
+      this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process')
+    }
+    this.showCreationDialog = this.objectSchema === undefined && this.formSchema === undefined
+  },
   methods: {
     updateSchema(formSchema: any) {
       this.formSchema = JSON.parse(JSON.stringify(formSchema))
+    },
+    setFormSchema(schema: IVEOFormSchema) {
+      this.formSchema = schema
+      this.showCreationDialog = !this.objectSchema || false
+    },
+    setObjectSchema(schema: VEOObjectSchemaRAW) {
+      this.objectSchema = schema
+      this.showCreationDialog = !this.formSchema || false
+    },
+    updateSchemaName() {
+      if (this.formSchema) {
+        this.formSchema.name = this.formSchema.name.toLowerCase()
+      }
+    },
+    downloadSchema() {
+      if (this.$refs.downloadButton) {
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.formSchema))}`;
+        (this.$refs.downloadButton as any).href = data;
+        (this.$refs.downloadButton as any).download = `fs_${this.formSchema?.name || 'download'}.json`
+      }
     }
   }
 })
