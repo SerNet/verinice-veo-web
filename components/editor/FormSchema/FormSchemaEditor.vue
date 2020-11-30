@@ -6,9 +6,49 @@
         class="mt-2 mx-2 mb-2 drag-elements-wrapper"
         style="overflow: auto; height: calc(100vh - 202px);"
       >
+        <!-- Form elements -->
+        <div>
+          <v-subheader class="px-2">Form Elements</v-subheader>
+          <v-divider></v-divider>
+        </div>
+        <Draggable
+          class="drag-form-elements"
+          tag="div"
+          style="overflow: auto; min-width:300;"
+          :list="formElements"
+          :group="{ name: 'g1', pull: 'clone', put: false }"
+          :sort="false"
+          :clone="onCloneFormElement"
+        >
+          <v-card flat v-for="(el, i) in formElements" :key="i">
+            <v-list-item class="pa-1" flat>
+              <v-list-item-avatar color="grey darken-2" size="32">
+                <v-icon
+                  small
+                  dark
+                  outlined
+                  v-text="formElementsDescription[i].icon"
+                />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title
+                  class="caption"
+                  v-text="formElementsDescription[i].name"
+                />
+              </v-list-item-content>
+              <v-list-item-action class="ml-3">
+                <v-chip class="mr-2" color="grey darken-2" small label outlined>
+                  {{ formElementsDescription[i].group }}
+                </v-chip>
+              </v-list-item-action>
+            </v-list-item>
+          </v-card>
+        </Draggable>
+
+        <!-- Unused Basic Properties -->
         <div v-if="objectSchemaProperties.unused.basics.length > 0">
           <v-divider></v-divider>
-          <v-subheader>Basic Properties</v-subheader>
+          <v-subheader class="px-2">Basic Properties</v-subheader>
           <v-divider></v-divider>
         </div>
         <Draggable
@@ -24,7 +64,7 @@
             v-for="(el, i) in objectSchemaProperties.unused.basics"
             :key="i"
           >
-            <v-list-item class="ma-1 pa-1" flat>
+            <v-list-item class="pa-1" flat>
               <v-list-item-avatar size="32" :color="typeMap[el.type].color">
                 <v-icon small outlined dark v-text="typeMap[el.type].icon" />
               </v-list-item-avatar>
@@ -46,9 +86,10 @@
           </v-card>
         </Draggable>
 
+        <!-- Unused Aspects -->
         <div v-if="objectSchemaProperties.unused.aspects.length > 0">
           <v-divider></v-divider>
-          <v-subheader>Aspects</v-subheader>
+          <v-subheader class="px-2">Aspects</v-subheader>
           <v-divider></v-divider>
         </div>
         <Draggable
@@ -64,7 +105,7 @@
             v-for="(el, i) in objectSchemaProperties.unused.aspects"
             :key="i"
           >
-            <v-list-item class="ma-1 pa-1" flat>
+            <v-list-item class="pa-1" flat>
               <v-list-item-avatar size="32" :color="typeMap[el.type].color">
                 <v-icon small outlined dark v-text="typeMap[el.type].icon" />
               </v-list-item-avatar>
@@ -86,9 +127,10 @@
           </v-card>
         </Draggable>
 
+        <!-- Unused Links -->
         <div v-if="objectSchemaProperties.unused.links.length > 0">
           <v-divider></v-divider>
-          <v-subheader>Links</v-subheader>
+          <v-subheader class="px-2">Links</v-subheader>
           <v-divider></v-divider>
         </div>
         <Draggable
@@ -104,7 +146,7 @@
             v-for="(el, i) in objectSchemaProperties.unused.links"
             :key="i"
           >
-            <v-list-item class="ma-1 pa-1" flat>
+            <v-list-item class="pa-1" flat>
               <v-list-item-avatar size="32" :color="typeMap[el.type].color">
                 <v-icon small outlined dark v-text="typeMap[el.type].icon" />
               </v-list-item-avatar>
@@ -236,6 +278,31 @@ export default Vue.extend({
   data() {
     return {
       fab: false,
+      formElements: [
+        {
+          type: 'Layout',
+          options: {
+            format: 'group'
+          },
+          elements: []
+        },
+        {
+          type: 'Label',
+          text: 'TEXT'
+        }
+      ],
+      formElementsDescription: [
+        {
+          name: 'group',
+          group: 'layout',
+          icon: 'mdi-form-select'
+        },
+        {
+          name: 'text',
+          group: 'label',
+          icon: 'mdi-format-text'
+        }
+      ],
       move: [
         { from: 'unused', to: 'used' },
         { from: 'used', to: 'unused' }
@@ -493,6 +560,11 @@ export default Vue.extend({
     }
   },
   methods: {
+    onCloneFormElement(original: any) {
+      // Return always new object reference on clone to get in issues of the same reference
+      // https://github.com/SortableJS/Vue.Draggable/issues/203
+      return JSON.parse(JSON.stringify(original))
+    },
     onDelete(event: any): void {
       vjp.remove(this.value, '/content')
     },
