@@ -180,7 +180,7 @@
           :objectSchemaProperties.sync="objectSchemaProperties"
           @delete="onDelete"
         />
-        <v-speed-dial
+        <!-- <v-speed-dial
           v-model="fab"
           bottom
           absolute
@@ -212,7 +212,7 @@
             </v-btn>
             <span class="fse-create-element-caption">{{ element.name }}</span>
           </div>
-        </v-speed-dial>
+        </v-speed-dial> -->
       </div>
     </v-col>
   </v-row>
