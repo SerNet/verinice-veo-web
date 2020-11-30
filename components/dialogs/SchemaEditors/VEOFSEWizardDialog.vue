@@ -59,10 +59,12 @@
           </v-row>
         </v-window-item>
         <v-window-item value="import-1">
-          <VEOEditorFileUpload :code="fscode" :submit-button-text="$t('editor.formschema.wizard.import')" @schema-uploaded="setFormSchema" />
+          <h2>{{ $t('editor.formschema.wizard.import') }}</h2>
+          <VEOEditorFileUpload :code="fscode" @schema-uploaded="doImport1" />
         </v-window-item>
         <v-window-item value="import-2">
-          <VEOEditorFileUpload :code="oscode" :submit-button-text="$t('editor.objectschema.wizard.import')" @schema-uploaded="setObjectSchema" />
+          <h2>{{ $t('editor.objectschema.wizard.import') }}</h2>
+          <VEOEditorFileUpload :code="oscode" @schema-uploaded="doImport2" />
         </v-window-item>
       </v-window>
     </template>
@@ -151,7 +153,9 @@ export default Vue.extend({
     state(newValue) {
       if (newValue === 'start') {
         this.oscode = '\n\n\n\n\n'
+        this.objectSchema = undefined
         this.fscode = '\n\n\n\n\n'
+        this.formSchema = undefined
         this.clearCreateForm()
       }
     }
@@ -185,6 +189,28 @@ export default Vue.extend({
       this.formSchema = generateSchema(this.createForm.title, this.objectSchema?.title || this.createForm.modelType)
       this.$emit('form-schema', this.formSchema)
       this.$emit('object-schema', this.objectSchema)
+    },
+    // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
+    async doImport1(schema: IVEOFormSchema) {
+      this.setFormSchema(schema)
+      console.log('1', schema.modelType, this.objectTypes)
+      if (this.objectTypes.findIndex((item: { value: string, text: string }) => item.value.toLowerCase() === schema.modelType.toLowerCase()) !== -1) {
+        this.objectSchema = await this.$api.schema.fetch(schema.modelType.toLowerCase())
+        this.$emit('form-schema', this.formSchema)
+        this.$emit('object-schema', this.objectSchema)
+      } else {
+        this.state = 'import-2'
+      }
+    },
+    // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
+    doImport2(schema: VEOObjectSchemaRAW) {
+      if (schema.title !== this.formSchema?.modelType) {
+        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, this.$t('editor.formschema.wizard.import.wrongobjectschema', { objectType: schema.title, formType: this.formSchema?.modelType }))
+      } else {
+        this.setObjectSchema(schema)
+        this.$emit('form-schema', this.formSchema)
+        this.$emit('object-schema', this.objectSchema)
+      }
     },
     clearCreateForm() {
       this.createForm = {

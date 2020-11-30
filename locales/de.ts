@@ -41,6 +41,7 @@ export default {
   'editor.formschema.wizard.generate.none': 'Mit leerem Formular starten',
   'editor.formschema.wizard.generate.title': 'Möchten Sie ein Formular vorgenerieren?',
   'editor.formschema.wizard.import': 'Formular importieren',
+  'editor.formschema.wizard.import.wrongobjectschema': 'Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss "{formType}" sein.',
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
