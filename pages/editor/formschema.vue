@@ -70,16 +70,17 @@
         </v-tabs-items>
       </v-col>
     </v-row>
-    <VEOFSEWizardDialog v-model="showCreationDialog" @objectSchema="setObjectSchema" @formSchema="setFormSchema" />
+    <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
   </v-col>
 </template>
 
 <script lang="ts">
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
+import { IVEOFormSchema, VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
 import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
+import { generateSchema } from '~/lib/FormSchemaHelper'
 
 export default Vue.extend({
   components: {
@@ -90,52 +91,17 @@ export default Vue.extend({
     return {
       tab: 'form-schema',
       showCreationDialog: false as boolean,
-      objectSchema: {},
-      formSchema: {
-        name: 'Verarbeitungstätigkeiten',
-        modelType: 'Process',
-        content: {
-          type: 'Layout',
-          options: {
-            format: 'group',
-            direction: 'vertical'
-          },
-          elements: [
-            {
-              type: 'Layout',
-              options: {
-                format: 'group',
-                direction: 'horizontal'
-              },
-              elements: [
-                {
-                  type: 'Control',
-                  scope: '#/properties/name',
-                  options: {
-                    label: 'Name'
-                  }
-                },
-                {
-                  type: 'Control',
-                  scope:
-                    '#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_comment',
-                  options: {
-                    format: 'multiline',
-                    label: 'process_SensitiveData_comment'
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      },
+      objectSchema: undefined as VEOObjectSchemaRAW | undefined,
+      formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
       objectData: {}
     }
   },
   async fetch() {
     const objectSchema = await this.$api.schema.fetch('process')
-    this.objectSchema = objectSchema
+    if (!this.$route.query.wizard) {
+      this.objectSchema = objectSchema
+    }
   },
   computed: {
     maxHeight(): string {
@@ -155,13 +121,16 @@ export default Vue.extend({
     }
   },
   mounted() {
-    this.showCreationDialog = this.objectSchema === undefined
+    if (!this.$route.query.wizard) {
+      this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process')
+    }
+    this.showCreationDialog = this.objectSchema === undefined && this.formSchema === undefined
   },
   methods: {
     updateSchema(formSchema: any) {
       this.formSchema = JSON.parse(JSON.stringify(formSchema))
     },
-    setFormSchema(schema: any) {
+    setFormSchema(schema: IVEOFormSchema) {
       this.formSchema = schema
       this.showCreationDialog = !this.objectSchema || false
     },

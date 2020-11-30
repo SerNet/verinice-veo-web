@@ -3,90 +3,76 @@
     <template #default>
       <v-window v-model="state">
         <v-window-item value="start" class="py-8">
-          <h2 class="text-center my-8">{{ $t('editor.formschema.wizard.start.title') }}</h2>
+          <h2 class="text-center my-8">{{ $t('editor.objectschema.wizard.start.title') }}</h2>
           <v-row class="text-center">
             <v-col>
-              <v-btn color="primary" @click="state = 'create'">
+              <v-btn color="primary" @click="state = 'create-1'">
                 {{ $t('editor.formschema.wizard.create') }}
               </v-btn>
             </v-col>
             <v-col>
-              <v-btn color="primary" @click="state = 'import'">
+              <v-btn color="primary" @click="state = 'import-1'">
                 {{ $t('editor.formschema.wizard.import') }}
               </v-btn>
             </v-col>
           </v-row>
         </v-window-item>
-        <v-window-item value="create">
-          <v-form v-model="createForm.valid" @submit.prevent="createSchema()">
+        <v-window-item value="create-1">
+          <v-form v-model="createForm.valid" @submit.prevent="doCreate1()">
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.title') }}*:</span>
+                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.title.text') }}*:</span>
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-text-field v-model="createForm.title" :label="$t('editor.formschema.create.title')" :rules="createForm.rules.title" required />
               </v-col>
             </v-row>
+            <v-row no-gutters class="align-center mt-4">
+              <v-col :cols="12" :md="5">
+                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.text') }}*:</span>
+              </v-col>
+              <v-col :cols="12" :md="5">
+                <v-select v-model="createForm.modelType" :label="$t('editor.formschema.create.type')" :rules="createForm.rules.modelType" :items="objectTypes" required />
+              </v-col>
+            </v-row>
+            <v-row v-if="createForm.modelType === 'custom'">
+              <v-col :cols="12">
+                <VEOEditorFileUpload :code="oscode" :submit-button-text="$t('editor.objectschema.wizard.import')" @schema-uploaded="setObjectSchema" />
+              </v-col>
+            </v-row>
           </v-form>
           <small>{{ $t('editor.dialog.requiredfields') }}</small>
         </v-window-item>
-        <v-window-item value="import" class="px-4">
-          <v-tabs v-model="activeTab">
-            <v-tab>{{ $t('editor.formschema.wizard.import.file') }}</v-tab>
-            <v-tab>{{ $t('editor.formschema.wizard.import.code') }}</v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="activeTab">
-            <v-tab-item>
-              <v-form
-                class="mt-4"
-                @submit.prevent="doUpload()"
-              >
-                <v-file-input
-                  v-model="file"
-                  accept=".json"
-                  counter
-                  dense
-                  outlined
-                  show-size
-                  :label="`${ $t('editor.formschema.wizard.upload')} (.json)`"
-                  :disabled="uploading"
-                />
-                <v-row class="ml-6">
-                  <v-col cols="auto">
-                    <v-btn
-                      role="submit"
-                      type="submit"
-                      color="primary"
-                      :disabled="uploading || !file"
-                    >
-                      {{ $t('editor.formschema.wizard.import') }}
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="auto">
-                    <v-progress-circular
-                      v-if="uploading"
-                      indeterminate
-                      color="primary"
-                      class="mr-2"
-                    />
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-tab-item>
-            <v-tab-item>
-              <CodeEditor v-model="code" @schema-updated="createSchema" />
-            </v-tab-item>
-          </v-tabs-items>
+        <v-window-item value="create-2">
+          <h2 class="text-center my-8">{{ $t('editor.formschema.wizard.generate.title') }}wie starten</h2>
+          <v-row class="text-center">
+            <v-col>
+              <v-btn color="primary" @click="doCreate2(false)">
+                {{ $t('editor.formschema.wizard.generate.none') }}
+              </v-btn>
+            </v-col>
+            <v-col>
+              <v-btn color="primary" @click="doCreate2(true)">
+                {{ $t('editor.formschema.wizard.generate.generate') }}
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-window-item>
+        <v-window-item value="import-1">
+          <VEOEditorFileUpload :code="fscode" :submit-button-text="$t('editor.formschema.wizard.import')" @schema-uploaded="setFormSchema" />
+        </v-window-item>
+        <v-window-item value="import-2">
+          <VEOEditorFileUpload :code="oscode" :submit-button-text="$t('editor.objectschema.wizard.import')" @schema-uploaded="setObjectSchema" />
         </v-window-item>
       </v-window>
     </template>
     <template #dialog-options>
       <span />
-      <v-btn v-if="state !== 'start'" color="primary" @click="state = 'start'">
+      <v-btn v-if="state !== 'start'" color="primary" @click="goBack()">
         {{ $t('global.button.previous') }}
       </v-btn>
       <v-spacer />
-      <v-btn v-if="state === 'create'" color="primary" role="submit" type="submit" :disabled="!createForm.valid" @click="createSchema()">
+      <v-btn v-if="state === 'create-1'" color="primary" role="submit" type="submit" :disabled="!createForm.valid || (createForm.modelType === 'custom' && !objectSchema)" @click="doCreate1()">
         {{ $t('global.button.next') }}
       </v-btn>
     </template>
@@ -97,15 +83,18 @@
 import Vue from 'vue'
 import { trim } from 'lodash'
 
-import { generateSchema } from '~/lib/ObjectSchemaHelper'
+import { IVEOFormSchema, VEOObjectSchemaRAW } from 'veo-objectschema-7'
+import { generateSchema } from '~/lib/FormSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import CodeEditor from '~/components/CodeEditor.vue'
+import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
+import { ObjectSchemaNames } from '~/types/FormSchema'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 export default Vue.extend({
   components: {
     VeoDialog,
-    CodeEditor
+    VEOEditorFileUpload
   },
   props: {
     value: {
@@ -117,24 +106,38 @@ export default Vue.extend({
     return {
       dialog: false as boolean,
       noWatch: false as boolean,
-      state: 'start' as 'start' | 'import' | 'create',
       createForm: {
         title: '' as string,
+        modelType: '' as string,
         valid: false,
         rules: {
-          title: [(input: string) => trim(input).length > 0]
+          title: [(input: string) => trim(input).length > 0],
+          modelType: [(input: string) => trim(input).length > 0]
         }
       },
-      code: '\n\n\n\n\n' as string,
-      activeTab: 0 as number,
-      file: undefined as File | undefined,
-      uploading: false as boolean
+      oscode: '\n\n\n\n\n' as string,
+      fscode: '\n\n\n\n\n' as string,
+      formSchema: undefined as IVEOFormSchema | undefined,
+      objectSchema: undefined as VEOObjectSchemaRAW | undefined,
+      state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2'
+    }
+  },
+  computed: {
+    objectTypes(): {value: string, text: string}[] {
+      const types = Object.keys(ObjectSchemaNames).map((value: string) => {
+        return {
+          text: this.$t(`unit.data.type.${value}`) as string,
+          value
+        }
+      })
+      types.unshift({ text: this.$t('editor.formschema.wizard.modelType.custom') as string, value: 'custom' })
+      return types
     }
   },
   watch: {
     dialog(newValue: boolean) {
       if (newValue) {
-        this.state = 'start'
+        // this.state = 'step1'
       }
       if (!this.noWatch) {
         this.$emit('input', newValue)
@@ -147,7 +150,8 @@ export default Vue.extend({
     },
     state(newValue) {
       if (newValue === 'start') {
-        this.code = ''
+        this.oscode = '\n\n\n\n\n'
+        this.fscode = '\n\n\n\n\n'
         this.clearCreateForm()
       }
     }
@@ -156,44 +160,50 @@ export default Vue.extend({
     this.dialog = this.value
   },
   methods: {
-    createSchema(_schema?: any) {
-      /* if (this.state === 'create') {
-        const schema = generateSchema(this.createForm.type.toLowerCase(), this.createForm.description)
-        this.$emit('schema', schema)
+    goBack() {
+      if (this.state === 'create-1' || this.state === 'import-1') {
+        this.state = 'start'
+      } else if (this.state === 'create-2') {
+        this.state = 'create-1'
+      } else if (this.state === 'import-2') {
+        this.state = 'import-1'
+      }
+    },
+    // Create/load object schema and proceed to step 1
+    async doCreate1() {
+      // Only proceed if an object schema was uploaded/pasted (we sadly can't validate it in the form, so we have to to it here)
+      if (this.objectSchema || this.createForm.modelType !== 'custom') {
+        if (!this.objectSchema) {
+          this.objectSchema = await this.$api.schema.fetch(this.createForm.modelType)
+        }
+        this.state = 'create-2'
       } else {
-        this.$emit('schema', _schema)
-      } */
+        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, this.$t('editor.formschema.wizard.objectschema.required'))
+      }
+    },
+    doCreate2(_generateSchema: boolean) {
+      this.formSchema = generateSchema(this.createForm.title, this.objectSchema?.title || this.createForm.modelType)
+      this.$emit('form-schema', this.formSchema)
+      this.$emit('object-schema', this.objectSchema)
     },
     clearCreateForm() {
       this.createForm = {
         title: '' as string,
+        modelType: '' as string,
         valid: false,
         rules: {
-          title: [(input: string) => trim(input).length > 0]
+          title: [(input: string) => trim(input).length > 0],
+          modelType: [(input: string) => trim(input).length > 0]
         }
       }
     },
-    doUpload() {
-      this.uploading = true
-
-      if (this.file) {
-        // Init file reader
-        const fr = new FileReader()
-
-        // Register callback upon successfull file upload
-        fr.onload = (event) => {
-          const result = JSON.parse(event.target?.result as string || '{}')
-          this.$emit('schema', result)
-          this.uploading = false
-        }
-        fr.onerror = (_) => {
-          this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('editor.formschema.wizard.upload.error')}: ${fr.error}`)
-          this.uploading = false
-        }
-
-        // Read file
-        fr.readAsText(this.file)
-      }
+    setObjectSchema(schema: VEOObjectSchemaRAW) {
+      this.oscode = JSON.stringify(schema, undefined, 2)
+      this.objectSchema = schema
+    },
+    setFormSchema(schema: IVEOFormSchema) {
+      this.fscode = JSON.stringify(schema, undefined, 2)
+      this.formSchema = schema
     }
   }
 })

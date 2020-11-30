@@ -39,52 +39,7 @@
           <small>{{ $t('editor.dialog.requiredfields') }}</small>
         </v-window-item>
         <v-window-item value="import" class="px-4">
-          <v-tabs v-model="activeTab">
-            <v-tab>{{ $t('editor.objectschema.wizard.import.file') }}</v-tab>
-            <v-tab>{{ $t('editor.objectschema.wizard.import.code') }}</v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="activeTab">
-            <v-tab-item>
-              <v-form
-                class="mt-4"
-                @submit.prevent="doUpload()"
-              >
-                <v-file-input
-                  v-model="file"
-                  accept=".json"
-                  counter
-                  dense
-                  outlined
-                  show-size
-                  :label="`${ $t('editor.objectschema.wizard.upload')} (.json)`"
-                  :disabled="uploading"
-                />
-                <v-row class="ml-6">
-                  <v-col cols="auto">
-                    <v-btn
-                      role="submit"
-                      type="submit"
-                      color="primary"
-                      :disabled="uploading || !file"
-                    >
-                      {{ $t('editor.objectschema.wizard.import') }}
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="auto">
-                    <v-progress-circular
-                      v-if="uploading"
-                      indeterminate
-                      color="primary"
-                      class="mr-2"
-                    />
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-tab-item>
-            <v-tab-item>
-              <CodeEditor v-model="code" @schema-updated="createSchema" />
-            </v-tab-item>
-          </v-tabs-items>
+          <VEOEditorFileUpload :code="code" @schema-uploaded="createSchema" />
         </v-window-item>
       </v-window>
     </template>
@@ -107,13 +62,12 @@ import { trim } from 'lodash'
 
 import { generateSchema } from '~/lib/ObjectSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import CodeEditor from '~/components/CodeEditor.vue'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
+import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 
 export default Vue.extend({
   components: {
     VeoDialog,
-    CodeEditor
+    VEOEditorFileUpload
   },
   props: {
     value: {
@@ -135,10 +89,7 @@ export default Vue.extend({
           description: [(input: string) => trim(input).length > 0]
         }
       },
-      code: '\n\n\n\n\n' as string,
-      activeTab: 0 as number,
-      file: undefined as File | undefined,
-      uploading: false as boolean
+      code: '\n\n\n\n\n' as string
     }
   },
   watch: {
@@ -183,28 +134,6 @@ export default Vue.extend({
           type: [(input: string) => trim(input).length > 0],
           description: [(input: string) => trim(input).length > 0]
         }
-      }
-    },
-    doUpload() {
-      this.uploading = true
-
-      if (this.file) {
-        // Init file reader
-        const fr = new FileReader()
-
-        // Register callback upon successfull file upload
-        fr.onload = (event) => {
-          const result = JSON.parse(event.target?.result as string || '{}')
-          this.$emit('schema', result)
-          this.uploading = false
-        }
-        fr.onerror = (_) => {
-          this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('editor.objectschema.wizard.upload.error')}: ${fr.error}`)
-          this.uploading = false
-        }
-
-        // Read file
-        fr.readAsText(this.file)
       }
     }
   }
