@@ -1,41 +1,36 @@
 <template>
-  <v-card rounded elevation="0" class="fse-input mx-3 my-2">
-    <v-card-text class="pa-0">
-      <v-row no-gutters>
-        <v-col cols="auto">
-          <v-icon small class="handle pr-1">mdi-menu</v-icon>
-        </v-col>
-        <v-col cols="auto">
-          <div style="max-width: 220px; padding-top: 2px">
-            <div class="text-caption text-truncate">
-              Label
-            </div>
-          </div>
-        </v-col>
-        <v-spacer />
-        <v-col cols="auto" class="text-right">
-          <v-btn icon x-small @click="open">
-            <v-icon dense small>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn icon x-small @click="onDelete">
-            <v-icon dense small>mdi-delete</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
-        <v-col cols="auto">
+  <v-card rounded elevation="0" class="fse-input mx-3 my-2 px-2">
+    <v-row no-gutters>
+      <v-col cols="auto">
+        <v-icon small class="handle pr-1">mdi-menu</v-icon>
+      </v-col>
+      <v-col cols="auto">
+        <div style="max-width: 220px; padding-top: 2px">
           <div class="text-caption text-truncate">
-            {{ value.text }}
+            Label
           </div>
-        </v-col>
-      </v-row>
-    </v-card-text>
+        </div>
+      </v-col>
+      <v-spacer />
+      <v-col cols="auto" class="text-right">
+        <v-btn icon x-small @click="open">
+          <v-icon dense small>mdi-pencil</v-icon>
+        </v-btn>
+        <v-btn icon x-small @click="onDelete">
+          <v-icon dense small>mdi-delete</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col cols="auto">
+        <div class="text-caption text-truncate">
+          {{ value.text }}
+        </div>
+      </v-col>
+    </v-row>
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
       <template #default>
-        <v-text-field
-          v-model="dialog.data.text.value"
-          label="Text"
-        />
+        <v-text-field v-model="dialog.data.text.value" label="Text" />
         <v-combobox
           v-model="dialog.data.class.value"
           label="Class"
