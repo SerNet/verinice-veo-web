@@ -1,186 +1,179 @@
 <template>
-  <div>
-    <div class="px-5 py-4 veo-editor-header">
-      <v-expansion-panels accordion>
-        <v-expansion-panel>
-          <v-expansion-panel-header class="pa-2">
-            Unused Basic Properties
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <Draggable
-              class="drag-unused-basic-properties"
-              tag="div"
-              style="overflow: auto; min-width:300;"
-              :list="objectSchemaProperties.unused.basics"
-              :group="{ name: 'g1', pull: 'clone', put: false }"
-              :sort="false"
-            >
-              <v-card
-                class="ma-1 pa-1"
-                v-for="(el, i) in objectSchemaProperties.unused.basics"
-                flat
-                :key="i"
-              >
-                <v-row no-gutters>
-                  <v-col cols="auto">
-                    <v-avatar
-                      :color="typeMap[el.type].color"
-                      size="32"
-                      class="mr-2"
-                    >
-                      <v-icon small dark>
-                        {{ typeMap[el.type].icon }}
-                      </v-icon>
-                    </v-avatar>
-                  </v-col>
-                  <v-col cols="auto">
-                    {{ el.label }}
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col cols="auto">
-                    <v-chip :color="typeMap[el.type].color" outlined label pill>
-                      {{ el.type }}
-                    </v-chip>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </Draggable>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-expansion-panel>
-          <v-expansion-panel-header class="pa-2">
-            Unused Aspects
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <Draggable
-              class="drag-unused-aspects"
-              tag="div"
-              style="overflow: auto; min-width:300;"
-              :list="objectSchemaProperties.unused.aspects"
-              :group="{ name: 'g1', pull: 'clone', put: false }"
-              :sort="false"
-            >
-              <v-card
-                class="ma-1 pa-1"
-                v-for="(el, i) in objectSchemaProperties.unused.aspects"
-                flat
-                :key="i"
-              >
-                <v-row no-gutters>
-                  <v-col cols="auto">
-                    <v-avatar
-                      :color="typeMap[el.type].color"
-                      size="32"
-                      class="mr-2"
-                    >
-                      <v-icon small dark>
-                        {{ typeMap[el.type].icon }}
-                      </v-icon>
-                    </v-avatar>
-                  </v-col>
-                  <v-col cols="auto">
-                    {{ el.label }}
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col cols="auto">
-                    <v-chip :color="typeMap[el.type].color" outlined label pill>
-                      {{ el.type }}
-                    </v-chip>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </Draggable>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-expansion-panel>
-          <v-expansion-panel-header class="pa-2">
-            Unused Links
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <Draggable
-              class="drag-unused-links"
-              tag="div"
-              style="overflow: auto; min-width:300;"
-              :list="objectSchemaProperties.unused.links"
-              :group="{ name: 'g1', pull: 'clone', put: false }"
-              :sort="false"
-            >
-              <v-card
-                class="ma-1 pa-1"
-                v-for="(el, i) in objectSchemaProperties.unused.links"
-                flat
-                :key="i"
-              >
-                <v-row no-gutters>
-                  <v-col cols="auto">
-                    <v-avatar
-                      :color="typeMap[el.type].color"
-                      size="32"
-                      class="mr-2"
-                    >
-                      <v-icon small dark>
-                        {{ typeMap[el.type].icon }}
-                      </v-icon>
-                    </v-avatar>
-                  </v-col>
-                  <v-col cols="auto">
-                    {{ el.label }}
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col cols="auto">
-                    <v-chip :color="typeMap[el.type].color" outlined label pill>
-                      {{ el.type }}
-                    </v-chip>
-                  </v-col>
-                </v-row>
-              </v-card>
-            </Draggable>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </div>
-    <div class="veo-editor-body" style="height: 5000px;">
-      <FseGenerator
-        :schema="objectSchema"
-        :value="value.content"
-        :objectSchemaProperties.sync="objectSchemaProperties"
-        @delete="onDelete"
-      />
-      <v-speed-dial
-        v-model="fab"
-        bottom
-        absolute
-        right
-        direction="top"
-        open-on-hover
-        transition="scale-transition"
-        fixed
-        style="right: 50%;"
+  <v-row no-gutters>
+    <v-col cols="4">
+      <v-card
+        elevation="0"
+        class="mt-2 mx-2 mb-2 drag-elements-wrapper"
+        style="overflow: auto; height: calc(100vh - 202px);"
       >
-        <template #activator>
-          <v-btn v-model="fab" color="primary" dark small fab>
-            <v-icon v-if="fab">
-              mdi-close
-            </v-icon>
-            <v-icon v-else>
-              mdi-plus
-            </v-icon>
-          </v-btn>
-        </template>
-
-        <div
-          v-for="element in createElementActions"
-          :key="element.name"
-          class="fse-create-element"
-        >
-          <v-btn fab x-small @click="element.action">
-            <v-icon>{{ element.icon }}</v-icon>
-          </v-btn>
-          <span class="fse-create-element-caption">{{ element.name }}</span>
+        <div v-if="objectSchemaProperties.unused.basics.length > 0">
+          <v-divider></v-divider>
+          <v-subheader>Basic Properties</v-subheader>
+          <v-divider></v-divider>
         </div>
-      </v-speed-dial>
-    </div>
-  </div>
+        <Draggable
+          class="drag-unused-basic-properties"
+          tag="div"
+          style="overflow: auto; min-width:300;"
+          :list="objectSchemaProperties.unused.basics"
+          :group="{ name: 'g1', pull: 'clone', put: false }"
+          :sort="false"
+        >
+          <v-card
+            flat
+            v-for="(el, i) in objectSchemaProperties.unused.basics"
+            :key="i"
+          >
+            <v-list-item class="ma-1 pa-1" flat>
+              <v-list-item-avatar size="32" :color="typeMap[el.type].color">
+                <v-icon small outlined dark v-text="typeMap[el.type].icon" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title class="caption" v-text="el.label" />
+              </v-list-item-content>
+              <v-list-item-action class="ml-3">
+                <v-chip
+                  :color="typeMap[el.type].color"
+                  class="mr-2"
+                  small
+                  label
+                  outlined
+                >
+                  {{ el.type }}
+                </v-chip>
+              </v-list-item-action>
+            </v-list-item>
+          </v-card>
+        </Draggable>
+
+        <div v-if="objectSchemaProperties.unused.aspects.length > 0">
+          <v-divider></v-divider>
+          <v-subheader>Aspects</v-subheader>
+          <v-divider></v-divider>
+        </div>
+        <Draggable
+          class="drag-unused-aspects"
+          tag="div"
+          style="overflow: auto; min-width:300;"
+          :list="objectSchemaProperties.unused.aspects"
+          :group="{ name: 'g1', pull: 'clone', put: false }"
+          :sort="false"
+        >
+          <v-card
+            flat
+            v-for="(el, i) in objectSchemaProperties.unused.aspects"
+            :key="i"
+          >
+            <v-list-item class="ma-1 pa-1" flat>
+              <v-list-item-avatar size="32" :color="typeMap[el.type].color">
+                <v-icon small outlined dark v-text="typeMap[el.type].icon" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title class="caption" v-text="el.label" />
+              </v-list-item-content>
+              <v-list-item-action class="ml-3">
+                <v-chip
+                  :color="typeMap[el.type].color"
+                  class="mr-2"
+                  small
+                  label
+                  outlined
+                >
+                  {{ el.type }}
+                </v-chip>
+              </v-list-item-action>
+            </v-list-item>
+          </v-card>
+        </Draggable>
+
+        <div v-if="objectSchemaProperties.unused.links.length > 0">
+          <v-divider></v-divider>
+          <v-subheader>Links</v-subheader>
+          <v-divider></v-divider>
+        </div>
+        <Draggable
+          class="drag-unused-links"
+          tag="div"
+          style="overflow: auto; min-width:300;"
+          :list="objectSchemaProperties.unused.links"
+          :group="{ name: 'g1', pull: 'clone', put: false }"
+          :sort="false"
+        >
+          <v-card
+            flat
+            v-for="(el, i) in objectSchemaProperties.unused.links"
+            :key="i"
+          >
+            <v-list-item class="ma-1 pa-1" flat>
+              <v-list-item-avatar size="32" :color="typeMap[el.type].color">
+                <v-icon small outlined dark v-text="typeMap[el.type].icon" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title class="caption" v-text="el.label" />
+              </v-list-item-content>
+              <v-list-item-action class="ml-3">
+                <v-chip
+                  :color="typeMap[el.type].color"
+                  class="mr-2"
+                  small
+                  label
+                  outlined
+                >
+                  {{ el.type }}
+                </v-chip>
+              </v-list-item-action>
+            </v-list-item>
+          </v-card>
+        </Draggable>
+      </v-card>
+    </v-col>
+    <v-col cols="8">
+      <div
+        class="veo-editor-body"
+        style="overflow: auto; height: calc(100vh - 182px);"
+      >
+        <FseGenerator
+          :schema="objectSchema"
+          :value="value.content"
+          :objectSchemaProperties.sync="objectSchemaProperties"
+          @delete="onDelete"
+        />
+        <v-speed-dial
+          v-model="fab"
+          bottom
+          absolute
+          right
+          direction="top"
+          open-on-hover
+          transition="scale-transition"
+          fixed
+          style="right: 50%;"
+        >
+          <template #activator>
+            <v-btn v-model="fab" color="primary" dark small fab>
+              <v-icon v-if="fab">
+                mdi-close
+              </v-icon>
+              <v-icon v-else>
+                mdi-plus
+              </v-icon>
+            </v-btn>
+          </template>
+
+          <div
+            v-for="element in createElementActions"
+            :key="element.name"
+            class="fse-create-element"
+          >
+            <v-btn fab x-small @click="element.action">
+              <v-icon>{{ element.icon }}</v-icon>
+            </v-btn>
+            <span class="fse-create-element-caption">{{ element.name }}</span>
+          </div>
+        </v-speed-dial>
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -554,27 +547,8 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
-.veo-editor-header {
-  background-color: white;
-  border-bottom: 2px solid $grey;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  max-height: 200px;
-  overflow: auto;
-}
-
-.veo-editor-header ::v-deep .v-expansion-panel-header {
-  min-height: auto;
-}
-.veo-editor-header
-  ::v-deep
-  .v-expansion-panel--active
-  > .v-expansion-panel-header {
-  min-height: auto;
-}
-.veo-editor-header ::v-deep .v-expansion-panel-content__wrap {
-  padding: 0 0 8px 0;
+.drag-elements-wrapper {
+  border: 2px solid $grey;
 }
 
 .veo-editor-body ::v-deep .v-card.vf-layout {

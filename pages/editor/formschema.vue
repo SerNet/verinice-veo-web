@@ -10,7 +10,7 @@
         :style="{ maxHeight }"
         style="overflow: auto"
         cols="12"
-        lg="6"
+        lg="8"
       >
         <v-row dense class="align-center">
           <v-col cols="auto"><h1 class="ml-4 mt-2">{{ $t('editor.formschema.headline') }}</h1></v-col>
@@ -36,7 +36,7 @@
         :style="{ maxHeight }"
         style="overflow: auto;"
         cols="12"
-        lg="6"
+        lg="4"
       >
         <v-tabs v-model="tab">
           <v-tabs-slider />
