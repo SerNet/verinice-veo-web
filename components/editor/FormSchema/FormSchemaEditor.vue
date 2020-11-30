@@ -6,6 +6,11 @@
         class="mt-2 mx-2 mb-2 drag-elements-wrapper"
         style="overflow: auto; height: calc(100vh - 202px);"
       >
+        <div v-if="objectSchemaProperties.unused.basics.length > 0">
+          <v-divider></v-divider>
+          <v-subheader>Basic Properties</v-subheader>
+          <v-divider></v-divider>
+        </div>
         <Draggable
           class="drag-unused-basic-properties"
           tag="div"
@@ -41,6 +46,11 @@
           </v-card>
         </Draggable>
 
+        <div v-if="objectSchemaProperties.unused.aspects.length > 0">
+          <v-divider></v-divider>
+          <v-subheader>Aspects</v-subheader>
+          <v-divider></v-divider>
+        </div>
         <Draggable
           class="drag-unused-aspects"
           tag="div"
@@ -75,6 +85,12 @@
             </v-list-item>
           </v-card>
         </Draggable>
+
+        <div v-if="objectSchemaProperties.unused.links.length > 0">
+          <v-divider></v-divider>
+          <v-subheader>Links</v-subheader>
+          <v-divider></v-divider>
+        </div>
         <Draggable
           class="drag-unused-links"
           tag="div"
