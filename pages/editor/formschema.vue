@@ -23,7 +23,7 @@
           </v-col>
         </v-row>
         <v-row class="mx-4">
-          <v-col cols="12" lg="4"><v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" /></v-col>
+          <v-col cols="12" lg="4" class="pl-0"><v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" /></v-col>
         </v-row>
         <FormSchemaEditor
           v-if="!$fetchState.pending"
