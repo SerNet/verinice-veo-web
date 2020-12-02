@@ -45,13 +45,14 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType, Ref, ref, watch } from '@nuxtjs/composition-api'
-import { IInputElement, IInputElementWeights } from '~/types/VEOEditor'
+import { IVEOFormSchemaItemOptions } from 'veo-objectschema-7'
+import { IInputElement } from '~/types/VEOEditor'
 
 interface IProps {
   value: boolean,
   availableControls: IInputElement[],
   name: string,
-  schema: IInputElementWeights['schema']
+  schema: any
 }
 
 export default defineComponent<IProps>({
@@ -69,7 +70,7 @@ export default defineComponent<IProps>({
       required: true
     },
     schema: {
-      type: Object as PropType<IInputElementWeights['schema']>,
+      type: Object as PropType<any>,
       required: true
     }
   },
@@ -99,7 +100,7 @@ export default defineComponent<IProps>({
     const activeControl: Ref<string> = ref('')
 
     const scope: Ref<string> = ref('')
-    const options: Ref<IInputElementWeights['options']> = ref({
+    const options: Ref<IVEOFormSchemaItemOptions> = ref({
       label: '' as string
     })
 
