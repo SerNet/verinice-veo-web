@@ -2,7 +2,7 @@
   <v-card rounded elevation="0" class="fse-input mx-3 my-2">
     <v-card-text class="pa-0">
       <v-row no-gutters>
-        <v-col cols="auto" class="text-right px-1 fse-input-dragbar">
+        <v-col cols="auto" class="text-right px-1 fse-input-dragbar" :style="{ backgroundColor: color }">
           <v-icon class="handle">mdi-menu</v-icon>
         </v-col>
         <v-col class="px-2">
@@ -30,8 +30,9 @@ import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
 
+import { VEOTypeNameRAW } from 'veo-objectschema-7'
 import { BaseObject } from '~/components/forms/utils'
-import { eligibleInputElements, IInputElement } from '~/types/VEOEditor'
+import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VEOEditor'
 import VEOFSEEditControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditControlDialog.vue'
 
 export default Vue.extend({
@@ -82,6 +83,9 @@ export default Vue.extend({
   computed: {
     availableElements(): IInputElement[] {
       return eligibleInputElements(this.$props)
+    },
+    color(): string {
+      return INPUT_TYPES[this.schema.type as VEOTypeNameRAW].color
     }
   },
   mounted() {
@@ -125,7 +129,6 @@ export default Vue.extend({
 }
 
 .fse-input-dragbar {
-  background-color: $color-string;
   color: white;
 
   i {
