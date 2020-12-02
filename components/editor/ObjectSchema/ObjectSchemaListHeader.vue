@@ -26,12 +26,12 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { ITypeInfo } from './ObjectSchemaEditor.vue'
 import { IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
+import { IInputType } from '~/types/VEOEditor'
 
 interface IProps {
   item: IVEOCustomAspect | IVEOCustomLink
-  styling: ITypeInfo
+  styling: IInputType
 }
 
 export default defineComponent<IProps>({

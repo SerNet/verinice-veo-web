@@ -11,11 +11,10 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
-import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
-import { BaseObject, IApi } from '~/components/forms/utils'
-import FseFormElement from './Collection/FormElements/FseFormElement.vue'
+import FseFormElement from './Collection/FseFormElement.vue'
+import { BaseObject } from '~/components/forms/utils'
 
 export default Vue.extend({
   components: {

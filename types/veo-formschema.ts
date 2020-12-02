@@ -5,22 +5,23 @@ declare module 'veo-objectschema-7' {
 
     export type IVEOFormSchemaContentType = 'Layout' | 'Control' | string
 
-    export interface IVEOFormSchemaContentOptions {
+    export interface IVEOFormSchemaItemOptions {
+        label?: string
         format?: string,
         direction?: string,
-        label?: string
+        highlight?: boolean
     }
 
-    export interface IVEOFormSchemaContent {
+    export interface IVEOFormSchemaItem {
         type: IVEOFormSchemaContentType,
         scope?: string,
-        options?: IVEOFormSchemaContentOptions,
-        elements?: IVEOFormSchemaContent[]
+        options?: IVEOFormSchemaItemOptions,
+        elements?: IVEOFormSchemaItem[]
     }
 
     export interface IVEOFormSchema {
         name: string,
         modelType: string,
-        content: IVEOFormSchemaContent
+        content: IVEOFormSchemaItem
     }
 }

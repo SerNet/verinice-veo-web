@@ -77,10 +77,10 @@
 import { defineComponent, ref, watch, computed, Ref } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 
-import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
+import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { IVEOAttribute, IVEOCustomAspect, IVEOCustomLink, prefixedAspectName as aspectName } from '~/lib/ObjectSchemaHelper'
-import { ITypeInfo } from '~/components/editor/ObjectSchema/ObjectSchemaEditor.vue'
 import { ObjectSchemaNames } from '~/types/FormSchema'
+import { IInputTypes } from '~/types/VEOEditor'
 
 interface IProps {
   value: boolean,
@@ -88,7 +88,7 @@ interface IProps {
   mode: string,
   type: 'aspect' | 'link',
   schema: VEOObjectSchemaRAW,
-  typeMap: Record<VEOTypeNameRAW, ITypeInfo>
+  typeMap: IInputTypes
 }
 
 export default defineComponent<IProps>({
