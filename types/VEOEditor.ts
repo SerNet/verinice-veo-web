@@ -1,5 +1,13 @@
-import { IVEOFormSchemaItem, IVEOFormSchemaItemOptions, VEOTypeNameRAW } from 'veo-objectschema-7'
+import { IVEOFormSchemaItem, IVEOFormSchemaItemOptions } from 'veo-formschema'
+import { VEOTypeNameRAW } from 'veo-objectschema-7'
 
+// ===============================
+// File containing multiple helper classes for the object and form schema editors
+// ===============================
+
+/**
+* Defines how an element should be styled in the editors.
+*/
 export interface IInputType {
   name: string,
   color: string
@@ -23,6 +31,9 @@ export const INPUT_TYPES = {
   default: { icon: 'mdi-help-box', name: 'unknown', color: 'grey' }
 } as IInputTypes
 
+/**
+ * All information a form element carries in the form schema editor
+ */
 export interface IInputElementInfo {
   schema: any,
   options: IVEOFormSchemaItemOptions,
@@ -43,6 +54,9 @@ export interface IInputElement {
   weight: (weights: IInputElementInfo) => number
 }
 
+/**
+ * Const array defining all possible control types and when which input type shall be used
+ */
 const INPUT_ELEMENTS = [
   {
     name: 'ArrayField',
@@ -55,7 +69,7 @@ const INPUT_ELEMENTS = [
   },
   {
     name: 'Autocomplete',
-    type: ['array', 'undefined', 'string'],
+    type: ['undefined', 'enum', 'array'],
     options: { format: 'autocomplete' },
     weight: weights => calculateConditionsScore([
       typeof weights.schema.type === 'undefined' || weights.schema.type === 'string' || weights.schema.type === 'array',
@@ -148,8 +162,11 @@ const INPUT_ELEMENTS = [
   },
   {
     name: 'Radio',
-    type: ['undefined', 'string'],
-    options: { format: 'radio' },
+    type: ['undefined', 'enum', 'array'],
+    options: {
+      format: 'radio',
+      direction: 'vertical'
+    },
     weight: weights => calculateConditionsScore([
       typeof weights.schema.type === 'undefined' || weights.schema.type === 'string',
       typeof weights.schema.enum !== 'undefined',
@@ -158,7 +175,7 @@ const INPUT_ELEMENTS = [
   },
   {
     name: 'Select',
-    type: ['undefined', 'string', 'array'],
+    type: ['undefined', 'enum', 'array'],
     weight: weights => calculateConditionsScore([
       typeof weights.schema.type === 'undefined' || weights.schema.type === 'string' || weights.schema.type === 'array',
       typeof weights.schema.enum !== 'undefined' || (weights.schema.items instanceof Object && !Array.isArray(weights.schema.items) && typeof weights.schema.items.enum !== 'undefined')
@@ -176,17 +193,13 @@ const INPUT_ELEMENTS = [
   }
 ] as IInputElement[]
 
-export function eligibleInputElements(weights: any) {
-  return INPUT_ELEMENTS.filter(element => element.type.includes(weights.schema.type)).sort(
-    (a: IInputElement, b: IInputElement) => b.weight(weights) - a.weight(weights)
-  ).filter(element => element.weight(weights) > 0)
-}
-
+/**
+ * Calculates the score a specific control type reaches against certain conditions.
+ * @param conditions The conditions to check against.
+ * @param additionalCustomAdvantage Increases the score by x.
+ */
 function calculateConditionsScore(conditions: boolean[], additionalCustomAdvantage: number = 0): number {
-  // @param: additionalCustomAdvantage (Optional)
-  // if current conditions must have some custom advantage in comparison.
-
-  // If every condition is satisfied, than calculate number of conditions
+  // If every condition is satisfied, then calculate number of conditions
   // else not every condition is satisfied and therefore return 0
   return (
     (isEveryConditionTrue(conditions) ? conditions.length : 0) +
@@ -196,4 +209,68 @@ function calculateConditionsScore(conditions: boolean[], additionalCustomAdvanta
 
 function isEveryConditionTrue(conditions: boolean[]): boolean {
   return conditions.every(condition => condition === true)
+}
+
+/**
+ * Returns an array containing all control types with the one fitting best at the front and the one fitting worst at the end of the array.
+*/
+export function eligibleInputElements(type: string, weights: any) {
+  return INPUT_ELEMENTS.filter(element => element.type.includes(type)).sort(
+    (a: IInputElement, b: IInputElement) => b.weight(weights) - a.weight(weights)
+  ).filter(element => element.weight(weights) > 0)
+}
+
+interface IControlTypeAlternative {
+  format: string,
+  applicable?: (conditions: any) => boolean,
+  direction?: string
+}
+
+export interface IControlType {
+  name: string,
+  format?: string,
+  direction?: string
+}
+
+/**
+ * Returns an arary containing all alternative options for a specific input and how they should be saved to the form schema.
+ *
+ * @param control The control to search the alternatives to.
+ */
+export function controlTypeAlternatives(control: string, controlDetails: any): IControlType[] {
+  const alternatives: Record<string, { format?: string, alternatives: Record<string, IControlTypeAlternative> }> = {
+    InputText: {
+      alternatives: {
+        InputMultiline: { format: 'multiline' },
+        MarkdownEditor: { format: 'markdown' }
+      }
+    },
+    Select: {
+      alternatives: {
+        Radio: { format: 'radio', direction: 'asdf', applicable: (currentType) => { return !currentType.schema.type || currentType.schema.type !== 'array' } },
+        Autocomplete: { format: 'autocomplete' }
+      }
+    }
+  }
+
+  const items: IControlType[] = []
+  for (const parent of Object.keys(alternatives)) {
+    if (parent === control || Object.keys(alternatives[parent].alternatives).includes(control)) {
+      items.push(...Object
+        .keys(alternatives[parent].alternatives)
+        .filter((child) => {
+          const filterFunction = alternatives[parent].alternatives[child].applicable
+          return filterFunction === undefined || filterFunction(controlDetails)
+        })
+        .map((child) => {
+          const item = { name: child, ...alternatives[parent].alternatives[child] }
+          delete item.applicable
+          return item
+        })
+      )
+      items.unshift({ name: parent, format: undefined })
+    }
+  }
+
+  return items
 }

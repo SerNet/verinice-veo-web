@@ -7,15 +7,14 @@ import { JsonPointer } from 'json-ptr'
 import vjp from 'vue-json-pointer'
 import Ajv, { RequiredParams } from 'ajv'
 import { chunk, merge } from 'lodash'
-import { UISchema, UISchemaElement, UIRule } from '~/types/UISchema'
-import { BaseObject, IApi } from '~/components/forms/utils'
+import Draggable from 'vuedraggable'
+import { IUsedAndUnusedObjectSchemaProperties } from '../FormSchemaEditor.vue'
 import FseLabel from './elements/FseLabel.vue'
 import FseControl from './elements/FseControl.vue'
 import FseLayout from './elements/FseLayout.vue'
-import { IUsedAndUnusedObjectSchemaProperties } from '../FormSchemaEditor.vue'
+import { UISchema, UISchemaElement, UIRule } from '~/types/UISchema'
+import { BaseObject, IApi } from '~/components/forms/utils'
 // import Wrapper from '~/components/forms/Wrapper.vue'
-
-import Draggable from 'vuedraggable'
 
 export default Vue.extend({
   name: 'FseGenerator',
@@ -97,7 +96,7 @@ export default Vue.extend({
       }
     },
     onDelete(event: any, formSchemaPointer: string): void {
-      let vjpPointer = formSchemaPointer.replace('#', '')
+      const vjpPointer = formSchemaPointer.replace('#', '')
       // Not allowed to make changes on the root object
       if (formSchemaPointer !== '#') {
         vjp.remove(this.value, vjpPointer)
@@ -178,7 +177,8 @@ export default Vue.extend({
               ...partOfProps
             },
             on: {
-              delete: (event: any) => this.onDelete(event, formSchemaPointer)
+              delete: (event: any) => this.onDelete(event, formSchemaPointer),
+              update: (event: any) => { console.log('update', event) }
             }
           })
         }

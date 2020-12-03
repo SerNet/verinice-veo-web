@@ -9,7 +9,7 @@
         <!-- Form elements -->
         <div>
           <v-subheader class="px-2">Form Elements</v-subheader>
-          <v-divider></v-divider>
+          <v-divider />
         </div>
         <Draggable
           class="drag-form-elements"
@@ -20,7 +20,7 @@
           :sort="false"
           :clone="onCloneFormElement"
         >
-          <v-card flat v-for="(el, i) in formElements" :key="i">
+          <v-card v-for="(el, i) in formElements" :key="i" flat>
             <v-list-item class="pa-1" flat>
               <v-list-item-avatar color="grey darken-2" size="32">
                 <v-icon
@@ -47,9 +47,9 @@
 
         <!-- Unused Basic Properties -->
         <div v-if="objectSchemaProperties.unused.basics.length > 0">
-          <v-divider></v-divider>
+          <v-divider />
           <v-subheader class="px-2">Basic Properties</v-subheader>
-          <v-divider></v-divider>
+          <v-divider />
         </div>
         <Draggable
           class="drag-unused-basic-properties"
@@ -60,9 +60,9 @@
           :sort="false"
         >
           <v-card
-            flat
             v-for="(el, i) in objectSchemaProperties.unused.basics"
             :key="i"
+            flat
           >
             <v-list-item class="pa-1" flat>
               <v-list-item-avatar size="32" :color="typeMap[el.type].color">
@@ -88,9 +88,9 @@
 
         <!-- Unused Aspects -->
         <div v-if="objectSchemaProperties.unused.aspects.length > 0">
-          <v-divider></v-divider>
+          <v-divider />
           <v-subheader class="px-2">Aspects</v-subheader>
-          <v-divider></v-divider>
+          <v-divider />
         </div>
         <Draggable
           class="drag-unused-aspects"
@@ -101,9 +101,9 @@
           :sort="false"
         >
           <v-card
-            flat
             v-for="(el, i) in objectSchemaProperties.unused.aspects"
             :key="i"
+            flat
           >
             <v-list-item class="pa-1" flat>
               <v-list-item-avatar size="32" :color="typeMap[el.type].color">
@@ -129,9 +129,9 @@
 
         <!-- Unused Links -->
         <div v-if="objectSchemaProperties.unused.links.length > 0">
-          <v-divider></v-divider>
+          <v-divider />
           <v-subheader class="px-2">Links</v-subheader>
-          <v-divider></v-divider>
+          <v-divider />
         </div>
         <Draggable
           class="drag-unused-links"
@@ -142,9 +142,9 @@
           :sort="false"
         >
           <v-card
-            flat
             v-for="(el, i) in objectSchemaProperties.unused.links"
             :key="i"
+            flat
           >
             <v-list-item class="pa-1" flat>
               <v-list-item-avatar size="32" :color="typeMap[el.type].color">
@@ -177,8 +177,9 @@
         <FseGenerator
           :schema="objectSchema"
           :value="value.content"
-          :objectSchemaProperties.sync="objectSchemaProperties"
+          :object-schema-properties.sync="objectSchemaProperties"
           @delete="onDelete"
+          @update="onUpdate"
         />
         <!-- <v-speed-dial
           v-model="fab"
@@ -222,9 +223,9 @@
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
 // import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
-import FseGenerator from './Generator/FseGenerator.vue'
 import vjp from 'vue-json-pointer'
 import { JsonPointer } from 'json-ptr'
+import FseGenerator from './Generator/FseGenerator.vue'
 
 interface IControl {
   scope: string
@@ -414,7 +415,7 @@ export default Vue.extend({
           links: any[]
         }
 
-        flattenedSchema.forEach(obj => {
+        flattenedSchema.forEach((obj) => {
           if (obj.scope.includes('#/properties/customAspects')) {
             properties.aspects.push(obj)
           } else if (obj.scope.includes('#/properties/links')) {
@@ -509,7 +510,7 @@ export default Vue.extend({
         }
 
         this.move.forEach(({ from, to }) => {
-          propertiesMoveTo[to].forEach(scopeToMove => {
+          propertiesMoveTo[to].forEach((scopeToMove) => {
             // Get the key and scope pair in "from" to be able to find the the same pointer(key) of the object in "to" ObjectSchemaProperties
             const keyScopePair = propertiesFlattened[from].find(
               ([key, scope]) => scope === scopeToMove
@@ -567,6 +568,10 @@ export default Vue.extend({
     },
     onDelete(event: any): void {
       vjp.remove(this.value, '/content')
+    },
+    onUpdate(event: any): void {
+      // vjp.remove(this.value, '/content')
+      console.log('FSEUpdateElement')
     },
     onCreateLabel() {
       const topLevelElements: any = JsonPointer.get(

@@ -1,7 +1,7 @@
 /**
  * Interface defining the form schema used for typing.
  */
-declare module 'veo-objectschema-7' {
+declare module 'veo-formschema' {
 
     export type IVEOFormSchemaContentType = 'Layout' | 'Control' | string
 

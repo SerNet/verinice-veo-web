@@ -1,5 +1,5 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="$t('editor.formschema.edit.input.headline', { element: name })" large persistent>
+  <VeoDialog v-model="dialog.value" :headline="$t('editor.formschema.edit.input.headline', { element: name })" large>
     <template #default>
       <v-form>
         <v-row no-gutters class="align-center mt-4">
@@ -7,7 +7,7 @@
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.label.text') }}*:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-text-field v-model="scope" :label="$t('editor.formschema.edit.input.label')" required />
+            <v-text-field v-model="label" :label="$t('editor.formschema.edit.input.label')" required />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center">
@@ -15,21 +15,37 @@
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.scope.text') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-text-field v-model="options.label" :label="$t('editor.formschema.edit.input.scope')" required />
+            <v-text-field v-model="_scope" :label="$t('editor.formschema.edit.input.scope')" required />
+          </v-col>
+        </v-row>
+        <v-row v-if="alternatives.length > 0" no-gutters class="align-center">
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.type') }}:</span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-select v-model="activeControlType.name" :items="alternatives" item-text="name" item-value="name" @input="updateActiveControlType()" />
+          </v-col>
+        </v-row>
+        <v-row v-if="activeControlType.direction !== undefined" no-gutters class="align-center">
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.direction') }}:</span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-radio-group v-model="activeControlType.direction">
+              <v-radio :label="$t('editor.formschema.edit.input.direction.horizontal')" value="horizontal" />
+              <v-radio :label="$t('editor.formschema.edit.input.direction.vertical')" value="vertical" />
+            </v-radio-group>
+          </v-col>
+        </v-row>
+        <v-row v-if="activeControlType.highlight !== undefined" no-gutters class="align-center">
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.highlight') }}:</span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-checkbox v-modl="activeControlType.highlight" :label="$t('editor.formschema.edit.input.highlight')" />
           </v-col>
         </v-row>
       </v-form>
-      <p class="pb-0 pt-2" style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.type') }}:</p>
-      <v-tabs v-model="activeControl" center-active>
-        <v-tab v-for="control in $props.availableControls" :key="control.name">
-          {{ control.name }}
-        </v-tab>
-      </v-tabs>
-      <v-tabs-items v-model="activeControl">
-        <v-tab-item v-for="control in $props.availableControls" :key="control.name">
-          {{ control }}
-        </v-tab-item>
-      </v-tabs-items>
       <small>{{ $t('editor.dialog.requiredfields') }}</small>
     </template>
     <template #dialog-options>
@@ -37,22 +53,24 @@
       <v-btn text color="primary" @click="close()">
         {{ $t('global.button.close') }}
       </v-btn>
-      <v-btn text color="primary" @click="saveNode()">
+      <v-btn text color="primary" @click="updateElement()">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, Ref, ref, watch } from '@nuxtjs/composition-api'
-import { IVEOFormSchemaItemOptions } from 'veo-objectschema-7'
-import { IInputElement } from '~/types/VEOEditor'
+import { computed, defineComponent, PropType, Ref, ref, watch } from '@nuxtjs/composition-api'
+import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 interface IProps {
   value: boolean,
-  availableControls: IInputElement[],
   name: string,
-  schema: any
+  options: any,
+  schema: any,
+  type: string,
+  scope: string
 }
 
 export default defineComponent<IProps>({
@@ -61,16 +79,24 @@ export default defineComponent<IProps>({
       type: Boolean,
       required: true
     },
-    availableControls: {
-      type: Array as PropType<IInputElement[]>,
-      required: true
-    },
     name: {
       type: String,
       required: true
     },
+    options: {
+      type: Object as PropType<any>,
+      required: true
+    },
     schema: {
       type: Object as PropType<any>,
+      required: true
+    },
+    type: {
+      type: String,
+      required: true
+    },
+    scope: {
+      type: String,
       required: true
     }
   },
@@ -97,14 +123,32 @@ export default defineComponent<IProps>({
     /**
      * Control types related stuff
      */
-    const activeControl: Ref<string> = ref('')
+    const activeControlType: Ref<IControlType> = ref({ name: props.type, format: undefined })
 
-    const scope: Ref<string> = ref('')
-    const options: Ref<IVEOFormSchemaItemOptions> = ref({
-      label: '' as string
+    watch(() => props.type, (val: string) => {
+      activeControlType.value.name = val
     })
 
-    return { dialog, close, activeControl, scope, options }
+    function updateActiveControlType() {
+      const newType = alternatives.value.find(item => item.name === activeControlType.value.name)
+      if (newType) {
+        activeControlType.value = newType
+      } else {
+        context.root.$emit(VeoEvents.SNACKBAR_ERROR, 'updateActiveControlType: Control type not found')
+      }
+    }
+
+    const _scope: Ref<string> = ref(props.scope)
+    const label: Ref<string> = ref(props.options?.label || '')
+    const alternatives = computed(() => controlTypeAlternatives(activeControlType.value.name, props))
+
+    function updateElement() {
+      const options: any = activeControlType.value
+      delete options.name
+      context.emit('edit', { scope: _scope.value, options: { label: label.value, ...options } })
+    }
+
+    return { dialog, close, activeControlType, _scope, label, alternatives, updateActiveControlType, updateElement }
   }
 })
 </script>

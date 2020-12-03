@@ -2,7 +2,7 @@
   <v-card rounded elevation="0" class="fse-input mx-3 my-2">
     <v-card-text class="pa-0">
       <v-row no-gutters>
-        <v-col cols="auto" class="text-right px-1 fse-input-dragbar" :style="{ backgroundColor: color }">
+        <v-col cols="auto" class="text-right px-1 fse-input-dragbar" :class="color">
           <v-icon class="handle">mdi-menu</v-icon>
         </v-col>
         <v-col class="px-2">
@@ -21,7 +21,8 @@
         </v-col>
       </v-row>
     </v-card-text>
-    <VEOFSEEditControlDialog v-model="editDialog" :available-controls="availableElements" v-bind="$props" />
+    <VEOFSEEditControlDialog v-model="editDialog" v-bind="$props" :type="currentType" @edit="doEdit" />
+    <VEOFSEDeleteControlDialog v-model="deleteDialog" :name="name" @delete="doDelete" />
   </v-card>
 </template>
 <script lang="ts">
@@ -34,10 +35,12 @@ import { VEOTypeNameRAW } from 'veo-objectschema-7'
 import { BaseObject } from '~/components/forms/utils'
 import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VEOEditor'
 import VEOFSEEditControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditControlDialog.vue'
+import VEOFSEDeleteControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteControlDialog.vue'
 
 export default Vue.extend({
   components: {
-    VEOFSEEditControlDialog
+    VEOFSEEditControlDialog,
+    VEOFSEDeleteControlDialog
   },
   props: {
     name: {
@@ -71,32 +74,52 @@ export default Vue.extend({
     visible: {
       type: Boolean,
       default: true
+    },
+    scope: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
-      currentType: 'Unknown' as string,
+      availableElements: [] as IInputElement[],
       editDialog: false as boolean,
       deleteDialog: false as boolean
     }
   },
   computed: {
-    availableElements(): IInputElement[] {
-      return eligibleInputElements(this.$props)
-    },
     color(): string {
-      return INPUT_TYPES[this.schema.type as VEOTypeNameRAW].color
+      return INPUT_TYPES[this.type].color
+    },
+    currentType(): string {
+      return this.availableElements[0]?.name || 'Unknown'
+    },
+    type(): VEOTypeNameRAW {
+      return this.schema.type ? this.schema.type as any : (this.schema.enum) ? 'enum' : 'default'
+    }
+  },
+  watch: {
+    name() {
+      this.availableElements = eligibleInputElements(this.type, this.$props)
     }
   },
   mounted() {
-    this.currentType = this.availableElements[0]?.name || 'Unknown'
+    this.availableElements = eligibleInputElements(this.type, this.$props)
   },
   methods: {
     showEdit() {
       this.editDialog = true
     },
+    doEdit(data: any) {
+      this.$emit('update', data)
+      this.editDialog = false
+    },
     showDelete() {
       this.deleteDialog = true
+    },
+    doDelete() {
+      this.$emit('delete')
+      this.deleteDialog = false
     }
   }
 })

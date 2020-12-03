@@ -2,9 +2,8 @@
   <div class="vf-control">
     <FseFormElement
       v-bind="$props"
-      @input="$emit('input', $event)"
+      v-on="$listeners"
       @change="$emit('input', $event)"
-      @delete="$emit('delete', $event)"
     />
   </div>
 </template>
