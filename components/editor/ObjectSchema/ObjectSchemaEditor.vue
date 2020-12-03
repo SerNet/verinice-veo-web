@@ -32,7 +32,7 @@
           <v-card v-for="(aspect, index) of customAspects" v-show="(!hideEmptyAspects || aspect.item.attributes.length > 0) && itemContainsAttributeTitle(aspect, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
               <ObjectSchemaListHeader v-bind="aspect" @edit-item="showEditDialog(aspect.item, 'aspect')" @delete-item="showDeleteDialog(aspect.item, 'aspect')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="INPUT_TYPE[attribute.type]" two-line />
+              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="newItemTypes[attribute.type]" two-line />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -52,7 +52,7 @@
           <v-card v-for="(link, index) of customLinks" v-show="itemContainsAttributeTitle(link, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
               <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @edit-item="showEditDialog(link.item, 'link')" @delete-item="showDeleteDialog(link.item, 'link')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="INPUT_TYPE[attribute.type]" two-line />
+              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="newItemTypes[attribute.type]" two-line />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -125,6 +125,7 @@ export default defineComponent<IProps>({
     // Sadly computed refs wouldn't catch schema updates, so we have to deal with it on our own.
     function computeProperties() {
       const _schema = JSON.parse(JSON.stringify(schema.value))
+
       customAspects.value = getAspects(_schema).map((entry: IVEOCustomAspect) => {
         return {
           item: entry,
@@ -158,7 +159,7 @@ export default defineComponent<IProps>({
     }
 
     // Removing types from the new item type selection as they are purely used as a fallback.
-    const newItemTypes = ref(INPUT_TYPES) as any
+    const newItemTypes: Ref<any> = ref(INPUT_TYPES)
     delete newItemTypes.value.default
     delete newItemTypes.value.null
 
