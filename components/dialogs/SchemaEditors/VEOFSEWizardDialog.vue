@@ -85,7 +85,8 @@
 import Vue from 'vue'
 import { trim } from 'lodash'
 
-import { IVEOFormSchema, VEOObjectSchemaRAW } from 'veo-objectschema-7'
+import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
+import { IVEOFormSchema } from 'veo-formschema'
 import { generateSchema } from '~/lib/FormSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import CodeEditor from '~/components/CodeEditor.vue'
