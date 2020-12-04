@@ -566,12 +566,18 @@ export default Vue.extend({
       // https://github.com/SortableJS/Vue.Draggable/issues/203
       return JSON.parse(JSON.stringify(original))
     },
-    onDelete(event: any): void {
+    onDelete(_event: any): void {
       vjp.remove(this.value, '/content')
     },
     onUpdate(event: any): void {
-      // vjp.remove(this.value, '/content')
-      console.log('FSEUpdateElement')
+      const element = vjp.get(this.value, `/content${event.formSchemaPointer}`)
+      element.options = event.payload.options
+      element.scope = event.payload.scope
+      if (element.scope !== event.payload.scope) {
+        // TODO: Implement
+        /* vjp.set(this.value, event.payload.scope, element)
+        vjp.remove(this.value, element.scope) */
+      }
     },
     onCreateLabel() {
       const topLevelElements: any = JsonPointer.get(

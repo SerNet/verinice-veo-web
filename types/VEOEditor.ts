@@ -241,7 +241,7 @@ export function controlTypeAlternatives(control: string, controlDetails: any): I
   const alternatives: Record<string, { format?: string, alternatives: Record<string, IControlTypeAlternative> }> = {
     InputText: {
       alternatives: {
-        InputMultiline: { format: 'multiline' },
+        InputTextMultiline: { format: 'multiline' },
         MarkdownEditor: { format: 'markdown' }
       }
     },

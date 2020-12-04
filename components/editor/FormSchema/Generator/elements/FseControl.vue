@@ -41,9 +41,22 @@ export default Vue.extend({
       type: Object,
       default: () => undefined
     },
-    formSchemaPointer: String,
-    disabled: Boolean,
-    visible: Boolean
+    formSchemaPointer: {
+      type: String,
+      default: ''
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    visible: {
+      type: Boolean,
+      default: true
+    },
+    scope: {
+      type: String,
+      default: ''
+    }
   }
 })
 </script>

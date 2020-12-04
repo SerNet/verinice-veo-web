@@ -3,7 +3,7 @@
     <v-card-text class="pa-0">
       <v-row no-gutters>
         <v-col cols="auto" class="text-right px-1 fse-input-dragbar" :class="color">
-          <v-icon class="handle">mdi-menu</v-icon>
+          <v-icon class="handle" color="white">mdi-menu</v-icon>
         </v-col>
         <v-col class="px-2">
           <div style="white-space: nowrap">
@@ -77,7 +77,7 @@ export default Vue.extend({
     },
     scope: {
       type: String,
-      default: ''
+      required: true
     }
   },
   data() {
@@ -100,6 +100,9 @@ export default Vue.extend({
   },
   watch: {
     name() {
+      this.availableElements = eligibleInputElements(this.type, this.$props)
+    },
+    options() {
       this.availableElements = eligibleInputElements(this.type, this.$props)
     }
   },
@@ -149,13 +152,5 @@ export default Vue.extend({
   font-size: 1.1rem;
   font-weight: bold;
   padding-right: 4px;
-}
-
-.fse-input-dragbar {
-  color: white;
-
-  i {
-    color: white;
-  }
 }
 </style>

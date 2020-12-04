@@ -1,19 +1,16 @@
 <script lang="ts">
 // import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
 import Vue, { VNode, PropOptions } from 'vue'
-import { JSONSchema7, JSONSchema7Object, JSONSchema7Type } from 'json-schema'
+import { JSONSchema7 } from 'json-schema'
 import { JsonPointer } from 'json-ptr'
 
 import vjp from 'vue-json-pointer'
-import Ajv, { RequiredParams } from 'ajv'
-import { chunk, merge } from 'lodash'
-import Draggable from 'vuedraggable'
 import { IUsedAndUnusedObjectSchemaProperties } from '../FormSchemaEditor.vue'
 import FseLabel from './elements/FseLabel.vue'
 import FseControl from './elements/FseControl.vue'
 import FseLayout from './elements/FseLayout.vue'
-import { UISchema, UISchemaElement, UIRule } from '~/types/UISchema'
-import { BaseObject, IApi } from '~/components/forms/utils'
+import { UISchema, UISchemaElement } from '~/types/UISchema'
+import { BaseObject } from '~/components/forms/utils'
 // import Wrapper from '~/components/forms/Wrapper.vue'
 
 export default Vue.extend({
@@ -76,7 +73,6 @@ export default Vue.extend({
       handler() {}
     }
   },
-  created() {},
   methods: {
     propertyPath(path: string) {
       // TODO: Better translation from #/properties/name to #/name for values
@@ -95,7 +91,7 @@ export default Vue.extend({
         this.$emit('input', this.value)
       }
     },
-    onDelete(event: any, formSchemaPointer: string): void {
+    onDelete(_event: any, formSchemaPointer: string): void {
       const vjpPointer = formSchemaPointer.replace('#', '')
       // Not allowed to make changes on the root object
       if (formSchemaPointer !== '#') {
@@ -103,6 +99,9 @@ export default Vue.extend({
       } else {
         this.$emit('delete', undefined)
       }
+    },
+    onUpdate(event: any, formSchemaPointer: string): void {
+      this.$emit('update', { payload: event, formSchemaPointer: formSchemaPointer.replace('#', '') })
     }
   },
   render(h): VNode {
@@ -174,11 +173,12 @@ export default Vue.extend({
             props: {
               elements: element.elements,
               options: element.options,
-              ...partOfProps
+              ...partOfProps,
+              scope: element.scope || ''
             },
             on: {
               delete: (event: any) => this.onDelete(event, formSchemaPointer),
-              update: (event: any) => { console.log('update', event) }
+              update: (event: any) => { this.onUpdate(event, formSchemaPointer) }
             }
           })
         }
