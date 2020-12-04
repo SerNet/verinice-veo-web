@@ -32,7 +32,7 @@
           <v-card v-for="(aspect, index) of customAspects" v-show="(!hideEmptyAspects || aspect.item.attributes.length > 0) && itemContainsAttributeTitle(aspect, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
               <ObjectSchemaListHeader v-bind="aspect" @edit-item="showEditDialog(aspect.item, 'aspect')" @delete-item="showDeleteDialog(aspect.item, 'aspect')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line />
+              <ObjectSchemaListItem v-for="(attribute, index2) of aspect.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="newItemTypes[attribute.type]" two-line />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -52,7 +52,7 @@
           <v-card v-for="(link, index) of customLinks" v-show="itemContainsAttributeTitle(link, search)" :key="index" class="mb-2" outlined>
             <v-list class="py-0" dense>
               <ObjectSchemaListHeader v-bind="link" :styling="{ name: link.item.raw.items.properties.target.properties.type.enum[0], color: 'black' }" @edit-item="showEditDialog(link.item, 'link')" @delete-item="showDeleteDialog(link.item, 'link')" />
-              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="typeMap[attribute.type]" two-line />
+              <ObjectSchemaListItem v-for="(attribute, index2) of link.item.attributes" v-show="attributeContainsTitle(attribute, search)" :key="index2" :item="attribute" :styling="newItemTypes[attribute.type]" two-line />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -66,18 +66,13 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
-import { VEOObjectSchemaRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
+import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute, renameAspect, renameLink, updateLinkDetails, deleteAspect, deleteLink } from '~/lib/ObjectSchemaHelper'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
+import { IInputType, INPUT_TYPES } from '~/types/VEOEditor'
 
 import VEOOSECustomPropertiesDialog from '~/components/dialogs/SchemaEditors/VEOOSECustomPropertiesDialog.vue'
 import VEOOSEDeleteCustomPropertyDialog from '~/components/dialogs/SchemaEditors/VEOOSEDeleteCustomPropertyDialog.vue'
-
-export interface ITypeInfo {
-  name: string
-  color: string
-  icon: string
-}
 
 interface IProps {
   value: VEOObjectSchemaRAW
@@ -85,7 +80,7 @@ interface IProps {
 
 interface EditorPropertyItem {
   item: IVEOCustomLink | IVEOCustomAspect | IVEOBasicProperty
-  styling?: ITypeInfo
+  styling?: IInputType
 }
 
 export default defineComponent<IProps>({
@@ -102,18 +97,6 @@ export default defineComponent<IProps>({
      */
     const search = ref('')
     const hideEmptyAspects = ref(false)
-
-    const typeMap: Ref<Record<VEOTypeNameRAW, ITypeInfo>> = ref({
-      string: { icon: 'mdi-alphabetical-variant', name: 'string', color: 'red' },
-      boolean: { icon: 'mdi-check-box-outline', name: 'boolean', color: 'teal' },
-      object: { icon: 'mdi-file-tree', name: 'object', color: 'indigo' },
-      number: { icon: 'mdi-decimal', name: 'number', color: 'light-blue' },
-      integer: { icon: 'mdi-numeric', name: 'integer', color: 'green' },
-      array: { icon: 'mdi-view-list', name: 'array', color: 'amber' },
-      enum: { icon: 'mdi-label-multiple', name: 'enum', color: 'light-green' },
-      null: { icon: 'mdi-cancel', name: 'null', color: 'blue-grey' },
-      default: { icon: 'mdi-help-box', name: 'unknown', color: 'grey' }
-    })
 
     function itemContainsAttributeTitle(item: EditorPropertyItem, title: string): boolean {
       return !title || title.length === 0 || item.item.title.toLowerCase().includes(title.toLowerCase()) || (item.item as IVEOCustomAspect | IVEOCustomLink).attributes.some((attribute: IVEOAttribute) => attributeContainsTitle(attribute, title))
@@ -142,6 +125,7 @@ export default defineComponent<IProps>({
     // Sadly computed refs wouldn't catch schema updates, so we have to deal with it on our own.
     function computeProperties() {
       const _schema = JSON.parse(JSON.stringify(schema.value))
+
       customAspects.value = getAspects(_schema).map((entry: IVEOCustomAspect) => {
         return {
           item: entry,
@@ -157,7 +141,7 @@ export default defineComponent<IProps>({
       basicProps.value = getBasicProperties(_schema).map((entry: IVEOBasicProperty) => {
         return {
           item: entry,
-          styling: typeMap.value[entry.type]
+          styling: INPUT_TYPES[entry.type]
         }
       })
     }
@@ -175,7 +159,7 @@ export default defineComponent<IProps>({
     }
 
     // Removing types from the new item type selection as they are purely used as a fallback.
-    const newItemTypes = ref(typeMap) as any
+    const newItemTypes: Ref<any> = ref(INPUT_TYPES)
     delete newItemTypes.value.default
     delete newItemTypes.value.null
 
@@ -251,7 +235,7 @@ export default defineComponent<IProps>({
       computeProperties()
     }
 
-    return { schema, hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, typeMap, newItemTypes, basicProps, customAspects, customLinks, deleteDialog, showDeleteDialog, doDeleteItem }
+    return { schema, hideEmptyAspects, search, itemContainsAttributeTitle, attributeContainsTitle, objectSchemaDialog, showAddDialog, doAddItem, showEditDialog, doEditItem, newItemTypes, basicProps, customAspects, customLinks, deleteDialog, showDeleteDialog, doDeleteItem }
   }
 })
 </script>

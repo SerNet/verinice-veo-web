@@ -17,12 +17,12 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { ITypeInfo } from './ObjectSchemaEditor.vue'
 import { IVEOBasicProperty, IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
+import { IInputType } from '~/types/VEOEditor'
 
 interface IProps {
   item: IVEOCustomAspect | IVEOCustomLink | IVEOBasicProperty
-  styling: ITypeInfo
+  styling: IInputType
   disabled: boolean
 }
 

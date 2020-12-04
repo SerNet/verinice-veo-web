@@ -1,26 +1,27 @@
 /**
  * Interface defining the form schema used for typing.
  */
-declare module 'veo-objectschema-7' {
+declare module 'veo-formschema' {
 
     export type IVEOFormSchemaContentType = 'Layout' | 'Control' | string
 
-    export interface IVEOFormSchemaContentOptions {
+    export interface IVEOFormSchemaItemOptions {
+        label?: string
         format?: string,
         direction?: string,
-        label?: string
+        highlight?: boolean
     }
 
-    export interface IVEOFormSchemaContent {
+    export interface IVEOFormSchemaItem {
         type: IVEOFormSchemaContentType,
         scope?: string,
-        options?: IVEOFormSchemaContentOptions,
-        elements?: IVEOFormSchemaContent[]
+        options?: IVEOFormSchemaItemOptions,
+        elements?: IVEOFormSchemaItem[]
     }
 
     export interface IVEOFormSchema {
         name: string,
         modelType: string,
-        content: IVEOFormSchemaContent
+        content: IVEOFormSchemaItem
     }
 }

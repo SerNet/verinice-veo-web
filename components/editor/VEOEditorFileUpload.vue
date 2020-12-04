@@ -48,7 +48,8 @@
   </div>
 </template>
 <script lang="ts">
-import { IVEOFormSchema, VEOObjectSchemaRAW } from 'veo-objectschema-7'
+import { IVEOFormSchema } from 'veo-formschema'
+import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
 import CodeEditor from '~/components/CodeEditor.vue'

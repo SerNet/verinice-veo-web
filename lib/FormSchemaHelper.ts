@@ -1,4 +1,4 @@
-import { IVEOFormSchema } from 'veo-objectschema-7'
+import { IVEOFormSchema } from 'veo-formschema'
 
 export function generateSchema(name: string, modelType: string): IVEOFormSchema {
   return {
