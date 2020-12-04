@@ -4,23 +4,8 @@
       <AppBarLogo>
         <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
       </AppBarLogo>
-      <!--<v-select
-        class="domain-select"
-        :items="domains"
-        :value="domains[0]"
-        hide-details
-        flat
-        light
-        :prepend-inner-icon="!$vuetify.breakpoint.xs?'mdi-domain':''"
-        dense
-        label="Domain"
-        solo
-      />-->
-
       <AppUnitSelection @create-unit="createUnit" />
-
       <portal-target name="toolbar" />
-
       <v-spacer />
       <AppAccountBtn
         v-if="$auth.profile"
@@ -31,25 +16,18 @@
         @logout="$auth.logout('/')"
       />
     </v-app-bar>
-
-    <AppTabBar :offset="$vuetify.application.top" :items="nav" :drawer.sync="drawer" />
-
+    <AppTabBar :offset="$vuetify.application.top" :items="navItems" :drawer.sync="drawer" />
     <v-main>
       <nuxt />
+      <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
+      <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%;" />
     </v-main>
-
-    <VeoNewUnitDialog v-model="newUnitCreation" :persistent="newUnitPersistent" />
-
-    <v-footer app padless inset outlined>
-      <portal-target style="width: 100%" name="footer" />
-    </v-footer>
-
-    <VeoSnackbar />
+    <VeoNewUnitDialog v-model="newUnitDialog.value" v-bind="newUnitDialog" />
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, Ref, ref } from '@nuxtjs/composition-api'
 
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
@@ -57,102 +35,117 @@ import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
 import AppUnitSelection from '~/components/layout/AppUnitSelection.vue'
 import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
 import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
+import VeoAlert, { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
+import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 
-export default Vue.extend({
+interface IProps {}
+
+export default defineComponent<IProps>({
   components: {
     AppBarLogo,
     AppTabBar,
     AppAccountBtn,
     AppUnitSelection,
     VeoNewUnitDialog,
-    VeoSnackbar
+    VeoSnackbar,
+    VeoAlert
   },
-  data() {
-    return {
-      drawer: false as boolean,
-      domains: ['Datenschutz', 'ISO 27001'],
-      units: [],
-      newUnitCreation: false as boolean,
-      newUnitPersistent: false as boolean
+  setup(_props, context) {
+    //
+    // Global navigation
+    //
+    const drawer: Ref<boolean> = ref(false)
+    const navItems = ref([
+      {
+        name: 'dashboard',
+        icon: 'mdi-home',
+        exact: true,
+        to: `/${context.root.$route.params.unit}/`
+      },
+      {
+        name: 'veo.data',
+        icon: 'mdi-folder',
+        to: `/${context.root.$route.params.unit}/data`
+      },
+      {
+        name: 'veo.forms',
+        icon: 'mdi-format-list-checks',
+        to: `/${context.root.$route.params.unit}/forms`
+      },
+      {
+        name: 'settings',
+        icon: 'mdi-cog',
+        to: `/${context.root.$route.params.unit}/settings`
+      },
+      {
+        name: 'help',
+        icon: 'mdi-help',
+        to: `/${context.root.$route.params.unit}/help`
+      },
+      {
+        name: 'Editor',
+        icon: 'mdi-application-cog',
+        to: '/editor',
+        exact: true
+      }
+    ])
+
+    //
+    // Unit creation and navigation
+    //
+    const newUnitDialog = ref({ value: false, persistent: false })
+
+    function createUnit(persistent: boolean = false) {
+      newUnitDialog.value.value = true
+      newUnitDialog.value.persistent = persistent
     }
-  },
-  computed: {
-    nav(): Array<any> {
-      return [
-        {
-          name: 'dashboard',
-          icon: 'mdi-home',
-          exact: true,
-          to: `/${this.$route.params.unit}/`
-        },
-        {
-          name: 'veo.data',
-          icon: 'mdi-folder',
-          to: `/${this.$route.params.unit}/data`
-        },
-        {
-          name: 'veo.forms',
-          icon: 'mdi-format-list-checks',
-          to: `/${this.$route.params.unit}/forms`
-        },
-        {
-          name: 'settings',
-          icon: 'mdi-cog',
-          to: `/${this.$route.params.unit}/settings`
-        },
-        {
-          name: 'help',
-          icon: 'mdi-help',
-          to: `/${this.$route.params.unit}/help`
-        },
-        {
-          name: 'Editor',
-          icon: 'mdi-application-cog',
-          to: '/editor',
-          exact: true
-        }
-      ]
-    }
-  },
-  methods: {
-    createUnit(persistent: boolean = false) {
-      this.newUnitCreation = true
-      this.newUnitPersistent = persistent
-    }
+
+    //
+    // Handling of global events
+    //
+    const alert = ref({ value: false, content: '', title: '', type: ALERT_TYPE.INFO })
+    const snackbar = ref({ value: false, text: '' })
+
+    context.root.$on(VeoEvents.ALERT_ERROR, (payload: VeoEventPayload) => {
+      alert.value.content = payload.text
+      alert.value.title = payload.title || ''
+      alert.value.type = ALERT_TYPE.ERROR
+      alert.value.value = true
+    })
+    context.root.$on(VeoEvents.ALERT_INFO, (payload: VeoEventPayload) => {
+      alert.value.content = payload.text
+      alert.value.title = payload.title || ''
+      alert.value.type = ALERT_TYPE.INFO
+      alert.value.value = true
+    })
+    context.root.$on(VeoEvents.ALERT_SUCCESS, (payload: VeoEventPayload) => {
+      alert.value.content = payload.text
+      alert.value.title = payload.title || ''
+      alert.value.type = ALERT_TYPE.SUCCESS
+      alert.value.value = true
+    })
+    context.root.$on(VeoEvents.ALERT_WARNING, (payload: VeoEventPayload) => {
+      alert.value.content = payload.text
+      alert.value.title = payload.title || ''
+      alert.value.type = ALERT_TYPE.WARNING
+      alert.value.value = true
+    })
+    context.root.$on(VeoEvents.ALERT_CLOSE, () => {
+      alert.value.value = false
+    })
+
+    context.root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: VeoEventPayload) => {
+      snackbar.value.text = payload.text
+      snackbar.value.value = true
+    })
+    context.root.$on(VeoEvents.SNACKBAR_CLOSE, () => {
+      snackbar.value.value = false
+    })
+
+    return { alert, createUnit, drawer, navItems, newUnitDialog, snackbar }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-::v-deep .v-main__wrap {
-  border-top: 1px solid #e0e0e0;
-}
-::v-deep .language-btn .v-input__control div[role='combobox'].v-input__slot {
-  padding-right: 0;
-}
-::v-deep .language-btn input {
-  min-width: 1px !important;
-  margin: 0 !important;
-}
-::v-deep .language-btn .v-select__selection.v-select__selection--comma {
-  margin: 0 !important;
-}
-
-.v-footer {
-  border-right: none;
-  border-bottom: none;
-  border-left: none;
-}
-
-.app-bar {
-  overflow: hidden;
-}
-
-/*.domain-select {
-  position: absolute;
-  left: 220px;
-  top: 13px;
-  width: 190px; // Workaround bis sich das Select automatisch verkleinern lässt
-}*/
-
 </style>

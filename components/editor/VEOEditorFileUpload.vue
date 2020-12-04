@@ -96,7 +96,7 @@ export default Vue.extend({
           this.uploading = false
         }
         fr.onerror = (_) => {
-          this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('editor.upload.error')}: ${fr.error}`)
+          this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('editor.upload.error'), text: fr.error })
           this.uploading = false
         }
 

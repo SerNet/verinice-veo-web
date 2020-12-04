@@ -129,7 +129,7 @@ export default defineComponent<Props>({
         context.emit('schema-updated', updatedSchema)
         context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, context.root.$i18n.t('editor.code.save.success'))
       } catch (e) {
-        context.root.$emit(VeoEvents.SNACKBAR_ERROR, `${context.root.$i18n.t('editor.code.save.error')}: ${e}`)
+        context.root.$emit(VeoEvents.ALERT_ERROR, { title: context.root.$i18n.t('editor.code.save.error'), text: e })
       }
       saveButtonDisabled.value = true
     }

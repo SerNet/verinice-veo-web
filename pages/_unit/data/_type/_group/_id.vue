@@ -173,7 +173,7 @@ export default Vue.extend({
         this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
         this.$fetch()
       } catch (e) {
-        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('global.appstate.alert.error')}: ${e}`)
+        this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('global.appstate.alert.error'), text: e })
         this.error = e
       } finally {
         this.btnLoading = false
@@ -193,7 +193,7 @@ export default Vue.extend({
         this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
         this.$router.push({ path: `/${this.unit}/data/${this.objectType}/${this.objectGroup}/` })
       } catch (e) {
-        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('global.appstate.alert.error')}: ${e}`)
+        this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('global.appstate.alert.error'), text: e })
       }
       this.deleteBtnLoading = false
     },

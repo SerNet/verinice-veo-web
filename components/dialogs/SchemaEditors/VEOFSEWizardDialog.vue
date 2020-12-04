@@ -183,7 +183,7 @@ export default Vue.extend({
         }
         this.state = 'create-2'
       } else {
-        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, this.$t('editor.formschema.wizard.objectschema.required'))
+        this.$root.$emit(VeoEvents.ALERT_ERROR, { text: this.$t('editor.formschema.wizard.objectschema.required') })
       }
     },
     doCreate2(_generateSchema: boolean) {
@@ -206,7 +206,7 @@ export default Vue.extend({
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     doImport2(schema: VEOObjectSchemaRAW) {
       if (schema.title !== this.formSchema?.modelType) {
-        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, this.$t('editor.formschema.wizard.import.wrongobjectschema', { objectType: schema.title, formType: this.formSchema?.modelType }))
+        this.$root.$emit(VeoEvents.ALERT_ERROR, { text: this.$t('editor.formschema.wizard.import.wrongobjectschema', { objectType: schema.title, formType: this.formSchema?.modelType }) })
       } else {
         this.setObjectSchema(schema)
         this.$emit('form-schema', this.formSchema)

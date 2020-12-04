@@ -631,7 +631,7 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .drag-elements-wrapper {
-  border: 2px solid $grey;
+  border: 1px solid $grey;
 }
 
 .veo-editor-body ::v-deep .v-card.vf-layout {

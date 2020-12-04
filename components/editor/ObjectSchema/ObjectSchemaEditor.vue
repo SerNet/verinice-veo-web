@@ -178,7 +178,7 @@ export default defineComponent<IProps>({
         context.emit('schema-updated', schema.value)
         computeProperties()
       } catch (e) {
-        context.root.$emit(VeoEvents.SNACKBAR_ERROR, `${context.root.$i18n.t('editor.dialog.createform.error')}: ${e}`)
+        context.root.$emit(VeoEvents.ALERT_ERROR, { title: context.root.$i18n.t('editor.dialog.createform.error'), text: e })
       }
     }
 
@@ -259,7 +259,7 @@ export default defineComponent<IProps>({
 
 .veo-editor-header {
   background-color: white;
-  border-bottom: 2px solid $grey;
+  border-bottom: 1px solid $grey;
   position: sticky;
   top: 0;
   z-index: 2;

@@ -212,7 +212,7 @@ export default Vue.extend({
 
 .veo-editor-header {
   background-color: white;
-  border-bottom: 2px solid $grey;
+  border-bottom: 1px solid $grey;
   position: sticky;
   top: 0;
   z-index: 2;
@@ -229,8 +229,4 @@ export default Vue.extend({
   > .v-expansion-panel-header {
   min-height: auto;
 }
-
-// .veo-editor-body ::v-deep .v-card {
-//   border: 1px solid $grey-darken-2 !important;
-// }
 </style>
