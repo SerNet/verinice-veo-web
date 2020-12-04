@@ -20,7 +20,7 @@
     <v-main>
       <nuxt />
       <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
-      <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%;" />
+      <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1" />
     </v-main>
     <VeoNewUnitDialog v-model="newUnitDialog.value" v-bind="newUnitDialog" />
   </v-app>
