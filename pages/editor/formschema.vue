@@ -63,7 +63,7 @@
                 :schema="objectSchema"
                 :ui="formSchema.content"
                 :lang="lang"
-                :api="{}"
+                :api="dynamicAPI"
               />
             </v-card>
           </v-tab-item>
@@ -118,6 +118,16 @@ export default Vue.extend({
         try {
           this.formSchema = JSON.parse(v)
         } catch (e) {}
+      }
+    },
+    dynamicAPI(): any {
+      // TODO: need a solution if new target type is added
+      return {
+        fetchAll: (objectType: string, searchParams?: any) => {
+          return new Promise((resolve) => {
+            return resolve([])
+          })
+        }
       }
     }
   },
