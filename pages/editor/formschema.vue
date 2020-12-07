@@ -123,7 +123,11 @@ export default Vue.extend({
     dynamicAPI(): any {
       // TODO: need a solution if new target type is added
       return {
-        fetchAll: (objectType: string, searchParams?: any) => {}
+        fetchAll: (objectType: string, searchParams?: any) => {
+          return new Promise((resolve) => {
+            return resolve([])
+          })
+        }
       }
     }
   },
