@@ -5,7 +5,6 @@ import { JSONSchema7 } from 'json-schema'
 import { JsonPointer } from 'json-ptr'
 
 import vjp from 'vue-json-pointer'
-import { IUsedAndUnusedObjectSchemaProperties } from '../FormSchemaEditor.vue'
 import FseLabel from './elements/FseLabel.vue'
 import FseControl from './elements/FseControl.vue'
 import FseLayout from './elements/FseLayout.vue'
@@ -27,10 +26,7 @@ export default Vue.extend({
     lang: {
       type: Object,
       default: undefined
-    } as PropOptions<BaseObject>,
-    objectSchemaProperties: {
-      type: Object
-    } as PropOptions<IUsedAndUnusedObjectSchemaProperties>
+    } as PropOptions<BaseObject>
   },
   data() {
     return {
@@ -101,7 +97,10 @@ export default Vue.extend({
       }
     },
     onUpdate(event: any, formSchemaPointer: string): void {
-      this.$emit('update', { payload: event, formSchemaPointer: formSchemaPointer.replace('#', '') })
+      this.$emit('update', {
+        payload: event,
+        formSchemaPointer: formSchemaPointer.replace('#', '')
+      })
     }
   },
   render(h): VNode {
@@ -178,7 +177,9 @@ export default Vue.extend({
             },
             on: {
               delete: (event: any) => this.onDelete(event, formSchemaPointer),
-              update: (event: any) => { this.onUpdate(event, formSchemaPointer) }
+              update: (event: any) => {
+                this.onUpdate(event, formSchemaPointer)
+              }
             }
           })
         }

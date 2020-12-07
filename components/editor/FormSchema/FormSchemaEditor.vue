@@ -46,7 +46,7 @@
         </Draggable>
 
         <!-- Unused Basic Properties -->
-        <div v-if="objectSchemaProperties.unused.basics.length > 0">
+        <div v-if="unused.basics.length > 0">
           <v-divider />
           <v-subheader class="px-2">Basic Properties</v-subheader>
           <v-divider />
@@ -55,15 +55,12 @@
           class="drag-unused-basic-properties"
           tag="div"
           style="overflow: auto; min-width:300;"
-          :list="objectSchemaProperties.unused.basics"
+          :list="unused.basics"
           :group="{ name: 'g1', pull: 'clone', put: false }"
           :sort="false"
+          :clone="onCloneControl"
         >
-          <v-card
-            v-for="(el, i) in objectSchemaProperties.unused.basics"
-            :key="i"
-            flat
-          >
+          <v-card v-for="(el, i) in unused.basics" :key="i" flat>
             <v-list-item class="pa-1" flat>
               <v-list-item-avatar size="32" :color="typeMap[el.type].color">
                 <v-icon small outlined dark v-text="typeMap[el.type].icon" />
@@ -87,7 +84,7 @@
         </Draggable>
 
         <!-- Unused Aspects -->
-        <div v-if="objectSchemaProperties.unused.aspects.length > 0">
+        <div v-if="unused.aspects.length > 0">
           <v-divider />
           <v-subheader class="px-2">Aspects</v-subheader>
           <v-divider />
@@ -96,15 +93,12 @@
           class="drag-unused-aspects"
           tag="div"
           style="overflow: auto; min-width:300;"
-          :list="objectSchemaProperties.unused.aspects"
+          :list="unused.aspects"
           :group="{ name: 'g1', pull: 'clone', put: false }"
           :sort="false"
+          :clone="onCloneControl"
         >
-          <v-card
-            v-for="(el, i) in objectSchemaProperties.unused.aspects"
-            :key="i"
-            flat
-          >
+          <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
             <v-list-item class="pa-1" flat>
               <v-list-item-avatar size="32" :color="typeMap[el.type].color">
                 <v-icon small outlined dark v-text="typeMap[el.type].icon" />
@@ -128,7 +122,7 @@
         </Draggable>
 
         <!-- Unused Links -->
-        <div v-if="objectSchemaProperties.unused.links.length > 0">
+        <div v-if="unused.links.length > 0">
           <v-divider />
           <v-subheader class="px-2">Links</v-subheader>
           <v-divider />
@@ -137,16 +131,12 @@
           class="drag-unused-links"
           tag="div"
           style="overflow: auto; min-width:300;"
-          :list="objectSchemaProperties.unused.links"
+          :list="unused.links"
           :group="{ name: 'g1', pull: 'clone', put: false }"
           :sort="false"
-          :clone="onCloneUnusedLinks"
+          :clone="onCloneControl"
         >
-          <v-card
-            v-for="(el, i) in objectSchemaProperties.unused.links"
-            :key="i"
-            flat
-          >
+          <v-card v-for="(el, i) in unused.links" :key="i" flat>
             <v-list-item class="pa-1" flat>
               <v-list-item-avatar size="32" :color="typeMap[el.type].color">
                 <v-icon small outlined dark v-text="typeMap[el.type].icon" />
@@ -178,7 +168,6 @@
         <FseGenerator
           :schema="objectSchema"
           :value="value.content"
-          :object-schema-properties.sync="objectSchemaProperties"
           @delete="onDelete"
           @update="onUpdate"
         />
@@ -228,7 +217,7 @@ import vjp from 'vue-json-pointer'
 import { JsonPointer } from 'json-ptr'
 import FseGenerator from './Generator/FseGenerator.vue'
 
-interface IControl {
+export interface IControl {
   scope: string
   // TODO: These types are assumed for us to describe easily property type, however e.g. "type: enum" does not exist in JSONSchema standard
   // Therefore, "type: enum", describes the JSONSchema element, which includes "enum: []"
@@ -243,28 +232,18 @@ interface IControl {
     | 'null'
     | 'default'
   label: string
+  category: 'basics' | 'aspects' | 'links'
+  used: boolean
 }
 
-export interface IControlLink extends IControl {
-  elements: IControl[]
+export interface IControlItem {
+  [key: string]: IControl[]
 }
 
-export interface IObjectSchemaProperties {
+export interface IUnused {
   basics: IControl[]
   aspects: IControl[]
-  links: IControlLink[]
-}
-
-export interface IUsedAndUnusedObjectSchemaProperties {
-  used: IObjectSchemaProperties
-  unused: IObjectSchemaProperties
-}
-
-type UsedUnused = 'unused' | 'used'
-
-interface IFromTo {
-  from: UsedUnused
-  to: UsedUnused
+  links: IControl[]
 }
 
 export default Vue.extend({
@@ -305,22 +284,8 @@ export default Vue.extend({
           icon: 'mdi-format-text'
         }
       ],
-      move: [
-        { from: 'unused', to: 'used' },
-        { from: 'used', to: 'unused' }
-      ] as IFromTo[],
-      objectSchemaProperties: {
-        unused: {
-          basics: [],
-          aspects: [],
-          links: []
-        },
-        used: {
-          basics: [],
-          aspects: [],
-          links: []
-        }
-      } as IUsedAndUnusedObjectSchemaProperties,
+      controls: [] as IControl[],
+      controlsItems: {} as IControlItem,
       objectSchemaPropertiesPatterns: {
         standard: [
           '#/properties/name',
@@ -375,6 +340,19 @@ export default Vue.extend({
           action: this.onCreatePage
         }
       ]
+    },
+    unused(): IUnused {
+      return {
+        basics: this.controls.filter(
+          obj => obj.category === 'basics' && !obj.used
+        ),
+        aspects: this.controls.filter(
+          obj => obj.category === 'aspects' && !obj.used
+        ),
+        links: this.controls.filter(
+          obj => obj.category === 'links' && !obj.used
+        )
+      }
     }
   },
   watch: {
@@ -410,24 +388,20 @@ export default Vue.extend({
             }
           })
 
-        const properties = { basics: [], aspects: [], links: [] } as {
-          basics: any[]
-          aspects: any[]
-          links: any[]
-        }
-
-        flattenedSchema.forEach((obj) => {
+        let propertiesArray: any[] = []
+        flattenedSchema.forEach(obj => {
           if (obj.scope.includes('#/properties/customAspects')) {
-            properties.aspects.push(obj)
+            propertiesArray.push({ ...obj, category: 'aspects', used: false })
           } else if (obj.scope.includes('#/properties/links')) {
-            properties.links.push(obj)
+            propertiesArray.push({ ...obj, category: 'links', used: false })
           } else {
-            properties.basics.push(obj)
+            propertiesArray.push({ ...obj, category: 'basics', used: false })
           }
         })
+        const links = propertiesArray.filter(obj => obj.category === 'links')
 
         // Get unique links
-        const linksScopes = properties.links
+        const linksScopes = links
           .map(obj =>
             obj.scope
               .split('/')
@@ -436,37 +410,34 @@ export default Vue.extend({
           )
           .filter((el: string, i, arr) => arr.indexOf(el) === i)
 
-        // Wrap link attributes with their parent Links
-        properties.links = linksScopes.map((linksScope: string) => {
+        let propertiesItems: any = {}
+
+        linksScopes.forEach((linksScope: string) => {
           // all links attributes
-          return {
+          propertiesItems[linksScope] = links
+            .filter(obj => obj.scope.includes(linksScope))
+            .map(obj => ({
+              ...obj,
+              scope: `#/${obj.scope
+                .split('/')
+                .slice(6)
+                .join('/')}`
+            }))
+        })
+
+        propertiesArray = [
+          ...propertiesArray.filter(obj => obj.category !== 'links'),
+          ...linksScopes.map((linksScope: string) => ({
             scope: linksScope,
             type: 'array',
             label: linksScope.split('/').slice(-1)[0],
-            elements: properties.links
-              .filter(obj => obj.scope.includes(linksScope))
-              .map(obj => ({
-                ...obj,
-                scope: `#/${obj.scope
-                  .split('/')
-                  .slice(6)
-                  .join('/')}`
-              }))
-          }
-        })
+            category: 'links',
+            used: false
+          }))
+        ]
 
-        this.objectSchemaProperties = {
-          unused: {
-            basics: properties.basics,
-            aspects: properties.aspects,
-            links: properties.links
-          },
-          used: {
-            basics: [],
-            aspects: [],
-            links: []
-          }
-        }
+        this.controls = propertiesArray
+        this.controlsItems = propertiesItems
       }
     },
     'value.content': {
@@ -479,85 +450,19 @@ export default Vue.extend({
           .filter(([key, value]) => /\/scope$/i.test(key))
           .map(([key, value]) => value as string)
 
-        const propertiesFlattened = {
-          unused: Object.entries(
-            JsonPointer.flatten(
-              this.objectSchemaProperties.unused,
-              true
-            ) as Record<string, any>
-          ).filter(([key, value]) => /\/scope$/i.test(key)),
-          used: Object.entries(
-            JsonPointer.flatten(
-              this.objectSchemaProperties.used,
-              true
-            ) as Record<string, any>
-          ).filter(([key, value]) => /\/scope$/i.test(key))
-        }
-
-        const propertiesFlattenedScopes = {
-          unused: propertiesFlattened.unused.map(
-            ([key, scope]) => scope as string
-          ),
-          used: propertiesFlattened.used.map(([key, scope]) => scope as string)
-        }
-
-        const propertiesMoveTo = {
-          used: usedScopes
-            .filter(scope => !propertiesFlattenedScopes.used.includes(scope))
-            .filter((el: string, i, arr) => arr.indexOf(el) === i),
-          unused: propertiesFlattenedScopes.used
-            .filter(scope => !usedScopes.includes(scope))
-            .filter((el: string, i, arr) => arr.indexOf(el) === i)
-        }
-
-        this.move.forEach(({ from, to }) => {
-          propertiesMoveTo[to].forEach((scopeToMove) => {
-            // Get the key and scope pair in "from" to be able to find the the same pointer(key) of the object in "to" ObjectSchemaProperties
-            const keyScopePair = propertiesFlattened[from].find(
-              ([key, scope]) => scope === scopeToMove
-            )
-
-            if (keyScopePair) {
-              // Get the Object Pointer in ObjectSchemaProperties
-              const objectPointer = keyScopePair[0].replace('/scope', '')
-              // Get the Array Pointer which contains the object
-              const arrayPointer = objectPointer
-                .split('/')
-                .slice(0, -1)
-                .join('/')
-
-              // Get the value of "from" Object which should be moved in "to" ObjectSchemaProperties
-              const objectToMove = JsonPointer.get(
-                this.objectSchemaProperties[from],
-                objectPointer
-              )
-              // Get the last index (free) for the moving object in "to" ObjectSchemaProperties
-              const indexInNewArray = (JsonPointer.get(
-                this.objectSchemaProperties[to],
-                arrayPointer
-              ) as any[]).length
-
-              // Get the pointer for free index of the moving object in the "to" array
-              const vjpPointerInNewArray = `${arrayPointer.replace(
-                '#',
-                ''
-              )}/${indexInNewArray}`
-
-              const vjpObjectPointer = objectPointer.replace('#', '')
-
-              // Set the Object in the "to" array (move)
-              vjp.set(
-                this.objectSchemaProperties[to],
-                vjpPointerInNewArray,
-                objectToMove
-              )
-              // Remove the Object from the "from" array
-              vjp.remove(this.objectSchemaProperties[from], vjpObjectPointer)
+        this.controls.forEach((obj, i) => {
+          if (usedScopes.includes(obj.scope)) {
+            // if an element is used in FormSchema and "used" property is not true yet => set to true
+            if (obj.used === false) {
+              vjp.set(this.controls, `/${i}/used`, true)
             }
-          })
+          } else {
+            if (obj.used === true) {
+              // if an element is not in FormSchema anymore, but "used" property is true => set to false
+              vjp.set(this.controls, `/${i}/used`, false)
+            }
+          }
         })
-
-        console.log('Properties Move to: ', propertiesMoveTo)
       }
     }
   },
@@ -567,9 +472,16 @@ export default Vue.extend({
       // https://github.com/SortableJS/Vue.Draggable/issues/203
       return JSON.parse(JSON.stringify(original))
     },
-    onCloneUnusedLinks(original: any) {
-      original.elements = []
-      return JSON.parse(JSON.stringify(original))
+    onCloneControl(original: any) {
+      const dataToClone: IControl = JSON.parse(JSON.stringify(original))
+      return {
+        type: 'Control',
+        scope: dataToClone.scope,
+        options: {
+          label: dataToClone.label
+        },
+        ...(dataToClone.category === 'links' && { elements: [] })
+      }
     },
     onDelete(_event: any): void {
       vjp.remove(this.value, '/content')

@@ -29,7 +29,6 @@
           :class="dynamicClasses"
           handle=".handle"
           :group="{ name: 'g1' }"
-          @add="onAdd"
         >
           <slot />
         </Draggable>
@@ -43,10 +42,7 @@
           :items="dialog.data.directionList"
           label="Direction"
         />
-        <v-checkbox
-          v-model="dialog.data.highlight.value"
-          label="Highlight"
-        />
+        <v-checkbox v-model="dialog.data.highlight.value" label="Highlight" />
         <v-combobox
           v-model="dialog.data.class.value"
           label="Class"
@@ -209,32 +205,6 @@ export default Vue.extend({
         vjp.set(this.formSchema, vjpPointer, value)
       } else {
         vjp.remove(this.formSchema, vjpPointer)
-      }
-    },
-    onAdd(event: any) {
-      if (
-        ['drag-unused-basic-properties', 'drag-unused-aspects'].includes(
-          event.from.className
-        )
-      ) {
-        const oldElement = this.formSchema.elements[event.newIndex]
-        this.formSchema.elements.splice(event.newIndex, 1, {
-          type: 'Control',
-          scope: oldElement.scope,
-          options: {
-            label: oldElement.label
-          }
-        })
-      } else if (event.from.className === 'drag-unused-links') {
-        const oldElement = this.formSchema.elements[event.newIndex]
-        this.formSchema.elements.splice(event.newIndex, 1, {
-          type: 'Control',
-          scope: oldElement.scope,
-          options: {
-            label: oldElement.label
-          },
-          elements: []
-        })
       }
     }
   }
