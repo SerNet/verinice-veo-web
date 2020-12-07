@@ -9,7 +9,7 @@
           </nuxt-link>
         </div>
         <div class="d-flex align-center" style="width: 60%; max-width: 500px;">
-          <v-text-field :label="$t('search.label')" hide-details rounded background-color="grey" height="40" />
+          <v-text-field :label="$t('search.label')" hide-details background-color="grey" height="40" class="veo-app-bar-search" />
         </div>
         <AppAccountBtn
           v-if="$auth.profile"
@@ -183,5 +183,17 @@ export default defineComponent<IProps>({
 .veo-app-bar {
   background-color: white !important;
   box-shadow: inset 0 -1px 0 $grey !important;
+}
+
+.veo-app-bar-search {
+  border-radius: 4px;
+
+  ::v-deep .v-input__slot {
+    padding: 0 16px;
+  }
+
+  ::v-deep .v-input__slot:before {
+    border-top: 0 !important;
+  }
 }
 </style>

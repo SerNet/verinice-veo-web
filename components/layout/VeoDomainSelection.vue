@@ -1,9 +1,9 @@
 <template>
-  <v-list-item style="height: 56px;">
+  <v-list-item class="pt-1" style="height: 64px;">
     <v-list-item-icon>
       {{ $t('domain.select.label') }}:
     </v-list-item-icon>
-    <v-list-item-title>
+    <v-list-item-title class="pb-2">
       <v-select
         v-if="$auth.profile"
         item-text="name"
