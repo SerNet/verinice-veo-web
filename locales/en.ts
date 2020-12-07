@@ -1,6 +1,8 @@
 export default {
   welcome: 'Welcome',
 
+  'domain.select.label': 'Domain',
+
   'editor.basicproperties': 'Basic properties',
   'editor.code.save.error': 'Couldn\'t update schema',
   'editor.code.save.success': 'Schema updated!',
@@ -100,6 +102,11 @@ export default {
   'global.error.fetching': 'An error occured while fetching the resource',
   'global.logout': 'Logout',
 
+  'page.editors': 'Editors.title',
+
+  'page.help': 'Manual.title',
+
+  'page.index.title': 'Home',
   'page.index.chooseunit': 'Please choose a Unit',
   'page.index.chooseunitplaceholder': 'Search for a unit...',
 
@@ -112,6 +119,8 @@ export default {
   'page.settings.language': 'Preferred Language',
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
+
+  'search.label': 'Search veo',
 
   'unit.create': 'Create new unit',
   'unit.created': 'Unit was created',
@@ -149,5 +158,6 @@ export default {
   'unit.forms.create': 'Create {type}',
   'unit.forms.noprocesses': 'No processes found',
   'unit.forms.nrr': 'This dataset has been edited by another user. Do you want to load the changes?',
-  'unit.index.title': 'Dashboard'
+  'unit.index.title': 'Dashboard',
+  'unit.select.label': 'Unit'
 }

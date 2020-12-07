@@ -1,6 +1,8 @@
 export default {
   welcome: 'Willkommen',
 
+  'domain.select.label': 'Domain',
+
   'editor.basicproperties': 'Standardattribute',
   'editor.code.save.error': 'Das Schema konnte nicht aktualisiert werden',
   'editor.code.save.success': 'Schema wurde aktualisiert!',
@@ -100,6 +102,11 @@ export default {
   'global.error.fetching': 'Fehler beim Abruf',
   'global.logout': 'Logout',
 
+  'page.editors.title': 'Editoren',
+
+  'page.help.title': 'Handbuch',
+
+  'page.index.title': 'Startseite',
   'page.index.chooseunit': 'Bitte wählen Sie eine Unit',
   'page.index.chooseunitplaceholder': 'Nach einer Unit suchen...',
 
@@ -113,7 +120,10 @@ export default {
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 
+  'search.label': 'veo durchsuchen',
+
   'unit.create': 'Neue Unit erstellen',
+  'unit.create.short': 'Unit erstellen',
   'unit.created': 'Unit wurde erstellt',
   'unit.data.createobject': '{type} erstellen',
   'unit.data.deleteobject': 'Soll das Objekt {object} wirklich gelöscht werden?',
@@ -149,5 +159,6 @@ export default {
   'unit.forms.create': '{type} erstellen',
   'unit.forms.noprocesses': 'Keine Verarbeitungstätigkeiten vorhanden',
   'unit.forms.nrr': 'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
-  'unit.index.title': 'Dashboard'
+  'unit.index.title': 'Dashboard',
+  'unit.select.label': 'Unit'
 }

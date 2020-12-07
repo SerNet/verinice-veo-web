@@ -21,6 +21,9 @@
             <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
+        <v-divider />
+        <VeoDomainSelection />
+        <VeoUnitSelection />
       </v-list>
       <v-divider />
       <v-card-actions>
@@ -34,8 +37,13 @@
 <script lang="ts">
 import Vue from 'vue'
 
+import VeoDomainSelection from '~/components/layout/VeoDomainSelection.vue'
+import VeoUnitSelection from '~/components/layout/VeoUnitSelection.vue'
+
 export default Vue.extend({
-  components: {},
+  components: {
+    VeoUnitSelection
+  },
   props: {
     prename: { type: String, default: '' },
     lastname: { type: String, default: '' },

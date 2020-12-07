@@ -1,28 +1,29 @@
 <template>
-  <v-navigation-drawer v-if="filteredItems.length > 0" :value="drawer" :class="{'v-application--is-rtl': right}" :right="right" :floating="true" width="64" :permanent="!$vuetify.breakpoint.xs" clipped app @input="$emit('update:drawer', $event)">
-    <v-tabs
-      class="nav-tabs"
-      active-class="nav-tab-active"
-      slider-size="3"
-      background-color="#fafafa"
-      vertical
-    >
-      <v-tab v-for="item in filteredItems" :key="item.name" class="nav-tab" :title="item.name" :to="item.to" :exact="item.exact" :disabled="$route.params.unit === undefined && item.name !== 'Editor'">
-        <v-icon v-if="item.icon" v-text="item.icon">mdi-folder</v-icon>
-      </v-tab>
-    </v-tabs>
+  <v-navigation-drawer app :class="{'v-application--is-rtl': right}" clipped :mini-variant="drawer" :permanent="!$vuetify.breakpoint.xs" :right="right" @input="$emit('update:drawer', $event)" @mouseenter.native="onMouseEnter()" @mouseleave.native="onMouseLeave()">
+    <div class="d-flex flex-column fill-height">
+      <v-list nav dense rounded>
+        <v-list-item v-for="item in filteredItems" :key="item.name" link :to="item.to" :exact="item.exact" :disabled="item.disabled" active-class="veo-active-link-item">
+          <v-list-item-icon v-if="item.icon">
+            <v-icon v-text="item.icon" />
+          </v-list-item-icon>
+          <v-list-item-title>{{ item.name }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+      <v-spacer />
+    </div>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
 
-interface INavItem {
+export interface INavItem {
   name: string,
   icon: string,
   exact?: boolean,
   to: string,
-  visible?: boolean
+  visible?: boolean,
+  disabled: boolean
 }
 
 export default Vue.extend({
@@ -50,17 +51,47 @@ export default Vue.extend({
   },
   data() {
     return {
+      openedOnHover: false as boolean
     }
   },
   computed: {
     filteredItems(): INavItem[] {
       return this.items.filter(item => item.visible !== false)
     }
+  },
+  mounted() {
+    // Closes the menu if the cursor leaves the browser
+    document.addEventListener('mouseleave', this.onMouseLeave)
+  },
+  destroyed() {
+    // Closes the menu if the cursor leaves the browser
+    document.removeEventListener('mouseleave', this.onMouseLeave)
+  },
+  methods: {
+    onMouseEnter() {
+      // If this.drawer is true, the mini-variant is displayed
+      if (this.drawer) {
+        this.openedOnHover = true
+        setTimeout(() => {
+          if (this.openedOnHover) {
+            this.$emit('update:drawer', false)
+          }
+        }, 200)
+      }
+    },
+    onMouseLeave() {
+      if (!this.drawer && this.openedOnHover) {
+        this.$emit('update:drawer', true)
+      }
+      this.openedOnHover = false
+    }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
 .v-application--is-rtl {
   ::v-deep .v-tabs-bar {
     transform: scaleX(-1);
@@ -70,55 +101,7 @@ export default Vue.extend({
   }
 }
 
-.v-navigation-drawer.theme--light {
-  background-color: #FAFAFA;
-}
-
-.nav-tabs {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-
-  .nav-tab {
-    width: 64px;
-    min-width: 64px;
-  }
-
-  ::v-deep {
-    .v-tabs-bar {
-      &:before {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        width: 1px;
-        height: 100%;
-        background-color: #e0e0e0;
-        z-index: 0;
-      }
-    }
-
-    .v-tab {
-      min-width: 64px;
-    }
-
-    .v-tabs-slider-wrapper {
-      height: 48px !important
-    }
-
-    .v-window {
-      border-top: 1px solid #e0e0e0
-    }
-  }
-
-  // eslint-disable-next-line vue-scoped-css/no-unused-selector
-  .nav-tab-active {
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-width: 1px 0 !important;
-  }
+.veo-active-link-item {
+  color: $primary !important;
 }
 </style>

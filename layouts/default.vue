@@ -1,23 +1,29 @@
 <template>
   <v-app>
-    <v-app-bar class="app-bar pl-0" app clipped-left clipped-right flat border color="primary" dark>
-      <AppBarLogo>
-        <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
-      </AppBarLogo>
-      <AppUnitSelection @create-unit="createUnit" />
-      <portal-target name="toolbar" />
-      <v-spacer />
-      <AppAccountBtn
-        v-if="$auth.profile"
-        :username="$auth.profile.username"
-        :prename="$auth.profile.firstName"
-        :lastname="$auth.profile.lastName"
-        :email="$auth.profile.email"
-        @logout="$auth.logout('/')"
-      />
+    <v-app-bar class="veo-app-bar" app clipped-left clipped-right flat>
+      <div class="d-flex justify-space-between" style="width: 100%">
+        <div class="d-flex">
+          <v-app-bar-nav-icon @click="drawer = !drawer" />
+          <nuxt-link to="/">
+            <AppBarLogo class="ml-2" />
+          </nuxt-link>
+        </div>
+        <div class="d-flex align-center" style="width: 60%; max-width: 500px;">
+          <v-text-field :label="$t('search.label')" hide-details rounded background-color="grey" height="40" />
+        </div>
+        <AppAccountBtn
+          v-if="$auth.profile"
+          :username="$auth.profile.username"
+          :prename="$auth.profile.firstName"
+          :lastname="$auth.profile.lastName"
+          :email="$auth.profile.email"
+          @logout="$auth.logout('/')"
+        />
+      </div>
     </v-app-bar>
-    <AppTabBar :offset="$vuetify.application.top" :items="navItems" :drawer.sync="drawer" />
+    <VeoPrimaryNav :offset="$vuetify.application.top" :items="navItems" :drawer.sync="drawer" />
     <v-main>
+      <VeoBreadcrumbs />
       <nuxt />
       <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
       <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1" />
@@ -30,12 +36,12 @@
 import { computed, defineComponent, Ref, ref } from '@nuxtjs/composition-api'
 
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
-import AppTabBar from '~/components/layout/AppTabBar.vue'
+import VeoPrimaryNav, { INavItem } from '~/components/layout/AppTabBar.vue'
 import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
-import AppUnitSelection from '~/components/layout/AppUnitSelection.vue'
 import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
 import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
 import VeoAlert, { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
+import VeoBreadcrumbs from '~/components/layout/VeoBreadcrumbs.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 
 interface IProps {}
@@ -43,52 +49,72 @@ interface IProps {}
 export default defineComponent<IProps>({
   components: {
     AppBarLogo,
-    AppTabBar,
+    VeoPrimaryNav,
     AppAccountBtn,
-    AppUnitSelection,
     VeoNewUnitDialog,
     VeoSnackbar,
-    VeoAlert
+    VeoAlert,
+    VeoBreadcrumbs
   },
   setup(_props, context) {
     //
     // Global navigation
     //
     const drawer: Ref<boolean> = ref(false)
-    const navItems = computed(() => [
-      {
-        name: 'dashboard',
+    const navItems = computed(() => {
+      let items: INavItem[] = []
+      if (context.root.$route.params.unit !== undefined) {
+        items = [
+          {
+            name: context.root.$t('unit.index.title') as string,
+            icon: 'mdi-view-dashboard',
+            exact: true,
+            to: `/${context.root.$route.params.unit}/`,
+            disabled: context.root.$route.params.unit === undefined
+          },
+          {
+            name: 'veo.data',
+            icon: 'mdi-folder',
+            to: `/${context.root.$route.params.unit}/data`,
+            disabled: context.root.$route.params.unit === undefined
+          },
+          {
+            name: 'veo.forms',
+            icon: 'mdi-format-list-checks',
+            to: `/${context.root.$route.params.unit}/forms`,
+            disabled: context.root.$route.params.unit === undefined
+          },
+          {
+            name: context.root.$t('page.settings.title') as string,
+            icon: 'mdi-cog',
+            to: `/${context.root.$route.params.unit}/settings`,
+            disabled: context.root.$route.params.unit === undefined
+          },
+          {
+            name: context.root.$t('page.help.title') as string,
+            icon: 'mdi-help',
+            to: `/${context.root.$route.params.unit}/help`,
+            disabled: context.root.$route.params.unit === undefined
+          }
+        ]
+      }
+      items.unshift({
+        name: context.root.$t('page.index.title') as string,
         icon: 'mdi-home',
+        to: '/',
         exact: true,
-        to: `/${context.root.$route.params.unit}/`
-      },
-      {
-        name: 'veo.data',
-        icon: 'mdi-folder',
-        to: `/${context.root.$route.params.unit}/data`
-      },
-      {
-        name: 'veo.forms',
-        icon: 'mdi-format-list-checks',
-        to: `/${context.root.$route.params.unit}/forms`
-      },
-      {
-        name: 'settings',
-        icon: 'mdi-cog',
-        to: `/${context.root.$route.params.unit}/settings`
-      },
-      {
-        name: 'help',
-        icon: 'mdi-help',
-        to: `/${context.root.$route.params.unit}/help`
-      },
-      {
-        name: 'Editor',
+        disabled: false
+      })
+      items.push({
+        name: context.root.$t('page.editors.title') as string,
         icon: 'mdi-application-cog',
         to: '/editor',
-        exact: true
-      }
-    ])
+        exact: false,
+        disabled: false
+      })
+
+      return items
+    })
 
     //
     // Unit creation and navigation
@@ -142,10 +168,20 @@ export default defineComponent<IProps>({
       snackbar.value.value = false
     })
 
-    return { alert, createUnit, drawer, navItems, newUnitDialog, snackbar }
+    context.root.$on('create-unit', (persistent: boolean) => {
+      createUnit(persistent)
+    })
+
+    return { alert, drawer, navItems, newUnitDialog, snackbar }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
+.veo-app-bar {
+  background-color: white !important;
+  box-shadow: inset 0 -1px 0 $grey !important;
+}
 </style>
