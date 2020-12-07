@@ -225,6 +225,16 @@ export default Vue.extend({
             label: oldElement.label
           }
         })
+      } else if (event.from.className === 'drag-unused-links') {
+        const oldElement = this.formSchema.elements[event.newIndex]
+        this.formSchema.elements.splice(event.newIndex, 1, {
+          type: 'Control',
+          scope: oldElement.scope,
+          options: {
+            label: oldElement.label
+          },
+          elements: []
+        })
       }
     }
   }

@@ -140,6 +140,7 @@
           :list="objectSchemaProperties.unused.links"
           :group="{ name: 'g1', pull: 'clone', put: false }"
           :sort="false"
+          :clone="onCloneUnusedLinks"
         >
           <v-card
             v-for="(el, i) in objectSchemaProperties.unused.links"
@@ -564,6 +565,10 @@ export default Vue.extend({
     onCloneFormElement(original: any) {
       // Return always new object reference on clone to get in issues of the same reference
       // https://github.com/SortableJS/Vue.Draggable/issues/203
+      return JSON.parse(JSON.stringify(original))
+    },
+    onCloneUnusedLinks(original: any) {
+      original.elements = []
       return JSON.parse(JSON.stringify(original))
     },
     onDelete(_event: any): void {
