@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from '@nuxtjs/composition-api'
+import { computed, defineComponent, Ref, ref } from '@nuxtjs/composition-api'
 
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
@@ -55,7 +55,7 @@ export default defineComponent<IProps>({
     // Global navigation
     //
     const drawer: Ref<boolean> = ref(false)
-    const navItems = ref([
+    const navItems = computed(() => [
       {
         name: 'dashboard',
         icon: 'mdi-home',
