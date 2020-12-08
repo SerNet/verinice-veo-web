@@ -1,6 +1,4 @@
 export default {
-  welcome: 'Welcome',
-
   'domain.select.label': 'Domain',
 
   'editor.basicproperties': 'Basic properties',
@@ -122,7 +120,7 @@ export default {
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 
-  'search.label': 'Search veo',
+  'search.label': 'Search verinice.veo',
 
   'unit.create': 'Create new unit',
   'unit.created': 'Unit was created',

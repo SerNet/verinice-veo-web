@@ -39,11 +39,6 @@ export default Vue.extend({
   async fetch() {
     this.unit = await this.$api.unit.fetch(this.$route.params.unit)
   },
-  head(): any {
-    return {
-      title: this.$t('welcome')
-    }
-  },
   watch: {
     '$route.params': '$fetch'
   },

@@ -9,7 +9,7 @@
             </v-list-item-icon>
             <v-list-item-title>{{ item.name }}</v-list-item-title>
           </v-list-item>
-          <v-list-group v-else :key="item.name" v-model="item.extended" no-action :prepend-icon="item.icon" active-class="veo-active-link-group">
+          <v-list-group v-else :key="item.name" v-model="item.extended" no-action :prepend-icon="item.icon" active-class="veo-active-link-group" @click="persistSubmenuUIState(item.name, item.extended)">
             <template #activator>
               <v-list-item-title>{{ item.name }}</v-list-item-title>
             </template>
@@ -76,6 +76,14 @@ export default Vue.extend({
     this.getNavEntries(this.$route)
     // Closes the menu if the cursor leaves the browser
     document.addEventListener('mouseleave', this.onMouseLeave)
+
+    // Loads the menu state from the preferences
+    const fixedMenu = this.fetchUIState().persistentMenu
+    if (fixedMenu !== undefined) {
+      this.$nextTick(() => {
+        this.$emit('update:drawer', !fixedMenu)
+      })
+    }
   },
   destroyed() {
     // Closes the menu if the cursor leaves the browser
@@ -117,7 +125,7 @@ export default Vue.extend({
             to: undefined,
             disabled: false,
             childItems: await this.fetchDataTypes(),
-            extended: true
+            extended: this.fetchUIState().dataCollapsed ? !this.fetchUIState().dataCollapsed : true
           },
           {
             name: 'veo.forms',
@@ -125,7 +133,7 @@ export default Vue.extend({
             to: undefined,
             disabled: false,
             childItems: await this.fetchFormTypes(),
-            extended: true
+            extended: this.fetchUIState().formsCollapsed ? !this.fetchUIState().formsCollapsed : true
           },
           {
             name: this.$t('page.settings.title') as string,
@@ -162,11 +170,14 @@ export default Vue.extend({
     toggleMenu() {
       if (!this.drawer && this.openedOnHover) {
         this.openedOnHover = false
+        this.persistUIState(true)
       } else if (!this.drawer) {
         this.openedOnHover = false
         this.$emit('update:drawer', true)
+        this.persistUIState(false)
       } else {
         this.$emit('update:drawer', !this.drawer)
+        this.persistUIState(true)
       }
     },
     async fetchDataTypes(): Promise<INavItem[]> {
@@ -204,6 +215,35 @@ export default Vue.extend({
     },
     capitalize(string: string): string {
       return string.charAt(0).toUpperCase() + string.slice(1)
+    },
+    /**
+     * Used to store the current ui settings in the local storage to reconstruct the layout on page reload.
+     */
+    persistUIState(persistentMenu?: boolean, dataCollapsed?: boolean, formsCollapsed?: boolean) {
+      // fetch state from local storage
+      let preferences = this.fetchUIState()
+
+      // If the property doesn't exist, the state hasn't been stored yet so we create the initial one.
+      if (preferences.persistentMenu === undefined) {
+        preferences = { persistentMenu: false, dataCollapsed: false, formsCollapsed: false }
+      }
+
+      // Overwrite fetched state
+      localStorage.setItem('veo-menu-preferences', JSON.stringify({
+        persistentMenu: persistentMenu ?? preferences.persistentMenu,
+        dataCollapsed: dataCollapsed ?? preferences.dataCollapsed,
+        formsCollapsed: formsCollapsed ?? preferences.formsCollapsed
+      }))
+    },
+    fetchUIState(): { persistentMenu?: boolean, dataCollapsed?: boolean, formsCollapsed?: boolean } {
+      return JSON.parse(localStorage.getItem('veo-menu-preferences') || '{}')
+    },
+    persistSubmenuUIState(item: string, state: boolean) {
+      if (item === 'veo.data') {
+        this.persistUIState(undefined, state)
+      } else if (item === 'veo.forms') {
+        this.persistUIState(undefined, undefined, state)
+      }
     }
   }
 })
