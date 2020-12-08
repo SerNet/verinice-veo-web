@@ -119,7 +119,7 @@ export default Vue.extend({
             to: undefined,
             disabled: false,
             childItems: await this.fetchDataTypes(),
-            extended: this.fetchUIState().dataCollapsed ? !this.fetchUIState().dataCollapsed : true,
+            extended: this.fetchUIState()['veo.data'] ? !this.fetchUIState()['veo.data'] : true,
             topLevelItem: true
           },
           {
@@ -128,7 +128,7 @@ export default Vue.extend({
             to: undefined,
             disabled: false,
             childItems: await this.fetchFormTypes(),
-            extended: this.fetchUIState().formsCollapsed ? !this.fetchUIState().formsCollapsed : true,
+            extended: this.fetchUIState()['veo.forms'] ? !this.fetchUIState()['veo.forms'] : true,
             topLevelItem: true
           },
           {
@@ -170,14 +170,14 @@ export default Vue.extend({
     toggleMenu() {
       if (!this.drawer && this.openedOnHover) {
         this.openedOnHover = false
-        this.persistUIState(true)
+        this.persistUIState('persistentMenu', true)
       } else if (!this.drawer) {
         this.openedOnHover = false
         this.$emit('update:drawer', true)
-        this.persistUIState(false)
+        this.persistUIState('persistentMenu', false)
       } else {
         this.$emit('update:drawer', !this.drawer)
-        this.persistUIState(true)
+        this.persistUIState('persistentMenu', true)
       }
     },
     async fetchDataTypes(): Promise<INavItem[]> {
@@ -188,7 +188,6 @@ export default Vue.extend({
         // TODO: Implement groups
         await this.$api.group.fetchAll({ type: this.capitalize(key), unit: this.$route.params.unit }).then((data) => {
           if (data.length > 0) {
-            console.log('1', data)
           }
         })
 
@@ -219,7 +218,7 @@ export default Vue.extend({
                 topLevelItem: false
               }
             ],
-            extended: true,
+            extended: this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] ? !this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] : true,
             topLevelItem: false
           })
         } else {
@@ -229,7 +228,7 @@ export default Vue.extend({
             to: `/${this.$route.params.unit}/data/${key}/-/`,
             disabled: false,
             childItems: undefined,
-            extended: true,
+            extended: this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] ? !this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] : true,
             topLevelItem: false
           })
         }
@@ -254,23 +253,15 @@ export default Vue.extend({
     /**
      * Used to store the current ui settings in the local storage to reconstruct the layout on page reload.
      */
-    persistUIState(persistentMenu?: boolean, dataCollapsed?: boolean, formsCollapsed?: boolean) {
+    persistUIState(item: string, state: boolean) {
       // fetch state from local storage
-      let preferences = this.fetchUIState()
-
-      // If the property doesn't exist, the state hasn't been stored yet so we create the initial one.
-      if (preferences.persistentMenu === undefined) {
-        preferences = { persistentMenu: false, dataCollapsed: false, formsCollapsed: false }
-      }
+      const preferences = this.fetchUIState()
+      preferences[item] = state
 
       // Overwrite fetched state
-      localStorage.setItem('veo-menu-preferences', JSON.stringify({
-        persistentMenu: persistentMenu ?? preferences.persistentMenu,
-        dataCollapsed: dataCollapsed ?? preferences.dataCollapsed,
-        formsCollapsed: formsCollapsed ?? preferences.formsCollapsed
-      }))
+      localStorage.setItem('veo-menu-preferences', JSON.stringify(preferences))
     },
-    fetchUIState(): { persistentMenu?: boolean, dataCollapsed?: boolean, formsCollapsed?: boolean } {
+    fetchUIState(): { [key:string]: boolean } {
       return JSON.parse(localStorage.getItem('veo-menu-preferences') || '{}')
     }
   }

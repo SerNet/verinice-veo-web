@@ -64,11 +64,7 @@ export default defineComponent<IProps>({
   setup(props, context) {
     function persistSubmenuUIState(item: string, state: boolean) {
       context.emit('update:extended', state)
-      if (item === 'veo.data') {
-        props.persistUIState(undefined, state)
-      } else if (item === 'veo.forms') {
-        props.persistUIState(undefined, undefined, state)
-      }
+      props.persistUIState(item, state)
     }
 
     return { persistSubmenuUIState }

@@ -194,7 +194,6 @@ export default Vue.extend({
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     async doImport1(schema: IVEOFormSchema) {
       this.setFormSchema(schema)
-      console.log('1', schema.modelType, this.objectTypes)
       if (this.objectTypes.findIndex((item: { value: string, text: string }) => item.value.toLowerCase() === schema.modelType.toLowerCase()) !== -1) {
         this.objectSchema = await this.$api.schema.fetch(schema.modelType.toLowerCase())
         this.$emit('form-schema', this.formSchema)
