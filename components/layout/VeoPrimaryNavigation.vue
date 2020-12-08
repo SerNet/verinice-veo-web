@@ -3,20 +3,7 @@
     <div class="d-flex flex-column fill-height">
       <v-list nav dense :shaped="!drawer" :rounded="drawer" expand>
         <template v-for="item in items">
-          <v-list-item v-if="item.childItems === undefined" :key="item.name" :to="item.to" :exact="item.exact" :disabled="item.disabled" active-class="veo-active-link-item">
-            <v-list-item-icon v-if="item.icon">
-              <v-icon v-text="item.icon" />
-            </v-list-item-icon>
-            <v-list-item-title>{{ item.name }}</v-list-item-title>
-          </v-list-item>
-          <v-list-group v-else :key="item.name" v-model="item.extended" no-action :prepend-icon="item.icon" active-class="veo-active-link-group" @click="persistSubmenuUIState(item.name, item.extended)">
-            <template #activator>
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
-            </template>
-            <v-list-item v-for="child of item.childItems" :key="child.name" :to="child.to" :exact="child.exact" :disabled="child.disabled" active-class="veo-active-link-item">
-              <v-list-item-title>{{ child.name }}</v-list-item-title>
-            </v-list-item>
-          </v-list-group>
+          <VeoPrimaryNavigationEntry :key="item.name" v-bind="item" :extended.sync="item.extended" :persist-u-i-state="persistUIState" />
         </template>
       </v-list>
       <v-spacer />
@@ -40,6 +27,8 @@ import Vue from 'vue'
 import { Route } from 'vue-router'
 import { FormSchemaMeta, FormSchemaMetas, ObjectSchemaNames } from '~/types/FormSchema'
 
+import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
+
 export interface INavItem {
   name: string,
   icon?: string,
@@ -48,9 +37,13 @@ export interface INavItem {
   disabled: boolean,
   childItems?: INavItem[],
   extended?: boolean
+  topLevelItem: boolean
 }
 
 export default Vue.extend({
+  components: {
+    VeoPrimaryNavigationEntry
+  },
   props: {
     right: {
       type: Boolean,
@@ -117,7 +110,8 @@ export default Vue.extend({
             icon: 'mdi-view-dashboard',
             exact: true,
             to: `/${route.params.unit}/`,
-            disabled: false
+            disabled: false,
+            topLevelItem: true
           },
           {
             name: 'veo.data',
@@ -125,7 +119,8 @@ export default Vue.extend({
             to: undefined,
             disabled: false,
             childItems: await this.fetchDataTypes(),
-            extended: this.fetchUIState().dataCollapsed ? !this.fetchUIState().dataCollapsed : true
+            extended: this.fetchUIState().dataCollapsed ? !this.fetchUIState().dataCollapsed : true,
+            topLevelItem: true
           },
           {
             name: 'veo.forms',
@@ -133,19 +128,22 @@ export default Vue.extend({
             to: undefined,
             disabled: false,
             childItems: await this.fetchFormTypes(),
-            extended: this.fetchUIState().formsCollapsed ? !this.fetchUIState().formsCollapsed : true
+            extended: this.fetchUIState().formsCollapsed ? !this.fetchUIState().formsCollapsed : true,
+            topLevelItem: true
           },
           {
             name: this.$t('page.settings.title') as string,
             icon: 'mdi-cog',
             to: `/${route.params.unit}/settings`,
-            disabled: false
+            disabled: false,
+            topLevelItem: true
           },
           {
             name: this.$t('page.help.title') as string,
             icon: 'mdi-help',
             to: `/${route.params.unit}/help`,
-            disabled: false
+            disabled: false,
+            topLevelItem: true
           }
         ]
       } else {
@@ -154,7 +152,8 @@ export default Vue.extend({
           icon: 'mdi-home',
           to: '/',
           exact: false,
-          disabled: false
+          disabled: false,
+          topLevelItem: true
         })
       }
 
@@ -164,7 +163,8 @@ export default Vue.extend({
         icon: 'mdi-application-cog',
         to: '/editor',
         exact: false,
-        disabled: false
+        disabled: false,
+        topLevelItem: true
       })
     },
     toggleMenu() {
@@ -191,14 +191,48 @@ export default Vue.extend({
             console.log('1', data)
           }
         })
-        objects.push({
-          name: this.$t(`unit.data.type.${key}`) as string,
-          exact: true,
-          to: `/${this.$route.params.unit}/data/${key}/-/`,
-          disabled: false,
-          childItems: undefined,
-          extended: true
-        })
+
+        // ToDo: Remove Demo
+        if (key === 'asset') {
+          objects.push({
+            name: this.$t(`unit.data.type.${key}`) as string,
+            exact: true,
+            to: `/${this.$route.params.unit}/data/${key}/-/`,
+            disabled: false,
+            childItems: [
+              {
+                name: 'Untergruppe1',
+                exact: true,
+                to: `/${this.$route.params.unit}/data/${key}/-/`,
+                disabled: false,
+                childItems: undefined,
+                extended: true,
+                topLevelItem: false
+              },
+              {
+                name: 'Untergruppe2',
+                exact: true,
+                to: `/${this.$route.params.unit}/data/${key}/-/`,
+                disabled: false,
+                childItems: undefined,
+                extended: true,
+                topLevelItem: false
+              }
+            ],
+            extended: true,
+            topLevelItem: false
+          })
+        } else {
+          objects.push({
+            name: this.$t(`unit.data.type.${key}`) as string,
+            exact: true,
+            to: `/${this.$route.params.unit}/data/${key}/-/`,
+            disabled: false,
+            childItems: undefined,
+            extended: true,
+            topLevelItem: false
+          })
+        }
       }
 
       return objects
@@ -209,7 +243,8 @@ export default Vue.extend({
           name: entry.name,
           exact: true,
           to: `/${this.$route.params.unit}/forms/${entry.id}/`,
-          disabled: false
+          disabled: false,
+          topLevelItem: false
         }
       }))
     },
@@ -237,13 +272,6 @@ export default Vue.extend({
     },
     fetchUIState(): { persistentMenu?: boolean, dataCollapsed?: boolean, formsCollapsed?: boolean } {
       return JSON.parse(localStorage.getItem('veo-menu-preferences') || '{}')
-    },
-    persistSubmenuUIState(item: string, state: boolean) {
-      if (item === 'veo.data') {
-        this.persistUIState(undefined, state)
-      } else if (item === 'veo.forms') {
-        this.persistUIState(undefined, undefined, state)
-      }
     }
   }
 })
