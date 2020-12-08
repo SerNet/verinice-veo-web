@@ -100,7 +100,7 @@ export default Vue.extend({
       }
       this.openedOnHover = false
     },
-    async getNavEntries(route: Route) {
+    getNavEntries(route: Route) {
       this.items = []
       // Only show nav links belonging to units if a unit is selected
       if (route.params.unit !== undefined) {
@@ -118,7 +118,7 @@ export default Vue.extend({
             icon: 'mdi-folder',
             to: undefined,
             disabled: false,
-            childItems: await this.fetchDataTypes(),
+            childItems: undefined,
             extended: this.fetchUIState()['veo.data'] ? !this.fetchUIState()['veo.data'] : true,
             topLevelItem: true
           },
@@ -127,7 +127,7 @@ export default Vue.extend({
             icon: 'mdi-format-list-checks',
             to: undefined,
             disabled: false,
-            childItems: await this.fetchFormTypes(),
+            childItems: undefined,
             extended: this.fetchUIState()['veo.forms'] ? !this.fetchUIState()['veo.forms'] : true,
             topLevelItem: true
           },
@@ -146,6 +146,14 @@ export default Vue.extend({
             topLevelItem: true
           }
         ]
+
+        // Async loading of child elements (done now as to not block the rendering of the menu)
+        this.fetchDataTypes().then((data: INavItem[]) => {
+          this.items[1].childItems = data
+        })
+        this.fetchFormTypes().then((data: INavItem[]) => {
+          this.items[2].childItems = data
+        })
       } else {
         this.items.push({
           name: this.$t('page.index.title') as string,
