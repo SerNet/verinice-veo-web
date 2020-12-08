@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12">
+  <v-col class="veo-page" cols="12">
     <div style="max-width: 640px">
       <div class="body-1 mb-4">{{ $t('page.index.chooseunit') }}:</div>
       <v-data-iterator :search="search" :items="units" item-key="id">

@@ -2,6 +2,7 @@
   <v-app>
     <v-app-bar class="veo-app-bar" app clipped-left clipped-right flat>
       <div class="d-flex">
+        <v-app-bar-nav-icon v-if="$vuetify.breakpoint.xs" @click="drawer = true" />
         <nuxt-link to="/">
           <AppBarLogo class="ml-2" />
         </nuxt-link>
@@ -19,7 +20,7 @@
       />
     </v-app-bar>
     <VeoPrimaryNav :drawer.sync="drawer" />
-    <v-main>
+    <v-main style="max-height: 100vh;" class="overflow-hidden">
       <VeoBreadcrumbs />
       <nuxt />
     </v-main>

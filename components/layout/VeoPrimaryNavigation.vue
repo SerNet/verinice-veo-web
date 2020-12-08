@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer app :class="{'v-application--is-rtl': right}" clipped :mini-variant="drawer" :permanent="!$vuetify.breakpoint.xs" :right="right" @input="$emit('update:drawer', $event)" @mouseenter.native="onMouseEnter()" @mouseleave.native="onMouseLeave()">
+  <v-navigation-drawer :value="drawer" app :class="{'v-application--is-rtl': right}" clipped :mini-variant="!$vuetify.breakpoint.xs && drawer" :permanent="!$vuetify.breakpoint.xs" :temporary="$vuetify.breakpoint.xs" :right="right" @input="$emit('update:drawer', $event)" @mouseenter.native="onMouseEnter()" @mouseleave.native="onMouseLeave()">
     <div class="d-flex flex-column fill-height">
       <v-list nav dense :shaped="!drawer" :rounded="drawer" expand>
         <template v-for="item in items">
@@ -9,7 +9,7 @@
       <v-spacer />
       <v-list nav dense class="pa-0">
         <v-divider />
-        <v-list-item class="pl-4" @click="toggleMenu()">
+        <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="toggleMenu()">
           <v-list-item-icon>
             <v-icon v-if="drawer || openedOnHover">mdi-chevron-double-right</v-icon>
             <v-icon v-else>mdi-chevron-double-left</v-icon>
@@ -85,7 +85,7 @@ export default Vue.extend({
   methods: {
     onMouseEnter() {
       // If this.drawer is true, the mini-variant is displayed
-      if (this.drawer) {
+      if (!this.$vuetify.breakpoint.xs && this.drawer) {
         this.openedOnHover = true
         setTimeout(() => {
           if (this.openedOnHover) {
@@ -95,7 +95,7 @@ export default Vue.extend({
       }
     },
     onMouseLeave() {
-      if (!this.drawer && this.openedOnHover) {
+      if (!this.$vuetify.breakpoint.xs && !this.drawer && this.openedOnHover) {
         this.$emit('update:drawer', true)
       }
       this.openedOnHover = false

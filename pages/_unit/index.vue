@@ -1,5 +1,5 @@
 <template>
-  <v-row class="pa-4">
+  <v-row class="pa-4 veo-page">
     <template v-if="$fetchState.pending">
       <v-progress-circular size="64" color="primary" indeterminate />
     </template>
