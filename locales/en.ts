@@ -108,7 +108,7 @@ export default {
 
   'page.help': 'Manual.title',
 
-  'page.index.title': 'Home',
+  'page.index.title': 'Unit selection',
   'page.index.chooseunit': 'Please choose a Unit',
   'page.index.chooseunitplaceholder': 'Search for a unit...',
 

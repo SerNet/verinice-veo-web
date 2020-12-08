@@ -108,7 +108,7 @@ export default {
 
   'page.help.title': 'Handbuch',
 
-  'page.index.title': 'Startseite',
+  'page.index.title': 'Unitauswahl',
   'page.index.chooseunit': 'Bitte wählen Sie eine Unit',
   'page.index.chooseunitplaceholder': 'Nach einer Unit suchen...',
 

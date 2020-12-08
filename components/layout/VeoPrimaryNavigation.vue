@@ -140,6 +140,14 @@ export default Vue.extend({
             disabled: false
           }
         ]
+      } else {
+        this.items.push({
+          name: this.$t('page.index.title') as string,
+          icon: 'mdi-home',
+          to: '/',
+          exact: false,
+          disabled: false
+        })
       }
 
       // Add permanent entries to the nav bar
