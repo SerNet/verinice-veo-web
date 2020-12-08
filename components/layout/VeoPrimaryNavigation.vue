@@ -151,7 +151,7 @@ export default Vue.extend({
           name: this.$t('page.index.title') as string,
           icon: 'mdi-home',
           to: '/',
-          exact: false,
+          exact: true,
           disabled: false,
           topLevelItem: true
         })
