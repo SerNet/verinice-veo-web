@@ -1,25 +1,23 @@
 <template>
   <v-app>
     <v-app-bar class="veo-app-bar" app clipped-left clipped-right flat>
-      <div class="d-flex justify-space-between" style="width: 100%">
-        <div class="d-flex">
-          <v-app-bar-nav-icon @click="drawer = !drawer" />
-          <nuxt-link to="/">
-            <AppBarLogo class="ml-2" />
-          </nuxt-link>
-        </div>
-        <div class="d-flex align-center" style="width: 60%; max-width: 500px;">
-          <v-text-field :label="$t('search.label')" hide-details background-color="grey" height="40" class="veo-app-bar-search" />
-        </div>
-        <AppAccountBtn
-          v-if="$auth.profile"
-          :username="$auth.profile.username"
-          :prename="$auth.profile.firstName"
-          :lastname="$auth.profile.lastName"
-          :email="$auth.profile.email"
-          @logout="$auth.logout('/')"
-        />
+      <div class="d-flex">
+        <v-app-bar-nav-icon @click="drawer = !drawer" />
+        <nuxt-link to="/">
+          <AppBarLogo class="ml-2" />
+        </nuxt-link>
       </div>
+      <div class="d-flex align-center" style="width: 60%; max-width: 500px;">
+        <v-text-field :label="$t('search.label')" hide-details background-color="grey" height="40" class="veo-app-bar-search" />
+      </div>
+      <AppAccountBtn
+        v-if="$auth.profile"
+        :username="$auth.profile.username"
+        :prename="$auth.profile.firstName"
+        :lastname="$auth.profile.lastName"
+        :email="$auth.profile.email"
+        @logout="$auth.logout('/')"
+      />
     </v-app-bar>
     <VeoPrimaryNav :offset="$vuetify.application.top" :items="navItems" :drawer.sync="drawer" />
     <v-main>
@@ -183,6 +181,13 @@ export default defineComponent<IProps>({
 .veo-app-bar {
   background-color: white !important;
   box-shadow: inset 0 -1px 0 $grey !important;
+
+  .v-toolbar__content {
+    > * {
+      flex-grow: 1;
+      flex-basis: 0;
+    }
+  }
 }
 
 .veo-app-bar-search {

@@ -1,11 +1,13 @@
 <template>
   <v-menu v-model="value" :close-on-content-click="false" min-width="200" nudge-bottom="5" offset-y origin="top right">
     <template #activator="{ on }">
-      <v-btn class="mr-0" icon dark v-on="on">
-        <v-avatar size="48" color="secondary">
-          <span class="white--text headline">{{ username.substr(0,1).toUpperCase() }}</span>
-        </v-avatar>
-      </v-btn>
+      <div style="flex-basis: 0;" class="mr-0 text-right flex-grow-1">
+        <v-btn icon dark v-on="on">
+          <v-avatar size="48" color="secondary">
+            <span class="white--text headline">{{ username.substr(0,1).toUpperCase() }}</span>
+          </v-avatar>
+        </v-btn>
+      </div>
     </template>
     <v-card>
       <v-list>
