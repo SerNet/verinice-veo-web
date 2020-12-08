@@ -101,6 +101,8 @@ export default {
   'global.button.yes': 'Yes',
   'global.error.fetching': 'An error occured while fetching the resource',
   'global.logout': 'Logout',
+  'global.menu.collapse': 'Collapse menu',
+  'global.menu.expand': 'Fix menu',
 
   'page.editors': 'Editors.title',
 

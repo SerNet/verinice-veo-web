@@ -1,27 +1,31 @@
 <template>
-  <v-list-item dense class="my-2 pt-1" style="height: 40px;">
-    <v-list-item-content class="align-center py-3">
-      <span class="pt-1 flex-grow-0" style="flex-basis: auto; width: 60px;">{{ $t('unit.select.label') }}:</span>
-      <v-autocomplete
-        v-if="$auth.profile"
-        :items="units"
-        item-text="name"
-        item-value="id"
-        :value="unit"
-        hide-details
-        dense
-        class="ml-3 mt-0"
-        :label="$t('unit.select.label')"
-        style="max-width: 200px"
-        @change="changeUnit"
-      />
-    </v-list-item-content>
-    <v-list-item-action class="ml-0">
-      <v-btn icon @click="createUnit()">
-        <v-icon>mdi-plus-circle-outline</v-icon>
-      </v-btn>
-    </v-list-item-action>
-  </v-list-item>
+  <div>
+    <v-list-item dense class="pt-1" style="height: 40px;">
+      <v-list-item-content class="align-center py-3">
+        <span class="pt-1 flex-grow-0" style="flex-basis: auto; width: 60px;">{{ $t('unit.select.label') }}:</span>
+        <v-autocomplete
+          v-if="$auth.profile"
+          :items="units"
+          item-text="name"
+          item-value="id"
+          :value="unit"
+          hide-details
+          dense
+          class="ml-3 mt-0"
+          :label="$t('unit.select.label')"
+          style="max-width: 220px"
+          @change="changeUnit"
+        />
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item>
+      <v-list-item-title class="d-flex justify-center">
+        <v-btn color="primary" outlined @click="createUnit()">
+          <v-icon>mdi-plus</v-icon> {{ $t('unit.create.short') }}
+        </v-btn>
+      </v-list-item-title>
+    </v-list-item>
+  </div>
 </template>
 
 <script lang="ts">

@@ -101,6 +101,8 @@ export default {
   'global.button.yes': 'Ja',
   'global.error.fetching': 'Fehler beim Abruf',
   'global.logout': 'Logout',
+  'global.menu.collapse': 'Menü verstecken',
+  'global.menu.expand': 'Menü fixieren',
 
   'page.editors.title': 'Editoren',
 

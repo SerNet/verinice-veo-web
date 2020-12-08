@@ -30,12 +30,6 @@ export default defineComponent<IProps>({
           disabled: false
         }))
       ]
-      returnArray.unshift({
-        disabled: false,
-        exact: true,
-        text: context.root.$i18n.t('page.index.title') as string,
-        to: '/'
-      })
       return returnArray
     })
 

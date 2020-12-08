@@ -50,15 +50,12 @@
     <AppSideContainer :width="350">
       <nuxt-child />
     </AppSideContainer>
-
-    <AppTabBar :items="navItems" :drawer="false" right />
   </v-row>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { IForm } from '~/lib/utils'
-import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
@@ -80,7 +77,6 @@ interface IData {
 
 export default Vue.extend({
   components: {
-    AppTabBar,
     AppSideContainer,
     VeoForm
   },

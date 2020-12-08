@@ -2,7 +2,6 @@
   <v-app>
     <v-app-bar class="veo-app-bar" app clipped-left clipped-right flat>
       <div class="d-flex">
-        <v-app-bar-nav-icon @click="drawer = !drawer" />
         <nuxt-link to="/">
           <AppBarLogo class="ml-2" />
         </nuxt-link>
@@ -19,22 +18,22 @@
         @logout="$auth.logout('/')"
       />
     </v-app-bar>
-    <VeoPrimaryNav :offset="$vuetify.application.top" :items="navItems" :drawer.sync="drawer" />
+    <VeoPrimaryNav :drawer.sync="drawer" />
     <v-main>
       <VeoBreadcrumbs />
       <nuxt />
-      <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
-      <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1" />
     </v-main>
+    <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
+    <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1" />
     <VeoNewUnitDialog v-model="newUnitDialog.value" v-bind="newUnitDialog" />
   </v-app>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from '@nuxtjs/composition-api'
+import { defineComponent, Ref, ref } from '@nuxtjs/composition-api'
 
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
-import VeoPrimaryNav, { INavItem } from '~/components/layout/AppTabBar.vue'
+import VeoPrimaryNav from '~/components/layout/VeoPrimaryNavigation.vue'
 import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
 import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
 import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
@@ -59,60 +58,6 @@ export default defineComponent<IProps>({
     // Global navigation
     //
     const drawer: Ref<boolean> = ref(false)
-    const navItems = computed(() => {
-      let items: INavItem[] = []
-      if (context.root.$route.params.unit !== undefined) {
-        items = [
-          {
-            name: context.root.$t('unit.index.title') as string,
-            icon: 'mdi-view-dashboard',
-            exact: true,
-            to: `/${context.root.$route.params.unit}/`,
-            disabled: context.root.$route.params.unit === undefined
-          },
-          {
-            name: 'veo.data',
-            icon: 'mdi-folder',
-            to: `/${context.root.$route.params.unit}/data`,
-            disabled: context.root.$route.params.unit === undefined
-          },
-          {
-            name: 'veo.forms',
-            icon: 'mdi-format-list-checks',
-            to: `/${context.root.$route.params.unit}/forms`,
-            disabled: context.root.$route.params.unit === undefined
-          },
-          {
-            name: context.root.$t('page.settings.title') as string,
-            icon: 'mdi-cog',
-            to: `/${context.root.$route.params.unit}/settings`,
-            disabled: context.root.$route.params.unit === undefined
-          },
-          {
-            name: context.root.$t('page.help.title') as string,
-            icon: 'mdi-help',
-            to: `/${context.root.$route.params.unit}/help`,
-            disabled: context.root.$route.params.unit === undefined
-          }
-        ]
-      }
-      items.unshift({
-        name: context.root.$t('page.index.title') as string,
-        icon: 'mdi-home',
-        to: '/',
-        exact: true,
-        disabled: false
-      })
-      items.push({
-        name: context.root.$t('page.editors.title') as string,
-        icon: 'mdi-application-cog',
-        to: '/editor',
-        exact: false,
-        disabled: false
-      })
-
-      return items
-    })
 
     //
     // Unit creation and navigation
@@ -170,7 +115,7 @@ export default defineComponent<IProps>({
       createUnit(persistent)
     })
 
-    return { alert, drawer, navItems, newUnitDialog, snackbar }
+    return { alert, drawer, newUnitDialog, snackbar }
   }
 })
 </script>
