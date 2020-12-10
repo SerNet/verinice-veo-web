@@ -1,6 +1,6 @@
 <template>
-  <v-row class="flex-column align-center justify-center wrapper">
-    <v-col cols="10" md="8" lg="6" class="mb-5">
+  <v-row dense class="flex-column flex-nowrap align-center justify-center wrapper">
+    <v-col cols="10" md="8" lg="6">
       <svg viewBox="0 0 155 30" version="1.1" xmlns="http://www.w3.org/2000/svg" style="transform: scale(0.6)">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <path
@@ -41,6 +41,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .wrapper {
-    margin-top: 15%
+    margin: 15% 0;
 }
 </style>

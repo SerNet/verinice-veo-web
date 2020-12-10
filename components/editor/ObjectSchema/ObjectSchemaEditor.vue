@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="display: contents; width: 100%">
     <div class="px-5 py-4 veo-editor-header">
       <v-text-field v-model="search" dense clearable flat solo-inverted hide-details prepend-inner-icon="mdi-magnify" :label="$t('editor.search.label')" />
       <v-checkbox v-model="hideEmptyAspects" class="caption" dense hide-details :label="$t('editor.hideemptyaspects')" />
@@ -261,7 +261,5 @@ export default defineComponent<IProps>({
   background-color: white;
   border-bottom: 1px solid $grey;
   position: sticky;
-  top: 0;
-  z-index: 2;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-  <v-col class="veo-page" cols="12">
-    <div style="max-width: 640px">
+  <VeoPage fullsize :title="$t('page.index.title')">
+    <v-col cols="12" md="8" xl="6" class="px-2">
       <div class="body-1 mb-4">{{ $t('page.index.chooseunit') }}:</div>
       <v-data-iterator :search="search" :items="units" item-key="id">
         <template #header>
@@ -25,15 +25,19 @@
           </v-list>
         </template>
       </v-data-iterator>
-    </div>
-  </v-col>
+    </v-col>
+  </VeoPage>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
+import VeoPage from '~/components/layout/VeoPage.vue'
+
 export default Vue.extend({
-  components: {},
+  components: {
+    VeoPage
+  },
   props: {},
   data() {
     return {
@@ -46,9 +50,9 @@ export default Vue.extend({
     const units = await this.$api.unit.fetchAll()
     this.units = units
   },
-  head() {
+  head(): any {
     return {
-      // title: ''
+      title: this.$t('page.index.title')
     }
   }
 })

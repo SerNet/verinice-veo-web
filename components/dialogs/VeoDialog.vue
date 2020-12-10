@@ -5,7 +5,7 @@
         <span>{{ headline }}</span>
         <v-spacer />
         <v-btn v-if="!closeHidden" :disabled="closeDisabled" icon large class="close-button" @click="closeDialog()">
-          <v-icon color="white">mdi-close</v-icon>
+          <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-4" style="position: relative;">
@@ -45,6 +45,10 @@ export default Vue.extend({
     closeHidden: {
       type: Boolean,
       default: false
+    },
+    closeFunction: {
+      type: Function,
+      default: () => () => { return true }
     },
     fixedHeader: {
       type: Boolean,
@@ -89,7 +93,9 @@ export default Vue.extend({
   },
   methods: {
     closeDialog() {
-      this.$emit('input', false)
+      if (this.closeFunction()) {
+        this.$emit('input', false)
+      }
     }
   }
 })
@@ -102,11 +108,6 @@ export default Vue.extend({
 }
 
 .headline {
-  background-color: $primary;
-  color: white;
-}
-
-.v-btn.close-button {
-  background-color: $primary !important;
+  border-bottom: 1px solid $grey;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-row class="flex-column align-center justify-center wrapper">
+  <v-row class="flex-column flex-nowrap align-center justify-center wrapper">
     <v-col cols="10" md="8" lg="6" class="mb-5">
       <svg viewBox="0 0 300 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -41,6 +41,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .wrapper {
-    margin-top: 15%
+    margin: 15% 0;
 }
 </style>

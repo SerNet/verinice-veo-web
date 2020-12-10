@@ -2,7 +2,7 @@
   <v-alert :value="value" :type="alertType" colored-border border="left" elevation="4" dense class="veo-alert" :icon="alertIcon">
     <v-row no-gutters class="justify-lg-space-between">
       <v-col cols="auto" class="accent--text">
-        <h3 class="accent--text text--darken-3" v-text="title" />
+        <h3 v-text="title" />
         <slot />
         <p v-if="content" class="mb-0 accent--text" v-html="content" />
       </v-col>

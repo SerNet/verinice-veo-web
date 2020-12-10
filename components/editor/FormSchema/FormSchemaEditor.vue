@@ -1,11 +1,7 @@
 <template>
-  <v-row no-gutters>
-    <v-col cols="4">
-      <v-card
-        elevation="0"
-        class="mt-2 mx-2 mb-2 drag-elements-wrapper"
-        style="overflow: auto; height: calc(100vh - 202px);"
-      >
+  <div class="veo-page-wrapper">
+    <VeoPage :cols="6">
+      <v-card flat class="mt-2 mx-2 mb-2 drag-elements-wrapper">
         <!-- Form elements -->
         <div>
           <v-subheader class="px-2">Form Elements</v-subheader>
@@ -168,8 +164,8 @@
           </v-card>
         </Draggable>
       </v-card>
-    </v-col>
-    <v-col cols="8">
+    </VeoPage>
+    <VeoPage cols="6">
       <div
         class="veo-editor-body"
         style="overflow: auto; height: calc(100vh - 182px);"
@@ -215,8 +211,8 @@
           </div>
         </v-speed-dial> -->
       </div>
-    </v-col>
-  </v-row>
+    </VeoPage>
+  </div>
 </template>
 
 <script lang="ts">
@@ -226,6 +222,7 @@ import Draggable from 'vuedraggable'
 import vjp from 'vue-json-pointer'
 import { JsonPointer } from 'json-ptr'
 import FseGenerator from './Generator/FseGenerator.vue'
+import VeoPage from '~/components/layout/VeoPage.vue'
 
 interface IControl {
   scope: string
@@ -270,7 +267,8 @@ export default Vue.extend({
   name: 'FormSchemaEditor',
   components: {
     Draggable,
-    FseGenerator
+    FseGenerator,
+    VeoPage
   },
   props: {
     objectSchema: Object,

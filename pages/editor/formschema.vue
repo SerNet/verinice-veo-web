@@ -1,77 +1,60 @@
 <template>
-  <v-col
-    class="pa-0 fill-height overflow-hidden"
-    style="max-height: calc(100vh - 70px);"
-    cols="12"
-  >
-    <v-row v-if="formSchema" class="fill-height ma-0">
-      <v-col
-        class="pa-0"
-        :style="{ maxHeight }"
-        style="overflow: auto"
-        cols="12"
-        lg="8"
-      >
-        <v-row dense class="align-center">
-          <v-col cols="auto"><h1 class="ml-4 mt-2">{{ $t('editor.formschema.headline') }}</h1></v-col>
-          <v-col cols="auto">
-            <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
-              <v-btn icon large color="primary">
-                <v-icon>mdi-download</v-icon>
-              </v-btn>
-            </a>
-          </v-col>
-        </v-row>
-        <v-row class="mx-4">
-          <v-col cols="12" lg="4" class="pl-0"><v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" /></v-col>
-        </v-row>
-        <FormSchemaEditor
-          v-if="!$fetchState.pending"
-          v-model="formSchema"
-          :object-schema="objectSchema"
-        />
-      </v-col>
-      <v-col
-        class="pa-0 fill-height"
-        :style="{ maxHeight }"
-        style="overflow: auto;"
-        cols="12"
-        lg="4"
-      >
-        <v-tabs v-model="tab">
-          <v-tabs-slider />
-
-          <v-tab href="#tab-1">
-            Code
-          </v-tab>
-
-          <v-tab href="#tab-2">
-            Preview
-          </v-tab>
-        </v-tabs>
-
-        <v-tabs-items v-model="tab">
-          <v-tab-item value="tab-1">
-            <v-card class="pa-3 ma-1" outlined>
-              <CodeEditor v-model="code" @schema-updated="updateSchema" />
-            </v-card>
-          </v-tab-item>
-          <v-tab-item value="tab-2">
-            <v-card class="pa-3 ma-1" outlined>
-              <VeoForm
-                v-model="objectData"
-                :schema="objectSchema"
-                :ui="formSchema.content"
-                :lang="lang"
-                :api="{}"
-              />
-            </v-card>
-          </v-tab-item>
-        </v-tabs-items>
-      </v-col>
+  <div>
+    <v-row v-if="formSchema" class="mx-4">
+      <v-col cols="12" lg="4" class="pl-0"><v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" /></v-col>
     </v-row>
+    <div class="veo-page-wrapper">
+      <VeoPage v-if="formSchema" fullsize height="100%" :title="$t('editor.formschema.headline')">
+        <template #header>
+          <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
+            <v-btn icon large color="primary">
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+          </a>
+        </template>
+        <template #default>
+          <FormSchemaEditor
+            v-if="!$fetchState.pending"
+            v-model="formSchema"
+            :object-schema="objectSchema"
+          />
+        </template>
+      </VeoPage>
+    <!--<VeoPage cols="4">
+      <v-tabs v-model="tab">
+        <v-tabs-slider />
+
+        <v-tab href="#tab-1">
+          Code
+        </v-tab>
+
+        <v-tab href="#tab-2">
+          Preview
+        </v-tab>
+      </v-tabs>
+
+      <v-tabs-items v-model="tab">
+        <v-tab-item value="tab-1">
+          <v-card class="pa-3 ma-1" outlined>
+            <CodeEditor v-model="code" @schema-updated="updateSchema" />
+          </v-card>
+        </v-tab-item>
+        <v-tab-item value="tab-2">
+          <v-card class="pa-3 ma-1" outlined>
+            <VeoForm
+              v-model="objectData"
+              :schema="objectSchema"
+              :ui="formSchema.content"
+              :lang="lang"
+              :api="{}"
+            />
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
+    </VeoPage>-->
+    </div>
     <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
-  </v-col>
+  </div>
 </template>
 
 <script lang="ts">

@@ -22,7 +22,9 @@
     <VeoPrimaryNav :drawer.sync="drawer" />
     <v-main style="max-height: 100vh;" class="overflow-hidden">
       <VeoBreadcrumbs />
-      <nuxt />
+      <v-row no-gutters class="fill-height overflow-hidden">
+        <nuxt />
+      </v-row>
     </v-main>
     <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
     <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1" />
@@ -39,7 +41,6 @@ import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
 import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
 import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
 import VeoAlert, { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
-import VeoBreadcrumbs from '~/components/layout/VeoBreadcrumbs.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 
 interface IProps {}
@@ -51,8 +52,7 @@ export default defineComponent<IProps>({
     AppAccountBtn,
     VeoNewUnitDialog,
     VeoSnackbar,
-    VeoAlert,
-    VeoBreadcrumbs
+    VeoAlert
   },
   setup(_props, context) {
     //

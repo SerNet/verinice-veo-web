@@ -1,41 +1,38 @@
 <template>
-  <v-col class="pa-0 fill-height overflow-hidden" style="max-height: calc(100vh - 70px);" cols="12">
-    <v-row v-if="schema" class="fill-height ma-0">
-      <v-col class="pa-0" :style="{ maxHeight }" style="overflow: auto; position: relative;" cols="12" :lg="collapsed ? 12 : 6">
-        <div class="veo-collapse-editor pa-1">
+  <div class="veo-page-wrapper">
+    <VeoPage v-if="schema" :fullsize="collapsed" :cols="12" :md="collapsed ? 12 : 6" :xl="collapsed ? 12 : 6" :title="$t('editor.objectschema.headline')">
+      <template #header>
+        <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
+          <v-btn icon large color="primary">
+            <v-icon>mdi-download</v-icon>
+          </v-btn>
+        </a>
+        <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
           <v-btn icon @click="collapsed = !collapsed">
             <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
             <v-icon v-else>mdi-chevron-right</v-icon>
           </v-btn>
         </div>
-        <v-row no-gutters class="flex-column align-center">
-          <v-col :cols="collapsed ? 8 : 12">
-            <v-row dense class="align-center">
-              <v-col cols="auto"><h1 class="ml-4 mt-2">{{ $t('editor.objectschema.headline') }}</h1></v-col>
-              <v-col cols="auto">
-                <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
-                  <v-btn icon large color="primary">
-                    <v-icon>mdi-download</v-icon>
-                  </v-btn>
-                </a>
-              </v-col>
-            </v-row>
-            <v-row class="mx-4">
-              <v-col cols="12" lg="4"><v-text-field v-model="schema.title" dense hide-details flat :label="$t('editor.objectschema.objectschema')" @input="updateSchemaName()" /></v-col>
-              <v-col cols="12" lg="8"><v-text-field v-model="schema.description" dense hide-details :label="$t('editor.objectschema.create.description')" /></v-col>
-            </v-row>
-          </v-col>
-          <v-col :cols="collapsed ? 8 : 12">
+      </template>
+      <template #default>
+        <v-col :cols="collapsed ? 8 : 12">
+          <v-row no-gutters class="flex-column overflow-hidden">
+            <v-col>
+              <v-row class="mx-4">
+                <v-col cols="12" lg="4"><v-text-field v-model="schema.title" dense hide-details flat :label="$t('editor.objectschema.objectschema')" @input="updateSchemaName()" /></v-col>
+                <v-col cols="12" lg="8"><v-text-field v-model="schema.description" dense hide-details :label="$t('editor.objectschema.create.description')" /></v-col>
+              </v-row>
+            </v-col>
             <ObjectSchemaEditor v-model="schema" @schema-updated="updateSchema" />
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col v-if="!collapsed" class="pa-0 fill-height" :style="{ maxHeight }" cols="12" lg="6">
-        <CodeEditor v-model="code" @schema-updated="updateSchema" />
-      </v-col>
-    </v-row>
+          </v-row>
+        </v-col>
+      </template>
+    </VeoPage>
+    <VeoPage v-if="schema && !collapsed && !$vuetify.breakpoint.xs" :cols="12" :md="collapsed ? 12 : 6" :xl="collapsed ? 12 : 6" height="100%">
+      <CodeEditor v-model="code" @schema-updated="updateSchema" />
+    </VeoPage>
     <VEOOSEWizardDialog v-model="showCreationDialog" @schema="setSchema" />
-  </v-col>
+  </div>
 </template>
 
 <script lang="ts">
@@ -43,16 +40,23 @@ import Vue from 'vue'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 
 import VEOOSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOOSEWizardDialog.vue'
+import VeoPage from '~/components/layout/VeoPage.vue'
 
 export default Vue.extend({
   components: {
-    VEOOSEWizardDialog
+    VEOOSEWizardDialog,
+    VeoPage
   },
   data() {
     return {
       collapsed: false as boolean,
       showCreationDialog: false as boolean,
       schema: undefined as VEOObjectSchemaRAW | undefined
+    }
+  },
+  head(): any {
+    return {
+      title: this.$t('editor.objectschema.headline')
     }
   },
   computed: {
@@ -105,5 +109,6 @@ export default Vue.extend({
   border-top-left-radius: 4px;
   position: absolute;
   right: 0;
+  top: 0;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="fill-height d-flex flex-column">
+  <div class="fill-height d-flex flex-column" style="width: 100%;">
     <div style="height: 100%; overflow: auto;">
       <div class="editor" :style="{ resize: 'vertical', width: '100%' }">
         <div ref="editor" @keydown.meta.enter="$emit('submit', $event)" @keydown.exact="codeModified()" />
