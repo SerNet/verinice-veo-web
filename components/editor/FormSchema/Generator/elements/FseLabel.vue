@@ -5,10 +5,8 @@
         <v-icon small class="handle pr-1">mdi-menu</v-icon>
       </v-col>
       <v-col>
-        <div style="max-width: 220px">
-          <div class="text-caption text-truncate">
-            Label
-          </div>
+        <div class="text-caption text-truncate">
+          {{ value.text }}
         </div>
       </v-col>
       <v-col cols="auto" class="text-right">
@@ -18,13 +16,6 @@
         <v-btn icon x-small @click="onDelete">
           <v-icon dense small>mdi-delete</v-icon>
         </v-btn>
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col cols="auto">
-        <div class="text-caption text-truncate">
-          {{ value.text }}
-        </div>
       </v-col>
     </v-row>
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
@@ -153,6 +144,7 @@ export default Vue.extend({
     },
     setValue(pointer: string, value: any, defaultValue: any): void {
       const vjpPointer = pointer.replace('#/', '/')
+      console.log(vjpPointer)
       // Only values should be set, which are not default in FormSchema (e.g. highlight: false)
       if (value !== defaultValue) {
         vjp.set(this.value, vjpPointer, value)
