@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <v-tabs v-model="activeTab">
+  <VeoTabs>
+    <template #tabs>
       <v-tab>{{ $t('editor.upload.import.file') }}</v-tab>
       <v-tab>{{ $t('editor.upload.import.code') }}</v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="activeTab">
+    </template>
+    <template #items>
       <v-tab-item>
         <v-form
           class="mt-4"
@@ -44,20 +44,22 @@
       <v-tab-item>
         <CodeEditor :value="code" @schema-updated="sendSchema" />
       </v-tab-item>
-    </v-tabs-items>
-  </div>
+    </template>
+  </VeoTabs>
 </template>
 <script lang="ts">
 import { IVEOFormSchema } from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
+import VeoTabs from '~/components/layout/VeoTabs.vue'
 import CodeEditor from '~/components/CodeEditor.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 export default Vue.extend({
   components: {
-    CodeEditor
+    CodeEditor,
+    VeoTabs
   },
   props: {
     code: {
@@ -71,7 +73,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      activeTab: 0 as number,
       file: undefined as File | undefined,
       uploading: false as boolean
     }

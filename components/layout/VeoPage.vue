@@ -2,13 +2,13 @@
   <v-col :cols="cols" :md="medium" :xl="xlarge" class="veo-page pa-0">
     <v-row v-if="title" dense class="align-center">
       <v-col cols="auto">
-        <h1 class="ml-2">{{ title }}</h1>
+        <h1 class="ml-4">{{ title }}</h1>
       </v-col>
       <v-col cols="auto">
         <slot name="header" />
       </v-col>
     </v-row>
-    <v-row no-gutters :style="{ height }">
+    <v-row no-gutters :style="{ height }" :class=" padding ? 'pa-4' : ''">
       <slot name="default" />
     </v-row>
   </v-col>
@@ -50,6 +50,10 @@ export default defineComponent<IProps>({
     height: {
       type: String,
       default: 'auto'
+    },
+    padding: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props) {

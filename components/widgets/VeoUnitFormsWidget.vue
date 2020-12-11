@@ -1,7 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title>{{ $t('unit.details.objects') }}</v-card-title>
-    <v-card-text v-if="$fetchState.pending">
+  <VeoWidget :title="$t('unit.details.forms')">
+    <template v-if="$fetchState.pending">
       <table>
         <tr v-for="type of objects" :key="type.id">
           <td>
@@ -12,8 +11,8 @@
           </td>
         </tr>
       </table>
-    </v-card-text>
-    <v-card-text v-else>
+    </template>
+    <template v-else>
       <table>
         <tr v-for="type of objects" :key="type.id">
           <td>
@@ -24,17 +23,22 @@
           </td>
         </tr>
       </table>
-    </v-card-text>
-  </v-card>
+    </template>
+  </VeoWidget>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+
 import { FormSchemaMetas } from '~/types/FormSchema'
+import VeoWidget from '~/components/widgets/VeoWidget.vue'
 
 type FormsList = FormSchemaMetas & { items?: number }[]
 
 export default Vue.extend({
+  components: {
+    VeoWidget
+  },
   props: {
     unit: {
       type: Object,

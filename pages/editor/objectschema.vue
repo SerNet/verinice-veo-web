@@ -60,9 +60,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    maxHeight(): string {
-      return 'calc(100vh - ' + this.$vuetify.application.top + 'px)'
-    },
     code: {
       get(): string {
         return this.schema ? JSON.stringify(this.schema, undefined, 2) : ''

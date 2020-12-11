@@ -1,6 +1,6 @@
 <template>
-  <div class="veo-page-wrapper">
-    <VeoPage :cols="6">
+  <div class="d-flex">
+    <VeoPage :cols="4">
       <v-card flat class="mt-2 mx-2 mb-2 drag-elements-wrapper">
         <!-- Form elements -->
         <div>
@@ -165,11 +165,8 @@
         </Draggable>
       </v-card>
     </VeoPage>
-    <VeoPage cols="6">
-      <div
-        class="veo-editor-body"
-        style="overflow: auto; height: calc(100vh - 182px);"
-      >
+    <VeoPage :cols="8">
+      <div class="veo-editor-body">
         <FseGenerator
           :schema="objectSchema"
           :value="value.content"
@@ -632,11 +629,8 @@ export default Vue.extend({
   border: 1px solid $grey;
 }
 
-.veo-editor-body ::v-deep .v-card.vf-layout {
-  border: 1px solid black !important;
-}
-.veo-editor-body ::v-deep .v-card.vf-label {
-  border: 1px solid black !important;
+.veo-editor-body {
+  width: 100%;
 }
 
 .fse-create-element {

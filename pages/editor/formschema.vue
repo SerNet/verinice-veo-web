@@ -1,10 +1,7 @@
 <template>
-  <div>
-    <v-row v-if="formSchema" class="mx-4">
-      <v-col cols="12" lg="4" class="pl-0"><v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" /></v-col>
-    </v-row>
-    <div class="veo-page-wrapper">
-      <VeoPage v-if="formSchema" fullsize height="100%" :title="$t('editor.formschema.headline')">
+  <div style="width: 100%; height: 100%;">
+    <v-row no-gutters style="height: 100%; flex-wrap: nowrap">
+      <VeoPage v-if="formSchema" :cols="8" :xl="8" height="100%" :title="$t('editor.formschema.headline')">
         <template #header>
           <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
             <v-btn icon large color="primary">
@@ -13,46 +10,45 @@
           </a>
         </template>
         <template #default>
-          <FormSchemaEditor
-            v-if="!$fetchState.pending"
-            v-model="formSchema"
-            :object-schema="objectSchema"
-          />
+          <div class="d-flex flex-column" style="width: 100%; height: 100%; flex-wrap: nowrap; overflow: hidden;">
+            <v-col v-if="formSchema" cols="4" class="px-4" style="flex-basis: auto;">
+              <v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" />
+            </v-col>
+            <FormSchemaEditor
+              v-if="!$fetchState.pending"
+              v-model="formSchema"
+              :object-schema="objectSchema"
+            />
+          </div>
         </template>
       </VeoPage>
-    <!--<VeoPage cols="4">
-      <v-tabs v-model="tab">
-        <v-tabs-slider />
-
-        <v-tab href="#tab-1">
-          Code
-        </v-tab>
-
-        <v-tab href="#tab-2">
-          Preview
-        </v-tab>
-      </v-tabs>
-
-      <v-tabs-items v-model="tab">
-        <v-tab-item value="tab-1">
-          <v-card class="pa-3 ma-1" outlined>
-            <CodeEditor v-model="code" @schema-updated="updateSchema" />
-          </v-card>
-        </v-tab-item>
-        <v-tab-item value="tab-2">
-          <v-card class="pa-3 ma-1" outlined>
-            <VeoForm
-              v-model="objectData"
-              :schema="objectSchema"
-              :ui="formSchema.content"
-              :lang="lang"
-              :api="{}"
-            />
-          </v-card>
-        </v-tab-item>
-      </v-tabs-items>
-    </VeoPage>-->
-    </div>
+      <VeoPage v-if="formSchema && objectSchema" :cols="4">
+        <VeoTabs fullsize>
+          <template #tabs>
+            <v-tab>Preview</v-tab>
+            <v-tab>Code</v-tab>
+          </template>
+          <template #items>
+            <v-tab-item>
+              <v-card class="pa-3 ma-1" outlined>
+                <VeoForm
+                  v-model="objectData"
+                  :schema="objectSchema"
+                  :ui="formSchema.content"
+                  :lang="lang"
+                  :api="{}"
+                />
+              </v-card>
+            </v-tab-item>
+            <v-tab-item>
+              <v-card class="pa-3 ma-1" outlined>
+                <CodeEditor v-model="code" @schema-updated="updateSchema" />
+              </v-card>
+            </v-tab-item>
+          </template>
+        </VeoTabs>
+      </VeoPage>
+    </v-row>
     <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
   </div>
 </template>
@@ -64,16 +60,18 @@ import Vue from 'vue'
 
 import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
+import VeoTabs from '~/components/layout/VeoTabs.vue'
+import VeoPage from '~/components/layout/VeoPage.vue'
 import { generateSchema } from '~/lib/FormSchemaHelper'
 
 export default Vue.extend({
   components: {
     VeoForm,
-    VEOFSEWizardDialog
+    VEOFSEWizardDialog,
+    VeoTabs
   },
   data() {
     return {
-      tab: 'form-schema',
       showCreationDialog: false as boolean,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       formSchema: undefined as IVEOFormSchema | undefined,
@@ -88,9 +86,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    maxHeight(): string {
-      return 'calc(100vh - ' + this.$vuetify.application.top + 'px)'
-    },
     code: {
       get(): string {
         return this.formSchema
