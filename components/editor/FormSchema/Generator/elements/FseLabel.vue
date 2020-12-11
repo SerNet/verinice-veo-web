@@ -144,7 +144,6 @@ export default Vue.extend({
     },
     setValue(pointer: string, value: any, defaultValue: any): void {
       const vjpPointer = pointer.replace('#/', '/')
-      console.log(vjpPointer)
       // Only values should be set, which are not default in FormSchema (e.g. highlight: false)
       if (value !== defaultValue) {
         vjp.set(this.value, vjpPointer, value)
