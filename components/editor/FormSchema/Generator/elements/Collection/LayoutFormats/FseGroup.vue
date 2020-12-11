@@ -47,12 +47,14 @@
           label="Class"
           multiple
           chips
+          append-icon=""
         />
         <v-combobox
           v-model="dialog.data.style.value"
           label="Style"
           multiple
           chips
+          append-icon=""
         />
       </template>
       <template #dialog-options>
