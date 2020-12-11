@@ -269,7 +269,8 @@ export default Vue.extend({
         },
         {
           type: 'Label',
-          text: 'TEXT'
+          text: 'TEXT',
+          options: {}
         }
       ],
       formElementsDescription: [
