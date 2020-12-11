@@ -2,7 +2,11 @@
   <v-card rounded elevation="0" class="fse-input mx-3 my-2">
     <v-card-text class="pa-0">
       <v-row no-gutters>
-        <v-col cols="auto" class="text-right px-1 fse-input-dragbar" :class="color">
+        <v-col
+          cols="auto"
+          class="text-right px-1 fse-input-dragbar"
+          :class="color"
+        >
           <v-icon class="handle" color="white">mdi-menu</v-icon>
         </v-col>
         <v-col class="px-2">
@@ -21,8 +25,17 @@
         </v-col>
       </v-row>
     </v-card-text>
-    <VEOFSEEditControlDialog v-model="editDialog" v-bind="$props" :type="currentType" @edit="doEdit" />
-    <VEOFSEDeleteControlDialog v-model="deleteDialog" :name="name" @delete="doDelete" />
+    <VEOFSEEditControlDialog
+      v-model="editDialog"
+      v-bind="$props"
+      :type="currentType"
+      @edit="doEdit"
+    />
+    <VEOFSEDeleteControlDialog
+      v-model="deleteDialog"
+      :name="name"
+      @delete="doDelete"
+    />
   </v-card>
 </template>
 <script lang="ts">
@@ -30,10 +43,15 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
+import vjp from 'vue-json-pointer'
 
 import { VEOTypeNameRAW } from 'veo-objectschema-7'
 import { BaseObject } from '~/components/forms/utils'
-import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VEOEditor'
+import {
+  eligibleInputElements,
+  IInputElement,
+  INPUT_TYPES
+} from '~/types/VEOEditor'
 import VEOFSEEditControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditControlDialog.vue'
 import VEOFSEDeleteControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteControlDialog.vue'
 
@@ -95,7 +113,11 @@ export default Vue.extend({
       return this.availableElements[0]?.name || 'Unknown'
     },
     type(): VEOTypeNameRAW {
-      return this.schema.type ? this.schema.type as any : (this.schema.enum) ? 'enum' : 'default'
+      return this.schema.type
+        ? (this.schema.type as any)
+        : this.schema.enum
+        ? 'enum'
+        : 'default'
     }
   },
   watch: {
@@ -114,7 +136,7 @@ export default Vue.extend({
       this.editDialog = true
     },
     doEdit(data: any) {
-      this.$emit('update', data)
+      vjp.set(this.value, '/options', data.options)
       this.editDialog = false
     },
     showDelete() {

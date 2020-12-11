@@ -162,6 +162,7 @@ export default Vue.extend({
               elementParentSchema.required.includes(elementName)
 
             partOfProps = {
+              value: element,
               name: elementName,
               schema: elementSchema,
               lang: this.lang
