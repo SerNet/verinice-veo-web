@@ -11,7 +11,7 @@
             <span class="fse-input-type">{{ currentType }}</span>
           </div>
         </v-col>
-        <v-col cols="auto" class="text-right">
+        <v-col cols="auto" class="text-right pr-2">
           <v-btn icon x-small @click="showEdit">
             <v-icon dense small>mdi-pencil</v-icon>
           </v-btn>

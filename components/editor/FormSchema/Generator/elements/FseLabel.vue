@@ -1,17 +1,14 @@
 <template>
-  <v-card rounded elevation="0" class="fse-input mx-3 my-2 px-2">
+  <v-card rounded elevation="0" class="fse-label mx-3 my-2 px-2">
     <v-row no-gutters>
       <v-col cols="auto">
         <v-icon small class="handle pr-1">mdi-menu</v-icon>
       </v-col>
-      <v-col cols="auto">
-        <div style="max-width: 220px; padding-top: 2px">
-          <div class="text-caption text-truncate">
-            Label
-          </div>
+      <v-col>
+        <div class="text-caption text-truncate">
+          {{ value.text }}
         </div>
       </v-col>
-      <v-spacer />
       <v-col cols="auto" class="text-right">
         <v-btn icon x-small @click="open">
           <v-icon dense small>mdi-pencil</v-icon>
@@ -19,13 +16,6 @@
         <v-btn icon x-small @click="onDelete">
           <v-icon dense small>mdi-delete</v-icon>
         </v-btn>
-      </v-col>
-    </v-row>
-    <v-row no-gutters>
-      <v-col cols="auto">
-        <div class="text-caption text-truncate">
-          {{ value.text }}
-        </div>
       </v-col>
     </v-row>
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
@@ -36,12 +26,14 @@
           label="Class"
           multiple
           chips
+          append-icon=""
         />
         <v-combobox
           v-model="dialog.data.style.value"
           label="Style"
           multiple
           chips
+          append-icon=""
         />
       </template>
       <template #dialog-options>
@@ -168,7 +160,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
-.fse-input {
+.fse-label {
   border: 2px solid $grey;
   min-width: 300px;
   overflow: hidden;

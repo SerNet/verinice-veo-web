@@ -10,14 +10,6 @@
             <v-text-field v-model="label" :label="$t('editor.formschema.edit.input.label')" required />
           </v-col>
         </v-row>
-        <v-row no-gutters class="align-center">
-          <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.scope.text') }}:</span>
-          </v-col>
-          <v-col :cols="12" :md="5">
-            <v-text-field v-model="_scope" :label="$t('editor.formschema.edit.input.scope')" required />
-          </v-col>
-        </v-row>
         <v-row v-if="alternatives.length > 0" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.type') }}:</span>
@@ -70,7 +62,6 @@ interface IProps {
   options: any,
   schema: any,
   type: string,
-  scope: string
 }
 
 export default defineComponent<IProps>({
@@ -92,10 +83,6 @@ export default defineComponent<IProps>({
       required: true
     },
     type: {
-      type: String,
-      required: true
-    },
-    scope: {
       type: String,
       required: true
     }
@@ -138,17 +125,16 @@ export default defineComponent<IProps>({
       }
     }
 
-    const _scope: Ref<string> = ref(props.scope)
     const label: Ref<string> = ref(props.options?.label || '')
     const alternatives = computed(() => controlTypeAlternatives(activeControlType.value.name, props))
 
     function updateElement() {
       const options: any = activeControlType.value
       delete options.name
-      context.emit('edit', { scope: _scope.value, options: { label: label.value, ...options } })
+      context.emit('edit', { options: { label: label.value, ...options } })
     }
 
-    return { dialog, close, activeControlType, _scope, label, alternatives, updateActiveControlType, updateElement }
+    return { dialog, close, activeControlType, label, alternatives, updateActiveControlType, updateElement }
   }
 })
 </script>

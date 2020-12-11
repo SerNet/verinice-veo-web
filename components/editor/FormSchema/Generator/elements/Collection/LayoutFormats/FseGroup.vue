@@ -1,21 +1,20 @@
 <template>
-  <v-card elevation="0" class="vf-group ma-2 fse-group">
-    <v-row no-gutters>
+  <v-card elevation="0" class="fse-group mx-3 my-2 px-2 pb-2">
+    <v-row no-gutters align="center">
       <v-col cols="auto">
-        <v-icon dense small class="handle pa-2">mdi-menu</v-icon>
+        <v-icon dense small class="handle pr-1">mdi-menu</v-icon>
       </v-col>
-      <v-col cols="auto">
-        <div class="text-caption text-truncate pa-1">
+      <v-col>
+        <div class="text-caption text-truncate">
           Layout (Group)
         </div>
       </v-col>
-      <v-spacer />
-      <v-col class="text-right">
-        <v-btn icon @click="open">
-          <v-icon dense small class="pa-2">mdi-pencil</v-icon>
+      <v-col cols="auto" class="text-right">
+        <v-btn icon x-small @click="open">
+          <v-icon dense small>mdi-pencil</v-icon>
         </v-btn>
-        <v-btn icon @click="onDelete">
-          <v-icon dense small class="pa-2">mdi-delete</v-icon>
+        <v-btn icon x-small @click="onDelete">
+          <v-icon dense small>mdi-delete</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -29,7 +28,6 @@
           :class="dynamicClasses"
           handle=".handle"
           :group="{ name: 'g1' }"
-          @add="onAdd"
         >
           <slot />
         </Draggable>
@@ -43,21 +41,20 @@
           :items="dialog.data.directionList"
           label="Direction"
         />
-        <v-checkbox
-          v-model="dialog.data.highlight.value"
-          label="Highlight"
-        />
+        <v-checkbox v-model="dialog.data.highlight.value" label="Highlight" />
         <v-combobox
           v-model="dialog.data.class.value"
           label="Class"
           multiple
           chips
+          append-icon=""
         />
         <v-combobox
           v-model="dialog.data.style.value"
           label="Style"
           multiple
           chips
+          append-icon=""
         />
       </template>
       <template #dialog-options>
@@ -209,32 +206,6 @@ export default Vue.extend({
         vjp.set(this.formSchema, vjpPointer, value)
       } else {
         vjp.remove(this.formSchema, vjpPointer)
-      }
-    },
-    onAdd(event: any) {
-      if (
-        ['drag-unused-basic-properties', 'drag-unused-aspects'].includes(
-          event.from.className
-        )
-      ) {
-        const oldElement = this.formSchema.elements[event.newIndex]
-        this.formSchema.elements.splice(event.newIndex, 1, {
-          type: 'Control',
-          scope: oldElement.scope,
-          options: {
-            label: oldElement.label
-          }
-        })
-      } else if (event.from.className === 'drag-unused-links') {
-        const oldElement = this.formSchema.elements[event.newIndex]
-        this.formSchema.elements.splice(event.newIndex, 1, {
-          type: 'Control',
-          scope: oldElement.scope,
-          options: {
-            label: oldElement.label
-          },
-          elements: []
-        })
       }
     }
   }
