@@ -45,7 +45,7 @@ export default {
   'editor.formschema.edit.input.label.text': 'Element label',
   'editor.formschema.edit.input.scope': 'Scope',
   'editor.formschema.edit.input.scope.text': 'Element scope',
-  'editor.formschema.edit.input.type': 'Type of the element',
+  'editor.formschema.edit.input.type': 'Control type',
   'editor.formschema.formschema': 'Form schema',
   'editor.formschema.headline': 'Form schema editor',
   'editor.formschema.wizard.create': 'Create form schema',

@@ -45,7 +45,7 @@ export default {
   'editor.formschema.edit.input.label.text': 'Beschriftung des Elements',
   'editor.formschema.edit.input.scope': 'Scope',
   'editor.formschema.edit.input.scope.text': 'Scope des Elements',
-  'editor.formschema.edit.input.type': 'Art des Elements',
+  'editor.formschema.edit.input.type': 'Steuerelement Typ',
   'editor.formschema.formschema': 'Formschema',
   'editor.formschema.headline': 'Form Schema Editor',
   'editor.formschema.wizard.create': 'Formular erstellen',
