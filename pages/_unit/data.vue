@@ -48,7 +48,6 @@ import Vue from 'vue'
 import { TranslateResult } from 'vue-i18n/types/index'
 import { IBaseObject } from '~/lib/utils'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
-import { ObjectSchemaNames } from '~/types/FormSchema'
 
 export default Vue.extend({
   components: {
@@ -61,15 +60,18 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    const keys = Object.keys(ObjectSchemaNames)
-    for await (const key of keys) {
-      this.objects.push({
+    await this.$api.schema.fetchAll().then(data => data.knownSchemas.map(async(key: string) => {
+      return {
         type: key,
         name: this.$t(`unit.data.type.${key}`),
         groups: await this.$api.group.fetchAll({ type: this.capitalize(key), unit: this.$route.params.unit }),
         active: undefined
+      }
+    })).then((types) => {
+      Promise.all(types).then((data) => {
+        this.objects = data as any
       })
-    }
+    })
   },
   computed: {
     unit(): string {

@@ -50,6 +50,11 @@ export default Vue.extend({
     return {
       // title: ''
     }
+  },
+  mounted() {
+    this.$api.schema.fetch('control').then((data) => {
+      console.log(data)
+    })
   }
 })
 </script>
