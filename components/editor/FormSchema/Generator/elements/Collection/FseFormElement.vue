@@ -113,10 +113,10 @@ export default Vue.extend({
       return this.availableElements[0]?.name || 'Unknown'
     },
     type(): VEOTypeNameRAW {
-      return this.schema.type
-        ? (this.schema.type as any)
-        : this.schema.enum
+      return Array.isArray(this.schema.enum)
         ? 'enum'
+        : this.schema.type && !Array.isArray(this.schema.type)
+        ? this.schema.type
         : 'default'
     }
   },

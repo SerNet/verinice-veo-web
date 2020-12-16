@@ -294,6 +294,7 @@ export default Vue.extend({
           '#/properties/description'
         ],
         regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/i,
+        regexLinks: /^#\/properties\/links\/properties\/\w+$/i,
         regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/i
       },
       typeMap: {
@@ -361,84 +362,42 @@ export default Vue.extend({
       immediate: true,
       deep: true,
       handler() {
-        const flattenedSchema = Object.entries(
+        const createControl = (
+          key: string,
+          value: any,
+          category: IControl['category']
+        ): IControl => {
+          return {
+            scope: key,
+            type: Array.isArray(value.enum) ? 'enum' : value.type,
+            label: key.split('/').slice(-1)[0],
+            category,
+            used: false
+          }
+        }
+        Object.entries(
           JsonPointer.flatten(this.objectSchema, true) as Record<string, any>
-        )
-          .filter(([key, value]) => {
-            return (
-              this.objectSchemaPropertiesPatterns.standard.includes(key) ||
-              this.objectSchemaPropertiesPatterns.regexAspectsAttributes.test(
-                key
-              ) ||
-              this.objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)
-            )
-          })
-          .map(([key, value]) => {
-            if (Array.isArray(value.enum)) {
-              return {
-                scope: key,
-                type: 'enum',
-                label: key.split('/').slice(-1)[0]
-              }
-            } else {
-              return {
-                scope: key,
-                type: value.type,
-                label: key.split('/').slice(-1)[0]
-              }
+        ).forEach(([key, value]) => {
+          if (this.objectSchemaPropertiesPatterns.standard.includes(key)) {
+            this.controls.push(createControl(key, value, 'basics'))
+          } else if (
+            this.objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)
+          ) {
+            this.controls.push(createControl(key, value, 'aspects'))
+          } else if (this.objectSchemaPropertiesPatterns.regexLinks.test(key)) {
+            this.controls.push(createControl(key, value, 'links'))
+          } else if (
+            this.objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)
+          ) {
+            const [linksKey, linksAttribute] = key.split('/items/')
+            if (!this.controlsItems[linksKey]) {
+              this.controlsItems[linksKey] = []
             }
-          })
-
-        let propertiesArray: any[] = []
-        flattenedSchema.forEach(obj => {
-          if (obj.scope.includes('#/properties/customAspects')) {
-            propertiesArray.push({ ...obj, category: 'aspects', used: false })
-          } else if (obj.scope.includes('#/properties/links')) {
-            propertiesArray.push({ ...obj, category: 'links', used: false })
-          } else {
-            propertiesArray.push({ ...obj, category: 'basics', used: false })
+            this.controlsItems[linksKey].push(
+              createControl(`#/${linksAttribute}`, value, 'links')
+            )
           }
         })
-        const links = propertiesArray.filter(obj => obj.category === 'links')
-
-        // Get unique links
-        const linksScopes = links
-          .map(obj =>
-            obj.scope
-              .split('/')
-              .slice(0, 5)
-              .join('/')
-          )
-          .filter((el: string, i, arr) => arr.indexOf(el) === i)
-
-        let propertiesItems: any = {}
-
-        linksScopes.forEach((linksScope: string) => {
-          // all links attributes
-          propertiesItems[linksScope] = links
-            .filter(obj => obj.scope.includes(linksScope))
-            .map(obj => ({
-              ...obj,
-              scope: `#/${obj.scope
-                .split('/')
-                .slice(6)
-                .join('/')}`
-            }))
-        })
-
-        propertiesArray = [
-          ...propertiesArray.filter(obj => obj.category !== 'links'),
-          ...linksScopes.map((linksScope: string) => ({
-            scope: linksScope,
-            type: 'array',
-            label: linksScope.split('/').slice(-1)[0],
-            category: 'links',
-            used: false
-          }))
-        ]
-
-        this.controls = propertiesArray
-        this.controlsItems = propertiesItems
       }
     },
     'value.content': {
