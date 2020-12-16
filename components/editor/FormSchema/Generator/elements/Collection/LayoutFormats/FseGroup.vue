@@ -11,9 +11,8 @@
       </v-col>
       <v-col cols="auto" class="text-right">
         <v-btn icon x-small @click="open">
-          <v-icon dense small>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn icon x-small @click="onDelete">
+          <v-icon dense small>mdi-pencil</v-icon></v-btn
+        ><v-btn icon x-small @click="onDelete">
           <v-icon dense small>mdi-delete</v-icon>
         </v-btn>
       </v-col>
