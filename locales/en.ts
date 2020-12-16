@@ -91,7 +91,7 @@ export default {
   'global.button.cancel': 'Cancel',
   'global.button.close': 'Close',
   'global.button.delete': 'Delete',
-  'global.button.next': 'Delete',
+  'global.button.next': 'Next',
   'global.button.no': 'No',
   'global.button.ok': 'Okay',
   'global.button.previous': 'Previous',
