@@ -6,7 +6,7 @@
       </v-col>
       <v-col>
         <div class="text-caption text-truncate">
-          Layout (Group)
+          Group
         </div>
       </v-col>
       <v-col cols="auto" class="text-right">
