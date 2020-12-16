@@ -1,46 +1,43 @@
 <template>
-  <v-list-item style="background-color: #FAFAFA" two-line @click="$emit('click', $event)">
+  <v-list-item style="background-color: #FAFAFA" two-line>
     <v-list-item-content>
-      <v-list-item-title class="body-1 font-weight-bold" v-text="name" />
-      <v-list-item-subtitle v-text="subtitle" />
+      <v-list-item-title class="body-1 font-weight-bold d-flex align-center">
+        {{ item.title }}
+        <v-btn icon x-small @click="$emit('delete-item', $event)">
+          <v-icon>
+            mdi-delete
+          </v-icon>
+        </v-btn>
+      </v-list-item-title>
+      <v-list-item-subtitle v-text="$tc('editor.itemlist.attributecount', item.attributes.length || 0)" />
     </v-list-item-content>
     <v-list-item-action class="ml-3">
-      <v-chip v-for="(label, index) in labels" :key="index" :color="label.color" class="mr-2" small label outlined>{{ label.name }}</v-chip>
+      <v-chip v-if="styling" :color="styling.color" class="mr-2" small label outlined>{{ styling.name }}</v-chip>
     </v-list-item-action>
+
     <v-list-item-action class="ml-0">
-      <v-btn icon>
+      <v-btn icon @click="$emit('edit-item', $event)">
         <v-icon>
-          mdi-chevron-right
+          mdi-pencil
         </v-icon>
       </v-btn>
     </v-list-item-action>
   </v-list-item>
 </template>
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
+import { IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
+import { IInputType } from '~/types/VEOEditor'
 
-interface ILabel {
-    color: string
-    name: string
+interface IProps {
+  item: IVEOCustomAspect | IVEOCustomLink
+  styling: IInputType
 }
 
-export default defineComponent({
+export default defineComponent<IProps>({
   props: {
-    color: { type: String, default: 'white' },
-    icon: { type: String, default: 'mdi-help' },
-    name: { type: String, default: '' },
-    children: { type: Array, default: () => [] },
-    labels: { type: Array as PropType<ILabel[]>, default: () => [] }
-  },
-  setup(props) {
-    const subtitle = computed(() => {
-      const count = props.children.length
-      if (!count) { return 'Keine Attribute' }
-      return `${count} ${count === 1 ? 'Attribut' : 'Attribute'}`
-    })
-    return {
-      subtitle
-    }
+    item: { type: Object, required: true },
+    styling: { type: Object, default: () => {} }
   }
 })
 </script>

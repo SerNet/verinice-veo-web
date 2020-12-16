@@ -104,6 +104,12 @@ export default Vue.extend({
           name: 'help',
           icon: 'mdi-help',
           to: `/${this.$route.params.unit}/help`
+        },
+        {
+          name: 'Editor',
+          icon: 'mdi-application-cog',
+          to: '/editor',
+          exact: true
         }
       ]
     }

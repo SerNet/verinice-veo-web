@@ -1,51 +1,41 @@
 <template>
-  <v-list-item two-line @click="$emit('click', $event)">
+  <v-list-item two-line>
     <v-list-item-avatar size="32">
-      <v-icon small :class="color" color="white" outlined dark v-text="icon" />
+      <v-icon v-if="styling" small :class="styling.color" color="white" outlined dark v-text="styling.icon" />
     </v-list-item-avatar>
     <v-list-item-content>
-      <v-list-item-title class="caption" v-text="name" />
+      <v-list-item-title class="caption" v-text="item.title" />
       <v-list-item-subtitle>
-        <strong v-text="title" />
-        <span v-if="title && description">
-          &mdash;
-        </span>
-        <span v-text="description" />
+        <span v-text="item.description" />
       </v-list-item-subtitle>
     </v-list-item-content>
     <v-list-item-action class="ml-3">
-      <v-chip v-for="(label, index) in labels" :key="index" :color="label.color" class="mr-2" small label outlined>{{ label.name }}</v-chip>
+      <v-chip v-if="styling" :color="styling.color" class="mr-2" small label outlined>{{ styling.name }}</v-chip>
     </v-list-item-action>
+    <v-list-item-action class="ml-0" style="width: 36px;" />
   </v-list-item>
 </template>
 <script lang="ts">
-import { defineComponent, PropOptions, PropType } from '@nuxtjs/composition-api'
-
-interface ILabel {
-    color: string
-    name: string
-}
+import { defineComponent } from '@nuxtjs/composition-api'
+import { IVEOBasicProperty, IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
+import { IInputType } from '~/types/VEOEditor'
 
 interface IProps {
-  color: string
-  icon: string
-  name: string
-  title: string
-  description: string
-  labels: string
+  item: IVEOCustomAspect | IVEOCustomLink | IVEOBasicProperty
+  styling: IInputType
+  disabled: boolean
 }
 
 export default defineComponent<IProps>({
   props: {
-    color: { type: String, default: 'white' },
-    icon: { type: String, default: 'mdi-help' },
-    name: { type: String, default: '' },
-    title: { type: String, default: '' },
-    description: { type: String, default: '' },
-    labels: { type: Array as PropType<ILabel[]>, default: () => [] }
-  },
-  setup(props) {
-
+    item: {
+      type: Object,
+      required: true
+    },
+    styling: {
+      type: Object,
+      default: () => {}
+    }
   }
 })
 </script>

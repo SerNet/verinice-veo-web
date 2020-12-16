@@ -2,14 +2,15 @@
   <v-card>
     <v-card-title :class="unit.parent ? 'pb-1' : 'pb-2'" style="font-size: 1.7rem">{{ unit.name }}</v-card-title>
     <v-card-text>
-      <div v-if="!unit.parent" class="mb-3">
+      <!--<div v-if="!unit.parent" class="mb-3">
         <p style="font-size: 1.1rem; font-weight: bold;">{{ $t('unit.details.noparent') }}</p>
-      </div>
+      </div>-->
       <p>
         <span v-if="unit.description">{{ unit.description }}</span>
         <i v-else>{{ $t('unit.details.nodescription') }}</i>
       </p>
       <br>
+      <!-- VEO-78: Unit Hierarchien deaktiviert, da im Backend nicht implementiert
       <div v-if="unit.parent" class="mb-3">
         <b>{{ $t('unit.details.parent') }}</b>: <nuxt-link :to="`/${unit.parent.resourcesUri}`">{{ unit.parent.displayName }}</nuxt-link>
       </div>
@@ -20,6 +21,7 @@
         </template>
         <span v-else>{{ $t('unit.details.nochild') }}</span>
       </ul>
+      -->
     </v-card-text>
   </v-card>
 </template>

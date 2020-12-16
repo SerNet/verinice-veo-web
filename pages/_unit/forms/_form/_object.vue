@@ -22,25 +22,7 @@
       />
 
       <div class="mx-auto" style="max-width:800px; width:100%;">
-        <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
-          <v-expansion-panel>
-            <v-expansion-panel-header>{{ $t('unit.data.objectdata') }}</v-expansion-panel-header>
-            <v-expansion-panel-content style="overflow:auto">
-              <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-          <v-expansion-panel>
-            <v-expansion-panel-header>{{ $t('unit.data.validationlogs') }}</v-expansion-panel-header>
-            <v-expansion-panel-content style="overflow:auto">
-              <div>{{ $t('unit.data.valid') }}: {{ isValid }}</div>
-              <div>{{ $t('unit.data.errormessages') }}:</div>
-              <pre>{{ errorMessages }}</pre>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
-
         <v-btn color="primary" :loading="btnLoading" block @click="onClick">{{ $t('global.button.save') }}</v-btn>
-        <AppStateAlert v-model="state" :error="error || $fetchState.error" state-after-alert="start" />
         <AppStateDialog v-if="error && error.status == 412" :value="!!error" title="Fehler" @input="error = undefined" @yes="$fetch">
           <template v-if="error">
             <span v-if="error && error.status == 412">{{ $t('unit.forms.nrr') }}</span>
@@ -55,16 +37,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { IForm } from '~/lib/utils'
-import AppStateAlert from '~/components/AppStateAlert.vue'
 import AppStateDialog from '~/components/AppStateDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
 
-export enum ObjectSchemaNames {
-  asset = 'asset',
-  control = 'control',
-  person = 'person',
-  process = 'process'
-}
+import { ObjectSchemaNames } from '~/types/FormSchema'
 
 export interface IValidationErrorMessage {
   pointer: string
@@ -78,7 +55,6 @@ interface IData {
   form: IForm
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
-  state: string
   error?: Error & { status?: number },
   btnLoading: boolean
 }
@@ -86,7 +62,6 @@ interface IData {
 export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
   components: {
-    AppStateAlert,
     AppStateDialog,
     VeoForm
   },
@@ -103,7 +78,6 @@ export default Vue.extend({
       },
       isValid: true,
       errorMessages: [],
-      state: 'start',
       error: undefined,
       btnLoading: false
     }
@@ -138,7 +112,7 @@ export default Vue.extend({
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
         fetchAll: (objectType: string, searchParams?: any) => {
-          return this.$api[objectType].fetchAll(searchParams)
+          return this.$api[objectType].fetchAll({ ...searchParams, unit: this.$route.params.unit })
         },
         create: async(objectType: string, createdObjectData: any) => {
           const res = await this.$api[objectType].create({
@@ -173,12 +147,11 @@ export default Vue.extend({
         } else {
           throw new Error('Object Type is not defined in FormSchema')
         }
-        this.state = 'success'
+        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
         this.$fetch()
       } catch (e) {
-        this.state = 'error'
+        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('global.appstate.alert.error')}: ${e}`)
         this.error = e
-        console.error(e)
       } finally {
         this.btnLoading = false
       }
@@ -202,7 +175,6 @@ export default Vue.extend({
         Object.keys(this.form.objectData.links).forEach((key: string) => {
           // this.form.objectData.links[key] = { ...this.form.objectData.links[key], type: key }
           this.form.objectData.links[key] = this.form.objectData.links[key].map((el: any) => {
-            console.log(el)
             el.target.type = el.target.type?.replace(/^\w/, (c: any) => c.toUpperCase())
             el.name = key
             el.type = key

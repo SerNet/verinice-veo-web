@@ -35,7 +35,7 @@ export default Vue.extend({
     computedTimeout(): Number {
       switch (this.type) {
         case 'success':
-          return 2000
+          return 4000
         default:
           return 0
       }

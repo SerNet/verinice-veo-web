@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="visible"
-    class="vf-layout vf-group d-flex mx-auto"
+    class="vf-layout vf-group d-flex mx-auto flex-wrap"
     :class="dynamicClasses"
     style="max-width: 800px; width: 100%;"
     :style="options && options.style"

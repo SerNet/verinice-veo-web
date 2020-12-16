@@ -19,23 +19,6 @@
         <VeoForm v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" :is-valid.sync="isValid" :error-messages.sync="errorMessages" />
 
         <div class="mx-auto" style="max-width:800px; width:100%;">
-          <v-expansion-panels v-model="panel" hover focusable multiple class="mx-auto my-3">
-            <v-expansion-panel>
-              <v-expansion-panel-header>{{ $t('unit.data.objectdata') }}</v-expansion-panel-header>
-              <v-expansion-panel-content style="overflow:auto">
-                <pre>{{ JSON.stringify(form.objectData, null, 4) }}</pre>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel>
-              <v-expansion-panel-header>{{ $t('unit.data.validationlogs') }}</v-expansion-panel-header>
-              <v-expansion-panel-content style="overflow:auto">
-                <div>{{ $t('unit.data.valid') }}: {{ isValid }}</div>
-                <div>{{ $t('unit.data.errormessages') }}:</div>
-                <pre>{{ errorMessages }}</pre>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-
           <v-btn color="primary" :loading="saveBtnLoading" @click="onClick">{{ $t('global.button.save') }}</v-btn>
           <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
             <template #activator="{ on, attrs }">
@@ -54,7 +37,6 @@
             </v-card>
           </v-dialog>
 
-          <AppStateAlert v-model="state" :error="error || $fetchState.error" state-after-alert="start" />
           <AppStateDialog v-if="error && error.status == 412" :value="!!error" title="Fehler" @input="error = undefined" @yes="$fetch">
             <template v-if="error">
               <span v-if="error && error.status == 412">{{ $t('unit.forms.nrr') }}</span>
@@ -75,12 +57,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { IBaseObject, IForm } from '~/lib/utils'
+import { IForm } from '~/lib/utils'
 import AppTabBar from '~/components/layout/AppTabBar.vue'
 import AppSideContainer from '~/components/layout/AppSideContainer.vue'
-import AppStateAlert from '~/components/AppStateAlert.vue'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 type APIGroup = 'asset' | 'control' | 'person' | 'process'
 
@@ -90,7 +72,6 @@ interface IData {
   form: IForm
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
-  state: string
   saveBtnLoading: boolean
   deleteBtnLoading: boolean,
   error?: Error & { status?: number },
@@ -101,7 +82,6 @@ export default Vue.extend({
   components: {
     AppTabBar,
     AppSideContainer,
-    AppStateAlert,
     VeoForm
   },
   middleware({ route, params, redirect }) {
@@ -124,7 +104,6 @@ export default Vue.extend({
       },
       isValid: true,
       errorMessages: [],
-      state: 'start',
       saveBtnLoading: false,
       deleteBtnLoading: false,
       error: undefined,
@@ -191,12 +170,11 @@ export default Vue.extend({
         } else {
           throw new Error('Object Type is not defined in FormSchema')
         }
-        this.state = 'success'
+        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
         this.$fetch()
       } catch (e) {
-        this.state = 'error'
+        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('global.appstate.alert.error')}: ${e}`)
         this.error = e
-        console.error(e)
       } finally {
         this.btnLoading = false
       }
@@ -212,10 +190,10 @@ export default Vue.extend({
       this.deleteBtnLoading = true
       try {
         await this.$api[this.objectType].delete(this.$route.params.id)
-        this.state = 'success'
+        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
         this.$router.push({ path: `/${this.unit}/data/${this.objectType}/${this.objectGroup}/` })
       } catch (e) {
-        this.state = 'error'
+        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('global.appstate.alert.error')}: ${e}`)
       }
       this.deleteBtnLoading = false
     },

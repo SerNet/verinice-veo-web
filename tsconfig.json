@@ -29,7 +29,9 @@
       "nuxt-i18n/types",
       "./types/context",
       "vuetify/types",
-      "./types/vue-json-pointer"
+      "./types/vue-json-pointer",
+      "./types/veo-objectschema-7",
+      "./types/veo-formschema"
     ]
   },
   "exclude": ["coverage",".nuxt", ".gitlab", "dist", "test/e2e"]

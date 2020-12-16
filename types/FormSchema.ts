@@ -1,6 +1,6 @@
 import { UISchema } from '~/types/UISchema'
 
-enum ObjectSchemaNames {
+export enum ObjectSchemaNames {
   asset = 'asset',
   control = 'control',
   person = 'person',
