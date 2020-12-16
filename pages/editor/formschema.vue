@@ -23,6 +23,7 @@
           </v-col>
         </v-row>
         <v-row class="mx-4">
+          <v-col cols="12" lg="2" class="pl-0"><v-text-field v-model="formSchema.modelType" dense hide-details flat readonly disabled :label="$t('editor.objectschema.objectschema')" class="objectschema-type-field" /></v-col>
           <v-col cols="12" lg="4" class="pl-0"><v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" /></v-col>
         </v-row>
         <FormSchemaEditor
@@ -165,4 +166,11 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.objectschema-type-field ::v-deep label {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+.objectschema-type-field ::v-deep input {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+</style>
