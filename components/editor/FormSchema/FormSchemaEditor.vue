@@ -171,39 +171,6 @@
           @delete="onDelete"
           @update="onUpdate"
         />
-        <!-- <v-speed-dial
-          v-model="fab"
-          bottom
-          absolute
-          right
-          direction="top"
-          open-on-hover
-          transition="scale-transition"
-          fixed
-          style="right: 50%;"
-        >
-          <template #activator>
-            <v-btn v-model="fab" color="primary" dark small fab>
-              <v-icon v-if="fab">
-                mdi-close
-              </v-icon>
-              <v-icon v-else>
-                mdi-plus
-              </v-icon>
-            </v-btn>
-          </template>
-
-          <div
-            v-for="element in createElementActions"
-            :key="element.name"
-            class="fse-create-element"
-          >
-            <v-btn fab x-small @click="element.action">
-              <v-icon>{{ element.icon }}</v-icon>
-            </v-btn>
-            <span class="fse-create-element-caption">{{ element.name }}</span>
-          </div>
-        </v-speed-dial> -->
       </div>
     </v-col>
   </v-row>
@@ -323,26 +290,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    createElementActions(): any {
-      return [
-        { name: 'Label', icon: 'mdi-format-text', action: this.onCreateLabel },
-        {
-          name: 'Control',
-          icon: 'mdi-form-textbox-password',
-          action: this.onCreateControl
-        },
-        {
-          name: 'Layout',
-          icon: 'mdi-form-select',
-          action: this.onCreateLayout
-        },
-        {
-          name: 'Page',
-          icon: 'mdi-book-open-page-variant',
-          action: this.onCreatePage
-        }
-      ]
-    },
     unused(): IUnused {
       return {
         basics: this.controls.filter(
@@ -474,9 +421,6 @@ export default Vue.extend({
         vjp.set(this.value, '/content', initialLayout)
       }
     },
-    onCreateControl() {
-      console.log('Create Control')
-    },
     onCreateLayout() {
       const topLevelElements: any = JsonPointer.get(
         this.value,
@@ -496,9 +440,6 @@ export default Vue.extend({
       } else {
         vjp.set(this.value, '/content', initialLayout)
       }
-    },
-    onCreatePage() {
-      console.log('Create Page')
     }
   }
 })
