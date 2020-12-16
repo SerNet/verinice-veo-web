@@ -83,6 +83,8 @@ export default {
   'editor.upload.import.file': 'Datei hochladen',
   'editor.upload.input.file.label': 'Schema hochladen',
 
+  'error.title': 'Es ist ein Fehler aufgetreten',
+
   'forms.input.linkadd': 'Link hinzufügen',
   'forms.input.link.targetObject': 'Target Objekt',
   'forms.input.link.targetObject.change.headline': 'Objekt ändern',

@@ -1,38 +1,42 @@
 <template>
-  <div class="veo-page-wrapper">
-    <VeoPage v-if="schema" :fullsize="collapsed" :cols="12" :md="collapsed ? 12 : 6" :xl="collapsed ? 12 : 6" :title="$t('editor.objectschema.headline')">
-      <template #header>
-        <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
-          <v-btn icon large color="primary">
-            <v-icon>mdi-download</v-icon>
-          </v-btn>
-        </a>
-        <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
-          <v-btn icon @click="collapsed = !collapsed">
-            <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
-            <v-icon v-else>mdi-chevron-right</v-icon>
-          </v-btn>
-        </div>
-      </template>
-      <template #default>
-        <v-col :cols="collapsed ? 8 : 12">
-          <v-row no-gutters class="flex-column overflow-hidden">
-            <v-col>
-              <v-row class="mx-4">
-                <v-col cols="12" lg="4"><v-text-field v-model="schema.title" dense hide-details flat :label="$t('editor.objectschema.objectschema')" @input="updateSchemaName()" /></v-col>
-                <v-col cols="12" lg="8"><v-text-field v-model="schema.description" dense hide-details :label="$t('editor.objectschema.create.description')" /></v-col>
-              </v-row>
-            </v-col>
-            <ObjectSchemaEditor v-model="schema" @schema-updated="updateSchema" />
-          </v-row>
-        </v-col>
-      </template>
-    </VeoPage>
-    <VeoPage v-if="schema && !collapsed && !$vuetify.breakpoint.xs" :cols="12" :md="collapsed ? 12 : 6" :xl="collapsed ? 12 : 6" height="100%">
-      <CodeEditor v-model="code" @schema-updated="updateSchema" />
-    </VeoPage>
-    <VEOOSEWizardDialog v-model="showCreationDialog" @schema="setSchema" />
-  </div>
+  <VeoPageWrapper>
+    <template #default>
+      <VeoPage v-if="schema" :fullsize="collapsed" no-padding :cols="12" :md="collapsed ? 12 : 6" :xl="collapsed ? 12 : 6" :title="$t('editor.objectschema.headline')">
+        <template #header>
+          <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
+            <v-btn icon large color="primary">
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+          </a>
+          <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
+            <v-btn icon @click="collapsed = !collapsed">
+              <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
+              <v-icon v-else>mdi-chevron-right</v-icon>
+            </v-btn>
+          </div>
+        </template>
+        <template #default>
+          <v-col :cols="collapsed ? 8 : 12">
+            <v-row no-gutters class="flex-column overflow-hidden">
+              <v-col>
+                <v-row class="mx-4">
+                  <v-col cols="12" lg="4"><v-text-field v-model="schema.title" dense hide-details flat :label="$t('editor.objectschema.objectschema')" @input="updateSchemaName()" /></v-col>
+                  <v-col cols="12" lg="8"><v-text-field v-model="schema.description" dense hide-details :label="$t('editor.objectschema.create.description')" /></v-col>
+                </v-row>
+              </v-col>
+              <ObjectSchemaEditor v-model="schema" @schema-updated="updateSchema" />
+            </v-row>
+          </v-col>
+        </template>
+      </VeoPage>
+      <VeoPage v-if="schema && !collapsed && !$vuetify.breakpoint.xs" no-padding :cols="12" :md="collapsed ? 12 : 6" :xl="collapsed ? 12 : 6" height="100%">
+        <CodeEditor v-model="code" @schema-updated="updateSchema" />
+      </VeoPage>
+    </template>
+    <template #external>
+      <VEOOSEWizardDialog v-model="showCreationDialog" @schema="setSchema" />
+    </template>
+  </VeoPageWrapper>
 </template>
 
 <script lang="ts">
@@ -40,11 +44,13 @@ import Vue from 'vue'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 
 import VEOOSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOOSEWizardDialog.vue'
+import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 
 export default Vue.extend({
   components: {
     VEOOSEWizardDialog,
+    VeoPageWrapper,
     VeoPage
   },
   data() {

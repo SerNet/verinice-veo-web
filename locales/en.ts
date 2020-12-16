@@ -83,6 +83,8 @@ export default {
   'editor.upload.import.file': 'Upload file',
   'editor.upload.input.file.label': 'Upload schema',
 
+  'error.title': 'An error occured',
+
   'forms.input.linkadd': 'Add link ',
   'forms.input.link.targetObject': 'Target object',
   'forms.input.link.targetObject.change.headline': 'Change object',

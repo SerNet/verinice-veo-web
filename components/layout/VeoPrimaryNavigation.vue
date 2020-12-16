@@ -199,47 +199,15 @@ export default Vue.extend({
           }
         })
 
-        // ToDo: Remove Demo
-        if (key === 'asset') {
-          objects.push({
-            name: this.$t(`unit.data.type.${key}`) as string,
-            exact: true,
-            to: `/${this.$route.params.unit}/data/${key}/-/`,
-            disabled: false,
-            childItems: [
-              {
-                name: 'Untergruppe1',
-                exact: true,
-                to: `/${this.$route.params.unit}/data/${key}/-/`,
-                disabled: false,
-                childItems: undefined,
-                extended: true,
-                topLevelItem: false
-              },
-              {
-                name: 'Untergruppe2',
-                exact: true,
-                to: `/${this.$route.params.unit}/data/${key}/-/`,
-                disabled: false,
-                childItems: undefined,
-                extended: true,
-                topLevelItem: false
-              }
-            ],
-            extended: this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] ? !this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] : true,
-            topLevelItem: false
-          })
-        } else {
-          objects.push({
-            name: this.$t(`unit.data.type.${key}`) as string,
-            exact: true,
-            to: `/${this.$route.params.unit}/data/${key}/-/`,
-            disabled: false,
-            childItems: undefined,
-            extended: this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] ? !this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] : true,
-            topLevelItem: false
-          })
-        }
+        objects.push({
+          name: this.$t(`unit.data.type.${key}`) as string,
+          exact: true,
+          to: `/${this.$route.params.unit}/data/${key}/-/`,
+          disabled: false,
+          childItems: undefined,
+          extended: this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] ? !this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] : true,
+          topLevelItem: false
+        })
       }
 
       return objects

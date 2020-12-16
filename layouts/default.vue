@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar class="veo-app-bar" app clipped-left clipped-right flat>
+    <v-app-bar class="veo-app-bar" app clipped-left flat>
       <div class="d-flex">
         <v-app-bar-nav-icon v-if="$vuetify.breakpoint.xs" @click="drawer = true" />
         <nuxt-link to="/">
@@ -18,13 +18,14 @@
         :email="$auth.profile.email"
         @logout="$auth.logout('/')"
       />
+      <span v-else />
     </v-app-bar>
     <VeoPrimaryNav :drawer.sync="drawer" />
     <v-main style="max-height: 100vh;" class="overflow-hidden">
       <VeoBreadcrumbs />
-      <v-row no-gutters class="fill-height overflow-hidden">
+      <VeoPageWrapper>
         <nuxt />
-      </v-row>
+      </VeoPageWrapper>
     </v-main>
     <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
     <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1" />
@@ -42,6 +43,7 @@ import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
 import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
 import VeoAlert, { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 
 interface IProps {}
 
@@ -52,7 +54,8 @@ export default defineComponent<IProps>({
     AppAccountBtn,
     VeoNewUnitDialog,
     VeoSnackbar,
-    VeoAlert
+    VeoAlert,
+    VeoPageWrapper
   },
   setup(_props, context) {
     //
@@ -117,6 +120,11 @@ export default defineComponent<IProps>({
     })
 
     return { alert, drawer, newUnitDialog, snackbar }
+  },
+  head() {
+    return {
+      titleTemplate: '%s - verinice.veo'
+    }
   }
 })
 </script>

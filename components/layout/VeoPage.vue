@@ -1,5 +1,5 @@
 <template>
-  <v-col :cols="cols" :md="medium" :xl="xlarge" class="veo-page pa-0">
+  <div class="veo-page" style="width: 100%;">
     <v-row v-if="title" dense class="align-center">
       <v-col cols="auto">
         <h1 class="ml-4">{{ title }}</h1>
@@ -8,21 +8,24 @@
         <slot name="header" />
       </v-col>
     </v-row>
-    <v-row no-gutters :style="{ height }" :class=" padding ? 'pa-4' : ''">
-      <slot name="default" />
+    <v-row no-gutters class="fill-height" :class=" noPadding ? '' : 'pa-4'">
+      <v-col :cols="cols" :md="medium" :xl="xlarge">
+        <slot name="default" />
+      </v-col>
     </v-row>
-  </v-col>
+  </div>
 </template>
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api'
 
 interface IProps {
   title?: string,
-  height?: string,
   fullsize: boolean,
   cols: number,
   md: number,
-  xl: number
+  xl: number,
+  fixedWidth: boolean,
+  noPadding: boolean
 }
 
 export default defineComponent<IProps>({
@@ -43,15 +46,15 @@ export default defineComponent<IProps>({
       type: Number,
       default: 6
     },
+    fixedWidth: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       default: undefined
     },
-    height: {
-      type: String,
-      default: 'auto'
-    },
-    padding: {
+    noPadding: {
       type: Boolean,
       default: false
     }
@@ -60,6 +63,8 @@ export default defineComponent<IProps>({
     const medium = computed(() => {
       if (props.fullsize) {
         return 12
+      } else if (props.fixedWidth) {
+        return props.cols
       } else if (props.md === 8 && props.cols <= 8) {
         return props.cols
       } else {
@@ -70,6 +75,8 @@ export default defineComponent<IProps>({
     const xlarge = computed(() => {
       if (props.fullsize) {
         return 12
+      } else if (props.fixedWidth) {
+        return props.cols
       } else if (props.xl === 6 && props.cols <= 6) {
         return props.cols
       } else {

@@ -1,7 +1,7 @@
 <template>
   <VeoPage>
-    <h2 class="px-4">{{ $t('page.editors.calltoaction') }}</h2>
-    <v-list two-line class="px-4 overflow-hidden">
+    <h2>{{ $t('page.editors.calltoaction') }}</h2>
+    <v-list two-line class="overflow-hidden">
       <v-list-item to="/editor/objectschema">
         <v-list-item-content>
           <v-list-item-title class="font-weight-bold">{{ $t('editor.objectschema.headline') }}</v-list-item-title>
