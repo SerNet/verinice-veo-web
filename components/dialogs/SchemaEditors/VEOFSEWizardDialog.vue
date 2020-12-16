@@ -91,7 +91,6 @@ import { generateSchema } from '~/lib/FormSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import CodeEditor from '~/components/CodeEditor.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
-import { ObjectSchemaNames } from '~/types/FormSchema'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 export default Vue.extend({
@@ -122,19 +121,8 @@ export default Vue.extend({
       fscode: '\n\n\n\n\n' as string,
       formSchema: undefined as IVEOFormSchema | undefined,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
-      state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2'
-    }
-  },
-  computed: {
-    objectTypes(): {value: string, text: string}[] {
-      const types = Object.keys(ObjectSchemaNames).map((value: string) => {
-        return {
-          text: this.$t(`unit.data.type.${value}`) as string,
-          value
-        }
-      })
-      types.unshift({ text: this.$t('editor.formschema.wizard.modelType.custom') as string, value: 'custom' })
-      return types
+      state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
+      objectTypes: [] as {value: string, text: string}[]
     }
   },
   watch: {
@@ -163,6 +151,16 @@ export default Vue.extend({
   },
   mounted() {
     this.dialog = this.value
+
+    this.$api.schema.fetchAll().then(data => data.knownSchemas.map((value: string) => {
+      return {
+        text: this.$t(`unit.data.type.${value}`) as string,
+        value
+      }
+    })).then((types) => {
+      types.unshift({ text: this.$t('editor.formschema.wizard.modelType.custom') as string, value: 'custom' })
+      this.objectTypes = types
+    })
   },
   methods: {
     goBack() {
@@ -194,7 +192,6 @@ export default Vue.extend({
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     async doImport1(schema: IVEOFormSchema) {
       this.setFormSchema(schema)
-      console.log('1', schema.modelType, this.objectTypes)
       if (this.objectTypes.findIndex((item: { value: string, text: string }) => item.value.toLowerCase() === schema.modelType.toLowerCase()) !== -1) {
         this.objectSchema = await this.$api.schema.fetch(schema.modelType.toLowerCase())
         this.$emit('form-schema', this.formSchema)

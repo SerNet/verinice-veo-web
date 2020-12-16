@@ -74,12 +74,11 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref } from '@nuxtjs/composition-api'
+import { defineComponent, ref, watch, computed, Ref, useContext } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { IVEOAttribute, IVEOCustomAspect, IVEOCustomLink, prefixedAspectName as aspectName } from '~/lib/ObjectSchemaHelper'
-import { ObjectSchemaNames } from '~/types/FormSchema'
 import { IInputTypes } from '~/types/VEOEditor'
 
 interface IProps {
@@ -102,6 +101,7 @@ export default defineComponent<IProps>({
     schema: { type: Object, required: true }
   },
   setup(props, context) {
+    const { $api } = useContext()
     /**
      * Common dialog stuff (opening and closing)
      */
@@ -163,14 +163,14 @@ export default defineComponent<IProps>({
       }
     })
 
-    // Generate an array containing all object types as defined in the ObjectSchemaNames enum.
-    const objectTypes = computed(() => {
-      return Object.keys(ObjectSchemaNames).map((value: string) => {
-        return {
-          text: context.root.$t(`unit.data.type.${value}`),
-          value
-        }
-      })
+    const objectTypes: Ref<{text: string, value: string}[]> = ref([])
+    $api.schema.fetchAll().then((data: {knownSchemas: string[] }) => data.knownSchemas.map((value: string) => {
+      return {
+        text: context.root.$t(`unit.data.type.${value}`) as string,
+        value
+      }
+    })).then((types: {text: string, value: string}[]) => {
+      objectTypes.value = types
     })
 
     function clearCreationForm() {

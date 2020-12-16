@@ -32,8 +32,6 @@
 import Vue from 'vue'
 import { TranslateResult } from 'vue-i18n/types/index'
 
-import { ObjectSchemaNames } from '~/types/FormSchema'
-
 export default Vue.extend({
   props: {
     unit: {
@@ -47,15 +45,18 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    const keys = Object.keys(ObjectSchemaNames)
-    for await (const key of keys) {
-      this.objects.push({
+    await this.$api.schema.fetchAll().then(data => data.knownSchemas.map(async(key: string) => {
+      return {
         title: this.$t(`unit.data.type.${key}`),
         link: `data/${key}`,
         // @ts-ignore
         items: (await this.$api[key].fetchAll({ unit: this.unit.id })).length
+      }
+    })).then((types) => {
+      Promise.all(types).then((data) => {
+        this.objects = data as any
       })
-    }
+    })
   }
 })
 </script>

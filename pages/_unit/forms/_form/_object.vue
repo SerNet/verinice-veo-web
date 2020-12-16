@@ -41,12 +41,7 @@ import AppStateDialog from '~/components/AppStateDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
-export enum ObjectSchemaNames {
-  asset = 'asset',
-  control = 'control',
-  person = 'person',
-  process = 'process'
-}
+import { ObjectSchemaNames } from '~/types/FormSchema'
 
 export interface IValidationErrorMessage {
   pointer: string
