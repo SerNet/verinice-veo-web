@@ -125,7 +125,7 @@ export default {
   'page.login.text.register': 'Noch kein Account?<br><b>Account erstellen!</b>',
 
   'page.settings.title': 'Einstellungen',
-  'page.settings.language': 'Bevorzugte Sprache',
+  'page.settings.language': 'Sprache',
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 

@@ -1,29 +1,60 @@
 <template>
   <div class="fill-height d-flex flex-column" style="width: 100%;">
-    <div style="height: 100%; overflow: auto;">
+    <div style="flex-grow: 1; overflow: auto;">
       <div class="editor" :style="{ resize: 'vertical', width: '100%' }">
-        <div ref="editor" @keydown.meta.enter="$emit('submit', $event)" @keydown.exact="codeModified()" />
+        <div
+          ref="editor"
+          @keydown.meta.enter="$emit('submit', $event)"
+          @keydown.exact="codeModified()"
+        />
       </div>
     </div>
     <div class="veo-editor-save-button">
-      <v-btn class="mx-4 my-2" color="primary" :disabled="saveButtonDisabled" @click="updateSchema()">{{ $t('editor.editor.button.save') }}</v-btn>
+      <v-btn
+        class="mx-4 my-2"
+        color="primary"
+        :disabled="saveButtonDisabled"
+        @click="updateSchema()"
+      >
+        {{ $t('editor.editor.button.save') }}
+      </v-btn>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { EditorState, EditorView, basicSetup } from '@codemirror/next/basic-setup'
-import { keymap, highlightSpecialChars, indentOnInput } from '@codemirror/next/view'
-import { startCompletion, autocompletion, completionKeymap } from '@codemirror/next/autocomplete'
+import {
+  EditorState,
+  EditorView,
+  basicSetup
+} from '@codemirror/next/basic-setup'
+import {
+  keymap,
+  highlightSpecialChars,
+  indentOnInput
+} from '@codemirror/next/view'
+import {
+  startCompletion,
+  autocompletion,
+  completionKeymap
+} from '@codemirror/next/autocomplete'
 import { json } from '@codemirror/next/lang-json'
 import { setDiagnostics, lintKeymap } from '@codemirror/next/lint'
-import { TransactionSpec, tagExtension, StateField, EditorSelection } from '@codemirror/next/state'
+import {
+  TransactionSpec,
+  tagExtension,
+  StateField,
+  EditorSelection
+} from '@codemirror/next/state'
 
 import { history, historyKeymap } from '@codemirror/next/history'
 import { foldGutter, foldKeymap } from '@codemirror/next/fold'
 import { lineNumbers } from '@codemirror/next/gutter'
 import { defaultKeymap } from '@codemirror/next/commands'
 import { bracketMatching } from '@codemirror/next/matchbrackets'
-import { closeBrackets, closeBracketsKeymap } from '@codemirror/next/closebrackets'
+import {
+  closeBrackets,
+  closeBracketsKeymap
+} from '@codemirror/next/closebrackets'
 import { searchKeymap } from '@codemirror/next/search'
 
 import { commentKeymap } from '@codemirror/next/comment'
@@ -31,7 +62,12 @@ import { rectangularSelection } from '@codemirror/next/rectangular-selection'
 import { gotoLineKeymap } from '@codemirror/next/goto-line'
 import { highlightSelectionMatches } from '@codemirror/next/highlight-selection'
 import { defaultHighlighter } from '@codemirror/next/highlight'
-import { defineComponent, onMounted, ref, watchEffect } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  watchEffect
+} from '@nuxtjs/composition-api'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 const languageTag = Symbol('language')
@@ -61,7 +97,9 @@ export default defineComponent<Props>({
     const editorRef = ref<HTMLDivElement>(null as any)
     let $editor: EditorView
 
-    function setLanguage(v: typeof basicSetup | false): TransactionSpec | undefined {
+    function setLanguage(
+      v: typeof basicSetup | false
+    ): TransactionSpec | undefined {
       if (!$editor) {
         return
       }
@@ -74,8 +112,13 @@ export default defineComponent<Props>({
 
     const toDiagnostic = (e: CodeError) => {
       const from = 'position' in e ? Number(e.position) - 1 : -1
-      const to = from === -1 ? $editor.state.doc.toString().length : from + $editor.state.doc.sliceString(from).split(/\s+/)[0].length
-      const severity = ('severity' in e ? String(e.severity).toLowerCase() : 'error') as any
+      const to =
+        from === -1
+          ? $editor.state.doc.toString().length
+          : from + $editor.state.doc.sliceString(from).split(/\s+/)[0].length
+      const severity = ('severity' in e
+        ? String(e.severity).toLowerCase()
+        : 'error') as any
       const message = e.message
 
       return { from: Math.max(0, from), to, severity, message }
@@ -104,15 +147,30 @@ export default defineComponent<Props>({
         const selections = selectionMarks.reduce(
           (out, v, i, list) => {
             if (i % 2 === 1) {
-              return out.concat(EditorSelection.range((list[i - 1]?.index || 0) - i + 1, (v.index || 0) - i))
+              return out.concat(
+                EditorSelection.range(
+                  (list[i - 1]?.index || 0) - i + 1,
+                  (v.index || 0) - i
+                )
+              )
             }
             return out
           },
-          [EditorSelection.cursor(Math.max((selectionMarks[1]?.index || 0) - 1), 0)]
+          [
+            EditorSelection.cursor(
+              Math.max((selectionMarks[1]?.index || 0) - 1),
+              0
+            )
+          ]
         )
 
-        const selection = selectionMarks.length ? EditorSelection.create(selections) : undefined
-        const transaction = { changes: { from: 0, insert: text, to: $editor.state.doc.length }, selection }
+        const selection = selectionMarks.length
+          ? EditorSelection.create(selections)
+          : undefined
+        const transaction = {
+          changes: { from: 0, insert: text, to: $editor.state.doc.length },
+          selection
+        }
         return transaction as TransactionSpec
       }
     }
@@ -127,9 +185,15 @@ export default defineComponent<Props>({
       try {
         updatedSchema = JSON.parse($editor.state.toJSON().doc)
         context.emit('schema-updated', updatedSchema)
-        context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, context.root.$i18n.t('editor.code.save.success'))
+        context.root.$emit(
+          VeoEvents.SNACKBAR_SUCCESS,
+          context.root.$i18n.t('editor.code.save.success')
+        )
       } catch (e) {
-        context.root.$emit(VeoEvents.ALERT_ERROR, { title: context.root.$i18n.t('editor.code.save.error'), text: e })
+        context.root.$emit(VeoEvents.ALERT_ERROR, {
+          title: context.root.$i18n.t('editor.code.save.error'),
+          text: e
+        })
       }
       saveButtonDisabled.value = true
     }
@@ -188,7 +252,10 @@ export default defineComponent<Props>({
 
       watchEffect(() => {
         try {
-          const transactions = [setText(props.value), setLanguage(props.language)].filter(_ => !!_) as TransactionSpec[]
+          const transactions = [
+            setText(props.value),
+            setLanguage(props.language)
+          ].filter(_ => !!_) as TransactionSpec[]
 
           $editor.dispatch(...transactions)
           // const err = setError(props.error)
@@ -254,5 +321,6 @@ export default defineComponent<Props>({
 
 .veo-editor-save-button {
   background-color: rgb(245, 245, 245);
+  flex-grow: 0;
 }
 </style>

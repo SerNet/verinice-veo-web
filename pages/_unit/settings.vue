@@ -1,10 +1,11 @@
 <template>
-  <v-col cols="12">
-    <h1>{{ $t('page.settings.title') }}</h1>
+  <VeoPage :title="$t('page.settings.title')">
     <v-row class="flex-column">
       <v-col class="settings-item">
-        <span class="settings-item-description">{{ $t('page.settings.language') }}:</span>
-        <v-overflow-btn
+        <span class="settings-item-description">
+          {{ $t('page.settings.language') }}:
+        </span>
+        <v-select
           :value="$i18n.locale"
           :items="langs"
           class="language-btn"
@@ -21,23 +22,30 @@
       </v-col>
       <v-divider class="mt-8 mb-3 mx-3" />
       <v-col class="settings-item py-1">
-        <span class="settings-item-description">{{ $t('page.settings.version') }}:</span>
+        <span class="settings-item-description">
+          {{ $t('page.settings.version') }}:
+        </span>
         <span style="font-size: 1.2rem;">{{ $config.version }}</span>
       </v-col>
       <v-col class="settings-item py-1">
-        <span class="settings-item-description">{{ $t('page.settings.build') }}:</span>
+        <span class="settings-item-description">
+          {{ $t('page.settings.build') }}:
+        </span>
         <span style="font-size: 1.2rem;">{{ $config.build }}</span>
       </v-col>
     </v-row>
-  </v-col>
+  </VeoPage>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
+import VeoPage from '~/components/layout/VeoPage.vue'
+
 export default Vue.extend({
-  components: {},
-  props: {},
+  components: {
+    VeoPage
+  },
   data() {
     return {
       langs: [
@@ -46,20 +54,18 @@ export default Vue.extend({
       ]
     }
   },
-  async fetch() {
-  },
+  async fetch() {},
   head(): any {
     return {
       title: this.$t('page.settings.title')
     }
-  },
-  methods: {}
+  }
 })
 </script>
 
 <style lang="scss" scoped>
 .language-btn {
-  max-width: 120px;
+  max-width: 200px;
 }
 
 .settings-item {

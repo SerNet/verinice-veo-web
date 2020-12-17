@@ -4,10 +4,21 @@
     :cols="absoluteSize ? cols : 12"
     :md="absoluteSize ? md : 12"
     :xl="absoluteSize ? xl : 12"
+    :class="$props.class"
   >
     <v-row v-if="title" no-gutters class="flex-column veo-page__title">
-      <v-col cols="12">
-        <h1 class="ml-1 d-inline">{{ title }}</h1>
+      <v-col
+        :cols="!absoluteSize ? cols : 12"
+        :md="!absoluteSize ? medium : 12"
+        :xl="!absoluteSize ? xlarge : 12"
+        class="d-flex flex-wrap"
+      >
+        <h1
+          class="d-inline"
+          :class="noPadding ? 'flex-grow-0' : 'px-4 flex-grow-0'"
+        >
+          {{ title }}
+        </h1>
         <slot name="title" />
       </v-col>
     </v-row>
@@ -23,13 +34,14 @@
     </v-row>
     <v-row
       no-gutters
-      style="max-height: 100%;"
+      :style="{ 'max-height': '100%', 'min-height': 0, height }"
       :class="noPadding ? '' : 'pa-4'"
     >
       <v-col
         :cols="!absoluteSize ? cols : 12"
         :md="!absoluteSize ? medium : 12"
         :xl="!absoluteSize ? xlarge : 12"
+        :class="contentClass"
       >
         <slot name="default" />
       </v-col>
@@ -48,10 +60,21 @@ interface IProps {
   xl: number
   noPadding: boolean
   stickyHeader: boolean
+  pageClass: string
+  contentClass: string
+  height: string
 }
 
 export default defineComponent<IProps>({
   props: {
+    pageClass: {
+      type: String,
+      default: ''
+    },
+    contentClass: {
+      type: String,
+      default: ''
+    },
     stickyHeader: {
       type: Boolean,
       default: false
@@ -69,6 +92,10 @@ export default defineComponent<IProps>({
     fullsize: {
       type: Boolean,
       default: false
+    },
+    height: {
+      type: String,
+      default: 'auto'
     },
     /**
      * The size of the page on viewports smaller than md

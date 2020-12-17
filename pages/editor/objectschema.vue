@@ -30,7 +30,11 @@
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
-          <v-row no-gutters class="flex-column overflow-hidden mt-2">
+          <v-row
+            no-gutters
+            class="flex-column overflow-hidden mt-2"
+            style="width: 100%"
+          >
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="12" lg="4">
@@ -100,8 +104,8 @@
         no-padding
         absolute-size
         :cols="12"
-        :md="collapsed ? 12 : 6"
-        :xl="collapsed ? 12 : 6"
+        :md="6"
+        :xl="6"
         height="100%"
       >
         <CodeEditor v-model="code" @schema-updated="updateSchema" />
