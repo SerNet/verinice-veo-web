@@ -1,5 +1,4 @@
-<script>
-</script>
+<script></script>
 <template>
   <VeoPage title="veo.data">
     <v-data-table
@@ -12,7 +11,13 @@
       <template #top>
         <v-row dense>
           <v-col :cols="3">
-            <v-select v-model="objectType" label="Type" :items="objectTypes" outlined dense />
+            <v-select
+              v-model="objectType"
+              label="Type"
+              :items="objectTypes"
+              outlined
+              dense
+            />
           </v-col>
           <v-col :cols="3">
             <v-select v-model="group" label="Group" outlined dense />
@@ -23,7 +28,9 @@
         </v-row>
       </template>
       <template #item.name="{ value, item }">
-        <nuxt-link :to="`/${$route.params.unit}/data/${objectType}/${group}/${item.id}`">
+        <nuxt-link
+          :to="`/${$route.params.unit}/data/${objectType}/${group}/${item.id}`"
+        >
           {{ value }}
         </nuxt-link>
       </template>
@@ -46,15 +53,7 @@ import { ObjectSchemaNames } from '~/types/FormSchema'
 import { GroupType } from '~/plugins/api/group'
 import { Route } from 'vue-router'
 
-interface IProps {
-  title?: string,
-  fullsize: boolean,
-  cols: number,
-  md: number,
-  xl: number,
-  fixedWidth: boolean,
-  noPadding: boolean
-}
+interface IProps {}
 
 export default defineComponent<IProps>({
   components: {
@@ -68,23 +67,19 @@ export default defineComponent<IProps>({
         {
           text: 'Title',
           value: 'name'
-
         },
         {
           text: 'UUID',
           value: 'id',
           sortable: false
-
         },
         {
           text: 'Created at',
           value: null
-
         },
         {
           text: 'Updated at',
           value: null
-
         },
         {
           text: '',
@@ -96,7 +91,7 @@ export default defineComponent<IProps>({
     }
   },
   computed: {
-    objectTypes(): {text: string, value: string}[] {
+    objectTypes(): { text: string; value: string }[] {
       const keys = Object.keys(ObjectSchemaNames)
 
       return keys.map((key: string) => {
@@ -111,7 +106,9 @@ export default defineComponent<IProps>({
     this.objects = []
 
     // @ts-ignore
-    this.objects = await this.$api[this.objectType].fetchAll({ unit: this.$route.params.unit })
+    this.objects = await this.$api[this.objectType].fetchAll({
+      unit: this.$route.params.unit
+    })
     console.log(this.objects)
     /*
     if (this.$route.params.group === '-') {
@@ -124,20 +121,18 @@ export default defineComponent<IProps>({
     */
   },
   mounted() {
-    if(this.$route.params.type) {
+    if (this.$route.params.type) {
       this.objectType = this.$route.params.type
     }
-    if(this.$route.params.group) {
+    if (this.$route.params.group) {
       this.group = this.$route.params.group
     }
   },
   watch: {
-    '$route'(newValue: Route) {
+    $route(newValue: Route) {
       console.log(newValue)
     }
   }
 })
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

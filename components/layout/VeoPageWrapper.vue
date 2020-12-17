@@ -1,9 +1,9 @@
 <template>
-  <div style="overflow: hidden;">
+  <div style="overflow: hidden; height: 100%; width: 100%;">
     <v-row no-gutters class="veo-page-wrapper fill-height overflow-hidden">
       <slot name="default" />
     </v-row>
-    <slot name="external" />
+    <slot name="helpers" />
   </div>
 </template>
 <script lang="ts">

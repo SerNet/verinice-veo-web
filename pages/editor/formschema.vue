@@ -1,18 +1,43 @@
 <template>
   <div style="width: 100%; height: 100%;">
     <v-row no-gutters style="height: 100%; flex-wrap: nowrap">
-      <VeoPage v-if="formSchema" :cols="8" :xl="8" height="100%" :title="$t('editor.formschema.headline')">
-        <template #header>
-          <a ref="downloadButton" href="#" class="text-decoration-none" @click="downloadSchema()">
+      <VeoPage
+        v-if="formSchema"
+        :cols="8"
+        :xl="8"
+        :title="$t('editor.formschema.headline')"
+      >
+        <template #title>
+          <a
+            ref="downloadButton"
+            href="#"
+            class="text-decoration-none"
+            @click="downloadSchema()"
+          >
             <v-btn icon large color="primary">
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </a>
         </template>
         <template #default>
-          <div class="d-flex flex-column" style="width: 100%; height: 100%; flex-wrap: nowrap; overflow: hidden;">
-            <v-col v-if="formSchema" cols="4" class="px-4" style="flex-basis: auto;">
-              <v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" />
+          <div
+            class="d-flex flex-column"
+            style="width: 100%; height: 100%; flex-wrap: nowrap; overflow: hidden;"
+          >
+            <v-col
+              v-if="formSchema"
+              cols="4"
+              class="px-4"
+              style="flex-basis: auto;"
+            >
+              <v-text-field
+                v-model="formSchema.name"
+                dense
+                hide-details
+                flat
+                :label="$t('editor.formschema.formschema')"
+                @input="updateSchemaName()"
+              />
             </v-col>
             <FormSchemaEditor
               v-if="!$fetchState.pending"
@@ -49,7 +74,11 @@
         </VeoTabs>
       </VeoPage>
     </v-row>
-    <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
+    <VEOFSEWizardDialog
+      v-model="showCreationDialog"
+      @object-schema="setObjectSchema"
+      @form-schema="setFormSchema"
+    />
   </div>
 </template>
 
@@ -103,7 +132,8 @@ export default Vue.extend({
     if (!this.$route.query.wizard) {
       this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process')
     }
-    this.showCreationDialog = this.objectSchema === undefined && this.formSchema === undefined
+    this.showCreationDialog =
+      this.objectSchema === undefined && this.formSchema === undefined
   },
   methods: {
     updateSchema(formSchema: any) {
@@ -124,9 +154,12 @@ export default Vue.extend({
     },
     downloadSchema() {
       if (this.$refs.downloadButton) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.formSchema))}`;
-        (this.$refs.downloadButton as any).href = data;
-        (this.$refs.downloadButton as any).download = `fs_${this.formSchema?.name || 'download'}.json`
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(
+          JSON.stringify(this.formSchema)
+        )}`
+        ;(this.$refs.downloadButton as any).href = data
+        ;(this.$refs.downloadButton as any).download = `fs_${this.formSchema
+          ?.name || 'download'}.json`
       }
     }
   }

@@ -101,7 +101,10 @@ export default Vue.extend({
       }
     },
     onUpdate(event: any, formSchemaPointer: string): void {
-      this.$emit('update', { payload: event, formSchemaPointer: formSchemaPointer.replace('#', '') })
+      this.$emit('update', {
+        payload: event,
+        formSchemaPointer: formSchemaPointer.replace('#', '')
+      })
     }
   },
   render(h): VNode {
@@ -178,7 +181,9 @@ export default Vue.extend({
             },
             on: {
               delete: (event: any) => this.onDelete(event, formSchemaPointer),
-              update: (event: any) => { this.onUpdate(event, formSchemaPointer) }
+              update: (event: any) => {
+                this.onUpdate(event, formSchemaPointer)
+              }
             }
           })
         }
@@ -209,24 +214,4 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
-
-.veo-editor-header {
-  background-color: white;
-  border-bottom: 1px solid $grey;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  max-height: 200px;
-  overflow: auto;
-}
-
-.veo-editor-header ::v-deep .v-expansion-panel-header {
-  min-height: auto;
-}
-.veo-editor-header
-  ::v-deep
-  .v-expansion-panel--active
-  > .v-expansion-panel-header {
-  min-height: auto;
-}
 </style>

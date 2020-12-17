@@ -4,17 +4,29 @@
     <v-list two-line class="overflow-hidden">
       <v-list-item to="/editor/objectschema">
         <v-list-item-content>
-          <v-list-item-title class="font-weight-bold">{{ $t('editor.objectschema.headline') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('editor.objectschema.description') }}</v-list-item-subtitle>
+          <v-list-item-title class="font-weight-bold">
+            {{ $t('editor.objectschema.headline') }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ $t('editor.objectschema.description') }}
+          </v-list-item-subtitle>
         </v-list-item-content>
-        <v-list-item-action><v-icon x-large>mdi-chevron-right</v-icon></v-list-item-action>
+        <v-list-item-action>
+          <v-icon x-large>mdi-chevron-right</v-icon>
+        </v-list-item-action>
       </v-list-item>
       <v-list-item to="/editor/formschema">
         <v-list-item-content>
-          <v-list-item-title class="font-weight-bold">{{ $t('editor.formschema.headline') }}</v-list-item-title>
-          <v-list-item-subtitle>{{ $t('editor.formschema.description') }}</v-list-item-subtitle>
+          <v-list-item-title class="font-weight-bold">
+            {{ $t('editor.formschema.headline') }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ $t('editor.formschema.description') }}
+          </v-list-item-subtitle>
         </v-list-item-content>
-        <v-list-item-action><v-icon x-large>mdi-chevron-right</v-icon></v-list-item-action>
+        <v-list-item-action>
+          <v-icon x-large>mdi-chevron-right</v-icon>
+        </v-list-item-action>
       </v-list-item>
     </v-list>
   </VeoPage>

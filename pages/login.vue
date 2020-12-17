@@ -18,10 +18,22 @@
         />
       </v-col>
       <v-col>
-        <v-btn depressed block color="primary" class="login-button" @click="$auth.login('/')">{{ $t('page.login.button.login') }}</v-btn>
+        <v-btn
+          depressed
+          block
+          color="primary"
+          class="login-button"
+          @click="$auth.login('/')"
+        >
+          {{ $t('page.login.button.login') }}
+        </v-btn>
       </v-col>
       <v-col>
-        <v-btn depressed block @click="$auth.register('/')">{{ $t('page.login.button.register') }}</v-btn>
+        <v-btn depressed block @click="$auth.register('/')">
+          {{
+            $t('page.login.button.register')
+          }}
+        </v-btn>
       </v-col>
     </v-row>
   </div>
@@ -51,7 +63,8 @@ export default Vue.extend({
 <style lang="scss" scoped>
 .wrapper {
   margin: 5% auto 0;
-  width: 420px;
+  max-width: 420px;
+  width: 90%;
 
   h1 {
     color: rgb(237, 237, 237);

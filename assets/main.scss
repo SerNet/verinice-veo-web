@@ -2,7 +2,7 @@
 
 .v-application {
   .__nuxt-error-page {
-      background-color: white !important;
+    background-color: white !important;
     .error {
       border-color: transparent !important;
       background-color: transparent !important;
@@ -19,15 +19,11 @@ html {
   overflow: hidden !important;
 }
 
-.veo-page {
-  flex-shrink: 1;
-  margin: 0;
-  max-height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  position: relative;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  color: darken($accent, 27.5%)
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: darken($accent, 27.5%);
 }
