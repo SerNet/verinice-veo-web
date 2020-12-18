@@ -1,71 +1,173 @@
 <template>
-  <v-col cols="12">
-    <template v-if="$fetchState.pending">
-      <div class="text-center ma-12">
-        <v-progress-circular indeterminate color="primary" size="50" />
-      </div>
+  <VeoPage title="veo.forms">
+    <template #title>
+      <v-spacer />
+      <v-btn
+        depressed
+        outlined
+        :to="`/${unit}/forms/${formType}/create`"
+        color="primary"
+        class="align-self-center"
+      >
+        {{ $t('unit.forms.create', { type: objectType }) }}
+      </v-btn>
     </template>
-
-    <template v-else>
-      <v-btn :to="`/${unit}/forms/${formId}/create`" color="primary" class="mt-6">{{ $t('unit.forms.create', { type: objectType }) }}</v-btn>
-      <v-list two-line max-width="500">
-        <v-list-item v-for="object in objects" :key="object.id" :to="`/${unit}/forms/${formId}/${object.id}`">
-          <v-list-item-avatar>
-            <v-icon dark class="primary">mdi-format-list-checks</v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title class="primary--text text-uppercase font-weight-medium" v-text="object.name" />
-            <v-list-item-subtitle v-text="object.id" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+    <template #default>
+      <v-data-table
+        :headers="headers"
+        :items="objects"
+        :items-per-page="20"
+        :no-data-text="`Keine {types} vorhanden!`"
+        :loading-text="`{types} werden geladen...`"
+        :loading="$fetchState.pending"
+        @click:row="goToObject"
+      >
+        <template #top>
+          <v-row dense>
+            <v-col :cols="3">
+              <v-select
+                v-model="formType"
+                label="Type"
+                :items="formTypes"
+                outlined
+                dense
+                @input="changeType()"
+              />
+            </v-col>
+            <v-col :cols="3">
+              <v-select
+                v-model="group"
+                label="Group"
+                :items="groups"
+                item-text="title"
+                item-value="id"
+                outlined
+                dense
+              />
+            </v-col>
+            <v-col :cols="6">
+              <v-text-field label="Title" outlined dense />
+            </v-col>
+          </v-row>
+        </template>
+        <template #item.name="{ value }">
+          <span class="font-weight-bold">{{ value }}</span>
+        </template>
+        <template #item.actions="{ item }">
+          <v-icon small class="mr-2">
+            mdi-pencil
+          </v-icon>
+          <v-icon small>
+            mdi-delete
+          </v-icon>
+        </template>
+      </v-data-table>
     </template>
-    <div v-if="!$fetchState.pending && objects.length === 0" class="display">{{ $t('unit.forms.noprocesses') }}</div>
-  </v-col>
+  </VeoPage>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+
+import VeoPage from '~/components/layout/VeoPage.vue'
 import { IBaseObject } from '~/lib/utils'
-import { FormSchema } from '~/types/FormSchema'
+import { FormSchema, FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 
 interface IData {
   formSchema: FormSchema | undefined
   objectType: string | undefined
   objects: IBaseObject[]
+  formType: string
+  formTypes: { value: string; text: string }[]
+  group: string
+  groups: { value: string; text: string }[]
+  headers: any
 }
 
 export default Vue.extend({
-  name: 'Forms',
+  components: {
+    VeoPage
+  },
   data(): IData {
     return {
       formSchema: undefined,
       objectType: '',
-      objects: []
+      objects: [],
+      formType: this.$route.params.form,
+      formTypes: [],
+      group: '-',
+      groups: [],
+      headers: [
+        {
+          text: 'Title',
+          value: 'name'
+        },
+        {
+          text: 'UUID',
+          value: 'id',
+          sortable: false
+        },
+        {
+          text: 'Created at',
+          value: null
+        },
+        {
+          text: 'Updated at',
+          value: null
+        },
+        {
+          text: '',
+          value: 'actions',
+          sortable: false
+        }
+      ]
     }
   },
   async fetch() {
     this.formSchema = await this.$api.form.fetch(this.$route.params.form)
     this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
-    this.objects = this.objectType && (await this.$api[this.objectType].fetchAll({ unit: this.$route.params.unit }))
+    this.objects =
+      this.objectType &&
+      (await this.$api[this.objectType].fetchAll({
+        unit: this.$route.params.unit
+      }))
+
+    this.formTypes = await this.$api.form
+      .fetchAll({ unit: this.$route.params.unit })
+      .then((formTypes: FormSchemaMetas) =>
+        formTypes.map((entry: FormSchemaMeta) => {
+          return {
+            text: entry.name,
+            value: entry.id
+          }
+        })
+      )
   },
   head() {
     return {
-      title: 'Forms'
+      title: 'veo.forms'
     }
   },
   computed: {
-    formId() {
-      return this.$route.params.form
-    },
     unit() {
       return this.$route.params.unit
     }
   },
-  watch: {
-    '$route.params': '$fetch'
+  methods: {
+    goToObject(item: any) {
+      this.$router.push(`/${this.unit}/forms/${this.formType}/${item.id}`)
+    },
+    changeType() {
+      this.$router.push(`/${this.unit}/forms/${this.formType}`)
+    }
   }
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
+.v-data-table ::v-deep tbody {
+  cursor: pointer;
+}
+</style>

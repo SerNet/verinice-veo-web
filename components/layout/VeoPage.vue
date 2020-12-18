@@ -28,7 +28,12 @@
       class="veo-page__header"
       :class="stickyHeader ? 'veo-page__header--sticky' : ''"
     >
-      <v-col cols="12" class="px-3 py-1">
+      <v-col
+        :cols="!absoluteSize ? cols : 12"
+        :md="!absoluteSize ? medium : 12"
+        :xl="!absoluteSize ? xlarge : 12"
+        class="px-3 py-1"
+      >
         <slot name="header" />
       </v-col>
     </v-row>

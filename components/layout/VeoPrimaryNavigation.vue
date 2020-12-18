@@ -1,21 +1,48 @@
 <template>
-  <v-navigation-drawer :value="drawer" app :class="{'v-application--is-rtl': right}" clipped :mini-variant="!$vuetify.breakpoint.xs && drawer" :permanent="!$vuetify.breakpoint.xs" :temporary="$vuetify.breakpoint.xs" :right="right" @input="$emit('update:drawer', $event)" @mouseenter.native="onMouseEnter()" @mouseleave.native="onMouseLeave()">
+  <v-navigation-drawer
+    :value="drawer"
+    app
+    :class="{ 'v-application--is-rtl': right }"
+    clipped
+    :mini-variant="!$vuetify.breakpoint.xs && drawer"
+    :permanent="!$vuetify.breakpoint.xs"
+    :temporary="$vuetify.breakpoint.xs"
+    :right="right"
+    @input="$emit('update:drawer', $event)"
+    @mouseenter.native="onMouseEnter()"
+    @mouseleave.native="onMouseLeave()"
+  >
     <div class="d-flex flex-column fill-height">
       <v-list nav dense :shaped="!drawer" :rounded="drawer" expand>
         <template v-for="item in items">
-          <VeoPrimaryNavigationEntry :key="item.name" v-bind="item" :extended.sync="item.extended" :persist-u-i-state="persistUIState" />
+          <VeoPrimaryNavigationEntry
+            :key="item.name"
+            v-bind="item"
+            :extended.sync="item.extended"
+            :persist-u-i-state="persistUIState"
+          />
         </template>
       </v-list>
       <v-spacer />
       <v-list nav dense class="pa-0">
         <v-divider />
-        <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="toggleMenu()">
+        <v-list-item
+          v-if="!$vuetify.breakpoint.xs"
+          class="pl-4"
+          @click="toggleMenu()"
+        >
           <v-list-item-icon>
-            <v-icon v-if="drawer || openedOnHover">mdi-chevron-double-right</v-icon>
+            <v-icon v-if="drawer || openedOnHover">
+              mdi-chevron-double-right
+            </v-icon>
             <v-icon v-else>mdi-chevron-double-left</v-icon>
           </v-list-item-icon>
-          <v-list-item-title v-if="drawer || openedOnHover">{{ $t('global.menu.expand') }}</v-list-item-title>
-          <v-list-item-title v-else>{{ $t('global.menu.collapse') }}</v-list-item-title>
+          <v-list-item-title v-if="drawer || openedOnHover">
+            {{ $t('global.menu.expand') }}
+          </v-list-item-title>
+          <v-list-item-title v-else>
+            {{ $t('global.menu.collapse') }}
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </div>
@@ -25,17 +52,21 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router'
-import { FormSchemaMeta, FormSchemaMetas, ObjectSchemaNames } from '~/types/FormSchema'
+import {
+  FormSchemaMeta,
+  FormSchemaMetas,
+  ObjectSchemaNames
+} from '~/types/FormSchema'
 
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
 
 export interface INavItem {
-  name: string,
-  icon?: string,
-  exact?: boolean,
-  to?: string,
-  disabled: boolean,
-  childItems?: INavItem[],
+  name: string
+  icon?: string
+  exact?: boolean
+  to?: string
+  disabled: boolean
+  childItems?: INavItem[]
   extended?: boolean
   topLevelItem: boolean
 }
@@ -117,18 +148,24 @@ export default Vue.extend({
             name: 'veo.data',
             icon: 'mdi-folder',
             to: undefined,
+            exact: false,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()['veo.data'] ? !this.fetchUIState()['veo.data'] : true,
+            extended: this.fetchUIState()['veo.data']
+              ? !this.fetchUIState()['veo.data']
+              : true,
             topLevelItem: true
           },
           {
             name: 'veo.forms',
             icon: 'mdi-format-list-checks',
             to: undefined,
+            exact: false,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()['veo.forms'] ? !this.fetchUIState()['veo.forms'] : true,
+            extended: this.fetchUIState()['veo.forms']
+              ? !this.fetchUIState()['veo.forms']
+              : true,
             topLevelItem: true
           },
           {
@@ -194,10 +231,15 @@ export default Vue.extend({
 
       for await (const key of keys) {
         // TODO: Implement groups
-        await this.$api.group.fetchAll({ type: this.capitalize(key), unit: this.$route.params.unit }).then((data) => {
-          if (data.length > 0) {
-          }
-        })
+        await this.$api.group
+          .fetchAll({
+            type: this.capitalize(key),
+            unit: this.$route.params.unit
+          })
+          .then((data: any) => {
+            if (data.length > 0) {
+            }
+          })
 
         objects.push({
           name: this.$t(`unit.data.type.${key}`) as string,
@@ -205,7 +247,11 @@ export default Vue.extend({
           to: `/${this.$route.params.unit}/data/${key}/-/`,
           disabled: false,
           childItems: undefined,
-          extended: this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] ? !this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string] : true,
+          extended: this.fetchUIState()[
+            this.$t(`unit.data.type.${key}`) as string
+          ]
+            ? !this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string]
+            : true,
           topLevelItem: false
         })
       }
@@ -213,15 +259,19 @@ export default Vue.extend({
       return objects
     },
     async fetchFormTypes(): Promise<INavItem[]> {
-      return await this.$api.form.fetchAll({ unit: this.$route.params.unit }).then((formTypes: FormSchemaMetas) => formTypes.map((entry: FormSchemaMeta) => {
-        return {
-          name: entry.name,
-          exact: true,
-          to: `/${this.$route.params.unit}/forms/${entry.id}/`,
-          disabled: false,
-          topLevelItem: false
-        }
-      }))
+      return await this.$api.form
+        .fetchAll({ unit: this.$route.params.unit })
+        .then((formTypes: FormSchemaMetas) =>
+          formTypes.map((entry: FormSchemaMeta) => {
+            return {
+              name: entry.name,
+              exact: true,
+              to: `/${this.$route.params.unit}/forms/${entry.id}/`,
+              disabled: false,
+              topLevelItem: false
+            }
+          })
+        )
     },
     capitalize(string: string): string {
       return string.charAt(0).toUpperCase() + string.slice(1)
@@ -237,7 +287,7 @@ export default Vue.extend({
       // Overwrite fetched state
       localStorage.setItem('veo-menu-preferences', JSON.stringify(preferences))
     },
-    fetchUIState(): { [key:string]: boolean } {
+    fetchUIState(): { [key: string]: boolean } {
       return JSON.parse(localStorage.getItem('veo-menu-preferences') || '{}')
     }
   }

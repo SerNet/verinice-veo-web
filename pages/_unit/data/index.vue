@@ -1,4 +1,3 @@
-<script></script>
 <template>
   <VeoPage title="veo.data">
     <template #title>
@@ -52,6 +51,9 @@
             </v-col>
           </v-row>
         </template>
+        <template #item.name="{ value }">
+          <span class="font-weight-bold">{{ value }}</span>
+        </template>
         <template #item.actions="{ item }">
           <v-icon small class="mr-2">
             mdi-pencil
@@ -70,8 +72,6 @@ import { defineComponent } from '@nuxtjs/composition-api'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import { ObjectSchemaNames } from '~/types/FormSchema'
 import { GroupType } from '~/plugins/api/group'
-import { Route, RawLocation } from 'vue-router'
-import { nextTick } from 'process'
 
 interface IProps {}
 
@@ -110,6 +110,29 @@ export default defineComponent<IProps>({
       objects: [] as any
     }
   },
+  async fetch() {
+    this.objects = []
+
+    // We have to do everythin on next tick, else the correct objecttype won't get picked up.
+    await this.$nextTick(async () => {
+      if (!this.$route.params.group || this.$route.params.group === '-') {
+        // @ts-ignore
+        this.objects = await this.$api[this.objectType].fetchAll({
+          unit: this.$route.params.unit
+        })
+      } else {
+        this.objects = await this.$api.group.fetchGroupMembers(
+          this.$route.params.group,
+          this.objectType as GroupType
+        )
+      }
+    })
+  },
+  head() {
+    return {
+      title: 'veo.data'
+    }
+  },
   computed: {
     objectTypes(): { text: string; value: string }[] {
       const keys = Object.keys(ObjectSchemaNames)
@@ -130,24 +153,6 @@ export default defineComponent<IProps>({
       ]
     }
   },
-  async fetch() {
-    this.objects = []
-
-    // We have to do everythin on next tick, else the correct objecttype won't get picked up.
-    await nextTick(async () => {
-      if (this.$route.params.group === '-') {
-        // @ts-ignore
-        this.objects = await this.$api[this.objectType].fetchAll({
-          unit: this.$route.params.unit
-        })
-      } else {
-        this.objects = await this.$api.group.fetchGroupMembers(
-          this.$route.params.group,
-          this.objectType as GroupType
-        )
-      }
-    })
-  },
   mounted() {
     if (this.$route.params.type) {
       this.objectType = this.$route.params.type
@@ -156,25 +161,16 @@ export default defineComponent<IProps>({
       this.group = this.$route.params.group
     }
   },
-  watch: {
-    $route(newValue: Route) {
-      console.log(newValue)
-    }
-  },
   methods: {
     changeType() {
-      this.$router.push({
-        params: {
-          type: this.objectType as string
-        }
-      })
+      this.$router.push(
+        `/${this.$route.params.unit}/data/${this.objectType}/${this.group}`
+      )
     },
     changeGroup() {
-      this.$router.push({
-        params: {
-          group: this.group as string
-        }
-      })
+      this.$router.push(
+        `/${this.$route.params.unit}/data/${this.objectType}/${this.group}`
+      )
     },
     goToObject(item: any) {
       this.$router.push(
@@ -185,6 +181,8 @@ export default defineComponent<IProps>({
 })
 </script>
 <style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
 .v-data-table ::v-deep tbody {
   cursor: pointer;
 }
