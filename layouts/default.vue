@@ -1,27 +1,15 @@
 <template>
   <v-app>
-    <v-app-bar class="app-bar pl-0" app clipped-left clipped-right flat border color="primary" dark>
-      <AppBarLogo>
-        <v-app-bar-nav-icon color="primary" @click.stop="drawer = !drawer" />
-      </AppBarLogo>
-      <!--<v-select
-        class="domain-select"
-        :items="domains"
-        :value="domains[0]"
-        hide-details
-        flat
-        light
-        :prepend-inner-icon="!$vuetify.breakpoint.xs?'mdi-domain':''"
-        dense
-        label="Domain"
-        solo
-      />-->
-
-      <AppUnitSelection @create-unit="createUnit" />
-
-      <portal-target name="toolbar" />
-
-      <v-spacer />
+    <v-app-bar class="veo-app-bar" app clipped-left flat>
+      <div class="d-flex">
+        <v-app-bar-nav-icon v-if="$vuetify.breakpoint.xs" @click="drawer = true" />
+        <nuxt-link to="/">
+          <AppBarLogo class="ml-2" />
+        </nuxt-link>
+      </div>
+      <div class="d-flex align-center" style="width: 60%; max-width: 500px;">
+        <v-text-field :label="$t('search.label')" hide-details background-color="grey" height="40" class="veo-app-bar-search" />
+      </div>
       <AppAccountBtn
         v-if="$auth.profile"
         :username="$auth.profile.username"
@@ -30,129 +18,141 @@
         :email="$auth.profile.email"
         @logout="$auth.logout('/')"
       />
+      <span v-else />
     </v-app-bar>
-
-    <AppTabBar :offset="$vuetify.application.top" :items="nav" :drawer.sync="drawer" />
-
-    <v-main>
-      <nuxt />
+    <VeoPrimaryNav :drawer.sync="drawer" />
+    <v-main style="max-height: 100vh;" class="overflow-hidden">
+      <VeoBreadcrumbs />
+      <VeoPageWrapper>
+        <nuxt />
+      </VeoPageWrapper>
     </v-main>
-
-    <VeoNewUnitDialog v-model="newUnitCreation" :persistent="newUnitPersistent" />
-
-    <v-footer app padless inset outlined>
-      <portal-target style="width: 100%" name="footer" />
-    </v-footer>
-
-    <VeoSnackbar />
+    <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
+    <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1" />
+    <VeoNewUnitDialog v-model="newUnitDialog.value" v-bind="newUnitDialog" />
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent, Ref, ref } from '@nuxtjs/composition-api'
 
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
-import AppTabBar from '~/components/layout/AppTabBar.vue'
+import VeoPrimaryNav from '~/components/layout/VeoPrimaryNavigation.vue'
 import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
-import AppUnitSelection from '~/components/layout/AppUnitSelection.vue'
 import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
 import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
+import VeoAlert, { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
+import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 
-export default Vue.extend({
+interface IProps {}
+
+export default defineComponent<IProps>({
   components: {
     AppBarLogo,
-    AppTabBar,
+    VeoPrimaryNav,
     AppAccountBtn,
-    AppUnitSelection,
     VeoNewUnitDialog,
-    VeoSnackbar
+    VeoSnackbar,
+    VeoAlert,
+    VeoPageWrapper
   },
-  data() {
+  setup(_props, context) {
+    //
+    // Global navigation
+    //
+    const drawer: Ref<boolean> = ref(false)
+
+    //
+    // Unit creation and navigation
+    //
+    const newUnitDialog = ref({ value: false, persistent: false })
+
+    function createUnit(persistent: boolean = false) {
+      newUnitDialog.value.value = true
+      newUnitDialog.value.persistent = persistent
+    }
+
+    //
+    // Handling of global events
+    //
+    const alert = ref({ value: false, content: '', title: '', type: ALERT_TYPE.INFO })
+    const snackbar = ref({ value: false, text: '' })
+
+    context.root.$on(VeoEvents.ALERT_ERROR, (payload: VeoEventPayload) => {
+      alert.value.content = payload.text
+      alert.value.title = payload.title || ''
+      alert.value.type = ALERT_TYPE.ERROR
+      alert.value.value = true
+    })
+    context.root.$on(VeoEvents.ALERT_INFO, (payload: VeoEventPayload) => {
+      alert.value.content = payload.text
+      alert.value.title = payload.title || ''
+      alert.value.type = ALERT_TYPE.INFO
+      alert.value.value = true
+    })
+    context.root.$on(VeoEvents.ALERT_SUCCESS, (payload: VeoEventPayload) => {
+      alert.value.content = payload.text
+      alert.value.title = payload.title || ''
+      alert.value.type = ALERT_TYPE.SUCCESS
+      alert.value.value = true
+    })
+    context.root.$on(VeoEvents.ALERT_WARNING, (payload: VeoEventPayload) => {
+      alert.value.content = payload.text
+      alert.value.title = payload.title || ''
+      alert.value.type = ALERT_TYPE.WARNING
+      alert.value.value = true
+    })
+    context.root.$on(VeoEvents.ALERT_CLOSE, () => {
+      alert.value.value = false
+    })
+
+    context.root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: VeoEventPayload) => {
+      snackbar.value.text = payload.text
+      snackbar.value.value = true
+    })
+    context.root.$on(VeoEvents.SNACKBAR_CLOSE, () => {
+      snackbar.value.value = false
+    })
+
+    context.root.$on('create-unit', (persistent: boolean) => {
+      createUnit(persistent)
+    })
+
+    return { alert, drawer, newUnitDialog, snackbar }
+  },
+  head() {
     return {
-      drawer: false as boolean,
-      domains: ['Datenschutz', 'ISO 27001'],
-      units: [],
-      newUnitCreation: false as boolean,
-      newUnitPersistent: false as boolean
-    }
-  },
-  computed: {
-    nav(): Array<any> {
-      return [
-        {
-          name: 'dashboard',
-          icon: 'mdi-home',
-          exact: true,
-          to: `/${this.$route.params.unit}/`
-        },
-        {
-          name: 'veo.data',
-          icon: 'mdi-folder',
-          to: `/${this.$route.params.unit}/data`
-        },
-        {
-          name: 'veo.forms',
-          icon: 'mdi-format-list-checks',
-          to: `/${this.$route.params.unit}/forms`
-        },
-        {
-          name: 'settings',
-          icon: 'mdi-cog',
-          to: `/${this.$route.params.unit}/settings`
-        },
-        {
-          name: 'help',
-          icon: 'mdi-help',
-          to: `/${this.$route.params.unit}/help`
-        },
-        {
-          name: 'Editor',
-          icon: 'mdi-application-cog',
-          to: '/editor',
-          exact: true
-        }
-      ]
-    }
-  },
-  methods: {
-    createUnit(persistent: boolean = false) {
-      this.newUnitCreation = true
-      this.newUnitPersistent = persistent
+      titleTemplate: '%s - verinice.veo'
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-::v-deep .v-main__wrap {
-  border-top: 1px solid #e0e0e0;
-}
-::v-deep .language-btn .v-input__control div[role='combobox'].v-input__slot {
-  padding-right: 0;
-}
-::v-deep .language-btn input {
-  min-width: 1px !important;
-  margin: 0 !important;
-}
-::v-deep .language-btn .v-select__selection.v-select__selection--comma {
-  margin: 0 !important;
+@import '~/assets/vuetify.scss';
+
+.veo-app-bar {
+  background-color: white !important;
+  box-shadow: inset 0 -1px 0 $grey !important;
+
+  .v-toolbar__content {
+    > * {
+      flex-grow: 1;
+      flex-basis: 0;
+    }
+  }
 }
 
-.v-footer {
-  border-right: none;
-  border-bottom: none;
-  border-left: none;
+.veo-app-bar-search {
+  border-radius: 4px;
+
+  ::v-deep .v-input__slot {
+    padding: 0 16px;
+  }
+
+  ::v-deep .v-input__slot:before {
+    border-top: 0 !important;
+  }
 }
-
-.app-bar {
-  overflow: hidden;
-}
-
-/*.domain-select {
-  position: absolute;
-  left: 220px;
-  top: 13px;
-  width: 190px; // Workaround bis sich das Select automatisch verkleinern lässt
-}*/
-
 </style>

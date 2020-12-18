@@ -1,21 +1,25 @@
 <template>
-  <VeoDialog v-model="dialog" large :headline="$t('editor.objectschema.headline')" close-hidden persistent fixed-header fixed-footer>
+  <VeoDialog v-model="dialog" :large="state !== 'start'" :headline="$t('editor.objectschema.headline')" persistent fixed-header fixed-footer :close-function="onClose">
     <template #default>
       <v-window v-model="state">
-        <v-window-item value="start" class="py-8">
-          <h2 class="text-center my-8">{{ $t('editor.objectschema.wizard.start.title') }}</h2>
-          <v-row class="text-center">
-            <v-col>
-              <v-btn color="primary" @click="state = 'create'">
-                {{ $t('editor.objectschema.wizard.create') }}
-              </v-btn>
-            </v-col>
-            <v-col>
-              <v-btn color="primary" @click="state = 'import'">
-                {{ $t('editor.objectschema.wizard.import') }}
-              </v-btn>
-            </v-col>
-          </v-row>
+        <v-window-item value="start" class="py-2">
+          <h2 class="text-center my-2">{{ $t('editor.objectschema.wizard.start.title') }}</h2>
+          <v-list two-line class="px-0 overflow-hidden">
+            <v-list-item @click="state = 'create'">
+              <v-list-item-content>
+                <v-list-item-title class="font-weight-bold">{{ $t('editor.objectschema.wizard.create') }}</v-list-item-title>
+                <v-list-item-subtitle>{{ $t('editor.objectschema.wizard.create.description') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action><v-icon x-large>mdi-chevron-right</v-icon></v-list-item-action>
+            </v-list-item>
+            <v-list-item @click="state = 'import'">
+              <v-list-item-content>
+                <v-list-item-title class="font-weight-bold">{{ $t('editor.objectschema.wizard.import') }}</v-list-item-title>
+                <v-list-item-subtitle>{{ $t('editor.objectschema.wizard.import.description') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action><v-icon x-large>mdi-chevron-right</v-icon></v-list-item-action>
+            </v-list-item>
+          </v-list>
         </v-window-item>
         <v-window-item value="create">
           <v-form v-model="createForm.valid" @submit.prevent="createSchema()">
@@ -135,10 +139,17 @@ export default Vue.extend({
           description: [(input: string) => trim(input).length > 0]
         }
       }
+    },
+    onClose() {
+      this.$router.push('/editor')
+      return true
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+.v-list-item__subtitle {
+  white-space: pre-wrap;
+}
 </style>

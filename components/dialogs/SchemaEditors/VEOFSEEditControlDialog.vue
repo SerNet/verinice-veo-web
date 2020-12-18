@@ -121,7 +121,7 @@ export default defineComponent<IProps>({
       if (newType) {
         activeControlType.value = newType
       } else {
-        context.root.$emit(VeoEvents.SNACKBAR_ERROR, 'updateActiveControlType: Control type not found')
+        context.root.$emit(VeoEvents.ALERT_ERROR, { text: 'updateActiveControlType: Control type not found' })
       }
     }
 

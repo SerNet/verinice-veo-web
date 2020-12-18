@@ -69,7 +69,7 @@ module.exports = {
   },
 
   router: {
-    middleware: ['authentication']
+    middleware: ['authentication', 'unitValidation']
   },
   /*
    ** Nuxt.js modules
