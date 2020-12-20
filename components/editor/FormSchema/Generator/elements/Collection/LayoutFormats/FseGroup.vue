@@ -19,6 +19,9 @@
     </v-row>
     <v-row no-gutters>
       <v-col>
+        <div v-if="options && options.label" class="text-subtitle-1 mb-2">
+          {{ options.label }}
+        </div>
         <Draggable
           class="dragArea d-flex"
           tag="div"
@@ -35,6 +38,10 @@
 
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
       <template #default>
+        <v-text-field
+          v-model="dialog.data.label.value"
+          label="Label"
+        ></v-text-field>
         <v-autocomplete
           v-model="dialog.data.direction.value"
           :items="dialog.data.directionList"
@@ -100,6 +107,7 @@ export default Vue.extend({
         data: {
           directionList: ['horizontal', 'vertical'],
           direction: { default: 'vertical', value: undefined },
+          label: { default: undefined, value: undefined },
           class: { default: undefined, value: [] as string[] },
           style: { default: undefined, value: [] as string[] }
         }
@@ -125,6 +133,10 @@ export default Vue.extend({
     open() {
       this.dialog.open = true
 
+      this.dialog.data.label.value = this.getValue(
+        '#/options/label',
+        this.dialog.data.label.default
+      )
       this.dialog.data.direction.value = this.getValue(
         '#/options/direction',
         this.dialog.data.direction.default
@@ -139,6 +151,11 @@ export default Vue.extend({
       )
     },
     save() {
+      this.setValue(
+        '#/options/label',
+        this.dialog.data.label.value,
+        this.dialog.data.label.default
+      )
       this.setValue(
         '#/options/direction',
         this.dialog.data.direction.value,
