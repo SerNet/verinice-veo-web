@@ -1,5 +1,5 @@
 <template>
-  <v-card rounded elevation="0" class="fse-label mx-3 my-2 px-2">
+  <v-card elevation="0" class="fse-label mx-3 my-2 px-2">
     <v-row no-gutters>
       <v-col cols="auto">
         <v-icon small class="handle pr-1">mdi-menu</v-icon>
@@ -52,15 +52,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
 import vjp from 'vue-json-pointer'
 import { JsonPointer } from 'json-ptr'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
-import { BaseObject, IApi } from '~/components/forms/utils'
+import { BaseObject } from '~/components/forms/utils'
 
 export default Vue.extend({
   name: 'FseLabel',
@@ -161,7 +155,7 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .fse-label {
-  border: 2px solid $grey;
+  border: 1px solid $grey;
   min-width: 300px;
   overflow: hidden;
 

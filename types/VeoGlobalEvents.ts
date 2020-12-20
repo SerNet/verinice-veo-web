@@ -1,8 +1,17 @@
+import { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
+
+export interface VeoEventPayload {
+  type?: ALERT_TYPE,
+  text: string,
+  title?: string
+}
+
 export const VeoEvents = {
+  SNACKBAR_CLOSE: 'snackbar_close',
   SNACKBAR_SUCCESS: 'snackbar_success',
-  SNACKBAR_SUCCESS_PERSISTENT: 'snackbar_success_persistent',
-  SNACKBAR_ERROR: 'snackbar_error',
-  SNACKBAR_INFO: 'snackbar_info',
-  SNACKBAR_WORKING: 'snackbar_working',
-  SNACKBAR_CLOSE: 'snackbar_close'
+  ALERT_CLOSE: 'alert_close',
+  ALERT_ERROR: 'alert_error',
+  ALERT_INFO: 'alert_info',
+  ALERT_SUCCESS: 'alert_success',
+  ALERT_WARNING: 'alert_warning'
 }

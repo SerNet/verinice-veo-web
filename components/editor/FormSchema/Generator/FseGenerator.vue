@@ -211,28 +211,4 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
-
-.veo-editor-header {
-  background-color: white;
-  border-bottom: 2px solid $grey;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  max-height: 200px;
-  overflow: auto;
-}
-
-.veo-editor-header ::v-deep .v-expansion-panel-header {
-  min-height: auto;
-}
-.veo-editor-header
-  ::v-deep
-  .v-expansion-panel--active
-  > .v-expansion-panel-header {
-  min-height: auto;
-}
-
-// .veo-editor-body ::v-deep .v-card {
-//   border: 1px solid $grey-darken-2 !important;
-// }
 </style>

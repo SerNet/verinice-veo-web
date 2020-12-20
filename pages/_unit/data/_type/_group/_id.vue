@@ -1,66 +1,119 @@
 <template>
-  <v-row no-gutters>
-    <v-col class="pa-3">
-      <template v-if="$fetchState.pending">
-        <div class="text-center ma-12">
-          <v-progress-circular indeterminate color="primary" size="50" />
-        </div>
+  <div v-if="$fetchState.pending" class="text-center ma-12">
+    <v-progress-circular indeterminate color="primary" size="50" />
+  </div>
+  <VeoPageWrapper v-else>
+    <VeoPage
+      :title="form.objectData.name"
+      absolute-size
+      :cols="8"
+      :md="8"
+      :xl="8"
+      sticky-header
+    >
+      <template #header>
+        <v-row>
+          <v-col cols="6">
+            <v-btn
+              outlined
+              :loading="deleteBtnLoading"
+              @click="showDeleteDialog()"
+            >
+              {{ $t('global.button.delete') }}
+            </v-btn>
+          </v-col>
+          <v-col cols="6" class="text-right">
+            <v-btn
+              color="primary"
+              outlined
+              :loading="saveBtnLoading"
+              @click="onClick"
+            >
+              {{ $t('global.button.save') }}
+            </v-btn>
+          </v-col>
+        </v-row>
       </template>
-
-      <template v-if="!$fetchState.pending && form.objectData">
+      <template #default>
+        <VeoForm
+          v-model="form.objectData"
+          :schema="form.objectSchema"
+          :lang="form.lang && form.lang['de']"
+          :is-valid.sync="isValid"
+          :error-messages.sync="errorMessages"
+          class="mb-8"
+        />
         <div class="mx-auto" style="max-width:800px; width:100%;">
-          <v-btn color="primary" :to="linkToLinks" dark>{{ $t('unit.data.links') }}</v-btn>
-          <v-btn color="primary" :to="linkToHistory" dark>{{ $t('unit.data.history') }}</v-btn>
-
-          <div class="display-1 mt-3">{{ form.objectData.name }}</div>
-          <div class="display mb-3">{{ form.objectData.id }}</div>
-        </div>
-
-        <VeoForm v-model="form.objectData" :schema="form.objectSchema" :lang="form.lang && form.lang['de']" :is-valid.sync="isValid" :error-messages.sync="errorMessages" />
-
-        <div class="mx-auto" style="max-width:800px; width:100%;">
-          <v-btn color="primary" :loading="saveBtnLoading" @click="onClick">{{ $t('global.button.save') }}</v-btn>
-          <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
-            <template #activator="{ on, attrs }">
-              <v-btn color="primary" dark :loading="deleteBtnLoading" v-bind="attrs" v-on="on">
-                {{ $t('global.button.delete') }}
-              </v-btn>
-            </template>
+          <v-dialog
+            v-if="form.objectData"
+            v-model="deleteDialog"
+            persistent
+            max-width="290"
+          >
             <v-card>
               <v-card-title class="headline" />
-              <v-card-text>{{ $t('unit.data.deleteobject', {object: `${form.objectData.name} ${form.objectData.id}`}) }}</v-card-text>
+              <v-card-text>
+                {{
+                  $t('unit.data.deleteobject', {
+                    object: `${form.objectData.name} ${form.objectData.id}`
+                  })
+                }}
+              </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn text @click="deleteDialog = false">{{ $t('global.button.cancel') }}</v-btn>
-                <v-btn text @click="deleteObject">{{ $t('global.button.delete') }}</v-btn>
+                <v-btn text @click="deleteDialog = false">
+                  {{ $t('global.button.cancel') }}
+                </v-btn>
+                <v-btn text @click="deleteObject">
+                  {{ $t('global.button.delete') }}
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
 
-          <AppStateDialog v-if="error && error.status == 412" :value="!!error" title="Fehler" @input="error = undefined" @yes="$fetch">
+          <AppStateDialog
+            v-if="error && error.status == 412"
+            :value="!!error"
+            title="Fehler"
+            @input="error = undefined"
+            @yes="$fetch"
+          >
             <template v-if="error">
-              <span v-if="error && error.status == 412">{{ $t('unit.forms.nrr') }}</span>
+              <span v-if="error && error.status == 412">{{
+                $t('unit.forms.nrr')
+              }}</span>
               <span v-else v-text="error" />
             </template>
           </AppStateDialog>
         </div>
       </template>
-    </v-col>
-
-    <AppSideContainer :width="350">
+    </VeoPage>
+    <VeoPage
+      v-if="!$vuetify.breakpoint.xsOnly"
+      :cols="4"
+      :md="4"
+      :xl="4"
+      absolute-size
+    >
+      <VeoTabs>
+        <template #tabs>
+          <v-tab :to="linkToLinks">Links</v-tab>
+          <v-tab :to="linkToHistory">History</v-tab>
+        </template>
+      </VeoTabs>
       <nuxt-child />
-    </AppSideContainer>
-
-    <AppTabBar :items="navItems" :drawer="false" right />
-  </v-row>
+    </VeoPage>
+  </VeoPageWrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { IForm } from '~/lib/utils'
-import AppTabBar from '~/components/layout/AppTabBar.vue'
-import AppSideContainer from '~/components/layout/AppSideContainer.vue'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
+import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
+import VeoPage from '~/components/layout/VeoPage.vue'
+import VeoTabs from '~/components/layout/VeoTabs.vue'
+
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
@@ -73,21 +126,24 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  deleteBtnLoading: boolean,
-  error?: Error & { status?: number },
+  deleteBtnLoading: boolean
+  error?: Error & { status?: number }
   btnLoading: boolean
 }
 
 export default Vue.extend({
   components: {
-    AppTabBar,
-    AppSideContainer,
-    VeoForm
+    VeoForm,
+    VeoPageWrapper,
+    VeoPage,
+    VeoTabs
   },
   middleware({ route, params, redirect }) {
     // TODO Nur weiterleiten, wenn Desktop
     if (route.name === 'unit-data-type-group-id') {
-      return redirect(`/${params.unit}/data/${params.type}/${params.group}/${params.id}/links`)
+      return redirect(
+        `/${params.unit}/data/${params.type}/${params.group}/${params.id}/links`
+      )
     }
   },
   validate({ params }) {
@@ -122,10 +178,17 @@ export default Vue.extend({
   },
   head(): any {
     return {
-      title: 'veo.data'
+      title: this.title
     }
   },
   computed: {
+    title(): string {
+      return this.$fetchState.pending
+        ? 'veo.data'
+        : `${this.form.objectData.name} - ${this.capitalize(
+            this.objectType
+          )} - veo.data`
+    },
     objectType(): APIGroup {
       return this.$route.params.type as APIGroup
     },
@@ -143,23 +206,12 @@ export default Vue.extend({
     },
     linkToHistory(): string {
       return `/${this.unit}/data/${this.objectType}/${this.objectGroup}/${this.objectId}/history`
-    },
-    navItems(): Array<Object> {
-      return [
-        {
-          name: 'Links',
-          icon: 'mdi-link',
-          to: this.linkToLinks
-        },
-        {
-          name: 'History',
-          icon: 'mdi-history',
-          to: this.linkToHistory
-        }
-      ]
     }
   },
   methods: {
+    showDeleteDialog() {
+      this.deleteDialog = true
+    },
     async onClick() {
       this.btnLoading = true
       this.error = undefined
@@ -170,10 +222,16 @@ export default Vue.extend({
         } else {
           throw new Error('Object Type is not defined in FormSchema')
         }
-        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
+        this.$root.$emit(
+          VeoEvents.SNACKBAR_SUCCESS,
+          this.$t('global.appstate.alert.success')
+        )
         this.$fetch()
       } catch (e) {
-        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('global.appstate.alert.error')}: ${e}`)
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          title: this.$t('global.appstate.alert.error'),
+          text: e
+        })
         this.error = e
       } finally {
         this.btnLoading = false
@@ -190,10 +248,18 @@ export default Vue.extend({
       this.deleteBtnLoading = true
       try {
         await this.$api[this.objectType].delete(this.$route.params.id)
-        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
-        this.$router.push({ path: `/${this.unit}/data/${this.objectType}/${this.objectGroup}/` })
+        this.$root.$emit(
+          VeoEvents.SNACKBAR_SUCCESS,
+          this.$t('global.appstate.alert.success')
+        )
+        this.$router.push({
+          path: `/${this.unit}/data/${this.objectType}/${this.objectGroup}/`
+        })
       } catch (e) {
-        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, `${this.$t('global.appstate.alert.error')}: ${e}`)
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          title: this.$t('global.appstate.alert.error'),
+          text: e
+        })
       }
       this.deleteBtnLoading = false
     },
@@ -201,13 +267,24 @@ export default Vue.extend({
       // TODO: find better solution
       //  Add Keys and IDs manually
       if (this.form.objectData.customAspects) {
-        Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
-          this.form.objectData.customAspects[key] = { ...this.form.objectData.customAspects[key], id: '00000000-0000-0000-0000-000000000000', type: key }
-        })
+        Object.keys(this.form.objectData.customAspects).forEach(
+          (key: string) => {
+            this.form.objectData.customAspects[key] = {
+              ...this.form.objectData.customAspects[key],
+              id: '00000000-0000-0000-0000-000000000000',
+              type: key
+            }
+          }
+        )
       }
+    },
+    capitalize(string: string): string {
+      return string.charAt(0).toUpperCase() + string.slice(1)
     }
   }
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+</style>

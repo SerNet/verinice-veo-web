@@ -1,19 +1,58 @@
 <template>
-  <v-row class="flex-column text-center mt-12">
-    <v-col>
-      <v-btn to="/editor/objectschema" color="primary">Objektschema Editor</v-btn>
-    </v-col>
-    <v-col>
-      <v-btn to="/editor/formschema" color="primary">Formschema Editor</v-btn>
-    </v-col>
-  </v-row>
+  <VeoPage>
+    <h2>{{ $t('page.editors.calltoaction') }}</h2>
+    <v-list two-line class="overflow-hidden">
+      <v-list-item to="/editor/objectschema">
+        <v-list-item-content>
+          <v-list-item-title class="font-weight-bold">
+            {{ $t('editor.objectschema.headline') }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ $t('editor.objectschema.description') }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-icon x-large>mdi-chevron-right</v-icon>
+        </v-list-item-action>
+      </v-list-item>
+      <v-list-item to="/editor/formschema">
+        <v-list-item-content>
+          <v-list-item-title class="font-weight-bold">
+            {{ $t('editor.formschema.headline') }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ $t('editor.formschema.description') }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-icon x-large>mdi-chevron-right</v-icon>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
+  </VeoPage>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { defineComponent } from '@nuxtjs/composition-api'
 
-export default Vue.extend({})
+import VeoPage from '~/components/layout/VeoPage.vue'
+
+interface IProps {}
+
+export default defineComponent<IProps>({
+  components: {
+    VeoPage
+  },
+  head(): any {
+    return {
+      title: 'verinice.veo'
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>
+.v-list-item__subtitle {
+  white-space: pre-wrap;
+}
 </style>

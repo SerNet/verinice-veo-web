@@ -1,21 +1,25 @@
 <template>
-  <VeoDialog v-model="dialog" large :headline="$t('editor.formschema.headline')" close-hidden persistent fixed-header fixed-footer>
+  <VeoDialog v-model="dialog" :large="state !== 'start'" :headline="$t('editor.formschema.headline')" persistent fixed-header fixed-footer :close-function="onClose">
     <template #default>
       <v-window v-model="state">
         <v-window-item value="start" class="py-8">
           <h2 class="text-center my-8">{{ $t('editor.objectschema.wizard.start.title') }}</h2>
-          <v-row class="text-center">
-            <v-col>
-              <v-btn color="primary" @click="state = 'create-1'">
-                {{ $t('editor.formschema.wizard.create') }}
-              </v-btn>
-            </v-col>
-            <v-col>
-              <v-btn color="primary" @click="state = 'import-1'">
-                {{ $t('editor.formschema.wizard.import') }}
-              </v-btn>
-            </v-col>
-          </v-row>
+          <v-list two-line class="px-0 overflow-hidden">
+            <v-list-item @click="state = 'create-1'">
+              <v-list-item-content>
+                <v-list-item-title class="font-weight-bold">{{ $t('editor.formschema.wizard.create') }}</v-list-item-title>
+                <v-list-item-subtitle>{{ $t('editor.formschema.wizard.create.description') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action><v-icon x-large>mdi-chevron-right</v-icon></v-list-item-action>
+            </v-list-item>
+            <v-list-item @click="state = 'import-1'">
+              <v-list-item-content>
+                <v-list-item-title class="font-weight-bold">{{ $t('editor.formschema.wizard.import') }}</v-list-item-title>
+                <v-list-item-subtitle>{{ $t('editor.formschema.wizard.import.description') }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action><v-icon x-large>mdi-chevron-right</v-icon></v-list-item-action>
+            </v-list-item>
+          </v-list>
         </v-window-item>
         <v-window-item value="create-1">
           <v-form v-model="createForm.valid" @submit.prevent="doCreate1()">
@@ -181,7 +185,7 @@ export default Vue.extend({
         }
         this.state = 'create-2'
       } else {
-        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, this.$t('editor.formschema.wizard.objectschema.required'))
+        this.$root.$emit(VeoEvents.ALERT_ERROR, { text: this.$t('editor.formschema.wizard.objectschema.required') })
       }
     },
     doCreate2(_generateSchema: boolean) {
@@ -203,7 +207,7 @@ export default Vue.extend({
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     doImport2(schema: VEOObjectSchemaRAW) {
       if (schema.title !== this.formSchema?.modelType) {
-        this.$root.$emit(VeoEvents.SNACKBAR_ERROR, this.$t('editor.formschema.wizard.import.wrongobjectschema', { objectType: schema.title, formType: this.formSchema?.modelType }))
+        this.$root.$emit(VeoEvents.ALERT_ERROR, { text: this.$t('editor.formschema.wizard.import.wrongobjectschema', { objectType: schema.title, formType: this.formSchema?.modelType }) })
       } else {
         this.setObjectSchema(schema)
         this.$emit('form-schema', this.formSchema)
@@ -228,10 +232,17 @@ export default Vue.extend({
     setFormSchema(schema: IVEOFormSchema) {
       this.fscode = JSON.stringify(schema, undefined, 2)
       this.formSchema = schema
+    },
+    onClose() {
+      this.$router.push('/editor')
+      return true
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
+.v-list-item__subtitle {
+  white-space: pre-wrap;
+}
 </style>

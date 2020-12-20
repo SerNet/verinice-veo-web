@@ -1,5 +1,5 @@
 export default {
-  welcome: 'Welcome',
+  'domain.select.label': 'Domain',
 
   'editor.basicproperties': 'Basic properties',
   'editor.code.save.error': 'Couldn\'t update schema',
@@ -36,6 +36,7 @@ export default {
   'editor.formschema.create.type.text': 'Type of the object schema',
   'editor.formschema.delete.control.headline': 'Delete element',
   'editor.formschema.delete.control.text': 'Do you really want to remove "{element}" from the form?',
+  'editor.formschema.description': 'Create, edit, import or export forms',
   'editor.formschema.edit.input.direction': 'Direction',
   'editor.formschema.edit.input.direction.horizontal': 'horizontal',
   'editor.formschema.edit.input.direction.vertical': 'vertical',
@@ -49,10 +50,12 @@ export default {
   'editor.formschema.formschema': 'Form schema',
   'editor.formschema.headline': 'Form schema editor',
   'editor.formschema.wizard.create': 'Create form schema',
+  'editor.formschema.wizard.create.description': 'Create a new form schema, either from scratch or a pre-generated layout.',
   'editor.formschema.wizard.generate.generate': 'Generate',
   'editor.formschema.wizard.generate.none': 'Start from scratch',
   'editor.formschema.wizard.generate.title': 'Do you want to pregenerate a form schema?',
   'editor.formschema.wizard.import': 'Import form schema',
+  'editor.formschema.wizard.import.description': 'Import an existing form schema and modify it.',
   'editor.formschema.wizard.import.wrongobjectschema': 'The uploaded object schema has the wrong type ({objectType}). It has to have the type ({formType}).',
   'editor.formschema.wizard.modelType.custom': 'Custom',
   'editor.formschema.wizard.objectschema.required': 'You have to specify an object schema!',
@@ -65,10 +68,13 @@ export default {
   'editor.objectschema.delete.aspect.headline': 'Delete aspect',
   'editor.objectschema.delete.link': 'Do you really want to delete the link "{link}"?',
   'editor.objectschema.delete.link.headline': 'Delete link',
+  'editor.objectschema.description': 'Create, edit, import or export object schemas',
   'editor.objectschema.headline': 'Object schema editor',
   'editor.objectschema.objectschema': 'Object schema',
   'editor.objectschema.wizard.create': 'Create object schema',
+  'editor.objectschema.wizard.create.description': 'Create a new object schema from scratch.',
   'editor.objectschema.wizard.import': 'Import object schema',
+  'editor.objectschema.wizard.import.description': 'Import an existing object schema and modify it.',
   'editor.objectschema.wizard.start.title': 'How do you want to start?',
   'editor.search.label': 'Search for a property...',
   'editor.upload.button.text': 'Upload',
@@ -76,6 +82,8 @@ export default {
   'editor.upload.import.code': 'Paste code',
   'editor.upload.import.file': 'Upload file',
   'editor.upload.input.file.label': 'Upload schema',
+
+  'error.title': 'An error occured',
 
   'forms.input.linkadd': 'Add link ',
   'forms.input.link.targetObject': 'Target object',
@@ -99,7 +107,15 @@ export default {
   'global.button.yes': 'Yes',
   'global.error.fetching': 'An error occured while fetching the resource',
   'global.logout': 'Logout',
+  'global.menu.collapse': 'Collapse menu',
+  'global.menu.expand': 'Fix menu',
 
+  'page.editors': 'Editors.title',
+  'page.editors.calltoaction': 'What do you want to do?',
+
+  'page.help': 'Manual.title',
+
+  'page.index.title': 'Unit selection',
   'page.index.chooseunit': 'Please choose a Unit',
   'page.index.chooseunitplaceholder': 'Search for a unit...',
 
@@ -109,9 +125,11 @@ export default {
   'page.login.text.register': '<b>Create account!</b>',
 
   'page.settings.title': 'Settings',
-  'page.settings.language': 'Preferred Language',
+  'page.settings.language': 'Language',
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
+
+  'search.label': 'Search verinice.veo',
 
   'unit.create': 'Create new unit',
   'unit.created': 'Unit was created',
@@ -149,5 +167,6 @@ export default {
   'unit.forms.create': 'Create {type}',
   'unit.forms.noprocesses': 'No processes found',
   'unit.forms.nrr': 'This dataset has been edited by another user. Do you want to load the changes?',
-  'unit.index.title': 'Dashboard'
+  'unit.index.title': 'Dashboard',
+  'unit.select.label': 'Unit'
 }
