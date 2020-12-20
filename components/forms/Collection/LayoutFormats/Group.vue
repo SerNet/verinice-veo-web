@@ -35,17 +35,9 @@ export default Vue.extend({
         return 'flex-column direction-vertical'
       }
     },
-    highlightClass() {
-      if (this.options && this.options.highlight === false) {
-        return 'no-highlight'
-      } else {
-        return 'highlight'
-      }
-    },
     dynamicClasses(): string[] {
       return [
         this.directionClass,
-        this.highlightClass,
         this.options && this.options.class ? this.options.class : ''
       ]
     }
@@ -65,18 +57,11 @@ export const helpers: Helpful<LayoutProps> = {
 </script>
 
 <style lang="scss" scoped>
-.vf-layout.vf-group.highlight {
+.vf-layout.vf-group.border {
   border-radius: 5px !important;
-  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
-    0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12) !important;
+  border: 1px dashed #cccccc;
   padding: 10px;
-}
-
-.vf-layout.vf-group.highlight + .vf-layout.vf-group.highlight {
-  margin-top: 16px;
-}
-
-.vf-layout.vf-group.no-highlight {
+  margin: 8px 0;
 }
 
 .direction-vertical > .vf-control {
