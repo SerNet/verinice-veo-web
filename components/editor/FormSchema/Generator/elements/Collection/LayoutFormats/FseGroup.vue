@@ -40,7 +40,6 @@
           :items="dialog.data.directionList"
           label="Direction"
         />
-        <v-checkbox v-model="dialog.data.highlight.value" label="Highlight" />
         <v-combobox
           v-model="dialog.data.class.value"
           label="Class"
@@ -101,7 +100,6 @@ export default Vue.extend({
         data: {
           directionList: ['horizontal', 'vertical'],
           direction: { default: 'vertical', value: undefined },
-          highlight: { default: true, value: undefined },
           class: { default: undefined, value: [] as string[] },
           style: { default: undefined, value: [] as string[] }
         }
@@ -116,19 +114,8 @@ export default Vue.extend({
         return 'flex-column direction-vertical'
       }
     },
-    highlightClass() {
-      if (this.options && this.options.highlight === false) {
-        return 'no-highlight'
-      } else {
-        return 'highlight'
-      }
-    },
     dynamicClasses(): string[] {
-      return [
-        this.directionClass,
-        this.highlightClass
-        // this.options && this.options.class ? this.options.class : ''
-      ]
+      return [this.directionClass]
     }
   },
   methods: {
@@ -141,10 +128,6 @@ export default Vue.extend({
       this.dialog.data.direction.value = this.getValue(
         '#/options/direction',
         this.dialog.data.direction.default
-      )
-      this.dialog.data.highlight.value = this.getValue(
-        '#/options/highlight',
-        this.dialog.data.highlight.default
       )
       this.dialog.data.class.value = this.stringToArray(
         this.getValue('#/options/class', this.dialog.data.class.default),
@@ -160,11 +143,6 @@ export default Vue.extend({
         '#/options/direction',
         this.dialog.data.direction.value,
         this.dialog.data.direction.default
-      )
-      this.setValue(
-        '#/options/highlight',
-        this.dialog.data.highlight.value,
-        this.dialog.data.highlight.default
       )
       this.setValue(
         '#/options/class',
