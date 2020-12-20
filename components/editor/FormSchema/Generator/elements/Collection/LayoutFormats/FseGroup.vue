@@ -12,7 +12,7 @@
       <v-col cols="auto" class="text-right">
         <v-btn icon x-small @click="open">
           <v-icon dense small>mdi-pencil</v-icon></v-btn
-        ><v-btn icon x-small @click="onDelete">
+        ><v-btn icon x-small @click="deleteDialog.open = true">
           <v-icon dense small>mdi-delete</v-icon>
         </v-btn>
       </v-col>
@@ -35,7 +35,7 @@
         </Draggable>
       </v-col>
     </v-row>
-
+    <!-- TODO: i18n for dialogs -->
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
       <template #default>
         <v-text-field
@@ -69,6 +69,27 @@
         </v-btn>
         <v-btn text color="primary" @click="save">
           {{ $t('global.button.save') }}
+        </v-btn>
+      </template>
+    </VeoDialog>
+
+    <!-- TODO: i18n for dialogs -->
+    <VeoDialog
+      v-model="deleteDialog.open"
+      :headline="$t('editor.formschema.delete.control.headline')"
+    >
+      <template #default>
+        <v-card-subtitle>{{
+          $t('editor.formschema.delete.control.text', { element: 'Group' })
+        }}</v-card-subtitle>
+      </template>
+      <template #dialog-options>
+        <v-spacer />
+        <v-btn text color="primary" @click="dialog.open = false">
+          {{ $t('global.button.no') }}
+        </v-btn>
+        <v-btn text color="primary" @click="onDelete">
+          {{ $t('global.button.delete') }}
         </v-btn>
       </template>
     </VeoDialog>
@@ -111,6 +132,9 @@ export default Vue.extend({
           class: { default: undefined, value: [] as string[] },
           style: { default: undefined, value: [] as string[] }
         }
+      },
+      deleteDialog: {
+        open: false
       }
     }
   },
