@@ -85,7 +85,7 @@
       </template>
       <template #dialog-options>
         <v-spacer />
-        <v-btn text color="primary" @click="dialog.open = false">
+        <v-btn text color="primary" @click="deleteDialog.open = false">
           {{ $t('global.button.no') }}
         </v-btn>
         <v-btn text color="primary" @click="onDelete">
