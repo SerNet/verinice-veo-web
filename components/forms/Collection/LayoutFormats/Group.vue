@@ -6,6 +6,9 @@
     style="max-width: 800px; width: 100%;"
     :style="options && options.style"
   >
+    <div v-if="options && options.label" class="text-subtitle-1 mb-2">
+      {{ options.label }}
+    </div>
     <slot />
   </div>
 </template>
