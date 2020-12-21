@@ -10,12 +10,12 @@
             <v-text-field v-model="label" :label="$t('editor.formschema.edit.input.label')" required />
           </v-col>
         </v-row>
-        <v-row v-if="alternatives.length > 0" no-gutters class="align-center">
+        <v-row no-gutters class="align-center">
           <v-col :cols="12" :md="5">
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.type') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-select v-model="activeControlType.name" :items="alternatives" item-text="name" item-value="name" @input="updateActiveControlType()" />
+            <v-select v-model="activeControlType.name" :disabled="alternatives.length === 1" :append-icon="alternatives.length === 1 ? '' : undefined" :items="alternatives" item-text="name" item-value="name" @input="updateActiveControlType()" />
           </v-col>
         </v-row>
         <v-row v-if="activeControlType.direction !== undefined" no-gutters class="align-center">
@@ -121,7 +121,7 @@ export default defineComponent<IProps>({
       if (newType) {
         activeControlType.value = newType
       } else {
-        context.root.$emit(VeoEvents.SNACKBAR_ERROR, 'updateActiveControlType: Control type not found')
+        context.root.$emit(VeoEvents.ALERT_ERROR, { text: 'updateActiveControlType: Control type not found' })
       }
     }
 

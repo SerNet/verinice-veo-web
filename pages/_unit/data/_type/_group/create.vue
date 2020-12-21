@@ -1,6 +1,7 @@
 <script lang="ts">
-import Vue from 'vue'
-import BaseObjectFormCreate, { ObjectSchemaNames } from '~/pages/_unit/forms/_form/create.vue'
+import BaseObjectFormCreate, {
+  ObjectSchemaNames
+} from '~/pages/_unit/forms/_form/create.vue'
 
 export default BaseObjectFormCreate.extend({
   name: 'veo-data-objectData-create',

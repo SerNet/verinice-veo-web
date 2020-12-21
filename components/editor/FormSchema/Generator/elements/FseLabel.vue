@@ -1,5 +1,5 @@
 <template>
-  <v-card rounded elevation="0" class="fse-label mx-3 my-2 px-2">
+  <v-card elevation="0" class="fse-label mx-3 my-2 px-2">
     <v-row no-gutters>
       <v-col cols="auto">
         <v-icon small class="handle pr-1">mdi-menu</v-icon>
@@ -13,7 +13,7 @@
         <v-btn icon x-small @click="open">
           <v-icon dense small>mdi-pencil</v-icon>
         </v-btn>
-        <v-btn icon x-small @click="onDelete">
+        <v-btn icon x-small @click="deleteDialog.open = true">
           <v-icon dense small>mdi-delete</v-icon>
         </v-btn>
       </v-col>
@@ -46,21 +46,36 @@
         </v-btn>
       </template>
     </VeoDialog>
+
+    <!-- TODO: i18n for dialogs -->
+    <VeoDialog
+      v-model="deleteDialog.open"
+      :headline="$t('editor.formschema.delete.control.headline')"
+    >
+      <template #default>
+        <v-card-subtitle>{{
+          $t('editor.formschema.delete.control.text', { element: 'Text' })
+        }}</v-card-subtitle>
+      </template>
+      <template #dialog-options>
+        <v-spacer />
+        <v-btn text color="primary" @click="deleteDialog.open = false">
+          {{ $t('global.button.no') }}
+        </v-btn>
+        <v-btn text color="primary" @click="onDelete">
+          {{ $t('global.button.delete') }}
+        </v-btn>
+      </template>
+    </VeoDialog>
   </v-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
 import vjp from 'vue-json-pointer'
 import { JsonPointer } from 'json-ptr'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
-import { BaseObject, IApi } from '~/components/forms/utils'
+import { BaseObject } from '~/components/forms/utils'
 
 export default Vue.extend({
   name: 'FseLabel',
@@ -83,6 +98,9 @@ export default Vue.extend({
           class: { default: undefined, value: [] as string[] },
           style: { default: undefined, value: [] as string[] }
         }
+      },
+      deleteDialog: {
+        open: false
       }
     }
   },
@@ -161,7 +179,7 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .fse-label {
-  border: 2px solid $grey;
+  border: 1px solid $grey;
   min-width: 300px;
   overflow: hidden;
 

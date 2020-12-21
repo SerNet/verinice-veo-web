@@ -15,13 +15,15 @@ export default {
   theme: {
     themes: {
       light: {
-        primary: '#c90000', // colors.red.darken1,
+        primary: '#c90000',
         secondary: colors.red.darken3,
         accent: colors.grey.darken1,
-        error: colors.red.accent2
-      },
-      dark: {
-        primary: colors.red.darken1
+        error: '#c90000',
+        // info:,
+        // success:,
+        // warning:,
+        grey: '#d7d7d7',
+        lightGrey: '#fafafa'
       }
     }
   }
