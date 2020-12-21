@@ -67,7 +67,7 @@
 import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
-import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute, renameAspect, renameLink, updateLinkDetails, deleteAspect, deleteLink } from '~/lib/ObjectSchemaHelper'
+import { addAspectToSchema, generateAspect, getAspects, getBasicProperties, getLinks, updateAspectAttributes, IVEOCustomLink, IVEOCustomAspect, IVEOBasicProperty, getAspect, generateLink, addLinkToSchema, getLink, updateLinkAttributes, IVEOAttribute, renameAspect, renameLink, updateLinkDetails, deleteAspect, deleteLink, prefixedAspectName } from '~/lib/ObjectSchemaHelper'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { IInputType, INPUT_TYPES } from '~/types/VEOEditor'
 
@@ -166,13 +166,20 @@ export default defineComponent<IProps>({
     function doAddItem(form: { name: string, targetType?: string, targetDescription?: string }) {
       try {
         if (objectSchemaDialog.value.type === 'aspect') {
-          const newAspect = generateAspect(form.name)
-          addAspectToSchema(schema.value, newAspect)
-          objectSchemaDialog.value.item = getAspect(schema.value, newAspect.properties.type.enum[0])
+          const newAspect = generateAspect()
+          prefixedAspectName(schema.value, form.name)
+          addAspectToSchema(schema.value, form.name, newAspect)
+
+          // We have to transform the aspect name in order to access it via the key in the schema
+          const aspectId = prefixedAspectName(schema.value, form.name)
+          objectSchemaDialog.value.item = getAspect(schema.value, aspectId)
         } else {
-          const newLink = generateLink(form.name, form.targetType || '', form.targetDescription || '')
-          addLinkToSchema(schema.value, newLink)
-          objectSchemaDialog.value.item = getLink(schema.value, newLink.items.properties.type.enum[0])
+          const newLink = generateLink(form.targetType || '', form.targetDescription || '')
+          addLinkToSchema(schema.value, form.name, newLink)
+
+          // We have to transform the aspect name in order to access it via the key in the schema
+          const aspectId = prefixedAspectName(schema.value, form.name)
+          objectSchemaDialog.value.item = getLink(schema.value, aspectId)
         }
         showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
         context.emit('schema-updated', schema.value)
