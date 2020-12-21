@@ -250,10 +250,35 @@ export function controlTypeAlternatives(control: string, controlDetails: any): I
         Radio: { format: 'radio', direction: 'asdf', applicable: (currentType) => { return !currentType.schema.type || currentType.schema.type !== 'array' } },
         Autocomplete: { format: 'autocomplete' }
       }
+    },
+    InputNumber: {
+      alternatives: {}
+    },
+    InputUri: {
+      alternatives: {}
+    },
+    InputDate: {
+      alternatives: {}
+    },
+    InputDateTime: {
+      alternatives: {}
+    },
+    Checkbox: {
+      alternatives: {}
+    },
+    Tags: {
+      alternatives: {}
+    },
+    ArrayField: {
+      alternatives: {}
+    },
+    LinksField: {
+      alternatives: {}
     }
   }
 
   const items: IControlType[] = []
+  // TODO: check if there is another solution than to loop over all keys
   for (const parent of Object.keys(alternatives)) {
     if (parent === control || Object.keys(alternatives[parent].alternatives).includes(control)) {
       items.push(...Object

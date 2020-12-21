@@ -6,20 +6,22 @@
       </v-col>
       <v-col>
         <div class="text-caption text-truncate">
-          Layout (Group)
+          Group
         </div>
       </v-col>
       <v-col cols="auto" class="text-right">
         <v-btn icon x-small @click="open">
-          <v-icon dense small>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn icon x-small @click="onDelete">
+          <v-icon dense small>mdi-pencil</v-icon></v-btn
+        ><v-btn icon x-small @click="deleteDialog.open = true">
           <v-icon dense small>mdi-delete</v-icon>
         </v-btn>
       </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col>
+        <div v-if="options && options.label" class="text-subtitle-1 mb-2">
+          {{ options.label }}
+        </div>
         <Draggable
           class="dragArea d-flex"
           tag="div"
@@ -33,15 +35,18 @@
         </Draggable>
       </v-col>
     </v-row>
-
+    <!-- TODO: i18n for dialogs -->
     <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
       <template #default>
+        <v-text-field
+          v-model="dialog.data.label.value"
+          label="Label"
+        ></v-text-field>
         <v-autocomplete
           v-model="dialog.data.direction.value"
           :items="dialog.data.directionList"
           label="Direction"
         />
-        <v-checkbox v-model="dialog.data.highlight.value" label="Highlight" />
         <v-combobox
           v-model="dialog.data.class.value"
           label="Class"
@@ -64,6 +69,27 @@
         </v-btn>
         <v-btn text color="primary" @click="save">
           {{ $t('global.button.save') }}
+        </v-btn>
+      </template>
+    </VeoDialog>
+
+    <!-- TODO: i18n for dialogs -->
+    <VeoDialog
+      v-model="deleteDialog.open"
+      :headline="$t('editor.formschema.delete.control.headline')"
+    >
+      <template #default>
+        <v-card-subtitle>{{
+          $t('editor.formschema.delete.control.text', { element: 'Group' })
+        }}</v-card-subtitle>
+      </template>
+      <template #dialog-options>
+        <v-spacer />
+        <v-btn text color="primary" @click="deleteDialog.open = false">
+          {{ $t('global.button.no') }}
+        </v-btn>
+        <v-btn text color="primary" @click="onDelete">
+          {{ $t('global.button.delete') }}
         </v-btn>
       </template>
     </VeoDialog>
@@ -102,10 +128,13 @@ export default Vue.extend({
         data: {
           directionList: ['horizontal', 'vertical'],
           direction: { default: 'vertical', value: undefined },
-          highlight: { default: true, value: undefined },
+          label: { default: undefined, value: undefined },
           class: { default: undefined, value: [] as string[] },
           style: { default: undefined, value: [] as string[] }
         }
+      },
+      deleteDialog: {
+        open: false
       }
     }
   },
@@ -117,19 +146,8 @@ export default Vue.extend({
         return 'flex-column direction-vertical'
       }
     },
-    highlightClass() {
-      if (this.options && this.options.highlight === false) {
-        return 'no-highlight'
-      } else {
-        return 'highlight'
-      }
-    },
     dynamicClasses(): string[] {
-      return [
-        this.directionClass,
-        this.highlightClass
-        // this.options && this.options.class ? this.options.class : ''
-      ]
+      return [this.directionClass]
     }
   },
   methods: {
@@ -139,13 +157,13 @@ export default Vue.extend({
     open() {
       this.dialog.open = true
 
+      this.dialog.data.label.value = this.getValue(
+        '#/options/label',
+        this.dialog.data.label.default
+      )
       this.dialog.data.direction.value = this.getValue(
         '#/options/direction',
         this.dialog.data.direction.default
-      )
-      this.dialog.data.highlight.value = this.getValue(
-        '#/options/highlight',
-        this.dialog.data.highlight.default
       )
       this.dialog.data.class.value = this.stringToArray(
         this.getValue('#/options/class', this.dialog.data.class.default),
@@ -158,14 +176,14 @@ export default Vue.extend({
     },
     save() {
       this.setValue(
+        '#/options/label',
+        this.dialog.data.label.value,
+        this.dialog.data.label.default
+      )
+      this.setValue(
         '#/options/direction',
         this.dialog.data.direction.value,
         this.dialog.data.direction.default
-      )
-      this.setValue(
-        '#/options/highlight',
-        this.dialog.data.highlight.value,
-        this.dialog.data.highlight.default
       )
       this.setValue(
         '#/options/class',

@@ -48,7 +48,7 @@
           <small>{{ $t('editor.dialog.requiredfields') }}</small>
         </v-window-item>
         <v-window-item value="create-2">
-          <h2 class="text-center my-8">{{ $t('editor.formschema.wizard.generate.title') }}wie starten</h2>
+          <h2 class="text-center my-8">{{ $t('editor.formschema.wizard.generate.title') }}</h2>
           <v-row class="text-center">
             <v-col>
               <v-btn color="primary" @click="doCreate2(false)">
