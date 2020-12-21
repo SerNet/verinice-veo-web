@@ -39,6 +39,18 @@
           >
             <v-col>
               <v-row class="mx-4">
+                <v-col cols="2" class="pl-0">
+                  <v-text-field
+                    v-model="formSchema.modelType"
+                    dense
+                    hide-details
+                    flat
+                    readonly
+                    disabled
+                    :label="$t('editor.objectschema.objectschema')"
+                    class="objectschema-type-field"
+                  />
+                </v-col>
                 <v-col cols="4">
                   <v-text-field
                     v-model="formSchema.name"
@@ -222,5 +234,13 @@ export default Vue.extend({
 
 .veo-fse-code-editor-page {
   border-left: 1px solid $grey;
+}
+
+.objectschema-type-field ::v-deep label {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.objectschema-type-field ::v-deep input {
+  color: rgba(0, 0, 0, 0.87) !important;
 }
 </style>
