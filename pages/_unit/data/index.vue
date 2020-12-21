@@ -139,6 +139,8 @@ export default defineComponent<IProps>({
 
       return keys.map((key: string) => {
         return {
+          // Vetur complains about this line, so we disable verification of it.
+          // @ts-ignore
           text: this.capitalize(key),
           value: key
         }
