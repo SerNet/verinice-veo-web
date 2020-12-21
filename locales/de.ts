@@ -64,7 +64,7 @@ export default {
   'editor.objectschema.create.description.text': 'Beschreibung des Schemas',
   'editor.objectschema.create.type': 'Schema-Typ',
   'editor.objectschema.create.type.text': 'Typ des neuen Schemas',
-  'editor.objectschema.delete.aspect': 'Möchten Sie den Aspekt "{aspect}" wirklBich löschen?',
+  'editor.objectschema.delete.aspect': 'Möchten Sie den Aspekt "{aspect}" wirklich löschen?',
   'editor.objectschema.delete.aspect.headline': 'Aspekt löschen',
   'editor.objectschema.delete.link': 'Möchten Sie den Link "{link}" wirklich löschen?',
   'editor.objectschema.delete.link.headline': 'Link löschen',
