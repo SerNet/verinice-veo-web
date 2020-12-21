@@ -16,7 +16,7 @@ export default {
   'editor.dialog.editform.aspect.description': 'Beschreibung',
   'editor.dialog.editform.aspect.noproperties': 'Dieser Aspekt besitzt keine Attribute',
   'editor.dialog.editform.aspect.title': 'Titel des Attributs',
-  'editor.dialog.editform.aspect.type': 'Art des Attributs',
+  'editor.dialog.editform.aspect.type': 'Attributtyp',
   'editor.dialog.editform.link.addproperty': 'Attribut hinzufügen',
   'editor.dialog.editform.link.description': 'Beschreibung',
   'editor.dialog.editform.link.noproperties': 'Dieser Link besitzt keine Attribute',

@@ -16,7 +16,7 @@ export default {
   'editor.dialog.editform.aspect.description': 'Description',
   'editor.dialog.editform.aspect.noproperties': 'This aspect has no attributes',
   'editor.dialog.editform.aspect.title': 'Aspect title',
-  'editor.dialog.editform.aspect.type': 'Aspect type',
+  'editor.dialog.editform.aspect.type': 'Attribute type',
   'editor.dialog.editform.link.addproperty': 'Add attribute',
   'editor.dialog.editform.link.description': 'Description',
   'editor.dialog.editform.link.noproperties': 'This link has no attributes',
@@ -61,7 +61,7 @@ export default {
   'editor.formschema.wizard.objectschema.required': 'You have to specify an object schema!',
   'editor.formschema.wizard.start.title': 'How do you want to start?',
   'editor.objectschema.create.description': 'Description',
-  'editor.objectschema.create.description.text': 'Description for the schema',
+  'editor.objectschema.create.description.text': 'Description of the schema',
   'editor.objectschema.create.type': 'Schema type',
   'editor.objectschema.create.type.text': 'Choose the type of the new schema',
   'editor.objectschema.delete.aspect': 'Do you really want to delete the aspect "{aspect}"?',
@@ -110,10 +110,10 @@ export default {
   'global.menu.collapse': 'Collapse menu',
   'global.menu.expand': 'Fix menu',
 
-  'page.editors': 'Editors.title',
+  'page.editors.title': 'Editors',
   'page.editors.calltoaction': 'What do you want to do?',
 
-  'page.help': 'Manual.title',
+  'page.help.title': 'Manual',
 
   'page.index.title': 'Unit selection',
   'page.index.chooseunit': 'Please choose a Unit',
