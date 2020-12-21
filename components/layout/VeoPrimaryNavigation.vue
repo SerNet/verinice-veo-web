@@ -242,16 +242,12 @@ export default Vue.extend({
           })
 
         objects.push({
-          name: this.$t(`unit.data.type.${key}`) as string,
+          name: this.capitalize(key),
           exact: true,
           to: `/${this.$route.params.unit}/data/${key}/-/`,
           disabled: false,
           childItems: undefined,
-          extended: this.fetchUIState()[
-            this.$t(`unit.data.type.${key}`) as string
-          ]
-            ? !this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string]
-            : true,
+          extended: this.fetchUIState()[key] ? !this.fetchUIState()[key] : true,
           topLevelItem: false
         })
       }
