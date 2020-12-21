@@ -171,6 +171,8 @@ export default defineComponent<IProps>({
 @import '~/assets/vuetify.scss';
 
 .veo-page {
+  display: flex;
+  flex-direction: column;
   flex-shrink: 1;
   margin: 0;
   max-height: 100%;
@@ -179,8 +181,13 @@ export default defineComponent<IProps>({
   position: relative;
 }
 
+.veo-page__title {
+  flex-grow: 0;
+}
+
 .veo-page__header {
   background: white;
+  flex-grow: 0;
   position: relative;
   top: 0;
   z-index: 4;
