@@ -8,9 +8,9 @@
       <v-form>
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"
-              >{{ $t('editor.formschema.edit.input.label.text') }}*:</span
-            >
+            <span style="font-size: 1.2rem;">
+              {{ $t('editor.formschema.edit.input.label.text') }}*:
+            </span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-text-field
@@ -22,9 +22,9 @@
         </v-row>
         <v-row no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"
-              >{{ $t('editor.formschema.edit.input.type') }}:</span
-            >
+            <span style="font-size: 1.2rem;">
+              {{ $t('editor.formschema.edit.input.type') }}:
+            </span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-select
@@ -44,9 +44,9 @@
           class="align-center"
         >
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"
-              >{{ $t('editor.formschema.edit.input.direction') }}:</span
-            >
+            <span style="font-size: 1.2rem;">
+              {{ $t('editor.formschema.edit.input.direction') }}:
+            </span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-radio-group v-model="activeControlType.direction">
@@ -67,9 +67,9 @@
           class="align-center"
         >
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"
-              >{{ $t('editor.formschema.edit.input.highlight') }}:</span
-            >
+            <span style="font-size: 1.2rem;">
+              {{ $t('editor.formschema.edit.input.highlight') }}:
+            </span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-checkbox
