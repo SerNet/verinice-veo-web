@@ -3,18 +3,15 @@ import { Plugin, Context } from '@nuxt/types'
 
 import { VeoError, VeoErrorTypes } from '~/types/VeoError'
 
-import asset from '~/plugins/api/asset'
-import control from '~/plugins/api/control'
+import object from '~/plugins/api/object'
 import form from '~/plugins/api/form'
 import group from '~/plugins/api/group'
-import person from '~/plugins/api/person'
-import process from '~/plugins/api/process'
 import schema from '~/plugins/api/schema'
 import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
 
 export function createAPI(context: Context) {
-  return Client.create(context, { asset, control, form, group, person, process, schema, translation, unit })
+  return Client.create(context, { form, group, object, schema, translation, unit })
 }
 
 export interface IAPIClient {

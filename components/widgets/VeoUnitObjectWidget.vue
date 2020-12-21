@@ -49,24 +49,32 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    /* await this.$api.schema
+    this.$api.schema.fetch('asset').then(data => {
+      console.log('1', data)
+    })
+    this.$api.translation.fetch(['de']).then(data => {
+      console.log('2', data)
+    })
+    await this.$api.schema
       .fetchAll()
-      .then(data =>
-        data.knownSchemas.map(async (key: string) => {
+      .then(data => {
+        console.log(data)
+        return data.knownSchemas.map(async (key: string) => {
           return {
             title: this.$t(`unit.data.type.${key}`),
             link: `data/${key}`,
             // @ts-ignore
-            items: (await this.$api[key].fetchAll({ unit: this.unit.id }))
-              .length
+            items: (
+              await this.$api.object.fetchAll(`${key}s`, { unit: this.unit.id })
+            ).length
           }
         })
-      )
+      })
       .then(types => {
         Promise.all(types).then(data => {
           this.objects = data as any
         })
-      }) */
+      })
   }
 })
 </script>
