@@ -39,7 +39,7 @@
           </v-col>
         </v-row>
         <v-row
-          v-if="activeControlType.direction !== undefined"
+          v-if="activeControlType.name === 'Radio'"
           no-gutters
           class="align-center"
         >
@@ -49,16 +49,10 @@
             </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-radio-group v-model="activeControlType.direction">
-              <v-radio
-                :label="$t('editor.formschema.edit.input.direction.horizontal')"
-                value="horizontal"
-              />
-              <v-radio
-                :label="$t('editor.formschema.edit.input.direction.vertical')"
-                value="vertical"
-              />
-            </v-radio-group>
+            <v-autocomplete
+              v-model="activeControlType.direction"
+              :items="directionItems"
+            ></v-autocomplete>
           </v-col>
         </v-row>
         <v-row
@@ -99,7 +93,8 @@ import {
   PropType,
   Ref,
   ref,
-  watch
+  watch,
+  getCurrentInstance
 } from '@nuxtjs/composition-api'
 import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
@@ -169,6 +164,20 @@ export default defineComponent<IProps>({
       format: undefined
     })
 
+    // Get current instance for using translations in Setup() https://github.com/kazupon/vue-i18n/issues/693#issuecomment-583796174
+    const vm = getCurrentInstance()
+
+    const directionItems = ref([
+      {
+        text: vm?.$i18n.t('editor.formschema.edit.input.direction.vertical'),
+        value: 'vertical'
+      },
+      {
+        text: vm?.$i18n.t('editor.formschema.edit.input.direction.horizontal'),
+        value: 'horizontal'
+      }
+    ])
+
     watch(
       () => props.type,
       (val: string) => {
@@ -204,6 +213,7 @@ export default defineComponent<IProps>({
       dialog,
       close,
       activeControlType,
+      directionItems,
       label,
       alternatives,
       updateActiveControlType,
