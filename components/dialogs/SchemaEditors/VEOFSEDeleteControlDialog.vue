@@ -5,10 +5,10 @@
     </template>
     <template #dialog-options>
       <v-spacer />
-      <v-btn text color="primary" @click="close()">
+      <v-btn text color="primary" outlined @click="close()">
         {{ $t('global.button.no') }}
       </v-btn>
-      <v-btn text color="primary" @click="doDelete()">
+      <v-btn text color="primary" outlined @click="doDelete()">
         {{ $t('global.button.delete') }}
       </v-btn>
     </template>
@@ -18,7 +18,7 @@
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
 
 interface IProps {
-  value: boolean,
+  value: boolean
   name: string
 }
 
@@ -39,15 +39,21 @@ export default defineComponent<IProps>({
      */
     const dialog = ref({ value: props.value })
 
-    watch(() => props.value, (val: boolean) => {
-      dialog.value.value = val
-    })
-
-    watch(() => dialog.value.value, (val: boolean) => {
-      if (!val) {
-        context.emit('input', val)
+    watch(
+      () => props.value,
+      (val: boolean) => {
+        dialog.value.value = val
       }
-    })
+    )
+
+    watch(
+      () => dialog.value.value,
+      (val: boolean) => {
+        if (!val) {
+          context.emit('input', val)
+        }
+      }
+    )
 
     function close() {
       context.emit('input', false)

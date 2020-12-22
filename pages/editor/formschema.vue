@@ -15,13 +15,7 @@
         content-class="veo-formschema-editor-page"
       >
         <template #title>
-          <a
-            ref="downloadButton"
-            href="#"
-            class="text-decoration-none"
-            style="vertical-align: bottom;"
-            @click="downloadSchema()"
-          >
+          <a ref="downloadButton" href="#" class="text-decoration-none" style="vertical-align: bottom;" @click="downloadSchema()">
             <v-btn icon large color="primary">
               <v-icon>mdi-download</v-icon>
             </v-btn>
@@ -32,11 +26,7 @@
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
-          <v-row
-            no-gutters
-            class="flex-column overflow-hidden mt-2"
-            style="width: 100%;"
-          >
+          <v-row no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%;">
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="2" class="pl-0">
@@ -52,38 +42,17 @@
                   />
                 </v-col>
                 <v-col cols="4">
-                  <v-text-field
-                    v-model="formSchema.name"
-                    dense
-                    hide-details
-                    flat
-                    :label="$t('editor.formschema.formschema')"
-                    @input="updateSchemaName()"
-                  />
+                  <v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" />
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
         </template>
         <template #default>
-          <FormSchemaEditor
-            v-if="!$fetchState.pending"
-            v-model="formSchema"
-            :object-schema="objectSchema"
-          />
+          <FormSchemaEditor v-if="!$fetchState.pending" v-model="formSchema" :object-schema="objectSchema" />
         </template>
       </VeoPage>
-      <VeoPage
-        v-if="
-          formSchema && objectSchema && !collapsed && !$vuetify.breakpoint.xs
-        "
-        no-padding
-        absolute-size
-        :cols="12"
-        :md="6"
-        :xl="6"
-        height="100%"
-      >
+      <VeoPage v-if="formSchema && objectSchema && !collapsed && !$vuetify.breakpoint.xs" no-padding absolute-size :cols="12" :md="6" :xl="6" height="100%">
         <VeoTabs fullsize class="veo-fse-code-editor-page">
           <template #tabs>
             <v-tab>Preview</v-tab>
@@ -92,13 +61,7 @@
           <template #items>
             <v-tab-item>
               <v-card class="pa-3 ma-1" outlined>
-                <VeoForm
-                  v-model="objectData"
-                  :schema="objectSchema"
-                  :ui="formSchema.content"
-                  :lang="lang"
-                  :api="{}"
-                />
+                <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="{}" />
               </v-card>
             </v-tab-item>
             <v-tab-item>
@@ -109,11 +72,7 @@
       </VeoPage>
     </template>
     <template #helpers>
-      <VEOFSEWizardDialog
-        v-model="showCreationDialog"
-        @object-schema="setObjectSchema"
-        @form-schema="setFormSchema"
-      />
+      <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
     </template>
   </VeoPageWrapper>
 </template>
@@ -152,12 +111,15 @@ export default Vue.extend({
       this.objectSchema = objectSchema
     }
   },
+  head(): any {
+    return {
+      title: this.$t('editor.formschema.headline')
+    }
+  },
   computed: {
     code: {
       get(): string {
-        return this.formSchema
-          ? JSON.stringify(this.formSchema, undefined, 2)
-          : ''
+        return this.formSchema ? JSON.stringify(this.formSchema, undefined, 2) : ''
       },
       set(v: string) {
         try {
@@ -168,8 +130,8 @@ export default Vue.extend({
     dynamicAPI(): any {
       // TODO: need a solution if new target type is added
       return {
-        fetchAll: (objectType: string, searchParams?: any) => {
-          return new Promise(resolve => {
+        fetchAll: (_objectType: string, _searchParams?: any) => {
+          return new Promise((resolve: any) => {
             return resolve([])
           })
         }
@@ -180,8 +142,7 @@ export default Vue.extend({
     if (!this.$route.query.wizard) {
       this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process')
     }
-    this.showCreationDialog =
-      this.objectSchema === undefined && this.formSchema === undefined
+    this.showCreationDialog = this.objectSchema === undefined && this.formSchema === undefined
   },
   methods: {
     updateSchema(formSchema: any) {
@@ -202,12 +163,9 @@ export default Vue.extend({
     },
     downloadSchema() {
       if (this.$refs.downloadButton) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(
-          JSON.stringify(this.formSchema)
-        )}`
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.formSchema))}`
         ;(this.$refs.downloadButton as any).href = data
-        ;(this.$refs.downloadButton as any).download = `fs_${this.formSchema
-          ?.name || 'download'}.json`
+        ;(this.$refs.downloadButton as any).download = `fs_${this.formSchema?.name || 'download'}.json`
       }
     }
   }

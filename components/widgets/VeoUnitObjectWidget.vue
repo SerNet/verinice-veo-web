@@ -54,7 +54,7 @@ export default Vue.extend({
       .then(data =>
         data.knownSchemas.map(async (key: string) => {
           return {
-            title: this.$t(`unit.data.type.${key}`),
+            title: this.capitalize(key),
             link: `data/${key}`,
             // @ts-ignore
             items: (await this.$api[key].fetchAll({ unit: this.unit.id }))
@@ -67,6 +67,11 @@ export default Vue.extend({
           this.objects = data as any
         })
       }) */
+  },
+  methods: {
+    capitalize(string: string): string {
+      return string.charAt(0).toUpperCase() + string.slice(1)
+    }
   }
 })
 </script>

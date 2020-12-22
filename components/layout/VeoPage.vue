@@ -13,10 +13,7 @@
         :xl="!absoluteSize ? xlarge : 12"
         class="d-flex flex-wrap"
       >
-        <h1
-          class="d-inline"
-          :class="noPadding ? 'flex-grow-0' : 'px-4 flex-grow-0'"
-        >
+        <h1 class="d-inline px-3 py-1 flex-grow-0">
           {{ title }}
         </h1>
         <slot name="title" />
@@ -37,11 +34,7 @@
         <slot name="header" />
       </v-col>
     </v-row>
-    <v-row
-      no-gutters
-      :style="{ 'max-height': '100%', 'min-height': 0, height }"
-      :class="noPadding ? '' : 'pa-4'"
-    >
+    <v-row no-gutters :style="{ 'max-height': '100%', 'min-height': 0, height }" :class="noPadding ? '' : 'pa-4'">
       <v-col
         :cols="!absoluteSize ? cols : 12"
         :md="!absoluteSize ? medium : 12"
@@ -171,6 +164,8 @@ export default defineComponent<IProps>({
 @import '~/assets/vuetify.scss';
 
 .veo-page {
+  display: flex;
+  flex-direction: column;
   flex-shrink: 1;
   margin: 0;
   max-height: 100%;
@@ -179,8 +174,13 @@ export default defineComponent<IProps>({
   position: relative;
 }
 
+.veo-page__title {
+  flex-grow: 0;
+}
+
 .veo-page__header {
   background: white;
+  flex-grow: 0;
   position: relative;
   top: 0;
   z-index: 4;

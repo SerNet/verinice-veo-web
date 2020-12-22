@@ -20,7 +20,7 @@
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn :disabled="!valid" color="primary" @click="createUnit()">{{ $t('global.button.save') }}</v-btn>
+      <v-btn :disabled="!valid" color="primary" outlined @click="createUnit()">{{ $t('global.button.save') }}</v-btn>
     </template>
   </VeoDialog>
 </template>
@@ -51,15 +51,11 @@ export default Vue.extend({
       dialog: false as boolean,
       noWatch: false as boolean,
       units: [] as Array<any>,
-      newUnit: {} as { units: string[], name: string, description: string },
+      newUnit: {} as { units: string[]; name: string; description: string },
       valid: false as boolean,
       rules: {
-        name: [
-          (v: string) => !!v || this.$t('unit.details.name.required')
-        ],
-        description: [
-          (v: string) => !!v || this.$t('unit.details.description.required')
-        ]
+        name: [(v: string) => !!v || this.$t('unit.details.name.required')],
+        description: [(v: string) => !!v || this.$t('unit.details.description.required')]
       },
       error: {
         value: false as boolean,
@@ -97,24 +93,28 @@ export default Vue.extend({
   methods: {
     createUnit() {
       this.loading = true
-      this.$api.unit.create(this.newUnit).then((data) => {
-        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('unit.created'))
-        this.error.value = false
-        this.dialog = false
-        this.$router.push({ path: `/${data.resourceId}` })
-      }).catch((err) => {
-        this.error.value = true
-        this.error.content = err
-      }).finally(() => {
-        this.loading = false
-      })
+      this.$api.unit
+        .create(this.newUnit)
+        .then(data => {
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('unit.created'))
+          this.error.value = false
+          this.dialog = false
+          this.$router.push({ path: `/${data.resourceId}` })
+        })
+        .catch(err => {
+          this.error.value = true
+          this.error.content = err
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 })
 </script>
 <style lang="scss" scoped>
 .new-unit-form {
-    max-width: 400px;
-    width: 100%;
+  max-width: 400px;
+  width: 100%;
 }
 </style>

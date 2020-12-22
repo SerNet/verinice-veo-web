@@ -1,30 +1,18 @@
 <template>
-  <VeoDialog
-    v-model="dialog.value"
-    :headline="$t('editor.formschema.edit.input.headline', { element: name })"
-    large
-  >
+  <VeoDialog v-model="dialog.value" :headline="$t('editor.formschema.edit.input.headline', { element: name })" large>
     <template #default>
       <v-form>
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">
-              {{ $t('editor.formschema.edit.input.label.text') }}*:
-            </span>
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.label.text') }}*: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-text-field
-              v-model="label"
-              :label="$t('editor.formschema.edit.input.label')"
-              required
-            />
+            <v-text-field v-model="label" :label="$t('editor.formschema.edit.input.label')" required />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">
-              {{ $t('editor.formschema.edit.input.type') }}:
-            </span>
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.type') }}: </span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-select
@@ -38,38 +26,20 @@
             />
           </v-col>
         </v-row>
-        <v-row
-          v-if="activeControlType.name === 'Radio'"
-          no-gutters
-          class="align-center"
-        >
+        <v-row v-if="activeControlType.name === 'Radio'" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">
-              {{ $t('editor.formschema.edit.input.direction') }}:
-            </span>
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.direction') }}: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-autocomplete
-              v-model="activeControlType.direction"
-              :items="directionItems"
-            ></v-autocomplete>
+            <v-autocomplete v-model="activeControlType.direction" :items="directionItems"></v-autocomplete>
           </v-col>
         </v-row>
-        <v-row
-          v-if="activeControlType.highlight !== undefined"
-          no-gutters
-          class="align-center"
-        >
+        <v-row v-if="activeControlType.highlight !== undefined" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">
-              {{ $t('editor.formschema.edit.input.highlight') }}:
-            </span>
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.highlight') }}: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-checkbox
-              v-modl="activeControlType.highlight"
-              :label="$t('editor.formschema.edit.input.highlight')"
-            />
+            <v-checkbox v-modl="activeControlType.highlight" :label="$t('editor.formschema.edit.input.highlight')" />
           </v-col>
         </v-row>
       </v-form>
@@ -77,25 +47,17 @@
     </template>
     <template #dialog-options>
       <v-spacer />
-      <v-btn text color="primary" @click="close()">
+      <v-btn text color="primary" outlined @click="close()">
         {{ $t('global.button.close') }}
       </v-btn>
-      <v-btn text color="primary" @click="updateElement()">
+      <v-btn text color="primary" outlined @click="updateElement()">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  PropType,
-  Ref,
-  ref,
-  watch,
-  getCurrentInstance
-} from '@nuxtjs/composition-api'
+import { computed, defineComponent, PropType, Ref, ref, watch, getCurrentInstance } from '@nuxtjs/composition-api'
 import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
@@ -159,10 +121,14 @@ export default defineComponent<IProps>({
     /**
      * Control types related stuff
      */
-    const activeControlType: Ref<IControlType> = ref({
-      name: props.type,
-      format: undefined
-    })
+    const activeControlType: Ref<IControlType> = ref({ name: props.type, format: undefined })
+
+    watch(
+      () => props.type,
+      (val: string) => {
+        activeControlType.value.name = val
+      }
+    )
 
     // Get current instance for using translations in Setup() https://github.com/kazupon/vue-i18n/issues/693#issuecomment-583796174
     const vm = getCurrentInstance()
@@ -186,9 +152,7 @@ export default defineComponent<IProps>({
     )
 
     function updateActiveControlType() {
-      const newType = alternatives.value.find(
-        item => item.name === activeControlType.value.name
-      )
+      const newType = alternatives.value.find(item => item.name === activeControlType.value.name)
       if (newType) {
         activeControlType.value = newType
       } else {
@@ -199,9 +163,7 @@ export default defineComponent<IProps>({
     }
 
     const label: Ref<string> = ref(props.options?.label || '')
-    const alternatives = computed(() =>
-      controlTypeAlternatives(activeControlType.value.name, props)
-    )
+    const alternatives = computed(() => controlTypeAlternatives(activeControlType.value.name, props))
 
     function updateElement() {
       const options: any = activeControlType.value
