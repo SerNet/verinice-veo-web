@@ -48,7 +48,7 @@ export default {
   'editor.formschema.edit.input.scope.text': 'Scope des Elements',
   'editor.formschema.edit.input.type': 'Steuerelement Typ',
   'editor.formschema.formschema': 'Formschema',
-  'editor.formschema.headline': 'Form Schema Editor',
+  'editor.formschema.headline': 'Formschema Editor',
   'editor.formschema.wizard.create': 'Formular erstellen',
   'editor.formschema.wizard.create.description': 'Neues Formular erstellen. Entweder leer oder mit vorgenerierten Feldern',
   'editor.formschema.wizard.generate.generate': 'Vorgenerieren',
