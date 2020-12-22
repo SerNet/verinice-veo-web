@@ -139,7 +139,9 @@ export default defineComponent<IProps>({
 
       return keys.map((key: string) => {
         return {
-          text: this.$t(`unit.data.type.${key}`) as string,
+          // Vetur complains about this line, so we disable verification of it.
+          // @ts-ignore
+          text: this.capitalize(key),
           value: key
         }
       })
@@ -176,6 +178,9 @@ export default defineComponent<IProps>({
       this.$router.push(
         `/${this.$route.params.unit}/data/${this.objectType}/${this.group}/${item.id}`
       )
+    },
+    capitalize(string: string): string {
+      return string.charAt(0).toUpperCase() + string.slice(1)
     }
   }
 })

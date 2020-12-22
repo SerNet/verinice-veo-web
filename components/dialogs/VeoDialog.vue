@@ -1,11 +1,5 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    max-width="80%"
-    :persistent="persistent"
-    :eager="eager"
-    :width="large ? '900px' : '450px'"
-  >
+  <v-dialog v-model="dialog" max-width="80%" :persistent="persistent" :eager="eager" :width="large ? '900px' : '450px'">
     <v-card>
       <v-card-title
         class="headline"
@@ -14,14 +8,7 @@
       >
         <span>{{ headline }}</span>
         <v-spacer />
-        <v-btn
-          v-if="!closeHidden"
-          :disabled="closeDisabled"
-          icon
-          large
-          class="close-button"
-          @click="closeDialog()"
-        >
+        <v-btn v-if="!closeHidden" :disabled="closeDisabled" icon large class="close-button" @click="closeDialog()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -135,6 +122,7 @@ export default Vue.extend({
 }
 
 .headline {
+  background: white;
   border-bottom: 1px solid $grey;
 }
 </style>

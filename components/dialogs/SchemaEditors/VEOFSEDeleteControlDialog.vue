@@ -1,8 +1,5 @@
 <template>
-  <VeoDialog
-    v-model="dialog.value"
-    :headline="$t('editor.formschema.delete.control.headline')"
-  >
+  <VeoDialog v-model="dialog.value" :headline="$t('editor.formschema.delete.control.headline')">
     <template #default>
       {{ $t('editor.formschema.delete.control.text', { element: name }) }}
     </template>
@@ -58,7 +55,16 @@ export default defineComponent<IProps>({
       }
     )
 
-    return { dialog, close }
+    watch(
+      () => dialog.value.value,
+      (val: boolean) => {
+        if (!val) {
+          context.emit('input', val)
+        }
+      }
+    )
+
+    return { dialog }
   }
 })
 </script>
