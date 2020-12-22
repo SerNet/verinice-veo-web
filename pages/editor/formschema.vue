@@ -26,6 +26,9 @@
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </a>
+          <v-btn icon large color="primary" @click="showCodeEditor = true">
+            <v-icon>mdi-code-tags</v-icon>
+          </v-btn>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
             <v-btn icon @click="collapsed = !collapsed">
               <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
@@ -77,35 +80,21 @@
         v-if="
           formSchema && objectSchema && !collapsed && !$vuetify.breakpoint.xs
         "
-        no-padding
         absolute-size
         :cols="12"
         :md="6"
         :xl="6"
         height="100%"
       >
-        <VeoTabs fullsize class="veo-fse-code-editor-page">
-          <template #tabs>
-            <v-tab>Preview</v-tab>
-            <v-tab>Code</v-tab>
-          </template>
-          <template #items>
-            <v-tab-item>
-              <v-card class="pa-3 ma-1" outlined>
-                <VeoForm
-                  v-model="objectData"
-                  :schema="objectSchema"
-                  :ui="formSchema.content"
-                  :lang="lang"
-                  :api="{}"
-                />
-              </v-card>
-            </v-tab-item>
-            <v-tab-item>
-              <CodeEditor v-model="code" @schema-updated="updateSchema" />
-            </v-tab-item>
-          </template>
-        </VeoTabs>
+        <v-card class="pa-3" style="height: 100%" outlined>
+          <VeoForm
+            v-model="objectData"
+            :schema="objectSchema"
+            :ui="formSchema.content"
+            :lang="lang"
+            :api="{}"
+          />
+        </v-card>
       </VeoPage>
     </template>
     <template #helpers>
@@ -114,6 +103,7 @@
         @object-schema="setObjectSchema"
         @form-schema="setFormSchema"
       />
+      <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
     </template>
   </VeoPageWrapper>
 </template>
@@ -124,8 +114,8 @@ import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
 import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
+import VeoFSECodeEditorDialog from '~/components/dialogs/SchemaEditors/VeoFSECodeEditorDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
-import VeoTabs from '~/components/layout/VeoTabs.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import { generateSchema } from '~/lib/FormSchemaHelper'
@@ -134,7 +124,7 @@ export default Vue.extend({
   components: {
     VeoForm,
     VEOFSEWizardDialog,
-    VeoTabs
+    VeoFSECodeEditorDialog
   },
   data() {
     return {
@@ -143,7 +133,8 @@ export default Vue.extend({
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
-      objectData: {}
+      objectData: {},
+      showCodeEditor: false as boolean
     }
   },
   async fetch() {

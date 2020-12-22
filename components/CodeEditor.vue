@@ -4,12 +4,13 @@
       <div class="editor" :style="{ resize: 'vertical', width: '100%' }">
         <div
           ref="editor"
+          style="height: 100%"
           @keydown.meta.enter="$emit('submit', $event)"
           @keydown.exact="codeModified()"
         />
       </div>
     </div>
-    <div class="veo-editor-save-button">
+    <div v-if="!readonly" class="veo-editor-save-button">
       <v-btn
         class="mx-4 my-2"
         color="primary"
@@ -66,6 +67,7 @@ import {
   defineComponent,
   onMounted,
   ref,
+  watch,
   watchEffect
 } from '@nuxtjs/composition-api'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
@@ -82,6 +84,7 @@ interface Props {
   wordwrap?: boolean
   language: typeof basicSetup | false
   error?: CodeError
+  readonly: boolean
 }
 
 export const SELECTION_CHAR = '\uD813'
@@ -91,7 +94,8 @@ export default defineComponent<Props>({
     value: { type: String, default: '' },
     wordwrap: { type: Boolean, default: false },
     language: { type: [Array, Boolean, Object], default: () => json() },
-    error: { type: Object, default: undefined }
+    error: { type: Object, default: undefined },
+    readonly: { type: Boolean, default: false }
   },
   setup(props, context) {
     const editorRef = ref<HTMLDivElement>(null as any)
@@ -181,19 +185,20 @@ export default defineComponent<Props>({
     }
 
     function updateSchema() {
-      let updatedSchema
-      try {
-        updatedSchema = JSON.parse($editor.state.toJSON().doc)
-        context.emit('schema-updated', updatedSchema)
-        context.root.$emit(
-          VeoEvents.SNACKBAR_SUCCESS,
-          context.root.$i18n.t('editor.code.save.success')
-        )
-      } catch (e) {
-        context.root.$emit(VeoEvents.ALERT_ERROR, {
-          title: context.root.$i18n.t('editor.code.save.error'),
-          text: e
-        })
+      if (!props.readonly) {
+        try {
+          const updatedSchema = JSON.parse($editor.state.toJSON().doc)
+          context.emit('schema-updated', updatedSchema)
+          context.root.$emit(
+            VeoEvents.SNACKBAR_SUCCESS,
+            context.root.$i18n.t('editor.code.save.success')
+          )
+        } catch (e) {
+          context.root.$emit(VeoEvents.ALERT_ERROR, {
+            title: context.root.$i18n.t('editor.code.save.error'),
+            text: e
+          })
+        }
       }
       saveButtonDisabled.value = true
     }
@@ -322,5 +327,17 @@ export default defineComponent<Props>({
 .veo-editor-save-button {
   background-color: rgb(245, 245, 245);
   flex-grow: 0;
+}
+
+/*
+ * Super ugly fix for resizes in a v-dialog, as codeMirror next has no refresh
+ * event we could use to make the gutters as big as they should be.
+ */
+::v-deep .cm-gutter-lineNumber {
+  min-height: 150px;
+}
+
+::v-deep .cm-gutterElement-lineNumber:not(:first-child) {
+  min-height: 18px;
 }
 </style>

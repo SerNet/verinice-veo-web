@@ -1,17 +1,38 @@
 <template>
-  <v-dialog v-model="dialog" max-width="80%" :persistent="persistent" :width="large ? '900px' : '450px'">
+  <v-dialog
+    v-model="dialog"
+    max-width="80%"
+    :persistent="persistent"
+    :eager="eager"
+    :width="large ? '900px' : '450px'"
+  >
     <v-card>
-      <v-card-title class="headline" :class="large ? '' : 'pl-4 pr-0 py-0'" :style="fixedHeader ? 'position: sticky; top: 0; z-index: 1;' : ''">
+      <v-card-title
+        class="headline"
+        :class="large ? '' : 'pl-4 pr-0 py-0'"
+        :style="fixedHeader ? 'position: sticky; top: 0; z-index: 1;' : ''"
+      >
         <span>{{ headline }}</span>
         <v-spacer />
-        <v-btn v-if="!closeHidden" :disabled="closeDisabled" icon large class="close-button" @click="closeDialog()">
+        <v-btn
+          v-if="!closeHidden"
+          :disabled="closeDisabled"
+          icon
+          large
+          class="close-button"
+          @click="closeDialog()"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
       <v-card-text class="pa-4" style="position: relative;">
         <slot />
       </v-card-text>
-      <v-card-actions v-if="hasActions" class="pb-3 px-4" :style="fixedFooter ? 'position: sticky; bottom: 0; z-index: 1;' : ''">
+      <v-card-actions
+        v-if="hasActions"
+        class="pb-3 px-4"
+        :style="fixedFooter ? 'position: sticky; bottom: 0; z-index: 1;' : ''"
+      >
         <slot name="dialog-options" />
       </v-card-actions>
     </v-card>
@@ -48,13 +69,19 @@ export default Vue.extend({
     },
     closeFunction: {
       type: Function,
-      default: () => () => { return true }
+      default: () => () => {
+        return true
+      }
     },
     fixedHeader: {
       type: Boolean,
       default: false
     },
     fixedFooter: {
+      type: Boolean,
+      default: false
+    },
+    eager: {
       type: Boolean,
       default: false
     }
