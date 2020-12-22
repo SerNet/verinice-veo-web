@@ -5,11 +5,11 @@
         v-if="formSchema"
         sticky-header
         absolute-size
-        :fullsize="collapsed"
+        :fullsize="previewCollapsed"
         no-padding
         :cols="12"
-        :md="collapsed ? 12 : 9"
-        :xl="collapsed ? 12 : 9"
+        :md="backlogCollapsed ? 6 : 8"
+        :xl="backlogCollapsed ? 6 : 8"
         :title="$t('editor.formschema.headline')"
         page-class="d-flex flex-column"
         content-class="veo-formschema-editor-page"
@@ -30,8 +30,8 @@
             <v-icon>mdi-code-tags</v-icon>
           </v-btn>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
-            <v-btn icon @click="collapsed = !collapsed">
-              <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
+            <v-btn icon @click="previewCollapsed = !previewCollapsed">
+              <v-icon v-if="previewCollapsed">mdi-chevron-left</v-icon>
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
@@ -65,16 +65,23 @@
           </v-row>
         </template>
         <template #default>
-          <FormSchemaEditor v-if="!$fetchState.pending" v-model="formSchema" :object-schema="objectSchema" />
+          <FormSchemaEditor
+            v-if="!$fetchState.pending"
+            v-model="formSchema"
+            :object-schema="objectSchema"
+            :backlog-collapsed="backlogCollapsed"
+            @toggle-backlog="backlogCollapsed = !backlogCollapsed"
+          />
         </template>
       </VeoPage>
       <VeoPage
-        v-if="formSchema && objectSchema && !collapsed && !$vuetify.breakpoint.xs"
+        v-if="formSchema && objectSchema && !previewCollapsed && !$vuetify.breakpoint.xs"
         absolute-size
         :cols="12"
-        :md="6"
-        :xl="6"
+        :md="backlogCollapsed ? 6 : 4"
+        :xl="backlogCollapsed ? 6 : 4"
         height="100%"
+        border-left
       >
         <v-card class="pa-3" style="height: 100%" outlined>
           <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="{}" />
@@ -108,7 +115,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      collapsed: false as boolean,
+      previewCollapsed: false as boolean,
+      backlogCollapsed: false as boolean,
       showCreationDialog: false as boolean,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       formSchema: undefined as IVEOFormSchema | undefined,

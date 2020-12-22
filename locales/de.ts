@@ -32,6 +32,8 @@ export default {
   'editor.editor.button.save': 'Codeänderungen übernehmen',
   'editor.hideemptyaspects': 'Leere Aspekte ausblenden',
   'editor.itemlist.attributecount': 'Keine Attribute | {n} Attribut | {n} Attribute',
+  'editor.formschema.controls.available': 'Verfügbare Steuerelemente',
+  'editor.formschema.controls.current': 'Verwendete Steuerelemente',
   'editor.formschema.create.title': 'Name des Formulars',
   'editor.formschema.create.title.text': 'Name des neuen Formschemas',
   'editor.formschema.create.type': 'Objektschematyp',

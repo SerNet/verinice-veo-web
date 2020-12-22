@@ -32,6 +32,8 @@ export default {
   'editor.editor.button.save': 'Apply code changes',
   'editor.hideemptyaspects': 'Hide empty aspects',
   'editor.itemlist.attributecount': 'No attributes | {n} attribute | {n} attributes',
+  'editor.formschema.controls.available': 'Available controls',
+  'editor.formschema.controls.current': 'Currently used controls',
   'editor.formschema.create.title': 'Form schema name',
   'editor.formschema.create.title.text': 'Name of the new form schema',
   'editor.formschema.create.type': 'Object schema type',

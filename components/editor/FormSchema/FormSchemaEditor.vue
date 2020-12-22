@@ -1,177 +1,164 @@
 <template>
   <VeoPageWrapper>
     <template #default>
-      <VeoPage absolute-size no-padding :cols="12" :md="8" :xl="8">
-        <v-card flat class="mt-2 mx-2 mb-2 drag-elements-wrapper">
-          <!-- Form elements -->
-          <div>
-            <v-subheader class="px-2">Form Elements</v-subheader>
-            <v-divider />
-          </div>
-          <Draggable
-            class="drag-form-elements"
-            tag="div"
-            style="overflow: auto; min-width:300;"
-            :list="formElements"
-            :group="{ name: 'g1', pull: 'clone', put: false }"
-            :sort="false"
-            :clone="onCloneFormElement"
-          >
-            <v-card v-for="(el, i) in formElements" :key="i" flat>
-              <v-list-item class="pa-1" flat>
-                <v-list-item-avatar color="grey darken-2" size="32">
-                  <v-icon
-                    small
-                    dark
-                    outlined
-                    v-text="formElementsDescription[i].icon"
-                  />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title
-                    class="caption"
-                    v-text="formElementsDescription[i].name"
-                  />
-                </v-list-item-content>
-                <v-list-item-action class="ml-3">
-                  <v-chip
-                    class="mr-2"
-                    color="grey darken-2"
-                    small
-                    label
-                    outlined
-                  >
-                    {{ formElementsDescription[i].group }}
-                  </v-chip>
-                </v-list-item-action>
-              </v-list-item>
-            </v-card>
-          </Draggable>
+      <VeoPage v-if="!backlogCollapsed" absolute-size no-padding :cols="12" :md="8" :xl="8" sticky-header>
+        <template #header>
+          <h3 class="text-center">{{ $t('editor.formschema.controls.available') }}</h3>
+        </template>
+        <template #default>
+          <v-card flat class="mt-4 mx-2 mb-2 drag-elements-wrapper">
+            <!-- Form elements -->
+            <div>
+              <v-subheader class="px-2">Form Elements</v-subheader>
+              <v-divider />
+            </div>
+            <Draggable
+              class="drag-form-elements"
+              tag="div"
+              style="overflow: auto; min-width:300;"
+              :list="formElements"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
+              :sort="false"
+              :clone="onCloneFormElement"
+            >
+              <v-card v-for="(el, i) in formElements" :key="i" flat>
+                <v-list-item class="pa-1" flat>
+                  <v-list-item-avatar color="grey darken-2" size="32">
+                    <v-icon small dark outlined v-text="formElementsDescription[i].icon" />
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title class="caption" v-text="formElementsDescription[i].name" />
+                  </v-list-item-content>
+                  <v-list-item-action class="ml-3">
+                    <v-chip class="mr-2" color="grey darken-2" small label outlined>
+                      {{ formElementsDescription[i].group }}
+                    </v-chip>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-card>
+            </Draggable>
 
-          <!-- Unused Basic Properties -->
-          <div v-if="unused.basics.length > 0">
-            <v-divider />
-            <v-subheader class="px-2">Basic Properties</v-subheader>
-            <v-divider />
-          </div>
-          <Draggable
-            class="drag-unused-basic-properties"
-            tag="div"
-            style="overflow: auto; min-width:300;"
-            :list="unused.basics"
-            :group="{ name: 'g1', pull: 'clone', put: false }"
-            :sort="false"
-            :clone="onCloneControl"
-          >
-            <v-card v-for="(el, i) in unused.basics" :key="i" flat>
-              <v-list-item class="pa-1" flat>
-                <v-list-item-avatar size="32" :color="typeMap[el.type].color">
-                  <v-icon small outlined dark v-text="typeMap[el.type].icon" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title class="caption" v-text="el.label" />
-                </v-list-item-content>
-                <v-list-item-action class="ml-3">
-                  <v-chip
-                    :color="typeMap[el.type].color"
-                    class="mr-2"
-                    small
-                    label
-                    outlined
-                  >
-                    {{ el.type }}
-                  </v-chip>
-                </v-list-item-action>
-              </v-list-item>
-            </v-card>
-          </Draggable>
+            <!-- Unused Basic Properties -->
+            <div v-if="unused.basics.length > 0">
+              <v-divider />
+              <v-subheader class="px-2">Basic Properties</v-subheader>
+              <v-divider />
+            </div>
+            <Draggable
+              class="drag-unused-basic-properties"
+              tag="div"
+              style="overflow: auto; min-width:300;"
+              :list="unused.basics"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
+              :sort="false"
+              :clone="onCloneControl"
+            >
+              <v-card v-for="(el, i) in unused.basics" :key="i" flat>
+                <v-list-item class="pa-1" flat>
+                  <v-list-item-avatar size="32" :color="typeMap[el.type].color">
+                    <v-icon small outlined dark v-text="typeMap[el.type].icon" />
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title class="caption" v-text="el.label" />
+                  </v-list-item-content>
+                  <v-list-item-action class="ml-3">
+                    <v-chip :color="typeMap[el.type].color" class="mr-2" small label outlined>
+                      {{ el.type }}
+                    </v-chip>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-card>
+            </Draggable>
 
-          <!-- Unused Aspects -->
-          <div v-if="unused.aspects.length > 0">
-            <v-divider />
-            <v-subheader class="px-2">Aspects</v-subheader>
-            <v-divider />
-          </div>
-          <Draggable
-            class="drag-unused-aspects"
-            tag="div"
-            style="overflow: auto; min-width:300;"
-            :list="unused.aspects"
-            :group="{ name: 'g1', pull: 'clone', put: false }"
-            :sort="false"
-            :clone="onCloneControl"
-          >
-            <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
-              <v-list-item class="pa-1" flat>
-                <v-list-item-avatar size="32" :color="typeMap[el.type].color">
-                  <v-icon small outlined dark v-text="typeMap[el.type].icon" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title class="caption" v-text="el.label" />
-                </v-list-item-content>
-                <v-list-item-action class="ml-3">
-                  <v-chip
-                    :color="typeMap[el.type].color"
-                    class="mr-2"
-                    small
-                    label
-                    outlined
-                  >
-                    {{ el.type }}
-                  </v-chip>
-                </v-list-item-action>
-              </v-list-item>
-            </v-card>
-          </Draggable>
+            <!-- Unused Aspects -->
+            <div v-if="unused.aspects.length > 0">
+              <v-divider />
+              <v-subheader class="px-2">Aspects</v-subheader>
+              <v-divider />
+            </div>
+            <Draggable
+              class="drag-unused-aspects"
+              tag="div"
+              style="overflow: auto; min-width:300;"
+              :list="unused.aspects"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
+              :sort="false"
+              :clone="onCloneControl"
+            >
+              <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
+                <v-list-item class="pa-1" flat>
+                  <v-list-item-avatar size="32" :color="typeMap[el.type].color">
+                    <v-icon small outlined dark v-text="typeMap[el.type].icon" />
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title class="caption" v-text="el.label" />
+                  </v-list-item-content>
+                  <v-list-item-action class="ml-3">
+                    <v-chip :color="typeMap[el.type].color" class="mr-2" small label outlined>
+                      {{ el.type }}
+                    </v-chip>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-card>
+            </Draggable>
 
-          <!-- Unused Links -->
-          <div v-if="unused.links.length > 0">
-            <v-divider />
-            <v-subheader class="px-2">Links</v-subheader>
-            <v-divider />
-          </div>
-          <Draggable
-            class="drag-unused-links"
-            tag="div"
-            style="overflow: auto; min-width:300;"
-            :list="unused.links"
-            :group="{ name: 'g1', pull: 'clone', put: false }"
-            :sort="false"
-            :clone="onCloneControl"
-          >
-            <v-card v-for="(el, i) in unused.links" :key="i" flat>
-              <v-list-item class="pa-1" flat>
-                <v-list-item-avatar size="32" :color="typeMap[el.type].color">
-                  <v-icon small outlined dark v-text="typeMap[el.type].icon" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title class="caption" v-text="el.label" />
-                </v-list-item-content>
-                <v-list-item-action class="ml-3">
-                  <v-chip
-                    :color="typeMap[el.type].color"
-                    class="mr-2"
-                    small
-                    label
-                    outlined
-                  >
-                    {{ el.type }}
-                  </v-chip>
-                </v-list-item-action>
-              </v-list-item>
-            </v-card>
-          </Draggable>
-        </v-card>
+            <!-- Unused Links -->
+            <div v-if="unused.links.length > 0">
+              <v-divider />
+              <v-subheader class="px-2">Links</v-subheader>
+              <v-divider />
+            </div>
+            <Draggable
+              class="drag-unused-links"
+              tag="div"
+              style="overflow: auto; min-width:300;"
+              :list="unused.links"
+              :group="{ name: 'g1', pull: 'clone', put: false }"
+              :sort="false"
+              :clone="onCloneControl"
+            >
+              <v-card v-for="(el, i) in unused.links" :key="i" flat>
+                <v-list-item class="pa-1" flat>
+                  <v-list-item-avatar size="32" :color="typeMap[el.type].color">
+                    <v-icon small outlined dark v-text="typeMap[el.type].icon" />
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title class="caption" v-text="el.label" />
+                  </v-list-item-content>
+                  <v-list-item-action class="ml-3">
+                    <v-chip :color="typeMap[el.type].color" class="mr-2" small label outlined>
+                      {{ el.type }}
+                    </v-chip>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-card>
+            </Draggable>
+          </v-card>
+        </template>
       </VeoPage>
-      <VeoPage absolute-size no-padding :cols="12" :md="8" :xl="8">
-        <div class="veo-editor-body">
-          <FseGenerator
-            :schema="objectSchema"
-            :value="value.content"
-            @delete="onDelete"
-            @update="onUpdate"
-          />
-        </div>
+      <VeoPage
+        absolute-size
+        no-padding
+        :fullsize="backlogCollapsed"
+        :cols="12"
+        :md="backlogCollapsed ? 12 : 8"
+        :xl="backlogCollapsed ? 12 : 8"
+        sticky-header
+      >
+        <template #header>
+          <h3 class="text-center">{{ $t('editor.formschema.controls.current') }}</h3>
+          <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
+            <v-btn icon @click="$emit('toggle-backlog')">
+              <v-icon v-if="!$props.backlogCollapsed">mdi-chevron-left</v-icon>
+              <v-icon v-else>mdi-chevron-right</v-icon>
+            </v-btn>
+          </div>
+        </template>
+        <template #default>
+          <div class="veo-editor-body pt-2">
+            <FseGenerator :schema="objectSchema" :value="value.content" @delete="onDelete" @update="onUpdate" />
+          </div>
+        </template>
       </VeoPage>
     </template>
   </VeoPageWrapper>
@@ -180,7 +167,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
-// import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
 import vjp from 'vue-json-pointer'
 import { JsonPointer } from 'json-ptr'
 import FseGenerator from './Generator/FseGenerator.vue'
@@ -191,16 +177,7 @@ export interface IControl {
   scope: string
   // TODO: These types are assumed for us to describe easily property type, however e.g. "type: enum" does not exist in JSONSchema standard
   // Therefore, "type: enum", describes the JSONSchema element, which includes "enum: []"
-  type:
-    | 'string'
-    | 'boolean'
-    | 'object'
-    | 'number'
-    | 'integer'
-    | 'array'
-    | 'enum'
-    | 'null'
-    | 'default'
+  type: 'string' | 'boolean' | 'object' | 'number' | 'integer' | 'array' | 'enum' | 'null' | 'default'
   label: string
   category: 'basics' | 'aspects' | 'links'
   used: boolean
@@ -225,7 +202,11 @@ export default Vue.extend({
   },
   props: {
     objectSchema: Object,
-    value: Object
+    value: Object,
+    backlogCollapsed: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -259,11 +240,7 @@ export default Vue.extend({
       controls: [] as IControl[],
       controlsItems: {} as IControlItem,
       objectSchemaPropertiesPatterns: {
-        standard: [
-          '#/properties/name',
-          '#/properties/abbreviation',
-          '#/properties/description'
-        ],
+        standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description'],
         regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/i,
         regexLinks: /^#\/properties\/links\/properties\/\w+$/i,
         regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/i
@@ -296,15 +273,9 @@ export default Vue.extend({
   computed: {
     unused(): IUnused {
       return {
-        basics: this.controls.filter(
-          obj => obj.category === 'basics' && !obj.used
-        ),
-        aspects: this.controls.filter(
-          obj => obj.category === 'aspects' && !obj.used
-        ),
-        links: this.controls.filter(
-          obj => obj.category === 'links' && !obj.used
-        )
+        basics: this.controls.filter(obj => obj.category === 'basics' && !obj.used),
+        aspects: this.controls.filter(obj => obj.category === 'aspects' && !obj.used),
+        links: this.controls.filter(obj => obj.category === 'links' && !obj.used)
       }
     }
   },
@@ -313,11 +284,7 @@ export default Vue.extend({
       immediate: true,
       deep: true,
       handler() {
-        const createControl = (
-          key: string,
-          value: any,
-          category: IControl['category']
-        ): IControl => {
+        const createControl = (key: string, value: any, category: IControl['category']): IControl => {
           return {
             scope: key,
             type: Array.isArray(value.enum) ? 'enum' : value.type,
@@ -326,27 +293,19 @@ export default Vue.extend({
             used: false
           }
         }
-        Object.entries(
-          JsonPointer.flatten(this.objectSchema, true) as Record<string, any>
-        ).forEach(([key, value]) => {
+        Object.entries(JsonPointer.flatten(this.objectSchema, true) as Record<string, any>).forEach(([key, value]) => {
           if (this.objectSchemaPropertiesPatterns.standard.includes(key)) {
             this.controls.push(createControl(key, value, 'basics'))
-          } else if (
-            this.objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)
-          ) {
+          } else if (this.objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)) {
             this.controls.push(createControl(key, value, 'aspects'))
           } else if (this.objectSchemaPropertiesPatterns.regexLinks.test(key)) {
             this.controls.push(createControl(key, value, 'links'))
-          } else if (
-            this.objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)
-          ) {
+          } else if (this.objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)) {
             const [linksKey, linksAttribute] = key.split('/items/')
             if (!this.controlsItems[linksKey]) {
               this.controlsItems[linksKey] = []
             }
-            this.controlsItems[linksKey].push(
-              createControl(`#/${linksAttribute}`, value, 'links')
-            )
+            this.controlsItems[linksKey].push(createControl(`#/${linksAttribute}`, value, 'links'))
           }
         })
       }
@@ -355,9 +314,7 @@ export default Vue.extend({
       immediate: true,
       deep: true,
       handler() {
-        const usedScopes = Object.entries(
-          JsonPointer.flatten(this.value.content, true)
-        )
+        const usedScopes = Object.entries(JsonPointer.flatten(this.value.content, true))
           .filter(([key, value]) => /\/scope$/i.test(key))
           .map(([key, value]) => value as string)
 
@@ -406,10 +363,7 @@ export default Vue.extend({
       }
     },
     onCreateLabel() {
-      const topLevelElements: any = JsonPointer.get(
-        this.value,
-        '#/content/elements'
-      )
+      const topLevelElements: any = JsonPointer.get(this.value, '#/content/elements')
 
       const initialLayout = {
         type: 'Label',
@@ -424,10 +378,7 @@ export default Vue.extend({
       }
     },
     onCreateLayout() {
-      const topLevelElements: any = JsonPointer.get(
-        this.value,
-        '#/content/elements'
-      )
+      const topLevelElements: any = JsonPointer.get(this.value, '#/content/elements')
 
       const initialLayout = {
         type: 'Layout',
@@ -449,6 +400,15 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
+
+.veo-collapse-editor {
+  background-color: rgb(245, 245, 245);
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
 
 .drag-elements-wrapper {
   border: 1px solid $grey;
