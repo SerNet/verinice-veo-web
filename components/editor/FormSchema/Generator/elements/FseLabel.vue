@@ -53,15 +53,13 @@
       :headline="$t('editor.formschema.delete.control.headline')"
     >
       <template #default>
-        <v-card-subtitle>{{
-          $t('editor.formschema.delete.control.text', { element: 'Text' })
-        }}</v-card-subtitle>
+        {{ $t('editor.formschema.delete.control.text', { element: 'Text' }) }}
       </template>
       <template #dialog-options>
-        <v-spacer />
         <v-btn text color="primary" @click="deleteDialog.open = false">
           {{ $t('global.button.no') }}
         </v-btn>
+        <v-spacer />
         <v-btn text color="primary" @click="onDelete">
           {{ $t('global.button.delete') }}
         </v-btn>
