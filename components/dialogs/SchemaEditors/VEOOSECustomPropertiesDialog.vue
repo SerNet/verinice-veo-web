@@ -1,12 +1,9 @@
 <template>
   <VeoDialog v-model="dialog.value" :headline="headline" large persistent>
     <template #default>
-      <v-form
-        v-model="form.valid"
-        @submit.prevent="_item && _item.attributes ? saveNode() : createNode()"
-      >
+      <v-form v-model="form.valid" @submit.prevent="_item && _item.attributes ? saveNode() : createNode()">
         <v-row>
-          <v-col>
+          <v-col cols="12" md="8">
             <v-text-field
               v-model="form.name"
               :label="`${$t('editor.dialog.createform.title')} *`"
@@ -14,6 +11,11 @@
               :rules="form.rules.name"
               :prefix="prefixedAspectName('')"
             />
+          </v-col>
+          <v-col cols="12" md="4" class="align-self-center text-right">
+            <v-btn color="primary" outlined @click="$emit('delete-item')">
+              {{ $t(`editor.dialog.delete.${type}`) }}
+            </v-btn>
           </v-col>
         </v-row>
         <v-row v-if="type === 'link'">
@@ -71,21 +73,13 @@
               </v-row>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn
-                fab
-                depressed
-                text
-                color="black"
-                @click="removeAttribute(index)"
-              >
+              <v-btn fab depressed text color="black" @click="removeAttribute(index)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-list-item-action>
           </v-list-item>
           <v-list-item v-if="_item.attributes.length === 0">
-            <v-list-item-content
-              class="veo-attribute-list-no-content justify-center"
-            >
+            <v-list-item-content class="veo-attribute-list-no-content justify-center">
               {{ $t(`editor.dialog.editform.${type}.noproperties`) }}
             </v-list-item-content>
           </v-list-item>
@@ -94,24 +88,15 @@
               <v-spacer />
               <v-btn color="primary" text @click="addAttribute()">
                 <v-icon>mdi-plus-circle-outline</v-icon>
-                <span class="ml-2">{{
-                  $t(`editor.dialog.editform.${type}.addproperty`)
-                }}</span>
+                <span class="ml-2">{{ $t(`editor.dialog.editform.${type}.addproperty`) }}</span>
               </v-btn>
             </v-list-item-action>
           </v-list-item>
         </v-list>
       </v-form>
-      <v-alert
-        v-if="duplicates.length > 0"
-        type="error"
-        class="mb-4 mt-6"
-        border="left"
-        colored-border
-      >
+      <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
         <span>
-          Es kann immer nur ein Attribut mit den folgende(n) Titel(n)
-          existieren:
+          Es kann immer nur ein Attribut mit den folgende(n) Titel(n) existieren:
         </span>
         <ul>
           <li v-for="duplicate of duplicates" :key="duplicate">
@@ -132,26 +117,14 @@
       <v-btn text color="primary" @click="close()">
         {{ $t('global.button.close') }}
       </v-btn>
-      <v-btn
-        text
-        color="primary"
-        :disabled="!form.valid || duplicates.length > 0"
-        @click="saveNode()"
-      >
+      <v-btn text color="primary" :disabled="!form.valid || duplicates.length > 0" @click="saveNode()">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  watch,
-  computed,
-  Ref,
-  useContext
-} from '@nuxtjs/composition-api'
+import { defineComponent, ref, watch, computed, Ref, useContext } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
@@ -197,9 +170,10 @@ export default defineComponent<IProps>({
         // If an item was passed, we want to update the form with it's values. Else we want to clear the form as we are creating a new item.
         if (val) {
           if (props.item) {
-            form.value.name = (props.item as
-              | IVEOCustomAspect
-              | IVEOCustomLink).title.replace(`${props.schema.title}_`, '')
+            form.value.name = (props.item as IVEOCustomAspect | IVEOCustomLink).title.replace(
+              `${props.schema.title}_`,
+              ''
+            )
 
             if (props.type === 'link') {
               form.value.targetType = (props.item as IVEOCustomLink).target.type
@@ -252,16 +226,9 @@ export default defineComponent<IProps>({
       targetDescription: '' as string,
       rules: {
         name: [(input: string) => trim(input).length > 0],
-        targetDescription: [
-          (input: string) => props.type === 'aspect' || trim(input).length > 0
-        ],
-        linkType: [
-          (input: string) => props.type === 'aspect' || trim(input).length > 0
-        ],
-        attributeTitle: [
-          (input: string) =>
-            dialog.value.mode === 'create' || trim(input).length > 0
-        ]
+        targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+        linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+        attributeTitle: [(input: string) => dialog.value.mode === 'create' || trim(input).length > 0]
       }
     })
 
@@ -288,16 +255,9 @@ export default defineComponent<IProps>({
         targetDescription: '' as string,
         rules: {
           name: [(input: string) => trim(input).length > 0],
-          targetDescription: [
-            (input: string) => props.type === 'aspect' || trim(input).length > 0
-          ],
-          linkType: [
-            (input: string) => props.type === 'aspect' || trim(input).length > 0
-          ],
-          attributeTitle: [
-            (input: string) =>
-              dialog.value.mode === 'create' || trim(input).length > 0
-          ]
+          targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+          linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+          attributeTitle: [(input: string) => dialog.value.mode === 'create' || trim(input).length > 0]
         }
       }
     }
@@ -324,10 +284,7 @@ export default defineComponent<IProps>({
       () => form.value,
       () => {
         if (_item.value) {
-          ;(_item.value as
-            | IVEOCustomAspect
-            | IVEOCustomLink).title = prefixedAspectName(form.value.name)
-
+          ;(_item.value as IVEOCustomAspect | IVEOCustomLink).title = prefixedAspectName(form.value.name)
           if (props.type === 'link') {
             ;(_item.value as IVEOCustomLink).target = {
               type: form.value.targetType,
@@ -348,10 +305,7 @@ export default defineComponent<IProps>({
           if (_item.value) {
             // Remove the prefix (id of the custom aspect/property) from the title of each attribute, as it will get added back on saving.
             for (const attribute of _item.value.attributes || []) {
-              attribute.title = attribute.title.replace(
-                `${_item.value.title}_`,
-                ''
-              )
+              attribute.title = attribute.title.replace(`${_item.value.title}_`, '')
             }
           }
         } else {
@@ -385,24 +339,18 @@ export default defineComponent<IProps>({
     function checkForDuplicate() {
       duplicates.value = []
       if (_item.value) {
-        ;(_item.value as IVEOCustomAspect | IVEOCustomLink).attributes.forEach(
-          (attribute1: IVEOAttribute) => {
-            if (
-              (_item.value as
-                | IVEOCustomAspect
-                | IVEOCustomLink).attributes.filter(
-                (attribute2: IVEOAttribute) =>
-                  attribute2.title.toLowerCase() ===
-                  attribute1.title.toLowerCase()
-              ).length > 1
-            ) {
-              const duplicateTitle = attribute1.title.toLowerCase()
-              if (!duplicates.value.includes(duplicateTitle)) {
-                duplicates.value.push(duplicateTitle)
-              }
+        ;(_item.value as IVEOCustomAspect | IVEOCustomLink).attributes.forEach((attribute1: IVEOAttribute) => {
+          if (
+            (_item.value as IVEOCustomAspect | IVEOCustomLink).attributes.filter(
+              (attribute2: IVEOAttribute) => attribute2.title.toLowerCase() === attribute1.title.toLowerCase()
+            ).length > 1
+          ) {
+            const duplicateTitle = attribute1.title.toLowerCase()
+            if (!duplicates.value.includes(duplicateTitle)) {
+              duplicates.value.push(duplicateTitle)
             }
           }
-        )
+        })
       }
     }
 

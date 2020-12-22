@@ -34,11 +34,7 @@
         <slot name="header" />
       </v-col>
     </v-row>
-    <v-row
-      no-gutters
-      :style="{ 'max-height': '100%', 'min-height': 0, height }"
-      :class="noPadding ? '' : 'pa-4'"
-    >
+    <v-row no-gutters :style="{ 'max-height': '100%', 'min-height': 0, height }" :class="noPadding ? '' : 'pa-4'">
       <v-col
         :cols="!absoluteSize ? cols : 12"
         :md="!absoluteSize ? medium : 12"

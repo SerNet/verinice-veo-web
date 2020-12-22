@@ -1,5 +1,13 @@
 <template>
-  <VeoDialog v-model="dialog" :large="state !== 'start'" :headline="$t('editor.formschema.headline')" persistent fixed-header fixed-footer :close-function="onClose">
+  <VeoDialog
+    v-model="dialog"
+    :large="state !== 'start'"
+    :headline="$t('editor.formschema.headline')"
+    persistent
+    fixed-header
+    fixed-footer
+    :close-function="onClose"
+  >
     <template #default>
       <v-window v-model="state">
         <v-window-item value="start" class="py-4">
@@ -39,7 +47,12 @@
                 <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.create.title.text') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
-                <v-text-field v-model="createForm.title" :label="$t('editor.formschema.create.title')" :rules="createForm.rules.title" required />
+                <v-text-field
+                  v-model="createForm.title"
+                  :label="$t('editor.formschema.create.title')"
+                  :rules="createForm.rules.title"
+                  required
+                />
               </v-col>
             </v-row>
             <v-row no-gutters class="align-center mt-4">
@@ -47,12 +60,22 @@
                 <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.create.type.text') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
-                <v-select v-model="createForm.modelType" :label="$t('editor.formschema.create.type')" :rules="createForm.rules.modelType" :items="objectTypes" required />
+                <v-select
+                  v-model="createForm.modelType"
+                  :label="$t('editor.formschema.create.type')"
+                  :rules="createForm.rules.modelType"
+                  :items="objectTypes"
+                  required
+                />
               </v-col>
             </v-row>
             <v-row v-if="createForm.modelType === 'custom'">
               <v-col :cols="12">
-                <VEOEditorFileUpload :code="oscode" :submit-button-text="$t('editor.objectschema.wizard.import')" @schema-uploaded="setObjectSchema" />
+                <VEOEditorFileUpload
+                  :code="oscode"
+                  :submit-button-text="$t('editor.objectschema.wizard.import')"
+                  @schema-uploaded="setObjectSchema"
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -87,7 +110,7 @@
     </template>
     <template #dialog-options>
       <span />
-      <v-btn v-if="state !== 'start'" color="primary" @click="goBack()">
+      <v-btn v-if="state !== 'start'" text color="primary" @click="goBack()">
         {{ $t('global.button.previous') }}
       </v-btn>
       <v-spacer />
@@ -96,6 +119,7 @@
         color="primary"
         role="submit"
         type="submit"
+        text
         :disabled="!createForm.valid || (createForm.modelType === 'custom' && !objectSchema)"
         @click="doCreate1()"
       >
@@ -225,7 +249,11 @@ export default Vue.extend({
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     async doImport1(schema: IVEOFormSchema) {
       this.setFormSchema(schema)
-      if (this.objectTypes.findIndex((item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType.toLowerCase()) !== -1) {
+      if (
+        this.objectTypes.findIndex(
+          (item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType.toLowerCase()
+        ) !== -1
+      ) {
         this.objectSchema = await this.$api.schema.fetch(schema.modelType.toLowerCase())
         this.$emit('form-schema', this.formSchema)
         this.$emit('object-schema', this.objectSchema)

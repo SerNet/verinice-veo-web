@@ -1,5 +1,13 @@
 <template>
-  <VeoDialog v-model="dialog" :large="state !== 'start'" :headline="$t('editor.objectschema.headline')" persistent fixed-header fixed-footer :close-function="onClose">
+  <VeoDialog
+    v-model="dialog"
+    :large="state !== 'start'"
+    :headline="$t('editor.objectschema.headline')"
+    persistent
+    fixed-header
+    fixed-footer
+    :close-function="onClose"
+  >
     <template #default>
       <v-window v-model="state">
         <v-window-item value="start" class="py-4">
@@ -20,7 +28,9 @@
             </v-list-item>
             <v-list-item @click="state = 'import'">
               <v-list-item-content>
-                <v-list-item-title class="font-weight-bold">{{ $t('editor.objectschema.wizard.import') }}</v-list-item-title>
+                <v-list-item-title class="font-weight-bold">
+                  {{ $t('editor.objectschema.wizard.import') }}
+                </v-list-item-title>
                 <v-list-item-subtitle>{{ $t('editor.objectschema.wizard.import.description') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
@@ -37,7 +47,12 @@
                 <span style="font-size: 1.2rem;"> {{ $t('editor.objectschema.create.type.text') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
-                <v-text-field v-model="createForm.type" :label="$t('editor.objectschema.create.type')" :rules="createForm.rules.type" required />
+                <v-text-field
+                  v-model="createForm.type"
+                  :label="$t('editor.objectschema.create.type')"
+                  :rules="createForm.rules.type"
+                  required
+                />
               </v-col>
             </v-row>
             <v-row no-gutters class="align-center mt-4">
@@ -45,7 +60,12 @@
                 <span style="font-size: 1.2rem;"> {{ $t('editor.objectschema.create.description.text') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
-                <v-text-field v-model="createForm.description" :label="$t('editor.objectschema.create.description')" :rules="createForm.rules.description" required />
+                <v-text-field
+                  v-model="createForm.description"
+                  :label="$t('editor.objectschema.create.description')"
+                  :rules="createForm.rules.description"
+                  required
+                />
               </v-col>
             </v-row>
           </v-form>
@@ -58,7 +78,12 @@
               <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.create.type.text') }}*: </span>
             </v-col>
             <v-col :cols="12" :md="5">
-              <v-select v-model="modelType" :label="$t('editor.formschema.create.type')" :items="objectTypes" required />
+              <v-select
+                v-model="modelType"
+                :label="$t('editor.formschema.create.type')"
+                :items="objectTypes"
+                required
+              />
             </v-col>
           </v-row>
           <v-row v-if="modelType === 'custom'">
@@ -71,14 +96,30 @@
     </template>
     <template #dialog-options>
       <span />
-      <v-btn v-if="state !== 'start'" outlined @click="state = 'start'">
+      <v-btn v-if="state !== 'start'" text @click="state = 'start'">
         {{ $t('global.button.previous') }}
       </v-btn>
       <v-spacer />
-      <v-btn v-if="state === 'create'" color="primary" outlined role="submit" type="submit" :disabled="!createForm.valid" @click="createSchema()">
+      <v-btn
+        v-if="state === 'create'"
+        color="primary"
+        text
+        role="submit"
+        type="submit"
+        :disabled="!createForm.valid"
+        @click="createSchema()"
+      >
         {{ $t('global.button.next') }}
       </v-btn>
-      <v-btn v-if="state === 'import'" color="primary" outlined role="submit" type="submit" :disabled="importNextDisabled" @click="importSchema()">
+      <v-btn
+        v-if="state === 'import'"
+        color="primary"
+        text
+        role="submit"
+        type="submit"
+        :disabled="importNextDisabled"
+        @click="importSchema()"
+      >
         {{ $t('global.button.next') }}
       </v-btn>
     </template>
@@ -180,7 +221,7 @@ export default Vue.extend({
       }
     },
     importSchema() {
-      this.$api.schema.fetch(this.modelType).then(data => {
+      this.$api.schema.fetch(this.modelType).then((data: any) => {
         this.$emit('schema', data)
       })
     },

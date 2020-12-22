@@ -12,6 +12,8 @@ export default {
   'editor.dialog.createform.linkdescription': 'Description',
   'editor.dialog.createform.title': 'Title',
   'editor.dialog.createform.error': 'Der Link/Aspekt konnte nicht erstellt werden',
+  'editor.dialog.delete.aspect': 'Aspekt löschen',
+  'editor.dialog.delete.link': 'Link löschen',
   'editor.dialog.editform.aspect.addproperty': 'Add attribute',
   'editor.dialog.editform.aspect.description': 'Description',
   'editor.dialog.editform.aspect.noproperties': 'This aspect has no attributes',
