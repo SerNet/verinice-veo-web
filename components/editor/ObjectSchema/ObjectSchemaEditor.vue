@@ -261,7 +261,6 @@ export default defineComponent<IProps>({
       try {
         if (objectSchemaDialog.value.type === 'aspect') {
           const newAspect = generateAspect()
-          prefixedAspectName(schema.value, form.name)
           addAspectToSchema(schema.value, form.name, newAspect)
 
           // We have to transform the aspect name in order to access it via the key in the schema

@@ -30,21 +30,17 @@
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
-          <v-row
-            no-gutters
-            class="flex-column overflow-hidden mt-2"
-            style="width: 100%"
-          >
+          <v-row no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%">
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="12" lg="4">
                   <v-text-field
-                    v-model="schema.title"
+                    :value="schema.title"
                     dense
                     hide-details
                     flat
                     :label="$t('editor.objectschema.objectschema')"
-                    @input="updateSchemaName()"
+                    @input="updateSchemaName"
                   />
                 </v-col>
                 <v-col cols="12" lg="8">
@@ -124,6 +120,7 @@ import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import VEOOSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOOSEWizardDialog.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
+import { renameSchema } from '~/lib/ObjectSchemaHelper'
 
 export default Vue.extend({
   components: {
@@ -169,19 +166,16 @@ export default Vue.extend({
       this.schema = schema
       this.showCreationDialog = false
     },
-    updateSchemaName() {
+    updateSchemaName(name: string) {
       if (this.schema) {
-        this.schema.title = this.schema.title.toLowerCase()
+        renameSchema(this.schema, name.toLowerCase())
       }
     },
     downloadSchema() {
       if (this.$refs.downloadButton) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(
-          JSON.stringify(this.schema)
-        )}`
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.schema))}`
         ;(this.$refs.downloadButton as any).href = data
-        ;(this.$refs.downloadButton as any).download = `os_${this.schema
-          ?.title || 'download'}.json`
+        ;(this.$refs.downloadButton as any).download = `os_${this.schema?.title || 'download'}.json`
       }
     }
   }
