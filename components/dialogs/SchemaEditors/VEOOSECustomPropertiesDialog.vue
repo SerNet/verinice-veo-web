@@ -12,7 +12,7 @@
               :prefix="prefixedAspectName('')"
             />
           </v-col>
-          <v-col cols="12" md="4" class="align-self-center text-right">
+          <v-col v-if="_item && _item.attributes" cols="12" md="4" class="align-self-center text-right">
             <v-btn color="primary" outlined @click="$emit('delete-item')">
               {{ $t(`editor.dialog.delete.${type}`) }}
             </v-btn>
@@ -51,7 +51,7 @@
                     :label="`${$t(`editor.dialog.editform.${type}.title`)} *`"
                     required
                     :rules="form.rules.attributeTitle"
-                    :prefix="_item.title + '_'"
+                    :prefix="attributeTitle"
                     @input="checkForDuplicate()"
                   />
                 </v-col>
@@ -170,11 +170,6 @@ export default defineComponent<IProps>({
         // If an item was passed, we want to update the form with it's values. Else we want to clear the form as we are creating a new item.
         if (val) {
           if (props.item) {
-            form.value.name = (props.item as IVEOCustomAspect | IVEOCustomLink).title.replace(
-              `${props.schema.title}_`,
-              ''
-            )
-
             if (props.type === 'link') {
               form.value.targetType = (props.item as IVEOCustomLink).target.type
               form.value.targetDescription = (props.item as IVEOCustomLink).target.description
@@ -284,7 +279,6 @@ export default defineComponent<IProps>({
       () => form.value,
       () => {
         if (_item.value) {
-          ;(_item.value as IVEOCustomAspect | IVEOCustomLink).title = prefixedAspectName(form.value.name)
           if (props.type === 'link') {
             ;(_item.value as IVEOCustomLink).target = {
               type: form.value.targetType,
@@ -302,11 +296,11 @@ export default defineComponent<IProps>({
       (val: IVEOCustomAspect | IVEOCustomLink | undefined) => {
         if (val) {
           _item.value = JSON.parse(JSON.stringify(val)) // Deep copy to avoid mutating the object passed by the prop (else we couldn't abort editing)
-          if (_item.value) {
-            // Remove the prefix (id of the custom aspect/property) from the title of each attribute, as it will get added back on saving.
-            for (const attribute of _item.value.attributes || []) {
-              attribute.title = attribute.title.replace(`${_item.value.title}_`, '')
-            }
+          form.value.name = val.title
+
+          if (props.type === 'link') {
+            form.value.targetType = (_item.value as IVEOCustomLink).target.type
+            form.value.targetDescription = (_item.value as IVEOCustomLink).target.description
           }
         } else {
           _item.value = val
@@ -354,6 +348,8 @@ export default defineComponent<IProps>({
       }
     }
 
+    const attributeTitle = computed(() => prefixedAspectName(form.value.name) + '_')
+
     return {
       dialog,
       form,
@@ -368,7 +364,8 @@ export default defineComponent<IProps>({
       removeAttribute,
       headline,
       close,
-      prefixedAspectName
+      prefixedAspectName,
+      attributeTitle
     }
   }
 })
