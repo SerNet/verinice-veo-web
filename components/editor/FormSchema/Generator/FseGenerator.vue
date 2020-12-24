@@ -39,10 +39,7 @@ export default Vue.extend({
     pages(): UISchemaElement[] | undefined {
       if (this.value && this.value.elements) {
         return this.value.elements
-          .filter(
-            el =>
-              el.type === 'Layout' && el.options && el.options.format === 'page'
-          )
+          .filter(el => el.type === 'Layout' && el.options && el.options.format === 'page')
           .map((el, i) => ({
             ...el,
             options: { ...el.options, _pageID: i + 1 }
@@ -104,17 +101,12 @@ export default Vue.extend({
     }
   },
   render(h): VNode {
-    const createComponent = (
-      element: UISchemaElement,
-      formSchemaPointer: string
-    ): VNode => {
+    const createComponent = (element: UISchemaElement, formSchemaPointer: string): VNode => {
       // Create children of layout "elements"
       const createChildren = () => {
         return (
           element.elements &&
-          element.elements.map((elem, index) =>
-            createComponent(elem, `${formSchemaPointer}/elements/${index}`)
-          )
+          element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`))
         )
       }
 
@@ -145,21 +137,11 @@ export default Vue.extend({
 
           if (element.scope) {
             const elementName = element.scope.split('/').pop() as string
-            const elementSchema = JsonPointer.get(
-              this.localSchema,
-              element.scope
-            ) as any
-            const elementValue = JsonPointer.get(
-              this.value,
-              this.propertyPath(element.scope)
-            ) as any
-            const elementParentSchema = JsonPointer.get(
-              this.localSchema,
-              '#'
-            ) as any
+            const elementSchema = JsonPointer.get(this.localSchema, element.scope) as any
+            const elementValue = JsonPointer.get(this.value, this.propertyPath(element.scope)) as any
+            const elementParentSchema = JsonPointer.get(this.localSchema, '#') as any
             const isRequired =
-              Array.isArray(elementParentSchema.required) &&
-              elementParentSchema.required.includes(elementName)
+              Array.isArray(elementParentSchema.required) && elementParentSchema.required.includes(elementName)
 
             partOfProps = {
               value: element,
