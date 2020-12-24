@@ -101,12 +101,14 @@ export default Vue.extend({
     }
   },
   render(h): VNode {
-    const createComponent = (element: UISchemaElement, formSchemaPointer: string): VNode => {
+    const createComponent = (element: UISchemaElement, formSchemaPointer: string, elementLevel: number): VNode => {
       // Create children of layout "elements"
       const createChildren = () => {
         return (
           element.elements &&
-          element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`))
+          element.elements.map((elem, index) =>
+            createComponent(elem, `${formSchemaPointer}/elements/${index}`, elementLevel + 1)
+          )
         )
       }
 
@@ -117,8 +119,9 @@ export default Vue.extend({
             {
               props: {
                 options: element.options,
-                formSchema: element,
-                formSchemaPointer
+                value: element,
+                formSchemaPointer,
+                level: elementLevel
               },
               on: {
                 delete: (event: any) => this.onDelete(event, formSchemaPointer)
@@ -186,7 +189,7 @@ export default Vue.extend({
       return null as any
     }
 
-    return createComponent(this.value, '#')
+    return createComponent(this.value, '#', 0)
   }
 })
 </script>
