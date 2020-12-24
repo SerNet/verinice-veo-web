@@ -148,7 +148,7 @@
         <template #header>
           <h3 class="text-center">{{ $t('editor.formschema.controls.current') }}</h3>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
-            <v-btn icon @click="$emit('toggle-backlog')">
+            <v-btn icon x-small @click="$emit('toggle-backlog')">
               <v-icon v-if="!$props.backlogCollapsed">mdi-chevron-left</v-icon>
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
@@ -403,8 +403,8 @@ export default Vue.extend({
 
 .veo-collapse-editor {
   background-color: rgb(245, 245, 245);
-  border-bottom-left-radius: 4px;
-  border-top-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
   position: absolute;
   left: 0;
   top: 0;

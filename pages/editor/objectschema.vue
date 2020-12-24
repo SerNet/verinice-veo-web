@@ -25,16 +25,12 @@
             </v-btn>
           </a>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
-            <v-btn icon @click="collapsed = !collapsed">
+            <v-btn icon x-small @click="collapsed = !collapsed">
               <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
-          <v-row
-            no-gutters
-            class="flex-column overflow-hidden mt-2"
-            style="width: 100%"
-          >
+          <v-row no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%">
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="12" lg="4">
@@ -176,12 +172,9 @@ export default Vue.extend({
     },
     downloadSchema() {
       if (this.$refs.downloadButton) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(
-          JSON.stringify(this.schema)
-        )}`
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.schema))}`
         ;(this.$refs.downloadButton as any).href = data
-        ;(this.$refs.downloadButton as any).download = `os_${this.schema
-          ?.title || 'download'}.json`
+        ;(this.$refs.downloadButton as any).download = `os_${this.schema?.title || 'download'}.json`
       }
     }
   }

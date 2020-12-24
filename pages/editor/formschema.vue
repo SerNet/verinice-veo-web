@@ -30,7 +30,7 @@
             <v-icon>mdi-code-tags</v-icon>
           </v-btn>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
-            <v-btn icon @click="previewCollapsed = !previewCollapsed">
+            <v-btn icon x-small @click="previewCollapsed = !previewCollapsed">
               <v-icon v-if="previewCollapsed">mdi-chevron-left</v-icon>
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
