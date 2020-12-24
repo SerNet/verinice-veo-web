@@ -6,7 +6,7 @@
           <h3 class="text-center">{{ $t('editor.formschema.controls.available') }}</h3>
         </template>
         <template #default>
-          <v-card flat class="mt-4 mx-2 mb-2 drag-elements-wrapper">
+          <v-card flat class="mt-0 mx-2 mb-2 drag-elements-wrapper">
             <!-- Form elements -->
             <div>
               <v-subheader class="px-2">Form Elements</v-subheader>
@@ -155,7 +155,7 @@
           </div>
         </template>
         <template #default>
-          <div class="veo-editor-body pt-2">
+          <div class="veo-editor-body d-flex pt-0 px-2 pb-2" style="height: 100%">
             <FseGenerator :schema="objectSchema" :value="value.content" @delete="onDelete" @update="onUpdate" />
           </div>
         </template>
