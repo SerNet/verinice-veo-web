@@ -3,7 +3,7 @@
     <template #default>
       <VeoPage v-if="!backlogCollapsed" absolute-size no-padding :cols="12" :md="8" :xl="8" sticky-header>
         <template #header>
-          <h3 class="text-center">{{ $t('editor.formschema.controls.available') }}</h3>
+          <h3 class="text-center pb-1">{{ $t('editor.formschema.controls.available') }}</h3>
         </template>
         <template #default>
           <v-card flat class="mt-0 mx-2 mb-2 drag-elements-wrapper">
@@ -146,7 +146,7 @@
         sticky-header
       >
         <template #header>
-          <h3 class="text-center">{{ $t('editor.formschema.controls.current') }}</h3>
+          <h3 class="text-center pb-1">{{ $t('editor.formschema.controls.current') }}</h3>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
             <v-btn icon x-small @click="$emit('toggle-backlog')">
               <v-icon v-if="!$props.backlogCollapsed">mdi-chevron-left</v-icon>
