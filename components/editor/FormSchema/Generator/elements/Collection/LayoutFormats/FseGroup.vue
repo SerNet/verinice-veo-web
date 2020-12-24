@@ -1,5 +1,10 @@
 <template>
-  <v-card flat v-if="level === 0" class="fse-group level-0" style="height: 100%; width: 100%">
+  <v-card v-if="level === 0" flat class="fse-group level-0" style="height: 100%; width: 100%">
+    <div v-if="value.elements.length === 0" class="dropzone-placeholder">
+      <div class="dropzone-placeholder-text subtitle-1">
+        {{ $t('editor.formschema.dropzone.placeholder') }}
+      </div>
+    </div>
     <Draggable
       class="dragArea d-flex"
       tag="div"
@@ -211,5 +216,17 @@ export const helpers: Helpful<LayoutProps> = {
 
 .fse-group {
   border: 1px solid $grey;
+}
+
+.dropzone-placeholder {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dropzone-placeholder-text {
+  text-align: center;
+  color: $grey;
 }
 </style>

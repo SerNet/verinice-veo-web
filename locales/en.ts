@@ -2,7 +2,7 @@ export default {
   'domain.select.label': 'Domain',
 
   'editor.basicproperties': 'Basic properties',
-  'editor.code.save.error': 'Couldn\'t update schema',
+  'editor.code.save.error': "Couldn't update schema",
   'editor.code.save.success': 'Schema updated!',
   'editor.customaspects': 'Custom aspects',
   'editor.customaspects.add': 'Add aspect',
@@ -53,14 +53,17 @@ export default {
   'editor.formschema.edit.input.type': 'Control type',
   'editor.formschema.formschema': 'Form schema',
   'editor.formschema.headline': 'Form schema editor',
+  'editor.formschema.dropzone.placeholder': 'Drag in the elements',
   'editor.formschema.wizard.create': 'Create form schema',
-  'editor.formschema.wizard.create.description': 'Create a new form schema, either from scratch or a pre-generated layout.',
+  'editor.formschema.wizard.create.description':
+    'Create a new form schema, either from scratch or a pre-generated layout.',
   'editor.formschema.wizard.generate.generate': 'Generate',
   'editor.formschema.wizard.generate.none': 'Start from scratch',
   'editor.formschema.wizard.generate.title': 'Do you want to pregenerate a form schema?',
   'editor.formschema.wizard.import': 'Import form schema',
   'editor.formschema.wizard.import.description': 'Import an existing form schema and modify it.',
-  'editor.formschema.wizard.import.wrongobjectschema': 'The uploaded object schema has the wrong type ({objectType}). It has to have the type ({formType}).',
+  'editor.formschema.wizard.import.wrongobjectschema':
+    'The uploaded object schema has the wrong type ({objectType}). It has to have the type ({formType}).',
   'editor.formschema.wizard.modelType.custom': 'Custom',
   'editor.formschema.wizard.objectschema.required': 'You have to specify an object schema!',
   'editor.formschema.wizard.start.title': 'How do you want to start?',

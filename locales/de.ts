@@ -53,14 +53,17 @@ export default {
   'editor.formschema.edit.input.type': 'Steuerelement Typ',
   'editor.formschema.formschema': 'Formschema',
   'editor.formschema.headline': 'Formschema Editor',
+  'editor.formschema.dropzone.placeholder': 'Ziehen Sie die Steuerelemente herein',
   'editor.formschema.wizard.create': 'Formular erstellen',
-  'editor.formschema.wizard.create.description': 'Neues Formular erstellen. Entweder leer oder mit vorgenerierten Feldern',
+  'editor.formschema.wizard.create.description':
+    'Neues Formular erstellen. Entweder leer oder mit vorgenerierten Feldern',
   'editor.formschema.wizard.generate.generate': 'Vorgenerieren',
   'editor.formschema.wizard.generate.none': 'Mit leerem Formular starten',
   'editor.formschema.wizard.generate.title': 'Möchten Sie ein Formular vorgenerieren?',
   'editor.formschema.wizard.import': 'Formular importieren',
   'editor.formschema.wizard.import.description': 'Existierendes Formular importieren und modifizieren',
-  'editor.formschema.wizard.import.wrongobjectschema': 'Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss "{formType}" sein.',
+  'editor.formschema.wizard.import.wrongobjectschema':
+    'Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss "{formType}" sein.',
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
@@ -167,7 +170,8 @@ export default {
   'unit.details.parent': 'Übergeordnete Unit',
   'unit.forms.create': '{type} erstellen',
   'unit.forms.noprocesses': 'Keine Verarbeitungstätigkeiten vorhanden',
-  'unit.forms.nrr': 'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
+  'unit.forms.nrr':
+    'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
   'unit.index.title': 'Dashboard',
   'unit.select.label': 'Unit'
 }
