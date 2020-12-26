@@ -22,7 +22,13 @@
         </v-col>
       </v-row>
     </v-card-text>
-    <VEOFSEEditControlDialog v-model="editDialog" v-bind="$props" :type="currentType" @edit="doEdit" />
+    <VEOFSEEditControlDialog
+      v-model="editDialog"
+      v-bind="$props"
+      :formSchema="value"
+      :type="currentType"
+      @edit="doEdit"
+    />
     <VEOFSEDeleteControlDialog v-model="deleteDialog" :name="name" @delete="doDelete" />
   </v-card>
 </template>

@@ -193,6 +193,10 @@ export interface IUnused {
   links: IControl[]
 }
 
+interface IProvide {
+  controlsItems: IControlItem
+}
+
 export default Vue.extend({
   name: 'FormSchemaEditor',
   components: {
@@ -206,6 +210,11 @@ export default Vue.extend({
     backlogCollapsed: {
       type: Boolean,
       default: false
+    }
+  },
+  provide(): IProvide {
+    return {
+      controlsItems: this.controlsItems
     }
   },
   data() {

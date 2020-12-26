@@ -42,6 +42,14 @@
             <v-checkbox v-modl="activeControlType.highlight" :label="$t('editor.formschema.edit.input.highlight')" />
           </v-col>
         </v-row>
+        <v-row v-if="activeControlType.name === 'LinksField'" no-gutters class="align-center">
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;"> Links Attribute: </span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-autocomplete item-text="label" :items="linksAttributes" multiple return-object></v-autocomplete>
+          </v-col>
+        </v-row>
       </v-form>
       <small>{{ $t('editor.dialog.requiredfields') }}</small>
     </template>
@@ -57,7 +65,16 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropType, Ref, ref, watch, getCurrentInstance } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  PropType,
+  Ref,
+  ref,
+  watch,
+  getCurrentInstance,
+  inject
+} from '@nuxtjs/composition-api'
 import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
@@ -66,6 +83,7 @@ interface IProps {
   name: string
   options: any
   schema: any
+  formSchema: any
   type: string
 }
 
@@ -85,6 +103,10 @@ export default defineComponent<IProps>({
     },
     schema: {
       type: Object as PropType<any>,
+      required: true
+    },
+    formSchema: {
+      type: Object,
       required: true
     },
     type: {
@@ -171,6 +193,12 @@ export default defineComponent<IProps>({
       context.emit('edit', { options: { label: label.value, ...options } })
     }
 
+    /**
+     * LinksField related code
+     */
+
+    const linksAttributes: any = ref((inject('controlsItems') as any)[props.formSchema.scope])
+
     return {
       dialog,
       close,
@@ -179,7 +207,8 @@ export default defineComponent<IProps>({
       label,
       alternatives,
       updateActiveControlType,
-      updateElement
+      updateElement,
+      linksAttributes
     }
   }
 })
