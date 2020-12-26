@@ -65,6 +65,26 @@
         </v-row>
       </v-form>
       <small>{{ $t('editor.dialog.requiredfields') }}</small>
+
+      <v-card v-if="activeControlType.name === 'LinksField'" flat style="border: 1px solid grey">
+        <Draggable
+          class="dragArea d-flex flex-column"
+          tag="div"
+          style="overflow: auto; width: 100%; min-height: 200px; height: 100%"
+          :list="formSchemaElements"
+          handle=".handle"
+          :group="{ name: 'link-attributes' }"
+        >
+          <div v-for="(attribute, index) in formSchemaElements" :key="index" class="handle">
+            <Control
+              :schema="getSchema(attribute.scope)"
+              :value="attribute"
+              :options="attribute.options"
+              :scope="attribute.scope"
+            />
+          </div>
+        </Draggable>
+      </v-card>
     </template>
     <template #dialog-options>
       <v-spacer />
@@ -90,8 +110,9 @@ import {
 } from '@nuxtjs/composition-api'
 import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import vjp from 'vue-json-pointer'
 import { update } from 'lodash'
+import Draggable from 'vuedraggable'
+import { JsonPointer } from 'json-ptr'
 
 interface IProps {
   value: boolean
@@ -103,6 +124,10 @@ interface IProps {
 }
 
 export default defineComponent<IProps>({
+  components: {
+    Draggable,
+    Control: async () => (await import('~/components/editor/FormSchema/Generator/elements/FseControl.vue')).default
+  },
   props: {
     value: {
       type: Boolean,
@@ -134,6 +159,8 @@ export default defineComponent<IProps>({
      * Common dialog stuff (opening and closing)
      */
     const dialog = ref({ value: props.value })
+
+    console.log(props)
 
     watch(
       () => props.value,
@@ -231,6 +258,10 @@ export default defineComponent<IProps>({
             }
           })
         })
+      }
+
+      linksField.getSchema = function(scope: string) {
+        return JsonPointer.get(props.schema.items, scope)
       }
     }
 
