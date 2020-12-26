@@ -48,6 +48,8 @@ export default {
   'editor.formschema.edit.input.highlight': 'Highlight element',
   'editor.formschema.edit.input.label': 'Label',
   'editor.formschema.edit.input.label.text': 'Element label',
+  'editor.formschema.edit.input.link.attributes': 'Attributes',
+  'editor.formschema.edit.input.link.attributes.text': 'Link attributes',
   'editor.formschema.edit.input.scope': 'Scope',
   'editor.formschema.edit.input.scope.text': 'Element scope',
   'editor.formschema.edit.input.type': 'Control type',

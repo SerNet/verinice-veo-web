@@ -23,6 +23,7 @@
       </v-row>
     </v-card-text>
     <VEOFSEEditControlDialog
+      v-if="editDialog"
       v-model="editDialog"
       v-bind="$props"
       :formSchema="value"
@@ -126,7 +127,10 @@ export default Vue.extend({
       this.editDialog = true
     },
     doEdit(data: any) {
-      vjp.set(this.value, '/options', data.options)
+      Object.keys(data).forEach(key => {
+        vjp.set(this.value, `/${key}`, data[key])
+      })
+
       this.editDialog = false
     },
     showDelete() {

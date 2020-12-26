@@ -1,5 +1,10 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="$t('editor.formschema.edit.input.headline', { element: name })" large>
+  <VeoDialog
+    v-model="dialog.value"
+    :key="formSchema.scope"
+    :headline="$t('editor.formschema.edit.input.headline', { element: name })"
+    large
+  >
     <template #default>
       <v-form>
         <v-row no-gutters class="align-center mt-4">
@@ -39,15 +44,23 @@
             <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.highlight') }}: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-checkbox v-modl="activeControlType.highlight" :label="$t('editor.formschema.edit.input.highlight')" />
+            <v-checkbox v-model="activeControlType.highlight" :label="$t('editor.formschema.edit.input.highlight')" />
           </v-col>
         </v-row>
         <v-row v-if="activeControlType.name === 'LinksField'" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> Links Attribute: </span>
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.link.attributes.text') }}: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-autocomplete item-text="label" :items="linksAttributes" multiple return-object></v-autocomplete>
+            <v-autocomplete
+              :value="linksAttributes"
+              item-text="label"
+              :items="linksAttributesItems"
+              multiple
+              return-object
+              :label="$t('editor.formschema.edit.input.link.attributes')"
+              @input="onInputLinksAttributes"
+            ></v-autocomplete>
           </v-col>
         </v-row>
       </v-form>
@@ -77,6 +90,8 @@ import {
 } from '@nuxtjs/composition-api'
 import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
+import vjp from 'vue-json-pointer'
+import { update } from 'lodash'
 
 interface IProps {
   value: boolean
@@ -187,17 +202,47 @@ export default defineComponent<IProps>({
     const label: Ref<string> = ref(props.options?.label || '')
     const alternatives = computed(() => controlTypeAlternatives(activeControlType.value.name, props))
 
-    function updateElement() {
-      const options: any = activeControlType.value
-      delete options.name
-      context.emit('edit', { options: { label: label.value, ...options } })
-    }
-
     /**
      * LinksField related code
      */
 
-    const linksAttributes: any = ref((inject('controlsItems') as any)[props.formSchema.scope])
+    const linksField: any = {}
+    if (activeControlType.value.name === 'LinksField') {
+      linksField.linksAttributesItems = ref((inject('controlsItems') as any)[props.formSchema.scope])
+      linksField.formSchemaElements = ref([...props.formSchema.elements])
+      linksField.linksAttributes = ref(
+        linksField.formSchemaElements.value.map((obj: any) => {
+          return linksField.linksAttributesItems.value.find((attr: any) => attr.scope === obj.scope)
+        })
+      )
+      if (linksField.formSchemaElements.value.length > 0) {
+        const dragElements = linksField.formSchemaElements
+      }
+
+      linksField.onInputLinksAttributes = function(event: any) {
+        console.log(event)
+        linksField.formSchemaElements.value = []
+        event.forEach((obj: any) => {
+          linksField.formSchemaElements.value.push({
+            type: 'Control',
+            scope: obj.scope,
+            options: {
+              label: obj.label
+            }
+          })
+        })
+      }
+    }
+
+    function updateElement() {
+      const options: any = activeControlType.value
+      let updateData: any = { options: { label: label.value, ...options } }
+      if (activeControlType.value.name === 'LinksField') {
+        updateData = { ...updateData, elements: linksField.formSchemaElements.value }
+      }
+      // delete options.name
+      context.emit('edit', updateData)
+    }
 
     return {
       dialog,
@@ -208,7 +253,7 @@ export default defineComponent<IProps>({
       alternatives,
       updateActiveControlType,
       updateElement,
-      linksAttributes
+      ...linksField
     }
   }
 })

@@ -48,6 +48,8 @@ export default {
   'editor.formschema.edit.input.highlight': 'Element hervorheben',
   'editor.formschema.edit.input.label': 'Beschriftung',
   'editor.formschema.edit.input.label.text': 'Beschriftung des Elements',
+  'editor.formschema.edit.input.link.attributes': 'Attribute',
+  'editor.formschema.edit.input.link.attributes.text': 'Linkattribute',
   'editor.formschema.edit.input.scope': 'Scope',
   'editor.formschema.edit.input.scope.text': 'Scope des Elements',
   'editor.formschema.edit.input.type': 'Steuerelement Typ',
