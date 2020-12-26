@@ -126,7 +126,7 @@ interface IProps {
 export default defineComponent<IProps>({
   components: {
     Draggable,
-    Control: async () => (await import('~/components/editor/FormSchema/Generator/elements/FseControl.vue')).default
+    Control: (): Promise<any> => import('~/components/editor/FormSchema/Generator/elements/FseControl.vue')
   },
   props: {
     value: {
