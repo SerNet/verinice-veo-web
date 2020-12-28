@@ -53,7 +53,7 @@
           </v-col>
           <v-col :cols="12" :md="5">
             <v-autocomplete
-              :value="linksAttributes"
+              v-model="linksAttributes"
               item-text="label"
               :items="linksAttributesItems"
               multiple
@@ -66,7 +66,11 @@
       </v-form>
       <small>{{ $t('editor.dialog.requiredfields') }}</small>
 
-      <v-card v-if="activeControlType.name === 'LinksField'" flat style="border: 1px solid grey">
+      <v-card
+        v-if="activeControlType.name === 'LinksField' && formSchemaElements.length > 0"
+        flat
+        style="border: 1px solid grey"
+      >
         <Draggable
           class="dragArea d-flex flex-column"
           tag="div"
@@ -77,10 +81,12 @@
         >
           <div v-for="(attribute, index) in formSchemaElements" :key="index" class="handle">
             <Control
+              :name="attribute.scope.split('/').pop()"
               :schema="getSchema(attribute.scope)"
               :value="attribute"
               :options="attribute.options"
               :scope="attribute.scope"
+              @delete="onLinksAttributeDelete(index, attribute.scope)"
             />
           </div>
         </Draggable>
@@ -160,8 +166,6 @@ export default defineComponent<IProps>({
      */
     const dialog = ref({ value: props.value })
 
-    console.log(props)
-
     watch(
       () => props.value,
       (val: boolean) => {
@@ -236,7 +240,8 @@ export default defineComponent<IProps>({
     const linksField: any = {}
     if (activeControlType.value.name === 'LinksField') {
       linksField.linksAttributesItems = ref((inject('controlsItems') as any)[props.formSchema.scope])
-      linksField.formSchemaElements = ref([...props.formSchema.elements])
+      // Important: JSON.parse(JSON.stringify()) is necessary to avoid edition of array objects through reference before saving
+      linksField.formSchemaElements = ref(JSON.parse(JSON.stringify(props.formSchema.elements)))
       linksField.linksAttributes = ref(
         linksField.formSchemaElements.value.map((obj: any) => {
           return linksField.linksAttributesItems.value.find((attr: any) => attr.scope === obj.scope)
@@ -247,7 +252,6 @@ export default defineComponent<IProps>({
       }
 
       linksField.onInputLinksAttributes = function(event: any) {
-        console.log(event)
         linksField.formSchemaElements.value = []
         event.forEach((obj: any) => {
           linksField.formSchemaElements.value.push({
@@ -258,6 +262,14 @@ export default defineComponent<IProps>({
             }
           })
         })
+      }
+
+      linksField.onLinksAttributeDelete = function(index: any, scope: string) {
+        linksField.linksAttributes.value.splice(
+          linksField.linksAttributes.value.findIndex((attr: any) => attr.scope === scope),
+          1
+        )
+        linksField.formSchemaElements.value.splice(index, 1)
       }
 
       linksField.getSchema = function(scope: string) {
