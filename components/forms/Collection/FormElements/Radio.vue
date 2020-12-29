@@ -126,4 +126,8 @@ export const helpers: Helpful<FormElementProps> = {
 .vf-radio {
   display: inline-block;
 }
+
+.vf-radio ::v-deep .v-input--radio-group--row .v-input--radio-group__input {
+  flex-wrap: nowrap;
+}
 </style>

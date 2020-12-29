@@ -11,7 +11,7 @@
       :search-input.sync="search"
       :label="$t('forms.input.link.targetObject')"
       class="links-field-row-autocomplete"
-      style="padding-right: 5px; width: 250px;"
+      style="width: 250px;"
       dense
       hide-details="auto"
       clearable
@@ -37,7 +37,7 @@
       </template>
 
       <template #item="{ item, on, attrs }">
-        <v-list-item v-bind="attrs" class="autcomplete-list-item" v-on="on">
+        <v-list-item v-bind="attrs" class="autocomplete-list-item" v-on="on">
           <v-list-item-content>
             <!-- TODO: change name with displayName after it is implemented -->
             <v-list-item-title v-text="item.name" />
@@ -418,16 +418,18 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-::v-deep .vf-control.col {
-  padding: 0 5px 0 0;
+.vf-links-field .vf-wrapper {
+  overflow: hidden;
+  width: auto;
+  max-width: none;
 }
 
-::v-deep .autcomplete-list-item .autocomplete-list-item-action-buttons {
+::v-deep .autocomplete-list-item .autocomplete-list-item-action-buttons {
   opacity: 0;
   transition: opacity 300ms;
 }
 
-::v-deep .autcomplete-list-item:hover .autocomplete-list-item-action-buttons {
+::v-deep .autocomplete-list-item:hover .autocomplete-list-item-action-buttons {
   opacity: 1;
 }
 
@@ -438,5 +440,9 @@ export default Vue.extend({
 .vf-links-field .direction-horizontal > .links-field-row-autocomplete {
   margin-top: 12px !important;
   margin-bottom: 12px !important;
+}
+
+.vf-links-field .direction-horizontal ::v-deep .vf-control {
+  margin: 0 0 0 5px;
 }
 </style>
