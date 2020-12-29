@@ -31,14 +31,6 @@
             />
           </v-col>
         </v-row>
-        <v-row v-if="activeControlType.name === 'Radio'" no-gutters class="align-center">
-          <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.direction') }}: </span>
-          </v-col>
-          <v-col :cols="12" :md="5">
-            <v-autocomplete v-model="activeControlType.direction" :items="directionItems"></v-autocomplete>
-          </v-col>
-        </v-row>
         <v-row v-if="activeControlType.highlight !== undefined" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
             <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.highlight') }}: </span>
@@ -61,6 +53,21 @@
               :label="$t('editor.formschema.edit.input.link.attributes')"
               @input="onInputLinksAttributes"
             ></v-autocomplete>
+          </v-col>
+        </v-row>
+        <v-row
+          v-if="
+            activeControlType.name === 'Radio' ||
+              (activeControlType.name === 'LinksField' && linksAttributes.length > 0)
+          "
+          no-gutters
+          class="align-center"
+        >
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.direction') }}: </span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-autocomplete v-model="activeControlType.direction" :items="directionItems"></v-autocomplete>
           </v-col>
         </v-row>
       </v-form>
