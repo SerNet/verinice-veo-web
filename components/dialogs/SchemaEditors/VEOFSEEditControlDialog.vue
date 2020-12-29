@@ -119,13 +119,16 @@ import {
   ref,
   watch,
   getCurrentInstance,
-  inject
+  inject,
+  reactive,
+  toRefs
 } from '@nuxtjs/composition-api'
 import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { update } from 'lodash'
 import Draggable from 'vuedraggable'
 import { JsonPointer } from 'json-ptr'
+import { BaseObject } from '~/components/forms/utils'
 
 interface IProps {
   value: boolean
@@ -169,6 +172,35 @@ export default defineComponent<IProps>({
   },
   setup(props, context) {
     /**
+     * General variables
+     */
+
+    const defaults: BaseObject = {
+      direction: 'horizontal'
+    }
+
+    /**
+     * General functions
+     */
+    function getValue(pointer: string, defaultValue: any): any {
+      const elValue = JsonPointer.get(props.formSchema, pointer)
+      // Default values are not set mostly in FormSchema, therefore in this case return defaultValue, otherwise the real value
+      return typeof elValue === 'undefined' || elValue === defaultValue ? defaultValue : elValue
+    }
+
+    function transformValues(values: any): any {
+      const transformedValues = JSON.parse(JSON.stringify(values))
+      // name is only used for activeControlType but not in option, therefore it should be deleted before saving
+      delete transformedValues.name
+      Object.entries(values).forEach(([key, val]) => {
+        if (defaults.hasOwnProperty(key)) {
+          transformedValues[key] = val === defaults[key] ? undefined : val
+        }
+      })
+      return transformedValues
+    }
+
+    /**
      * Common dialog stuff (opening and closing)
      */
     const dialog = ref({ value: props.value })
@@ -199,7 +231,9 @@ export default defineComponent<IProps>({
     const activeControlType: Ref<IControlType> = ref({
       name: props.type,
       format: props.options.format,
-      direction: props.options.direction
+      ...((props.type === 'Radio' || props.type === 'LinksField') && {
+        direction: getValue('#/options/direction', defaults.direction)
+      })
     })
 
     watch(
@@ -258,9 +292,23 @@ export default defineComponent<IProps>({
           return linksField.linksAttributesItems.value.find((attr: any) => attr.scope === obj.scope)
         })
       )
+
       if (linksField.formSchemaElements.value.length > 0) {
         const dragElements = linksField.formSchemaElements
       }
+
+      watch(
+        () => linksField.linksAttributes.value,
+        (newVal, oldVal) => {
+          if (newVal.length === 0) {
+            activeControlType.value.direction = undefined
+          } else {
+            activeControlType.value.direction = activeControlType.value.direction
+              ? activeControlType.value.direction
+              : defaults.direction
+          }
+        }
+      )
 
       linksField.onInputLinksAttributes = function(event: any) {
         linksField.formSchemaElements.value = []
@@ -289,7 +337,7 @@ export default defineComponent<IProps>({
     }
 
     function updateElement() {
-      const options: any = activeControlType.value
+      const options: any = transformValues(activeControlType.value)
       let updateData: any = { options: { label: label.value, ...options } }
       if (activeControlType.value.name === 'LinksField') {
         updateData = { ...updateData, elements: linksField.formSchemaElements.value }

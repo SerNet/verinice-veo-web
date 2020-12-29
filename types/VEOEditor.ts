@@ -247,7 +247,7 @@ export function controlTypeAlternatives(control: string, controlDetails: any): I
     },
     Select: {
       alternatives: {
-        Radio: { format: 'radio', direction: 'vertical', applicable: (currentType) => { return !currentType.schema.type || currentType.schema.type !== 'array' } },
+        Radio: { format: 'radio', direction: 'horizontal', applicable: (currentType) => { return !currentType.schema.type || currentType.schema.type !== 'array' } },
         Autocomplete: { format: 'autocomplete' }
       }
     },
