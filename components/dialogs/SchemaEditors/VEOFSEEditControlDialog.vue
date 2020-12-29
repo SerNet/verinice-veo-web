@@ -196,7 +196,11 @@ export default defineComponent<IProps>({
     /**
      * Control types related stuff
      */
-    const activeControlType: Ref<IControlType> = ref({ name: props.type, format: undefined })
+    const activeControlType: Ref<IControlType> = ref({
+      name: props.type,
+      format: props.options.format,
+      direction: props.options.direction
+    })
 
     watch(
       () => props.type,
