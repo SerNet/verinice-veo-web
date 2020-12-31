@@ -84,7 +84,7 @@
         border-left
       >
         <v-card class="pa-3" style="height: 100%" outlined>
-          <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="{}" />
+          <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="dynamicAPI" />
         </v-card>
       </VeoPage>
     </template>
