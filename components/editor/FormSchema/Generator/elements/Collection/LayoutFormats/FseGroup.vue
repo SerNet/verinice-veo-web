@@ -23,7 +23,7 @@
         <v-icon dense small class="handle pr-1">mdi-menu</v-icon>
       </v-col>
       <v-col>
-        <div class="text-caption text-truncate">Group</div>
+        <div class="text-caption text-truncate">{{ $t('editor.formschema.elements.group.name') }}</div>
       </v-col>
       <v-col cols="auto" class="text-right">
         <v-btn icon x-small @click="open"> <v-icon dense small>mdi-pencil</v-icon></v-btn
@@ -50,40 +50,81 @@
         </Draggable>
       </v-col>
     </v-row>
-    <!-- TODO: i18n for dialogs -->
-    <VeoDialog v-model="dialog.open" headline="Edit" large persistent>
+    <VeoDialog
+      v-model="dialog.open"
+      :key="formSchemaPointer"
+      :headline="$t('editor.formschema.edit.group.headline')"
+      large
+    >
       <template #default>
-        <v-text-field v-model="dialog.data.label.value" label="Label"></v-text-field>
-        <v-autocomplete v-model="dialog.data.direction.value" :items="dialog.data.directionList" label="Direction" />
-        <v-combobox v-model="dialog.data.class.value" label="Class" multiple chips append-icon="" />
-        <v-combobox v-model="dialog.data.style.value" label="Style" multiple chips append-icon="" />
+        <v-form>
+          <v-row no-gutters class="align-center mt-4">
+            <v-col :cols="12" :md="5">
+              <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.label.text') }}: </span>
+            </v-col>
+            <v-col :cols="12" :md="5">
+              <v-text-field
+                v-model="dialog.data.label.value"
+                :label="$t('editor.formschema.edit.input.label')"
+                required
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="align-center">
+            <v-col :cols="12" :md="5">
+              <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.direction') }}*: </span>
+            </v-col>
+            <v-col :cols="12" :md="5">
+              <v-autocomplete v-model="dialog.data.direction.value" :items="dialog.data.directionList"></v-autocomplete>
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="align-center">
+            <v-col :cols="12" :md="5">
+              <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.css.class') }}: </span>
+            </v-col>
+            <v-col :cols="12" :md="5">
+              <v-combobox
+                v-model="dialog.data.class.value"
+                :label="$t('editor.formschema.edit.css.class.text')"
+                multiple
+                chips
+                append-icon=""
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="align-center">
+            <v-col :cols="12" :md="5">
+              <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.css.style') }}: </span>
+            </v-col>
+            <v-col :cols="12" :md="5">
+              <v-combobox
+                v-model="dialog.data.style.value"
+                :label="$t('editor.formschema.edit.css.style.text')"
+                multiple
+                chips
+                append-icon=""
+              />
+            </v-col>
+          </v-row>
+        </v-form>
+        <small>{{ $t('editor.dialog.requiredfields') }}</small>
       </template>
       <template #dialog-options>
         <v-spacer />
-        <v-btn text color="primary" @click="dialog.open = false">
+        <v-btn text color="primary" outlined @click="dialog.open = false">
           {{ $t('global.button.close') }}
         </v-btn>
-        <v-btn text color="primary" @click="save">
+        <v-btn text color="primary" outlined @click="save">
           {{ $t('global.button.save') }}
         </v-btn>
       </template>
     </VeoDialog>
 
-    <!-- TODO: i18n for dialogs -->
-    <VeoDialog v-model="deleteDialog.open" :headline="$t('editor.formschema.delete.control.headline')">
-      <template #default>
-        <v-card-subtitle>{{ $t('editor.formschema.delete.control.text', { element: 'Group' }) }}</v-card-subtitle>
-      </template>
-      <template #dialog-options>
-        <v-spacer />
-        <v-btn text color="primary" @click="deleteDialog.open = false">
-          {{ $t('global.button.no') }}
-        </v-btn>
-        <v-btn text color="primary" @click="onDelete">
-          {{ $t('global.button.delete') }}
-        </v-btn>
-      </template>
-    </VeoDialog>
+    <VEOFSEDeleteDialog
+      v-model="deleteDialog.open"
+      :name="$t('editor.formschema.elements.group.name')"
+      @delete="onDelete"
+    />
   </v-card>
 </template>
 
@@ -95,11 +136,13 @@ import Draggable from 'vuedraggable'
 import vjp from 'vue-json-pointer'
 import { JsonPointer } from 'json-ptr'
 import { calculateConditionsScore, Helpful, LayoutProps } from '~/components/forms/Collection/utils/helpers'
+import VEOFSEDeleteDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteDialog.vue'
 
 export default Vue.extend({
   name: 'FseGroup',
   components: {
-    Draggable
+    Draggable,
+    VEOFSEDeleteDialog
   },
   props: {
     options: Object,
@@ -114,7 +157,16 @@ export default Vue.extend({
       dialog: {
         open: false,
         data: {
-          directionList: ['horizontal', 'vertical'],
+          directionList: [
+            {
+              text: this.$i18n.t('editor.formschema.edit.input.direction.vertical'),
+              value: 'vertical'
+            },
+            {
+              text: this.$i18n.t('editor.formschema.edit.input.direction.horizontal'),
+              value: 'horizontal'
+            }
+          ],
           direction: { default: 'vertical', value: undefined },
           label: { default: undefined, value: undefined },
           class: { default: undefined, value: [] as string[] },

@@ -30,7 +30,7 @@
       :type="currentType"
       @edit="doEdit"
     />
-    <VEOFSEDeleteControlDialog v-model="deleteDialog" :name="name" @delete="doDelete" />
+    <VEOFSEDeleteDialog v-model="deleteDialog" :name="name" @delete="doDelete" />
   </v-card>
 </template>
 <script lang="ts">
@@ -44,12 +44,12 @@ import { VEOTypeNameRAW } from 'veo-objectschema-7'
 import { BaseObject } from '~/components/forms/utils'
 import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VEOEditor'
 import VEOFSEEditControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditControlDialog.vue'
-import VEOFSEDeleteControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteControlDialog.vue'
+import VEOFSEDeleteDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteDialog.vue'
 
 export default Vue.extend({
   components: {
     VEOFSEEditControlDialog,
-    VEOFSEDeleteControlDialog
+    VEOFSEDeleteDialog
   },
   props: {
     name: {
