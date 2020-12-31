@@ -5,62 +5,92 @@
         v-if="formSchema"
         sticky-header
         absolute-size
-        :fullsize="collapsed"
+        :fullsize="previewCollapsed"
         no-padding
         :cols="12"
-        :md="collapsed ? 12 : 9"
-        :xl="collapsed ? 12 : 9"
+        :md="backlogCollapsed ? 6 : 8"
+        :xl="backlogCollapsed ? 6 : 8"
         :title="$t('editor.formschema.headline')"
         page-class="d-flex flex-column"
         content-class="veo-formschema-editor-page"
       >
         <template #title>
-          <a ref="downloadButton" href="#" class="text-decoration-none" style="vertical-align: bottom;" @click="downloadSchema()">
+          <a
+            ref="downloadButton"
+            href="#"
+            class="text-decoration-none"
+            style="vertical-align: bottom;"
+            @click="downloadSchema()"
+          >
             <v-btn icon large color="primary">
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </a>
+          <v-btn icon large color="primary" @click="showCodeEditor = true">
+            <v-icon>mdi-code-tags</v-icon>
+          </v-btn>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
-            <v-btn icon @click="collapsed = !collapsed">
-              <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
+            <v-btn icon x-small @click="previewCollapsed = !previewCollapsed">
+              <v-icon v-if="previewCollapsed">mdi-chevron-left</v-icon>
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
           <v-row no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%;">
             <v-col>
               <v-row class="mx-4">
+                <v-col cols="2" class="pl-0">
+                  <v-text-field
+                    v-model="formSchema.modelType"
+                    dense
+                    hide-details
+                    flat
+                    readonly
+                    disabled
+                    :label="$t('editor.objectschema.objectschema')"
+                    class="objectschema-type-field"
+                  />
+                </v-col>
                 <v-col cols="4">
-                  <v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" />
+                  <v-text-field
+                    v-model="formSchema.name"
+                    dense
+                    hide-details
+                    flat
+                    :label="$t('editor.formschema.formschema')"
+                    @input="updateSchemaName()"
+                  />
                 </v-col>
               </v-row>
             </v-col>
           </v-row>
         </template>
         <template #default>
-          <FormSchemaEditor v-if="!$fetchState.pending" v-model="formSchema" :object-schema="objectSchema" />
+          <FormSchemaEditor
+            v-if="!$fetchState.pending"
+            v-model="formSchema"
+            :object-schema="objectSchema"
+            :backlog-collapsed="backlogCollapsed"
+            @toggle-backlog="backlogCollapsed = !backlogCollapsed"
+          />
         </template>
       </VeoPage>
-      <VeoPage v-if="formSchema && objectSchema && !collapsed && !$vuetify.breakpoint.xs" no-padding absolute-size :cols="12" :md="6" :xl="6" height="100%">
-        <VeoTabs fullsize class="veo-fse-code-editor-page">
-          <template #tabs>
-            <v-tab>Preview</v-tab>
-            <v-tab>Code</v-tab>
-          </template>
-          <template #items>
-            <v-tab-item>
-              <v-card class="pa-3 ma-1" outlined>
-                <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="{}" />
-              </v-card>
-            </v-tab-item>
-            <v-tab-item>
-              <CodeEditor v-model="code" @schema-updated="updateSchema" />
-            </v-tab-item>
-          </template>
-        </VeoTabs>
+      <VeoPage
+        v-if="formSchema && objectSchema && !previewCollapsed && !$vuetify.breakpoint.xs"
+        absolute-size
+        :cols="12"
+        :md="backlogCollapsed ? 6 : 4"
+        :xl="backlogCollapsed ? 6 : 4"
+        height="100%"
+        border-left
+      >
+        <v-card class="pa-3" style="height: 100%" outlined>
+          <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="dynamicAPI" />
+        </v-card>
       </VeoPage>
     </template>
     <template #helpers>
       <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
+      <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
     </template>
   </VeoPageWrapper>
 </template>
@@ -71,8 +101,8 @@ import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
 import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
+import VeoFSECodeEditorDialog from '~/components/dialogs/SchemaEditors/VeoFSECodeEditorDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
-import VeoTabs from '~/components/layout/VeoTabs.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import { generateSchema } from '~/lib/FormSchemaHelper'
@@ -81,16 +111,18 @@ export default Vue.extend({
   components: {
     VeoForm,
     VEOFSEWizardDialog,
-    VeoTabs
+    VeoFSECodeEditorDialog
   },
   data() {
     return {
-      collapsed: false as boolean,
+      previewCollapsed: false as boolean,
+      backlogCollapsed: false as boolean,
       showCreationDialog: false as boolean,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
-      objectData: {}
+      objectData: {},
+      showCodeEditor: false as boolean
     }
   },
   async fetch() {
@@ -180,5 +212,13 @@ export default Vue.extend({
 
 .veo-fse-code-editor-page {
   border-left: 1px solid $grey;
+}
+
+.objectschema-type-field ::v-deep label {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.objectschema-type-field ::v-deep input {
+  color: rgba(0, 0, 0, 0.87) !important;
 }
 </style>

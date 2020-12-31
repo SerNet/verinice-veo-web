@@ -25,7 +25,7 @@
             </v-btn>
           </a>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
-            <v-btn icon @click="collapsed = !collapsed">
+            <v-btn icon x-small @click="collapsed = !collapsed">
               <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>

@@ -28,7 +28,6 @@
         :disabled="disabled"
         :visible="visible"
         :api="api"
-        style="flex-basis: 0"
         @input="onInput"
       />
       <v-btn :disabled="!localValue" elevation="0" x-small text fab color="primary" @click="removeRow(i)">
@@ -127,8 +126,4 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style lang="scss" scoped>
-::v-deep .vf-control.col {
-  padding: 0 5px 0 0;
-}
-</style>
+<style lang="scss" scoped></style>

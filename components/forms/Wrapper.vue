@@ -41,4 +41,8 @@ export default Vue.extend({
     outline: none;
   }
 }
+
+.vf-wrapper {
+  overflow: auto;
+}
 </style>

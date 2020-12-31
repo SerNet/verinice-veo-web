@@ -5,19 +5,10 @@
         <PageHeader>Radio</PageHeader>
       </v-col>
       <v-col cols="12">
-        <v-switch
-          v-model="isHorizontal"
-          label="Horizontal"
-          hide-details
-          color="primary"
-        />
+        <v-switch v-model="isHorizontal" label="Vertikal" hide-details color="primary" />
       </v-col>
       <v-col cols="auto" class="docs-form-sector">
-        <VeoForm
-          v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
-        />
+        <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" />
       </v-col>
     </v-row>
     <FormDescription
@@ -63,7 +54,7 @@ export default Vue.extend({
           radio: 'Beispiel-1'
         }
       },
-      formHorizontal: {
+      formVertical: {
         objectSchema: {
           type: 'object',
           properties: {
@@ -78,7 +69,7 @@ export default Vue.extend({
           options: {
             label: 'Radio',
             format: 'radio',
-            direction: 'horizontal'
+            direction: 'vertical'
           }
         },
         data: {
@@ -91,7 +82,7 @@ export default Vue.extend({
   computed: {
     dynamicForm(): any {
       if (this.isHorizontal) {
-        return this.formHorizontal
+        return this.formVertical
       }
       return this.form
     }
