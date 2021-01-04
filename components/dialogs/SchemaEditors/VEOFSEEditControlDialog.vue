@@ -2,7 +2,7 @@
   <VeoDialog
     :key="formSchema.scope"
     v-model="dialog.value"
-    :headline="$t('editor.formschema.edit.input.headline', { element: name })"
+    :headline="$t('editor.formschema.edit.input.headline')"
     large
   >
     <template #default>

@@ -30,7 +30,7 @@
       :type="currentType"
       @edit="doEdit"
     />
-    <VEOFSEDeleteDialog v-model="deleteDialog" :name="name" @delete="doDelete" />
+    <VEOFSEDeleteDialog v-model="deleteDialog" @delete="doDelete" />
   </v-card>
 </template>
 <script lang="ts">
