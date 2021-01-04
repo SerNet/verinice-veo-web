@@ -122,7 +122,6 @@
 
     <VEOFSEDeleteDialog
       v-model="deleteDialog.open"
-      :name="$t('editor.formschema.elements.group.name')"
       @delete="onDelete"
     />
   </v-card>

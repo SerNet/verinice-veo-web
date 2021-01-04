@@ -1,7 +1,7 @@
 <template>
   <VeoDialog v-model="dialog.value" :headline="$t('editor.formschema.delete.control.headline')">
     <template #default>
-      {{ $t('editor.formschema.delete.control.text', { element: name }) }}
+      {{ $t('editor.formschema.delete.control.text') }}
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
@@ -19,17 +19,12 @@ import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
 
 interface IProps {
   value: boolean
-  name: string
 }
 
 export default defineComponent<IProps>({
   props: {
     value: {
       type: Boolean,
-      required: true
-    },
-    name: {
-      type: String,
       required: true
     }
   },
