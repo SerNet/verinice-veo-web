@@ -9,7 +9,7 @@
       <v-row>
         <v-col :cols="6" />
         <v-col :cols="6" class="text-right">
-          <v-btn color="primary" outlined :loading="btnLoading" @click="onClick">
+          <v-btn color="primary" text outlined :loading="btnLoading" @click="onClick">
             {{ $t('global.button.save') }}
           </v-btn>
         </v-col>

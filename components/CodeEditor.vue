@@ -11,7 +11,7 @@
       </div>
     </div>
     <div v-if="!readonly" class="veo-editor-save-button">
-      <v-btn class="mx-4 my-2" color="primary" :disabled="saveButtonDisabled" @click="updateSchema()">
+      <v-btn class="mx-4 my-2" color="primary" outlined :disabled="saveButtonDisabled" @click="updateSchema()">
         {{ $t('editor.editor.button.save') }}
       </v-btn>
     </div>

@@ -19,8 +19,8 @@
       </v-col>
     </v-row>
     <VeoDialog
-      v-model="dialog.open"
       :key="formSchemaPointer"
+      v-model="dialog.open"
       :headline="$t('editor.formschema.edit.text.headline')"
       large
     >
@@ -70,10 +70,10 @@
         <small>{{ $t('editor.dialog.requiredfields') }}</small>
       </template>
       <template #dialog-options>
-        <v-spacer />
         <v-btn text color="primary" outlined @click="dialog.open = false">
           {{ $t('global.button.close') }}
         </v-btn>
+        <v-spacer />
         <v-btn text color="primary" outlined @click="save">
           {{ $t('global.button.save') }}
         </v-btn>

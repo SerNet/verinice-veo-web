@@ -51,8 +51,8 @@
       </v-col>
     </v-row>
     <VeoDialog
-      v-model="dialog.open"
       :key="formSchemaPointer"
+      v-model="dialog.open"
       :headline="$t('editor.formschema.edit.group.headline')"
       large
     >
@@ -75,7 +75,7 @@
               <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.direction') }}*: </span>
             </v-col>
             <v-col :cols="12" :md="5">
-              <v-autocomplete v-model="dialog.data.direction.value" :items="dialog.data.directionList"></v-autocomplete>
+              <v-autocomplete v-model="dialog.data.direction.value" :items="dialog.data.directionList" />
             </v-col>
           </v-row>
           <v-row no-gutters class="align-center">
@@ -110,10 +110,10 @@
         <small>{{ $t('editor.dialog.requiredfields') }}</small>
       </template>
       <template #dialog-options>
-        <v-spacer />
         <v-btn text color="primary" outlined @click="dialog.open = false">
           {{ $t('global.button.close') }}
         </v-btn>
+        <v-spacer />
         <v-btn text color="primary" outlined @click="save">
           {{ $t('global.button.save') }}
         </v-btn>

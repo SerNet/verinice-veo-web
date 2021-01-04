@@ -113,10 +113,10 @@
       </v-btn>
     </template>
     <template v-else #dialog-options>
-      <v-spacer />
       <v-btn text color="primary" @click="close()">
         {{ $t('global.button.close') }}
       </v-btn>
+      <v-spacer />
       <v-btn text color="primary" :disabled="!form.valid || duplicates.length > 0" @click="saveNode()">
         {{ $t('global.button.save') }}
       </v-btn>

@@ -1,7 +1,7 @@
 <template>
   <VeoDialog
-    v-model="dialog.value"
     :key="formSchema.scope"
+    v-model="dialog.value"
     :headline="$t('editor.formschema.edit.input.headline', { element: name })"
     large
   >
@@ -52,7 +52,7 @@
               return-object
               :label="$t('editor.formschema.edit.input.link.attributes')"
               @input="onInputLinksAttributes"
-            ></v-autocomplete>
+            />
           </v-col>
         </v-row>
         <v-row
@@ -67,7 +67,7 @@
             <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.direction') }}: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-autocomplete v-model="activeControlType.direction" :items="directionItems"></v-autocomplete>
+            <v-autocomplete v-model="activeControlType.direction" :items="directionItems" />
           </v-col>
         </v-row>
       </v-form>
@@ -100,11 +100,11 @@
       </v-card>
     </template>
     <template #dialog-options>
-      <v-spacer />
-      <v-btn text color="primary" outlined @click="close()">
+      <v-btn text color="primary" @click="close()">
         {{ $t('global.button.close') }}
       </v-btn>
-      <v-btn text color="primary" outlined @click="updateElement()">
+      <v-spacer />
+      <v-btn text color="primary" @click="updateElement()">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
@@ -123,11 +123,11 @@ import {
   reactive,
   toRefs
 } from '@nuxtjs/composition-api'
-import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { update } from 'lodash'
 import Draggable from 'vuedraggable'
 import { JsonPointer } from 'json-ptr'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
+import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { BaseObject } from '~/components/forms/utils'
 
 interface IProps {

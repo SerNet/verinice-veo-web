@@ -5,7 +5,12 @@
       <v-alert v-if="error.value" type="error">{{ error.content }}</v-alert>
       <v-form v-model="valid" class="new-unit-form">
         <v-text-field v-model="newUnit.name" :rules="rules.name" required :label="$t('unit.details.name')" />
-        <v-text-field v-model="newUnit.description" :rules="rules.description" required :label="$t('unit.details.description')" />
+        <v-text-field
+          v-model="newUnit.description"
+          :rules="rules.description"
+          required
+          :label="$t('unit.details.description')"
+        />
         <!-- VEO-78: Unit Hierarchien deaktiviert, da im Backend nicht implementiert
         <v-select
           class="unit-select flex-grow-0"
@@ -20,7 +25,9 @@
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn :disabled="!valid" color="primary" outlined @click="createUnit()">{{ $t('global.button.save') }}</v-btn>
+      <v-btn :disabled="!valid" color="primary" outlined text @click="createUnit()">{{
+        $t('global.button.save')
+      }}</v-btn>
     </template>
   </VeoDialog>
 </template>
