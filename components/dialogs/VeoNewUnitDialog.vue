@@ -25,9 +25,10 @@
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn :disabled="!valid" color="primary" outlined text @click="createUnit()">{{
-        $t('global.button.save')
-      }}</v-btn>
+      <v-spacer />
+      <v-btn :disabled="!valid" color="primary" text @click="createUnit()">
+        {{ $t('global.button.save') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>

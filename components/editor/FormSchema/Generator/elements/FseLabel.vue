@@ -70,11 +70,11 @@
         <small>{{ $t('editor.dialog.requiredfields') }}</small>
       </template>
       <template #dialog-options>
-        <v-btn text color="primary" outlined @click="dialog.open = false">
+        <v-btn text color="primary" @click="dialog.open = false">
           {{ $t('global.button.close') }}
         </v-btn>
         <v-spacer />
-        <v-btn text color="primary" outlined @click="save">
+        <v-btn text color="primary" @click="save">
           {{ $t('global.button.save') }}
         </v-btn>
       </template>
