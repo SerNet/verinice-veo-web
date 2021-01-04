@@ -75,12 +75,12 @@
           <h2>{{ $t('editor.objectschema.wizard.import') }}</h2>
           <v-row no-gutters class="align-center mt-4">
             <v-col :cols="12" :md="5">
-              <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.create.type.text') }}*: </span>
+              <span style="font-size: 1.2rem;"> {{ $t('editor.objectschema.create.type.text') }}*: </span>
             </v-col>
             <v-col :cols="12" :md="5">
               <v-select
                 v-model="modelType"
-                :label="$t('editor.formschema.create.type')"
+                :label="$t('editor.objectschema.create.type')"
                 :items="objectTypes"
                 required
               />
@@ -89,6 +89,13 @@
           <v-row v-if="modelType === 'custom'">
             <v-col :cols="12">
               <VEOEditorFileUpload :code="code" @schema-uploaded="createSchema" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <span style="text-decoration: undeline; font-weight: bold; cursor: pointer;" @click="state = 'create'">
+                {{ $t('editor.objectschema.wizard.import.back') }}
+              </span>
             </v-col>
           </v-row>
         </v-window-item>
@@ -205,7 +212,7 @@ export default Vue.extend({
       )
       .then((types: any) => {
         types.unshift({
-          text: this.$t('editor.formschema.wizard.modelType.custom') as string,
+          text: this.$t('editor.objectschema.wizard.modelType.custom') as string,
           value: 'custom'
         })
         this.objectTypes = types
