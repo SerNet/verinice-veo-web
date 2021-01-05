@@ -15,7 +15,13 @@
         content-class="veo-formschema-editor-page"
       >
         <template #title>
-          <a ref="downloadButton" href="#" class="text-decoration-none" style="vertical-align: bottom;" @click="downloadSchema()">
+          <a
+            ref="downloadButton"
+            href="#"
+            class="text-decoration-none"
+            style="vertical-align: bottom;"
+            @click="downloadSchema()"
+          >
             <v-btn icon large color="primary">
               <v-icon>mdi-download</v-icon>
             </v-btn>
@@ -30,7 +36,14 @@
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="4">
-                  <v-text-field v-model="formSchema.name" dense hide-details flat :label="$t('editor.formschema.formschema')" @input="updateSchemaName()" />
+                  <v-text-field
+                    v-model="formSchema.name"
+                    dense
+                    hide-details
+                    flat
+                    :label="$t('editor.formschema.formschema')"
+                    @input="updateSchemaName()"
+                  />
                 </v-col>
               </v-row>
             </v-col>
@@ -40,7 +53,15 @@
           <FormSchemaEditor v-if="!$fetchState.pending" v-model="formSchema" :object-schema="objectSchema" />
         </template>
       </VeoPage>
-      <VeoPage v-if="formSchema && objectSchema && !collapsed && !$vuetify.breakpoint.xs" no-padding absolute-size :cols="12" :md="6" :xl="6" height="100%">
+      <VeoPage
+        v-if="formSchema && objectSchema && !collapsed && !$vuetify.breakpoint.xs"
+        no-padding
+        absolute-size
+        :cols="12"
+        :md="6"
+        :xl="6"
+        height="100%"
+      >
         <VeoTabs fullsize class="veo-fse-code-editor-page">
           <template #tabs>
             <v-tab>Preview</v-tab>
@@ -95,7 +116,7 @@ export default Vue.extend({
   },
   async fetch() {
     const objectSchema = await this.$api.schema.fetch('process')
-    if (!this.$route.query.wizard) {
+    if (this.$route.query.nowizard) {
       this.objectSchema = objectSchema
     }
   },
@@ -127,7 +148,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-    if (!this.$route.query.wizard) {
+    if (this.$route.query.nowizard) {
       this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process')
     }
     this.showCreationDialog = this.objectSchema === undefined && this.formSchema === undefined

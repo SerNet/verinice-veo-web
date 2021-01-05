@@ -87,12 +87,12 @@
           </h2>
           <v-row class="text-center">
             <v-col>
-              <v-btn color="primary" @click="doCreate2(false)">
+              <v-btn color="primary" outlined text @click="doCreate2(false)">
                 {{ $t('editor.formschema.wizard.generate.none') }}
               </v-btn>
             </v-col>
             <v-col>
-              <v-btn color="primary" @click="doCreate2(true)">
+              <v-btn color="primary" outlined text @click="doCreate2(true)">
                 {{ $t('editor.formschema.wizard.generate.generate') }}
               </v-btn>
             </v-col>
