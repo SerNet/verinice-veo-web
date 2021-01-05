@@ -70,7 +70,7 @@
               <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
             </v-col>
             <v-col cols="auto" class="text-left">
-              <h3>{{ $t('editor.objectschema.schema.invalid') }}</h3>
+              <h3>{{ $t('editor.objectschema.validation.schema.invalid') }}</h3>
               <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
                 <v-list-item-content>
                   <v-list-item-title>{{ error.code }} </v-list-item-title>
