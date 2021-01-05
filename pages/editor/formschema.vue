@@ -76,10 +76,11 @@
         </template>
         <template #default>
           <FormSchemaEditor
-<<<<<<< pages/editor/formschema.vue
-            v-if="!$fetchState.pending && schemaIsValid.valid"
+            v-if="!$fetchState.pending"
             v-model="formSchema"
             :object-schema="objectSchema"
+            :backlog-collapsed="backlogCollapsed"
+            @toggle-backlog="backlogCollapsed = !backlogCollapsed"
           />
           <v-row v-else class="fill-height flex-column text-center align-center px-8">
             <v-col cols="auto" style="flex-grow: 0">
@@ -99,40 +100,6 @@
         </template>
       </VeoPage>
       <VeoPage
-        v-if="formSchema && objectSchema && !collapsed && !$vuetify.breakpoint.xs"
-        no-padding
-        absolute-size
-        :cols="12"
-        :md="6"
-        :xl="6"
-        height="100%"
-      >
-        <VeoTabs fullsize class="veo-fse-code-editor-page">
-          <template #tabs>
-            <v-tab>Preview</v-tab>
-            <v-tab>Code</v-tab>
-          </template>
-          <template #items>
-            <v-tab-item>
-              <v-card class="pa-3 ma-1" outlined>
-                <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="{}" />
-              </v-card>
-            </v-tab-item>
-            <v-tab-item>
-              <CodeEditor v-model="code" @schema-updated="updateSchema" />
-            </v-tab-item>
-          </template>
-        </VeoTabs>
-=======
-            v-if="!$fetchState.pending"
-            v-model="formSchema"
-            :object-schema="objectSchema"
-            :backlog-collapsed="backlogCollapsed"
-            @toggle-backlog="backlogCollapsed = !backlogCollapsed"
-          />
-        </template>
-      </VeoPage>
-      <VeoPage
         v-if="formSchema && objectSchema && !previewCollapsed && !$vuetify.breakpoint.xs"
         absolute-size
         :cols="12"
@@ -142,18 +109,20 @@
         border-left
       >
         <v-card class="pa-3" style="height: 100%" outlined>
-          <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="dynamicAPI" />
+          <VeoForm
+            v-model="objectData"
+            :schema="objectSchema"
+            :ui="formSchema.content"
+            :lang="lang"
+            :api="dynamicAPI"
+          />
         </v-card>
->>>>>>> pages/editor/formschema.vue
       </VeoPage>
     </template>
     <template #helpers>
       <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
-<<<<<<< pages/editor/formschema.vue
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
-=======
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
->>>>>>> pages/editor/formschema.vue
     </template>
   </VeoPageWrapper>
 </template>
@@ -280,10 +249,6 @@ export default Vue.extend({
   .veo-formschema-editor-page {
     max-height: 100%;
   }
-}
-
-.veo-fse-code-editor-page {
-  border-left: 1px solid $grey;
 }
 
 .objectschema-type-field ::v-deep label {
