@@ -113,7 +113,7 @@ export class Client {
             return this.req(url, { ...options, retry: false })
           }
         } */
-        await $user.logout()
+        await $user.logout('/')
         return Promise.reject(new Error(`Invalid JWT: ${combinedOptions.method || 'GET'} ${reqURL}`))
       } else if (options.method === 'DELETE') {
         return Promise.resolve()
