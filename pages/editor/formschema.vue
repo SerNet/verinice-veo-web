@@ -26,13 +26,23 @@
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </a>
+          <v-btn
+            v-if="schemaIsValid.warnings.length > 0"
+            icon
+            large
+            color="warning"
+            class="ml-2"
+            @click="showErrorDialog = !showErrorDialog"
+          >
+            <v-icon>mdi-alert-circle-outline</v-icon>
+          </v-btn>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
             <v-btn icon @click="collapsed = !collapsed">
               <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
-          <v-row no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%;">
+          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%;">
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="4">
@@ -50,7 +60,26 @@
           </v-row>
         </template>
         <template #default>
-          <FormSchemaEditor v-if="!$fetchState.pending" v-model="formSchema" :object-schema="objectSchema" />
+          <FormSchemaEditor
+            v-if="!$fetchState.pending && schemaIsValid.valid"
+            v-model="formSchema"
+            :object-schema="objectSchema"
+          />
+          <v-row v-else class="fill-height flex-column text-center align-center px-8">
+            <v-col cols="auto" style="flex-grow: 0">
+              <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
+            </v-col>
+            <v-col cols="auto" class="text-left">
+              <h3>{{ $t('editor.objectschema.schema.invalid') }}</h3>
+              <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
+                <v-list-item-content>
+                  <v-list-item-title>{{ error.code }} </v-list-item-title>
+                  <v-list-item-subtitle>{{ error.message }} </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-col>
+            <v-spacer />
+          </v-row>
         </template>
       </VeoPage>
       <VeoPage
@@ -82,6 +111,7 @@
     </template>
     <template #helpers>
       <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
+      <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
     </template>
   </VeoPageWrapper>
 </template>
@@ -96,10 +126,15 @@ import VeoForm from '~/components/forms/VeoForm.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
-import { generateSchema } from '~/lib/FormSchemaHelper'
+import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
+import { generateSchema, validate } from '~/lib/FormSchemaHelper'
+import { VeoSchemaValidatorValidationResult } from '~/lib/VeoSchemaValidator'
 
 export default Vue.extend({
   components: {
+    VeoEditorErrorDialog,
+    VeoPageWrapper,
+    VeoPage,
     VeoForm,
     VEOFSEWizardDialog,
     VeoTabs
@@ -108,6 +143,7 @@ export default Vue.extend({
     return {
       collapsed: false as boolean,
       showCreationDialog: false as boolean,
+      showErrorDialog: false as boolean,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
@@ -145,6 +181,9 @@ export default Vue.extend({
           })
         }
       }
+    },
+    schemaIsValid(): VeoSchemaValidatorValidationResult {
+      return this.formSchema ? validate(this.formSchema) : { valid: false, errors: [], warnings: [] }
     }
   },
   mounted() {
