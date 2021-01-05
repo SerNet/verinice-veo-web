@@ -29,13 +29,23 @@
           <v-btn icon large color="primary" @click="showCodeEditor = true">
             <v-icon>mdi-code-tags</v-icon>
           </v-btn>
+          <v-btn
+            v-if="schemaIsValid.warnings.length > 0"
+            icon
+            large
+            color="warning"
+            class="ml-2"
+            @click="showErrorDialog = !showErrorDialog"
+          >
+            <v-icon>mdi-alert-circle-outline</v-icon>
+          </v-btn>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
             <v-btn icon x-small @click="previewCollapsed = !previewCollapsed">
               <v-icon v-if="previewCollapsed">mdi-chevron-left</v-icon>
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
-          <v-row no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%;">
+          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%;">
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="2" class="pl-0">
@@ -72,6 +82,21 @@
             :backlog-collapsed="backlogCollapsed"
             @toggle-backlog="backlogCollapsed = !backlogCollapsed"
           />
+          <v-row v-else class="fill-height flex-column text-center align-center px-8">
+            <v-col cols="auto" style="flex-grow: 0">
+              <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
+            </v-col>
+            <v-col cols="auto" class="text-left">
+              <h3>{{ $t('editor.objectschema.validation.schema.invalid') }}</h3>
+              <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
+                <v-list-item-content>
+                  <v-list-item-title>{{ error.code }} </v-list-item-title>
+                  <v-list-item-subtitle>{{ error.message }} </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-col>
+            <v-spacer />
+          </v-row>
         </template>
       </VeoPage>
       <VeoPage
@@ -84,12 +109,19 @@
         border-left
       >
         <v-card class="pa-3" style="height: 100%" outlined>
-          <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="dynamicAPI" />
+          <VeoForm
+            v-model="objectData"
+            :schema="objectSchema"
+            :ui="formSchema.content"
+            :lang="lang"
+            :api="dynamicAPI"
+          />
         </v-card>
       </VeoPage>
     </template>
     <template #helpers>
       <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
+      <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
     </template>
   </VeoPageWrapper>
@@ -105,10 +137,15 @@ import VeoFSECodeEditorDialog from '~/components/dialogs/SchemaEditors/VeoFSECod
 import VeoForm from '~/components/forms/VeoForm.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
-import { generateSchema } from '~/lib/FormSchemaHelper'
+import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
+import { generateSchema, validate } from '~/lib/FormSchemaHelper'
+import { VeoSchemaValidatorValidationResult } from '~/lib/VeoSchemaValidator'
 
 export default Vue.extend({
   components: {
+    VeoEditorErrorDialog,
+    VeoPageWrapper,
+    VeoPage,
     VeoForm,
     VEOFSEWizardDialog,
     VeoFSECodeEditorDialog
@@ -118,6 +155,7 @@ export default Vue.extend({
       previewCollapsed: false as boolean,
       backlogCollapsed: false as boolean,
       showCreationDialog: false as boolean,
+      showErrorDialog: false as boolean,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
@@ -127,7 +165,7 @@ export default Vue.extend({
   },
   async fetch() {
     const objectSchema = await this.$api.schema.fetch('process')
-    if (!this.$route.query.wizard) {
+    if (this.$route.query.nowizard) {
       this.objectSchema = objectSchema
     }
   },
@@ -156,10 +194,13 @@ export default Vue.extend({
           })
         }
       }
+    },
+    schemaIsValid(): VeoSchemaValidatorValidationResult {
+      return this.formSchema ? validate(this.formSchema) : { valid: false, errors: [], warnings: [] }
     }
   },
   mounted() {
-    if (!this.$route.query.wizard) {
+    if (this.$route.query.nowizard) {
       this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process')
     }
     this.showCreationDialog = this.objectSchema === undefined && this.formSchema === undefined
@@ -208,10 +249,6 @@ export default Vue.extend({
   .veo-formschema-editor-page {
     max-height: 100%;
   }
-}
-
-.veo-fse-code-editor-page {
-  border-left: 1px solid $grey;
 }
 
 .objectschema-type-field ::v-deep label {

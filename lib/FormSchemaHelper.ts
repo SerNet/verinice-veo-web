@@ -1,4 +1,5 @@
 import { IVEOFormSchema } from 'veo-formschema'
+import VeoSchemaValidator, { VeoSchemaValidatorValidationResult } from './VeoSchemaValidator'
 
 export function generateSchema(name: string, modelType: string): IVEOFormSchema {
   return {
@@ -13,4 +14,9 @@ export function generateSchema(name: string, modelType: string): IVEOFormSchema 
       elements: []
     }
   }
+}
+
+export function validate(schema: IVEOFormSchema): VeoSchemaValidatorValidationResult {
+  const validator = new VeoSchemaValidator('FORM_SCHEMA')
+  return validator.validate(schema, schema.name || undefined)
 }
