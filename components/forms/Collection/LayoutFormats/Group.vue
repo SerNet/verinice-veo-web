@@ -1,9 +1,8 @@
 <template>
   <div
     v-if="visible"
-    class="vf-layout vf-group d-flex mx-auto flex-wrap"
+    class="vf-layout vf-group d-flex"
     :class="dynamicClasses"
-    style="max-width: 800px; width: 100%;"
     :style="options && options.style"
   >
     <div v-if="options && options.label" class="text-subtitle-1 mb-2">

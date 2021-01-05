@@ -8,9 +8,9 @@
     <div v-if="options && options.label" class="subtitle-1 mb-2">
       {{ options && options.label }}
     </div>
-    <div v-for="(val, i) in value" :key="i" class="d-flex flex-row align-center">
+    <div v-for="(val, i) in localValue" :key="i" class="d-flex flex-row align-center">
       <div class="d-inline-block" style="width: 32px">
-        <v-btn v-if="i === value.length - 1" elevation="0" x-small text fab color="primary" @click="addRow">
+        <v-btn v-if="i === localValue.length - 1" elevation="0" x-small text fab color="primary" @click="addRow">
           <v-icon>mdi-plus-circle-outline</v-icon>
         </v-btn>
       </div>
@@ -24,22 +24,13 @@
         :options="options"
         :elements="elements"
         :validation="validation"
-        :value="value[i]"
+        :value="localValue[i]"
         :disabled="disabled"
         :visible="visible"
         :api="api"
-        style="flex-basis: 0"
         @input="onInput"
       />
-      <v-btn
-        :disabled="!value"
-        elevation="0"
-        x-small
-        text
-        fab
-        color="primary"
-        @click="removeRow(i)"
-      >
+      <v-btn :disabled="!localValue" elevation="0" x-small text fab color="primary" @click="removeRow(i)">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </div>
@@ -50,17 +41,14 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
 import LinksFieldRow from '~/components/forms/Collection/FormElements/LinksFieldRow.vue'
 
 interface IData {
   selected: string[]
+  localValue: any
 }
 
 export default Vue.extend({
@@ -84,7 +72,8 @@ export default Vue.extend({
   },
   data(): IData {
     return {
-      selected: []
+      selected: [],
+      localValue: []
     }
   },
   computed: {
@@ -92,32 +81,32 @@ export default Vue.extend({
       return {}
     }
   },
-  mounted() {
-    if (!this.value || this.value.length === 0) {
-      this.addRow()
-    }
-  },
   methods: {
     addRow() {
-      const value = this.value ? this.value : []
-      value.push({ ...this.rowToAdd })
-      this.$emit('input', value)
+      this.localValue.push({ ...this.rowToAdd })
+      this.$emit('input', this.localValue)
     },
     removeRow(rowIndex: number) {
-      let _value = this.value
-
       // If only one link exists, empty it instead of deleting it.
-      if (_value.length === 1) {
+      if (this.localValue.length === 1) {
         this.selected = []
-        _value = [{ ...this.rowToAdd }]
+        this.localValue = [{ ...this.rowToAdd }]
+        this.$emit('input', undefined)
       } else {
         this.selected.splice(rowIndex, 1)
-        _value.splice(rowIndex, 1)
+        this.localValue.splice(rowIndex, 1)
+        this.$emit('input', this.localValue)
       }
-      this.$emit('input', _value)
     },
     onInput() {
-      this.$emit('input', this.value)
+      this.$emit('input', this.localValue)
+    }
+  },
+  created() {
+    if (!this.value || this.value.length === 0) {
+      this.localValue = [{ ...this.rowToAdd }]
+    } else {
+      this.localValue = JSON.parse(JSON.stringify(this.value))
     }
   }
 })
@@ -132,17 +121,9 @@ export const helpers: Helpful<FormElementProps> = {
       props.schema.items.properties &&
       props.schema.items.properties
     const isTarget = !!(schemaItemsProperties && schemaItemsProperties.target)
-    return calculateConditionsScore([
-      props.schema.type === 'array',
-      typeof props.elements !== 'undefined',
-      isTarget
-    ])
+    return calculateConditionsScore([props.schema.type === 'array', typeof props.elements !== 'undefined', isTarget])
   }
 }
 </script>
 
-<style lang="scss" scoped>
-::v-deep .vf-control.col {
-  padding: 0 5px 0 0;
-}
-</style>
+<style lang="scss" scoped></style>

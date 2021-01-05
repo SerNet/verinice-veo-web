@@ -1,5 +1,5 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="headline" large persistent>
+  <VeoDialog v-model="dialog.value" :headline="headline" large persistent fixed-header>
     <template #default>
       <v-form v-model="form.valid" @submit.prevent="_item && _item.attributes ? saveNode() : createNode()">
         <v-row>
@@ -11,11 +11,6 @@
               :rules="form.rules.name"
               :prefix="prefixedAspectName('')"
             />
-          </v-col>
-          <v-col v-if="_item && _item.attributes" cols="12" md="4" class="align-self-center text-right">
-            <v-btn color="primary" outlined @click="$emit('delete-item')">
-              {{ $t(`editor.dialog.delete.${type}`) }}
-            </v-btn>
           </v-col>
         </v-row>
         <v-row v-if="type === 'link'">
@@ -113,6 +108,9 @@
       </v-btn>
     </template>
     <template v-else #dialog-options>
+      <v-btn color="primary" outlined @click="$emit('delete-item')">
+        {{ $t(`editor.dialog.delete.${type}`) }}
+      </v-btn>
       <v-spacer />
       <v-btn text color="primary" @click="close()">
         {{ $t('global.button.close') }}

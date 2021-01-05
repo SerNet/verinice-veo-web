@@ -20,7 +20,7 @@
     </v-list-item>
     <v-list-item>
       <v-list-item-title class="d-flex justify-center">
-        <v-btn color="primary" outlined @click="createUnit()">
+        <v-btn color="primary" text outlined @click="createUnit()">
           <v-icon>mdi-plus</v-icon> {{ $t('unit.create.short') }}
         </v-btn>
       </v-list-item-title>
@@ -59,5 +59,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

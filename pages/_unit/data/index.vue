@@ -3,7 +3,7 @@
     <template #title>
       <v-spacer />
       <v-btn
-        depressed
+        text
         outlined
         :to="`/${$route.params.unit}/data/${objectType}/${group}/create`"
         color="primary"
@@ -25,14 +25,7 @@
         <template #top>
           <v-row dense>
             <v-col :cols="3">
-              <v-select
-                v-model="objectType"
-                label="Type"
-                :items="objectTypes"
-                outlined
-                dense
-                @input="changeType()"
-              />
+              <v-select v-model="objectType" label="Type" :items="objectTypes" outlined dense @input="changeType()" />
             </v-col>
             <v-col :cols="3">
               <v-select
@@ -121,10 +114,7 @@ export default defineComponent<IProps>({
           unit: this.$route.params.unit
         })
       } else {
-        this.objects = await this.$api.group.fetchGroupMembers(
-          this.$route.params.group,
-          this.objectType as GroupType
-        )
+        this.objects = await this.$api.group.fetchGroupMembers(this.$route.params.group, this.objectType as GroupType)
       }
     })
   },
@@ -165,19 +155,13 @@ export default defineComponent<IProps>({
   },
   methods: {
     changeType() {
-      this.$router.push(
-        `/${this.$route.params.unit}/data/${this.objectType}/${this.group}`
-      )
+      this.$router.push(`/${this.$route.params.unit}/data/${this.objectType}/${this.group}`)
     },
     changeGroup() {
-      this.$router.push(
-        `/${this.$route.params.unit}/data/${this.objectType}/${this.group}`
-      )
+      this.$router.push(`/${this.$route.params.unit}/data/${this.objectType}/${this.group}`)
     },
     goToObject(item: any) {
-      this.$router.push(
-        `/${this.$route.params.unit}/data/${this.objectType}/${this.group}/${item.id}`
-      )
+      this.$router.push(`/${this.$route.params.unit}/data/${this.objectType}/${this.group}/${item.id}`)
     },
     capitalize(string: string): string {
       return string.charAt(0).toUpperCase() + string.slice(1)

@@ -7,10 +7,27 @@
     <template #items>
       <v-tab-item>
         <v-form class="mt-4" @submit.prevent="doUpload()">
-          <v-file-input v-model="file" accept=".json" counter dense outlined show-size :label="`${$t('editor.upload.input.file.label')} (.json)`" :disabled="uploading" />
+          <v-file-input
+            v-model="file"
+            accept=".json"
+            counter
+            dense
+            outlined
+            show-size
+            :label="`${$t('editor.upload.input.file.label')} (.json)`"
+            :disabled="uploading"
+          />
           <v-row class="ml-6">
             <v-col cols="auto">
-              <v-btn role="submit" type="submit" color="primary" outlined :disabled="uploading || !file" v-text="buttonText" />
+              <v-btn
+                role="submit"
+                type="submit"
+                color="primary"
+                outlined
+                text
+                :disabled="uploading || !file"
+                v-text="buttonText"
+              />
             </v-col>
             <v-col cols="auto">
               <v-progress-circular v-if="uploading" indeterminate color="primary" class="mr-2" />
