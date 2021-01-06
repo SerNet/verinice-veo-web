@@ -52,8 +52,14 @@ describe('InputDateTime.vue', () => {
     wrapper.vm.$parent.$forceUpdate()
     await wrapper.vm.$nextTick()
 
+    const el = wrapper.find(
+      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control .v-input.v-text-field input'
+    )
+
+    expect(el.exists()).toBe(true)
+
     const inputElement = wrapper.find(
-      '.vf-wrapper > .vf-layout > .vf-control .v-input.v-text-field input'
+      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control .v-input.v-text-field input'
     ).element as HTMLInputElement
 
     expect(wrapper.element).toMatchSnapshot('Initial render')

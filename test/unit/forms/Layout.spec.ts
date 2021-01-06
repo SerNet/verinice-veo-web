@@ -96,19 +96,17 @@ describe('Layout.vue', () => {
 
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
     expect(layoutWrapper.exists()).toBe(true)
-    expect(layoutWrapper.classes()).toContain('d-flex')
-    expect(layoutWrapper.classes()).toContain('flex-column')
+    expect(layoutWrapper.classes()).toContain('vf-group')
+    expect(layoutWrapper.classes()).toContain('col-md-auto')
+    expect(layoutWrapper.classes()).toContain('col-12')
 
-    const pageSelector = wrapper.find(
-      '.vf-wrapper > .vf-layout > .vf-layout.vf-page'
-    )
     expect(layoutWrapper.exists()).toBe(true)
 
     const horitontalLayoutSelector = wrapper.find(
-      '.vf-wrapper > .vf-layout > .vf-layout.vf-page > .vf-layout'
+      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-layout.vf-page > .vf-layout > .row > .col > .row'
     )
     expect(horitontalLayoutSelector.exists()).toBe(true)
-    expect(horitontalLayoutSelector.classes()).toContain('d-flex')
     expect(horitontalLayoutSelector.classes()).toContain('flex-row')
+    expect(horitontalLayoutSelector.classes()).toContain('direction-horizontal')
   })
 })
