@@ -44,6 +44,8 @@ export default {
   'editor.formschema.delete.control.headline': 'Element löschen',
   'editor.formschema.delete.control.text': 'Möchten Sie das Element wirklich aus dem Formular entfernen?',
   'editor.formschema.description': 'Formulare erstellen, bearbeiten, importieren und exportieren',
+  'editor.formschema.backlog.button.expand': 'Alle ausklappen',
+  'editor.formschema.backlog.button.collapse': 'Alle einklappen',
   'editor.formschema.edit.group.headline': 'Gruppen Element anpassen',
   'editor.formschema.edit.text.headline': 'Text Element anpassen',
   'editor.formschema.edit.css.class': 'CSS Klassen',

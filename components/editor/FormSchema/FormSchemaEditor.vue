@@ -7,14 +7,18 @@
         </template>
         <template #default>
           <v-card flat class="mt-0 mx-2 mb-2 backlog-wrapper">
-            <v-expansion-panels accordion multiple :value="[0, 1, 2, 3]" flat>
+            <div class="px-4 py-4">
+              <v-btn text small @click="onExpandAll">{{ $t('editor.formschema.backlog.button.expand') }}</v-btn>
+              <v-btn text small @click="onCollapseAll">{{ $t('editor.formschema.backlog.button.collapse') }}</v-btn>
+            </div>
+            <v-expansion-panels accordion multiple v-model="expansionPanels" flat>
               <v-expansion-panel>
                 <v-expansion-panel-header class="overline">
                   {{ $t('editor.formelements') }} ({{ formElements.length }})
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-card outlined>
-                    <v-list class="py-0" dense>
+                  <v-card outlined v-if="formElements.length > 0">
+                    <v-list class="py-0">
                       <Draggable
                         class="drag-form-elements"
                         tag="div"
@@ -50,8 +54,8 @@
                   {{ $t('editor.basicproperties') }} ({{ unused.basics.length }})
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-card outlined>
-                    <v-list class="py-0" dense>
+                  <v-card outlined v-if="unused.basics.length > 0">
+                    <v-list class="py-0">
                       <Draggable
                         class="drag-unused-basic-properties"
                         tag="div"
@@ -87,8 +91,8 @@
                   {{ $t('editor.customaspects') }} ({{ unused.aspects.length }})
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-card outlined>
-                    <v-list class="py-0" dense>
+                  <v-card outlined v-if="unused.aspects.length > 0">
+                    <v-list class="py-0">
                       <Draggable
                         class="drag-unused-aspects"
                         tag="div"
@@ -127,8 +131,8 @@
                   {{ $t('editor.customlinks') }} ({{ unused.links.length }})
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-card outlined>
-                    <v-list class="py-0" dense>
+                  <v-card outlined v-if="unused.links.length > 0">
+                    <v-list class="py-0">
                       <Draggable
                         class="drag-unused-links"
                         tag="div"
@@ -400,6 +404,7 @@ export default Vue.extend({
           icon: 'mdi-format-text'
         }
       ],
+      expansionPanels: [0, 1, 2, 3],
       controls: [] as IControl[],
       controlsItems: {} as IControlItem,
       objectSchemaPropertiesPatterns: {
@@ -556,6 +561,12 @@ export default Vue.extend({
       } else {
         vjp.set(this.value, '/content', initialLayout)
       }
+    },
+    onExpandAll() {
+      this.expansionPanels = [0, 1, 2, 3]
+    },
+    onCollapseAll() {
+      this.expansionPanels = []
     }
   }
 })
