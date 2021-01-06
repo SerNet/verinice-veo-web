@@ -8,7 +8,13 @@
         <v-expansion-panel-content>
           <v-card outlined>
             <v-list class="py-0" dense disabled>
-              <ObjectSchemaListItem v-for="(child, index) of basicProps" :key="index" v-bind="child" two-line />
+              <ObjectSchemaListItem
+                v-for="(child, index) of basicProps"
+                v-show="attributeContainsTitle(child.item, search)"
+                :key="index"
+                v-bind="child"
+                two-line
+              />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -186,7 +192,7 @@ export default defineComponent<IProps>({
       )
     }
 
-    function attributeContainsTitle(property: IVEOAttribute, title: string) {
+    function attributeContainsTitle(property: IVEOAttribute | IVEOBasicProperty, title: string) {
       return (
         !title || title.length === 0 || (property.title && property.title.toLowerCase().includes(title.toLowerCase()))
       )
