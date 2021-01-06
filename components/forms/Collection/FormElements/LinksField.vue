@@ -5,35 +5,43 @@
     :class="options && options.class"
     :style="options && options.style"
   >
-    <div v-if="options && options.label" class="subtitle-1 mb-2">
-      {{ options && options.label }}
+    <div class="d-flex">
+      <span v-if="options && options.label" class="subtitle-1 mb-2">
+        {{ options && options.label }}
+      </span>
+      <v-spacer />
     </div>
-    <div v-for="(val, i) in localValue" :key="i" class="d-flex flex-row align-center">
-      <div class="d-inline-block" style="width: 32px">
-        <v-btn v-if="i === localValue.length - 1" elevation="0" x-small text fab color="primary" @click="addRow">
-          <v-icon>mdi-plus-circle-outline</v-icon>
-        </v-btn>
-      </div>
-      <LinksFieldRow
-        :key="i"
-        :index="i"
-        :name="name"
-        :selected.sync="selected[i]"
-        :schema="schema"
-        :lang="lang"
-        :options="options"
-        :elements="elements"
-        :validation="validation"
-        :value="localValue[i]"
-        :disabled="disabled"
-        :visible="visible"
-        :api="api"
-        @input="onInput"
-      />
-      <v-btn :disabled="!localValue" elevation="0" x-small text fab color="primary" @click="removeRow(i)">
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-    </div>
+    <v-list dense class="py-0 ml-2">
+      <v-list-item v-for="(val, i) in localValue" :key="i" class="links-field-item my-2 pt-2">
+        <v-list-item-content>
+          <LinksFieldRow
+            :key="i"
+            :index="i"
+            :name="name"
+            :selected.sync="selected[i]"
+            :schema="schema"
+            :lang="lang"
+            :options="options"
+            :elements="elements"
+            :validation="validation"
+            :value="localValue[i]"
+            :disabled="disabled"
+            :visible="visible"
+            :api="api"
+            @input="onInput"
+          />
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn :disabled="!localValue" depressed text fab small @click="removeRow(i)">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
+    <v-btn small text color="primary" @click="addRow()">
+      <v-icon small>mdi-plus</v-icon>
+      <span>{{ $t('forms.input.linkadd') }}</span>
+    </v-btn>
   </div>
 </template>
 
@@ -81,6 +89,13 @@ export default Vue.extend({
       return {}
     }
   },
+  created() {
+    if (!this.value || this.value.length === 0) {
+      this.localValue = [{ ...this.rowToAdd }]
+    } else {
+      this.localValue = JSON.parse(JSON.stringify(this.value))
+    }
+  },
   methods: {
     addRow() {
       this.localValue.push({ ...this.rowToAdd })
@@ -101,13 +116,6 @@ export default Vue.extend({
     onInput() {
       this.$emit('input', this.localValue)
     }
-  },
-  created() {
-    if (!this.value || this.value.length === 0) {
-      this.localValue = [{ ...this.rowToAdd }]
-    } else {
-      this.localValue = JSON.parse(JSON.stringify(this.value))
-    }
   }
 })
 
@@ -126,4 +134,11 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
+.links-field-item {
+  border: 1px solid $grey;
+  border-radius: 4px;
+}
+</style>

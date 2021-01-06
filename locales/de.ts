@@ -106,6 +106,7 @@ export default {
 
   'error.title': 'Es ist ein Fehler aufgetreten',
 
+  'forms.input.array.add': 'Element hinzufügen',
   'forms.input.linkadd': 'Link hinzufügen',
   'forms.input.link.noattributes': 'Keine weiteren Eigenschaften',
   'forms.input.link.targetObject': 'Ziel Objekt',

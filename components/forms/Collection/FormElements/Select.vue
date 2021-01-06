@@ -1,10 +1,6 @@
 <template>
   <div v-if="visible" class="vf-select vf-form-element">
-    <ValidationProvider
-      v-slot="{ errors }"
-      :name="options && options.label"
-      :rules="validation"
-    >
+    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
       <v-select
         :disabled="disabled"
         :value="value"
@@ -30,11 +26,7 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7, JSONSchema7Type } from 'json-schema'
 import { JsonPointer } from 'json-ptr'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
 interface IItem {
@@ -120,9 +112,7 @@ export default Vue.extend({
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
     return calculateConditionsScore([
-      typeof props.schema.type === 'undefined' ||
-        props.schema.type === 'string' ||
-        props.schema.type === 'array',
+      typeof props.schema.type === 'undefined' || props.schema.type === 'string' || props.schema.type === 'array',
       typeof props.schema.enum !== 'undefined' ||
         (props.schema.items instanceof Object &&
           !Array.isArray(props.schema.items) &&
@@ -132,8 +122,4 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style lang="scss" scoped>
-.vf-select {
-  width: 250px;
-}
-</style>
+<style lang="scss" scoped></style>

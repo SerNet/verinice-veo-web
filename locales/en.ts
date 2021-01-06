@@ -106,6 +106,7 @@ export default {
 
   'error.title': 'An error occured',
 
+  'forms.input.array.add': 'Add element',
   'forms.input.linkadd': 'Add link ',
   'forms.input.link.noattributes': 'No child properties',
   'forms.input.link.targetObject': 'Target object',

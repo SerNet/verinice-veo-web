@@ -82,9 +82,16 @@
         :xl="backlogCollapsed ? 6 : 4"
         height="100%"
         border-left
+        content-class="pb-4"
       >
-        <v-card class="pa-3" style="height: 100%" outlined>
-          <VeoForm v-model="objectData" :schema="objectSchema" :ui="formSchema.content" :lang="lang" :api="dynamicAPI" />
+        <v-card style="height: 100%" outlined>
+          <VeoForm
+            v-model="objectData"
+            :schema="objectSchema"
+            :ui="formSchema.content"
+            :lang="lang"
+            :api="dynamicAPI"
+          />
         </v-card>
       </VeoPage>
     </template>

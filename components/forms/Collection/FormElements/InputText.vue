@@ -1,10 +1,6 @@
 <template>
-  <div v-if="visible" class="vf-input-text vf-form-element">
-    <ValidationProvider
-      :name="options && options.label"
-      :rules="validation"
-      v-slot="{ errors }"
-    >
+  <div v-if="visible" class="vf-form-element vf-input-text">
+    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
       <v-text-field
         :disabled="disabled"
         :value="value"
@@ -18,7 +14,7 @@
         @input="$emit('input', $event)"
         @change="$emit('input', $event)"
         @click:clear="clear"
-      ></v-text-field>
+      />
     </ValidationProvider>
   </div>
 </template>
@@ -27,11 +23,7 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
 export default Vue.extend({
@@ -62,16 +54,9 @@ export const helpers: Helpful<FormElementProps> = {
     // if other fields have the same number of true conditions
     // if other fields are appropriate, they MUST have more true conditions
 
-    return calculateConditionsScore(
-      [props.schema.type === 'string'],
-      Number.EPSILON
-    )
+    return calculateConditionsScore([props.schema.type === 'string'], Number.EPSILON)
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.vf-input-text {
-  width: 250px;
-}
-</style>
+<style lang="scss" scoped></style>
