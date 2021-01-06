@@ -73,7 +73,7 @@ export default {
   'editor.formschema.wizard.generate.none': 'Start from scratch',
   'editor.formschema.wizard.generate.title': 'Do you want to pregenerate a form schema?',
   'editor.formschema.wizard.import': 'Import form schema',
-  'editor.formschema.wizard.import.back': 'Create a new object schema',
+  'editor.formschema.wizard.import.back': 'Create a new form schema',
   'editor.formschema.wizard.import.description': 'Import an existing form schema and modify it.',
   'editor.formschema.wizard.import.wrongobjectschema': 'The uploaded object schema has the wrong type ({objectType}). It has to have the type ({formType}).',
   'editor.formschema.wizard.modelType.custom': 'Custom',
@@ -107,6 +107,7 @@ export default {
   'error.title': 'An error occured',
 
   'forms.input.linkadd': 'Add link ',
+  'forms.input.link.noattributes': 'No child properties',
   'forms.input.link.targetObject': 'Target object',
   'forms.input.link.targetObject.change.headline': 'Change object',
   'forms.input.link.targetObject.create': 'Create',
