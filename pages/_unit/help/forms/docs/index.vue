@@ -1,5 +1,5 @@
 <template>
-  <VeoPage>
+  <VeoPage fullsize>
     <v-row>
       <v-col cols="12">
         <div class="display-1 font-weight-bold">Dokumentation</div>
@@ -20,7 +20,6 @@
       </v-col>
     </v-row>
   </VeoPage>
-  </v-container>
 </template>
 
 <script lang="ts">

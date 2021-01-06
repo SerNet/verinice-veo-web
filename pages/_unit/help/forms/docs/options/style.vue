@@ -1,23 +1,14 @@
 <template>
-  <VeoPage>
+  <VeoPage fullsize>
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Style</PageHeader>
       </v-col>
       <v-col cols="12">
-        <v-select
-          v-model="definition.value"
-          label="Definiert als"
-          :items="definition.items"
-          style="max-width:400px"
-        />
+        <v-select v-model="definition.value" label="Definiert als" :items="definition.items" style="max-width:400px" />
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector d-flex justify-center">
-        <VeoForm
-          v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
-        />
+        <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" />
       </v-col>
     </v-row>
     <FormDescription
@@ -25,8 +16,7 @@
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
     />
-    </VeoPage>
-  </v-container>
+  </VeoPage>
 </template>
 
 <script lang="ts">
@@ -75,11 +65,7 @@ export default Vue.extend({
           type: 'Label',
           text: 'Beispiel Text',
           options: {
-            style: [
-              { 'font-size': '3rem' },
-              { 'font-weight': 700 },
-              { 'font-style': 'italic' }
-            ]
+            style: [{ 'font-size': '3rem' }, { 'font-weight': 700 }, { 'font-style': 'italic' }]
           }
         },
         data: {}

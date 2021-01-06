@@ -1,15 +1,11 @@
 <template>
-  <VeoPage>
+  <VeoPage fullsize>
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Page</PageHeader>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
-        <VeoForm
-          v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
-        />
+        <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" />
       </v-col>
     </v-row>
     <FormDescription
@@ -17,8 +13,7 @@
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
     />
-    </VeoPage>
-  </v-container>
+  </VeoPage>
 </template>
 
 <script lang="ts">
