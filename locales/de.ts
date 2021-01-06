@@ -8,6 +8,7 @@ export default {
   'editor.customaspects.add': 'Aspekte hinzufügen',
   'editor.customlinks': 'Individuelle Links',
   'editor.customlinks.add': 'Links hinzufügen',
+  'editor.formelements': 'Formelemente',
   'editor.dialog.createform.linktype': 'Art des Links',
   'editor.dialog.createform.linkdescription': 'Linkbeschreibung',
   'editor.dialog.createform.title': 'Titel',
@@ -74,7 +75,8 @@ export default {
   'editor.formschema.wizard.generate.title': 'Möchten Sie ein Formular vorgenerieren?',
   'editor.formschema.wizard.import': 'Formular importieren',
   'editor.formschema.wizard.import.description': 'Existierendes Formular importieren und modifizieren',
-  'editor.formschema.wizard.import.wrongobjectschema': 'Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss "{formType}" sein.',
+  'editor.formschema.wizard.import.wrongobjectschema':
+    'Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss "{formType}" sein.',
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
@@ -91,7 +93,8 @@ export default {
   'editor.objectschema.objectschema': 'Objektschema',
   'editor.objectschema.validation.errors': 'Fehler',
   'editor.objectschema.validation.errors.none': 'Keine Fehler gefunden!',
-  'editor.objectschema.validation.schema.invalid': 'Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.',
+  'editor.objectschema.validation.schema.invalid':
+    'Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.',
   'editor.objectschema.validation.warnings': 'Warnungen',
   'editor.objectschema.wizard.create': 'Objektschema erstellen',
   'editor.objectschema.wizard.create.description': 'Neues, leeres Objektschema erstellen',

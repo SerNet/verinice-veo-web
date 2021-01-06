@@ -8,6 +8,7 @@ export default {
   'editor.customaspects.add': 'Add aspect',
   'editor.customlinks': 'Custom links',
   'editor.customlinks.add': 'Add link',
+  'editor.formelements': 'Form elements',
   'editor.dialog.createform.linktype': 'Link type',
   'editor.dialog.createform.linkdescription': 'Description',
   'editor.dialog.createform.title': 'Title',
@@ -75,7 +76,8 @@ export default {
   'editor.formschema.wizard.import': 'Import form schema',
   'editor.formschema.wizard.import.back': 'Create a new object schema',
   'editor.formschema.wizard.import.description': 'Import an existing form schema and modify it.',
-  'editor.formschema.wizard.import.wrongobjectschema': 'The uploaded object schema has the wrong type ({objectType}). It has to have the type ({formType}).',
+  'editor.formschema.wizard.import.wrongobjectschema':
+    'The uploaded object schema has the wrong type ({objectType}). It has to have the type ({formType}).',
   'editor.formschema.wizard.modelType.custom': 'Custom',
   'editor.formschema.wizard.objectschema.required': 'You have to specify an object schema!',
   'editor.formschema.wizard.start.title': 'How do you want to start?',
@@ -92,7 +94,8 @@ export default {
   'editor.objectschema.objectschema': 'Object schema',
   'editor.objectschema.validation.errors': 'Errors',
   'editor.objectschema.validation.errors.none': 'No errors found!',
-  'editor.objectschema.validation.schema.invalid': 'Couldn\'t load schema. Please resolve the following errors and try again.',
+  'editor.objectschema.validation.schema.invalid':
+    "Couldn't load schema. Please resolve the following errors and try again.",
   'editor.objectschema.validation.warnings': 'Warnings',
   'editor.objectschema.wizard.create': 'Create object schema',
   'editor.objectschema.wizard.create.description': 'Create a new object schema from scratch.',

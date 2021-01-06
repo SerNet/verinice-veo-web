@@ -9,7 +9,7 @@
           <v-card flat class="mt-0 mx-2 mb-2 backlog-wrapper">
             <!-- Form elements -->
             <div>
-              <v-subheader class="px-2">Form Elements</v-subheader>
+              <v-subheader class="px-2">{{ $t('editor.formelements') }}</v-subheader>
               <v-divider />
             </div>
             <Draggable
@@ -41,7 +41,7 @@
             <!-- Unused Basic Properties -->
             <div v-if="unused.basics.length > 0">
               <v-divider />
-              <v-subheader class="px-2">Basic Properties</v-subheader>
+              <v-subheader class="px-2">{{ $t('editor.basicproperties') }}</v-subheader>
               <v-divider />
             </div>
             <Draggable
@@ -73,7 +73,7 @@
             <!-- Unused Aspects -->
             <div v-if="unused.aspects.length > 0">
               <v-divider />
-              <v-subheader class="px-2">Aspects</v-subheader>
+              <v-subheader class="px-2">{{ $t('editor.customaspects') }}</v-subheader>
               <v-divider />
             </div>
             <Draggable
@@ -108,7 +108,7 @@
             <!-- Unused Links -->
             <div v-if="unused.links.length > 0">
               <v-divider />
-              <v-subheader class="px-2">Links</v-subheader>
+              <v-subheader class="px-2">{{ $t('editor.customlinks') }}</v-subheader>
               <v-divider />
             </div>
             <Draggable
