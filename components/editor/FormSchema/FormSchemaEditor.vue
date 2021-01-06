@@ -6,7 +6,7 @@
           <h3 class="text-center pb-1">{{ $t('editor.formschema.controls.available') }}</h3>
         </template>
         <template #default>
-          <v-card flat class="mt-0 mx-2 mb-2 drag-elements-wrapper">
+          <v-card flat class="mt-0 mx-2 mb-2 backlog-wrapper">
             <!-- Form elements -->
             <div>
               <v-subheader class="px-2">Form Elements</v-subheader>
@@ -91,10 +91,9 @@
                     <v-icon small outlined dark v-text="typeMap[el.type].icon" />
                   </v-list-item-avatar>
                   <v-list-item-content>
-                    <v-list-item-title class="caption"
-                      ><span style="color: grey;">{{ el.label.split('_')[1] }}</span
-                      ><span style="padding: 0 4px;">/</span
-                      ><span>{{ el.label.split('_')[2] }}</span></v-list-item-title
+                    <v-list-item-title class="caption aspects-title"
+                      ><span>{{ el.label.split('_')[1] }}</span
+                      ><span>/</span><span>{{ el.label.split('_')[2] }}</span></v-list-item-title
                     >
                   </v-list-item-content>
                   <v-list-item-action class="ml-3">
@@ -423,11 +422,22 @@ export default Vue.extend({
   top: 0;
 }
 
-.drag-elements-wrapper {
+.backlog-wrapper {
   border: 1px solid $grey;
 }
 
 .veo-editor-body {
   width: 100%;
+}
+
+.backlog-wrapper .aspects-title {
+  & > span:first-child,
+  & > span:nth-child(2) {
+    color: $accent;
+  }
+
+  & > span:nth-child(2) {
+    padding: 0 4px;
+  }
 }
 </style>
