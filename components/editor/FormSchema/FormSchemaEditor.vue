@@ -91,7 +91,11 @@
                     <v-icon small outlined dark v-text="typeMap[el.type].icon" />
                   </v-list-item-avatar>
                   <v-list-item-content>
-                    <v-list-item-title class="caption" v-text="el.label" />
+                    <v-list-item-title class="caption"
+                      ><span style="color: grey;">{{ el.label.split('_')[1] }}</span
+                      ><span style="padding: 0 4px;">/</span
+                      ><span>{{ el.label.split('_')[2] }}</span></v-list-item-title
+                    >
                   </v-list-item-content>
                   <v-list-item-action class="ml-3">
                     <v-chip :color="typeMap[el.type].color" class="mr-2" small label outlined>
@@ -123,7 +127,7 @@
                     <v-icon small outlined dark v-text="typeMap[el.type].icon" />
                   </v-list-item-avatar>
                   <v-list-item-content>
-                    <v-list-item-title class="caption" v-text="el.label" />
+                    <v-list-item-title class="caption" v-text="el.label.split('_')[1]" />
                   </v-list-item-content>
                   <v-list-item-action class="ml-3">
                     <v-chip :color="typeMap[el.type].color" class="mr-2" small label outlined>
