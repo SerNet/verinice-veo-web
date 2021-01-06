@@ -122,12 +122,4 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style lang="scss" scoped>
-.vf-radio {
-  display: inline-block;
-}
-
-.vf-radio ::v-deep .v-input--radio-group--row .v-input--radio-group__input {
-  flex-wrap: nowrap;
-}
-</style>
+<style lang="scss" scoped></style>

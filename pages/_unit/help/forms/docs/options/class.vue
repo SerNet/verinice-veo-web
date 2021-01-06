@@ -1,23 +1,14 @@
 <template>
-  <v-container class="ml-0">
+  <VeoPage fullsize>
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Class</PageHeader>
       </v-col>
       <v-col cols="12">
-        <v-select
-          v-model="definition.value"
-          label="Definiert als"
-          :items="definition.items"
-          style="max-width:400px"
-        />
+        <v-select v-model="definition.value" label="Definiert als" :items="definition.items" style="max-width:400px" />
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector d-flex justify-center">
-        <VeoForm
-          v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
-        />
+        <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" />
       </v-col>
     </v-row>
     <FormDescription
@@ -25,7 +16,7 @@
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
     />
-  </v-container>
+  </VeoPage>
 </template>
 
 <script lang="ts">

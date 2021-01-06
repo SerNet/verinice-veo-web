@@ -1,23 +1,15 @@
 <template>
-  <v-container class="ml-0">
+  <VeoPage fullsize>
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Checkbox</PageHeader>
       </v-col>
       <v-col cols="auto" class="docs-form-sector">
-        <VeoForm
-          v-model="form.data"
-          :schema="form.objectSchema"
-          :ui="form.formSchema"
-        />
+        <VeoForm v-model="form.data" :schema="form.objectSchema" :ui="form.formSchema" />
       </v-col>
     </v-row>
-    <FormDescription
-      :object-schema="form.objectSchema"
-      :form-schema="form.formSchema"
-      :data="form.data"
-    />
-  </v-container>
+    <FormDescription :object-schema="form.objectSchema" :form-schema="form.formSchema" :data="form.data" />
+  </VeoPage>
 </template>
 
 <script lang="ts">

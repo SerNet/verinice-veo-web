@@ -73,6 +73,7 @@ export default {
   'editor.formschema.wizard.generate.none': 'Mit leerem Formular starten',
   'editor.formschema.wizard.generate.title': 'Möchten Sie ein Formular vorgenerieren?',
   'editor.formschema.wizard.import': 'Formular importieren',
+  'editor.formschema.wizard.import.back': 'Stattdessen ein neues Formschema erstellen',
   'editor.formschema.wizard.import.description': 'Existierendes Formular importieren und modifizieren',
   'editor.formschema.wizard.import.wrongobjectschema': 'Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss "{formType}" sein.',
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
@@ -109,8 +110,10 @@ export default {
 
   'error.title': 'Es ist ein Fehler aufgetreten',
 
+  'forms.input.array.add': 'Element hinzufügen',
   'forms.input.linkadd': 'Link hinzufügen',
-  'forms.input.link.targetObject': 'Target Objekt',
+  'forms.input.link.noattributes': 'Keine weiteren Eigenschaften',
+  'forms.input.link.targetObject': 'Ziel Objekt',
   'forms.input.link.targetObject.change.headline': 'Objekt ändern',
   'forms.input.link.targetObject.create': 'Erstellen',
   'forms.input.link.targetObject.create.headline': 'Ein neues Objekt anlegen',

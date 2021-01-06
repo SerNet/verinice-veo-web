@@ -1,10 +1,6 @@
 <template>
   <div v-if="visible" class="vf-checkbox vf-form-element">
-    <ValidationProvider
-      v-slot="{ errors }"
-      :name="options && options.label"
-      :rules="validation"
-    >
+    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
       <v-checkbox
         :input-value="value"
         :error-messages="errors[0]"
@@ -32,11 +28,7 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { BaseObject, IApi } from '~/components/forms/utils'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'Checkbox',
@@ -77,8 +69,4 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style lang="scss" scoped>
-.vf-checkbox {
-  display: inline-block;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -7,7 +7,7 @@ exports[`InputUri.vue should be rendered InputUri field: Initial render 1`] = `
   <!---->
    
   <div
-    class="vf-control"
+    class="vf-control col-md-auto col-12"
   >
     <div
       class="vf-input-uri vf-form-element"

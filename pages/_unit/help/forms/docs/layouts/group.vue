@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ml-0">
+  <VeoPage fullsize>
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Group</PageHeader>
@@ -9,7 +9,7 @@
           <v-col cols="2">
             <v-switch
               v-model="direction"
-              :label="`Direction: ${this.direction}`"
+              :label="`Direction: ${direction}`"
               hide-details
               color="primary"
               false-value="vertical"
@@ -19,7 +19,7 @@
           <v-col cols="2">
             <v-switch
               v-model="highlight"
-              :label="`Highlight: ${this.highlight}`"
+              :label="`Highlight: ${highlight}`"
               hide-details
               color="primary"
               :false-value="true"
@@ -29,19 +29,11 @@
         </v-row>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
-        <VeoForm
-          v-model="form.data"
-          :schema="form.objectSchema"
-          :ui="form.formSchema"
-        />
+        <VeoForm v-model="form.data" :schema="form.objectSchema" :ui="form.formSchema" />
       </v-col>
     </v-row>
-    <FormDescription
-      :object-schema="form.objectSchema"
-      :form-schema="form.formSchema"
-      :data="form.data"
-    />
-  </v-container>
+    <FormDescription :object-schema="form.objectSchema" :form-schema="form.formSchema" :data="form.data" />
+  </VeoPage>
 </template>
 
 <script lang="ts">
