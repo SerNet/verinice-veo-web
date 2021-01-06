@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ml-0">
+  <VeoPage>
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Group</PageHeader>
@@ -41,6 +41,7 @@
       :form-schema="form.formSchema"
       :data="form.data"
     />
+    </VeoPage>
   </v-container>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ml-0">
+  <VeoPage>
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Style</PageHeader>
@@ -25,6 +25,7 @@
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
     />
+    </VeoPage>
   </v-container>
 </template>
 
