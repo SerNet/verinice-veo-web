@@ -7,7 +7,161 @@
         </template>
         <template #default>
           <v-card flat class="mt-0 mx-2 mb-2 backlog-wrapper">
-            <!-- Form elements -->
+            <v-expansion-panels accordion multiple :value="[0, 1, 2, 3]" flat>
+              <v-expansion-panel>
+                <v-expansion-panel-header class="overline">
+                  {{ $t('editor.formelements') }} ({{ formElements.length }})
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-card outlined>
+                    <v-list class="py-0" dense>
+                      <Draggable
+                        class="drag-form-elements"
+                        tag="div"
+                        style="overflow: auto; min-width:300;"
+                        :list="formElements"
+                        :group="{ name: 'g1', pull: 'clone', put: false }"
+                        :sort="false"
+                        :clone="onCloneFormElement"
+                      >
+                        <v-card v-for="(el, i) in formElements" :key="i" flat>
+                          <v-list-item flat>
+                            <v-list-item-avatar color="grey darken-2" size="32">
+                              <v-icon small dark outlined v-text="formElementsDescription[i].icon" />
+                            </v-list-item-avatar>
+                            <v-list-item-content>
+                              <v-list-item-title class="caption" v-text="formElementsDescription[i].name" />
+                            </v-list-item-content>
+                            <v-list-item-action class="ml-3">
+                              <v-chip class="mr-2" color="grey darken-2" small label outlined>
+                                {{ formElementsDescription[i].group }}
+                              </v-chip>
+                            </v-list-item-action>
+                          </v-list-item>
+                        </v-card>
+                      </Draggable>
+                    </v-list>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+
+              <v-expansion-panel>
+                <v-expansion-panel-header class="overline">
+                  {{ $t('editor.basicproperties') }} ({{ unused.basics.length }})
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-card outlined>
+                    <v-list class="py-0" dense>
+                      <Draggable
+                        class="drag-unused-basic-properties"
+                        tag="div"
+                        style="overflow: auto; min-width:300;"
+                        :list="unused.basics"
+                        :group="{ name: 'g1', pull: 'clone', put: false }"
+                        :sort="false"
+                        :clone="onCloneControl"
+                      >
+                        <v-card v-for="(el, i) in unused.basics" :key="i" flat>
+                          <v-list-item flat>
+                            <v-list-item-avatar size="32" :color="typeMap[el.type].color">
+                              <v-icon small outlined dark v-text="typeMap[el.type].icon" />
+                            </v-list-item-avatar>
+                            <v-list-item-content>
+                              <v-list-item-title class="caption" v-text="el.label" />
+                            </v-list-item-content>
+                            <v-list-item-action class="ml-3">
+                              <v-chip :color="typeMap[el.type].color" class="mr-2" small label outlined>
+                                {{ el.type }}
+                              </v-chip>
+                            </v-list-item-action>
+                          </v-list-item>
+                        </v-card>
+                      </Draggable>
+                    </v-list>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+
+              <v-expansion-panel>
+                <v-expansion-panel-header class="overline">
+                  {{ $t('editor.customaspects') }} ({{ unused.aspects.length }})
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-card outlined>
+                    <v-list class="py-0" dense>
+                      <Draggable
+                        class="drag-unused-aspects"
+                        tag="div"
+                        style="overflow: auto; min-width:300;"
+                        :list="unused.aspects"
+                        :group="{ name: 'g1', pull: 'clone', put: false }"
+                        :sort="false"
+                        :clone="onCloneControl"
+                      >
+                        <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
+                          <v-list-item flat>
+                            <v-list-item-avatar size="32" :color="typeMap[el.type].color">
+                              <v-icon small outlined dark v-text="typeMap[el.type].icon" />
+                            </v-list-item-avatar>
+                            <v-list-item-content>
+                              <v-list-item-title class="caption aspects-title"
+                                ><span>{{ el.label.split('_')[1] }}</span
+                                ><span>/</span><span>{{ el.label.split('_')[2] }}</span></v-list-item-title
+                              >
+                            </v-list-item-content>
+                            <v-list-item-action class="ml-3">
+                              <v-chip :color="typeMap[el.type].color" class="mr-2" small label outlined>
+                                {{ el.type }}
+                              </v-chip>
+                            </v-list-item-action>
+                          </v-list-item>
+                        </v-card>
+                      </Draggable>
+                    </v-list>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+
+              <v-expansion-panel>
+                <v-expansion-panel-header class="overline">
+                  {{ $t('editor.customlinks') }} ({{ unused.links.length }})
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-card outlined>
+                    <v-list class="py-0" dense>
+                      <Draggable
+                        class="drag-unused-links"
+                        tag="div"
+                        style="overflow: auto; min-width:300;"
+                        :list="unused.links"
+                        :group="{ name: 'g1', pull: 'clone', put: false }"
+                        :sort="false"
+                        :clone="onCloneControl"
+                      >
+                        <v-card v-for="(el, i) in unused.links" :key="i" flat>
+                          <v-list-item flat>
+                            <v-list-item-avatar size="32" :color="typeMap[el.type].color">
+                              <v-icon small outlined dark v-text="typeMap[el.type].icon" />
+                            </v-list-item-avatar>
+                            <v-list-item-content>
+                              <v-list-item-title class="caption" v-text="el.label.split('_')[1]" />
+                            </v-list-item-content>
+                            <v-list-item-action class="ml-3">
+                              <v-chip :color="typeMap[el.type].color" class="mr-2" small label outlined>
+                                {{ el.type }}
+                              </v-chip>
+                            </v-list-item-action>
+                          </v-list-item>
+                        </v-card>
+                      </Draggable>
+                    </v-list>
+                  </v-card>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-card>
+
+          <!-- <v-card flat class="mt-0 mx-2 mb-2 backlog-wrapper">
             <div>
               <v-subheader class="px-2">{{ $t('editor.formelements') }}</v-subheader>
               <v-divider />
@@ -38,7 +192,6 @@
               </v-card>
             </Draggable>
 
-            <!-- Unused Basic Properties -->
             <div v-if="unused.basics.length > 0">
               <v-divider />
               <v-subheader class="px-2">{{ $t('editor.basicproperties') }}</v-subheader>
@@ -70,7 +223,6 @@
               </v-card>
             </Draggable>
 
-            <!-- Unused Aspects -->
             <div v-if="unused.aspects.length > 0">
               <v-divider />
               <v-subheader class="px-2">{{ $t('editor.customaspects') }}</v-subheader>
@@ -105,7 +257,6 @@
               </v-card>
             </Draggable>
 
-            <!-- Unused Links -->
             <div v-if="unused.links.length > 0">
               <v-divider />
               <v-subheader class="px-2">{{ $t('editor.customlinks') }}</v-subheader>
@@ -136,7 +287,7 @@
                 </v-list-item>
               </v-card>
             </Draggable>
-          </v-card>
+          </v-card> -->
         </template>
       </VeoPage>
       <VeoPage
