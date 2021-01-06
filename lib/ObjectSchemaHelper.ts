@@ -1,6 +1,7 @@
 
 import { isObject, replace } from 'lodash'
 import { VEOCustomAspectRAW, VEOObjectSchemaRAW, VEOAttributeRAW, VEOCustomLinkRAW, VEOTypeRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
+import VeoSchemaValidator, { VeoSchemaValidatorValidationResult } from './VeoSchemaValidator'
 
 export interface IObjectSchemaHelperOptions {
   customProperties?: Record<string, string>
@@ -841,4 +842,9 @@ export function updateLinkDetails(schema: VEOObjectSchemaRAW, link: IVEOCustomLi
 
   schema.properties[OPTIONS.customProperties.links].properties[rawTitle].items.properties.target.title = target.description
   schema.properties[OPTIONS.customProperties.links].properties[rawTitle].items.properties.target.properties.type.enum[0] = target.type
+}
+
+export function validate(schema: VEOObjectSchemaRAW): VeoSchemaValidatorValidationResult {
+  const validator = new VeoSchemaValidator('OBJECT_SCHEMA')
+  return validator.validate(schema, schema.title || undefined)
 }
