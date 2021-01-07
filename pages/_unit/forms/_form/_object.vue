@@ -110,6 +110,7 @@ export default Vue.extend({
         objectData,
         lang
       }
+      console.log(this.form)
     } else {
       throw new Error('Object Type is not defined in FormSchema')
     }
@@ -184,6 +185,7 @@ export default Vue.extend({
       await this.save(objectType)
     },
     async save(objectType: ObjectSchemaNames) {
+      // TODO: SubType für Domain setzen
       await this.$api[objectType].update(this.$route.params.object, this.form.objectData)
     },
     formatObjectData() {

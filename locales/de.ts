@@ -66,6 +66,7 @@ export default {
   'editor.formschema.formschema': 'Formschema',
   'editor.formschema.headline': 'Formschema Editor',
   'editor.formschema.dropzone.placeholder': 'Ziehen Sie die Steuerelemente herein',
+  'editor.formschema.subType': 'Sub Typ',
   'editor.formschema.wizard.create': 'Formular erstellen',
   'editor.formschema.wizard.create.description':
     'Neues Formular erstellen. Entweder leer oder mit vorgenerierten Feldern',
@@ -133,6 +134,7 @@ export default {
   'global.button.save': 'Speichern',
   'global.button.yes': 'Ja',
   'global.error.fetching': 'Fehler beim Abruf',
+  'global.input.required': 'Das Feld muss ausgefüllt werden',
   'global.logout': 'Logout',
   'global.menu.collapse': 'Menü verstecken',
   'global.menu.expand': 'Menü fixieren',

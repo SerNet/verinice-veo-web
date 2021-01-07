@@ -144,6 +144,7 @@ export default Vue.extend({
       objectData,
       lang
     }
+    console.log(this.form)
   },
   head(): any {
     return {
@@ -205,6 +206,7 @@ export default Vue.extend({
       await this.save(objectType)
     },
     async save(objectType: APIGroup) {
+      // TODO: SubType für Domain setzen (Wie an Subtype hier kommen? Steht ja in Form Schema)
       await this.$api[objectType].update(this.objectId, this.form.objectData)
     },
     async deleteObject() {
