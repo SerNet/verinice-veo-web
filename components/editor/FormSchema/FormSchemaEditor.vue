@@ -58,7 +58,7 @@
                           :clone="onCloneControl"
                         >
                           <v-card v-for="(el, i) in unused.basics" :key="i" flat>
-                            <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
+                            <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
                           </v-card>
                         </Draggable>
                       </v-list>
@@ -83,7 +83,7 @@
                           :clone="onCloneControl"
                         >
                           <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
-                            <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
+                            <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
                           </v-card>
                         </Draggable>
                       </v-list>
@@ -108,7 +108,7 @@
                           :clone="onCloneControl"
                         >
                           <v-card v-for="(el, i) in unused.links" :key="i" flat>
-                            <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
+                            <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
                           </v-card>
                         </Draggable>
                       </v-list>
@@ -163,6 +163,7 @@ export interface IControl {
   // Therefore, "type: enum", describes the JSONSchema element, which includes "enum: []"
   type: 'string' | 'boolean' | 'object' | 'number' | 'integer' | 'array' | 'enum' | 'null' | 'default'
   label: string
+  backlogTitle: string
   propertyName: string
   category: 'basics' | 'aspects' | 'links'
   used: boolean
@@ -283,7 +284,8 @@ export default Vue.extend({
       handler() {
         const createControl = (key: string, value: any, category: IControl['category']): IControl => {
           const propertyName = key.split('/').slice(-1)[0]
-          const label =
+          const label = propertyName.split('_').pop() || ''
+          const backlogTitle =
             category !== 'basics'
               ? propertyName
                   .split('_')
@@ -294,6 +296,7 @@ export default Vue.extend({
             scope: key,
             type: Array.isArray(value.enum) ? 'enum' : value.type,
             label,
+            backlogTitle,
             propertyName,
             category,
             used: false
