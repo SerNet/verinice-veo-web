@@ -29,7 +29,11 @@
                         :clone="onCloneFormElement"
                       >
                         <v-card v-for="(el, i) in formElements" :key="i" flat>
-                          <v-list-item flat>
+                          <FormSchemaEditorListItem
+                            :title="formElementsDescription[i].title"
+                            :styling="formElementsDescription[i]"
+                          />
+                          <!-- <v-list-item flat>
                             <v-list-item-avatar color="grey darken-2" size="32">
                               <v-icon small dark outlined v-text="formElementsDescription[i].icon" />
                             </v-list-item-avatar>
@@ -41,7 +45,7 @@
                                 {{ formElementsDescription[i].group }}
                               </v-chip>
                             </v-list-item-action>
-                          </v-list-item>
+                          </v-list-item> -->
                         </v-card>
                       </Draggable>
                     </v-list>
@@ -66,7 +70,8 @@
                         :clone="onCloneControl"
                       >
                         <v-card v-for="(el, i) in unused.basics" :key="i" flat>
-                          <v-list-item flat>
+                          <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
+                          <!-- <v-list-item flat>
                             <v-list-item-avatar size="32" :color="typeMap[el.type].color">
                               <v-icon small outlined dark v-text="typeMap[el.type].icon" />
                             </v-list-item-avatar>
@@ -78,7 +83,7 @@
                                 {{ el.type }}
                               </v-chip>
                             </v-list-item-action>
-                          </v-list-item>
+                          </v-list-item> -->
                         </v-card>
                       </Draggable>
                     </v-list>
@@ -103,7 +108,8 @@
                         :clone="onCloneControl"
                       >
                         <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
-                          <v-list-item flat>
+                          <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
+                          <!-- <v-list-item flat>
                             <v-list-item-avatar size="32" :color="typeMap[el.type].color">
                               <v-icon small outlined dark v-text="typeMap[el.type].icon" />
                             </v-list-item-avatar>
@@ -118,7 +124,7 @@
                                 {{ el.type }}
                               </v-chip>
                             </v-list-item-action>
-                          </v-list-item>
+                          </v-list-item> -->
                         </v-card>
                       </Draggable>
                     </v-list>
@@ -143,7 +149,8 @@
                         :clone="onCloneControl"
                       >
                         <v-card v-for="(el, i) in unused.links" :key="i" flat>
-                          <v-list-item flat>
+                          <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
+                          <!-- <v-list-item flat>
                             <v-list-item-avatar size="32" :color="typeMap[el.type].color">
                               <v-icon small outlined dark v-text="typeMap[el.type].icon" />
                             </v-list-item-avatar>
@@ -155,7 +162,7 @@
                                 {{ el.type }}
                               </v-chip>
                             </v-list-item-action>
-                          </v-list-item>
+                          </v-list-item> -->
                         </v-card>
                       </Draggable>
                     </v-list>
@@ -337,6 +344,7 @@ export interface IControl {
   // Therefore, "type: enum", describes the JSONSchema element, which includes "enum: []"
   type: 'string' | 'boolean' | 'object' | 'number' | 'integer' | 'array' | 'enum' | 'null' | 'default'
   label: string
+  propertyName: string
   category: 'basics' | 'aspects' | 'links'
   used: boolean
 }
@@ -394,14 +402,16 @@ export default Vue.extend({
       ],
       formElementsDescription: [
         {
-          name: 'group',
-          group: 'layout',
-          icon: 'mdi-form-select'
+          title: 'group',
+          icon: 'mdi-form-select',
+          name: 'layout',
+          color: 'grey darken-2'
         },
         {
-          name: 'text',
-          group: 'label',
-          icon: 'mdi-format-text'
+          title: 'text',
+          icon: 'mdi-format-text',
+          name: 'label',
+          color: 'grey darken-2'
         }
       ],
       expansionPanels: [0, 1, 2, 3],
@@ -453,10 +463,19 @@ export default Vue.extend({
       deep: true,
       handler() {
         const createControl = (key: string, value: any, category: IControl['category']): IControl => {
+          const propertyName = key.split('/').slice(-1)[0]
+          const label =
+            category !== 'basics'
+              ? propertyName
+                  .split('_')
+                  .slice(1)
+                  .join('/')
+              : propertyName
           return {
             scope: key,
             type: Array.isArray(value.enum) ? 'enum' : value.type,
-            label: key.split('/').slice(-1)[0],
+            label,
+            propertyName,
             category,
             used: false
           }

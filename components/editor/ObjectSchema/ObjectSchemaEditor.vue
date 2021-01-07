@@ -8,7 +8,14 @@
         <v-expansion-panel-content>
           <v-card outlined>
             <v-list class="py-0" dense disabled>
-              <ObjectSchemaListItem v-for="(child, index) of basicProps" :key="index" v-bind="child" two-line />
+              <ObjectSchemaListItem
+                v-for="(child, index) of basicProps"
+                :key="index"
+                :title="child.item.title"
+                :description="child.item.description"
+                :styling="child.styling"
+                two-line
+              />
             </v-list>
           </v-card>
         </v-expansion-panel-content>
@@ -44,7 +51,8 @@
                 v-for="(attribute, index2) of aspect.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
-                :item="attribute"
+                :title="attribute.title"
+                :description="attribute.description"
                 :styling="newItemTypes[attribute.type]"
                 two-line
               />
@@ -85,7 +93,8 @@
                 v-for="(attribute, index2) of link.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
-                :item="attribute"
+                :title="attribute.title"
+                :description="attribute.description"
                 :styling="newItemTypes[attribute.type]"
                 two-line
               />
