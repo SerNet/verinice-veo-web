@@ -66,7 +66,7 @@ export default {
   'editor.formschema.formschema': 'Formschema',
   'editor.formschema.headline': 'Formschema Editor',
   'editor.formschema.dropzone.placeholder': 'Ziehen Sie die Steuerelemente herein',
-  'editor.formschema.subType': 'Sub Typ',
+  'editor.formschema.subtype': 'Sub Typ',
   'editor.formschema.wizard.create': 'Formular erstellen',
   'editor.formschema.wizard.create.description':
     'Neues Formular erstellen. Entweder leer oder mit vorgenerierten Feldern',

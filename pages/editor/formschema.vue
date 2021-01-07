@@ -81,7 +81,7 @@
                     flat
                     required
                     :rules="editorRules.subType"
-                    :label="$t('editor.formschema.subType')"
+                    :label="$t('editor.formschema.subtype')"
                   />
                 </v-col>
               </v-row>

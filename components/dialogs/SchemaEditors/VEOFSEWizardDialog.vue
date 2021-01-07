@@ -57,6 +57,19 @@
             </v-row>
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
+                <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.subtype') }}*: </span>
+              </v-col>
+              <v-col :cols="12" :md="5">
+                <v-text-field
+                  v-model="createForm.subType"
+                  :label="$t('editor.formschema.subtype')"
+                  :rules="createForm.rules.subType"
+                  required
+                />
+              </v-col>
+            </v-row>
+            <v-row no-gutters class="align-center mt-4">
+              <v-col :cols="12" :md="5">
                 <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.create.type.text') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
@@ -158,10 +171,12 @@ export default Vue.extend({
       createForm: {
         title: '' as string,
         modelType: '' as string,
+        subType: '' as string,
         valid: false,
         rules: {
           title: [(input: string) => trim(input).length > 0],
-          modelType: [(input: string) => trim(input).length > 0]
+          modelType: [(input: string) => trim(input).length > 0],
+          subType: [(input: string) => trim(input).length > 0]
         }
       },
       oscode: '\n\n\n\n\n' as string,
@@ -242,7 +257,11 @@ export default Vue.extend({
       }
     },
     doCreate2(_generateSchema: boolean) {
-      this.formSchema = generateSchema(this.createForm.title, this.objectSchema?.title || this.createForm.modelType)
+      this.formSchema = generateSchema(
+        this.createForm.title,
+        this.objectSchema?.title || this.createForm.modelType,
+        this.createForm.subType
+      )
       this.$emit('form-schema', this.formSchema)
       this.$emit('object-schema', this.objectSchema)
     },
@@ -280,10 +299,12 @@ export default Vue.extend({
       this.createForm = {
         title: '' as string,
         modelType: '' as string,
+        subType: '' as string,
         valid: false,
         rules: {
           title: [(input: string) => trim(input).length > 0],
-          modelType: [(input: string) => trim(input).length > 0]
+          modelType: [(input: string) => trim(input).length > 0],
+          subType: [(input: string) => trim(input).length > 0]
         }
       }
     },
