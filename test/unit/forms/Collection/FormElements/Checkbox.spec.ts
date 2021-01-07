@@ -53,7 +53,7 @@ describe('VeoForm.vue', () => {
     await wrapper.vm.$nextTick()
 
     const controlElement = wrapper.find(
-      '.vf-wrapper > .vf-layout > .vf-control'
+      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control'
     )
 
     expect(controlElement.findAll('.v-input.v-input--checkbox')).toHaveLength(1)

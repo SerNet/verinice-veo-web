@@ -10,6 +10,7 @@
             <v-list class="py-0" dense disabled>
               <ObjectSchemaEditorListItem
                 v-for="(child, index) of basicProps"
+                v-show="attributeContainsTitle(child.item, search)"
                 :key="index"
                 :title="child.item.title"
                 :description="child.item.description"
@@ -195,7 +196,7 @@ export default defineComponent<IProps>({
       )
     }
 
-    function attributeContainsTitle(property: IVEOAttribute, title: string) {
+    function attributeContainsTitle(property: IVEOAttribute | IVEOBasicProperty, title: string) {
       return (
         !title || title.length === 0 || (property.title && property.title.toLowerCase().includes(title.toLowerCase()))
       )

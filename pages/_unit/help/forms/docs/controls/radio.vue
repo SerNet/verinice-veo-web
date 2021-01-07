@@ -1,5 +1,5 @@
 <template>
-  <v-container class="ml-0">
+  <VeoPage fullsize>
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Radio</PageHeader>
@@ -16,7 +16,7 @@
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
     />
-  </v-container>
+  </VeoPage>
 </template>
 
 <script lang="ts">
