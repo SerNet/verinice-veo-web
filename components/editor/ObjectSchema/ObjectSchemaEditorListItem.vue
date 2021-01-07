@@ -1,8 +1,8 @@
 <template>
   <EditorListItem :title="title" :styling="styling" two-line>
-    <template #description
-      ><v-list-item-subtitle><span v-text="description"/></v-list-item-subtitle
-    ></template>
+    <template #description>
+      <v-list-item-subtitle><span v-text="description"/></v-list-item-subtitle>
+    </template>
     <template #right-space><v-list-item-action class="ml-0" style="width: 36px;"/></template>
   </EditorListItem>
 </template>

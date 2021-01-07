@@ -68,8 +68,8 @@
     <VeoPage v-if="!$vuetify.breakpoint.xsOnly" :cols="4" :md="4" :xl="4" absolute-size>
       <VeoTabs>
         <template #tabs>
-          <v-tab :to="linkToLinks">Links</v-tab>
-          <v-tab :to="linkToHistory">History</v-tab>
+          <v-tab :to="linkToLinks">{{ $t('unit.data.links') }}</v-tab>
+          <v-tab :to="linkToHistory">{{ $t('unit.data.history') }}</v-tab>
         </template>
       </VeoTabs>
       <nuxt-child />

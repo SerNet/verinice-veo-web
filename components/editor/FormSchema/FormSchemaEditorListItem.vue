@@ -1,5 +1,5 @@
 <template>
-  <EditorListItem :title="title" :styling="styling"></EditorListItem>
+  <EditorListItem :title="title" :styling="styling" />
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'

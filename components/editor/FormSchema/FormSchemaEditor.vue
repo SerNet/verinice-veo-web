@@ -7,19 +7,19 @@
         </template>
         <template #default>
           <div class="pt-0 px-2 pb-2" style="height: 100%">
-            <v-card flat class="backlog-wrapper" style="height: 100%">
+            <v-card flat style="height: 100%">
               <div class="px-4 py-4">
                 <v-btn text small @click="onExpandAll">{{ $t('editor.formschema.backlog.button.expand') }}</v-btn>
                 <v-btn text small @click="onCollapseAll">{{ $t('editor.formschema.backlog.button.collapse') }}</v-btn>
               </div>
-              <v-expansion-panels accordion multiple v-model="expansionPanels" flat>
+              <v-expansion-panels v-model="expansionPanels" accordion multiple flat>
                 <v-expansion-panel>
                   <v-expansion-panel-header class="overline">
                     {{ $t('editor.formelements') }} ({{ formElements.length }})
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-card outlined v-if="formElements.length > 0">
-                      <v-list class="py-0">
+                    <v-card v-if="formElements.length > 0" outlined>
+                      <v-list dense class="py-0">
                         <Draggable
                           class="drag-form-elements"
                           tag="div"
@@ -46,8 +46,8 @@
                     {{ $t('editor.basicproperties') }} ({{ unused.basics.length }})
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-card outlined v-if="unused.basics.length > 0">
-                      <v-list class="py-0">
+                    <v-card v-if="unused.basics.length > 0" outlined>
+                      <v-list dense class="py-0">
                         <Draggable
                           class="drag-unused-basic-properties"
                           tag="div"
@@ -71,8 +71,8 @@
                     {{ $t('editor.customaspects') }} ({{ unused.aspects.length }})
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-card outlined v-if="unused.aspects.length > 0">
-                      <v-list class="py-0">
+                    <v-card v-if="unused.aspects.length > 0" outlined>
+                      <v-list dense class="py-0">
                         <Draggable
                           class="drag-unused-aspects"
                           tag="div"
@@ -96,8 +96,8 @@
                     {{ $t('editor.customlinks') }} ({{ unused.links.length }})
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-card outlined v-if="unused.links.length > 0">
-                      <v-list class="py-0">
+                    <v-card v-if="unused.links.length > 0" outlined>
+                      <v-list dense class="py-0">
                         <Draggable
                           class="drag-unused-links"
                           tag="div"
@@ -188,7 +188,13 @@ export default Vue.extend({
   components: {
     Draggable,
     FseGenerator,
-    VeoPage
+    VeoPage,
+    VeoPageWrapper
+  },
+  provide(): IProvide {
+    return {
+      controlsItems: this.controlsItems
+    }
   },
   props: {
     objectSchema: Object,
@@ -196,11 +202,6 @@ export default Vue.extend({
     backlogCollapsed: {
       type: Boolean,
       default: false
-    }
-  },
-  provide(): IProvide {
-    return {
-      controlsItems: this.controlsItems
     }
   },
   data() {
@@ -285,13 +286,12 @@ export default Vue.extend({
         const createControl = (key: string, value: any, category: IControl['category']): IControl => {
           const propertyName = key.split('/').slice(-1)[0]
           const label = propertyName.split('_').pop() || ''
-          const backlogTitle =
-            category !== 'basics'
-              ? propertyName
-                  .split('_')
-                  .slice(1)
-                  .join('/')
-              : propertyName
+          let backlogTitle = propertyName
+
+          if (category !== 'basics') {
+            backlogTitle = backlogTitle.replace(`${this.objectSchema.title.toLowerCase()}_`, '')
+            backlogTitle = backlogTitle.replace('_', ' / ')
+          }
           return {
             scope: key,
             type: Array.isArray(value.enum) ? 'enum' : value.type,
@@ -423,10 +423,6 @@ export default Vue.extend({
   position: absolute;
   left: 0;
   top: 0;
-}
-
-.backlog-wrapper {
-  border: 1px solid $grey;
 }
 
 .veo-editor-body {
