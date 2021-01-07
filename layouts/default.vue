@@ -7,8 +7,15 @@
           <AppBarLogo class="ml-2" />
         </nuxt-link>
       </div>
-      <div class="d-flex align-center" style="width: 60%; max-width: 500px;">
-        <v-text-field :label="$t('search.label')" hide-details background-color="grey" height="40" class="veo-app-bar-search" />
+      <div class="d-flex align-center" style="width: 60%; max-width: 500px; cursor: no-drop">
+        <v-text-field
+          :label="$t('search.label')"
+          hide-details
+          background-color="grey"
+          height="40"
+          disabled
+          class="veo-app-bar-search"
+        />
       </div>
       <AppAccountBtn
         v-if="$auth.profile"
@@ -28,7 +35,11 @@
       </VeoPageWrapper>
     </v-main>
     <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
-    <VeoAlert v-model="alert.value" v-bind="alert" style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1" />
+    <VeoAlert
+      v-model="alert.value"
+      v-bind="alert"
+      style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
+    />
     <VeoNewUnitDialog v-model="newUnitDialog.value" v-bind="newUnitDialog" />
   </v-app>
 </template>
