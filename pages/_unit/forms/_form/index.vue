@@ -26,7 +26,7 @@
         <template #top>
           <v-row dense>
             <v-col :cols="3">
-              <v-select v-model="formType" label="Type" :items="formTypes" outlined dense @input="changeType()" />
+              <v-select v-model="formType" label="Formular" :items="formTypes" outlined dense @input="changeType()" />
             </v-col>
             <v-col :cols="3">
               <v-select

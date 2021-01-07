@@ -186,6 +186,8 @@ export default Vue.extend({
     },
     async save(objectType: ObjectSchemaNames) {
       // TODO: SubType für Domain setzen
+      const domainId = '00000000-0000-0000-0000-000000000000'
+      this.form.objectData.subType[domainId] = this.form.formSchema?.subType || domainId
       await this.$api[objectType].update(this.$route.params.object, this.form.objectData)
     },
     formatObjectData() {
