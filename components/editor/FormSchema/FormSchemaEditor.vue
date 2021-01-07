@@ -6,116 +6,118 @@
           <h3 class="text-center pb-1">{{ $t('editor.formschema.controls.available') }}</h3>
         </template>
         <template #default>
-          <v-card flat class="mt-0 mx-2 mb-2 backlog-wrapper">
-            <div class="px-4 py-4">
-              <v-btn text small @click="onExpandAll">{{ $t('editor.formschema.backlog.button.expand') }}</v-btn>
-              <v-btn text small @click="onCollapseAll">{{ $t('editor.formschema.backlog.button.collapse') }}</v-btn>
-            </div>
-            <v-expansion-panels accordion multiple v-model="expansionPanels" flat>
-              <v-expansion-panel>
-                <v-expansion-panel-header class="overline">
-                  {{ $t('editor.formelements') }} ({{ formElements.length }})
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-card outlined v-if="formElements.length > 0">
-                    <v-list class="py-0">
-                      <Draggable
-                        class="drag-form-elements"
-                        tag="div"
-                        style="overflow: auto; min-width:300;"
-                        :list="formElements"
-                        :group="{ name: 'g1', pull: 'clone', put: false }"
-                        :sort="false"
-                        :clone="onCloneFormElement"
-                      >
-                        <v-card v-for="(el, i) in formElements" :key="i" flat>
-                          <FormSchemaEditorListItem
-                            :title="formElementsDescription[i].title"
-                            :styling="formElementsDescription[i]"
-                          />
-                        </v-card>
-                      </Draggable>
-                    </v-list>
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
+          <div class="pt-0 px-2 pb-2" style="height: 100%">
+            <v-card flat class="backlog-wrapper" style="height: 100%">
+              <div class="px-4 py-4">
+                <v-btn text small @click="onExpandAll">{{ $t('editor.formschema.backlog.button.expand') }}</v-btn>
+                <v-btn text small @click="onCollapseAll">{{ $t('editor.formschema.backlog.button.collapse') }}</v-btn>
+              </div>
+              <v-expansion-panels accordion multiple v-model="expansionPanels" flat>
+                <v-expansion-panel>
+                  <v-expansion-panel-header class="overline">
+                    {{ $t('editor.formelements') }} ({{ formElements.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-card outlined v-if="formElements.length > 0">
+                      <v-list class="py-0">
+                        <Draggable
+                          class="drag-form-elements"
+                          tag="div"
+                          style="overflow: auto; min-width:300;"
+                          :list="formElements"
+                          :group="{ name: 'g1', pull: 'clone', put: false }"
+                          :sort="false"
+                          :clone="onCloneFormElement"
+                        >
+                          <v-card v-for="(el, i) in formElements" :key="i" flat>
+                            <FormSchemaEditorListItem
+                              :title="formElementsDescription[i].title"
+                              :styling="formElementsDescription[i]"
+                            />
+                          </v-card>
+                        </Draggable>
+                      </v-list>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
 
-              <v-expansion-panel>
-                <v-expansion-panel-header class="overline">
-                  {{ $t('editor.basicproperties') }} ({{ unused.basics.length }})
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-card outlined v-if="unused.basics.length > 0">
-                    <v-list class="py-0">
-                      <Draggable
-                        class="drag-unused-basic-properties"
-                        tag="div"
-                        style="overflow: auto; min-width:300;"
-                        :list="unused.basics"
-                        :group="{ name: 'g1', pull: 'clone', put: false }"
-                        :sort="false"
-                        :clone="onCloneControl"
-                      >
-                        <v-card v-for="(el, i) in unused.basics" :key="i" flat>
-                          <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
-                        </v-card>
-                      </Draggable>
-                    </v-list>
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
+                <v-expansion-panel>
+                  <v-expansion-panel-header class="overline">
+                    {{ $t('editor.basicproperties') }} ({{ unused.basics.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-card outlined v-if="unused.basics.length > 0">
+                      <v-list class="py-0">
+                        <Draggable
+                          class="drag-unused-basic-properties"
+                          tag="div"
+                          style="overflow: auto; min-width:300;"
+                          :list="unused.basics"
+                          :group="{ name: 'g1', pull: 'clone', put: false }"
+                          :sort="false"
+                          :clone="onCloneControl"
+                        >
+                          <v-card v-for="(el, i) in unused.basics" :key="i" flat>
+                            <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
+                          </v-card>
+                        </Draggable>
+                      </v-list>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
 
-              <v-expansion-panel>
-                <v-expansion-panel-header class="overline">
-                  {{ $t('editor.customaspects') }} ({{ unused.aspects.length }})
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-card outlined v-if="unused.aspects.length > 0">
-                    <v-list class="py-0">
-                      <Draggable
-                        class="drag-unused-aspects"
-                        tag="div"
-                        style="overflow: auto; min-width:300;"
-                        :list="unused.aspects"
-                        :group="{ name: 'g1', pull: 'clone', put: false }"
-                        :sort="false"
-                        :clone="onCloneControl"
-                      >
-                        <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
-                          <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
-                        </v-card>
-                      </Draggable>
-                    </v-list>
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
+                <v-expansion-panel>
+                  <v-expansion-panel-header class="overline">
+                    {{ $t('editor.customaspects') }} ({{ unused.aspects.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-card outlined v-if="unused.aspects.length > 0">
+                      <v-list class="py-0">
+                        <Draggable
+                          class="drag-unused-aspects"
+                          tag="div"
+                          style="overflow: auto; min-width:300;"
+                          :list="unused.aspects"
+                          :group="{ name: 'g1', pull: 'clone', put: false }"
+                          :sort="false"
+                          :clone="onCloneControl"
+                        >
+                          <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
+                            <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
+                          </v-card>
+                        </Draggable>
+                      </v-list>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
 
-              <v-expansion-panel>
-                <v-expansion-panel-header class="overline">
-                  {{ $t('editor.customlinks') }} ({{ unused.links.length }})
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-card outlined v-if="unused.links.length > 0">
-                    <v-list class="py-0">
-                      <Draggable
-                        class="drag-unused-links"
-                        tag="div"
-                        style="overflow: auto; min-width:300;"
-                        :list="unused.links"
-                        :group="{ name: 'g1', pull: 'clone', put: false }"
-                        :sort="false"
-                        :clone="onCloneControl"
-                      >
-                        <v-card v-for="(el, i) in unused.links" :key="i" flat>
-                          <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
-                        </v-card>
-                      </Draggable>
-                    </v-list>
-                  </v-card>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-          </v-card>
+                <v-expansion-panel>
+                  <v-expansion-panel-header class="overline">
+                    {{ $t('editor.customlinks') }} ({{ unused.links.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-card outlined v-if="unused.links.length > 0">
+                      <v-list class="py-0">
+                        <Draggable
+                          class="drag-unused-links"
+                          tag="div"
+                          style="overflow: auto; min-width:300;"
+                          :list="unused.links"
+                          :group="{ name: 'g1', pull: 'clone', put: false }"
+                          :sort="false"
+                          :clone="onCloneControl"
+                        >
+                          <v-card v-for="(el, i) in unused.links" :key="i" flat>
+                            <FormSchemaEditorListItem :title="el.label" :styling="typeMap[el.type]" />
+                          </v-card>
+                        </Draggable>
+                      </v-list>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-card>
+          </div>
         </template>
       </VeoPage>
       <VeoPage
