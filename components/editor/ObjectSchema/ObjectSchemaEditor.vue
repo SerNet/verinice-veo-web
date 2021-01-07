@@ -8,7 +8,7 @@
         <v-expansion-panel-content>
           <v-card outlined>
             <v-list class="py-0" dense disabled>
-              <ObjectSchemaListItem
+              <ObjectSchemaEditorListItem
                 v-for="(child, index) of basicProps"
                 :key="index"
                 :title="child.item.title"
@@ -42,12 +42,12 @@
             outlined
           >
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader
+              <ObjectSchemaEditorListHeader
                 v-bind="aspect"
                 @edit-item="showEditDialog(aspect.item, 'aspect')"
                 @delete-item="showDeleteDialog(aspect.item, 'aspect')"
               />
-              <ObjectSchemaListItem
+              <ObjectSchemaEditorListItem
                 v-for="(attribute, index2) of aspect.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
@@ -80,7 +80,7 @@
             outlined
           >
             <v-list class="py-0" dense>
-              <ObjectSchemaListHeader
+              <ObjectSchemaEditorListHeader
                 v-bind="link"
                 :styling="{
                   name: link.item.raw.items.properties.target.properties.type.enum[0],
@@ -89,7 +89,7 @@
                 @edit-item="showEditDialog(link.item, 'link')"
                 @delete-item="showDeleteDialog(link.item, 'link')"
               />
-              <ObjectSchemaListItem
+              <ObjectSchemaEditorListItem
                 v-for="(attribute, index2) of link.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
