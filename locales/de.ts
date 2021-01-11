@@ -67,6 +67,8 @@ export default {
   'editor.formschema.edit.input.scope.text': 'Scope des Elements',
   'editor.formschema.edit.input.type': 'Steuerelement Typ',
   'editor.formschema.formschema': 'Formschema',
+  'editor.formschema.search': 'Nach einem Steuerelement suchen...',
+  'editor.formschema.search.noMatch': 'Keine passenden Steuerelemente vorhanden',
   'editor.formschema.headline': 'Formschema Editor',
   'editor.formschema.dropzone.placeholder': 'Ziehen Sie die Steuerelemente herein',
   'editor.formschema.wizard.create': 'Formular erstellen',
