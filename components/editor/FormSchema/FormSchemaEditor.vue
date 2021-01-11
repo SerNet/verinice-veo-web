@@ -4,112 +4,127 @@
       <VeoPage v-if="!backlogCollapsed" absolute-size no-padding :cols="12" :md="8" :xl="8" sticky-header>
         <template #header>
           <h3 class="text-center pb-1">{{ $t('editor.formschema.controls.available') }}</h3>
+          <v-text-field
+            v-model="searchQuery"
+            class="mb-1"
+            dense
+            flat
+            clearable
+            hide-details
+            solo-inverted
+            prepend-inner-icon="mdi-magnify"
+            :label="$t('editor.formschema.search')"
+          />
         </template>
         <template #default>
           <div class="pt-0 px-2 pb-2" style="height: 100%">
             <v-card flat style="height: 100%">
-              <div class="px-4 py-4">
-                <v-btn text small @click="onExpandAll">{{ $t('editor.formschema.backlog.button.expand') }}</v-btn>
-                <v-btn text small @click="onCollapseAll">{{ $t('editor.formschema.backlog.button.collapse') }}</v-btn>
+              <div v-show="!controlElementsVisible && searchQuery" class="text-center mt-1">
+                <span class="text--disabled">{{ $t('editor.formschema.search.noMatch') }}</span>
+              </div>
+              <div v-show="controlElementsVisible" class="px-4 py-4">
+                <v-btn text small @click="onExpandAll">
+                  {{ $t('editor.formschema.backlog.button.expand') }}
+                </v-btn>
+                <v-btn text small @click="onCollapseAll">
+                  {{ $t('editor.formschema.backlog.button.collapse') }}
+                </v-btn>
               </div>
               <v-expansion-panels v-model="expansionPanels" accordion multiple flat>
-                <v-expansion-panel>
+                <v-expansion-panel v-show="filteredFormElements.length">
                   <v-expansion-panel-header class="overline">
-                    {{ $t('editor.formelements') }} ({{ formElements.length }})
+                    {{ $t('editor.formelements') }} ({{ filteredFormElements.length }})
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-card v-if="formElements.length > 0" outlined>
+                    <v-card outlined>
                       <v-list dense class="py-0">
                         <Draggable
                           class="drag-form-elements"
                           tag="div"
                           style="overflow: auto; min-width:300;"
-                          :list="formElements"
+                          :list="filteredFormElements"
                           :group="{ name: 'g1', pull: 'clone', put: false }"
                           :sort="false"
                           :clone="onCloneFormElement"
                         >
-                          <v-card v-for="(el, i) in formElements" :key="i" flat>
-                            <FormSchemaEditorListItem
-                              :title="formElementsDescription[i].title"
-                              :styling="formElementsDescription[i]"
-                            />
-                          </v-card>
+                          <v-sheet v-for="(el, i) in filteredFormElements" :key="i">
+                            <FormSchemaEditorListItem :title="el.description.title" :styling="el.description" />
+                          </v-sheet>
                         </Draggable>
                       </v-list>
                     </v-card>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
 
-                <v-expansion-panel>
+                <v-expansion-panel v-show="filteredBasics.length">
                   <v-expansion-panel-header class="overline">
-                    {{ $t('editor.basicproperties') }} ({{ unused.basics.length }})
+                    {{ $t('editor.basicproperties') }} ({{ filteredBasics.length }})
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-card v-if="unused.basics.length > 0" outlined>
+                    <v-card v-show="filteredBasics.length" outlined>
                       <v-list dense class="py-0">
                         <Draggable
                           class="drag-unused-basic-properties"
                           tag="div"
                           style="overflow: auto; min-width:300;"
-                          :list="unused.basics"
+                          :list="filteredBasics"
                           :group="{ name: 'g1', pull: 'clone', put: false }"
                           :sort="false"
                           :clone="onCloneControl"
                         >
-                          <v-card v-for="(el, i) in unused.basics" :key="i" flat>
+                          <v-sheet v-for="(el, i) in filteredBasics" :key="i">
                             <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
-                          </v-card>
+                          </v-sheet>
                         </Draggable>
                       </v-list>
                     </v-card>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
 
-                <v-expansion-panel>
+                <v-expansion-panel v-show="filteredAspects.length">
                   <v-expansion-panel-header class="overline">
-                    {{ $t('editor.customaspects') }} ({{ unused.aspects.length }})
+                    {{ $t('editor.customaspects') }} ({{ filteredAspects.length }})
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-card v-if="unused.aspects.length > 0" outlined>
+                    <v-card v-if="filteredAspects.length" outlined>
                       <v-list dense class="py-0">
                         <Draggable
                           class="drag-unused-aspects"
                           tag="div"
                           style="overflow: auto; min-width:300;"
-                          :list="unused.aspects"
+                          :list="filteredAspects"
                           :group="{ name: 'g1', pull: 'clone', put: false }"
                           :sort="false"
                           :clone="onCloneControl"
                         >
-                          <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
+                          <v-sheet v-for="(el, i) in filteredAspects" :key="i">
                             <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
-                          </v-card>
+                          </v-sheet>
                         </Draggable>
                       </v-list>
                     </v-card>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
 
-                <v-expansion-panel>
+                <v-expansion-panel v-show="filteredLinks.length">
                   <v-expansion-panel-header class="overline">
-                    {{ $t('editor.customlinks') }} ({{ unused.links.length }})
+                    {{ $t('editor.customlinks') }} ({{ filteredLinks.length }})
                   </v-expansion-panel-header>
                   <v-expansion-panel-content>
-                    <v-card v-if="unused.links.length > 0" outlined>
+                    <v-card v-if="filteredLinks.length" outlined>
                       <v-list dense class="py-0">
                         <Draggable
                           class="drag-unused-links"
                           tag="div"
                           style="overflow: auto; min-width:300;"
-                          :list="unused.links"
+                          :list="filteredLinks"
                           :group="{ name: 'g1', pull: 'clone', put: false }"
                           :sort="false"
                           :clone="onCloneControl"
                         >
-                          <v-card v-for="(el, i) in unused.links" :key="i" flat>
+                          <v-sheet v-for="(el, i) in filteredLinks" :key="i">
                             <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
-                          </v-card>
+                          </v-sheet>
                         </Draggable>
                       </v-list>
                     </v-card>
@@ -207,32 +222,31 @@ export default Vue.extend({
   data() {
     return {
       fab: false,
+      searchQuery: '',
       formElements: [
         {
           type: 'Layout',
           options: {
             format: 'group'
           },
-          elements: []
+          elements: [],
+          description: {
+            title: 'group',
+            icon: 'mdi-form-select',
+            name: 'layout',
+            color: 'grey darken-2'
+          }
         },
         {
           type: 'Label',
           text: 'TEXT',
-          options: {}
-        }
-      ],
-      formElementsDescription: [
-        {
-          title: 'group',
-          icon: 'mdi-form-select',
-          name: 'layout',
-          color: 'grey darken-2'
-        },
-        {
-          title: 'text',
-          icon: 'mdi-format-text',
-          name: 'label',
-          color: 'grey darken-2'
+          options: {},
+          description: {
+            title: 'text',
+            icon: 'mdi-format-text',
+            name: 'label',
+            color: 'grey darken-2'
+          }
         }
       ],
       expansionPanels: [0, 1, 2, 3],
@@ -276,6 +290,28 @@ export default Vue.extend({
         aspects: this.controls.filter(obj => obj.category === 'aspects' && !obj.used),
         links: this.controls.filter(obj => obj.category === 'links' && !obj.used)
       }
+    },
+    filteredBasics(): IControl[] {
+      return this.unused.basics.filter(b => !this.searchQuery || b.label?.toLowerCase().includes(this.searchQuery))
+    },
+    filteredAspects(): IControl[] {
+      return this.unused.aspects.filter(a => !this.searchQuery || a.label?.toLowerCase().includes(this.searchQuery))
+    },
+    filteredLinks(): IControl[] {
+      return this.unused.links.filter(l => !this.searchQuery || l.label?.toLowerCase().includes(this.searchQuery))
+    },
+    filteredFormElements(): any {
+      return this.formElements.filter(
+        (f: any) => !this.searchQuery || f.description.title?.toLowerCase().includes(this.searchQuery)
+      )
+    },
+    controlElementsVisible(): boolean {
+      return !!(
+        this.filteredFormElements.length +
+        this.filteredBasics.length +
+        this.filteredAspects.length +
+        this.filteredLinks.length
+      )
     }
   },
   watch: {
