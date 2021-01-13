@@ -75,7 +75,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      miniVariant: !LocalStorage.primaryNavMiniVariant,
+      miniVariant: LocalStorage.primaryNavMiniVariant,
       items: [] as INavItem[]
     }
   },
@@ -86,7 +86,6 @@ export default Vue.extend({
   },
   mounted() {
     this.getNavEntries(this.$route)
-    this.miniVariant = LocalStorage.primaryNavMiniVariant
   },
   methods: {
     getNavEntries(route: Route) {
