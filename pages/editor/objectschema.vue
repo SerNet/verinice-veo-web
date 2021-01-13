@@ -40,7 +40,12 @@
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
-          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%">
+          <v-row
+            v-if="schemaIsValid.valid"
+            no-gutters
+            class="flex-column overflow-hidden mt-2"
+            style="width: 100%"
+          >
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="12" lg="4">
@@ -113,8 +118,8 @@
               <h3>{{ $t('editor.objectschema.validation.schema.invalid') }}</h3>
               <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
                 <v-list-item-content>
-                  <v-list-item-title>{{ error.code }} </v-list-item-title>
-                  <v-list-item-subtitle>{{ error.message }} </v-list-item-subtitle>
+                  <v-list-item-title>{{ error.code }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ error.message }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -122,6 +127,7 @@
           </v-row>
         </template>
       </VeoPage>
+      <v-divider vertical />
       <VeoPage
         v-if="schema && !collapsed && !$vuetify.breakpoint.xs"
         no-padding

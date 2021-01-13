@@ -45,7 +45,12 @@
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
-          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%;">
+          <v-row
+            v-if="schemaIsValid.valid"
+            no-gutters
+            class="flex-column overflow-hidden mt-2"
+            style="width: 100%;"
+          >
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="2" class="pl-0">
@@ -90,8 +95,8 @@
               <h3>{{ $t('editor.objectschema.validation.schema.invalid') }}</h3>
               <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
                 <v-list-item-content>
-                  <v-list-item-title>{{ error.code }} </v-list-item-title>
-                  <v-list-item-subtitle>{{ error.message }} </v-list-item-subtitle>
+                  <v-list-item-title>{{ error.code }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ error.message }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -99,6 +104,7 @@
           </v-row>
         </template>
       </VeoPage>
+      <v-divider vertical />
       <VeoPage
         v-if="formSchema && objectSchema && !previewCollapsed && !$vuetify.breakpoint.xs"
         absolute-size
@@ -106,7 +112,6 @@
         :md="backlogCollapsed ? 6 : 4"
         :xl="backlogCollapsed ? 6 : 4"
         height="100%"
-        border-left
         content-class="pb-4"
       >
         <v-card style="height: 100%" outlined>
@@ -121,7 +126,11 @@
       </VeoPage>
     </template>
     <template #helpers>
-      <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
+      <VEOFSEWizardDialog
+        v-model="showCreationDialog"
+        @object-schema="setObjectSchema"
+        @form-schema="setFormSchema"
+      />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
     </template>

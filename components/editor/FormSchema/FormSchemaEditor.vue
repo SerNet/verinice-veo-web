@@ -1,7 +1,15 @@
 <template>
   <VeoPageWrapper>
     <template #default>
-      <VeoPage v-if="!backlogCollapsed" absolute-size no-padding :cols="12" :md="8" :xl="8" sticky-header>
+      <VeoPage
+        v-if="!backlogCollapsed"
+        absolute-size
+        no-padding
+        :cols="12"
+        :md="8"
+        :xl="8"
+        sticky-header
+      >
         <template #header>
           <h3 class="text-center pb-1">{{ $t('editor.formschema.controls.available') }}</h3>
           <v-text-field
@@ -23,18 +31,22 @@
                 <span class="text--disabled">{{ $t('editor.formschema.search.noMatch') }}</span>
               </div>
               <div v-show="controlElementsVisible" class="px-4 py-4">
-                <v-btn text small @click="onExpandAll">
-                  {{ $t('editor.formschema.backlog.button.expand') }}
-                </v-btn>
-                <v-btn text small @click="onCollapseAll">
-                  {{ $t('editor.formschema.backlog.button.collapse') }}
-                </v-btn>
+                <v-btn
+                  text
+                  small
+                  @click="onExpandAll"
+                >{{ $t('editor.formschema.backlog.button.expand') }}</v-btn>
+                <v-btn
+                  text
+                  small
+                  @click="onCollapseAll"
+                >{{ $t('editor.formschema.backlog.button.collapse') }}</v-btn>
               </div>
               <v-expansion-panels v-model="expansionPanels" accordion multiple flat>
                 <v-expansion-panel v-show="filteredFormElements.length">
-                  <v-expansion-panel-header class="overline">
-                    {{ $t('editor.formelements') }} ({{ filteredFormElements.length }})
-                  </v-expansion-panel-header>
+                  <v-expansion-panel-header
+                    class="overline"
+                  >{{ $t('editor.formelements') }} ({{ filteredFormElements.length }})</v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-card outlined>
                       <v-list dense class="py-0">
@@ -48,7 +60,10 @@
                           :clone="onCloneFormElement"
                         >
                           <v-sheet v-for="(el, i) in filteredFormElements" :key="i">
-                            <FormSchemaEditorListItem :title="el.description.title" :styling="el.description" />
+                            <FormSchemaEditorListItem
+                              :title="el.description.title"
+                              :styling="el.description"
+                            />
                           </v-sheet>
                         </Draggable>
                       </v-list>
@@ -57,9 +72,9 @@
                 </v-expansion-panel>
 
                 <v-expansion-panel v-show="filteredBasics.length">
-                  <v-expansion-panel-header class="overline">
-                    {{ $t('editor.basicproperties') }} ({{ filteredBasics.length }})
-                  </v-expansion-panel-header>
+                  <v-expansion-panel-header
+                    class="overline"
+                  >{{ $t('editor.basicproperties') }} ({{ filteredBasics.length }})</v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-card v-show="filteredBasics.length" outlined>
                       <v-list dense class="py-0">
@@ -73,7 +88,10 @@
                           :clone="onCloneControl"
                         >
                           <v-sheet v-for="(el, i) in filteredBasics" :key="i">
-                            <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
+                            <FormSchemaEditorListItem
+                              :title="el.backlogTitle"
+                              :styling="typeMap[el.type]"
+                            />
                           </v-sheet>
                         </Draggable>
                       </v-list>
@@ -82,9 +100,9 @@
                 </v-expansion-panel>
 
                 <v-expansion-panel v-show="filteredAspects.length">
-                  <v-expansion-panel-header class="overline">
-                    {{ $t('editor.customaspects') }} ({{ filteredAspects.length }})
-                  </v-expansion-panel-header>
+                  <v-expansion-panel-header
+                    class="overline"
+                  >{{ $t('editor.customaspects') }} ({{ filteredAspects.length }})</v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-card v-if="filteredAspects.length" outlined>
                       <v-list dense class="py-0">
@@ -98,7 +116,10 @@
                           :clone="onCloneControl"
                         >
                           <v-sheet v-for="(el, i) in filteredAspects" :key="i">
-                            <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
+                            <FormSchemaEditorListItem
+                              :title="el.backlogTitle"
+                              :styling="typeMap[el.type]"
+                            />
                           </v-sheet>
                         </Draggable>
                       </v-list>
@@ -107,9 +128,9 @@
                 </v-expansion-panel>
 
                 <v-expansion-panel v-show="filteredLinks.length">
-                  <v-expansion-panel-header class="overline">
-                    {{ $t('editor.customlinks') }} ({{ filteredLinks.length }})
-                  </v-expansion-panel-header>
+                  <v-expansion-panel-header
+                    class="overline"
+                  >{{ $t('editor.customlinks') }} ({{ filteredLinks.length }})</v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-card v-if="filteredLinks.length" outlined>
                       <v-list dense class="py-0">
@@ -123,7 +144,10 @@
                           :clone="onCloneControl"
                         >
                           <v-sheet v-for="(el, i) in filteredLinks" :key="i">
-                            <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
+                            <FormSchemaEditorListItem
+                              :title="el.backlogTitle"
+                              :styling="typeMap[el.type]"
+                            />
                           </v-sheet>
                         </Draggable>
                       </v-list>
@@ -135,6 +159,7 @@
           </div>
         </template>
       </VeoPage>
+      <v-divider vertical />
       <VeoPage
         absolute-size
         no-padding
@@ -155,7 +180,12 @@
         </template>
         <template #default>
           <div class="veo-editor-body d-flex pt-0 px-2 pb-2" style="height: 100%">
-            <FseGenerator :schema="objectSchema" :value="value.content" @delete="onDelete" @update="onUpdate" />
+            <FseGenerator
+              :schema="objectSchema"
+              :value="value.content"
+              @delete="onDelete"
+              @update="onUpdate"
+            />
           </div>
         </template>
       </VeoPage>
