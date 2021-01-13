@@ -1,35 +1,15 @@
 <template>
-  <v-list-item
-    v-if="childItems === undefined"
-    :to="to"
-    :exact="exact"
-    :disabled="disabled"
-    active-class="veo-active-link-item"
-  >
+  <v-list-item v-if="childItems === undefined" :to="to" :exact="exact" :disabled="disabled" active-class="veo-active-link-item">
     <v-list-item-icon v-if="icon">
       <v-icon v-text="icon" />
     </v-list-item-icon>
     <v-list-item-title>{{ name }}</v-list-item-title>
   </v-list-item>
-  <v-list-group
-    v-else
-    :key="name"
-    :value="!collapsed"
-    no-action
-    :prepend-icon="icon"
-    active-class="veo-active-link-group"
-    :sub-group="!topLevelItem"
-    @input="setCollapsedState(name, !$event)"
-  >
+  <v-list-group v-else :key="name" :value="extended" no-action :prepend-icon="icon" active-class="veo-active-link-group" :sub-group="!topLevelItem" @click="persistSubmenuUIState(name, extended)">
     <template #activator>
       <v-list-item-title>{{ name }}</v-list-item-title>
     </template>
-    <VeoPrimaryNavigationEntry
-      v-for="child of childItems"
-      :key="child.name"
-      v-bind="child"
-      :persist-u-i-state="child.persistCollapsedState"
-    />
+    <VeoPrimaryNavigationEntry v-for="child of childItems" :key="child.name" v-bind="child" :persist-u-i-state="persistUIState" />
   </v-list-group>
 </template>
 
@@ -68,28 +48,29 @@ export default defineComponent<IProps>({
       type: Array as PropType<INavItem[]>,
       default: undefined
     },
-    collapsed: {
+    extended: {
       type: Boolean,
-      default: false
+      default: true
     },
     topLevelItem: {
       type: Boolean,
       required: true
     },
     persistUIState: {
-      type: Function
+      type: Function,
+      required: true
     }
   },
   setup(props, context) {
-    function setCollapsedState(item: string, collapsed: boolean) {
-      context.emit('update:collapsed', collapsed)
-
-      props.persistUIState?.(collapsed)
+    function persistSubmenuUIState(item: string, state: boolean) {
+      context.emit('update:extended', state)
+      props.persistUIState(item, state)
     }
 
-    return { setCollapsedState }
+    return { persistSubmenuUIState }
   }
 })
 </script>
 <style lang="scss" scoped>
+
 </style>

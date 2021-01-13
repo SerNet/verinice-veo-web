@@ -1,6 +1,5 @@
 import { Plugin } from '@nuxt/types'
 import Keycloak from 'keycloak-js'
-import LocalStorage from '~/util/LocalStorage';
 
 /**
  * This class handles all authentication related stuff.
@@ -91,7 +90,6 @@ export class Auth {
    * @param absolute If set to true, the passed destination gets interpreted as an absolute url, else it gets interpreted as an absolute path within the app.
    */
   public async logout(destination?: string, absolute: boolean = false): Promise<void> {
-    LocalStorage.clear();
     await this.keycloak.logout({ redirectUri: `${(absolute ? '' : window.location.origin)}${destination}` })
   }
 
