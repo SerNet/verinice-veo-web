@@ -24,11 +24,7 @@
       <v-spacer />
       <v-list nav dense class="pa-0">
         <v-divider />
-        <v-list-item
-          v-if="!$vuetify.breakpoint.xs"
-          class="pl-4"
-          @click="setMiniVariant(!miniVariant)"
-        >
+        <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="setMiniVariant(!miniVariant)">
           <v-list-item-icon>
             <v-icon v-if="miniVariant">mdi-chevron-double-right</v-icon>
             <v-icon v-else>mdi-chevron-double-left</v-icon>
@@ -44,8 +40,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router'
-import LocalStorage from '~/util/LocalStorage'
 import { capitalize } from 'lodash'
+import LocalStorage from '~/util/LocalStorage'
 import { FormSchemaMeta, FormSchemaMetas, ObjectSchemaNames } from '~/types/FormSchema'
 
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
@@ -90,6 +86,7 @@ export default Vue.extend({
   },
   mounted() {
     this.getNavEntries(this.$route)
+    this.miniVariant = LocalStorage.primaryNavMiniVariant
   },
   methods: {
     getNavEntries(route: Route) {
