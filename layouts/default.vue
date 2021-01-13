@@ -27,7 +27,7 @@
       />
       <span v-else />
     </v-app-bar>
-    <VeoPrimaryNav :drawer.sync="drawer" />
+    <VeoPrimaryNav v-model="drawer" />
     <v-main style="max-height: 100vh;" class="overflow-hidden">
       <VeoBreadcrumbs />
       <VeoPageWrapper>
