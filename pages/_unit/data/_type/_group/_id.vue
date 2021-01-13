@@ -116,8 +116,9 @@ import VeoTabs from '~/components/layout/VeoTabs.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-
-type APIGroup = 'asset' | 'control' | 'person' | 'process'
+import { getSchemaName } from '~/plugins/api/schema'
+import object from '~/plugins/api/object'
+import { capitalize } from 'lodash'
 
 interface IData {
   panel: number[]
@@ -146,9 +147,6 @@ export default Vue.extend({
       )
     }
   },
-  validate({ params }) {
-    return ['asset', 'control', 'person', 'process'].includes(params.type)
-  },
   data(): IData {
     return {
       panel: [],
@@ -167,9 +165,12 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.objectType)
+    const objectSchema = await this.$api.schema.fetch(this.schemaType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api[this.objectType].fetch(this.objectId)
+    const objectData = await this.$api.object.fetch(
+      this.$route.params.type,
+      this.objectId
+    )
     this.form = {
       objectSchema,
       objectData,
@@ -185,12 +186,12 @@ export default Vue.extend({
     title(): string {
       return this.$fetchState.pending
         ? 'veo.data'
-        : `${this.form.objectData.name} - ${this.capitalize(
-            this.objectType
+        : `${this.form.objectData.name} - ${capitalize(
+            this.$route.params.type || ''
           )} - veo.data`
     },
-    objectType(): APIGroup {
-      return this.$route.params.type as APIGroup
+    schemaType(): string | undefined {
+      return getSchemaName(this.$route.params.type)
     },
     objectGroup(): string {
       return this.$route.params.group
@@ -202,10 +203,10 @@ export default Vue.extend({
       return this.$route.params.unit
     },
     linkToLinks(): string {
-      return `/${this.unit}/data/${this.objectType}/${this.objectGroup}/${this.objectId}/links`
+      return `/${this.unit}/data/${this.$route.params.type}/${this.objectGroup}/${this.objectId}/links`
     },
     linkToHistory(): string {
-      return `/${this.unit}/data/${this.objectType}/${this.objectGroup}/${this.objectId}/history`
+      return `/${this.unit}/data/${this.$route.params.type}/${this.objectGroup}/${this.objectId}/history`
     }
   },
   methods: {
@@ -217,8 +218,8 @@ export default Vue.extend({
       this.error = undefined
       try {
         this.formatObjectData()
-        if (this.objectType) {
-          await this.action(this.objectType)
+        if (this.$route.params.type) {
+          await this.action(this.$route.params.type)
         } else {
           throw new Error('Object Type is not defined in FormSchema')
         }
@@ -237,23 +238,30 @@ export default Vue.extend({
         this.btnLoading = false
       }
     },
-    async action(objectType: APIGroup) {
+    async action(objectType: string) {
       await this.save(objectType)
     },
-    async save(objectType: APIGroup) {
-      await this.$api[objectType].update(this.objectId, this.form.objectData)
+    async save(objectType: string) {
+      await this.$api.object.update(
+        this.$route.params.type,
+        this.objectId,
+        this.form.objectData
+      )
     },
     async deleteObject() {
       this.deleteDialog = false
       this.deleteBtnLoading = true
       try {
-        await this.$api[this.objectType].delete(this.$route.params.id)
+        await this.$api.object.delete(
+          this.$route.params.type,
+          this.$route.params.id
+        )
         this.$root.$emit(
           VeoEvents.SNACKBAR_SUCCESS,
           this.$t('global.appstate.alert.success')
         )
         this.$router.push({
-          path: `/${this.unit}/data/${this.objectType}/${this.objectGroup}/`
+          path: `/${this.unit}/data/${this.$route.params.type}/${this.objectGroup}/`
         })
       } catch (e) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -277,9 +285,6 @@ export default Vue.extend({
           }
         )
       }
-    },
-    capitalize(string: string): string {
-      return string.charAt(0).toUpperCase() + string.slice(1)
     }
   }
 })

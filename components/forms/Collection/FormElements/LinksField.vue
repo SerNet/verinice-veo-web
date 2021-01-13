@@ -8,9 +8,21 @@
     <div v-if="options && options.label" class="subtitle-1 mb-2">
       {{ options && options.label }}
     </div>
-    <div v-for="(val, i) in value" :key="i" class="d-flex flex-row align-center">
+    <div
+      v-for="(val, i) in value"
+      :key="i"
+      class="d-flex flex-row align-center"
+    >
       <div class="d-inline-block" style="width: 32px">
-        <v-btn v-if="i === value.length - 1" elevation="0" x-small text fab color="primary" @click="addRow">
+        <v-btn
+          v-if="i === value.length - 1"
+          elevation="0"
+          x-small
+          text
+          fab
+          color="primary"
+          @click="addRow"
+        >
           <v-icon>mdi-plus-circle-outline</v-icon>
         </v-btn>
       </div>

@@ -52,13 +52,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router'
-import {
-  FormSchemaMeta,
-  FormSchemaMetas,
-  ObjectSchemaNames
-} from '~/types/FormSchema'
+import { FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
+import { capitalize } from 'lodash'
 
 export interface INavItem {
   name: string
@@ -226,37 +223,21 @@ export default Vue.extend({
       }
     },
     async fetchDataTypes(): Promise<INavItem[]> {
-      const objects: INavItem[] = []
-      const keys = Object.keys(ObjectSchemaNames)
-
-      for await (const key of keys) {
-        // TODO: Implement groups
-        await this.$api.group
-          .fetchAll({
-            type: this.capitalize(key),
-            unit: this.$route.params.unit
-          })
-          .then((data: any) => {
-            if (data.length > 0) {
-            }
-          })
-
-        objects.push({
-          name: this.$t(`unit.data.type.${key}`) as string,
-          exact: true,
-          to: `/${this.$route.params.unit}/data/${key}/-/`,
-          disabled: false,
-          childItems: undefined,
-          extended: this.fetchUIState()[
-            this.$t(`unit.data.type.${key}`) as string
-          ]
-            ? !this.fetchUIState()[this.$t(`unit.data.type.${key}`) as string]
-            : true,
-          topLevelItem: false
+      return this.$api.schema.fetchAll().then(data => {
+        return data.map(entry => {
+          return {
+            name: capitalize(entry.schemaName),
+            exact: true,
+            to: `/${this.$route.params.unit}/data/${entry.endpoint}/-/`,
+            disabled: false,
+            childItems: undefined,
+            extended: this.fetchUIState()[entry.schemaName]
+              ? !this.fetchUIState()[entry.schemaName]
+              : true,
+            topLevelItem: false
+          }
         })
-      }
-
-      return objects
+      })
     },
     async fetchFormTypes(): Promise<INavItem[]> {
       return await this.$api.form

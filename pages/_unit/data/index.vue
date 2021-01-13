@@ -5,11 +5,11 @@
       <v-btn
         depressed
         outlined
-        :to="`/${$route.params.unit}/data/${objectType}/${group}/create`"
+        :to="`/${$route.params.unit}/data/${currentSchemaType}/${group}/create`"
         color="primary"
         class="align-self-center"
       >
-        {{ $t('unit.data.createobject', { type: objectType }) }}
+        {{ $t('unit.data.createobject', { type: currentSchemaType }) }}
       </v-btn>
     </template>
     <template #default>
@@ -26,9 +26,11 @@
           <v-row dense>
             <v-col :cols="3">
               <v-select
-                v-model="objectType"
+                v-model="currentSchemaType"
                 label="Type"
-                :items="objectTypes"
+                :items="schemaTypes"
+                item-text="schemaName"
+                item-value="endpoint"
                 outlined
                 dense
                 @input="changeType()"
@@ -67,11 +69,22 @@
   </VeoPage>
 </template>
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import {
+  ComputedRef,
+  defineComponent,
+  nextTick,
+  onMounted,
+  Ref,
+  ref,
+  SetupContext,
+  useContext,
+  useFetch
+} from '@nuxtjs/composition-api'
+import { capitalize } from 'lodash'
+import { DataTableHeader } from 'vuetify'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
-import { ObjectSchemaNames } from '~/types/FormSchema'
-import { GroupType } from '~/plugins/api/group'
+import { ISchemaEndpoint } from '~/plugins/api/schema'
 
 interface IProps {}
 
@@ -79,103 +92,138 @@ export default defineComponent<IProps>({
   components: {
     VeoPage
   },
-  data() {
-    return {
-      group: '-' as string,
-      objectType: 'asset' /* ObjectSchemaNames[0] */ as string,
-      headers: [
-        {
-          text: 'Title',
-          value: 'name'
-        },
-        {
-          text: 'UUID',
-          value: 'id',
-          sortable: false
-        },
-        {
-          text: 'Created at',
-          value: null
-        },
-        {
-          text: 'Updated at',
-          value: null
-        },
-        {
-          text: '',
-          value: 'actions',
-          sortable: false
-        }
-      ],
-      objects: [] as any
-    }
-  },
-  async fetch() {
-    this.objects = []
+  setup(props: IProps) {
+    const context = useContext()
+    // URL parameters
+    const currentSchemaType: Ref<string | undefined> = ref(
+      context.route.value.params.type
+    )
+    const group: Ref<string | undefined> = ref(context.route.value.params.group)
+    const unit: Ref<string> = ref(context.route.value.params.unit)
 
-    // We have to do everythin on next tick, else the correct objecttype won't get picked up.
-    await this.$nextTick(async () => {
-      if (!this.$route.params.group || this.$route.params.group === '-') {
-        // @ts-ignore
-        this.objects = await this.$api[this.objectType].fetchAll({
-          unit: this.$route.params.unit
+    // Common parameters
+    const schemaTypes: Ref<ISchemaEndpoint[]> = ref([])
+
+    // Fetch
+    const { fetch, fetchState } = useFetch(async () => {
+      schemaTypes.value = await context.$api.schema
+        .fetchAll()
+        .then((data: ISchemaEndpoint[]) => {
+          return data.map(entry => {
+            return {
+              schemaName: capitalize(entry.schemaName),
+              endpoint: entry.endpoint
+            }
+          })
         })
-      } else {
-        this.objects = await this.$api.group.fetchGroupMembers(
-          this.$route.params.group,
-          this.objectType as GroupType
-        )
+      if (currentSchemaType.value) {
+        // We have to do everything on next tick, else the correct schema type won't get picked up.
+        await nextTick(async () => {
+          if (!group.value || group.value === '-') {
+            // @ts-ignore
+            objects.value = await context.$api.object.fetchAll(
+              currentSchemaType.value as string,
+              {
+                unit: unit.value
+              }
+            )
+          } else {
+            objects.value = await context.$api.group.fetchGroupMembers(
+              group.value as string,
+              currentSchemaType.value as string
+            )
+          }
+        })
       }
     })
+
+    // Make sure the url always displays all parameters
+    onMounted(verifyURLParameters)
+
+    async function verifyURLParameters() {
+      if (!currentSchemaType.value) {
+        if (schemaTypes.value.length === 0) {
+          await fetch()
+        }
+        nextTick(() => {
+          context.app.router?.push(
+            `/${unit.value}/data/${schemaTypes.value[0].endpoint}/`
+          )
+        })
+      }
+      if (!group.value) {
+        context.app.router?.push(
+          `/${unit.value}/data/${currentSchemaType.value}/-/`
+        )
+      }
+    }
+
+    // Table related stuff
+    const headers: Ref<DataTableHeader[]> = ref([
+      {
+        text: 'Title',
+        value: 'name'
+      },
+      {
+        text: 'UUID',
+        value: 'id',
+        sortable: false
+      },
+      {
+        text: 'Created at',
+        value: ''
+      },
+      {
+        text: 'Updated at',
+        value: ''
+      },
+      {
+        text: '',
+        value: 'actions',
+        sortable: false
+      }
+    ])
+    const objects: Ref<any[]> = ref([])
+    const groups: ComputedRef<{ title: string; id: string }[]> = ref([
+      {
+        title: '-',
+        id: '-'
+      }
+    ])
+
+    function goToObject(item: any) {
+      context.app.router?.push(
+        `/${unit.value}/data/${currentSchemaType.value}/${group.value}/${item.id}`
+      )
+    }
+
+    // Navigation upon changing the schemaType or group
+    function changeType() {
+      context.app.router?.push(
+        `/${unit.value}/data/${currentSchemaType.value}/${group.value}`
+      )
+    }
+    function changeGroup() {
+      context.app.router?.push(
+        `/${unit.value}/data/${currentSchemaType.value}/${group.value}`
+      )
+    }
+
+    return {
+      group,
+      currentSchemaType,
+      schemaTypes,
+      headers,
+      objects,
+      groups,
+      goToObject,
+      changeType,
+      changeGroup
+    }
   },
   head() {
     return {
       title: 'veo.data'
-    }
-  },
-  computed: {
-    objectTypes(): { text: string; value: string }[] {
-      const keys = Object.keys(ObjectSchemaNames)
-
-      return keys.map((key: string) => {
-        return {
-          text: this.$t(`unit.data.type.${key}`) as string,
-          value: key
-        }
-      })
-    },
-    groups(): { title: '-'; id: '-' }[] {
-      return [
-        {
-          title: '-',
-          id: '-'
-        }
-      ]
-    }
-  },
-  mounted() {
-    if (this.$route.params.type) {
-      this.objectType = this.$route.params.type
-    }
-    if (this.$route.params.group) {
-      this.group = this.$route.params.group
-    }
-  },
-  methods: {
-    changeType() {
-      this.$router.push(
-        `/${this.$route.params.unit}/data/${this.objectType}/${this.group}`
-      )
-    },
-    changeGroup() {
-      this.$router.push(
-        `/${this.$route.params.unit}/data/${this.objectType}/${this.group}`
-      )
-    },
-    goToObject(item: any) {
-      this.$router.push(
-        `/${this.$route.params.unit}/data/${this.objectType}/${this.group}/${item.id}`
-      )
     }
   }
 })

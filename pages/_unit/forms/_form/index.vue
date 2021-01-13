@@ -9,7 +9,7 @@
         color="primary"
         class="align-self-center"
       >
-        {{ $t('unit.forms.create', { type: objectType }) }}
+        {{ $t('unit.forms.create', { type: createButtonText }) }}
       </v-btn>
     </template>
     <template #default>
@@ -71,6 +71,7 @@ import Vue from 'vue'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
 import { IBaseObject } from '~/lib/utils'
+import { endpoints, getSchemaName } from '~/plugins/api/schema'
 import { FormSchema, FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 
 interface IData {
@@ -126,9 +127,13 @@ export default Vue.extend({
   async fetch() {
     this.formSchema = await this.$api.form.fetch(this.$route.params.form)
     this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
+    if (this.formSchema) {
+      // @ts-ignore
+      this.objectType = endpoints[this.formSchema.modelType.toLowerCase()]
+    }
     this.objects =
       this.objectType &&
-      (await this.$api[this.objectType].fetchAll({
+      (await this.$api.object.fetchAll(this.objectType, {
         unit: this.$route.params.unit
       }))
 
@@ -151,6 +156,9 @@ export default Vue.extend({
   computed: {
     unit() {
       return this.$route.params.unit
+    },
+    createButtonText(): string {
+      return getSchemaName(this.objectType || '') || ''
     }
   },
   methods: {

@@ -85,7 +85,7 @@
                   :schema="objectSchema"
                   :ui="formSchema.content"
                   :lang="lang"
-                  :api="{}"
+                  :api="dynamicAPI"
                 />
               </v-card>
             </v-tab-item>

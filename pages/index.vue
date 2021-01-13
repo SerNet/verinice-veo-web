@@ -58,11 +58,6 @@ export default Vue.extend({
     return {
       title: this.$t('page.index.title')
     }
-  },
-  mounted() {
-    this.$api.schema.fetch('control').then((data) => {
-      console.log(data)
-    })
   }
 })
 </script>

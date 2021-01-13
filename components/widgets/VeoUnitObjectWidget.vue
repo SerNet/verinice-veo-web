@@ -28,6 +28,7 @@
 </template>
 
 <script lang="ts">
+import { capitalize } from 'lodash'
 import Vue from 'vue'
 import { TranslateResult } from 'vue-i18n/types/index'
 
@@ -49,26 +50,23 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    this.$api.schema.fetch('asset').then(data => {
-      console.log('1', data)
-    })
-    this.$api.translation.fetch(['de']).then(data => {
-      console.log('2', data)
-    })
     await this.$api.schema
       .fetchAll()
       .then(data => {
-        console.log(data)
-        return data.knownSchemas.map(async (key: string) => {
-          return {
-            title: this.$t(`unit.data.type.${key}`),
-            link: `data/${key}`,
-            // @ts-ignore
-            items: (
-              await this.$api.object.fetchAll(`${key}s`, { unit: this.unit.id })
-            ).length
+        return data.map(
+          async (key: { schemaName: string; endpoint: string }) => {
+            return {
+              title: capitalize(key.schemaName),
+              link: `data/${key.endpoint}`,
+              // @ts-ignore
+              items: (
+                await this.$api.object.fetchAll(`${key.endpoint}`, {
+                  unit: this.unit.id
+                })
+              ).length
+            }
           }
-        })
+        )
       })
       .then(types => {
         Promise.all(types).then(data => {
