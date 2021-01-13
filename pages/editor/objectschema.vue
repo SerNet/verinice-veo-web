@@ -34,13 +34,13 @@
           >
             <v-icon>mdi-alert-circle-outline</v-icon>
           </v-btn>
-          <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
-            <v-btn icon x-small @click="collapsed = !collapsed">
-              <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
-              <v-icon v-else>mdi-chevron-right</v-icon>
-            </v-btn>
-          </div>
-          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%">
+          <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="collapsed" right />
+          <v-row
+            v-if="schemaIsValid.valid"
+            no-gutters
+            class="flex-column overflow-hidden mt-2"
+            style="width: 100%"
+          >
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="12" lg="4">
@@ -113,8 +113,8 @@
               <h3>{{ $t('editor.objectschema.validation.schema.invalid') }}</h3>
               <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
                 <v-list-item-content>
-                  <v-list-item-title>{{ error.code }} </v-list-item-title>
-                  <v-list-item-subtitle>{{ error.message }} </v-list-item-subtitle>
+                  <v-list-item-title>{{ error.code }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ error.message }}</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </v-col>
@@ -145,6 +145,7 @@
 import Vue from 'vue'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 
+import CollapseButton from '~/components/layout/CollapseButton.vue'
 import VEOOSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOOSEWizardDialog.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
@@ -156,6 +157,7 @@ export default Vue.extend({
   components: {
     VeoEditorErrorDialog,
     VEOOSEWizardDialog,
+    CollapseButton,
     VeoPageWrapper,
     VeoPage
   },
@@ -216,16 +218,3 @@ export default Vue.extend({
   }
 })
 </script>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.veo-collapse-editor {
-  background-color: rgb(245, 245, 245);
-  border-bottom-left-radius: 4px;
-  border-top-left-radius: 4px;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-</style>
