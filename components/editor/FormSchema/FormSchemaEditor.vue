@@ -1,177 +1,163 @@
 <template>
   <VeoPageWrapper>
     <template #default>
-      <VeoPage absolute-size no-padding :cols="12" :md="8" :xl="8">
-        <v-card flat class="mt-2 mx-2 mb-2 drag-elements-wrapper">
-          <!-- Form elements -->
-          <div>
-            <v-subheader class="px-2">Form Elements</v-subheader>
-            <v-divider />
-          </div>
-          <Draggable
-            class="drag-form-elements"
-            tag="div"
-            style="overflow: auto; min-width:300;"
-            :list="formElements"
-            :group="{ name: 'g1', pull: 'clone', put: false }"
-            :sort="false"
-            :clone="onCloneFormElement"
-          >
-            <v-card v-for="(el, i) in formElements" :key="i" flat>
-              <v-list-item class="pa-1" flat>
-                <v-list-item-avatar color="grey darken-2" size="32">
-                  <v-icon
-                    small
-                    dark
-                    outlined
-                    v-text="formElementsDescription[i].icon"
-                  />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title
-                    class="caption"
-                    v-text="formElementsDescription[i].name"
-                  />
-                </v-list-item-content>
-                <v-list-item-action class="ml-3">
-                  <v-chip
-                    class="mr-2"
-                    color="grey darken-2"
-                    small
-                    label
-                    outlined
-                  >
-                    {{ formElementsDescription[i].group }}
-                  </v-chip>
-                </v-list-item-action>
-              </v-list-item>
-            </v-card>
-          </Draggable>
-
-          <!-- Unused Basic Properties -->
-          <div v-if="unused.basics.length > 0">
-            <v-divider />
-            <v-subheader class="px-2">Basic Properties</v-subheader>
-            <v-divider />
-          </div>
-          <Draggable
-            class="drag-unused-basic-properties"
-            tag="div"
-            style="overflow: auto; min-width:300;"
-            :list="unused.basics"
-            :group="{ name: 'g1', pull: 'clone', put: false }"
-            :sort="false"
-            :clone="onCloneControl"
-          >
-            <v-card v-for="(el, i) in unused.basics" :key="i" flat>
-              <v-list-item class="pa-1" flat>
-                <v-list-item-avatar size="32" :color="typeMap[el.type].color">
-                  <v-icon small outlined dark v-text="typeMap[el.type].icon" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title class="caption" v-text="el.label" />
-                </v-list-item-content>
-                <v-list-item-action class="ml-3">
-                  <v-chip
-                    :color="typeMap[el.type].color"
-                    class="mr-2"
-                    small
-                    label
-                    outlined
-                  >
-                    {{ el.type }}
-                  </v-chip>
-                </v-list-item-action>
-              </v-list-item>
-            </v-card>
-          </Draggable>
-
-          <!-- Unused Aspects -->
-          <div v-if="unused.aspects.length > 0">
-            <v-divider />
-            <v-subheader class="px-2">Aspects</v-subheader>
-            <v-divider />
-          </div>
-          <Draggable
-            class="drag-unused-aspects"
-            tag="div"
-            style="overflow: auto; min-width:300;"
-            :list="unused.aspects"
-            :group="{ name: 'g1', pull: 'clone', put: false }"
-            :sort="false"
-            :clone="onCloneControl"
-          >
-            <v-card v-for="(el, i) in unused.aspects" :key="i" flat>
-              <v-list-item class="pa-1" flat>
-                <v-list-item-avatar size="32" :color="typeMap[el.type].color">
-                  <v-icon small outlined dark v-text="typeMap[el.type].icon" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title class="caption" v-text="el.label" />
-                </v-list-item-content>
-                <v-list-item-action class="ml-3">
-                  <v-chip
-                    :color="typeMap[el.type].color"
-                    class="mr-2"
-                    small
-                    label
-                    outlined
-                  >
-                    {{ el.type }}
-                  </v-chip>
-                </v-list-item-action>
-              </v-list-item>
-            </v-card>
-          </Draggable>
-
-          <!-- Unused Links -->
-          <div v-if="unused.links.length > 0">
-            <v-divider />
-            <v-subheader class="px-2">Links</v-subheader>
-            <v-divider />
-          </div>
-          <Draggable
-            class="drag-unused-links"
-            tag="div"
-            style="overflow: auto; min-width:300;"
-            :list="unused.links"
-            :group="{ name: 'g1', pull: 'clone', put: false }"
-            :sort="false"
-            :clone="onCloneControl"
-          >
-            <v-card v-for="(el, i) in unused.links" :key="i" flat>
-              <v-list-item class="pa-1" flat>
-                <v-list-item-avatar size="32" :color="typeMap[el.type].color">
-                  <v-icon small outlined dark v-text="typeMap[el.type].icon" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title class="caption" v-text="el.label" />
-                </v-list-item-content>
-                <v-list-item-action class="ml-3">
-                  <v-chip
-                    :color="typeMap[el.type].color"
-                    class="mr-2"
-                    small
-                    label
-                    outlined
-                  >
-                    {{ el.type }}
-                  </v-chip>
-                </v-list-item-action>
-              </v-list-item>
-            </v-card>
-          </Draggable>
-        </v-card>
-      </VeoPage>
-      <VeoPage absolute-size no-padding :cols="12" :md="8" :xl="8">
-        <div class="veo-editor-body">
-          <FseGenerator
-            :schema="objectSchema"
-            :value="value.content"
-            @delete="onDelete"
-            @update="onUpdate"
+      <VeoPage v-if="!backlogCollapsed" absolute-size no-padding :cols="12" :md="8" :xl="8" sticky-header>
+        <template #header>
+          <h3 class="text-center pb-1">{{ $t('editor.formschema.controls.available') }}</h3>
+          <v-text-field
+            v-model="searchQuery"
+            class="mb-1"
+            dense
+            flat
+            clearable
+            hide-details
+            solo-inverted
+            prepend-inner-icon="mdi-magnify"
+            :label="$t('editor.formschema.search')"
           />
-        </div>
+        </template>
+        <template #default>
+          <div class="pt-0 px-2 pb-2" style="height: 100%">
+            <v-card flat style="height: 100%">
+              <div v-show="!controlElementsVisible && searchQuery" class="text-center mt-1">
+                <span class="text--disabled">{{ $t('editor.formschema.search.noMatch') }}</span>
+              </div>
+              <div v-show="controlElementsVisible" class="px-4 py-4">
+                <v-btn text small @click="onExpandAll">
+                  {{ $t('editor.formschema.backlog.button.expand') }}
+                </v-btn>
+                <v-btn text small @click="onCollapseAll">
+                  {{ $t('editor.formschema.backlog.button.collapse') }}
+                </v-btn>
+              </div>
+              <v-expansion-panels v-model="expansionPanels" accordion multiple flat>
+                <v-expansion-panel v-show="filteredFormElements.length">
+                  <v-expansion-panel-header class="overline">
+                    {{ $t('editor.formelements') }} ({{ filteredFormElements.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-card outlined>
+                      <v-list dense class="py-0">
+                        <Draggable
+                          class="drag-form-elements"
+                          tag="div"
+                          style="overflow: auto; min-width:300;"
+                          :list="filteredFormElements"
+                          :group="{ name: 'g1', pull: 'clone', put: false }"
+                          :sort="false"
+                          :clone="onCloneFormElement"
+                        >
+                          <v-sheet v-for="(el, i) in filteredFormElements" :key="i">
+                            <FormSchemaEditorListItem :title="el.description.title" :styling="el.description" />
+                          </v-sheet>
+                        </Draggable>
+                      </v-list>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+
+                <v-expansion-panel v-show="filteredBasics.length">
+                  <v-expansion-panel-header class="overline">
+                    {{ $t('editor.basicproperties') }} ({{ filteredBasics.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-card v-show="filteredBasics.length" outlined>
+                      <v-list dense class="py-0">
+                        <Draggable
+                          class="drag-unused-basic-properties"
+                          tag="div"
+                          style="overflow: auto; min-width:300;"
+                          :list="filteredBasics"
+                          :group="{ name: 'g1', pull: 'clone', put: false }"
+                          :sort="false"
+                          :clone="onCloneControl"
+                        >
+                          <v-sheet v-for="(el, i) in filteredBasics" :key="i">
+                            <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
+                          </v-sheet>
+                        </Draggable>
+                      </v-list>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+
+                <v-expansion-panel v-show="filteredAspects.length">
+                  <v-expansion-panel-header class="overline">
+                    {{ $t('editor.customaspects') }} ({{ filteredAspects.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-card v-if="filteredAspects.length" outlined>
+                      <v-list dense class="py-0">
+                        <Draggable
+                          class="drag-unused-aspects"
+                          tag="div"
+                          style="overflow: auto; min-width:300;"
+                          :list="filteredAspects"
+                          :group="{ name: 'g1', pull: 'clone', put: false }"
+                          :sort="false"
+                          :clone="onCloneControl"
+                        >
+                          <v-sheet v-for="(el, i) in filteredAspects" :key="i">
+                            <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
+                          </v-sheet>
+                        </Draggable>
+                      </v-list>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+
+                <v-expansion-panel v-show="filteredLinks.length">
+                  <v-expansion-panel-header class="overline">
+                    {{ $t('editor.customlinks') }} ({{ filteredLinks.length }})
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    <v-card v-if="filteredLinks.length" outlined>
+                      <v-list dense class="py-0">
+                        <Draggable
+                          class="drag-unused-links"
+                          tag="div"
+                          style="overflow: auto; min-width:300;"
+                          :list="filteredLinks"
+                          :group="{ name: 'g1', pull: 'clone', put: false }"
+                          :sort="false"
+                          :clone="onCloneControl"
+                        >
+                          <v-sheet v-for="(el, i) in filteredLinks" :key="i">
+                            <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" />
+                          </v-sheet>
+                        </Draggable>
+                      </v-list>
+                    </v-card>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-card>
+          </div>
+        </template>
+      </VeoPage>
+      <VeoPage
+        absolute-size
+        no-padding
+        :fullsize="backlogCollapsed"
+        :cols="12"
+        :md="backlogCollapsed ? 12 : 8"
+        :xl="backlogCollapsed ? 12 : 8"
+        sticky-header
+      >
+        <template #header>
+          <h3 class="text-center pb-1">{{ $t('editor.formschema.controls.current') }}</h3>
+          <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
+            <v-btn icon x-small @click="$emit('toggle-backlog')">
+              <v-icon v-if="!$props.backlogCollapsed">mdi-chevron-left</v-icon>
+              <v-icon v-else>mdi-chevron-right</v-icon>
+            </v-btn>
+          </div>
+        </template>
+        <template #default>
+          <div class="veo-editor-body d-flex pt-0 px-2 pb-2" style="height: 100%">
+            <FseGenerator :schema="objectSchema" :value="value.content" @delete="onDelete" @update="onUpdate" />
+          </div>
+        </template>
       </VeoPage>
     </template>
   </VeoPageWrapper>
@@ -180,7 +166,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import Draggable from 'vuedraggable'
-// import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
 import vjp from 'vue-json-pointer'
 import { JsonPointer } from 'json-ptr'
 import FseGenerator from './Generator/FseGenerator.vue'
@@ -191,17 +176,10 @@ export interface IControl {
   scope: string
   // TODO: These types are assumed for us to describe easily property type, however e.g. "type: enum" does not exist in JSONSchema standard
   // Therefore, "type: enum", describes the JSONSchema element, which includes "enum: []"
-  type:
-    | 'string'
-    | 'boolean'
-    | 'object'
-    | 'number'
-    | 'integer'
-    | 'array'
-    | 'enum'
-    | 'null'
-    | 'default'
+  type: 'string' | 'boolean' | 'object' | 'number' | 'integer' | 'array' | 'enum' | 'null' | 'default'
   label: string
+  backlogTitle: string
+  propertyName: string
   category: 'basics' | 'aspects' | 'links'
   used: boolean
 }
@@ -216,54 +194,66 @@ export interface IUnused {
   links: IControl[]
 }
 
+interface IProvide {
+  controlsItems: IControlItem
+}
+
 export default Vue.extend({
   name: 'FormSchemaEditor',
   components: {
     Draggable,
     FseGenerator,
-    VeoPage
+    VeoPage,
+    VeoPageWrapper
+  },
+  provide(): IProvide {
+    return {
+      controlsItems: this.controlsItems
+    }
   },
   props: {
     objectSchema: Object,
-    value: Object
+    value: Object,
+    backlogCollapsed: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
       fab: false,
+      searchQuery: '',
       formElements: [
         {
           type: 'Layout',
           options: {
             format: 'group'
           },
-          elements: []
+          elements: [],
+          description: {
+            title: 'group',
+            icon: 'mdi-form-select',
+            name: 'layout',
+            color: 'grey darken-2'
+          }
         },
         {
           type: 'Label',
           text: 'TEXT',
-          options: {}
+          options: {},
+          description: {
+            title: 'text',
+            icon: 'mdi-format-text',
+            name: 'label',
+            color: 'grey darken-2'
+          }
         }
       ],
-      formElementsDescription: [
-        {
-          name: 'group',
-          group: 'layout',
-          icon: 'mdi-form-select'
-        },
-        {
-          name: 'text',
-          group: 'label',
-          icon: 'mdi-format-text'
-        }
-      ],
+      expansionPanels: [0, 1, 2, 3],
       controls: [] as IControl[],
       controlsItems: {} as IControlItem,
       objectSchemaPropertiesPatterns: {
-        standard: [
-          '#/properties/name',
-          '#/properties/abbreviation',
-          '#/properties/description'
-        ],
+        standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description'],
         regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/i,
         regexLinks: /^#\/properties\/links\/properties\/\w+$/i,
         regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/i
@@ -296,16 +286,32 @@ export default Vue.extend({
   computed: {
     unused(): IUnused {
       return {
-        basics: this.controls.filter(
-          obj => obj.category === 'basics' && !obj.used
-        ),
-        aspects: this.controls.filter(
-          obj => obj.category === 'aspects' && !obj.used
-        ),
-        links: this.controls.filter(
-          obj => obj.category === 'links' && !obj.used
-        )
+        basics: this.controls.filter(obj => obj.category === 'basics' && !obj.used),
+        aspects: this.controls.filter(obj => obj.category === 'aspects' && !obj.used),
+        links: this.controls.filter(obj => obj.category === 'links' && !obj.used)
       }
+    },
+    filteredBasics(): IControl[] {
+      return this.unused.basics.filter(b => !this.searchQuery || b.label?.toLowerCase().includes(this.searchQuery))
+    },
+    filteredAspects(): IControl[] {
+      return this.unused.aspects.filter(a => !this.searchQuery || a.label?.toLowerCase().includes(this.searchQuery))
+    },
+    filteredLinks(): IControl[] {
+      return this.unused.links.filter(l => !this.searchQuery || l.label?.toLowerCase().includes(this.searchQuery))
+    },
+    filteredFormElements(): any {
+      return this.formElements.filter(
+        (f: any) => !this.searchQuery || f.description.title?.toLowerCase().includes(this.searchQuery)
+      )
+    },
+    controlElementsVisible(): boolean {
+      return !!(
+        this.filteredFormElements.length +
+        this.filteredBasics.length +
+        this.filteredAspects.length +
+        this.filteredLinks.length
+      )
     }
   },
   watch: {
@@ -313,40 +319,38 @@ export default Vue.extend({
       immediate: true,
       deep: true,
       handler() {
-        const createControl = (
-          key: string,
-          value: any,
-          category: IControl['category']
-        ): IControl => {
+        const createControl = (key: string, value: any, category: IControl['category']): IControl => {
+          const propertyName = key.split('/').slice(-1)[0]
+          const label = propertyName.split('_').pop() || ''
+          let backlogTitle = propertyName
+
+          if (category !== 'basics') {
+            backlogTitle = backlogTitle.replace(`${this.objectSchema.title.toLowerCase()}_`, '')
+            backlogTitle = backlogTitle.replace('_', ' / ')
+          }
           return {
             scope: key,
             type: Array.isArray(value.enum) ? 'enum' : value.type,
-            label: key.split('/').slice(-1)[0],
+            label,
+            backlogTitle,
+            propertyName,
             category,
             used: false
           }
         }
-        Object.entries(
-          JsonPointer.flatten(this.objectSchema, true) as Record<string, any>
-        ).forEach(([key, value]) => {
+        Object.entries(JsonPointer.flatten(this.objectSchema, true) as Record<string, any>).forEach(([key, value]) => {
           if (this.objectSchemaPropertiesPatterns.standard.includes(key)) {
             this.controls.push(createControl(key, value, 'basics'))
-          } else if (
-            this.objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)
-          ) {
+          } else if (this.objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)) {
             this.controls.push(createControl(key, value, 'aspects'))
           } else if (this.objectSchemaPropertiesPatterns.regexLinks.test(key)) {
             this.controls.push(createControl(key, value, 'links'))
-          } else if (
-            this.objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)
-          ) {
+          } else if (this.objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)) {
             const [linksKey, linksAttribute] = key.split('/items/')
             if (!this.controlsItems[linksKey]) {
               this.controlsItems[linksKey] = []
             }
-            this.controlsItems[linksKey].push(
-              createControl(`#/${linksAttribute}`, value, 'links')
-            )
+            this.controlsItems[linksKey].push(createControl(`#/${linksAttribute}`, value, 'links'))
           }
         })
       }
@@ -355,9 +359,7 @@ export default Vue.extend({
       immediate: true,
       deep: true,
       handler() {
-        const usedScopes = Object.entries(
-          JsonPointer.flatten(this.value.content, true)
-        )
+        const usedScopes = Object.entries(JsonPointer.flatten(this.value.content, true))
           .filter(([key, value]) => /\/scope$/i.test(key))
           .map(([key, value]) => value as string)
 
@@ -406,10 +408,7 @@ export default Vue.extend({
       }
     },
     onCreateLabel() {
-      const topLevelElements: any = JsonPointer.get(
-        this.value,
-        '#/content/elements'
-      )
+      const topLevelElements: any = JsonPointer.get(this.value, '#/content/elements')
 
       const initialLayout = {
         type: 'Label',
@@ -424,10 +423,7 @@ export default Vue.extend({
       }
     },
     onCreateLayout() {
-      const topLevelElements: any = JsonPointer.get(
-        this.value,
-        '#/content/elements'
-      )
+      const topLevelElements: any = JsonPointer.get(this.value, '#/content/elements')
 
       const initialLayout = {
         type: 'Layout',
@@ -442,6 +438,12 @@ export default Vue.extend({
       } else {
         vjp.set(this.value, '/content', initialLayout)
       }
+    },
+    onExpandAll() {
+      this.expansionPanels = [0, 1, 2, 3]
+    },
+    onCollapseAll() {
+      this.expansionPanels = []
     }
   }
 })
@@ -450,8 +452,13 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
-.drag-elements-wrapper {
-  border: 1px solid $grey;
+.veo-collapse-editor {
+  background-color: rgb(245, 245, 245);
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .veo-editor-body {

@@ -3,32 +3,16 @@
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPageWrapper v-else>
-    <VeoPage
-      :title="form.objectData.name"
-      absolute-size
-      :cols="8"
-      :md="8"
-      :xl="8"
-      sticky-header
-    >
+    <VeoPage :title="form.objectData.name" absolute-size :cols="8" :md="8" :xl="8" sticky-header>
       <template #header>
         <v-row>
           <v-col cols="6">
-            <v-btn
-              outlined
-              :loading="deleteBtnLoading"
-              @click="showDeleteDialog()"
-            >
+            <v-btn text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
               {{ $t('global.button.delete') }}
             </v-btn>
           </v-col>
           <v-col cols="6" class="text-right">
-            <v-btn
-              color="primary"
-              outlined
-              :loading="saveBtnLoading"
-              @click="onClick"
-            >
+            <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="onClick">
               {{ $t('global.button.save') }}
             </v-btn>
           </v-col>
@@ -44,12 +28,7 @@
           class="mb-8"
         />
         <div class="mx-auto" style="max-width:800px; width:100%;">
-          <v-dialog
-            v-if="form.objectData"
-            v-model="deleteDialog"
-            persistent
-            max-width="290"
-          >
+          <v-dialog v-if="form.objectData" v-model="deleteDialog" persistent max-width="290">
             <v-card>
               <v-card-title class="headline" />
               <v-card-text>
@@ -60,10 +39,10 @@
                 }}
               </v-card-text>
               <v-card-actions>
-                <v-spacer />
                 <v-btn text @click="deleteDialog = false">
                   {{ $t('global.button.cancel') }}
                 </v-btn>
+                <v-spacer />
                 <v-btn text @click="deleteObject">
                   {{ $t('global.button.delete') }}
                 </v-btn>
@@ -79,26 +58,18 @@
             @yes="$fetch"
           >
             <template v-if="error">
-              <span v-if="error && error.status == 412">{{
-                $t('unit.forms.nrr')
-              }}</span>
+              <span v-if="error && error.status == 412">{{ $t('unit.forms.nrr') }}</span>
               <span v-else v-text="error" />
             </template>
           </AppStateDialog>
         </div>
       </template>
     </VeoPage>
-    <VeoPage
-      v-if="!$vuetify.breakpoint.xsOnly"
-      :cols="4"
-      :md="4"
-      :xl="4"
-      absolute-size
-    >
+    <VeoPage v-if="!$vuetify.breakpoint.xsOnly" :cols="4" :md="4" :xl="4" absolute-size>
       <VeoTabs>
         <template #tabs>
-          <v-tab :to="linkToLinks">Links</v-tab>
-          <v-tab :to="linkToHistory">History</v-tab>
+          <v-tab :to="linkToLinks">{{ $t('unit.data.links') }}</v-tab>
+          <v-tab :to="linkToHistory">{{ $t('unit.data.history') }}</v-tab>
         </template>
       </VeoTabs>
       <nuxt-child />
@@ -142,9 +113,7 @@ export default Vue.extend({
   middleware({ route, params, redirect }) {
     // TODO Nur weiterleiten, wenn Desktop
     if (route.name === 'unit-data-type-group-id') {
-      return redirect(
-        `/${params.unit}/data/${params.type}/${params.group}/${params.id}/links`
-      )
+      return redirect(`/${params.unit}/data/${params.type}/${params.group}/${params.id}/links`)
     }
   },
   data(): IData {
@@ -167,10 +136,7 @@ export default Vue.extend({
   async fetch() {
     const objectSchema = await this.$api.schema.fetch(this.schemaType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api.object.fetch(
-      this.$route.params.type,
-      this.objectId
-    )
+    const objectData = await this.$api.object.fetch(this.$route.params.type, this.objectId)
     this.form = {
       objectSchema,
       objectData,
@@ -186,9 +152,7 @@ export default Vue.extend({
     title(): string {
       return this.$fetchState.pending
         ? 'veo.data'
-        : `${this.form.objectData.name} - ${capitalize(
-            this.$route.params.type || ''
-          )} - veo.data`
+        : `${this.form.objectData.name} - ${capitalize(this.$route.params.type || '')} - veo.data`
     },
     schemaType(): string | undefined {
       return getSchemaName(this.$route.params.type)
@@ -223,10 +187,7 @@ export default Vue.extend({
         } else {
           throw new Error('Object Type is not defined in FormSchema')
         }
-        this.$root.$emit(
-          VeoEvents.SNACKBAR_SUCCESS,
-          this.$t('global.appstate.alert.success')
-        )
+        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
         this.$fetch()
       } catch (e) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -242,24 +203,14 @@ export default Vue.extend({
       await this.save(objectType)
     },
     async save(objectType: string) {
-      await this.$api.object.update(
-        this.$route.params.type,
-        this.objectId,
-        this.form.objectData
-      )
+      await this.$api.object.update(this.$route.params.type, this.objectId, this.form.objectData)
     },
     async deleteObject() {
       this.deleteDialog = false
       this.deleteBtnLoading = true
       try {
-        await this.$api.object.delete(
-          this.$route.params.type,
-          this.$route.params.id
-        )
-        this.$root.$emit(
-          VeoEvents.SNACKBAR_SUCCESS,
-          this.$t('global.appstate.alert.success')
-        )
+        await this.$api.object.delete(this.$route.params.type, this.$route.params.id)
+        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
         this.$router.push({
           path: `/${this.unit}/data/${this.$route.params.type}/${this.objectGroup}/`
         })
@@ -275,15 +226,13 @@ export default Vue.extend({
       // TODO: find better solution
       //  Add Keys and IDs manually
       if (this.form.objectData.customAspects) {
-        Object.keys(this.form.objectData.customAspects).forEach(
-          (key: string) => {
-            this.form.objectData.customAspects[key] = {
-              ...this.form.objectData.customAspects[key],
-              id: '00000000-0000-0000-0000-000000000000',
-              type: key
-            }
+        Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
+          this.form.objectData.customAspects[key] = {
+            ...this.form.objectData.customAspects[key],
+            id: '00000000-0000-0000-0000-000000000000',
+            type: key
           }
-        )
+        })
       }
     }
   }

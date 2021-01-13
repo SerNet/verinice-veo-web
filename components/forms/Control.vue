@@ -1,16 +1,11 @@
 <template>
-  <div class="vf-control">
-    <FormElement
-      v-bind="$props"
-      @input="$emit('input', $event)"
-      @change="$emit('input', $event)"
-    />
-  </div>
+  <v-col cols="12" md="auto" class="vf-control">
+    <FormElement v-bind="$props" @input="$emit('input', $event)" @change="$emit('input', $event)" />
+  </v-col>
 </template>
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue'
-import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
 import { BaseObject, IApi } from '~/components/forms/utils'

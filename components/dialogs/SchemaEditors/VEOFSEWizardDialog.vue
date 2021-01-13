@@ -10,46 +10,41 @@
   >
     <template #default>
       <v-window v-model="state">
-        <v-window-item value="start" class="py-8">
-          <h2 class="text-center my-8">
+        <v-window-item value="start" class="py-4">
+          <h2>
             {{ $t('editor.objectschema.wizard.start.title') }}
           </h2>
           <v-list two-line class="px-0 overflow-hidden">
             <v-list-item @click="state = 'create-1'">
               <v-list-item-content>
-                <v-list-item-title class="font-weight-bold">{{
-                  $t('editor.formschema.wizard.create')
-                }}</v-list-item-title>
-                <v-list-item-subtitle>{{
-                  $t('editor.formschema.wizard.create.description')
-                }}</v-list-item-subtitle>
+                <v-list-item-title class="font-weight-bold">
+                  {{ $t('editor.formschema.wizard.create') }}
+                </v-list-item-title>
+                <v-list-item-subtitle>{{ $t('editor.formschema.wizard.create.description') }}</v-list-item-subtitle>
               </v-list-item-content>
-              <v-list-item-action
-                ><v-icon x-large>mdi-chevron-right</v-icon></v-list-item-action
-              >
+              <v-list-item-action>
+                <v-icon x-large>mdi-chevron-right</v-icon>
+              </v-list-item-action>
             </v-list-item>
             <v-list-item @click="state = 'import-1'">
               <v-list-item-content>
-                <v-list-item-title class="font-weight-bold">{{
-                  $t('editor.formschema.wizard.import')
-                }}</v-list-item-title>
-                <v-list-item-subtitle>{{
-                  $t('editor.formschema.wizard.import.description')
-                }}</v-list-item-subtitle>
+                <v-list-item-title class="font-weight-bold">
+                  {{ $t('editor.formschema.wizard.import') }}
+                </v-list-item-title>
+                <v-list-item-subtitle>{{ $t('editor.formschema.wizard.import.description') }}</v-list-item-subtitle>
               </v-list-item-content>
-              <v-list-item-action
-                ><v-icon x-large>mdi-chevron-right</v-icon></v-list-item-action
-              >
+              <v-list-item-action>
+                <v-icon x-large>mdi-chevron-right</v-icon>
+              </v-list-item-action>
             </v-list-item>
           </v-list>
         </v-window-item>
-        <v-window-item value="create-1">
+        <v-window-item value="create-1" class="px-4">
+          <h2>{{ $t('editor.formschema.wizard.create') }}</h2>
           <v-form v-model="createForm.valid" @submit.prevent="doCreate1()">
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;"
-                  >{{ $t('editor.formschema.create.title.text') }}*:</span
-                >
+                <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.create.title.text') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-text-field
@@ -62,9 +57,7 @@
             </v-row>
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;"
-                  >{{ $t('editor.formschema.create.type.text') }}*:</span
-                >
+                <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.create.type.text') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-select
@@ -88,24 +81,24 @@
           </v-form>
           <small>{{ $t('editor.dialog.requiredfields') }}</small>
         </v-window-item>
-        <v-window-item value="create-2">
+        <v-window-item value="create-2" class="px-4">
           <h2 class="text-center my-8">
             {{ $t('editor.formschema.wizard.generate.title') }}
           </h2>
           <v-row class="text-center">
             <v-col>
-              <v-btn color="primary" @click="doCreate2(false)">
+              <v-btn color="primary" outlined text @click="doCreate2(false)">
                 {{ $t('editor.formschema.wizard.generate.none') }}
               </v-btn>
             </v-col>
             <v-col>
-              <v-btn color="primary" @click="doCreate2(true)">
+              <v-btn color="primary" outlined text @click="doCreate2(true)">
                 {{ $t('editor.formschema.wizard.generate.generate') }}
               </v-btn>
             </v-col>
           </v-row>
         </v-window-item>
-        <v-window-item value="import-1">
+        <v-window-item value="import-1" class="px-4">
           <h2>{{ $t('editor.formschema.wizard.import') }}</h2>
           <VEOEditorFileUpload :code="fscode" @schema-uploaded="doImport1" />
         </v-window-item>
@@ -117,7 +110,7 @@
     </template>
     <template #dialog-options>
       <span />
-      <v-btn v-if="state !== 'start'" color="primary" @click="goBack()">
+      <v-btn v-if="state !== 'start'" text color="primary" @click="goBack()">
         {{ $t('global.button.previous') }}
       </v-btn>
       <v-spacer />
@@ -126,10 +119,8 @@
         color="primary"
         role="submit"
         type="submit"
-        :disabled="
-          !createForm.valid ||
-            (createForm.modelType === 'custom' && !objectSchema)
-        "
+        text
+        :disabled="!createForm.valid || (createForm.modelType === 'custom' && !objectSchema)"
         @click="doCreate1()"
       >
         {{ $t('global.button.next') }}
@@ -146,14 +137,9 @@ import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { IVEOFormSchema } from 'veo-formschema'
 import { generateSchema } from '~/lib/FormSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import CodeEditor from '~/components/CodeEditor.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import {
-  endpoints,
-  getSchemaEndpoint,
-  ISchemaEndpoint
-} from '~/plugins/api/schema'
+import { endpoints, getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
 
 export default Vue.extend({
   components: {
@@ -183,12 +169,7 @@ export default Vue.extend({
       fscode: '\n\n\n\n\n' as string,
       formSchema: undefined as IVEOFormSchema | undefined,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
-      state: 'start' as
-        | 'start'
-        | 'create-1'
-        | 'create-2'
-        | 'import-1'
-        | 'import-2',
+      state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
       objectTypes: [] as { value: string; text: string }[]
     }
   },
@@ -252,9 +233,7 @@ export default Vue.extend({
       // Only proceed if an object schema was uploaded/pasted (we sadly can't validate it in the form, so we have to to it here)
       if (this.objectSchema || this.createForm.modelType !== 'custom') {
         if (!this.objectSchema) {
-          this.objectSchema = await this.$api.schema.fetch(
-            this.createForm.modelType
-          )
+          this.objectSchema = await this.$api.schema.fetch(this.createForm.modelType)
         }
         this.state = 'create-2'
       } else {
@@ -264,10 +243,7 @@ export default Vue.extend({
       }
     },
     doCreate2(_generateSchema: boolean) {
-      this.formSchema = generateSchema(
-        this.createForm.title,
-        this.objectSchema?.title || this.createForm.modelType
-      )
+      this.formSchema = generateSchema(this.createForm.title, this.objectSchema?.title || this.createForm.modelType)
       this.$emit('form-schema', this.formSchema)
       this.$emit('object-schema', this.objectSchema)
     },
@@ -276,13 +252,10 @@ export default Vue.extend({
       this.setFormSchema(schema)
       if (
         this.objectTypes.findIndex(
-          (item: { value: string; text: string }) =>
-            item.value.toLowerCase() === schema.modelType.toLowerCase()
+          (item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType.toLowerCase()
         ) !== -1
       ) {
-        this.objectSchema = await this.$api.schema.fetch(
-          schema.modelType.toLowerCase()
-        )
+        this.objectSchema = await this.$api.schema.fetch(schema.modelType.toLowerCase())
         this.$emit('form-schema', this.formSchema)
         this.$emit('object-schema', this.objectSchema)
       } else {

@@ -26,11 +26,7 @@
       <v-spacer />
       <v-list nav dense class="pa-0">
         <v-divider />
-        <v-list-item
-          v-if="!$vuetify.breakpoint.xs"
-          class="pl-4"
-          @click="toggleMenu()"
-        >
+        <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="toggleMenu()">
           <v-list-item-icon>
             <v-icon v-if="drawer || openedOnHover">
               mdi-chevron-double-right
@@ -148,9 +144,7 @@ export default Vue.extend({
             exact: false,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()['veo.data']
-              ? !this.fetchUIState()['veo.data']
-              : true,
+            extended: this.fetchUIState()['veo.data'] ? !this.fetchUIState()['veo.data'] : true,
             topLevelItem: true
           },
           {
@@ -160,9 +154,7 @@ export default Vue.extend({
             exact: false,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()['veo.forms']
-              ? !this.fetchUIState()['veo.forms']
-              : true,
+            extended: this.fetchUIState()['veo.forms'] ? !this.fetchUIState()['veo.forms'] : true,
             topLevelItem: true
           },
           {
@@ -231,28 +223,24 @@ export default Vue.extend({
             to: `/${this.$route.params.unit}/data/${entry.endpoint}/-/`,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()[entry.schemaName]
-              ? !this.fetchUIState()[entry.schemaName]
-              : true,
+            extended: this.fetchUIState()[entry.schemaName] ? !this.fetchUIState()[entry.schemaName] : true,
             topLevelItem: false
           }
         })
       })
     },
     async fetchFormTypes(): Promise<INavItem[]> {
-      return await this.$api.form
-        .fetchAll({ unit: this.$route.params.unit })
-        .then((formTypes: FormSchemaMetas) =>
-          formTypes.map((entry: FormSchemaMeta) => {
-            return {
-              name: entry.name,
-              exact: true,
-              to: `/${this.$route.params.unit}/forms/${entry.id}/`,
-              disabled: false,
-              topLevelItem: false
-            }
-          })
-        )
+      return await this.$api.form.fetchAll({ unit: this.$route.params.unit }).then((formTypes: FormSchemaMetas) =>
+        formTypes.map((entry: FormSchemaMeta) => {
+          return {
+            name: entry.name,
+            exact: true,
+            to: `/${this.$route.params.unit}/forms/${entry.id}/`,
+            disabled: false,
+            topLevelItem: false
+          }
+        })
+      )
     },
     capitalize(string: string): string {
       return string.charAt(0).toUpperCase() + string.slice(1)

@@ -2,13 +2,16 @@ import Vue from 'vue'
 import { mount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
+import VueI18n from 'vue-i18n'
 
 import { install as VeeValidate } from '~/plugins/vee-validate'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { Renderable } from '~/types/renderable'
 Vue.use(VeeValidate)
 Vue.use(Vuetify)
+Vue.use(VueI18n)
 const vuetify = new Vuetify()
+const i18n = new VueI18n()
 
 // TODO: Fix broken tests
 const ignore = (...args: any[]) => {}
@@ -76,6 +79,7 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
+      i18n,
       propsData: { ...form }
     })
 
@@ -85,14 +89,14 @@ describe('ArrayField.vue', () => {
     await wrapper.vm.$nextTick()
 
     const controlElement = wrapper.find(
-      '.vf-wrapper > .vf-layout > .vf-control'
+      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control'
     )
 
     await flushPromises()
     expect(controlElement.findAll('.vf-array-field')).toHaveLength(1)
     const arrayField = controlElement.find('.vf-array-field')
 
-    const numberOfRows = arrayField.findAll('.vf-array-field > .flex-row')
+    const numberOfRows = arrayField.findAll('.vf-array-field > .v-list > .v-list-item')
       .length
     expect(numberOfRows).toBe(1)
 
@@ -174,6 +178,7 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
+      i18n,
       propsData: { ...form }
     })
 
@@ -183,7 +188,7 @@ describe('ArrayField.vue', () => {
     await wrapper.vm.$nextTick()
 
     const controlElement = wrapper.find(
-      '.vf-wrapper > .vf-layout > .vf-control'
+      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control'
     )
 
     await flushPromises()
@@ -272,6 +277,7 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
+      i18n,
       propsData: { ...form }
     })
 
@@ -281,7 +287,7 @@ describe('ArrayField.vue', () => {
     await wrapper.vm.$nextTick()
 
     const controlElement = wrapper.find(
-      '.vf-wrapper > .vf-layout > .vf-control'
+      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control'
     )
 
     await flushPromises()
@@ -400,6 +406,7 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
+      i18n,
       propsData: { ...form }
     })
 
@@ -409,7 +416,7 @@ describe('ArrayField.vue', () => {
     await wrapper.vm.$nextTick()
 
     const controlElement = wrapper.find(
-      '.vf-wrapper > .vf-layout > .vf-control'
+      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control'
     )
 
     await flushPromises()
@@ -578,6 +585,7 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
+      i18n,
       propsData: { ...form }
     })
 
@@ -587,14 +595,14 @@ describe('ArrayField.vue', () => {
     await wrapper.vm.$nextTick()
 
     const controlElement = wrapper.find(
-      '.vf-wrapper > .vf-layout > .vf-control'
+      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control'
     )
 
     await flushPromises()
     expect(controlElement.findAll('.vf-array-field')).toHaveLength(1)
     const arrayField = controlElement.find('.vf-array-field')
 
-    let numberOfRows = arrayField.findAll('.vf-array-field > .flex-row').length
+    let numberOfRows = arrayField.findAll('.vf-array-field > .v-list > .vf-array-field-item').length
     expect(numberOfRows).toBe(1)
 
     expect(arrayField.findAll('.vf-btn-add')).toHaveLength(1)
@@ -602,7 +610,7 @@ describe('ArrayField.vue', () => {
     // Very Important to forceUpdate arrayField, otherwise it will not update DOM !!!
     arrayField.vm.$forceUpdate()
     await flushPromises()
-    numberOfRows = arrayField.findAll('.vf-array-field > .flex-row').length
+    numberOfRows = arrayField.findAll('.vf-array-field > .v-list > .vf-array-field-item').length
     expect(numberOfRows).toBe(2)
 
     expect(arrayField.findAll('.vf-btn-remove')).toHaveLength(2)
@@ -613,7 +621,7 @@ describe('ArrayField.vue', () => {
     // Very Important to forceUpdate arrayField, otherwise it will not update DOM !!!
     arrayField.vm.$forceUpdate()
     await flushPromises()
-    numberOfRows = arrayField.findAll('.vf-array-field > .flex-row').length
+    numberOfRows = arrayField.findAll('.vf-array-field > .v-list > .vf-array-field-item').length
     expect(numberOfRows).toBe(1)
   })
 })

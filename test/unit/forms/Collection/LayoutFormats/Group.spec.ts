@@ -58,8 +58,9 @@ describe('Group.vue', () => {
 
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
     expect(layoutWrapper.exists()).toBe(true)
-    expect(layoutWrapper.classes()).toContain('d-flex')
-    expect(layoutWrapper.classes()).toContain('flex-column')
+    expect(layoutWrapper.classes()).toContain('vf-group')
+    expect(layoutWrapper.classes()).toContain('col-md-auto')
+    expect(layoutWrapper.classes()).toContain('col-12')
 
     // TODO: get width of input elements and compare with wrapper width.
     // e.g. expect( width of each element ).toBe(width of wrapper)
@@ -115,8 +116,8 @@ describe('Group.vue', () => {
     // TODO: Better solution to find child layout element
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
     expect(layoutWrapper.exists()).toBe(true)
-    expect(layoutWrapper.classes()).toContain('d-flex')
-    expect(layoutWrapper.classes()).toContain('flex-row')
+    expect(layoutWrapper.classes()).toContain('col-md-auto')
+    expect(layoutWrapper.classes()).toContain('col-12')
 
     // TODO: get width of input elements and compare with wrapper width.
     // e.g. expect( sum(width of each element) ).toBeLessThanOrEqual(width of wrapper)

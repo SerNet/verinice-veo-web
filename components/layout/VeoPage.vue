@@ -2,9 +2,9 @@
   <v-col
     class="veo-page"
     :cols="absoluteSize ? cols : 12"
-    :md="absoluteSize ? md : 12"
-    :xl="absoluteSize ? xl : 12"
-    :class="$props.class"
+    :md="absoluteSize ? medium : 12"
+    :xl="absoluteSize ? xlarge : 12"
+    :class="classes"
   >
     <v-row v-if="title" no-gutters class="flex-column veo-page__title">
       <v-col
@@ -13,10 +13,7 @@
         :xl="!absoluteSize ? xlarge : 12"
         class="d-flex flex-wrap"
       >
-        <h1
-          class="d-inline"
-          :class="noPadding ? 'flex-grow-0' : 'px-4 flex-grow-0'"
-        >
+        <h1 class="d-inline px-3 py-1 flex-grow-0">
           {{ title }}
         </h1>
         <slot name="title" />
@@ -37,11 +34,7 @@
         <slot name="header" />
       </v-col>
     </v-row>
-    <v-row
-      no-gutters
-      :style="{ 'max-height': '100%', 'min-height': 0, height }"
-      :class="noPadding ? '' : 'pa-4'"
-    >
+    <v-row no-gutters :style="{ 'max-height': '100%', 'min-height': 0, height }" :class="noPadding ? '' : 'pa-4'">
       <v-col
         :cols="!absoluteSize ? cols : 12"
         :md="!absoluteSize ? medium : 12"
@@ -68,6 +61,8 @@ interface IProps {
   pageClass: string
   contentClass: string
   height: string
+  borderLeft: boolean
+  borderRight: boolean
 }
 
 export default defineComponent<IProps>({
@@ -136,6 +131,14 @@ export default defineComponent<IProps>({
     noPadding: {
       type: Boolean,
       default: false
+    },
+    borderLeft: {
+      type: Boolean,
+      default: false
+    },
+    borderRight: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, context) {
@@ -163,7 +166,16 @@ export default defineComponent<IProps>({
       return !!context.slots.header
     })
 
-    return { medium, xlarge, showExtensionSlot }
+    const classes = computed(() => {
+      return (
+        props.pageClass +
+        ' ' +
+        (props.borderLeft ? ' veo-page--border-left' : '') +
+        (props.borderRight ? ' veo-page--border-right' : '')
+      )
+    })
+
+    return { medium, xlarge, showExtensionSlot, classes }
   }
 })
 </script>
@@ -171,6 +183,8 @@ export default defineComponent<IProps>({
 @import '~/assets/vuetify.scss';
 
 .veo-page {
+  display: flex;
+  flex-direction: column;
   flex-shrink: 1;
   margin: 0;
   max-height: 100%;
@@ -179,8 +193,14 @@ export default defineComponent<IProps>({
   position: relative;
 }
 
+.veo-page__title {
+  background: white;
+  flex-grow: 0;
+}
+
 .veo-page__header {
   background: white;
+  flex-grow: 0;
   position: relative;
   top: 0;
   z-index: 4;
@@ -188,5 +208,13 @@ export default defineComponent<IProps>({
 
 .veo-page__header--sticky {
   position: sticky;
+}
+
+.veo-page--border-left {
+  border-left: 1px solid $grey;
+}
+
+.veo-page--border-right {
+  border-right: 1px solid $grey;
 }
 </style>

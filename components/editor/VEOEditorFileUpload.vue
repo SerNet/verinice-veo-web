@@ -6,10 +6,7 @@
     </template>
     <template #items>
       <v-tab-item>
-        <v-form
-          class="mt-4"
-          @submit.prevent="doUpload()"
-        >
+        <v-form class="mt-4" @submit.prevent="doUpload()">
           <v-file-input
             v-model="file"
             accept=".json"
@@ -17,7 +14,7 @@
             dense
             outlined
             show-size
-            :label="`${ $t('editor.upload.input.file.label')} (.json)`"
+            :label="`${$t('editor.upload.input.file.label')} (.json)`"
             :disabled="uploading"
           />
           <v-row class="ml-6">
@@ -26,17 +23,14 @@
                 role="submit"
                 type="submit"
                 color="primary"
+                outlined
+                text
                 :disabled="uploading || !file"
                 v-text="buttonText"
               />
             </v-col>
             <v-col cols="auto">
-              <v-progress-circular
-                v-if="uploading"
-                indeterminate
-                color="primary"
-                class="mr-2"
-              />
+              <v-progress-circular v-if="uploading" indeterminate color="primary" class="mr-2" />
             </v-col>
           </v-row>
         </v-form>
@@ -79,7 +73,7 @@ export default Vue.extend({
   },
   computed: {
     buttonText(): string {
-      return this.submitButtonText || this.$t('editor.upload.button.text') as string
+      return this.submitButtonText || (this.$t('editor.upload.button.text') as string)
     }
   },
   methods: {
@@ -91,12 +85,12 @@ export default Vue.extend({
         const fr = new FileReader()
 
         // Register callback upon successfull file upload
-        fr.onload = (event) => {
-          const result = JSON.parse(event.target?.result as string || '{}')
+        fr.onload = event => {
+          const result = JSON.parse((event.target?.result as string) || '{}')
           this.sendSchema(result)
           this.uploading = false
         }
-        fr.onerror = (_) => {
+        fr.onerror = _ => {
           this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('editor.upload.error'), text: fr.error })
           this.uploading = false
         }
@@ -111,6 +105,4 @@ export default Vue.extend({
   }
 })
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

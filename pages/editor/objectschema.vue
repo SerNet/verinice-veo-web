@@ -24,27 +24,33 @@
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </a>
+          <v-btn
+            v-if="schemaIsValid.warnings.length > 0"
+            icon
+            large
+            color="warning"
+            class="ml-2"
+            @click="showErrorDialog = !showErrorDialog"
+          >
+            <v-icon>mdi-alert-circle-outline</v-icon>
+          </v-btn>
           <div v-if="!$vuetify.breakpoint.xs" class="veo-collapse-editor pa-1">
-            <v-btn icon @click="collapsed = !collapsed">
+            <v-btn icon x-small @click="collapsed = !collapsed">
               <v-icon v-if="collapsed">mdi-chevron-left</v-icon>
               <v-icon v-else>mdi-chevron-right</v-icon>
             </v-btn>
           </div>
-          <v-row
-            no-gutters
-            class="flex-column overflow-hidden mt-2"
-            style="width: 100%"
-          >
+          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%">
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="12" lg="4">
                   <v-text-field
-                    v-model="schema.title"
+                    :value="schema.title"
                     dense
                     hide-details
                     flat
                     :label="$t('editor.objectschema.objectschema')"
-                    @input="updateSchemaName()"
+                    @input="updateSchemaName"
                   />
                 </v-col>
                 <v-col cols="12" lg="8">
@@ -61,6 +67,7 @@
         </template>
         <template #header>
           <v-row
+            v-if="schemaIsValid.valid"
             dense
             class="flex-column"
             :style="{
@@ -92,11 +99,27 @@
         </template>
         <template #default>
           <ObjectSchemaEditor
+            v-if="schemaIsValid.valid"
             v-model="schema"
             :search="search"
             :hide-empty-aspects="hideEmptyAspects"
             @schema-updated="updateSchema"
           />
+          <v-row v-else class="fill-height flex-column text-center align-center px-8">
+            <v-col cols="auto" style="flex-grow: 0">
+              <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
+            </v-col>
+            <v-col cols="auto" class="text-left">
+              <h3>{{ $t('editor.objectschema.validation.schema.invalid') }}</h3>
+              <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
+                <v-list-item-content>
+                  <v-list-item-title>{{ error.code }} </v-list-item-title>
+                  <v-list-item-subtitle>{{ error.message }} </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-col>
+            <v-spacer />
+          </v-row>
         </template>
       </VeoPage>
       <VeoPage
@@ -113,6 +136,7 @@
     </template>
     <template #helpers>
       <VEOOSEWizardDialog v-model="showCreationDialog" @schema="setSchema" />
+      <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
     </template>
   </VeoPageWrapper>
 </template>
@@ -124,9 +148,13 @@ import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import VEOOSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOOSEWizardDialog.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
+import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
+import { renameSchema, validate } from '~/lib/ObjectSchemaHelper'
+import { VeoSchemaValidatorValidationResult } from '~/lib/VeoSchemaValidator'
 
 export default Vue.extend({
   components: {
+    VeoEditorErrorDialog,
     VEOOSEWizardDialog,
     VeoPageWrapper,
     VeoPage
@@ -135,6 +163,7 @@ export default Vue.extend({
     return {
       collapsed: false as boolean,
       showCreationDialog: false as boolean,
+      showErrorDialog: false as boolean,
       schema: undefined as VEOObjectSchemaRAW | undefined,
       hideEmptyAspects: false as boolean,
       search: '' as string
@@ -155,6 +184,9 @@ export default Vue.extend({
           this.schema = JSON.parse(v)
         } catch (e) {}
       }
+    },
+    schemaIsValid(): VeoSchemaValidatorValidationResult {
+      return this.schema ? validate(this.schema) : { valid: false, errors: [], warnings: [] }
     }
   },
   mounted() {
@@ -169,19 +201,16 @@ export default Vue.extend({
       this.schema = schema
       this.showCreationDialog = false
     },
-    updateSchemaName() {
+    updateSchemaName(name: string) {
       if (this.schema) {
-        this.schema.title = this.schema.title.toLowerCase()
+        renameSchema(this.schema, name.toLowerCase())
       }
     },
     downloadSchema() {
       if (this.$refs.downloadButton) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(
-          JSON.stringify(this.schema)
-        )}`
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.schema))}`
         ;(this.$refs.downloadButton as any).href = data
-        ;(this.$refs.downloadButton as any).download = `os_${this.schema
-          ?.title || 'download'}.json`
+        ;(this.$refs.downloadButton as any).download = `os_${this.schema?.title || 'download'}.json`
       }
     }
   }

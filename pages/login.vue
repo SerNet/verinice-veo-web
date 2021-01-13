@@ -2,7 +2,7 @@
   <div class="wrapper">
     <v-row class="flex-column text-center">
       <v-col>
-        <h1 class="text-uppercase mb-6">verinice-veo</h1>
+        <h1 class="mb-6 primary--text">verinice.veo</h1>
       </v-col>
       <v-col class="d-flex justify-end mb-6">
         <v-select
@@ -18,21 +18,13 @@
         />
       </v-col>
       <v-col>
-        <v-btn
-          depressed
-          block
-          color="primary"
-          class="login-button"
-          @click="$auth.login('/')"
-        >
+        <v-btn depressed block color="primary" class="login-button" @click="$auth.login('/')">
           {{ $t('page.login.button.login') }}
         </v-btn>
       </v-col>
       <v-col>
         <v-btn depressed block @click="$auth.register('/')">
-          {{
-            $t('page.login.button.register')
-          }}
+          {{ $t('page.login.button.register') }}
         </v-btn>
       </v-col>
     </v-row>
@@ -68,7 +60,8 @@ export default Vue.extend({
 
   h1 {
     color: rgb(237, 237, 237);
-    font-weight: 300;
+    font-size: 52px;
+    font-weight: 400;
   }
 }
 

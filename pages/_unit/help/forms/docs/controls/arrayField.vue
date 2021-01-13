@@ -1,23 +1,14 @@
 <template>
-  <v-container class="ml-0">
+  <VeoPage fullsize>
     <v-row justify="center">
       <v-col cols="12">
         <PageHeader>Array Field</PageHeader>
       </v-col>
       <v-col cols="12">
-        <v-switch
-          v-model="isVertical"
-          label="Vertical"
-          hide-details
-          color="primary"
-        />
+        <v-switch v-model="isVertical" label="Vertical" hide-details color="primary" />
       </v-col>
       <v-col cols="auto" class="docs-form-sector">
-        <VeoForm
-          v-model="dynamicForm.data"
-          :schema="dynamicForm.objectSchema"
-          :ui="dynamicForm.formSchema"
-        />
+        <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" />
       </v-col>
     </v-row>
     <FormDescription
@@ -25,7 +16,7 @@
       :form-schema="dynamicForm.formSchema"
       :data="dynamicForm.data"
     />
-  </v-container>
+  </VeoPage>
 </template>
 
 <script lang="ts">

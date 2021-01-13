@@ -1,10 +1,15 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="$t('editor.formschema.edit.input.headline', { element: name })" large>
+  <VeoDialog
+    :key="formSchema.scope"
+    v-model="dialog.value"
+    :headline="$t('editor.formschema.edit.input.headline')"
+    large
+  >
     <template #default>
       <v-form>
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.label.text') }}*:</span>
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.label.text') }}*: </span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-text-field v-model="label" :label="$t('editor.formschema.edit.input.label')" required />
@@ -12,39 +17,93 @@
         </v-row>
         <v-row no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.type') }}:</span>
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.type') }}: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-select v-model="activeControlType.name" :disabled="alternatives.length === 1" :append-icon="alternatives.length === 1 ? '' : undefined" :items="alternatives" item-text="name" item-value="name" @input="updateActiveControlType()" />
-          </v-col>
-        </v-row>
-        <v-row v-if="activeControlType.direction !== undefined" no-gutters class="align-center">
-          <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.direction') }}:</span>
-          </v-col>
-          <v-col :cols="12" :md="5">
-            <v-radio-group v-model="activeControlType.direction">
-              <v-radio :label="$t('editor.formschema.edit.input.direction.horizontal')" value="horizontal" />
-              <v-radio :label="$t('editor.formschema.edit.input.direction.vertical')" value="vertical" />
-            </v-radio-group>
+            <v-select
+              v-model="activeControlType.name"
+              :disabled="alternatives.length === 1"
+              :append-icon="alternatives.length === 1 ? '' : undefined"
+              :items="alternatives"
+              item-text="name"
+              item-value="name"
+              @input="updateActiveControlType()"
+            />
           </v-col>
         </v-row>
         <v-row v-if="activeControlType.highlight !== undefined" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.highlight') }}:</span>
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.highlight') }}: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-checkbox v-modl="activeControlType.highlight" :label="$t('editor.formschema.edit.input.highlight')" />
+            <v-checkbox v-model="activeControlType.highlight" :label="$t('editor.formschema.edit.input.highlight')" />
+          </v-col>
+        </v-row>
+        <v-row v-if="activeControlType.name === 'LinksField'" no-gutters class="align-center">
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.link.attributes.text') }}: </span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-autocomplete
+              v-model="linksAttributes"
+              item-text="label"
+              :items="linksAttributesItems"
+              multiple
+              return-object
+              :label="$t('editor.formschema.edit.input.link.attributes')"
+              @input="onInputLinksAttributes"
+            />
+          </v-col>
+        </v-row>
+        <v-row
+          v-if="
+            activeControlType.name === 'Radio' ||
+              (activeControlType.name === 'LinksField' && linksAttributes.length > 0)
+          "
+          no-gutters
+          class="align-center"
+        >
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.direction') }}: </span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-autocomplete v-model="activeControlType.direction" :items="directionItems" />
           </v-col>
         </v-row>
       </v-form>
       <small>{{ $t('editor.dialog.requiredfields') }}</small>
+
+      <v-card
+        v-if="activeControlType.name === 'LinksField' && formSchemaElements.length > 0"
+        flat
+        style="border: 1px solid grey"
+      >
+        <Draggable
+          class="dragArea d-flex flex-column"
+          tag="div"
+          style="overflow: auto; width: 100%; min-height: 200px; height: 100%"
+          :list="formSchemaElements"
+          handle=".handle"
+          :group="{ name: 'link-attributes' }"
+        >
+          <div v-for="(attribute, index) in formSchemaElements" :key="index" class="handle">
+            <Control
+              :name="attribute.scope.split('/').pop()"
+              :schema="getSchema(attribute.scope)"
+              :value="attribute"
+              :options="attribute.options"
+              :scope="attribute.scope"
+              @delete="onLinksAttributeDelete(index, attribute.scope)"
+            />
+          </div>
+        </Draggable>
+      </v-card>
     </template>
     <template #dialog-options>
-      <v-spacer />
       <v-btn text color="primary" @click="close()">
         {{ $t('global.button.close') }}
       </v-btn>
+      <v-spacer />
       <v-btn text color="primary" @click="updateElement()">
         {{ $t('global.button.save') }}
       </v-btn>
@@ -52,19 +111,39 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropType, Ref, ref, watch } from '@nuxtjs/composition-api'
-import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
+import {
+  computed,
+  defineComponent,
+  PropType,
+  Ref,
+  ref,
+  watch,
+  getCurrentInstance,
+  inject,
+  reactive,
+  toRefs
+} from '@nuxtjs/composition-api'
+import { update } from 'lodash'
+import Draggable from 'vuedraggable'
+import { JsonPointer } from 'json-ptr'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
+import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
+import { BaseObject } from '~/components/forms/utils'
 
 interface IProps {
-  value: boolean,
-  name: string,
-  options: any,
-  schema: any,
-  type: string,
+  value: boolean
+  name: string
+  options: any
+  schema: any
+  formSchema: any
+  type: string
 }
 
 export default defineComponent<IProps>({
+  components: {
+    Draggable,
+    Control: (): Promise<any> => import('~/components/editor/FormSchema/Generator/elements/FseControl.vue')
+  },
   props: {
     value: {
       type: Boolean,
@@ -82,6 +161,10 @@ export default defineComponent<IProps>({
       type: Object as PropType<any>,
       required: true
     },
+    formSchema: {
+      type: Object,
+      required: true
+    },
     type: {
       type: String,
       required: true
@@ -89,19 +172,54 @@ export default defineComponent<IProps>({
   },
   setup(props, context) {
     /**
+     * General variables
+     */
+
+    const defaults: BaseObject = {
+      direction: 'horizontal'
+    }
+
+    /**
+     * General functions
+     */
+    function getValue(pointer: string, defaultValue: any): any {
+      const elValue = JsonPointer.get(props.formSchema, pointer)
+      // Default values are not set mostly in FormSchema, therefore in this case return defaultValue, otherwise the real value
+      return typeof elValue === 'undefined' || elValue === defaultValue ? defaultValue : elValue
+    }
+
+    function transformValues(values: any): any {
+      const transformedValues = JSON.parse(JSON.stringify(values))
+      // name is only used for activeControlType but not in option, therefore it should be deleted before saving
+      delete transformedValues.name
+      Object.entries(values).forEach(([key, val]) => {
+        if (defaults.hasOwnProperty(key)) {
+          transformedValues[key] = val === defaults[key] ? undefined : val
+        }
+      })
+      return transformedValues
+    }
+
+    /**
      * Common dialog stuff (opening and closing)
      */
     const dialog = ref({ value: props.value })
 
-    watch(() => props.value, (val: boolean) => {
-      dialog.value.value = val
-    })
-
-    watch(() => dialog.value.value, (val: boolean) => {
-      if (!val) {
-        context.emit('input', val)
+    watch(
+      () => props.value,
+      (val: boolean) => {
+        dialog.value.value = val
       }
-    })
+    )
+
+    watch(
+      () => dialog.value.value,
+      (val: boolean) => {
+        if (!val) {
+          context.emit('input', val)
+        }
+      }
+    )
 
     function close() {
       context.emit('input', false)
@@ -110,31 +228,135 @@ export default defineComponent<IProps>({
     /**
      * Control types related stuff
      */
-    const activeControlType: Ref<IControlType> = ref({ name: props.type, format: undefined })
-
-    watch(() => props.type, (val: string) => {
-      activeControlType.value.name = val
+    const activeControlType: Ref<IControlType> = ref({
+      name: props.type,
+      format: props.options.format,
+      ...((props.type === 'Radio' || props.type === 'LinksField') && {
+        direction: getValue('#/options/direction', defaults.direction)
+      })
     })
+
+    watch(
+      () => props.type,
+      (val: string) => {
+        activeControlType.value.name = val
+      }
+    )
+
+    // Get current instance for using translations in Setup() https://github.com/kazupon/vue-i18n/issues/693#issuecomment-583796174
+    const vm = getCurrentInstance()
+
+    const directionItems = ref([
+      {
+        text: vm?.$i18n.t('editor.formschema.edit.input.direction.vertical'),
+        value: 'vertical'
+      },
+      {
+        text: vm?.$i18n.t('editor.formschema.edit.input.direction.horizontal'),
+        value: 'horizontal'
+      }
+    ])
+
+    watch(
+      () => props.type,
+      (val: string) => {
+        activeControlType.value.name = val
+      }
+    )
 
     function updateActiveControlType() {
       const newType = alternatives.value.find(item => item.name === activeControlType.value.name)
       if (newType) {
         activeControlType.value = newType
       } else {
-        context.root.$emit(VeoEvents.ALERT_ERROR, { text: 'updateActiveControlType: Control type not found' })
+        context.root.$emit(VeoEvents.ALERT_ERROR, {
+          text: 'updateActiveControlType: Control type not found'
+        })
       }
     }
 
     const label: Ref<string> = ref(props.options?.label || '')
     const alternatives = computed(() => controlTypeAlternatives(activeControlType.value.name, props))
 
-    function updateElement() {
-      const options: any = activeControlType.value
-      delete options.name
-      context.emit('edit', { options: { label: label.value, ...options } })
+    /**
+     * LinksField related code
+     */
+
+    const linksField: any = {}
+    if (activeControlType.value.name === 'LinksField') {
+      linksField.linksAttributesItems = ref((inject('controlsItems') as any)[props.formSchema.scope])
+      // Important: JSON.parse(JSON.stringify()) is necessary to avoid edition of array objects through reference before saving
+      linksField.formSchemaElements = ref(JSON.parse(JSON.stringify(props.formSchema.elements)))
+      linksField.linksAttributes = ref(
+        linksField.formSchemaElements.value.map((obj: any) => {
+          return linksField.linksAttributesItems.value.find((attr: any) => attr.scope === obj.scope)
+        })
+      )
+
+      if (linksField.formSchemaElements.value.length > 0) {
+        const dragElements = linksField.formSchemaElements
+      }
+
+      watch(
+        () => linksField.linksAttributes.value,
+        (newVal, oldVal) => {
+          if (newVal.length === 0) {
+            activeControlType.value.direction = undefined
+          } else {
+            activeControlType.value.direction = activeControlType.value.direction
+              ? activeControlType.value.direction
+              : defaults.direction
+          }
+        }
+      )
+
+      linksField.onInputLinksAttributes = function(event: any) {
+        linksField.formSchemaElements.value = []
+        event.forEach((obj: any) => {
+          linksField.formSchemaElements.value.push({
+            type: 'Control',
+            scope: obj.scope,
+            options: {
+              label: obj.label
+            }
+          })
+        })
+      }
+
+      linksField.onLinksAttributeDelete = function(index: any, scope: string) {
+        linksField.linksAttributes.value.splice(
+          linksField.linksAttributes.value.findIndex((attr: any) => attr.scope === scope),
+          1
+        )
+        linksField.formSchemaElements.value.splice(index, 1)
+      }
+
+      linksField.getSchema = function(scope: string) {
+        return JsonPointer.get(props.schema.items, scope)
+      }
     }
 
-    return { dialog, close, activeControlType, label, alternatives, updateActiveControlType, updateElement }
+    function updateElement() {
+      const options: any = transformValues(activeControlType.value)
+      let updateData: any = { options: { label: label.value, ...options } }
+      if (activeControlType.value.name === 'LinksField') {
+        updateData = { ...updateData, elements: linksField.formSchemaElements.value }
+      }
+      // delete options.name
+      context.emit('edit', updateData)
+    }
+
+    return {
+      dialog,
+      close,
+      activeControlType,
+      directionItems,
+      label,
+      alternatives,
+      updateActiveControlType,
+      updateElement,
+      ...linksField
+    }
   }
 })
 </script>

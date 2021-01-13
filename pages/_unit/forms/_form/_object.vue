@@ -9,12 +9,7 @@
       <v-row>
         <v-col :cols="6" />
         <v-col :cols="6" class="text-right">
-          <v-btn
-            color="primary"
-            outlined
-            :loading="btnLoading"
-            @click="onClick"
-          >
+          <v-btn color="primary" text outlined :loading="btnLoading" @click="onClick">
             {{ $t('global.button.save') }}
           </v-btn>
         </v-col>
@@ -40,9 +35,7 @@
           @yes="$fetch"
         >
           <template v-if="error">
-            <span v-if="error && error.status == 412">{{
-              $t('unit.forms.nrr')
-            }}</span>
+            <span v-if="error && error.status == 412">{{ $t('unit.forms.nrr') }}</span>
             <span v-else v-text="error" />
           </template>
         </AppStateDialog>
@@ -108,10 +101,7 @@ export default Vue.extend({
     if (this.objectType) {
       const objectSchema = await this.$api.schema.fetch(this.objectType)
       const objectData = this.$route.params.object
-        ? await this.$api.object.fetch(
-            getSchemaEndpoint(this.objectType),
-            this.$route.params.object
-          )
+        ? await this.$api.object.fetch(getSchemaEndpoint(this.objectType), this.$route.params.object)
         : {}
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
       this.form = {
@@ -131,9 +121,7 @@ export default Vue.extend({
   },
   computed: {
     title(): string {
-      return this.$fetchState.pending
-        ? 'veo.forms'
-        : `${this.form.objectData.name} - veo.forms`
+      return this.$fetchState.pending ? 'veo.forms' : `${this.form.objectData.name} - veo.forms`
     },
     unit(): string {
       return this.$route.params.unit
@@ -148,26 +136,17 @@ export default Vue.extend({
           })
         },
         create: async (objectType: string, createdObjectData: any) => {
-          const res = await this.$api.object.create(
-            getSchemaEndpoint(objectType),
-            {
-              ...createdObjectData,
-              owner: {
-                targetUri: `/units/${this.unit}`
-              }
+          const res = await this.$api.object.create(getSchemaEndpoint(objectType), {
+            ...createdObjectData,
+            owner: {
+              targetUri: `/units/${this.unit}`
             }
-          )
+          })
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
-          return this.$api.object.fetch(
-            getSchemaEndpoint(objectType),
-            res.resourceId
-          )
+          return this.$api.object.fetch(getSchemaEndpoint(objectType), res.resourceId)
         },
         update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.object.update(
-            getSchemaEndpoint(objectType),
-            updatedObjectData
-          )
+          return this.$api.object.update(getSchemaEndpoint(objectType), updatedObjectData)
         },
         delete: (objectType: string, id: string) => {
           this.$api.object.delete(getSchemaEndpoint(objectType), id)
@@ -189,10 +168,7 @@ export default Vue.extend({
         } else {
           throw new Error('Object Type is not defined in FormSchema')
         }
-        this.$root.$emit(
-          VeoEvents.SNACKBAR_SUCCESS,
-          this.$t('global.appstate.alert.success')
-        )
+        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })
         this.$fetch()
       } catch (e) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -208,40 +184,34 @@ export default Vue.extend({
       await this.save(objectType)
     },
     async save(objectType: string) {
-      await this.$api.object.update(
-        getSchemaEndpoint(objectType),
-        this.$route.params.object,
-        this.form.objectData
-      )
+      await this.$api.object.update(getSchemaEndpoint(objectType), this.$route.params.object, this.form.objectData)
     },
     formatObjectData() {
       // TODO: find better solution
       //  Add Keys and IDs manually
       if (this.form.objectData.customAspects) {
-        Object.keys(this.form.objectData.customAspects).forEach(
-          (key: string) => {
-            this.form.objectData.customAspects[key] = {
-              ...this.form.objectData.customAspects[key],
-              id: '00000000-0000-0000-0000-000000000000',
-              type: key
-            }
+        Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
+          this.form.objectData.customAspects[key] = {
+            ...this.form.objectData.customAspects[key],
+            id: '00000000-0000-0000-0000-000000000000',
+            type: key
           }
-        )
+        })
       }
 
       if (this.form.objectData.links) {
         Object.keys(this.form.objectData.links).forEach((key: string) => {
-          // this.form.objectData.links[key] = { ...this.form.objectData.links[key], type: key }
-          this.form.objectData.links[key] = this.form.objectData.links[key].map(
-            (el: any) => {
-              el.target.type = el.target.type?.replace(/^\w/, (c: any) =>
-                c.toUpperCase()
-              )
+          if (!this.form.objectData.links[key]) {
+            delete this.form.objectData.links[key]
+          } else {
+            // this.form.objectData.links[key] = { ...this.form.objectData.links[key], type: key }
+            this.form.objectData.links[key] = this.form.objectData.links[key].map((el: any) => {
+              // el.target.type = el.target.type?.replace(/^\w/, (c: any) => c.toUpperCase())
               el.name = key
-              el.type = key
+              // el.type = key
               return el
-            }
-          )
+            })
+          }
         })
       }
     }

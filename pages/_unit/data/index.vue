@@ -3,7 +3,7 @@
     <template #title>
       <v-spacer />
       <v-btn
-        depressed
+        text
         outlined
         :to="`/${$route.params.unit}/data/${currentSchemaType}/${group}/create`"
         color="primary"
@@ -95,9 +95,7 @@ export default defineComponent<IProps>({
   setup(props: IProps) {
     const context = useContext()
     // URL parameters
-    const currentSchemaType: Ref<string | undefined> = ref(
-      context.route.value.params.type
-    )
+    const currentSchemaType: Ref<string | undefined> = ref(context.route.value.params.type)
     const group: Ref<string | undefined> = ref(context.route.value.params.group)
     const unit: Ref<string> = ref(context.route.value.params.unit)
 
@@ -106,27 +104,22 @@ export default defineComponent<IProps>({
 
     // Fetch
     const { fetch, fetchState } = useFetch(async () => {
-      schemaTypes.value = await context.$api.schema
-        .fetchAll()
-        .then((data: ISchemaEndpoint[]) => {
-          return data.map(entry => {
-            return {
-              schemaName: capitalize(entry.schemaName),
-              endpoint: entry.endpoint
-            }
-          })
+      schemaTypes.value = await context.$api.schema.fetchAll().then((data: ISchemaEndpoint[]) => {
+        return data.map(entry => {
+          return {
+            schemaName: capitalize(entry.schemaName),
+            endpoint: entry.endpoint
+          }
         })
+      })
       if (currentSchemaType.value) {
         // We have to do everything on next tick, else the correct schema type won't get picked up.
         await nextTick(async () => {
           if (!group.value || group.value === '-') {
             // @ts-ignore
-            objects.value = await context.$api.object.fetchAll(
-              currentSchemaType.value as string,
-              {
-                unit: unit.value
-              }
-            )
+            objects.value = await context.$api.object.fetchAll(currentSchemaType.value as string, {
+              unit: unit.value
+            })
           } else {
             objects.value = await context.$api.group.fetchGroupMembers(
               group.value as string,
@@ -146,15 +139,11 @@ export default defineComponent<IProps>({
           await fetch()
         }
         nextTick(() => {
-          context.app.router?.push(
-            `/${unit.value}/data/${schemaTypes.value[0].endpoint}/`
-          )
+          context.app.router?.push(`/${unit.value}/data/${schemaTypes.value[0].endpoint}/`)
         })
       }
       if (!group.value) {
-        context.app.router?.push(
-          `/${unit.value}/data/${currentSchemaType.value}/-/`
-        )
+        context.app.router?.push(`/${unit.value}/data/${currentSchemaType.value}/-/`)
       }
     }
 
@@ -192,21 +181,15 @@ export default defineComponent<IProps>({
     ])
 
     function goToObject(item: any) {
-      context.app.router?.push(
-        `/${unit.value}/data/${currentSchemaType.value}/${group.value}/${item.id}`
-      )
+      context.app.router?.push(`/${unit.value}/data/${currentSchemaType.value}/${group.value}/${item.id}`)
     }
 
     // Navigation upon changing the schemaType or group
     function changeType() {
-      context.app.router?.push(
-        `/${unit.value}/data/${currentSchemaType.value}/${group.value}`
-      )
+      context.app.router?.push(`/${unit.value}/data/${currentSchemaType.value}/${group.value}`)
     }
     function changeGroup() {
-      context.app.router?.push(
-        `/${unit.value}/data/${currentSchemaType.value}/${group.value}`
-      )
+      context.app.router?.push(`/${unit.value}/data/${currentSchemaType.value}/${group.value}`)
     }
 
     return {

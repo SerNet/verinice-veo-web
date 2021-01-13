@@ -1,10 +1,6 @@
 <template>
   <div v-if="visible" class="vf-radio vf-form-element">
-    <ValidationProvider
-      v-slot="{ errors }"
-      :name="options && options.label"
-      :rules="validation"
-    >
+    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
       <div v-if="options && options.label" class="subtitle-1">
         {{ options && options.label }}
       </div>
@@ -22,12 +18,7 @@
         @change="$emit('input', $event)"
       >
         <!-- Attention: ValidationProvider must wrap each element with ":value" property, else occures infinity loop error -->
-        <ValidationProvider
-          v-for="(item, i) in items"
-          v-slot="{ errors }"
-          :key="i"
-          :name="item.value.toString()"
-        >
+        <ValidationProvider v-for="(item, i) in items" v-slot="{ errors }" :key="i" :name="item.value.toString()">
           <v-radio :value="item.value" :label="item.text" color="primary" />
         </ValidationProvider>
         <div slot="append">
@@ -43,11 +34,7 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7, JSONSchema7Type } from 'json-schema'
 import { JsonPointer } from 'json-ptr'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
 interface IItem {
@@ -73,12 +60,10 @@ export default Vue.extend({
       return this.schema && this.schema.enum ? [...this.schema.enum] : []
     },
     radioLabels(): JSONSchema7Type[] {
-      return this.options && this.options.enum
-        ? [...this.options.enum]
-        : [...this.radioValues]
+      return this.options && this.options.enum ? [...this.options.enum] : [...this.radioValues]
     },
     isDirectionVertical(): boolean {
-      return !(this.options && this.options.direction === 'horizontal')
+      return this.options && this.options.direction === 'vertical'
     },
     isItemsWithCustomizedLabels(): boolean {
       return !!(this.options && Array.isArray(this.options.enum))
@@ -129,8 +114,7 @@ export default Vue.extend({
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
     return calculateConditionsScore([
-      typeof props.schema.type === 'undefined' ||
-        props.schema.type === 'string',
+      typeof props.schema.type === 'undefined' || props.schema.type === 'string',
       typeof props.schema.enum !== 'undefined',
       typeof props.options !== 'undefined' && props.options.format === 'radio'
     ])
@@ -138,8 +122,4 @@ export const helpers: Helpful<FormElementProps> = {
 }
 </script>
 
-<style lang="scss" scoped>
-.vf-radio {
-  display: inline-block;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -16,12 +16,7 @@
       </template>
       <template #default="{ items }">
         <v-list dense>
-          <v-list-item
-            v-for="item in items"
-            :key="item.id"
-            two-line
-            :to="'/' + item.id"
-          >
+          <v-list-item v-for="item in items" :key="item.id" two-line :to="'/' + item.id">
             <v-list-item-content>
               <v-list-item-title v-text="item.name" />
               <v-list-item-subtitle v-text="item.id" />

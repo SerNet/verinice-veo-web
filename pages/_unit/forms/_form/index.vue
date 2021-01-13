@@ -4,6 +4,7 @@
       <v-spacer />
       <v-btn
         depressed
+        text
         outlined
         :to="`/${unit}/forms/${formType}/create`"
         color="primary"
@@ -25,14 +26,7 @@
         <template #top>
           <v-row dense>
             <v-col :cols="3">
-              <v-select
-                v-model="formType"
-                label="Type"
-                :items="formTypes"
-                outlined
-                dense
-                @input="changeType()"
-              />
+              <v-select v-model="formType" label="Type" :items="formTypes" outlined dense @input="changeType()" />
             </v-col>
             <v-col :cols="3">
               <v-select

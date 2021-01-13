@@ -1,5 +1,14 @@
 <template>
-  <v-alert :value="value" :type="alertType" colored-border border="left" elevation="4" dense class="veo-alert" :icon="alertIcon">
+  <v-alert
+    :value="value"
+    :type="alertType"
+    colored-border
+    border="left"
+    elevation="4"
+    dense
+    class="veo-alert"
+    :icon="alertIcon"
+  >
     <v-row no-gutters class="justify-lg-space-between">
       <v-col cols="auto" class="accent--text">
         <h3 v-text="title" />
@@ -7,7 +16,7 @@
         <p v-if="content" class="mb-0 accent--text" v-html="content" />
       </v-col>
       <v-col cols="auto" class="ml-6 align-self-center">
-        <v-btn outlined :color="alertType" @click="$emit('input', false)">{{ $t('global.button.ok') }}</v-btn>
+        <v-btn outlined text :color="alertType" @click="$emit('input', false)">{{ $t('global.button.ok') }}</v-btn>
       </v-col>
     </v-row>
   </v-alert>
@@ -17,7 +26,12 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-export enum ALERT_TYPE { ERROR, INFO, SUCCESS, WARNING }
+export enum ALERT_TYPE {
+  ERROR,
+  INFO,
+  SUCCESS,
+  WARNING
+}
 
 export default Vue.extend({
   props: {

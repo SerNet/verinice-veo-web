@@ -1,6 +1,7 @@
 
 import { isObject, replace } from 'lodash'
 import { VEOCustomAspectRAW, VEOObjectSchemaRAW, VEOAttributeRAW, VEOCustomLinkRAW, VEOTypeRAW, VEOTypeNameRAW } from 'veo-objectschema-7'
+import VeoSchemaValidator, { VeoSchemaValidatorValidationResult } from './VeoSchemaValidator'
 
 export interface IObjectSchemaHelperOptions {
   customProperties?: Record<string, string>
@@ -56,7 +57,15 @@ const CUSTOM_PROPERTIES: Record<string, string> = {
  * @returns Returns the cleaned string ready to be used as a key.
  */
 function cleanName(string: string): string {
-  return replace(string.toLowerCase(), / /g, '_')
+  return replace(string, / /g, '_')
+}
+
+function cleanAspectName(schema: VEOObjectSchemaRAW, aspectName: string) {
+  return aspectName.replace(`${schema.title.toLowerCase()}_`, '')
+}
+
+function cleanAttributeName(aspectName: string, attributeName: string) {
+  return attributeName.replace(`${aspectName}_`, '')
 }
 
 /**
@@ -75,7 +84,7 @@ function mergeWithDefaultOptions(options?: IObjectSchemaHelperOptions): IHelperO
 }
 
 export function prefixedAspectName(schema: VEOObjectSchemaRAW, aspectName: string): string {
-  return `${cleanName(schema.title)}_${cleanName(aspectName)}`
+  return `${cleanName(schema.title.toLowerCase())}_${cleanName(aspectName)}`
 }
 
 export function prefixedAttributeName(schema: VEOObjectSchemaRAW, aspectName: string): string {
@@ -177,6 +186,26 @@ export function generateSchema(type: string, description?: string): VEOObjectSch
   }
 }
 
+export function renameSchema(schema: VEOObjectSchemaRAW, newName: string, options?: IObjectSchemaHelperOptions) {
+  const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
+
+  const oldName = schema.title.toLowerCase()
+
+  for (const aspect in schema.properties[OPTIONS.customProperties.customAspects].properties) {
+    const newAspectTitle = aspect.replace(oldName, newName)
+    schema.properties[OPTIONS.customProperties.customAspects].properties[newAspectTitle] = schema.properties[OPTIONS.customProperties.customAspects].properties[aspect]
+    delete schema.properties[OPTIONS.customProperties.customAspects].properties[aspect]
+  }
+
+  for (const link in schema.properties[OPTIONS.customProperties.links].properties) {
+    const newLinkTitle = link.replace(oldName, newName)
+    schema.properties[OPTIONS.customProperties.links].properties[newLinkTitle] = schema.properties[OPTIONS.customProperties.links].properties[link]
+    delete schema.properties[OPTIONS.customProperties.links].properties[link]
+  }
+
+  schema.title = newName
+}
+
 /**
  * Returns an array containg the value of a basic property of a schema.
  *
@@ -244,8 +273,8 @@ export function getAspect(schema: VEOObjectSchemaRAW, name: string, options?: IO
   if (schema.properties[OPTIONS.customProperties.customAspects].properties[name]) {
     return {
       raw: schema.properties[OPTIONS.customProperties.customAspects].properties[name],
-      title: schema.properties[OPTIONS.customProperties.customAspects].properties[name].properties.type.enum[0],
-      attributes: getAspectAttributes(undefined, schema.properties[OPTIONS.customProperties.customAspects].properties[name])
+      title: cleanAspectName(schema, name),
+      attributes: getAspectAttributes(schema, name)
     }
   }
   throw new Error(`ObjectSchemaHelper::getAspect: ${name} Aspect not found!`)
@@ -274,24 +303,17 @@ export function getAspects(schema: VEOObjectSchemaRAW, options?: IObjectSchemaHe
  * @param aspect The custom aspect to fetch the attributes from.
  * @param options Optional object to override default options.
  */
-export function getAspectAttributes(schema: VEOObjectSchemaRAW | undefined, aspect: VEOCustomAspectRAW | string, options?: IObjectSchemaHelperOptions): IVEOAttribute[] {
+export function getAspectAttributes(schema: VEOObjectSchemaRAW, aspectName: string, options?: IObjectSchemaHelperOptions): IVEOAttribute[] {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
-
-  if (!schema && !isObject(aspect)) {
-    throw new Error('ObjectSchemaHelper::getAspectAttributes: If no schema is passed, a custom aspect has to be the second parameter!')
-  }
 
   const values: IVEOAttribute[] = []
 
-  // If the schema is set and the aspect is a string, we access it in the schema, else we already have the aspect object and don't need to do anything.
-  if (schema && !isObject(aspect)) {
-    aspect = schema.properties[OPTIONS.customProperties.customAspects].properties[aspect]
-  }
-  aspect = aspect as VEOCustomAspectRAW
+  const aspect = schema.properties[OPTIONS.customProperties.customAspects].properties[aspectName]
+
   for (const attribute in aspect.properties.attributes.properties) {
     values.push({
       raw: aspect.properties.attributes.properties[attribute],
-      title: attribute,
+      title: cleanAttributeName(aspectName, attribute),
       type: aspect.properties.attributes.properties[attribute].type ? aspect.properties.attributes.properties[attribute].type : (aspect.properties.attributes.properties[attribute]) ? 'enum' : 'default',
       description: aspect.properties.attributes.properties[attribute].title
     })
@@ -306,8 +328,7 @@ export function getAspectAttributes(schema: VEOObjectSchemaRAW | undefined, aspe
  *
  * @returns Returns the aspect to be further modified.
  */
-export function generateAspect(name: string): VEOCustomAspectRAW {
-  const cleanedName = cleanName(name)
+export function generateAspect(): VEOCustomAspectRAW {
   return {
     type: 'object',
     required: ['type'],
@@ -324,10 +345,6 @@ export function generateAspect(name: string): VEOCustomAspectRAW {
         items: {
           type: 'string'
         }
-      },
-      type: {
-        description: 'The name of the type described by this schema.',
-        enum: [cleanedName]
       },
       domains: {
         type: 'array',
@@ -382,16 +399,13 @@ export function generateAspect(name: string): VEOCustomAspectRAW {
  *
  * @throws Throws an error if the custom aspect already exists. Use updateAspectInSchema in this case.
  */
-export function addAspectToSchema(schema: VEOObjectSchemaRAW, aspect: VEOCustomAspectRAW, options?: IObjectSchemaHelperOptions): void {
+export function addAspectToSchema(schema: VEOObjectSchemaRAW, aspectName: string, aspect: VEOCustomAspectRAW, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
-  const aspectId = prefixedAspectName(schema, aspect.properties.type.enum[0])
+  const aspectId = prefixedAspectName(schema, aspectName)
 
   if (schema.properties[OPTIONS.customProperties.customAspects].properties[aspectId]) {
     throw new Error(`ObjectSchemaHelper::addAspectToSchema: Aspect ${aspectId} already exists!`)
   }
-
-  // Overwriting the default title to fit it to the naming convention.
-  aspect.properties.type.enum[0] = aspectId
 
   schema.properties[OPTIONS.customProperties.customAspects].properties[aspectId] = aspect
 }
@@ -408,10 +422,12 @@ export function addAspectToSchema(schema: VEOObjectSchemaRAW, aspect: VEOCustomA
 export function updateAspectInSchema(schema: VEOObjectSchemaRAW, aspect: IVEOCustomAspect, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  if (!schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.title]) {
-    throw new Error(`ObjectSchemaHelper::updateAspectInSchema: Aspect ${aspect.title} not found!`)
+  const rawTitle = prefixedAspectName(schema, aspect.title)
+
+  if (!schema.properties[OPTIONS.customProperties.customAspects].properties[rawTitle]) {
+    throw new Error(`ObjectSchemaHelper::updateAspectInSchema: Aspect ${rawTitle} not found!`)
   }
-  schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.title].properties.type.enum[0] = aspect.title
+  schema.properties[OPTIONS.customProperties.customAspects].properties[rawTitle].properties.type.enum[0] = rawTitle
   updateAspectAttributes(schema, aspect, aspect.attributes)
 }
 
@@ -425,10 +441,12 @@ export function updateAspectInSchema(schema: VEOObjectSchemaRAW, aspect: IVEOCus
 export function deleteAspect(schema: VEOObjectSchemaRAW, aspect: string, options?: IObjectSchemaHelperOptions) {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  if (!schema.properties[OPTIONS.customProperties.customAspects].properties[aspect]) {
-    throw new Error(`ObjectSchemaHelper::deleteAspect: Aspect ${aspect} not found!`)
+  const rawTitle = prefixedAspectName(schema, aspect)
+
+  if (!schema.properties[OPTIONS.customProperties.customAspects].properties[rawTitle]) {
+    throw new Error(`ObjectSchemaHelper::deleteAspect: Aspect ${rawTitle} not found!`)
   }
-  delete schema.properties[OPTIONS.customProperties.customAspects].properties[aspect]
+  delete schema.properties[OPTIONS.customProperties.customAspects].properties[rawTitle]
 }
 
 /**
@@ -444,7 +462,7 @@ export function deleteAspect(schema: VEOObjectSchemaRAW, aspect: string, options
 export function addAttributeToAspect(schema: VEOObjectSchemaRAW, aspect: IVEOCustomAspect | string, attribute: IVEOAttribute, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  const aspectName = (isObject(aspect)) ? aspect.title : aspect
+  const aspectName = (isObject(aspect)) ? prefixedAspectName(schema, aspect.title) : aspect
   const attributeName = aspectName + '_' + cleanName(attribute.title)
 
   if (!schema.properties[OPTIONS.customProperties.customAspects].properties[aspectName]) {
@@ -474,7 +492,7 @@ export function addAttributeToAspect(schema: VEOObjectSchemaRAW, aspect: IVEOCus
 export function updateAspectAttributes(schema: VEOObjectSchemaRAW, aspect: IVEOCustomAspect | string, attributes: IVEOAttribute[], options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  const aspectName = (isObject(aspect)) ? aspect.title : aspect
+  const aspectName = (isObject(aspect)) ? prefixedAspectName(schema, aspect.title) : aspect
 
   if (!schema.properties[OPTIONS.customProperties.customAspects].properties[aspectName]) {
     throw new Error(`ObjectSchemaHelper::updateAspectAttributes: Aspect ${aspectName} not found!`)
@@ -499,13 +517,15 @@ export function updateAspectAttributes(schema: VEOObjectSchemaRAW, aspect: IVEOC
 export function renameAspect(schema: VEOObjectSchemaRAW, aspect: IVEOCustomAspect, newTitle: string, options?: IObjectSchemaHelperOptions):void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  if (!schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.title]) {
-    throw new Error(`ObjectSchemaHelper::renameAspect: Old aspect ${aspect.title} not found!`)
+  const rawTitle = prefixedAspectName(schema, aspect.title)
+  newTitle = prefixedAspectName(schema, newTitle)
+
+  if (!schema.properties[OPTIONS.customProperties.customAspects].properties[rawTitle]) {
+    throw new Error(`ObjectSchemaHelper::renameAspect: Old aspect ${rawTitle} not found!`)
   }
 
-  schema.properties[OPTIONS.customProperties.customAspects].properties[newTitle] = schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.title]
-  schema.properties[OPTIONS.customProperties.customAspects].properties[newTitle].properties.type.enum[0] = newTitle
-  delete schema.properties[OPTIONS.customProperties.customAspects].properties[aspect.title]
+  schema.properties[OPTIONS.customProperties.customAspects].properties[newTitle] = schema.properties[OPTIONS.customProperties.customAspects].properties[rawTitle]
+  delete schema.properties[OPTIONS.customProperties.customAspects].properties[rawTitle]
 }
 
 /**
@@ -524,8 +544,8 @@ export function getLink(schema: VEOObjectSchemaRAW, name: string, options?: IObj
   if (schema.properties[OPTIONS.customProperties.links].properties[name]) {
     return {
       raw: schema.properties[OPTIONS.customProperties.links].properties[name],
-      title: schema.properties[OPTIONS.customProperties.links].properties[name].items.properties.type.enum[0],
-      attributes: getLinkAttributes(undefined, schema.properties[OPTIONS.customProperties.links].properties[name]),
+      title: cleanAspectName(schema, name),
+      attributes: getLinkAttributes(schema, name),
       target: {
         type: schema.properties[OPTIONS.customProperties.links].properties[name].items.properties.target.properties.type.enum[0],
         description: schema.properties[OPTIONS.customProperties.links].properties[name].items.properties.target.title
@@ -558,24 +578,16 @@ export function getLinks(schema: VEOObjectSchemaRAW, options?: IObjectSchemaHelp
  * @param link The custom link to fetch the attributes from.
  * @param options Optional object to override default options.
  */
-export function getLinkAttributes(schema: VEOObjectSchemaRAW | undefined, link: VEOCustomLinkRAW | string, options?: IObjectSchemaHelperOptions): IVEOAttribute[] {
+export function getLinkAttributes(schema: VEOObjectSchemaRAW, linkName: string, options?: IObjectSchemaHelperOptions): IVEOAttribute[] {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
-
-  if (!schema && !isObject(link)) {
-    throw new Error('ObjectSchemaHelper::getLinkAttributes: If no schema is passed, a custom link has to be the second parameter!')
-  }
 
   const values: IVEOAttribute[] = []
 
-  // If the schema is set and the link is a string, we access it in the schema, else we already have the link object and don't need to do anything.
-  if (schema && !isObject(link)) {
-    link = schema.properties[OPTIONS.customProperties.links].properties[link]
-  }
-  link = link as VEOCustomLinkRAW
+  const link = schema.properties[OPTIONS.customProperties.links].properties[linkName]
   for (const attribute in link.items.properties.attributes.properties) {
     values.push({
       raw: link.items.properties.attributes.properties[attribute],
-      title: attribute,
+      title: cleanAttributeName(linkName, attribute),
       type: link.items.properties.attributes.properties[attribute].type ? link.items.properties.attributes.properties[attribute].type : (link.items.properties.attributes.properties[attribute]) ? 'enum' : 'default',
       description: link.items.properties.attributes.properties[attribute].title
     })
@@ -592,9 +604,7 @@ export function getLinkAttributes(schema: VEOObjectSchemaRAW | undefined, link: 
  *
  * @returns Returns the custom link to be further modified.
  */
-export function generateLink(name: string, target: string, description: string): VEOCustomLinkRAW {
-  const linkName = cleanName(name)
-
+export function generateLink(target: string, description: string): VEOCustomLinkRAW {
   return {
     type: 'array',
     items: {
@@ -611,10 +621,6 @@ export function generateLink(name: string, target: string, description: string):
           items: {
             type: 'string'
           }
-        },
-        type: {
-          description: 'The name of the type described by this schema.',
-          enum: [linkName]
         },
         domains: {
           type: 'array',
@@ -700,16 +706,13 @@ export function generateLink(name: string, target: string, description: string):
  *
  * @throws Throws an error if the custom link already exists. Use updateLinkInSchema in this case.
  */
-export function addLinkToSchema(schema: VEOObjectSchemaRAW, link: VEOCustomLinkRAW, options?: IObjectSchemaHelperOptions): void {
+export function addLinkToSchema(schema: VEOObjectSchemaRAW, linkName: string, link: VEOCustomLinkRAW, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
-  const linkId = prefixedAspectName(schema, link.items.properties.type.enum[0])
+  const linkId = prefixedAspectName(schema, linkName)
 
   if (schema.properties[OPTIONS.customProperties.links].properties[linkId]) {
     throw new Error(`ObjectSchemaHelper::addLinkToSchema: Link ${linkId} already exists!`)
   }
-
-  // Overwriting the default title to fit it to the naming convention.
-  link.items.properties.type.enum[0] = linkId
 
   schema.properties[OPTIONS.customProperties.links].properties[linkId] = link
 }
@@ -726,10 +729,12 @@ export function addLinkToSchema(schema: VEOObjectSchemaRAW, link: VEOCustomLinkR
 export function updateLinkInSchema(schema: VEOObjectSchemaRAW, link: IVEOCustomLink, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  if (!schema.properties[OPTIONS.customProperties.links].properties[link.title]) {
-    throw new Error(`ObjectSchemaHelper::updateLinkInSchema: Link ${link.title} not found!`)
+  const rawTitle = prefixedAspectName(schema, link.title)
+
+  if (!schema.properties[OPTIONS.customProperties.links].properties[rawTitle]) {
+    throw new Error(`ObjectSchemaHelper::updateLinkInSchema: Link ${rawTitle} not found!`)
   }
-  schema.properties[OPTIONS.customProperties.links].properties[link.title].items.properties.type.enum[0] = link.title
+  schema.properties[OPTIONS.customProperties.links].properties[rawTitle].items.properties.type.enum[0] = rawTitle
   updateLinkAttributes(schema, link, link.attributes)
 }
 
@@ -743,10 +748,12 @@ export function updateLinkInSchema(schema: VEOObjectSchemaRAW, link: IVEOCustomL
 export function deleteLink(schema: VEOObjectSchemaRAW, link: string, options?: IObjectSchemaHelperOptions) {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  if (!schema.properties[OPTIONS.customProperties.links].properties[link]) {
-    throw new Error(`ObjectSchemaHelper::deleteLink: Link ${link} not found!`)
+  const rawTitle = prefixedAspectName(schema, link)
+
+  if (!schema.properties[OPTIONS.customProperties.links].properties[rawTitle]) {
+    throw new Error(`ObjectSchemaHelper::deleteLink: Link ${rawTitle} not found!`)
   }
-  delete schema.properties[OPTIONS.customProperties.links].properties[link]
+  delete schema.properties[OPTIONS.customProperties.links].properties[rawTitle]
 }
 
 /**
@@ -762,7 +769,7 @@ export function deleteLink(schema: VEOObjectSchemaRAW, link: string, options?: I
 export function addAttributeToLink(schema: VEOObjectSchemaRAW, link: IVEOCustomLink | string, attribute: IVEOAttribute, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  const linkName = (isObject(link)) ? link.title : link
+  const linkName = (isObject(link)) ? prefixedAspectName(schema, link.title) : link
   const attributeName = linkName + '_' + cleanName(attribute.title)
 
   if (!schema.properties[OPTIONS.customProperties.links].properties[linkName]) {
@@ -792,7 +799,7 @@ export function addAttributeToLink(schema: VEOObjectSchemaRAW, link: IVEOCustomL
 export function updateLinkAttributes(schema: VEOObjectSchemaRAW, link: IVEOCustomLink | string, attributes: IVEOAttribute[], options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  const linkName = (isObject(link)) ? link.title : link
+  const linkName = (isObject(link)) ? prefixedAspectName(schema, link.title) : link
 
   if (!schema.properties[OPTIONS.customProperties.links].properties[linkName]) {
     throw new Error(`ObjectSchemaHelper::updateLinkAttributes: Link ${linkName} not found!`)
@@ -817,18 +824,27 @@ export function updateLinkAttributes(schema: VEOObjectSchemaRAW, link: IVEOCusto
 export function renameLink(schema: VEOObjectSchemaRAW, link: IVEOCustomLink, newTitle: string, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  if (!schema.properties[OPTIONS.customProperties.links].properties[link.title]) {
-    throw new Error(`ObjectSchemaHelper::renameLink: Old link ${link.title} not found!`)
+  const rawTitle = prefixedAspectName(schema, link.title)
+  newTitle = prefixedAspectName(schema, newTitle)
+
+  if (!schema.properties[OPTIONS.customProperties.links].properties[rawTitle]) {
+    throw new Error(`ObjectSchemaHelper::renameLink: Old link ${rawTitle} not found!`)
   }
 
-  schema.properties[OPTIONS.customProperties.links].properties[newTitle] = schema.properties[OPTIONS.customProperties.links].properties[link.title]
-  schema.properties[OPTIONS.customProperties.links].properties[newTitle].items.properties.type.enum[0] = newTitle
-  delete schema.properties[OPTIONS.customProperties.links].properties[link.title]
+  schema.properties[OPTIONS.customProperties.links].properties[newTitle] = schema.properties[OPTIONS.customProperties.links].properties[rawTitle]
+  delete schema.properties[OPTIONS.customProperties.links].properties[rawTitle]
 }
 
 export function updateLinkDetails(schema: VEOObjectSchemaRAW, link: IVEOCustomLink, target: { type: string, description: string }, options?: IObjectSchemaHelperOptions): void {
   const OPTIONS: IHelperOptions = mergeWithDefaultOptions(options)
 
-  schema.properties[OPTIONS.customProperties.links].properties[link.title].items.properties.target.title = target.description
-  schema.properties[OPTIONS.customProperties.links].properties[link.title].items.properties.target.properties.type.enum[0] = target.type
+  const rawTitle = prefixedAspectName(schema, link.title)
+
+  schema.properties[OPTIONS.customProperties.links].properties[rawTitle].items.properties.target.title = target.description
+  schema.properties[OPTIONS.customProperties.links].properties[rawTitle].items.properties.target.properties.type.enum[0] = target.type
+}
+
+export function validate(schema: VEOObjectSchemaRAW): VeoSchemaValidatorValidationResult {
+  const validator = new VeoSchemaValidator('OBJECT_SCHEMA')
+  return validator.validate(schema, schema.title || undefined)
 }
