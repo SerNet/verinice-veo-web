@@ -7,14 +7,21 @@
       <template #header>
         <v-row>
           <v-col cols="6">
-            <v-btn text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
-              {{ $t('global.button.delete') }}
-            </v-btn>
+            <v-btn
+              text
+              outlined
+              :loading="deleteBtnLoading"
+              @click="showDeleteDialog()"
+            >{{ $t('global.button.delete') }}</v-btn>
           </v-col>
           <v-col cols="6" class="text-right">
-            <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="onClick">
-              {{ $t('global.button.save') }}
-            </v-btn>
+            <v-btn
+              color="primary"
+              outlined
+              text
+              :loading="saveBtnLoading"
+              @click="onClick"
+            >{{ $t('global.button.save') }}</v-btn>
           </v-col>
         </v-row>
       </template>
@@ -33,19 +40,15 @@
               <v-card-title class="headline" />
               <v-card-text>
                 {{
-                  $t('unit.data.deleteobject', {
-                    object: `${form.objectData.name} ${form.objectData.id}`
-                  })
+                $t('unit.data.deleteobject', {
+                object: `${form.objectData.name} ${form.objectData.id}`
+                })
                 }}
               </v-card-text>
               <v-card-actions>
-                <v-btn text @click="deleteDialog = false">
-                  {{ $t('global.button.cancel') }}
-                </v-btn>
+                <v-btn text @click="deleteDialog = false">{{ $t('global.button.cancel') }}</v-btn>
                 <v-spacer />
-                <v-btn text @click="deleteObject">
-                  {{ $t('global.button.delete') }}
-                </v-btn>
+                <v-btn text @click="deleteObject">{{ $t('global.button.delete') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -65,6 +68,7 @@
         </div>
       </template>
     </VeoPage>
+    <v-divider vertical />
     <VeoPage v-if="!$vuetify.breakpoint.xsOnly" :cols="4" :md="4" :xl="4" absolute-size>
       <VeoTabs>
         <template #tabs>

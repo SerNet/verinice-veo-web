@@ -40,12 +40,7 @@
             <v-icon>mdi-alert-circle-outline</v-icon>
           </v-btn>
           <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="previewCollapsed" right />
-          <v-row
-            v-if="schemaIsValid.valid"
-            no-gutters
-            class="flex-column overflow-hidden mt-2"
-            style="width: 100%;"
-          >
+          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%;">
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="2" class="pl-0">
@@ -99,6 +94,7 @@
           </v-row>
         </template>
       </VeoPage>
+      <v-divider vertical />
       <VeoPage
         v-if="formSchema && objectSchema && !previewCollapsed && !$vuetify.breakpoint.xs"
         absolute-size
@@ -106,7 +102,6 @@
         :md="backlogCollapsed ? 6 : 4"
         :xl="backlogCollapsed ? 6 : 4"
         height="100%"
-        border-left
         content-class="pb-4"
       >
         <v-card style="height: 100%" outlined>
@@ -121,11 +116,7 @@
       </VeoPage>
     </template>
     <template #helpers>
-      <VEOFSEWizardDialog
-        v-model="showCreationDialog"
-        @object-schema="setObjectSchema"
-        @form-schema="setFormSchema"
-      />
+      <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
     </template>

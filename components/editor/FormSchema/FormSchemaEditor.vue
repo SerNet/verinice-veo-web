@@ -159,6 +159,7 @@
           </div>
         </template>
       </VeoPage>
+      <v-divider vertical />
       <VeoPage
         absolute-size
         no-padding
