@@ -1,13 +1,13 @@
 <template>
   <VeoPage :title="title" padding>
-    <v-row no-gutters class="flex-column" style="margin-top: -20px;">
+    <v-row no-gutters class="flex-column fill-height" style="margin-top: -20px;">
       <p class="veo-unit-description">
         <span v-if="unit.description">{{ unit.description }}</span>
         <i v-else>{{ $t('unit.details.nodescription') }}</i>
       </p>
-      <template v-if="$fetchState.pending">
+      <div v-if="$fetchState.pending" class="flex-grow-1 d-flex align-center justify-center">
         <v-progress-circular size="64" color="primary" indeterminate />
-      </template>
+      </div>
       <template v-else>
         <v-row>
           <!--<v-col :cols="12" sm="6" lg="4">

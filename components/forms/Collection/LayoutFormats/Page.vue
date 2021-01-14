@@ -1,9 +1,9 @@
 <template>
   <div
     v-if="visible"
-    class="vf-layout vf-page d-flex flex-column mx-auto"
+    class="vf-layout vf-page d-flex flex-column mx-auto fill-width"
     :class="options && options.class"
-    style="max-width: 800px; width: 100%;"
+    style="max-width: 800px;"
     :style="options && options.style"
   >
     <slot />
@@ -14,11 +14,7 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
-import {
-  calculateConditionsScore,
-  Helpful,
-  LayoutProps
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, Helpful, LayoutProps } from '~/components/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'Page',
@@ -31,9 +27,7 @@ export default Vue.extend({
 
 export const helpers: Helpful<LayoutProps> = {
   matchingScore(props) {
-    return calculateConditionsScore([
-      typeof props.options !== 'undefined' && props.options.format === 'page'
-    ])
+    return calculateConditionsScore([typeof props.options !== 'undefined' && props.options.format === 'page'])
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div style="overflow: hidden; height: 100%; width: 100%;">
+  <div class="fill-width fill-height" style="overflow: hidden;">
     <v-row no-gutters class="veo-page-wrapper fill-height overflow-hidden">
       <slot name="default" />
     </v-row>

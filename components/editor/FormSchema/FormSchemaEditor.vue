@@ -35,18 +35,24 @@
                   text
                   small
                   @click="onExpandAll"
-                >{{ $t('editor.formschema.backlog.button.expand') }}</v-btn>
+                >
+                  {{ $t('editor.formschema.backlog.button.expand') }}
+                </v-btn>
                 <v-btn
                   text
                   small
                   @click="onCollapseAll"
-                >{{ $t('editor.formschema.backlog.button.collapse') }}</v-btn>
+                >
+                  {{ $t('editor.formschema.backlog.button.collapse') }}
+                </v-btn>
               </div>
               <v-expansion-panels v-model="expansionPanels" accordion multiple flat>
                 <v-expansion-panel v-show="filteredFormElements.length">
                   <v-expansion-panel-header
                     class="overline"
-                  >{{ $t('editor.formelements') }} ({{ filteredFormElements.length }})</v-expansion-panel-header>
+                  >
+                    {{ $t('editor.formelements') }} ({{ filteredFormElements.length }})
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-card outlined>
                       <v-list dense class="py-0">
@@ -74,7 +80,9 @@
                 <v-expansion-panel v-show="filteredBasics.length">
                   <v-expansion-panel-header
                     class="overline"
-                  >{{ $t('editor.basicproperties') }} ({{ filteredBasics.length }})</v-expansion-panel-header>
+                  >
+                    {{ $t('editor.basicproperties') }} ({{ filteredBasics.length }})
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-card v-show="filteredBasics.length" outlined>
                       <v-list dense class="py-0">
@@ -102,7 +110,9 @@
                 <v-expansion-panel v-show="filteredAspects.length">
                   <v-expansion-panel-header
                     class="overline"
-                  >{{ $t('editor.customaspects') }} ({{ filteredAspects.length }})</v-expansion-panel-header>
+                  >
+                    {{ $t('editor.customaspects') }} ({{ filteredAspects.length }})
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-card v-if="filteredAspects.length" outlined>
                       <v-list dense class="py-0">
@@ -130,7 +140,9 @@
                 <v-expansion-panel v-show="filteredLinks.length">
                   <v-expansion-panel-header
                     class="overline"
-                  >{{ $t('editor.customlinks') }} ({{ filteredLinks.length }})</v-expansion-panel-header>
+                  >
+                    {{ $t('editor.customlinks') }} ({{ filteredLinks.length }})
+                  </v-expansion-panel-header>
                   <v-expansion-panel-content>
                     <v-card v-if="filteredLinks.length" outlined>
                       <v-list dense class="py-0">
@@ -178,7 +190,7 @@
           />
         </template>
         <template #default>
-          <div class="veo-editor-body d-flex pt-0 px-2 pb-2" style="height: 100%">
+          <div class="fill-height fill-width d-flex pt-0 px-2 pb-2">
             <FseGenerator
               :schema="objectSchema"
               :value="value.content"
@@ -479,9 +491,3 @@ export default Vue.extend({
   }
 })
 </script>
-
-<style lang="scss" scoped>
-.veo-editor-body {
-  width: 100%;
-}
-</style>

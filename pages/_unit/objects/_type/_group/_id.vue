@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$fetchState.pending" class="text-center ma-12">
+  <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPageWrapper v-else>
