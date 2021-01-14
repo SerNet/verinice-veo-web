@@ -170,7 +170,23 @@ export default Vue.extend({
       formSchema: undefined as IVEOFormSchema | undefined,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
-      objectTypes: [] as { value: string; text: string }[]
+      schemas: [] as ISchemaEndpoint[]
+    }
+  },
+  computed: {
+    objectTypes(): { text: string; value: string }[] {
+      return [
+        {
+          text: this.$t('editor.formschema.wizard.modelType.custom') as string,
+          value: 'custom'
+        },
+        ...this.schemas.map((entry: ISchemaEndpoint) => {
+          return {
+            text: capitalize(entry.schemaName),
+            value: entry.schemaName
+          }
+        })
+      ]
     }
   },
   watch: {
@@ -200,23 +216,7 @@ export default Vue.extend({
   mounted() {
     this.dialog = this.value
 
-    this.$api.schema
-      .fetchAll()
-      .then(data =>
-        data.map((value: ISchemaEndpoint) => {
-          return {
-            text: capitalize(value.schemaName),
-            value: value.schemaName
-          }
-        })
-      )
-      .then(types => {
-        types.unshift({
-          text: this.$t('editor.formschema.wizard.modelType.custom') as string,
-          value: 'custom'
-        })
-        this.objectTypes = types
-      })
+    this.$api.schema.fetchAll().then((data: ISchemaEndpoint[]) => (this.schemas = data))
   },
   methods: {
     goBack() {

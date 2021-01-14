@@ -229,14 +229,14 @@ export default defineComponent<IProps>({
     const objectTypes: Ref<{ text: string; value: string }[]> = ref([])
     $api.schema
       .fetchAll()
-      .then((data: ISchemaEndpoint[]) =>
-        data.map((value: ISchemaEndpoint) => {
+      .then((data: ISchemaEndpoint[]) => {
+        return data.map((value: ISchemaEndpoint) => {
           return {
             text: capitalize(value.schemaName),
             value: value.schemaName
           }
         })
-      )
+      })
       .then((types: { text: string; value: string }[]) => {
         objectTypes.value = types
       })
