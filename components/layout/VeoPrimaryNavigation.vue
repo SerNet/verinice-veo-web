@@ -1,44 +1,36 @@
 <template>
   <v-navigation-drawer
-    :value="drawer"
+    :value="value"
     app
     :class="{ 'v-application--is-rtl': right }"
     clipped
-    :mini-variant="!$vuetify.breakpoint.xs && drawer"
+    :mini-variant="!$vuetify.breakpoint.xs && miniVariant"
     :permanent="!$vuetify.breakpoint.xs"
     :temporary="$vuetify.breakpoint.xs"
     :right="right"
-    @input="$emit('update:drawer', $event)"
-    @mouseenter.native="onMouseEnter()"
-    @mouseleave.native="onMouseLeave()"
+    v-on="$listeners"
   >
     <div class="d-flex flex-column fill-height">
-      <v-list nav dense :shaped="!drawer" :rounded="drawer" expand>
+      <v-list nav dense :shaped="!miniVariant" :rounded="miniVariant" expand>
         <template v-for="item in items">
           <VeoPrimaryNavigationEntry
             :key="item.name"
             v-bind="item"
-            :extended.sync="item.extended"
-            :persist-u-i-state="persistUIState"
+            :collapsed.sync="item.collapsed"
+            :persist-u-i-state="item.persistCollapsedState"
           />
         </template>
       </v-list>
       <v-spacer />
       <v-list nav dense class="pa-0">
         <v-divider />
-        <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="toggleMenu()">
+        <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="setMiniVariant(!miniVariant)">
           <v-list-item-icon>
-            <v-icon v-if="drawer || openedOnHover">
-              mdi-chevron-double-right
-            </v-icon>
+            <v-icon v-if="miniVariant">mdi-chevron-double-right</v-icon>
             <v-icon v-else>mdi-chevron-double-left</v-icon>
           </v-list-item-icon>
-          <v-list-item-title v-if="drawer || openedOnHover">
-            {{ $t('global.menu.expand') }}
-          </v-list-item-title>
-          <v-list-item-title v-else>
-            {{ $t('global.menu.collapse') }}
-          </v-list-item-title>
+          <v-list-item-title v-if="miniVariant">{{ $t('global.menu.expand') }}</v-list-item-title>
+          <v-list-item-title v-else>{{ $t('global.menu.collapse') }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </div>
@@ -48,10 +40,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router'
+import { capitalize } from 'lodash'
+import LocalStorage from '~/util/LocalStorage'
 import { FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
-import { capitalize } from 'lodash'
 
 export interface INavItem {
   name: string
@@ -60,11 +53,13 @@ export interface INavItem {
   to?: string
   disabled: boolean
   childItems?: INavItem[]
-  extended?: boolean
+  collapsed?: boolean
   topLevelItem: boolean
+  persistCollapsedState?: (collapsed: boolean) => void
 }
 
 export default Vue.extend({
+  name: 'VeoPrimaryNavigation',
   components: {
     VeoPrimaryNavigationEntry
   },
@@ -73,14 +68,14 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
-    drawer: {
+    value: {
       type: Boolean,
-      default: undefined
+      default: true
     }
   },
   data() {
     return {
-      openedOnHover: false as boolean,
+      miniVariant: LocalStorage.primaryNavMiniVariant,
       items: [] as INavItem[]
     }
   },
@@ -91,39 +86,8 @@ export default Vue.extend({
   },
   mounted() {
     this.getNavEntries(this.$route)
-    // Closes the menu if the cursor leaves the browser
-    document.addEventListener('mouseleave', this.onMouseLeave)
-
-    // Loads the menu state from the preferences
-    const fixedMenu = this.fetchUIState().persistentMenu
-    if (fixedMenu !== undefined) {
-      this.$nextTick(() => {
-        this.$emit('update:drawer', !fixedMenu)
-      })
-    }
-  },
-  destroyed() {
-    // Closes the menu if the cursor leaves the browser
-    document.removeEventListener('mouseleave', this.onMouseLeave)
   },
   methods: {
-    onMouseEnter() {
-      // If this.drawer is true, the mini-variant is displayed
-      if (!this.$vuetify.breakpoint.xs && this.drawer) {
-        this.openedOnHover = true
-        setTimeout(() => {
-          if (this.openedOnHover) {
-            this.$emit('update:drawer', false)
-          }
-        }, 200)
-      }
-    },
-    onMouseLeave() {
-      if (!this.$vuetify.breakpoint.xs && !this.drawer && this.openedOnHover) {
-        this.$emit('update:drawer', true)
-      }
-      this.openedOnHover = false
-    },
     getNavEntries(route: Route) {
       this.items = []
       // Only show nav links belonging to units if a unit is selected
@@ -138,23 +102,25 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.data',
+            name: 'veo.Objects',
             icon: 'mdi-folder',
             to: undefined,
             exact: false,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()['veo.data'] ? !this.fetchUIState()['veo.data'] : true,
+            collapsed: LocalStorage.navEntryVeoDataCollapsed,
+            persistCollapsedState: (collapsed: boolean) => (LocalStorage.navEntryVeoDataCollapsed = collapsed),
             topLevelItem: true
           },
           {
-            name: 'veo.forms',
+            name: 'veo.Forms',
             icon: 'mdi-format-list-checks',
             to: undefined,
             exact: false,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()['veo.forms'] ? !this.fetchUIState()['veo.forms'] : true,
+            collapsed: LocalStorage.navEntryVeoFormsCollapsed,
+            persistCollapsedState: (collapsed: boolean) => (LocalStorage.navEntryVeoFormsCollapsed = collapsed),
             topLevelItem: true
           },
           {
@@ -201,34 +167,22 @@ export default Vue.extend({
         topLevelItem: true
       })
     },
-    toggleMenu() {
-      if (!this.drawer && this.openedOnHover) {
-        this.openedOnHover = false
-        this.persistUIState('persistentMenu', true)
-      } else if (!this.drawer) {
-        this.openedOnHover = false
-        this.$emit('update:drawer', true)
-        this.persistUIState('persistentMenu', false)
-      } else {
-        this.$emit('update:drawer', !this.drawer)
-        this.persistUIState('persistentMenu', true)
-      }
-    },
     async fetchDataTypes(): Promise<INavItem[]> {
       return this.$api.schema.fetchAll().then(data => {
         return data.map(entry => {
           return {
             name: capitalize(entry.schemaName),
             exact: true,
-            to: `/${this.$route.params.unit}/data/${entry.endpoint}/-/`,
+            to: `/${this.$route.params.unit}/objects/${entry.endpoint}/-/`,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()[entry.schemaName] ? !this.fetchUIState()[entry.schemaName] : true,
+            collapsed: false,
             topLevelItem: false
           }
         })
       })
     },
+
     async fetchFormTypes(): Promise<INavItem[]> {
       return await this.$api.form.fetchAll({ unit: this.$route.params.unit }).then((formTypes: FormSchemaMetas) =>
         formTypes.map((entry: FormSchemaMeta) => {
@@ -242,22 +196,9 @@ export default Vue.extend({
         })
       )
     },
-    capitalize(string: string): string {
-      return string.charAt(0).toUpperCase() + string.slice(1)
-    },
-    /**
-     * Used to store the current ui settings in the local storage to reconstruct the layout on page reload.
-     */
-    persistUIState(item: string, state: boolean) {
-      // fetch state from local storage
-      const preferences = this.fetchUIState()
-      preferences[item] = state
-
-      // Overwrite fetched state
-      localStorage.setItem('veo-menu-preferences', JSON.stringify(preferences))
-    },
-    fetchUIState(): { [key: string]: boolean } {
-      return JSON.parse(localStorage.getItem('veo-menu-preferences') || '{}')
+    setMiniVariant(miniVariant: boolean) {
+      this.miniVariant = miniVariant
+      LocalStorage.primaryNavMiniVariant = miniVariant
     }
   }
 })

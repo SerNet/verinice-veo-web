@@ -1,5 +1,5 @@
 <template>
-  <div :class="fullsize ? 'veo-tabs-fullsize' : ''">
+  <div :class="{'fill-width': fullsize }">
     <v-tabs v-model="activeTab">
       <slot name="tabs" />
     </v-tabs>
@@ -12,8 +12,8 @@
 import { defineComponent, ref } from '@nuxtjs/composition-api'
 
 interface IProps {
-    fullsize: boolean,
-    startItem: number
+  fullsize: boolean
+  startItem: number
 }
 
 export default defineComponent<IProps>({
@@ -34,8 +34,3 @@ export default defineComponent<IProps>({
   }
 })
 </script>
-<style lang="scss" scoped>
-.veo-tabs-fullsize {
-  width: 100%;
-}
-</style>

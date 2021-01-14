@@ -17,22 +17,15 @@
             :label="`${$t('editor.upload.input.file.label')} (.json)`"
             :disabled="uploading"
           />
-          <v-row class="ml-6">
-            <v-col cols="auto">
-              <v-btn
-                role="submit"
-                type="submit"
-                color="primary"
-                outlined
-                text
-                :disabled="uploading || !file"
-                v-text="buttonText"
-              />
-            </v-col>
-            <v-col cols="auto">
-              <v-progress-circular v-if="uploading" indeterminate color="primary" class="mr-2" />
-            </v-col>
-          </v-row>
+          <v-btn
+            role="submit"
+            type="submit"
+            color="primary"
+            outlined
+            text
+            :loading="uploading"
+            :disabled="!file"
+          >{{ buttonText }}</v-btn>
         </v-form>
       </v-tab-item>
       <v-tab-item>

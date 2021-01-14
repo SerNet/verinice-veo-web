@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$fetchState.pending" class="text-center ma-12">
+  <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPageWrapper v-else>
@@ -39,13 +39,9 @@
                 }}
               </v-card-text>
               <v-card-actions>
-                <v-btn text @click="deleteDialog = false">
-                  {{ $t('global.button.cancel') }}
-                </v-btn>
+                <v-btn text @click="deleteDialog = false">{{ $t('global.button.cancel') }}</v-btn>
                 <v-spacer />
-                <v-btn text @click="deleteObject">
-                  {{ $t('global.button.delete') }}
-                </v-btn>
+                <v-btn text @click="deleteObject">{{ $t('global.button.delete') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -65,6 +61,7 @@
         </div>
       </template>
     </VeoPage>
+    <v-divider vertical />
     <VeoPage v-if="!$vuetify.breakpoint.xsOnly" :cols="4" :md="4" :xl="4" absolute-size>
       <VeoTabs>
         <template #tabs>
@@ -113,7 +110,7 @@ export default Vue.extend({
   middleware({ route, params, redirect }) {
     // TODO Nur weiterleiten, wenn Desktop
     if (route.name === 'unit-data-type-group-id') {
-      return redirect(`/${params.unit}/data/${params.type}/${params.group}/${params.id}/links`)
+      return redirect(`/${params.unit}/objects/${params.type}/${params.group}/${params.id}/links`)
     }
   },
   data(): IData {
@@ -151,8 +148,8 @@ export default Vue.extend({
   computed: {
     title(): string {
       return this.$fetchState.pending
-        ? 'veo.data'
-        : `${this.form.objectData.name} - ${capitalize(this.$route.params.type || '')} - veo.data`
+        ? 'veo.Objects'
+        : `${this.form.objectData.name} - ${capitalize(this.schemaType)} - veo.Objects`
     },
     schemaType(): string | undefined {
       return getSchemaName(this.$route.params.type)
@@ -167,10 +164,10 @@ export default Vue.extend({
       return this.$route.params.unit
     },
     linkToLinks(): string {
-      return `/${this.unit}/data/${this.$route.params.type}/${this.objectGroup}/${this.objectId}/links`
+      return `/${this.unit}/objects/${this.schemaType}/${this.objectGroup}/${this.objectId}/links`
     },
     linkToHistory(): string {
-      return `/${this.unit}/data/${this.$route.params.type}/${this.objectGroup}/${this.objectId}/history`
+      return `/${this.unit}/objects/${this.schemaType}/${this.objectGroup}/${this.objectId}/history`
     }
   },
   methods: {
@@ -212,7 +209,7 @@ export default Vue.extend({
         await this.$api.object.delete(this.$route.params.type, this.$route.params.id)
         this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
         this.$router.push({
-          path: `/${this.unit}/data/${this.$route.params.type}/${this.objectGroup}/`
+          path: `/${this.unit}/objects/${this.schemaType}/${this.objectGroup}/`
         })
       } catch (e) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {

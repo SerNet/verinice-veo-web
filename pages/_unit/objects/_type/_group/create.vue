@@ -26,7 +26,7 @@ export default BaseObjectFormCreate.extend({
     async action(objectType: string) {
       const createdObjectUUID = await this.create(objectType)
       if (createdObjectUUID) {
-        const createdObjectURL = `/${this.unit}/data/${this.objectType}/${this.objectGroup}/${createdObjectUUID}/links`
+        const createdObjectURL = `/${this.unit}/objects/${this.objectType}/${this.objectGroup}/${createdObjectUUID}/links`
         this.$router.push(createdObjectURL)
       } else {
         throw new Error('UUID of the create object does not exist!')

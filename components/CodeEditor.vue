@@ -1,5 +1,5 @@
 <template>
-  <div class="fill-height d-flex flex-column" style="width: 100%;">
+  <div class="fill-height fill-width d-flex flex-column">
     <div style="flex-grow: 1; overflow: auto;">
       <div class="editor" :style="{ resize: 'vertical', width: '100%' }">
         <div
@@ -11,9 +11,13 @@
       </div>
     </div>
     <div v-if="!readonly" class="veo-editor-save-button">
-      <v-btn class="mx-4 my-2" color="primary" outlined :disabled="saveButtonDisabled" @click="updateSchema()">
-        {{ $t('editor.editor.button.save') }}
-      </v-btn>
+      <v-btn
+        class="mx-4 my-2"
+        color="primary"
+        outlined
+        :disabled="saveButtonDisabled"
+        @click="updateSchema()"
+      >{{ $t('editor.editor.button.save') }}</v-btn>
     </div>
   </div>
 </template>

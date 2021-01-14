@@ -1,11 +1,11 @@
 <template>
-  <VeoPage title="veo.data">
+  <VeoPage title="veo.Objects">
     <template #title>
       <v-spacer />
       <v-btn
         text
         outlined
-        :to="`/${$route.params.unit}/data/${currentSchemaType}/${group}/create`"
+        :to="`/${$route.params.unit}/objects/${objectType}/${group}/create`"
         color="primary"
         class="align-self-center"
       >
