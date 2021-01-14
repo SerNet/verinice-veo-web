@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 
-import VeoData from '~/pages/_unit/data/index.vue'
+import VeoData from '~/pages/_unit/objects/index.vue'
 
 interface IProps {}
 

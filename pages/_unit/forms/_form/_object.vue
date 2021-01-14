@@ -121,7 +121,7 @@ export default Vue.extend({
   },
   computed: {
     title(): string {
-      return this.$fetchState.pending ? 'veo.forms' : `${this.form.objectData.name} - veo.forms`
+      return this.$fetchState.pending ? 'veo.Forms' : `${this.form.objectData.name} - veo.Forms`
     },
     unit(): string {
       return this.$route.params.unit

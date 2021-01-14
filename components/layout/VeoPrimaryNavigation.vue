@@ -102,7 +102,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.data',
+            name: 'veo.Objects',
             icon: 'mdi-folder',
             to: undefined,
             exact: false,
@@ -113,7 +113,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.forms',
+            name: 'veo.Forms',
             icon: 'mdi-format-list-checks',
             to: undefined,
             exact: false,
@@ -186,7 +186,7 @@ export default Vue.extend({
         objects.push({
           name: capitalize(key),
           exact: true,
-          to: `/${this.$route.params.unit}/data/${key}/-/`,
+          to: `/${this.$route.params.unit}/objects/${key}/-/`,
           disabled: false,
           childItems: undefined,
           collapsed: false,
