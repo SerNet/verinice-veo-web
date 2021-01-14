@@ -53,18 +53,16 @@ export default Vue.extend({
     await this.$api.schema
       .fetchAll()
       .then(data => {
-        return data.map(async (key: { schemaName: string; endpoint: string }) => {
-          return {
-            title: capitalize(key.schemaName),
-            link: `data/${key.endpoint}`,
-            // @ts-ignore
-            items: (
-              await this.$api.object.fetchAll(`${key.endpoint}`, {
-                unit: this.unit.id
-              })
-            ).length
-          }
-        })
+        return data.map(async (key: { schemaName: string; endpoint: string }) => ({
+          title: capitalize(key.schemaName),
+          link: `data/${key.endpoint}`,
+          // @ts-ignore
+          items: (
+            await this.$api.object.fetchAll(`${key.endpoint}`, {
+              unit: this.unit.id
+            })
+          ).length
+        }))
       })
       .then(types => {
         Promise.all(types).then(data => {

@@ -37,21 +37,11 @@ export default function(api: Client) {
      * Returns an array of all entity schemas with their corresponding endpoint.
      */
     fetchAll(): Promise<ISchemaEndpoint[]> {
-      return api.req('/api/schemas').then((data: { knownSchemas: string[] })=> {
-        let schemas: ISchemaEndpoint[] = []
-
-        data.knownSchemas.forEach(entry => {
-          schemas.push({
-            schemaName: entry,
-            // @ts-ignore
-            endpoint: endpoints[entry]
-          })
-        })
-
-        schemas = schemas.filter((entry => !!entry.endpoint))
-
-        return schemas
-      })
+      return api.req('/api/schemas').then((data: { knownSchemas: string[] })=> data.knownSchemas.map(schema => ({
+        schemaName: schema,
+        // @ts-ignore
+        endpoint: endpoints[schema]
+      })).filter(entry => !!entry.endpoint))
     },
 
     /**

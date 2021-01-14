@@ -5,7 +5,7 @@
       <v-btn
         text
         outlined
-        :to="`/${$route.params.unit}/objects/${objectType}/${group}/create`"
+        :to="`/${$route.params.unit}/objects/${currentSchemaType}/${group}/create`"
         color="primary"
         class="align-self-center"
       >
@@ -139,11 +139,11 @@ export default defineComponent<IProps>({
           await fetch()
         }
         nextTick(() => {
-          context.app.router?.push(`/${unit.value}/data/${schemaTypes.value[0].endpoint}/`)
+          context.app.router?.push(`/${unit.value}/objects/${schemaTypes.value[0].endpoint}/`)
         })
       }
       if (!group.value) {
-        context.app.router?.push(`/${unit.value}/data/${currentSchemaType.value}/-/`)
+        context.app.router?.push(`/${unit.value}/objects/${currentSchemaType.value}/-/`)
       }
     }
 
@@ -181,15 +181,25 @@ export default defineComponent<IProps>({
     ])
 
     function goToObject(item: any) {
-      context.app.router?.push(`/${unit.value}/data/${currentSchemaType.value}/${group.value}/${item.id}`)
+      context.app.router?.push(`/${unit.value}/objects/${currentSchemaType.value}/${group.value}/${item.id}`)
     }
 
     // Navigation upon changing the schemaType or group
     function changeType() {
-      context.app.router?.push(`/${unit.value}/data/${currentSchemaType.value}/${group.value}`)
+      context.app.router?.push({
+        params: {
+          ...context.route.value.params,
+          type: currentSchemaType.value || ''
+        }
+      })
     }
     function changeGroup() {
-      context.app.router?.push(`/${unit.value}/data/${currentSchemaType.value}/${group.value}`)
+      context.app.router?.push({
+        params: {
+          ...context.route.value.params,
+          group: group.value || ''
+        }
+      })
     }
 
     return {
