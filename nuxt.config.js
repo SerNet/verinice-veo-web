@@ -162,6 +162,7 @@ module.exports = {
    */
   css: [
     '~/assets/main.scss',
+    '~/assets/util.scss',
     '~/assets/vuetify.scss'
   ],
 

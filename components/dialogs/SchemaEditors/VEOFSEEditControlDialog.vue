@@ -9,15 +9,19 @@
       <v-form>
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.label.text') }}*: </span>
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.label.text') }}*:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-text-field v-model="label" :label="$t('editor.formschema.edit.input.label')" required />
+            <v-text-field
+              v-model="label"
+              :label="$t('editor.formschema.edit.input.label')"
+              required
+            />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.type') }}: </span>
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.type') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-select
@@ -33,15 +37,20 @@
         </v-row>
         <v-row v-if="activeControlType.highlight !== undefined" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.highlight') }}: </span>
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.highlight') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-checkbox v-model="activeControlType.highlight" :label="$t('editor.formschema.edit.input.highlight')" />
+            <v-checkbox
+              v-model="activeControlType.highlight"
+              :label="$t('editor.formschema.edit.input.highlight')"
+            />
           </v-col>
         </v-row>
         <v-row v-if="activeControlType.name === 'LinksField'" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.link.attributes.text') }}: </span>
+            <span
+              style="font-size: 1.2rem;"
+            >{{ $t('editor.formschema.edit.input.link.attributes.text') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-autocomplete
@@ -64,7 +73,7 @@
           class="align-center"
         >
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.direction') }}: </span>
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.direction') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-autocomplete v-model="activeControlType.direction" :items="directionItems" />
@@ -79,9 +88,9 @@
         style="border: 1px solid grey"
       >
         <Draggable
-          class="dragArea d-flex flex-column"
+          class="dragArea d-flex flex-column fill-width fill-height"
           tag="div"
-          style="overflow: auto; width: 100%; min-height: 200px; height: 100%"
+          style="overflow: auto; min-height: 200px;"
           :list="formSchemaElements"
           handle=".handle"
           :group="{ name: 'link-attributes' }"
@@ -100,13 +109,9 @@
       </v-card>
     </template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="close()">
-        {{ $t('global.button.close') }}
-      </v-btn>
+      <v-btn text color="primary" @click="close()">{{ $t('global.button.close') }}</v-btn>
       <v-spacer />
-      <v-btn text color="primary" @click="updateElement()">
-        {{ $t('global.button.save') }}
-      </v-btn>
+      <v-btn text color="primary" @click="updateElement()">{{ $t('global.button.save') }}</v-btn>
     </template>
   </VeoDialog>
 </template>

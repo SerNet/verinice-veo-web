@@ -35,7 +35,11 @@
             <v-icon>mdi-alert-circle-outline</v-icon>
           </v-btn>
           <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="collapsed" right />
-          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%">
+          <v-row
+            v-if="schemaIsValid.valid"
+            no-gutters
+            class="flex-column overflow-hidden mt-2 fill-width"
+          >
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="12" lg="4">

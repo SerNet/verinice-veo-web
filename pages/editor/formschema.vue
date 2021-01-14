@@ -40,7 +40,11 @@
             <v-icon>mdi-alert-circle-outline</v-icon>
           </v-btn>
           <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="previewCollapsed" right />
-          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2" style="width: 100%;">
+          <v-row
+            v-if="schemaIsValid.valid"
+            no-gutters
+            class="flex-column overflow-hidden mt-2 fill-width"
+          >
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="2" class="pl-0">
@@ -116,7 +120,11 @@
       </VeoPage>
     </template>
     <template #helpers>
-      <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
+      <VEOFSEWizardDialog
+        v-model="showCreationDialog"
+        @object-schema="setObjectSchema"
+        @form-schema="setFormSchema"
+      />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
     </template>

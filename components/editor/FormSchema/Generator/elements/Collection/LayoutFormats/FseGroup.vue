@@ -1,14 +1,14 @@
 <template>
-  <v-card v-if="level === 0" flat class="fse-group level-0" style="height: 100%; width: 100%">
+  <v-card v-if="level === 0" flat class="fse-group level-0 fill-width fill-height">
     <div v-if="value.elements.length === 0" class="dropzone-placeholder">
-      <div class="dropzone-placeholder-text subtitle-1">
-        {{ $t('editor.formschema.dropzone.placeholder') }}
-      </div>
+      <div
+        class="dropzone-placeholder-text subtitle-1"
+      >{{ $t('editor.formschema.dropzone.placeholder') }}</div>
     </div>
     <Draggable
-      class="dragArea d-flex"
+      class="dragArea d-flex fill-width fill-height"
       tag="div"
-      style="overflow: auto; width: 100%; height: 100%"
+      style="overflow: auto;"
       :list="value.elements"
       :class="dynamicClasses"
       handle=".handle"
@@ -26,17 +26,17 @@
         <div class="text-caption text-truncate">{{ $t('editor.formschema.elements.group.name') }}</div>
       </v-col>
       <v-col cols="auto" class="text-right">
-        <v-btn icon x-small @click="open"> <v-icon dense small>mdi-pencil</v-icon></v-btn
-        ><v-btn icon x-small @click="deleteDialog.open = true">
+        <v-btn icon x-small @click="open">
+          <v-icon dense small>mdi-pencil</v-icon>
+        </v-btn>
+        <v-btn icon x-small @click="deleteDialog.open = true">
           <v-icon dense small>mdi-delete</v-icon>
         </v-btn>
       </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col>
-        <div v-if="options && options.label" class="text-subtitle-1 mb-2">
-          {{ options.label }}
-        </div>
+        <div v-if="options && options.label" class="text-subtitle-1 mb-2">{{ options.label }}</div>
         <Draggable
           class="dragArea d-flex"
           tag="div"
@@ -60,7 +60,7 @@
         <v-form>
           <v-row no-gutters class="align-center mt-4">
             <v-col :cols="12" :md="5">
-              <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.label.text') }}: </span>
+              <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.label.text') }}:</span>
             </v-col>
             <v-col :cols="12" :md="5">
               <v-text-field
@@ -72,15 +72,18 @@
           </v-row>
           <v-row no-gutters class="align-center">
             <v-col :cols="12" :md="5">
-              <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.direction') }}*: </span>
+              <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.direction') }}*:</span>
             </v-col>
             <v-col :cols="12" :md="5">
-              <v-autocomplete v-model="dialog.data.direction.value" :items="dialog.data.directionList" />
+              <v-autocomplete
+                v-model="dialog.data.direction.value"
+                :items="dialog.data.directionList"
+              />
             </v-col>
           </v-row>
           <v-row no-gutters class="align-center">
             <v-col :cols="12" :md="5">
-              <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.css.class') }}: </span>
+              <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.css.class') }}:</span>
             </v-col>
             <v-col :cols="12" :md="5">
               <v-combobox
@@ -88,13 +91,13 @@
                 :label="$t('editor.formschema.edit.css.class.text')"
                 multiple
                 chips
-                append-icon=""
+                append-icon
               />
             </v-col>
           </v-row>
           <v-row no-gutters class="align-center">
             <v-col :cols="12" :md="5">
-              <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.css.style') }}: </span>
+              <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.css.style') }}:</span>
             </v-col>
             <v-col :cols="12" :md="5">
               <v-combobox
@@ -102,7 +105,7 @@
                 :label="$t('editor.formschema.edit.css.style.text')"
                 multiple
                 chips
-                append-icon=""
+                append-icon
               />
             </v-col>
           </v-row>
@@ -110,20 +113,13 @@
         <small>{{ $t('editor.dialog.requiredfields') }}</small>
       </template>
       <template #dialog-options>
-        <v-btn text color="primary" @click="dialog.open = false">
-          {{ $t('global.button.close') }}
-        </v-btn>
+        <v-btn text color="primary" @click="dialog.open = false">{{ $t('global.button.close') }}</v-btn>
         <v-spacer />
-        <v-btn text color="primary" @click="save">
-          {{ $t('global.button.save') }}
-        </v-btn>
+        <v-btn text color="primary" @click="save">{{ $t('global.button.save') }}</v-btn>
       </template>
     </VeoDialog>
 
-    <VEOFSEDeleteDialog
-      v-model="deleteDialog.open"
-      @delete="onDelete"
-    />
+    <VEOFSEDeleteDialog v-model="deleteDialog.open" @delete="onDelete" />
   </v-card>
 </template>
 

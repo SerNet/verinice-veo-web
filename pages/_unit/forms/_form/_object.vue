@@ -1,17 +1,19 @@
 <template>
-  <div v-if="$fetchState.pending">
-    <div class="text-center ma-12">
-      <v-progress-circular indeterminate color="primary" size="50" />
-    </div>
+  <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
+    <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPage v-else :title="form.objectData.name" sticky-header>
     <template #header>
       <v-row>
         <v-col :cols="6" />
         <v-col :cols="6" class="text-right">
-          <v-btn color="primary" text outlined :loading="btnLoading" @click="onClick">
-            {{ $t('global.button.save') }}
-          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            outlined
+            :loading="btnLoading"
+            @click="onClick"
+          >{{ $t('global.button.save') }}</v-btn>
         </v-col>
       </v-row>
     </template>
