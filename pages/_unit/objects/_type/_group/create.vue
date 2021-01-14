@@ -1,7 +1,5 @@
 <script lang="ts">
-import BaseObjectFormCreate, {
-  ObjectSchemaNames
-} from '~/pages/_unit/forms/_form/create.vue'
+import BaseObjectFormCreate, { ObjectSchemaNames } from '~/pages/_unit/forms/_form/create.vue'
 
 export default BaseObjectFormCreate.extend({
   name: 'veo-data-objectData-create',
@@ -27,7 +25,7 @@ export default BaseObjectFormCreate.extend({
     async action(objectType: ObjectSchemaNames) {
       const createdObjectUUID = await this.create(objectType)
       if (createdObjectUUID) {
-        const createdObjectURL = `/${this.unit}/data/${this.objectType}/${this.objectGroup}/${createdObjectUUID}/links`
+        const createdObjectURL = `/${this.unit}/objects/${this.objectType}/${this.objectGroup}/${createdObjectUUID}/links`
         this.$router.push(createdObjectURL)
       } else {
         throw new Error('UUID of the create object does not exist!')

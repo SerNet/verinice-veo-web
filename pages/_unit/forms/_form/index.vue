@@ -1,5 +1,5 @@
 <template>
-  <VeoPage title="veo.forms">
+  <VeoPage title="veo.Forms">
     <template #title>
       <v-spacer />
       <v-btn

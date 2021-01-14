@@ -1,11 +1,11 @@
 <template>
-  <VeoPage title="veo.data">
+  <VeoPage title="veo.Objects">
     <template #title>
       <v-spacer />
       <v-btn
         text
         outlined
-        :to="`/${$route.params.unit}/data/${objectType}/${group}/create`"
+        :to="`/${$route.params.unit}/objects/${objectType}/${group}/create`"
         color="primary"
         class="align-self-center"
       >
@@ -120,7 +120,7 @@ export default defineComponent<IProps>({
   },
   head() {
     return {
-      title: 'veo.data'
+      title: 'veo.Objects'
     }
   },
   computed: {
@@ -155,13 +155,13 @@ export default defineComponent<IProps>({
   },
   methods: {
     changeType() {
-      this.$router.push(`/${this.$route.params.unit}/data/${this.objectType}/${this.group}`)
+      this.$router.push(`/${this.$route.params.unit}/objects/${this.objectType}/${this.group}`)
     },
     changeGroup() {
-      this.$router.push(`/${this.$route.params.unit}/data/${this.objectType}/${this.group}`)
+      this.$router.push(`/${this.$route.params.unit}/objects/${this.objectType}/${this.group}`)
     },
     goToObject(item: any) {
-      this.$router.push(`/${this.$route.params.unit}/data/${this.objectType}/${this.group}/${item.id}`)
+      this.$router.push(`/${this.$route.params.unit}/objects/${this.objectType}/${this.group}/${item.id}`)
     },
     capitalize(string: string): string {
       return string.charAt(0).toUpperCase() + string.slice(1)

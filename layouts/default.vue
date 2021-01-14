@@ -3,7 +3,7 @@
     <v-app-bar class="veo-app-bar" app clipped-left flat>
       <div class="d-flex">
         <v-app-bar-nav-icon v-if="$vuetify.breakpoint.xs" @click="drawer = true" />
-        <nuxt-link to="/">
+        <nuxt-link to="/" class="text-decoration-none">
           <AppBarLogo class="ml-2" />
         </nuxt-link>
       </div>

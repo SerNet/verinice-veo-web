@@ -7,21 +7,14 @@
       <template #header>
         <v-row>
           <v-col cols="6">
-            <v-btn
-              text
-              outlined
-              :loading="deleteBtnLoading"
-              @click="showDeleteDialog()"
-            >{{ $t('global.button.delete') }}</v-btn>
+            <v-btn text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
+              {{ $t('global.button.delete') }}
+            </v-btn>
           </v-col>
           <v-col cols="6" class="text-right">
-            <v-btn
-              color="primary"
-              outlined
-              text
-              :loading="saveBtnLoading"
-              @click="onClick"
-            >{{ $t('global.button.save') }}</v-btn>
+            <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="onClick">
+              {{ $t('global.button.save') }}
+            </v-btn>
           </v-col>
         </v-row>
       </template>
@@ -40,9 +33,9 @@
               <v-card-title class="headline" />
               <v-card-text>
                 {{
-                $t('unit.data.deleteobject', {
-                object: `${form.objectData.name} ${form.objectData.id}`
-                })
+                  $t('unit.data.deleteobject', {
+                    object: `${form.objectData.name} ${form.objectData.id}`
+                  })
                 }}
               </v-card-text>
               <v-card-actions>
@@ -116,7 +109,7 @@ export default Vue.extend({
   middleware({ route, params, redirect }) {
     // TODO Nur weiterleiten, wenn Desktop
     if (route.name === 'unit-data-type-group-id') {
-      return redirect(`/${params.unit}/data/${params.type}/${params.group}/${params.id}/links`)
+      return redirect(`/${params.unit}/objects/${params.type}/${params.group}/${params.id}/links`)
     }
   },
   validate({ params }) {
@@ -157,8 +150,8 @@ export default Vue.extend({
   computed: {
     title(): string {
       return this.$fetchState.pending
-        ? 'veo.data'
-        : `${this.form.objectData.name} - ${this.capitalize(this.objectType)} - veo.data`
+        ? 'veo.Objects'
+        : `${this.form.objectData.name} - ${this.capitalize(this.objectType)} - veo.Objects`
     },
     objectType(): APIGroup {
       return this.$route.params.type as APIGroup
@@ -173,10 +166,10 @@ export default Vue.extend({
       return this.$route.params.unit
     },
     linkToLinks(): string {
-      return `/${this.unit}/data/${this.objectType}/${this.objectGroup}/${this.objectId}/links`
+      return `/${this.unit}/objects/${this.objectType}/${this.objectGroup}/${this.objectId}/links`
     },
     linkToHistory(): string {
-      return `/${this.unit}/data/${this.objectType}/${this.objectGroup}/${this.objectId}/history`
+      return `/${this.unit}/objects/${this.objectType}/${this.objectGroup}/${this.objectId}/history`
     }
   },
   methods: {
@@ -218,7 +211,7 @@ export default Vue.extend({
         await this.$api[this.objectType].delete(this.$route.params.id)
         this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
         this.$router.push({
-          path: `/${this.unit}/data/${this.objectType}/${this.objectGroup}/`
+          path: `/${this.unit}/objects/${this.objectType}/${this.objectGroup}/`
         })
       } catch (e) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {

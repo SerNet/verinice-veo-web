@@ -26,11 +26,7 @@
       <v-spacer />
       <v-list nav dense class="pa-0">
         <v-divider />
-        <v-list-item
-          v-if="!$vuetify.breakpoint.xs"
-          class="pl-4"
-          @click="toggleMenu()"
-        >
+        <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="toggleMenu()">
           <v-list-item-icon>
             <v-icon v-if="drawer || openedOnHover">
               mdi-chevron-double-right
@@ -52,11 +48,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router'
-import {
-  FormSchemaMeta,
-  FormSchemaMetas,
-  ObjectSchemaNames
-} from '~/types/FormSchema'
+import { FormSchemaMeta, FormSchemaMetas, ObjectSchemaNames } from '~/types/FormSchema'
 
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
 
@@ -145,27 +137,23 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.data',
+            name: 'veo.Objects',
             icon: 'mdi-folder',
             to: undefined,
             exact: false,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()['veo.data']
-              ? !this.fetchUIState()['veo.data']
-              : true,
+            extended: this.fetchUIState()['veo.Objects'] ? !this.fetchUIState()['veo.Objects'] : true,
             topLevelItem: true
           },
           {
-            name: 'veo.forms',
+            name: 'veo.Forms',
             icon: 'mdi-format-list-checks',
             to: undefined,
             exact: false,
             disabled: false,
             childItems: undefined,
-            extended: this.fetchUIState()['veo.forms']
-              ? !this.fetchUIState()['veo.forms']
-              : true,
+            extended: this.fetchUIState()['veo.Forms'] ? !this.fetchUIState()['veo.Forms'] : true,
             topLevelItem: true
           },
           {
@@ -244,7 +232,7 @@ export default Vue.extend({
         objects.push({
           name: this.capitalize(key),
           exact: true,
-          to: `/${this.$route.params.unit}/data/${key}/-/`,
+          to: `/${this.$route.params.unit}/objects/${key}/-/`,
           disabled: false,
           childItems: undefined,
           extended: this.fetchUIState()[key] ? !this.fetchUIState()[key] : true,
@@ -255,19 +243,17 @@ export default Vue.extend({
       return objects
     },
     async fetchFormTypes(): Promise<INavItem[]> {
-      return await this.$api.form
-        .fetchAll({ unit: this.$route.params.unit })
-        .then((formTypes: FormSchemaMetas) =>
-          formTypes.map((entry: FormSchemaMeta) => {
-            return {
-              name: entry.name,
-              exact: true,
-              to: `/${this.$route.params.unit}/forms/${entry.id}/`,
-              disabled: false,
-              topLevelItem: false
-            }
-          })
-        )
+      return await this.$api.form.fetchAll({ unit: this.$route.params.unit }).then((formTypes: FormSchemaMetas) =>
+        formTypes.map((entry: FormSchemaMeta) => {
+          return {
+            name: entry.name,
+            exact: true,
+            to: `/${this.$route.params.unit}/forms/${entry.id}/`,
+            disabled: false,
+            topLevelItem: false
+          }
+        })
+      )
     },
     capitalize(string: string): string {
       return string.charAt(0).toUpperCase() + string.slice(1)
