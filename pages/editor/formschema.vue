@@ -71,6 +71,20 @@
                 </v-col>
               </v-row>
             </v-col>
+            <v-col cols="12">
+              <v-row class="mx-4">
+                <v-col cols="2" class="pl-0">
+                  <v-text-field
+                    v-model="formSchema.subType"
+                    dense
+                    flat
+                    required
+                    :rules="editorRules.subType"
+                    :label="$t('editor.formschema.subtype')"
+                  />
+                </v-col>
+              </v-row>
+            </v-col>
           </v-row>
         </template>
         <template #default>
@@ -137,6 +151,7 @@ import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
 import CollapseButton from '~/components/layout/CollapseButton.vue'
+import { trim } from 'lodash'
 import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
 import VeoFSECodeEditorDialog from '~/components/dialogs/SchemaEditors/VeoFSECodeEditorDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
@@ -165,7 +180,10 @@ export default Vue.extend({
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
       objectData: {},
-      showCodeEditor: false as boolean
+      showCodeEditor: false as boolean,
+      editorRules: {
+        subType: [(input: string) => (input && trim(input).length > 0) || this.$t('global.input.required')]
+      }
     }
   },
   async fetch() {
@@ -206,7 +224,7 @@ export default Vue.extend({
   },
   mounted() {
     if (this.$route.query.nowizard) {
-      this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process')
+      this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process', 'PR')
     }
     this.showCreationDialog = this.objectSchema === undefined && this.formSchema === undefined
   },

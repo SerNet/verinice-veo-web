@@ -10,6 +10,7 @@ export enum ObjectSchemaNames {
 export interface BaseFormSchema {
   name: string
   modelType: ObjectSchemaNames
+  subType: string
 }
 
 export interface FormSchema extends BaseFormSchema {
