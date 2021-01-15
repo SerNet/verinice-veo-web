@@ -1,11 +1,10 @@
 import { IVEOFormSchema } from 'veo-formschema'
 import VeoSchemaValidator, { VeoSchemaValidatorValidationResult } from './VeoSchemaValidator'
 
-export function generateSchema(name: string, modelType: string, subType: string): IVEOFormSchema {
+export function generateSchema(name: string, modelType: string): IVEOFormSchema {
   return {
     name,
     modelType,
-    subType,
     content: {
       type: 'Layout',
       options: {
