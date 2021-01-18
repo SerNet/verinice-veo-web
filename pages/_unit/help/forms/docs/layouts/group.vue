@@ -17,14 +17,7 @@
             />
           </v-col>
           <v-col cols="2">
-            <v-switch
-              v-model="highlight"
-              :label="`Highlight: ${highlight}`"
-              hide-details
-              color="primary"
-              :false-value="true"
-              :true-value="false"
-            />
+            <v-switch v-model="border" :label="`Border`" hide-details color="primary" />
           </v-col>
         </v-row>
       </v-col>
@@ -92,7 +85,7 @@ export default Vue.extend({
         }
       },
       direction: 'vertical',
-      highlight: true
+      border: false
     }
   },
   watch: {
@@ -102,10 +95,14 @@ export default Vue.extend({
         this.update(this.form.formSchema, '/options/direction', this.direction)
       }
     },
-    highlight: {
+    border: {
       immediate: true,
       handler() {
-        this.update(this.form.formSchema, '/options/highlight', this.highlight)
+        if (this.border) {
+          this.update(this.form.formSchema, '/options/class', 'border')
+        } else {
+          this.update(this.form.formSchema, '/options/class', undefined)
+        }
       }
     }
   },
