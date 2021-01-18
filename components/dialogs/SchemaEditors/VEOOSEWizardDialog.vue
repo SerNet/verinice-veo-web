@@ -119,7 +119,7 @@
         {{ $t('global.button.next') }}
       </v-btn>
       <v-btn
-        v-if="state === 'import'"
+        v-if="state === 'import' && modelType !== 'custom'"
         color="primary"
         text
         role="submit"
