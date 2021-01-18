@@ -184,7 +184,7 @@ export default Vue.extend({
         } else {
           throw new Error('Object Type is not defined in FormSchema')
         }
-        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
+        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })
         this.$fetch()
       } catch (e) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -207,7 +207,7 @@ export default Vue.extend({
       this.deleteBtnLoading = true
       try {
         await this.$api.object.delete(this.$route.params.type, this.$route.params.id)
-        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('global.appstate.alert.success'))
+        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })
         this.$router.push({
           path: `/${this.unit}/objects/${this.schemaType}/${this.objectGroup}/`
         })

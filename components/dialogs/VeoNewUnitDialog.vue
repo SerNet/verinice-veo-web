@@ -104,10 +104,11 @@ export default Vue.extend({
       this.$api.unit
         .create(this.newUnit)
         .then((data: any) => {
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('unit.created'))
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.created') })
           this.error.value = false
           this.dialog = false
           this.$router.push({ path: `/${data.resourceId}` })
+          this.$emit(VeoEvents.UNIT_CHANGED, data.resourceId)
         })
         .catch((error: string) => {
           this.error.value = true
