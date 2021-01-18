@@ -78,7 +78,10 @@ export default Vue.extend({
   },
   mounted() {
     this.$root.$on(VeoEvents.UNIT_CHANGED, () => {
-      this.$fetch()
+      this.$nextTick(() => {
+        console.log('asdf')
+        this.$fetch()
+      })
     })
   }
 })
