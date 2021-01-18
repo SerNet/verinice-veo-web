@@ -90,7 +90,7 @@
             <v-col :cols="12">
               <VEOEditorFileUpload
                 :code="code"
-                :input-label="$t('editor.upload.objectschema.input.file.label')"
+                :input-label="$t('editor.objectschema.upload.input.file.label')"
                 @schema-uploaded="createSchema"
               />
             </v-col>

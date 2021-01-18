@@ -85,6 +85,7 @@ export default {
   'editor.formschema.wizard.modelType.custom': 'Custom',
   'editor.formschema.wizard.objectschema.required': 'You have to specify an object schema!',
   'editor.formschema.wizard.start.title': 'How do you want to start?',
+  'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema upload @:editor.upload.file.format',
   'editor.objectschema.create.description': 'Description',
   'editor.objectschema.create.description.text': 'Description of the schema',
   'editor.objectschema.create.type': 'Schema type',
@@ -108,16 +109,15 @@ export default {
   'editor.objectschema.wizard.import.description': 'Import an existing object schema and modify it.',
   'editor.objectschema.wizard.modelType.custom': 'Custom',
   'editor.objectschema.wizard.start.title': 'How do you want to start?',
+  'editor.objectschema.upload.input.file.label':
+    '@:editor.objectschema.objectschema upload @:editor.upload.file.format',
   'editor.search.label': 'Search for a property...',
   'editor.upload.button.text': 'Upload',
   'editor.upload.error': 'Error while uploading file',
   'editor.upload.import.code': 'Paste code',
   'editor.upload.import.file': 'Upload file',
   'editor.upload.file.format': '(.json)',
-  'editor.upload.formshema.input.file.label': '@:editor.formschema.formschema hochladen @:editor.upload.file.format',
-  'editor.upload.objectschema.input.file.label':
-    '@:editor.objectschema.objectschema hochladen @:editor.upload.file.format',
-  'editor.upload.input.file.label': 'Schema hochladen @:editor.upload.file.format',
+  'editor.upload.input.file.label': 'Schema upload @:editor.upload.file.format',
 
   'error.title': 'An error occured',
 

@@ -73,7 +73,7 @@
               <v-col :cols="12">
                 <VEOEditorFileUpload
                   :code="oscode"
-                  :input-label="$t('editor.upload.objectschema.input.file.label')"
+                  :input-label="$t('editor.objectschema.upload.input.file.label')"
                   :submit-button-text="$t('editor.objectschema.wizard.import')"
                   @schema-uploaded="setObjectSchema"
                 />
@@ -103,7 +103,7 @@
           <h2>{{ $t('editor.formschema.wizard.import') }}</h2>
           <VEOEditorFileUpload
             :code="fscode"
-            :input-label="$t('editor.upload.formshema.input.file.label')"
+            :input-label="$t('editor.formschema.upload.input.file.label')"
             @schema-uploaded="doImport1"
           />
         </v-window-item>
@@ -111,7 +111,7 @@
           <h2>{{ $t('editor.objectschema.wizard.import') }}</h2>
           <VEOEditorFileUpload
             :code="oscode"
-            :input-label="$t('editor.upload.objectschema.input.file.label')"
+            :input-label="$t('editor.objectschema.upload.input.file.label')"
             @schema-uploaded="doImport2"
           />
         </v-window-item>
