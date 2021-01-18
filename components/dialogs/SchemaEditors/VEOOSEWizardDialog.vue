@@ -88,7 +88,11 @@
           </v-row>
           <v-row v-if="modelType === 'custom'">
             <v-col :cols="12">
-              <VEOEditorFileUpload :code="code" @schema-uploaded="createSchema" />
+              <VEOEditorFileUpload
+                :code="code"
+                :input-label="$t('editor.upload.objectschema.input.file.label')"
+                @schema-uploaded="createSchema"
+              />
             </v-col>
           </v-row>
           <v-row>

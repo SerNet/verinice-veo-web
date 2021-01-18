@@ -113,7 +113,11 @@ export default {
   'editor.upload.error': 'Fehler beim Dateiupload',
   'editor.upload.import.code': 'Code einfügen',
   'editor.upload.import.file': 'Datei hochladen',
-  'editor.upload.input.file.label': 'Schema hochladen',
+  'editor.upload.file.format': '(.json)',
+  'editor.upload.formshema.input.file.label': '@:editor.formschema.formschema hochladen @:editor.upload.file.format',
+  'editor.upload.objectschema.input.file.label':
+    '@:editor.objectschema.objectschema hochladen @:editor.upload.file.format',
+  'editor.upload.input.file.label': 'Schema hochladen @:editor.upload.file.format',
 
   'error.title': 'Es ist ein Fehler aufgetreten',
 

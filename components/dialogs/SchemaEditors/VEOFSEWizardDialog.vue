@@ -73,6 +73,7 @@
               <v-col :cols="12">
                 <VEOEditorFileUpload
                   :code="oscode"
+                  :input-label="$t('editor.upload.objectschema.input.file.label')"
                   :submit-button-text="$t('editor.objectschema.wizard.import')"
                   @schema-uploaded="setObjectSchema"
                 />
@@ -100,11 +101,19 @@
         </v-window-item>
         <v-window-item value="import-1" class="px-4">
           <h2>{{ $t('editor.formschema.wizard.import') }}</h2>
-          <VEOEditorFileUpload :code="fscode" @schema-uploaded="doImport1" />
+          <VEOEditorFileUpload
+            :code="fscode"
+            :input-label="$t('editor.upload.formshema.input.file.label')"
+            @schema-uploaded="doImport1"
+          />
         </v-window-item>
         <v-window-item value="import-2">
           <h2>{{ $t('editor.objectschema.wizard.import') }}</h2>
-          <VEOEditorFileUpload :code="oscode" @schema-uploaded="doImport2" />
+          <VEOEditorFileUpload
+            :code="oscode"
+            :input-label="$t('editor.upload.objectschema.input.file.label')"
+            @schema-uploaded="doImport2"
+          />
         </v-window-item>
       </v-window>
     </template>
@@ -252,10 +261,10 @@ export default Vue.extend({
       this.setFormSchema(schema)
       if (
         this.objectTypes.findIndex(
-          (item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType.toLowerCase()
+          (item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType?.toLowerCase()
         ) !== -1
       ) {
-        this.objectSchema = await this.$api.schema.fetch(schema.modelType.toLowerCase())
+        this.objectSchema = await this.$api.schema.fetch(schema.modelType?.toLowerCase())
         this.$emit('form-schema', this.formSchema)
         this.$emit('object-schema', this.objectSchema)
       } else {

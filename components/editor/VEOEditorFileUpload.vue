@@ -16,7 +16,7 @@
             show-size
             @change="onChange"
             :loading="uploading"
-            :label="`${$t('editor.upload.input.file.label')} (.json)`"
+            :label="inputLabel"
             :disabled="uploading"
           />
         </v-form>
@@ -43,6 +43,10 @@ export default Vue.extend({
   },
   props: {
     code: {
+      type: String,
+      required: true
+    },
+    inputLabel: {
       type: String,
       required: true
     },
