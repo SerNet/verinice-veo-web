@@ -16,15 +16,17 @@
               true-value="horizontal"
             />
           </v-col>
-          <v-col cols="2">
-            <v-switch
-              v-model="highlight"
-              :label="`Highlight: ${highlight}`"
+          <v-col cols="auto">
+            <v-switch v-model="border" label="Border" hide-details color="primary" />
+          </v-col>
+          <v-col cols="2" class="ml-10">
+            <v-text-field
+              :value="groupTitle"
+              label="Group title"
               hide-details
-              color="primary"
-              :false-value="true"
-              :true-value="false"
-            />
+              clearable
+              @input="onInputGroupTitle"
+            ></v-text-field>
           </v-col>
         </v-row>
       </v-col>
@@ -92,7 +94,8 @@ export default Vue.extend({
         }
       },
       direction: 'vertical',
-      highlight: true
+      border: false,
+      groupTitle: undefined
     }
   },
   watch: {
@@ -102,10 +105,14 @@ export default Vue.extend({
         this.update(this.form.formSchema, '/options/direction', this.direction)
       }
     },
-    highlight: {
+    border: {
       immediate: true,
       handler() {
-        this.update(this.form.formSchema, '/options/highlight', this.highlight)
+        if (this.border) {
+          this.update(this.form.formSchema, '/options/class', 'border')
+        } else {
+          this.update(this.form.formSchema, '/options/class', undefined)
+        }
       }
     }
   },
@@ -113,6 +120,15 @@ export default Vue.extend({
     update(object: any, jsonPointer: string, value: any): void {
       vjp.set(this.form.formSchema, jsonPointer, value)
       this.form.formSchema = { ...this.form.formSchema }
+    },
+    onInputGroupTitle(event: any) {
+      this.groupTitle = event
+      console.log(event)
+      if (event) {
+        this.update(this.form.formSchema, '/options/label', event)
+      } else {
+        this.update(this.form.formSchema, '/options/label', undefined)
+      }
     }
   }
 })
