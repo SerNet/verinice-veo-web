@@ -32,6 +32,7 @@
 import Vue from 'vue'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
+import { IVeoUnit } from '~/types/VeoUnits'
 
 export default Vue.extend({
   components: {
@@ -42,7 +43,7 @@ export default Vue.extend({
     return {
       search: '',
       unit: '',
-      units: []
+      units: [] as IVeoUnit[]
     }
   },
   async fetch() {

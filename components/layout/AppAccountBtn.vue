@@ -1,10 +1,17 @@
 <template>
   <div style="flex-basis: 0;" class="mr-0 text-right flex-grow-1">
-    <v-menu v-model="value" :close-on-content-click="false" min-width="200" nudge-bottom="5" offset-y origin="top right">
+    <v-menu
+      v-model="value"
+      :close-on-content-click="false"
+      min-width="200"
+      nudge-bottom="5"
+      offset-y
+      origin="top right"
+    >
       <template #activator="{ on }">
         <v-btn icon dark v-on="on">
           <v-avatar size="48" color="secondary">
-            <span class="white--text headline">{{ username.substr(0,1).toUpperCase() }}</span>
+            <span class="white--text headline">{{ username.substr(0, 1).toUpperCase() }}</span>
           </v-avatar>
         </v-btn>
       </template>
@@ -12,7 +19,7 @@
         <v-list>
           <v-list-item>
             <v-list-item-avatar color="secondary">
-              <v-icon class="white--text headline">{{ username.substr(0,1).toUpperCase() }}</v-icon>
+              <v-icon class="white--text headline">{{ username.substr(0, 1).toUpperCase() }}</v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
               <span>
@@ -23,8 +30,8 @@
             </v-list-item-content>
           </v-list-item>
           <v-divider />
-          <VeoDomainSelection />
-          <VeoUnitSelection />
+          <VeoUnitSelection :units="units" />
+          <VeoDomainSelection :domains="currentUnitDomains" />
         </v-list>
         <v-divider />
         <v-card-actions>
@@ -41,10 +48,13 @@ import Vue from 'vue'
 
 import VeoDomainSelection from '~/components/layout/VeoDomainSelection.vue'
 import VeoUnitSelection from '~/components/layout/VeoUnitSelection.vue'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
+import { IVeoDomain, IVeoUnit } from '~/types/VeoUnits'
 
 export default Vue.extend({
   components: {
-    VeoUnitSelection
+    VeoUnitSelection,
+    VeoDomainSelection
   },
   props: {
     prename: { type: String, default: '' },
@@ -54,12 +64,24 @@ export default Vue.extend({
   },
   data() {
     return {
-      value: false
+      value: false,
+      units: [] as IVeoUnit[]
     }
   },
-  methods: {}
+  async fetch() {
+    this.units = await this.$api.unit.fetchAll()
+  },
+  computed: {
+    currentUnitDomains(): IVeoDomain[] {
+      return this.units.find((unit: IVeoUnit) => unit.id === this.$route.params.unit)?.domains || []
+    }
+  },
+  mounted() {
+    this.$root.$on(VeoEvents.UNIT_CHANGED, () => {
+      this.$fetch()
+    })
+  }
 })
 </script>
 
-<style lang="stylus" scoped>
-</style>
+<style lang="stylus" scoped></style>

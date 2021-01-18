@@ -13,5 +13,9 @@ export const VeoEvents = {
   ALERT_ERROR: 'alert_error',
   ALERT_INFO: 'alert_info',
   ALERT_SUCCESS: 'alert_success',
-  ALERT_WARNING: 'alert_warning'
+  ALERT_WARNING: 'alert_warning',
+
+  DOMAIN_CHANGED: 'domain_changed',
+  UNIT_CREATE: 'unit-create',
+  UNIT_CHANGED: 'unit_changed'
 }
