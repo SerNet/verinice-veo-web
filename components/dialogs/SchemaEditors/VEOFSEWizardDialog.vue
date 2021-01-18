@@ -131,7 +131,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { trim } from 'lodash'
+import { capitalize, trim } from 'lodash'
 
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { IVEOFormSchema } from 'veo-formschema'
@@ -139,6 +139,7 @@ import { generateSchema } from '~/lib/FormSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
+import { endpoints, getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
 
 export default Vue.extend({
   components: {
@@ -169,7 +170,23 @@ export default Vue.extend({
       formSchema: undefined as IVEOFormSchema | undefined,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
-      objectTypes: [] as { value: string; text: string }[]
+      schemas: [] as ISchemaEndpoint[]
+    }
+  },
+  computed: {
+    objectTypes(): { text: string; value: string }[] {
+      return [
+        {
+          text: this.$t('editor.formschema.wizard.modelType.custom') as string,
+          value: 'custom'
+        },
+        ...this.schemas.map((entry: ISchemaEndpoint) => {
+          return {
+            text: capitalize(entry.schemaName),
+            value: entry.schemaName
+          }
+        })
+      ]
     }
   },
   watch: {
@@ -199,23 +216,7 @@ export default Vue.extend({
   mounted() {
     this.dialog = this.value
 
-    this.$api.schema
-      .fetchAll()
-      .then(data =>
-        data.knownSchemas.map((value: string) => {
-          return {
-            text: value,
-            value
-          }
-        })
-      )
-      .then((types: any) => {
-        types.unshift({
-          text: this.$t('editor.formschema.wizard.modelType.custom') as string,
-          value: 'custom'
-        })
-        this.objectTypes = types
-      })
+    this.$api.schema.fetchAll().then((data: ISchemaEndpoint[]) => (this.schemas = data))
   },
   methods: {
     goBack() {

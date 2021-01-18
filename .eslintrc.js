@@ -9,7 +9,7 @@ module.exports = {
     'no-debugger': 'warn',
     'no-unused-vars': 'warn',
     'no-useless-constructor': 'off',
-    'space-before-function-paren': ['error', 'never'],
+    'space-before-function-paren': ['always'],
     '@typescript-eslint/no-unused-vars': 'warn',
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'vue/singleline-html-element-content-newline': 0,

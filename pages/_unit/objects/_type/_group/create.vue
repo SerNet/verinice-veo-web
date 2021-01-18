@@ -1,10 +1,11 @@
 <script lang="ts">
-import BaseObjectFormCreate, { ObjectSchemaNames } from '~/pages/_unit/forms/_form/create.vue'
+import BaseObjectFormCreate from '~/pages/_unit/forms/_form/create.vue'
+import { getSchemaName } from '~/plugins/api/schema'
 
 export default BaseObjectFormCreate.extend({
   name: 'veo-data-objectData-create',
   async fetch() {
-    this.objectType = this.$route.params.type as ObjectSchemaNames
+    this.objectType = getSchemaName(this.$route.params.type)
     const formSchema = undefined
     const objectSchema = await this.$api.schema.fetch(this.objectType)
     const objectData = {}
@@ -22,7 +23,7 @@ export default BaseObjectFormCreate.extend({
     }
   },
   methods: {
-    async action(objectType: ObjectSchemaNames) {
+    async action(objectType: string) {
       const createdObjectUUID = await this.create(objectType)
       if (createdObjectUUID) {
         const createdObjectURL = `/${this.unit}/objects/${this.objectType}/${this.objectGroup}/${createdObjectUUID}/links`

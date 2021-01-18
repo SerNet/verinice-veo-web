@@ -54,8 +54,8 @@ import AppStateDialog from '~/components/AppStateDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-
-import { ObjectSchemaNames } from '~/types/FormSchema'
+import { getSchemaEndpoint } from '~/plugins/api/schema'
+import object from '~/plugins/api/object'
 
 export interface IValidationErrorMessage {
   pointer: string
@@ -65,7 +65,7 @@ export interface IValidationErrorMessage {
 interface IData {
   panel: number[]
   activeLanguage: string
-  objectType: ObjectSchemaNames | undefined
+  objectType: string | undefined
   form: IForm
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
@@ -100,10 +100,10 @@ export default Vue.extend({
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.$route.params.form)
     this.objectType = formSchema.modelType && formSchema.modelType.toLowerCase()
-    if (this.objectType && this.objectType in ObjectSchemaNames) {
+    if (this.objectType) {
       const objectSchema = await this.$api.schema.fetch(this.objectType)
       const objectData = this.$route.params.object
-        ? await this.$api[this.objectType].fetch(this.$route.params.object)
+        ? await this.$api.object.fetch(getSchemaEndpoint(this.objectType), this.$route.params.object)
         : {}
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
       this.form = {
@@ -132,26 +132,26 @@ export default Vue.extend({
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
         fetchAll: (objectType: string, searchParams?: any) => {
-          return this.$api[objectType].fetchAll({
+          return this.$api.object.fetchAll(getSchemaEndpoint(objectType), {
             ...searchParams,
             unit: this.$route.params.unit
           })
         },
         create: async (objectType: string, createdObjectData: any) => {
-          const res = await this.$api[objectType].create({
+          const res = await this.$api.object.create(getSchemaEndpoint(objectType), {
             ...createdObjectData,
             owner: {
               targetUri: `/units/${this.unit}`
             }
           })
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
-          return this.$api[objectType].fetch(res.resourceId)
+          return this.$api.object.fetch(getSchemaEndpoint(objectType), res.resourceId)
         },
         update: (objectType: string, updatedObjectData: any) => {
-          return this.$api[objectType].update(updatedObjectData)
+          return this.$api.object.update(getSchemaEndpoint(objectType), updatedObjectData)
         },
         delete: (objectType: string, id: string) => {
-          this.$api[objectType].delete(id)
+          this.$api.object.delete(getSchemaEndpoint(objectType), id)
         }
       }
     }
@@ -182,11 +182,11 @@ export default Vue.extend({
         this.btnLoading = false
       }
     },
-    async action(objectType: ObjectSchemaNames) {
+    async action(objectType: string) {
       await this.save(objectType)
     },
-    async save(objectType: ObjectSchemaNames) {
-      await this.$api[objectType].update(this.$route.params.object, this.form.objectData)
+    async save(objectType: string) {
+      await this.$api.object.update(getSchemaEndpoint(objectType), this.$route.params.object, this.form.objectData)
     },
     formatObjectData() {
       // TODO: find better solution

@@ -42,7 +42,7 @@ import Vue from 'vue'
 import { Route } from 'vue-router'
 import { capitalize } from 'lodash'
 import LocalStorage from '~/util/LocalStorage'
-import { FormSchemaMeta, FormSchemaMetas, ObjectSchemaNames } from '~/types/FormSchema'
+import { FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
 
@@ -168,34 +168,21 @@ export default Vue.extend({
       })
     },
     async fetchDataTypes(): Promise<INavItem[]> {
-      const objects: INavItem[] = []
-      const keys = Object.keys(ObjectSchemaNames)
-
-      for await (const key of keys) {
-        // TODO: Implement groups
-        await this.$api.group
-          .fetchAll({
-            type: capitalize(key),
-            unit: this.$route.params.unit
-          })
-          .then((data: any) => {
-            if (data.length > 0) {
-            }
-          })
-
-        objects.push({
-          name: capitalize(key),
-          exact: true,
-          to: `/${this.$route.params.unit}/objects/${key}/-/`,
-          disabled: false,
-          childItems: undefined,
-          collapsed: false,
-          topLevelItem: false
+      return this.$api.schema.fetchAll().then(data => {
+        return data.map(entry => {
+          return {
+            name: capitalize(entry.schemaName),
+            exact: true,
+            to: `/${this.$route.params.unit}/objects/${entry.endpoint}/-/`,
+            disabled: false,
+            childItems: undefined,
+            collapsed: false,
+            topLevelItem: false
+          }
         })
-      }
-
-      return objects
+      })
     },
+
     async fetchFormTypes(): Promise<INavItem[]> {
       return await this.$api.form.fetchAll({ unit: this.$route.params.unit }).then((formTypes: FormSchemaMetas) =>
         formTypes.map((entry: FormSchemaMeta) => {
