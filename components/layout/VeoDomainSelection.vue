@@ -9,6 +9,7 @@
         :disabled="!unitIsSet"
         dense
         outlined
+        hide-details
         :label="$t('domain.select.label')"
         @input="doChangeDomain"
       />

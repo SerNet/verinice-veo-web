@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from '@nuxtjs/composition-api'
+import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api'
 
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
 import VeoPrimaryNav from '~/components/layout/VeoPrimaryNavigation.vue'
@@ -69,6 +69,7 @@ export default defineComponent<IProps>({
     VeoPageWrapper
   },
   setup(_props, context) {
+    const { $user } = useContext()
     //
     // Global navigation
     //
@@ -133,6 +134,7 @@ export default defineComponent<IProps>({
     })
 
     context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
+      $user.currentDomain = undefined
       context.root.$router.push('/' + newUnit)
     })
 

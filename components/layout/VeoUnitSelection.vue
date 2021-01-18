@@ -1,8 +1,8 @@
 <template>
   <div style="display: contents">
     <v-list-item>
-      <v-list-item-title class="d-flex justify-center">
-        <v-btn color="primary" text outlined @click="doCreateUnit()">
+      <v-list-item-title class="d-flex justify-end">
+        <v-btn color="primary" text @click="doCreateUnit()">
           <v-icon>mdi-plus</v-icon> {{ $t('unit.create.short') }}
         </v-btn>
       </v-list-item-title>
@@ -16,6 +16,7 @@
           item-value="id"
           dense
           outlined
+          hide-details
           :label="$t('unit.select.label')"
           @change="doChangeUnit"
         />
