@@ -1,15 +1,8 @@
 import { UISchema } from '~/types/UISchema'
 
-export enum ObjectSchemaNames {
-  asset = 'asset',
-  control = 'control',
-  person = 'person',
-  process = 'process'
-}
-
 export interface BaseFormSchema {
   name: string
-  modelType: ObjectSchemaNames
+  modelType: string
 }
 
 export interface FormSchema extends BaseFormSchema {

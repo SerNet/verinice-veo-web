@@ -1,8 +1,7 @@
 <script lang="ts">
-import { ObjectSchemaNames } from '~/types/FormSchema'
 import BaseObjectForm from '~/pages/_unit/forms/_form/_object.vue'
+import { getSchemaEndpoint } from '~/plugins/api/schema'
 
-export { ObjectSchemaNames }
 export default BaseObjectForm.extend({
   name: 'veo-forms-objectData-create',
   computed: {
@@ -11,7 +10,7 @@ export default BaseObjectForm.extend({
     }
   },
   methods: {
-    async action(objectType: ObjectSchemaNames) {
+    async action(objectType: string) {
       const createdObjectUUID = await this.create(objectType)
       if (createdObjectUUID) {
         const createdObjectURL = `/${this.unit}/forms/${this.$route.params.form}/${createdObjectUUID}`
@@ -20,13 +19,16 @@ export default BaseObjectForm.extend({
         throw new Error('UUID of the create object does not exist!')
       }
     },
-    async create(objectType: ObjectSchemaNames): Promise<string | undefined> {
-      const res = await this.$api[objectType].create({
-        ...this.form.objectData,
-        owner: {
-          targetUri: `/units/${this.unit}`
+    async create(objectType: string): Promise<string | undefined> {
+      const res = await this.$api.object.create(
+        getSchemaEndpoint(this.objectType || ''),
+        {
+          ...this.form.objectData,
+          owner: {
+            targetUri: `/units/${this.unit}`
+          }
         }
-      })
+      )
       return res.resourceId
     }
   }

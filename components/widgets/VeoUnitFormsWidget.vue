@@ -15,11 +15,11 @@
     <template v-else>
       <table>
         <tr v-for="type of objects" :key="type.id">
-          <td>
-            {{ type.name }}:
-          </td>
+          <td>{{ type.name }}:</td>
           <td class="text-right">
-            <nuxt-link :to="`/${$route.params.unit}/forms/${type.id}`"><b>{{ type.items }}</b></nuxt-link>
+            <nuxt-link :to="`/${$route.params.unit}/forms/${type.id}`"
+              ><b>{{ type.items }}</b></nuxt-link
+            >
           </td>
         </tr>
       </table>
@@ -32,6 +32,7 @@ import Vue from 'vue'
 
 import { FormSchemaMetas } from '~/types/FormSchema'
 import VeoWidget from '~/components/widgets/VeoWidget.vue'
+import { endpoints } from '~/plugins/api/schema'
 
 type FormsList = FormSchemaMetas & { items?: number }[]
 
@@ -47,15 +48,19 @@ export default Vue.extend({
   },
   data() {
     return {
-      objects: [] as FormsList
+      objects: [] as any
     }
   },
   async fetch() {
     this.objects = await this.$api.form.fetchAll({ unit: this.unit.id })
     for (const object of this.objects) {
-      const objectType = object.modelType.toLowerCase()
       // @ts-ignore
-      object.items = (await this.$api[objectType].fetchAll({ unit: this.unit.id })).length
+      const objectType = endpoints[object.modelType.toLowerCase()]
+      object.items = (
+        await this.$api.object.fetchAll(objectType, {
+          unit: this.unit.id
+        })
+      ).length
     }
   }
 })

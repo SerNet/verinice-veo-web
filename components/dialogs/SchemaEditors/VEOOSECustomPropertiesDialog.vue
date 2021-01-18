@@ -123,7 +123,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch, computed, Ref, useContext } from '@nuxtjs/composition-api'
-import { trim } from 'lodash'
+import { capitalize, trim } from 'lodash'
 
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import {
@@ -132,6 +132,7 @@ import {
   IVEOCustomLink,
   prefixedAspectName as aspectName
 } from '~/lib/ObjectSchemaHelper'
+import { ISchemaEndpoint } from '~/plugins/api/schema'
 import { IInputTypes } from '~/types/VEOEditor'
 
 interface IProps {
@@ -228,14 +229,14 @@ export default defineComponent<IProps>({
     const objectTypes: Ref<{ text: string; value: string }[]> = ref([])
     $api.schema
       .fetchAll()
-      .then((data: { knownSchemas: string[] }) =>
-        data.knownSchemas.map((value: string) => {
+      .then((data: ISchemaEndpoint[]) => {
+        return data.map((value: ISchemaEndpoint) => {
           return {
-            text: value,
-            value
+            text: capitalize(value.schemaName),
+            value: value.schemaName
           }
         })
-      )
+      })
       .then((types: { text: string; value: string }[]) => {
         objectTypes.value = types
       })

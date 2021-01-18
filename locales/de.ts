@@ -177,7 +177,6 @@ export default {
   'unit.data.nogroup': 'Objekt ohne Gruppe',
   'unit.data.noobjects': 'Keine Objekte vorhanden',
   'unit.data.objectdata': 'objectData',
-  'unit.data.type': 'Typ',
   'unit.data.valid': 'isValid',
   'unit.data.validationlogs': 'Validation logs',
   'unit.details.children': 'Untergeordnete Units',

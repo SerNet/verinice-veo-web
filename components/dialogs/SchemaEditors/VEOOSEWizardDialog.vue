@@ -135,11 +135,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { trim } from 'lodash'
+import { capitalize, trim } from 'lodash'
 
 import { generateSchema } from '~/lib/ObjectSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
+import { ISchemaEndpoint } from '~/plugins/api/schema'
 
 export default Vue.extend({
   components: {
@@ -203,10 +204,10 @@ export default Vue.extend({
     this.$api.schema
       .fetchAll()
       .then(data =>
-        data.knownSchemas.map((value: string) => {
+        data.map((value: ISchemaEndpoint) => {
           return {
-            text: value,
-            value
+            text: capitalize(value.schemaName),
+            value: value.schemaName
           }
         })
       )

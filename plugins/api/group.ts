@@ -28,7 +28,7 @@ export default function(api: Client) {
      * @param id
      * @param type
      */
-    fetch(id: string, type: GroupType) {
+    fetch(id: string, type: string) {
       return api.req(`/api/groups/${id}`, {
         params: { type }
       })
@@ -40,7 +40,7 @@ export default function(api: Client) {
      * @param type
      * @param group
      */
-    update(id: string, type: GroupType, group: Object) {
+    update(id: string, type: string, group: Object) {
       return api.req(`/api/groups/${id}`, {
         method: 'PUT',
         params: { type },
@@ -53,7 +53,7 @@ export default function(api: Client) {
      * @param id
      * @param type
      */
-    delete(id: string, type: GroupType) {
+    delete(id: string, type: string) {
       return api.req(`/api/groups/${id}`, {
         method: 'DELETE',
         params: { type }
@@ -65,12 +65,10 @@ export default function(api: Client) {
      * @param id
      * @param type
      */
-    fetchGroupMembers(id: string, type: GroupType) {
+    fetchGroupMembers(id: string, type: string) {
       return api.req(`/api/groups/${id}/members`, {
         params: { type }
       })
     }
   }
 }
-
-export type GroupType = 'Asset' | 'Control' | 'Person' | 'Process' // | 'Document' | 'Risk'
