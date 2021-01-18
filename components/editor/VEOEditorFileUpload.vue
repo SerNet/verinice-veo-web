@@ -69,9 +69,11 @@ export default Vue.extend({
   methods: {
     async onChange(event: any) {
       this.uploading = true
-      await this.delay(3000)
-      this.doUpload()
       // 3 seconds delay to better visualise uploading process if a file is very small
+      if (event) {
+        await this.delay(2000)
+      }
+      this.doUpload()
       this.uploading = false
     },
     delay(ms: number): Promise<void> {
