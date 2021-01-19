@@ -145,7 +145,7 @@ export default Vue.extend({
   },
   head() {
     return {
-      title: 'veo.forms'
+      title: 'veo.Forms'
     }
   },
   computed: {
@@ -153,14 +153,10 @@ export default Vue.extend({
       return this.$route.params.unit
     },
     displayedObjects(): IBaseObject[] {
-      this.objects.forEach(object => {
-        console.log(JSON.stringify(object.subType), this.$user.currentDomain)
-      })
-      /* return this.objects.filter(
+      return this.objects.filter(
         (object: IBaseObject) =>
           !this.formSchema || object.subType[this.$user.currentDomain] === this.formSchema.subType
-      ) */
-      // ToDo #93
+      )
       return this.objects
     },
     createButtonText(): string {
