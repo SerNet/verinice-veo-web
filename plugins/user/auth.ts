@@ -1,6 +1,5 @@
-import { Plugin } from '@nuxt/types'
 import Keycloak from 'keycloak-js'
-import LocalStorage from '~/util/LocalStorage';
+import LocalStorage from '~/util/LocalStorage'
 
 /**
  * This class handles all authentication related stuff.
@@ -11,25 +10,25 @@ export class Auth {
   /**
    * Keycloak adapter used for communication with the keycloak server.
    */
-  protected keycloak: Keycloak.KeycloakInstance;
+  protected _keycloak: Keycloak.KeycloakInstance;
 
   /**
    * Profile of the currently logged in user (contains details such as his mail address and first and lastname)
    */
-  public profile?: Keycloak.KeycloakProfile;
+  public _profile?: Keycloak.KeycloakProfile;
 
   /**
    * Used to check whether the adapter has already been initialized to avoid undefined behaviour.
    */
-  private initialized: boolean;
+  private _initialized: boolean;
 
   /**
    * Called further down upon injecting this plugin into the application.
    * @param config Contains keycloak adapter configuration set in the nuxt.config.js
    */
   constructor(config: Keycloak.KeycloakConfig) {
-    this.keycloak = Keycloak(config)
-    this.initialized = false
+    this._keycloak = Keycloak(config)
+    this._initialized = false
   }
 
   /**
@@ -39,15 +38,15 @@ export class Auth {
    * IMPORTANT: Many modern browsers don't allow us to check for a sso via an iframe, so we disable it (else authenticating on page load is more difficult (don't ask why))
    */
   public async init(): Promise<void> {
-    await this.keycloak.init({ onLoad: 'check-sso', silentCheckSsoRedirectUri: window.location.origin + '/sso', checkLoginIframe: false }).catch((error) => {
+    await this._keycloak.init({ onLoad: 'check-sso', silentCheckSsoRedirectUri: window.location.origin + '/sso', checkLoginIframe: false }).catch((error) => {
       throw new Error(`Error while setting up authentication provider: ${error}`)
     })
 
     // Register hooks.
     // If the onTokenExpired event occures, the plugin tries to refresh the user's token. If it fails it tries to reauthenticate the user.
-    this.keycloak.onTokenExpired = async() => {
+    this._keycloak.onTokenExpired = async() => {
       try {
-        await this.keycloak.updateToken(3600)
+        await this._keycloak.updateToken(3600)
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log('logged out')
@@ -55,11 +54,11 @@ export class Auth {
       }
     }
 
-    if (this.keycloak.authenticated) {
+    if (this._keycloak.authenticated) {
       await this.loadUserProfile()
     }
 
-    this.initialized = true
+    this._initialized = true
   }
 
   /**
@@ -69,7 +68,7 @@ export class Auth {
    * @param absolute If set to true, the passed destination gets interpreted as an absolute url, else it gets interpreted as an absolute path within the app.
    */
   public async login(destination?: string, absolute: boolean = false): Promise<void> {
-    await this.keycloak.login({ redirectUri: `${absolute ? '' : window.location.origin}${destination}` })
+    await this._keycloak.login({ redirectUri: `${absolute ? '' : window.location.origin}${destination}` })
     await this.loadUserProfile()
   }
 
@@ -81,7 +80,7 @@ export class Auth {
    * @param absolute If set to true, the passed destination gets interpreted as an absolute url, else it gets interpreted as an absolute path within the app.
    */
   public async register(destination?: string, absolute: boolean = false): Promise<void> {
-    await this.keycloak.login({ redirectUri: `${absolute ? '' : window.location.origin}${destination}`, action: 'register' })
+    await this._keycloak.login({ redirectUri: `${absolute ? '' : window.location.origin}${destination}`, action: 'register' })
   }
 
   /**
@@ -92,56 +91,45 @@ export class Auth {
    */
   public async logout(destination?: string, absolute: boolean = false): Promise<void> {
     LocalStorage.clear();
-    await this.keycloak.logout({ redirectUri: `${(absolute ? '' : window.location.origin)}${destination}` })
+    await this._keycloak.logout({ redirectUri: `${(absolute ? '' : window.location.origin)}${destination}` })
   }
 
   /**
    * Returns whether the user is authenticated or not. If the plugin hasn't been properly initialized yet, it returns false.
    */
-  public isAuthenticated(): boolean {
-    return this.keycloak.authenticated || false
+  public get authenticated(): boolean {
+    return this._keycloak.authenticated || false
   }
 
   /**
    * Returns whether the plugin has been fully initialized.
    */
-  public isInitialized(): boolean {
-    return this.initialized
+  public get initialized(): boolean {
+    return this._initialized
   }
 
   /**
    * Returns the token used for api communication. If the user isn't logged in, it returns undefined.
    */
-  public getToken(): string | undefined {
-    return this.keycloak.token
+  public get token(): string | undefined {
+    return this._keycloak.token
   }
+
+  public get profile(): Keycloak.KeycloakProfile | undefined {
+    return this._profile
+  }
+
+
 
   /**
    * Loads the profile of the logged in user (such as firstname, lastname and mail address). Fails if the user is not authenticated.
    */
   private async loadUserProfile() {
-    await this.keycloak.loadUserProfile().then((profile) => {
-      this.profile = profile
+    await this._keycloak.loadUserProfile().then((profile) => {
+      this._profile = profile
     }).catch(() => {
       throw new Error('Error while fetching user profile')
     })
   }
 }
 
-/**
- * Default export of the plugin, injects auth in the nuxt context after initializing auth.
- */
-export default (async function({ route, $config }, inject) {
-  const $auth = new Auth({
-    url: $config.oidcUrl,
-    realm: $config.oidcRealm,
-    clientId: $config.oidcClient
-  })
-
-  // If we init keycloak if we are on the sso page, the adapter will get confused as it tries to use the same page as the silent sso check, creating a loop.
-  if (route.name !== 'sso' && !$auth.isInitialized()) {
-    await $auth.init()
-  }
-
-  inject('auth', $auth)
-} as Plugin)

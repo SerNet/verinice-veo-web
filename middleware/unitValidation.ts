@@ -4,10 +4,22 @@ import { validate } from 'uuid'
 /**
  * This file checks whether a unit is set as a parameter validates it. If the validation fails, the user gets redirected to the index page.
  */
-export default (function({ redirect, route }) {
+export default (async function({ redirect, route, $user, $api }) {
   if (route.params.unit) {
     if (!validate(route.params.unit)) {
       return redirect('/')
+    } else {
+      // Update the unit in the user plugin (used to preload the last domain the user viewed in this unit)
+      $user.unit = route.params.unit
+    }
+
+    // If no domain is set, we have to set a default one, else the user can't save forms
+    if($user.currentDomain === undefined) {
+      $api.unit.fetch(route.params.unit).then((unit) => {
+        if(unit.domains[0]) {
+          $user.currentDomain = unit.domains[0].targetUri.replace('/domains/', '')
+        }
+      })
     }
   }
 }) as Middleware

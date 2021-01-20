@@ -18,12 +18,12 @@
         />
       </div>
       <AppAccountBtn
-        v-if="$auth.profile"
-        :username="$auth.profile.username"
-        :prename="$auth.profile.firstName"
-        :lastname="$auth.profile.lastName"
-        :email="$auth.profile.email"
-        @logout="$auth.logout('/')"
+        v-if="$user.auth.profile"
+        :username="$user.auth.profile.username"
+        :prename="$user.auth.profile.firstName"
+        :lastname="$user.auth.profile.lastName"
+        :email="$user.auth.profile.email"
+        @logout="$user.auth.logout('/')"
       />
       <span v-else />
     </v-app-bar>
@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from '@nuxtjs/composition-api'
+import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api'
 
 import AppBarLogo from '~/components/layout/AppBarLogo.vue'
 import VeoPrimaryNav from '~/components/layout/VeoPrimaryNavigation.vue'
@@ -69,6 +69,7 @@ export default defineComponent<IProps>({
     VeoPageWrapper
   },
   setup(_props, context) {
+    const { $user } = useContext()
     //
     // Global navigation
     //
@@ -90,6 +91,7 @@ export default defineComponent<IProps>({
     const alert = ref({ value: false, content: '', title: '', type: ALERT_TYPE.INFO })
     const snackbar = ref({ value: false, text: '' })
 
+    // Alert and snackbar events
     context.root.$on(VeoEvents.ALERT_ERROR, (payload: VeoEventPayload) => {
       alert.value.content = payload.text
       alert.value.title = payload.title || ''
@@ -126,8 +128,14 @@ export default defineComponent<IProps>({
       snackbar.value.value = false
     })
 
-    context.root.$on('create-unit', (persistent: boolean) => {
+    // UI related events (unit switch/creation)
+    context.root.$on(VeoEvents.UNIT_CREATE, (persistent: boolean) => {
       createUnit(persistent)
+    })
+
+    context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
+      $user.currentDomain = undefined
+      context.root.$router.push('/' + newUnit)
     })
 
     return { alert, drawer, newUnitDialog, snackbar }

@@ -40,11 +40,7 @@
             <v-icon>mdi-alert-circle-outline</v-icon>
           </v-btn>
           <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="previewCollapsed" right />
-          <v-row
-            v-if="schemaIsValid.valid"
-            no-gutters
-            class="flex-column overflow-hidden mt-2 fill-width"
-          >
+          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2 fill-width">
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="2" class="pl-0">
@@ -67,6 +63,20 @@
                     flat
                     :label="$t('editor.formschema.formschema')"
                     @input="updateSchemaName()"
+                  />
+                </v-col>
+              </v-row>
+            </v-col>
+            <v-col cols="12">
+              <v-row class="mx-4">
+                <v-col cols="2" class="pl-0">
+                  <v-text-field
+                    v-model="formSchema.subType"
+                    dense
+                    flat
+                    required
+                    :rules="editorRules.subType"
+                    :label="$t('editor.formschema.subtype')"
                   />
                 </v-col>
               </v-row>
@@ -120,11 +130,7 @@
       </VeoPage>
     </template>
     <template #helpers>
-      <VEOFSEWizardDialog
-        v-model="showCreationDialog"
-        @object-schema="setObjectSchema"
-        @form-schema="setFormSchema"
-      />
+      <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
     </template>
@@ -134,6 +140,7 @@
 <script lang="ts">
 import { IVEOFormSchema } from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
+import { trim } from 'lodash'
 import Vue from 'vue'
 
 import CollapseButton from '~/components/layout/CollapseButton.vue'
@@ -165,7 +172,10 @@ export default Vue.extend({
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
       objectData: {},
-      showCodeEditor: false as boolean
+      showCodeEditor: false as boolean,
+      editorRules: {
+        subType: [(input: string) => (input && trim(input).length > 0) || this.$t('global.input.required')]
+      }
     }
   },
   async fetch() {
@@ -206,7 +216,7 @@ export default Vue.extend({
   },
   mounted() {
     if (this.$route.query.nowizard) {
-      this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process')
+      this.formSchema = generateSchema('Verarbeitungstätigkeiten', 'Process', 'VT')
     }
     this.showCreationDialog = this.objectSchema === undefined && this.formSchema === undefined
   },

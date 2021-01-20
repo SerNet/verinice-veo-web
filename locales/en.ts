@@ -71,6 +71,7 @@ export default {
   'editor.formschema.formschema': 'Form schema',
   'editor.formschema.headline': 'Form schema editor',
   'editor.formschema.dropzone.placeholder': 'Drag in the elements',
+  'editor.formschema.subtype': 'Subtype',
   'editor.formschema.wizard.create': 'Create form schema',
   'editor.formschema.wizard.create.description':
     'Create a new form schema, either from scratch or a pre-generated layout.',
@@ -144,6 +145,7 @@ export default {
   'global.button.save': 'Save',
   'global.button.yes': 'Yes',
   'global.error.fetching': 'An error occured while fetching the resource',
+  'global.input.required': 'The field is required',
   'global.logout': 'Logout',
   'global.menu.collapse': 'Collapse menu',
   'global.menu.expand': 'Fix menu',

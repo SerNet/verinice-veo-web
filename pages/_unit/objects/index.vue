@@ -216,7 +216,7 @@ export default defineComponent<IProps>({
   },
   head() {
     return {
-      title: 'veo.data'
+      title: 'veo.Objects'
     }
   }
 })

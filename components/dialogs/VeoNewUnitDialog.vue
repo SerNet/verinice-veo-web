@@ -73,7 +73,7 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    /* if (this.$auth.profile) {
+    /* if (this.$user.auth.profile) {
       this.units = await this.$api.unit.fetchAll()
     } */
   },
@@ -103,15 +103,16 @@ export default Vue.extend({
       this.loading = true
       this.$api.unit
         .create(this.newUnit)
-        .then(data => {
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, this.$t('unit.created'))
+        .then((data: any) => {
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.created') })
           this.error.value = false
           this.dialog = false
+          this.$root.$emit(VeoEvents.UNIT_CHANGED, data.resourceId)
           this.$router.push({ path: `/${data.resourceId}` })
         })
-        .catch(err => {
+        .catch((error: string) => {
           this.error.value = true
-          this.error.content = err
+          this.error.content = error
         })
         .finally(() => {
           this.loading = false

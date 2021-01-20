@@ -1,46 +1,42 @@
 <template>
-  <div>
-    <v-list-item dense class="pt-1" style="height: 40px;">
-      <v-list-item-content class="align-center py-3">
-        <span class="pt-1 flex-grow-0" style="flex-basis: auto; width: 60px;">{{ $t('unit.select.label') }}:</span>
-        <v-autocomplete
-          v-if="$auth.profile"
-          :items="units"
-          item-text="name"
-          item-value="id"
-          :value="unit"
-          hide-details
-          dense
-          class="ml-3 mt-0"
-          :label="$t('unit.select.label')"
-          style="max-width: 220px"
-          @change="changeUnit"
-        />
-      </v-list-item-content>
-    </v-list-item>
+  <div style="display: contents">
     <v-list-item>
-      <v-list-item-title class="d-flex justify-center">
-        <v-btn color="primary" text outlined @click="createUnit()">
+      <v-list-item-title class="d-flex justify-end">
+        <v-btn color="primary" text @click="doCreateUnit()">
           <v-icon>mdi-plus</v-icon> {{ $t('unit.create.short') }}
         </v-btn>
       </v-list-item-title>
+    </v-list-item>
+    <v-list-item dense>
+      <v-list-item-content>
+        <v-autocomplete
+          :value="unit"
+          :items="units"
+          item-text="name"
+          item-value="id"
+          dense
+          outlined
+          hide-details
+          :label="$t('unit.select.label')"
+          @change="doChangeUnit"
+        />
+      </v-list-item-content>
     </v-list-item>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { Prop } from 'vue/types/options'
+
+import { IVeoUnit } from '~/types/VeoUnits'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 export default Vue.extend({
-  data() {
-    return { units: [] }
-  },
-  async fetch() {
-    if (this.$auth.profile) {
-      this.units = await this.$api.unit.fetchAll()
-      if (this.units.length === 0) {
-        this.createUnit(true)
-      }
+  props: {
+    units: {
+      type: Array as Prop<IVeoUnit[]>,
+      required: true
     }
   },
   computed: {
@@ -49,11 +45,11 @@ export default Vue.extend({
     }
   },
   methods: {
-    changeUnit(e: string) {
-      this.$router.push('/' + e)
+    doChangeUnit(unit: string) {
+      this.$root.$emit(VeoEvents.UNIT_CHANGED, unit)
     },
-    createUnit(persistent: boolean = false) {
-      this.$root.$emit('create-unit', persistent)
+    doCreateUnit(persistent: boolean = false) {
+      this.$root.$emit(VeoEvents.UNIT_CREATE, persistent)
     }
   }
 })

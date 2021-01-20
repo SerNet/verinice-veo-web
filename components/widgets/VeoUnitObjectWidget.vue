@@ -55,7 +55,7 @@ export default Vue.extend({
       .then(data => {
         return data.map(async (key: { schemaName: string; endpoint: string }) => ({
           title: capitalize(key.schemaName),
-          link: `data/${key.endpoint}`,
+          link: `objects/${key.endpoint}`,
           // @ts-ignore
           items: (
             await this.$api.object.fetchAll(`${key.endpoint}`, {
