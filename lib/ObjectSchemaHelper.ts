@@ -332,7 +332,7 @@ export function generateAspect(): VEOCustomAspectRAW {
   return {
     type: 'object',
     required: ['type'],
-    additionalAttributes: false,
+    additionalProperties: false,
     properties: {
       id: {
         type: 'string',
