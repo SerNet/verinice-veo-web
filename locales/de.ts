@@ -85,6 +85,7 @@ export default {
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
+  'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema hochladen @:editor.upload.file.format',
   'editor.objectschema.create.description': 'Beschreibung',
   'editor.objectschema.create.description.text': 'Beschreibung des Schemas',
   'editor.objectschema.create.type': 'Schema-Typ',
@@ -108,12 +109,15 @@ export default {
   'editor.objectschema.wizard.import.description': 'Bestehendes Objektschema importieren und modifizieren',
   'editor.objectschema.wizard.modelType.custom': 'Eigenes',
   'editor.objectschema.wizard.start.title': 'Wie möchten Sie starten?',
+  'editor.objectschema.upload.input.file.label':
+    '@:editor.objectschema.objectschema hochladen @:editor.upload.file.format',
   'editor.search.label': 'Nach einer Eigenschaft suchen...',
   'editor.upload.button.text': 'Hochladen',
   'editor.upload.error': 'Fehler beim Dateiupload',
   'editor.upload.import.code': 'Code einfügen',
   'editor.upload.import.file': 'Datei hochladen',
-  'editor.upload.input.file.label': 'Schema hochladen',
+  'editor.upload.file.format': '(.json)',
+  'editor.upload.input.file.label': 'Schema hochladen @:editor.upload.file.format',
 
   'error.title': 'Es ist ein Fehler aufgetreten',
 

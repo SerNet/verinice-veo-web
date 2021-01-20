@@ -88,7 +88,11 @@
           </v-row>
           <v-row v-if="modelType === 'custom'">
             <v-col :cols="12">
-              <VEOEditorFileUpload :code="code" @schema-uploaded="createSchema" />
+              <VEOEditorFileUpload
+                :code="code"
+                :input-label="$t('editor.objectschema.upload.input.file.label')"
+                @schema-uploaded="createSchema"
+              />
             </v-col>
           </v-row>
           <v-row>
@@ -119,7 +123,7 @@
         {{ $t('global.button.next') }}
       </v-btn>
       <v-btn
-        v-if="state === 'import'"
+        v-if="state === 'import' && modelType !== 'custom'"
         color="primary"
         text
         role="submit"

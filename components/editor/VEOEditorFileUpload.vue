@@ -6,7 +6,7 @@
     </template>
     <template #items>
       <v-tab-item>
-        <v-form class="mt-4" @submit.prevent="doUpload()">
+        <v-form class="mt-4">
           <v-file-input
             v-model="file"
             accept=".json"
@@ -14,18 +14,11 @@
             dense
             outlined
             show-size
-            :label="`${$t('editor.upload.input.file.label')} (.json)`"
+            @change="onChange"
+            :loading="uploading"
+            :label="inputLabel"
             :disabled="uploading"
           />
-          <v-btn
-            role="submit"
-            type="submit"
-            color="primary"
-            outlined
-            text
-            :loading="uploading"
-            :disabled="!file"
-          >{{ buttonText }}</v-btn>
         </v-form>
       </v-tab-item>
       <v-tab-item>
@@ -53,6 +46,10 @@ export default Vue.extend({
       type: String,
       required: true
     },
+    inputLabel: {
+      type: String,
+      required: true
+    },
     submitButtonText: {
       type: String,
       default: ''
@@ -70,9 +67,19 @@ export default Vue.extend({
     }
   },
   methods: {
-    doUpload() {
+    async onChange(event: any) {
       this.uploading = true
-
+      // 3 seconds delay to better visualise uploading process if a file is very small
+      if (event) {
+        await this.delay(2000)
+      }
+      this.doUpload()
+      this.uploading = false
+    },
+    delay(ms: number): Promise<void> {
+      return new Promise(resolve => setTimeout(resolve, ms))
+    },
+    doUpload() {
       if (this.file) {
         // Init file reader
         const fr = new FileReader()
@@ -81,11 +88,9 @@ export default Vue.extend({
         fr.onload = event => {
           const result = JSON.parse((event.target?.result as string) || '{}')
           this.sendSchema(result)
-          this.uploading = false
         }
         fr.onerror = _ => {
           this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('editor.upload.error'), text: fr.error })
-          this.uploading = false
         }
 
         // Read file
