@@ -172,6 +172,7 @@ export default {
   'search.label': 'Search verinice.veo',
 
   'unit.create': 'Create new unit',
+  'unit.create.short': 'Create unit',
   'unit.created': 'Unit was created',
   'unit.data.createobject': 'Create {type}',
   'unit.data.deleteobject': 'Do you really want to delete {object}?',
@@ -200,8 +201,18 @@ export default {
   'unit.details.objects.process': 'Total processes',
   'unit.details.parent': 'Parent unit',
   'unit.forms.create': 'Create {type}',
-  'unit.forms.noprocesses': 'No processes found',
+  'unit.forms.delete': 'Do you really want to delete the form "{name}"?',
+  'unit.forms.delete.headline': 'Delete form',
+  'unit.forms.form': 'Form',
+  'unit.forms.header.abbreviation': 'Abb.',
+  'unit.forms.header.description': 'Description',
+  'unit.forms.header.title': 'Form title',
+  'unit.forms.header.updatedat': 'Date',
+  'unit.forms.header.updatedby': 'Editor',
   'unit.forms.nrr': 'This dataset has been edited by another user. Do you want to load the changes?',
+  'unit.forms.loading': 'Loading {types}',
+  'unit.forms.noentries': 'No {types} exist!',
+  'unit.forms.search': 'Search',
   'unit.index.title': 'Dashboard',
   'unit.select.label': 'Unit'
 }
