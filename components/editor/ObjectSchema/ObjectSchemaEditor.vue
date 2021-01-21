@@ -16,6 +16,7 @@
                 :description="child.item.description"
                 :styling="child.styling"
                 two-line
+                translate
               />
             </v-list>
           </v-card>
@@ -56,6 +57,7 @@
                 :description="attribute.description"
                 :styling="newItemTypes[attribute.type]"
                 two-line
+                translate
               />
             </v-list>
           </v-card>
@@ -98,6 +100,7 @@
                 :description="attribute.description"
                 :styling="newItemTypes[attribute.type]"
                 two-line
+                translate
               />
             </v-list>
           </v-card>
@@ -262,11 +265,9 @@ export default defineComponent<IProps>({
     }
 
     // Removing types from the new item type selection as they are purely used as a fallback.
-    const newItemTypes: Ref<any> = ref(INPUT_TYPES)
+    const newItemTypes: Ref<any> = ref(JSON.parse(JSON.stringify(INPUT_TYPES)))
     delete newItemTypes.value.default
     delete newItemTypes.value.null
-    delete newItemTypes.value.object
-    delete newItemTypes.value.array
 
     function doAddItem(form: { name: string; targetType?: string; targetDescription?: string }) {
       try {

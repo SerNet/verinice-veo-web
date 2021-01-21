@@ -1,5 +1,5 @@
 <template>
-  <EditorListItem :title="title" :styling="styling" />
+  <EditorListItem :title="title" :styling="styling" :translate="translate" />
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
@@ -11,6 +11,7 @@ interface IProps {
   description: string
   styling: IInputType
   disabled: boolean
+  translate: boolean
 }
 
 export default defineComponent<IProps>({
@@ -21,6 +22,10 @@ export default defineComponent<IProps>({
     styling: {
       type: Object,
       default: () => {}
+    },
+    translate: {
+      type: Boolean,
+      default: false
     }
   }
 })

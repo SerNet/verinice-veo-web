@@ -104,10 +104,15 @@ export default defineComponent<IProps>({
     })
 
     const types = computed(() => {
-      const dummy: string[] = []
-      for (const entry in INPUT_TYPES) {
-        // @ts-ignore
-        dummy.push(INPUT_TYPES[entry].name)
+      const dummy: { text: string; value: string }[] = []
+      const availableTypes = INPUT_TYPES as any
+      for (const entry in availableTypes) {
+        if (!['null', 'unknown', 'array', 'object'].includes(availableTypes[entry].name)) {
+          dummy.push({
+            text: context.root.$t(`editor.inputtypes.${availableTypes[entry].name}`) as string,
+            value: availableTypes[entry].name
+          })
+        }
       }
       return dummy
     })
