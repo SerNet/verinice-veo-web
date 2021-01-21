@@ -85,6 +85,8 @@ export default {
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
+  'editor.objectschema.aspect.values': 'Auswahlmöglichkeiten',
+  'editor.objectschema.aspect.values.hint': 'Werte (mit <b>,</b> oder <b>Enter</b> trennen)',
   'editor.objectschema.create.description': 'Beschreibung',
   'editor.objectschema.create.description.text': 'Beschreibung des Schemas',
   'editor.objectschema.create.type': 'Schema-Typ',

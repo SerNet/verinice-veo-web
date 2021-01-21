@@ -265,6 +265,8 @@ export default defineComponent<IProps>({
     const newItemTypes: Ref<any> = ref(INPUT_TYPES)
     delete newItemTypes.value.default
     delete newItemTypes.value.null
+    delete newItemTypes.value.object
+    delete newItemTypes.value.array
 
     function doAddItem(form: { name: string; targetType?: string; targetDescription?: string }) {
       try {

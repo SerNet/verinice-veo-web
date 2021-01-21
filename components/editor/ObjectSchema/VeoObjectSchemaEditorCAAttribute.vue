@@ -2,7 +2,7 @@
   <v-list-item class="veo-attribute-list-attribute my-2">
     <v-list-item-content>
       <v-row>
-        <v-col class="py-0">
+        <v-col :cols="8" class="py-0">
           <v-text-field
             :value="$props.title"
             :label="`${$t(`editor.dialog.editform.aspect.title`)} *`"
@@ -26,8 +26,43 @@
           <v-text-field
             :value="$props.description"
             :label="$t(`editor.dialog.editform.aspect.description`)"
+            clearable
             @input="doUpdate($event, 'description')"
           />
+        </v-col>
+      </v-row>
+      <v-row v-if="$props.type === 'enum'" class="flex-column">
+        <v-col>
+          <v-divider />
+        </v-col>
+        <v-col class="py-0">
+          <h3>{{ $t('editor.objectschema.aspect.values') }}</h3>
+        </v-col>
+        <v-col class="py-0">
+          <v-combobox
+            :value="$props.enum"
+            chips
+            multiple
+            disable-lookup
+            hide-no-data
+            append-icon=""
+            clearable
+            @input="doUpdate($event, 'enum')"
+          >
+            <template #label>
+              <span v-html="$t('editor.objectschema.aspect.values.hint')" />
+            </template>
+            <template #selection="data">
+              <v-chip
+                :key="JSON.stringify(data.item)"
+                v-bind="data.attrs"
+                close
+                @click:close="removeValueFromEnum(data.item)"
+              >
+                {{ data.item }}
+              </v-chip>
+            </template>
+          </v-combobox>
         </v-col>
       </v-row>
     </v-list-item-content>
@@ -48,14 +83,16 @@ interface IProps {
   type: string
   description: string
   aspectName: string
+  enum: any[]
 }
 
 export default defineComponent<IProps>({
   props: {
     title: { type: String, default: '' },
-    type: { type: String, required: true },
+    type: { type: String, default: 'enum' },
     description: { type: String, default: '' },
-    aspectName: { type: String, required: true }
+    aspectName: { type: String, required: true },
+    enum: { type: Array, default: () => [] }
   },
   setup(props, context) {
     const prefix = computed(() => props.aspectName + '_')
@@ -86,12 +123,28 @@ export default defineComponent<IProps>({
       context.emit('update', object)
     }
 
+    // special operations for enums
+    const attributeTypes = ref([
+      { text: 'Zahl', value: 'number' },
+      { text: 'Ganzzahl', value: 'integer' },
+      { text: 'Text', value: 'string' }
+    ])
+
+    function removeValueFromEnum(value: string) {
+      doUpdate(
+        props.enum.filter(entry => entry !== value),
+        'enum'
+      )
+    }
+
     return {
       prefix,
       rules,
       types,
       doDelete,
-      doUpdate
+      doUpdate,
+      attributeTypes,
+      removeValueFromEnum
     }
   }
 })

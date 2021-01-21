@@ -103,7 +103,7 @@ import {
   prefixedAspectName as aspectName
 } from '~/lib/ObjectSchemaHelper'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
-import { IInputTypes, INPUT_TYPES } from '~/types/VEOEditor'
+import { IInputTypes } from '~/types/VEOEditor'
 
 import VeoObjectSchemaEditorCAAttribute from '~/components/editor/ObjectSchema/VeoObjectSchemaEditorCAAttribute.vue'
 
