@@ -2,9 +2,9 @@
   <div class="fill-width" style="display: contents;">
     <v-expansion-panels accordion multiple :value="[0, 1, 2]" flat>
       <v-expansion-panel>
-        <v-expansion-panel-header
-          class="overline"
-        >{{ $t('editor.basicproperties') }} ({{ basicProps.length }})</v-expansion-panel-header>
+        <v-expansion-panel-header class="overline"
+          >{{ $t('editor.basicproperties') }} ({{ basicProps.length }})</v-expansion-panel-header
+        >
         <v-expansion-panel-content>
           <v-card outlined>
             <v-list class="py-0" dense disabled>
@@ -108,7 +108,6 @@
       v-model="objectSchemaDialog.value"
       v-bind="objectSchemaDialog"
       :schema="schema"
-      :type-map="newItemTypes"
       @create-node="doAddItem"
       @save-node="doEditItem"
       @delete-item="showDeleteDialog(objectSchemaDialog.item, objectSchemaDialog.type)"
