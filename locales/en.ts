@@ -213,6 +213,8 @@ export default {
   'unit.forms.loading': 'Loading {types}',
   'unit.forms.noentries': 'No {types} exist!',
   'unit.forms.search': 'Search',
+  'unit.objects.created': 'Created',
+  'unit.objects.updated': 'Updated',
   'unit.index.title': 'Dashboard',
   'unit.select.label': 'Unit'
 }

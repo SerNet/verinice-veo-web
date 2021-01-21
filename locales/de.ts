@@ -214,6 +214,8 @@ export default {
   'unit.forms.search': 'Suche',
   'unit.forms.nrr':
     'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
+  'unit.objects.created': 'Erstellt',
+  'unit.objects.updated': 'Bearbeitet',
   'unit.index.title': 'Dashboard',
   'unit.select.label': 'Unit'
 }

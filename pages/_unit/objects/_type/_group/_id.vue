@@ -3,15 +3,17 @@
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPageWrapper v-else>
-    <VeoPage :title="form.objectData.name" absolute-size :cols="8" :md="8" :xl="8" sticky-header>
+    <VeoPage absolute-size :cols="8" :md="8" :xl="8" sticky-header>
       <template #header>
         <v-row>
-          <v-col cols="6">
+          <v-col>
+            <h1>{{ form.objectData.name }}</h1>
+          </v-col>
+          <v-spacer />
+          <v-col class="text-right">
             <v-btn text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
               {{ $t('global.button.delete') }}
             </v-btn>
-          </v-col>
-          <v-col cols="6" class="text-right">
             <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="onClick">
               {{ $t('global.button.save') }}
             </v-btn>
@@ -69,7 +71,13 @@
           <v-tab :to="linkToHistory">{{ $t('unit.data.history') }}</v-tab>
         </template>
       </VeoTabs>
-      <nuxt-child />
+      <nuxt-child
+        v-if="form.objectData"
+        :createdAt="form.objectData.createdAt"
+        :createdBy="form.objectData.createdBy"
+        :updatedAt="form.objectData.updatedAt"
+        :updatedBy="form.objectData.updatedBy"
+      />
     </VeoPage>
   </VeoPageWrapper>
 </template>
@@ -97,7 +105,6 @@ interface IData {
   saveBtnLoading: boolean
   deleteBtnLoading: boolean
   error?: Error & { status?: number }
-  btnLoading: boolean
 }
 
 export default Vue.extend({
@@ -126,8 +133,7 @@ export default Vue.extend({
       errorMessages: [],
       saveBtnLoading: false,
       deleteBtnLoading: false,
-      error: undefined,
-      btnLoading: false
+      error: undefined
     }
   },
   async fetch() {
@@ -175,7 +181,7 @@ export default Vue.extend({
       this.deleteDialog = true
     },
     async onClick() {
-      this.btnLoading = true
+      this.saveBtnLoading = true
       this.error = undefined
       try {
         this.formatObjectData()
@@ -193,7 +199,7 @@ export default Vue.extend({
         })
         this.error = e
       } finally {
-        this.btnLoading = false
+        this.saveBtnLoading = false
       }
     },
     async action(objectType: string) {
