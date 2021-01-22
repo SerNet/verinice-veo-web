@@ -33,46 +33,16 @@
           </v-col>
         </v-row>
         <v-list v-if="_item && _item.attributes" dense class="py-0">
-          <v-list-item
-            v-for="(attribute, index) of _item.attributes"
-            :key="index"
-            class="veo-attribute-list-attribute my-2"
-          >
-            <v-list-item-content>
-              <v-row>
-                <v-col class="py-0">
-                  <v-text-field
-                    v-model="attribute.title"
-                    :label="`${$t(`editor.dialog.editform.${type}.title`)} *`"
-                    required
-                    :rules="form.rules.attributeTitle"
-                    :prefix="attributeTitle"
-                    @input="checkForDuplicate()"
-                  />
-                </v-col>
-                <v-col :cols="4" class="py-0">
-                  <v-select
-                    v-model="attribute.type"
-                    :label="$t(`editor.dialog.editform.${type}.type`)"
-                    :items="types"
-                  />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col class="py-0">
-                  <v-text-field
-                    v-model="attribute.description"
-                    :label="$t(`editor.dialog.editform.${type}.description`)"
-                  />
-                </v-col>
-              </v-row>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn fab depressed text color="black" @click="removeAttribute(index)">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
+          <template v-for="(attribute, index) of _item.attributes" class="veo-attribute-list-attribute my-2">
+            <VeoObjectSchemaEditorCAAttribute
+              v-bind="attribute"
+              :key="index"
+              :aspectName="prefixedAspectName(item.title)"
+              @delete="removeAttribute(index)"
+              @update="updateAttribute($event, index)"
+            />
+          </template>
+
           <v-list-item v-if="_item.attributes.length === 0">
             <v-list-item-content class="veo-attribute-list-no-content justify-center">
               {{ $t(`editor.dialog.editform.${type}.noproperties`) }}
@@ -135,23 +105,26 @@ import {
 import { ISchemaEndpoint } from '~/plugins/api/schema'
 import { IInputTypes } from '~/types/VEOEditor'
 
+import VeoObjectSchemaEditorCAAttribute from '~/components/editor/ObjectSchema/VeoObjectSchemaEditorCAAttribute.vue'
+
 interface IProps {
   value: boolean
   item: IVEOCustomAspect | IVEOCustomLink | undefined
   mode: string
   type: 'aspect' | 'link'
   schema: VEOObjectSchemaRAW
-  typeMap: IInputTypes
 }
 
 export default defineComponent<IProps>({
+  components: {
+    VeoObjectSchemaEditorCAAttribute
+  },
   props: {
     value: { type: Boolean, required: true },
     // eslint-disable-next-line
     item: { required: true }, // No type to avoid checking for invalid prop (item can either be undefined, IVEOCustomLink or IVEOCustomAspect)
     mode: { type: String, default: 'create' },
     type: { type: String, required: true },
-    typeMap: { type: Object, required: true },
     schema: { type: Object, required: true }
   },
   setup(props, context) {
@@ -221,8 +194,7 @@ export default defineComponent<IProps>({
       rules: {
         name: [(input: string) => trim(input).length > 0],
         targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
-        linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
-        attributeTitle: [(input: string) => dialog.value.mode === 'create' || trim(input).length > 0]
+        linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
       }
     })
 
@@ -250,8 +222,7 @@ export default defineComponent<IProps>({
         rules: {
           name: [(input: string) => trim(input).length > 0],
           targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
-          linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
-          attributeTitle: [(input: string) => dialog.value.mode === 'create' || trim(input).length > 0]
+          linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
         }
       }
     }
@@ -263,15 +234,6 @@ export default defineComponent<IProps>({
     /**
      * Edit item stuff
      */
-    // Generate an array containing all type names from the type map.
-    const types = computed(() => {
-      const dummy: string[] = []
-      for (const entry in props.typeMap) {
-        // @ts-ignore
-        dummy.push(props.typeMap[entry].name)
-      }
-      return dummy
-    })
 
     // Update item attributes if the form gets updated (we use a form and not the item itself as a v-model as the item doesn't exist on creation).
     watch(
@@ -327,6 +289,14 @@ export default defineComponent<IProps>({
       _item.value?.attributes.splice(index, 1)
     }
 
+    function updateAttribute(newValues: IVEOAttribute, index: number) {
+      if (_item.value) {
+        _item.value.attributes[index] = newValues
+        // We need to completely overwrite the object, else vue won't pick up the changes
+        _item.value.attributes = JSON.parse(JSON.stringify(_item.value.attributes))
+      }
+    }
+
     // Aspect ID's have to be unique in a custom aspect/link
     const duplicates: Ref<string[]> = ref([])
     function checkForDuplicate() {
@@ -354,13 +324,13 @@ export default defineComponent<IProps>({
       form,
       checkForDuplicate,
       duplicates,
-      types,
       objectTypes,
       createNode,
       saveNode,
       _item,
       addAttribute,
       removeAttribute,
+      updateAttribute,
       headline,
       close,
       prefixedAspectName,
@@ -376,11 +346,6 @@ export default defineComponent<IProps>({
 .veo-attribute-list-no-content {
   font-size: 1.2rem;
   font-weight: bold;
-}
-
-.veo-attribute-list-attribute {
-  border: 1px solid $grey;
-  border-radius: 4px;
 }
 
 .veo-attribute-list-add-button {
