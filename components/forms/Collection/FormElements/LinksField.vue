@@ -11,7 +11,7 @@
       </span>
       <v-spacer />
     </div>
-    <v-list dense class="py-0 ml-2">
+    <v-list dense class="py-0">
       <v-list-item v-for="(val, i) in localValue" :key="i" class="links-field-item my-2 pt-2">
         <v-list-item-content>
           <LinksFieldRow
@@ -140,5 +140,10 @@ export const helpers: Helpful<FormElementProps> = {
 .links-field-item {
   border: 1px solid $grey;
   border-radius: 4px;
+}
+
+.links-field-item ::v-deep .vf-layout {
+  padding-left: 0;
+  padding-right: 0;
 }
 </style>

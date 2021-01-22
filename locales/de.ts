@@ -214,9 +214,21 @@ export default {
   'unit.details.objects.process': 'Alle Prozesse',
   'unit.details.parent': 'Übergeordnete Unit',
   'unit.forms.create': '{type} erstellen',
-  'unit.forms.noprocesses': 'Keine Verarbeitungstätigkeiten vorhanden',
+  'unit.forms.delete': 'Möchten Sie das Formular "{name}" wirklich löschen?',
+  'unit.forms.delete.headline': 'Formular löschen',
+  'unit.forms.form': 'Formular',
+  'unit.forms.header.abbreviation': 'Abk.',
+  'unit.forms.header.description': 'Beschreibung',
+  'unit.forms.header.title': 'Formulartitel',
+  'unit.forms.header.updatedat': 'Datum',
+  'unit.forms.header.updatedby': 'Bearbeiter',
+  'unit.forms.loading': '{types} werden geladen',
+  'unit.forms.noentries': 'Keine {types} vorhanden!',
+  'unit.forms.search': 'Suche',
   'unit.forms.nrr':
     'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
+  'unit.objects.created': 'Erstellt',
+  'unit.objects.updated': 'Bearbeitet',
   'unit.index.title': 'Dashboard',
   'unit.select.label': 'Unit'
 }
