@@ -32,9 +32,6 @@
         </v-col>
       </v-row>
       <v-row v-if="$props.type === 'enum'" class="flex-column">
-        <v-col>
-          <v-divider />
-        </v-col>
         <v-col class="py-0">
           <h3>{{ $t('editor.objectschema.aspect.values') }}</h3>
         </v-col>
