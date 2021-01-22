@@ -7,13 +7,9 @@
       <v-row>
         <v-col :cols="6" />
         <v-col :cols="6" class="text-right">
-          <v-btn
-            color="primary"
-            text
-            outlined
-            :loading="btnLoading"
-            @click="onClick"
-          >{{ $t('global.button.save') }}</v-btn>
+          <v-btn color="primary" text outlined :loading="btnLoading" @click="onClick">{{
+            $t('global.button.save')
+          }}</v-btn>
         </v-col>
       </v-row>
     </template>
@@ -111,6 +107,24 @@ export default Vue.extend({
         formSchema,
         objectData,
         lang
+      }
+
+      // Add subtype to object data so it gets saved
+      if (this.form.formSchema?.subType) {
+        // Sub type is not set yet, if the object is created
+        if (!this.form.objectData.subType) {
+          this.form.objectData.subType = { [this.$user.currentDomain]: this.form.formSchema?.subType }
+        } else {
+          this.form.objectData.subType[this.$user.currentDomain] = this.form.formSchema?.subType
+        }
+      }
+
+      // Add domain to object data so it gets saved
+      const domainObject = { targetUri: `/domains/${this.$user.currentDomain}` }
+      if (!this.form.objectData.domains) {
+        this.form.objectData.domains = [domainObject]
+      } else {
+        this.form.objectData.domains.push(domainObject)
       }
     } else {
       throw new Error('Object Type is not defined in FormSchema')

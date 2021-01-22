@@ -82,6 +82,7 @@ export default {
   'editor.formschema.formschema': 'Form schema',
   'editor.formschema.headline': 'Form schema editor',
   'editor.formschema.dropzone.placeholder': 'Drag in the elements',
+  'editor.formschema.subtype': 'Subtype',
   'editor.formschema.wizard.create': 'Create form schema',
   'editor.formschema.wizard.create.description':
     'Create a new form schema, either from scratch or a pre-generated layout.',
@@ -96,6 +97,7 @@ export default {
   'editor.formschema.wizard.modelType.custom': 'Custom',
   'editor.formschema.wizard.objectschema.required': 'You have to specify an object schema!',
   'editor.formschema.wizard.start.title': 'How do you want to start?',
+  'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema upload @:editor.upload.file.format',
   'editor.objectschema.aspect.values': 'Available options',
   'editor.objectschema.aspect.values.hint': 'Available options (seperate entries with <b>Enter</b>)',
   'editor.objectschema.create.description': 'Description',
@@ -121,12 +123,15 @@ export default {
   'editor.objectschema.wizard.import.description': 'Import an existing object schema and modify it.',
   'editor.objectschema.wizard.modelType.custom': 'Custom',
   'editor.objectschema.wizard.start.title': 'How do you want to start?',
+  'editor.objectschema.upload.input.file.label':
+    '@:editor.objectschema.objectschema upload @:editor.upload.file.format',
   'editor.search.label': 'Search for a property...',
   'editor.upload.button.text': 'Upload',
   'editor.upload.error': 'Error while uploading file',
   'editor.upload.import.code': 'Paste code',
   'editor.upload.import.file': 'Upload file',
-  'editor.upload.input.file.label': 'Upload schema',
+  'editor.upload.file.format': '(.json)',
+  'editor.upload.input.file.label': 'Schema upload @:editor.upload.file.format',
 
   'error.title': 'An error occured',
 
@@ -153,6 +158,7 @@ export default {
   'global.button.save': 'Save',
   'global.button.yes': 'Yes',
   'global.error.fetching': 'An error occured while fetching the resource',
+  'global.input.required': 'The field is required',
   'global.logout': 'Logout',
   'global.menu.collapse': 'Collapse menu',
   'global.menu.expand': 'Fix menu',

@@ -82,6 +82,7 @@ export default {
   'editor.formschema.search.noMatch': 'Keine passenden Steuerelemente vorhanden',
   'editor.formschema.headline': 'Formschema Editor',
   'editor.formschema.dropzone.placeholder': 'Ziehen Sie die Steuerelemente herein',
+  'editor.formschema.subtype': 'Sub Typ',
   'editor.formschema.wizard.create': 'Formular erstellen',
   'editor.formschema.wizard.create.description':
     'Neues Formular erstellen. Entweder leer oder mit vorgenerierten Feldern',
@@ -96,6 +97,7 @@ export default {
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
+  'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema hochladen @:editor.upload.file.format',
   'editor.objectschema.aspect.values': 'Auswahlmöglichkeiten',
   'editor.objectschema.aspect.values.hint': 'Werte (mit <b>Enter</b> trennen)',
   'editor.objectschema.create.description': 'Beschreibung',
@@ -121,12 +123,15 @@ export default {
   'editor.objectschema.wizard.import.description': 'Bestehendes Objektschema importieren und modifizieren',
   'editor.objectschema.wizard.modelType.custom': 'Eigenes',
   'editor.objectschema.wizard.start.title': 'Wie möchten Sie starten?',
+  'editor.objectschema.upload.input.file.label':
+    '@:editor.objectschema.objectschema hochladen @:editor.upload.file.format',
   'editor.search.label': 'Nach einer Eigenschaft suchen...',
   'editor.upload.button.text': 'Hochladen',
   'editor.upload.error': 'Fehler beim Dateiupload',
   'editor.upload.import.code': 'Code einfügen',
   'editor.upload.import.file': 'Datei hochladen',
-  'editor.upload.input.file.label': 'Schema hochladen',
+  'editor.upload.file.format': '(.json)',
+  'editor.upload.input.file.label': 'Schema hochladen @:editor.upload.file.format',
 
   'error.title': 'Es ist ein Fehler aufgetreten',
 
@@ -153,6 +158,7 @@ export default {
   'global.button.save': 'Speichern',
   'global.button.yes': 'Ja',
   'global.error.fetching': 'Fehler beim Abruf',
+  'global.input.required': 'Das Feld muss ausgefüllt werden',
   'global.logout': 'Logout',
   'global.menu.collapse': 'Menü verstecken',
   'global.menu.expand': 'Menü fixieren',

@@ -16,7 +16,7 @@
     <template #default>
       <v-data-table
         :headers="headers"
-        :items="objects"
+        :items="displayedObjects"
         :items-per-page="20"
         :no-data-text="`Keine {types} vorhanden!`"
         :loading-text="`{types} werden geladen...`"
@@ -26,7 +26,7 @@
         <template #top>
           <v-row dense>
             <v-col :cols="3">
-              <v-select v-model="formType" label="Type" :items="formTypes" outlined dense @input="changeType()" />
+              <v-select v-model="formType" label="Formular" :items="formTypes" outlined dense @input="changeType()" />
             </v-col>
             <v-col :cols="3">
               <v-select
@@ -124,12 +124,13 @@ export default Vue.extend({
     if (this.formSchema) {
       // @ts-ignore
       this.objectType = endpoints[this.formSchema.modelType.toLowerCase()]
-    }
-    this.objects =
-      this.objectType &&
-      (await this.$api.object.fetchAll(this.objectType, {
+
+      this.objects = await this.$api.object.fetchAll(this.objectType, {
         unit: this.$route.params.unit
-      }))
+      })
+    } else {
+      this.objects = []
+    }
 
     this.formTypes = await this.$api.form
       .fetchAll({ unit: this.$route.params.unit })
@@ -144,12 +145,19 @@ export default Vue.extend({
   },
   head() {
     return {
-      title: 'veo.forms'
+      title: 'veo.Forms'
     }
   },
   computed: {
     unit() {
       return this.$route.params.unit
+    },
+    displayedObjects(): IBaseObject[] {
+      return this.objects.filter(
+        (object: IBaseObject) =>
+          !this.formSchema || object.subType[this.$user.currentDomain] === this.formSchema.subType
+      )
+      return this.objects
     },
     createButtonText(): string {
       return getSchemaName(this.objectType || '') || ''

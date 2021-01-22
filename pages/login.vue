@@ -18,12 +18,12 @@
         />
       </v-col>
       <v-col>
-        <v-btn depressed block color="primary" class="login-button" @click="$auth.login('/')">
+        <v-btn depressed block color="primary" class="login-button" @click="$user.auth.login('/')">
           {{ $t('page.login.button.login') }}
         </v-btn>
       </v-col>
       <v-col>
-        <v-btn depressed block @click="$auth.register('/')">
+        <v-btn depressed block @click="$user.auth.register('/')">
           {{ $t('page.login.button.register') }}
         </v-btn>
       </v-col>

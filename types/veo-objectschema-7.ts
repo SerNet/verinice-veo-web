@@ -98,7 +98,7 @@ declare module 'veo-objectschema-7' {
       references: VEOReferencesRAW
       attributes: VEOAttributesRAW
     },
-    additionalAttributes: false
+    additionalProperties: false
     required: ['type']
   }
 

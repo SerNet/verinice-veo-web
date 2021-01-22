@@ -1,12 +1,14 @@
 import { Client } from '~/plugins/api'
 
+import { IVeoUnit } from '~/types/VeoUnits'
+
 export default function(api: Client) {
   return {
     /**
      * Loads all Units
      * @param parent
      */
-    fetchAll(params?: Record<string, string>) {
+    fetchAll(params?: Record<string, string>): Promise<IVeoUnit[]> {
       return api.req('/api/units', {
         params
       })
@@ -26,7 +28,7 @@ export default function(api: Client) {
      * Loads an Unit
      * @param id
      */
-    fetch(id: string) {
+    fetch(id: string): Promise<IVeoUnit> {
       return api.req(`/api/units/${id}`)
     },
 

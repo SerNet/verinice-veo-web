@@ -3,6 +3,7 @@ import { UISchema } from '~/types/UISchema'
 export interface BaseFormSchema {
   name: string
   modelType: string
+  subType: string
 }
 
 export interface FormSchema extends BaseFormSchema {
