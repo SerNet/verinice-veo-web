@@ -119,7 +119,7 @@ export default defineComponent<IProps>({
           returnArray.length >= 6
             ? [
                 {
-                  text: '...',
+                  text: '•••',
                   menuItems: returnArray.slice(0, returnArray.length - 4)
                 },
                 ...returnArray.slice(returnArray.length - 4)
