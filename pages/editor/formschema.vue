@@ -70,14 +70,7 @@
             <v-col cols="12">
               <v-row class="mx-4">
                 <v-col cols="2" class="pl-0">
-                  <v-text-field
-                    v-model="formSchema.subType"
-                    dense
-                    flat
-                    required
-                    :rules="editorRules.subType"
-                    :label="$t('editor.formschema.subtype')"
-                  />
+                  <v-text-field v-model="formSchema.subType" dense flat :label="$t('editor.formschema.subtype')" />
                 </v-col>
               </v-row>
             </v-col>
@@ -172,10 +165,7 @@ export default Vue.extend({
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
       objectData: {},
-      showCodeEditor: false as boolean,
-      editorRules: {
-        subType: [(input: string) => (input && trim(input).length > 0) || this.$t('global.input.required')]
-      }
+      showCodeEditor: false as boolean
     }
   },
   async fetch() {

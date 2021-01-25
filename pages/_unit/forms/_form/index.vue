@@ -152,10 +152,16 @@ export default Vue.extend({
     unit() {
       return this.$route.params.unit
     },
+    /**
+     * Only display objects that either have no subtype set (but still are part of the model type)
+     * OR have a subtype that is the same as the subType of the form schema
+     */
     displayedObjects(): IBaseObject[] {
       return this.objects.filter(
         (object: IBaseObject) =>
-          !this.formSchema || object.subType[this.$user.currentDomain] === this.formSchema.subType
+          !this.formSchema ||
+          !object.subType[this.$user.currentDomain] ||
+          object.subType[this.$user.currentDomain] === this.formSchema.subType
       )
       return this.objects
     },
