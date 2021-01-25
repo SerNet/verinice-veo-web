@@ -3,7 +3,7 @@ import { UISchema } from '~/types/UISchema'
 export interface BaseFormSchema {
   name: string
   modelType: string
-  subType: string
+  subType: string | null
 }
 
 export interface FormSchema extends BaseFormSchema {
