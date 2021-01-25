@@ -2,54 +2,74 @@
   <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
-  <VeoPage v-else :title="form.objectData.name" sticky-header>
-    <template #header>
-      <v-row>
-        <v-col :cols="6" />
-        <v-col :cols="6" class="text-right">
-          <v-btn color="primary" text outlined :loading="btnLoading" @click="onClick">{{
-            $t('global.button.save')
-          }}</v-btn>
-        </v-col>
-      </v-row>
-    </template>
-    <template #default>
-      <VeoForm
-        v-model="form.objectData"
-        :schema="form.objectSchema"
-        :ui="form.formSchema && form.formSchema.content"
-        :lang="form.lang && form.lang[activeLanguage]"
-        :api="dynamicAPI"
-        :is-valid.sync="isValid"
-        :error-messages.sync="errorMessages"
-      />
-
-      <div class="mx-auto" style="max-width:800px; width:100%;">
-        <AppStateDialog
-          v-if="error && error.status == 412"
-          :value="!!error"
-          title="Fehler"
-          @input="error = undefined"
-          @yes="$fetch"
+  <VeoPageWrapper v-else>
+    <VeoPage absolute-size :cols="8" :md="8" :xl="8" sticky-header>
+      <template #header>
+        <v-row>
+          <v-col>
+            <h1>{{ form.objectData.name }}</h1>
+          </v-col>
+          <v-spacer />
+          <v-col class="text-right">
+            <v-btn text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
+              {{ $t('global.button.delete') }}
+            </v-btn>
+            <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="onClick">
+              {{ $t('global.button.save') }}
+            </v-btn>
+          </v-col>
+        </v-row>
+      </template>
+      <template #default>
+        <VeoForm
+          v-model="form.objectData"
+          :schema="form.objectSchema"
+          :ui="form.formSchema && form.formSchema.content"
+          :lang="form.lang && form.lang[activeLanguage]"
+          :api="dynamicAPI"
+          :is-valid.sync="isValid"
+          :error-messages.sync="errorMessages"
+        />
+        <DeleteFormDialog v-model="deleteDialog" :form="form.objectData" @delete="doDelete" />
+        <VeoAlert
+          v-model="alert.value"
+          v-bind="alert"
+          style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
         >
-          <template v-if="error">
-            <span v-if="error && error.status == 412">{{ $t('unit.forms.nrr') }}</span>
-            <span v-else v-text="error" />
+          <template #additional-button>
+            <v-btn outlined text color="error" @click="$fetch()">{{ $t('global.button.yes') }}</v-btn>
           </template>
-        </AppStateDialog>
-      </div>
-    </template>
-  </VeoPage>
+        </VeoAlert>
+      </template>
+    </VeoPage>
+    <v-divider vertical />
+    <VeoPage v-if="!$vuetify.breakpoint.xsOnly" :cols="4" :md="4" :xl="4" absolute-size>
+      <VeoTabs>
+        <template #tabs>
+          <v-tab :to="linkToLinks">{{ $t('unit.data.links') }}</v-tab>
+          <v-tab :to="linkToHistory">{{ $t('unit.data.history') }}</v-tab>
+        </template>
+      </VeoTabs>
+      <nuxt-child
+        v-if="form.objectData"
+        :createdAt="form.objectData.createdAt"
+        :createdBy="form.objectData.createdBy"
+        :updatedAt="form.objectData.updatedAt"
+        :updatedBy="form.objectData.updatedBy"
+      />
+    </VeoPage>
+  </VeoPageWrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-import { IForm } from '~/lib/utils'
-import AppStateDialog from '~/components/AppStateDialog.vue'
-import VeoForm from '~/components/forms/VeoForm.vue'
+import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
+import VeoTabs from '~/components/layout/VeoTabs.vue'
+import { IForm } from '~/lib/utils'
+import VeoForm from '~/components/forms/VeoForm.vue'
+import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 import object from '~/plugins/api/object'
 
@@ -65,16 +85,19 @@ interface IData {
   form: IForm
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
-  error?: Error & { status?: number }
-  btnLoading: boolean
+  saveBtnLoading: boolean
+  deleteBtnLoading: boolean
+  deleteDialog: boolean
+  alert: VeoEventPayload & { value: boolean }
 }
 
 export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
   components: {
-    AppStateDialog,
     VeoForm,
-    VeoPage
+    VeoPageWrapper,
+    VeoPage,
+    VeoTabs
   },
   data(): IData {
     return {
@@ -89,8 +112,16 @@ export default Vue.extend({
       },
       isValid: true,
       errorMessages: [],
-      error: undefined,
-      btnLoading: false
+      saveBtnLoading: false,
+      deleteBtnLoading: false,
+      deleteDialog: false,
+      alert: {
+        value: false,
+        text: '',
+        type: 0,
+        title: this.$t('global.appstate.alert.error') as string,
+        saveButtonText: this.$t('global.button.no') as string
+      }
     }
   },
   async fetch() {
@@ -129,6 +160,7 @@ export default Vue.extend({
     } else {
       throw new Error('Object Type is not defined in FormSchema')
     }
+    this.alert.value = false
   },
   head(): any {
     return {
@@ -141,6 +173,12 @@ export default Vue.extend({
     },
     unit(): string {
       return this.$route.params.unit
+    },
+    formId(): string {
+      return this.$route.params.form
+    },
+    object(): string {
+      return this.$route.params.object
     },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
@@ -168,39 +206,63 @@ export default Vue.extend({
           this.$api.object.delete(getSchemaEndpoint(objectType), id)
         }
       }
+    },
+    linkToLinks(): string {
+      return `/${this.unit}/forms/${this.formId}/${this.object}/links`
+    },
+    linkToHistory(): string {
+      return `/${this.unit}/forms/${this.formId}/${this.object}/history`
     }
-  },
-  watch: {
-    '$route.params': '$fetch'
   },
   methods: {
     async onClick() {
-      this.btnLoading = true
-      this.error = undefined
-      try {
-        this.formatObjectData()
-        if (this.objectType) {
-          await this.action(this.objectType)
-        } else {
-          throw new Error('Object Type is not defined in FormSchema')
-        }
-        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })
-        this.$fetch()
-      } catch (e) {
-        this.$root.$emit(VeoEvents.ALERT_ERROR, {
-          title: this.$t('global.appstate.alert.error'),
-          text: e
+      this.saveBtnLoading = true
+      this.formatObjectData()
+      if (this.objectType) {
+        await this.action(this.objectType).finally(() => {
+          this.saveBtnLoading = false
         })
-        this.error = e
-      } finally {
-        this.btnLoading = false
+      } else {
+        throw new Error('Object Type is not defined in FormSchema')
+        this.saveBtnLoading = false
       }
     },
     async action(objectType: string) {
       await this.save(objectType)
     },
     async save(objectType: string) {
-      await this.$api.object.update(getSchemaEndpoint(objectType), this.$route.params.object, this.form.objectData)
+      await this.$api.object
+        .update(getSchemaEndpoint(objectType), this.object, this.form.objectData)
+        .then(() => {
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
+          this.$fetch()
+        })
+        .catch((error: { status: number; name: string }) => {
+          this.alert.text = error.status === 412 ? this.$t('unit.forms.nrr') : ''
+          this.alert.value = true
+        })
+    },
+    showDeleteDialog() {
+      this.deleteDialog = true
+    },
+    async doDelete() {
+      this.deleteDialog = false
+      this.deleteBtnLoading = true
+      await this.$api.object
+        .delete(getSchemaEndpoint(this.objectType || ''), this.object)
+        .then(() => {
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })
+          this.$router.push({
+            path: `/${this.unit}/forms/${this.formId}/`
+          })
+        })
+        .catch((error: { status: number; name: string }) => {
+          this.alert.text = error.status === 412 ? this.$t('unit.forms.nrr') : ''
+          this.alert.value = true
+        })
+        .finally(() => {
+          this.deleteBtnLoading = false
+        })
     },
     formatObjectData() {
       // TODO: find better solution

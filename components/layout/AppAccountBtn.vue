@@ -1,6 +1,13 @@
 <template>
   <div style="flex-basis: 0;" class="mr-0 text-right flex-grow-1">
-    <v-menu v-model="value" :close-on-content-click="false" width="350" nudge-bottom="5" offset-y origin="top right">
+    <v-menu
+      v-model="value"
+      :close-on-content-click="false"
+      max-width="350px"
+      nudge-bottom="5"
+      offset-y
+      origin="top right"
+    >
       <template #activator="{ on }">
         <v-btn icon dark v-on="on">
           <v-avatar size="48" color="secondary">
