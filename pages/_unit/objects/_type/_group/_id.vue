@@ -70,8 +70,7 @@ import VeoTabs from '~/components/layout/VeoTabs.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
-import { getSchemaEndpoint, getSchemaName } from '~/plugins/api/schema'
-import object from '~/plugins/api/object'
+import { getSchemaName } from '~/plugins/api/schema'
 import { capitalize } from 'lodash'
 import DeleteObjectDialog from '~/components/dialogs/DeleteObjectDialog.vue'
 

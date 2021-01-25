@@ -47,7 +47,7 @@
           <span class="table--description-cell">{{ value }}</span>
         </template>
         <template #item.updatedAt="{ value }">
-          {{ new Date(value).toLocaleDateString('de-DE') }}<br />
+          {{ new Date(value).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}<br />
           {{ new Date(value).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
         </template>
         <template #item.actions="{ item }">
@@ -75,18 +75,7 @@
   </VeoPage>
 </template>
 <script lang="ts">
-import {
-  computed,
-  ComputedRef,
-  defineComponent,
-  nextTick,
-  onMounted,
-  Ref,
-  ref,
-  SetupContext,
-  useContext,
-  useFetch
-} from '@nuxtjs/composition-api'
+import { computed, defineComponent, nextTick, onMounted, Ref, ref, useContext, useFetch } from '@nuxtjs/composition-api'
 import { capitalize } from 'lodash'
 import { DataTableHeader } from 'vuetify'
 

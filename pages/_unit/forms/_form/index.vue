@@ -46,7 +46,7 @@
           <span class="table--description-cell">{{ value }}</span>
         </template>
         <template #item.updatedAt="{ value }">
-          {{ new Date(value).toLocaleDateString('de-DE') }}<br />
+          {{ new Date(value).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}<br />
           {{ new Date(value).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
         </template>
         <template #item.actions="{ item }">
@@ -79,7 +79,7 @@ import Vue from 'vue'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
 import { IBaseObject } from '~/lib/utils'
-import { endpoints, getSchemaEndpoint, getSchemaName } from '~/plugins/api/schema'
+import { endpoints, getSchemaEndpoint } from '~/plugins/api/schema'
 import { FormSchema, FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 import DeleteFormDialog from '~/components/dialogs/DeleteFormDialog.vue'
 
