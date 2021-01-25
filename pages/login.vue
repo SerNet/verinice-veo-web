@@ -53,6 +53,8 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
 .wrapper {
   margin: 5% auto 0;
   max-width: 420px;
@@ -60,13 +62,10 @@ export default Vue.extend({
 
   h1 {
     color: rgb(237, 237, 237);
+    font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
     font-size: 52px;
     font-weight: 400;
   }
-}
-
-.v-btn.login-button {
-  border: 1px solid rgb(155, 0, 0) !important;
 }
 
 .v-btn {
