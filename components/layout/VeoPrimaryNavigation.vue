@@ -124,6 +124,14 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
+            name: 'veo.Scopes',
+            icon: 'mdi-archive',
+            exact: false,
+            to: `/${route.params.unit}/scopes`,
+            disabled: false,
+            topLevelItem: true
+          },
+          {
             name: this.$t('page.settings.title') as string,
             icon: 'mdi-cog',
             to: `/${route.params.unit}/settings`,
