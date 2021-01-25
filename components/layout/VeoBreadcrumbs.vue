@@ -1,7 +1,24 @@
 <template>
   <v-breadcrumbs :items="items" class="px-4 py-3">
     <template v-slot:item="{ item }">
-      <v-breadcrumbs-item :to="item.to" :disabled="item.disabled" :exact="item.exact">
+      <v-menu v-if="item.menuItems" offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="primary" x-small text v-bind="attrs" v-on="on">
+            {{ item.text }}
+          </v-btn>
+        </template>
+        <v-list dense outlined>
+          <v-list-item
+            v-for="(menuItem, index) in item.menuItems"
+            :to="menuItem.to"
+            :exact="menuItem.exact"
+            :key="index"
+          >
+            <v-list-item-title class="primary--text font-weight-regular">{{ menuItem.text }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      <v-breadcrumbs-item v-if="!item.menuItems" :to="item.to" :disabled="item.disabled" :exact="item.exact">
         {{ item.text }}
       </v-breadcrumbs-item>
     </template>
@@ -97,7 +114,17 @@ export default defineComponent<IProps>({
           })
         ]
         console.log(context.root.$route, returnArray)
-        items.value = returnArray
+
+        items.value =
+          returnArray.length >= 6
+            ? [
+                {
+                  text: '...',
+                  menuItems: returnArray.slice(0, returnArray.length - 4)
+                },
+                ...returnArray.slice(returnArray.length - 4)
+              ]
+            : returnArray
       },
       { immediate: true }
     )
