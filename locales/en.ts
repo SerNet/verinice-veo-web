@@ -203,5 +203,10 @@ export default {
   'unit.forms.noprocesses': 'No processes found',
   'unit.forms.nrr': 'This dataset has been edited by another user. Do you want to load the changes?',
   'unit.index.title': 'Dashboard',
-  'unit.select.label': 'Unit'
+  'unit.select.label': 'Unit',
+
+  'breadcrumbs.settings': 'Settings',
+  'breadcrumbs.help': 'Manual',
+  'breadcrumbs.editor': 'Editors',
+  'breadcrumbs.objectschema': 'Objectschema'
 }

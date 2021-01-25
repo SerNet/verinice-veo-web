@@ -68,6 +68,14 @@ export default defineComponent<IProps>({
         }, 300)
       )
     }
+
+    function getText(params: any, type: string) {
+      const text =
+        params[type] ||
+        (context.root.$i18n.te('breadcrumbs.' + type) && context.root.$i18n.t('breadcrumbs.' + type)) ||
+        type
+      return capitalize(text)
+    }
     watch(
       () => context.root.$route.fullPath,
       async () => {
@@ -96,12 +104,9 @@ export default defineComponent<IProps>({
           breadcrumbsReplacement = { ...breadcrumbsReplacement, ...titelObject }
         })
 
-        console.log(JSON.stringify(breadcrumbsReplacement, null, 4))
         const returnArray = [
           ...routes.map((el: string, i: number) => {
-            const item = breadcrumbsReplacement[el]
-              ? { ...breadcrumbsReplacement[el] }
-              : { text: capitalize(params[el] || el) }
+            const item = breadcrumbsReplacement[el] ? { ...breadcrumbsReplacement[el] } : { text: getText(params, el) }
             return {
               ...item,
               to: `/${routes
@@ -113,7 +118,6 @@ export default defineComponent<IProps>({
             }
           })
         ]
-        console.log(context.root.$route, returnArray)
 
         items.value =
           returnArray.length >= 6

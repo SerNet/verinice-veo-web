@@ -205,5 +205,10 @@ export default {
   'unit.forms.nrr':
     'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
   'unit.index.title': 'Dashboard',
-  'unit.select.label': 'Unit'
+  'unit.select.label': 'Unit',
+
+  'breadcrumbs.settings': 'Einstellungen',
+  'breadcrumbs.help': 'Handbuch',
+  'breadcrumbs.editor': 'Editoren',
+  'breadcrumbs.objectschema': 'Objektschema'
 }
