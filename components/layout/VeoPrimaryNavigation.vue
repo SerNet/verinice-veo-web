@@ -172,7 +172,7 @@ export default Vue.extend({
         return data.map(entry => {
           return {
             name: capitalize(entry.schemaName),
-            exact: true,
+            exact: false,
             to: `/${this.$route.params.unit}/objects/${entry.endpoint}/-/`,
             disabled: false,
             childItems: undefined,
@@ -188,7 +188,7 @@ export default Vue.extend({
         formTypes.map((entry: FormSchemaMeta) => {
           return {
             name: entry.name,
-            exact: true,
+            exact: false,
             to: `/${this.$route.params.unit}/forms/${entry.id}/`,
             disabled: false,
             topLevelItem: false
