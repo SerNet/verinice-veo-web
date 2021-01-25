@@ -1,5 +1,10 @@
 <template>
   <v-breadcrumbs :items="items" class="px-4 py-3">
+    <template v-slot:item="{ item }">
+      <v-breadcrumbs-item :to="item.to" :disabled="item.disabled" :exact="item.exact">
+        {{ item.text }}
+      </v-breadcrumbs-item>
+    </template>
     <template #divider>
       <v-icon>mdi-chevron-right</v-icon>
     </template>
@@ -77,10 +82,15 @@ export default defineComponent<IProps>({
         console.log(JSON.stringify(breadcrumbsReplacement, null, 4))
         const returnArray = [
           ...routes.map((el: string, i: number) => {
-            const item = breadcrumbsReplacement[el] ? { ...breadcrumbsReplacement[el] } : { text: capitalize(el) }
+            const item = breadcrumbsReplacement[el]
+              ? { ...breadcrumbsReplacement[el] }
+              : { text: capitalize(params[el] || el) }
             return {
               ...item,
-              to: `/${routes.slice(0, i + 1).join('/')}/`,
+              to: `/${routes
+                .slice(0, i + 1)
+                .map(route => params[route] || route)
+                .join('/')}/`,
               exact: true,
               disabled: false
             }
