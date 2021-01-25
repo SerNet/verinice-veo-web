@@ -1,7 +1,7 @@
 import { IVEOFormSchema } from 'veo-formschema'
 import VeoSchemaValidator, { VeoSchemaValidatorValidationResult } from './VeoSchemaValidator'
 
-export function generateSchema(name: string, modelType: string, subType: string): IVEOFormSchema {
+export function generateSchema(name: string, modelType: string, subType: string | null): IVEOFormSchema {
   return {
     name,
     modelType,
