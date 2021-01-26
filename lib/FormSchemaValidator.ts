@@ -52,7 +52,6 @@ export default class FormSchemaValidator {
   }
 
   private elementExists(element: any, objectSchema: VEOObjectSchemaRAW, context: string) {
-    console.log(context, element)
     if(!element.scope && element.type === 'Control') {
       this.errors.push({ code: 'E_SCOPE_MISSING', message: `The element ${context} is missing its scope.` })
     } else if (element.scope) {
