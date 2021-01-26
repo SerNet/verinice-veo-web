@@ -114,6 +114,7 @@
             :input-label="$t('editor.formschema.upload.input.file.label')"
             @schema-uploaded="doImport1"
           />
+          <v-checkbox v-model="forceOwnSchema" :label="$t('editor.formschema.wizard.forceownschema')" />
         </v-window-item>
         <v-window-item value="import-2">
           <h2>{{ $t('editor.objectschema.wizard.import') }}</h2>
@@ -123,6 +124,8 @@
             :title="$t('editor.formschema.wizard.invalidos')"
             :content="$t('editor.formschema.wizard.invalidos.content')"
             class="my-4"
+            flat
+            no-close-button
           />
           <VEOEditorFileUpload
             :code="oscode"
@@ -196,7 +199,8 @@ export default Vue.extend({
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
       schemas: [] as ISchemaEndpoint[],
-      invalidOS: false as boolean
+      invalidOS: false as boolean,
+      forceOwnSchema: false as boolean
     }
   },
   computed: {
@@ -283,6 +287,7 @@ export default Vue.extend({
     async doImport1(schema: IVEOFormSchema) {
       this.setFormSchema(schema)
       if (
+        !this.forceOwnSchema &&
         this.objectTypes.findIndex(
           (item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType?.toLowerCase()
         ) !== -1

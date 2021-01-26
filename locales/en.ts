@@ -86,6 +86,7 @@ export default {
   'editor.formschema.wizard.create': 'Create form schema',
   'editor.formschema.wizard.create.description':
     'Create a new form schema, either from scratch or a pre-generated layout.',
+  'editor.formschema.wizard.forceownschema': 'Don\'t load existing schemas from the server',
   'editor.formschema.wizard.generate.generate': 'Generate',
   'editor.formschema.wizard.generate.none': 'Start from scratch',
   'editor.formschema.wizard.generate.title': 'Do you want to pregenerate a form schema?',
@@ -95,10 +96,10 @@ export default {
   'editor.formschema.wizard.import.wrongobjectschema':
     'The uploaded object schema has the wrong type ({objectType}). It has to have the type ({formType}).',
   'editor.formschema.wizard.modelType.custom': 'Custom',
-  'editor.formschema.wizard.objectschema.required': 'You have to specify an object schema!',
-  'editor.formschema.wizard.start.title': 'How do you want to start?',
   'editor.formschema.wizard.invalidos': 'Form schema doesn\'t match object schema',
   'editor.formschema.wizard.invalidos.content': 'It seems like the form schema is using properties not present on the remote object schema. Please upload the modified object schema.',
+  'editor.formschema.wizard.objectschema.required': 'You have to specify an object schema!',
+  'editor.formschema.wizard.start.title': 'How do you want to start?',
   'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema upload @:editor.upload.file.format',
   'editor.objectschema.aspect.values': 'Available options',
   'editor.objectschema.aspect.values.hint': 'Available options (seperate entries with <b>Enter</b>)',
