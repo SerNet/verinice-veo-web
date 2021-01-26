@@ -97,6 +97,8 @@ export default {
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
+  'editor.formschema.wizard.invalidos': 'Formschema stimmt nicht mit Remote-Objektschema überein',
+  'editor.formschema.wizard.invalidos.content': 'Das Formschema verwendet Eigenschaften, die nicht im Remote-Objektschema existieren. Bitte laden Sie das modifizierte Objektschema hoch.',
   'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema hochladen @:editor.upload.file.format',
   'editor.objectschema.aspect.values': 'Auswahlmöglichkeiten',
   'editor.objectschema.aspect.values.hint': 'Werte (mit <b>Enter</b> trennen)',

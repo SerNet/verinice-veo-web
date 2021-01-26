@@ -97,6 +97,8 @@ export default {
   'editor.formschema.wizard.modelType.custom': 'Custom',
   'editor.formschema.wizard.objectschema.required': 'You have to specify an object schema!',
   'editor.formschema.wizard.start.title': 'How do you want to start?',
+  'editor.formschema.wizard.invalidos': 'Form schema doesn\'t match object schema',
+  'editor.formschema.wizard.invalidos.content': 'It seems like the form schema is using properties not present on the remote object schema. Please upload the modified object schema.',
   'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema upload @:editor.upload.file.format',
   'editor.objectschema.aspect.values': 'Available options',
   'editor.objectschema.aspect.values.hint': 'Available options (seperate entries with <b>Enter</b>)',

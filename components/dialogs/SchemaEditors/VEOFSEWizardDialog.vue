@@ -117,6 +117,13 @@
         </v-window-item>
         <v-window-item value="import-2">
           <h2>{{ $t('editor.objectschema.wizard.import') }}</h2>
+          <VeoAlert
+            v-model="invalidOS"
+            :type="1"
+            :title="$t('editor.formschema.wizard.invalidos')"
+            :content="$t('editor.formschema.wizard.invalidos.content')"
+            class="my-4"
+          />
           <VEOEditorFileUpload
             :code="oscode"
             :input-label="$t('editor.objectschema.upload.input.file.label')"
@@ -152,11 +159,11 @@ import { capitalize, trim } from 'lodash'
 
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { IVEOFormSchema } from 'veo-formschema'
-import { generateSchema } from '~/lib/FormSchemaHelper'
+import { generateSchema, validate } from '~/lib/FormSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { endpoints, getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
+import { ISchemaEndpoint } from '~/plugins/api/schema'
 
 export default Vue.extend({
   components: {
@@ -188,7 +195,8 @@ export default Vue.extend({
       formSchema: undefined as IVEOFormSchema | undefined,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
-      schemas: [] as ISchemaEndpoint[]
+      schemas: [] as ISchemaEndpoint[],
+      invalidOS: false as boolean
     }
   },
   computed: {
@@ -280,8 +288,17 @@ export default Vue.extend({
         ) !== -1
       ) {
         this.objectSchema = await this.$api.schema.fetch(schema.modelType?.toLowerCase())
-        this.$emit('form-schema', this.formSchema)
-        this.$emit('object-schema', this.objectSchema)
+
+        /* Checks whether the form schema fits the object schema. If not, we assume that the object schema the
+         * user used for this form schema is a modified version of an existing object schema and ask him to provide it.
+         */
+        if (!validate(schema, this.objectSchema).valid) {
+          this.invalidOS = true
+          this.state = 'import-2'
+        } else {
+          this.$emit('form-schema', this.formSchema)
+          this.$emit('object-schema', this.objectSchema)
+        }
       } else {
         this.state = 'import-2'
       }

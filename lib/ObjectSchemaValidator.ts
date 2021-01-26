@@ -24,33 +24,17 @@ export interface VeoSchemaValidatorValidationResult {
   warnings: VeoSchemaValidatorMessage[]
 }
 
-export default class VeoSchemaValidator {
-  private schemaType: 'FORM_SCHEMA' | 'OBJECT_SCHEMA' | undefined
-
+export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = []
   private warnings: VeoSchemaValidatorMessage[] = []
 
-  constructor(schemaType?: 'FORM_SCHEMA' | 'OBJECT_SCHEMA') {
-    this.schemaType = schemaType
-  }
-
-  public setSchemaType(schemaType: 'FORM_SCHEMA' | 'OBJECT_SCHEMA'): void {
-    this.schemaType = schemaType
-  }
-
   public validate(schema: any, context: string = 'schema'): VeoSchemaValidatorValidationResult {
-    if (!this.schemaType) {
-      this.errors.push({ code: 'E_MISSING_SCHEMA_TYPE', message: 'The schema type is not set. Please set it by using VeoSchemaValidator.setSchemaType()' })
-    } else if (this.schemaType === 'FORM_SCHEMA') {
-      this.validateFormEntries(schema, context)
-    } else {
-      if (!schema.title) {
-        this.errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `The schema "${context}" is missing the property "title"` })
-      }
-
-      this.validateCustomAspects(schema, context)
-      this.validateCustomLinks(schema, context)
+    if (!schema.title) {
+      this.errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `The schema "${context}" is missing the property "title"` })
     }
+
+    this.validateCustomAspects(schema, context)
+    this.validateCustomLinks(schema, context)
 
     return { valid: this.errors.length === 0, errors: this.errors, warnings: this.warnings }
   }
@@ -79,10 +63,6 @@ export default class VeoSchemaValidator {
         this.validateLink(schema.properties.links.properties[link], `${context}.links.properties.${link}`)
       }
     }
-  }
-
-  private validateFormEntries(_schema: any, _context: string): void {
-
   }
 
   private validateName(schemaName: string, linkTitle: string, context: string): void {
