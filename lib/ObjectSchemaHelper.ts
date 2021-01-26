@@ -12,6 +12,7 @@ export interface IVEOAttribute {
   type: VEOTypeRAW
   title: string
   description: string
+  enum?: any[]
 }
 
 export interface IVEOCustomAspect {
@@ -315,7 +316,8 @@ export function getAspectAttributes(schema: VEOObjectSchemaRAW, aspectName: stri
       raw: aspect.properties.attributes.properties[attribute],
       title: cleanAttributeName(aspectName, attribute),
       type: aspect.properties.attributes.properties[attribute].type ? aspect.properties.attributes.properties[attribute].type : (aspect.properties.attributes.properties[attribute]) ? 'enum' : 'default',
-      description: aspect.properties.attributes.properties[attribute].title
+      description: aspect.properties.attributes.properties[attribute].title,
+      enum: aspect.properties.attributes.properties[attribute].enum
     })
   }
   return values
@@ -474,6 +476,13 @@ export function addAttributeToAspect(schema: VEOObjectSchemaRAW, aspect: IVEOCus
   // Unset properties specifically created for VEOCustomAspect that don't belong to the json schema.
   delete (attribute as any).raw
   delete (attribute as any).description
+
+  // JSON Schema doesn't support extending types, so we have to delete the type. Else the form schema editor won't load it.
+  if(attribute.type === 'enum') {
+    delete (attribute as any).type
+  } else {
+    delete (attribute as any).enum
+  }
 
   // Overwrite old property with new one.
   schema.properties[OPTIONS.customProperties.customAspects].properties[aspectName].properties.attributes.properties[attributeName] = attribute

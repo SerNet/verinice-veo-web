@@ -1,5 +1,5 @@
 <template>
-  <EditorListItem :title="title" :styling="styling" two-line>
+  <EditorListItem :title="title" :styling="styling" :translate="translate" two-line>
     <template #description>
       <v-list-item-subtitle><span v-text="description"/></v-list-item-subtitle>
     </template>
@@ -30,6 +30,10 @@ export default defineComponent<IProps>({
     styling: {
       type: Object,
       default: () => {}
+    },
+    translate: {
+      type: Boolean,
+      default: false
     }
   }
 })

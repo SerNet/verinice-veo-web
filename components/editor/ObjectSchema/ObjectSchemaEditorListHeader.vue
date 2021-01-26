@@ -4,22 +4,16 @@
       <v-list-item-title class="body-1 font-weight-bold d-flex align-center">
         {{ item.title }}
       </v-list-item-title>
-      <v-list-item-subtitle
-        v-text="
-          $tc('editor.itemlist.attributecount', item.attributes.length || 0)
-        "
-      />
+      <v-list-item-subtitle v-text="$tc('editor.itemlist.attributecount', item.attributes.length || 0)" />
     </v-list-item-content>
     <v-list-item-action class="ml-3">
-      <v-chip
-        v-if="styling"
-        :color="styling.color"
-        class="mr-2"
-        small
-        label
-        outlined
-      >
-        {{ styling.name }}
+      <v-chip v-if="styling" :color="styling.color" class="mr-2" small label outlined>
+        <span v-if="$props.translate">
+          {{ $t(`editor.inputtypes.${styling.name}`) }}
+        </span>
+        <span v-else>
+          {{ styling.name }}
+        </span>
       </v-chip>
     </v-list-item-action>
 
@@ -50,7 +44,11 @@ interface IProps {
 export default defineComponent<IProps>({
   props: {
     item: { type: Object, required: true },
-    styling: { type: Object, default: () => {} }
+    styling: { type: Object, default: () => {} },
+    translate: {
+      type: Boolean,
+      default: false
+    }
   }
 })
 </script>

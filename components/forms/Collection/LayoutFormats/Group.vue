@@ -89,9 +89,7 @@ export const helpers: Helpful<LayoutProps> = {
 
 ::v-deep {
   & > .vf-input-text-multiline,
-  & > .vf-markdown-editor {
-    width: 100%;
-  }
+  & > .vf-markdown-editor,
   & > .vf-autocomplete,
   & > .vf-checkbox,
   & > .vf-input-date,
@@ -101,7 +99,7 @@ export const helpers: Helpful<LayoutProps> = {
   & > .vf-input-uri,
   & > .vf-select,
   & > .vf-tags {
-    max-width: 350px;
+    max-width: 100%;
   }
 }
 </style>

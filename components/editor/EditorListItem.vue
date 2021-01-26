@@ -8,7 +8,14 @@
       <slot name="description"></slot>
     </v-list-item-content>
     <v-list-item-action class="ml-3">
-      <v-chip v-if="styling" :color="styling.color" class="mr-2" small label outlined>{{ styling.name }}</v-chip>
+      <v-chip v-if="styling" :color="styling.color" class="mr-2" small label outlined>
+        <span v-if="$props.translate">
+          {{ $t(`editor.inputtypes.${styling.name}`) }}
+        </span>
+        <span v-else>
+          {{ styling.name }}
+        </span>
+      </v-chip>
     </v-list-item-action>
     <slot name="right-space"></slot>
   </v-list-item>
@@ -22,6 +29,7 @@ interface IProps {
   item: IVEOCustomAspect | IVEOCustomLink | IVEOBasicProperty
   styling: IInputType
   disabled: boolean
+  translate: boolean
 }
 
 export default defineComponent<IProps>({
@@ -35,6 +43,10 @@ export default defineComponent<IProps>({
     styling: {
       type: Object,
       default: () => {}
+    },
+    translate: {
+      type: Boolean,
+      default: false
     }
   }
 })
