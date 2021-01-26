@@ -29,7 +29,7 @@
     </v-app-bar>
     <VeoPrimaryNav v-model="drawer" />
     <v-main style="max-height: 100vh;" class="overflow-hidden">
-      <VeoBreadcrumbs :custom-breadcrumbs="customBreadcrumbs" />
+      <VeoBreadcrumbs />
       <VeoPageWrapper>
         <nuxt />
       </VeoPageWrapper>
@@ -69,20 +69,6 @@ export default defineComponent<IProps>({
     VeoPageWrapper
   },
   setup(_props, context) {
-    const customBreadcrumbs = [
-      {
-        '/:unit/objects/:type/:group/:id/history': [
-          {
-            text: 'Dashboard',
-            to: '/:unit'
-          },
-          {
-            text: 'Test Text',
-            to: '/:unit/objects/:type'
-          }
-        ]
-      }
-    ]
     const { $user } = useContext()
     //
     // Global navigation
@@ -152,7 +138,7 @@ export default defineComponent<IProps>({
       context.root.$router.push('/' + newUnit)
     })
 
-    return { alert, drawer, newUnitDialog, snackbar, customBreadcrumbs }
+    return { alert, drawer, newUnitDialog, snackbar }
   },
   head() {
     return {
