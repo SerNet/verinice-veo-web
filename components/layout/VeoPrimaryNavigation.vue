@@ -45,6 +45,7 @@ import LocalStorage from '~/util/LocalStorage'
 import { FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
 
 export interface INavItem {
   name: string
@@ -91,13 +92,14 @@ export default Vue.extend({
     getNavEntries(route: Route) {
       this.items = []
       // Only show nav links belonging to units if a unit is selected
-      if (route.params.unit !== undefined) {
+      if ((route.params.unit && separateUUIDParam(route.params.unit).id) !== undefined) {
+        const routeUnitParam = route.params.unit
         this.items = [
           {
             name: this.$t('unit.index.title') as string,
             icon: 'mdi-view-dashboard',
             exact: true,
-            to: `/${route.params.unit}/`,
+            to: `/${routeUnitParam}/`,
             disabled: false,
             topLevelItem: true
           },
@@ -126,14 +128,14 @@ export default Vue.extend({
           {
             name: this.$t('page.settings.title') as string,
             icon: 'mdi-cog',
-            to: `/${route.params.unit}/settings`,
+            to: `/${routeUnitParam}/settings`,
             disabled: false,
             topLevelItem: true
           },
           {
             name: this.$t('page.help.title') as string,
             icon: 'mdi-help',
-            to: `/${route.params.unit}/help`,
+            to: `/${routeUnitParam}/help`,
             disabled: false,
             topLevelItem: true
           }
@@ -168,12 +170,13 @@ export default Vue.extend({
       })
     },
     async fetchDataTypes(): Promise<INavItem[]> {
+      const routeUnitParam = this.$route.params.unit
       return this.$api.schema.fetchAll().then(data => {
         return data.map(entry => {
           return {
             name: capitalize(entry.schemaName),
             exact: false,
-            to: `/${this.$route.params.unit}/objects/${entry.endpoint}/-/`,
+            to: `/${routeUnitParam}/objects/${entry.endpoint}/-/`,
             disabled: false,
             childItems: undefined,
             collapsed: false,
@@ -184,12 +187,13 @@ export default Vue.extend({
     },
 
     async fetchFormTypes(): Promise<INavItem[]> {
-      return await this.$api.form.fetchAll({ unit: this.$route.params.unit }).then((formTypes: FormSchemaMetas) =>
+      const routeUnitParam = this.$route.params.unit
+      return await this.$api.form.fetchAll({ unit: routeUnitParam }).then((formTypes: FormSchemaMetas) =>
         formTypes.map((entry: FormSchemaMeta) => {
           return {
             name: entry.name,
             exact: false,
-            to: `/${this.$route.params.unit}/forms/${entry.id}/`,
+            to: `/${routeUnitParam}/forms/${createUUIDUrlParam('form', entry.id)}/`,
             disabled: false,
             topLevelItem: false
           }

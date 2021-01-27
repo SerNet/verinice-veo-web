@@ -55,6 +55,7 @@ import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
 import VeoAlert, { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
+import { createUUIDUrlParam } from '~/lib/utils'
 
 interface IProps {}
 
@@ -135,7 +136,7 @@ export default defineComponent<IProps>({
 
     context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
       $user.currentDomain = undefined
-      context.root.$router.push('/' + newUnit)
+      context.root.$router.push('/' + createUUIDUrlParam('unit', newUnit))
     })
 
     return { alert, drawer, newUnitDialog, snackbar }

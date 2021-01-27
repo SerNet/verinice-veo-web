@@ -48,6 +48,7 @@ import Vue from 'vue'
 
 import VeoDomainSelection from '~/components/layout/VeoDomainSelection.vue'
 import VeoUnitSelection from '~/components/layout/VeoUnitSelection.vue'
+import { separateUUIDParam } from '~/lib/utils'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoDomain, IVeoUnit } from '~/types/VeoUnits'
 
@@ -73,7 +74,11 @@ export default Vue.extend({
   },
   computed: {
     currentUnitDomains(): IVeoDomain[] {
-      return this.units.find((unit: IVeoUnit) => unit.id === this.$route.params.unit)?.domains || []
+      return (
+        this.units.find(
+          (unit: IVeoUnit) => unit.id === (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id)
+        )?.domains || []
+      )
     }
   },
   mounted() {
