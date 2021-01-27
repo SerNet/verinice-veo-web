@@ -241,5 +241,6 @@ export default {
   'breadcrumbs.help': 'Handbuch',
   'breadcrumbs.editor': 'Editoren',
   'breadcrumbs.objectschema': 'Objektschema',
-  'breadcrumbs.history': 'Verlauf'
+  'breadcrumbs.history': 'Verlauf',
+  'breadcrumbs.create': 'Erstellen'
 }
