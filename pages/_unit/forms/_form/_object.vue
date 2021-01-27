@@ -300,4 +300,11 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+::v-deep {
+  .vf-layout.vf-group {
+    // To avoid sticky-header height, when scroll to group element
+    scroll-margin-top: 68px;
+  }
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12" md="auto" class="vf-layout vf-group">
+  <v-col cols="12" md="auto" class="vf-layout vf-group" :id="groupId">
     <v-row v-if="visible" dense class="flex-column" :class="dynamicClasses" :style="options && options.style">
       <v-col v-if="options && options.label">
         <h3>{{ options.label }}</h3>
@@ -26,6 +26,7 @@ export default Vue.extend({
   name: 'Group',
   props: {
     options: Object,
+    formSchemaPointer: String,
     disabled: Boolean,
     visible: Boolean
   },
@@ -39,6 +40,9 @@ export default Vue.extend({
     },
     dynamicClasses(): string[] {
       return [this.options && this.options.class ? this.options.class : '']
+    },
+    groupId(): string {
+      return this.formSchemaPointer.slice(2).replaceAll('/', '-')
     }
   }
 })
