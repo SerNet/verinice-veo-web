@@ -122,7 +122,7 @@
             v-model="invalidOS"
             :type="1"
             :title="$t('editor.formschema.wizard.invalidos')"
-            :content="$t('editor.formschema.wizard.invalidos.content')"
+            :text="$t('editor.formschema.wizard.invalidos.content')"
             class="my-4"
             flat
             no-close-button
