@@ -86,6 +86,7 @@ export default {
   'editor.formschema.wizard.create': 'Formular erstellen',
   'editor.formschema.wizard.create.description':
     'Neues Formular erstellen. Entweder leer oder mit vorgenerierten Feldern',
+  'editor.formschema.wizard.forceownschema': 'Existierende Objektschema selbst hochladen.',
   'editor.formschema.wizard.generate.generate': 'Vorgenerieren',
   'editor.formschema.wizard.generate.none': 'Mit leerem Formular starten',
   'editor.formschema.wizard.generate.title': 'Möchten Sie ein Formular vorgenerieren?',
@@ -95,6 +96,8 @@ export default {
   'editor.formschema.wizard.import.wrongobjectschema':
     'Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss "{formType}" sein.',
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
+  'editor.formschema.wizard.invalidos': 'Formschema stimmt nicht mit existierendem Objektschema überein',
+  'editor.formschema.wizard.invalidos.content': 'Das Formschema verwendet Eigenschaften, die nicht im in der Anwendung hinterlegten Objektschema existieren. Bitte laden Sie das modifizierte Objektschema hoch.',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
   'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema hochladen @:editor.upload.file.format',

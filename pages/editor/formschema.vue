@@ -133,7 +133,6 @@
 <script lang="ts">
 import { IVEOFormSchema } from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
-import { trim } from 'lodash'
 import Vue from 'vue'
 
 import CollapseButton from '~/components/layout/CollapseButton.vue'
@@ -144,7 +143,7 @@ import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
 import { generateSchema, validate } from '~/lib/FormSchemaHelper'
-import { VeoSchemaValidatorValidationResult } from '~/lib/VeoSchemaValidator'
+import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 
 export default Vue.extend({
   components: {
@@ -201,7 +200,7 @@ export default Vue.extend({
       }
     },
     schemaIsValid(): VeoSchemaValidatorValidationResult {
-      return this.formSchema ? validate(this.formSchema) : { valid: false, errors: [], warnings: [] }
+      return this.formSchema ? validate(this.formSchema, this.objectSchema) : { valid: false, errors: [], warnings: [] }
     }
   },
   mounted() {

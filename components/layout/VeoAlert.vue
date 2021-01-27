@@ -1,10 +1,10 @@
 <template>
   <v-alert
     :value="value"
-    :type="alertType"
+    :color="alertColor"
     colored-border
     border="left"
-    elevation="4"
+    :elevation="flat ? 0 : 4"
     dense
     class="veo-alert"
     :icon="alertIcon"
@@ -15,7 +15,7 @@
         <slot />
         <p v-if="text" class="mb-0 accent--text" v-html="text" />
       </v-col>
-      <v-col cols="auto" class="ml-6 align-self-center">
+      <v-col v-if="!noCloseButton" cols="auto" class="ml-6 align-self-center">
         <slot name="additional-button" />
         <v-btn outlined text :color="alertType" @click="$emit('input', false)">
           <span v-if="saveButtonText">{{ saveButtonText }}</span>
@@ -55,24 +55,32 @@ export default Vue.extend({
       type: Number as Prop<ALERT_TYPE>,
       default: 1
     },
+    flat: {
+      type: Boolean,
+      default: false
+    },
+    noCloseButton: {
+      type: Boolean,
+      default: false
+    },
     saveButtonText: {
       type: String,
       default: undefined
     }
   },
   computed: {
-    alertType(): string {
+    alertColor(): string {
       switch (this.type) {
         case 0:
-          return 'error'
+          return 'primary'
         case 1:
-          return 'info'
+          return 'primary'
         case 2:
           return 'success'
         case 3:
           return 'warning'
         default:
-          return 'info'
+          return 'primary'
       }
     },
     alertIcon(): string {
