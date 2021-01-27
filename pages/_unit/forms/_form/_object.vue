@@ -3,7 +3,11 @@
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPageWrapper v-else>
-    <VeoPage absolute-size :cols="8" :md="8" :xl="8" sticky-header>
+    <VeoPage :cols="2" :md="2" :xl="2" absolute-size>
+      <VeoFormNavigation />
+    </VeoPage>
+    <v-divider vertical />
+    <VeoPage absolute-size :cols="6" :md="6" :xl="6" sticky-header>
       <template #header>
         <v-row>
           <v-col>
@@ -71,7 +75,6 @@ import { IForm } from '~/lib/utils'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
-import object from '~/plugins/api/object'
 
 export interface IValidationErrorMessage {
   pointer: string
