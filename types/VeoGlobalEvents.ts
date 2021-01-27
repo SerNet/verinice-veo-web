@@ -3,7 +3,8 @@ import { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
 export interface VeoEventPayload {
   type?: ALERT_TYPE,
   text: string,
-  title?: string
+  title?: string,
+  saveButtonText?: string
 }
 
 export const VeoEvents = {

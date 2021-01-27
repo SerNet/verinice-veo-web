@@ -95,7 +95,11 @@ export default Vue.extend({
             '/extinguishingTime$',
             '^#/properties/links',
             '/applicableTo$',
-            '/references$'
+            '/references$',
+            '/updatedAt$',
+            '/updatedBy$',
+            '/createdAt$',
+            '/createdBy$'
           ],
           elementsPerPage: -1
         }

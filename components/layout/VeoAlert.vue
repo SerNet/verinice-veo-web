@@ -13,10 +13,14 @@
       <v-col cols="auto" class="accent--text">
         <h3 v-text="title" />
         <slot />
-        <p v-if="content" class="mb-0 accent--text" v-html="content" />
+        <p v-if="text" class="mb-0 accent--text" v-html="text" />
       </v-col>
       <v-col v-if="!noCloseButton" cols="auto" class="ml-6 align-self-center">
-        <v-btn outlined text :color="alertColor" @click="$emit('input', false)">{{ $t('global.button.ok') }}</v-btn>
+        <slot name="additional-button" />
+        <v-btn outlined text :color="alertType" @click="$emit('input', false)">
+          <span v-if="saveButtonText">{{ saveButtonText }}</span>
+          <span v-else>{{ $t('global.button.ok') }}</span>
+        </v-btn>
       </v-col>
     </v-row>
   </v-alert>
@@ -39,7 +43,7 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
-    content: {
+    text: {
       type: String,
       default: undefined
     },
@@ -58,6 +62,10 @@ export default Vue.extend({
     noCloseButton: {
       type: Boolean,
       default: false
+    },
+    saveButtonText: {
+      type: String,
+      default: undefined
     }
   },
   computed: {
