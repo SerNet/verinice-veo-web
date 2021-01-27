@@ -31,6 +31,8 @@
 <script lang="ts">
 import { computed, ComputedRef, ref, defineComponent, watch, reactive, Ref, PropOptions } from '@nuxtjs/composition-api'
 import { capitalize, last, intersection } from 'lodash'
+import { separateUUIDParam } from '~/lib/utils'
+import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 interface IBaseBreadcrumbEntry {
   text: string
@@ -42,7 +44,8 @@ interface IBreadcrumbEntry extends IBaseBreadcrumbEntry {
   exact: boolean
 }
 
-type ParamsWithUUID = ':form' | ':object' | ':group' | ':id'
+// TODO: check if :group should be added here, after groups are implemented
+type ParamsWithUUID = ':form' | ':object' | ':id'
 
 interface IUUIDParamTitel {
   [key: string]: { text: string | null }
@@ -64,24 +67,38 @@ export default defineComponent<IProps>({
   },
   setup(_props, context) {
     let items: Ref<IBreadcrumbEntry[]> = ref([])
-    const apiNames: any = {
-      ':form': 'form',
-      ':object': null, // Problem with getting API path (process, control, ...)
-      ':group': 'group',
-      ':id': null // Problem with getting API path (process, control, ...)
+    const displayNameKeyMap = {
+      ':form': 'name',
+      ':object': 'name', // TODO: change to displayName after implemented
+      ':id': 'name' // TODO: change to displayName after implemented
     }
-    async function getUUIDParamTitel(type: ParamsWithUUID, uuid: string) {
-      if (sessionStorage.getItem(uuid)) {
-        return { [type]: { text: sessionStorage.getItem(uuid) } }
+
+    const apiKeyMap = {
+      ':form': 'form',
+      ':object': 'object',
+      ':id': 'object'
+    }
+
+    async function getUUIDParamTitel(type: ParamsWithUUID, param: string) {
+      // "param" has always pattern: type-UUID, where type can be form, process, control, asset, ...
+      const paramSeparated = separateUUIDParam(param)
+      if (sessionStorage.getItem(paramSeparated.id)) {
+        return { [type]: { text: sessionStorage.getItem(paramSeparated.id) } }
       }
-      return new Promise<IUUIDParamTitel>(resolve =>
-        setTimeout(() => {
-          const title = capitalize(type.slice(1)) + 'DisplayName'
-          console.log(title)
-          sessionStorage.setItem(uuid, title)
-          resolve({ [type]: { text: sessionStorage.getItem(uuid) } })
-        }, 300)
-      )
+
+      return new Promise<IUUIDParamTitel>(async resolve => {
+        const apiKey = apiKeyMap[type]
+        const displayNameKey = displayNameKeyMap[type]
+        // @ts-ignore
+        const api = context.root.$api[apiKey]
+        const text =
+          apiKey === 'object'
+            ? (await api.fetch(getSchemaEndpoint(paramSeparated.type), paramSeparated.id))[displayNameKey]
+            : (await api.fetch(paramSeparated.id))[displayNameKey]
+
+        sessionStorage.setItem(paramSeparated.id, text)
+        resolve({ [type]: { text: text } })
+      })
     }
 
     function getText(params: any, type: string) {
@@ -95,7 +112,8 @@ export default defineComponent<IProps>({
       () => context.root.$route.fullPath,
       async () => {
         const params: any = {}
-        const paramsWithUUID: ParamsWithUUID[] = [':form', ':object', ':group', ':id']
+        // TODO: check if :group should be added here, after groups are implemented
+        const paramsWithUUID: ParamsWithUUID[] = [':form', ':object', ':id']
         Object.entries(context.root.$route.params).forEach(([key, value]) => {
           params[`:${key}`] = value
         })
@@ -115,6 +133,7 @@ export default defineComponent<IProps>({
         } else {
           let breadcrumbsReplacement: any = {
             ':unit': { text: 'Dashboard' },
+            ':group': { text: 'Group' },
             forms: { text: 'veo.Forms' },
             objects: { text: 'veo.Objects' }
           }
