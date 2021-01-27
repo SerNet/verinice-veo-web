@@ -1,7 +1,7 @@
 <template>
   <v-alert
     :value="value"
-    :type="alertType"
+    :color="alertColor"
     colored-border
     border="left"
     :elevation="flat ? 0 : 4"
@@ -16,7 +16,7 @@
         <p v-if="content" class="mb-0 accent--text" v-html="content" />
       </v-col>
       <v-col v-if="!noCloseButton" cols="auto" class="ml-6 align-self-center">
-        <v-btn outlined text :color="alertType" @click="$emit('input', false)">{{ $t('global.button.ok') }}</v-btn>
+        <v-btn outlined text :color="alertColor" @click="$emit('input', false)">{{ $t('global.button.ok') }}</v-btn>
       </v-col>
     </v-row>
   </v-alert>
@@ -61,18 +61,18 @@ export default Vue.extend({
     }
   },
   computed: {
-    alertType(): string {
+    alertColor(): string {
       switch (this.type) {
         case 0:
-          return 'error'
+          return 'primary'
         case 1:
-          return 'info'
+          return 'primary'
         case 2:
           return 'success'
         case 3:
           return 'warning'
         default:
-          return 'info'
+          return 'primary'
       }
     },
     alertIcon(): string {
