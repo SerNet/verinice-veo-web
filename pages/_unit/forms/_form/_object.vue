@@ -4,10 +4,10 @@
   </div>
   <VeoPageWrapper v-else>
     <VeoPage :cols="2" :md="2" :xl="2" absolute-size>
-      <VeoFormNavigation />
+      <VeoFormNavigation :formSchema="form.formSchema && form.formSchema.content" />
     </VeoPage>
     <v-divider vertical />
-    <VeoPage absolute-size :cols="6" :md="6" :xl="6" sticky-header>
+    <VeoPage absolute-size :cols="6" :md="6" :xl="6" sticky-header id="scroll-wrapper">
       <template #header>
         <v-row>
           <v-col>
