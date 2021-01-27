@@ -7,7 +7,7 @@
             {{ item.text }}
           </v-btn>
         </template>
-        <v-list dense outlined>
+        <v-list dense class="py-0">
           <v-list-item
             v-for="(menuItem, index) in item.menuItems"
             :to="menuItem.to"
