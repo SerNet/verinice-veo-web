@@ -45,7 +45,6 @@
                           :list="filteredFormElements"
                           :group="{ name: 'g1', pull: 'clone', put: false }"
                           :sort="false"
-                          :swapThreshold="0.6"
                           :clone="onCloneFormElement"
                         >
                           <v-sheet v-for="(el, i) in filteredFormElements" :key="i">
@@ -75,7 +74,6 @@
                           :list="filteredBasics"
                           :group="{ name: 'g1', pull: 'clone', put: false }"
                           :sort="false"
-                          :swapThreshold="0.6"
                           :clone="onCloneControl"
                         >
                           <v-sheet v-for="(el, i) in filteredBasics" :key="i">
@@ -101,7 +99,6 @@
                           :list="filteredAspects"
                           :group="{ name: 'g1', pull: 'clone', put: false }"
                           :sort="false"
-                          :swapThreshold="0.6"
                           :clone="onCloneControl"
                         >
                           <v-sheet v-for="(el, i) in filteredAspects" :key="i">
@@ -127,7 +124,6 @@
                           :list="filteredLinks"
                           :group="{ name: 'g1', pull: 'clone', put: false }"
                           :sort="false"
-                          :swapThreshold="0.6"
                           :clone="onCloneControl"
                         >
                           <v-sheet v-for="(el, i) in filteredLinks" :key="i">
