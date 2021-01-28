@@ -237,5 +237,12 @@ export default {
   'unit.objects.created': 'Created',
   'unit.objects.updated': 'Updated',
   'unit.index.title': 'Dashboard',
-  'unit.select.label': 'Unit'
+  'unit.select.label': 'Unit',
+
+  'breadcrumbs.settings': 'Settings',
+  'breadcrumbs.help': 'Manual',
+  'breadcrumbs.editor': 'Editors',
+  'breadcrumbs.objectschema': 'Objectschema',
+  'breadcrumbs.history': 'History',
+  'breadcrumbs.create': 'Create'
 }

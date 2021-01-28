@@ -103,3 +103,23 @@ export interface IForm {
   objectData: IBaseObject
   lang?: IBaseObject
 }
+
+export function createUUIDUrlParam(type: string, UUID: string): string {
+  // UUID is exactly 36 characters long
+  // If it exactly 36 characters long (raw UUID), than add type to it, else return it directly, because type is already in it
+  return UUID.length !== 36 ? UUID : `${type.toLocaleLowerCase()}-${UUID}`
+}
+
+interface IUUIDParam {
+  type: string
+  id: string
+}
+
+export function separateUUIDParam(param: string): IUUIDParam {
+  // returns id with 36 characters from the structure type-UUID
+  const id = param.slice(-36)
+  return {
+    type: param.replace(`-${id}`, ''),
+    id: id
+  }
+}

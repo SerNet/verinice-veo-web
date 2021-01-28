@@ -67,7 +67,7 @@ import Vue from 'vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
-import { IForm } from '~/lib/utils'
+import { IForm, separateUUIDParam } from '~/lib/utils'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
@@ -125,12 +125,12 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    const formSchema = await this.$api.form.fetch(this.$route.params.form)
+    const formSchema = await this.$api.form.fetch(this.formId)
     this.objectType = formSchema.modelType && formSchema.modelType.toLowerCase()
     if (this.objectType) {
       const objectSchema = await this.$api.schema.fetch(this.objectType)
       const objectData = this.$route.params.object
-        ? await this.$api.object.fetch(getSchemaEndpoint(this.objectType), this.$route.params.object)
+        ? await this.$api.object.fetch(getSchemaEndpoint(this.objectType), this.objectId)
         : {}
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
       this.form = {
@@ -171,13 +171,22 @@ export default Vue.extend({
     title(): string {
       return this.$fetchState.pending ? 'veo.Forms' : `${this.form.objectData.name} - veo.Forms`
     },
-    unit(): string {
+    unitId(): string {
+      return separateUUIDParam(this.$route.params.unit).id
+    },
+    unitRoute() {
       return this.$route.params.unit
     },
     formId(): string {
+      return separateUUIDParam(this.$route.params.form).id
+    },
+    formRoute() {
       return this.$route.params.form
     },
-    object(): string {
+    objectId(): string {
+      return separateUUIDParam(this.$route.params.object).id
+    },
+    objectRoute() {
       return this.$route.params.object
     },
     dynamicAPI(): any {
@@ -186,14 +195,14 @@ export default Vue.extend({
         fetchAll: (objectType: string, searchParams?: any) => {
           return this.$api.object.fetchAll(getSchemaEndpoint(objectType), {
             ...searchParams,
-            unit: this.$route.params.unit
+            unit: this.unitId
           })
         },
         create: async (objectType: string, createdObjectData: any) => {
           const res = await this.$api.object.create(getSchemaEndpoint(objectType), {
             ...createdObjectData,
             owner: {
-              targetUri: `/units/${this.unit}`
+              targetUri: `/units/${this.unitId}`
             }
           })
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
@@ -208,10 +217,10 @@ export default Vue.extend({
       }
     },
     linkToLinks(): string {
-      return `/${this.unit}/forms/${this.formId}/${this.object}/links`
+      return `/${this.unitRoute}/forms/${this.formRoute}/${this.objectRoute}/links`
     },
     linkToHistory(): string {
-      return `/${this.unit}/forms/${this.formId}/${this.object}/history`
+      return `/${this.unitRoute}/forms/${this.formRoute}/${this.objectRoute}/history`
     }
   },
   methods: {
@@ -232,7 +241,7 @@ export default Vue.extend({
     },
     async save(objectType: string) {
       await this.$api.object
-        .update(getSchemaEndpoint(objectType), this.object, this.form.objectData)
+        .update(getSchemaEndpoint(objectType), this.objectId, this.form.objectData)
         .then(() => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
           this.$fetch()
@@ -249,11 +258,11 @@ export default Vue.extend({
       this.deleteDialog = false
       this.deleteBtnLoading = true
       await this.$api.object
-        .delete(getSchemaEndpoint(this.objectType || ''), this.object)
+        .delete(getSchemaEndpoint(this.objectType || ''), this.objectId)
         .then(() => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })
           this.$router.push({
-            path: `/${this.unit}/forms/${this.formId}/`
+            path: `/${this.unitRoute}/forms/${this.formRoute}/`
           })
         })
         .catch((error: { status: number; name: string }) => {

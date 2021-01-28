@@ -62,7 +62,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { IForm } from '~/lib/utils'
+import { IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
@@ -153,16 +153,22 @@ export default Vue.extend({
       return this.$route.params.group
     },
     objectId(): string {
+      return separateUUIDParam(this.$route.params.id).id
+    },
+    objectRoute(): string {
       return this.$route.params.id
     },
-    unit(): String {
+    unitId(): string {
+      return separateUUIDParam(this.$route.params.unit).id
+    },
+    unitRoute(): string {
       return this.$route.params.unit
     },
     linkToLinks(): string {
-      return `/${this.unit}/objects/${this.schemaEndpoint}/${this.objectGroup}/${this.objectId}/links`
+      return `/${this.unitRoute}/objects/${this.schemaEndpoint}/${this.objectGroup}/${this.objectRoute}/links`
     },
     linkToHistory(): string {
-      return `/${this.unit}/objects/${this.schemaEndpoint}/${this.objectGroup}/${this.objectId}/history`
+      return `/${this.unitRoute}/objects/${this.schemaEndpoint}/${this.objectGroup}/${this.objectRoute}/history`
     }
   },
   methods: {
@@ -196,11 +202,11 @@ export default Vue.extend({
       this.deleteBtnLoading = true
 
       await this.$api.object
-        .delete(this.schemaEndpoint, this.$route.params.id)
+        .delete(this.schemaEndpoint, this.objectId)
         .then(() => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })
           this.$router.push({
-            path: `/${this.unit}/objects/${this.schemaEndpoint}/${this.objectGroup}/`
+            path: `/${this.unitRoute}/objects/${this.schemaEndpoint}/${this.objectGroup}/`
           })
         })
         .catch((error: { status: number; name: string }) => {
