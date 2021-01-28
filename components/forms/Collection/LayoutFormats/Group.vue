@@ -30,6 +30,12 @@ export default Vue.extend({
     disabled: Boolean,
     visible: Boolean
   },
+  data() {
+    return {
+      groupIdPattern: /\//g,
+      replaceWith: '-'
+    }
+  },
   computed: {
     directionClass(): string {
       if (this.options && this.options.direction === 'horizontal') {
@@ -42,7 +48,7 @@ export default Vue.extend({
       return [this.options && this.options.class ? this.options.class : '']
     },
     groupId(): string {
-      return this.formSchemaPointer.slice(2).replaceAll('/', '-')
+      return this.formSchemaPointer.slice(2).replace(this.groupIdPattern, this.replaceWith)
     }
   }
 })
