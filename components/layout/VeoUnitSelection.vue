@@ -31,6 +31,7 @@ import { Prop } from 'vue/types/options'
 
 import { IVeoUnit } from '~/types/VeoUnits'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
+import { separateUUIDParam } from '~/lib/utils'
 
 export default Vue.extend({
   props: {
@@ -41,7 +42,7 @@ export default Vue.extend({
   },
   computed: {
     unit(): string | undefined {
-      return this.$route.params.unit || '-'
+      return (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id) || '-'
     }
   },
   methods: {

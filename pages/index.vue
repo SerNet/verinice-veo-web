@@ -16,7 +16,7 @@
       </template>
       <template #default="{ items }">
         <v-list dense>
-          <v-list-item v-for="item in items" :key="item.id" two-line :to="'/' + item.id">
+          <v-list-item v-for="item in items" :key="item.id" two-line :to="'/' + createUUIDUrlParam('unit', item.id)">
             <v-list-item-content>
               <v-list-item-title v-text="item.name" />
               <v-list-item-subtitle v-text="item.id" />
@@ -32,6 +32,7 @@
 import Vue from 'vue'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
+import { createUUIDUrlParam } from '~/lib/utils'
 import { IVeoUnit } from '~/types/VeoUnits'
 
 export default Vue.extend({
@@ -49,6 +50,9 @@ export default Vue.extend({
   async fetch() {
     const units = await this.$api.unit.fetchAll()
     this.units = units
+  },
+  methods: {
+    createUUIDUrlParam
   },
   head(): any {
     return {

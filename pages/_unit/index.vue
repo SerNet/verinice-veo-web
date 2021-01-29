@@ -32,6 +32,7 @@ import VeoPage from '~/components/layout/VeoPage.vue'
 // import VeoUnitWidget from '~/components/widgets/VeoUnitWidget.vue'
 import VeoUnitFormsWidget from '~/components/widgets/VeoUnitFormsWidget.vue'
 import VeoUnitObjectWidget from '~/components/widgets/VeoUnitObjectWidget.vue'
+import { separateUUIDParam } from '~/lib/utils'
 
 export default Vue.extend({
   components: {
@@ -46,7 +47,7 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    this.unit = await this.$api.unit.fetch(this.$route.params.unit)
+    this.unit = await this.$api.unit.fetch(this.unitId)
   },
   head(): any {
     return {
@@ -56,6 +57,9 @@ export default Vue.extend({
   computed: {
     title(): string {
       return this.unit.name || ''
+    },
+    unitId() {
+      return separateUUIDParam(this.$route.params.unit).id
     }
   },
   watch: {

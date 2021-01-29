@@ -6,7 +6,7 @@
         depressed
         text
         outlined
-        :to="`/${unit}/forms/${formType}/create`"
+        :to="`/${unitRoute}/forms/${formRoute}/create`"
         color="primary"
         class="align-self-center"
       >
@@ -78,7 +78,7 @@
 import Vue from 'vue'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
-import { IBaseObject } from '~/lib/utils'
+import { createUUIDUrlParam, IBaseObject, separateUUIDParam } from '~/lib/utils'
 import { endpoints, getSchemaEndpoint } from '~/plugins/api/schema'
 import { FormSchema, FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 import DeleteFormDialog from '~/components/dialogs/DeleteFormDialog.vue'
@@ -86,6 +86,7 @@ import DeleteFormDialog from '~/components/dialogs/DeleteFormDialog.vue'
 interface IData {
   formSchema: FormSchema | undefined
   objectType: string | undefined
+  objectTypePlural: string | undefined
   objects: IBaseObject[]
   formType: string
   formTypes: { value: string; text: string }[]
@@ -102,8 +103,9 @@ export default Vue.extend({
     return {
       formSchema: undefined,
       objectType: '',
+      objectTypePlural: '',
       objects: [],
-      formType: this.$route.params.form,
+      formType: separateUUIDParam(this.$route.params.form).id,
       formTypes: [],
       headers: [
         {
@@ -137,29 +139,27 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    this.formSchema = await this.$api.form.fetch(this.$route.params.form)
+    this.formSchema = await this.$api.form.fetch(this.formId)
     this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
     if (this.formSchema) {
       // @ts-ignore
-      this.objectType = endpoints[this.formSchema.modelType.toLowerCase()]
+      this.objectTypePlural = endpoints[this.formSchema.modelType.toLowerCase()]
 
-      this.objects = await this.$api.object.fetchAll(this.objectType, {
-        unit: this.$route.params.unit
+      this.objects = await this.$api.object.fetchAll(this.objectTypePlural, {
+        unit: this.unitId
       })
     } else {
       this.objects = []
     }
 
-    this.formTypes = await this.$api.form
-      .fetchAll({ unit: this.$route.params.unit })
-      .then((formTypes: FormSchemaMetas) =>
-        formTypes.map((entry: FormSchemaMeta) => {
-          return {
-            text: entry.name,
-            value: entry.id
-          }
-        })
-      )
+    this.formTypes = await this.$api.form.fetchAll({ unit: this.unitId }).then((formTypes: FormSchemaMetas) =>
+      formTypes.map((entry: FormSchemaMeta) => {
+        return {
+          text: entry.name,
+          value: entry.id
+        }
+      })
+    )
   },
   head() {
     return {
@@ -167,8 +167,17 @@ export default Vue.extend({
     }
   },
   computed: {
-    unit() {
+    unitId() {
+      return separateUUIDParam(this.$route.params.unit).id
+    },
+    unitRoute() {
       return this.$route.params.unit
+    },
+    formId() {
+      return separateUUIDParam(this.$route.params.form).id
+    },
+    formRoute(): string {
+      return createUUIDUrlParam('form', this.formType)
     },
     /**
      * Only display objects that either have no subtype set (but still are part of the model type)
@@ -191,7 +200,9 @@ export default Vue.extend({
   },
   methods: {
     doEdit(item: any) {
-      this.$router.push(`/${this.unit}/forms/${this.formType}/${item.id}`)
+      this.$router.push(
+        `/${this.unitRoute}/forms/${this.formRoute}/${createUUIDUrlParam(this.objectType as string, item.id)}`
+      )
     },
     showDelete(item: any) {
       this.deleteDialog.item = item
@@ -215,7 +226,7 @@ export default Vue.extend({
       }
     },
     changeType() {
-      this.$router.push(`/${this.unit}/forms/${this.formType}`)
+      this.$router.push(`/${this.unitRoute}/forms/${this.formRoute}`)
     }
   }
 })

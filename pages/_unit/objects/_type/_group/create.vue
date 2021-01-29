@@ -1,4 +1,5 @@
 <script lang="ts">
+import { createUUIDUrlParam } from '~/lib/utils'
 import BaseObjectFormCreate from '~/pages/_unit/forms/_form/create.vue'
 import { getSchemaEndpoint, getSchemaName } from '~/plugins/api/schema'
 
@@ -26,9 +27,9 @@ export default BaseObjectFormCreate.extend({
     async action(objectType: string) {
       const createdObjectUUID = await this.create(objectType)
       if (createdObjectUUID) {
-        const createdObjectURL = `/${this.unit}/objects/${getSchemaEndpoint(objectType)}/${
+        const createdObjectURL = `/${this.unitRoute}/objects/${getSchemaEndpoint(objectType)}/${
           this.objectGroup
-        }/${createdObjectUUID}/links`
+        }/${createUUIDUrlParam(objectType, createdObjectUUID)}/links`
         this.$router.push(createdObjectURL)
       } else {
         throw new Error('UUID of the create object does not exist!')

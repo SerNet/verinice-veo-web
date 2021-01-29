@@ -5,7 +5,7 @@
       <v-btn
         text
         outlined
-        :to="`/${$route.params.unit}/objects/${currentSchemaType}/${group}/create`"
+        :to="`/${unitRoute}/objects/${currentSchemaType}/${group}/create`"
         color="primary"
         class="align-self-center"
       >
@@ -80,7 +80,7 @@ import { capitalize } from 'lodash'
 import { DataTableHeader } from 'vuetify'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
-import { IBaseObject } from '~/lib/utils'
+import { createUUIDUrlParam, IBaseObject, separateUUIDParam } from '~/lib/utils'
 import { getSchemaName, ISchemaEndpoint } from '~/plugins/api/schema'
 import DeleteObjectDialog from '~/components/dialogs/DeleteObjectDialog.vue'
 
@@ -97,7 +97,8 @@ export default defineComponent<IProps>({
     const currentSchemaType: Ref<string> = ref(context.route.value.params.type)
     const currentSchemaName = computed(() => getSchemaName(currentSchemaType.value || ''))
     const group: Ref<string | undefined> = ref(context.route.value.params.group)
-    const unit: Ref<string> = ref(context.route.value.params.unit)
+    const unitId = computed(() => separateUUIDParam(context.route.value.params.unit).id)
+    const unitRoute = computed(() => context.route.value.params.unit)
 
     // Common parameters
     const schemaTypes: Ref<ISchemaEndpoint[]> = ref([])
@@ -118,7 +119,7 @@ export default defineComponent<IProps>({
           if (!group.value || group.value === '-') {
             // @ts-ignore
             objects.value = await context.$api.object.fetchAll(currentSchemaType.value as string, {
-              unit: unit.value
+              unit: unitId.value
             })
           } else {
             objects.value = await context.$api.group.fetchGroupMembers(
@@ -139,11 +140,11 @@ export default defineComponent<IProps>({
           await fetch()
         }
         nextTick(() => {
-          context.app.router?.push(`/${unit.value}/objects/${schemaTypes.value[0].endpoint}/`)
+          context.app.router?.push(`/${unitRoute.value}/objects/${schemaTypes.value[0].endpoint}/`)
         })
       }
       if (!group.value) {
-        context.app.router?.push(`/${unit.value}/objects/${currentSchemaType.value}/-/`)
+        context.app.router?.push(`/${unitRoute.value}/objects/${currentSchemaType.value}/-/`)
       }
     }
 
@@ -200,7 +201,12 @@ export default defineComponent<IProps>({
     const deleteDialog: Ref<{ value: boolean; item: any }> = ref({ value: false, item: undefined })
 
     function doEdit(item: any) {
-      context.app.router?.push(`/${unit.value}/objects/${currentSchemaType.value}/${group.value}/${item.id}`)
+      context.app.router?.push(
+        `/${unitRoute.value}/objects/${currentSchemaType.value}/${group.value}/${createUUIDUrlParam(
+          currentSchemaName.value as string,
+          item.id
+        )}`
+      )
     }
 
     function showDelete(item: any) {
@@ -222,6 +228,7 @@ export default defineComponent<IProps>({
     }
 
     return {
+      unitRoute,
       group,
       currentSchemaType,
       currentSchemaName,
@@ -234,7 +241,8 @@ export default defineComponent<IProps>({
       doDuplicate,
       showDelete,
       doDelete,
-      deleteDialog
+      deleteDialog,
+      separateUUIDParam
     }
   },
   head() {

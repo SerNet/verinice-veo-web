@@ -53,8 +53,8 @@
     <v-col v-if="ui.elements.length > 0">
       <VeoForm :schema="schema.items" :ui="ui" :value="value" :lang="lang" :api="api" @input="onInput" />
     </v-col>
-    <v-col v-else class="py-4 pl-3 links-field-row-no-attributes">
-      Keine weiteren Eigenschaften
+    <v-col v-else class="py-4 pl-1 links-field-row-no-attributes font-italic">
+      {{ $t('forms.input.link.noattributes') }}
     </v-col>
     <v-dialog :value="!!dialog" persistent max-width="500" @input="dialog = !$event ? false : dialog">
       <v-card v-if="dialog === 'DIALOG_CREATE'">
@@ -404,6 +404,6 @@ export default Vue.extend({
 }
 
 .links-field-row-no-attributes {
-  color: $accent;
+  color: $grey;
 }
 </style>
