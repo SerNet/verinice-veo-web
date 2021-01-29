@@ -4,6 +4,9 @@
   </div>
   <VeoPageWrapper v-else>
     <VeoPage :cols="2" :md="2" :xl="2" absolute-size>
+      <div class="button text-uppercase accent--text font-weight-medium my-2">
+        {{ $t('page.forms.navigation.group.title') }}
+      </div>
       <VeoFormNavigation :formSchema="form.formSchema && form.formSchema.content" class="mx-n4" />
     </VeoPage>
     <v-divider vertical />
