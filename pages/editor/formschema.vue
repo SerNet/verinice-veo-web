@@ -26,7 +26,7 @@
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </a>
-          <v-btn icon large color="primary">
+          <v-btn icon large color="primary" @click="onClickTranslationBtn">
             <v-icon>mdi-translate</v-icon>
           </v-btn>
           <v-btn icon large color="primary" @click="showCodeEditor = true">
@@ -125,6 +125,11 @@
       <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
+      <VEOFSETranslationDialog
+        v-if="formSchema && formSchema.translation"
+        v-model="showTranslationDialog"
+        :translation.sync="formSchema.translation"
+      />
     </template>
   </VeoPageWrapper>
 </template>
@@ -137,6 +142,7 @@ import Vue from 'vue'
 import CollapseButton from '~/components/layout/CollapseButton.vue'
 import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
 import VeoFSECodeEditorDialog from '~/components/dialogs/SchemaEditors/VeoFSECodeEditorDialog.vue'
+import VEOFSETranslationDialog from '~/components/dialogs/SchemaEditors/VEOFSETranslationDialog.vue'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
@@ -146,12 +152,14 @@ import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 
 export default Vue.extend({
   components: {
+    CollapseButton,
     VeoEditorErrorDialog,
     VeoPageWrapper,
     VeoPage,
     VeoForm,
     VEOFSEWizardDialog,
-    VeoFSECodeEditorDialog
+    VeoFSECodeEditorDialog,
+    VEOFSETranslationDialog
   },
   data() {
     return {
@@ -163,7 +171,8 @@ export default Vue.extend({
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
       objectData: {},
-      showCodeEditor: false as boolean
+      showCodeEditor: false as boolean,
+      showTranslationDialog: false as boolean
     }
   },
   async fetch() {
@@ -231,6 +240,9 @@ export default Vue.extend({
         ;(this.$refs.downloadButton as any).href = data
         ;(this.$refs.downloadButton as any).download = `fs_${this.formSchema?.name || 'download'}.json`
       }
+    },
+    onClickTranslationBtn() {
+      this.showTranslationDialog = true
     }
   }
 })
