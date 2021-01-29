@@ -3,7 +3,7 @@
     <template v-for="item in items">
       <v-list-item :key="item.initialId + '0'" @click="onClick(item.initialId)">
         <v-list-item-content>
-          <v-list-item-title>{{ item.text }}</v-list-item-title>
+          <v-list-item-title :class="currentLevelLeftMargin">{{ item.text }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <VeoFormNavigation
@@ -11,7 +11,6 @@
         :initialId="item.initialId"
         :key="item.initialId + '1'"
         :nestingLevel="nextNestingLevel"
-        :class="nextNestingLevelMargin"
       />
     </template>
   </v-list>
@@ -64,8 +63,8 @@ export default Vue.extend({
     nextNestingLevel(): number {
       return this.nestingLevel + 1
     },
-    nextNestingLevelMargin(): string {
-      return `ml-${this.nextNestingLevel * 4}`
+    currentLevelLeftMargin(): string {
+      return `ml-${this.nestingLevel * 4}`
     }
   },
   watch: {
