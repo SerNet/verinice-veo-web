@@ -115,11 +115,13 @@ interface IUUIDParam {
   id: string
 }
 
-export function separateUUIDParam(param: string): IUUIDParam {
+export function separateUUIDParam(param: string | undefined): IUUIDParam {
+  // if param is not defined, make it string; TODO: check if this can cause bugs
+  const stringParam = param || ''
   // returns id with 36 characters from the structure type-UUID
-  const id = param.slice(-36)
+  const id = stringParam.slice(-36)
   return {
-    type: param.replace(`-${id}`, ''),
+    type: stringParam.replace(`-${id}`, ''),
     id: id
   }
 }
