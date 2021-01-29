@@ -8,6 +8,7 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
    
   <div
     class="vf-layout vf-group col-md-auto col-12"
+    id=""
   >
     <div
       class="row flex-column row--dense"
@@ -104,6 +105,7 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
    
   <div
     class="vf-layout vf-group col-md-auto col-12"
+    id=""
   >
     <div
       class="row flex-column row--dense"

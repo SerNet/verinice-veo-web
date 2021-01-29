@@ -97,7 +97,8 @@ export default {
     'Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss "{formType}" sein.',
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
   'editor.formschema.wizard.invalidos': 'Formschema stimmt nicht mit existierendem Objektschema überein',
-  'editor.formschema.wizard.invalidos.content': 'Das Formschema verwendet Eigenschaften, die nicht im in der Anwendung hinterlegten Objektschema existieren. Bitte laden Sie das modifizierte Objektschema hoch.',
+  'editor.formschema.wizard.invalidos.content':
+    'Das Formschema verwendet Eigenschaften, die nicht im in der Anwendung hinterlegten Objektschema existieren. Bitte laden Sie das modifizierte Objektschema hoch.',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
   'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema hochladen @:editor.upload.file.format',
@@ -184,6 +185,8 @@ export default {
   'page.settings.language': 'Sprache',
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
+
+  'page.forms.navigation.group.title': 'Inhaltsverzeichnis',
 
   'search.label': 'verinice.veo durchsuchen',
 
