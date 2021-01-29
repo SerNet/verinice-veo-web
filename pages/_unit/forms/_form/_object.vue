@@ -4,7 +4,7 @@
   </div>
   <VeoPageWrapper v-else>
     <VeoPage :cols="2" :md="2" :xl="2" absolute-size>
-      <VeoFormNavigation :formSchema="form.formSchema && form.formSchema.content" />
+      <VeoFormNavigation :formSchema="form.formSchema && form.formSchema.content" class="mx-n4" />
     </VeoPage>
     <v-divider vertical />
     <VeoPage absolute-size :cols="6" :md="6" :xl="6" sticky-header id="scroll-wrapper">
@@ -300,11 +300,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-::v-deep {
-  .vf-layout.vf-group {
-    // To avoid sticky-header height, when scroll to group element
-    scroll-margin-top: 68px;
-  }
-}
-</style>
+<style lang="scss" scoped></style>
