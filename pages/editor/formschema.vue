@@ -26,6 +26,9 @@
               <v-icon>mdi-download</v-icon>
             </v-btn>
           </a>
+          <v-btn icon large color="primary">
+            <v-icon>mdi-translate</v-icon>
+          </v-btn>
           <v-btn icon large color="primary" @click="showCodeEditor = true">
             <v-icon>mdi-code-tags</v-icon>
           </v-btn>
@@ -55,7 +58,7 @@
                     class="objectschema-type-field"
                   />
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="3">
                   <v-text-field
                     v-model="formSchema.name"
                     dense
@@ -65,11 +68,7 @@
                     @input="updateSchemaName()"
                   />
                 </v-col>
-              </v-row>
-            </v-col>
-            <v-col cols="12">
-              <v-row class="mx-4">
-                <v-col cols="2" class="pl-0">
+                <v-col cols="1">
                   <v-text-field v-model="formSchema.subType" dense flat :label="$t('editor.formschema.subtype')" />
                 </v-col>
               </v-row>
