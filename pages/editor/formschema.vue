@@ -10,7 +10,7 @@
         :cols="12"
         :md="backlogCollapsed ? 6 : 8"
         :xl="backlogCollapsed ? 6 : 8"
-        :title="$t('editor.formschema.headline')"
+        :title="title"
         page-class="d-flex flex-column"
         content-class="veo-formschema-editor-page"
       >
@@ -39,42 +39,11 @@
           >
             <v-icon>mdi-alert-circle-outline</v-icon>
           </v-btn>
+          <v-spacer />
+          <v-btn icon large color="primary" class="mr-10" @click="showDetailDialog = !showDetailDialog">
+            <v-icon>mdi-wrench</v-icon>
+          </v-btn>
           <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="previewCollapsed" right />
-          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2 fill-width">
-            <v-col>
-              <v-row class="mx-4">
-                <v-col cols="2" class="pl-0">
-                  <v-text-field
-                    v-model="formSchema.modelType"
-                    dense
-                    hide-details
-                    flat
-                    readonly
-                    disabled
-                    :label="$t('editor.objectschema.objectschema')"
-                    class="objectschema-type-field"
-                  />
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="formSchema.name"
-                    dense
-                    hide-details
-                    flat
-                    :label="$t('editor.formschema.formschema')"
-                    @input="updateSchemaName()"
-                  />
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col cols="12">
-              <v-row class="mx-4">
-                <v-col cols="2" class="pl-0">
-                  <v-text-field v-model="formSchema.subType" dense flat :label="$t('editor.formschema.subtype')" />
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
         </template>
         <template #default>
           <FormSchemaEditor
@@ -126,6 +95,15 @@
       <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
+      <VeoFSESchemaDetailsDialog
+        v-if="formSchema"
+        v-model="showDetailDialog"
+        :object-schema="formSchema.modelType"
+        :form-schema="formSchema.name"
+        :subtype="formSchema.subType"
+        @update-schema-name="updateSchemaName"
+        @update-subtype="updateSubType"
+      />
     </template>
   </VeoPageWrapper>
 </template>
@@ -142,6 +120,7 @@ import VeoForm from '~/components/forms/VeoForm.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
+import VeoFSESchemaDetailsDialog from '~/components/dialogs/SchemaEditors/VeoFSESchemaDetailsDialog.vue'
 import { generateSchema, validate } from '~/lib/FormSchemaHelper'
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 
@@ -152,7 +131,9 @@ export default Vue.extend({
     VeoPage,
     VeoForm,
     VEOFSEWizardDialog,
-    VeoFSECodeEditorDialog
+    VeoFSECodeEditorDialog,
+    CollapseButton,
+    VeoFSESchemaDetailsDialog
   },
   data() {
     return {
@@ -160,6 +141,7 @@ export default Vue.extend({
       backlogCollapsed: false as boolean,
       showCreationDialog: false as boolean,
       showErrorDialog: false as boolean,
+      showDetailDialog: false as boolean,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
@@ -201,6 +183,9 @@ export default Vue.extend({
     },
     schemaIsValid(): VeoSchemaValidatorValidationResult {
       return this.formSchema ? validate(this.formSchema, this.objectSchema) : { valid: false, errors: [], warnings: [] }
+    },
+    title(): string {
+      return `${this.$t('editor.formschema.headline')} (${this.formSchema?.name})`
     }
   },
   mounted() {
@@ -221,9 +206,14 @@ export default Vue.extend({
       this.objectSchema = schema
       this.showCreationDialog = !this.formSchema || false
     },
-    updateSchemaName() {
+    updateSchemaName(value: string) {
       if (this.formSchema) {
-        this.formSchema.name = this.formSchema.name.toLowerCase()
+        this.formSchema.name = value.toLowerCase()
+      }
+    },
+    updateSubType(value: string) {
+      if (this.formSchema) {
+        this.formSchema.subType = value
       }
     },
     downloadSchema() {
@@ -242,13 +232,5 @@ export default Vue.extend({
   .veo-formschema-editor-page {
     max-height: 100%;
   }
-}
-
-.objectschema-type-field ::v-deep label {
-  color: rgba(0, 0, 0, 0.6) !important;
-}
-
-.objectschema-type-field ::v-deep input {
-  color: rgba(0, 0, 0, 0.87) !important;
 }
 </style>

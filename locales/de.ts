@@ -57,6 +57,7 @@ export default {
   'editor.formschema.description': 'Formulare erstellen, bearbeiten, importieren und exportieren',
   'editor.formschema.backlog.button.expand': 'Alle ausklappen',
   'editor.formschema.backlog.button.collapse': 'Alle einklappen',
+  'editor.formschema.details.headline': 'Formschema Eigenschaften',
   'editor.formschema.edit.group.headline': 'Gruppen Element anpassen',
   'editor.formschema.edit.text.headline': 'Text Element anpassen',
   'editor.formschema.edit.css.class': 'CSS Klassen',
