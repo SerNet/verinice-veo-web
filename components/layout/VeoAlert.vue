@@ -17,7 +17,7 @@
       </v-col>
       <v-col v-if="!noCloseButton" cols="auto" class="ml-6 align-self-center">
         <slot name="additional-button" />
-        <v-btn outlined text :color="alertType" @click="$emit('input', false)">
+        <v-btn outlined text :color="alertColor" @click="$emit('input', false)">
           <span v-if="saveButtonText">{{ saveButtonText }}</span>
           <span v-else>{{ $t('global.button.ok') }}</span>
         </v-btn>
