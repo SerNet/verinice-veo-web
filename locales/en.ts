@@ -83,6 +83,7 @@ export default {
   'editor.formschema.formschema': 'Form schema',
   'editor.formschema.headline': 'Form schema editor',
   'editor.formschema.dropzone.placeholder': 'Drag in the elements',
+  'editor.formschema.preview': 'Preview',
   'editor.formschema.subtype': 'Subtype',
   'editor.formschema.wizard.create': 'Create form schema',
   'editor.formschema.wizard.create.description':

@@ -83,6 +83,7 @@ export default {
   'editor.formschema.search.noMatch': 'Keine passenden Steuerelemente vorhanden',
   'editor.formschema.headline': 'Formschema Editor',
   'editor.formschema.dropzone.placeholder': 'Ziehen Sie die Steuerelemente herein',
+  'editor.formschema.preview': 'Vorschau',
   'editor.formschema.subtype': 'Sub Typ',
   'editor.formschema.wizard.create': 'Formular erstellen',
   'editor.formschema.wizard.create.description':

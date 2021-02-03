@@ -1,6 +1,14 @@
 <template>
-  <div class="fill-width fill-height" style="overflow: hidden;">
-    <v-row no-gutters class="veo-page-wrapper fill-height overflow-hidden">
+  <div class="fill-width fill-height d-flex flex-column overflow-hidden">
+    <!-- Encapsulate header in div as to not interfere with the pages -->
+    <div>
+      <h1 v-if="title" class="d-inline px-4 py-1 flex-grow-0">
+        {{ title }}
+      </h1>
+      <slot name="title" />
+      <slot name="header" />
+    </div>
+    <v-row no-gutters class="veo-page-wrapper overflow-hidden">
       <slot name="default" />
     </v-row>
     <slot name="helpers" />
@@ -9,9 +17,18 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 
-interface IProps {}
+interface IProps {
+  title: String
+}
 
-export default defineComponent<IProps>({})
+export default defineComponent<IProps>({
+  props: {
+    title: {
+      type: String,
+      default: undefined
+    }
+  }
+})
 </script>
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
