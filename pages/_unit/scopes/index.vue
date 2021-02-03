@@ -1,7 +1,7 @@
 <template>
   <VeoPage title="veo.Scopes">
     <template #default>
-      asdf
+      <VeoHierarchicalTable title="asdf" />
     </template>
   </VeoPage>
 </template>
@@ -9,17 +9,19 @@
 import { defineComponent } from '@nuxtjs/composition-api'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
+import VeoHierarchicalTable from '~/components/scopes/VeoHierarchicalTable.vue'
 
 interface IProps {}
 
 export default defineComponent<IProps>({
   components: {
-    VeoPage
+    VeoPage,
+    VeoHierarchicalTable
   },
   setup() {},
   head() {
     return {
-      title: 'veo.Objects'
+      title: 'veo.Scopes'
     }
   }
 })
