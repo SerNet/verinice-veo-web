@@ -145,7 +145,7 @@ export default Vue.extend({
       // @ts-ignore
       this.objectTypePlural = endpoints[this.formSchema.modelType.toLowerCase()]
 
-      this.objects = await this.$api.object.fetchAll(this.objectTypePlural, {
+      this.objects = await this.$api.entity.fetchAll(this.objectTypePlural, {
         unit: this.unitId
       })
     } else {
@@ -210,7 +210,7 @@ export default Vue.extend({
     },
     doDuplicate(item: IBaseObject) {
       if (this.formSchema) {
-        this.$api.object
+        this.$api.entity
           .create(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), { ...item })
           .then((response: any) => {
             this.doEdit({ id: response.resourceId })
@@ -220,7 +220,7 @@ export default Vue.extend({
     doDelete(id: number) {
       this.deleteDialog.value = false
       if (this.formSchema) {
-        this.$api.object.delete(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), id).then(() => {
+        this.$api.entity.delete(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), id).then(() => {
           this.$fetch()
         })
       }

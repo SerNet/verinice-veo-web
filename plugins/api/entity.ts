@@ -26,6 +26,7 @@ export default function(api: Client) {
      */
     create(objectType: string, person: Object) {
       return api.req(`/api/${objectType}`, {
+        method: 'POST',
         json: person
       })
     },

@@ -20,6 +20,7 @@ export default function(api: Client) {
      */
     create(unit: Object) {
       return api.req('/api/units', {
+        method: 'POST',
         json: unit
       })
     },
