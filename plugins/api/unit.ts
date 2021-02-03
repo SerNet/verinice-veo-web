@@ -1,6 +1,6 @@
 import { Client } from '~/plugins/api'
 
-import { IVeoUnit } from '~/types/VeoUnits'
+import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes'
 
 export default function(api: Client) {
   return {
@@ -18,7 +18,7 @@ export default function(api: Client) {
      * Creates a Unit
      * @param unit
      */
-    create(unit: Object) {
+    create(unit: Object): Promise<void> {
       return api.req('/api/units', {
         method: 'POST',
         json: unit
@@ -38,7 +38,7 @@ export default function(api: Client) {
      * @param id
      * @param unit
      */
-    update(id: string, unit: Object) {
+    update(id: string, unit: Object): Promise<IVeoUnit> {
       return api.req(`/api/units/${id}`, {
         method: 'PUT',
         json: unit
@@ -49,7 +49,7 @@ export default function(api: Client) {
      * Deletes a Unit
      * @param id
      */
-    delete(id: string) {
+    delete(id: string): Promise<IVeoAPIMessage> {
       return api.req(`/api/units/${id}`, {
         method: 'DELETE'
       })

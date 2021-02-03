@@ -10,6 +10,7 @@ import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
 import scope from '~/plugins/api/scope'
 import { User } from '~/plugins/user'
+import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 export function createAPI(context: Context) {
   return Client.create(context, { form, entity, schema, translation, unit, scope })
@@ -54,7 +55,7 @@ export class Client {
     return _url
   }
 
-  public async req(url: string, options: RequestOptions & { method: 'DELETE' }): Promise<void>
+  public async req(url: string, options: RequestOptions & { method: 'DELETE' }): Promise<any>
   public async req<T = any>(url: string, options?: RequestOptions): Promise<T>
 
   /**

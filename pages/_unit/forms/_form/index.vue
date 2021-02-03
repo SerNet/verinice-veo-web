@@ -80,11 +80,11 @@ import Vue from 'vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import { createUUIDUrlParam, IBaseObject, separateUUIDParam } from '~/lib/utils'
 import { endpoints, getSchemaEndpoint } from '~/plugins/api/schema'
-import { FormSchema, FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 import DeleteFormDialog from '~/components/dialogs/DeleteFormDialog.vue'
+import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
 
 interface IData {
-  formSchema: FormSchema | undefined
+  formSchema: IVeoFormSchema | undefined
   objectType: string | undefined
   objectTypePlural: string | undefined
   objects: IBaseObject[]
@@ -152,8 +152,8 @@ export default Vue.extend({
       this.objects = []
     }
 
-    this.formTypes = await this.$api.form.fetchAll({ unit: this.unitId }).then((formTypes: FormSchemaMetas) =>
-      formTypes.map((entry: FormSchemaMeta) => {
+    this.formTypes = await this.$api.form.fetchAll({ unit: this.unitId }).then((formTypes: IVeoFormSchemaMeta[]) =>
+      formTypes.map((entry: IVeoFormSchemaMeta) => {
         return {
           text: entry.name,
           value: entry.id

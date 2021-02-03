@@ -30,12 +30,9 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { FormSchemaMetas } from '~/types/FormSchema'
 import VeoWidget from '~/components/widgets/VeoWidget.vue'
 import { endpoints } from '~/plugins/api/schema'
 import { createUUIDUrlParam } from '~/lib/utils'
-
-type FormsList = FormSchemaMetas & { items?: number }[]
 
 export default Vue.extend({
   components: {

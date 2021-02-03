@@ -1,4 +1,5 @@
 import { Client } from '~/plugins/api'
+import { IVeoObjectSchema } from '~/types/VeoTypes'
 
 export interface ISchemaEndpoint {
   schemaName: string
@@ -48,7 +49,7 @@ export default function(api: Client) {
      * Retrieves an entity schema.
      * @param type
      */
-    fetch(type: string) {
+    fetch(type: string): Promise<IVeoObjectSchema> {
       return api.req(`/api/schemas/${type}`, {
         params: {
           domains: 'GDPR,ISO_27001'

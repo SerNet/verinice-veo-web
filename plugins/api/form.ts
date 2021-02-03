@@ -1,5 +1,5 @@
 import { Client } from '~/plugins/api'
-import { FormSchema, FormSchemaMetas } from '~/types/FormSchema'
+import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
 
 export default function(api: Client) {
   return {
@@ -7,7 +7,7 @@ export default function(api: Client) {
      * Loads all Forms
      * @param parent
      */
-    fetchAll(params?: Record<string, string>): Promise<FormSchemaMetas> {
+    fetchAll(params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
       return api.req('/api/forms', {
         params
       })
@@ -16,23 +16,20 @@ export default function(api: Client) {
     /**
      * Creates a form
      * @param form
+     * 
+     * @returns UUID of the new form
      */
-    create(form: FormSchema) {
+    create(form: IVeoFormSchema): Promise<string> {
       return api.req('/api/forms', {
         json: form
       })
     },
-    /* form = {
-      "name": "string",
-      "modelType": "Asset",
-      "content": {}
-    } */
 
     /**
      * Loads a forml by id
      * @param id
      */
-    fetch(id: string): Promise<FormSchema> {
+    fetch(id: string): Promise<IVeoFormSchema> {
       return api.req(`/api/forms/${id}`)
     },
 
@@ -41,7 +38,7 @@ export default function(api: Client) {
      * @param id
      * @param form
      */
-    update(id: string, form: FormSchema) {
+    update(id: string, form: IVeoFormSchema): Promise<void> {
       return api.req(`/api/forms/${id}`, {
         method: 'PUT',
         json: form
@@ -52,7 +49,7 @@ export default function(api: Client) {
      * Deletes a form
      * @param id
      */
-    delete(id: string) {
+    delete(id: string): Promise<void> {
       return api.req(`/api/forms/${id}`, {
         method: 'DELETE'
       })
