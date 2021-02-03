@@ -5,7 +5,7 @@
       <h1 v-if="title" class="d-inline px-4 py-1 flex-grow-0">
         {{ title }}
       </h1>
-      <slot name="title" />
+      <slot v-else name="title" />
       <slot name="header" />
     </div>
     <v-row no-gutters class="veo-page-wrapper overflow-hidden">
