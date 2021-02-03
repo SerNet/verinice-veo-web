@@ -1,5 +1,5 @@
 <template>
-  <VeoPageWrapper :title="title">
+  <VeoPageWrapper :title="title" title-class="d-flex align-center">
     <template v-if="schemaIsValid.valid" #header>
       <a
         ref="downloadButton"
@@ -26,7 +26,7 @@
         <v-icon>mdi-alert-circle-outline</v-icon>
       </v-btn>
       <v-spacer />
-      <v-btn icon large color="primary" class="mr-10" @click="showDetailDialog = !showDetailDialog">
+      <v-btn icon large color="primary" class="mr-4" @click="showDetailDialog = !showDetailDialog">
         <v-icon>mdi-wrench</v-icon>
       </v-btn>
     </template>
@@ -294,10 +294,4 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped>
-::v-deep {
-  .veo-formschema-editor-page {
-    max-height: 100%;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

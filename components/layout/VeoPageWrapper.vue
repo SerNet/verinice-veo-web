@@ -1,7 +1,7 @@
 <template>
   <div class="fill-width fill-height d-flex flex-column overflow-hidden">
     <!-- Encapsulate header in div as to not interfere with the pages -->
-    <div>
+    <div :class="titleClass">
       <h1 v-if="title" class="d-inline px-4 py-1 flex-grow-0">
         {{ title }}
       </h1>
@@ -19,11 +19,16 @@ import { defineComponent } from '@nuxtjs/composition-api'
 
 interface IProps {
   title: String
+  titleClass: String
 }
 
 export default defineComponent<IProps>({
   props: {
     title: {
+      type: String,
+      default: undefined
+    },
+    titleClass: {
       type: String,
       default: undefined
     }
