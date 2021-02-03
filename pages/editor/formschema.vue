@@ -70,14 +70,7 @@
             <v-col cols="12">
               <v-row class="mx-4">
                 <v-col cols="2" class="pl-0">
-                  <v-text-field
-                    v-model="formSchema.subType"
-                    dense
-                    flat
-                    required
-                    :rules="editorRules.subType"
-                    :label="$t('editor.formschema.subtype')"
-                  />
+                  <v-text-field v-model="formSchema.subType" dense flat :label="$t('editor.formschema.subtype')" />
                 </v-col>
               </v-row>
             </v-col>
@@ -140,7 +133,6 @@
 <script lang="ts">
 import { IVEOFormSchema } from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
-import { trim } from 'lodash'
 import Vue from 'vue'
 
 import CollapseButton from '~/components/layout/CollapseButton.vue'
@@ -151,7 +143,7 @@ import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
 import { generateSchema, validate } from '~/lib/FormSchemaHelper'
-import { VeoSchemaValidatorValidationResult } from '~/lib/VeoSchemaValidator'
+import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 
 export default Vue.extend({
   components: {
@@ -172,10 +164,7 @@ export default Vue.extend({
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
       objectData: {},
-      showCodeEditor: false as boolean,
-      editorRules: {
-        subType: [(input: string) => (input && trim(input).length > 0) || this.$t('global.input.required')]
-      }
+      showCodeEditor: false as boolean
     }
   },
   async fetch() {
@@ -211,7 +200,7 @@ export default Vue.extend({
       }
     },
     schemaIsValid(): VeoSchemaValidatorValidationResult {
-      return this.formSchema ? validate(this.formSchema) : { valid: false, errors: [], warnings: [] }
+      return this.formSchema ? validate(this.formSchema, this.objectSchema) : { valid: false, errors: [], warnings: [] }
     }
   },
   mounted() {

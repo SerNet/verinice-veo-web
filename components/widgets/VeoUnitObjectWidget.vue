@@ -58,7 +58,7 @@ export default Vue.extend({
           link: `objects/${key.endpoint}`,
           // @ts-ignore
           items: (
-            await this.$api.object.fetchAll(`${key.endpoint}`, {
+            await this.$api.entity.fetchAll(`${key.endpoint}`, {
               unit: this.unit.id
             })
           ).length

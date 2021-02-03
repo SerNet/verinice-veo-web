@@ -2,7 +2,7 @@
   <div class="toolbar-logo">
     <div class="inner hidden-xs-only">
       <div class="hidden-xs-only">
-        <h1 class="app-title">verinice.VEO</h1>
+        <h1 class="app-title">verinice.veo</h1>
       </div>
       <svg class="hidden-sm-and-up" viewBox="0 0 28 22" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -24,6 +24,8 @@ export default Vue.extend({})
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
 .toolbar-logo {
   align-items: center;
   display: flex;
@@ -37,7 +39,7 @@ export default Vue.extend({})
   }
 
   .app-title {
-    color: #e53935;
+    color: $primary;
     font-family: 'Trebuchet MS', Helvetica, Arial, sans-serif;
     font-size: 40px;
     font-weight: normal;

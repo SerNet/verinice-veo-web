@@ -19,8 +19,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import { separateUUIDParam } from '~/lib/utils'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoDomain } from '~/types/VeoUnits.ts'
+import { IVeoDomain } from '~/types/VeoTypes.ts'
 
 export default Vue.extend({
   props: {
@@ -40,7 +41,7 @@ export default Vue.extend({
       }))
     },
     unitIsSet(): boolean {
-      return this.$route.params.unit !== undefined
+      return (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id) !== undefined
     }
   },
   methods: {

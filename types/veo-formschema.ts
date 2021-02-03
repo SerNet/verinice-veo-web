@@ -22,7 +22,7 @@ declare module 'veo-formschema' {
     export interface IVEOFormSchema {
         name: string
         modelType: string
-        subType: string
+        subType: string | null
         content: IVEOFormSchemaItem
     }
 }

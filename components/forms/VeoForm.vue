@@ -95,7 +95,11 @@ export default Vue.extend({
             '/extinguishingTime$',
             '^#/properties/links',
             '/applicableTo$',
-            '/references$'
+            '/references$',
+            '/updatedAt$',
+            '/updatedBy$',
+            '/createdAt$',
+            '/createdBy$'
           ],
           elementsPerPage: -1
         }
@@ -441,16 +445,31 @@ export default Vue.extend({
     const value = this.value
     const lang = this.lang
 
-    const createComponent = (element: UISchemaElement): VNode => {
+    const createComponent = (element: UISchemaElement, formSchemaPointer: string, elementLevel: number): VNode => {
       const createChildren = () => {
-        return element.elements && element.elements.map(elem => createComponent(elem))
+        return (
+          element.elements &&
+          element.elements.map((elem, index) =>
+            createComponent(elem, `${formSchemaPointer}/elements/${index}`, elementLevel + 1)
+          )
+        )
       }
 
       const rule = this.evaluateRule(element.rule)
 
       switch (element.type) {
         case 'Layout':
-          return h(Layout, { props: { options: element.options, ...rule } }, createChildren())
+          return h(
+            Layout,
+            {
+              props: {
+                options: element.options,
+                formSchemaPointer,
+                ...rule
+              }
+            },
+            createChildren()
+          )
         case 'Control': {
           let partOfProps: { [key: string]: any } = {
             name: undefined,
@@ -518,7 +537,7 @@ export default Vue.extend({
           input: (v: any) => (this.page = v)
         }
       },
-      [createComponent(this.currentPage)]
+      [createComponent(this.currentPage, '#', 0)]
     )
   }
 })

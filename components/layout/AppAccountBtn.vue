@@ -1,6 +1,13 @@
 <template>
   <div style="flex-basis: 0;" class="mr-0 text-right flex-grow-1">
-    <v-menu v-model="value" :close-on-content-click="false" width="350" nudge-bottom="5" offset-y origin="top right">
+    <v-menu
+      v-model="value"
+      :close-on-content-click="false"
+      max-width="350px"
+      nudge-bottom="5"
+      offset-y
+      origin="top right"
+    >
       <template #activator="{ on }">
         <v-btn icon dark v-on="on">
           <v-avatar size="48" color="secondary">
@@ -41,8 +48,9 @@ import Vue from 'vue'
 
 import VeoDomainSelection from '~/components/layout/VeoDomainSelection.vue'
 import VeoUnitSelection from '~/components/layout/VeoUnitSelection.vue'
+import { separateUUIDParam } from '~/lib/utils'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoDomain, IVeoUnit } from '~/types/VeoUnits'
+import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
@@ -66,7 +74,11 @@ export default Vue.extend({
   },
   computed: {
     currentUnitDomains(): IVeoDomain[] {
-      return this.units.find((unit: IVeoUnit) => unit.id === this.$route.params.unit)?.domains || []
+      return (
+        this.units.find(
+          (unit: IVeoUnit) => unit.id === (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id)
+        )?.domains || []
+      )
     }
   },
   mounted() {

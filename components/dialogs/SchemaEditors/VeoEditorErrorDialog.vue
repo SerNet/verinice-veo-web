@@ -36,7 +36,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
 
-import { VeoSchemaValidatorValidationResult } from '~/lib/VeoSchemaValidator'
+import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 
 interface IProps {
   value: boolean

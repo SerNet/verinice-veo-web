@@ -30,16 +30,4 @@ export default defineComponent<IProps>({
   }
 })
 </script>
-<style lang="scss" scoped>
-::v-deep .v-list-item__content {
-  padding: 0;
-}
-
-::v-deep .v-list-item__content > .v-list-item__title {
-  text-overflow: initial;
-  overflow: auto;
-  height: 48px;
-  display: flex;
-  align-items: center;
-}
-</style>
+<style lang="scss" scoped></style>

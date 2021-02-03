@@ -1,9 +1,5 @@
 <template>
-  <LayoutFormat
-    v-bind="$props"
-    @input="$emit('input', $event)"
-    @change="$emit('input', $event)"
-  >
+  <LayoutFormat v-bind="$props" @input="$emit('input', $event)" @change="$emit('input', $event)">
     <slot />
   </LayoutFormat>
 </template>
@@ -18,6 +14,7 @@ export default Vue.extend({
   },
   props: {
     options: { type: Object, default: undefined },
+    formSchemaPointer: String,
     disabled: Boolean,
     visible: Boolean
   }

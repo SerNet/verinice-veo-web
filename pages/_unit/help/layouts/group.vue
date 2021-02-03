@@ -123,7 +123,6 @@ export default Vue.extend({
     },
     onInputGroupTitle(event: any) {
       this.groupTitle = event
-      console.log(event)
       if (event) {
         this.update(this.form.formSchema, '/options/label', event)
       } else {

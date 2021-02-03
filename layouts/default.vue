@@ -55,6 +55,7 @@ import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
 import VeoAlert, { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
+import { createUUIDUrlParam } from '~/lib/utils'
 
 interface IProps {}
 
@@ -88,30 +89,30 @@ export default defineComponent<IProps>({
     //
     // Handling of global events
     //
-    const alert = ref({ value: false, content: '', title: '', type: ALERT_TYPE.INFO })
+    const alert = ref({ value: false, text: '', title: '', type: ALERT_TYPE.INFO })
     const snackbar = ref({ value: false, text: '' })
 
     // Alert and snackbar events
     context.root.$on(VeoEvents.ALERT_ERROR, (payload: VeoEventPayload) => {
-      alert.value.content = payload.text
+      alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.ERROR
       alert.value.value = true
     })
     context.root.$on(VeoEvents.ALERT_INFO, (payload: VeoEventPayload) => {
-      alert.value.content = payload.text
+      alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.INFO
       alert.value.value = true
     })
     context.root.$on(VeoEvents.ALERT_SUCCESS, (payload: VeoEventPayload) => {
-      alert.value.content = payload.text
+      alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.SUCCESS
       alert.value.value = true
     })
     context.root.$on(VeoEvents.ALERT_WARNING, (payload: VeoEventPayload) => {
-      alert.value.content = payload.text
+      alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.WARNING
       alert.value.value = true
@@ -135,7 +136,7 @@ export default defineComponent<IProps>({
 
     context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
       $user.currentDomain = undefined
-      context.root.$router.push('/' + newUnit)
+      context.root.$router.push('/' + createUUIDUrlParam('unit', newUnit))
     })
 
     return { alert, drawer, newUnitDialog, snackbar }

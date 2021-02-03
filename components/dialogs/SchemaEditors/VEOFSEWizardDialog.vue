@@ -60,12 +60,7 @@
                 <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.subtype') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
-                <v-text-field
-                  v-model="createForm.subType"
-                  :label="$t('editor.formschema.subtype')"
-                  :rules="createForm.rules.subType"
-                  required
-                />
+                <v-text-field v-model="createForm.subType" :label="$t('editor.formschema.subtype')" />
               </v-col>
             </v-row>
             <v-row no-gutters class="align-center mt-4">
@@ -119,9 +114,19 @@
             :input-label="$t('editor.formschema.upload.input.file.label')"
             @schema-uploaded="doImport1"
           />
+          <v-checkbox v-model="forceOwnSchema" :label="$t('editor.formschema.wizard.forceownschema')" />
         </v-window-item>
         <v-window-item value="import-2">
           <h2>{{ $t('editor.objectschema.wizard.import') }}</h2>
+          <VeoAlert
+            v-model="invalidOS"
+            :type="1"
+            :title="$t('editor.formschema.wizard.invalidos')"
+            :text="$t('editor.formschema.wizard.invalidos.content')"
+            class="my-4"
+            flat
+            no-close-button
+          />
           <VEOEditorFileUpload
             :code="oscode"
             :input-label="$t('editor.objectschema.upload.input.file.label')"
@@ -157,11 +162,11 @@ import { capitalize, trim } from 'lodash'
 
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { IVEOFormSchema } from 'veo-formschema'
-import { generateSchema } from '~/lib/FormSchemaHelper'
+import { generateSchema, validate } from '~/lib/FormSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { endpoints, getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
+import { ISchemaEndpoint } from '~/plugins/api/schema'
 
 export default Vue.extend({
   components: {
@@ -181,12 +186,11 @@ export default Vue.extend({
       createForm: {
         title: '' as string,
         modelType: '' as string,
-        subType: '' as string,
+        subType: null as string | null,
         valid: false,
         rules: {
           title: [(input: string) => trim(input).length > 0],
-          modelType: [(input: string) => trim(input).length > 0],
-          subType: [(input: string) => trim(input).length > 0]
+          modelType: [(input: string) => trim(input).length > 0]
         }
       },
       oscode: '\n\n\n\n\n' as string,
@@ -194,7 +198,9 @@ export default Vue.extend({
       formSchema: undefined as IVEOFormSchema | undefined,
       objectSchema: undefined as VEOObjectSchemaRAW | undefined,
       state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
-      schemas: [] as ISchemaEndpoint[]
+      schemas: [] as ISchemaEndpoint[],
+      invalidOS: false as boolean,
+      forceOwnSchema: false as boolean
     }
   },
   computed: {
@@ -267,10 +273,12 @@ export default Vue.extend({
       }
     },
     doCreate2(_generateSchema: boolean) {
+      const _subtype =
+        !this.createForm.subType || trim(this.createForm.subType).length == 0 ? null : this.createForm.subType
       this.formSchema = generateSchema(
         this.createForm.title,
         this.objectSchema?.title || this.createForm.modelType,
-        this.createForm.subType
+        _subtype
       )
       this.$emit('form-schema', this.formSchema)
       this.$emit('object-schema', this.objectSchema)
@@ -279,13 +287,23 @@ export default Vue.extend({
     async doImport1(schema: IVEOFormSchema) {
       this.setFormSchema(schema)
       if (
+        !this.forceOwnSchema &&
         this.objectTypes.findIndex(
           (item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType?.toLowerCase()
         ) !== -1
       ) {
         this.objectSchema = await this.$api.schema.fetch(schema.modelType?.toLowerCase())
-        this.$emit('form-schema', this.formSchema)
-        this.$emit('object-schema', this.objectSchema)
+
+        /* Checks whether the form schema fits the object schema. If not, we assume that the object schema the
+         * user used for this form schema is a modified version of an existing object schema and ask him to provide it.
+         */
+        if (!validate(schema, this.objectSchema).valid) {
+          this.invalidOS = true
+          this.state = 'import-2'
+        } else {
+          this.$emit('form-schema', this.formSchema)
+          this.$emit('object-schema', this.objectSchema)
+        }
       } else {
         this.state = 'import-2'
       }
@@ -309,12 +327,11 @@ export default Vue.extend({
       this.createForm = {
         title: '' as string,
         modelType: '' as string,
-        subType: '' as string,
+        subType: null as string | null,
         valid: false,
         rules: {
           title: [(input: string) => trim(input).length > 0],
-          modelType: [(input: string) => trim(input).length > 0],
-          subType: [(input: string) => trim(input).length > 0]
+          modelType: [(input: string) => trim(input).length > 0]
         }
       }
     },

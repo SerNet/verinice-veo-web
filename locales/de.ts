@@ -86,6 +86,7 @@ export default {
   'editor.formschema.wizard.create': 'Formular erstellen',
   'editor.formschema.wizard.create.description':
     'Neues Formular erstellen. Entweder leer oder mit vorgenerierten Feldern',
+  'editor.formschema.wizard.forceownschema': 'Existierende Objektschema selbst hochladen.',
   'editor.formschema.wizard.generate.generate': 'Vorgenerieren',
   'editor.formschema.wizard.generate.none': 'Mit leerem Formular starten',
   'editor.formschema.wizard.generate.title': 'Möchten Sie ein Formular vorgenerieren?',
@@ -95,6 +96,9 @@ export default {
   'editor.formschema.wizard.import.wrongobjectschema':
     'Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss "{formType}" sein.',
   'editor.formschema.wizard.modelType.custom': 'Eigenes',
+  'editor.formschema.wizard.invalidos': 'Formschema stimmt nicht mit existierendem Objektschema überein',
+  'editor.formschema.wizard.invalidos.content':
+    'Das Formschema verwendet Eigenschaften, die nicht im in der Anwendung hinterlegten Objektschema existieren. Bitte laden Sie das modifizierte Objektschema hoch.',
   'editor.formschema.wizard.objectschema.required': 'Sie müssen ein Objektschema spezifizieren',
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
   'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema hochladen @:editor.upload.file.format',
@@ -182,20 +186,27 @@ export default {
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 
+  'page.forms.navigation.group.title': 'Inhaltsverzeichnis',
+
   'search.label': 'verinice.veo durchsuchen',
 
   'unit.create': 'Neue Unit erstellen',
   'unit.create.short': 'Unit erstellen',
   'unit.created': 'Unit wurde erstellt',
   'unit.data.createobject': '{type} erstellen',
-  'unit.data.deleteobject': 'Soll das Objekt {object} wirklich gelöscht werden?',
+  'unit.data.delete': 'Möchten Sie das Objekt "{name}" wirklich löschen?',
+  'unit.data.delete.headline': 'Formular löschen',
   'unit.data.errormessages': 'Fehlermeldungen',
   'unit.data.group': 'Gruppe',
   'unit.data.history': 'Verlauf',
   'unit.data.links': 'Links',
+  'unit.data.loading': '{types} werden geladen',
+  'unit.data.noentries': 'Keine {types} vorhanden!',
   'unit.data.nogroup': 'Objekt ohne Gruppe',
-  'unit.data.noobjects': 'Keine Objekte vorhanden',
   'unit.data.objectdata': 'objectData',
+  'unit.data.saved': 'Objekt wurde erfolgreich gespeichert!',
+  'unit.data.search': 'Suche',
+  'unit.data.type': 'Objekttyp',
   'unit.data.valid': 'isValid',
   'unit.data.validationlogs': 'Validation logs',
   'unit.details.children': 'Untergeordnete Units',
@@ -214,9 +225,28 @@ export default {
   'unit.details.objects.process': 'Alle Prozesse',
   'unit.details.parent': 'Übergeordnete Unit',
   'unit.forms.create': '{type} erstellen',
-  'unit.forms.noprocesses': 'Keine Verarbeitungstätigkeiten vorhanden',
+  'unit.forms.delete': 'Möchten Sie das Formular "{name}" wirklich löschen?',
+  'unit.forms.delete.headline': 'Formular löschen',
+  'unit.forms.form': 'Formular',
+  'unit.forms.header.abbreviation': 'Abk.',
+  'unit.forms.header.description': 'Beschreibung',
+  'unit.forms.header.title': 'Formulartitel',
+  'unit.forms.header.updatedat': 'Datum',
+  'unit.forms.header.updatedby': 'Bearbeiter',
+  'unit.forms.loading': '{types} werden geladen',
+  'unit.forms.noentries': 'Keine {types} vorhanden!',
+  'unit.forms.search': 'Suche',
   'unit.forms.nrr':
     'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
+  'unit.objects.created': 'Erstellt',
+  'unit.objects.updated': 'Bearbeitet',
   'unit.index.title': 'Dashboard',
-  'unit.select.label': 'Unit'
+  'unit.select.label': 'Unit',
+
+  'breadcrumbs.settings': 'Einstellungen',
+  'breadcrumbs.help': 'Handbuch',
+  'breadcrumbs.editor': 'Editoren',
+  'breadcrumbs.objectschema': 'Objektschema',
+  'breadcrumbs.history': 'Verlauf',
+  'breadcrumbs.create': 'Erstellen'
 }

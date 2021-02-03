@@ -1,4 +1,5 @@
 import { Client } from '~/plugins/api'
+import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
 
 /**
  * This file replaces the individual files for each object schema (at the point
@@ -14,7 +15,7 @@ export default function(api: Client) {
      * Loads all Persons
      * @param parent
      */
-    fetchAll(objectType: string, params?: Record<string, string>) {
+    fetchAll(objectType: string, params?: Record<string, string>): Promise<IVeoEntity[]> {
       return api.req(`/api/${objectType}`, {
         params
       })
@@ -24,8 +25,9 @@ export default function(api: Client) {
      * Creates a person
      * @param person
      */
-    create(objectType: string, person: Object) {
+    create(objectType: string, person: Object): Promise<IVeoAPIMessage> {
       return api.req(`/api/${objectType}`, {
+        method: 'POST',
         json: person
       })
     },
@@ -34,7 +36,7 @@ export default function(api: Client) {
      * Loads one Person by id
      * @param id
      */
-    fetch(objectType: string, id: string) {
+    fetch(objectType: string, id: string): Promise<IVeoEntity> {
       return api.req(`/api/${objectType}/${id}`)
     },
 
@@ -43,7 +45,7 @@ export default function(api: Client) {
      * @param id
      * @param person
      */
-    update(objectType: string, id: string, person: Object) {
+    update(objectType: string, id: string, person: Object): Promise<IVeoEntity> {
       return api.req(`/api/${objectType}/${id}`, {
         method: 'PUT',
         json: person
@@ -54,7 +56,7 @@ export default function(api: Client) {
      * Deletes a person
      * @param id
      */
-    delete(objectType: string, id: string) {
+    delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
       return api.req(`/api/${objectType}/${id}`, {
         method: 'DELETE'
       })

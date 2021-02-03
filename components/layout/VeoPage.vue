@@ -13,7 +13,7 @@
         :xl="!absoluteSize ? xlarge : 12"
         class="d-flex flex-wrap"
       >
-        <h1 class="d-inline px-3 py-1 flex-grow-0">
+        <h1 class="d-inline px-4 py-1 flex-grow-0">
           {{ title }}
         </h1>
         <slot name="title" />

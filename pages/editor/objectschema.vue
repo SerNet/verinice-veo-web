@@ -35,11 +35,7 @@
             <v-icon>mdi-alert-circle-outline</v-icon>
           </v-btn>
           <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="collapsed" right />
-          <v-row
-            v-if="schemaIsValid.valid"
-            no-gutters
-            class="flex-column overflow-hidden mt-2 fill-width"
-          >
+          <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2 fill-width">
             <v-col>
               <v-row class="mx-4">
                 <v-col cols="12" lg="4">
@@ -151,7 +147,7 @@ import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
 import { renameSchema, validate } from '~/lib/ObjectSchemaHelper'
-import { VeoSchemaValidatorValidationResult } from '~/lib/VeoSchemaValidator'
+import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 
 export default Vue.extend({
   components: {

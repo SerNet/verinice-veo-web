@@ -6,11 +6,11 @@
         depressed
         text
         outlined
-        :to="`/${unit}/forms/${formType}/create`"
+        :to="`/${unitRoute}/forms/${formRoute}/create`"
         color="primary"
         class="align-self-center"
       >
-        {{ $t('unit.forms.create', { type: createButtonText }) }}
+        {{ $t('unit.forms.create', { type: formName }) }}
       </v-btn>
     </template>
     <template #default>
@@ -18,44 +18,58 @@
         :headers="headers"
         :items="displayedObjects"
         :items-per-page="20"
-        :no-data-text="`Keine {types} vorhanden!`"
-        :loading-text="`{types} werden geladen...`"
+        :no-data-text="$t('unit.forms.noentries', { types: formName })"
+        :loading-text="$t('unit.forms.loading', { types: formName })"
         :loading="$fetchState.pending"
-        @click:row="goToObject"
       >
         <template #top>
           <v-row dense>
-            <v-col :cols="3">
-              <v-select v-model="formType" label="Formular" :items="formTypes" outlined dense @input="changeType()" />
-            </v-col>
-            <v-col :cols="3">
+            <v-col :cols="12" :md="3">
               <v-select
-                v-model="group"
-                label="Group"
-                :items="groups"
-                item-text="title"
-                item-value="id"
+                v-model="formType"
+                :label="$t('unit.forms.form')"
+                :items="formTypes"
                 outlined
                 dense
+                @input="changeType()"
               />
             </v-col>
-            <v-col :cols="6">
-              <v-text-field label="Title" outlined dense />
+            <v-col :cols="9">
+              <v-text-field :label="$t('unit.forms.search')" outlined dense style="visibility: hidden" />
             </v-col>
           </v-row>
         </template>
         <template #item.name="{ value }">
-          <span class="font-weight-bold">{{ value }}</span>
+          <span class="table--title-cell">{{ value }}</span>
+        </template>
+        <template #item.description="{ value }">
+          <span class="table--description-cell">{{ value }}</span>
+        </template>
+        <template #item.updatedAt="{ value }">
+          {{ new Date(value).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}<br />
+          {{ new Date(value).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
         </template>
         <template #item.actions="{ item }">
-          <v-icon small class="mr-2">
-            mdi-pencil
-          </v-icon>
-          <v-icon small>
-            mdi-delete
-          </v-icon>
+          <div class="d-flex flex-row">
+            <v-btn icon @click="doEdit(item)">
+              <v-icon>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
+            <v-btn icon @click="doDuplicate(item)">
+              <v-icon>
+                mdi-content-copy
+              </v-icon>
+            </v-btn>
+            <v-btn icon @click="showDelete(item)">
+              <v-icon>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+          </div>
         </template>
       </v-data-table>
+      <DeleteFormDialog v-model="deleteDialog.value" :form="deleteDialog.item" @delete="doDelete" />
     </template>
   </VeoPage>
 </template>
@@ -64,84 +78,88 @@
 import Vue from 'vue'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
-import { IBaseObject } from '~/lib/utils'
-import { endpoints, getSchemaName } from '~/plugins/api/schema'
-import { FormSchema, FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
+import { createUUIDUrlParam, IBaseObject, separateUUIDParam } from '~/lib/utils'
+import { endpoints, getSchemaEndpoint } from '~/plugins/api/schema'
+import DeleteFormDialog from '~/components/dialogs/DeleteFormDialog.vue'
+import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
 
 interface IData {
-  formSchema: FormSchema | undefined
+  formSchema: IVeoFormSchema | undefined
   objectType: string | undefined
+  objectTypePlural: string | undefined
   objects: IBaseObject[]
   formType: string
   formTypes: { value: string; text: string }[]
-  group: string
-  groups: { value: string; text: string }[]
   headers: any
+  deleteDialog: { value: boolean; item: any }
 }
 
 export default Vue.extend({
   components: {
-    VeoPage
+    VeoPage,
+    DeleteFormDialog
   },
   data(): IData {
     return {
       formSchema: undefined,
       objectType: '',
+      objectTypePlural: '',
       objects: [],
-      formType: this.$route.params.form,
+      formType: separateUUIDParam(this.$route.params.form).id,
       formTypes: [],
-      group: '-',
-      groups: [],
       headers: [
         {
-          text: 'Title',
+          text: this.$t('unit.forms.header.abbreviation'),
+          value: 'abbreviation'
+        },
+        {
+          text: this.$t('unit.forms.header.title'),
           value: 'name'
         },
         {
-          text: 'UUID',
-          value: 'id',
+          text: this.$t('unit.forms.header.description'),
+          value: 'description',
           sortable: false
         },
         {
-          text: 'Created at',
-          value: null
+          text: this.$t('unit.forms.header.updatedby'),
+          value: 'updatedBy'
         },
         {
-          text: 'Updated at',
-          value: null
+          text: this.$t('unit.forms.header.updatedat'),
+          value: 'updatedAt'
         },
         {
           text: '',
           value: 'actions',
           sortable: false
         }
-      ]
+      ],
+      deleteDialog: { value: false, item: undefined }
     }
   },
   async fetch() {
-    this.formSchema = await this.$api.form.fetch(this.$route.params.form)
+    this.formSchema = await this.$api.form.fetch(this.formId)
     this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
     if (this.formSchema) {
       // @ts-ignore
-      this.objectType = endpoints[this.formSchema.modelType.toLowerCase()]
+      this.objectTypePlural = endpoints[this.formSchema.modelType.toLowerCase()]
 
-      this.objects = await this.$api.object.fetchAll(this.objectType, {
-        unit: this.$route.params.unit
+      this.objects = await this.$api.entity.fetchAll(this.objectTypePlural, {
+        unit: this.unitId
       })
     } else {
       this.objects = []
     }
 
-    this.formTypes = await this.$api.form
-      .fetchAll({ unit: this.$route.params.unit })
-      .then((formTypes: FormSchemaMetas) =>
-        formTypes.map((entry: FormSchemaMeta) => {
-          return {
-            text: entry.name,
-            value: entry.id
-          }
-        })
-      )
+    this.formTypes = await this.$api.form.fetchAll({ unit: this.unitId }).then((formTypes: IVeoFormSchemaMeta[]) =>
+      formTypes.map((entry: IVeoFormSchemaMeta) => {
+        return {
+          text: entry.name,
+          value: entry.id
+        }
+      })
+    )
   },
   head() {
     return {
@@ -149,35 +167,88 @@ export default Vue.extend({
     }
   },
   computed: {
-    unit() {
+    unitId() {
+      return separateUUIDParam(this.$route.params.unit).id
+    },
+    unitRoute() {
       return this.$route.params.unit
     },
+    formId() {
+      return separateUUIDParam(this.$route.params.form).id
+    },
+    formRoute(): string {
+      return createUUIDUrlParam('form', this.formType)
+    },
+    /**
+     * Only display objects that either have no subtype set (but still are part of the model type)
+     * OR have a subtype that is the same as the subType of the form schema
+     */
     displayedObjects(): IBaseObject[] {
       return this.objects.filter(
         (object: IBaseObject) =>
-          !this.formSchema || object.subType[this.$user.currentDomain] === this.formSchema.subType
+          !this.formSchema ||
+          !object.subType[this.$user.currentDomain] ||
+          object.subType[this.$user.currentDomain] === this.formSchema.subType
       )
-      return this.objects
     },
-    createButtonText(): string {
-      return getSchemaName(this.objectType || '') || ''
+    formName(): string {
+      return this.formSchema?.name || ''
+    },
+    currentDomain(): string {
+      return this.$user.currentDomain
     }
   },
   methods: {
-    goToObject(item: any) {
-      this.$router.push(`/${this.unit}/forms/${this.formType}/${item.id}`)
+    doEdit(item: any) {
+      this.$router.push(
+        `/${this.unitRoute}/forms/${this.formRoute}/${createUUIDUrlParam(this.objectType as string, item.id)}`
+      )
+    },
+    showDelete(item: any) {
+      this.deleteDialog.item = item
+      this.deleteDialog.value = true
+    },
+    doDuplicate(item: IBaseObject) {
+      if (this.formSchema) {
+        this.$api.entity
+          .create(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), { ...item })
+          .then((response: any) => {
+            this.doEdit({ id: response.resourceId })
+          })
+      }
+    },
+    doDelete(id: number) {
+      this.deleteDialog.value = false
+      if (this.formSchema) {
+        this.$api.entity.delete(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), id).then(() => {
+          this.$fetch()
+        })
+      }
     },
     changeType() {
-      this.$router.push(`/${this.unit}/forms/${this.formType}`)
+      this.$router.push(`/${this.unitRoute}/forms/${this.formRoute}`)
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
+.table--description-cell {
+  display: block;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-.v-data-table ::v-deep tbody {
-  cursor: pointer;
+.table--title-cell {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+::v-deep table {
+  th {
+    white-space: nowrap;
+  }
 }
 </style>

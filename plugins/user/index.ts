@@ -32,6 +32,8 @@ export class User {
         return defaultDomains[this._currentUnit]
       }
     }
+
+    return this._currentDomain
   }
 
   public set currentDomain(value: string | undefined) {

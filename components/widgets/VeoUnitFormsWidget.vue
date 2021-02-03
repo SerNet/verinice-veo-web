@@ -17,7 +17,7 @@
         <tr v-for="type of objects" :key="type.id">
           <td>{{ type.name }}:</td>
           <td class="text-right">
-            <nuxt-link :to="`/${$route.params.unit}/forms/${type.id}`"
+            <nuxt-link :to="`/${$route.params.unit}/forms/${createUUIDUrlParam('form', type.id)}`"
               ><b>{{ type.items }}</b></nuxt-link
             >
           </td>
@@ -30,11 +30,9 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { FormSchemaMetas } from '~/types/FormSchema'
 import VeoWidget from '~/components/widgets/VeoWidget.vue'
 import { endpoints } from '~/plugins/api/schema'
-
-type FormsList = FormSchemaMetas & { items?: number }[]
+import { createUUIDUrlParam } from '~/lib/utils'
 
 export default Vue.extend({
   components: {
@@ -57,11 +55,14 @@ export default Vue.extend({
       // @ts-ignore
       const objectType = endpoints[object.modelType.toLowerCase()]
       object.items = (
-        await this.$api.object.fetchAll(objectType, {
+        await this.$api.entity.fetchAll(objectType, {
           unit: this.unit.id
         })
       ).length
     }
+  },
+  methods: {
+    createUUIDUrlParam
   }
 })
 </script>

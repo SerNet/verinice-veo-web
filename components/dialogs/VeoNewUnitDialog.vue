@@ -37,6 +37,7 @@ import Vue from 'vue'
 
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import VeoLoadingWrapper from '~/components/layout/VeoLoadingWrapper.vue'
+import { createUUIDUrlParam } from '~/lib/utils'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 export default Vue.extend({
@@ -104,11 +105,12 @@ export default Vue.extend({
       this.$api.unit
         .create(this.newUnit)
         .then((data: any) => {
+          const unit = data.resourceId
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.created') })
           this.error.value = false
           this.dialog = false
-          this.$root.$emit(VeoEvents.UNIT_CHANGED, data.resourceId)
-          this.$router.push({ path: `/${data.resourceId}` })
+          this.$root.$emit(VeoEvents.UNIT_CHANGED, unit)
+          this.$router.push({ path: `/${createUUIDUrlParam('unit', unit)}` })
         })
         .catch((error: string) => {
           this.error.value = true
