@@ -140,8 +140,8 @@ export default Vue.extend({
   computed: {
     title(): string {
       return this.$fetchState.pending
-        ? 'veo.Objects'
-        : `${this.form.objectData.name} - ${capitalize(this.schemaType)} - veo.Objects`
+        ? this.$t('breadcrumbs.objects')
+        : `${this.form.objectData.name} - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
     },
     schemaType(): string | undefined {
       return getSchemaName(this.schemaEndpoint || '')

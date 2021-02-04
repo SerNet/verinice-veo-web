@@ -1,5 +1,5 @@
 <template>
-  <VeoPage title="veo.Objects">
+  <VeoPage :title="$t('breadcrumbs.objects')">
     <template #title>
       <v-spacer />
       <v-btn
@@ -247,7 +247,7 @@ export default defineComponent<IProps>({
   },
   head() {
     return {
-      title: 'veo.Objects'
+      title: this.$t('breadcrumbs.objects') as string
     }
   }
 })

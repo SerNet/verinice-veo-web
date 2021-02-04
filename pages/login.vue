@@ -2,7 +2,7 @@
   <div class="wrapper">
     <v-row class="flex-column text-center">
       <v-col>
-        <h1 class="mb-6 primary--text">verinice.veo</h1>
+        <h1 class="mb-6 primary--text">verinice.</h1>
       </v-col>
       <v-col class="d-flex justify-end mb-6">
         <v-select
@@ -46,7 +46,7 @@ export default Vue.extend({
   },
   head(): any {
     return {
-      title: 'verinice.veo'
+      title: 'verinice.'
     }
   }
 })

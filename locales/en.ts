@@ -188,7 +188,7 @@ export default {
 
   'page.forms.navigation.group.title': 'Contents',
 
-  'search.label': 'Search verinice.veo',
+  'search.label': 'Search verinice.',
 
   'unit.create': 'Create new unit',
   'unit.create.short': 'Create unit',
@@ -245,6 +245,8 @@ export default {
   'breadcrumbs.settings': 'Settings',
   'breadcrumbs.help': 'Manual',
   'breadcrumbs.editor': 'Editors',
+  'breadcrumbs.forms': 'Forms',
+  'breadcrumbs.objects': 'Objects',
   'breadcrumbs.objectschema': 'Objectschema',
   'breadcrumbs.history': 'History',
   'breadcrumbs.create': 'Create'

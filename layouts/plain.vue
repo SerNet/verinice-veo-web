@@ -16,7 +16,7 @@ import Vue from 'vue'
 export default Vue.extend({
   head() {
     return {
-      titleTemplate: '%s - verinice.veo'
+      titleTemplate: '%s - verinice.'
     }
   }
 })

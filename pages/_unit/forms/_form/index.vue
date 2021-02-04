@@ -1,5 +1,5 @@
 <template>
-  <VeoPage title="veo.Forms">
+  <VeoPage :title="$t('breadcrumbs.forms')">
     <template #title>
       <v-spacer />
       <v-btn
@@ -163,7 +163,7 @@ export default Vue.extend({
   },
   head() {
     return {
-      title: 'veo.Forms'
+      title: this.$t('breadcrumbs.objects') as string
     }
   },
   computed: {
