@@ -1,34 +1,64 @@
 <template>
   <VeoPageWrapper :title="title" title-class="d-flex align-center">
     <template v-if="schemaIsValid.valid" #header>
-      <a
-        ref="downloadButton"
-        href="#"
-        class="text-decoration-none"
-        style="vertical-align: bottom;"
-        @click="downloadSchema()"
-      >
-        <v-btn icon large color="primary">
-          <v-icon>mdi-download</v-icon>
-        </v-btn>
-      </a>
-      <v-btn icon large color="primary" @click="showCodeEditor = true">
-        <v-icon>mdi-code-tags</v-icon>
-      </v-btn>
-      <v-btn
-        v-if="schemaIsValid.warnings.length > 0"
-        icon
-        large
-        color="warning"
-        class="ml-2"
-        @click="showErrorDialog = !showErrorDialog"
-      >
-        <v-icon>mdi-alert-circle-outline</v-icon>
-      </v-btn>
+      <v-tooltip top>
+        <template #activator="{on}">
+          <a
+            ref="downloadButton"
+            href="#"
+            class="text-decoration-none"
+            style="vertical-align: bottom;"
+            @click="downloadSchema()"
+            v-on="on"
+          >
+            <v-btn icon large color="primary">
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+          </a>
+        </template>
+        <template #default>
+          {{ $t('editor.schema.download') }}
+        </template>
+      </v-tooltip>
+      <v-tooltip top>
+        <template #activator="{on}">
+          <v-btn icon large color="primary" @click="showCodeEditor = true" v-on="on">
+            <v-icon>mdi-code-tags</v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ $t('editor.schema.code') }}
+        </template>
+      </v-tooltip>
+      <v-tooltip top>
+        <template #activator="{on}">
+          <v-btn
+            v-if="schemaIsValid.warnings.length > 0"
+            icon
+            large
+            color="warning"
+            class="ml-2"
+            @click="showErrorDialog = !showErrorDialog"
+            v-on="on"
+          >
+            <v-icon>mdi-alert-circle-outline</v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ $t('editor.schema.warnings') }}
+        </template>
+      </v-tooltip>
       <v-spacer />
-      <v-btn icon large color="primary" class="mr-4" @click="showDetailDialog = !showDetailDialog">
-        <v-icon>mdi-wrench</v-icon>
-      </v-btn>
+      <v-tooltip top>
+        <template #activator="{on}">
+          <v-btn icon large color="primary" class="mr-4" @click="showDetailDialog = !showDetailDialog" v-on="on">
+            <v-icon>mdi-wrench</v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ $t('editor.schema.properties') }}
+        </template>
+      </v-tooltip>
     </template>
     <template v-if="formSchema && objectSchema && schemaIsValid.valid" #default>
       <VeoPage

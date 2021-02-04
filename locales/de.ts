@@ -131,6 +131,10 @@ export default {
   'editor.objectschema.wizard.start.title': 'Wie möchten Sie starten?',
   'editor.objectschema.upload.input.file.label':
     '@:editor.objectschema.objectschema hochladen @:editor.upload.file.format',
+  'editor.schema.code': 'Schema Code',
+  'editor.schema.download': 'Schema herunterladen',
+  'editor.schema.properties': 'Schema Eigenschaften',
+  'editor.schema.warnings': 'Hinweise',
   'editor.search.label': 'Nach einer Eigenschaft suchen...',
   'editor.upload.button.text': 'Hochladen',
   'editor.upload.error': 'Fehler beim Dateiupload',
