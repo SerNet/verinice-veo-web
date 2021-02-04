@@ -13,27 +13,43 @@
         :title="$t('editor.objectschema.headline')"
       >
         <template #title>
-          <a
-            ref="downloadButton"
-            href="#"
-            class="text-decoration-none"
-            style="vertical-align: bottom;"
-            @click="downloadSchema()"
-          >
-            <v-btn icon large color="primary">
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </a>
-          <v-btn
-            v-if="schemaIsValid.warnings.length > 0"
-            icon
-            large
-            color="warning"
-            class="ml-2"
-            @click="showErrorDialog = !showErrorDialog"
-          >
-            <v-icon>mdi-alert-circle-outline</v-icon>
-          </v-btn>
+          <v-tooltip top>
+            <template #activator="{on}">
+              <a
+                ref="downloadButton"
+                href="#"
+                class="text-decoration-none"
+                style="vertical-align: bottom;"
+                @click="downloadSchema()"
+                v-on="on"
+              >
+                <v-btn icon large color="primary">
+                  <v-icon>mdi-download</v-icon>
+                </v-btn>
+              </a>
+            </template>
+            <template #default>
+              {{ $t('editor.schema.download') }}
+            </template>
+          </v-tooltip>
+          <v-tooltip top>
+            <template #activator="{on}">
+              <v-btn
+                v-if="schemaIsValid.warnings.length > 0"
+                icon
+                large
+                color="warning"
+                class="ml-2"
+                @click="showErrorDialog = !showErrorDialog"
+                v-on="on"
+              >
+                <v-icon>mdi-alert-circle-outline</v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t('editor.schema.warnings') }}
+            </template>
+          </v-tooltip>
           <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="collapsed" right />
           <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2 fill-width">
             <v-col>

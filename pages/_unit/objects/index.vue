@@ -52,21 +52,42 @@
         </template>
         <template #item.actions="{ item }">
           <div class="d-flex flex-row">
-            <v-btn icon @click="doEdit(item)">
-              <v-icon>
-                mdi-pencil
-              </v-icon>
-            </v-btn>
-            <v-btn icon @click="doDuplicate(item)">
-              <v-icon>
-                mdi-content-copy
-              </v-icon>
-            </v-btn>
-            <v-btn icon @click="showDelete(item)">
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
+            <v-tooltip top>
+              <template #activator="{on}">
+                <v-btn icon @click="doEdit(item)" v-on="on">
+                  <v-icon>
+                    mdi-pencil
+                  </v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('unit.objects.tooltip.edit') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip top>
+              <template #activator="{on}">
+                <v-btn icon @click="doDuplicate(item)" v-on="on">
+                  <v-icon>
+                    mdi-content-copy
+                  </v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('unit.objects.tooltip.clone') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip top>
+              <template #activator="{on}">
+                <v-btn icon @click="showDelete(item)" v-on="on">
+                  <v-icon>
+                    mdi-delete
+                  </v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('unit.objects.tooltip.delete') }}
+              </template>
+            </v-tooltip>
           </div>
         </template>
       </v-data-table>

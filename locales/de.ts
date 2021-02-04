@@ -129,6 +129,8 @@ export default {
   'editor.objectschema.wizard.start.title': 'Wie möchten Sie starten?',
   'editor.objectschema.upload.input.file.label':
     '@:editor.objectschema.objectschema hochladen @:editor.upload.file.format',
+  'editor.schema.download': 'Schema herunterladen',
+  'editor.schema.warnings': 'Hinweise',
   'editor.search.label': 'Nach einer Eigenschaft suchen...',
   'editor.upload.button.text': 'Hochladen',
   'editor.upload.error': 'Fehler beim Dateiupload',
@@ -238,7 +240,13 @@ export default {
   'unit.forms.search': 'Suche',
   'unit.forms.nrr':
     'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
+  'unit.forms.tooltip.clone': 'Formular klonen',
+  'unit.forms.tooltip.delete': 'Formular löschen',
+  'unit.forms.tooltip.edit': 'Formular bearbeiten',
   'unit.objects.created': 'Erstellt',
+  'unit.objects.tooltip.clone': 'Objekt klonen',
+  'unit.objects.tooltip.delete': 'Objekt löschen',
+  'unit.objects.tooltip.edit': 'Objekt bearbeiten',
   'unit.objects.updated': 'Bearbeitet',
   'unit.index.title': 'Dashboard',
   'unit.select.label': 'Unit',
