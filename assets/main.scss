@@ -27,3 +27,7 @@ h5,
 h6 {
   color: darken($accent, 27.5%);
 }
+
+.v-navigation-drawer__border {
+  background-color: $grey !important;
+}
