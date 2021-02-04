@@ -11,7 +11,12 @@
       <div class="d-flex justify-between">
         <h3>{{ title }}</h3>
         <v-spacer />
-        <VeoMenuButton button-text="Scope erstellen" :menu-items="menuItems" />
+        <VeoMenuButton
+          button-text="Scope erstellen"
+          button-event="create-scope"
+          :menu-items="menuItems"
+          v-on="$listeners"
+        />
       </div>
     </template>
   </v-data-table>

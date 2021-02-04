@@ -6,7 +6,7 @@
       outlined
       :disabled="disabled"
       class="veo-hierarchical-table__expandable-menu-default-button"
-      @click="$emit('click')"
+      @click="$emit(buttonEvent)"
     >
       {{ buttonText }}</v-btn
     ><v-menu bottom left offset-y>
@@ -42,6 +42,7 @@ interface IProps {
   disabled: boolean
   color: string
   buttonText: string
+  buttonEvent: string
 }
 
 export default defineComponent<IProps>({
@@ -61,6 +62,10 @@ export default defineComponent<IProps>({
     buttonText: {
       type: String,
       required: true
+    },
+    buttonEvent: {
+      type: String,
+      default: 'click'
     }
   },
   setup(_props, _context) {}
