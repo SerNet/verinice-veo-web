@@ -1,6 +1,6 @@
 <template>
   <VeoPageWrapper :title="title" title-class="d-flex align-center">
-    <template v-if="schemaIsValid.valid" #header>
+    <template #header>
       <v-tooltip top>
         <template #activator="{on}">
           <a
@@ -89,6 +89,7 @@
             :object-schema="objectSchema"
             :form-schema="formSchema"
             :search-query="searchQuery"
+            @controlItems="updateControlItems"
           />
         </template>
       </VeoPage>
@@ -141,16 +142,7 @@
       </VeoPage>
     </template>
     <template v-else-if="!schemaIsValid.valid" #default>
-      <VeoPage
-        v-if="formSchema"
-        sticky-header
-        absolute-size
-        fullsize
-        no-padding
-        :cols="12"
-        :title="title"
-        content-class="px-4"
-      >
+      <VeoPage v-if="formSchema" sticky-header absolute-size fullsize no-padding :cols="12" content-class="px-4">
         <template #default>
           <v-row class="fill-height flex-column text-center align-center px-8">
             <v-col cols="auto" style="flex-grow: 0">
@@ -190,7 +182,6 @@
 <script lang="ts">
 import { IVEOFormSchema } from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
-import Vue from 'vue'
 import vjp from 'vue-json-pointer'
 
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
@@ -205,9 +196,11 @@ import VeoFSESchemaDetailsDialog from '~/components/dialogs/SchemaEditors/VeoFSE
 import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
 
 import { validate } from '~/lib/FormSchemaHelper'
-import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
+import { computed, defineComponent, onMounted, provide, Ref, ref, useContext } from '@nuxtjs/composition-api'
 
-export default Vue.extend({
+interface IProps {}
+
+export default defineComponent<IProps>({
   components: {
     VeoPageWrapper,
     VeoPage,
@@ -220,45 +213,51 @@ export default Vue.extend({
     VeoFSESchemaDetailsDialog,
     VEOFSEWizardDialog
   },
-  data() {
-    return {
-      previewCollapsed: false as boolean,
-      backlogCollapsed: false as boolean,
-      showCreationDialog: false as boolean,
-      showErrorDialog: false as boolean,
-      showDetailDialog: false as boolean,
-      objectSchema: undefined as VEOObjectSchemaRAW | undefined,
-      formSchema: undefined as IVEOFormSchema | undefined,
-      showCodeEditor: false as boolean,
-      objectData: {},
-      lang: {},
-      searchQuery: undefined as string | undefined
-    }
-  },
   head(): any {
     return {
       title: this.$t('editor.formschema.headline')
     }
   },
-  computed: {
-    code: {
-      get(): string {
-        return this.formSchema ? JSON.stringify(this.formSchema, undefined, 2) : ''
-      },
-      set(v: string) {
-        try {
-          this.formSchema = JSON.parse(v)
-        } catch (e) {}
-      }
-    },
-    schemaIsValid(): VeoSchemaValidatorValidationResult {
-      return this.formSchema ? validate(this.formSchema, this.objectSchema) : { valid: false, errors: [], warnings: [] }
-    },
-    title(): string {
-      return `${this.$t('editor.formschema.headline')} ${this.formSchema ? `(${this.formSchema?.name})` : ''}`
-    },
-    dynamicAPI(): any {
-      // TODO: need a solution if new target type is added
+  setup(_props, context) {
+    /**
+     * Layout specific stuff
+     */
+    const previewCollapsed = ref(false)
+    const backlogCollapsed = ref(false)
+    const showCreationDialog = ref(false)
+    const showErrorDialog = ref(false)
+    const showDetailDialog = ref(false)
+    const showCodeEditor = ref(false)
+    const searchQuery: Ref<undefined | string> = ref(undefined)
+
+    const controlItems = ref({})
+
+    const downloadButton: Ref<any> = ref(null)
+    provide('controlsItems', controlItems)
+
+    onMounted(() => {
+      showCreationDialog.value = objectSchema.value === undefined && formSchema.value === undefined
+    })
+
+    const title = computed(
+      () => `${context.root.$t('editor.formschema.headline')} ${formSchema.value ? `(${formSchema.value?.name})` : ''}`
+    )
+
+    const oneColumnCollapsed = computed(() => backlogCollapsed.value || previewCollapsed.value)
+
+    /**
+     * Schema related stuff
+     */
+    const objectSchema: Ref<VEOObjectSchemaRAW | undefined> = ref(undefined)
+    const formSchema: Ref<any | undefined> = ref(undefined)
+    const objectData = ref({})
+    const lang = ref({})
+
+    const schemaIsValid = computed(() =>
+      formSchema.value ? validate(formSchema.value, objectSchema.value) : { valid: false, errors: [], warnings: [] }
+    )
+
+    const dynamicAPI = computed(() => {
       return {
         fetchAll: (_objectType: string, _searchParams?: any) => {
           return new Promise((resolve: any) => {
@@ -266,51 +265,53 @@ export default Vue.extend({
           })
         }
       }
-    },
-    oneColumnCollapsed(): boolean {
-      return this.backlogCollapsed || this.previewCollapsed
+    })
+
+    const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''))
+
+    function updateSchema(formSchema: any) {
+      formSchema.value = JSON.parse(JSON.stringify(formSchema))
     }
-  },
-  mounted() {
-    this.showCreationDialog = this.objectSchema === undefined && this.formSchema === undefined
-  },
-  methods: {
-    updateSchema(formSchema: any) {
-      this.formSchema = JSON.parse(JSON.stringify(formSchema))
-    },
-    setFormSchema(schema: IVEOFormSchema) {
-      this.formSchema = schema
-      this.showCreationDialog = !this.objectSchema || false
-    },
-    setObjectSchema(schema: VEOObjectSchemaRAW) {
-      this.objectSchema = schema
-      this.showCreationDialog = !this.formSchema || false
-    },
-    updateSchemaName(value: string) {
-      if (this.formSchema) {
-        this.formSchema.name = value.toLowerCase()
+
+    function setFormSchema(schema: IVEOFormSchema) {
+      formSchema.value = schema
+      showCreationDialog.value = !objectSchema.value || false
+    }
+
+    function setObjectSchema(schema: VEOObjectSchemaRAW) {
+      objectSchema.value = schema
+      showCreationDialog.value = !formSchema.value || false
+    }
+
+    function updateSchemaName(value: string) {
+      if (formSchema.value) {
+        formSchema.value.name = value.toLowerCase()
       }
-    },
-    updateSubType(value: string) {
-      if (this.formSchema) {
-        this.formSchema.subType = value
+    }
+
+    function updateSubType(value: string) {
+      if (formSchema.value) {
+        formSchema.value.subType = value
       }
-    },
-    downloadSchema() {
-      if (this.$refs.downloadButton) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.formSchema))}`
-        ;(this.$refs.downloadButton as any).href = data
-        ;(this.$refs.downloadButton as any).download = `fs_${this.formSchema?.name || 'download'}.json`
+    }
+
+    function downloadSchema() {
+      if (downloadButton.value && downloadButton.value !== null) {
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value))}`
+        downloadButton.value.href = data
+        downloadButton.value.download = `fs_${formSchema.value?.name || 'download'}.json`
       }
-    },
-    onDelete(_event: any): void {
-      if (this.formSchema) {
-        vjp.remove(this.formSchema, '/content')
+    }
+
+    function onDelete(_event: any): void {
+      if (formSchema.value) {
+        vjp.remove(formSchema.value, '/content')
       }
-    },
-    onUpdate(event: any): void {
-      if (this.formSchema) {
-        const element = vjp.get(this.formSchema, `/content${event.formSchemaPointer}`)
+    }
+
+    function onUpdate(event: any): void {
+      if (formSchema.value) {
+        const element = vjp.get(formSchema.value, `/content${event.formSchemaPointer}`)
         element.options = event.payload.options
         element.scope = event.payload.scope
         if (element.scope !== event.payload.scope) {
@@ -319,6 +320,39 @@ export default Vue.extend({
           vjp.remove(this.value, element.scope) */
         }
       }
+    }
+
+    function updateControlItems(items: any) {
+      controlItems.value = items
+    }
+
+    return {
+      previewCollapsed,
+      backlogCollapsed,
+      showCreationDialog,
+      showErrorDialog,
+      showCodeEditor,
+      showDetailDialog,
+      searchQuery,
+      title,
+      oneColumnCollapsed,
+      objectSchema,
+      formSchema,
+      objectData,
+      lang,
+      schemaIsValid,
+      dynamicAPI,
+      updateSchema,
+      setFormSchema,
+      setObjectSchema,
+      updateSchemaName,
+      updateSubType,
+      downloadSchema,
+      onDelete,
+      onUpdate,
+      updateControlItems,
+      downloadButton,
+      code
     }
   }
 })

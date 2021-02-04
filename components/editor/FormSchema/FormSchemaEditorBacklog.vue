@@ -117,7 +117,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropType, provide, ref, Ref, watch } from '@nuxtjs/composition-api'
+import { computed, ComputedRef, defineComponent, PropType, ref, Ref, watch } from '@nuxtjs/composition-api'
 import { JsonPointer } from 'json-ptr'
 import vjp from 'vue-json-pointer'
 import Draggable from 'vuedraggable'
@@ -130,10 +130,6 @@ interface IProps {
   searchQuery: string
   formSchema: IVEOFormSchema
   objectSchema: VEOObjectSchemaRAW
-}
-
-interface IProvide {
-  controlsItems: IControlItem
 }
 
 export interface IUnused {
@@ -176,7 +172,7 @@ export default defineComponent<IProps>({
   components: {
     Draggable
   },
-  setup(props, _context) {
+  setup(props, context) {
     const typeMap = ref(INPUT_TYPES)
 
     const formElements = [
@@ -209,9 +205,6 @@ export default defineComponent<IProps>({
     const controls: Ref<IControl[]> = ref([])
 
     const controlsItems: Ref<IControlItem> = ref({})
-
-    provide('controlsItems', controlsItems)
-
     /**
      * React to formschema or objectschema changes
      */
@@ -284,6 +277,8 @@ export default defineComponent<IProps>({
             controlsItems.value[linksKey].push(createControl(`#/${linksAttribute}`, value, 'links'))
           }
         })
+
+        context.emit('controlItems', controlsItems.value)
       },
       {
         deep: true,
