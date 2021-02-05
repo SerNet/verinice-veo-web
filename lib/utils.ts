@@ -1,6 +1,6 @@
 import castArray from 'lodash/castArray'
 import { JSONSchema7 } from 'json-schema'
-import { FormSchema } from '~/types/FormSchema'
+import { IVeoFormSchema } from '~/types/VeoTypes'
 
 interface ICmpFunction {
   (a: any, b: any): number
@@ -99,7 +99,7 @@ export interface IBaseObject {
 
 export interface IForm {
   objectSchema: JSONSchema7
-  formSchema?: FormSchema
+  formSchema?: IVeoFormSchema
   objectData: IBaseObject
   lang?: IBaseObject
 }

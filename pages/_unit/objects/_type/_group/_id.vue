@@ -124,7 +124,7 @@ export default Vue.extend({
   async fetch() {
     const objectSchema = await this.$api.schema.fetch(this.schemaType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api.object.fetch(this.schemaEndpoint, this.objectId)
+    const objectData = await this.$api.entity.fetch(this.schemaEndpoint, this.objectId)
     this.form = {
       objectSchema,
       objectData,
@@ -186,7 +186,7 @@ export default Vue.extend({
       await this.save(objectType)
     },
     async save(objectType: string) {
-      await this.$api.object
+      await this.$api.entity
         .update(this.schemaEndpoint, this.objectId, this.form.objectData)
         .then(() => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
@@ -201,7 +201,7 @@ export default Vue.extend({
       this.deleteDialog = false
       this.deleteBtnLoading = true
 
-      await this.$api.object
+      await this.$api.entity
         .delete(this.schemaEndpoint, this.objectId)
         .then(() => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })

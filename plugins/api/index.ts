@@ -3,16 +3,17 @@ import { Plugin, Context } from '@nuxt/types'
 
 import { VeoError, VeoErrorTypes } from '~/types/VeoError'
 
-import object from '~/plugins/api/object'
+import entity from '~/plugins/api/entity'
 import form from '~/plugins/api/form'
-import group from '~/plugins/api/group'
 import schema from '~/plugins/api/schema'
 import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
+import scope from '~/plugins/api/scope'
 import { User } from '~/plugins/user'
+import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 export function createAPI(context: Context) {
-  return Client.create(context, { form, group, object, schema, translation, unit })
+  return Client.create(context, { form, entity, schema, translation, unit, scope })
 }
 
 export interface IAPIClient {
@@ -54,7 +55,7 @@ export class Client {
     return _url
   }
 
-  public async req(url: string, options: RequestOptions & { method: 'DELETE' }): Promise<void>
+  public async req(url: string, options: RequestOptions & { method: 'DELETE' }): Promise<any>
   public async req<T = any>(url: string, options?: RequestOptions): Promise<T>
 
   /**

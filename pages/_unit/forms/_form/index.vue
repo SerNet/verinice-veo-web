@@ -80,11 +80,11 @@ import Vue from 'vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import { createUUIDUrlParam, IBaseObject, separateUUIDParam } from '~/lib/utils'
 import { endpoints, getSchemaEndpoint } from '~/plugins/api/schema'
-import { FormSchema, FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 import DeleteFormDialog from '~/components/dialogs/DeleteFormDialog.vue'
+import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
 
 interface IData {
-  formSchema: FormSchema | undefined
+  formSchema: IVeoFormSchema | undefined
   objectType: string | undefined
   objectTypePlural: string | undefined
   objects: IBaseObject[]
@@ -145,15 +145,15 @@ export default Vue.extend({
       // @ts-ignore
       this.objectTypePlural = endpoints[this.formSchema.modelType.toLowerCase()]
 
-      this.objects = await this.$api.object.fetchAll(this.objectTypePlural, {
+      this.objects = await this.$api.entity.fetchAll(this.objectTypePlural, {
         unit: this.unitId
       })
     } else {
       this.objects = []
     }
 
-    this.formTypes = await this.$api.form.fetchAll({ unit: this.unitId }).then((formTypes: FormSchemaMetas) =>
-      formTypes.map((entry: FormSchemaMeta) => {
+    this.formTypes = await this.$api.form.fetchAll({ unit: this.unitId }).then((formTypes: IVeoFormSchemaMeta[]) =>
+      formTypes.map((entry: IVeoFormSchemaMeta) => {
         return {
           text: entry.name,
           value: entry.id
@@ -210,7 +210,7 @@ export default Vue.extend({
     },
     doDuplicate(item: IBaseObject) {
       if (this.formSchema) {
-        this.$api.object
+        this.$api.entity
           .create(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), { ...item })
           .then((response: any) => {
             this.doEdit({ id: response.resourceId })
@@ -220,7 +220,7 @@ export default Vue.extend({
     doDelete(id: number) {
       this.deleteDialog.value = false
       if (this.formSchema) {
-        this.$api.object.delete(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), id).then(() => {
+        this.$api.entity.delete(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), id).then(() => {
           this.$fetch()
         })
       }

@@ -50,7 +50,7 @@ import VeoDomainSelection from '~/components/layout/VeoDomainSelection.vue'
 import VeoUnitSelection from '~/components/layout/VeoUnitSelection.vue'
 import { separateUUIDParam } from '~/lib/utils'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoDomain, IVeoUnit } from '~/types/VeoUnits'
+import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {

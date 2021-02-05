@@ -33,7 +33,7 @@ import Vue from 'vue'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
 import { createUUIDUrlParam } from '~/lib/utils'
-import { IVeoUnit } from '~/types/VeoUnits'
+import { IVeoUnit } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
