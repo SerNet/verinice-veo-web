@@ -13,7 +13,7 @@
         :title="$t('editor.objectschema.headline')"
       >
         <template #title>
-          <v-tooltip top>
+          <v-tooltip bottom>
             <template #activator="{on}">
               <a
                 ref="downloadButton"
@@ -32,7 +32,7 @@
               {{ $t('editor.schema.download') }}
             </template>
           </v-tooltip>
-          <v-tooltip top>
+          <v-tooltip bottom>
             <template #activator="{on}">
               <v-btn
                 v-if="schemaIsValid.warnings.length > 0"

@@ -50,7 +50,7 @@
           {{ new Date(value).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
         </template>
         <template #item.actions="{ item }">
-          <v-tooltip top>
+          <v-tooltip bottom>
             <template #activator="{on}">
               <v-btn icon @click="doEdit(item)" v-on="on">
                 <v-icon>
@@ -62,7 +62,7 @@
               {{ $t('unit.forms.tooltip.edit') }}
             </template>
           </v-tooltip>
-          <v-tooltip top>
+          <v-tooltip bottom>
             <template #activator="{on}">
               <v-btn icon @click="doDuplicate(item)" v-on="on">
                 <v-icon>
@@ -74,7 +74,7 @@
               {{ $t('unit.forms.tooltip.clone') }}
             </template>
           </v-tooltip>
-          <v-tooltip top>
+          <v-tooltip bottom>
             <template #activator="{on}">
               <v-btn icon @click="showDelete(item)" v-on="on">
                 <v-icon>
