@@ -135,9 +135,7 @@ export default {
   'editor.objectschema.upload.input.file.label':
     '@:editor.objectschema.objectschema upload @:editor.upload.file.format',
   'editor.schema.code': 'Schema code',
-  'editor.schema.download': 'Download schema',
   'editor.schema.properties': 'Schema properties',
-  'editor.schema.warnings': 'Warnings',
   'editor.search.label': 'Search for a property...',
   'editor.upload.button.text': 'Upload',
   'editor.upload.error': 'Error while uploading file',
