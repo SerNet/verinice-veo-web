@@ -105,8 +105,8 @@ export default defineComponent<IProps>({
     // KeyMap for definition of KEY in $api.KEY.fetch()
     const apiKeyMap = {
       ':form': 'form',
-      ':object': 'object',
-      ':id': 'object'
+      ':object': 'entity',
+      ':id': 'entity'
     }
 
     // Default properties for Breadcrumb listItem
@@ -142,7 +142,7 @@ export default defineComponent<IProps>({
         // @ts-ignore
         const api = context.root.$api[apiKey]
         const text: string =
-          apiKey === 'object'
+          apiKey === 'entity'
             ? (await api.fetch(getSchemaEndpoint(paramSeparated.type), paramSeparated.id))[displayNameKey]
             : (await api.fetch(paramSeparated.id))[displayNameKey]
 
