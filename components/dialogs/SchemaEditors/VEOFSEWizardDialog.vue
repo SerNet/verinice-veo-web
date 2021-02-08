@@ -48,16 +48,17 @@
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-text-field
-                  v-model="createForm.title"
+                  :value="createForm.title"
                   :label="$t('editor.formschema.create.title')"
                   :rules="createForm.rules.title"
+                  @input="formatSchemaName"
                   required
                 />
               </v-col>
             </v-row>
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.subtype') }}*: </span>
+                <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.subtype') }}: </span>
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-text-field v-model="createForm.subType" :label="$t('editor.formschema.subtype')" />
@@ -346,6 +347,9 @@ export default Vue.extend({
     onClose() {
       this.$router.push('/editor')
       return true
+    },
+    formatSchemaName(val: string) {
+      this.createForm.title = val.toLowerCase()
     }
   }
 })
