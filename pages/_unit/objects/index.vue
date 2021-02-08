@@ -1,5 +1,5 @@
 <template>
-  <VeoPage title="veo.Objects">
+  <VeoPage :title="$t('breadcrumbs.objects')">
     <template #title>
       <v-spacer />
       <v-btn
@@ -52,21 +52,42 @@
         </template>
         <template #item.actions="{ item }">
           <div class="d-flex flex-row">
-            <v-btn icon @click="doEdit(item)">
-              <v-icon>
-                mdi-pencil
-              </v-icon>
-            </v-btn>
-            <v-btn icon @click="doDuplicate(item)">
-              <v-icon>
-                mdi-content-copy
-              </v-icon>
-            </v-btn>
-            <v-btn icon @click="showDelete(item)">
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn icon @click="doEdit(item)" v-on="on">
+                  <v-icon>
+                    mdi-pencil
+                  </v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('unit.objects.tooltip.edit') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn icon @click="doDuplicate(item)" v-on="on">
+                  <v-icon>
+                    mdi-content-copy
+                  </v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('unit.objects.tooltip.clone') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn icon @click="showDelete(item)" v-on="on">
+                  <v-icon>
+                    mdi-delete
+                  </v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('unit.objects.tooltip.delete') }}
+              </template>
+            </v-tooltip>
           </div>
         </template>
       </v-data-table>
@@ -116,17 +137,10 @@ export default defineComponent<IProps>({
       if (currentSchemaType.value) {
         // We have to do everything on next tick, else the correct schema type won't get picked up.
         await nextTick(async () => {
-          if (!group.value || group.value === '-') {
-            // @ts-ignore
-            objects.value = await context.$api.object.fetchAll(currentSchemaType.value as string, {
-              unit: unitId.value
-            })
-          } else {
-            objects.value = await context.$api.group.fetchGroupMembers(
-              group.value as string,
-              currentSchemaType.value as string
-            )
-          }
+          // @ts-ignore
+          objects.value = await context.$api.entity.fetchAll(currentSchemaType.value as string, {
+            unit: unitId.value
+          })
         })
       }
     })
@@ -215,14 +229,14 @@ export default defineComponent<IProps>({
     }
 
     function doDuplicate(item: IBaseObject) {
-      context.$api.object.create(currentSchemaType.value, { ...item }).then((response: any) => {
+      context.$api.entity.create(currentSchemaType.value, { ...item }).then((response: any) => {
         doEdit({ id: response.resourceId })
       })
     }
 
     function doDelete(id: string) {
       deleteDialog.value.value = false
-      context.$api.object.delete(currentSchemaType.value, id).then(() => {
+      context.$api.entity.delete(currentSchemaType.value, id).then(() => {
         fetch()
       })
     }
@@ -247,7 +261,7 @@ export default defineComponent<IProps>({
   },
   head() {
     return {
-      title: 'veo.Objects'
+      title: this.$t('breadcrumbs.objects') as string
     }
   }
 })

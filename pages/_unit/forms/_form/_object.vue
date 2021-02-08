@@ -136,7 +136,7 @@ export default Vue.extend({
     if (this.objectType) {
       const objectSchema = await this.$api.schema.fetch(this.objectType)
       const objectData = this.$route.params.object
-        ? await this.$api.object.fetch(getSchemaEndpoint(this.objectType), this.objectId)
+        ? await this.$api.entity.fetch(getSchemaEndpoint(this.objectType), this.objectId)
         : {}
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
       this.form = {
@@ -175,7 +175,9 @@ export default Vue.extend({
   },
   computed: {
     title(): string {
-      return this.$fetchState.pending ? 'veo.Forms' : `${this.form.objectData.name} - veo.Forms`
+      return this.$fetchState.pending
+        ? this.$t('breadcrumbs.forms')
+        : `${this.form.objectData.name} - ${this.$t('breadcrumbs.forms')}`
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
@@ -199,26 +201,26 @@ export default Vue.extend({
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
         fetchAll: (objectType: string, searchParams?: any) => {
-          return this.$api.object.fetchAll(getSchemaEndpoint(objectType), {
+          return this.$api.entity.fetchAll(getSchemaEndpoint(objectType), {
             ...searchParams,
             unit: this.unitId
           })
         },
         create: async (objectType: string, createdObjectData: any) => {
-          const res = await this.$api.object.create(getSchemaEndpoint(objectType), {
+          const res = await this.$api.entity.create(getSchemaEndpoint(objectType), {
             ...createdObjectData,
             owner: {
               targetUri: `/units/${this.unitId}`
             }
           })
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
-          return this.$api.object.fetch(getSchemaEndpoint(objectType), res.resourceId)
+          return this.$api.entity.fetch(getSchemaEndpoint(objectType), res.resourceId)
         },
         update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.object.update(getSchemaEndpoint(objectType), updatedObjectData)
+          return this.$api.entity.update(getSchemaEndpoint(objectType), updatedObjectData)
         },
         delete: (objectType: string, id: string) => {
-          this.$api.object.delete(getSchemaEndpoint(objectType), id)
+          this.$api.entity.delete(getSchemaEndpoint(objectType), id)
         }
       }
     },
@@ -246,7 +248,7 @@ export default Vue.extend({
       await this.save(objectType)
     },
     async save(objectType: string) {
-      await this.$api.object
+      await this.$api.entity
         .update(getSchemaEndpoint(objectType), this.objectId, this.form.objectData)
         .then(() => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
@@ -263,7 +265,7 @@ export default Vue.extend({
     async doDelete() {
       this.deleteDialog = false
       this.deleteBtnLoading = true
-      await this.$api.object
+      await this.$api.entity
         .delete(getSchemaEndpoint(this.objectType || ''), this.objectId)
         .then(() => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })

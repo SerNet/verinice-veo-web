@@ -15,6 +15,7 @@
           height="40"
           disabled
           class="veo-app-bar-search"
+          style="visibility: hidden"
         />
       </div>
       <AppAccountBtn
@@ -143,7 +144,7 @@ export default defineComponent<IProps>({
   },
   head() {
     return {
-      titleTemplate: '%s - verinice.veo'
+      titleTemplate: '%s - verinice.'
     }
   }
 })

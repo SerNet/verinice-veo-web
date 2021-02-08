@@ -42,10 +42,10 @@ import Vue from 'vue'
 import { Route } from 'vue-router'
 import { capitalize } from 'lodash'
 import LocalStorage from '~/util/LocalStorage'
-import { FormSchemaMeta, FormSchemaMetas } from '~/types/FormSchema'
 
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
+import { IVeoFormSchemaMeta } from '~/types/VeoTypes'
 
 export interface INavItem {
   name: string
@@ -104,7 +104,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.Objects',
+            name: this.$t('breadcrumbs.objects') as string,
             icon: 'mdi-folder',
             to: undefined,
             exact: false,
@@ -115,7 +115,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.Forms',
+            name: this.$t('breadcrumbs.forms') as string,
             icon: 'mdi-format-list-checks',
             to: undefined,
             exact: false,
@@ -188,8 +188,8 @@ export default Vue.extend({
 
     async fetchFormTypes(): Promise<INavItem[]> {
       const routeUnitParam = this.$route.params.unit
-      return await this.$api.form.fetchAll({ unit: routeUnitParam }).then((formTypes: FormSchemaMetas) =>
-        formTypes.map((entry: FormSchemaMeta) => {
+      return await this.$api.form.fetchAll({ unit: routeUnitParam }).then((formTypes: IVeoFormSchemaMeta[]) =>
+        formTypes.map((entry: IVeoFormSchemaMeta) => {
           return {
             name: entry.name,
             exact: false,

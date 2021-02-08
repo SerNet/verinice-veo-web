@@ -29,7 +29,7 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import { IVeoUnit } from '~/types/VeoUnits'
+import { IVeoUnit } from '~/types/VeoTypes'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { separateUUIDParam } from '~/lib/utils'
 

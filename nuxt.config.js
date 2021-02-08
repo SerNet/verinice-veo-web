@@ -55,7 +55,6 @@ module.exports = {
    */
   plugins: [
     '~/plugins/vee-validate',
-    '~/plugins/portal-vue',
     '~/plugins/logger',
     '~/plugins/user',
     '~/plugins/api'
