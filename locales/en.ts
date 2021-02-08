@@ -87,6 +87,10 @@ export default {
   'editor.formschema.preview': 'Preview',
   'editor.formschema.subtype': 'Subtype',
   'editor.formschema.translation': 'Custom translations',
+  'editor.formschema.translation.language.fullname.de': 'German',
+  'editor.formschema.translation.language.fullname.en': 'English',
+  'editor.formschema.translation.language.fullname.fr': 'Italian',
+  'editor.formschema.translation.language.fullname.cs': 'Czech',
   'editor.formschema.wizard.create': 'Create form schema',
   'editor.formschema.wizard.create.description':
     'Create a new form schema, either from scratch or a pre-generated layout.',

@@ -20,7 +20,7 @@
         </v-row>
 
         <v-row>
-          <v-col v-for="item in translationAsCode" :key="item.name">
+          <v-col v-for="item in translationAsCode" :key="item.name" :cols="12">
             <v-card outlined>
               <v-card-title>{{ item.fullName }}</v-card-title>
               <v-card-text>
@@ -56,6 +56,10 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
+    languages: {
+      type: Array,
+      required: true
+    },
     translation: {
       type: Object,
       required: true
@@ -67,24 +71,22 @@ export default Vue.extend({
         translation: {} as IVEOFormSchemaTranslationCollection,
         primaryLanguage: 'de',
         languages: ['de']
-      },
-      languageItems: [
-        { text: 'Deutsch', value: 'de' },
-        { text: 'Englisch', value: 'en' },
-        { text: 'Französisch', value: 'fr' },
-        { text: 'Tschechisch', value: 'cz' }
-      ],
-      languageFullName: { de: 'Deutsch', en: 'Englisch' } as any
+      }
     }
   },
   computed: {
-    translationAsCode(): any {
-      return Object.keys(this.dialog.translation).map((translationName: string) => ({
-        name: translationName,
-        fullName: this.languageFullName[translationName],
-        code: JSON.stringify(this.dialog.translation[translationName], undefined, 2)
+    languageItems() {
+      return (this.languages as string[]).map((languageCode: string) => ({
+        value: languageCode,
+        text: this.$t(`editor.formschema.translation.language.fullname.${languageCode}`)
       }))
-      // return JSON.stringify(this.dialog.translation, undefined, 2)
+    },
+    translationAsCode(): any {
+      return this.dialog.languages.map(languageCode => ({
+        name: languageCode,
+        fullName: this.languageItems.find(languageItem => languageItem.value === languageCode)?.text,
+        code: JSON.stringify(this.dialog.translation[languageCode], undefined, 2)
+      }))
     }
     // translationAsCode: {
     //   get(): string {

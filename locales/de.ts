@@ -87,6 +87,10 @@ export default {
   'editor.formschema.preview': 'Vorschau',
   'editor.formschema.subtype': 'Sub Typ',
   'editor.formschema.translation': 'Benutzerdefinierte Übersetzungen',
+  'editor.formschema.translation.language.fullname.de': 'Deutsch',
+  'editor.formschema.translation.language.fullname.en': 'Englisch',
+  'editor.formschema.translation.language.fullname.it': 'Italienisch',
+  'editor.formschema.translation.language.fullname.cs': 'Tschechisch',
   'editor.formschema.wizard.create': 'Formschema erstellen',
   'editor.formschema.wizard.create.description':
     'Neues Formschema erstellen. Entweder leer oder mit vorgenerierten Feldern',

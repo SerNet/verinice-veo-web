@@ -176,8 +176,9 @@
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
       <VEOFSETranslationDialog
-        v-if="formSchema && formSchema.translation"
+        v-if="!$fetchState.pending && formSchema && formSchema.translation"
         v-model="showTranslationDialog"
+        :languages="avaliableLanguages"
         :translation.sync="formSchema.translation"
       />
       <VeoFSESchemaDetailsDialog
@@ -211,7 +212,7 @@ import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardD
 import VEOFSETranslationDialog from '~/components/dialogs/SchemaEditors/VEOFSETranslationDialog.vue'
 
 import { validate } from '~/lib/FormSchemaHelper'
-import { computed, defineComponent, onMounted, provide, Ref, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch } from '@nuxtjs/composition-api'
 
 interface IProps {}
 
@@ -346,10 +347,15 @@ export default defineComponent<IProps>({
      * Translations related stuff
      */
     const showTranslationDialog: Ref<boolean> = ref(false)
+    const avaliableLanguages: Ref<string[]> = ref([])
 
     function onClickTranslationBtn() {
       showTranslationDialog.value = true
     }
+
+    const { fetch, fetchState } = useFetch(async () => {
+      avaliableLanguages.value = Object.keys((await context.root.$api.translation.fetch([]))?.lang)
+    })
 
     return {
       previewCollapsed,
@@ -379,7 +385,8 @@ export default defineComponent<IProps>({
       downloadButton,
       code,
       showTranslationDialog,
-      onClickTranslationBtn
+      onClickTranslationBtn,
+      avaliableLanguages
     }
   }
 })
