@@ -2,7 +2,7 @@
   <div class="toolbar-logo">
     <div class="inner hidden-xs-only">
       <div class="hidden-xs-only">
-        <h1 class="app-title">verinice.veo</h1>
+        <h1 class="app-title">verinice.</h1>
       </div>
       <svg class="hidden-sm-and-up" viewBox="0 0 28 22" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

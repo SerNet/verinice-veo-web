@@ -41,7 +41,7 @@ export default defineComponent<IProps>({
   },
   head(): any {
     return {
-      title: 'verinice.veo'
+      title: 'verinice.'
     }
   }
 })

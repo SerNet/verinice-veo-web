@@ -1,5 +1,5 @@
 <template>
-  <VeoPage title="veo.Forms">
+  <VeoPage :title="$t('breadcrumbs.forms')">
     <template #title>
       <v-spacer />
       <v-btn
@@ -50,23 +50,42 @@
           {{ new Date(value).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
         </template>
         <template #item.actions="{ item }">
-          <div class="d-flex flex-row">
-            <v-btn icon @click="doEdit(item)">
-              <v-icon>
-                mdi-pencil
-              </v-icon>
-            </v-btn>
-            <v-btn icon @click="doDuplicate(item)">
-              <v-icon>
-                mdi-content-copy
-              </v-icon>
-            </v-btn>
-            <v-btn icon @click="showDelete(item)">
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
-          </div>
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn icon @click="doEdit(item)" v-on="on">
+                <v-icon>
+                  mdi-pencil
+                </v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t('unit.forms.tooltip.edit') }}
+            </template>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn icon @click="doDuplicate(item)" v-on="on">
+                <v-icon>
+                  mdi-content-copy
+                </v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t('unit.forms.tooltip.clone') }}
+            </template>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn icon @click="showDelete(item)" v-on="on">
+                <v-icon>
+                  mdi-delete
+                </v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t('unit.forms.tooltip.delete') }}
+            </template>
+          </v-tooltip>
         </template>
       </v-data-table>
       <DeleteFormDialog v-model="deleteDialog.value" :form="deleteDialog.item" @delete="doDelete" />
@@ -163,7 +182,7 @@ export default Vue.extend({
   },
   head() {
     return {
-      title: 'veo.Forms'
+      title: this.$t('breadcrumbs.forms') as string
     }
   },
   computed: {

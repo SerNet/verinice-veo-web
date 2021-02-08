@@ -29,10 +29,9 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, ref, defineComponent, watch, reactive, Ref, PropOptions } from '@nuxtjs/composition-api'
+import { ref, defineComponent, watch, Ref, PropOptions, useContext } from '@nuxtjs/composition-api'
 import { capitalize, last, intersection } from 'lodash'
-import { IBaseObject, separateUUIDParam } from '~/lib/utils'
-import { generate } from '~/nuxt.config'
+import { separateUUIDParam } from '~/lib/utils'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 interface IBaseStringObject {
@@ -86,9 +85,9 @@ export default defineComponent<IProps>({
     // Define which keys from path should be replaces with custom Text
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
       ':unit': { text: 'Dashboard' },
-      ':group': { text: 'Group' },
-      forms: { text: 'veo.Forms' },
-      objects: { text: 'veo.Objects' }
+      ':group': { text: '-' },
+      forms: { text: context.root.$t('breadcrumbs.forms') as string },
+      objects: { text: context.root.$t('breadcrumbs.objects') as string }
     }
 
     // TODO: check if :group should be added here, after groups are implemented

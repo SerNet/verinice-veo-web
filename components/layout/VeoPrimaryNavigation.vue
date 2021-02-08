@@ -104,7 +104,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.Objects',
+            name: this.$t('breadcrumbs.objects') as string,
             icon: 'mdi-folder',
             to: undefined,
             exact: false,
@@ -115,7 +115,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.Forms',
+            name: this.$t('breadcrumbs.forms') as string,
             icon: 'mdi-format-list-checks',
             to: undefined,
             exact: false,
