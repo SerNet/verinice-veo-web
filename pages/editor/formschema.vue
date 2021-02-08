@@ -239,7 +239,7 @@ export default defineComponent<IProps>({
     })
 
     const title = computed(
-      () => `${context.root.$t('editor.formschema.headline')} ${formSchema.value ? `(${formSchema.value?.name})` : ''}`
+      () => `${context.root.$t('editor.formschema.headline')} ${formSchema.value ? `- ${formSchema.value?.name}` : ''}`
     )
 
     const oneColumnCollapsed = computed(() => backlogCollapsed.value || previewCollapsed.value)

@@ -1,34 +1,45 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="$t('editor.formschema.details.headline')">
+  <VeoDialog v-model="dialog.value" large :headline="$t('editor.formschema.details.headline')">
     <template #default>
-      <v-form v-model="form.valid">
-        <table class="formschema--details-table">
-          <tr>
-            <td>{{ $t('editor.formschema.title.text') }}*:</td>
-            <td>
-              <v-text-field
-                :value="form.data.formSchema"
-                required
-                flat
-                :rules="form.rules.formSchema"
-                @input="formatSchemaName"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>{{ $t('editor.formschema.subtype') }}:</td>
-            <td>
-              <v-text-field v-model="form.data.subType" flat />
-            </td>
-          </tr>
-          <tr>
-            <td>{{ $t('editor.formschema.create.type.text') }}*:</td>
-            <td>
-              <v-text-field :value="objectSchema" flat readonly disabled class="objectschema-type-field" />
-            </td>
-          </tr>
-        </table>
-
+      <v-form v-model="form.valid" class="mx-4" @submit="doSave()">
+        <v-row no-gutters class="align-center mt-4">
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.title.text') }}*: </span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-text-field
+              :value="form.data.formSchema"
+              required
+              flat
+              :rules="form.rules.formSchema"
+              :label="$t('editor.formschema.create.title')"
+              @input="formatSchemaName"
+            />
+          </v-col>
+        </v-row>
+        <v-row no-gutters class="align-center mt-4">
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.subtype') }}: </span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-text-field v-model="form.data.subType" :label="$t('editor.formschema.subtype')" flat />
+          </v-col>
+        </v-row>
+        <v-row no-gutters class="align-center mt-4">
+          <v-col :cols="12" :md="5">
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.text') }}*: </span>
+          </v-col>
+          <v-col :cols="12" :md="5">
+            <v-text-field
+              :value="objectSchema"
+              flat
+              :label="$t('editor.formschema.create.type')"
+              readonly
+              disabled
+              class="objectschema-type-field"
+            />
+          </v-col>
+        </v-row>
         <small>{{ $t('editor.dialog.requiredfields') }}</small>
       </v-form>
     </template>
@@ -142,16 +153,6 @@ export default defineComponent<IProps>({
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
-
-.formschema--details-table {
-  tr {
-    vertical-align: baseline;
-
-    td:first-of-type {
-      padding-right: 16px;
-    }
-  }
-}
 
 .objectschema-type-field ::v-deep label {
   color: rgba(0, 0, 0, 0.6) !important;
