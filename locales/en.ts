@@ -57,6 +57,7 @@ export default {
   'editor.formschema.description': 'Create, edit, import or export form schemas',
   'editor.formschema.backlog.button.expand': 'Expand all',
   'editor.formschema.backlog.button.collapse': 'Collapse all',
+  'editor.formschema.details.headline': 'Formschema details',
   'editor.formschema.edit.group.headline': 'Edit group element',
   'editor.formschema.edit.text.headline': 'Edit text element',
   'editor.formschema.edit.css.class': 'CSS classes',
@@ -79,9 +80,11 @@ export default {
   'editor.formschema.edit.input.type': 'Control type',
   'editor.formschema.search': 'Search for a control...',
   'editor.formschema.search.noMatch': 'No matching controls',
+  'editor.formschema.title.text': 'Name of the new form schema',
   'editor.formschema.formschema': 'Form schema',
   'editor.formschema.headline': 'Form schema editor',
   'editor.formschema.dropzone.placeholder': 'Drag in the elements',
+  'editor.formschema.preview': 'Preview',
   'editor.formschema.subtype': 'Subtype',
   'editor.formschema.wizard.create': 'Create form schema',
   'editor.formschema.wizard.create.description':
@@ -131,6 +134,8 @@ export default {
   'editor.schema.warnings': 'Warnings',
   'editor.objectschema.upload.input.file.label':
     '@:editor.objectschema.objectschema upload @:editor.upload.file.format',
+  'editor.schema.code': 'Schema code',
+  'editor.schema.properties': 'Schema properties',
   'editor.search.label': 'Search for a property...',
   'editor.upload.button.text': 'Upload',
   'editor.upload.error': 'Error while uploading file',

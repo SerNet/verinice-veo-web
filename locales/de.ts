@@ -57,6 +57,7 @@ export default {
   'editor.formschema.description': 'Formschemas erstellen, bearbeiten, importieren und exportieren',
   'editor.formschema.backlog.button.expand': 'Alle ausklappen',
   'editor.formschema.backlog.button.collapse': 'Alle einklappen',
+  'editor.formschema.details.headline': 'Formschema Eigenschaften',
   'editor.formschema.edit.group.headline': 'Gruppen Element anpassen',
   'editor.formschema.edit.text.headline': 'Text Element anpassen',
   'editor.formschema.edit.css.class': 'CSS Klassen',
@@ -80,8 +81,10 @@ export default {
   'editor.formschema.formschema': 'Formschema',
   'editor.formschema.search': 'Nach einem Steuerelement suchen...',
   'editor.formschema.search.noMatch': 'Keine passenden Steuerelemente vorhanden',
+  'editor.formschema.title.text': 'Name des Formschemas',
   'editor.formschema.headline': 'Formschema Editor',
   'editor.formschema.dropzone.placeholder': 'Ziehen Sie die Steuerelemente herein',
+  'editor.formschema.preview': 'Vorschau',
   'editor.formschema.subtype': 'Sub Typ',
   'editor.formschema.wizard.create': 'Formschema erstellen',
   'editor.formschema.wizard.create.description':
@@ -129,7 +132,9 @@ export default {
   'editor.objectschema.wizard.start.title': 'Wie möchten Sie starten?',
   'editor.objectschema.upload.input.file.label':
     '@:editor.objectschema.objectschema hochladen @:editor.upload.file.format',
+  'editor.schema.code': 'Schema Code',
   'editor.schema.download': 'Schema herunterladen',
+  'editor.schema.properties': 'Schema Eigenschaften',
   'editor.schema.warnings': 'Hinweise',
   'editor.search.label': 'Nach einer Eigenschaft suchen...',
   'editor.upload.button.text': 'Hochladen',

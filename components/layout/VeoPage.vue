@@ -4,7 +4,7 @@
     :cols="absoluteSize ? cols : 12"
     :md="absoluteSize ? medium : 12"
     :xl="absoluteSize ? xlarge : 12"
-    :class="classes"
+    :class="pageClass"
   >
     <v-row v-if="title" no-gutters class="flex-column veo-page__title">
       <v-col
@@ -61,8 +61,6 @@ interface IProps {
   pageClass: string
   contentClass: string
   height: string
-  borderLeft: boolean
-  borderRight: boolean
 }
 
 export default defineComponent<IProps>({
@@ -131,14 +129,6 @@ export default defineComponent<IProps>({
     noPadding: {
       type: Boolean,
       default: false
-    },
-    borderLeft: {
-      type: Boolean,
-      default: false
-    },
-    borderRight: {
-      type: Boolean,
-      default: false
     }
   },
   setup(props, context) {
@@ -166,16 +156,7 @@ export default defineComponent<IProps>({
       return !!context.slots.header
     })
 
-    const classes = computed(() => {
-      return (
-        props.pageClass +
-        ' ' +
-        (props.borderLeft ? ' veo-page--border-left' : '') +
-        (props.borderRight ? ' veo-page--border-right' : '')
-      )
-    })
-
-    return { medium, xlarge, showExtensionSlot, classes }
+    return { medium, xlarge, showExtensionSlot }
   }
 })
 </script>
@@ -208,13 +189,5 @@ export default defineComponent<IProps>({
 
 .veo-page__header--sticky {
   position: sticky;
-}
-
-.veo-page--border-left {
-  border-left: 1px solid $grey;
-}
-
-.veo-page--border-right {
-  border-right: 1px solid $grey;
 }
 </style>
