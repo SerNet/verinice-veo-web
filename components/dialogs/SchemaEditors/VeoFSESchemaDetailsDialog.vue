@@ -1,26 +1,41 @@
 <template>
   <VeoDialog v-model="dialog.value" :headline="$t('editor.formschema.details.headline')">
     <template #default>
-      <table class="formschema--details-table">
-        <tr>
-          <td>{{ $t('editor.formschema.formschema') }}</td>
-          <td>
-            <v-text-field :value="formSchema" required flat @input="updateSchemaName" :rules="rules.formSchema" />
-          </td>
-        </tr>
-        <tr>
-          <td>{{ $t('editor.formschema.subtype') }}</td>
-          <td>
-            <v-text-field :value="subtype" flat @input="updateSubType" />
-          </td>
-        </tr>
-        <tr>
-          <td>{{ $t('editor.objectschema.objectschema') }}</td>
-          <td>
-            <v-text-field :value="objectSchema" flat readonly disabled class="objectschema-type-field" />
-          </td>
-        </tr>
-      </table>
+      <v-form v-model="form.valid">
+        <table class="formschema--details-table">
+          <tr>
+            <td>{{ $t('editor.formschema.title.text') }}*:</td>
+            <td>
+              <v-text-field
+                :value="form.data.formSchema"
+                required
+                flat
+                :rules="form.rules.formSchema"
+                @input="formatSchemaName"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>{{ $t('editor.formschema.subtype') }}:</td>
+            <td>
+              <v-text-field v-model="form.data.subType" flat />
+            </td>
+          </tr>
+          <tr>
+            <td>{{ $t('editor.formschema.create.type.text') }}*:</td>
+            <td>
+              <v-text-field :value="objectSchema" flat readonly disabled class="objectschema-type-field" />
+            </td>
+          </tr>
+        </table>
+
+        <small>{{ $t('editor.dialog.requiredfields') }}</small>
+      </v-form>
+    </template>
+    <template #dialog-options>
+      <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.cancel') }}</v-btn>
+      <v-spacer />
+      <v-btn text color="primary" :disabled="!form.valid" @click="doSave()">{{ $t('global.button.save') }}</v-btn>
     </template>
   </VeoDialog>
 </template>
@@ -32,7 +47,7 @@ interface IProps {
   value: boolean
   objectSchema: string
   formSchema: string
-  subType: string
+  subtype: string
 }
 
 export default defineComponent<IProps>({
@@ -60,8 +75,15 @@ export default defineComponent<IProps>({
      */
     const dialog = ref({ value: props.value })
 
-    const rules = ref({
-      formSchema: [(input: string) => trim(input).length > 0 || context.root.$t('global.input.required')]
+    const form = ref({
+      data: {
+        formSchema: props.formSchema as string,
+        subType: props.subtype as string
+      },
+      rules: {
+        formSchema: [(input: string) => trim(input).length > 0 || context.root.$t('global.input.required')]
+      },
+      valid: false
     })
 
     watch(
@@ -89,17 +111,31 @@ export default defineComponent<IProps>({
       }
     )
 
-    function updateSubType(value: string) {
-      context.emit('update-subtype', value)
-    }
-
-    function updateSchemaName(value: string) {
-      if (trim(value).length > 0) {
-        context.emit('update-schema-name', value)
+    watch(
+      () => props.formSchema,
+      (val: string) => {
+        form.value.data.formSchema = val
       }
+    )
+
+    watch(
+      () => props.subtype,
+      (val: string) => {
+        form.value.data.subType = val
+      }
+    )
+
+    function doSave() {
+      context.emit('update-subtype', form.value.data.subType)
+      context.emit('update-schema-name', form.value.data.formSchema)
+      context.emit('input', false)
     }
 
-    return { dialog, updateSchemaName, updateSubType, rules }
+    function formatSchemaName(val: string) {
+      form.value.data.formSchema = val.toLowerCase()
+    }
+
+    return { dialog, doSave, form, formatSchemaName }
   }
 })
 </script>

@@ -1,7 +1,7 @@
 <template>
   <VeoPageWrapper :title="title" title-class="d-flex align-center">
-    <template #header>
-      <v-tooltip top>
+    <template #header v-if="formSchema && objectSchema && schemaIsValid.valid">
+      <v-tooltip bottom>
         <template #activator="{on}">
           <a
             ref="downloadButton"
@@ -20,7 +20,7 @@
           {{ $t('editor.schema.download') }}
         </template>
       </v-tooltip>
-      <v-tooltip top>
+      <v-tooltip bottom>
         <template #activator="{on}">
           <v-btn icon large color="primary" @click="showCodeEditor = true" v-on="on">
             <v-icon>mdi-code-tags</v-icon>
@@ -30,7 +30,7 @@
           {{ $t('editor.schema.code') }}
         </template>
       </v-tooltip>
-      <v-tooltip top>
+      <v-tooltip bottom>
         <template #activator="{on}">
           <v-btn
             v-if="schemaIsValid.warnings.length > 0"
@@ -48,10 +48,9 @@
           {{ $t('editor.schema.warnings') }}
         </template>
       </v-tooltip>
-      <v-spacer />
-      <v-tooltip top>
+      <v-tooltip bottom>
         <template #activator="{on}">
-          <v-btn icon large color="primary" class="mr-4" @click="showDetailDialog = !showDetailDialog" v-on="on">
+          <v-btn icon large color="primary" @click="showDetailDialog = !showDetailDialog" v-on="on">
             <v-icon>mdi-wrench</v-icon>
           </v-btn>
         </template>

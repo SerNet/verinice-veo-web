@@ -80,6 +80,7 @@ export default {
   'editor.formschema.edit.input.type': 'Control type',
   'editor.formschema.search': 'Search for a control...',
   'editor.formschema.search.noMatch': 'No matching controls',
+  'editor.formschema.title.text': 'Name of the new form schema',
   'editor.formschema.formschema': 'Form schema',
   'editor.formschema.headline': 'Form schema editor',
   'editor.formschema.dropzone.placeholder': 'Drag in the elements',
