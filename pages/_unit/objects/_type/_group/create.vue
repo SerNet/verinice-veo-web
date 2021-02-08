@@ -29,7 +29,7 @@ export default BaseObjectFormCreate.extend({
       }
     },
     async create(schemaEndpoint: string | undefined): Promise<string | undefined> {
-      const res = await this.$api.object.create(schemaEndpoint, {
+      const res = await this.$api.entity.create(schemaEndpoint, {
         ...this.form.objectData,
         owner: {
           targetUri: `/units/${this.unitId}`

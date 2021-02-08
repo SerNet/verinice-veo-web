@@ -116,17 +116,10 @@ export default defineComponent<IProps>({
       if (currentSchemaType.value) {
         // We have to do everything on next tick, else the correct schema type won't get picked up.
         await nextTick(async () => {
-          if (!group.value || group.value === '-') {
-            // @ts-ignore
-            objects.value = await context.$api.object.fetchAll(currentSchemaType.value as string, {
-              unit: unitId.value
-            })
-          } else {
-            objects.value = await context.$api.group.fetchGroupMembers(
-              group.value as string,
-              currentSchemaType.value as string
-            )
-          }
+          // @ts-ignore
+          objects.value = await context.$api.entity.fetchAll(currentSchemaType.value as string, {
+            unit: unitId.value
+          })
         })
       }
     })
@@ -215,14 +208,14 @@ export default defineComponent<IProps>({
     }
 
     function doDuplicate(item: IBaseObject) {
-      context.$api.object.create(currentSchemaType.value, { ...item }).then((response: any) => {
+      context.$api.entity.create(currentSchemaType.value, { ...item }).then((response: any) => {
         doEdit({ id: response.resourceId })
       })
     }
 
     function doDelete(id: string) {
       deleteDialog.value.value = false
-      context.$api.object.delete(currentSchemaType.value, id).then(() => {
+      context.$api.entity.delete(currentSchemaType.value, id).then(() => {
         fetch()
       })
     }
