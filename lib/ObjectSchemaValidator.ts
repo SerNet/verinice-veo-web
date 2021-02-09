@@ -1,5 +1,4 @@
 import { isArray, isObject } from 'lodash'
-import { generateAspect, generateLink } from './ObjectSchemaHelper'
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string, value: any }
 
