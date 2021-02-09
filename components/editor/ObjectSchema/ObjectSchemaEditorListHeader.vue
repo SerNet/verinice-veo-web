@@ -33,11 +33,12 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
+
+import { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2'
 import { IInputType } from '~/types/VEOEditor'
 
 interface IProps {
-  item: IVEOCustomAspect | IVEOCustomLink
+  item: IVeoOSHCustomAspect | IVeoOSHCustomLink
   styling: IInputType
 }
 

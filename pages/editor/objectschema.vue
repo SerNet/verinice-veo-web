@@ -2,7 +2,7 @@
   <VeoPageWrapper>
     <template #default>
       <VeoPage
-        v-if="schema"
+        v-if="objectSchemaHelper"
         sticky-header
         absolute-size
         :fullsize="collapsed"
@@ -40,7 +40,7 @@
               <v-row class="mx-4">
                 <v-col cols="12" lg="4">
                   <v-text-field
-                    :value="schema.title"
+                    :value="title"
                     dense
                     hide-details
                     flat
@@ -50,10 +50,11 @@
                 </v-col>
                 <v-col cols="12" lg="8">
                   <v-text-field
-                    v-model="schema.description"
+                    :value="description"
                     dense
                     hide-details
                     :label="$t('editor.objectschema.create.description')"
+                    @input="updateDescription"
                   />
                 </v-col>
               </v-row>
@@ -95,10 +96,9 @@
         <template #default>
           <ObjectSchemaEditor
             v-if="schemaIsValid.valid"
-            v-model="schema"
+            v-model="objectSchemaHelper"
             :search="search"
             :hide-empty-aspects="hideEmptyAspects"
-            @schema-updated="updateSchema"
           />
           <v-row v-else class="fill-height flex-column text-center align-center px-8">
             <v-col cols="auto" style="flex-grow: 0">
@@ -119,7 +119,7 @@
       </VeoPage>
       <v-divider vertical />
       <VeoPage
-        v-if="schema && !collapsed && !$vuetify.breakpoint.xs"
+        v-if="!collapsed && objectSchemaHelper && !$vuetify.breakpoint.xs"
         no-padding
         absolute-size
         :cols="12"
@@ -127,7 +127,7 @@
         :xl="6"
         height="100%"
       >
-        <CodeEditor v-model="code" @schema-updated="updateSchema" />
+        <CodeEditor v-model="code" />
       </VeoPage>
     </template>
     <template #helpers>
@@ -139,15 +139,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 
 import CollapseButton from '~/components/layout/CollapseButton.vue'
 import VEOOSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOOSEWizardDialog.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
-import { renameSchema, validate } from '~/lib/ObjectSchemaHelper'
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
+import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2'
+import { IVeoObjectSchema } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
@@ -162,9 +162,9 @@ export default Vue.extend({
       collapsed: false as boolean,
       showCreationDialog: false as boolean,
       showErrorDialog: false as boolean,
-      schema: undefined as VEOObjectSchemaRAW | undefined,
       hideEmptyAspects: false as boolean,
-      search: '' as string
+      search: '' as string,
+      objectSchemaHelper: undefined as ObjectSchemaHelper | undefined
     }
   },
   head(): any {
@@ -175,40 +175,45 @@ export default Vue.extend({
   computed: {
     code: {
       get(): string {
-        return this.schema ? JSON.stringify(this.schema, undefined, 2) : ''
+        return JSON.stringify(this.objectSchemaHelper?.toSchema() || '{}')
       },
       set(v: string) {
         try {
-          this.schema = JSON.parse(v)
+          this.objectSchemaHelper = new ObjectSchemaHelper(JSON.parse(v))
         } catch (e) {}
       }
     },
     schemaIsValid(): VeoSchemaValidatorValidationResult {
-      return this.schema ? validate(this.schema) : { valid: false, errors: [], warnings: [] }
+      return this.objectSchemaHelper?.validate() || { valid: false, errors: [], warnings: [] }
+    },
+    title(): string {
+      return this.objectSchemaHelper?.getTitle() || ''
+    },
+    description(): string {
+      return this.objectSchemaHelper?.getDescription() || ''
     }
   },
   mounted() {
-    this.showCreationDialog = this.schema === undefined
+    this.showCreationDialog = true
   },
   methods: {
-    updateSchema(schema: VEOObjectSchemaRAW) {
-      this.schema = undefined // We have to set schema to undefined first, else changes wouldn't get picked up.
-      this.schema = schema
-    },
-    setSchema(schema: VEOObjectSchemaRAW) {
-      this.schema = schema
+    setSchema(schema?: IVeoObjectSchema) {
       this.showCreationDialog = false
+      this.objectSchemaHelper = new ObjectSchemaHelper(schema)
     },
     updateSchemaName(name: string) {
-      if (this.schema) {
-        renameSchema(this.schema, name.toLowerCase())
-      }
+      this.objectSchemaHelper?.setTitle(name)
+    },
+    updateDescription(description: string) {
+      this.objectSchemaHelper?.setDescription(description)
     },
     downloadSchema() {
       if (this.$refs.downloadButton) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(this.schema))}`
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(
+          JSON.stringify(this.objectSchemaHelper?.toSchema())
+        )}`
         ;(this.$refs.downloadButton as any).href = data
-        ;(this.$refs.downloadButton as any).download = `os_${this.schema?.title || 'download'}.json`
+        ;(this.$refs.downloadButton as any).download = `os_${this.objectSchemaHelper?.getTitle() || 'download'}.json`
       }
     }
   }

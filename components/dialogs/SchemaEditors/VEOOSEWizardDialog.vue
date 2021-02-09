@@ -141,7 +141,6 @@
 import Vue from 'vue'
 import { capitalize, trim } from 'lodash'
 
-import { generateSchema } from '~/lib/ObjectSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
@@ -226,8 +225,7 @@ export default Vue.extend({
   methods: {
     createSchema(_schema?: any) {
       if (this.state === 'create') {
-        const schema = generateSchema(this.createForm.type.toLowerCase(), this.createForm.description)
-        this.$emit('schema', schema)
+        this.$emit('schema', undefined)
       } else {
         this.$emit('schema', _schema)
       }

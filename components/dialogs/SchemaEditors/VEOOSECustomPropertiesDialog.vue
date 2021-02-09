@@ -9,17 +9,17 @@
               :label="`${$t('editor.dialog.createform.title')} *`"
               required
               :rules="form.rules.name"
-              :prefix="prefixedAspectName('')"
+              :prefix="item.prefix"
             />
           </v-col>
         </v-row>
         <v-row v-if="type === 'link'">
           <v-col class="py-0">
             <v-text-field
-              v-model="form.targetDescription"
+              v-model="form.description"
               :label="`${$t('editor.dialog.createform.linkdescription')} *`"
               required
-              :rules="form.rules.targetDescription"
+              :rules="form.rules.description"
             />
           </v-col>
           <v-col :cols="4" class="py-0">
@@ -37,7 +37,7 @@
             <VeoObjectSchemaEditorCAAttribute
               v-bind="attribute"
               :key="index"
-              :aspectName="prefixedAspectName(item.title)"
+              :aspectName="item.prefix + '' + item.title"
               @delete="removeAttribute(index)"
               @update="updateAttribute($event, index)"
             />
@@ -96,20 +96,14 @@ import { defineComponent, ref, watch, computed, Ref, useContext } from '@nuxtjs/
 import { capitalize, trim } from 'lodash'
 
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
-import {
-  IVEOAttribute,
-  IVEOCustomAspect,
-  IVEOCustomLink,
-  prefixedAspectName as aspectName
-} from '~/lib/ObjectSchemaHelper'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
-import { IInputTypes } from '~/types/VEOEditor'
 
 import VeoObjectSchemaEditorCAAttribute from '~/components/editor/ObjectSchema/VeoObjectSchemaEditorCAAttribute.vue'
+import { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2'
 
 interface IProps {
   value: boolean
-  item: IVEOCustomAspect | IVEOCustomLink | undefined
+  item: IVeoOSHCustomAspect | IVeoOSHCustomLink | undefined
   mode: string
   type: 'aspect' | 'link'
   schema: VEOObjectSchemaRAW
@@ -133,25 +127,6 @@ export default defineComponent<IProps>({
      * Common dialog stuff (opening and closing)
      */
     const dialog = ref({ value: props.value, mode: props.mode })
-
-    watch(
-      () => props.value,
-      (val: boolean) => {
-        dialog.value.value = val
-
-        // If an item was passed, we want to update the form with it's values. Else we want to clear the form as we are creating a new item.
-        if (val) {
-          if (props.item) {
-            if (props.type === 'link') {
-              form.value.targetType = (props.item as IVEOCustomLink).target.type
-              form.value.targetDescription = (props.item as IVEOCustomLink).target.description
-            }
-          } else {
-            clearCreationForm()
-          }
-        }
-      }
-    )
 
     watch(
       () => dialog.value.value,
@@ -190,10 +165,10 @@ export default defineComponent<IProps>({
       valid: false,
       name: '',
       targetType: '' as string,
-      targetDescription: '' as string,
+      description: '' as string,
       rules: {
         name: [(input: string) => trim(input).length > 0],
-        targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+        description: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
         linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
       }
     })
@@ -218,10 +193,10 @@ export default defineComponent<IProps>({
         valid: false,
         name: '',
         targetType: '' as string,
-        targetDescription: '' as string,
+        description: '' as string,
         rules: {
           name: [(input: string) => trim(input).length > 0],
-          targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
+          description: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
           linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
         }
       }
@@ -235,43 +210,23 @@ export default defineComponent<IProps>({
      * Edit item stuff
      */
 
-    // Update item attributes if the form gets updated (we use a form and not the item itself as a v-model as the item doesn't exist on creation).
-    watch(
-      () => form.value,
-      () => {
-        if (_item.value) {
-          if (props.type === 'link') {
-            ;(_item.value as IVEOCustomLink).target = {
-              type: form.value.targetType,
-              description: form.value.targetDescription
-            }
-          }
-        }
-      },
-      { deep: true }
-    )
-
     const _item = ref(props.item)
     watch(
       () => props.item,
-      (val: IVEOCustomAspect | IVEOCustomLink | undefined) => {
+      (val: IVeoOSHCustomAspect | IVeoOSHCustomLink | undefined) => {
         if (val) {
           _item.value = JSON.parse(JSON.stringify(val)) // Deep copy to avoid mutating the object passed by the prop (else we couldn't abort editing)
           form.value.name = val.title
 
           if (props.type === 'link') {
-            form.value.targetType = (_item.value as IVEOCustomLink).target.type
-            form.value.targetDescription = (_item.value as IVEOCustomLink).target.description
+            form.value.targetType = (_item.value as IVeoOSHCustomLink).targetType
+            form.value.description = (_item.value as IVeoOSHCustomLink).description
           }
         } else {
           _item.value = val
         }
       }
     )
-
-    function prefixedAspectName(aspect: string): string {
-      return aspectName(props.schema, aspect)
-    }
 
     function saveNode() {
       context.emit('save-node', { item: _item.value, id: props.item?.title })
@@ -289,7 +244,7 @@ export default defineComponent<IProps>({
       _item.value?.attributes.splice(index, 1)
     }
 
-    function updateAttribute(newValues: IVEOAttribute, index: number) {
+    function updateAttribute(newValues: IVeoOSHCustomProperty, index: number) {
       if (_item.value) {
         _item.value.attributes[index] = newValues
         // We need to completely overwrite the object, else vue won't pick up the changes
@@ -302,22 +257,22 @@ export default defineComponent<IProps>({
     function checkForDuplicate() {
       duplicates.value = []
       if (_item.value) {
-        ;(_item.value as IVEOCustomAspect | IVEOCustomLink).attributes.forEach((attribute1: IVEOAttribute) => {
-          if (
-            (_item.value as IVEOCustomAspect | IVEOCustomLink).attributes.filter(
-              (attribute2: IVEOAttribute) => attribute2.title.toLowerCase() === attribute1.title.toLowerCase()
-            ).length > 1
-          ) {
-            const duplicateTitle = attribute1.title.toLowerCase()
-            if (!duplicates.value.includes(duplicateTitle)) {
-              duplicates.value.push(duplicateTitle)
+        ;(_item.value as IVeoOSHCustomAspect | IVeoOSHCustomLink).attributes.forEach(
+          (attribute1: IVeoOSHCustomProperty) => {
+            if (
+              (_item.value as IVeoOSHCustomAspect | IVeoOSHCustomLink).attributes.filter(
+                (attribute2: IVeoOSHCustomProperty) => attribute2.title.toLowerCase() === attribute1.title.toLowerCase()
+              ).length > 1
+            ) {
+              const duplicateTitle = attribute1.title.toLowerCase()
+              if (!duplicates.value.includes(duplicateTitle)) {
+                duplicates.value.push(duplicateTitle)
+              }
             }
           }
-        })
+        )
       }
     }
-
-    const attributeTitle = computed(() => prefixedAspectName(form.value.name) + '_')
 
     return {
       dialog,
@@ -332,9 +287,7 @@ export default defineComponent<IProps>({
       removeAttribute,
       updateAttribute,
       headline,
-      close,
-      prefixedAspectName,
-      attributeTitle
+      close
     }
   }
 })
