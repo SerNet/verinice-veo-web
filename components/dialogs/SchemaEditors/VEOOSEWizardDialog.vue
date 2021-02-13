@@ -225,14 +225,17 @@ export default Vue.extend({
   methods: {
     createSchema(_schema?: any) {
       if (this.state === 'create') {
-        this.$emit('schema', undefined)
+        this.$emit('completed', {
+          schema: undefined,
+          meta: { type: this.createForm.type, description: this.createForm.description }
+        })
       } else {
-        this.$emit('schema', _schema)
+        this.$emit('completed', { schema: _schema, meta: undefined })
       }
     },
     importSchema() {
       this.$api.schema.fetch(this.modelType).then((data: any) => {
-        this.$emit('schema', data)
+        this.$emit('completed', { schema: data, meta: undefined })
       })
     },
     clearCreateForm() {

@@ -113,6 +113,7 @@ export default {
   'editor.objectschema.delete.link': 'Do you really want to delete the link "{link}"?',
   'editor.objectschema.delete.link.headline': 'Delete link',
   'editor.objectschema.description': 'Create, edit, import or export object schemas',
+  'editor.objectschema.duplicate': 'Attribute titles have to be unique in an aspect or link',
   'editor.objectschema.headline': 'Object schema editor',
   'editor.objectschema.objectschema': 'Object schema',
   'editor.objectschema.validation.errors': 'Errors',

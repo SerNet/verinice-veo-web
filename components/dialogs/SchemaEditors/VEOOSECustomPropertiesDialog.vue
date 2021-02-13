@@ -5,18 +5,18 @@
         <v-row>
           <v-col cols="12" md="8">
             <v-text-field
-              v-model="form.name"
+              v-model="form.data.name"
               :label="`${$t('editor.dialog.createform.title')} *`"
               required
               :rules="form.rules.name"
-              :prefix="item.prefix"
+              :prefix="prefix"
             />
           </v-col>
         </v-row>
         <v-row v-if="type === 'link'">
           <v-col class="py-0">
             <v-text-field
-              v-model="form.description"
+              v-model="form.data.description"
               :label="`${$t('editor.dialog.createform.linkdescription')} *`"
               required
               :rules="form.rules.description"
@@ -24,7 +24,7 @@
           </v-col>
           <v-col :cols="4" class="py-0">
             <v-select
-              v-model="form.targetType"
+              v-model="form.data.targetType"
               :label="`${$t('editor.dialog.createform.linktype')} *`"
               :items="objectTypes"
               required
@@ -32,12 +32,20 @@
             />
           </v-col>
         </v-row>
+        <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
+          <span> {{ $t('editor.objectschema.duplicate') }}: </span>
+          <ul>
+            <li v-for="duplicate of duplicates" :key="duplicate">
+              {{ duplicate }}
+            </li>
+          </ul>
+        </v-alert>
         <v-list v-if="_item && _item.attributes" dense class="py-0">
           <template v-for="(attribute, index) of _item.attributes" class="veo-attribute-list-attribute my-2">
             <VeoObjectSchemaEditorCAAttribute
               v-bind="attribute"
               :key="index"
-              :aspectName="item.prefix + '' + item.title"
+              :aspectName="aspectPrefix"
               @delete="removeAttribute(index)"
               @update="updateAttribute($event, index)"
             />
@@ -59,16 +67,6 @@
           </v-list-item>
         </v-list>
       </v-form>
-      <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
-        <span>
-          Es kann immer nur ein Attribut mit den folgende(n) Titel(n) existieren:
-        </span>
-        <ul>
-          <li v-for="duplicate of duplicates" :key="duplicate">
-            {{ duplicate }}
-          </li>
-        </ul>
-      </v-alert>
       <small>{{ $t('editor.dialog.requiredfields') }}</small>
     </template>
     <template v-if="dialog.mode === 'create'" #dialog-options>
@@ -93,9 +91,8 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch, computed, Ref, useContext } from '@nuxtjs/composition-api'
-import { capitalize, trim } from 'lodash'
+import { capitalize, cloneDeep, trim } from 'lodash'
 
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
 
 import VeoObjectSchemaEditorCAAttribute from '~/components/editor/ObjectSchema/VeoObjectSchemaEditorCAAttribute.vue'
@@ -106,7 +103,6 @@ interface IProps {
   item: IVeoOSHCustomAspect | IVeoOSHCustomLink | undefined
   mode: string
   type: 'aspect' | 'link'
-  schema: VEOObjectSchemaRAW
 }
 
 export default defineComponent<IProps>({
@@ -118,8 +114,7 @@ export default defineComponent<IProps>({
     // eslint-disable-next-line
     item: { required: true }, // No type to avoid checking for invalid prop (item can either be undefined, IVEOCustomLink or IVEOCustomAspect)
     mode: { type: String, default: 'create' },
-    type: { type: String, required: true },
-    schema: { type: Object, required: true }
+    type: { type: String, required: true }
   },
   setup(props, context) {
     const { $api } = useContext()
@@ -127,6 +122,17 @@ export default defineComponent<IProps>({
      * Common dialog stuff (opening and closing)
      */
     const dialog = ref({ value: props.value, mode: props.mode })
+
+    watch(
+      () => props.value,
+      (val: boolean) => {
+        dialog.value.value = val
+
+        if (!val) {
+          clearCreationForm()
+        }
+      }
+    )
 
     watch(
       () => dialog.value.value,
@@ -154,6 +160,14 @@ export default defineComponent<IProps>({
       }
     })
 
+    const prefix = computed(() => {
+      return props.item ? props.item.prefix : ''
+    })
+
+    const aspectPrefix = computed(() => {
+      return prefix.value + '' + form.value.data.name
+    })
+
     function close() {
       context.emit('input', false)
     }
@@ -163,9 +177,11 @@ export default defineComponent<IProps>({
      */
     const form = ref({
       valid: false,
-      name: '',
-      targetType: '' as string,
-      description: '' as string,
+      data: {
+        name: '',
+        targetType: '' as string,
+        description: '' as string
+      },
       rules: {
         name: [(input: string) => trim(input).length > 0],
         description: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
@@ -189,47 +205,46 @@ export default defineComponent<IProps>({
       })
 
     function clearCreationForm() {
-      form.value = {
-        valid: false,
+      form.value.data = {
         name: '',
-        targetType: '' as string,
-        description: '' as string,
-        rules: {
-          name: [(input: string) => trim(input).length > 0],
-          description: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
-          linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
-        }
+        targetType: '',
+        description: ''
       }
     }
 
     function createNode() {
-      context.emit('create-node', form.value)
+      context.emit('create-node', form.value.data)
     }
 
     /**
      * Edit item stuff
      */
-
-    const _item = ref(props.item)
+    const _item = ref(cloneDeep(props.item)) // Avoid copying the reference, only the value
     watch(
       () => props.item,
       (val: IVeoOSHCustomAspect | IVeoOSHCustomLink | undefined) => {
         if (val) {
           _item.value = JSON.parse(JSON.stringify(val)) // Deep copy to avoid mutating the object passed by the prop (else we couldn't abort editing)
-          form.value.name = val.title
+          form.value.data.name = val.title
 
           if (props.type === 'link') {
-            form.value.targetType = (_item.value as IVeoOSHCustomLink).targetType
-            form.value.description = (_item.value as IVeoOSHCustomLink).description
+            form.value.data.targetType = (_item.value as IVeoOSHCustomLink).targetType
+            form.value.data.description = (_item.value as IVeoOSHCustomLink).description
           }
         } else {
           _item.value = val
         }
+      },
+      {
+        deep: true
       }
     )
 
     function saveNode() {
-      context.emit('save-node', { item: _item.value, id: props.item?.title })
+      context.emit('save-node', {
+        item: { ..._item.value, ...form.value.data, title: form.value.data.name },
+        id: props.item?.title
+      })
     }
 
     function addAttribute() {
@@ -249,6 +264,8 @@ export default defineComponent<IProps>({
         _item.value.attributes[index] = newValues
         // We need to completely overwrite the object, else vue won't pick up the changes
         _item.value.attributes = JSON.parse(JSON.stringify(_item.value.attributes))
+
+        checkForDuplicate()
       }
     }
 
@@ -277,7 +294,6 @@ export default defineComponent<IProps>({
     return {
       dialog,
       form,
-      checkForDuplicate,
       duplicates,
       objectTypes,
       createNode,
@@ -287,6 +303,8 @@ export default defineComponent<IProps>({
       removeAttribute,
       updateAttribute,
       headline,
+      prefix,
+      aspectPrefix,
       close
     }
   }

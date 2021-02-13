@@ -86,7 +86,7 @@
               <ObjectSchemaEditorListHeader
                 v-bind="link"
                 :styling="{
-                  name: link.item.raw.items.properties.target.properties.type.enum[0],
+                  name: link.item.targetType,
                   color: 'black'
                 }"
                 @edit-item="showEditDialog(link.item, 'link')"
@@ -110,7 +110,6 @@
     <VEOOSECustomPropertiesDialog
       v-model="objectSchemaDialog.value"
       v-bind="objectSchemaDialog"
-      :schema="schema"
       @create-node="doAddItem"
       @save-node="doEditItem"
       @delete-item="showDeleteDialog(objectSchemaDialog.item, objectSchemaDialog.type)"
@@ -126,7 +125,6 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import ObjectSchemaHelper, {
   IVeoOSHCustomAspect,
   IVeoOSHCustomLink,
@@ -252,13 +250,13 @@ export default defineComponent<IProps>({
     delete newItemTypes.value.default
     delete newItemTypes.value.null
 
-    function doAddItem(form: { name: string; targetType?: string; targetDescription?: string }) {
+    function doAddItem(form: { name: string; targetType?: string; description?: string }) {
       try {
         if (objectSchemaDialog.value.type === 'aspect') {
           objectSchemaHelper.value.addCustomAspect(form.name)
           objectSchemaDialog.value.item = objectSchemaHelper.value.getCustomAspect(form.name)
         } else {
-          objectSchemaHelper.value.addCustomLink(form.name, form.targetType || '', form.targetDescription || '')
+          objectSchemaHelper.value.addCustomLink(form.name, form.targetType || '', form.description || '')
           objectSchemaDialog.value.item = objectSchemaHelper.value.getCustomLink(form.name)
         }
         showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
@@ -289,14 +287,9 @@ export default defineComponent<IProps>({
       }
 
       if (objectSchemaDialog.value.type === 'aspect') {
-        objectSchemaHelper.value.up
-        updateAspectAttributes(schema.value, object.item as IVEOCustomAspect, object.item.attributes)
+        objectSchemaHelper.value.updateCustomAspectAttributes(object.item.title, object.item.attributes)
       } else {
-        updateLinkAttributes(schema.value, object.item as IVEOCustomLink, object.item.attributes)
-        updateLinkDetails(schema.value, object.item as IVEOCustomLink, {
-          type: (object.item as IVEOCustomLink).target.type,
-          description: (object.item as IVEOCustomLink).target.description
-        })
+        objectSchemaHelper.value.updateCustomLink(object.item.title, object.item as IVeoOSHCustomLink)
       }
 
       objectSchemaDialog.value.value = false

@@ -1,7 +1,6 @@
 import { merge } from "lodash";
 import { capitalize } from '~/lib/utils'
 import {
-  IVeoCustomAspect,
   IVeoObjectSchema,
   IVeoObjectSchemaCustomAspect,
   IVeoObjectSchemaCustomLink,
@@ -60,13 +59,14 @@ export default class ObjectSchemaHelper {
     this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links' }
     merge(this._options, options)
 
-    if(objectSchema) {
-      this.loadObjectSchema(objectSchema)
+    if(!objectSchema) {
+      objectSchema = this.generateSchema()
     }
+    this.loadObjectSchema(objectSchema)
   }
 
   public setTitle(value: string) {
-    this._title = value
+    this._title = value.toLowerCase()
     this.updateSchemaPrefixes()
   }
 
@@ -229,8 +229,189 @@ export default class ObjectSchemaHelper {
     return validator.validate(this.toSchema())
   }
 
+  public static generateLinkSchema(link: IVeoOSHCustomLink): IVeoObjectSchemaCustomLink {
+    const schemaLink: IVeoObjectSchemaCustomLink = {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            title: 'The UUID to identify the element',
+            format: 'regex',
+            pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+          },
+          applicableTo: {
+            type: 'array',
+            items: {
+              type: 'string'
+            }
+          },
+          domains: {
+            type: 'array',
+            title: 'The list of domains in which this element is present.',
+            description: 'The ids of elements of the type domain.',
+            items: {
+              type: 'object',
+              properties: {
+                displayName: {
+                  type: 'string',
+                  description: 'A friendly human readable title of the referenced domain.'
+                },
+                targetUri: {
+                  type: 'string',
+                  description: 'The resource URL of the referenced domain.'
+                }
+              },
+              required: ['targetUri']
+            },
+            uniqueItems: true
+          },
+          references: {
+            type: 'array',
+            items: {
+              properties: {
+                displayName: {
+                  type: 'string',
+                  description: 'A friendly human readable title of the referenced object.'
+                },
+                targetUri: {
+                  type: 'string',
+                  description: 'The resource URL of the referenced object.'
+                }
+              },
+              required: ['targetUri']
+            }
+          },
+          abbreviation: {
+            type: 'string',
+            title: 'Abbreviation',
+            description: 'The abbreviation for this custom link.'
+          },
+          description: {
+            type: 'string',
+            title: 'Description',
+            description: 'The name for this custom link.'
+          },
+          name: {
+            type: 'string',
+            title: 'Name',
+            description: 'The name for this custom link.'
+          },
+          target: {
+            type: 'object',
+            title: link.description,
+            properties: {
+              targetUri: {
+                type: 'string',
+                title: 'The id of the target object.'
+              },
+              type: {
+                enum: [link.targetType]
+              }
+            }
+          },
+          attributes: {
+            type: 'object',
+            properties: {}
+          }
+        },
+        additionalProperties: false,
+        required: ['type', 'target']
+      }
+    }
+
+    for(const attribute of link.attributes) {
+      // @ts-ignore
+      const dummy: IVeoObjectSchemaProperty = { ...attribute }
+      dummy.title = dummy.description
+      delete dummy.prefix
+      delete dummy.description
+
+      schemaLink.items.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy
+    }
+
+    return schemaLink
+  }
+
+  public static generateAspectSchema(aspect: IVeoOSHCustomAspect): IVeoObjectSchemaCustomAspect {
+    const schemaAspect = {
+      type: 'object',
+      required: ['type'],
+      additionalProperties: false,
+      properties: {
+        id: {
+          type: 'string',
+          title: 'The UUID to identify the element',
+          format: 'regex',
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
+        },
+        applicableTo: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        },
+        domains: {
+          type: 'array',
+          title: 'The list of domains in which this element is present.',
+          description: 'The ids of elements of the type domain.',
+          items: {
+            type: 'object',
+            properties: {
+              displayName: {
+                type: 'string',
+                description: 'A friendly human readable title of the referenced domain.'
+              },
+              targetUri: {
+                type: 'string',
+                description: 'The resource URL of the referenced domain.'
+              }
+            },
+            required: ['targetUri']
+          },
+          uniqueItems: true
+        },
+        references: {
+          type: 'array',
+          items: {
+            properties: {
+              displayName: {
+                type: 'string',
+                description: 'A friendly human readable title of the referenced object.'
+              },
+              targetUri: {
+                type: 'string',
+                description: 'The resource URL of the referenced object.'
+              }
+            },
+            required: ['targetUri']
+          }
+        },
+        attributes: {
+          type: 'object',
+          properties: {}
+        }
+      }
+    }
+
+    for(const attribute of aspect.attributes) {
+      // @ts-ignore
+      const dummy: IVeoObjectSchemaProperty = { ...attribute }
+      dummy.title = dummy.description
+      delete dummy.prefix
+      delete dummy.description
+
+      // @ts-ignore
+      schemaAspect.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy
+    }
+
+    // @ts-ignore
+    return schemaAspect
+  }
+
   private loadObjectSchema(objectSchema: IVeoObjectSchema) {
-    this._title = objectSchema.title
+    this._title = objectSchema.title?.toLowerCase()
     this._description = objectSchema.description
 
     for(const key in objectSchema.properties) {
@@ -260,8 +441,9 @@ export default class ObjectSchemaHelper {
       for(let attributeName in aspect.properties.attributes.properties) {
         const attribute = aspect.properties.attributes.properties[attributeName]
         dummy.attributes.push({
-          title: attributeName,
-          description: this.cleanAttributeName(attributeName, dummy.title),
+          ...attribute,
+          title: capitalize(this.cleanAttributeName(attributeName, dummy.title), true),
+          description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
         })
@@ -279,13 +461,14 @@ export default class ObjectSchemaHelper {
       dummy.attributes = []
       dummy.prefix = `${this._title}_`
       dummy.description = link.items.properties.target.title
-      dummy.type = capitalize(link.items.properties.target.properties.type.enum[0])
+      dummy.targetType = capitalize(link.items.properties.target.properties.type.enum[0])
 
       for(let attributeName in link.items.properties.attributes.properties) {
         const attribute = link.items.properties.attributes.properties[attributeName]
         dummy.attributes.push({
-          title: attributeName,
-          description: this.cleanAttributeName(attributeName, dummy.title),
+          ...attribute,
+          title: capitalize(this.cleanAttributeName(attributeName, dummy.title), true),
+          description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
         })
@@ -478,183 +661,10 @@ export default class ObjectSchemaHelper {
   }
 
   private addAspectToSchema(schema: IVeoObjectSchema, aspect: IVeoOSHCustomAspect) {
-    const schemaAspect: IVeoObjectSchemaCustomAspect = {
-      type: 'object',
-      required: ['type'],
-      additionalProperties: false,
-      properties: {
-        id: {
-          type: 'string',
-          title: 'The UUID to identify the element',
-          format: 'regex',
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        },
-        applicableTo: {
-          type: 'array',
-          items: {
-            type: 'string'
-          }
-        },
-        domains: {
-          type: 'array',
-          title: 'The list of domains in which this element is present.',
-          description: 'The ids of elements of the type domain.',
-          items: {
-            type: 'object',
-            properties: {
-              displayName: {
-                type: 'string',
-                description: 'A friendly human readable title of the referenced domain.'
-              },
-              targetUri: {
-                type: 'string',
-                description: 'The resource URL of the referenced domain.'
-              }
-            },
-            required: ['targetUri']
-          },
-          uniqueItems: true
-        },
-        references: {
-          type: 'array',
-          items: {
-            properties: {
-              displayName: {
-                type: 'string',
-                description: 'A friendly human readable title of the referenced object.'
-              },
-              targetUri: {
-                type: 'string',
-                description: 'The resource URL of the referenced object.'
-              }
-            },
-            required: ['targetUri']
-          }
-        },
-        attributes: {
-          type: 'object',
-          properties: {}
-        }
-      }
-    }
-
-    for(const attribute of aspect.attributes) {
-      // @ts-ignore
-      const dummy: IVeoObjectSchemaProperty = { ...attribute }
-      dummy.title = dummy.description
-      delete dummy.prefix
-      delete dummy.description
-
-      // @ts-ignore
-      schemaAspect.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy
-    }
-
-    schema.properties.customAspects.properties[`${aspect.prefix}${aspect.title}`] = schemaAspect
+    schema.properties.customAspects.properties[`${aspect.prefix}${aspect.title}`] = ObjectSchemaHelper.generateAspectSchema(aspect)
   }
 
   private addLinkToSchema(schema: IVeoObjectSchema, link: IVeoOSHCustomLink) {
-    const schemaLink: IVeoObjectSchemaCustomLink = {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: {
-            type: 'string',
-            title: 'The UUID to identify the element',
-            format: 'regex',
-            pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-          },
-          applicableTo: {
-            type: 'array',
-            items: {
-              type: 'string'
-            }
-          },
-          domains: {
-            type: 'array',
-            title: 'The list of domains in which this element is present.',
-            description: 'The ids of elements of the type domain.',
-            items: {
-              type: 'object',
-              properties: {
-                displayName: {
-                  type: 'string',
-                  description: 'A friendly human readable title of the referenced domain.'
-                },
-                targetUri: {
-                  type: 'string',
-                  description: 'The resource URL of the referenced domain.'
-                }
-              },
-              required: ['targetUri']
-            },
-            uniqueItems: true
-          },
-          references: {
-            type: 'array',
-            items: {
-              properties: {
-                displayName: {
-                  type: 'string',
-                  description: 'A friendly human readable title of the referenced object.'
-                },
-                targetUri: {
-                  type: 'string',
-                  description: 'The resource URL of the referenced object.'
-                }
-              },
-              required: ['targetUri']
-            }
-          },
-          abbreviation: {
-            type: 'string',
-            title: 'Abbreviation',
-            description: 'The abbreviation for this custom link.'
-          },
-          description: {
-            type: 'string',
-            title: 'Description',
-            description: 'The name for this custom link.'
-          },
-          name: {
-            type: 'string',
-            title: 'Name',
-            description: 'The name for this custom link.'
-          },
-          target: {
-            type: 'object',
-            title: link.description,
-            properties: {
-              targetUri: {
-                type: 'string',
-                title: 'The id of the target object.'
-              },
-              type: {
-                enum: [link.targetType]
-              }
-            }
-          },
-          attributes: {
-            type: 'object',
-            properties: {}
-          }
-        },
-        additionalProperties: false,
-        required: ['type', 'target']
-      }
-    }
-
-    for(const attribute of link.attributes) {
-      // @ts-ignore
-      const dummy: IVeoObjectSchemaProperty = { ...attribute }
-      dummy.title = dummy.description
-      delete dummy.prefix
-      delete dummy.description
-
-      // @ts-ignore
-      schemaAspect.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy
-    }
-
-    schema.properties.links.properties[`${link.prefix}${link.title}`] = schemaLink
+    schema.properties.links.properties[`${link.prefix}${link.title}`] = ObjectSchemaHelper.generateLinkSchema(link)
   }
 }

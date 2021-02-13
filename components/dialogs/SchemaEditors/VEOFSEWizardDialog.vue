@@ -160,13 +160,13 @@
 import Vue from 'vue'
 import { capitalize, trim } from 'lodash'
 
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { IVEOFormSchema } from 'veo-formschema'
 import { generateSchema, validate } from '~/lib/FormSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
+import { IVeoObjectSchema } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
@@ -196,7 +196,7 @@ export default Vue.extend({
       oscode: '\n\n\n\n\n' as string,
       fscode: '\n\n\n\n\n' as string,
       formSchema: undefined as IVEOFormSchema | undefined,
-      objectSchema: undefined as VEOObjectSchemaRAW | undefined,
+      objectSchema: undefined as IVeoObjectSchema | undefined,
       state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
       schemas: [] as ISchemaEndpoint[],
       invalidOS: false as boolean,
@@ -309,7 +309,7 @@ export default Vue.extend({
       }
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
-    doImport2(schema: VEOObjectSchemaRAW) {
+    doImport2(schema: IVeoObjectSchema) {
       if (schema.title !== this.formSchema?.modelType) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('editor.formschema.wizard.import.wrongobjectschema', {
@@ -335,7 +335,7 @@ export default Vue.extend({
         }
       }
     },
-    setObjectSchema(schema: VEOObjectSchemaRAW) {
+    setObjectSchema(schema: IVeoObjectSchema) {
       this.oscode = JSON.stringify(schema, undefined, 2)
       this.objectSchema = schema
     },

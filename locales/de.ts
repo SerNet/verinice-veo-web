@@ -113,6 +113,7 @@ export default {
   'editor.objectschema.delete.link': 'Möchten Sie den Link "{link}" wirklich löschen?',
   'editor.objectschema.delete.link.headline': 'Link löschen',
   'editor.objectschema.description': 'Objektschemas erstellen, bearbeiten, importieren und exportieren',
+  'editor.objectschema.duplicate': 'Es kann immer nur ein Attribut mit den folgende(n) Titel(n) existieren',
   'editor.objectschema.headline': 'Objektschema Editor',
   'editor.objectschema.objectschema': 'Objektschema',
   'editor.objectschema.validation.errors': 'Fehler',

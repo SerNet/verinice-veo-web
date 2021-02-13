@@ -132,7 +132,6 @@
 
 <script lang="ts">
 import { IVEOFormSchema } from 'veo-formschema'
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
 import CollapseButton from '~/components/layout/CollapseButton.vue'
@@ -144,6 +143,7 @@ import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
 import { generateSchema, validate } from '~/lib/FormSchemaHelper'
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
+import { IVeoObjectSchema } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
@@ -160,7 +160,7 @@ export default Vue.extend({
       backlogCollapsed: false as boolean,
       showCreationDialog: false as boolean,
       showErrorDialog: false as boolean,
-      objectSchema: undefined as VEOObjectSchemaRAW | undefined,
+      objectSchema: undefined as IVeoObjectSchema | undefined,
       formSchema: undefined as IVEOFormSchema | undefined,
       lang: {},
       objectData: {},
@@ -217,7 +217,7 @@ export default Vue.extend({
       this.formSchema = schema
       this.showCreationDialog = !this.objectSchema || false
     },
-    setObjectSchema(schema: VEOObjectSchemaRAW) {
+    setObjectSchema(schema: IVeoObjectSchema) {
       this.objectSchema = schema
       this.showCreationDialog = !this.formSchema || false
     },

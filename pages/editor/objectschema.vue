@@ -131,7 +131,7 @@
       </VeoPage>
     </template>
     <template #helpers>
-      <VEOOSEWizardDialog v-model="showCreationDialog" @schema="setSchema" />
+      <VEOOSEWizardDialog v-model="showCreationDialog" @completed="setSchema" />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
     </template>
   </VeoPageWrapper>
@@ -175,7 +175,7 @@ export default Vue.extend({
   computed: {
     code: {
       get(): string {
-        return JSON.stringify(this.objectSchemaHelper?.toSchema() || '{}')
+        return JSON.stringify(this.objectSchemaHelper?.toSchema() || '{}', undefined, 2)
       },
       set(v: string) {
         try {
@@ -197,9 +197,13 @@ export default Vue.extend({
     this.showCreationDialog = true
   },
   methods: {
-    setSchema(schema?: IVeoObjectSchema) {
+    setSchema(data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) {
       this.showCreationDialog = false
-      this.objectSchemaHelper = new ObjectSchemaHelper(schema)
+      this.objectSchemaHelper = new ObjectSchemaHelper(data.schema)
+      if (data.meta) {
+        this.objectSchemaHelper.setTitle(data.meta.type)
+        this.objectSchemaHelper.setDescription(data.meta.description)
+      }
     },
     updateSchemaName(name: string) {
       this.objectSchemaHelper?.setTitle(name)
