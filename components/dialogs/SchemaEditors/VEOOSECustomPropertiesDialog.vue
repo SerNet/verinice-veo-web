@@ -32,14 +32,6 @@
             />
           </v-col>
         </v-row>
-        <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
-          <span> {{ $t('editor.objectschema.duplicate') }}: </span>
-          <ul>
-            <li v-for="duplicate of duplicates" :key="duplicate">
-              {{ duplicate }}
-            </li>
-          </ul>
-        </v-alert>
         <v-list v-if="_item && _item.attributes" dense class="py-0">
           <template v-for="(attribute, index) of _item.attributes" class="veo-attribute-list-attribute my-2">
             <VeoObjectSchemaEditorCAAttribute
@@ -66,6 +58,14 @@
             </v-list-item-action>
           </v-list-item>
         </v-list>
+        <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
+          <span> {{ $t('editor.objectschema.duplicate') }}: </span>
+          <ul>
+            <li v-for="duplicate of duplicates" :key="duplicate">
+              {{ duplicate }}
+            </li>
+          </ul>
+        </v-alert>
       </v-form>
       <small>{{ $t('editor.dialog.requiredfields') }}</small>
     </template>
