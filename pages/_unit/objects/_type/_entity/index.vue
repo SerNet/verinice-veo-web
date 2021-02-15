@@ -3,7 +3,7 @@ import Vue from 'vue'
 
 export default Vue.extend({
   middleware({ redirect, params }) {
-    redirect(`/${params.unit}/objects/${params.type}/-/list`)
+    redirect(`/${params.unit}/objects/${params.type}/${params.entity}/list`)
   }
 })
 </script>

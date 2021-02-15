@@ -1,8 +1,7 @@
 <template>
   <VeoPage title="veo.Scopes">
     <template #default>
-      <VeoHierarchicalTable title="asdf" @create-scope="showCreateScope()" />
-      <VeoCreateScopeDialog v-model="createScopeDialog" @created="scopeCreated" />
+      <VeoObjectList title="asdf" @create-scope="showCreateScope()" />
     </template>
   </VeoPage>
 </template>
@@ -10,16 +9,14 @@
 import { defineComponent, ref, useContext } from '@nuxtjs/composition-api'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
-import VeoHierarchicalTable from '~/components/scopes/VeoHierarchicalTable.vue'
-import VeoCreateScopeDialog from '~/components/scopes/VeoCreateScopeDialog.vue'
+import VeoObjectList from '~/components/objects/VeoObjectList.vue'
 
 interface IProps {}
 
 export default defineComponent<IProps>({
   components: {
     VeoPage,
-    VeoHierarchicalTable,
-    VeoCreateScopeDialog
+    VeoObjectList
   },
   setup(_props, _context) {
     const { $api } = useContext()
