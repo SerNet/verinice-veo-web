@@ -24,7 +24,7 @@
             <v-card outlined>
               <v-card-title>{{ item.fullName }}</v-card-title>
               <v-card-text>
-                <CodeEditor :key="item.name" :value="item.code" />
+                <CodeEditor :key="item.name" :value="item.code" ref="codeEditor" @input="onInputCode($event, item)" />
               </v-card-text>
             </v-card>
           </v-col>
@@ -47,6 +47,16 @@ import { IVEOFormSchemaTranslationCollection } from 'veo-formschema'
 import Vue from 'vue'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 
+interface ITranslationItem {
+  name: string
+  fullName: string
+  code: string
+}
+
+interface ITranslationCollection {
+  [key: string]: string
+}
+
 export default Vue.extend({
   components: {
     VeoDialog
@@ -68,9 +78,9 @@ export default Vue.extend({
   data() {
     return {
       dialog: {
-        translation: {} as IVEOFormSchemaTranslationCollection,
+        translation: {} as ITranslationCollection,
         primaryLanguage: 'de',
-        languages: ['de']
+        languages: [] as string[]
       }
     }
   },
@@ -81,34 +91,41 @@ export default Vue.extend({
         text: this.$t(`editor.formschema.translation.language.fullname.${languageCode}`)
       }))
     },
-    translationAsCode(): any {
-      return this.dialog.languages.map(languageCode => ({
+    translationAsCode(): ITranslationItem[] {
+      return this.dialog.languages.map((languageCode: string) => ({
         name: languageCode,
-        fullName: this.languageItems.find(languageItem => languageItem.value === languageCode)?.text,
-        code: JSON.stringify(this.dialog.translation[languageCode], undefined, 2)
+        fullName: this.languageItems.find(languageItem => languageItem.value === languageCode)?.text as string,
+        code: this.dialog.translation[languageCode]
       }))
     }
-    // translationAsCode: {
-    //   get(): string {
-    //     return this.dialog.translation ? JSON.stringify(this.dialog.translation, undefined, 2) : ''
-    //   },
-    //   set(v: string) {
-    //     try {
-    //       this.$emit('update:translation', JSON.parse(v))
-    //     } catch (e) {}
-    //   }
-    // }
+  },
+  watch: {
+    translation: {
+      immediate: true,
+      handler() {
+        this.dialog.translation = Object.fromEntries(
+          Object.entries(this.translation).map(([key, value]) => [key, JSON.stringify(value, null, 2)])
+        )
+        this.dialog.languages = Object.keys(this.translation)
+      }
+    }
   },
   methods: {
     onDialogStatus(event: boolean) {
       this.$emit('input', event)
     },
     onSave() {
+      const translationJSON = Object.fromEntries(
+        Object.entries(this.dialog.translation)
+          .filter(([key, value]) => this.dialog.languages.includes(key))
+          .map(([key, value]) => [key, JSON.parse(value as string)])
+      )
+      this.$emit('update-translation', translationJSON)
       this.onDialogStatus(false)
+    },
+    onInputCode(event: any, item: ITranslationItem) {
+      this.dialog.translation[item.name] = event
     }
-  },
-  created() {
-    this.dialog.translation = this.translation
   }
 })
 </script>

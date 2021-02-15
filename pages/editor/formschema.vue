@@ -179,7 +179,8 @@
         v-if="!$fetchState.pending && formSchema && formSchema.translation"
         v-model="showTranslationDialog"
         :languages="avaliableLanguages"
-        :translation.sync="formSchema.translation"
+        :translation="formSchema.translation"
+        @update-translation="onUpdateTranslation"
       />
       <VeoFSESchemaDetailsDialog
         v-if="formSchema"
@@ -357,6 +358,10 @@ export default defineComponent<IProps>({
       avaliableLanguages.value = Object.keys((await context.root.$api.translation.fetch([]))?.lang)
     })
 
+    function onUpdateTranslation(event: any) {
+      vjp.set(formSchema.value, '/translation', event)
+    }
+
     return {
       previewCollapsed,
       backlogCollapsed,
@@ -386,7 +391,8 @@ export default defineComponent<IProps>({
       code,
       showTranslationDialog,
       onClickTranslationBtn,
-      avaliableLanguages
+      avaliableLanguages,
+      onUpdateTranslation
     }
   }
 })

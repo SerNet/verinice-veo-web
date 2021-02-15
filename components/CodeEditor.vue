@@ -7,17 +7,14 @@
           style="height: 100%"
           @keydown.meta.enter="$emit('submit', $event)"
           @keydown.exact="codeModified()"
+          @keyup="onChangedCode($event)"
         />
       </div>
     </div>
     <div v-if="!readonly" class="veo-editor-save-button">
-      <v-btn
-        class="mx-4 my-2"
-        color="primary"
-        outlined
-        :disabled="saveButtonDisabled"
-        @click="updateSchema()"
-      >{{ $t('editor.editor.button.save') }}</v-btn>
+      <v-btn class="mx-4 my-2" color="primary" outlined :disabled="saveButtonDisabled" @click="updateSchema()">{{
+        $t('editor.editor.button.save')
+      }}</v-btn>
     </div>
   </div>
 </template>
@@ -234,6 +231,14 @@ export default defineComponent<Props>({
       })
     })
 
+    function onChangedCode(event: any) {
+      // console.log(event.target.innerText)
+      const editorText = $editor.state.toJSON().doc
+      if (editorText !== props.value) {
+        context.emit('input', editorText)
+      }
+    }
+
     return {
       editor: editorRef,
       update() {
@@ -252,7 +257,8 @@ export default defineComponent<Props>({
       },
       codeModified,
       saveButtonDisabled,
-      updateSchema
+      updateSchema,
+      onChangedCode
     }
   }
 })
