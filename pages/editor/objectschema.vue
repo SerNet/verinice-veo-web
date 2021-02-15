@@ -99,6 +99,7 @@
             v-model="objectSchemaHelper"
             :search="search"
             :hide-empty-aspects="hideEmptyAspects"
+            @schema-updated="updateCode"
           />
           <v-row v-else class="fill-height flex-column text-center align-center px-8">
             <v-col cols="auto" style="flex-grow: 0">
@@ -127,7 +128,7 @@
         :xl="6"
         height="100%"
       >
-        <CodeEditor v-model="code" />
+        <CodeEditor v-model="code" @schema-updated="updateSchema" />
       </VeoPage>
     </template>
     <template #helpers>
@@ -164,7 +165,8 @@ export default Vue.extend({
       showErrorDialog: false as boolean,
       hideEmptyAspects: false as boolean,
       search: '' as string,
-      objectSchemaHelper: undefined as ObjectSchemaHelper | undefined
+      objectSchemaHelper: undefined as ObjectSchemaHelper | undefined,
+      code: '' as string
     }
   },
   head(): any {
@@ -173,16 +175,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    code: {
-      get(): string {
-        return JSON.stringify(this.objectSchemaHelper?.toSchema() || '{}', undefined, 2)
-      },
-      set(v: string) {
-        try {
-          this.objectSchemaHelper = new ObjectSchemaHelper(JSON.parse(v))
-        } catch (e) {}
-      }
-    },
     schemaIsValid(): VeoSchemaValidatorValidationResult {
       return this.objectSchemaHelper?.validate() || { valid: false, errors: [], warnings: [] }
     },
@@ -204,12 +196,21 @@ export default Vue.extend({
         this.objectSchemaHelper.setTitle(data.meta.type)
         this.objectSchemaHelper.setDescription(data.meta.description)
       }
+      this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2)
+    },
+    updateSchema(schema: IVeoObjectSchema) {
+      this.objectSchemaHelper = new ObjectSchemaHelper(schema)
     },
     updateSchemaName(name: string) {
       this.objectSchemaHelper?.setTitle(name)
     },
     updateDescription(description: string) {
       this.objectSchemaHelper?.setDescription(description)
+    },
+    updateCode() {
+      if (this.objectSchemaHelper) {
+        this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2)
+      }
     },
     downloadSchema() {
       if (this.$refs.downloadButton) {

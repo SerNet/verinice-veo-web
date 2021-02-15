@@ -98,8 +98,8 @@ export default class ObjectSchemaHelper {
       throw new Error(`ObjectSchemaHelper2::updateCustomAspect: Aspect "${aspectName}" not found!`)
     } else {
       aspect.prefix = `${this._title}_`
-      this.updateAspectAttributePrefixes(aspect)
       this._customAspects[aspectIndex] = aspect
+      this.updateAspectAttributePrefixes(aspectIndex)
     }
   }
 
@@ -109,8 +109,8 @@ export default class ObjectSchemaHelper {
     if(aspectIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomAspectAttributes: Aspect "${aspectName}" not found!`)
     } else {
-      this.updateAspectAttributePrefixes(this._customAspects[aspectIndex])
       this._customAspects[aspectIndex].attributes = attributes
+      this.updateAspectAttributePrefixes(aspectIndex)
     }
   }
 
@@ -121,7 +121,7 @@ export default class ObjectSchemaHelper {
       throw new Error(`ObjectSchemaHelper2::renameCustomAspect: Aspect "${oldName}" not found!`)
     } else {
       this._customAspects[aspectIndex].title = newName
-      this.updateAspectAttributePrefixes(this._customAspects[aspectIndex])
+      this.updateAspectAttributePrefixes(aspectIndex)
     }
   }
 
@@ -161,8 +161,8 @@ export default class ObjectSchemaHelper {
       throw new Error(`ObjectSchemaHelper2::updateCustomLink: Link "${linkName}" not found!`)
     } else {
       link.prefix = `${this._title}_`
-      this.updateAspectAttributePrefixes(link)
       this._customLinks[linkIndex] = link
+      this.updateCustomLinkAttributes(linkName, link.attributes)
     }
   }
 
@@ -172,8 +172,8 @@ export default class ObjectSchemaHelper {
     if(linkIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomLinkAttributes: Link "${linkName}" not found!`)
     } else {
-      this.updateAspectAttributePrefixes(this._customLinks[linkIndex])
       this._customLinks[linkIndex].attributes = attributes
+      this.updateLinkAttributePrefixes(linkIndex)
     }
   } 
 
@@ -184,7 +184,7 @@ export default class ObjectSchemaHelper {
       throw new Error(`ObjectSchemaHelper2::renameCustomLink: Link "${oldName}" not found!`)
     } else {
       this._customLinks[linkIndex].title = newName
-      this.updateLinkAttributePrefixes(this._customLinks[linkIndex])
+      this.updateLinkAttributePrefixes(linkIndex)
     }
   }
 
@@ -496,27 +496,27 @@ export default class ObjectSchemaHelper {
     return attributeName.replace(`${this._title}_`, '').replace(`${customObjectName}_`, '')
   }
 
-  private updateAspectAttributePrefixes(aspect: IVeoOSHCustomAspect) {
-    for(const attribute of aspect.attributes) {
-      attribute.prefix = `${aspect.prefix}${aspect.title}_`
+  private updateAspectAttributePrefixes(aspectIndex: number) {
+    for(const attributeIndex in this._customAspects[aspectIndex].attributes) {
+      this._customAspects[aspectIndex].attributes[attributeIndex].prefix = `${this._customAspects[aspectIndex].prefix}${this._customAspects[aspectIndex].title}_`
     }
   }
 
-  private updateLinkAttributePrefixes(link: IVeoOSHCustomLink) {
-    for(const attribute of link.attributes) {
-      attribute.prefix = `${link.prefix}${link.title}_`
+  private updateLinkAttributePrefixes(linkIndex: number) {
+    for(const attributeIndex in this._customLinks[linkIndex].attributes) {
+      this._customLinks[linkIndex].attributes[attributeIndex].prefix = `${this._customLinks[linkIndex].prefix}${this._customLinks[linkIndex].title}_`
     }
   }
 
   private updateSchemaPrefixes() {
-    for(const aspect of this._customAspects) {
-      aspect.prefix = `${this._title}_`
-      this.updateAspectAttributePrefixes(aspect)
+    for(const aspectIndex in this._customAspects) {
+      this._customAspects[aspectIndex].prefix = `${this._title}_`
+      this.updateAspectAttributePrefixes(aspectIndex as unknown as number)
     }
 
-    for(const link of this._customLinks) {
-      link.prefix = `${this._title}_`
-      this.updateLinkAttributePrefixes(link)
+    for(const linkIndex in this._customLinks) {
+      this._customLinks[linkIndex].prefix = `${this._title}_`
+      this.updateLinkAttributePrefixes(linkIndex as unknown as number)
     }
   }
 
