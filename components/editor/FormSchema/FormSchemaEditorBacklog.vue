@@ -121,7 +121,6 @@ import { computed, ComputedRef, defineComponent, PropType, ref, Ref, watch } fro
 import { JsonPointer } from 'json-ptr'
 import vjp from 'vue-json-pointer'
 import Draggable from 'vuedraggable'
-
 import { IVEOFormSchema } from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { INPUT_TYPES } from '~/types/VEOEditor'
@@ -354,7 +353,7 @@ export default defineComponent<IProps>({
         type: 'Control',
         scope: dataToClone.scope,
         options: {
-          label: dataToClone.label
+          label: `#lang/${dataToClone.propertyName}`
         },
         ...(dataToClone.category === 'links' && { elements: [] })
       }

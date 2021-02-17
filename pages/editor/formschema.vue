@@ -119,7 +119,15 @@
         </template>
         <template #default>
           <div class="fill-height fill-width d-flex px-2">
-            <FseGenerator :schema="objectSchema" :value="formSchema.content" @delete="onDelete" @update="onUpdate" />
+            <FseGenerator
+              :schema="objectSchema"
+              :value="formSchema.content"
+              :general-translation="translation && translation.lang['de']"
+              :custom-translation="formSchema.translation['de']"
+              @delete="onDelete"
+              @update="onUpdate"
+              @update-custom-translation="onUpdateCustomTranslation"
+            />
           </div>
         </template>
       </VeoPage>
@@ -143,7 +151,7 @@
               v-model="objectData"
               :schema="objectSchema"
               :ui="formSchema.content"
-              :lang="lang"
+              :lang="translation"
               :api="dynamicAPI"
             />
           </v-card>
@@ -172,15 +180,21 @@
       </VeoPage>
     </template>
     <template #helpers>
-      <VEOFSEWizardDialog v-model="showCreationDialog" @object-schema="setObjectSchema" @form-schema="setFormSchema" />
+      <VEOFSEWizardDialog
+        v-model="showCreationDialog"
+        @update-object-schema="setObjectSchema"
+        @update-form-schema="setFormSchema"
+        @update-translation="setTranslation"
+      />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
       <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
+      <!-- Important: showTranslationDialog should be in v-if to only run code in the dialog when it is open  -->
       <VEOFSETranslationDialog
-        v-if="!$fetchState.pending && formSchema && formSchema.translation"
+        v-if="!$fetchState.pending && showTranslationDialog && formSchema && formSchema.translation"
         v-model="showTranslationDialog"
         :languages="avaliableLanguages"
         :translation="formSchema.translation"
-        @update-translation="onUpdateTranslation"
+        @update-translation="setFormTranslation"
       />
       <VeoFSESchemaDetailsDialog
         v-if="formSchema"
@@ -214,6 +228,8 @@ import VEOFSETranslationDialog from '~/components/dialogs/SchemaEditors/VEOFSETr
 
 import { validate } from '~/lib/FormSchemaHelper'
 import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch } from '@nuxtjs/composition-api'
+import { IVeoTranslations } from '~/types/VeoTypes'
+import { merge } from 'lodash'
 
 interface IProps {}
 
@@ -267,9 +283,9 @@ export default defineComponent<IProps>({
      * Schema related stuff
      */
     const objectSchema: Ref<VEOObjectSchemaRAW | undefined> = ref(undefined)
-    const formSchema: Ref<any | undefined> = ref(undefined)
+    const formSchema: Ref<IVEOFormSchema | undefined> = ref(undefined)
+    const translation: Ref<IVeoTranslations | undefined> = ref(undefined)
     const objectData = ref({})
-    const lang = ref({})
 
     const schemaIsValid = computed(() =>
       formSchema.value ? validate(formSchema.value, objectSchema.value) : { valid: false, errors: [], warnings: [] }
@@ -301,6 +317,10 @@ export default defineComponent<IProps>({
       showCreationDialog.value = !formSchema.value || false
     }
 
+    function setTranslation(newTranslation: IVeoTranslations) {
+      translation.value = newTranslation
+    }
+
     function updateSchemaName(value: string) {
       if (formSchema.value) {
         formSchema.value.name = value.toLowerCase()
@@ -321,22 +341,21 @@ export default defineComponent<IProps>({
       }
     }
 
-    function onDelete(_event: any): void {
+    function onDelete(event: any): void {
       if (formSchema.value) {
-        vjp.remove(formSchema.value, '/content')
+        const vjpPointer = event.formSchemaPointer.replace('#', '')
+        // Not allowed to make changes on the root object
+        if (event.formSchemaPointer !== '#') {
+          vjp.remove(formSchema.value.content, vjpPointer)
+        } else {
+          vjp.remove(formSchema.value, '/content')
+        }
       }
     }
 
     function onUpdate(event: any): void {
-      if (formSchema.value) {
-        const element = vjp.get(formSchema.value, `/content${event.formSchemaPointer}`)
-        element.options = event.payload.options
-        element.scope = event.payload.scope
-        if (element.scope !== event.payload.scope) {
-          // TODO: Implement
-          /* vjp.set(this.value, event.payload.scope, element)
-          vjp.remove(this.value, element.scope) */
-        }
+      if (formSchema.value?.content) {
+        vjp.set(formSchema.value.content, event.formSchemaPointer.replace('#', ''), event.data)
       }
     }
 
@@ -358,8 +377,20 @@ export default defineComponent<IProps>({
       avaliableLanguages.value = Object.keys((await context.root.$api.translation.fetch([]))?.lang)
     })
 
-    function onUpdateTranslation(event: any) {
-      vjp.set(formSchema.value, '/translation', event)
+    function setFormTranslation(event: any) {
+      if (formSchema.value) {
+        vjp.set(formSchema.value, '/translation', event)
+      }
+    }
+
+    function onUpdateCustomTranslation(event: any) {
+      if (formSchema.value) {
+        vjp.set(
+          formSchema.value,
+          `/translation/${'de'}`,
+          merge({ ...formSchema.value.translation['de'] }, { ...event })
+        )
+      }
     }
 
     return {
@@ -375,12 +406,14 @@ export default defineComponent<IProps>({
       objectSchema,
       formSchema,
       objectData,
-      lang,
+      translation,
       schemaIsValid,
       dynamicAPI,
       updateSchema,
       setFormSchema,
       setObjectSchema,
+      setTranslation,
+
       updateSchemaName,
       updateSubType,
       downloadSchema,
@@ -392,7 +425,8 @@ export default defineComponent<IProps>({
       showTranslationDialog,
       onClickTranslationBtn,
       avaliableLanguages,
-      onUpdateTranslation
+      setFormTranslation,
+      onUpdateCustomTranslation
     }
   }
 })

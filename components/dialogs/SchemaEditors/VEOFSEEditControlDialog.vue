@@ -93,7 +93,11 @@
               :value="attribute"
               :options="attribute.options"
               :scope="attribute.scope"
+              :formSchema="attribute"
+              :generalTranslation="generalTranslation"
+              :customTranslation="localCustomTranslation"
               @delete="onLinksAttributeDelete(index, attribute.scope)"
+              @update-custom-translation="onUpdateLinksCustomTranslation"
             />
           </div>
         </Draggable>
@@ -115,16 +119,16 @@ import {
   ref,
   watch,
   getCurrentInstance,
-  inject,
-  reactive,
-  toRefs
+  inject
 } from '@nuxtjs/composition-api'
-import { update } from 'lodash'
 import Draggable from 'vuedraggable'
 import { JsonPointer } from 'json-ptr'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { BaseObject } from '~/components/forms/utils'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import { merge } from 'lodash'
 
 interface IProps {
   value: boolean
@@ -132,6 +136,8 @@ interface IProps {
   options: any
   schema: any
   formSchema: any
+  generalTranslation: IVeoTranslation
+  customTranslation: IVEOFormSchemaTranslationCollectionItem
   type: string
 }
 
@@ -161,6 +167,14 @@ export default defineComponent<IProps>({
       type: Object,
       required: true
     },
+    generalTranslation: {
+      type: Object,
+      default: () => {}
+    },
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    },
     type: {
       type: String,
       required: true
@@ -174,6 +188,8 @@ export default defineComponent<IProps>({
     const defaults: BaseObject = {
       direction: 'horizontal'
     }
+
+    const localCustomTranslation: Ref<IVEOFormSchemaTranslationCollectionItem> = ref(props.customTranslation)
 
     /**
      * General functions
@@ -271,7 +287,11 @@ export default defineComponent<IProps>({
       }
     }
 
-    const label: Ref<string> = ref(props.options?.label || '')
+    function getLabel() {
+      return localCustomTranslation.value?.[props.name] || props.generalTranslation?.[props.name] || props.name
+    }
+
+    const label: Ref<string> = ref(getLabel())
     const alternatives = computed(() => controlTypeAlternatives(activeControlType.value.name, props))
 
     /**
@@ -327,6 +347,10 @@ export default defineComponent<IProps>({
         linksField.formSchemaElements.value.splice(index, 1)
       }
 
+      linksField.onUpdateLinksCustomTranslation = function(event: any) {
+        localCustomTranslation.value = merge({ ...localCustomTranslation.value }, { ...event })
+      }
+
       linksField.getSchema = function(scope: string) {
         return JsonPointer.get(props.schema.items, scope)
       }
@@ -334,16 +358,22 @@ export default defineComponent<IProps>({
 
     function updateElement() {
       const options: any = transformValues(activeControlType.value)
-      let updateData: any = { options: { label: label.value, ...options } }
+      let updateData: any = { ...props.formSchema, options: { label: props.formSchema?.options?.label, ...options } }
       if (activeControlType.value.name === 'LinksField') {
         updateData = { ...updateData, elements: linksField.formSchemaElements.value }
       }
       // delete options.name
-      context.emit('edit', updateData)
+      context.emit('edit', JSON.parse(JSON.stringify(updateData)))
+      console.log(merge({ [props.name]: label.value }, { ...localCustomTranslation.value }))
+      context.emit(
+        'update-custom-translation',
+        merge({ [props.name]: label.value }, { ...localCustomTranslation.value, [props.name]: undefined })
+      )
     }
 
     return {
       dialog,
+      localCustomTranslation,
       close,
       activeControlType,
       directionItems,

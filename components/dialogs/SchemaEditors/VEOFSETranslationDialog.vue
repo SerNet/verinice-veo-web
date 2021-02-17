@@ -21,7 +21,7 @@
 
         <v-row>
           <v-col v-for="item in translationAsCode" :key="item.name" :cols="12">
-            <v-card outlined>
+            <v-card outlined :key="item.name">
               <v-card-title>{{ item.fullName }}</v-card-title>
               <v-card-text>
                 <CodeEditor :key="item.name" :value="item.code" ref="codeEditor" @input="onInputCode($event, item)" />
@@ -102,6 +102,7 @@ export default Vue.extend({
   watch: {
     translation: {
       immediate: true,
+      deep: true,
       handler() {
         this.dialog.translation = Object.fromEntries(
           Object.entries(this.translation).map(([key, value]) => [key, JSON.stringify(value, null, 2)])

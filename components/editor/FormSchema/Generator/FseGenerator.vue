@@ -10,6 +10,8 @@ import FseControl from './elements/FseControl.vue'
 import FseLayout from './elements/FseLayout.vue'
 import { UISchema, UISchemaElement } from '~/types/UISchema'
 import { BaseObject } from '~/components/forms/utils'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
 // import Wrapper from '~/components/forms/Wrapper.vue'
 
 export default Vue.extend({
@@ -23,10 +25,14 @@ export default Vue.extend({
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
-    lang: {
+    generalTranslation: {
       type: Object,
-      default: undefined
-    } as PropOptions<BaseObject>
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>
   },
   data() {
     return {
@@ -84,20 +90,14 @@ export default Vue.extend({
         this.$emit('input', this.value)
       }
     },
-    onDelete(_event: any, formSchemaPointer: string): void {
-      const vjpPointer = formSchemaPointer.replace('#', '')
-      // Not allowed to make changes on the root object
-      if (formSchemaPointer !== '#') {
-        vjp.remove(this.value, vjpPointer)
-      } else {
-        this.$emit('delete', undefined)
-      }
+    onDelete(event: any): void {
+      this.$emit('delete', event)
     },
-    onUpdate(event: any, formSchemaPointer: string): void {
-      this.$emit('update', {
-        payload: event,
-        formSchemaPointer: formSchemaPointer.replace('#', '')
-      })
+    onUpdate(event: any): void {
+      this.$emit('update', event)
+    },
+    onUpdateCustomTranslation(event: any): void {
+      this.$emit('update-custom-translation', event)
     }
   },
   render(h): VNode {
@@ -124,7 +124,7 @@ export default Vue.extend({
                 level: elementLevel
               },
               on: {
-                delete: (event: any) => this.onDelete(event, formSchemaPointer)
+                delete: (event: any) => this.onDelete(event)
               }
             },
             createChildren()
@@ -133,9 +133,9 @@ export default Vue.extend({
           let partOfProps: { [key: string]: any } = {
             name: undefined,
             schema: {},
-            formSchema: element,
             formSchemaPointer,
-            lang: {}
+            generalTranslation: {},
+            customTranslation: {}
           }
 
           if (element.scope) {
@@ -147,11 +147,12 @@ export default Vue.extend({
               Array.isArray(elementParentSchema.required) && elementParentSchema.required.includes(elementName)
 
             partOfProps = {
+              ...partOfProps,
               value: element,
               name: elementName,
               schema: elementSchema,
-              lang: this.lang
-              // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug
+              generalTranslation: this.generalTranslation,
+              customTranslation: this.customTranslation
             }
           }
           return h(FseControl, {
@@ -162,10 +163,9 @@ export default Vue.extend({
               scope: element.scope || ''
             },
             on: {
-              delete: (event: any) => this.onDelete(event, formSchemaPointer),
-              update: (event: any) => {
-                this.onUpdate(event, formSchemaPointer)
-              }
+              delete: (event: any) => this.onDelete(event),
+              update: (event: any) => this.onUpdate(event),
+              'update-custom-translation': (event: any) => this.onUpdateCustomTranslation(event)
             }
           })
         }
@@ -177,7 +177,7 @@ export default Vue.extend({
               text: element.text
             },
             on: {
-              delete: (event: any) => this.onDelete(event, formSchemaPointer)
+              delete: (event: any) => this.onDelete(event)
             }
           })
       }
