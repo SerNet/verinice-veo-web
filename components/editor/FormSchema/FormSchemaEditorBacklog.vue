@@ -345,7 +345,9 @@ export default defineComponent<IProps>({
     function onCloneFormElement(original: any) {
       // Return always new object reference on clone to get in issues of the same reference
       // https://github.com/SortableJS/Vue.Draggable/issues/203
-      return JSON.parse(JSON.stringify(original))
+      const element = JSON.parse(JSON.stringify(original))
+      JsonPointer.unset(element, '#/description')
+      return element
     }
     function onCloneControl(original: IControl) {
       const dataToClone: IControl = JSON.parse(JSON.stringify(original))
