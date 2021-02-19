@@ -109,24 +109,24 @@ export default Vue.extend({
       formTypes: [],
       headers: [
         {
-          text: this.$t('unit.forms.header.abbreviation'),
+          text: this.$t('unit.list.header.abbreviation'),
           value: 'abbreviation'
         },
         {
-          text: this.$t('unit.forms.header.title'),
+          text: this.$t('unit.list.header.title'),
           value: 'name'
         },
         {
-          text: this.$t('unit.forms.header.description'),
+          text: this.$t('unit.list.header.description'),
           value: 'description',
           sortable: false
         },
         {
-          text: this.$t('unit.forms.header.updatedby'),
+          text: this.$t('unit.list.header.updatedby'),
           value: 'updatedBy'
         },
         {
-          text: this.$t('unit.forms.header.updatedat'),
+          text: this.$t('unit.list.header.updatedat'),
           value: 'updatedAt'
         },
         {

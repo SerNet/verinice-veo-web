@@ -11,7 +11,13 @@
       {{ buttonText }}</v-btn
     ><v-menu bottom left offset-y>
       <template v-slot:activator="{ on }">
-        <v-btn :color="color" outlined v-on="on" class="veo-hierarchical-table__expandable-menu-expand-button">
+        <v-btn
+          :color="color"
+          :disabled="menuItems.length === 0"
+          outlined
+          v-on="on"
+          class="veo-hierarchical-table__expandable-menu-expand-button"
+        >
           <v-icon>mdi-chevron-down</v-icon>
         </v-btn>
       </template>

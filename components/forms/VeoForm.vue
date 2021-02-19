@@ -99,7 +99,8 @@ export default Vue.extend({
             '/updatedAt$',
             '/updatedBy$',
             '/createdAt$',
-            '/createdBy$'
+            '/createdBy$',
+            '/parts$'
           ],
           elementsPerPage: -1
         }

@@ -81,7 +81,7 @@ module.exports = {
     '@nuxtjs/pwa',
     ['cookie-universal-nuxt', { parseJSON: false }],
     'nuxt-polyfill',
-    'nuxt-i18n'
+    ['nuxt-i18n', { vueI18nLoader: true }]
   ],
 
   /**
