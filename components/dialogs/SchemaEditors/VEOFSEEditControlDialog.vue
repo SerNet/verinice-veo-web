@@ -364,7 +364,6 @@ export default defineComponent<IProps>({
       }
       // delete options.name
       context.emit('edit', JSON.parse(JSON.stringify(updateData)))
-      console.log(merge({ [props.name]: label.value }, { ...localCustomTranslation.value }))
       context.emit(
         'update-custom-translation',
         merge({ [props.name]: label.value }, { ...localCustomTranslation.value, [props.name]: undefined })

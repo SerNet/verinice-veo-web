@@ -174,10 +174,15 @@ export default Vue.extend({
             props: {
               options: element.options,
               value: element,
-              text: element.text
+              name: element.text.replace('#lang/', ''),
+              text: element.text,
+              formSchemaPointer,
+              customTranslation: this.customTranslation
             },
             on: {
-              delete: (event: any) => this.onDelete(event)
+              delete: (event: any) => this.onDelete(event),
+              update: (event: any) => this.onUpdate(event),
+              'update-custom-translation': (event: any) => this.onUpdateCustomTranslation(event)
             }
           })
       }

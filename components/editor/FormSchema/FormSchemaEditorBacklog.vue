@@ -124,6 +124,7 @@ import Draggable from 'vuedraggable'
 import { IVEOFormSchema } from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { INPUT_TYPES } from '~/types/VEOEditor'
+import { v4 as uuid } from 'uuid'
 
 interface IProps {
   searchQuery: string
@@ -190,8 +191,6 @@ export default defineComponent<IProps>({
       },
       {
         type: 'Label',
-        text: 'TEXT',
-        options: {},
         description: {
           title: 'text',
           icon: 'mdi-format-text',
@@ -347,6 +346,10 @@ export default defineComponent<IProps>({
       // https://github.com/SortableJS/Vue.Draggable/issues/203
       const element = JSON.parse(JSON.stringify(original))
       JsonPointer.unset(element, '#/description')
+      if (element?.type?.toLowerCase() === 'label') {
+        const elementName = `text_${uuid()}`
+        element.text = `#lang/${elementName}`
+      }
       return element
     }
     function onCloneControl(original: IControl) {
