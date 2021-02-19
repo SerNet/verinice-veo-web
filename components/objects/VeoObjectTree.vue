@@ -30,7 +30,7 @@
           <v-col :cols="3" class="list__title-col">{{ item.name }}</v-col>
           <v-col :cols="4" class="list__description-col">{{ item.description }}</v-col>
           <v-col :cols="2">{{ item.updatedBy }}</v-col>
-          <v-col :cols="2" class="list-date justify-end">
+          <v-col :cols="2" class="list-date justify-end text-right">
             <div>
               {{
                 new Date(item.updatedAt).toLocaleDateString('de-DE', {
@@ -38,7 +38,7 @@
                   month: '2-digit',
                   year: 'numeric'
                 })
-              }}<br />
+              }}
               {{ new Date(item.updatedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
             </div>
           </v-col>
@@ -79,7 +79,6 @@
                 {{ $t('unit.objects.tooltip.delete') }}
               </template>
             </v-tooltip>
-            <div>&nbsp;<br />&nbsp;</div>
           </v-col>
         </v-row>
       </template>

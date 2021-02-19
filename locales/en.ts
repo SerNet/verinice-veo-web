@@ -216,7 +216,7 @@ export default {
   'unit.object.list.header.abbreviation': 'Abb.',
   'unit.object.list.header.description': 'Description',
   'unit.object.list.header.title': 'Object name',
-  'unit.object.list.header.updatedat': 'Date',
+  'unit.object.list.header.updatedat': 'Last change',
   'unit.object.list.header.updatedby': 'Editor',
   'unit.objects.created': 'Created',
   'unit.objects.updated': 'Updated',
