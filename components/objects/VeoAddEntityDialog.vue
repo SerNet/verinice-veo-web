@@ -5,7 +5,7 @@
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
-        {{ $t('global.button.abort') }}
+        {{ $t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn text color="primary" :disabled="!form" @click="$emit('delete', form.id)">
