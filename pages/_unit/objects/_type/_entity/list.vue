@@ -39,9 +39,9 @@
         <VeoMenuButton
           :menu-items="menuItems"
           :button-text="$t('object_create', { type: objectType })"
-          button-event="create-asset"
-          @create-asset="navigateCreate()"
-          @add-asset="showAddEntitiesDialog()"
+          button-event="create-entity"
+          @create-entity="navigateCreate()"
+          @add-entity="showAddEntitiesDialog()"
         />
       </v-col>
     </v-row>
@@ -116,21 +116,23 @@ export default Vue.extend({
   async fetch() {
     if (this.$route.params.entity !== '-') {
       this.objects = await this.$api.entity.fetchSubEntities(this.$route.params.type, this.$route.params.entity)
+      this.currentEntity = await this.$api.entity.fetch(this.$route.params.type, this.$route.params.entity)
     } else {
       this.objects = await this.$api.entity.fetchAll(this.$route.params.type)
+      this.currentEntity = undefined
     }
     this.maxObjects = this.objects.length
     this.currentPage = 0
   },
   computed: {
     menuItems(): IVeoMenuButtonItem[] {
-      if (this.$route.params.type === '-') {
+      if (this.$route.params.entity === '-') {
         return []
       } else {
         return [
           {
             name: this.$t('object_add', { type: this.objectType }) as string,
-            eventName: 'add-asset',
+            eventName: 'add-entity',
             disabled: false
           }
         ]
@@ -182,8 +184,35 @@ export default Vue.extend({
         `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/create`
       )
     },
-    showAddEntitiesDialog() {},
-    doAddEntitiesDialog(entities: string[]) {},
+    showAddEntitiesDialog() {
+      if (this.entities.length === 0) {
+        this.$api.entity
+          .fetchAll(this.$route.params.type)
+          .then((entities: IVeoEntity[]) => {
+            this.entities = entities
+          })
+          .finally(() => {
+            this.addDialog = true
+          })
+      } else {
+        this.addDialog = true
+      }
+    },
+    doAddEntitiesDialog(entities: string[]) {
+      if (this.currentEntity) {
+        const children = entities.map((entity: string) => {
+          return {
+            targetUri: `${this.$config.apiUrl}/${this.$route.params.type}/${entity}`
+          }
+        })
+
+        this.currentEntity.parts = children
+        this.$api.entity.update(this.$route.params.type, this.$route.params.entity, this.currentEntity).finally(() => {
+          this.addDialog = false
+          this.$fetch()
+        })
+      }
+    },
     showDeleteEntityDialog(item: IVeoEntity) {
       this.deleteDialog.item = item
       this.deleteDialog.value = true

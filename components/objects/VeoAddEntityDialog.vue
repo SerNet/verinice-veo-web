@@ -1,29 +1,56 @@
 <template>
-  <VeoDialog v-model="dialog" :headline="$t('unit.data.delete.headline')">
+  <VeoDialog v-model="dialog" :headline="$t('headline')">
     <template #default>
-      {{ $t('unit.data.delete', { name }) }}
+      {{ $t('add_subentities', { name: entityName }) }}
+      <v-autocomplete
+        v-model="selectedEntities"
+        :items="displayedEntities"
+        item-value="id"
+        item-text="name"
+        clearable
+        multiple
+      />
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
         {{ $t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!form" @click="$emit('delete', form.id)">
+      <v-btn
+        text
+        color="primary"
+        :disabled="selectedEntities.length === 0"
+        @click="$emit('add-entities', selectedEntities)"
+      >
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
+<i18n>
+{
+  "en": {
+    "add_subentities": "Add sub objects to \"{name}\"",
+    "headline": "Edit sub objects"
+  },
+  "de": {
+    "add_subentities": "Unterobjekte zu \"{name}\" hinzufügen",
+    "headline": "Unterobjekte bearbeiten"
+  }
+}
+</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import { IBaseObject } from '~/lib/utils'
+import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
   dialog: boolean
   noWatch: boolean
+  selectedEntities: string[]
 }
 
 export default Vue.extend({
@@ -35,20 +62,28 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
-    form: {
-      type: Object as Prop<IBaseObject>,
+    entities: {
+      type: Array as Prop<IVeoEntity[]>,
+      default: []
+    },
+    currentEntity: {
+      type: Object as Prop<IVeoEntity | undefined>,
       default: undefined
     }
   },
   data() {
     return {
       dialog: false,
-      noWatch: false
+      noWatch: false,
+      selectedEntities: []
     } as IData
   },
   computed: {
-    name(): string {
-      return this.form?.name ?? ''
+    entityName(): string {
+      return this.currentEntity?.name || ''
+    },
+    displayedEntities(): IVeoEntity[] {
+      return this.entities.filter(entity => entity.id !== this.currentEntity?.id)
     }
   },
   watch: {
@@ -60,6 +95,10 @@ export default Vue.extend({
     dialog(newValue: boolean) {
       if (!this.noWatch) {
         this.$emit('input', newValue)
+      }
+
+      if (newValue) {
+        this.selectedEntities = this.currentEntity?.parts.map(child => child.targetUri.split('/').pop()) || []
       }
     }
   },

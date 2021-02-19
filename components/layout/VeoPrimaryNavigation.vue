@@ -113,7 +113,7 @@ export default Vue.extend({
           },
           {
             name: 'veo.Objects',
-            icon: 'mdi-folder',
+            icon: 'mdi-file-document',
             to: undefined,
             exact: false,
             disabled: false,
