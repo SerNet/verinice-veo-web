@@ -1,48 +1,62 @@
 <template>
   <div class="pa-4 pl-0">
-    <v-row dense style="font-size: 0.85em; margin-left: 64px; margin-right: 4px;">
-      <v-col :cols="1">Abk.</v-col>
-      <v-col :cols="3">
-        Objektname
-      </v-col>
-      <v-col :cols="5">
-        Beschreibung
-      </v-col>
-      <v-col :cols="2">
-        Bearbeiter
-      </v-col>
-      <v-col :cols="1">
-        Datum
-      </v-col>
-    </v-row>
-    <v-treeview v-model="tree" :items="items" item-key="id" open-on-click activatable>
-      <template #prepend="{ item, open }">
-        <v-icon v-if="item.parts.length > 0">
-          {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
-        </v-icon>
-        <v-icon v-else>mdi-file</v-icon>
+    <div v-if="displayedItems.length === 0">
+      <span v-if="$route.params.param === '-'" class="text-center">
+        {{ $t('no_objects') }}
+      </span>
+      <span v-else class="text-center">
+        {{ $t('no_child_objects') }} <nuxt-link :to="editItemLink">{{ $t('object_edit') }}</nuxt-link>
+      </span>
+    </div>
+    <v-treeview
+      v-else
+      :active.sync="active"
+      :items="displayedItems"
+      :load-children="loadSubEntities"
+      :open.sync="open"
+      open-on-click
+      transition
+    >
+      <template #prepend="{ item }">
+        <v-tooltip v-if="item.parts.length > 0" bottom>
+          <template #activator="{ on }">
+            <v-icon v-on="on">mdi-file-document-multiple</v-icon>
+          </template>
+          <template #default>
+            <span
+              class="d-inline-block text-center"
+              v-html="$t('object_has_subobjects', { amount: item.parts.length })"
+            />
+          </template>
+        </v-tooltip>
+        <v-tooltip v-else bottom>
+          <template #activator="{ on }">
+            <v-icon v-on="on">mdi-file-document</v-icon>
+          </template>
+          <template #default>
+            <span v-html="$t('object_has_no_subobjects')" />
+          </template>
+        </v-tooltip>
       </template>
       <template #label="{item}">
-        <v-row dense class="align-center tree-item">
-          <v-col :cols="1" class="d-flex align-center">
+        <div class="tree-item d-flex justify-space-between align-center" @click="goToItem(item)">
+          <div>
             {{ item.abbreviation }}
-          </v-col>
-          <v-col :cols="3" class="list__title-col">{{ item.name }}</v-col>
-          <v-col :cols="4" class="list__description-col">{{ item.description }}</v-col>
-          <v-col :cols="2">{{ item.updatedBy }}</v-col>
-          <v-col :cols="2" class="list-date justify-end text-right">
-            <div>
-              {{
-                new Date(item.updatedAt).toLocaleDateString('de-DE', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric'
-                })
-              }}
-              {{ new Date(item.updatedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
-            </div>
-          </v-col>
-          <v-col :cols="2" class="list-actions flex-row align-center justify-end">
+            <b>{{ item.name }}</b>
+            <v-tooltip bottom>
+              <template #activator="{ on }">
+                <span v-on="on">
+                  {{ formatDate(item.updatedAt) }}
+                </span>
+              </template>
+              <template #default>
+                {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}<br />
+                {{ $t('updated_at') }}: {{ formatDate(item.updatedAt) }} {{ $t('by') }} {{ item.updatedBy }}
+              </template>
+            </v-tooltip>
+            <span class="list__description-col ml-2">{{ item.description }}</span>
+          </div>
+          <div class="list-actions">
             <v-tooltip bottom>
               <template #activator="{on}">
                 <v-btn icon @click.stop="editSubItem(item)" v-on="on">
@@ -52,52 +66,85 @@
                 </v-btn>
               </template>
               <template #default>
-                {{ $t('unit.objects.tooltip.edit') }}
+                {{ $t('edit') }}
               </template>
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="duplicateSubItem(item)" v-on="on">
+                <v-btn icon @click.stop="$emit('duplicate', item)" v-on="on">
                   <v-icon>
                     mdi-content-copy
                   </v-icon>
                 </v-btn>
               </template>
               <template #default>
-                {{ $t('unit.objects.tooltip.clone') }}
+                {{ $t('clone') }}
               </template>
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="showDelete(item)" v-on="on">
+                <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
                   <v-icon>
                     mdi-delete
                   </v-icon>
                 </v-btn>
               </template>
               <template #default>
-                {{ $t('unit.objects.tooltip.delete') }}
+                {{ $t('delete') }}
               </template>
             </v-tooltip>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
       </template>
     </v-treeview>
-    <DeleteObjectDialog v-model="deleteDialog.value" :form="deleteDialog.item" @delete="doDelete" />
   </div>
 </template>
+<i18n>
+{
+  "en": {
+    "by": "by",
+    "clone": "Clone object",
+    "created_at": "Created",
+    "delete": "Delete object",
+    "edit": "Edit object",
+    "no_objects": "There are no objects",
+    "no_child_objects": "This object has no sub objects",
+    "object_edit": "Edit this object",
+    "object_has_no_subobjects": "Standard object",
+    "object_has_subobjects": "Composite object<br>({amount} sub objects)",
+    "parent_object": "Parent object",
+    "updated_at": "Updated"
+  },
+  "de": {
+    "by": "von",
+    "clone": "Objekt klonen",
+    "created_at": "Erstellt",
+    "delete": "Objekt löschen",
+    "edit": "Objekt bearbeiten",
+    "no_objects": "Es existieren keine Objekte!",
+    "no_child_objects": "Dieses Objekt hat keine Unterobjekte.",
+    "object_edit": "Dieses Objekt bearbeiten",
+    "object_has_no_subobjects": "Standardobjekt",
+    "object_has_subobjects": "Zusammengesetztes Objekt<br>({amount} Unterobjekte)",
+    "parent_object": "Übergeordnetes Objekt",
+    "updated_at": "Aktualisiert"
+  }
+}
+</i18n>
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import DeleteObjectDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoEntity } from '~/types/VeoTypes'
 
+interface IData {
+  deleteDialog: { value: boolean; item: IVeoEntity | undefined }
+  open: string[]
+  active: string[]
+  displayedItems: (IVeoEntity & { children?: IVeoEntity[] })[]
+}
+
 export default Vue.extend({
-  components: {
-    DeleteObjectDialog
-  },
   props: {
     title: {
       type: String,
@@ -109,36 +156,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    headers() {
-      return [
-        {
-          text: this.$t('unit.list.header.abbreviation'),
-          value: 'abbreviation'
-        },
-        {
-          text: this.$t('unit.list.header.title'),
-          value: 'name'
-        },
-        {
-          text: this.$t('unit.list.header.description'),
-          value: 'description',
-          sortable: false
-        },
-        {
-          text: this.$t('unit.list.header.updatedby'),
-          value: 'updatedBy'
-        },
-        {
-          text: this.$t('unit.list.header.updatedat'),
-          value: 'updatedAt'
-        },
-        {
-          text: '',
-          value: 'actions',
-          sortable: false
-        }
-      ]
-    },
     editItemLink(): string {
       return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
     }
@@ -146,37 +163,59 @@ export default Vue.extend({
   data() {
     return {
       deleteDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined },
-      tree: []
+      open: [],
+      active: [],
+      displayedItems: []
+    } as IData
+  },
+  watch: {
+    items() {
+      this.updateItemsBasedOnProp()
     }
   },
   methods: {
-    goToItem(item: IVeoEntity) {
-      this.$router.push(`/${this.$route.params.unit}/objects/${this.$route.params.type}/${item.id}/list`)
+    goToItem(item: IVeoEntity & { children?: IVeoEntity[] }) {
+      if (!item.children) {
+        this.editSubItem(item)
+      }
     },
-    goToParent() {},
     editSubItem(item: IVeoEntity) {
       this.$router.push(`/${this.$route.params.unit}/objects/${this.$route.params.type}/${item.id}/edit`)
     },
-    duplicateSubItem(item: IVeoEntity) {
-      const newItem = item
-      item.name = `${item.name} (Klon)`
-      this.$api.entity.create(this.$route.params.type, newItem).then(() => {
-        this.$emit('fetch')
-        this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
-          text: 'Objekt wurde dupliziert'
+    loadSubEntities(item: IVeoEntity & { children: IVeoEntity[] }) {
+      return this.$api.entity.fetchSubEntities(this.$route.params.type, item.id).then((data: IVeoEntity[]) => {
+        item.children = data.map((item: IVeoEntity) => {
+          if (item.parts.length > 0) {
+            return { ...item, children: [] }
+          } else {
+            return item
+          }
         })
       })
     },
-    showDelete(item: IVeoEntity) {
-      this.deleteDialog.item = item
-      this.deleteDialog.value = true
-    },
-    doDelete(id: string) {
-      this.deleteDialog.value = false
-      this.$api.entity.delete(this.$route.params.type, id).then(() => {
-        this.$emit('fetch')
+    updateItemsBasedOnProp() {
+      this.displayedItems = this.items.map((item: IVeoEntity) => {
+        if (item.parts.length > 0) {
+          return { ...item, children: [] }
+        } else {
+          return item
+        }
       })
+    },
+    formatDate(date: string) {
+      return (
+        new Date(date).toLocaleDateString('de-DE', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }) +
+        ' ' +
+        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+      )
     }
+  },
+  mounted() {
+    this.updateItemsBasedOnProp()
   }
 })
 </script>
@@ -184,19 +223,10 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .list__description-col {
-  display: block;
+  font-style: italic;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.list__title-col {
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-.list-date {
-  display: flex;
 }
 
 .tree-item:hover {

@@ -4,11 +4,11 @@
     <v-row>
       <v-col>
         <v-icon>mdi-account</v-icon>
-        {{ $props.updatedBy }}
+        {{ object.updatedBy }}
       </v-col>
       <v-col>
         <v-icon>mdi-clock-time-four-outline</v-icon>
-        {{ new Date($props.updatedAt).toLocaleString() }}
+        {{ new Date(object.updatedAt).toLocaleString() }}
       </v-col>
     </v-row>
     <v-divider />
@@ -16,11 +16,11 @@
     <v-row>
       <v-col>
         <v-icon>mdi-account</v-icon>
-        {{ $props.createdBy }}
+        {{ object.createdBy }}
       </v-col>
       <v-col>
         <v-icon>mdi-clock-time-four-outline</v-icon>
-        {{ new Date($props.createdAt).toLocaleString() }}
+        {{ new Date(object.createdAt).toLocaleString() }}
       </v-col>
     </v-row>
   </div>
@@ -28,13 +28,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Prop } from 'vue/types/options'
+
+import { IVeoEntity } from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {
-    createdAt: String,
-    createdBy: String,
-    updatedAt: String,
-    updatedBy: String
+    object: Object as Prop<IVeoEntity>
   }
 })
 </script>

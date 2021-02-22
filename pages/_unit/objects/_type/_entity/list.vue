@@ -45,18 +45,7 @@
         />
       </v-col>
     </v-row>
-    <VeoObjectList :items="displayedObjects" @duplicate="doDuplicateEntity" @delete="showDeleteEntityDialog" />
-    <v-row class="justify-end mr-2">
-      <v-col cols="auto">
-        <span> {{ $t('showing') }} {{ start + 1 }} - {{ end }} {{ $t('of') }} {{ maxObjects }} </span>
-        <v-btn icon :disabled="currentPage == 0" @click="currentPage--">
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
-        <v-btn icon :disabled="(currentPage + 1) * itemsPerPage >= maxObjects" @click="currentPage++">
-          <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
+    <VeoObjectList :items="objects" @duplicate="doDuplicateEntity" @delete="showDeleteEntityDialog" />
     <VeoDeleteEntityDialog v-model="deleteDialog.value" :form="deleteDialog.item" @delete="doDeleteEntityDialog" />
     <VeoAddEntityDialog
       v-model="addDialog"
@@ -121,8 +110,6 @@ export default Vue.extend({
       this.objects = await this.$api.entity.fetchAll(this.$route.params.type)
       this.currentEntity = undefined
     }
-    this.maxObjects = this.objects.length
-    this.currentPage = 0
   },
   computed: {
     menuItems(): IVeoMenuButtonItem[] {
@@ -141,17 +128,6 @@ export default Vue.extend({
     title(): string {
       return capitalize(this.$route.params.type)
     },
-    start(): number {
-      const start = this.currentPage * this.itemsPerPage
-      return this.maxObjects === 0 ? -1 : start
-    },
-    end(): number {
-      const end = this.currentPage * this.itemsPerPage + this.itemsPerPage
-      return end > this.maxObjects ? this.maxObjects : end
-    },
-    displayedObjects(): IVeoEntity[] {
-      return this.objects.slice(this.start, this.end)
-    },
     objectType(): string {
       return capitalize(getSchemaName(this.$route.params.type) || '')
     }
@@ -159,9 +135,6 @@ export default Vue.extend({
   data() {
     return {
       objects: [] as IVeoEntity[],
-      currentPage: 0 as number,
-      maxObjects: 0 as number,
-      itemsPerPage: 10 as number,
       addDialog: false as boolean,
       deleteDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined },
       currentEntity: undefined as undefined | IVeoEntity,
