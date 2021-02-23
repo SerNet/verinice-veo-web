@@ -791,6 +791,14 @@ export function addAttributeToLink(schema: VEOObjectSchemaRAW, link: IVEOCustomL
   delete (attribute as any).raw
   delete (attribute as any).description
 
+  if(attribute.type && attribute.type !== 'enum') {
+    delete (attribute as any).enum
+  }
+
+  if(attribute.type && attribute.type === 'enum') {
+    delete (attribute as any).type
+  }
+
   // Overwrite old property with new one.
   schema.properties[OPTIONS.customProperties.links].properties[linkName].items.properties.attributes.properties[attributeName] = attribute
 }

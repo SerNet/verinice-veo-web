@@ -104,7 +104,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.Scopes',
+            name: 'Scopes',
             icon: 'mdi-archive',
             exact: false,
             to: `/${route.params.unit}/scopes`,
