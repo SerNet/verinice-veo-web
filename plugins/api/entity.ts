@@ -60,6 +60,16 @@ export default function(api: Client) {
       return api.req(`/api/${objectType}/${id}`, {
         method: 'DELETE'
       })
+    },
+
+    /**
+     * Returns all entities that are a sub entity of this entity.
+     * 
+     * @param objectType The type to fetch the entities for.
+     * @param id The uuid of the entity to fetch the sub entities for.
+     */
+    fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
+      return api.req(`/api/${objectType}/${id}/parts`)
     }
   }
 }
