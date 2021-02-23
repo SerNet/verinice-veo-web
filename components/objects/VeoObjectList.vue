@@ -26,7 +26,7 @@
       </tr>
     </template>
     <template #item.abbreviation="{ item }">
-      <v-tooltip v-if="item.parts.length > 0" bottom>
+      <v-tooltip v-if="item.parts && item.parts.length > 0" bottom>
         <template #activator="{ on }">
           <v-icon v-on="on">mdi-file-document-multiple</v-icon>
         </template>
@@ -35,6 +35,22 @@
             class="d-inline-block text-center"
             v-html="$t('object_has_subobjects', { amount: item.parts.length })"
           />
+        </template>
+      </v-tooltip>
+      <v-tooltip v-else-if="item.members && item.members.length > 0" bottom>
+        <template #activator="{ on }">
+          <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
+        </template>
+        <template #default>
+          <span class="d-inline-block text-center" v-html="$t('scope_children', { amount: item.members.length })" />
+        </template>
+      </v-tooltip>
+      <v-tooltip v-else-if="item.members" bottom>
+        <template #activator="{ on }">
+          <v-icon v-on="on">mdi-archive</v-icon>
+        </template>
+        <template #default>
+          <span v-html="$t('scope_empty')" />
         </template>
       </v-tooltip>
       <v-tooltip v-else bottom>
@@ -120,6 +136,8 @@
     "object_has_no_subobjects": "Standard object",
     "object_has_subobjects": "Composite object<br>({amount} sub objects)",
     "parent_object": "Parent object",
+    "scope_children": "Scope with members",
+    "scope_empty": "Empty scope",
     "updated_at": "Updated"
   },
   "de": {
@@ -134,6 +152,8 @@
     "object_has_no_subobjects": "Standardobjekt",
     "object_has_subobjects": "Zusammengesetztes Objekt<br>({amount} Unterobjekte)",
     "parent_object": "Übergeordnetes Objekt",
+    "scope_children": "Scope mit Inhalt",
+    "scope_empty": "Scope ohne Inhalt",
     "updated_at": "Aktualisiert"
   }
 }
