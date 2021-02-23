@@ -16,7 +16,7 @@
     <template #default>
       <v-data-table
         :headers="headers"
-        :items="displayedObjects"
+        :items="objects"
         :items-per-page="20"
         :no-data-text="$t('unit.forms.noentries', { types: formName })"
         :loading-text="$t('unit.forms.loading', { types: formName })"
@@ -165,7 +165,8 @@ export default Vue.extend({
       this.objectTypePlural = endpoints[this.formSchema.modelType.toLowerCase()]
 
       this.objects = await this.$api.entity.fetchAll(this.objectTypePlural, {
-        unit: this.unitId
+        unit: this.unitId,
+        subType: this.formSchema.subType
       })
     } else {
       this.objects = []
@@ -197,18 +198,6 @@ export default Vue.extend({
     },
     formRoute(): string {
       return createUUIDUrlParam('form', this.formType)
-    },
-    /**
-     * Only display objects that either have no subtype set (but still are part of the model type)
-     * OR have a subtype that is the same as the subType of the form schema
-     */
-    displayedObjects(): IBaseObject[] {
-      return this.objects.filter(
-        (object: IBaseObject) =>
-          !this.formSchema ||
-          !object.subType[this.$user.currentDomain] ||
-          object.subType[this.$user.currentDomain] === this.formSchema.subType
-      )
     },
     formName(): string {
       return this.formSchema?.name || ''

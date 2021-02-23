@@ -55,14 +55,13 @@ export default class FormSchemaValidator {
     if(!element.scope && element.type === 'Control') {
       this.errors.push({ code: 'E_SCOPE_MISSING', message: `The element ${context} is missing its scope.` })
     } else if (element.scope) {
-      if(!JsonPointer.get(objectSchema, element.scope)) {
+      const schema = JsonPointer.get(objectSchema, element.scope) as any
+      if(!schema) {
         this.errors.push({ code: 'E_PROPERTY_MISSING', message: `The element ${element.scope} doesn't exist in the object schema.` })
-      }
-    }    
-
-    if(element.elements) {
-      for(const child in element.elements) {
-        this.elementExists(element.elements[child], objectSchema, `${context}.elements.[${child}]`)
+      } else if(element.elements) {
+        for(const child in element.elements) {
+          this.elementExists(element.elements[child], schema, `${context}.elements.[${child}]`)
+        }
       }
     }
   } 

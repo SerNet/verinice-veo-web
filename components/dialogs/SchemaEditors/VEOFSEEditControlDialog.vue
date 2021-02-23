@@ -12,11 +12,7 @@
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.label.text') }}*:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-text-field
-              v-model="label"
-              :label="$t('editor.formschema.edit.input.label')"
-              required
-            />
+            <v-text-field v-model="label" :label="$t('editor.formschema.edit.input.label')" required />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center">
@@ -40,17 +36,12 @@
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.highlight') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-checkbox
-              v-model="activeControlType.highlight"
-              :label="$t('editor.formschema.edit.input.highlight')"
-            />
+            <v-checkbox v-model="activeControlType.highlight" :label="$t('editor.formschema.edit.input.highlight')" />
           </v-col>
         </v-row>
         <v-row v-if="activeControlType.name === 'LinksField'" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span
-              style="font-size: 1.2rem;"
-            >{{ $t('editor.formschema.edit.input.link.attributes.text') }}:</span>
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.link.attributes.text') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-autocomplete
@@ -289,7 +280,7 @@ export default defineComponent<IProps>({
 
     const linksField: any = {}
     if (activeControlType.value.name === 'LinksField') {
-      linksField.linksAttributesItems = ref((inject('controlsItems') as any)[props.formSchema.scope])
+      linksField.linksAttributesItems = ref((inject('controlsItems') as any).value[props.formSchema.scope])
       // Important: JSON.parse(JSON.stringify()) is necessary to avoid edition of array objects through reference before saving
       linksField.formSchemaElements = ref(JSON.parse(JSON.stringify(props.formSchema.elements)))
       linksField.linksAttributes = ref(
