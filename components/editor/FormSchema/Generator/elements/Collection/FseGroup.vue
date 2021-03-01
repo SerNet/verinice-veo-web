@@ -1,13 +1,27 @@
 <template>
-  <v-card elevation="0" class="fse-label mx-3 my-2 px-2">
-    <v-row no-gutters>
+  <v-card v-if="level === 0" flat class="fse-group level-0 fill-width fill-height">
+    <div v-if="value.elements.length === 0" class="dropzone-placeholder">
+      <div class="dropzone-placeholder-text subtitle-1">{{ $t('editor.formschema.dropzone.placeholder') }}</div>
+    </div>
+    <Draggable
+      class="dragArea d-flex fill-width fill-height"
+      tag="div"
+      style="overflow: auto;"
+      :list="value.elements"
+      :class="dynamicClasses"
+      handle=".handle"
+      :group="{ name: 'g1' }"
+    >
+      <slot />
+    </Draggable>
+  </v-card>
+  <v-card v-else elevation="0" class="fse-group mx-3 my-2 px-2 pb-2">
+    <v-row no-gutters align="center">
       <v-col cols="auto">
-        <v-icon small class="handle pr-1">mdi-menu</v-icon>
+        <v-icon dense small class="handle pr-1">mdi-menu</v-icon>
       </v-col>
       <v-col>
-        <div class="text-caption text-truncate">
-          {{ label }}
-        </div>
+        <div class="text-caption text-truncate">{{ $t('editor.formschema.elements.group.name') }}</div>
       </v-col>
       <v-col cols="auto" class="text-right">
         <v-btn icon x-small @click="showEdit">
@@ -18,8 +32,24 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-row no-gutters>
+      <v-col>
+        <div v-if="label" class="text-subtitle-1 mb-2">{{ label }}</div>
+        <Draggable
+          class="dragArea d-flex"
+          tag="div"
+          style="overflow: auto; min-width:300; min-height:100px"
+          :list="value.elements"
+          :class="dynamicClasses"
+          handle=".handle"
+          :group="{ name: 'g1' }"
+        >
+          <slot />
+        </Draggable>
+      </v-col>
+    </v-row>
 
-    <VEOFSEEditLabelDialog
+    <VEOFSEEditGroupDialog
       v-if="editDialog"
       v-bind="$props"
       v-model="editDialog"
@@ -35,7 +65,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
-import VEOFSEEditLabelDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditLabelDialog.vue'
+import Draggable from 'vuedraggable'
+import VEOFSEEditGroupDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditGroupDialog.vue'
 import VEOFSEDeleteDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteDialog.vue'
 import {
   IVEOFormSchemaCustomTranslationEvent,
@@ -45,9 +76,10 @@ import {
 } from 'veo-formschema'
 
 export default Vue.extend({
-  name: 'FseLabel',
+  name: 'FseGroup',
   components: {
-    VEOFSEEditLabelDialog,
+    Draggable,
+    VEOFSEEditGroupDialog,
     VEOFSEDeleteDialog
   },
   props: {
@@ -56,15 +88,15 @@ export default Vue.extend({
       default: () => undefined
     },
     name: {
-      type: String,
-      required: true
+      type: String
     },
     options: Object,
     customTranslation: {
       type: Object,
       default: () => {}
     } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
-    formSchemaPointer: String
+    formSchemaPointer: String,
+    level: Number
   },
   data() {
     return {
@@ -79,6 +111,18 @@ export default Vue.extend({
       handler() {
         this.setLabel()
       }
+    }
+  },
+  computed: {
+    directionClass(): string {
+      if (this.options && this.options.direction === 'horizontal') {
+        return 'flex-row direction-horizontal'
+      } else {
+        return 'flex-column direction-vertical'
+      }
+    },
+    dynamicClasses(): string[] {
+      return [this.directionClass]
     }
   },
   methods: {
@@ -109,19 +153,19 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
-.fse-label {
+.fse-group {
   border: 1px solid $grey;
-  min-width: 300px;
-  overflow: hidden;
+}
 
-  .row {
-    flex-wrap: nowrap;
+.dropzone-placeholder {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}
 
-    .col {
-      align-items: center;
-      display: flex;
-      height: 36px;
-    }
-  }
+.dropzone-placeholder-text {
+  text-align: center;
+  color: $grey;
 }
 </style>

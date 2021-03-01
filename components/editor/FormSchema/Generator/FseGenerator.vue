@@ -126,10 +126,15 @@ export default Vue.extend({
                 options: element.options,
                 value: element,
                 formSchemaPointer,
-                level: elementLevel
+                level: elementLevel,
+                name: element.options?.label?.replace('#lang/', ''),
+                customTranslation: this.customTranslation
               },
               on: {
-                delete: (event: IVEOFormSchemaItemDeleteEvent) => this.onDelete(event)
+                delete: (event: IVEOFormSchemaItemDeleteEvent) => this.onDelete(event),
+                update: (event: IVEOFormSchemaItemUpdateEvent) => this.onUpdate(event),
+                'update-custom-translation': (event: IVEOFormSchemaCustomTranslationEvent) =>
+                  this.onUpdateCustomTranslation(event)
               }
             },
             createChildren()
@@ -168,7 +173,7 @@ export default Vue.extend({
               scope: element.scope || ''
             },
             on: {
-              delete: (event: any) => this.onDelete(event),
+              delete: (event: IVEOFormSchemaItemDeleteEvent) => this.onDelete(event),
               update: (event: IVEOFormSchemaItemUpdateEvent) => this.onUpdate(event),
               'update-custom-translation': (event: IVEOFormSchemaCustomTranslationEvent) =>
                 this.onUpdateCustomTranslation(event)
