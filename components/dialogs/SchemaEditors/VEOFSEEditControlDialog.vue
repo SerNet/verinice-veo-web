@@ -127,7 +127,7 @@ import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { BaseObject } from '~/components/forms/utils'
 import { IVeoTranslation } from '~/types/VeoTypes'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import { IVEOFormSchemaCustomTranslationEvent, IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
 import { merge } from 'lodash'
 
 interface IProps {
@@ -366,7 +366,10 @@ export default defineComponent<IProps>({
       context.emit('edit', JSON.parse(JSON.stringify(updateData)))
       context.emit(
         'update-custom-translation',
-        merge({ [props.name]: label.value }, { ...localCustomTranslation.value, [props.name]: undefined })
+        merge(
+          { [props.name]: label.value },
+          { ...localCustomTranslation.value, [props.name]: undefined }
+        ) as IVEOFormSchemaCustomTranslationEvent
       )
     }
 

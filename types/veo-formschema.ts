@@ -2,13 +2,12 @@
  * Interface defining the form schema used for typing.
  */
 declare module 'veo-formschema' {
-  export type IVEOFormSchemaContentType = 'Layout' | 'Control' | string
+  export type IVEOFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string
 
   export interface IVEOFormSchemaItemOptions {
     label?: string
     format?: string
     direction?: string
-    highlight?: boolean
   }
 
   export interface IVEOFormSchemaItem {
@@ -32,5 +31,21 @@ declare module 'veo-formschema' {
     subType: string | null
     translation: IVEOFormSchemaTranslationCollection
     content: IVEOFormSchemaItem
+  }
+
+  /**
+   * FormSchemaEditor Types
+   */
+  export interface IVEOFormSchemaCustomTranslationEvent {
+    [key: string]: string
+  }
+
+  export interface IVEOFormSchemaItemUpdateEvent {
+    formSchemaPointer: string
+    data: IVEOFormSchemaItem
+  }
+
+  export interface IVEOFormSchemaItemDeleteEvent {
+    formSchemaPointer: string
   }
 }

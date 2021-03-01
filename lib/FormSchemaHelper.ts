@@ -1,4 +1,4 @@
-import { IVEOFormSchema, IVEOFormSchemaTranslationCollection } from 'veo-formschema'
+import { IVEOFormSchema, IVEOFormSchemaItem, IVEOFormSchemaTranslationCollection } from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import FormSchemaValidator from './FormSchemaValidator'
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator'

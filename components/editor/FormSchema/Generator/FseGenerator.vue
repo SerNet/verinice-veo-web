@@ -11,7 +11,12 @@ import FseLayout from './elements/FseLayout.vue'
 import { UISchema, UISchemaElement } from '~/types/UISchema'
 import { BaseObject } from '~/components/forms/utils'
 import { IVeoTranslation } from '~/types/VeoTypes'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import {
+  IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItemDeleteEvent,
+  IVEOFormSchemaItemUpdateEvent,
+  IVEOFormSchemaTranslationCollectionItem
+} from 'veo-formschema'
 // import Wrapper from '~/components/forms/Wrapper.vue'
 
 export default Vue.extend({
@@ -90,13 +95,13 @@ export default Vue.extend({
         this.$emit('input', this.value)
       }
     },
-    onDelete(event: any): void {
+    onDelete(event: IVEOFormSchemaItemDeleteEvent): void {
       this.$emit('delete', event)
     },
-    onUpdate(event: any): void {
+    onUpdate(event: IVEOFormSchemaItemUpdateEvent): void {
       this.$emit('update', event)
     },
-    onUpdateCustomTranslation(event: any): void {
+    onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent): void {
       this.$emit('update-custom-translation', event)
     }
   },
@@ -124,7 +129,7 @@ export default Vue.extend({
                 level: elementLevel
               },
               on: {
-                delete: (event: any) => this.onDelete(event)
+                delete: (event: IVEOFormSchemaItemDeleteEvent) => this.onDelete(event)
               }
             },
             createChildren()
@@ -164,8 +169,9 @@ export default Vue.extend({
             },
             on: {
               delete: (event: any) => this.onDelete(event),
-              update: (event: any) => this.onUpdate(event),
-              'update-custom-translation': (event: any) => this.onUpdateCustomTranslation(event)
+              update: (event: IVEOFormSchemaItemUpdateEvent) => this.onUpdate(event),
+              'update-custom-translation': (event: IVEOFormSchemaCustomTranslationEvent) =>
+                this.onUpdateCustomTranslation(event)
             }
           })
         }
@@ -180,9 +186,10 @@ export default Vue.extend({
               customTranslation: this.customTranslation
             },
             on: {
-              delete: (event: any) => this.onDelete(event),
-              update: (event: any) => this.onUpdate(event),
-              'update-custom-translation': (event: any) => this.onUpdateCustomTranslation(event)
+              delete: (event: IVEOFormSchemaItemDeleteEvent) => this.onDelete(event),
+              update: (event: IVEOFormSchemaItemUpdateEvent) => this.onUpdate(event),
+              'update-custom-translation': (event: IVEOFormSchemaCustomTranslationEvent) =>
+                this.onUpdateCustomTranslation(event)
             }
           })
       }

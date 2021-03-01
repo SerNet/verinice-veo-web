@@ -61,7 +61,11 @@
 <script lang="ts">
 import { defineComponent, PropType, Ref, ref, reactive } from '@nuxtjs/composition-api'
 import { BaseObject } from '~/components/forms/utils'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import {
+  IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItemUpdateEvent,
+  IVEOFormSchemaTranslationCollectionItem
+} from 'veo-formschema'
 
 interface IProps {
   value: boolean
@@ -172,8 +176,8 @@ export default defineComponent<IProps>({
       } else {
         updateData = { ...updateData, options }
       }
-      context.emit('edit', updateData)
-      context.emit('update-custom-translation', { [props.name]: formData.text })
+      context.emit('edit', updateData as IVEOFormSchemaItemUpdateEvent['data'])
+      context.emit('update-custom-translation', { [props.name]: formData.text } as IVEOFormSchemaCustomTranslationEvent)
     }
 
     return {

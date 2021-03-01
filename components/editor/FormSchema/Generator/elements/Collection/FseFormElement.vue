@@ -47,7 +47,12 @@ import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VEOEd
 import VEOFSEEditControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditControlDialog.vue'
 import VEOFSEDeleteDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteDialog.vue'
 import { IVeoTranslation } from '~/types/VeoTypes'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import {
+  IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItemDeleteEvent,
+  IVEOFormSchemaItemUpdateEvent,
+  IVEOFormSchemaTranslationCollectionItem
+} from 'veo-formschema'
 
 export default Vue.extend({
   components: {
@@ -142,21 +147,21 @@ export default Vue.extend({
     showEdit() {
       this.editDialog = true
     },
-    doEdit(data: any) {
-      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data })
+    doEdit(data: IVEOFormSchemaItemUpdateEvent['data']) {
+      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data } as IVEOFormSchemaItemUpdateEvent)
       this.editDialog = false
     },
     showDelete() {
       this.deleteDialog = true
     },
     doDelete() {
-      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer })
+      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVEOFormSchemaItemDeleteEvent)
       this.deleteDialog = false
     },
     setLabel(): void {
       this.label = this.customTranslation?.[this.name] || this.generalTranslation?.[this.name] || this.name
     },
-    onUpdateCustomTranslation(event: any) {
+    onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent) {
       this.$emit('update-custom-translation', event)
     }
   },

@@ -37,7 +37,12 @@ import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
 import VEOFSEEditLabelDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditLabelDialog.vue'
 import VEOFSEDeleteDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteDialog.vue'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import {
+  IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItemDeleteEvent,
+  IVEOFormSchemaItemUpdateEvent,
+  IVEOFormSchemaTranslationCollectionItem
+} from 'veo-formschema'
 
 export default Vue.extend({
   name: 'FseLabel',
@@ -83,15 +88,15 @@ export default Vue.extend({
     showDelete() {
       this.deleteDialog = true
     },
-    onEdit(data: any) {
-      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data })
+    onEdit(data: IVEOFormSchemaItemUpdateEvent['data']) {
+      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data } as IVEOFormSchemaItemUpdateEvent)
       this.editDialog = false
     },
     onDelete() {
-      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer })
+      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVEOFormSchemaItemDeleteEvent)
       this.deleteDialog = false
     },
-    onUpdateCustomTranslation(event: any) {
+    onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent) {
       this.$emit('update-custom-translation', event)
     },
     setLabel() {

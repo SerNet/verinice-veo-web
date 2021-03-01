@@ -210,7 +210,13 @@
 </template>
 
 <script lang="ts">
-import { IVEOFormSchema } from 'veo-formschema'
+import {
+  IVEOFormSchema,
+  IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItemDeleteEvent,
+  IVEOFormSchemaItemUpdateEvent,
+  IVEOFormSchemaTranslationCollection
+} from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import vjp from 'vue-json-pointer'
 
@@ -341,7 +347,7 @@ export default defineComponent<IProps>({
       }
     }
 
-    function onDelete(event: any): void {
+    function onDelete(event: IVEOFormSchemaItemDeleteEvent): void {
       if (formSchema.value) {
         const vjpPointer = event.formSchemaPointer.replace('#', '')
         // Not allowed to make changes on the root object
@@ -353,7 +359,7 @@ export default defineComponent<IProps>({
       }
     }
 
-    function onUpdate(event: any): void {
+    function onUpdate(event: IVEOFormSchemaItemUpdateEvent): void {
       if (formSchema.value?.content) {
         vjp.set(formSchema.value.content, event.formSchemaPointer.replace('#', ''), event.data)
       }
@@ -377,13 +383,13 @@ export default defineComponent<IProps>({
       avaliableLanguages.value = Object.keys((await context.root.$api.translation.fetch([]))?.lang)
     })
 
-    function setFormTranslation(event: any) {
+    function setFormTranslation(event: IVEOFormSchemaTranslationCollection) {
       if (formSchema.value) {
         vjp.set(formSchema.value, '/translation', event)
       }
     }
 
-    function onUpdateCustomTranslation(event: any) {
+    function onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent) {
       if (formSchema.value) {
         vjp.set(
           formSchema.value,
