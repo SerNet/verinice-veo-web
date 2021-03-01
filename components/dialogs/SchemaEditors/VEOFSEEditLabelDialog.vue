@@ -100,15 +100,13 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
-    /**
-     * General variables
-     */
-
+    // Default values which should not be shown in FormSchema
     const defaults: BaseObject = {
       class: undefined,
       style: undefined
     }
 
+    // Transform string values of class/style ("class-1 class-2 class-3") to an array (["class-1", "class-2", "class-3"])
     function getAsArray(type: 'class' | 'style'): string[] | undefined {
       if (props.formSchema?.options?.[type]) {
         const split = props.formSchema?.options?.[type].split(type === 'style' ? ';' : ' ')
@@ -124,6 +122,7 @@ export default defineComponent<IProps>({
       style: getAsArray('style') as string[]
     })
 
+    // Transform array values of class/style backwards to string
     function getAsString(type: 'class' | 'style'): string | undefined {
       if (formData[type] && formData[type].length > 0) {
         const string = formData[type]?.join(type === 'style' ? ';' : ' ')
@@ -133,10 +132,7 @@ export default defineComponent<IProps>({
       }
     }
 
-    /**
-     * General functions
-     */
-
+    // Transform local values of options' properties to FormSchema suitable form
     function transformValues(values: any): any {
       const transformedValues = JSON.parse(JSON.stringify(values))
       ;['class', 'style'].forEach((propName: any) => {
@@ -153,18 +149,12 @@ export default defineComponent<IProps>({
       return transformedValues
     }
 
-    /**
-     * Common dialog stuff (opening and closing)
-     */
-
+    // Emit Open/Close (true/false) events when dialog state changes
     function onDialogChanged(event: boolean) {
       context.emit('input', event)
     }
 
-    /**
-     * LinksField related code
-     */
-
+    // Emit translations and FormSchema updates of the element
     function updateElement() {
       let options: any = transformValues(formData)
       const formSchema = JSON.parse(JSON.stringify(props.formSchema))
