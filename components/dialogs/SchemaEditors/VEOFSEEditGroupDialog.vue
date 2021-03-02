@@ -14,7 +14,7 @@
           </v-col>
           <v-col :cols="12" :md="5">
             <v-text-field
-              :value="formData.label"
+              :value="localCustomTranslation[localName]"
               :label="$t('editor.formschema.edit.input.label')"
               required
               @input="onInputLabel"
@@ -122,6 +122,8 @@ export default defineComponent<IProps>({
       style: undefined
     }
 
+    const localCustomTranslation: Ref<IVEOFormSchemaTranslationCollectionItem> = ref({ ...props.customTranslation })
+
     // Get values of element by Pointer and if is not defined, get its default values (e.g. direction = undefined => 'vertical')
     function getValue(pointer: string, defaultValue: any): any {
       const elValue = JsonPointer.get(props.formSchema, pointer)
@@ -176,7 +178,7 @@ export default defineComponent<IProps>({
       if (!localName.value) {
         localName.value = `group_${uuid()}`
       }
-      formData.label = event
+      localCustomTranslation.value[localName.value] = event
     }
 
     // Transform local values of options' properties to FormSchema suitable form
@@ -223,13 +225,17 @@ export default defineComponent<IProps>({
       } else {
         updateData = { ...updateData, options }
       }
-      const updateTranslation: IVEOFormSchemaCustomTranslationEvent = { [localName.value]: formData.label }
+      const updateTranslation: IVEOFormSchemaCustomTranslationEvent = JSON.parse(
+        JSON.stringify(localCustomTranslation.value)
+      )
       context.emit('edit', updateData as IVEOFormSchemaItemUpdateEvent['data'])
       context.emit('update-custom-translation', updateTranslation)
     }
 
     return {
       formData,
+      localName,
+      localCustomTranslation,
       onDialogChanged,
       updateElement,
       directionItems,

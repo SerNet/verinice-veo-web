@@ -13,7 +13,12 @@
             <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.input.text.text') }}*: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-text-field v-model="formData.text" :label="$t('editor.formschema.edit.input.text')" required />
+            <v-text-field
+              :value="localCustomTranslation[name]"
+              :label="$t('editor.formschema.edit.input.text')"
+              required
+              @input="onInputText"
+            />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center">
@@ -106,6 +111,8 @@ export default defineComponent<IProps>({
       style: undefined
     }
 
+    const localCustomTranslation: Ref<IVEOFormSchemaTranslationCollectionItem> = ref({ ...props.customTranslation })
+
     // Transform string values of class/style ("class-1 class-2 class-3") to an array (["class-1", "class-2", "class-3"])
     function getAsArray(type: 'class' | 'style'): string[] | undefined {
       if (props.formSchema?.options?.[type]) {
@@ -117,7 +124,6 @@ export default defineComponent<IProps>({
     }
 
     const formData = reactive({
-      text: props.customTranslation?.[props.name] as string | undefined,
       class: getAsArray('class') as string[],
       style: getAsArray('style') as string[]
     })
@@ -149,6 +155,10 @@ export default defineComponent<IProps>({
       return transformedValues
     }
 
+    function onInputText(event: string) {
+      localCustomTranslation.value[props.name] = event
+    }
+
     // Emit Open/Close (true/false) events when dialog state changes
     function onDialogChanged(event: boolean) {
       context.emit('input', event)
@@ -166,13 +176,17 @@ export default defineComponent<IProps>({
       } else {
         updateData = { ...updateData, options }
       }
-      const updateTranslation: IVEOFormSchemaCustomTranslationEvent = { [props.name]: formData.text }
+      const updateTranslation: IVEOFormSchemaCustomTranslationEvent = JSON.parse(
+        JSON.stringify(localCustomTranslation.value)
+      )
       context.emit('edit', updateData as IVEOFormSchemaItemUpdateEvent['data'])
       context.emit('update-custom-translation', updateTranslation)
     }
 
     return {
       formData,
+      localCustomTranslation,
+      onInputText,
       onDialogChanged,
       updateElement
     }

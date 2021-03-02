@@ -132,8 +132,13 @@ import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { controlTypeAlternatives, IControlType } from '~/types/VEOEditor'
 import { BaseObject } from '~/components/forms/utils'
 import { IVeoTranslation } from '~/types/VeoTypes'
-import { IVEOFormSchemaCustomTranslationEvent, IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
-import { merge } from 'lodash'
+import {
+  IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItem,
+  IVEOFormSchemaTranslationCollectionItem
+} from 'veo-formschema'
+import { differenceBy, merge } from 'lodash'
+import { deleteElementCustomTranslation } from '~/lib/FormSchemaHelper'
 
 interface IProps {
   value: boolean
@@ -340,19 +345,42 @@ export default defineComponent<IProps>({
       )
 
       linksField.onInputLinksAttributes = function(event: any) {
+        // Get attributes which were deleted in the autocomplete element
+        const deletedLinksAttributes: IVEOFormSchemaItem[] = differenceBy<any>(
+          linksField.formSchemaElements.value,
+          event,
+          'scope'
+        )
         linksField.formSchemaElements.value = []
         event.forEach((obj: any) => {
           linksField.formSchemaElements.value.push({
             type: 'Control',
             scope: obj.scope,
             options: {
-              label: obj.label
+              label: `#lang/${obj.propertyName}`
             }
           })
+        })
+
+        deletedLinksAttributes.forEach(deletedElementFormSchema => {
+          deleteElementCustomTranslation(
+            deletedElementFormSchema,
+            localCustomTranslation.value,
+            updatedCustomTranslationValue => {
+              linksField.onUpdateLinksCustomTranslation(updatedCustomTranslationValue)
+            }
+          )
         })
       }
 
       linksField.onLinksAttributeDelete = function(index: any, scope: string) {
+        deleteElementCustomTranslation(
+          linksField.formSchemaElements.value[index],
+          localCustomTranslation.value,
+          updatedCustomTranslationValue => {
+            linksField.onUpdateLinksCustomTranslation(updatedCustomTranslationValue)
+          }
+        )
         linksField.linksAttributes.value.splice(
           linksField.linksAttributes.value.findIndex((attr: any) => attr.scope === scope),
           1
@@ -360,8 +388,8 @@ export default defineComponent<IProps>({
         linksField.formSchemaElements.value.splice(index, 1)
       }
 
-      linksField.onUpdateLinksCustomTranslation = function(event: any) {
-        localCustomTranslation.value = merge({ ...localCustomTranslation.value }, { ...event })
+      linksField.onUpdateLinksCustomTranslation = function(event: IVEOFormSchemaTranslationCollectionItem) {
+        localCustomTranslation.value = event
       }
 
       linksField.getSchema = function(scope: string) {

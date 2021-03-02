@@ -202,6 +202,7 @@ export default defineComponent<IProps>({
 
     const controls: Ref<IControl[]> = ref([])
 
+    // Nested Control items in a Control element, e.g. LinksField and its attributes
     const controlsItems: Ref<IControlItem> = ref({})
     /**
      * React to formschema or objectschema changes

@@ -12,6 +12,7 @@ declare module 'veo-formschema' {
 
   export interface IVEOFormSchemaItem {
     type: IVEOFormSchemaContentType
+    text?: string
     scope?: string
     options?: IVEOFormSchemaItemOptions
     elements?: IVEOFormSchemaItem[]

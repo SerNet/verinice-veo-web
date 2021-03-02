@@ -213,6 +213,7 @@
 import {
   IVEOFormSchema,
   IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItem,
   IVEOFormSchemaItemDeleteEvent,
   IVEOFormSchemaItemUpdateEvent,
   IVEOFormSchemaTranslationCollection
@@ -232,10 +233,10 @@ import VeoFSESchemaDetailsDialog from '~/components/dialogs/SchemaEditors/VeoFSE
 import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
 import VEOFSETranslationDialog from '~/components/dialogs/SchemaEditors/VEOFSETranslationDialog.vue'
 
-import { validate } from '~/lib/FormSchemaHelper'
+import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper'
 import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch } from '@nuxtjs/composition-api'
 import { IVeoTranslations } from '~/types/VeoTypes'
-import { merge } from 'lodash'
+import { JsonPointer } from 'json-ptr'
 
 interface IProps {}
 
@@ -349,6 +350,18 @@ export default defineComponent<IProps>({
 
     function onDelete(event: IVEOFormSchemaItemDeleteEvent): void {
       if (formSchema.value) {
+        // Delete custom translation keys for deleted elemented and nested elements
+        const elementFormSchema = JsonPointer.get(
+          formSchema.value.content,
+          event.formSchemaPointer
+        ) as IVEOFormSchemaItem
+        deleteElementCustomTranslation(
+          elementFormSchema,
+          formSchema.value.translation['de'],
+          updatedCustomTranslationValue => {
+            onUpdateCustomTranslation(updatedCustomTranslationValue)
+          }
+        )
         const vjpPointer = event.formSchemaPointer.replace('#', '')
         // Not allowed to make changes on the root object
         if (event.formSchemaPointer !== '#') {
@@ -391,11 +404,7 @@ export default defineComponent<IProps>({
 
     function onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent) {
       if (formSchema.value) {
-        vjp.set(
-          formSchema.value,
-          `/translation/${'de'}`,
-          merge({ ...formSchema.value.translation['de'] }, { ...event })
-        )
+        vjp.set(formSchema.value, `/translation/${'de'}`, event)
       }
     }
 
