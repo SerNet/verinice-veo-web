@@ -81,6 +81,7 @@ import {
 } from 'veo-formschema'
 import { v4 as uuid } from 'uuid'
 import { JsonPointer } from 'json-ptr'
+import { merge } from 'lodash'
 
 interface IProps {
   value: boolean
@@ -180,7 +181,7 @@ export default defineComponent<IProps>({
 
     // Transform local values of options' properties to FormSchema suitable form
     function transformValues(values: any): any {
-      const transformedValues = JSON.parse(JSON.stringify(values))
+      let transformedValues = JSON.parse(JSON.stringify(values))
       ;['class', 'style'].forEach((propName: any) => {
         transformedValues[propName] = getAsString(propName)
       })
@@ -189,13 +190,19 @@ export default defineComponent<IProps>({
       if (localName.value) {
         transformedValues.label = `#lang/${localName.value}`
       }
-      Object.entries(transformedValues).forEach(([key, val]) => {
-        if (defaults.hasOwnProperty(key)) {
-          if (val === defaults[key]) {
-            delete transformedValues[key]
-          }
-        }
-      })
+      Object.entries(transformedValues)
+        .filter(([key, val]) => defaults.hasOwnProperty(key) && val === defaults[key])
+        .forEach(([key, _]) => {
+          // Properties with "null" values will be removed from the object
+          transformedValues[key] = null
+        })
+
+      transformedValues = merge(props.options, transformedValues)
+      Object.entries(transformedValues)
+        .filter(([_, val]) => val === null)
+        .forEach(([key, _]) => {
+          delete transformedValues[key]
+        })
       return transformedValues
     }
 
