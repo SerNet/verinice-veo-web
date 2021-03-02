@@ -223,10 +223,9 @@ export default defineComponent<IProps>({
       } else {
         updateData = { ...updateData, options }
       }
+      const updateTranslation: IVEOFormSchemaCustomTranslationEvent = { [localName.value]: formData.label }
       context.emit('edit', updateData as IVEOFormSchemaItemUpdateEvent['data'])
-      context.emit('update-custom-translation', {
-        [localName.value]: formData.label
-      } as IVEOFormSchemaCustomTranslationEvent)
+      context.emit('update-custom-translation', updateTranslation)
     }
 
     return {

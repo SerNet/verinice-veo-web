@@ -37,7 +37,7 @@ declare module 'veo-formschema' {
    * FormSchemaEditor Types
    */
   export interface IVEOFormSchemaCustomTranslationEvent {
-    [key: string]: string
+    [key: string]: string | undefined
   }
 
   export interface IVEOFormSchemaItemUpdateEvent {

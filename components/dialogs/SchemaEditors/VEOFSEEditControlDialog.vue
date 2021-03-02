@@ -12,7 +12,12 @@
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.label.text') }}*:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-text-field v-model="label" :label="$t('editor.formschema.edit.input.label')" required />
+            <v-text-field
+              :value="localCustomTranslation[name] || defaultLabel"
+              :label="$t('editor.formschema.edit.input.label')"
+              required
+              @input="onInputLabel"
+            />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center">
@@ -189,7 +194,7 @@ export default defineComponent<IProps>({
       direction: 'horizontal'
     }
 
-    const localCustomTranslation: Ref<IVEOFormSchemaTranslationCollectionItem> = ref(props.customTranslation)
+    const localCustomTranslation: Ref<IVEOFormSchemaTranslationCollectionItem> = ref({ ...props.customTranslation })
 
     /**
      * General functions
@@ -287,11 +292,19 @@ export default defineComponent<IProps>({
       }
     }
 
-    function getLabel() {
-      return localCustomTranslation.value?.[props.name] || props.generalTranslation?.[props.name] || props.name
+    /**
+     * Label related code
+     */
+
+    function getDefaultLabel() {
+      return props.generalTranslation?.[props.name] || props.name
+    }
+    const defaultLabel: Ref<string> = ref(getDefaultLabel())
+
+    function onInputLabel(event: string) {
+      localCustomTranslation.value[props.name] = event
     }
 
-    const label: Ref<string> = ref(getLabel())
     const alternatives = computed(() => controlTypeAlternatives(activeControlType.value.name, props))
 
     /**
@@ -362,15 +375,11 @@ export default defineComponent<IProps>({
       if (activeControlType.value.name === 'LinksField') {
         updateData = { ...updateData, elements: linksField.formSchemaElements.value }
       }
-      // delete options.name
-      context.emit('edit', JSON.parse(JSON.stringify(updateData)))
-      context.emit(
-        'update-custom-translation',
-        merge(
-          { [props.name]: label.value },
-          { ...localCustomTranslation.value, [props.name]: undefined }
-        ) as IVEOFormSchemaCustomTranslationEvent
+      const updateTranslation: IVEOFormSchemaCustomTranslationEvent = JSON.parse(
+        JSON.stringify(localCustomTranslation.value)
       )
+      context.emit('edit', JSON.parse(JSON.stringify(updateData)))
+      context.emit('update-custom-translation', updateTranslation)
     }
 
     return {
@@ -379,7 +388,8 @@ export default defineComponent<IProps>({
       close,
       activeControlType,
       directionItems,
-      label,
+      defaultLabel,
+      onInputLabel,
       alternatives,
       updateActiveControlType,
       updateElement,
