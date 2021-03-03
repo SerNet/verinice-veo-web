@@ -45,7 +45,6 @@
         />
       </v-col>
     </v-row>
-    {{ localHistory.length }}
     <component
       :is="component"
       :items="objects"
@@ -110,6 +109,13 @@ export default Vue.extend({
     VeoDeleteEntityDialog,
     VeoAddEntityDialog
   },
+  asyncData({from, route}) {
+    // Super dirty fix in order to allow navigation to parent object if the user clicked on a child previously.
+    // For some reason the page gets recreated completely, rendering beforeRouteUpdate and watch $route completely useless
+    return {
+      showParentLink: route.name === from.name && route.path !== from.path && route.params.entity !== '-'
+    }
+  },
   async fetch() {
     if (this.$route.params.entity !== '-') {
       this.objects = await this.$api.entity.fetchSubEntities(this.$route.params.type, this.entityId)
@@ -151,6 +157,11 @@ export default Vue.extend({
       return capitalize(this.objectType)
     }
   },
+  head(): any {
+    return {
+      title: `${this.title} - ${this.$t('breadcrumbs.objects')}`
+    }
+  },
   data() {
     return {
       objects: [] as IVeoEntity[],
@@ -160,8 +171,7 @@ export default Vue.extend({
       entities: [] as IVeoEntity[],
       showParentLink: false as boolean,
       component: VeoObjectList,
-      activeView: 0,
-      localHistory: [] as string[]
+      activeView: 0
     }
   },
   methods: {
@@ -186,14 +196,16 @@ export default Vue.extend({
       )
     },
     navigateSubEntity(item: IVeoEntity) {
-      this.localHistory.push(this.entityId)
-      this.$router.push(`/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.generateEntityLink(item.id)}/list`)
+      this.$router.push({
+        params: {
+          entity: this.generateEntityLink(item.id)
+        }
+      })
     },
     navigateSubEntityDetails(item: IVeoEntity) {
       this.$router.push(`/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.generateEntityLink(item.id)}/edit`)
     },
     navigateParent() {
-      this.localHistory.pop()
       this.$router.back()
     },
     showAddEntitiesDialog() {
