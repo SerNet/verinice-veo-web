@@ -184,9 +184,10 @@ export default Vue.extend({
         .then(async (_data: IVeoAPIMessage) => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
 
-          this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.generateEntityLink(this.entityId)}/list`)
+          this.$router.back()
         })
-        .catch(() => {
+        .catch((error: { status: number; name: string }) => {
+          this.alert.text = error.status === 412 ? this.$t('unit.forms.nrr') : ''
           this.alert.value = true
         })
         .finally(() => {
