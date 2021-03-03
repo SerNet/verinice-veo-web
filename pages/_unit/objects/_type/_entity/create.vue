@@ -37,6 +37,16 @@
     </template>
   </VeoPage>
 </template>
+<i18n>
+{
+  "de": {
+    "object_create": "Objekt erstellen"
+  },
+  "en": {
+    "object_create": "Create object"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -102,7 +112,7 @@ export default Vue.extend({
     title(): string {
       return this.$fetchState.pending
         ? this.$t('breadcrumbs.objects')
-        : `Objekt erstellen - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
+        : `${this.$t('object_create')} - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
     },
     schemaType(): string | undefined {
       return getSchemaName(this.schemaEndpoint || '')
@@ -114,7 +124,7 @@ export default Vue.extend({
       return capitalize(this.schemaType)
     },
     parent(): string {
-      return this.$route.params.entity
+      return separateUUIDParam(this.$route.params.entity).id
     },
     unitID(): string {
       return separateUUIDParam(this.$route.params.unit).id

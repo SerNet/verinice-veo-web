@@ -54,6 +54,7 @@ export interface IVeoEntity {
   subType: IVeoEntitySubtypes
   parts: any[]
   description: string
+  description_short?: string // Frontend only attribute used in VeoObjectList.vue
 }
 
 export interface IVeoEntitySubtypes {

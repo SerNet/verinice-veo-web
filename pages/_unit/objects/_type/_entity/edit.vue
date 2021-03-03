@@ -13,7 +13,7 @@
                     </v-btn>
                   </template>
                   <template #default>
-                    {{ $t('list_view') }}
+                    {{ $t('breadcrumbs.list_view') }}
                   </template>
                 </v-tooltip>
                 <v-tooltip bottom>
@@ -23,7 +23,7 @@
                     </v-btn>
                   </template>
                   <template #default>
-                    {{ $t('tree_view') }}
+                    {{ $t('breadcrumbs.tree_view') }}
                   </template>
                 </v-tooltip>
                 <v-tooltip bottom>
@@ -33,7 +33,7 @@
                     </v-btn>
                   </template>
                   <template #default>
-                    {{ $t('detail_view') }}
+                    {{ $t('breadcrumbs.detail_view') }}
                   </template>
                 </v-tooltip>
               </v-btn-toggle>
@@ -82,16 +82,10 @@
 <i18n>
 {
   "en": {
-    "detail_view": "Detail view",
-    "edit_object": "Edit {title}",
-    "list_view": "List view",
-    "tree_view": "Tree view"
+    "edit_object": "Edit \"{title}\""
   },
   "de": {
-    "detail_view": "Detailansicht",
-    "edit_object": "{title} bearbeiten",
-    "list_view": "Listenansicht",
-    "tree_view": "Baumansicht"
+    "edit_object": "\"{title}\" bearbeiten"
   }
 }
 </i18n>
@@ -146,9 +140,9 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.schemaType)
+    const objectSchema = await this.$api.schema.fetch(this.objectType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api.entity.fetch(this.$route.params.type, this.$route.params.entity)
+    const objectData = await this.$api.entity.fetch(this.$route.params.type, this.entityId)
     this.form = {
       objectSchema,
       objectData,
@@ -158,36 +152,25 @@ export default Vue.extend({
   },
   head(): any {
     return {
-      title: this.title
+      title: this.objectTitle
     }
   },
   computed: {
-    title(): string {
-      return this.$fetchState.pending
-        ? this.$t('breadcrumbs.objects')
-        : `Objekt erstellen - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
-    },
     objectTitle(): string {
       return this.$t('edit_object', {
-        title: this.$fetchState.pending ? this.formattedSchemaType : this.form.objectData.name
+        title: this.$fetchState.pending ? this.formattedObjectType : this.form.objectData.name
       })
     },
-    schemaType(): string | undefined {
+    objectType(): string | undefined {
       return getSchemaName(this.schemaEndpoint || '')
     },
     schemaEndpoint(): string | undefined {
       return this.$route.params.type
     },
-    formattedSchemaType(): string {
-      return capitalize(this.schemaType)
+    formattedObjectType(): string {
+      return capitalize(this.objectType)
     },
-    parent(): string {
-      return this.$route.params.entity
-    },
-    unitID(): string {
-      return separateUUIDParam(this.$route.params.unit).id
-    },
-    objectID(): string {
+    entityId(): string {
       return separateUUIDParam(this.$route.params.entity).id
     }
   },
@@ -197,21 +180,11 @@ export default Vue.extend({
       this.formatObjectData()
 
       await this.$api.entity
-        .update(this.schemaEndpoint, this.objectID, this.form.objectData)
-        .then(async (data: IVeoAPIMessage) => {
+        .update(this.schemaEndpoint, this.entityId, this.form.objectData)
+        .then(async (_data: IVeoAPIMessage) => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
 
-          if (this.parent !== '-') {
-            const parent = await this.$api.entity.fetch(this.schemaEndpoint, this.parent)
-            parent.parts.push({
-              targetUri: `${this.$config.apiUrl}/${this.schemaEndpoint}/${data.resourceId}`
-            })
-            this.$api.entity.update(this.schemaEndpoint, parent.id, parent).finally(() => {
-              this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.parent}/list`)
-            })
-          } else {
-            this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.parent}/list`)
-          }
+          this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.generateEntityLink(this.entityId)}/list`)
         })
         .catch(() => {
           this.alert.value = true
@@ -242,6 +215,9 @@ export default Vue.extend({
       this.$router.push(
         `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/list`
       )
+    },
+    generateEntityLink(uuid: string): string {
+      return uuid === '-' ? '-' : `${this.objectType}-${uuid}`
     }
   }
 })

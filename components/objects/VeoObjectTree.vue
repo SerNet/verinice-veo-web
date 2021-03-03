@@ -12,7 +12,7 @@
       v-else
       :active.sync="active"
       :items="displayedItems"
-      :load-children="loadSubEntities"
+      :load-children="loadChildren"
       :open.sync="open"
       open-on-click
       transition
@@ -39,7 +39,7 @@
         </v-tooltip>
       </template>
       <template #label="{item}">
-        <div class="tree-item d-flex justify-space-between align-center" @click="goToItem(item)">
+        <div class="tree-item d-flex justify-space-between align-center">
           <div>
             {{ item.abbreviation }}
             <b>{{ item.name }}</b>
@@ -59,7 +59,7 @@
           <div class="list-actions">
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="editSubItem(item)" v-on="on">
+                <v-btn icon @click.stop="$emit('edit', item)" v-on="on">
                   <v-icon>
                     mdi-pencil
                   </v-icon>
@@ -146,13 +146,17 @@ interface IData {
 
 export default Vue.extend({
   props: {
-    title: {
-      type: String,
-      default: ''
-    },
     items: {
       type: Array as Prop<IVeoEntity[]>,
       default: () => []
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    loadChildren: {
+      type: Function,
+      default: () => ((_item: IVeoEntity & { children: IVeoEntity[]}) => { return []})
     }
   },
   computed: {
@@ -174,25 +178,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    goToItem(item: IVeoEntity & { children?: IVeoEntity[] }) {
-      if (!item.children) {
-        this.editSubItem(item)
-      }
-    },
-    editSubItem(item: IVeoEntity) {
-      this.$router.push(`/${this.$route.params.unit}/objects/${this.$route.params.type}/${item.id}/edit`)
-    },
-    loadSubEntities(item: IVeoEntity & { children: IVeoEntity[] }) {
-      return this.$api.entity.fetchSubEntities(this.$route.params.type, item.id).then((data: IVeoEntity[]) => {
-        item.children = data.map((item: IVeoEntity) => {
-          if (item.parts.length > 0) {
-            return { ...item, children: [] }
-          } else {
-            return item
-          }
-        })
-      })
-    },
     updateItemsBasedOnProp() {
       this.displayedItems = this.items.map((item: IVeoEntity) => {
         if (item.parts.length > 0) {
@@ -200,6 +185,8 @@ export default Vue.extend({
         } else {
           return item
         }
+      }).sort((a: IVeoEntity, b: IVeoEntity) => {
+        return a.name.localeCompare(b.name)
       })
     },
     formatDate(date: string) {

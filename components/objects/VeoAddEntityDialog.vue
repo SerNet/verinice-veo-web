@@ -19,7 +19,6 @@
       <v-btn
         text
         color="primary"
-        :disabled="selectedEntities.length === 0"
         @click="$emit('add-entities', selectedEntities)"
       >
         {{ $t('global.button.save') }}

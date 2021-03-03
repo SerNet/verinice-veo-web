@@ -1,11 +1,12 @@
 <template>
   <v-data-table
-    :items="items"
+    :items="displayedItems"
     item-key="id"
     :headers="headers"
     :items-per-page="itemsPerPage"
+    :loading="loading"
     class="veo-object-list"
-    @click:row="goToItem"
+    @click:row="$emit('click', $event)"
   >
     <template #no-data>
       <span v-if="$route.params.param === '-'" class="text-center">
@@ -15,8 +16,8 @@
         {{ $t('no_child_objects') }} <nuxt-link :to="editItemLink">{{ $t('object_edit') }}</nuxt-link>
       </span>
     </template>
-    <template #body.prepend>
-      <tr dense class="align-center" @click="goToParent()">
+    <template v-if="showParentLink" #body.prepend>
+      <tr @click="$emit('parent')">
         <td>
           <v-icon>mdi-arrow-left</v-icon>
         </td>
@@ -26,99 +27,122 @@
       </tr>
     </template>
     <template #item.abbreviation="{ item }">
-      <v-tooltip v-if="item.parts && item.parts.length > 0" bottom>
-        <template #activator="{ on }">
-          <v-icon v-on="on">mdi-file-document-multiple</v-icon>
-        </template>
-        <template #default>
-          <span
-            class="d-inline-block text-center"
-            v-html="$t('object_has_subobjects', { amount: item.parts.length })"
-          />
-        </template>
-      </v-tooltip>
-      <v-tooltip v-else-if="item.members && item.members.length > 0" bottom>
-        <template #activator="{ on }">
-          <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
-        </template>
-        <template #default>
-          <span class="d-inline-block text-center" v-html="$t('scope_children', { amount: item.members.length })" />
-        </template>
-      </v-tooltip>
-      <v-tooltip v-else-if="item.members" bottom>
-        <template #activator="{ on }">
-          <v-icon v-on="on">mdi-archive</v-icon>
-        </template>
-        <template #default>
-          <span v-html="$t('scope_empty')" />
-        </template>
-      </v-tooltip>
-      <v-tooltip v-else bottom>
-        <template #activator="{ on }">
-          <v-icon v-on="on">mdi-file-document</v-icon>
-        </template>
-        <template #default>
-          <span v-html="$t('object_has_no_subobjects')" />
-        </template>
-      </v-tooltip>
-      <span>{{ item.abbreviation }}</span>
+      <div class="veo-object-list__abbreviation nowrap">
+        <v-tooltip v-if="item.parts && item.parts.length > 0" bottom>
+          <template #activator="{ on }">
+            <v-icon v-on="on">mdi-file-document-multiple</v-icon>
+          </template>
+          <template #default>
+            <span
+              class="d-inline-block text-center"
+              v-html="$t('object_has_subobjects', { amount: item.parts.length })"
+            />
+          </template>
+        </v-tooltip>
+        <v-tooltip v-else-if="item.members && item.members.length > 0" bottom>
+          <template #activator="{ on }">
+            <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
+          </template>
+          <template #default>
+            <span class="d-inline-block text-center" v-html="$t('scope_children', { amount: item.members.length })" />
+          </template>
+        </v-tooltip>
+        <v-tooltip v-else-if="item.members" bottom>
+          <template #activator="{ on }">
+            <v-icon v-on="on">mdi-archive</v-icon>
+          </template>
+          <template #default>
+            <span v-html="$t('scope_empty')" />
+          </template>
+        </v-tooltip>
+        <v-tooltip v-else bottom>
+          <template #activator="{ on }">
+            <v-icon v-on="on">mdi-file-document</v-icon>
+          </template>
+          <template #default>
+            <span v-html="$t('object_has_no_subobjects')" />
+          </template>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="{ on }">
+            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.abbreviation }}</span>
+          </template>
+          <template #default>
+            <span>{{ item.abbreviation }}</span>
+          </template>
+        </v-tooltip>
+      </div>
     </template>
     <template #item.name="{ value }">
-      <span class="veo-object-list__title">{{ value }}</span>
+      <div class="veo-object-list__title">{{ value }}</div>
     </template>
-    <template #item.description="{ value }">
-      <span class="veo-object-list__description">{{ value }}</span>
+    <template #item.description="{ item, value }">
+      <div class="veo-object-list__description">
+        <v-tooltip v-if="item.description_short" bottom>
+          <template #activator="{ on }">
+            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.description_short }}</span>
+          </template>
+          <template #default>
+            <span>{{ value }}</span>
+          </template>
+        </v-tooltip>
+        <span v-else>{{ value }}</span>
+      </div>
     </template>
     <template #item.date="{ item }">
-      <v-tooltip bottom>
-        <template #activator="{ on }">
-          <span v-on="on">
-            {{ formatDate(item.updatedAt) }}
-          </span>
-        </template>
-        <template #default>
-          {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}<br />
-          {{ $t('updated_at') }}: {{ formatDate(item.updatedAt) }} {{ $t('by') }} {{ item.updatedBy }}
-        </template>
-      </v-tooltip>
+      <div class="veo-object-list__date nowrap">
+        <v-tooltip bottom>
+          <template #activator="{ on }">
+            <span v-on="on">
+              {{ formatDate(item.updatedAt) }}
+            </span>
+          </template>
+          <template #default>
+            {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}<br />
+            {{ $t('updated_at') }}: {{ formatDate(item.updatedAt) }} {{ $t('by') }} {{ item.updatedBy }}
+          </template>
+        </v-tooltip>
+      </div>
     </template>
-    <template #item.actions="{ item }" class="text-right">
-      <v-tooltip bottom>
-        <template #activator="{on}">
-          <v-btn icon @click.stop="editSubItem(item)" v-on="on">
-            <v-icon>
-              mdi-pencil
-            </v-icon>
-          </v-btn>
-        </template>
-        <template #default>
-          {{ $t('edit') }}
-        </template>
-      </v-tooltip>
-      <v-tooltip bottom>
-        <template #activator="{on}">
-          <v-btn icon @click.stop="$emit('duplicate', item)" v-on="on">
-            <v-icon>
-              mdi-content-copy
-            </v-icon>
-          </v-btn>
-        </template>
-        <template #default>
-          {{ $t('clone') }}
-        </template>
-      </v-tooltip>
-      <v-tooltip bottom>
-        <template #activator="{on}">
-          <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
-            <v-icon>
-              mdi-delete
-            </v-icon>
-          </v-btn>
-        </template>
-        <template #default>
-          {{ $t('delete') }}
-        </template>
-      </v-tooltip>
+    <template #item.actions="{ item }">
+      <div class="veo-object-list__actions">
+        <v-tooltip bottom>
+          <template #activator="{on}">
+            <v-btn icon @click.stop="$emit('edit', item)" v-on="on">
+              <v-icon>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
+          </template>
+          <template #default>
+            {{ $t('edit') }}
+          </template>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="{on}">
+            <v-btn icon @click.stop="$emit('duplicate', item)" v-on="on">
+              <v-icon>
+                mdi-content-copy
+              </v-icon>
+            </v-btn>
+          </template>
+          <template #default>
+            {{ $t('clone') }}
+          </template>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="{on}">
+            <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
+              <v-icon>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+          </template>
+          <template #default>
+            {{ $t('delete') }}
+          </template>
+        </v-tooltip>
+      </div>
     </template>
   </v-data-table>
 </template>
@@ -161,18 +185,23 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import { getSchemaName } from '~/plugins/api/schema'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {
-    title: {
-      type: String,
-      default: ''
-    },
     items: {
       type: Array as Prop<IVeoEntity[]>,
       default: () => []
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    showParentLink: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -181,6 +210,24 @@ export default Vue.extend({
     }
   },
   computed: {
+    displayedItems(): IVeoEntity[] {
+      return this.items.map(item => {
+        // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+        if(item.description && item.description.length >  40) {
+          item.description_short = item.description.substring(0, 40) + '...'
+        }
+        
+        return item
+      }).sort((a: IVeoEntity, b: IVeoEntity) => {
+        if(a.parts.length > 0 && b.parts.length === 0) {
+          return -1
+        } else if (a.parts.length === 0 && b.parts.length > 0) {
+          return 1
+        } else {
+          return a.name.localeCompare(b.name)
+        }
+      })
+    },
     editItemLink(): string {
       return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
     },
@@ -189,7 +236,6 @@ export default Vue.extend({
         {
           text: this.$t('unit.object.list.header.abbreviation'),
           value: 'abbreviation',
-          width: 110
         },
         {
           text: this.$t('unit.object.list.header.title'),
@@ -199,19 +245,17 @@ export default Vue.extend({
           text: this.$t('unit.object.list.header.description'),
           filterable: false,
           sortable: false,
-          value: 'description',
-          width: 200
+          value: 'description'
         },
         {
           text: this.$t('unit.object.list.header.updatedby'),
           value: 'updatedBy',
-          width: 150
+          class: 'nowrap'
         },
         {
           align: 'end',
           text: this.$t('unit.object.list.header.updatedat'),
           value: 'date',
-          width: 150
         },
         {
           align: 'end',
@@ -219,21 +263,12 @@ export default Vue.extend({
           sortable: false,
           text: '',
           value: 'actions',
-          width: 150
+          width: 108 /* 3*widthOfButton */
         }
       ]
     }
   },
   methods: {
-    goToItem(item: IVeoEntity) {
-      this.$router.push(`/${this.$route.params.unit}/objects/${this.$route.params.type}/${item.id}/list`)
-    },
-    goToParent() {
-      console.log('Bla')
-    },
-    editSubItem(item: IVeoEntity) {
-      this.$router.push(`/${this.$route.params.unit}/objects/${this.$route.params.type}/${item.id}/edit`)
-    },
     formatDate(date: string) {
       return (
         new Date(date).toLocaleDateString('de-DE', {
@@ -255,16 +290,36 @@ export default Vue.extend({
   cursor: pointer;
 }
 
+.veo-object-list__abbreviation {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 65px;
+
+  .veo-object-list__abbreviation--abbreviation {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 .veo-object-list__title {
   font-weight: bold;
   white-space: nowrap;
 }
 
 .veo-object-list__description {
-  display: block;
   overflow: hidden;
-  max-width: 70%;
-  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.veo-object-list__date {}
+
+.veo-object-list__actions {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+::v-deep .nowrap {
   white-space: nowrap;
 }
 </style>
