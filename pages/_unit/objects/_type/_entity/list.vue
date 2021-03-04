@@ -264,6 +264,8 @@ export default Vue.extend({
         // @ts-ignore
         entity.parts = children
 
+        // TODO: fetch entfernen, ist nur für Bugfix enthalten
+        // TODO: Hinzufügen und Löschen von Verknüpfungen Bug in Treeview beheben
         this.$api.entity.fetch(this.$route.params.type, entity.id).then(() => {
           this.$api.entity.update(this.$route.params.type, entity?.id, entity).catch((error: any) => {
             this.$root.$emit(VeoEvents.ALERT_ERROR, {
