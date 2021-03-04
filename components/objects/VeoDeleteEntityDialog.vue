@@ -8,7 +8,7 @@
         {{ $t('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!form" @click="$emit('delete', form.id)">
+      <v-btn text color="primary" :disabled="!item" @click="$emit('delete', item.id)">
         {{ $t('global.button.delete') }}
       </v-btn>
     </template>
@@ -31,7 +31,7 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import { IBaseObject } from '~/lib/utils'
+import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
   dialog: boolean
@@ -47,8 +47,8 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
-    form: {
-      type: Object as Prop<IBaseObject>,
+    item: {
+      type: Object as Prop<IVeoEntity>,
       default: undefined
     }
   },
@@ -60,7 +60,7 @@ export default Vue.extend({
   },
   computed: {
     name(): string {
-      return this.form?.name ?? ''
+      return this.item?.name ?? ''
     }
   },
   watch: {

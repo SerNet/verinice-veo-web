@@ -61,8 +61,8 @@
       @create-entity="navigateCreate"
       @add-entity="showAddEntitiesDialog"
     />
-    <VeoDeleteEntityDialog v-model="deleteDialog.value" :form="deleteDialog.item" @delete="doDeleteEntityDialog" />
-    <VeoUnlinkEntityDialog v-model="unlinkDialog.value" :form="unlinkDialog.item" @unlink="doUnlinkEntityDialog" />
+    <VeoDeleteEntityDialog v-model="deleteDialog.value" v-bind="deleteDialog" @delete="doDeleteEntityDialog" />
+    <VeoUnlinkEntityDialog v-model="unlinkDialog.value" v-bind="unlinkDialog" @unlink="doUnlinkEntityDialog" />
     <VeoAddEntityDialog
       v-model="addDialog"
       :entities="entities"
@@ -185,7 +185,7 @@ export default Vue.extend({
       objects: [] as IVeoEntity[],
       addDialog: false as boolean,
       deleteDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined },
-      unlinkDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined },
+      unlinkDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined, parent: undefined as IVeoEntity | undefined },
       currentEntity: undefined as undefined | IVeoEntity,
       temporaryParent: undefined as undefined | IVeoEntity,
       entities: [] as IVeoEntity[],
@@ -247,37 +247,36 @@ export default Vue.extend({
         this.addDialog = true
       }
     },
-    doAddEntitiesDialog(entities: string[]) {
-      let entity: any = undefined
+    async doAddEntitiesDialog(entities: string[]) {
+      let entity: IVeoEntity | undefined = undefined
       if(this.currentEntity) {
         entity = this.currentEntity
       } else if(this.temporaryParent) {
         entity = this.temporaryParent
-      } else {
-        return
       }
 
-      const children = entities.map((entity: string) => {
-        return {
-          targetUri: `${this.$config.apiUrl}/${this.$route.params.type}/${entity}`
-        }
-      })
-      entity.parts = children
-
-      // The treeview uses children for hierarchie, however it doesn't get used for entities other than scopes and breaks those api calls.
-      entity.children = []
-
-      console.log(entity)
-      this.$api.entity.update(this.$route.params.type, entity.id, entity).catch((error: any) => {
-        this.$root.$emit(VeoEvents.ALERT_ERROR, {
-          title: this.$t('object_update_error'),
-          text: JSON.stringify(error)
+      if(entity) {
+        const children = entities.map((_entity: string) => {
+          return {
+            targetUri: `${this.$config.apiUrl}${this.$route.params.type}/${_entity}`
+          }
         })
-      }).finally(() => {
-        this.addDialog = false
-        this.temporaryParent = undefined
-        this.$fetch()
-      })
+        // @ts-ignore
+        entity.parts = children
+
+        this.$api.entity.fetch(this.$route.params.type, entity.id).then(() => {
+          this.$api.entity.update(this.$route.params.type, entity?.id, entity).catch((error: any) => {
+            this.$root.$emit(VeoEvents.ALERT_ERROR, {
+              title: this.$t('object_update_error'),
+              text: JSON.stringify(error)
+            })
+          }).finally(() => {
+            this.addDialog = false
+            this.temporaryParent = undefined
+            this.$fetch()
+          })
+        })
+      }
     },
     showDeleteEntityDialog(item: IVeoEntity) {
       this.deleteDialog.item = item
@@ -294,15 +293,16 @@ export default Vue.extend({
         })
       })
     },
-    showUnlinkEntityDialog(item: IVeoEntity) {
+    showUnlinkEntityDialog(item: IVeoEntity, parent?: IVeoEntity) {
       this.unlinkDialog.item = item
+      this.unlinkDialog.parent = parent || this.currentEntity
       this.unlinkDialog.value = true
     },
     doUnlinkEntityDialog(id: string) {
       this.unlinkDialog.value = false
-      if(this.currentEntity) {
-        this.currentEntity.parts = this.currentEntity.parts.filter(part => !part.targetUri.includes(id))
-        this.$api.entity.update(this.$route.params.type, this.currentEntity.id, this.currentEntity).then(() => {
+      if(this.unlinkDialog.item && this.unlinkDialog.parent) {
+        this.unlinkDialog.parent.parts = this.unlinkDialog.parent.parts.filter(part => !part.targetUri.includes(id))
+        this.$api.entity.update(this.$route.params.type, this.unlinkDialog.parent.id, this.unlinkDialog.parent).then(() => {
           this.$fetch()
         }).catch((error: any) => {
           this.$root.$emit(VeoEvents.ALERT_ERROR, {

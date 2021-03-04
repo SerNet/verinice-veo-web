@@ -1,14 +1,14 @@
 <template>
   <VeoDialog v-model="dialog" :headline="$t('headline')">
     <template #default>
-      {{ $t('text', { name }) }}
+      <span v-html="$t('text', { name, parentName })" />
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
         {{ $t('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!form" @click="$emit('unlink', form.id)">
+      <v-btn text color="primary" :disabled="!item" @click="$emit('unlink', item.id)">
         {{ $t('headline') }}
       </v-btn>
     </template>
@@ -17,11 +17,11 @@
 <i18n>
 {
   "en": {
-  "text": "Unlinking \"{name}\" only removes the object from its parent. If you wish to delete the object, you have to delete it from the root element.",
+  "text": "Unlinking \"{name}\" only removes the object from \"{parentName}\".<br>If you wish to delete the object, you have to delete it from the root element.",
   "headline": "Unlink object"
   },
   "de": {
-    "text": "Es wird nur die Verknüpfung von \"{name}\" zu seinem Elternelement entfernt. Das Objekt kann nur von der obersten Ebene aus gelöscht werden.",
+    "text": "Es wird nur die Verknüpfung von \"{name}\" zu \"{parentName}\" entfernt. Das Objekt kann nur von der obersten Ebene aus gelöscht werden.",
     "headline": "Verknüpfung entfernen"
   }
 }
@@ -31,7 +31,7 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import { IBaseObject } from '~/lib/utils'
+import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
   dialog: boolean
@@ -47,8 +47,12 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
-    form: {
-      type: Object as Prop<IBaseObject>,
+    item: {
+      type: Object as Prop<IVeoEntity>,
+      default: undefined
+    },
+    parent: {
+      type: Object as Prop<IVeoEntity>,
       default: undefined
     }
   },
@@ -60,7 +64,10 @@ export default Vue.extend({
   },
   computed: {
     name(): string {
-      return this.form?.name ?? ''
+      return this.item?.name ?? ''
+    },
+    parentName(): string {
+      return this.parent?.name ?? ''
     }
   },
   watch: {

@@ -107,7 +107,7 @@
                 {{ $t('clone') }}
               </template>
             </v-tooltip>
-            <v-tooltip bottom>
+            <v-tooltip v-if="$route.params.entity === '-'" bottom>
               <template #activator="{on}">
                 <v-btn icon @click.stop="$emit('delete', item.entry)" v-on="on" class="action-delete">
                   <v-icon>
@@ -121,7 +121,7 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="$emit('unlink', item.entry)" v-on="on"  class="action-unlink">
+                <v-btn icon @click.stop="showUnlink(item)" v-on="on"  :class="$route.params.entity === '-' ? 'action-unlink' : ''">
                   <v-icon>
                     mdi-link-off
                   </v-icon>
@@ -256,8 +256,11 @@ export default Vue.extend({
         new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
       )
     },
-    isFirstLevel(item: IVeoEntity): boolean {
-      return true
+    showUnlink(entry: ITreeEntry) {
+      this.$emit('unlink', entry.entry, this.getParent(entry.id)?.entry)
+    },
+    getParent(id: string): ITreeEntry | undefined {
+      return this.displayedItems.find((entry: ITreeEntry) => ((entry.children?.findIndex(child => child.id === id) ?? -1) > -1))
     }
   },
   mounted() {
