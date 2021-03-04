@@ -97,7 +97,7 @@ export default Vue.extend({
       }
 
       if (newValue) {
-        this.selectedEntities = this.currentEntity?.parts.map(child => child.targetUri.split('/').pop()) || []
+        this.selectedEntities = this.currentEntity?.parts.map(child => child.targetUri.split('/').pop() || '') || []
       }
     }
   },
