@@ -4,18 +4,33 @@
       <div style="min-height: 20vh">
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">Wählen Sie Primärsprache aus*:</span>
+            <span style="font-size: 1.2rem;"
+              >{{ $t('editor.formschema.translation.edit.language.input.label.text') }}*:</span
+            >
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-autocomplete v-model="dialog.primaryLanguage" :items="languageItems" label="Primärsprache" required />
+            <v-autocomplete
+              v-model="activeLanguage"
+              :items="languageItems"
+              :label="$t('editor.formschema.translation.edit.language.input.label')"
+              required
+            />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">Unterstütze Sprachen*:</span>
+            <span style="font-size: 1.2rem;"
+              >{{ $t('editor.formschema.translation.edit.supportedlanguages.input.label.text') }}*:</span
+            >
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-autocomplete v-model="dialog.languages" :items="languageItems" multiple label="Sprachen" required />
+            <v-autocomplete
+              v-model="dialog.languages"
+              :items="languageItems"
+              multiple
+              :label="$t('editor.formschema.translation.edit.supportedlanguages.input.label')"
+              required
+            />
           </v-col>
         </v-row>
 
@@ -66,12 +81,16 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
-    languages: {
-      type: Array,
-      required: true
-    },
     translation: {
       type: Object,
+      required: true
+    },
+    language: {
+      type: String,
+      required: true
+    },
+    languages: {
+      type: Array,
       required: true
     }
   },
@@ -79,12 +98,19 @@ export default Vue.extend({
     return {
       dialog: {
         translation: {} as ITranslationCollection,
-        primaryLanguage: 'de',
         languages: [] as string[]
       }
     }
   },
   computed: {
+    activeLanguage: {
+      get(): string {
+        return this.language
+      },
+      set(event: string) {
+        this.$emit('update-language', event)
+      }
+    },
     languageItems() {
       return (this.languages as string[]).map((languageCode: string) => ({
         value: languageCode,

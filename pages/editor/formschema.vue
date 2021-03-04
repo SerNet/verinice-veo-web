@@ -192,8 +192,10 @@
       <VEOFSETranslationDialog
         v-if="!$fetchState.pending && showTranslationDialog && formSchema && formSchema.translation"
         v-model="showTranslationDialog"
-        :languages="avaliableLanguages"
         :translation="formSchema.translation"
+        :language="formSchema.language"
+        :languages="avaliableLanguages"
+        @update-language="setFormLanguage"
         @update-translation="setFormTranslation"
       />
       <VeoFSESchemaDetailsDialog
@@ -402,6 +404,12 @@ export default defineComponent<IProps>({
       }
     }
 
+    function setFormLanguage(event: string) {
+      if (formSchema.value) {
+        vjp.set(formSchema.value, '/language', event)
+      }
+    }
+
     function onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent) {
       if (formSchema.value) {
         vjp.set(formSchema.value, `/translation/${formSchema.value.language}`, event)
@@ -428,7 +436,6 @@ export default defineComponent<IProps>({
       setFormSchema,
       setObjectSchema,
       setTranslation,
-
       updateSchemaName,
       updateSubType,
       downloadSchema,
@@ -441,6 +448,7 @@ export default defineComponent<IProps>({
       onClickTranslationBtn,
       avaliableLanguages,
       setFormTranslation,
+      setFormLanguage,
       onUpdateCustomTranslation
     }
   }
