@@ -10,7 +10,7 @@
           </v-col>
           <v-col :cols="12" :md="5">
             <v-autocomplete
-              v-model="activeLanguage"
+              v-model="dialog.language"
               :items="languageItems"
               :label="$t('editor.formschema.translation.edit.language.input.label')"
               required
@@ -98,19 +98,12 @@ export default Vue.extend({
     return {
       dialog: {
         translation: {} as ITranslationCollection,
+        language: '' as string,
         languages: [] as string[]
       }
     }
   },
   computed: {
-    activeLanguage: {
-      get(): string {
-        return this.language
-      },
-      set(event: string) {
-        this.$emit('update-language', event)
-      }
-    },
     languageItems() {
       return (this.languages as string[]).map((languageCode: string) => ({
         value: languageCode,
@@ -135,6 +128,12 @@ export default Vue.extend({
         )
         this.dialog.languages = Object.keys(this.translation)
       }
+    },
+    language: {
+      immediate: true,
+      handler() {
+        this.dialog.language = this.language
+      }
     }
   },
   methods: {
@@ -147,6 +146,7 @@ export default Vue.extend({
           .filter(([key, value]) => this.dialog.languages.includes(key))
           .map(([key, value]) => [key, JSON.parse(value as string)])
       )
+      this.$emit('update-language', this.dialog.language)
       this.$emit('update-translation', translationJSON)
       this.onDialogStatus(false)
     },
