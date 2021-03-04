@@ -30,6 +30,7 @@ declare module 'veo-formschema' {
     name: string
     modelType: string
     subType: string | null
+    language: string
     translation: IVEOFormSchemaTranslationCollection
     content: IVEOFormSchemaItem
   }

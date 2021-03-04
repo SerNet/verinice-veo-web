@@ -12,12 +12,14 @@ export function generateSchema(
   name: string,
   modelType: string,
   subType: string | null,
-  translation: IVEOFormSchemaTranslationCollection = {}
+  language: string = 'de',
+  translation: IVEOFormSchemaTranslationCollection = { de: {} }
 ): IVEOFormSchema {
   return {
     name,
     modelType,
     subType,
+    language,
     translation,
     content: {
       type: 'Layout',

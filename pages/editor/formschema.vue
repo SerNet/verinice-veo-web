@@ -122,8 +122,8 @@
             <FseGenerator
               :schema="objectSchema"
               :value="formSchema.content"
-              :general-translation="translation && translation.lang['de']"
-              :custom-translation="formSchema.translation['de']"
+              :general-translation="translation && translation.lang[formSchema.language]"
+              :custom-translation="formSchema.translation[formSchema.language]"
               @delete="onDelete"
               @update="onUpdate"
               @update-custom-translation="onUpdateCustomTranslation"
@@ -357,7 +357,7 @@ export default defineComponent<IProps>({
         ) as IVEOFormSchemaItem
         deleteElementCustomTranslation(
           elementFormSchema,
-          formSchema.value.translation['de'],
+          formSchema.value.translation[formSchema.value.language],
           updatedCustomTranslationValue => {
             onUpdateCustomTranslation(updatedCustomTranslationValue)
           }
@@ -404,7 +404,7 @@ export default defineComponent<IProps>({
 
     function onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent) {
       if (formSchema.value) {
-        vjp.set(formSchema.value, `/translation/${'de'}`, event)
+        vjp.set(formSchema.value, `/translation/${formSchema.value.language}`, event)
       }
     }
 
