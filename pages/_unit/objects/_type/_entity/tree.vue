@@ -1,6 +1,7 @@
 <script lang="ts">
 import List from '~/pages/_unit/objects/_type/_entity/list.vue'
-import VeoObjectTree from '~/components/objects/VeoObjectTree.vue'
+import VeoObjectTree, { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
+import { IVeoEntity } from '~/types/VeoTypes'
 
 export default List.extend({
   components: {
@@ -11,6 +12,23 @@ export default List.extend({
       component: VeoObjectTree,
       activeView: 1
     }
+  },
+  methods: {
+    sortingFunction(a: ITreeEntry, b: ITreeEntry) {
+      return a.entry.name.localeCompare(b.entry.name)
+    },
+    loadSubEntities(parent: ITreeEntry) {
+      let id = 0;
+      return this.$api.entity.fetchSubEntities(this.$route.params.type, parent.entry.id).then((data: IVeoEntity[]) => {
+        parent.children = data.map((item: IVeoEntity) => {
+          if (item.parts.length > 0) {
+            return { entry: item, children: [] as ITreeEntry[], id: parent.id + '.'+id++ }
+          } else {
+            return { entry: item, id: parent.id + '.'+id++ }
+          }
+        }).sort(this.sortingFunction)
+      })
+    },
   }
 })
 </script>

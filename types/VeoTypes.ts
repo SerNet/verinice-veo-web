@@ -52,7 +52,7 @@ export interface IVeoEntity {
   links: IVeoCustomLinks
   customAspects: IVeoCustomAspects
   subType: IVeoEntitySubtypes
-  parts: any[]
+  parts: IVeoLink[]
   description: string
   description_short?: string // Frontend only attribute used in VeoObjectList.vue
 }

@@ -40,8 +40,8 @@
           :menu-items="menuItems"
           :button-text="$t('object_create', { type: objectCreateText })"
           button-event="create-entity"
-          @create-entity="navigateCreate()"
-          @add-entity="showAddEntitiesDialog()"
+          @create-entity="navigateCreate"
+          @add-entity="showAddEntitiesDialog"
         />
       </v-col>
     </v-row>
@@ -51,17 +51,22 @@
       :loading="$fetchState.pending"
       :show-parent-link="showParentLink"
       :load-children="loadSubEntities"
+      :sorting-function="sortingFunction"
       @duplicate="doDuplicateEntity"
       @delete="showDeleteEntityDialog"
       @edit="navigateSubEntityDetails"
+      @unlink="showUnlinkEntityDialog"
       @parent="navigateParent"
       @click="navigateSubEntity"
+      @create-entity="navigateCreate"
+      @add-entity="showAddEntitiesDialog"
     />
     <VeoDeleteEntityDialog v-model="deleteDialog.value" :form="deleteDialog.item" @delete="doDeleteEntityDialog" />
+    <VeoUnlinkEntityDialog v-model="unlinkDialog.value" :form="unlinkDialog.item" @unlink="doUnlinkEntityDialog" />
     <VeoAddEntityDialog
       v-model="addDialog"
       :entities="entities"
-      :current-entity="currentEntity"
+      :current-entity="addEntityCurrentEntity"
       @add-entities="doAddEntitiesDialog"
     />
   </VeoPage>
@@ -73,6 +78,10 @@
     "object_add": "Link {type}",
     "object_cloned": "Object cloned successfully",
     "object_create": "Create {type}",
+    "object_delete_error": "Failed to delete object",
+    "object_duplicate_error": "Failed to duplicate object",
+    "object_unlink_error": "Failed to unlink object",
+    "object_update_error": "Failed to update object",
     "of": "of",
     "showing": "Showing"
   },
@@ -81,6 +90,10 @@
     "object_add": "{type} verknüpfen",
     "object_cloned": "Objekt wurde geklont",
     "object_create": "{type} erstellen",
+    "object_delete_error": "Objekt konnte nicht gelöscht werden",
+    "object_duplicate_error": "Objekt konnte nicht erstellt werden",
+    "object_unlink_error": "Verlinkung konnte nicht entfernt werden",
+    "object_update_error": "Objekt konnte nicht aktualisiert werden",
     "of": "von",
     "showing": "Zeige"
   }
@@ -95,6 +108,7 @@ import VeoObjectList from '~/components/objects/VeoObjectList.vue'
 import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
+import VeoUnlinkEntityDialog from '~/components/objects/VeoUnlinkEntityDialog.vue'
 import VeoAddEntityDialog from '~/components/objects/VeoAddEntityDialog.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaName } from '~/plugins/api/schema'
@@ -107,6 +121,7 @@ export default Vue.extend({
     VeoObjectList,
     VeoMenuButton,
     VeoDeleteEntityDialog,
+    VeoUnlinkEntityDialog,
     VeoAddEntityDialog
   },
   asyncData({from, route}) {
@@ -155,6 +170,9 @@ export default Vue.extend({
     },
     objectCreateText(): string {
       return capitalize(this.objectType)
+    },
+    addEntityCurrentEntity(): IVeoEntity | undefined {
+      return this.temporaryParent || this.currentEntity
     }
   },
   head(): any {
@@ -167,7 +185,9 @@ export default Vue.extend({
       objects: [] as IVeoEntity[],
       addDialog: false as boolean,
       deleteDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined },
+      unlinkDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined },
       currentEntity: undefined as undefined | IVeoEntity,
+      temporaryParent: undefined as undefined | IVeoEntity,
       entities: [] as IVeoEntity[],
       showParentLink: false as boolean,
       component: VeoObjectList,
@@ -190,9 +210,9 @@ export default Vue.extend({
         `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.generateEntityLink(this.entityId)}/edit`
       )
     },
-    navigateCreate() {
+    navigateCreate(parent?: IVeoEntity) {
       this.$router.push(
-        `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.generateEntityLink(this.entityId)}/create`
+        `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.generateEntityLink(parent?.id || this.entityId)}/create`
       )
     },
     navigateSubEntity(item: IVeoEntity) {
@@ -208,7 +228,10 @@ export default Vue.extend({
     navigateParent() {
       this.$router.back()
     },
-    showAddEntitiesDialog() {
+    showAddEntitiesDialog(item?: IVeoEntity) {
+      if(item) {
+        this.temporaryParent = item
+      }
       if (this.entities.length === 0) {
         this.$api.entity
           .fetchAll(this.$route.params.type, {
@@ -225,19 +248,36 @@ export default Vue.extend({
       }
     },
     doAddEntitiesDialog(entities: string[]) {
-      if (this.currentEntity) {
-        const children = entities.map((entity: string) => {
-          return {
-            targetUri: `${this.$config.apiUrl}/${this.$route.params.type}/${entity}`
-          }
-        })
-
-        this.currentEntity.parts = children
-        this.$api.entity.update(this.$route.params.type, this.entityId, this.currentEntity).finally(() => {
-          this.addDialog = false
-          this.$fetch()
-        })
+      let entity: any = undefined
+      if(this.currentEntity) {
+        entity = this.currentEntity
+      } else if(this.temporaryParent) {
+        entity = this.temporaryParent
+      } else {
+        return
       }
+
+      const children = entities.map((entity: string) => {
+        return {
+          targetUri: `${this.$config.apiUrl}/${this.$route.params.type}/${entity}`
+        }
+      })
+      entity.parts = children
+
+      // The treeview uses children for hierarchie, however it doesn't get used for entities other than scopes and breaks those api calls.
+      entity.children = []
+
+      console.log(entity)
+      this.$api.entity.update(this.$route.params.type, entity.id, entity).catch((error: any) => {
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          title: this.$t('object_update_error'),
+          text: JSON.stringify(error)
+        })
+      }).finally(() => {
+        this.addDialog = false
+        this.temporaryParent = undefined
+        this.$fetch()
+      })
     },
     showDeleteEntityDialog(item: IVeoEntity) {
       this.deleteDialog.item = item
@@ -247,7 +287,30 @@ export default Vue.extend({
       this.deleteDialog.value = false
       this.$api.entity.delete(this.$route.params.type, id).then(() => {
         this.$fetch()
+      }).catch((error: any) => {
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          title: this.$t('object_delete_error'),
+          text: JSON.stringify(error)
+        })
       })
+    },
+    showUnlinkEntityDialog(item: IVeoEntity) {
+      this.unlinkDialog.item = item
+      this.unlinkDialog.value = true
+    },
+    doUnlinkEntityDialog(id: string) {
+      this.unlinkDialog.value = false
+      if(this.currentEntity) {
+        this.currentEntity.parts = this.currentEntity.parts.filter(part => !part.targetUri.includes(id))
+        this.$api.entity.update(this.$route.params.type, this.currentEntity.id, this.currentEntity).then(() => {
+          this.$fetch()
+        }).catch((error: any) => {
+          this.$root.$emit(VeoEvents.ALERT_ERROR, {
+            title: this.$t('object_unlink_error'),
+            text: JSON.stringify(error)
+          })
+        })
+      }
     },
     doDuplicateEntity(item: IVeoEntity) {
       const newItem = item
@@ -257,23 +320,27 @@ export default Vue.extend({
         this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
           text: this.$t('object_cloned')
         })
+      }).catch((error: any) => {
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          title: this.$t('object_duplicate_error'),
+          text: JSON.stringify(error)
+        })
       })
     },
     generateEntityLink(uuid: string) {
       return uuid === '-' ? '-' : `${this.objectType}-${uuid}`
     },
-    loadSubEntities(item: IVeoEntity & { children: IVeoEntity[] }) {
-      return this.$api.entity.fetchSubEntities(this.$route.params.type, item.id).then((data: IVeoEntity[]) => {
-        item.children = data.map((item: IVeoEntity) => {
-          if (item.parts.length > 0) {
-            return { ...item, children: [] }
-          } else {
-            return item
-          }
-        }).sort((a: IVeoEntity, b: IVeoEntity) => {
-          return a.name.localeCompare(b.name)
-        })
-      })
+    loadSubEntities(_parent: any) {
+      return []
+    },
+    sortingFunction(a: any, b: any) {
+      if(a.parts.length > 0 && b.parts.length === 0) {
+        return -1
+      } else if (a.parts.length === 0 && b.parts.length > 0) {
+        return 1
+      } else {
+        return a.name.localeCompare(b.name)
+      }
     }
   }
 })

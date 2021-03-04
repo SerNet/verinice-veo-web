@@ -242,6 +242,7 @@ export default {
   'breadcrumbs.list_view': 'List view',
   'breadcrumbs.objects': 'Objects',
   'breadcrumbs.objectschema': 'Object schema',
+  'breadcrumbs.scopes': 'Scopes',
   'breadcrumbs.tree_view': 'Tree view',
   'breadcrumbs.history': 'History',
   'breadcrumbs.create': 'Create'

@@ -130,7 +130,7 @@
             {{ $t('clone') }}
           </template>
         </v-tooltip>
-        <v-tooltip bottom>
+        <v-tooltip v-if="$route.params.entity === '-'" bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
               <v-icon>
@@ -140,6 +140,18 @@
           </template>
           <template #default>
             {{ $t('delete') }}
+          </template>
+        </v-tooltip>
+        <v-tooltip v-else bottom>
+          <template #activator="{on}">
+            <v-btn icon @click.stop="$emit('unlink', item)" v-on="on">
+              <v-icon>
+                mdi-link-off
+              </v-icon>
+            </v-btn>
+          </template>
+          <template #default>
+            {{ $t('unlink') }}
           </template>
         </v-tooltip>
       </div>
@@ -162,6 +174,7 @@
     "parent_object": "Parent object",
     "scope_children": "Scope with members",
     "scope_empty": "Empty scope",
+    "unlink": "Remove link",
     "updated_at": "Updated"
   },
   "de": {
@@ -178,6 +191,7 @@
     "parent_object": "Übergeordnetes Objekt",
     "scope_children": "Scope mit Inhalt",
     "scope_empty": "Scope ohne Inhalt",
+    "unlink": "Verknüpfung entfernen",
     "updated_at": "Aktualisiert"
   }
 }
@@ -185,7 +199,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
-import { getSchemaName } from '~/plugins/api/schema'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 
@@ -202,6 +215,10 @@ export default Vue.extend({
     showParentLink: {
       type: Boolean,
       default: false
+    },
+    sortingFunction: {
+      type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
+      default: () => ((a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name))
     }
   },
   data() {
@@ -218,15 +235,7 @@ export default Vue.extend({
         }
         
         return item
-      }).sort((a: IVeoEntity, b: IVeoEntity) => {
-        if(a.parts.length > 0 && b.parts.length === 0) {
-          return -1
-        } else if (a.parts.length === 0 && b.parts.length > 0) {
-          return 1
-        } else {
-          return a.name.localeCompare(b.name)
-        }
-      })
+      }).sort(this.sortingFunction)
     },
     editItemLink(): string {
       return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
