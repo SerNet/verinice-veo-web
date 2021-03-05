@@ -59,7 +59,7 @@ export default class ObjectSchemaHelper {
     this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links' }
     merge(this._options, options)
 
-    if(!objectSchema) {
+    if (!objectSchema) {
       objectSchema = this.generateSchema()
     }
     this.loadObjectSchema(objectSchema)
@@ -94,7 +94,7 @@ export default class ObjectSchemaHelper {
   public updateCustomAspect(aspectName: string, aspect: IVeoOSHCustomAspect) {
     const aspectIndex = this._customAspects.findIndex(aspect => aspect.title === aspectName)
 
-    if(aspectIndex === -1) {
+    if (aspectIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomAspect: Aspect "${aspectName}" not found!`)
     } else {
       aspect.prefix = `${this._title}_`
@@ -106,7 +106,7 @@ export default class ObjectSchemaHelper {
   public updateCustomAspectAttributes(aspectName: string, attributes: IVeoOSHCustomProperty[]) {
     const aspectIndex = this._customAspects.findIndex(aspect => aspect.title === aspectName)
 
-    if(aspectIndex === -1) {
+    if (aspectIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomAspectAttributes: Aspect "${aspectName}" not found!`)
     } else {
       this._customAspects[aspectIndex].attributes = attributes
@@ -117,7 +117,7 @@ export default class ObjectSchemaHelper {
   public renameCustomAspect(oldName: string, newName: string) {
     const aspectIndex = this._customAspects.findIndex(aspect => aspect.title === oldName)
 
-    if(aspectIndex === -1) {
+    if (aspectIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::renameCustomAspect: Aspect "${oldName}" not found!`)
     } else {
       this._customAspects[aspectIndex].title = newName
@@ -128,7 +128,7 @@ export default class ObjectSchemaHelper {
   public removeCustomAspect(aspectName: string) {
     const aspectIndex = this._customAspects.findIndex(aspect => aspect.title === aspectName)
 
-    if(aspectIndex === -1) {
+    if (aspectIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::removeCustomAspect: Aspect "${aspectName}" not found!`)
     } else {
       this._customAspects.splice(aspectIndex, 1)
@@ -157,7 +157,7 @@ export default class ObjectSchemaHelper {
   public updateCustomLink(linkName: string, link: IVeoOSHCustomLink) {
     const linkIndex = this._customLinks.findIndex(link => link.title === linkName)
 
-    if(linkIndex === -1) {
+    if (linkIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomLink: Link "${linkName}" not found!`)
     } else {
       link.prefix = `${this._title}_`
@@ -169,18 +169,18 @@ export default class ObjectSchemaHelper {
   public updateCustomLinkAttributes(linkName: string, attributes: IVeoOSHCustomProperty[]) {
     const linkIndex = this._customLinks.findIndex(link => link.title === linkName)
 
-    if(linkIndex === -1) {
+    if (linkIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomLinkAttributes: Link "${linkName}" not found!`)
     } else {
       this._customLinks[linkIndex].attributes = attributes
       this.updateLinkAttributePrefixes(linkIndex)
     }
-  } 
+  }
 
   public renameCustomLink(oldName: string, newName: string) {
     const linkIndex = this._customLinks.findIndex(link => link.title === oldName)
 
-    if(linkIndex === -1) {
+    if (linkIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::renameCustomLink: Link "${oldName}" not found!`)
     } else {
       this._customLinks[linkIndex].title = newName
@@ -191,7 +191,7 @@ export default class ObjectSchemaHelper {
   public removeCustomLink(linkName: string) {
     const linkIndex = this._customLinks.findIndex(link => link.title === linkName)
 
-    if(linkIndex === -1) {
+    if (linkIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::removeCustomLink: Link "${linkName}" not found!`)
     } else {
       this._customLinks.splice(linkIndex, 1)
@@ -213,11 +213,11 @@ export default class ObjectSchemaHelper {
   public toSchema(): IVeoObjectSchema {
     const dummy: IVeoObjectSchema = this.generateSchema()
 
-    for(const aspect of this._customAspects) {
+    for (const aspect of this._customAspects) {
       this.addAspectToSchema(dummy, aspect)
     }
 
-    for(const link of this._customLinks) {
+    for (const link of this._customLinks) {
       this.addLinkToSchema(dummy, link)
     }
 
@@ -321,12 +321,20 @@ export default class ObjectSchemaHelper {
       }
     }
 
-    for(const attribute of link.attributes) {
+    for (const attribute of link.attributes) {
       // @ts-ignore
       const dummy: IVeoObjectSchemaProperty = { ...attribute }
       dummy.title = dummy.description
       delete dummy.prefix
       delete dummy.description
+
+      // @ts-ignore We cast attribute to IVeoObjectSchemaProperty a couple lines before,
+      // however there is still some data in there which is not defined in IVeoObjectSchemaProperty
+      if (dummy.type === 'enum') {
+        delete dummy.type
+      } else {
+        delete dummy.enum
+      }
 
       schemaLink.items.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy
     }
@@ -395,12 +403,20 @@ export default class ObjectSchemaHelper {
       }
     }
 
-    for(const attribute of aspect.attributes) {
+    for (const attribute of aspect.attributes) {
       // @ts-ignore
       const dummy: IVeoObjectSchemaProperty = { ...attribute }
       dummy.title = dummy.description
       delete dummy.prefix
       delete dummy.description
+
+      // @ts-ignore We cast attribute to IVeoObjectSchemaProperty a couple lines before,
+      // however there is still some data in there which is not defined in IVeoObjectSchemaProperty
+      if (dummy.type === 'enum') {
+        delete dummy.type
+      } else {
+        delete dummy.enum
+      }
 
       // @ts-ignore
       schemaAspect.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy
@@ -414,8 +430,8 @@ export default class ObjectSchemaHelper {
     this._title = objectSchema.title?.toLowerCase()
     this._description = objectSchema.description
 
-    for(const key in objectSchema.properties) {
-      switch(key) {
+    for (const key in objectSchema.properties) {
+      switch (key) {
         case this._options.customAspectsKey:
           // @ts-ignore
           this.loadCustomAspects(objectSchema.properties[key])
@@ -425,20 +441,20 @@ export default class ObjectSchemaHelper {
           this.loadCustomLinks(objectSchema.properties[key])
           break
         default:
-        	this.loadBasicProperties(objectSchema.properties, key)
+          this.loadBasicProperties(objectSchema.properties, key)
       }
     }
   }
 
   private loadCustomAspects(aspects: IVeoObjectSchema['properties']['customAspects']) {
-    for(let aspectName in aspects.properties) {
+    for (let aspectName in aspects.properties) {
       const aspect = aspects.properties[aspectName] as IVeoObjectSchemaCustomAspect
       const dummy: any = {}
       dummy.title = this.cleanCustomObjectName(aspectName)
       dummy.attributes = []
       dummy.prefix = `${this._title}_`
 
-      for(let attributeName in aspect.properties.attributes.properties) {
+      for (let attributeName in aspect.properties.attributes.properties) {
         const attribute = aspect.properties.attributes.properties[attributeName]
         dummy.attributes.push({
           ...attribute,
@@ -454,7 +470,7 @@ export default class ObjectSchemaHelper {
   }
 
   private loadCustomLinks(links: IVeoObjectSchema['properties']['links']) {
-    for(let linkName in links.properties) {
+    for (let linkName in links.properties) {
       const link = links.properties[linkName] as IVeoObjectSchemaCustomLink
       const dummy: any = {}
       dummy.title = this.cleanCustomObjectName(linkName)
@@ -463,7 +479,7 @@ export default class ObjectSchemaHelper {
       dummy.description = link.items.properties.target.title
       dummy.targetType = capitalize(link.items.properties.target.properties.type.enum[0])
 
-      for(let attributeName in link.items.properties.attributes.properties) {
+      for (let attributeName in link.items.properties.attributes.properties) {
         const attribute = link.items.properties.attributes.properties[attributeName]
         dummy.attributes.push({
           ...attribute,
@@ -497,24 +513,24 @@ export default class ObjectSchemaHelper {
   }
 
   private updateAspectAttributePrefixes(aspectIndex: number) {
-    for(const attributeIndex in this._customAspects[aspectIndex].attributes) {
+    for (const attributeIndex in this._customAspects[aspectIndex].attributes) {
       this._customAspects[aspectIndex].attributes[attributeIndex].prefix = `${this._customAspects[aspectIndex].prefix}${this._customAspects[aspectIndex].title}_`
     }
   }
 
   private updateLinkAttributePrefixes(linkIndex: number) {
-    for(const attributeIndex in this._customLinks[linkIndex].attributes) {
+    for (const attributeIndex in this._customLinks[linkIndex].attributes) {
       this._customLinks[linkIndex].attributes[attributeIndex].prefix = `${this._customLinks[linkIndex].prefix}${this._customLinks[linkIndex].title}_`
     }
   }
 
   private updateSchemaPrefixes() {
-    for(const aspectIndex in this._customAspects) {
+    for (const aspectIndex in this._customAspects) {
       this._customAspects[aspectIndex].prefix = `${this._title}_`
       this.updateAspectAttributePrefixes(aspectIndex as unknown as number)
     }
 
-    for(const linkIndex in this._customLinks) {
+    for (const linkIndex in this._customLinks) {
       this._customLinks[linkIndex].prefix = `${this._title}_`
       this.updateLinkAttributePrefixes(linkIndex as unknown as number)
     }

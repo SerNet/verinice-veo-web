@@ -92,7 +92,7 @@ export default defineComponent<IProps>({
     enum: { type: Array, default: () => [] }
   },
   setup(props, context) {
-    const prefix = computed(() => props.aspectName + '_')
+    const prefix = computed(() => props.aspectName)
 
     watch(
       props,

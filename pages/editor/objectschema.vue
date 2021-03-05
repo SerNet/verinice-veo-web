@@ -192,6 +192,7 @@ export default Vue.extend({
     setSchema(data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) {
       this.showCreationDialog = false
       this.objectSchemaHelper = new ObjectSchemaHelper(data.schema)
+
       if (data.meta) {
         this.objectSchemaHelper.setTitle(data.meta.type)
         this.objectSchemaHelper.setDescription(data.meta.description)
@@ -203,9 +204,11 @@ export default Vue.extend({
     },
     updateSchemaName(name: string) {
       this.objectSchemaHelper?.setTitle(name)
+      this.code = JSON.stringify(this.objectSchemaHelper?.toSchema(), undefined, 2)
     },
     updateDescription(description: string) {
       this.objectSchemaHelper?.setDescription(description)
+      this.code = JSON.stringify(this.objectSchemaHelper?.toSchema(), undefined, 2)
     },
     updateCode() {
       if (this.objectSchemaHelper) {
