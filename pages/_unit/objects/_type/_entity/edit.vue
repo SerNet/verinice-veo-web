@@ -61,7 +61,7 @@
               v-bind="alert"
               style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
             >
-              <template #additional-button>
+              <template v-if="alert.error === 412" #additional-button>
                 <v-btn outlined text color="error" @click="$fetch()">{{ $t('global.button.yes') }}</v-btn>
               </template>
             </VeoAlert>
@@ -109,7 +109,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: VeoEventPayload & { value: boolean }
+  alert: VeoEventPayload & { value: boolean, error: number }
 }
 
 export default Vue.extend({
@@ -135,7 +135,8 @@ export default Vue.extend({
         text: '',
         type: 0,
         title: this.$t('global.appstate.alert.error') as string,
-        saveButtonText: this.$t('global.button.no') as string
+        saveButtonText: this.$t('global.button.no') as string,
+        error: 0 as number
       }
     }
   },
@@ -187,7 +188,14 @@ export default Vue.extend({
           this.$router.back()
         })
         .catch((error: { status: number; name: string }) => {
-          this.alert.text = error.status === 412 ? this.$t('unit.forms.nrr') : ''
+          if(error.status === 412) {
+            this.alert.text = this.$t('unit.forms.nrr')
+            this.alert.saveButtonText = this.$t('global.button.no') as string
+          } else {
+            this.alert.text = error.name
+            this.alert.saveButtonText = this.$t('global.button.ok') as string
+          }
+          this.alert.error = error.status
           this.alert.value = true
         })
         .finally(() => {
