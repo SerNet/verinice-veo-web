@@ -25,11 +25,12 @@
           </v-col>
           <v-col :cols="12" :md="5">
             <v-autocomplete
-              v-model="dialog.languages"
+              :value="dialog.languages"
               :items="languageItems"
               multiple
               :label="$t('editor.formschema.translation.edit.supportedlanguages.input.label')"
               required
+              @input="onInputLanguages"
             />
           </v-col>
         </v-row>
@@ -58,7 +59,7 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { IVEOFormSchemaTranslationCollection } from 'veo-formschema'
+import { isEmpty } from 'lodash'
 import Vue from 'vue'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 
@@ -100,7 +101,8 @@ export default Vue.extend({
         translation: {} as ITranslationCollection,
         language: '' as string,
         languages: [] as string[]
-      }
+      },
+      emptyObjectString: '{\n  \n}'
     }
   },
   computed: {
@@ -124,7 +126,10 @@ export default Vue.extend({
       deep: true,
       handler() {
         this.dialog.translation = Object.fromEntries(
-          Object.entries(this.translation).map(([key, value]) => [key, JSON.stringify(value, null, 2)])
+          Object.entries(this.translation).map(([key, value]) => [
+            key,
+            !isEmpty(value) ? JSON.stringify(value, null, 2) : this.emptyObjectString
+          ])
         )
         this.dialog.languages = Object.keys(this.translation)
       }
@@ -152,6 +157,14 @@ export default Vue.extend({
     },
     onInputCode(event: any, item: ITranslationItem) {
       this.dialog.translation[item.name] = event
+    },
+    onInputLanguages(event: string[]) {
+      this.dialog.languages = event
+      event.forEach(languageCode => {
+        if (isEmpty(this.dialog.translation[languageCode])) {
+          this.dialog.translation[languageCode] = this.emptyObjectString
+        }
+      })
     }
   }
 })
