@@ -1,5 +1,5 @@
 <template>
-  <VeoPage title="veo.Forms">
+  <VeoPage :title="$t('breadcrumbs.forms')">
     <template #title>
       <v-spacer />
       <v-btn
@@ -16,7 +16,7 @@
     <template #default>
       <v-data-table
         :headers="headers"
-        :items="displayedObjects"
+        :items="objects"
         :items-per-page="20"
         :no-data-text="$t('unit.forms.noentries', { types: formName })"
         :loading-text="$t('unit.forms.loading', { types: formName })"
@@ -50,23 +50,42 @@
           {{ new Date(value).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
         </template>
         <template #item.actions="{ item }">
-          <div class="d-flex flex-row">
-            <v-btn icon @click="doEdit(item)">
-              <v-icon>
-                mdi-pencil
-              </v-icon>
-            </v-btn>
-            <v-btn icon @click="doDuplicate(item)">
-              <v-icon>
-                mdi-content-copy
-              </v-icon>
-            </v-btn>
-            <v-btn icon @click="showDelete(item)">
-              <v-icon>
-                mdi-delete
-              </v-icon>
-            </v-btn>
-          </div>
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn icon @click="doEdit(item)" v-on="on">
+                <v-icon>
+                  mdi-pencil
+                </v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t('unit.forms.tooltip.edit') }}
+            </template>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn icon @click="doDuplicate(item)" v-on="on">
+                <v-icon>
+                  mdi-content-copy
+                </v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t('unit.forms.tooltip.clone') }}
+            </template>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn icon @click="showDelete(item)" v-on="on">
+                <v-icon>
+                  mdi-delete
+                </v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t('unit.forms.tooltip.delete') }}
+            </template>
+          </v-tooltip>
         </template>
       </v-data-table>
       <DeleteFormDialog v-model="deleteDialog.value" :form="deleteDialog.item" @delete="doDelete" />
@@ -109,24 +128,24 @@ export default Vue.extend({
       formTypes: [],
       headers: [
         {
-          text: this.$t('unit.forms.header.abbreviation'),
+          text: this.$t('unit.list.header.abbreviation'),
           value: 'abbreviation'
         },
         {
-          text: this.$t('unit.forms.header.title'),
+          text: this.$t('unit.list.header.title'),
           value: 'name'
         },
         {
-          text: this.$t('unit.forms.header.description'),
+          text: this.$t('unit.list.header.description'),
           value: 'description',
           sortable: false
         },
         {
-          text: this.$t('unit.forms.header.updatedby'),
+          text: this.$t('unit.list.header.updatedby'),
           value: 'updatedBy'
         },
         {
-          text: this.$t('unit.forms.header.updatedat'),
+          text: this.$t('unit.list.header.updatedat'),
           value: 'updatedAt'
         },
         {
@@ -146,7 +165,8 @@ export default Vue.extend({
       this.objectTypePlural = endpoints[this.formSchema.modelType.toLowerCase()]
 
       this.objects = await this.$api.entity.fetchAll(this.objectTypePlural, {
-        unit: this.unitId
+        unit: this.unitId,
+        subType: this.formSchema.subType
       })
     } else {
       this.objects = []
@@ -163,7 +183,7 @@ export default Vue.extend({
   },
   head() {
     return {
-      title: 'veo.Forms'
+      title: this.$t('breadcrumbs.forms') as string
     }
   },
   computed: {
@@ -178,18 +198,6 @@ export default Vue.extend({
     },
     formRoute(): string {
       return createUUIDUrlParam('form', this.formType)
-    },
-    /**
-     * Only display objects that either have no subtype set (but still are part of the model type)
-     * OR have a subtype that is the same as the subType of the form schema
-     */
-    displayedObjects(): IBaseObject[] {
-      return this.objects.filter(
-        (object: IBaseObject) =>
-          !this.formSchema ||
-          !object.subType[this.$user.currentDomain] ||
-          object.subType[this.$user.currentDomain] === this.formSchema.subType
-      )
     },
     formName(): string {
       return this.formSchema?.name || ''

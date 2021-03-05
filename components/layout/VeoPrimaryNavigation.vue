@@ -104,8 +104,16 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.Objects',
-            icon: 'mdi-folder',
+            name: 'Scopes',
+            icon: 'mdi-archive',
+            exact: false,
+            to: `/${route.params.unit}/scopes`,
+            disabled: false,
+            topLevelItem: true
+          },
+          {
+            name: this.$t('breadcrumbs.objects') as string,
+            icon: 'mdi-file-document',
             to: undefined,
             exact: false,
             disabled: false,
@@ -115,7 +123,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'veo.Forms',
+            name: this.$t('breadcrumbs.forms') as string,
             icon: 'mdi-format-list-checks',
             to: undefined,
             exact: false,
@@ -143,10 +151,10 @@ export default Vue.extend({
 
         // Async loading of child elements (done now as to not block the rendering of the menu)
         this.fetchDataTypes().then((data: INavItem[]) => {
-          this.items[1].childItems = data
+          this.items[2].childItems = data
         })
         this.fetchFormTypes().then((data: INavItem[]) => {
-          this.items[2].childItems = data
+          this.items[3].childItems = data
         })
       } else {
         this.items.push({

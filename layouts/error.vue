@@ -33,12 +33,11 @@ export default Vue.extend({
   },
   head(): any {
     return {
-      title: 'verinice.veo',
-      titleTemplate: '%s - verinice.veo'
+      title: 'verinice.',
+      titleTemplate: '%s - verinice.'
     }
   }
 })
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

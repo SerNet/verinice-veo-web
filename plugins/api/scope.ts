@@ -53,6 +53,10 @@ export default function(api: Client) {
       return api.req(`/api/scopes/${id}`, {
         method: 'DELETE'
       })
+    },
+
+    fetchScopeMembers(id: string): Promise<IVeoScope[]> {
+      return api.req(`/api/scopes/${id}/members`)
     }
   }
 }

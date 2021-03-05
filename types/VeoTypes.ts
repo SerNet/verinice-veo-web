@@ -53,6 +53,7 @@ export interface IVeoEntity {
   customAspects: IVeoCustomAspects
   subType: IVeoEntitySubtypes
   parts: any[]
+  description: string
 }
 
 export interface IVeoEntitySubtypes {
