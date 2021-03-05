@@ -1,121 +1,82 @@
 <template>
-  <VeoPage :title="$t('breadcrumbs.forms')">
+  <VeoPage :title="$t('breadcrumbs.forms')" fullsize>
     <template #title>
       <v-spacer />
       <v-btn
-        depressed
-        text
         outlined
         :to="`/${unitRoute}/forms/${formRoute}/create`"
         color="primary"
-        class="align-self-center"
+        class="align-self-center mr-4"
       >
         {{ $t('unit.forms.create', { type: formName }) }}
       </v-btn>
     </template>
     <template #default>
-      <v-data-table
-        :headers="headers"
+      <v-row dense>
+        <v-col :cols="12" :md="3">
+          <v-select
+            v-model="formType"
+            :label="$t('unit.forms.form')"
+            :items="formTypes"
+            outlined
+            dense
+            @input="changeType()"
+          />
+        </v-col>
+        <v-col :cols="9">
+          <v-text-field :label="$t('unit.forms.search')" outlined dense style="visibility: hidden" />
+        </v-col>
+      </v-row>
+      <VeoFormList
         :items="objects"
-        :items-per-page="20"
-        :no-data-text="$t('unit.forms.noentries', { types: formName })"
-        :loading-text="$t('unit.forms.loading', { types: formName })"
         :loading="$fetchState.pending"
-      >
-        <template #top>
-          <v-row dense>
-            <v-col :cols="12" :md="3">
-              <v-select
-                v-model="formType"
-                :label="$t('unit.forms.form')"
-                :items="formTypes"
-                outlined
-                dense
-                @input="changeType()"
-              />
-            </v-col>
-            <v-col :cols="9">
-              <v-text-field :label="$t('unit.forms.search')" outlined dense style="visibility: hidden" />
-            </v-col>
-          </v-row>
-        </template>
-        <template #item.name="{ value }">
-          <span class="table--title-cell">{{ value }}</span>
-        </template>
-        <template #item.description="{ value }">
-          <span class="table--description-cell">{{ value }}</span>
-        </template>
-        <template #item.updatedAt="{ value }">
-          {{ new Date(value).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' }) }}<br />
-          {{ new Date(value).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) }}
-        </template>
-        <template #item.actions="{ item }">
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn icon @click="doEdit(item)" v-on="on">
-                <v-icon>
-                  mdi-pencil
-                </v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('unit.forms.tooltip.edit') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn icon @click="doDuplicate(item)" v-on="on">
-                <v-icon>
-                  mdi-content-copy
-                </v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('unit.forms.tooltip.clone') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn icon @click="showDelete(item)" v-on="on">
-                <v-icon>
-                  mdi-delete
-                </v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('unit.forms.tooltip.delete') }}
-            </template>
-          </v-tooltip>
-        </template>
-      </v-data-table>
+        @duplicate="doDuplicateForm"
+        @delete="showDelete"
+        @edit="doEdit"
+      />
       <DeleteFormDialog v-model="deleteDialog.value" :form="deleteDialog.item" @delete="doDelete" />
     </template>
   </VeoPage>
 </template>
-
+<i18n>
+{
+  "en": {
+    "clone": "Clone",
+    "form_cloned": "Object cloned successfully",
+    "form_duplicate_error": "Failed to duplicate object"
+  },
+  "de": {
+    "clone": "Klon",
+    "form_cloned": "Objekt wurde geklont",
+    "form_duplicate_error": "Objekt konnte nicht erstellt werden"
+  }
+}
+</i18n>
 <script lang="ts">
 import Vue from 'vue'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
-import { createUUIDUrlParam, IBaseObject, separateUUIDParam } from '~/lib/utils'
+import VeoFormList from '~/components/objects/VeoFormList.vue'
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
 import { endpoints, getSchemaEndpoint } from '~/plugins/api/schema'
-import DeleteFormDialog from '~/components/dialogs/DeleteFormDialog.vue'
-import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
+import DeleteFormDialog from '~/components/objects/VeoDeleteFormDialog.vue'
+import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 interface IData {
   formSchema: IVeoFormSchema | undefined
   objectType: string | undefined
   objectTypePlural: string | undefined
-  objects: IBaseObject[]
+  objects: IVeoEntity[]
   formType: string
   formTypes: { value: string; text: string }[]
-  headers: any
   deleteDialog: { value: boolean; item: any }
 }
 
 export default Vue.extend({
   components: {
     VeoPage,
+    VeoFormList,
     DeleteFormDialog
   },
   data(): IData {
@@ -126,35 +87,7 @@ export default Vue.extend({
       objects: [],
       formType: separateUUIDParam(this.$route.params.form).id,
       formTypes: [],
-      headers: [
-        {
-          text: this.$t('unit.list.header.abbreviation'),
-          value: 'abbreviation'
-        },
-        {
-          text: this.$t('unit.list.header.title'),
-          value: 'name'
-        },
-        {
-          text: this.$t('unit.list.header.description'),
-          value: 'description',
-          sortable: false
-        },
-        {
-          text: this.$t('unit.list.header.updatedby'),
-          value: 'updatedBy'
-        },
-        {
-          text: this.$t('unit.list.header.updatedat'),
-          value: 'updatedAt'
-        },
-        {
-          text: '',
-          value: 'actions',
-          sortable: false
-        }
-      ],
-      deleteDialog: { value: false, item: undefined }
+      deleteDialog: { value: false, item: undefined },
     }
   },
   async fetch() {
@@ -216,15 +149,6 @@ export default Vue.extend({
       this.deleteDialog.item = item
       this.deleteDialog.value = true
     },
-    doDuplicate(item: IBaseObject) {
-      if (this.formSchema) {
-        this.$api.entity
-          .create(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), { ...item })
-          .then((response: any) => {
-            this.doEdit({ id: response.resourceId })
-          })
-      }
-    },
     doDelete(id: number) {
       this.deleteDialog.value = false
       if (this.formSchema) {
@@ -235,28 +159,26 @@ export default Vue.extend({
     },
     changeType() {
       this.$router.push(`/${this.unitRoute}/forms/${this.formRoute}`)
+    },
+    doDuplicateForm(item: IVeoEntity) {
+      if(this.formSchema) {
+        const newItem = item
+        item.name = `${item.name} (${this.$t('clone')})`
+        this.$api.entity.create(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), newItem).then(() => {
+          this.$fetch()
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
+            text: this.$t('form_cloned')
+          })
+        }).catch((error: any) => {
+          this.$root.$emit(VeoEvents.ALERT_ERROR, {
+            title: this.$t('form_duplicate_error'),
+            text: JSON.stringify(error)
+          })
+        })
+      }
     }
   }
 })
 </script>
 
-<style lang="scss" scoped>
-.table--description-cell {
-  display: block;
-  max-width: 250px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.table--title-cell {
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-::v-deep table {
-  th {
-    white-space: nowrap;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

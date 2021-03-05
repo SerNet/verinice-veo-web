@@ -1,40 +1,20 @@
 <template>
-  <div>
-    <h2>Erstellt</h2>
-    <v-row>
-      <v-col>
-        <v-icon>mdi-account</v-icon>
-        {{ $props.updatedBy }}
-      </v-col>
-      <v-col>
-        <v-icon>mdi-clock-time-four-outline</v-icon>
-        {{ new Date($props.updatedAt).toLocaleString() }}
-      </v-col>
-    </v-row>
-    <v-divider />
-    <h2>Bearbeitet</h2>
-    <v-row>
-      <v-col>
-        <v-icon>mdi-account</v-icon>
-        {{ $props.createdBy }}
-      </v-col>
-      <v-col>
-        <v-icon>mdi-clock-time-four-outline</v-icon>
-        {{ new Date($props.createdAt).toLocaleString() }}
-      </v-col>
-    </v-row>
-  </div>
+  <VeoObjectHistory :object="object" />
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
+import { Prop } from 'vue/types/options'
+
+import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
+import { IVeoEntity } from '~/types/VeoTypes'
 
 export default Vue.extend({
+  components: {
+    VeoObjectHistory
+  },
   props: {
-    createdAt: String,
-    createdBy: String,
-    updatedAt: String,
-    updatedBy: String
+    object: Object as Prop<IVeoEntity>
   }
 })
 </script>

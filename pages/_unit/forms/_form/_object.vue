@@ -3,22 +3,30 @@
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPageWrapper v-else>
-    <VeoPage :cols="2" :md="2" :xl="2" absolute-size>
+    <VeoPage v-if="!contentsCollapsed && formSchemaHasGroups" :cols="2" :md="2" :xl="2" absolute-size>
       <div class="button text-uppercase accent--text font-weight-medium my-2">
         {{ $t('page.forms.navigation.group.title') }}
       </div>
       <VeoFormNavigation :formSchema="form.formSchema && form.formSchema.content" class="mx-n4" />
     </VeoPage>
     <v-divider vertical />
-    <VeoPage absolute-size :cols="6" :md="6" :xl="6" sticky-header id="scroll-wrapper">
+    <VeoPage
+      absolute-size
+      :cols="!contentsCollapsed && formSchemaHasGroups ? 6 : 8"
+      :md="!contentsCollapsed && formSchemaHasGroups ? 6 : 8"
+      :xl="!contentsCollapsed && formSchemaHasGroups ? 6 : 8"
+      sticky-header
+      id="scroll-wrapper"
+    >
       <template #header>
+        <CollapseButton v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups" v-model="contentsCollapsed" />
         <v-row>
           <v-col>
             <h1>{{ form.objectData.name }}</h1>
           </v-col>
           <v-spacer />
           <v-col class="text-right">
-            <v-btn text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
+            <v-btn v-if="$route.params.object" text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
               {{ $t('global.button.delete') }}
             </v-btn>
             <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="onClick">
@@ -36,6 +44,7 @@
           :api="dynamicAPI"
           :is-valid.sync="isValid"
           :error-messages.sync="errorMessages"
+          @input="formModified = true"
         />
         <DeleteFormDialog v-model="deleteDialog" :form="form.objectData" @delete="doDelete" />
         <VeoAlert
@@ -54,15 +63,12 @@
       <VeoTabs>
         <template #tabs>
           <v-tab :to="linkToLinks">{{ $t('unit.data.links') }}</v-tab>
-          <v-tab :to="linkToHistory">{{ $t('unit.data.history') }}</v-tab>
+          <v-tab :to="linkToHistory" :disabled="!$route.params.object">{{ $t('unit.data.history') }}</v-tab>
         </template>
       </VeoTabs>
       <nuxt-child
         v-if="form.objectData"
-        :createdAt="form.objectData.createdAt"
-        :createdBy="form.objectData.createdBy"
-        :updatedAt="form.objectData.updatedAt"
-        :updatedBy="form.objectData.updatedBy"
+        :object="form.objectData"
       />
     </VeoPage>
   </VeoPageWrapper>
@@ -74,6 +80,8 @@ import Vue from 'vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
+import DeleteFormDialog from '~/components/objects/VeoDeleteFormDialog.vue'
+import CollapseButton from '~/components/layout/CollapseButton.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
@@ -94,7 +102,9 @@ interface IData {
   saveBtnLoading: boolean
   deleteBtnLoading: boolean
   deleteDialog: boolean
-  alert: VeoEventPayload & { value: boolean }
+  alert: VeoEventPayload & { value: boolean },
+  contentsCollapsed: boolean,
+  formModified: boolean
 }
 
 export default Vue.extend({
@@ -103,7 +113,9 @@ export default Vue.extend({
     VeoForm,
     VeoPageWrapper,
     VeoPage,
-    VeoTabs
+    VeoTabs,
+    DeleteFormDialog,
+    CollapseButton
   },
   data(): IData {
     return {
@@ -127,7 +139,9 @@ export default Vue.extend({
         type: 0,
         title: this.$t('global.appstate.alert.error') as string,
         saveButtonText: this.$t('global.button.no') as string
-      }
+      },
+      contentsCollapsed: false as boolean,
+      formModified: false as boolean
     }
   },
   async fetch() {
@@ -229,6 +243,13 @@ export default Vue.extend({
     },
     linkToHistory(): string {
       return `/${this.unitRoute}/forms/${this.formRoute}/${this.objectRoute}/history`
+    },
+    formSchemaHasGroups(): boolean {
+      if(this.form.formSchema?.content.elements) {
+        return this.form.formSchema?.content?.elements?.findIndex((element: any) => (element.type === 'Layout' || element.type === 'Group') && element.options.label) > -1
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -252,7 +273,9 @@ export default Vue.extend({
         .update(getSchemaEndpoint(objectType), this.objectId, this.form.objectData)
         .then(() => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
-          this.$fetch()
+          this.$router.push({
+            path: `/${this.unitRoute}/forms/${this.formRoute}/`
+          })
         })
         .catch((error: { status: number; name: string }) => {
           this.alert.text = error.status === 412 ? this.$t('unit.forms.nrr') : ''

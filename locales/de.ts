@@ -193,7 +193,7 @@ export default {
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 
-  'page.forms.navigation.group.title': 'Inhaltsverzeichnis',
+  'page.forms.navigation.group.title': 'Inhalt',
 
   'search.label': 'verinice. durchsuchen',
 

@@ -81,9 +81,7 @@
     "object_delete_error": "Failed to delete object",
     "object_duplicate_error": "Failed to duplicate object",
     "object_unlink_error": "Failed to unlink object",
-    "object_update_error": "Failed to update object",
-    "of": "of",
-    "showing": "Showing"
+    "object_update_error": "Failed to update object"
   },
   "de": {
     "clone": "Klon",
@@ -93,9 +91,7 @@
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_duplicate_error": "Objekt konnte nicht erstellt werden",
     "object_unlink_error": "Verlinkung konnte nicht entfernt werden",
-    "object_update_error": "Objekt konnte nicht aktualisiert werden",
-    "of": "von",
-    "showing": "Zeige"
+    "object_update_error": "Objekt konnte nicht aktualisiert werden"
   }
 }
 </i18n>

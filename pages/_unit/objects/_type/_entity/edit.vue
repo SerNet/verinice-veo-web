@@ -55,6 +55,7 @@
               :is-valid.sync="isValid"
               :error-messages.sync="errorMessages"
               class="mb-8"
+              @input="entityModified = true"
             />
             <VeoAlert
               v-model="alert.value"
@@ -110,6 +111,7 @@ interface IData {
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
   alert: VeoEventPayload & { value: boolean }
+  entityModified: boolean
 }
 
 export default Vue.extend({
@@ -136,7 +138,8 @@ export default Vue.extend({
         type: 0,
         title: this.$t('global.appstate.alert.error') as string,
         saveButtonText: this.$t('global.button.no') as string
-      }
+      },
+      entityModified: false
     }
   },
   async fetch() {
