@@ -143,7 +143,7 @@
         :xl="6"
         height="100%"
       >
-        <CodeEditor v-model="code" @schema-updated="updateSchema" />
+        <SchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
       </VeoPage>
     </template>
     <template #helpers>
@@ -180,7 +180,8 @@ export default Vue.extend({
       showErrorDialog: false as boolean,
       schema: undefined as VEOObjectSchemaRAW | undefined,
       hideEmptyAspects: false as boolean,
-      search: '' as string
+      search: '' as string,
+      code: '' as string
     }
   },
   head(): any {
@@ -188,17 +189,15 @@ export default Vue.extend({
       title: this.$t('editor.objectschema.headline')
     }
   },
-  computed: {
-    code: {
-      get(): string {
-        return this.schema ? JSON.stringify(this.schema, undefined, 2) : ''
-      },
-      set(v: string) {
-        try {
-          this.schema = JSON.parse(v)
-        } catch (e) {}
+  watch: {
+    schema: {
+      immediate: true,
+      handler() {
+        this.code = this.schema ? JSON.stringify(this.schema, null, 2) : ''
       }
-    },
+    }
+  },
+  computed: {
     schemaIsValid(): VeoSchemaValidatorValidationResult {
       return this.schema ? validate(this.schema) : { valid: false, errors: [], warnings: [] }
     }
@@ -208,8 +207,8 @@ export default Vue.extend({
   },
   methods: {
     updateSchema(schema: VEOObjectSchemaRAW) {
-      this.schema = undefined // We have to set schema to undefined first, else changes wouldn't get picked up.
-      this.schema = schema
+      // this.schema = undefined // We have to set schema to undefined first, else changes wouldn't get picked up.
+      this.schema = JSON.parse(JSON.stringify(schema))
     },
     setSchema(schema: VEOObjectSchemaRAW) {
       this.schema = schema

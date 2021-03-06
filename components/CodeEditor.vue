@@ -2,19 +2,8 @@
   <div class="fill-height fill-width d-flex flex-column">
     <div style="flex-grow: 1; overflow: auto;">
       <div class="editor" :style="{ resize: 'vertical', width: '100%' }">
-        <div
-          ref="editor"
-          style="height: 100%"
-          @keydown.meta.enter="$emit('submit', $event)"
-          @keydown.exact="codeModified()"
-          @keyup="onChangedCode($event)"
-        />
+        <div ref="editor" style="height: 100%" @keyup="onChangedCode($event)" />
       </div>
-    </div>
-    <div v-if="!readonly" class="veo-editor-save-button">
-      <v-btn class="mx-4 my-2" color="primary" outlined :disabled="saveButtonDisabled" @click="updateSchema()">{{
-        $t('editor.editor.button.save')
-      }}</v-btn>
     </div>
   </div>
 </template>
@@ -40,7 +29,6 @@ import { gotoLineKeymap } from '@codemirror/next/goto-line'
 import { highlightSelectionMatches } from '@codemirror/next/highlight-selection'
 import { defaultHighlighter } from '@codemirror/next/highlight'
 import { defineComponent, onMounted, ref, watchEffect } from '@nuxtjs/composition-api'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 const languageTag = Symbol('language')
 
@@ -133,27 +121,6 @@ export default defineComponent<Props>({
       }
     }
 
-    const saveButtonDisabled = ref(true)
-    function codeModified() {
-      saveButtonDisabled.value = false
-    }
-
-    function updateSchema() {
-      if (!props.readonly) {
-        try {
-          const updatedSchema = JSON.parse($editor.state.toJSON().doc)
-          context.emit('schema-updated', updatedSchema)
-          context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, context.root.$i18n.t('editor.code.save.success'))
-        } catch (e) {
-          context.root.$emit(VeoEvents.ALERT_ERROR, {
-            title: context.root.$i18n.t('editor.code.save.error'),
-            text: e
-          })
-        }
-      }
-      saveButtonDisabled.value = true
-    }
-
     onMounted(() => {
       const updateExtension = StateField.define({
         create() {
@@ -167,12 +134,13 @@ export default defineComponent<Props>({
           return tr.docChanged ? value : value
         }
       })
-
       const editor: EditorView = ($editor = new EditorView({
         state: EditorState.create({
           doc: props.value,
           extensions: [
             [
+              // readonly if editable = false (https://github.com/codemirror/codemirror.next/issues/173#issuecomment-766366143)
+              EditorView.editable.of(!props.readonly),
               lineNumbers(),
               highlightSpecialChars(),
               history(),
@@ -218,21 +186,9 @@ export default defineComponent<Props>({
 
       setText(props.value)
       // setError(props.error)
-
-      // Registering event hooks
-      $editor.dom.onpaste = () => {
-        codeModified()
-      }
-
-      $editor.dom.addEventListener('keydown', function(event) {
-        if (event.ctrlKey && event.key === 'z') {
-          codeModified()
-        }
-      })
     })
 
-    function onChangedCode(event: any) {
-      // console.log(event.target.innerText)
+    function onChangedCode() {
       const editorText = $editor.state.toJSON().doc
       if (editorText !== props.value) {
         context.emit('input', editorText)
@@ -255,9 +211,6 @@ export default defineComponent<Props>({
           $editor.focus()
         })
       },
-      codeModified,
-      saveButtonDisabled,
-      updateSchema,
       onChangedCode
     }
   }
