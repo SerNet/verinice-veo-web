@@ -266,7 +266,7 @@ export default Vue.extend({
 
         // We fetch the parent entity, as not all flows use the properly fetched entity with an etag, however we need one when updating
         const updatedElementEtag = (await this.$api.entity.fetch(this.$route.params.type, entity.id)).$etag
-        if(entity && updatedElementEtag) {
+        if(entity && updatedElementEtag && !(entity as any).$etag) {
           // @ts-ignore
           entity.$etag = updatedElementEtag
         }
@@ -309,7 +309,7 @@ export default Vue.extend({
 
         // We fetch the parent entity, as not all flows use the properly fetched entity with an etag, however we need one when updating
         const updatedElementEtag = (await this.$api.entity.fetch(this.$route.params.type, this.unlinkDialog.parent.id)).$etag
-        if(this.unlinkDialog.parent && updatedElementEtag) {
+        if(this.unlinkDialog.parent && updatedElementEtag && !(this.unlinkDialog.parent as any).$etag) {
           // @ts-ignore
           this.unlinkDialog.parent.$etag = updatedElementEtag
         }
