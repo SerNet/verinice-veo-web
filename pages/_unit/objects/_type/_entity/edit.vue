@@ -55,7 +55,12 @@
               :is-valid.sync="isValid"
               :error-messages.sync="errorMessages"
               class="mb-8"
-              @input="entityModified = true"
+              @input="entityModified.isModified = true"
+            />
+            <VeoEntityModifiedDialog
+              v-model="entityModified.dialog"
+              :item="form.objectData"
+              @exit="$router.push(entityModified.target)"
             />
             <VeoAlert
               v-model="alert.value"
@@ -92,17 +97,20 @@
 </i18n>
 <script lang="ts">
 import Vue from 'vue'
+import { Route } from 'vue-router/types/index'
+import { capitalize } from 'lodash'
+
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
 import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
+import VeoEntityModifiedDialog from '~/components/objects/VeoEntityModifiedDialog.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaName } from '~/plugins/api/schema'
-import { capitalize } from 'lodash'
 import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 interface IData {
@@ -111,7 +119,11 @@ interface IData {
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
   alert: VeoEventPayload & { value: boolean }
-  entityModified: boolean
+  entityModified: {
+    isModified: boolean
+    dialog: boolean
+    target?: Route
+  }
 }
 
 export default Vue.extend({
@@ -120,7 +132,8 @@ export default Vue.extend({
     VeoPage,
     VeoPageWrapper,
     VeoTabs,
-    VeoObjectHistory
+    VeoObjectHistory,
+    VeoEntityModifiedDialog
   },
   data(): IData {
     return {
@@ -139,7 +152,11 @@ export default Vue.extend({
         title: this.$t('global.appstate.alert.error') as string,
         saveButtonText: this.$t('global.button.no') as string
       },
-      entityModified: false
+      entityModified: {
+        isModified: false,
+        dialog: false,
+        target: undefined
+      }
     }
   },
   async fetch() {
@@ -222,6 +239,18 @@ export default Vue.extend({
     },
     generateEntityLink(uuid: string): string {
       return uuid === '-' ? '-' : `${this.objectType}-${uuid}`
+    }
+  },
+  beforeRouteLeave(to: Route, _from: Route, next: Function) {
+    // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
+    if(this.entityModified.isModified && this.entityModified.dialog) {
+      next()
+    } else if (this.entityModified.isModified) { // If the form was modified and the dialog is closed, show it and abort navigation
+      this.entityModified.target = to
+      this.entityModified.dialog = true
+      next(false)
+    } else { // The form wasn't modified, proceed as if this hook doesn't exist
+      next()
     }
   }
 })

@@ -44,9 +44,14 @@
           :api="dynamicAPI"
           :is-valid.sync="isValid"
           :error-messages.sync="errorMessages"
-          @input="formModified = true"
+          @input="formModified.isModified = true"
         />
         <DeleteFormDialog v-model="deleteDialog" :form="form.objectData" @delete="doDelete" />
+        <VeoFormModifiedDialog
+          v-model="formModified.dialog"
+          :item="form.objectData"
+          @exit="$router.push(formModified.target)"
+        />
         <VeoAlert
           v-model="alert.value"
           v-bind="alert"
@@ -76,11 +81,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Route } from 'vue-router/types/index'
 
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
 import DeleteFormDialog from '~/components/objects/VeoDeleteFormDialog.vue'
+import VeoFormModifiedDialog from '~/components/objects/VeoFormModifiedDialog.vue'
 import CollapseButton from '~/components/layout/CollapseButton.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import VeoForm from '~/components/forms/VeoForm.vue'
@@ -102,9 +109,13 @@ interface IData {
   saveBtnLoading: boolean
   deleteBtnLoading: boolean
   deleteDialog: boolean
-  alert: VeoEventPayload & { value: boolean },
-  contentsCollapsed: boolean,
-  formModified: boolean
+  alert: VeoEventPayload & { value: boolean }
+  contentsCollapsed: boolean
+  formModified: {
+    isModified: boolean
+    dialog: boolean
+    target?: Route
+  }
 }
 
 export default Vue.extend({
@@ -115,7 +126,8 @@ export default Vue.extend({
     VeoPage,
     VeoTabs,
     DeleteFormDialog,
-    CollapseButton
+    CollapseButton,
+    VeoFormModifiedDialog
   },
   data(): IData {
     return {
@@ -141,7 +153,11 @@ export default Vue.extend({
         saveButtonText: this.$t('global.button.no') as string
       },
       contentsCollapsed: false as boolean,
-      formModified: false as boolean
+      formModified: {
+        isModified: false,
+        dialog: false,
+        target: undefined
+      }
     }
   },
   async fetch() {
@@ -332,6 +348,18 @@ export default Vue.extend({
           }
         })
       }
+    }
+  },
+  beforeRouteLeave(to: Route, _from: Route, next: Function) {
+    // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
+    if(this.formModified.isModified && this.formModified.dialog) {
+      next()
+    } else if (this.formModified.isModified) { // If the form was modified and the dialog is closed, show it and abort navigation
+      this.formModified.target = to
+      this.formModified.dialog = true
+      next(false)
+    } else { // The form wasn't modified, proceed as if this hook doesn't exist
+      next()
     }
   }
 })
