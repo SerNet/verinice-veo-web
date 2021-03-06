@@ -1,6 +1,6 @@
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
 
@@ -19,7 +19,9 @@ import * as InputUri from './InputUri.vue'
 import * as InputDateTime from './InputDateTime.vue'
 import * as LinksField from './LinksField.vue'
 import { ContextListener } from '~/components/forms/Collection/utils/helpers'
-import { BaseObject, IApi } from '~/components/forms/utils'
+import { IApi } from '~/components/forms/utils'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
 
 const components = [
   InputText,
@@ -42,25 +44,51 @@ export default Vue.extend({
   name: 'FormElement',
   functional: true,
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
-    elements: Array as Prop<UISchemaElement[]>,
-    value: {},
-    validation: Object,
+    value: {
+      type: undefined,
+      default: () => undefined
+    },
+    name: {
+      type: String,
+      default: ''
+    },
+    schema: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<JSONSchema7>,
+    options: {
+      type: Object,
+      default: () => undefined
+    },
+    validation: {
+      type: Object,
+      default: () => undefined
+    },
     disabled: Boolean,
     visible: Boolean,
-    api: Object as Prop<IApi>
+    generalTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    elements: {
+      type: Array,
+      default: () => []
+    } as PropOptions<UISchemaElement[]>,
+    api: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<IApi>
   },
   render(h, context) {
     const props = context.props
 
     function appropriateComponent() {
       return components.sort(
-        (a: any, b: any) =>
-          b.helpers.matchingScore({ ...props }) -
-          a.helpers.matchingScore({ ...props })
+        (a: any, b: any) => b.helpers.matchingScore({ ...props }) - a.helpers.matchingScore({ ...props })
       )[0].default
     }
 

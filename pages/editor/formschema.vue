@@ -151,7 +151,8 @@
               v-model="objectData"
               :schema="objectSchema"
               :ui="formSchema.content"
-              :lang="translation"
+              :general-translation="translation && translation.lang[formSchema.language]"
+              :custom-translation="formSchema.translation && formSchema.translation[formSchema.language]"
               :api="dynamicAPI"
             />
           </v-card>

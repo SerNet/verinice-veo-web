@@ -12,6 +12,8 @@ import Label from '~/components/forms/Label.vue'
 import Control from '~/components/forms/Control.vue'
 import Layout from '~/components/forms/Layout.vue'
 import Wrapper from '~/components/forms/Wrapper.vue'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
 
 interface IErrorMessageElement {
   pointer: string
@@ -51,10 +53,14 @@ export default Vue.extend({
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
-    lang: {
+    generalTranslation: {
       type: Object,
-      default: undefined
-    } as PropOptions<BaseObject>,
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
     options: {
       type: Object,
       default: undefined
@@ -178,7 +184,18 @@ export default Vue.extend({
         }
       }
     },
-    lang: {
+    generalTranslation: {
+      immediate: true,
+      handler() {
+        // this.localSchema = this.translate<JSONSchema7>(this.schema)
+        if (this.ui) {
+          this.localUI = this.translate<UISchema>(this.ui)
+        } else if (this.localUI) {
+          this.localUI = this.translate<UISchema>(this.localUI)
+        }
+      }
+    },
+    customTranslation: {
       immediate: true,
       handler() {
         // this.localSchema = this.translate<JSONSchema7>(this.schema)
@@ -244,18 +261,15 @@ export default Vue.extend({
   },
   methods: {
     getLangText(langPointer: string): string {
-      return JsonPointer.get(this.lang, langPointer.replace('#lang/', '#/')) as string
+      const translationKey = langPointer.replace('#lang/', '')
+      return this.customTranslation?.[translationKey] || this.generalTranslation?.[translationKey] || ''
     },
     translate<T>(objectWithLangPointers: JSONSchema7 | UISchemaElement): T {
       return JSON.parse(
         JSON.stringify(objectWithLangPointers).replace(
           /"(#lang\/.*?)"/gi,
           (langMatchWithQuotes: string, langMatchWithoutQuotes: string) => {
-            return (
-              JSON.stringify(this.getLangText(langMatchWithoutQuotes)) ||
-              JSON.stringify(langMatchWithoutQuotes.split('/').pop()) ||
-              'MISSING'
-            )
+            return JSON.stringify(this.getLangText(langMatchWithoutQuotes))
           }
         )
       )
@@ -373,19 +387,10 @@ export default Vue.extend({
             type: 'Layout',
             options: {
               type: 'group',
-              direction: 'vertical'
+              direction: 'vertical',
+              label: uniqueCustomAspect.split('/').pop()
             },
-            elements: [
-              {
-                type: 'Label',
-                text: uniqueCustomAspect.split('/').pop(),
-                options: {
-                  class: 'display',
-                  style: 'color: #8c8c8c'
-                }
-              },
-              ...content.filter((el: any) => el.scope && el.scope.includes(uniqueCustomAspect))
-            ]
+            elements: [...content.filter((el: any) => el.scope && el.scope.includes(uniqueCustomAspect))]
           }
         })
       ] as UISchemaElement[]
@@ -432,19 +437,13 @@ export default Vue.extend({
         type: 'Layout',
         options: {
           format: 'group',
-          direction: 'vertical',
-          highlight: false
+          direction: 'vertical'
         },
         elements: content
       }
     }
   },
   render(h): VNode {
-    const ui = this.ui
-    const schema = this.schema
-    const value = this.value
-    const lang = this.lang
-
     const createComponent = (element: UISchemaElement, formSchemaPointer: string, elementLevel: number): VNode => {
       const createChildren = () => {
         return (
@@ -476,14 +475,15 @@ export default Vue.extend({
             schema: {},
             value: undefined,
             validation: {},
-            lang: {},
+            generalTranslation: undefined,
+            customTranslation: undefined,
             api: {}
           }
 
           if (element.scope) {
             const elementName = element.scope.split('/').pop() as string
             const elementSchema = JsonPointer.get(this.localSchema, element.scope) as any
-            const elementValue = JsonPointer.get(value, this.propertyPath(element.scope)) as any
+            const elementValue = JsonPointer.get(this.value, this.propertyPath(element.scope)) as any
             const elementParentSchema = JsonPointer.get(this.localSchema, '#') as any
             const isRequired =
               Array.isArray(elementParentSchema.required) && elementParentSchema.required.includes(elementName)
@@ -491,7 +491,8 @@ export default Vue.extend({
             partOfProps = {
               name: elementName,
               schema: elementSchema,
-              lang: this.lang,
+              generalTranslation: this.generalTranslation,
+              customTranslation: this.customTranslation,
               // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug
               value: typeof elementValue !== 'undefined' ? elementValue : elementSchema && elementSchema.default,
               validation: {

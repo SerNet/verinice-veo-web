@@ -51,7 +51,15 @@
       </v-autocomplete>
     </v-col>
     <v-col v-if="ui.elements.length > 0">
-      <VeoForm :schema="schema.items" :ui="ui" :value="value" :lang="lang" :api="api" @input="onInput" />
+      <VeoForm
+        :schema="schema.items"
+        :ui="ui"
+        :value="value"
+        :general-translation="generalTranslation"
+        :custom-translation="customTranslation"
+        :api="api"
+        @input="onInput"
+      />
     </v-col>
     <v-col v-else class="py-4 pl-1 links-field-row-no-attributes font-italic">
       {{ $t('forms.input.link.noattributes') }}
@@ -66,7 +74,8 @@
             v-model="newObject"
             :schema="linksFieldDialogObjectSchema"
             :ui="linksFieldDialogFormSchema"
-            :lang="lang"
+            :general-translation="generalTranslation"
+            :custom-translation="customTranslation"
             :api="api"
           />
         </v-card-text>
@@ -97,7 +106,8 @@
             v-model="itemInDialog"
             :schema="linksFieldDialogObjectSchema"
             :ui="linksFieldDialogFormSchema"
-            :lang="lang"
+            :general-translation="generalTranslation"
+            :custom-translation="customTranslation"
             :api="api"
           />
         </v-card-text>
@@ -150,7 +160,7 @@
 import Vue, { PropOptions } from 'vue'
 import { JSONSchema7 } from 'json-schema'
 import vjp from 'vue-json-pointer'
-import { UISchema } from '@/types/UISchema'
+import { UISchema, UISchemaElement } from '@/types/UISchema'
 import {
   BaseObject,
   IApi,
@@ -158,6 +168,8 @@ import {
   linksFieldDialogObjectSchema,
   linksFieldDialogFormSchema
 } from '~/components/forms/utils'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
 
 interface ITarget {
   targetUri: string | undefined
@@ -198,16 +210,44 @@ export default Vue.extend({
     VeoForm: async () => (await import('~/components/forms/VeoForm.vue')).default
   },
   props: {
-    name: { type: String, default: '' },
-    schema: { type: Object, default: undefined } as PropOptions<JSONSchema7>,
-    lang: { type: Object, default: undefined } as PropOptions<BaseObject>,
-    options: { type: Object, default: undefined },
-    elements: { type: Array, default: undefined },
-    validation: { type: Object, default: undefined },
-    value: { type: Object, default: undefined } as PropOptions<BaseObject>,
+    value: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<BaseObject>,
+    name: {
+      type: String,
+      default: ''
+    },
+    schema: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<JSONSchema7>,
+    options: {
+      type: Object,
+      default: () => undefined
+    },
+    validation: {
+      type: Object,
+      default: () => undefined
+    },
     disabled: Boolean,
     visible: Boolean,
-    api: { type: Object, default: undefined } as PropOptions<IApi>,
+    generalTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    elements: {
+      type: Array,
+      default: () => []
+    } as PropOptions<UISchemaElement[]>,
+    api: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<IApi>,
     index: { type: Number, default: undefined }
   },
   data(): IData {

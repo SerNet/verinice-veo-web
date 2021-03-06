@@ -12,7 +12,7 @@
           v-model="dynamicForm.data"
           :schema="dynamicForm.objectSchema"
           :ui="dynamicForm.formSchema"
-          :lang="dynamicForm.lang['de']"
+          :general-translation="dynamicForm.lang[activeLanguage]"
           :api="api"
         />
       </v-col>
@@ -47,6 +47,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      activeLanguage: 'de',
       items: [
         {
           // displayName: 'Kirsten Putzig',
