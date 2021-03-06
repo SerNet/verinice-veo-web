@@ -28,7 +28,7 @@ import { rectangularSelection } from '@codemirror/next/rectangular-selection'
 import { gotoLineKeymap } from '@codemirror/next/goto-line'
 import { highlightSelectionMatches } from '@codemirror/next/highlight-selection'
 import { defaultHighlighter } from '@codemirror/next/highlight'
-import { defineComponent, onMounted, ref, watchEffect } from '@nuxtjs/composition-api'
+import { defineComponent, onMounted, ref, watchEffect, watch } from '@nuxtjs/composition-api'
 
 const languageTag = Symbol('language')
 
@@ -139,8 +139,6 @@ export default defineComponent<Props>({
           doc: props.value,
           extensions: [
             [
-              // readonly if editable = false (https://github.com/codemirror/codemirror.next/issues/173#issuecomment-766366143)
-              EditorView.editable.of(!props.readonly),
               lineNumbers(),
               highlightSpecialChars(),
               history(),
@@ -173,6 +171,17 @@ export default defineComponent<Props>({
         }),
         parent: editorRef.value
       }))
+
+      // Make CodeEditor editable/non-editable
+      watch(
+        () => props.readonly,
+        () => {
+          editor.contentDOM.contentEditable = JSON.stringify(!props.readonly)
+        },
+        {
+          immediate: true
+        }
+      )
 
       watchEffect(() => {
         try {
