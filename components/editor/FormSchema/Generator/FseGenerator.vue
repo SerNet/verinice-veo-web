@@ -4,12 +4,10 @@ import Vue, { VNode, PropOptions } from 'vue'
 import { JSONSchema7 } from 'json-schema'
 import { JsonPointer } from 'json-ptr'
 
-import vjp from 'vue-json-pointer'
 import FseLabel from './elements/FseLabel.vue'
 import FseControl from './elements/FseControl.vue'
 import FseLayout from './elements/FseLayout.vue'
 import { UISchema, UISchemaElement } from '~/types/UISchema'
-import { BaseObject } from '~/components/forms/utils'
 import { IVeoTranslation } from '~/types/VeoTypes'
 import {
   IVEOFormSchemaCustomTranslationEvent,
@@ -39,62 +37,7 @@ export default Vue.extend({
       default: () => {}
     } as PropOptions<IVEOFormSchemaTranslationCollectionItem>
   },
-  data() {
-    return {
-      page: 1,
-      localSchema: this.schema,
-      localUI: this.value
-    }
-  },
-  computed: {
-    pages(): UISchemaElement[] | undefined {
-      if (this.value && this.value.elements) {
-        return this.value.elements
-          .filter(el => el.type === 'Layout' && el.options && el.options.format === 'page')
-          .map((el, i) => ({
-            ...el,
-            options: { ...el.options, _pageID: i + 1 }
-          }))
-      }
-      return undefined
-    },
-    pagesLength(): number {
-      return this.pages ? this.pages.length : 1
-    }
-  },
-  watch: {
-    schema: {
-      immediate: true,
-      deep: true,
-      handler() {
-        // IMPORTANT! This is needed to update localSchema when schema is updated
-        // Else it cannot detect updated object of schema and does not update veo-form
-        this.localSchema = JSON.parse(JSON.stringify(this.schema))
-      }
-    },
-    lang: {
-      immediate: true,
-      handler() {}
-    }
-  },
   methods: {
-    propertyPath(path: string) {
-      // TODO: Better translation from #/properties/name to #/name for values
-      return String(path || '').replace(/\/properties\//g, '/')
-    },
-    setValue(scope: string, v: any): any {
-      if (scope) {
-        // TODO: Here was changed JsonPointer with Vue.set() because of reactivity
-        // Investigate how to work with it JsonPointer, because of JsonPaths
-        // but have vue reactivity
-
-        // console.log(this.value, scope, propertyPath(scope), v );
-        // JsonPointer.set(this.value, propertyPath(scope), v, true);
-
-        vjp.set(this.value, this.propertyPath(scope).replace('#/', '/'), v)
-        this.$emit('input', this.value)
-      }
-    },
     onDelete(event: IVEOFormSchemaItemDeleteEvent): void {
       this.$emit('delete', event)
     },
@@ -150,11 +93,7 @@ export default Vue.extend({
 
           if (element.scope) {
             const elementName = element.scope.split('/').pop() as string
-            const elementSchema = JsonPointer.get(this.localSchema, element.scope) as any
-            const elementValue = JsonPointer.get(this.value, this.propertyPath(element.scope)) as any
-            const elementParentSchema = JsonPointer.get(this.localSchema, '#') as any
-            const isRequired =
-              Array.isArray(elementParentSchema.required) && elementParentSchema.required.includes(elementName)
+            const elementSchema = JsonPointer.get(this.schema, element.scope) as any
 
             partOfProps = {
               ...partOfProps,
