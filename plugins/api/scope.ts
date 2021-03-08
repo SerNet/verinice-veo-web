@@ -12,12 +12,10 @@ export default function (api: Client) {
       return api.req('/api/scopes', {
         params
       }).then((result: IVeoScope[]) => {
-        return result.map((entry: IVeoScope) => {
-          return {
-            ...entry,
-            $type: 'scope'
-          }
+        result.forEach((entry: IVeoScope) => {
+          Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: 'scope' })
         })
+        return result
       })
     },
 
@@ -38,10 +36,8 @@ export default function (api: Client) {
      */
     fetch(id: string): Promise<IVeoScope> {
       return api.req(`/api/scopes/${id}`).then((result: IVeoScope) => {
-        return {
-          ...result,
-          $type: 'scope'
-        }
+        Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: 'scope' })
+        return result
       })
     },
 
@@ -51,16 +47,12 @@ export default function (api: Client) {
      * @param unit
      */
     update(id: string, scope: IVeoScope): Promise<IVeoScope> {
-      // @ts-ignore
-      delete scope.$type
       return api.req(`/api/scopes/${id}`, {
         method: 'PUT',
         json: scope
       }).then((result: IVeoScope) => {
-        return {
-          ...result,
-          $type: 'scope'
-        }
+        Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: 'scope' })
+        return result
       })
     },
 
@@ -76,12 +68,10 @@ export default function (api: Client) {
 
     fetchScopeMembers(id: string): Promise<IVeoScope[]> {
       return api.req(`/api/scopes/${id}/members`).then((result: IVeoScope[]) => {
-        return result.map((entry: IVeoScope) => {
-          return {
-            ...entry,
-            $type: 'scope'
-          }
+        result.forEach((entry: IVeoScope) => {
+          Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: 'scope' })
         })
+        return result
       })
     }
   }

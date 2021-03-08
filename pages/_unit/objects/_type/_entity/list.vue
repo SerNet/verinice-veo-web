@@ -41,7 +41,7 @@
           :button-text="$t('object_create', { type: objectCreateText })"
           button-event="create-entity"
           @create-entity="navigateCreate"
-          @add-entity="showAddEntitiesDialog"
+          @add-entity="showAddEntitiesDialog('entities', $event)"
         />
       </v-col>
     </v-row>
@@ -59,14 +59,13 @@
       @parent="navigateParent"
       @click="navigateSubEntity"
       @create-entity="navigateCreate"
-      @add-entity="showAddEntitiesDialog"
+      @add-entity="showAddEntitiesDialog('entities', $event)"
     />
     <VeoDeleteEntityDialog v-model="deleteDialog.value" v-bind="deleteDialog" @delete="doDeleteEntityDialog" />
     <VeoUnlinkEntityDialog v-model="unlinkDialog.value" v-bind="unlinkDialog" @unlink="doUnlinkEntityDialog" />
     <VeoAddEntityDialog
-      v-model="addDialog"
-      :entities="entities"
-      :current-entity="addEntityCurrentEntity"
+      v-model="addDialog.value"
+      v-bind="addDialog"
       @add-entities="doAddEntitiesDialog"
     />
   </VeoPage>
@@ -106,13 +105,37 @@ import { capitalize } from 'lodash'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoObjectList from '~/components/objects/VeoObjectList.vue'
 import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
-import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntity, IVeoLink } from '~/types/VeoTypes'
 import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
 import VeoUnlinkEntityDialog from '~/components/objects/VeoUnlinkEntityDialog.vue'
-import VeoAddEntityDialog from '~/components/objects/VeoAddEntityDialog.vue'
+import VeoAddEntityDialog, { IItem } from '~/components/objects/VeoAddEntityDialog.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { getSchemaName } from '~/plugins/api/schema'
+import { getSchemaName, ISchemaEndpoint } from '~/plugins/api/schema'
 import { separateUUIDParam } from '~/lib/utils'
+
+interface IData {
+  objects: IVeoEntity[]
+  addDialog: {
+    value: boolean
+    items: IItem[]
+    editedItem?: IVeoEntity
+    eventName: string
+  }
+  deleteDialog: {
+    value: boolean
+    item: undefined | IVeoEntity
+  }
+  unlinkDialog: {
+    value: boolean
+    item: undefined | IVeoEntity
+    parent: undefined | IVeoEntity
+  }
+  currentEntity: undefined | IVeoEntity
+  entities: IVeoEntity[]
+  showParentLink: boolean
+  activeView: number
+  component: any
+}
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
@@ -129,6 +152,31 @@ export default Vue.extend({
     // For some reason the page gets recreated completely, rendering beforeRouteUpdate and watch $route completely useless
     return {
       showParentLink: route.name === from.name && route.path !== from.path && route.params.entity !== '-'
+    }
+  },
+  data(): IData {
+    return {
+      objects: [],
+      addDialog: {
+        editedItem: undefined,
+        eventName: 'add-entities',
+        items: [],
+        value: false
+      },
+      deleteDialog: {
+        value: false,
+        item: undefined
+      },
+      unlinkDialog: {
+        value: false,
+        item: undefined,
+        parent: undefined
+      },
+      currentEntity: undefined as undefined | IVeoEntity,
+      entities: [] as IVeoEntity[],
+      showParentLink: false as boolean,
+      component: VeoObjectList,
+      activeView: 0
     }
   },
   async fetch() {
@@ -170,28 +218,11 @@ export default Vue.extend({
     },
     objectCreateText(): string {
       return capitalize(this.objectType)
-    },
-    addEntityCurrentEntity(): IVeoEntity | undefined {
-      return this.temporaryParent || this.currentEntity
     }
   },
   head(): any {
     return {
       title: `${this.title} - ${this.$t('breadcrumbs.objects')}`
-    }
-  },
-  data() {
-    return {
-      objects: [] as IVeoEntity[],
-      addDialog: false as boolean,
-      deleteDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined },
-      unlinkDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined, parent: undefined as IVeoEntity | undefined },
-      currentEntity: undefined as undefined | IVeoEntity,
-      temporaryParent: undefined as undefined | IVeoEntity,
-      entities: [] as IVeoEntity[],
-      showParentLink: false as boolean,
-      component: VeoObjectList,
-      activeView: 0
     }
   },
   methods: {
@@ -228,58 +259,102 @@ export default Vue.extend({
     navigateParent() {
       this.$router.back()
     },
-    showAddEntitiesDialog(item?: IVeoEntity) {
+    async fetchEntities() {
+      return this.$api.entity.fetchAll(this.$route.params.type, { unit: this.unitId }).then((entities: IVeoEntity[]) => {
+        this.entities = entities
+      })
+    },
+    async showAddEntitiesDialog(type: 'entities' | 'scopes', item?: IVeoEntity) {
+      let currentItem
       if(item) {
-        this.temporaryParent = item
-      }
-      if (this.entities.length === 0) {
-        this.$api.entity
-          .fetchAll(this.$route.params.type, {
-            unit: this.unitId
-          })
-          .then((entities: IVeoEntity[]) => {
-            this.entities = entities
-          })
-          .finally(() => {
-            this.addDialog = true
-          })
+        currentItem = item
       } else {
-        this.addDialog = true
+        currentItem = this.currentEntity
+      }
+
+      if(currentItem) {
+        if(type === 'scopes') {
+          throw new Error('Objects doesn\'t support Scope management')
+        } else {
+          if (this.entities.length === 0) {
+            await this.fetchEntities()
+          }
+
+          this.addDialog.items = this.entities.map(entity => {
+            return {
+              id: entity.id,
+              type: entity.$type,
+              name: entity.name,
+              hidden: false,
+              selected: false
+            }
+          })
+        }
+
+        let links: IVeoLink[]
+        if(currentItem.$type === 'scope') {
+          throw new Error('Objects doesn\'t support Scope management')
+        } else {
+          links = (currentItem as IVeoEntity).parts
+        }
+
+        for(const link of links) {
+          const destructedLink = link.targetUri.split('/')
+          const id = destructedLink.pop() || ''
+          const type = destructedLink.pop() || ''
+
+          const itemIndex = this.addDialog.items.findIndex(item => item.id === id)
+
+          // If the item exists, simply set its selected value to true. Else the item is a scope.
+          // To avoid an api call, we simply take the values from the existing link
+          if(itemIndex > 0) {
+            this.addDialog.items[itemIndex].selected = true
+          } else {
+            this.addDialog.items.push({
+              id,
+              type,
+              name: link.displayName,
+              hidden: true,
+              selected: true
+            })
+          }
+        }
+
+        this.addDialog.editedItem = currentItem
+        this.addDialog.eventName = 'add-entities'
+        this.addDialog.value = true
       }
     },
-    async doAddEntitiesDialog(entities: string[]) {
-      let entity: IVeoEntity | undefined = undefined
-      if(this.currentEntity) {
-        entity = this.currentEntity
-      } else if(this.temporaryParent) {
-        entity = this.temporaryParent
-      }
-
+    async doAddEntitiesDialog(entities: IItem[]) {
+      let entity: IVeoEntity | undefined = this.addDialog.editedItem
       if(entity) {
-        const children = entities.map((_entity: string) => {
+        const children = entities.map((_entity) => {
           return {
-            targetUri: `${this.$config.apiUrl}${this.$route.params.type}/${_entity}`
+            targetUri: `/${_entity.type}/${_entity.id}`
           }
         })
-        // @ts-ignore
-        entity.parts = children
 
         // We fetch the parent entity, as not all flows use the properly fetched entity with an etag, however we need one when updating
-        const updatedElementEtag = (await this.$api.entity.fetch(this.$route.params.type, entity.id)).$etag
-        if(entity && updatedElementEtag && !(entity as any).$etag) {
+        if(entity.$type === 'scope') {
+          throw new Error('Objects doesn\'t support Scope management')
+        } else {
           // @ts-ignore
-          entity.$etag = updatedElementEtag
-        }
-        this.$api.entity.update(this.$route.params.type, entity?.id, entity).catch((error: any) => {
-          this.$root.$emit(VeoEvents.ALERT_ERROR, {
-            title: this.$t('object_update_error'),
-            text: JSON.stringify(error)
+          entity.parts = children
+          const updatedElementEtag = (await this.$api.entity.fetch(entity.$type, entity.id)).$etag
+          if(entity && updatedElementEtag && !(entity as any).$etag) {
+            // @ts-ignore
+            entity.$etag = updatedElementEtag
+          }
+          this.$api.entity.update(entity.$type, entity?.id, entity).catch((error: any) => {
+            this.$root.$emit(VeoEvents.ALERT_ERROR, {
+              title: this.$t('object_update_error'),
+              text: JSON.stringify(error)
+            })
+          }).finally(() => {
+            this.addDialog.value = false
+            this.$fetch()
           })
-        }).finally(() => {
-          this.addDialog = false
-          this.temporaryParent = undefined
-          this.$fetch()
-        })
+        }
       }
     },
     showDeleteEntityDialog(item: IVeoEntity) {

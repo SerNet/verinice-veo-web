@@ -19,12 +19,10 @@ export default function (api: Client) {
       return api.req(`/api/${objectType}`, {
         params
       }).then((result: IVeoEntity[]) => {
-        return result.map((entry: IVeoEntity) => {
-          return {
-            ...entry,
-            $type: objectType
-          }
+        result.forEach((entry: IVeoEntity) => {
+          Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
         })
+        return result
       })
     },
 
@@ -45,10 +43,8 @@ export default function (api: Client) {
      */
     fetch(objectType: string, id: string): Promise<IVeoEntity> {
       return api.req(`/api/${objectType}/${id}`).then((result: IVeoEntity) => {
-        return {
-          ...result,
-          $type: objectType
-        }
+        Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: objectType })
+        return result
       })
     },
 
@@ -58,12 +54,12 @@ export default function (api: Client) {
      * @param entity
      */
     update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
-      // @ts-ignore
-      delete entity.$type
-
       return api.req(`/api/${objectType}/${id}`, {
         method: 'PUT',
         json: entity
+      }).then((result: IVeoEntity) => {
+        Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: objectType })
+        return result
       })
     },
 
@@ -85,12 +81,10 @@ export default function (api: Client) {
      */
     fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
       return api.req(`/api/${objectType}/${id}/parts`).then((result: IVeoEntity[]) => {
-        return result.map((entry: IVeoEntity) => {
-          return {
-            ...entry,
-            $type: objectType
-          }
+        result.forEach((entry: IVeoEntity) => {
+          Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
         })
+        return result
       })
     }
   }

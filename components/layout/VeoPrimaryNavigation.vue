@@ -195,13 +195,13 @@ export default Vue.extend({
     },
 
     async fetchFormTypes(): Promise<INavItem[]> {
-      const routeUnitParam = this.$route.params.unit
+      const routeUnitParam = separateUUIDParam(this.$route.params.unit).id
       return await this.$api.form.fetchAll({ unit: routeUnitParam }).then((formTypes: IVeoFormSchemaMeta[]) =>
         formTypes.map((entry: IVeoFormSchemaMeta) => {
           return {
             name: entry.name,
             exact: false,
-            to: `/${routeUnitParam}/forms/${createUUIDUrlParam('form', entry.id)}/`,
+            to: `/${createUUIDUrlParam('unit', routeUnitParam)}/forms/${createUUIDUrlParam('form', entry.id)}/`,
             disabled: false,
             topLevelItem: false
           }

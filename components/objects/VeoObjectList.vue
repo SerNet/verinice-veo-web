@@ -41,7 +41,7 @@
         </v-tooltip>
         <v-tooltip v-else-if="item.members && item.members.length > 0" bottom>
           <template #activator="{ on }">
-            <v-icon v-on="on">mdi-archive-star</v-icon>
+            <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
           <template #default>
             <span class="d-inline-block text-center" v-html="$t('scope_children', { amount: item.members.length })" />
