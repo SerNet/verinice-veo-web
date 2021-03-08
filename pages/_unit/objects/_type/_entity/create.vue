@@ -65,7 +65,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: VeoEventPayload & { value: boolean }
+  alert: VeoEventPayload & { value: boolean, error: number }
 }
 
 export default Vue.extend({
@@ -88,7 +88,8 @@ export default Vue.extend({
         text: '',
         type: 0,
         title: this.$t('global.appstate.alert.error') as string,
-        saveButtonText: this.$t('global.button.no') as string
+        saveButtonText: this.$t('global.button.no') as string,
+        error: 0 as number
       }
     }
   },
@@ -156,8 +157,12 @@ export default Vue.extend({
           } else {
             this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.parent}/list`)
           }
-        })
-        .finally(() => {
+        }).catch((error: { status: number; name: string }) => {
+          this.alert.text = error.name
+          this.alert.saveButtonText = this.$t('global.button.ok') as string
+          this.alert.error = 0
+          this.alert.value = true
+        }).finally(() => {
           this.saveBtnLoading = false
         })
     },

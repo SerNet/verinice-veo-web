@@ -24,18 +24,23 @@ export default BaseObjectForm.extend({
       const createdObjectUUID = await this.create(objectType)
       if (createdObjectUUID) {
         this.$router.push(`/${this.unitRoute}/forms/${this.formRoute}`)
-      } else {
-        throw new Error('UUID of the create object does not exist!')
       }
     },
     async create(objectType: string): Promise<string | undefined> {
-      const res = await this.$api.entity.create(getSchemaEndpoint(this.objectType || ''), {
+      return this.$api.entity.create(getSchemaEndpoint(this.objectType || ''), {
         ...this.form.objectData,
         owner: {
           targetUri: `/units/${this.unitId}`
         }
+      }).then((data: any) => {
+        return data.resourceId
+      }).catch((error: { status: number; name: string }) => {
+        this.alert.text = error.name
+        this.alert.saveButtonText = this.$t('global.button.ok') as string
+        this.alert.error = 0
+        this.alert.value = true
+        return undefined
       })
-      return res.resourceId
     }
   }
 })

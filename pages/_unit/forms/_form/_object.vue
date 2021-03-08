@@ -289,6 +289,7 @@ export default Vue.extend({
       await this.$api.entity
         .update(getSchemaEndpoint(objectType), this.objectId, this.form.objectData)
         .then(() => {
+          this.formModified.isModified = false
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
           this.$router.push({
             path: `/${this.unitRoute}/forms/${this.formRoute}/`

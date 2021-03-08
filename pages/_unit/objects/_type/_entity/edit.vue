@@ -203,6 +203,7 @@ export default Vue.extend({
       await this.$api.entity
         .update(this.schemaEndpoint, this.entityId, this.form.objectData)
         .then(async (_data: IVeoAPIMessage) => {
+          this.entityModified.isModified = false
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
 
           this.$router.back()
