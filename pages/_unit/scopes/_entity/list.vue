@@ -78,9 +78,9 @@
 {
   "en": {
     "clone": "Clone",
-    "object_add": "Link {type}",
+    "object_add": "Link object",
     "object_cloned": "Object cloned successfully",
-    "object_create": "Create {type}",
+    "object_create": "Create object",
     "object_delete_error": "Failed to delete object",
     "object_duplicate_error": "Failed to duplicate object",
     "object_unlink_error": "Failed to unlink object",
@@ -90,9 +90,9 @@
   },
   "de": {
     "clone": "Klon",
-    "object_add": "{type} verknüpfen",
+    "object_add": "Objekt verknüpfen",
     "object_cloned": "Objekt wurde geklont",
-    "object_create": "{type} erstellen",
+    "object_create": "Objekt erstellen",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_duplicate_error": "Objekt konnte nicht erstellt werden",
     "object_unlink_error": "Verlinkung konnte nicht entfernt werden",
@@ -200,7 +200,7 @@ export default Vue.extend({
       this.currentEntity = undefined
     } else if(this.entityType === 'scope') {
       this.objects = await this.$api.scope.fetchScopeMembers(this.entityId)
-      this.currentEntity = await this.$api.scope.fetch(this.entityType, this.entityId)
+      this.currentEntity = await this.$api.scope.fetch(this.entityId)
     } else {
       this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId)
       this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId)
@@ -269,7 +269,7 @@ export default Vue.extend({
       return this.temporaryParent || this.currentEntity
     },
     title(): string {
-      return this.entityType !== '-' ? this.entityId : this.$t('breadcrumbs.scopes')
+      return this.currentEntity ? this.currentEntity.name : this.entityType !== '-' ? this.entityId : this.$t('breadcrumbs.scopes')
     }
   },
   methods: {
@@ -288,25 +288,25 @@ export default Vue.extend({
         `/${this.$route.params.unit}/scopes/${this.$route.params.entity}/edit`
       )
     },
-    navigateCreate(parent?: IVeoEntity) {
+    navigateCreate(parent?: IVeoEntity | IVeoScope) {
       this.$router.push(
         `/${this.$route.params.unit}/scopes/${createUUIDUrlParam(this.entityType, parent?.id || this.entityId)}/create`
       )
     },
-    navigateSubEntity(item: IVeoEntity) {
+    navigateSubEntity(item: IVeoEntity | IVeoScope) {
       this.$router.push({
         params: {
-          entity: createUUIDUrlParam(this.entityType, item.id)
+          entity: createUUIDUrlParam(item.$type, item.id)
         }
       })
     },
-    navigateSubEntityDetails(item: IVeoEntity) {
-      this.$router.push(`/${this.$route.params.unit}/scopes/${createUUIDUrlParam(this.entityType, item.id)}/edit`)
+    navigateSubEntityDetails(item: IVeoEntity | IVeoScope) {
+      this.$router.push(`/${this.$route.params.unit}/scopes/${createUUIDUrlParam(item.$type, item.id)}/edit`)
     },
     navigateParent() {
       this.$router.back()
     },
-    showAddEntitiesDialog(item?: IVeoEntity) { // ToDo
+    showAddEntitiesDialog(item?: IVeoEntity | IVeoScope) { // ToDo
       if(item) {
         this.temporaryParent = item
       }
@@ -362,7 +362,7 @@ export default Vue.extend({
         })
       }
     },
-    showDeleteEntityDialog(item: IVeoEntity) {
+    showDeleteEntityDialog(item: IVeoEntity | IVeoScope) {
       this.deleteDialog.item = item
       this.deleteDialog.value = true
     },
@@ -377,7 +377,7 @@ export default Vue.extend({
         })
       })
     },
-    showUnlinkEntityDialog(item: IVeoEntity, parent?: IVeoEntity) {
+    showUnlinkEntityDialog(item: IVeoEntity | IVeoScope, parent?: IVeoEntity | IVeoScope) {
       this.unlinkDialog.item = item
       this.unlinkDialog.parent = parent || this.currentEntity
       this.unlinkDialog.value = true
@@ -404,7 +404,7 @@ export default Vue.extend({
         })
       }
     },
-    doDuplicateEntity(item: IVeoEntity) { // ToDo
+    doDuplicateEntity(item: IVeoEntity | IVeoScope) { // ToDo
       const newItem = item
       item.name = `${item.name} (${this.$t('clone')})`
       this.$api.entity.create(this.$route.params.type, newItem).then(() => {
@@ -481,8 +481,7 @@ export default Vue.extend({
       }
     },
     entityIsScope(entity: IVeoEntity | IVeoScope): boolean {
-      // @ts-ignore
-      return !!entity.members
+      return entity.$type === 'scope'
     }
   }
 })

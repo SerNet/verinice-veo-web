@@ -2,7 +2,7 @@ import { Client } from '~/plugins/api'
 
 import { IVeoAPIMessage, IVeoScope } from '~/types/VeoTypes'
 
-export default function(api: Client) {
+export default function (api: Client) {
   return {
     /**
      * Loads all Units
@@ -11,6 +11,13 @@ export default function(api: Client) {
     fetchAll(params?: Record<string, string>): Promise<IVeoScope[]> {
       return api.req('/api/scopes', {
         params
+      }).then((result: IVeoScope[]) => {
+        return result.map((entry: IVeoScope) => {
+          return {
+            ...entry,
+            $type: 'scope'
+          }
+        })
       })
     },
 
@@ -30,7 +37,12 @@ export default function(api: Client) {
      * @param id
      */
     fetch(id: string): Promise<IVeoScope> {
-      return api.req(`/api/scopes/${id}`)
+      return api.req(`/api/scopes/${id}`).then((result: IVeoScope) => {
+        return {
+          ...result,
+          $type: 'scope'
+        }
+      })
     },
 
     /**
@@ -38,10 +50,17 @@ export default function(api: Client) {
      * @param id
      * @param unit
      */
-    update(id: string, unit: Object): Promise<IVeoScope> {
+    update(id: string, scope: IVeoScope): Promise<IVeoScope> {
+      // @ts-ignore
+      delete scope.$type
       return api.req(`/api/scopes/${id}`, {
         method: 'PUT',
-        json: unit
+        json: scope
+      }).then((result: IVeoScope) => {
+        return {
+          ...result,
+          $type: 'scope'
+        }
       })
     },
 
@@ -56,7 +75,14 @@ export default function(api: Client) {
     },
 
     fetchScopeMembers(id: string): Promise<IVeoScope[]> {
-      return api.req(`/api/scopes/${id}/members`)
+      return api.req(`/api/scopes/${id}/members`).then((result: IVeoScope[]) => {
+        return result.map((entry: IVeoScope) => {
+          return {
+            ...entry,
+            $type: 'scope'
+          }
+        })
+      })
     }
   }
 }

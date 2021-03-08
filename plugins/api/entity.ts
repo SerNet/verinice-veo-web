@@ -9,51 +9,66 @@ import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
  * 
  * @param api Instance of the api client class used to communicate with the api endpoint.
  */
-export default function(api: Client) {
+export default function (api: Client) {
   return {
     /**
-     * Loads all Persons
+     * Loads all Entities
      * @param parent
      */
     fetchAll(objectType: string, params?: Record<string, string>): Promise<IVeoEntity[]> {
       return api.req(`/api/${objectType}`, {
         params
+      }).then((result: IVeoEntity[]) => {
+        return result.map((entry: IVeoEntity) => {
+          return {
+            ...entry,
+            $type: objectType
+          }
+        })
       })
     },
 
     /**
-     * Creates a person
-     * @param person
+     * Creates an entity
+     * @param entity
      */
-    create(objectType: string, person: Object): Promise<IVeoAPIMessage> {
+    create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
       return api.req(`/api/${objectType}`, {
         method: 'POST',
-        json: person
+        json: entity
       })
     },
 
     /**
-     * Loads one Person by id
+     * Loads one entity by id
      * @param id
      */
     fetch(objectType: string, id: string): Promise<IVeoEntity> {
-      return api.req(`/api/${objectType}/${id}`)
-    },
-
-    /**
-     * Updates a person
-     * @param id
-     * @param person
-     */
-    update(objectType: string, id: string, person: Object): Promise<IVeoEntity> {
-      return api.req(`/api/${objectType}/${id}`, {
-        method: 'PUT',
-        json: person
+      return api.req(`/api/${objectType}/${id}`).then((result: IVeoEntity) => {
+        return {
+          ...result,
+          $type: objectType
+        }
       })
     },
 
     /**
-     * Deletes a person
+     * Updates an entity
+     * @param id
+     * @param entity
+     */
+    update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
+      // @ts-ignore
+      delete entity.$type
+
+      return api.req(`/api/${objectType}/${id}`, {
+        method: 'PUT',
+        json: entity
+      })
+    },
+
+    /**
+     * Deletes an entity
      * @param id
      */
     delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
@@ -69,7 +84,14 @@ export default function(api: Client) {
      * @param id The uuid of the entity to fetch the sub entities for.
      */
     fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
-      return api.req(`/api/${objectType}/${id}/parts`)
+      return api.req(`/api/${objectType}/${id}/parts`).then((result: IVeoEntity[]) => {
+        return result.map((entry: IVeoEntity) => {
+          return {
+            ...entry,
+            $type: objectType
+          }
+        })
+      })
     }
   }
 }

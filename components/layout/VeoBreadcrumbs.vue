@@ -144,12 +144,21 @@ export default defineComponent<IProps>({
       return new Promise<ICustomBreadcrumbTextEntry>(async resolve => {
         const apiKey = apiKeyMap[type]
         const displayNameKey = displayNameKeyMap[type]
-        // @ts-ignore
-        const api = context.root.$api[apiKey]
-        const text: string =
-          apiKey === 'entity'
-            ? (await api.fetch(getSchemaEndpoint(paramSeparated.type), paramSeparated.id))[displayNameKey]
-            : (await api.fetch(paramSeparated.id))[displayNameKey]
+
+        let text: string
+        if(apiKey === 'entity' && paramSeparated.type === 'scope') {
+          // @ts-ignore
+          text = (await context.root.$api.scope.fetch(paramSeparated.id))[displayNameKey]
+        } else if (apiKey === 'entity') {
+          const api = context.root.$api[apiKey]
+          // @ts-ignore
+          text = (await api.fetch(getSchemaEndpoint(paramSeparated.type), paramSeparated.id))[displayNameKey]
+        } else {
+          // @ts-ignore
+          const api = context.root.$api[apiKey]
+          text = (await api.fetch(paramSeparated.id))[displayNameKey]
+        }
+        
 
         sessionStorage.setItem(paramSeparated.id, text)
         resolve({ [type]: { text } })
