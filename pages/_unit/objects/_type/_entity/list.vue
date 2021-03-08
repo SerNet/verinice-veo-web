@@ -260,19 +260,21 @@ export default Vue.extend({
         // @ts-ignore
         entity.parts = children
 
-        // TODO: fetch entfernen, ist nur für Bugfix enthalten
-        // TODO: Hinzufügen und Löschen von Verknüpfungen Bug in Treeview beheben
-        this.$api.entity.fetch(this.$route.params.type, entity.id).then(() => {
-          this.$api.entity.update(this.$route.params.type, entity?.id, entity).catch((error: any) => {
-            this.$root.$emit(VeoEvents.ALERT_ERROR, {
-              title: this.$t('object_update_error'),
-              text: JSON.stringify(error)
-            })
-          }).finally(() => {
-            this.addDialog = false
-            this.temporaryParent = undefined
-            this.$fetch()
+        // We fetch the parent entity, as not all flows use the properly fetched entity with an etag, however we need one when updating
+        const updatedElementEtag = (await this.$api.entity.fetch(this.$route.params.type, entity.id)).$etag
+        if(entity && updatedElementEtag && !(entity as any).$etag) {
+          // @ts-ignore
+          entity.$etag = updatedElementEtag
+        }
+        this.$api.entity.update(this.$route.params.type, entity?.id, entity).catch((error: any) => {
+          this.$root.$emit(VeoEvents.ALERT_ERROR, {
+            title: this.$t('object_update_error'),
+            text: JSON.stringify(error)
           })
+        }).finally(() => {
+          this.addDialog = false
+          this.temporaryParent = undefined
+          this.$fetch()
         })
       }
     },
@@ -296,10 +298,18 @@ export default Vue.extend({
       this.unlinkDialog.parent = parent || this.currentEntity
       this.unlinkDialog.value = true
     },
-    doUnlinkEntityDialog(id: string) {
+    async doUnlinkEntityDialog(id: string) {
       this.unlinkDialog.value = false
       if(this.unlinkDialog.item && this.unlinkDialog.parent) {
         this.unlinkDialog.parent.parts = this.unlinkDialog.parent.parts.filter(part => !part.targetUri.includes(id))
+
+        // We fetch the parent entity, as not all flows use the properly fetched entity with an etag, however we need one when updating
+        const updatedElementEtag = (await this.$api.entity.fetch(this.$route.params.type, this.unlinkDialog.parent.id)).$etag
+        if(this.unlinkDialog.parent && updatedElementEtag && !(this.unlinkDialog.parent as any).$etag) {
+          // @ts-ignore
+          this.unlinkDialog.parent.$etag = updatedElementEtag
+        }
+
         this.$api.entity.update(this.$route.params.type, this.unlinkDialog.parent.id, this.unlinkDialog.parent).then(() => {
           this.$fetch()
         }).catch((error: any) => {

@@ -57,7 +57,7 @@
           v-bind="alert"
           style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
         >
-          <template #additional-button>
+          <template v-if="alert.error === 412" #additional-button>
             <v-btn outlined text color="error" @click="$fetch()">{{ $t('global.button.yes') }}</v-btn>
           </template>
         </VeoAlert>
@@ -109,7 +109,7 @@ interface IData {
   saveBtnLoading: boolean
   deleteBtnLoading: boolean
   deleteDialog: boolean
-  alert: VeoEventPayload & { value: boolean }
+  alert: VeoEventPayload & { value: boolean, error: number }
   contentsCollapsed: boolean
   formModified: {
     isModified: boolean
@@ -150,7 +150,8 @@ export default Vue.extend({
         text: '',
         type: 0,
         title: this.$t('global.appstate.alert.error') as string,
-        saveButtonText: this.$t('global.button.no') as string
+        saveButtonText: this.$t('global.button.no') as string,
+        error: 0 as number
       },
       contentsCollapsed: false as boolean,
       formModified: {
@@ -294,8 +295,7 @@ export default Vue.extend({
           })
         })
         .catch((error: { status: number; name: string }) => {
-          this.alert.text = error.status === 412 ? this.$t('unit.forms.nrr') : ''
-          this.alert.value = true
+          this.showError(error.status, error.name)
         })
     },
     showDeleteDialog() {
@@ -313,12 +313,22 @@ export default Vue.extend({
           })
         })
         .catch((error: { status: number; name: string }) => {
-          this.alert.text = error.status === 412 ? this.$t('unit.forms.nrr') : ''
-          this.alert.value = true
+          this.showError(error.status, error.name)
         })
         .finally(() => {
           this.deleteBtnLoading = false
         })
+    },
+    showError(status: number, message: string) {
+      if(status === 412) {
+        this.alert.text = this.$t('unit.forms.nrr')
+        this.alert.saveButtonText = this.$t('global.button.no')
+      } else {
+        this.alert.text = message
+        this.alert.saveButtonText = this.$t('global.button.ok')
+      }
+      this.alert.error = status
+      this.alert.value = true
     },
     formatObjectData() {
       // TODO: find better solution

@@ -230,6 +230,8 @@ export default Vue.extend({
   },
   watch: {
     items() {
+      this.open = []
+      this.active = []
       this.updateItemsBasedOnProp()
     }
   },
