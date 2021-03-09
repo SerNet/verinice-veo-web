@@ -114,6 +114,7 @@
           <VEOEditorFileUpload
             :code="fscode"
             :input-label="$t('editor.formschema.upload.input.file.label')"
+            :clear-input.sync="clearInput"
             @schema-uploaded="doImport1"
           />
           <v-checkbox v-model="forceOwnSchema" :label="$t('editor.formschema.wizard.forceownschema')" />
@@ -161,7 +162,7 @@
 <i18n>
 {
   "de": {
-    "import.help1": "Laden Sie hier das Formschema hoch, das sie bearbeiten möchten.",
+    "import.help1": "Laden Sie hier das Formschema hoch, das Sie Bearbeiten möchten.",
     "import.help2": "Laden Sie hier das Objektschema hoch, auf dem das Formschema basiert."
   },
   "en": {
@@ -214,7 +215,8 @@ export default Vue.extend({
       state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
       schemas: [] as ISchemaEndpoint[],
       invalidOS: false as boolean,
-      forceOwnSchema: false as boolean
+      forceOwnSchema: false as boolean,
+      clearInput: false as boolean
     }
   },
   computed: {
@@ -267,8 +269,15 @@ export default Vue.extend({
       if (this.state === 'create-1' || this.state === 'import-1') {
         this.state = 'start'
       } else if (this.state === 'create-2') {
+        if(this.createForm.modelType !== 'custom') {
+          this.objectSchema = undefined
+        }
+        
         this.state = 'create-1'
       } else if (this.state === 'import-2') {
+        this.fscode = ''
+        this.oscode = ''
+        this.clearInput = true
         this.state = 'import-1'
       }
     },
@@ -276,7 +285,7 @@ export default Vue.extend({
     async doCreate1() {
       // Only proceed if an object schema was uploaded/pasted (we sadly can't validate it in the form, so we have to to it here)
       if (this.objectSchema || this.createForm.modelType !== 'custom') {
-        if (!this.objectSchema) {
+        if (this.createForm.modelType !== 'custom') {
           this.objectSchema = await this.$api.schema.fetch(this.createForm.modelType)
         }
         this.state = 'create-2'
