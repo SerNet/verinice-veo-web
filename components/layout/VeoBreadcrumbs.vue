@@ -92,7 +92,6 @@ export default defineComponent<IProps>({
     // Define which keys from path should be replaces with custom Text
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
       ':unit': { text: '', icon: 'mdi-home' },
-      ':group': { text: '-' },
       forms: { text: context.root.$t('breadcrumbs.forms') as string },
       objects: { text: context.root.$t('breadcrumbs.objects') as string }
     }
