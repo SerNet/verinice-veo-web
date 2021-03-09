@@ -1,6 +1,6 @@
 <template>
   <div class="fill-width" style="display: contents;">
-    <v-expansion-panels accordion multiple :value="[0, 1, 2]" flat>
+    <v-expansion-panels accordion multiple :value="expansionPanels" flat>
       <v-expansion-panel>
         <v-expansion-panel-header class="overline"
           >{{ $t('editor.basicproperties') }} ({{ basicProps.length }})</v-expansion-panel-header
@@ -194,6 +194,8 @@ export default defineComponent<IProps>({
     const customLinks: Ref<EditorPropertyItem[]> = ref([])
     const basicProps: Ref<EditorPropertyItem[]> = ref([])
 
+    const expansionPanels = ref([0, 1, 2])
+
     computeProperties()
     watch(
       () => props.value,
@@ -293,6 +295,7 @@ export default defineComponent<IProps>({
       }
 
       objectSchemaDialog.value.value = false
+      objectSchemaDialog.value.item = undefined // Set to undefined so the new item gets picked up
       context.emit('schema-updated')
       computeProperties()
     }
@@ -327,6 +330,7 @@ export default defineComponent<IProps>({
       itemContainsAttributeTitle,
       attributeContainsTitle,
       objectSchemaDialog,
+      expansionPanels,
       showAddDialog,
       doAddItem,
       showEditDialog,

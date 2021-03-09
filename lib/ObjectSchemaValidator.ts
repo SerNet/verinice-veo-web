@@ -33,6 +33,7 @@ export default class ObjectSchemaValidator {
       this.errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `The schema "${context}" is missing the property "title"` })
     }
 
+    this.validateBaseSchema(schema, context)
     this.validateCustomAspects(schema, context)
     this.validateCustomLinks(schema, context)
 
@@ -123,7 +124,8 @@ export default class ObjectSchemaValidator {
 
   private validateType(attribute: any, context: string) {
     if (!attribute.type) {
-      this.warnings.push({ code: 'W_NO_ATTRIBUTE_TYPE', message: `The attribute ${context} has no type. Skipping validation...` })
+      // Type is not required and NOT set for enums, so we skip this check
+      // this.warnings.push({ code: 'W_NO_ATTRIBUTE_TYPE', message: `The attribute ${context} has no type. Skipping validation...` })
     } else {
       switch (attribute.type) {
         case 'enum':
@@ -141,6 +143,16 @@ export default class ObjectSchemaValidator {
             this.errors.push({ code: 'E_ATTRIBUTE_MISSING_PROPERTY', message: `The attribute ${context} is missing the property "properties". Required for "type: object"` })
           }
           break
+      }
+    }
+  }
+
+  private validateBaseSchema(schema: any, context: string) {
+    const requiredKeys: string[] = ['abbreviation', 'description', 'domains', 'id', 'name', 'owner', 'parts', 'subType']
+
+    for (const key of requiredKeys) {
+      if (schema.properties[key] === undefined) {
+        this.errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `${context} is missing the required property ${key}` })
       }
     }
   }

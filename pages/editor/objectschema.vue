@@ -182,7 +182,8 @@ export default Vue.extend({
       hideEmptyAspects: false as boolean,
       search: '' as string,
       objectSchemaHelper: undefined as ObjectSchemaHelper | undefined,
-      code: '' as string
+      code: '' as string,
+      schemaIsValid: { valid: false, errors: [], warnings: [] } as VeoSchemaValidatorValidationResult
     }
   },
   head(): any {
@@ -191,9 +192,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    schemaIsValid(): VeoSchemaValidatorValidationResult {
-      return this.objectSchemaHelper?.validate() || { valid: false, errors: [], warnings: [] }
-    },
     title(): string {
       return this.objectSchemaHelper?.getTitle() || ''
     },
@@ -214,9 +212,14 @@ export default Vue.extend({
         this.objectSchemaHelper.setDescription(data.meta.description)
       }
       this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2)
+      this.validate()
     },
     updateSchema(schema: IVeoObjectSchema) {
       this.objectSchemaHelper = new ObjectSchemaHelper(schema)
+      this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2)
+      this.objectSchemaHelper = new ObjectSchemaHelper(JSON.parse(this.code))
+
+      this.validate()
     },
     updateSchemaName(name: string) {
       this.objectSchemaHelper?.setTitle(name)
@@ -229,6 +232,7 @@ export default Vue.extend({
     updateCode() {
       if (this.objectSchemaHelper) {
         this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2)
+        this.validate()
       }
     },
     downloadSchema() {
@@ -239,6 +243,10 @@ export default Vue.extend({
         ;(this.$refs.downloadButton as any).href = data
         ;(this.$refs.downloadButton as any).download = `os_${this.objectSchemaHelper?.getTitle() || 'download'}.json`
       }
+    },
+    validate() {
+      console.log(this.objectSchemaHelper?.validate())
+      this.schemaIsValid = this.objectSchemaHelper?.validate() || { valid: false, errors: [], warnings: [] }
     }
   }
 })
