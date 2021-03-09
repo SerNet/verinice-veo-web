@@ -3,14 +3,12 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { IVEOBasicProperty, IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
+
 import { IInputType } from '~/types/VEOEditor'
 
 interface IProps {
   title: string
-  description: string
   styling: IInputType
-  disabled: boolean
   translate: boolean
 }
 

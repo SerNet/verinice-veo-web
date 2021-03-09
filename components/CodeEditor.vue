@@ -11,13 +11,9 @@
       </div>
     </div>
     <div v-if="!readonly" class="veo-editor-save-button">
-      <v-btn
-        class="mx-4 my-2"
-        color="primary"
-        outlined
-        :disabled="saveButtonDisabled"
-        @click="updateSchema()"
-      >{{ $t('editor.editor.button.save') }}</v-btn>
+      <v-btn class="mx-4 my-2" color="primary" outlined :disabled="saveButtonDisabled" @click="updateSchema()">{{
+        $t('editor.editor.button.save')
+      }}</v-btn>
     </div>
   </div>
 </template>
@@ -146,7 +142,10 @@ export default defineComponent<Props>({
         try {
           const updatedSchema = JSON.parse($editor.state.toJSON().doc)
           context.emit('schema-updated', updatedSchema)
-          context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, context.root.$i18n.t('editor.code.save.success'))
+          context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
+            title: context.root.$i18n.t('editor.code.save.success'),
+            text: ''
+          })
         } catch (e) {
           context.root.$emit(VeoEvents.ALERT_ERROR, {
             title: context.root.$i18n.t('editor.code.save.error'),

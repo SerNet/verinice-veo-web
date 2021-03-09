@@ -1,49 +1,49 @@
 <template>
   <VeoDialog v-model="dialog.value" :headline="headline" large persistent fixed-header>
     <template #default>
-      <v-form v-model="form.valid" @submit.prevent="_item && _item.attributes ? saveNode() : createNode()">
+      <v-form v-model="form.valid" @submit.prevent="editedElement && editedElement.attributes ? saveNode() : createNode()">
         <v-row>
           <v-col cols="12" md="8">
             <v-text-field
-              v-model="form.name"
+              v-model="form.data.name"
               :label="`${$t('editor.dialog.createform.title')} *`"
               required
               :rules="form.rules.name"
-              :prefix="prefixedAspectName('')"
+              :prefix="prefix"
             />
           </v-col>
         </v-row>
         <v-row v-if="type === 'link'">
           <v-col class="py-0">
             <v-text-field
-              v-model="form.targetDescription"
+              v-model="form.data.description"
               :label="`${$t('editor.dialog.createform.linkdescription')} *`"
               required
-              :rules="form.rules.targetDescription"
+              :rules="form.rules.description"
             />
           </v-col>
           <v-col :cols="4" class="py-0">
             <v-select
-              v-model="form.targetType"
+              v-model="form.data.targetType"
               :label="`${$t('editor.dialog.createform.linktype')} *`"
-              :items="objectTypes"
+              :items="formattedObjectTypes"
               required
-              :rules="form.rules.linkType"
+              :rules="form.rules.targetType"
             />
           </v-col>
         </v-row>
-        <v-list v-if="_item && _item.attributes" dense class="py-0">
-          <template v-for="(attribute, index) of _item.attributes" class="veo-attribute-list-attribute my-2">
+        <v-list v-if="editedElement" dense class="py-0">
+          <template v-for="(attribute, index) of editedElement.attributes" class="veo-attribute-list-attribute my-2">
             <VeoObjectSchemaEditorCAAttribute
               v-bind="attribute"
               :key="index"
-              :aspectName="prefixedAspectName(item.title)"
+              :aspectName="aspectPrefix"
               @delete="removeAttribute(index)"
               @update="updateAttribute($event, index)"
             />
           </template>
 
-          <v-list-item v-if="_item.attributes.length === 0">
+          <v-list-item v-if="editedElement.attributes.length === 0">
             <v-list-item-content class="veo-attribute-list-no-content justify-center">
               {{ $t(`editor.dialog.editform.${type}.noproperties`) }}
             </v-list-item-content>
@@ -58,17 +58,15 @@
             </v-list-item-action>
           </v-list-item>
         </v-list>
+        <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
+          <span> {{ $t('editor.objectschema.duplicate') }}: </span>
+          <ul>
+            <li v-for="duplicate of duplicates" :key="duplicate">
+              {{ duplicate }}
+            </li>
+          </ul>
+        </v-alert>
       </v-form>
-      <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
-        <span>
-          Es kann immer nur ein Attribut mit den folgende(n) Titel(n) existieren:
-        </span>
-        <ul>
-          <li v-for="duplicate of duplicates" :key="duplicate">
-            {{ duplicate }}
-          </li>
-        </ul>
-      </v-alert>
       <small>{{ $t('editor.dialog.requiredfields') }}</small>
     </template>
     <template v-if="dialog.mode === 'create'" #dialog-options>
@@ -92,250 +90,206 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch, computed, Ref, useContext } from '@nuxtjs/composition-api'
-import { capitalize, trim } from 'lodash'
+import Vue from 'vue'
+import { Prop } from 'vue/types/options'
+import { capitalize, cloneDeep, trim } from 'lodash'
 
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
-import {
-  IVEOAttribute,
-  IVEOCustomAspect,
-  IVEOCustomLink,
-  prefixedAspectName as aspectName
-} from '~/lib/ObjectSchemaHelper'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
-import { IInputTypes } from '~/types/VEOEditor'
 
 import VeoObjectSchemaEditorCAAttribute from '~/components/editor/ObjectSchema/VeoObjectSchemaEditorCAAttribute.vue'
+import { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2'
 
-interface IProps {
-  value: boolean
-  item: IVEOCustomAspect | IVEOCustomLink | undefined
-  mode: string
-  type: 'aspect' | 'link'
-  schema: VEOObjectSchemaRAW
+interface IData {
+  dialog: { value: boolean, mode: 'create' | 'edit' }
+  noWatch: boolean
+  form: {
+    valid: boolean
+    data: {
+      description: string
+      name: string
+      targetType: string
+    },
+    rules: {
+      description: ((input: string) => boolean)[]
+      name: ((input: string) => boolean)[]
+      targetType: ((input: string) => boolean)[]
+    }
+  },
+  objectTypes: ISchemaEndpoint[]
+  editedElement: undefined | IVeoOSHCustomAspect | IVeoOSHCustomLink,
+  duplicates: string[]
 }
 
-export default defineComponent<IProps>({
+export default Vue.extend({
   components: {
     VeoObjectSchemaEditorCAAttribute
   },
   props: {
-    value: { type: Boolean, required: true },
-    // eslint-disable-next-line
-    item: { required: true }, // No type to avoid checking for invalid prop (item can either be undefined, IVEOCustomLink or IVEOCustomAspect)
-    mode: { type: String, default: 'create' },
-    type: { type: String, required: true },
-    schema: { type: Object, required: true }
-  },
-  setup(props, context) {
-    const { $api } = useContext()
-    /**
-     * Common dialog stuff (opening and closing)
-     */
-    const dialog = ref({ value: props.value, mode: props.mode })
-
-    watch(
-      () => props.value,
-      (val: boolean) => {
-        dialog.value.value = val
-
-        // If an item was passed, we want to update the form with it's values. Else we want to clear the form as we are creating a new item.
-        if (val) {
-          if (props.item) {
-            if (props.type === 'link') {
-              form.value.targetType = (props.item as IVEOCustomLink).target.type
-              form.value.targetDescription = (props.item as IVEOCustomLink).target.description
-            }
-          } else {
-            clearCreationForm()
-          }
-        }
-      }
-    )
-
-    watch(
-      () => dialog.value.value,
-      (val: boolean) => {
-        if (!val) {
-          context.emit('input', val)
-        }
-      }
-    )
-
-    watch(
-      () => props.mode,
-      (val: string) => {
-        dialog.value.mode = val
-      }
-    )
-
-    const headline = computed(() => {
-      if (dialog.value.mode === 'create') {
-        return context.root.$t(`editor.dialog.headline.${props.type}.create`)
-      } else {
-        return context.root.$t(`editor.dialog.headline.${props.type}.edit`, {
-          title: props.item?.title ? `"${props.item?.title}"` : ''
-        })
-      }
-    })
-
-    function close() {
-      context.emit('input', false)
+    value: {
+      type: Boolean,
+      required: true
+    },
+    item: {
+      type: Object as Prop<undefined | IVeoOSHCustomAspect | IVeoOSHCustomLink>,
+      default: undefined
+    },
+    mode: {
+      type: String,
+      default: 'create'
+    },
+    type: {
+      type: String,
+      required: true
     }
-
-    /**
-     * Create item stuff
-     */
-    const form = ref({
-      valid: false,
-      name: '',
-      targetType: '' as string,
-      targetDescription: '' as string,
-      rules: {
-        name: [(input: string) => trim(input).length > 0],
-        targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
-        linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
-      }
-    })
-
-    const objectTypes: Ref<{ text: string; value: string }[]> = ref([])
-    $api.schema
-      .fetchAll()
-      .then((data: ISchemaEndpoint[]) => {
-        return data.map((value: ISchemaEndpoint) => {
-          return {
-            text: capitalize(value.schemaName),
-            value: value.schemaName
-          }
-        })
-      })
-      .then((types: { text: string; value: string }[]) => {
-        objectTypes.value = types
-      })
-
-    function clearCreationForm() {
-      form.value = {
+  },
+  data() {
+    return {
+      dialog: { value: false, mode: 'create' },
+      noWatch: false,
+      form: {
         valid: false,
-        name: '',
-        targetType: '' as string,
-        targetDescription: '' as string,
+        data: {
+          name: '',
+          targetType: '',
+          description: ''
+        },
         rules: {
           name: [(input: string) => trim(input).length > 0],
-          targetDescription: [(input: string) => props.type === 'aspect' || trim(input).length > 0],
-          linkType: [(input: string) => props.type === 'aspect' || trim(input).length > 0]
-        }
-      }
-    }
-
-    function createNode() {
-      context.emit('create-node', form.value)
-    }
-
-    /**
-     * Edit item stuff
-     */
-
-    // Update item attributes if the form gets updated (we use a form and not the item itself as a v-model as the item doesn't exist on creation).
-    watch(
-      () => form.value,
-      () => {
-        if (_item.value) {
-          if (props.type === 'link') {
-            ;(_item.value as IVEOCustomLink).target = {
-              type: form.value.targetType,
-              description: form.value.targetDescription
-            }
-          }
+          description: [(input: string) => this.type === 'aspect' || trim(input).length > 0],
+          targetType: [(input: string) => this.type === 'aspect' || trim(input).length > 0]
         }
       },
-      { deep: true }
-    )
+      objectTypes: [],
+      editedElement: undefined,
+      duplicates: []
+    } as IData
+  },
+  async fetch() {
+    this.objectTypes = await this.$api.schema.fetchAll()
+  },
+  computed: {
+    headline(): string {
+      if (this.dialog.mode === 'create') {
+        return this.$t(`editor.dialog.headline.${this.type}.create`) as string
+      } else {
+        return this.$t(`editor.dialog.headline.${this.type}.edit`, {
+          title: this.item?.title ? `"${this.item?.title}"` : ''
+        }) as string
+      }
+    },
+    prefix(): string {
+      return this.item?.prefix ?? ''
+    },
+    aspectPrefix(): string {
+      return `${this.prefix}${this.form.data.name}`
+    },
+    formattedObjectTypes(): { text: string, value: string }[] {
+      return this.objectTypes.map((value: ISchemaEndpoint) => ({
+        text: capitalize(value.schemaName),
+        value: value.schemaName
+      }))
+    }
+  },
+  watch: {
+    value(newValue: boolean) {
+      this.noWatch = true
+      this.dialog.value = newValue
+      this.noWatch = false
 
-    const _item = ref(props.item)
-    watch(
-      () => props.item,
-      (val: IVEOCustomAspect | IVEOCustomLink | undefined) => {
-        if (val) {
-          _item.value = JSON.parse(JSON.stringify(val)) // Deep copy to avoid mutating the object passed by the prop (else we couldn't abort editing)
-          form.value.name = val.title
+      if(!newValue) {
+        this.clearForm()
+      } else if(this.editedElement) {
+        this.form.data.name = this.editedElement.title
 
-          if (props.type === 'link') {
-            form.value.targetType = (_item.value as IVEOCustomLink).target.type
-            form.value.targetDescription = (_item.value as IVEOCustomLink).target.description
-          }
-        } else {
-          _item.value = val
+        if (this.type === 'link') {
+          this.form.data.targetType = (this.editedElement as IVeoOSHCustomLink).targetType
+          this.form.data.description = (this.editedElement as IVeoOSHCustomLink).description
         }
       }
-    )
+    },
+    'dialog.value'(newValue: boolean) {
+      if (!this.noWatch) {
+        this.$emit('input', newValue)
+      }
+    },
+    mode(newValue: 'create' | 'edit') {
+      this.dialog.mode = newValue
+    },
+    item(newValue: undefined | IVeoOSHCustomAspect | IVeoOSHCustomLink) {
+      this.editedElement = cloneDeep(newValue)
 
-    function prefixedAspectName(aspect: string): string {
-      return aspectName(props.schema, aspect)
-    }
+      // If the item is not undefined, set form data
+      if(newValue) {
+        this.form.data.name = newValue.title
 
-    function saveNode() {
-      context.emit('save-node', { item: _item.value, id: props.item?.title })
-    }
-
-    function addAttribute() {
-      _item.value?.attributes.push({
-        type: 'string',
-        title: '',
-        description: ''
-      })
-    }
-
-    function removeAttribute(index: number) {
-      _item.value?.attributes.splice(index, 1)
-    }
-
-    function updateAttribute(newValues: IVEOAttribute, index: number) {
-      if (_item.value) {
-        _item.value.attributes[index] = newValues
-        // We need to completely overwrite the object, else vue won't pick up the changes
-        _item.value.attributes = JSON.parse(JSON.stringify(_item.value.attributes))
+        if (this.type === 'link') {
+          this.form.data.targetType = (newValue as IVeoOSHCustomLink).targetType
+          this.form.data.description = (newValue as IVeoOSHCustomLink).description
+        }
+      } else {
+        this.clearForm()
       }
     }
-
-    // Aspect ID's have to be unique in a custom aspect/link
-    const duplicates: Ref<string[]> = ref([])
-    function checkForDuplicate() {
-      duplicates.value = []
-      if (_item.value) {
-        ;(_item.value as IVEOCustomAspect | IVEOCustomLink).attributes.forEach((attribute1: IVEOAttribute) => {
-          if (
-            (_item.value as IVEOCustomAspect | IVEOCustomLink).attributes.filter(
-              (attribute2: IVEOAttribute) => attribute2.title.toLowerCase() === attribute1.title.toLowerCase()
-            ).length > 1
-          ) {
-            const duplicateTitle = attribute1.title.toLowerCase()
-            if (!duplicates.value.includes(duplicateTitle)) {
-              duplicates.value.push(duplicateTitle)
-            }
-          }
+  },
+  methods: {
+    close() {
+      this.$emit('input', false)
+    },
+    clearForm() {
+      this.form.data = {
+        name: '',
+        targetType: '',
+        description: ''
+      }
+    },
+    createNode() {
+      this.$emit('create-node', this.form.data)
+    },
+    saveNode() {
+      this.$emit('save-node', {
+        item: { ...this.editedElement, ...this.form.data, title: this.form.data.name },
+        id: this.item?.title
+      })
+    },
+    addAttribute() {
+      if(this.editedElement) {
+        this.editedElement.attributes.push({
+          type: 'string',
+          title: '',
+          description: ''
         })
       }
-    }
+    },
+    removeAttribute(index: number) {
+      if(this.editedElement) {
+        this.editedElement?.attributes.splice(index, 1)
+      }
+    },
+    updateAttribute(newValues: IVeoOSHCustomProperty, index: number) {
+      if(this.editedElement) {
+        this.editedElement.attributes[index] = newValues
+        // We need to completely overwrite the object, else vue won't pick up the changes
+        this.editedElement.attributes = JSON.parse(JSON.stringify(this.editedElement.attributes))
 
-    const attributeTitle = computed(() => prefixedAspectName(form.value.name) + '_')
-
-    return {
-      dialog,
-      form,
-      checkForDuplicate,
-      duplicates,
-      objectTypes,
-      createNode,
-      saveNode,
-      _item,
-      addAttribute,
-      removeAttribute,
-      updateAttribute,
-      headline,
-      close,
-      prefixedAspectName,
-      attributeTitle
+        this.checkForDuplicate()
+      }
+    },
+    checkForDuplicate() {
+      this.duplicates = []
+      if (this.editedElement) {
+        for(let attribute1 of this.editedElement.attributes) {
+          if (this.editedElement.attributes.filter((attribute2: IVeoOSHCustomProperty) => attribute2.title.toLowerCase() === attribute1.title.toLowerCase()).length > 1) {
+            const duplicateTitle = attribute1.title.toLowerCase()
+            if (!this.duplicates.includes(duplicateTitle)) {
+              this.duplicates.push(duplicateTitle)
+            }
+          }
+        }
+      }
     }
+  },
+  mounted() {
+    this.dialog.value = this.value
   }
 })
 </script>

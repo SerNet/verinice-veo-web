@@ -6,7 +6,7 @@
  * 3. Objectschema / formschema types
  */
 
-import { VEOObjectSchemaRAW } from "veo-objectschema-7";
+import { JSONSchema7TypeName } from "json-schema";
 
 /**
  * 1. Basic / global types
@@ -133,6 +133,92 @@ export interface IVeoCustomAttributes {
  * 
  * NOTE: THESE TYPES ONLY GET USED FOR SCHEMAS, ALL USER DATA WILL USE THE ABOVE types.
  */
-// TODO: Implement in #116
-export interface IVeoObjectSchema extends VEOObjectSchemaRAW {
+
+ /**
+  * 
+  */
+export interface IVeoObjectSchema {
+  $schema: string
+  type: JSONSchema7TypeName
+  properties: {
+    abbreviation: IVeoObjectSchemaProperty
+    createdAt: IVeoObjectSchemaProperty
+    createdBy: IVeoObjectSchemaProperty
+    customAspects: IVeoObjectSchemaCustomObjects
+    description: IVeoObjectSchemaProperty
+    domains: IVeoObjectSchemaArray
+    id: IVeoObjectSchemaProperty
+    links: IVeoObjectSchemaCustomObjects
+    name: IVeoObjectSchemaProperty
+    owner: IVeoObjectSchemaObject
+    parts: IVeoObjectSchemaArray
+    subType: IVeoObjectSchemaProperty
+    updatedAt: IVeoObjectSchemaProperty
+    updatedBy: IVeoObjectSchemaProperty
+  }
+  required: string[]
+  title: string
+  description: string
+}
+
+export interface IVeoObjectSchemaProperty {
+  type?: JSONSchema7TypeName
+  title?: string
+  description?: string
+  pattern?: string
+  [key: string]: any
+}
+
+export interface IVeoObjectSchemaCustomObjects {
+  type: JSONSchema7TypeName
+  title: string
+  description: string
+  properties: {
+    [key: string]: IVeoObjectSchemaCustomAspect | IVeoObjectSchemaCustomLink
+  }
+}
+
+export interface IVeoObjectSchemaCustomAspect {
+  type: 'object'
+  properties: {
+    id: IVeoObjectSchemaProperty
+    applicableTo: IVeoObjectSchemaArray
+    domains: IVeoObjectSchemaArray
+    references: IVeoObjectSchemaArray
+    attributes: IVeoObjectSchemaObject
+  }
+  additionalProperties: boolean
+  required: string[]
+}
+
+export interface IVeoObjectSchemaCustomLink {
+  type: 'array',
+  items: {
+    type: 'object'
+    properties: {
+      id: IVeoObjectSchemaProperty
+      applicableTo: IVeoObjectSchemaArray
+      domains: IVeoObjectSchemaArray
+      references: IVeoObjectSchemaArray
+      abbreviation: IVeoObjectSchemaProperty
+      description: IVeoObjectSchemaProperty
+      name: IVeoObjectSchemaProperty
+      target: IVeoObjectSchemaObject
+      attributes: IVeoObjectSchemaObject
+    }
+    additionalProperties: boolean
+    required: string[]
+  }
+}
+
+export interface IVeoObjectSchemaObject extends IVeoObjectSchemaProperty {
+  type: 'object'
+  properties: {
+    [key: string]: IVeoObjectSchemaProperty
+  }
+}
+
+export interface IVeoObjectSchemaArray extends IVeoObjectSchemaProperty {
+  type: 'array'
+  items: any
 }
