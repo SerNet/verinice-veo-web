@@ -317,7 +317,7 @@ export default class ObjectSchemaHelper {
           }
         },
         additionalProperties: false,
-        required: ['type', 'target']
+        required: ['target']
       }
     }
 
@@ -345,7 +345,6 @@ export default class ObjectSchemaHelper {
   public static generateAspectSchema(aspect: IVeoOSHCustomAspect): IVeoObjectSchemaCustomAspect {
     const schemaAspect = {
       type: 'object',
-      required: ['type'],
       additionalProperties: false,
       properties: {
         id: {
