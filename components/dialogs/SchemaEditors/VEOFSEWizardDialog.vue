@@ -110,6 +110,7 @@
         </v-window-item>
         <v-window-item value="import-1" class="px-4">
           <h2>{{ $t('editor.formschema.wizard.import') }}</h2>
+          <p>{{ $t('import.help1') }}</p>
           <VEOEditorFileUpload
             :code="fscode"
             :input-label="$t('editor.formschema.upload.input.file.label')"
@@ -119,6 +120,7 @@
         </v-window-item>
         <v-window-item value="import-2">
           <h2>{{ $t('editor.objectschema.wizard.import') }}</h2>
+          <p>{{ $t('import.help2') }}</p>
           <VeoAlert
             v-model="invalidOS"
             :type="1"
@@ -156,7 +158,18 @@
     </template>
   </VeoDialog>
 </template>
-
+<i18n>
+{
+  "de": {
+    "import.help1": "Laden Sie hier das Formschema hoch, das sie bearbeiten möchten.",
+    "import.help2": "Laden Sie hier das Objektschema hoch, auf dem das Formschema basiert."
+  },
+  "en": {
+    "import.help1": "Upload the form schema you want to edit.",
+    "import.help2": "Upload the object schema the form schema is based on."
+  }
+}
+</i18n>
 <script lang="ts">
 import Vue from 'vue'
 import { capitalize, trim } from 'lodash'

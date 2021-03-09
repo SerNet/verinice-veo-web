@@ -23,6 +23,7 @@ export interface IVeoOSHCustomProperty {
   type: string
   description: string
   prefix?: string
+  multiple?: string
   [key: string]: any
 }
 
@@ -332,9 +333,16 @@ export default class ObjectSchemaHelper {
       // however there is still some data in there which is not defined in IVeoObjectSchemaProperty
       if (dummy.type === 'enum') {
         delete dummy.type
+        if (!!dummy.multiple) {
+          dummy.type = 'array'
+          dummy.items = { enum: dummy.enum }
+          dummy.enum
+        }
       } else {
         delete dummy.enum
       }
+
+      delete dummy.multiple
 
       schemaLink.items.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy
     }
@@ -414,9 +422,16 @@ export default class ObjectSchemaHelper {
       // however there is still some data in there which is not defined in IVeoObjectSchemaProperty
       if (dummy.type === 'enum') {
         delete dummy.type
+        if (!!dummy.multiple) {
+          dummy.type = 'array'
+          dummy.items = { enum: dummy.enum }
+          delete dummy.enum
+        }
       } else {
         delete dummy.enum
       }
+
+      delete dummy.multiple
 
       // @ts-ignore
       schemaAspect.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy
