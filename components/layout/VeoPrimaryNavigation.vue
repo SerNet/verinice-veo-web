@@ -21,7 +21,8 @@
           />
         </template>
       </v-list>
-      <v-spacer />
+    </div>
+    <template #append>
       <v-list nav dense class="pa-0">
         <v-divider />
         <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="setMiniVariant(!miniVariant)">
@@ -33,7 +34,7 @@
           <v-list-item-title v-else>{{ $t('global.menu.collapse') }}</v-list-item-title>
         </v-list-item>
       </v-list>
-    </div>
+    </template>
   </v-navigation-drawer>
 </template>
 
