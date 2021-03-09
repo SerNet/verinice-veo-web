@@ -226,6 +226,28 @@ export default defineComponent<IProps>({
         : listItems
     }
 
+    async function createBreadcrumbs() {
+      // Parameters map from route path
+      const params: IBaseStringObject = {}
+      Object.entries(context.root.$route.params).forEach(([key, value]) => {
+        params[`:${key}`] = value
+      })
+
+      // Pathtemplate is general definition of current path without real values (e.g. /:unit/forms/:form)
+      const pathTemplate = last(context.root.$route.matched)?.path
+      if (pathTemplate) {
+        const listItems: IBreadcrumbEntry[] =
+          _props.customBreadcrumbs && _props.customBreadcrumbs[pathTemplate]
+            ? generateCustomBreadcrumb(pathTemplate, params)
+            : await generateStandardBreadcrumb(pathTemplate, params)
+
+        breadcrumbItems.value = collapseBreadcrumb(listItems)
+      } else {
+        console.warn('Pathtemplate is undefined in Breadcrumbs')
+        breadcrumbItems.value = []
+      }
+    }
+
     /**
      * Definition of watchers for route changes
      */
@@ -233,28 +255,19 @@ export default defineComponent<IProps>({
     watch(
       () => context.root.$route.fullPath,
       async () => {
-        // Parameters map from route path
-        const params: IBaseStringObject = {}
-        Object.entries(context.root.$route.params).forEach(([key, value]) => {
-          params[`:${key}`] = value
-        })
-
-        // Pathtemplate is general definition of current path without real values (e.g. /:unit/forms/:form)
-        const pathTemplate = last(context.root.$route.matched)?.path
-        if (pathTemplate) {
-          const listItems: IBreadcrumbEntry[] =
-            _props.customBreadcrumbs && _props.customBreadcrumbs[pathTemplate]
-              ? generateCustomBreadcrumb(pathTemplate, params)
-              : await generateStandardBreadcrumb(pathTemplate, params)
-
-          breadcrumbItems.value = collapseBreadcrumb(listItems)
-        } else {
-          console.warn('Pathtemplate is undefined in Breadcrumbs')
-          breadcrumbItems.value = []
-        }
+        await createBreadcrumbs()
       },
       { immediate: true }
     )
+
+    watch(
+      () => context.root.$i18n.locale,
+      () => {
+        createBreadcrumbs()
+      }
+    )
+
+    context.root.$i18n.locale
 
     /**
      * Definition of returned values to templace
