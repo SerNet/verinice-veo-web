@@ -267,8 +267,6 @@ export default defineComponent<IProps>({
       }
     )
 
-    context.root.$i18n.locale
-
     /**
      * Definition of returned values to templace
      */
