@@ -1,7 +1,7 @@
 <template>
   <div class="pa-4 pl-0">
     <div v-if="displayedItems.length === 0">
-      <span v-if="$route.params.param === '-'" class="text-center">
+      <span v-if="$route.params.entity === '-'" class="text-center">
         {{ $t('no_objects') }}
       </span>
       <span v-else class="text-center">
@@ -18,7 +18,7 @@
       transition
     >
       <template #prepend="{ item }">
-        <v-tooltip v-if="item.entry.parts.length > 0" bottom>
+        <v-tooltip v-if="item.entry.parts && item.entry.parts.length > 0" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-file-document-multiple</v-icon>
           </template>
@@ -29,12 +29,36 @@
             />
           </template>
         </v-tooltip>
+        <v-tooltip v-else-if="item.entry.members && item.entry.members.length > 0" bottom>
+          <template #activator="{ on }">
+            <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
+          </template>
+          <template #default>
+            <span class="d-inline-block text-center" v-html="$t('scope_children', { amount: item.entry.members.length })" />
+          </template>
+        </v-tooltip>
+        <v-tooltip v-else-if="item.entry.members" bottom>
+          <template #activator="{ on }">
+            <v-icon v-on="on">mdi-archive</v-icon>
+          </template>
+          <template #default>
+            <span v-html="$t('scope_empty')" />
+          </template>
+        </v-tooltip>
         <v-tooltip v-else bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-file-document</v-icon>
           </template>
           <template #default>
             <span v-html="$t('object_has_no_subobjects')" />
+          </template>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="{ on }">
+            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.entry.abbreviation }}</span>
+          </template>
+          <template #default>
+            <span>{{ item.entry.abbreviation }}</span>
           </template>
         </v-tooltip>
       </template>
@@ -154,6 +178,8 @@
     "object_has_no_subobjects": "Standard object",
     "object_has_subobjects": "Composite object<br>({amount} sub objects)",
     "parent_object": "Parent object",
+    "scope_children": "Scope with members",
+    "scope_empty": "Empty scope",
     "unlink": "Remove link",
     "updated_at": "Updated"
   },
@@ -172,6 +198,8 @@
     "object_has_no_subobjects": "Standardobjekt",
     "object_has_subobjects": "Zusammengesetztes Objekt<br>({amount} Unterobjekte)",
     "parent_object": "Übergeordnetes Objekt",
+    "scope_children": "Scope mit Inhalt",
+    "scope_empty": "Scope ohne Inhalt",
     "unlink": "Verknüpfung entfernen",
     "updated_at": "Aktualisiert"
   }
@@ -181,10 +209,10 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntity, IVeoScope } from '~/types/VeoTypes'
 
 interface IData {
-  deleteDialog: { value: boolean; item: IVeoEntity | undefined }
+  deleteDialog: { value: boolean; item: IVeoScope | IVeoEntity | undefined }
   open: string[]
   active: string[]
   displayedItems: ITreeEntry[]
@@ -199,7 +227,7 @@ export interface ITreeEntry {
 export default Vue.extend({
   props: {
     items: {
-      type: Array as Prop<IVeoEntity[]>,
+      type: Array as Prop<(IVeoEntity | IVeoScope)[]>,
       default: () => []
     },
     loading: {
@@ -208,25 +236,24 @@ export default Vue.extend({
     },
     loadChildren: {
       type: Function,
-      default: () => ((_item: IVeoEntity & { children: IVeoEntity[]}) => { return []})
+      default: () => ((_item: (IVeoEntity | IVeoScope) & { children: (IVeoScope | IVeoEntity)[]}) => { return []})
     },
     sortingFunction: {
       type: Function as Prop<(a: ITreeEntry, b: ITreeEntry) => number>,
       default: () => ((a: ITreeEntry, b: ITreeEntry) => a.entry.name.localeCompare(b.entry.name))
+    },
+    editItemLink: {
+      type: String,
+      default: ''
     }
   },
-  computed: {
-    editItemLink(): string {
-      return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
-    }
-  },
-  data() {
+  data(): IData {
     return {
-      deleteDialog: { value: false as boolean, item: undefined as IVeoEntity | undefined },
+      deleteDialog: { value: false, item: undefined },
       open: [],
       active: [],
       displayedItems: []
-    } as IData
+    }
   },
   watch: {
     items() {
@@ -239,8 +266,11 @@ export default Vue.extend({
     updateItemsBasedOnProp() {
       let id = 0;
 
-      this.displayedItems = this.items.map((item: IVeoEntity) => {
-        if (item.parts.length > 0) {
+      this.displayedItems = this.items.map((item: IVeoEntity | IVeoScope) => {
+        console.log(item)
+        if (item.$type === 'scope' && (item as IVeoScope).members.length > 0) {
+          return { entry: item, children: [] as ITreeEntry[], id: ''+id++ }
+        } else if (item.parts && item.parts.length > 0) {
           return { entry: item, children: [] as ITreeEntry[], id: ''+id++ }
         } else {
           return { entry: item, id: ''+id++ }

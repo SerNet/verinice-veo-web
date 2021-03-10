@@ -105,7 +105,7 @@ import { capitalize } from 'lodash'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoObjectList from '~/components/objects/VeoObjectList.vue'
 import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
-import { IVeoEntity, IVeoLink } from '~/types/VeoTypes'
+import { IVeoAPIMessage, IVeoEntity, IVeoLink } from '~/types/VeoTypes'
 import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
 import VeoUnlinkEntityDialog from '~/components/objects/VeoUnlinkEntityDialog.vue'
 import VeoAddEntityDialog, { IItem } from '~/components/objects/VeoAddEntityDialog.vue'
@@ -325,8 +325,8 @@ export default Vue.extend({
         this.addDialog.value = true
       }
     },
-    async doAddEntitiesDialog(entities: IItem[]) {
-      let entity: IVeoEntity | undefined = this.addDialog.editedItem
+    async doAddEntitiesDialog(entities: IItem[], parent?: IVeoEntity) {
+      let entity: IVeoEntity | undefined = parent || this.addDialog.editedItem
       if(entity) {
         const children = entities.map((_entity) => {
           return {
@@ -402,8 +402,35 @@ export default Vue.extend({
     doDuplicateEntity(item: IVeoEntity) {
       const newItem = item
       item.name = `${item.name} (${this.$t('clone')})`
-      this.$api.entity.create(this.$route.params.type, newItem).then(() => {
-        this.$fetch()
+      return this.$api.entity.create(this.$route.params.type, newItem).then((newEntity: IVeoAPIMessage) => {
+        if(this.$route.entity !== '-') {
+          const existingChildren: IItem[] = this.currentEntity?.parts.map((part: IVeoLink) => {
+            const destructedLink = part.targetUri.split('/')
+            return {
+              id: destructedLink.pop() || '',
+              type: destructedLink.pop() || '',
+              name: '',
+              selected: true,
+              hidden: false
+            }
+          }) || []
+          this.doAddEntitiesDialog([{
+            id: newEntity.resourceId,
+            type: item.$type,
+            name: item.name,
+            selected: true,
+            hidden: false
+          }, ...existingChildren], this.currentEntity).then(() => {
+            setTimeout(() =>  {
+              this.$fetch()
+            }, 50)
+          })
+        } else {
+          setTimeout(() =>  {
+            this.$fetch()
+          }, 50)
+        }
+
         this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
           text: this.$t('object_cloned')
         })
