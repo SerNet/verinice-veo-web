@@ -87,6 +87,9 @@ export default Vue.extend({
   },
   mounted() {
     this.getNavEntries(this.$route)
+    this.$i18n.onLanguageSwitched = () => {
+      this.getNavEntries(this.$route)
+    }
   },
   methods: {
     getNavEntries(route: Route) {
