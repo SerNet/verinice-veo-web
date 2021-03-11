@@ -1,8 +1,7 @@
-import Ajv, { RequiredParams } from 'ajv'
-import { JSONReporter } from 'consola'
+import Ajv from 'ajv'
 import { JsonPointer } from 'json-ptr'
 
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
+import { IVeoObjectSchema } from '~/types/VeoTypes'
 import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator'
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string, value: any }
@@ -30,7 +29,7 @@ export default class FormSchemaValidator {
    * 
    * @returns VeoSchemaValidatorValidationResult Contains all errors and warnings generated while checking the schema.
    */
-  public validate(schema: any, objectSchema: VEOObjectSchemaRAW | undefined = undefined, context: string = 'schema'): VeoSchemaValidatorValidationResult {
+  public validate(schema: any, objectSchema: IVeoObjectSchema | undefined = undefined, context: string = 'schema'): VeoSchemaValidatorValidationResult {
 
     if(objectSchema) {
       this.propertiesExistInObjectSchema(schema, objectSchema, context)
@@ -42,7 +41,7 @@ export default class FormSchemaValidator {
   }
 
 
-  private propertiesExistInObjectSchema(formSchema: any, objectSchema: VEOObjectSchemaRAW, context: string) {
+  private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoObjectSchema, context: string) {
     if(formSchema.content) {
       this.elementExists(formSchema.content, objectSchema, `${context}.content`)
     } else {
@@ -51,7 +50,7 @@ export default class FormSchemaValidator {
     
   }
 
-  private elementExists(element: any, objectSchema: VEOObjectSchemaRAW, context: string) {
+  private elementExists(element: any, objectSchema: IVeoObjectSchema, context: string) {
     if(!element.scope && element.type === 'Control') {
       this.errors.push({ code: 'E_SCOPE_MISSING', message: `The element ${context} is missing its scope.` })
     } else if (element.scope) {

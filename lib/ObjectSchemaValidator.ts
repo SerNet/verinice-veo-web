@@ -1,5 +1,5 @@
 import { isArray, isObject } from 'lodash'
-import { generateAspect, generateLink } from './ObjectSchemaHelper'
+import ObjectSchemaHelper from './ObjectSchemaHelper2'
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string, value: any }
 
@@ -33,6 +33,7 @@ export default class ObjectSchemaValidator {
       this.errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `The schema "${context}" is missing the property "title"` })
     }
 
+    this.validateBaseSchema(schema, context)
     this.validateCustomAspects(schema, context)
     this.validateCustomLinks(schema, context)
 
@@ -77,7 +78,12 @@ export default class ObjectSchemaValidator {
     } else if (!link.items.properties.target.title || !link.items.properties.target.properties.type.enum) {
       this.errors.push({ code: 'E_LINK_TARGET_INVALID', message: `The custom links (${context}) target is missing or malformed.` })
     } else {
-      const dummy = generateLink(link.items.properties.target.properties.type.enum, link.items.properties.target.title)
+      const dummy = ObjectSchemaHelper.generateLinkSchema({
+        description: '',
+        targetType: link.items.properties.target.properties.type.enum,
+        title: link.items.properties.target.title,
+        attributes: []
+      })
       const attributes = link.items.properties.attributes.properties
 
       for (const property of Object.keys(dummy.items.properties)) {
@@ -96,7 +102,10 @@ export default class ObjectSchemaValidator {
   }
 
   private validateAspect(aspect: any, context: string): void {
-    const dummy = generateAspect()
+    const dummy = ObjectSchemaHelper.generateAspectSchema({
+      title: '',
+      attributes: []
+    })
     const attributes = aspect.properties.attributes.properties
 
     for (const property of Object.keys(dummy.properties)) {
@@ -107,7 +116,7 @@ export default class ObjectSchemaValidator {
 
     for (const attribute of Object.keys(attributes)) {
       if (!attributes[attribute].title) {
-        this.errors.push({ code: 'E_ASPECT_ATTRIBUTE_INVALID', message: `The attribute title of ${context}.${attribute} is missing.` })
+        this.warnings.push({ code: 'E_ASPECT_ATTRIBUTE_INVALID', message: `The attribute title of ${context}.${attribute} is missing.` })
       }
       this.validateType(attributes[attribute], `${context}.${attribute}`)
     }
@@ -115,7 +124,8 @@ export default class ObjectSchemaValidator {
 
   private validateType(attribute: any, context: string) {
     if (!attribute.type) {
-      this.warnings.push({ code: 'W_NO_ATTRIBUTE_TYPE', message: `The attribute ${context} has no type. Skipping validation...` })
+      // Type is not required and NOT set for enums, so we skip this check
+      // this.warnings.push({ code: 'W_NO_ATTRIBUTE_TYPE', message: `The attribute ${context} has no type. Skipping validation...` })
     } else {
       switch (attribute.type) {
         case 'enum':
@@ -133,6 +143,16 @@ export default class ObjectSchemaValidator {
             this.errors.push({ code: 'E_ATTRIBUTE_MISSING_PROPERTY', message: `The attribute ${context} is missing the property "properties". Required for "type: object"` })
           }
           break
+      }
+    }
+  }
+
+  private validateBaseSchema(schema: any, context: string) {
+    const requiredKeys: string[] = ['abbreviation', 'description', 'domains', 'id', 'name', 'owner', 'parts', 'subType']
+
+    for (const key of requiredKeys) {
+      if (schema.properties[key] === undefined) {
+        this.errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `${context} is missing the required property ${key}` })
       }
     }
   }

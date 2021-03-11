@@ -4,17 +4,17 @@
       <v-row>
         <v-col :cols="8" class="py-0">
           <v-text-field
-            :value="$props.title"
+            :value="form.data.title"
             :label="`${$t(`editor.dialog.editform.aspect.title`)} *`"
             required
-            :rules="rules.title"
+            :rules="form.rules.title"
             :prefix="prefix"
             @input="doUpdate($event, 'title')"
           />
         </v-col>
         <v-col :cols="4" class="py-0">
           <v-select
-            :value="$props.type"
+            :value="form.data.type"
             :label="$t(`editor.dialog.editform.aspect.type`)"
             :items="types"
             @input="doUpdate($event, 'type')"
@@ -24,20 +24,28 @@
       <v-row>
         <v-col class="py-0">
           <v-text-field
-            :value="$props.description"
+            :value="form.data.description"
             :label="$t(`editor.dialog.editform.aspect.description`)"
             clearable
             @input="doUpdate($event, 'description')"
           />
         </v-col>
       </v-row>
-      <v-row v-if="$props.type === 'enum'" class="flex-column">
-        <v-col class="py-0">
+      <v-row v-if="form.data.type === 'enum'" class="flex-column">
+        <v-col class="py-0 d-flex align-center">
           <h3>{{ $t('editor.objectschema.aspect.values') }}</h3>
+          <v-checkbox
+            v-model="form.data.multiple"
+            dense
+            hide-details
+            :label="$t('multiple')"
+            class="mt-0 pt-0 ml-4"
+            @change="doUpdate($event, 'multiple')"
+          />
         </v-col>
         <v-col class="py-0">
           <v-combobox
-            :value="$props.enum"
+            :value="form.data.enum"
             chips
             multiple
             disable-lookup
@@ -70,8 +78,18 @@
     </v-list-item-action>
   </v-list-item>
 </template>
+<i18n>
+{
+  "de": {
+    "multiple": "Mehrfachauswahl"
+  },
+  "en": {
+    "multiple": "Multiple"
+  }
+}
+</i18n>
 <script lang="ts">
-import { defineComponent, ref, computed, Ref } from '@nuxtjs/composition-api'
+import { defineComponent, ref, computed, watch, nextTick, Ref } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 import { INPUT_TYPES } from '~/types/VEOEditor'
 
@@ -81,6 +99,7 @@ interface IProps {
   description: string
   aspectName: string
   enum: any[]
+  multiple: boolean
 }
 
 export default defineComponent<IProps>({
@@ -89,15 +108,36 @@ export default defineComponent<IProps>({
     type: { type: String, default: 'enum' },
     description: { type: String, default: '' },
     aspectName: { type: String, required: true },
-    enum: { type: Array, default: () => [] }
+    enum: { type: Array, default: () => [] },
+    multiple: { type: Boolean, default: false }
   },
   setup(props, context) {
     const prefix = computed(() => props.aspectName + '_')
 
-    const rules: Ref<{
-      [key: string]: ((value: string) => boolean)[]
-    }> = ref({
-      title: [(value: string) => trim(value).length > 0]
+    watch(
+      props,
+      (newValue: any) => {
+        form.value.data = { ...newValue }
+        nextTick().then(() => {
+          form.value.data.multiple = newValue.multiple
+        })
+      },
+      {
+        deep: true
+      }
+    )
+
+    const form = ref({
+      data: {
+        ...props
+      },
+      rules: {
+        title: [(value: string) => trim(value).length > 0]
+      }
+    })
+
+    nextTick().then(() => {
+      form.value.data.multiple = props.multiple
     })
 
     const types = computed(() => {
@@ -119,7 +159,7 @@ export default defineComponent<IProps>({
     }
 
     function doUpdate(value: any, property: string) {
-      const object = { ...props } as any
+      const object = { ...form.value.data } as any
       delete object.aspectName
       object[property] = value
       context.emit('update', object)
@@ -141,7 +181,7 @@ export default defineComponent<IProps>({
 
     return {
       prefix,
-      rules,
+      form,
       types,
       doDelete,
       doUpdate,

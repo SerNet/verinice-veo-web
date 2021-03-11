@@ -29,12 +29,12 @@
 </template>
 <script lang="ts">
 import { IVEOFormSchema } from 'veo-formschema'
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import Vue from 'vue'
 
 import VeoTabs from '~/components/layout/VeoTabs.vue'
 import CodeEditor from '~/components/CodeEditor.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
+import { IVeoObjectSchema } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
@@ -53,6 +53,10 @@ export default Vue.extend({
     submitButtonText: {
       type: String,
       default: ''
+    },
+    clearInput: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -64,6 +68,14 @@ export default Vue.extend({
   computed: {
     buttonText(): string {
       return this.submitButtonText || (this.$t('editor.upload.button.text') as string)
+    }
+  },
+  watch: {
+    clearInput(newValue) {
+      if(newValue) {
+        this.file = undefined
+        this.$emit('update:clearInput')
+      }
     }
   },
   methods: {
@@ -97,7 +109,7 @@ export default Vue.extend({
         fr.readAsText(this.file)
       }
     },
-    sendSchema(schema: VEOObjectSchemaRAW | IVEOFormSchema) {
+    sendSchema(schema: IVeoObjectSchema | IVEOFormSchema) {
       this.$emit('schema-uploaded', schema)
     }
   }

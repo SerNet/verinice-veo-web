@@ -2,6 +2,8 @@ import castArray from 'lodash/castArray'
 import { JSONSchema7 } from 'json-schema'
 import { IVeoFormSchema } from '~/types/VeoTypes'
 
+import { capitalize as _capitalize } from 'lodash'
+
 interface ICmpFunction {
   (a: any, b: any): number
 }
@@ -123,5 +125,13 @@ export function separateUUIDParam(param: string | undefined): IUUIDParam {
   return {
     type: stringParam.replace(`-${id}`, ''),
     id: id
+  }
+}
+
+export function capitalize(string: string, ignoreFollowingCharacterCasing: boolean = false) {
+  if(ignoreFollowingCharacterCasing) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  } else {
+    return _capitalize(string)
   }
 }

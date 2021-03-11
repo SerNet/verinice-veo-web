@@ -1,6 +1,6 @@
 <template>
   <div class="fill-width" style="display: contents;">
-    <v-expansion-panels accordion multiple :value="[0, 1, 2]" flat>
+    <v-expansion-panels accordion multiple :value="expansionPanels" flat>
       <v-expansion-panel>
         <v-expansion-panel-header class="overline"
           >{{ $t('editor.basicproperties') }} ({{ basicProps.length }})</v-expansion-panel-header
@@ -86,7 +86,7 @@
               <ObjectSchemaEditorListHeader
                 v-bind="link"
                 :styling="{
-                  name: link.item.raw.items.properties.target.properties.type.enum[0],
+                  name: link.item.targetType,
                   color: 'black'
                 }"
                 @edit-item="showEditDialog(link.item, 'link')"
@@ -110,7 +110,6 @@
     <VEOOSECustomPropertiesDialog
       v-model="objectSchemaDialog.value"
       v-bind="objectSchemaDialog"
-      :schema="schema"
       @create-node="doAddItem"
       @save-node="doEditItem"
       @delete-item="showDeleteDialog(objectSchemaDialog.item, objectSchemaDialog.type)"
@@ -126,30 +125,11 @@
 <script lang="ts">
 import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
 
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
-import {
-  addAspectToSchema,
-  generateAspect,
-  getAspects,
-  getBasicProperties,
-  getLinks,
-  updateAspectAttributes,
-  IVEOCustomLink,
-  IVEOCustomAspect,
-  IVEOBasicProperty,
-  getAspect,
-  generateLink,
-  addLinkToSchema,
-  getLink,
-  updateLinkAttributes,
-  IVEOAttribute,
-  renameAspect,
-  renameLink,
-  updateLinkDetails,
-  deleteAspect,
-  deleteLink,
-  prefixedAspectName
-} from '~/lib/ObjectSchemaHelper'
+import ObjectSchemaHelper, {
+  IVeoOSHCustomAspect,
+  IVeoOSHCustomLink,
+  IVeoOSHCustomProperty
+} from '~/lib/ObjectSchemaHelper2'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { IInputType, INPUT_TYPES } from '~/types/VEOEditor'
 
@@ -157,13 +137,13 @@ import VEOOSECustomPropertiesDialog from '~/components/dialogs/SchemaEditors/VEO
 import VEOOSEDeleteCustomPropertyDialog from '~/components/dialogs/SchemaEditors/VEOOSEDeleteCustomPropertyDialog.vue'
 
 interface IProps {
-  value: VEOObjectSchemaRAW
+  value: ObjectSchemaHelper
   search: string
   hideEmptyAspects: boolean
 }
 
 interface EditorPropertyItem {
-  item: IVEOCustomLink | IVEOCustomAspect | IVEOBasicProperty
+  item: IVeoOSHCustomAspect | IVeoOSHCustomLink | IVeoOSHCustomProperty
   styling?: IInputType
 }
 
@@ -192,13 +172,13 @@ export default defineComponent<IProps>({
         !title ||
         title.length === 0 ||
         item.item.title.toLowerCase().includes(title.toLowerCase()) ||
-        (item.item as IVEOCustomAspect | IVEOCustomLink).attributes.some((attribute: IVEOAttribute) =>
+        (item.item as IVeoOSHCustomAspect | IVeoOSHCustomLink).attributes.some((attribute: IVeoOSHCustomProperty) =>
           attributeContainsTitle(attribute, title)
         )
       )
     }
 
-    function attributeContainsTitle(property: IVEOAttribute | IVEOBasicProperty, title: string) {
+    function attributeContainsTitle(property: IVeoOSHCustomProperty, title: string) {
       return (
         !title || title.length === 0 || (property.title && property.title.toLowerCase().includes(title.toLowerCase()))
       )
@@ -208,40 +188,43 @@ export default defineComponent<IProps>({
      * schema related stuff
      */
     // @ts-ignore
-    const schema: Ref<VEOObjectSchemaRAW> = ref(props.value)
+    const objectSchemaHelper: Ref<ObjectSchemaHelper> = ref(props.value)
 
     const customAspects: Ref<EditorPropertyItem[]> = ref([])
     const customLinks: Ref<EditorPropertyItem[]> = ref([])
     const basicProps: Ref<EditorPropertyItem[]> = ref([])
 
+    const expansionPanels = ref([0, 1, 2])
+
     computeProperties()
     watch(
       () => props.value,
-      (val: VEOObjectSchemaRAW) => {
-        schema.value = val
+      (val: ObjectSchemaHelper) => {
+        objectSchemaHelper.value = val
         computeProperties()
       }
     )
 
     // Sadly computed refs wouldn't catch schema updates, so we have to deal with it on our own.
     function computeProperties() {
-      const _schema = JSON.parse(JSON.stringify(schema.value))
-
-      customAspects.value = getAspects(_schema).map((entry: IVEOCustomAspect) => {
+      customAspects.value = objectSchemaHelper.value.getCustomAspects().map((entry: IVeoOSHCustomAspect) => {
         return {
           item: entry,
           styling: undefined
         }
       })
-      customLinks.value = getLinks(_schema).map((entry: IVEOCustomLink) => {
+      customLinks.value = objectSchemaHelper.value.getCustomLinks().map((entry: IVeoOSHCustomLink) => {
+        // @ts-ignore
+        entry.type = entry.targetType
         return {
           item: entry,
           styling: undefined
         }
       })
-      basicProps.value = getBasicProperties(_schema).map((entry: IVEOBasicProperty) => {
+      basicProps.value = objectSchemaHelper.value.getBasicProperties().map((entry: IVeoOSHCustomProperty) => {
         return {
           item: entry,
+          // @ts-ignore
           styling: INPUT_TYPES[entry.type]
         }
       })
@@ -269,25 +252,17 @@ export default defineComponent<IProps>({
     delete newItemTypes.value.default
     delete newItemTypes.value.null
 
-    function doAddItem(form: { name: string; targetType?: string; targetDescription?: string }) {
+    function doAddItem(form: { name: string; targetType?: string; description?: string }) {
       try {
         if (objectSchemaDialog.value.type === 'aspect') {
-          const newAspect = generateAspect()
-          addAspectToSchema(schema.value, form.name, newAspect)
-
-          // We have to transform the aspect name in order to access it via the key in the schema
-          const aspectId = prefixedAspectName(schema.value, form.name)
-          objectSchemaDialog.value.item = getAspect(schema.value, aspectId)
+          objectSchemaHelper.value.addCustomAspect(form.name)
+          objectSchemaDialog.value.item = objectSchemaHelper.value.getCustomAspect(form.name)
         } else {
-          const newLink = generateLink(form.targetType || '', form.targetDescription || '')
-          addLinkToSchema(schema.value, form.name, newLink)
-
-          // We have to transform the aspect name in order to access it via the key in the schema
-          const aspectId = prefixedAspectName(schema.value, form.name)
-          objectSchemaDialog.value.item = getLink(schema.value, aspectId)
+          objectSchemaHelper.value.addCustomLink(form.name, form.targetType || '', form.description || '')
+          objectSchemaDialog.value.item = objectSchemaHelper.value.getCustomLink(form.name)
         }
         showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
-        context.emit('schema-updated', schema.value)
+        context.emit('schema-updated')
         computeProperties()
       } catch (e) {
         context.root.$emit(VeoEvents.ALERT_ERROR, {
@@ -297,38 +272,31 @@ export default defineComponent<IProps>({
       }
     }
 
-    function showEditDialog(aspect: IVEOCustomAspect | IVEOCustomLink, type: 'aspect' | 'link') {
+    function showEditDialog(aspect: IVeoOSHCustomAspect | IVeoOSHCustomLink, type: 'aspect' | 'link') {
       objectSchemaDialog.value.mode = 'edit'
       objectSchemaDialog.value.item = aspect
       objectSchemaDialog.value.value = true
       objectSchemaDialog.value.type = type
     }
 
-    function doEditItem(object: { item: IVEOCustomAspect | IVEOCustomLink; id: string }) {
+    function doEditItem(object: { item: IVeoOSHCustomAspect | IVeoOSHCustomLink; id: string }) {
       if (object.item.title !== object.id) {
-        const newTitle = object.item.title
-        object.item.title = object.id
-
         if (objectSchemaDialog.value.type === 'aspect') {
-          renameAspect(schema.value, object.item as IVEOCustomAspect, newTitle)
+          objectSchemaHelper.value.renameCustomAspect(object.id, object.item.title)
         } else {
-          renameLink(schema.value, object.item as IVEOCustomLink, newTitle)
+          objectSchemaHelper.value.renameCustomLink(object.id, object.item.title)
         }
-        object.item.title = newTitle
       }
 
       if (objectSchemaDialog.value.type === 'aspect') {
-        updateAspectAttributes(schema.value, object.item as IVEOCustomAspect, object.item.attributes)
+        objectSchemaHelper.value.updateCustomAspectAttributes(object.item.title, object.item.attributes)
       } else {
-        updateLinkAttributes(schema.value, object.item as IVEOCustomLink, object.item.attributes)
-        updateLinkDetails(schema.value, object.item as IVEOCustomLink, {
-          type: (object.item as IVEOCustomLink).target.type,
-          description: (object.item as IVEOCustomLink).target.description
-        })
+        objectSchemaHelper.value.updateCustomLink(object.item.title, object.item as IVeoOSHCustomLink)
       }
 
       objectSchemaDialog.value.value = false
-      context.emit('schema-updated', schema.value)
+      objectSchemaDialog.value.item = undefined // Set to undefined so the new item gets picked up
+      context.emit('schema-updated')
       computeProperties()
     }
 
@@ -340,7 +308,7 @@ export default defineComponent<IProps>({
       title: '',
       type: 'aspect' as 'link' | 'aspect'
     })
-    function showDeleteDialog(item: IVEOCustomAspect | IVEOCustomLink, type: 'aspect' | 'link') {
+    function showDeleteDialog(item: IVeoOSHCustomAspect | IVeoOSHCustomLink, type: 'aspect' | 'link') {
       deleteDialog.value.type = type
       deleteDialog.value.title = item.title
       deleteDialog.value.value = true
@@ -349,20 +317,20 @@ export default defineComponent<IProps>({
     function doDeleteItem() {
       objectSchemaDialog.value.value = false
       if (deleteDialog.value.type === 'aspect') {
-        deleteAspect(schema.value, deleteDialog.value.title)
+        objectSchemaHelper.value.removeCustomAspect(deleteDialog.value.title)
       } else {
-        deleteLink(schema.value, deleteDialog.value.title)
+        objectSchemaHelper.value.removeCustomLink(deleteDialog.value.title)
       }
       deleteDialog.value.value = false
-      context.emit('schema-updated', schema.value)
+      context.emit('schema-updated')
       computeProperties()
     }
 
     return {
-      schema,
       itemContainsAttributeTitle,
       attributeContainsTitle,
       objectSchemaDialog,
+      expansionPanels,
       showAddDialog,
       doAddItem,
       showEditDialog,

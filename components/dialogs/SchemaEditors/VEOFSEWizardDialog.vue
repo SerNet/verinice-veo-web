@@ -110,15 +110,18 @@
         </v-window-item>
         <v-window-item value="import-1" class="px-4">
           <h2>{{ $t('editor.formschema.wizard.import') }}</h2>
+          <p>{{ $t('import.help1') }}</p>
           <VEOEditorFileUpload
             :code="fscode"
             :input-label="$t('editor.formschema.upload.input.file.label')"
+            :clear-input.sync="clearInput"
             @schema-uploaded="doImport1"
           />
           <v-checkbox v-model="forceOwnSchema" :label="$t('editor.formschema.wizard.forceownschema')" />
         </v-window-item>
         <v-window-item value="import-2">
           <h2>{{ $t('editor.objectschema.wizard.import') }}</h2>
+          <p>{{ $t('import.help2') }}</p>
           <VeoAlert
             v-model="invalidOS"
             :type="1"
@@ -156,18 +159,29 @@
     </template>
   </VeoDialog>
 </template>
-
+<i18n>
+{
+  "de": {
+    "import.help1": "Laden Sie hier das Formschema hoch, das Sie Bearbeiten möchten.",
+    "import.help2": "Laden Sie hier das Objektschema hoch, auf dem das Formschema basiert."
+  },
+  "en": {
+    "import.help1": "Upload the form schema you want to edit.",
+    "import.help2": "Upload the object schema the form schema is based on."
+  }
+}
+</i18n>
 <script lang="ts">
 import Vue from 'vue'
 import { capitalize, trim } from 'lodash'
 
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { IVEOFormSchema } from 'veo-formschema'
 import { generateSchema, validate } from '~/lib/FormSchemaHelper'
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
+import { IVeoObjectSchema } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
@@ -197,11 +211,12 @@ export default Vue.extend({
       oscode: '\n\n\n\n\n' as string,
       fscode: '\n\n\n\n\n' as string,
       formSchema: undefined as IVEOFormSchema | undefined,
-      objectSchema: undefined as VEOObjectSchemaRAW | undefined,
+      objectSchema: undefined as IVeoObjectSchema | undefined,
       state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
       schemas: [] as ISchemaEndpoint[],
       invalidOS: false as boolean,
-      forceOwnSchema: false as boolean
+      forceOwnSchema: false as boolean,
+      clearInput: false as boolean
     }
   },
   computed: {
@@ -254,8 +269,15 @@ export default Vue.extend({
       if (this.state === 'create-1' || this.state === 'import-1') {
         this.state = 'start'
       } else if (this.state === 'create-2') {
+        if(this.createForm.modelType !== 'custom') {
+          this.objectSchema = undefined
+        }
+        
         this.state = 'create-1'
       } else if (this.state === 'import-2') {
+        this.fscode = ''
+        this.oscode = ''
+        this.clearInput = true
         this.state = 'import-1'
       }
     },
@@ -263,7 +285,7 @@ export default Vue.extend({
     async doCreate1() {
       // Only proceed if an object schema was uploaded/pasted (we sadly can't validate it in the form, so we have to to it here)
       if (this.objectSchema || this.createForm.modelType !== 'custom') {
-        if (!this.objectSchema) {
+        if (this.createForm.modelType !== 'custom') {
           this.objectSchema = await this.$api.schema.fetch(this.createForm.modelType)
         }
         this.state = 'create-2'
@@ -310,7 +332,7 @@ export default Vue.extend({
       }
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
-    doImport2(schema: VEOObjectSchemaRAW) {
+    doImport2(schema: IVeoObjectSchema) {
       if (schema.title !== this.formSchema?.modelType) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('editor.formschema.wizard.import.wrongobjectschema', {
@@ -336,7 +358,7 @@ export default Vue.extend({
         }
       }
     },
-    setObjectSchema(schema: VEOObjectSchemaRAW) {
+    setObjectSchema(schema: IVeoObjectSchema) {
       this.oscode = JSON.stringify(schema, undefined, 2)
       this.objectSchema = schema
     },

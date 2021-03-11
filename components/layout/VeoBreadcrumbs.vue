@@ -1,8 +1,8 @@
 <template>
   <v-breadcrumbs :items="breadcrumbItems" class="px-4 py-3">
-    <template v-slot:item="{ item }">
+    <template #item="{ item }">
       <v-menu v-if="item.menuItems" offset-y>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn color="primary" x-small text v-bind="attrs" v-on="on">
             {{ item.text }}
           </v-btn>
@@ -14,12 +14,18 @@
             :exact="menuItem.exact"
             :key="index"
           >
-            <v-list-item-title class="primary--text font-weight-regular">{{ menuItem.text }}</v-list-item-title>
+            <v-list-item-title v-if="menuItem.text" class="primary--text font-weight-regular">{{
+              menuItem.text
+            }}</v-list-item-title>
+            <v-icon v-else-if="menuItem.icon" small class="primary--text">{{ menuItem.icon }}</v-icon>
           </v-list-item>
         </v-list>
       </v-menu>
       <v-breadcrumbs-item v-if="!item.menuItems" :to="item.to" :disabled="item.disabled" :exact="item.exact">
-        {{ item.text }}
+        <template v-if="item.text">
+          {{ item.text }}
+        </template>
+        <v-icon v-else-if="item.icon" style="color: inherit">{{ item.icon }}</v-icon>
       </v-breadcrumbs-item>
     </template>
     <template #divider>
@@ -41,6 +47,7 @@ interface IBaseStringObject {
 interface IBaseBreadcrumbEntry {
   text: string
   to: string
+  icon?: string
 }
 
 interface IBreadcrumbEntry extends IBaseBreadcrumbEntry {
@@ -61,7 +68,7 @@ interface ICollapsedBreadcrumbEntry {
 }
 
 interface ICustomBreadcrumbTextEntry {
-  [key: string]: { text: string }
+  [key: string]: { text: string; icon?: string }
 }
 
 interface IProps {
@@ -84,8 +91,7 @@ export default defineComponent<IProps>({
 
     // Define which keys from path should be replaces with custom Text
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
-      ':unit': { text: 'Dashboard' },
-      ':group': { text: '-' },
+      ':unit': { text: '', icon: 'mdi-home' },
       forms: { text: context.root.$t('breadcrumbs.forms') as string },
       objects: { text: context.root.$t('breadcrumbs.objects') as string },
       list: { text: context.root.$t('breadcrumbs.list_view') as string },
@@ -232,6 +238,28 @@ export default defineComponent<IProps>({
         : listItems
     }
 
+    async function createBreadcrumbs() {
+      // Parameters map from route path
+      const params: IBaseStringObject = {}
+      Object.entries(context.root.$route.params).forEach(([key, value]) => {
+        params[`:${key}`] = value
+      })
+
+      // Pathtemplate is general definition of current path without real values (e.g. /:unit/forms/:form)
+      const pathTemplate = last(context.root.$route.matched)?.path
+      if (pathTemplate) {
+        const listItems: IBreadcrumbEntry[] =
+          _props.customBreadcrumbs && _props.customBreadcrumbs[pathTemplate]
+            ? generateCustomBreadcrumb(pathTemplate, params)
+            : await generateStandardBreadcrumb(pathTemplate, params)
+
+        breadcrumbItems.value = collapseBreadcrumb(listItems)
+      } else {
+        console.warn('Pathtemplate is undefined in Breadcrumbs')
+        breadcrumbItems.value = []
+      }
+    }
+
     /**
      * Definition of watchers for route changes
      */
@@ -239,27 +267,16 @@ export default defineComponent<IProps>({
     watch(
       () => context.root.$route.fullPath,
       async () => {
-        // Parameters map from route path
-        const params: IBaseStringObject = {}
-        Object.entries(context.root.$route.params).forEach(([key, value]) => {
-          params[`:${key}`] = value
-        })
-
-        // Pathtemplate is general definition of current path without real values (e.g. /:unit/forms/:form)
-        const pathTemplate = last(context.root.$route.matched)?.path
-        if (pathTemplate) {
-          const listItems: IBreadcrumbEntry[] =
-            _props.customBreadcrumbs && _props.customBreadcrumbs[pathTemplate]
-              ? generateCustomBreadcrumb(pathTemplate, params)
-              : await generateStandardBreadcrumb(pathTemplate, params)
-
-          breadcrumbItems.value = collapseBreadcrumb(listItems)
-        } else {
-          console.warn('Pathtemplate is undefined in Breadcrumbs')
-          breadcrumbItems.value = []
-        }
+        await createBreadcrumbs()
       },
       { immediate: true }
+    )
+
+    watch(
+      () => context.root.$i18n.locale,
+      () => {
+        createBreadcrumbs()
+      }
     )
 
     /**

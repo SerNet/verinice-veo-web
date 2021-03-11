@@ -180,7 +180,6 @@
 
 <script lang="ts">
 import { IVEOFormSchema } from 'veo-formschema'
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import vjp from 'vue-json-pointer'
 
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
@@ -195,7 +194,8 @@ import VeoFSESchemaDetailsDialog from '~/components/dialogs/SchemaEditors/VeoFSE
 import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardDialog.vue'
 
 import { validate } from '~/lib/FormSchemaHelper'
-import { computed, defineComponent, onMounted, provide, Ref, ref, useContext } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, provide, Ref, ref } from '@nuxtjs/composition-api'
+import { IVeoObjectSchema } from '~/types/VeoTypes'
 
 interface IProps {}
 
@@ -247,7 +247,7 @@ export default defineComponent<IProps>({
     /**
      * Schema related stuff
      */
-    const objectSchema: Ref<VEOObjectSchemaRAW | undefined> = ref(undefined)
+    const objectSchema: Ref<IVeoObjectSchema | undefined> = ref(undefined)
     const formSchema: Ref<any | undefined> = ref(undefined)
     const objectData = ref({})
     const lang = ref({})
@@ -277,7 +277,7 @@ export default defineComponent<IProps>({
       showCreationDialog.value = !objectSchema.value || false
     }
 
-    function setObjectSchema(schema: VEOObjectSchemaRAW) {
+    function setObjectSchema(schema: IVeoObjectSchema) {
       objectSchema.value = schema
       showCreationDialog.value = !formSchema.value || false
     }
@@ -296,7 +296,7 @@ export default defineComponent<IProps>({
 
     function downloadSchema() {
       if (downloadButton.value && downloadButton.value !== null) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value))}`
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`
         downloadButton.value.href = data
         downloadButton.value.download = `fs_${formSchema.value?.name || 'download'}.json`
       }
