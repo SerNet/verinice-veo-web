@@ -91,6 +91,7 @@
 </i18n>
 <script lang="ts">
 import Vue from 'vue'
+import { upperFirst } from 'lodash'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
@@ -100,8 +101,7 @@ import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
-import { getSchemaName } from '~/plugins/api/schema'
-import { capitalize } from 'lodash'
+import { getSchemaEndpoint } from '~/plugins/api/schema'
 import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 interface IData {
@@ -140,9 +140,16 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.objectType)
+    const objectSchema = await this.$api.schema.fetch(this.entityType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api.entity.fetch(this.$route.params.type, this.entityId)
+
+    let objectData
+    if(this.entityType === 'scope') {
+      objectData = await this.$api.scope.fetch(this.entityId)
+    } else {
+      objectData = await this.$api.entity.fetch(this.entityEndpoint, this.entityId)
+    }
+
     this.form = {
       objectSchema,
       objectData,
@@ -158,30 +165,29 @@ export default Vue.extend({
   computed: {
     objectTitle(): string {
       return this.$t('edit_object', {
-        title: this.$fetchState.pending ? this.formattedObjectType : this.form.objectData.name
+        title: this.$fetchState.pending ? this.formattedEntityType : this.form.objectData.name
       })
     },
-    objectType(): string | undefined {
-      return getSchemaName(this.schemaEndpoint || '')
-    },
-    schemaEndpoint(): string | undefined {
-      return this.$route.params.type
-    },
-    formattedObjectType(): string {
-      return capitalize(this.objectType)
+    entityEndpoint(): string | undefined {
+      return getSchemaEndpoint(this.entityType)
     },
     entityId(): string {
       return separateUUIDParam(this.$route.params.entity).id
+    },
+    entityType(): string {
+      return separateUUIDParam(this.$route.params.entity).type
+    },
+    formattedEntityType(): string {
+      return upperFirst(this.entityType)
     }
   },
   methods: {
-    async save() {
+    save() {
       this.saveBtnLoading = true
       this.formatObjectData()
 
-      await this.$api.entity
-        .update(this.schemaEndpoint, this.entityId, this.form.objectData)
-        .then(async (_data: IVeoAPIMessage) => {
+      if(this.entityType === 'scope') {
+        this.$api.scope.update(this.entityId, this.form.objectData).then(async (_data: IVeoAPIMessage) => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
 
           this.$router.back()
@@ -193,6 +199,22 @@ export default Vue.extend({
         .finally(() => {
           this.saveBtnLoading = false
         })
+      } else {
+        this.$api.entity
+          .update(this.entityEndpoint, this.entityId, this.form.objectData)
+          .then(async (_data: IVeoAPIMessage) => {
+            this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
+
+            this.$router.back()
+          })
+          .catch((error: { status: number; name: string }) => {
+            this.alert.text = error.status === 412 ? this.$t('unit.forms.nrr') : ''
+            this.alert.value = true
+          })
+          .finally(() => {
+            this.saveBtnLoading = false
+          })
+      }
     },
     formatObjectData() {
       // TODO: find better solution
@@ -209,16 +231,13 @@ export default Vue.extend({
     },
     navigateTree() {
       this.$router.push(
-        `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/tree`
+        `/${this.$route.params.unit}/scopes/${this.$route.params.entity}/tree`
       )
     },
     navigateList() {
       this.$router.push(
-        `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/list`
+        `/${this.$route.params.unit}/scopes/${this.$route.params.entity}/list`
       )
-    },
-    generateEntityLink(uuid: string): string {
-      return uuid === '-' ? '-' : `${this.objectType}-${uuid}`
     }
   }
 })

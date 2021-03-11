@@ -377,7 +377,6 @@ export default Vue.extend({
       this.navigateCreate(undefined, type)
     },
     showCreateScopeDialog() {
-      if(this.createEntityDialog)
       this.createScopeDialog = true
     },
     doCreateScope(scope: IVeoScope) {
