@@ -17,7 +17,9 @@
             :key="item.name"
             v-bind="item"
             :collapsed.sync="item.collapsed"
+            :mini-variant="miniVariant"
             :persist-u-i-state="item.persistCollapsedState"
+            @update-mini-variant="setMiniVariant($event)"
           />
         </template>
       </v-list>
