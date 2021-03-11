@@ -32,9 +32,9 @@
           v-model="form.objectData"
           :schema="form.objectSchema"
           :ui="form.formSchema && form.formSchema.content"
-          :general-translation="form.lang && form.lang[activeLanguage]"
+          :general-translation="form.lang && form.lang[$i18n.locale]"
           :custom-translation="
-            form.formSchema && form.formSchema.translation && form.formSchema.translation[activeLanguage]
+            form.formSchema && form.formSchema.translation && form.formSchema.translation[$i18n.locale]
           "
           :api="dynamicAPI"
           :is-valid.sync="isValid"
@@ -89,7 +89,6 @@ export interface IValidationErrorMessage {
 
 interface IData {
   panel: number[]
-  activeLanguage: string
   objectType: string | undefined
   form: IForm
   isValid: boolean
@@ -111,7 +110,6 @@ export default Vue.extend({
   data(): IData {
     return {
       panel: [],
-      activeLanguage: 'de',
       objectType: undefined,
       form: {
         objectSchema: {},

@@ -24,7 +24,7 @@
         <VeoForm
           v-model="form.objectData"
           :schema="form.objectSchema"
-          :general-translation="form.lang && form.lang[activeLanguage]"
+          :general-translation="form.lang && form.lang[$i18n.locale]"
           :is-valid.sync="isValid"
           :error-messages.sync="errorMessages"
           class="mb-8"
@@ -76,7 +76,6 @@ import DeleteObjectDialog from '~/components/dialogs/DeleteObjectDialog.vue'
 
 interface IData {
   panel: number[]
-  activeLanguage: string
   deleteDialog: boolean
   form: IForm
   isValid: boolean
@@ -103,7 +102,6 @@ export default Vue.extend({
   data(): IData {
     return {
       panel: [],
-      activeLanguage: 'de',
       deleteDialog: false,
       form: {
         objectSchema: {},

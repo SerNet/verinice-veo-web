@@ -122,8 +122,8 @@
             <FseGenerator
               :schema="objectSchema"
               :value="formSchema.content"
-              :general-translation="translation && translation.lang[formSchema.language]"
-              :custom-translation="formSchema.translation[formSchema.language]"
+              :general-translation="translation && translation.lang[language]"
+              :custom-translation="formSchema.translation[language]"
               @delete="onDelete"
               @update="onUpdate"
               @update-custom-translation="onUpdateCustomTranslation"
@@ -151,8 +151,8 @@
               v-model="objectData"
               :schema="objectSchema"
               :ui="formSchema.content"
-              :general-translation="translation && translation.lang[formSchema.language]"
-              :custom-translation="formSchema.translation && formSchema.translation[formSchema.language]"
+              :general-translation="translation && translation.lang[language]"
+              :custom-translation="formSchema.translation && formSchema.translation[language]"
               :api="dynamicAPI"
             />
           </v-card>
@@ -194,7 +194,7 @@
         v-if="!$fetchState.pending && showTranslationDialog && formSchema && formSchema.translation"
         v-model="showTranslationDialog"
         :translation="formSchema.translation"
-        :language="formSchema.language"
+        :language="language"
         :languages="avaliableLanguages"
         @update-language="setFormLanguage"
         @update-translation="setFormTranslation"
@@ -237,7 +237,7 @@ import VEOFSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOFSEWizardD
 import VEOFSETranslationDialog from '~/components/dialogs/SchemaEditors/VEOFSETranslationDialog.vue'
 
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper'
-import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch } from '@nuxtjs/composition-api'
+import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api'
 import { IVeoTranslations } from '~/types/VeoTypes'
 import { JsonPointer } from 'json-ptr'
 
@@ -296,6 +296,14 @@ export default defineComponent<IProps>({
     const formSchema: Ref<IVEOFormSchema | undefined> = ref(undefined)
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined)
     const objectData = ref({})
+    const language = ref(context.root.$i18n.locale)
+
+    watch(
+      () => context.root.$i18n.locale,
+      newLanguageVal => {
+        language.value = newLanguageVal
+      }
+    )
 
     const schemaIsValid = computed(() =>
       formSchema.value ? validate(formSchema.value, objectSchema.value) : { valid: false, errors: [], warnings: [] }
@@ -360,7 +368,7 @@ export default defineComponent<IProps>({
         ) as IVEOFormSchemaItem
         deleteElementCustomTranslation(
           elementFormSchema,
-          formSchema.value.translation[formSchema.value.language],
+          formSchema.value.translation[language.value],
           updatedCustomTranslationValue => {
             onUpdateCustomTranslation(updatedCustomTranslationValue)
           }
@@ -405,15 +413,13 @@ export default defineComponent<IProps>({
       }
     }
 
-    function setFormLanguage(event: string) {
-      if (formSchema.value) {
-        vjp.set(formSchema.value, '/language', event)
-      }
+    function setFormLanguage(newLanguageVal: string) {
+      language.value = newLanguageVal
     }
 
     function onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent) {
       if (formSchema.value) {
-        vjp.set(formSchema.value, `/translation/${formSchema.value.language}`, event)
+        vjp.set(formSchema.value, `/translation/${language.value}`, event)
       }
     }
 
@@ -430,6 +436,7 @@ export default defineComponent<IProps>({
       objectSchema,
       formSchema,
       objectData,
+      language,
       translation,
       schemaIsValid,
       dynamicAPI,
