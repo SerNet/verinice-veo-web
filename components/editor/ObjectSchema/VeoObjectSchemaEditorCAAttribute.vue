@@ -4,17 +4,17 @@
       <v-row>
         <v-col :cols="8" class="py-0">
           <v-text-field
-            :value="$props.title"
+            :value="form.data.title"
             :label="`${$t(`editor.dialog.editform.aspect.title`)} *`"
             required
-            :rules="rules.title"
+            :rules="form.rules.title"
             :prefix="prefix"
             @input="doUpdate($event, 'title')"
           />
         </v-col>
         <v-col :cols="4" class="py-0">
           <v-select
-            :value="$props.type"
+            :value="form.data.type"
             :label="$t(`editor.dialog.editform.aspect.type`)"
             :items="types"
             @input="doUpdate($event, 'type')"
@@ -24,20 +24,20 @@
       <v-row>
         <v-col class="py-0">
           <v-text-field
-            :value="$props.description"
+            :value="form.data.description"
             :label="$t(`editor.dialog.editform.aspect.description`)"
             clearable
             @input="doUpdate($event, 'description')"
           />
         </v-col>
       </v-row>
-      <v-row v-if="$props.type === 'enum'" class="flex-column">
+      <v-row v-if="form.data.type === 'enum'" class="flex-column">
         <v-col class="py-0">
           <h3>{{ $t('editor.objectschema.aspect.values') }}</h3>
         </v-col>
         <v-col class="py-0">
           <v-combobox
-            :value="$props.enum"
+            :value="form.data.enum"
             chips
             multiple
             disable-lookup
@@ -71,7 +71,7 @@
   </v-list-item>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed, Ref } from '@nuxtjs/composition-api'
+import { defineComponent, ref, computed, watch } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 import { INPUT_TYPES } from '~/types/VEOEditor'
 
@@ -92,12 +92,25 @@ export default defineComponent<IProps>({
     enum: { type: Array, default: () => [] }
   },
   setup(props, context) {
-    const prefix = computed(() => props.aspectName + '_')
+    const prefix = computed(() => props.aspectName)
 
-    const rules: Ref<{
-      [key: string]: ((value: string) => boolean)[]
-    }> = ref({
-      title: [(value: string) => trim(value).length > 0]
+    watch(
+      props,
+      (newValue: any) => {
+        form.value.data = newValue
+      },
+      {
+        deep: true
+      }
+    )
+
+    const form = ref({
+      data: {
+        ...props
+      },
+      rules: {
+        title: [(value: string) => trim(value).length > 0]
+      }
     })
 
     const types = computed(() => {
@@ -119,7 +132,7 @@ export default defineComponent<IProps>({
     }
 
     function doUpdate(value: any, property: string) {
-      const object = { ...props } as any
+      const object = { ...form.value.data } as any
       delete object.aspectName
       object[property] = value
       context.emit('update', object)
@@ -141,7 +154,7 @@ export default defineComponent<IProps>({
 
     return {
       prefix,
-      rules,
+      form,
       types,
       doDelete,
       doUpdate,

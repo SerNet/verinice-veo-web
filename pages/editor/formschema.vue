@@ -221,7 +221,6 @@ import {
   IVEOFormSchemaItemUpdateEvent,
   IVEOFormSchemaTranslationCollection
 } from 'veo-formschema'
-import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import vjp from 'vue-json-pointer'
 
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
@@ -238,7 +237,7 @@ import VEOFSETranslationDialog from '~/components/dialogs/SchemaEditors/VEOFSETr
 
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper'
 import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api'
-import { IVeoTranslations } from '~/types/VeoTypes'
+import { IVeoTranslations, IVeoObjectSchema } from '~/types/VeoTypes'
 import { JsonPointer } from 'json-ptr'
 
 interface IProps {}
@@ -292,7 +291,7 @@ export default defineComponent<IProps>({
     /**
      * Schema related stuff
      */
-    const objectSchema: Ref<VEOObjectSchemaRAW | undefined> = ref(undefined)
+    const objectSchema: Ref<IVeoObjectSchema | undefined> = ref(undefined)
     const formSchema: Ref<IVEOFormSchema | undefined> = ref(undefined)
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined)
     const objectData = ref({})
@@ -330,7 +329,7 @@ export default defineComponent<IProps>({
       showCreationDialog.value = !objectSchema.value || false
     }
 
-    function setObjectSchema(schema: VEOObjectSchemaRAW) {
+    function setObjectSchema(schema: IVeoObjectSchema) {
       objectSchema.value = schema
       showCreationDialog.value = !formSchema.value || false
     }

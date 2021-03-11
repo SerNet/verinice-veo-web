@@ -11,8 +11,8 @@
         <span v-if="$props.translate">
           {{ $t(`editor.inputtypes.${styling.name}`) }}
         </span>
-        <span v-else>
-          {{ styling.name }}
+        <span v-else-if="styling.name">
+          {{ capitalize(styling.name, true) }}
         </span>
       </v-chip>
     </v-list-item-action>
@@ -33,11 +33,13 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { IVEOCustomAspect, IVEOCustomLink } from '~/lib/ObjectSchemaHelper'
+
+import { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2'
 import { IInputType } from '~/types/VEOEditor'
+import { capitalize } from '~/lib/utils'
 
 interface IProps {
-  item: IVEOCustomAspect | IVEOCustomLink
+  item: IVeoOSHCustomAspect | IVeoOSHCustomLink
   styling: IInputType
 }
 
@@ -48,6 +50,11 @@ export default defineComponent<IProps>({
     translate: {
       type: Boolean,
       default: false
+    }
+  },
+  setup() {
+    return {
+      capitalize
     }
   }
 })
