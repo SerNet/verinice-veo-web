@@ -12,12 +12,13 @@
   >
     <div class="d-flex flex-column fill-height">
       <v-list nav dense :shaped="!miniVariant" :rounded="miniVariant" expand>
-        <template v-for="item in items">
+        <template v-for="(item, index) in items">
           <VeoPrimaryNavigationEntry
             :key="item.name"
             v-bind="item"
             :collapsed.sync="item.collapsed"
             :mini-variant="miniVariant"
+            @update:collapsed="onUpdateCollapsed(index, $event)"
             :persist-u-i-state="item.persistCollapsedState"
             @update-mini-variant="setMiniVariant($event)"
           />
@@ -90,6 +91,14 @@ export default Vue.extend({
   },
   mounted() {
     this.getNavEntries(this.$route)
+  },
+  computed: {
+    objectToToggleObjectFormCollapse() {
+      return {
+        [this.$t('breadcrumbs.objects') as string]: this.$t('breadcrumbs.forms') as string,
+        [this.$t('breadcrumbs.forms') as string]: this.$t('breadcrumbs.objects') as string
+      }
+    }
   },
   methods: {
     getNavEntries(route: Route) {
@@ -214,6 +223,19 @@ export default Vue.extend({
     setMiniVariant(miniVariant: boolean) {
       this.miniVariant = miniVariant
       LocalStorage.primaryNavMiniVariant = miniVariant
+    },
+    onUpdateCollapsed(itemIndex: number, collapsed: boolean) {
+      this.items[itemIndex].collapsed = collapsed
+      this.items[itemIndex].persistCollapsedState?.(collapsed)
+      // Get an index of the opposite forms vs. object
+      const toggleItemIndex = this.items.findIndex(
+        ({ name }) => name === this.objectToToggleObjectFormCollapse[this.items[itemIndex].name]
+      )
+      // If opposite item index exists, the item is opened and the current item was also opened, close the opposite
+      if (toggleItemIndex !== -1 && !this.items[toggleItemIndex].collapsed && !collapsed) {
+        this.items[toggleItemIndex].collapsed = true
+        this.items[toggleItemIndex].persistCollapsedState?.(true)
+      }
     }
   }
 })
