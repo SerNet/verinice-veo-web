@@ -26,7 +26,7 @@
           </v-col>
           <v-spacer />
           <v-col class="text-right">
-            <v-btn v-if="$route.params.object" text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
+            <v-btn v-if="$route.params.entity" text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
               {{ $t('global.button.delete') }}
             </v-btn>
             <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="onClick">
@@ -68,7 +68,7 @@
       <VeoTabs>
         <template #tabs>
           <v-tab :to="linkToLinks">{{ $t('unit.data.links') }}</v-tab>
-          <v-tab :to="linkToHistory" :disabled="!$route.params.object">{{ $t('unit.data.history') }}</v-tab>
+          <v-tab :to="linkToHistory" :disabled="!$route.params.entity">{{ $t('unit.data.history') }}</v-tab>
         </template>
       </VeoTabs>
       <nuxt-child
@@ -166,7 +166,7 @@ export default Vue.extend({
     this.objectType = formSchema.modelType && formSchema.modelType.toLowerCase()
     if (this.objectType) {
       const objectSchema = await this.$api.schema.fetch(this.objectType)
-      const objectData = this.$route.params.object
+      const objectData = this.$route.params.entity
         ? await this.$api.entity.fetch(getSchemaEndpoint(this.objectType), this.objectId)
         : {}
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
@@ -223,10 +223,10 @@ export default Vue.extend({
       return this.$route.params.form
     },
     objectId(): string {
-      return separateUUIDParam(this.$route.params.object).id
+      return separateUUIDParam(this.$route.params.entity).id
     },
     objectRoute() {
-      return this.$route.params.object
+      return this.$route.params.entity
     },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
@@ -256,10 +256,10 @@ export default Vue.extend({
       }
     },
     linkToLinks(): string {
-      return `/${this.unitRoute}/forms/${this.formRoute}/${this.objectRoute}/links`
+      return this.$route.params.entity ? `/${this.unitRoute}/forms/${this.formRoute}/${this.objectRoute}/links` : '#'
     },
     linkToHistory(): string {
-      return `/${this.unitRoute}/forms/${this.formRoute}/${this.objectRoute}/history`
+      return this.$route.params.entity ? `/${this.unitRoute}/forms/${this.formRoute}/${this.objectRoute}/history` : '#'
     },
     formSchemaHasGroups(): boolean {
       if(this.form.formSchema?.content.elements) {

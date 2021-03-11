@@ -77,7 +77,7 @@
       <VeoPage absolute-size :cols="12" :md="4" :xl="4">
         <VeoTabs>
           <template #tabs>
-            <v-tab disabled>{{ $t('unit.data.history') }}</v-tab>
+            <v-tab>{{ $t('unit.data.history') }}</v-tab>
           </template>
         </VeoTabs>
         <VeoObjectHistory :object="form.objectData" />
@@ -101,7 +101,7 @@ import { Route } from 'vue-router/types/index'
 import { capitalize } from 'lodash'
 
 import { IForm, separateUUIDParam } from '~/lib/utils'
-import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
+import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'

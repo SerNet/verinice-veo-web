@@ -1,6 +1,6 @@
 <script lang="ts">
 import { separateUUIDParam } from '~/lib/utils'
-import BaseObjectForm from '~/pages/_unit/forms/_form/_object.vue'
+import BaseObjectForm from '~/pages/_unit/forms/_form/_entity.vue'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 export default BaseObjectForm.extend({
