@@ -1,6 +1,6 @@
 <template>
-  <v-col cols="12" md="auto" class="vf-layout vf-group" :id="groupId">
-    <v-row v-if="visible" dense class="flex-column" :class="dynamicClasses" :style="options && options.style">
+  <v-col v-if="visible" cols="12" md="auto" class="vf-layout vf-group" :id="groupId">
+    <v-row dense class="flex-column" :class="dynamicClasses" :style="options && options.style">
       <v-col v-if="options && options.label">
         <h3>{{ options.label }}</h3>
       </v-col>

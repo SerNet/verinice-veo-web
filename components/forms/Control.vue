@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12" md="auto" class="vf-control">
+  <v-col v-if="visible" cols="12" md="auto" class="vf-control">
     <FormElement v-bind="$props" v-on="$listeners" />
   </v-col>
 </template>
