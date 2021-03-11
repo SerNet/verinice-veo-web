@@ -119,7 +119,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'Scopes',
+            name: this.$t('breadcrumbs.scopes') as string,
             icon: 'mdi-archive',
             exact: false,
             to: `/${route.params.unit}/scopes`,

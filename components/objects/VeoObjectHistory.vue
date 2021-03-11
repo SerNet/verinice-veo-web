@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{ $t('unit.objects.created') }}</h2>
+    <h4>{{ $t('unit.objects.created') }}</h4>
     <v-row>
       <v-col>
         <v-icon>mdi-account</v-icon>
@@ -12,7 +12,7 @@
       </v-col>
     </v-row>
     <v-divider />
-    <h2>{{ $t('unit.objects.updated') }}</h2>
+    <h4>{{ $t('unit.objects.updated') }}</h4>
     <v-row>
       <v-col>
         <v-icon>mdi-account</v-icon>

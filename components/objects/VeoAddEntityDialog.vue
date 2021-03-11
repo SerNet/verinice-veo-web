@@ -19,7 +19,6 @@
       <v-btn
         text
         color="primary"
-        :disabled="selectedEntities.length === 0"
         @click="$emit('add-entities', selectedEntities)"
       >
         {{ $t('global.button.save') }}
@@ -98,7 +97,7 @@ export default Vue.extend({
       }
 
       if (newValue) {
-        this.selectedEntities = this.currentEntity?.parts.map(child => child.targetUri.split('/').pop()) || []
+        this.selectedEntities = this.currentEntity?.parts.map(child => child.targetUri.split('/').pop() || '') || []
       }
     }
   },

@@ -1,7 +1,7 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="$t('unit.forms.delete.headline')">
+  <VeoDialog v-model="dialog.value" :headline="$t('headline')">
     <template #default>
-      {{ $t('unit.forms.delete', { name }) }}
+      {{ $t('text', { name }) }}
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
@@ -14,6 +14,18 @@
     </template>
   </VeoDialog>
 </template>
+<i18n>
+{
+  "en": {
+  "text": "Do you really want to delete the form \"{name}\"?",
+  "headline": "Delete form"
+  },
+  "de": {
+    "text": "Möchten Sie das Formular \"{name}\" wirklich löschen?",
+    "headline": "Formular löschen"
+  }
+}
+</i18n>
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, watch } from '@nuxtjs/composition-api'
 

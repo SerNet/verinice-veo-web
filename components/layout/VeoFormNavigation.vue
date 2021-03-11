@@ -7,6 +7,7 @@
         </v-list-item-content>
       </v-list-item>
       <VeoFormNavigation
+        v-if="nestingLevel < 0"
         :formSchema="item.layout"
         :initialId="item.initialId"
         :key="item.initialId + '1'"

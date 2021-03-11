@@ -56,7 +56,7 @@ interface IBreadcrumbEntry extends IBaseBreadcrumbEntry {
 }
 
 // TODO: check if :group should be added here, after groups are implemented
-type ParamsWithUUID = ':form' | ':object' | ':id'
+type ParamsWithUUID = ':form' | ':entity' | ':id'
 
 interface ICustomBreadcrumbEntry {
   [key: string]: IBaseBreadcrumbEntry[]
@@ -93,24 +93,26 @@ export default defineComponent<IProps>({
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
       ':unit': { text: '', icon: 'mdi-home' },
       forms: { text: context.root.$t('breadcrumbs.forms') as string },
-      objects: { text: context.root.$t('breadcrumbs.objects') as string }
+      objects: { text: context.root.$t('breadcrumbs.objects') as string },
+      list: { text: context.root.$t('breadcrumbs.list_view') as string },
+      tree: { text: context.root.$t('breadcrumbs.tree_view') as string }
     }
 
     // TODO: check if :group should be added here, after groups are implemented
     // Definition of route fragments in path, which is represented with UUID in standard path
-    const paramsWithUUID: ParamsWithUUID[] = [':form', ':object', ':id']
+    const paramsWithUUID: ParamsWithUUID[] = [':form', ':entity', ':id']
 
     // KeyMap for definition of object properties which represent displayName
     const displayNameKeyMap = {
       ':form': 'name',
-      ':object': 'name', // TODO: change to displayName after implemented
+      ':entity': 'name', // TODO: change to displayName after implemented
       ':id': 'name' // TODO: change to displayName after implemented
     }
 
     // KeyMap for definition of KEY in $api.KEY.fetch()
     const apiKeyMap = {
       ':form': 'form',
-      ':object': 'entity',
+      ':entity': 'entity',
       ':id': 'entity'
     }
 
@@ -134,6 +136,10 @@ export default defineComponent<IProps>({
     async function getUUIDParamTitel(type: ParamsWithUUID, param: string) {
       // "param" has always pattern: type-UUID, where type can be form, process, control, asset, ...
       const paramSeparated = separateUUIDParam(param)
+
+      if(paramSeparated.id === '-') {
+        return { [type]: { text: context.root.$t('breadcrumbs.all') as string } }
+      }
 
       // If a parameter title is already cached, return its value
       if (sessionStorage.getItem(paramSeparated.id)) {
