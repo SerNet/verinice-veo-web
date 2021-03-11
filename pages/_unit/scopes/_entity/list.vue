@@ -41,9 +41,9 @@
           :button-text="menuButton.text"
           :button-event="menuButton.event"
           @create-entity="navigateCreate()"
-          @add-entity="showAddEntitiesDialog('entities', $event)"
+          @add-entity="showAddDialog('entities', $event)"
           @create-scope="showCreateScopeDialog()"
-          @add-scope="showAddEntitiesDialog('scopes', $event)"
+          @add-scope="showAddDialog('scopes', $event)"
         />
       </v-col>
     </v-row>
@@ -62,7 +62,9 @@
       @parent="navigateParent"
       @click="navigateSubEntity"
       @create-entity="navigateCreate"
-      @add-entity="showAddEntitiesDialog('entities', $event)"
+      @add-entity="showAddDialog('entities', $event)"
+      @create-scope="showCreateScopeDialog()"
+      @add-scope="showAddDialog('scopes', $event)"
     />
     <VeoDeleteEntityDialog v-model="deleteDialog.value" v-bind="deleteDialog" @delete="doDeleteDialog" />
     <VeoUnlinkEntityDialog v-model="unlinkDialog.value" v-bind="unlinkDialog" @unlink="doUnlinkDialog" />
@@ -73,6 +75,7 @@
       @add-scopes="doAddDialog"
     />
     <VeoCreateScopeDialog v-model="createScopeDialog" @create-scope="doCreateScope" />
+    <VeoCreateEntityDialog v-model="createEntityDialog" :schemas="createEntitySchemas" @create-entity="doCreateEntityDialog" />
   </VeoPage>
 </template>
 <i18n>
@@ -107,7 +110,7 @@
 </i18n>
 <script lang="ts">
 import Vue from 'vue'
-import { capitalize } from 'lodash'
+import { capitalize, upperFirst } from 'lodash'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoObjectList from '~/components/objects/VeoObjectList.vue'
@@ -116,6 +119,7 @@ import { IVeoAPIMessage, IVeoEntity, IVeoLink, IVeoScope } from '~/types/VeoType
 import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
 import VeoUnlinkEntityDialog from '~/components/objects/VeoUnlinkEntityDialog.vue'
 import VeoAddEntityDialog, { IItem } from '~/components/objects/VeoAddEntityDialog.vue'
+import VeoCreateEntityDialog from '~/components/objects/VeoCreateEntityDialog.vue'
 import VeoCreateScopeDialog from '~/components/objects/VeoCreateScopeDialog.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
@@ -144,7 +148,9 @@ interface IData {
   showParentLink: boolean
   activeView: number
   createScopeDialog: boolean
+  createEntityDialog: boolean
   component: any
+  schemas: ISchemaEndpoint[]
 }
 
 export default Vue.extend({
@@ -156,7 +162,8 @@ export default Vue.extend({
     VeoDeleteEntityDialog,
     VeoUnlinkEntityDialog,
     VeoAddEntityDialog,
-    VeoCreateScopeDialog
+    VeoCreateScopeDialog,
+    VeoCreateEntityDialog
   },
   head(): any {
     return {
@@ -187,7 +194,9 @@ export default Vue.extend({
       component: VeoObjectList,
       activeView: 0,
       createScopeDialog: false,
-      scopes: []
+      createEntityDialog: false,
+      scopes: [],
+      schemas: []
     }
   },
   asyncData({from, route}) {
@@ -275,6 +284,11 @@ export default Vue.extend({
     },
     editItemLink(): string {
       return `/${this.$route.params.unit}/scopes/${this.$route.params.entity}/edit`
+    },
+    createEntitySchemas(): string[] {
+      return this.schemas.map((schema: ISchemaEndpoint) => {
+        return upperFirst(schema.schemaName).toString()
+      })
     }
   },
   methods: {
@@ -293,10 +307,24 @@ export default Vue.extend({
         this.editItemLink
       )
     },
-    navigateCreate(parent?: IVeoEntity | IVeoScope) {
-      this.$router.push(
-        `/${this.$route.params.unit}/scopes/${createUUIDUrlParam(this.entityType, parent?.id || this.entityId)}/create`
-      )
+    navigateCreate(parent?: IVeoEntity | IVeoScope, objectType?: string) {
+      const parentType = parent?.$type || this.entityType
+      const parentId = parent?.id || this.entityId
+
+      // If the user is viewing a scope and wants to create an entity, he has to specify a type first
+      if(parentType === 'scope' && !objectType) {
+        this.showCreateEntityDialog()
+      } else {
+        if(!objectType) {
+          objectType = upperFirst(parentType)
+        }
+        this.$router.push({
+          path: `/${this.$route.params.unit}/scopes/${createUUIDUrlParam(parentType, parentId)}/create`,
+          query: {
+            based_on: objectType
+          }
+        })
+      }
     },
     navigateSubEntity(item: IVeoEntity | IVeoScope) {
       this.$router.push({
@@ -320,16 +348,63 @@ export default Vue.extend({
       switch(this.entityType) {
         case '-':
         case 'scope':
-          return this.$api.schema.fetchAll({ unit: this.unitId }).then(async (schemas: ISchemaEndpoint[]) => {
-            for(const schema of schemas) {
+          if(this.schemas.length === 0) {
+            await this.fetchSchemas()
+          }
+
+          for(const schema of this.schemas) {
+            if(schema) {
               this.entities.push(...(await this.$api.entity.fetchAll(schema.endpoint, { unit: this.unitId })))
             }
-          })
+          }
+          break
         default:
           return this.entities = await this.$api.entity.fetchAll(this.entityEndpoint, { unit: this.unitId })
       }
     },
-    async showAddEntitiesDialog(type: 'entities' | 'scopes', item?: IVeoEntity) {
+    async fetchSchemas() {
+      return this.$api.schema.fetchAll({ unit: this.unitId }).then((schemas: ISchemaEndpoint[]) => {
+        this.schemas = schemas
+      })
+    },
+    async showCreateEntityDialog() {
+      if(this.schemas.length === 0) {
+        await this.fetchSchemas()
+      }
+      this.createEntityDialog = true
+    },
+    doCreateEntityDialog(type?: string) {
+      this.navigateCreate(undefined, type)
+    },
+    showCreateScopeDialog() {
+      if(this.createEntityDialog)
+      this.createScopeDialog = true
+    },
+    doCreateScope(scope: IVeoScope) {
+      this.$api.scope
+        .create({
+          ...scope,
+          owner: {
+            targetUri: `/units/${this.unitId}`
+          }
+        })
+        .then(async (data: IVeoAPIMessage) => {
+          if (this.entityId !== '-') {
+            const parent = await this.$api.scope.fetch(this.entityId)
+            parent.members.push({
+              targetUri: `${this.$config.apiUrl}/scopes/${data.resourceId}`
+            } as any)
+            this.$api.scope.update(parent.id, parent).then(() => {
+              this.$fetch()
+              this.createScopeDialog = false
+            })
+          } else {
+            this.$fetch()
+            this.createScopeDialog = false
+          }
+        })
+    },
+    async showAddDialog(type: 'entities' | 'scopes', item?: IVeoEntity) {
       let currentItem
       if(item) {
         currentItem = item
@@ -664,33 +739,6 @@ export default Vue.extend({
           text: JSON.stringify(error)
         })
       })
-    },
-    showCreateScopeDialog() {
-      this.createScopeDialog = true
-    },
-    doCreateScope(scope: IVeoScope) {
-      this.$api.scope
-        .create({
-          ...scope,
-          owner: {
-            targetUri: `/units/${this.unitId}`
-          }
-        })
-        .then(async (data: IVeoAPIMessage) => {
-          if (this.entityId !== '-') {
-            const parent = await this.$api.scope.fetch(this.entityId)
-            parent.members.push({
-              targetUri: `${this.$config.apiUrl}/scopes/${data.resourceId}`
-            } as any)
-            this.$api.scope.update(parent.id, parent).then(() => {
-              this.$fetch()
-              this.createScopeDialog = false
-            })
-          } else {
-            this.$fetch()
-            this.createScopeDialog = false
-          }
-        })
     },
     loadSubEntities(_parent: any) {
       return []

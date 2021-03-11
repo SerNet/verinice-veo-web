@@ -2,11 +2,11 @@
   <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
-  <VeoPage v-else absolute-size :cols="8" :md="8" :xl="8" sticky-header>
+  <VeoPage v-else-if="!!entityType" absolute-size :cols="8" :md="8" :xl="8" sticky-header>
     <template #header>
       <v-row>
         <v-col>
-          <h1>{{ formattedSchemaType }} erstellen</h1>
+          <h1>{{ $t('object_create', { type: formattedEntityType }) }}</h1>
         </v-col>
         <v-spacer />
         <v-col class="text-right">
@@ -36,14 +36,32 @@
       </VeoAlert>
     </template>
   </VeoPage>
+  <VeoPage v-else fullsize>
+    <template #default>
+      <v-row class="fill-height flex-column text-center align-center">
+      <v-spacer />
+      <v-col>
+        <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
+      </v-col>
+      <v-col cols="auto" class="text-left">
+        <h3>{{ $t('error.title') }}:</h3>
+        <p>{{ $t('no_type') }}</p>
+        <nuxt-link :to="backLink">{{ $t('global.button.previous') }}</nuxt-link>
+      </v-col>
+      <v-spacer />
+    </v-row>
+    </template>
+  </VeoPage>
 </template>
 <i18n>
 {
   "de": {
-    "object_create": "Objekt erstellen"
+    "no_type": "Es wurde kein Typ für das neue Objekt festgelegt. Bitte versuchen Sie es erneut.",
+    "object_create": "{type} erstellen"
   },
   "en": {
-    "object_create": "Create object"
+    "no_type": "There is no type set for the new object. Please try again.",
+    "object_create": "Create {type}"
   }
 }
 </i18n>
@@ -56,7 +74,7 @@ import VeoPage from '~/components/layout/VeoPage.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
-import { getSchemaName } from '~/plugins/api/schema'
+import { getSchemaEndpoint } from '~/plugins/api/schema'
 import { capitalize } from 'lodash'
 import { IVeoAPIMessage } from '~/types/VeoTypes'
 
@@ -93,13 +111,15 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.schemaType)
-    const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = {}
-    this.form = {
-      objectSchema,
-      objectData,
-      lang
+    if(this.entityType) {
+      const objectSchema = await this.$api.schema.fetch(this.entityType.toLowerCase())
+      const { lang } = await this.$api.translation.fetch(['de', 'en'])
+      const objectData = {}
+      this.form = {
+        objectSchema,
+        objectData,
+        lang
+      }
     }
     this.alert.value = false
   },
@@ -111,23 +131,34 @@ export default Vue.extend({
   computed: {
     title(): string {
       return this.$fetchState.pending
-        ? this.$t('breadcrumbs.objects')
-        : `${this.$t('object_create')} - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
+        ? this.$t('breadcrumbs.scopes')
+        : `${this.$t('object_create', { type: this.formattedEntityType })} - ${this.$t('breadcrumbs.scopes')}`
     },
-    schemaType(): string | undefined {
-      return getSchemaName(this.schemaEndpoint || '')
+    parentEndpoint(): string | undefined {
+      return getSchemaEndpoint(this.parentType)
     },
-    schemaEndpoint(): string | undefined {
-      return this.$route.params.type
-    },
-    formattedSchemaType(): string {
-      return capitalize(this.schemaType)
-    },
-    parent(): string {
+    parentId(): string {
       return separateUUIDParam(this.$route.params.entity).id
+    },
+    parentType(): string {
+      return separateUUIDParam(this.$route.params.entity).type.toLowerCase()
     },
     unitID(): string {
       return separateUUIDParam(this.$route.params.unit).id
+    },
+    entityEndpoint(): string | undefined {
+      return getSchemaEndpoint(this.entityType)
+    },
+    entityType(): string {
+      return this.$route.query.based_on.toLowerCase()
+    },
+    formattedEntityType(): string {
+      return capitalize(this.entityType)
+    },
+    backLink(): string {
+      const url = this.$route.fullPath.split('/')
+      url.pop()
+      return url.join('/')
     }
   },
   methods: {
@@ -135,8 +166,10 @@ export default Vue.extend({
       this.saveBtnLoading = true
       this.formatObjectData()
 
+      console.log(this.entityEndpoint)
+
       await this.$api.entity
-        .create(this.schemaEndpoint, {
+        .create(this.entityEndpoint, {
           ...this.form.objectData,
           owner: {
             targetUri: `/units/${this.unitID}`
@@ -144,17 +177,28 @@ export default Vue.extend({
         })
         .then(async (data: IVeoAPIMessage) => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
-
-          if (this.parent !== '-') {
-            const parent = await this.$api.entity.fetch(this.schemaEndpoint, this.parent)
-            parent.parts.push({
-              targetUri: `${this.$config.apiUrl}/${this.schemaEndpoint}/${data.resourceId}`
-            })
-            this.$api.entity.update(this.schemaEndpoint, parent.id, parent).finally(() => {
-              this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.parent}/list`)
-            })
+          console.log(this.parentType)
+          if (this.parentId !== '-') {
+            if(this.parentType === 'scope') {
+              const parent = await this.$api.scope.fetch(this.parentId)
+              parent.members.push({
+                targetUri: `/${this.entityEndpoint}/${data.resourceId}`
+              })
+              this.$api.scope.update(parent.id, parent).finally(() => {
+                this.$router.push(this.backLink)
+              })
+            } else {
+              const parent = await this.$api.entity.fetch(this.parentEndpoint, this.parentId)
+              parent.parts.push({
+                targetUri: `/${this.entityEndpoint}/${data.resourceId}`
+              })
+              this.$api.entity.update(this.parentEndpoint, parent.id, parent).finally(() => {
+                this.$router.push(this.backLink)
+              })
+            }
+            
           } else {
-            this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.parent}/list`)
+            this.$router.push(this.backLink)
           }
         })
         .finally(() => {

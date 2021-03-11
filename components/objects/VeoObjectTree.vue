@@ -267,7 +267,6 @@ export default Vue.extend({
       let id = 0;
 
       this.displayedItems = this.items.map((item: IVeoEntity | IVeoScope) => {
-        console.log(item)
         if (item.$type === 'scope' && (item as IVeoScope).members.length > 0) {
           return { entry: item, children: [] as ITreeEntry[], id: ''+id++ }
         } else if (item.parts && item.parts.length > 0) {

@@ -6,7 +6,7 @@
     <template #header>
       <v-row>
         <v-col>
-          <h1>{{ formattedSchemaType }} erstellen</h1>
+          <h1>{{ $t('object_create', { type: formattedSchemaType }) }}</h1>
         </v-col>
         <v-spacer />
         <v-col class="text-right">
@@ -40,10 +40,10 @@
 <i18n>
 {
   "de": {
-    "object_create": "Objekt erstellen"
+    "object_create": "{type} erstellen"
   },
   "en": {
-    "object_create": "Create object"
+    "object_create": "Create {type}"
   }
 }
 </i18n>
@@ -112,7 +112,7 @@ export default Vue.extend({
     title(): string {
       return this.$fetchState.pending
         ? this.$t('breadcrumbs.objects')
-        : `${this.$t('object_create')} - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
+        : `${this.$t('object_create', { type: this.formattedSchemaType })} - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
     },
     schemaType(): string | undefined {
       return getSchemaName(this.schemaEndpoint || '')
