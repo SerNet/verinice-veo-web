@@ -66,7 +66,7 @@ export default {
   'editor.formschema.edit.css.style.text': 'Styles',
   'editor.formschema.edit.input.text': 'Text',
   'editor.formschema.edit.input.text.text': 'Text des Elements',
-  'editor.formschema.edit.input.direction': 'Ausirchtung',
+  'editor.formschema.edit.input.direction': 'Ausrichtung',
   'editor.formschema.edit.input.direction.horizontal': 'Horizontal',
   'editor.formschema.edit.input.direction.vertical': 'Vertikal',
   'editor.formschema.edit.input.headline': 'Input Element anpassen',
