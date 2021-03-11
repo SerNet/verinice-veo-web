@@ -1,9 +1,12 @@
 <script lang="ts">
+import Vue from 'vue'
+
 import List from '~/pages/_unit/objects/_type/_entity/list.vue'
 import VeoObjectTree, { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 
-export default List.extend({
+export default Vue.extend({
+  extends: List,
   components: {
     VeoObjectTree
   },

@@ -1,10 +1,13 @@
 <script lang="ts">
+import Vue from 'vue'
+
 import List from '~/pages/_unit/scopes/_entity/list.vue'
 import VeoObjectTree, { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
 import { IVeoEntity, IVeoScope } from '~/types/VeoTypes'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 
-export default List.extend({
+export default Vue.extend({
+  extends: List,
   components: {
     VeoObjectTree
   },
@@ -16,7 +19,11 @@ export default List.extend({
   },
   methods: {
     sortingFunction(a: ITreeEntry, b: ITreeEntry) {
-      return a.entry.name.localeCompare(b.entry.name)
+      if(a.entry && b.entry) {
+        return a.entry.name.localeCompare(b.entry.name)
+      } else {
+        return 0
+      }
     },
     loadSubEntities(parent: ITreeEntry) {
       let id = 0;
@@ -33,7 +40,7 @@ export default List.extend({
           }).sort(this.sortingFunction)
         })
       } else {
-        return this.$api.entity.fetchSubEntities(getSchemaEndpoint(parent.entry.$type), parent.entry.id).then((data: IVeoEntity[]) => {
+        return this.$api.entity.fetchSubEntities(getSchemaEndpoint(parent.entry.$type) || '', parent.entry.id).then((data: IVeoEntity[]) => {
           parent.children = data.map((item: IVeoEntity) => {
             if (item.$type === 'scope' && (item as IVeoScope).members.length > 0) {
               return { entry: item, children: [] as ITreeEntry[], id: ''+id++ }
