@@ -1,5 +1,5 @@
 <template>
-  <VeoDialog :value="value" large :headline="$t('editor.formschema.formschema')" @input="onDialogStatus">
+  <VeoDialog :value="value" large :headline="$t('editor.formschema.translation')" @input="onDialogStatus">
     <template #default>
       <div style="min-height: 20vh">
         <v-row no-gutters class="align-center mt-4">
