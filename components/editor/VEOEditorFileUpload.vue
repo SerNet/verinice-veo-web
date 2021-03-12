@@ -22,7 +22,7 @@
         </v-form>
       </v-tab-item>
       <v-tab-item>
-        <CodeEditor :value="code" @schema-updated="sendSchema" />
+        <SchemaCodeEditor :value="code" @schema-updated="sendSchema" />
       </v-tab-item>
     </template>
   </VeoTabs>
@@ -30,15 +30,12 @@
 <script lang="ts">
 import { IVEOFormSchema } from 'veo-formschema'
 import Vue from 'vue'
-
 import VeoTabs from '~/components/layout/VeoTabs.vue'
-import CodeEditor from '~/components/CodeEditor.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoObjectSchema } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
-    CodeEditor,
     VeoTabs
   },
   props: {

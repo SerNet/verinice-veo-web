@@ -7,8 +7,8 @@
         </v-col>
         <v-col class="mx-2" style="overflow: auto">
           <div>
-            <div class="fse-input-title mt-1 mb-1">{{ options && options.label }}</div>
-            <div class="fse-input-property-name mb-1">{{ scope.split('/').pop() }}</div>
+            <div class="fse-input-title mt-1 mb-1">{{ label }}</div>
+            <div class="fse-input-property-name mb-1">{{ name }}</div>
             <div class="fse-input-type mb-1">{{ currentType }}</div>
           </div>
         </v-col>
@@ -29,12 +29,13 @@
       :formSchema="value"
       :type="currentType"
       @edit="doEdit"
+      @update-custom-translation="onUpdateCustomTranslation"
     />
     <VEOFSEDeleteDialog v-model="deleteDialog" @delete="doDelete" />
   </v-card>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropOptions } from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
@@ -45,6 +46,13 @@ import { BaseObject } from '~/components/forms/utils'
 import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VEOEditor'
 import VEOFSEEditControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditControlDialog.vue'
 import VEOFSEDeleteDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteDialog.vue'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import {
+  IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItemDeleteEvent,
+  IVEOFormSchemaItemUpdateEvent,
+  IVEOFormSchemaTranslationCollectionItem
+} from 'veo-formschema'
 
 export default Vue.extend({
   components: {
@@ -60,10 +68,14 @@ export default Vue.extend({
       type: Object as Prop<JSONSchema7>,
       required: true
     },
-    lang: {
-      type: Object as Prop<BaseObject>,
+    generalTranslation: {
+      type: Object,
       default: () => {}
-    },
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
     options: {
       type: Object,
       default: () => {}
@@ -75,6 +87,10 @@ export default Vue.extend({
     value: {
       type: Object,
       default: () => undefined
+    },
+    formSchemaPointer: {
+      type: String,
+      default: ''
     },
     disabled: {
       type: Boolean,
@@ -93,7 +109,8 @@ export default Vue.extend({
     return {
       availableElements: [] as IInputElement[],
       editDialog: false as boolean,
-      deleteDialog: false as boolean
+      deleteDialog: false as boolean,
+      label: '' as string
     }
   },
   computed: {
@@ -114,32 +131,43 @@ export default Vue.extend({
   watch: {
     name() {
       this.availableElements = eligibleInputElements(this.type, this.$props)
+      this.setLabel()
     },
     options() {
       this.availableElements = eligibleInputElements(this.type, this.$props)
+    },
+    generalTranslation() {
+      this.setLabel()
+    },
+    customTranslation() {
+      this.setLabel()
     }
-  },
-  mounted() {
-    this.availableElements = eligibleInputElements(this.type, this.$props)
   },
   methods: {
     showEdit() {
       this.editDialog = true
     },
-    doEdit(data: any) {
-      Object.keys(data).forEach(key => {
-        vjp.set(this.value, `/${key}`, data[key])
-      })
-
+    doEdit(data: IVEOFormSchemaItemUpdateEvent['data']) {
+      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data } as IVEOFormSchemaItemUpdateEvent)
       this.editDialog = false
     },
     showDelete() {
       this.deleteDialog = true
     },
     doDelete() {
-      this.$emit('delete')
+      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVEOFormSchemaItemDeleteEvent)
       this.deleteDialog = false
+    },
+    setLabel(): void {
+      this.label = this.customTranslation?.[this.name] || this.generalTranslation?.[this.name] || this.name
+    },
+    onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent) {
+      this.$emit('update-custom-translation', event)
     }
+  },
+  mounted() {
+    this.availableElements = eligibleInputElements(this.type, this.$props)
+    this.setLabel()
   }
 })
 </script>

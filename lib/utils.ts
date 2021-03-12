@@ -1,6 +1,6 @@
 import castArray from 'lodash/castArray'
 import { JSONSchema7 } from 'json-schema'
-import { IVeoFormSchema } from '~/types/VeoTypes'
+import { IVEOFormSchema } from 'veo-formschema'
 
 import { capitalize as _capitalize } from 'lodash'
 
@@ -101,7 +101,7 @@ export interface IBaseObject {
 
 export interface IForm {
   objectSchema: JSONSchema7
-  formSchema?: IVeoFormSchema
+  formSchema?: IVEOFormSchema
   objectData: IBaseObject
   lang?: IBaseObject
 }

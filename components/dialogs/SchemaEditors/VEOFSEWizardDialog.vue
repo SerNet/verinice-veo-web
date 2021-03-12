@@ -181,7 +181,7 @@ import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import VEOEditorFileUpload from '~/components/editor/VEOEditorFileUpload.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
-import { IVeoObjectSchema } from '~/types/VeoTypes'
+import { IVeoTranslations, IVeoObjectSchema } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
@@ -212,6 +212,7 @@ export default Vue.extend({
       fscode: '\n\n\n\n\n' as string,
       formSchema: undefined as IVEOFormSchema | undefined,
       objectSchema: undefined as IVeoObjectSchema | undefined,
+      translation: undefined as IVeoTranslations | undefined,
       state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
       schemas: [] as ISchemaEndpoint[],
       invalidOS: false as boolean,
@@ -263,6 +264,9 @@ export default Vue.extend({
     this.dialog = this.value
 
     this.$api.schema.fetchAll().then((data: ISchemaEndpoint[]) => (this.schemas = data))
+    this.$api.translation.fetch([]).then((translation: IVeoTranslations) => {
+      this.translation = translation
+    })
   },
   methods: {
     goBack() {
@@ -303,8 +307,7 @@ export default Vue.extend({
         this.objectSchema?.title || this.createForm.modelType,
         _subtype
       )
-      this.$emit('form-schema', this.formSchema)
-      this.$emit('object-schema', this.objectSchema)
+      this.emitSchemas()
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     async doImport1(schema: IVEOFormSchema) {
@@ -324,8 +327,7 @@ export default Vue.extend({
           this.invalidOS = true
           this.state = 'import-2'
         } else {
-          this.$emit('form-schema', this.formSchema)
-          this.$emit('object-schema', this.objectSchema)
+          this.emitSchemas()
         }
       } else {
         this.state = 'import-2'
@@ -342,8 +344,7 @@ export default Vue.extend({
         })
       } else {
         this.setObjectSchema(schema)
-        this.$emit('form-schema', this.formSchema)
-        this.$emit('object-schema', this.objectSchema)
+        this.emitSchemas()
       }
     },
     clearCreateForm() {
@@ -365,6 +366,11 @@ export default Vue.extend({
     setFormSchema(schema: IVEOFormSchema) {
       this.fscode = JSON.stringify(schema, undefined, 2)
       this.formSchema = schema
+    },
+    emitSchemas() {
+      this.$emit('update-form-schema', this.formSchema)
+      this.$emit('update-object-schema', this.objectSchema)
+      this.$emit('update-translation', this.translation)
     },
     onClose() {
       this.$router.push('/editor')

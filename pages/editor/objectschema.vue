@@ -145,7 +145,7 @@
         height="100%"
         content-class="ose__code-editor"
       >
-        <CodeEditor v-model="code" @schema-updated="updateSchema" />
+        <SchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
       </VeoPage>
     </template>
     <template #helpers>

@@ -19,7 +19,15 @@
         :style="[isDefaultRow[i] ? { opacity: 0.5 } : { opacity: 1 }]"
       >
         <v-list-item-content>
-          <VeoForm :schema="schema.items" :ui="ui" :value="value[i]" :lang="lang" :api="api" @input="onInput" />
+          <VeoForm
+            :schema="schema.items"
+            :ui="ui"
+            :value="value[i]"
+            :general-translation="generalTranslation"
+            :custom-translation="customTranslation"
+            :api="api"
+            @input="onInput"
+          />
         </v-list-item-content>
         <v-list-item-action>
           <v-btn depressed text fab small class="vf-btn-remove" @click="removeRow(i)">
@@ -37,10 +45,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { BaseObject, IApi } from '~/components/forms/utils'
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
 
 export default Vue.extend({
   name: 'ArrayField',
@@ -49,23 +59,28 @@ export default Vue.extend({
     VeoForm: async () => (await import('~/components/forms/VeoForm.vue')).default
   },
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
-    elements: Array,
     value: {
       type: Array
-      // default() {
-      //   return Array.isArray(this.schema.default) &&
-      //     this.schema.default.length > 0
-      //     ? [{ ...this.schema.default[0] }]
-      //     : [{}];
-      // }
-    },
+    } as PropOptions<BaseObject[]>,
+    name: String,
+    schema: {
+      type: Object
+    } as PropOptions<JSONSchema7>,
+    generalTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    options: Object,
+    elements: Array,
     disabled: Boolean,
     visible: Boolean,
-    api: Object as Prop<IApi>
+    api: {
+      type: Object
+    } as PropOptions<IApi>
   },
   computed: {
     ui() {

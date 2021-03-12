@@ -1,10 +1,5 @@
 <template>
-  <div
-    v-if="visible"
-    class="vf-label"
-    :class="options && options.class"
-    :style="options && options.style"
-  >
+  <div v-if="visible" class="vf-label" :class="options && options.class" :style="options && options.style">
     {{ text }}
   </div>
 </template>

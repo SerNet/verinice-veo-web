@@ -20,7 +20,7 @@
       <VeoForm
         v-model="form.objectData"
         :schema="form.objectSchema"
-        :lang="form.lang && form.lang['de']"
+        :general-translation="form.lang && form.lang[$i18n.locale]"
         :is-valid.sync="isValid"
         :error-messages.sync="errorMessages"
         class="mb-8"

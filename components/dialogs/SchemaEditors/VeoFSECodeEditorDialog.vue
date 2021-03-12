@@ -2,7 +2,7 @@
   <VeoDialog v-model="dialog.value" large fixed-header fixed-footer :headline="$t('editor.formschema.formschema')">
     <template #default>
       <div style="min-height: 20vh">
-        <CodeEditor v-model="$props.code" readonly />
+        <CodeEditor :value="$props.code" readonly />
       </div>
     </template>
     <template #dialog-options>

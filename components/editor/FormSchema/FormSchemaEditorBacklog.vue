@@ -121,10 +121,10 @@ import { computed, ComputedRef, defineComponent, PropType, ref, Ref, watch } fro
 import { JsonPointer } from 'json-ptr'
 import vjp from 'vue-json-pointer'
 import Draggable from 'vuedraggable'
-
 import { IVEOFormSchema } from 'veo-formschema'
 import { VEOObjectSchemaRAW } from 'veo-objectschema-7'
 import { INPUT_TYPES } from '~/types/VEOEditor'
+import { v4 as uuid } from 'uuid'
 
 interface IProps {
   searchQuery: string
@@ -191,8 +191,6 @@ export default defineComponent<IProps>({
       },
       {
         type: 'Label',
-        text: 'TEXT',
-        options: {},
         description: {
           title: 'text',
           icon: 'mdi-format-text',
@@ -204,6 +202,7 @@ export default defineComponent<IProps>({
 
     const controls: Ref<IControl[]> = ref([])
 
+    // Nested Control items in a Control element, e.g. LinksField and its attributes
     const controlsItems: Ref<IControlItem> = ref({})
     /**
      * React to formschema or objectschema changes
@@ -346,7 +345,13 @@ export default defineComponent<IProps>({
     function onCloneFormElement(original: any) {
       // Return always new object reference on clone to get in issues of the same reference
       // https://github.com/SortableJS/Vue.Draggable/issues/203
-      return JSON.parse(JSON.stringify(original))
+      const element = JSON.parse(JSON.stringify(original))
+      JsonPointer.unset(element, '#/description')
+      if (element?.type?.toLowerCase() === 'label') {
+        const elementName = `text_${uuid()}`
+        element.text = `#lang/${elementName}`
+      }
+      return element
     }
     function onCloneControl(original: IControl) {
       const dataToClone: IControl = JSON.parse(JSON.stringify(original))
@@ -354,7 +359,7 @@ export default defineComponent<IProps>({
         type: 'Control',
         scope: dataToClone.scope,
         options: {
-          label: dataToClone.label
+          label: `#lang/${dataToClone.propertyName}`
         },
         ...(dataToClone.category === 'links' && { elements: [] })
       }

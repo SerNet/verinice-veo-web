@@ -17,16 +17,17 @@
           <LinksFieldRow
             :key="i"
             :index="i"
+            :value="localValue[i]"
             :name="name"
             :selected.sync="selected[i]"
             :schema="schema"
-            :lang="lang"
             :options="options"
             :elements="elements"
             :validation="validation"
-            :value="localValue[i]"
             :disabled="disabled"
             :visible="visible"
+            :general-translation="generalTranslation"
+            :custom-translation="customTranslation"
             :api="api"
             @input="onInput"
           />
@@ -47,12 +48,15 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
 import LinksFieldRow from '~/components/forms/Collection/FormElements/LinksFieldRow.vue'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import { UISchemaElement } from '~/types/UISchema'
 
 interface IData {
   selected: string[]
@@ -65,18 +69,44 @@ export default Vue.extend({
     LinksFieldRow
   },
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
-    elements: Array,
-    validation: Object,
     value: {
-      type: Array as Prop<BaseObject[]>
+      type: Array,
+      default: () => []
+    } as PropOptions<BaseObject[]>,
+    name: {
+      type: String,
+      default: ''
+    },
+    schema: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<JSONSchema7>,
+    options: {
+      type: Object,
+      default: () => undefined
+    },
+    validation: {
+      type: Object,
+      default: () => undefined
     },
     disabled: Boolean,
     visible: Boolean,
-    api: Object as Prop<IApi>
+    generalTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    elements: {
+      type: Array,
+      default: () => []
+    } as PropOptions<UISchemaElement[]>,
+    api: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<IApi>
   },
   data(): IData {
     return {
