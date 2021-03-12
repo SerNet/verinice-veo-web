@@ -23,10 +23,10 @@
             <v-icon v-on="on">mdi-file-document-multiple</v-icon>
           </template>
           <template #default>
-            <span
-              class="d-inline-block text-center"
-              v-html="$t('object_has_subobjects', { amount: item.entry.parts.length })"
-            />
+            <span class="d-inline-block text-center">
+              {{ $t('object_has_subobjects') }}<br>
+              {{ $t('object_has_subobjects_amount', { amount: item.parts.length }) }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip v-else-if="item.entry.members && item.entry.members.length > 0" bottom>
@@ -34,7 +34,9 @@
             <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
           <template #default>
-            <span class="d-inline-block text-center" v-html="$t('scope_children', { amount: item.entry.members.length })" />
+            <span class="d-inline-block text-center">
+              {{ $t('scope_children', { amount: item.entry.members.length }) }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip v-else-if="item.entry.members" bottom>
@@ -42,7 +44,9 @@
             <v-icon v-on="on">mdi-archive</v-icon>
           </template>
           <template #default>
-            <span v-html="$t('scope_empty')" />
+            <span>
+              {{ $t('scope_empty') }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip v-else bottom>
@@ -50,7 +54,9 @@
             <v-icon v-on="on">mdi-file-document</v-icon>
           </template>
           <template #default>
-            <span v-html="$t('object_has_no_subobjects')" />
+            <span>
+              {{ $t('object_has_no_subobjects') }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip bottom>
@@ -181,7 +187,8 @@
     "object_create_subentity": "Add child object",
     "object_edit": "Edit this object",
     "object_has_no_subobjects": "Standard object",
-    "object_has_subobjects": "Composite object<br>({amount} sub objects)",
+    "object_has_subobjects": "Composite object",
+    "object_has_subobjects_amount": "({amount} sub objects)",
     "parent_object": "Parent object",
     "scope_add": "Link scope",
     "scope_children": "Scope with members",
@@ -203,7 +210,8 @@
     "object_create_subentity": "Unterobjekt hinzufügen",
     "object_edit": "Dieses Objekt bearbeiten",
     "object_has_no_subobjects": "Standardobjekt",
-    "object_has_subobjects": "Zusammengesetztes Objekt<br>({amount} Unterobjekte)",
+    "object_has_subobjects": "Zusammengesetztes Objekt",
+    "object_has_subobjects_amount": "({amount} Unterobjekte)",
     "parent_object": "Übergeordnetes Objekt",
     "scope_add": "Scope verknüpfen",
     "scope_children": "Scope mit Inhalt",

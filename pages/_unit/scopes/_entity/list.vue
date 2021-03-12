@@ -59,7 +59,7 @@
       @delete="showDeleteEntityDialog"
       @edit="navigateSubEntityDetails"
       @unlink="showUnlinkEntityDialog"
-      @parent="navigateParent"
+      @navigate-parent="navigateParent"
       @click="navigateSubEntity"
       @create-entity="navigateCreate($event)"
       @add-entity="showAddDialog('entities', $event)"

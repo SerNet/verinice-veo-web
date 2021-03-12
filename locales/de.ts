@@ -106,7 +106,7 @@ export default {
   'editor.formschema.wizard.start.title': 'Wie möchten Sie starten?',
   'editor.formschema.upload.input.file.label': '@:editor.formschema.formschema hochladen @:editor.upload.file.format',
   'editor.objectschema.aspect.values': 'Auswahlmöglichkeiten',
-  'editor.objectschema.aspect.values.hint': 'Werte (mit <b>Enter</b> trennen)',
+  'editor.objectschema.aspect.values.hint': 'Werte (mit Enter trennen)',
   'editor.objectschema.create.description': 'Beschreibung',
   'editor.objectschema.create.description.text': 'Beschreibung des Schemas',
   'editor.objectschema.create.type': 'Schema-Typ',
@@ -185,8 +185,6 @@ export default {
 
   'page.login.button.login': 'Anmelden',
   'page.login.button.register': 'Registrieren',
-  'page.login.text.login': '<br>Account vorhanden?',
-  'page.login.text.register': 'Noch kein Account?<br><b>Account erstellen!</b>',
 
   'page.settings.title': 'Einstellungen',
   'page.settings.language': 'Sprache',
