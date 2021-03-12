@@ -65,7 +65,6 @@
       <template #label="{ item }">
         <div class="tree-item d-flex justify-space-between align-center">
           <div>
-            {{ item.entry.abbreviation }}
             <b>{{ item.entry.name }}</b>
             <v-tooltip bottom>
               <template #activator="{ on }">
@@ -93,6 +92,12 @@
                   </template>
                   <template #default>
                     <v-list>
+                      <v-list-item v-if="item.type === 'scope'" @click="$emit('add-scope', item.entry)">
+                        <v-list-item-title>{{ $t('scope_add') }}</v-list-item-title>
+                      </v-list-item>
+                      <v-list-item v-if="item.type === 'scope'" @click="$emit('create-scope', item.entry)">
+                        <v-list-item-title>{{ $t('scope_create') }}</v-list-item-title>
+                      </v-list-item>
                       <v-list-item @click="$emit('add-entity', item.entry)">
                         <v-list-item-title>{{ $t('object_add') }}</v-list-item-title>
                       </v-list-item>
@@ -121,7 +126,7 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="$emit('duplicate', item.entry)" v-on="on">
+                <v-btn icon @click.stop="doDuplicate(item)" v-on="on">
                   <v-icon>
                     mdi-content-copy
                   </v-icon>
@@ -145,7 +150,7 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="showUnlink(item)" v-on="on"  :class="$route.params.entity === '-' ? 'action-unlink' : ''">
+                <v-btn icon @click.stop="doUnlink(item)" v-on="on"  :class="$route.params.entity === '-' ? 'action-unlink' : ''">
                   <v-icon>
                     mdi-link-off
                   </v-icon>
@@ -178,7 +183,9 @@
     "object_has_no_subobjects": "Standard object",
     "object_has_subobjects": "Composite object<br>({amount} sub objects)",
     "parent_object": "Parent object",
+    "scope_add": "Link scope",
     "scope_children": "Scope with members",
+    "scope_create": "Create scope",
     "scope_empty": "Empty scope",
     "unlink": "Remove link",
     "updated_at": "Updated"
@@ -198,7 +205,9 @@
     "object_has_no_subobjects": "Standardobjekt",
     "object_has_subobjects": "Zusammengesetztes Objekt<br>({amount} Unterobjekte)",
     "parent_object": "Übergeordnetes Objekt",
+    "scope_add": "Scope verknüpfen",
     "scope_children": "Scope mit Inhalt",
+    "scope_create": "Scope erstellen",
     "scope_empty": "Scope ohne Inhalt",
     "unlink": "Verknüpfung entfernen",
     "updated_at": "Aktualisiert"
@@ -256,11 +265,14 @@ export default Vue.extend({
     }
   },
   watch: {
-    items() {
-      this.open = []
-      this.active = []
-      this.updateItemsBasedOnProp()
-    }
+    items: {
+      handler() {
+        this.open = []
+        this.active = []
+        this.updateItemsBasedOnProp()
+      },
+      deep: true
+    },
   },
   methods: {
     updateItemsBasedOnProp() {
@@ -268,11 +280,11 @@ export default Vue.extend({
 
       this.displayedItems = this.items.map((item: IVeoEntity | IVeoScope) => {
         if (item.$type === 'scope' && (item as IVeoScope).members.length > 0) {
-          return { entry: item, children: [] as ITreeEntry[], id: ''+id++ }
+          return { entry: item, children: [] as ITreeEntry[], id: ''+id++, type: item.$type }
         } else if (item.parts && item.parts.length > 0) {
-          return { entry: item, children: [] as ITreeEntry[], id: ''+id++ }
+          return { entry: item, children: [] as ITreeEntry[], id: ''+id++, type: item.$type }
         } else {
-          return { entry: item, id: ''+id++ }
+          return { entry: item, id: ''+id++, type: item.$type }
         }
       }).sort(this.sortingFunction)
     },
@@ -287,8 +299,11 @@ export default Vue.extend({
         new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
       )
     },
-    showUnlink(entry: ITreeEntry) {
+    doUnlink(entry: ITreeEntry) {
       this.$emit('unlink', entry.entry, this.getParent(entry.id)?.entry)
+    },
+    doDuplicate(entry: ITreeEntry) {
+      this.$emit('duplicate', entry.entry, this.getParent(entry.id)?.entry)
     },
     getParent(id: string): ITreeEntry | undefined {
       return this.displayedItems.find((entry: ITreeEntry) => ((entry.children?.findIndex(child => child.id === id) ?? -1) > -1))

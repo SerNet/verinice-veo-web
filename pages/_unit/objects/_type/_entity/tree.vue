@@ -18,7 +18,11 @@ export default Vue.extend({
   },
   methods: {
     sortingFunction(a: ITreeEntry, b: ITreeEntry) {
-      return a.entry.name.localeCompare(b.entry.name)
+      if(a.entry && b.entry) {
+        return a.entry.name.localeCompare(b.entry.name)
+      } else {
+        return 0
+      }
     },
     loadSubEntities(parent: ITreeEntry) {
       let id = 0;

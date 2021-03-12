@@ -166,8 +166,6 @@ export default Vue.extend({
       this.saveBtnLoading = true
       this.formatObjectData()
 
-      console.log(this.entityEndpoint)
-
       await this.$api.entity
         .create(this.entityEndpoint, {
           ...this.form.objectData,
@@ -177,7 +175,6 @@ export default Vue.extend({
         })
         .then(async (data: IVeoAPIMessage) => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
-          console.log(this.parentType)
           if (this.parentId !== '-') {
             if(this.parentType === 'scope') {
               const parent = await this.$api.scope.fetch(this.parentId)

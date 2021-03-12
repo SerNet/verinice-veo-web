@@ -61,9 +61,9 @@
       @unlink="showUnlinkEntityDialog"
       @parent="navigateParent"
       @click="navigateSubEntity"
-      @create-entity="navigateCreate"
+      @create-entity="navigateCreate($event)"
       @add-entity="showAddDialog('entities', $event)"
-      @create-scope="showCreateScopeDialog()"
+      @create-scope="showCreateScopeDialog($event)"
       @add-scope="showAddDialog('scopes', $event)"
     />
     <VeoDeleteEntityDialog v-model="deleteDialog.value" v-bind="deleteDialog" @delete="doDeleteDialog" />
@@ -74,8 +74,8 @@
       @add-entities="doAddDialog"
       @add-scopes="doAddDialog"
     />
-    <VeoCreateScopeDialog v-model="createScopeDialog" @create-scope="doCreateScope" />
-    <VeoCreateEntityDialog v-model="createEntityDialog" :schemas="createEntitySchemas" @create-entity="doCreateEntityDialog" />
+    <VeoCreateScopeDialog v-model="createScopeDialog.value" @create-scope="doCreateScope" />
+    <VeoCreateEntityDialog v-model="createEntityDialog.value" :schemas="createEntitySchemas" @create-entity="doCreateEntityDialog" />
   </VeoPage>
 </template>
 <i18n>
@@ -91,6 +91,9 @@
     "object_update_error": "Failed to update object",
     "scope_add": "Link scope",
     "scope_create": "Create scope",
+    "scope_delete_error": "Failed to delete scope",
+    "scope_duplicate_error": "Failed to duplicate scope",
+    "scope_unlink_error": "Failed to unlink scope",
     "scope_update_error": "Failed to update scope"
   },
   "de": {
@@ -103,7 +106,11 @@
     "object_unlink_error": "Verlinkung konnte nicht entfernt werden",
     "object_update_error": "Objekt konnte nicht aktualisiert werden",
     "scope_add": "Scope verknüpfen",
+    "scope_cloned": "Scope wurde geklont",
     "scope_create": "Scope erstellen",
+    "scope_delete_error": "Scope konnte nicht gelöscht werden",
+    "scope_duplicate_error": "Scope konnte nicht erstellt werden",
+    "scope_unlink_error": "Verlinkung konnte nicht entfernt werden",
     "scope_update_error": "Scope konnte nicht aktualisiert werden"
   }
 }
@@ -147,8 +154,14 @@ interface IData {
   scopes: IVeoScope[]
   showParentLink: boolean
   activeView: number
-  createScopeDialog: boolean
-  createEntityDialog: boolean
+  createScopeDialog: {
+    value: boolean
+    parent?: IVeoEntity
+  }
+  createEntityDialog: {
+    value: boolean
+    parent?: IVeoEntity
+  }
   component: any
   schemas: ISchemaEndpoint[]
 }
@@ -193,8 +206,14 @@ export default Vue.extend({
       showParentLink: false,
       component: VeoObjectList,
       activeView: 0,
-      createScopeDialog: false,
-      createEntityDialog: false,
+      createScopeDialog: {
+        value: false,
+        parent: undefined
+      },
+      createEntityDialog: {
+        value: false,
+        parent: undefined
+      },
       scopes: [],
       schemas: []
     }
@@ -313,7 +332,7 @@ export default Vue.extend({
 
       // If the user is viewing a scope and wants to create an entity, he has to specify a type first
       if(parentType === 'scope' && !objectType) {
-        this.showCreateEntityDialog()
+        this.showCreateEntityDialog(parent)
       } else {
         if(!objectType) {
           objectType = upperFirst(parentType)
@@ -367,17 +386,19 @@ export default Vue.extend({
         this.schemas = schemas
       })
     },
-    async showCreateEntityDialog() {
+    async showCreateEntityDialog(parent?: IVeoEntity) {
       if(this.schemas.length === 0) {
         await this.fetchSchemas()
       }
-      this.createEntityDialog = true
+      this.createEntityDialog.value = true
+      this.createEntityDialog.parent = parent
     },
     doCreateEntityDialog(type?: string) {
-      this.navigateCreate(undefined, type)
+      this.navigateCreate(this.createEntityDialog.parent, type)
     },
-    showCreateScopeDialog() {
-      this.createScopeDialog = true
+    showCreateScopeDialog(parent?: IVeoEntity) {
+      this.createScopeDialog.value = true
+      this.createScopeDialog.parent = parent
     },
     doCreateScope(scope: IVeoScope) {
       this.$api.scope
@@ -388,18 +409,19 @@ export default Vue.extend({
           }
         })
         .then(async (data: IVeoAPIMessage) => {
-          if (this.entityId !== '-') {
-            const parent = await this.$api.scope.fetch(this.entityId)
+          const parentId = this.createScopeDialog.parent?.id || this.entityId
+          if (parentId !== '-') {
+            const parent = await this.$api.scope.fetch(parentId)
             parent.members.push({
               targetUri: `${this.$config.apiUrl}/scopes/${data.resourceId}`
             } as any)
             this.$api.scope.update(parent.id, parent).then(() => {
               this.$fetch()
-              this.createScopeDialog = false
+              this.createScopeDialog.value = false
             })
           } else {
             this.$fetch()
-            this.createScopeDialog = false
+            this.createScopeDialog.value = false
           }
         })
     },
@@ -633,16 +655,16 @@ export default Vue.extend({
         })
       }
     },
-    doDuplicate(item: IVeoEntity | IVeoScope) {
+    doDuplicate(item: IVeoEntity | IVeoScope, parent?: IVeoEntity) {
       if(item.$type === 'scope') {
-        this.doDuplicateScope(item as IVeoScope)
+        this.doDuplicateScope(item as IVeoScope, parent)
       } else {
-        this.doDuplicateEntity(item as IVeoEntity)
+        this.doDuplicateEntity(item as IVeoEntity, parent)
       }
     },
-    doDuplicateEntity(item: IVeoEntity) {
+    doDuplicateEntity(item: IVeoEntity, parentItem?: IVeoEntity) {
       const newItem = item
-      const parent = this.currentEntity as undefined | IVeoEntity | IVeoScope
+      const parent = parentItem || this.currentEntity as undefined | IVeoEntity | IVeoScope
 
       item.name = `${item.name} (${this.$t('clone')})`
       return this.$api.entity.create(getSchemaEndpoint(newItem.$type), newItem).then((newEntity: IVeoAPIMessage) => {
@@ -690,9 +712,9 @@ export default Vue.extend({
         })
       })
     },
-    doDuplicateScope(item: IVeoScope) {
+    doDuplicateScope(item: IVeoScope, parentItem?: IVeoEntity) {
       const newItem = item
-      const parent = this.currentEntity as undefined | IVeoEntity | IVeoScope
+      const parent = parentItem || this.currentEntity as undefined | IVeoEntity | IVeoScope
       item.name = `${item.name} (${this.$t('clone')})`
       return this.$api.scope.create(newItem).then((newEntity: IVeoAPIMessage) => {
         if(parent && this.$route.entity !== '-') {
