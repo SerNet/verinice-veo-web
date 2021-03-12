@@ -1,9 +1,12 @@
 <script lang="ts">
+import Vue from 'vue'
+
 import List from '~/pages/_unit/objects/_type/_entity/list.vue'
 import VeoObjectTree, { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 
-export default List.extend({
+export default Vue.extend({
+  extends: List,
   components: {
     VeoObjectTree
   },
@@ -15,7 +18,11 @@ export default List.extend({
   },
   methods: {
     sortingFunction(a: ITreeEntry, b: ITreeEntry) {
-      return a.entry.name.localeCompare(b.entry.name)
+      if(a.entry && b.entry) {
+        return a.entry.name.localeCompare(b.entry.name)
+      } else {
+        return 0
+      }
     },
     loadSubEntities(parent: ITreeEntry) {
       let id = 0;

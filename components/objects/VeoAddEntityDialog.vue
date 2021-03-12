@@ -3,8 +3,8 @@
     <template #default>
       {{ $t('add_subentities', { name: entityName }) }}
       <v-autocomplete
-        v-model="selectedEntities"
-        :items="displayedEntities"
+        v-model="selectedItems"
+        :items="displayedItems"
         item-value="id"
         item-text="name"
         clearable
@@ -19,7 +19,7 @@
       <v-btn
         text
         color="primary"
-        @click="$emit('add-entities', selectedEntities)"
+        @click="add()"
       >
         {{ $t('global.button.save') }}
       </v-btn>
@@ -44,12 +44,20 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntity, IVeoScope } from '~/types/VeoTypes'
+
+export interface IItem {
+  id: string
+  type: string
+  name: string
+  hidden: boolean
+  selected: boolean
+}
 
 interface IData {
   dialog: boolean
   noWatch: boolean
-  selectedEntities: string[]
+  selectedItems: string[]
 }
 
 export default Vue.extend({
@@ -61,28 +69,32 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
-    entities: {
-      type: Array as Prop<IVeoEntity[]>,
-      default: []
+    items: {
+      type: Array as Prop<IItem[]>,
+      default: () => []
     },
-    currentEntity: {
-      type: Object as Prop<IVeoEntity | undefined>,
+    editedItem: {
+      type: Object as Prop<IVeoEntity | IVeoScope | undefined>,
       default: undefined
+    },
+    eventName: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
       dialog: false,
       noWatch: false,
-      selectedEntities: []
+      selectedItems: []
     } as IData
   },
   computed: {
     entityName(): string {
-      return this.currentEntity?.name || ''
+      return this.editedItem?.name || ''
     },
-    displayedEntities(): IVeoEntity[] {
-      return this.entities.filter(entity => entity.id !== this.currentEntity?.id)
+    displayedItems(): IItem[] {
+      return this.items.filter(item => item.id !== this.editedItem?.id && !item.hidden)
     }
   },
   watch: {
@@ -96,10 +108,19 @@ export default Vue.extend({
         this.$emit('input', newValue)
       }
 
-      if (newValue) {
-        this.selectedEntities = this.currentEntity?.parts.map(child => child.targetUri.split('/').pop() || '') || []
+      if (newValue && this.editedItem) {
+        this.selectedItems = this.items.filter(item => item.selected && !item.hidden).map(item => item.id)
       }
     }
+  },
+  methods: {
+    add() {
+      const dummy: IItem[] = []
+      dummy.push(...this.items.filter(item => item.hidden && item.selected)) // Add hidden, yet selected items
+      dummy.push(...this.items.filter(item => this.selectedItems.includes(item.id)))
+
+      this.$emit(this.eventName, dummy)
+    },
   },
   mounted() {
     this.dialog = this.value
