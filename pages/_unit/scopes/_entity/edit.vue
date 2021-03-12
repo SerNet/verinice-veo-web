@@ -93,7 +93,7 @@
 import Vue from 'vue'
 import { upperFirst } from 'lodash'
 import { IForm, separateUUIDParam } from '~/lib/utils'
-import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
+import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
