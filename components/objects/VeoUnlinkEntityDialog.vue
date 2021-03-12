@@ -1,15 +1,15 @@
 <template>
   <VeoDialog v-model="dialog" :headline="$t('headline')">
     <template #default>
-      {{ $t('text', { name }) }}
+      <span v-html="$t('text', { name, parentName })" />
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
         {{ $t('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="$emit('delete', item.id)">
-        {{ $t('global.button.delete') }}
+      <v-btn text color="primary" :disabled="!item" @click="$emit('unlink', item.id)">
+        {{ $t('headline') }}
       </v-btn>
     </template>
   </VeoDialog>
@@ -17,12 +17,12 @@
 <i18n>
 {
   "en": {
-  "text": "Do you really want to delete the object \"{name}\"?",
-  "headline": "Delete object"
+  "text": "Unlinking \"{name}\" only removes the object from \"{parentName}\".<br>If you wish to delete the object, you have to delete it from the root element.",
+  "headline": "Unlink object"
   },
   "de": {
-    "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",
-    "headline": "Objekt löschen"
+    "text": "Es wird nur die Verknüpfung von \"{name}\" zu \"{parentName}\" entfernt. Das Objekt kann nur von der obersten Ebene aus gelöscht werden.",
+    "headline": "Verknüpfung entfernen"
   }
 }
 </i18n>
@@ -50,6 +50,10 @@ export default Vue.extend({
     item: {
       type: Object as Prop<IVeoEntity>,
       default: undefined
+    },
+    parent: {
+      type: Object as Prop<IVeoEntity>,
+      default: undefined
     }
   },
   data() {
@@ -61,6 +65,9 @@ export default Vue.extend({
   computed: {
     name(): string {
       return this.item?.name ?? ''
+    },
+    parentName(): string {
+      return this.parent?.name ?? ''
     }
   },
   watch: {

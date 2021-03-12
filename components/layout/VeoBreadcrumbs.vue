@@ -1,8 +1,8 @@
 <template>
   <v-breadcrumbs :items="breadcrumbItems" class="px-4 py-3">
-    <template v-slot:item="{ item }">
+    <template #item="{ item }">
       <v-menu v-if="item.menuItems" offset-y>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn color="primary" x-small text v-bind="attrs" v-on="on">
             {{ item.text }}
           </v-btn>
@@ -14,12 +14,18 @@
             :exact="menuItem.exact"
             :key="index"
           >
-            <v-list-item-title class="primary--text font-weight-regular">{{ menuItem.text }}</v-list-item-title>
+            <v-list-item-title v-if="menuItem.text" class="primary--text font-weight-regular">{{
+              menuItem.text
+            }}</v-list-item-title>
+            <v-icon v-else-if="menuItem.icon" small class="primary--text">{{ menuItem.icon }}</v-icon>
           </v-list-item>
         </v-list>
       </v-menu>
       <v-breadcrumbs-item v-if="!item.menuItems" :to="item.to" :disabled="item.disabled" :exact="item.exact">
-        {{ item.text }}
+        <template v-if="item.text">
+          {{ item.text }}
+        </template>
+        <v-icon v-else-if="item.icon" style="color: inherit">{{ item.icon }}</v-icon>
       </v-breadcrumbs-item>
     </template>
     <template #divider>
@@ -41,6 +47,7 @@ interface IBaseStringObject {
 interface IBaseBreadcrumbEntry {
   text: string
   to: string
+  icon?: string
 }
 
 interface IBreadcrumbEntry extends IBaseBreadcrumbEntry {
@@ -49,7 +56,7 @@ interface IBreadcrumbEntry extends IBaseBreadcrumbEntry {
 }
 
 // TODO: check if :group should be added here, after groups are implemented
-type ParamsWithUUID = ':form' | ':object' | ':id'
+type ParamsWithUUID = ':form' | ':entity' | ':id'
 
 interface ICustomBreadcrumbEntry {
   [key: string]: IBaseBreadcrumbEntry[]
@@ -61,7 +68,7 @@ interface ICollapsedBreadcrumbEntry {
 }
 
 interface ICustomBreadcrumbTextEntry {
-  [key: string]: { text: string }
+  [key: string]: { text: string; icon?: string }
 }
 
 interface IProps {
@@ -84,27 +91,28 @@ export default defineComponent<IProps>({
 
     // Define which keys from path should be replaces with custom Text
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
-      ':unit': { text: 'Dashboard' },
-      ':group': { text: '-' },
+      ':unit': { text: '', icon: 'mdi-home' },
       forms: { text: context.root.$t('breadcrumbs.forms') as string },
-      objects: { text: context.root.$t('breadcrumbs.objects') as string }
+      objects: { text: context.root.$t('breadcrumbs.objects') as string },
+      list: { text: context.root.$t('breadcrumbs.list_view') as string },
+      tree: { text: context.root.$t('breadcrumbs.tree_view') as string }
     }
 
     // TODO: check if :group should be added here, after groups are implemented
     // Definition of route fragments in path, which is represented with UUID in standard path
-    const paramsWithUUID: ParamsWithUUID[] = [':form', ':object', ':id']
+    const paramsWithUUID: ParamsWithUUID[] = [':form', ':entity', ':id']
 
     // KeyMap for definition of object properties which represent displayName
     const displayNameKeyMap = {
       ':form': 'name',
-      ':object': 'name', // TODO: change to displayName after implemented
+      ':entity': 'name', // TODO: change to displayName after implemented
       ':id': 'name' // TODO: change to displayName after implemented
     }
 
     // KeyMap for definition of KEY in $api.KEY.fetch()
     const apiKeyMap = {
       ':form': 'form',
-      ':object': 'entity',
+      ':entity': 'entity',
       ':id': 'entity'
     }
 
@@ -129,6 +137,10 @@ export default defineComponent<IProps>({
       // "param" has always pattern: type-UUID, where type can be form, process, control, asset, ...
       const paramSeparated = separateUUIDParam(param)
 
+      if(paramSeparated.id === '-') {
+        return { [type]: { text: context.root.$t('breadcrumbs.all') as string } }
+      }
+
       // If a parameter title is already cached, return its value
       if (sessionStorage.getItem(paramSeparated.id)) {
         return { [type]: { text: sessionStorage.getItem(paramSeparated.id) as string } }
@@ -138,12 +150,21 @@ export default defineComponent<IProps>({
       return new Promise<ICustomBreadcrumbTextEntry>(async resolve => {
         const apiKey = apiKeyMap[type]
         const displayNameKey = displayNameKeyMap[type]
-        // @ts-ignore
-        const api = context.root.$api[apiKey]
-        const text: string =
-          apiKey === 'entity'
-            ? (await api.fetch(getSchemaEndpoint(paramSeparated.type), paramSeparated.id))[displayNameKey]
-            : (await api.fetch(paramSeparated.id))[displayNameKey]
+
+        let text: string
+        if(apiKey === 'entity' && paramSeparated.type === 'scope') {
+          // @ts-ignore
+          text = (await context.root.$api.scope.fetch(paramSeparated.id))[displayNameKey]
+        } else if (apiKey === 'entity') {
+          const api = context.root.$api[apiKey]
+          // @ts-ignore
+          text = (await api.fetch(getSchemaEndpoint(paramSeparated.type), paramSeparated.id))[displayNameKey]
+        } else {
+          // @ts-ignore
+          const api = context.root.$api[apiKey]
+          text = (await api.fetch(paramSeparated.id))[displayNameKey]
+        }
+        
 
         sessionStorage.setItem(paramSeparated.id, text)
         resolve({ [type]: { text } })

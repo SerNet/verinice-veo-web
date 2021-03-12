@@ -6,61 +6,20 @@
     :items-per-page="itemsPerPage"
     :loading="loading"
     class="veo-object-list"
-    @click:row="$emit('click', $event)"
   >
     <template #no-data>
-      <span v-if="$route.params.param === '-'" class="text-center">
+      <span class="text-center">
         {{ $t('no_objects') }}
       </span>
-      <span v-else class="text-center">
-        {{ $t('no_child_objects') }} <nuxt-link :to="editItemLink">{{ $t('object_edit') }}</nuxt-link>
-      </span>
-    </template>
-    <template v-if="showParentLink" #body.prepend>
-      <tr @click="$emit('parent')">
-        <td>
-          <v-icon>mdi-arrow-left</v-icon>
-        </td>
-        <td colspan="5">
-          <i>{{ $t('parent_object') }}</i>
-        </td>
-      </tr>
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
-        <v-tooltip v-if="item.parts && item.parts.length > 0" bottom>
+        <v-tooltip bottom>
           <template #activator="{ on }">
-            <v-icon v-on="on">mdi-file-document-multiple</v-icon>
+            <v-icon v-on="on">mdi-format-list-checks</v-icon>
           </template>
           <template #default>
-            <span
-              class="d-inline-block text-center"
-              v-html="$t('object_has_subobjects', { amount: item.parts.length })"
-            />
-          </template>
-        </v-tooltip>
-        <v-tooltip v-else-if="item.members && item.members.length > 0" bottom>
-          <template #activator="{ on }">
-            <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
-          </template>
-          <template #default>
-            <span class="d-inline-block text-center" v-html="$t('scope_children', { amount: item.members.length })" />
-          </template>
-        </v-tooltip>
-        <v-tooltip v-else-if="item.members" bottom>
-          <template #activator="{ on }">
-            <v-icon v-on="on">mdi-archive</v-icon>
-          </template>
-          <template #default>
-            <span v-html="$t('scope_empty')" />
-          </template>
-        </v-tooltip>
-        <v-tooltip v-else bottom>
-          <template #activator="{ on }">
-            <v-icon v-on="on">mdi-file-document</v-icon>
-          </template>
-          <template #default>
-            <span v-html="$t('object_has_no_subobjects')" />
+            <span v-html="$t('form')" />
           </template>
         </v-tooltip>
         <v-tooltip bottom>
@@ -130,7 +89,7 @@
             {{ $t('clone') }}
           </template>
         </v-tooltip>
-        <v-tooltip v-if="$route.params.entity === '-'" bottom>
+        <v-tooltip bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
               <v-icon>
@@ -142,18 +101,6 @@
             {{ $t('delete') }}
           </template>
         </v-tooltip>
-        <v-tooltip v-else bottom>
-          <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('unlink', item)" v-on="on">
-              <v-icon>
-                mdi-link-off
-              </v-icon>
-            </v-btn>
-          </template>
-          <template #default>
-            {{ $t('unlink') }}
-          </template>
-        </v-tooltip>
       </div>
     </template>
   </v-data-table>
@@ -162,36 +109,24 @@
 {
   "en": {
     "by": "by",
-    "clone": "Clone object",
+    "clone": "Clone form",
     "created_at": "Created",
-    "delete": "Delete object",
-    "edit": "Edit object",
-    "no_objects": "There are no objects",
-    "no_child_objects": "This object has no sub objects",
-    "object_edit": "Edit this object",
-    "object_has_no_subobjects": "Standard object",
-    "object_has_subobjects": "Composite object<br>({amount} sub objects)",
-    "parent_object": "Parent object",
-    "scope_children": "Scope with members",
-    "scope_empty": "Empty scope",
-    "unlink": "Remove link",
+    "delete": "Delete form",
+    "edit": "Edit form",
+    "form": "Form",
+    "no_objects": "There are no forms",
+    "object_edit": "Edit this form",
     "updated_at": "Updated"
   },
   "de": {
     "by": "von",
-    "clone": "Objekt klonen",
+    "clone": "Formular klonen",
     "created_at": "Erstellt",
-    "delete": "Objekt löschen",
-    "edit": "Objekt bearbeiten",
-    "no_objects": "Es existieren keine Objekte!",
-    "no_child_objects": "Dieses Objekt hat keine Unterobjekte.",
-    "object_edit": "Dieses Objekt bearbeiten",
-    "object_has_no_subobjects": "Standardobjekt",
-    "object_has_subobjects": "Zusammengesetztes Objekt<br>({amount} Unterobjekte)",
-    "parent_object": "Übergeordnetes Objekt",
-    "scope_children": "Scope mit Inhalt",
-    "scope_empty": "Scope ohne Inhalt",
-    "unlink": "Verknüpfung entfernen",
+    "delete": "Formular löschen",
+    "edit": "Formular bearbeiten",
+    "form": "Formular",
+    "no_objects": "Es existieren keine Formulare!",
+    "object_edit": "Dieses Formular bearbeiten",
     "updated_at": "Aktualisiert"
   }
 }
@@ -209,10 +144,6 @@ export default Vue.extend({
       default: () => []
     },
     loading: {
-      type: Boolean,
-      default: false
-    },
-    showParentLink: {
       type: Boolean,
       default: false
     },
@@ -295,10 +226,6 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
-.veo-object-list {
-  cursor: pointer;
-}
-
 .veo-object-list__abbreviation {
   display: flex;
   flex-wrap: nowrap;
@@ -330,5 +257,11 @@ export default Vue.extend({
 
 ::v-deep .nowrap {
   white-space: nowrap;
+}
+
+::v-deep tbody {
+  tr:hover {
+    background-color: transparent !important;
+  }
 }
 </style>

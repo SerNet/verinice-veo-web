@@ -6,7 +6,7 @@
     <template #header>
       <v-row>
         <v-col>
-          <h1>{{ formattedSchemaType }} erstellen</h1>
+          <h1>{{ $t('object_create', { type: formattedSchemaType }) }}</h1>
         </v-col>
         <v-spacer />
         <v-col class="text-right">
@@ -37,11 +37,21 @@
     </template>
   </VeoPage>
 </template>
+<i18n>
+{
+  "de": {
+    "object_create": "{type} erstellen"
+  },
+  "en": {
+    "object_create": "Create {type}"
+  }
+}
+</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
-import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
+import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
@@ -55,7 +65,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: VeoEventPayload & { value: boolean }
+  alert: VeoEventPayload & { value: boolean, error: number }
 }
 
 export default Vue.extend({
@@ -78,7 +88,8 @@ export default Vue.extend({
         text: '',
         type: 0,
         title: this.$t('global.appstate.alert.error') as string,
-        saveButtonText: this.$t('global.button.no') as string
+        saveButtonText: this.$t('global.button.no') as string,
+        error: 0 as number
       }
     }
   },
@@ -102,7 +113,7 @@ export default Vue.extend({
     title(): string {
       return this.$fetchState.pending
         ? this.$t('breadcrumbs.objects')
-        : `Objekt erstellen - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
+        : `${this.$t('object_create', { type: this.formattedSchemaType })} - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
     },
     schemaType(): string | undefined {
       return getSchemaName(this.schemaEndpoint || '')
@@ -114,7 +125,7 @@ export default Vue.extend({
       return capitalize(this.schemaType)
     },
     parent(): string {
-      return this.$route.params.entity
+      return separateUUIDParam(this.$route.params.entity).id
     },
     unitID(): string {
       return separateUUIDParam(this.$route.params.unit).id
@@ -146,8 +157,12 @@ export default Vue.extend({
           } else {
             this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.parent}/list`)
           }
-        })
-        .finally(() => {
+        }).catch((error: { status: number; name: string }) => {
+          this.alert.text = error.name
+          this.alert.saveButtonText = this.$t('global.button.ok') as string
+          this.alert.error = 0
+          this.alert.value = true
+        }).finally(() => {
           this.saveBtnLoading = false
         })
     },

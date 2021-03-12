@@ -1,15 +1,24 @@
 <template>
   <VeoDialog v-model="dialog" :headline="$t('headline')">
     <template #default>
-      {{ $t('text', { name }) }}
+      {{ $t('create_entity') }}
+      <v-select
+        v-model="type"
+        :items="schemas"
+      />
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
-        {{ $t('global.button.no') }}
+        {{ $t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="$emit('delete', item.id)">
-        {{ $t('global.button.delete') }}
+      <v-btn
+        text
+        color="primary"
+        :disabled="!type"
+        @click="$emit('create-entity', type)"
+      >
+        {{ $t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
@@ -17,25 +26,26 @@
 <i18n>
 {
   "en": {
-  "text": "Do you really want to delete the object \"{name}\"?",
-  "headline": "Delete object"
+    "create_entity": "Please specify the type of the new object.",
+    "headline": "Create new object"
   },
   "de": {
-    "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",
-    "headline": "Objekt löschen"
+    "create_entity": "Bitte wählen Sie den Typ des neuen Objektes.",
+    "headline": "Objekt erstellen"
   }
 }
 </i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
   dialog: boolean
   noWatch: boolean
+  type?: string
 }
 
 export default Vue.extend({
@@ -47,21 +57,17 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
-    item: {
-      type: Object as Prop<IVeoEntity>,
-      default: undefined
+    schemas: {
+      type: Array as Prop<string[]>,
+      default: () => []
     }
   },
   data() {
     return {
       dialog: false,
-      noWatch: false
+      noWatch: false,
+      type: undefined
     } as IData
-  },
-  computed: {
-    name(): string {
-      return this.item?.name ?? ''
-    }
   },
   watch: {
     value(newValue: boolean) {
@@ -72,6 +78,10 @@ export default Vue.extend({
     dialog(newValue: boolean) {
       if (!this.noWatch) {
         this.$emit('input', newValue)
+      }
+
+      if (newValue) {
+        this.type = undefined
       }
     }
   },

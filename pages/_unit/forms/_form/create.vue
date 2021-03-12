@@ -1,6 +1,6 @@
 <script lang="ts">
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
-import BaseObjectForm from '~/pages/_unit/forms/_form/_object.vue'
+import { separateUUIDParam } from '~/lib/utils'
+import BaseObjectForm from '~/pages/_unit/forms/_form/_entity.vue'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 export default BaseObjectForm.extend({
@@ -23,23 +23,24 @@ export default BaseObjectForm.extend({
     async action(objectType: string) {
       const createdObjectUUID = await this.create(objectType)
       if (createdObjectUUID) {
-        const createdObjectURL = `/${this.unitRoute}/forms/${this.formRoute}/${createUUIDUrlParam(
-          objectType,
-          createdObjectUUID
-        )}`
-        this.$router.push(createdObjectURL)
-      } else {
-        throw new Error('UUID of the create object does not exist!')
+        this.$router.push(`/${this.unitRoute}/forms/${this.formRoute}`)
       }
     },
     async create(objectType: string): Promise<string | undefined> {
-      const res = await this.$api.entity.create(getSchemaEndpoint(this.objectType || ''), {
+      return this.$api.entity.create(getSchemaEndpoint(this.objectType || ''), {
         ...this.form.objectData,
         owner: {
           targetUri: `/units/${this.unitId}`
         }
+      }).then((data: any) => {
+        return data.resourceId
+      }).catch((error: { status: number; name: string }) => {
+        this.alert.text = error.name
+        this.alert.saveButtonText = this.$t('global.button.ok') as string
+        this.alert.error = 0
+        this.alert.value = true
+        return undefined
       })
-      return res.resourceId
     }
   }
 })

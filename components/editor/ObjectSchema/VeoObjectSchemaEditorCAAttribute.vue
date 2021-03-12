@@ -32,8 +32,16 @@
         </v-col>
       </v-row>
       <v-row v-if="form.data.type === 'enum'" class="flex-column">
-        <v-col class="py-0">
+        <v-col class="py-0 d-flex align-center">
           <h3>{{ $t('editor.objectschema.aspect.values') }}</h3>
+          <v-checkbox
+            v-model="form.data.multiple"
+            dense
+            hide-details
+            :label="$t('multiple')"
+            class="mt-0 pt-0 ml-4"
+            @change="doUpdate($event, 'multiple')"
+          />
         </v-col>
         <v-col class="py-0">
           <v-combobox
@@ -70,8 +78,18 @@
     </v-list-item-action>
   </v-list-item>
 </template>
+<i18n>
+{
+  "de": {
+    "multiple": "Mehrfachauswahl"
+  },
+  "en": {
+    "multiple": "Multiple"
+  }
+}
+</i18n>
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@nuxtjs/composition-api'
+import { defineComponent, ref, computed, watch, nextTick, Ref } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 import { INPUT_TYPES } from '~/types/VEOEditor'
 
@@ -81,6 +99,7 @@ interface IProps {
   description: string
   aspectName: string
   enum: any[]
+  multiple: boolean
 }
 
 export default defineComponent<IProps>({
@@ -89,15 +108,19 @@ export default defineComponent<IProps>({
     type: { type: String, default: 'enum' },
     description: { type: String, default: '' },
     aspectName: { type: String, required: true },
-    enum: { type: Array, default: () => [] }
+    enum: { type: Array, default: () => [] },
+    multiple: { type: Boolean, default: false }
   },
   setup(props, context) {
-    const prefix = computed(() => props.aspectName)
+    const prefix = computed(() => props.aspectName + '_')
 
     watch(
       props,
       (newValue: any) => {
-        form.value.data = newValue
+        form.value.data = { ...newValue }
+        nextTick().then(() => {
+          form.value.data.multiple = newValue.multiple
+        })
       },
       {
         deep: true
@@ -111,6 +134,10 @@ export default defineComponent<IProps>({
       rules: {
         title: [(value: string) => trim(value).length > 0]
       }
+    })
+
+    nextTick().then(() => {
+      form.value.data.multiple = props.multiple
     })
 
     const types = computed(() => {

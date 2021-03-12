@@ -8,8 +8,8 @@
         {{ $t('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="$emit('delete', item.id)">
-        {{ $t('global.button.delete') }}
+      <v-btn text color="primary" :disabled="!item" @click="$emit('exit', item.id)">
+        {{ $t('global.button.yes') }}
       </v-btn>
     </template>
   </VeoDialog>
@@ -17,12 +17,12 @@
 <i18n>
 {
   "en": {
-  "text": "Do you really want to delete the object \"{name}\"?",
-  "headline": "Delete object"
+  "text": "The object \"{name}\" has been edited. Do you really want to leave this page?",
+  "headline": "Close"
   },
   "de": {
-    "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",
-    "headline": "Objekt löschen"
+    "text": "Das Objekt \"{name}\" wurde bearbeitet. Wollen Sie wirklich die Seite verlassen?",
+    "headline": "Verlassen"
   }
 }
 </i18n>
@@ -52,11 +52,11 @@ export default Vue.extend({
       default: undefined
     }
   },
-  data() {
+  data(): IData {
     return {
       dialog: false,
       noWatch: false
-    } as IData
+    }
   },
   computed: {
     name(): string {

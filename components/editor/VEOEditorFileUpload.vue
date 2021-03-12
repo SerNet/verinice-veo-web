@@ -50,6 +50,10 @@ export default Vue.extend({
     submitButtonText: {
       type: String,
       default: ''
+    },
+    clearInput: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -61,6 +65,14 @@ export default Vue.extend({
   computed: {
     buttonText(): string {
       return this.submitButtonText || (this.$t('editor.upload.button.text') as string)
+    }
+  },
+  watch: {
+    clearInput(newValue) {
+      if(newValue) {
+        this.file = undefined
+        this.$emit('update:clearInput')
+      }
     }
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="fill-height fill-width d-flex flex-column">
+  <div class="fill-height fill-width d-flex flex-column" style="overflow: hidden;">
     <div style="flex-grow: 1; overflow: auto;">
       <div class="editor" :style="{ resize: 'vertical', width: '100%' }">
         <div ref="editor" style="height: 100%" @keyup="onChangedCode($event)" />
@@ -241,11 +241,6 @@ export default defineComponent<Props>({
   ::v-deep .cm-focused {
     outline: none !important;
   }
-}
-
-.veo-editor-save-button {
-  background-color: rgb(245, 245, 245);
-  flex-grow: 0;
 }
 
 /*

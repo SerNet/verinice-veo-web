@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="schema-editor-wrapper d-flex flex-column fill-height">
     <CodeEditor :value="code" @input="onInput" />
     <div v-if="!readonly" class="veo-editor-save-button">
       <v-btn class="mx-4 my-2" color="primary" outlined :disabled="saveButtonDisabled" @click="updateSchema()">{{
@@ -72,4 +72,15 @@ export default defineComponent<IProps>({
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.veo-editor-save-button {
+  background-color: rgb(245, 245, 245);
+  flex-grow: 0;
+}
+
+.schema-editor-wrapper {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+</style>

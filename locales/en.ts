@@ -243,12 +243,17 @@ export default {
   'unit.index.title': 'Dashboard',
   'unit.select.label': 'Unit',
 
+  'breadcrumbs.all': 'All',
   'breadcrumbs.settings': 'Settings',
   'breadcrumbs.help': 'Manual',
+  'breadcrumbs.detail_view': 'Detail view',
   'breadcrumbs.editor': 'Editors',
   'breadcrumbs.forms': 'Forms',
+  'breadcrumbs.list_view': 'List view',
   'breadcrumbs.objects': 'Objects',
   'breadcrumbs.objectschema': 'Object schema',
+  'breadcrumbs.scopes': 'Scopes',
+  'breadcrumbs.tree_view': 'Tree view',
   'breadcrumbs.history': 'History',
   'breadcrumbs.create': 'Create'
 }

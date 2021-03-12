@@ -143,6 +143,7 @@
         :md="6"
         :xl="6"
         height="100%"
+        content-class="ose__code-editor"
       >
         <SchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
       </VeoPage>
@@ -238,16 +239,20 @@ export default Vue.extend({
     downloadSchema() {
       if (this.$refs.downloadButton) {
         const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(
-          JSON.stringify(this.objectSchemaHelper?.toSchema())
+          JSON.stringify(this.objectSchemaHelper?.toSchema(), undefined, 2)
         )}`
         ;(this.$refs.downloadButton as any).href = data
         ;(this.$refs.downloadButton as any).download = `os_${this.objectSchemaHelper?.getTitle() || 'download'}.json`
       }
     },
     validate() {
-      console.log(this.objectSchemaHelper?.validate())
       this.schemaIsValid = this.objectSchemaHelper?.validate() || { valid: false, errors: [], warnings: [] }
     }
   }
 })
 </script>
+<style>
+.ose__code-editor {
+  height: 100%;
+}
+</style>

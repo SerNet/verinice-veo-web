@@ -14,12 +14,12 @@
   <v-list-group
     v-else
     :key="name"
-    :value="!collapsed"
+    :value="expanded"
     no-action
     :prepend-icon="icon"
     active-class="veo-active-link-group"
     :sub-group="!topLevelItem"
-    @input="setCollapsedState(name, !$event)"
+    @input="onInputExpanded"
   >
     <template #activator>
       <v-list-item-title>{{ name }}</v-list-item-title>
@@ -34,11 +34,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import { defineComponent, PropType, Ref, ref, watch } from '@nuxtjs/composition-api'
 import { INavItem } from './VeoPrimaryNavigation.vue'
 
 interface IProps extends INavItem {
   persistUIState: Function
+  miniVariant: boolean
 }
 
 export default defineComponent<IProps>({
@@ -72,6 +73,9 @@ export default defineComponent<IProps>({
       type: Boolean,
       default: false
     },
+    miniVariant: {
+      type: Boolean
+    },
     topLevelItem: {
       type: Boolean,
       required: true
@@ -81,15 +85,48 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
-    function setCollapsedState(item: string, collapsed: boolean) {
-      context.emit('update:collapsed', collapsed)
+    const expanded: Ref<boolean | undefined> = ref(!props.collapsed)
 
-      props.persistUIState?.(collapsed)
+    watch(
+      () => props.collapsed,
+      (newValue: boolean | undefined) => {
+        if (expanded.value !== !newValue) {
+          expanded.value = !newValue
+        }
+      }
+    )
+
+    function emitCollapsed(newExpandedVal: boolean | undefined) {
+      context.emit('update:collapsed', !newExpandedVal)
+      props.persistUIState?.(!newExpandedVal)
     }
 
-    return { setCollapsedState }
+    function onInputExpanded(newExpandedVal: boolean | undefined) {
+      // Set local expanded variable to new value
+      expanded.value = newExpandedVal
+      // Create a special behavior, when minivariant is active
+      if (props.miniVariant) {
+        // If new state of a list group is not expanded (false),
+        // but after clicking expansion panel it should be in minivariant it should be opened
+        // therefore hack it with $nextTick to force expansion
+        if (!expanded.value) {
+          context.root.$nextTick(() => {
+            expanded.value = true
+            emitCollapsed(expanded.value)
+            context.emit('update-mini-variant', false)
+          })
+        } else {
+          // If a new state of the group is expanded (true), then no need for hack
+          emitCollapsed(expanded.value)
+          context.emit('update-mini-variant', false)
+        }
+      } else {
+        emitCollapsed(expanded.value)
+      }
+    }
+
+    return { expanded, onInputExpanded }
   }
 })
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

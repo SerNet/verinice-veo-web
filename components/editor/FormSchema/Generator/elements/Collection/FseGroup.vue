@@ -168,4 +168,8 @@ export default Vue.extend({
   text-align: center;
   color: $grey;
 }
+
+.level-0 {
+  border: 0
+}
 </style>

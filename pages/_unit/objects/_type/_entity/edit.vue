@@ -13,7 +13,7 @@
                     </v-btn>
                   </template>
                   <template #default>
-                    {{ $t('list_view') }}
+                    {{ $t('breadcrumbs.list_view') }}
                   </template>
                 </v-tooltip>
                 <v-tooltip bottom>
@@ -23,7 +23,7 @@
                     </v-btn>
                   </template>
                   <template #default>
-                    {{ $t('tree_view') }}
+                    {{ $t('breadcrumbs.tree_view') }}
                   </template>
                 </v-tooltip>
                 <v-tooltip bottom>
@@ -33,7 +33,7 @@
                     </v-btn>
                   </template>
                   <template #default>
-                    {{ $t('detail_view') }}
+                    {{ $t('breadcrumbs.detail_view') }}
                   </template>
                 </v-tooltip>
               </v-btn-toggle>
@@ -55,13 +55,19 @@
               :is-valid.sync="isValid"
               :error-messages.sync="errorMessages"
               class="mb-8"
+              @input="entityModified.isModified = true"
+            />
+            <VeoEntityModifiedDialog
+              v-model="entityModified.dialog"
+              :item="form.objectData"
+              @exit="$router.push(entityModified.target)"
             />
             <VeoAlert
               v-model="alert.value"
               v-bind="alert"
               style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
             >
-              <template #additional-button>
+              <template v-if="alert.error === 412" #additional-button>
                 <v-btn outlined text color="error" @click="$fetch()">{{ $t('global.button.yes') }}</v-btn>
               </template>
             </VeoAlert>
@@ -71,7 +77,7 @@
       <VeoPage absolute-size :cols="12" :md="4" :xl="4">
         <VeoTabs>
           <template #tabs>
-            <v-tab disabled>{{ $t('unit.data.history') }}</v-tab>
+            <v-tab>{{ $t('unit.data.history') }}</v-tab>
           </template>
         </VeoTabs>
         <VeoObjectHistory :object="form.objectData" />
@@ -82,32 +88,29 @@
 <i18n>
 {
   "en": {
-    "detail_view": "Detail view",
-    "edit_object": "Edit {title}",
-    "list_view": "List view",
-    "tree_view": "Tree view"
+    "edit_object": "Edit \"{title}\""
   },
   "de": {
-    "detail_view": "Detailansicht",
-    "edit_object": "{title} bearbeiten",
-    "list_view": "Listenansicht",
-    "tree_view": "Baumansicht"
+    "edit_object": "\"{title}\" bearbeiten"
   }
 }
 </i18n>
 <script lang="ts">
 import Vue from 'vue'
+import { Route } from 'vue-router/types/index'
+import { capitalize } from 'lodash'
+
 import { IForm, separateUUIDParam } from '~/lib/utils'
-import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_object.vue'
+import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
 import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
+import VeoEntityModifiedDialog from '~/components/objects/VeoEntityModifiedDialog.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaName } from '~/plugins/api/schema'
-import { capitalize } from 'lodash'
 import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 interface IData {
@@ -115,7 +118,12 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: VeoEventPayload & { value: boolean }
+  alert: VeoEventPayload & { value: boolean, error: number }
+  entityModified: {
+    isModified: boolean
+    dialog: boolean
+    target?: Route
+  }
 }
 
 export default Vue.extend({
@@ -124,7 +132,8 @@ export default Vue.extend({
     VeoPage,
     VeoPageWrapper,
     VeoTabs,
-    VeoObjectHistory
+    VeoObjectHistory,
+    VeoEntityModifiedDialog
   },
   data(): IData {
     return {
@@ -141,14 +150,20 @@ export default Vue.extend({
         text: '',
         type: 0,
         title: this.$t('global.appstate.alert.error') as string,
-        saveButtonText: this.$t('global.button.no') as string
+        saveButtonText: this.$t('global.button.no') as string,
+        error: 0 as number
+      },
+      entityModified: {
+        isModified: false,
+        dialog: false,
+        target: undefined
       }
     }
   },
   async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.schemaType)
+    const objectSchema = await this.$api.schema.fetch(this.objectType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
-    const objectData = await this.$api.entity.fetch(this.$route.params.type, this.$route.params.entity)
+    const objectData = await this.$api.entity.fetch(this.$route.params.type, this.entityId)
     this.form = {
       objectSchema,
       objectData,
@@ -158,36 +173,25 @@ export default Vue.extend({
   },
   head(): any {
     return {
-      title: this.title
+      title: this.objectTitle
     }
   },
   computed: {
-    title(): string {
-      return this.$fetchState.pending
-        ? this.$t('breadcrumbs.objects')
-        : `Objekt erstellen - ${capitalize(this.schemaType)} - ${this.$t('breadcrumbs.objects')}`
-    },
     objectTitle(): string {
       return this.$t('edit_object', {
-        title: this.$fetchState.pending ? this.formattedSchemaType : this.form.objectData.name
+        title: this.$fetchState.pending ? this.formattedObjectType : this.form.objectData.name
       })
     },
-    schemaType(): string | undefined {
+    objectType(): string | undefined {
       return getSchemaName(this.schemaEndpoint || '')
     },
     schemaEndpoint(): string | undefined {
       return this.$route.params.type
     },
-    formattedSchemaType(): string {
-      return capitalize(this.schemaType)
+    formattedObjectType(): string {
+      return capitalize(this.objectType)
     },
-    parent(): string {
-      return this.$route.params.entity
-    },
-    unitID(): string {
-      return separateUUIDParam(this.$route.params.unit).id
-    },
-    objectID(): string {
+    entityId(): string {
       return separateUUIDParam(this.$route.params.entity).id
     }
   },
@@ -197,23 +201,22 @@ export default Vue.extend({
       this.formatObjectData()
 
       await this.$api.entity
-        .update(this.schemaEndpoint, this.objectID, this.form.objectData)
-        .then(async (data: IVeoAPIMessage) => {
+        .update(this.schemaEndpoint, this.entityId, this.form.objectData)
+        .then(async (_data: IVeoAPIMessage) => {
+          this.entityModified.isModified = false
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
 
-          if (this.parent !== '-') {
-            const parent = await this.$api.entity.fetch(this.schemaEndpoint, this.parent)
-            parent.parts.push({
-              targetUri: `${this.$config.apiUrl}/${this.schemaEndpoint}/${data.resourceId}`
-            })
-            this.$api.entity.update(this.schemaEndpoint, parent.id, parent).finally(() => {
-              this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.parent}/list`)
-            })
-          } else {
-            this.$router.push(`/${this.$route.params.unit}/objects/${this.schemaEndpoint}/${this.parent}/list`)
-          }
+          this.$router.back()
         })
-        .catch(() => {
+        .catch((error: { status: number; name: string }) => {
+          if(error.status === 412) {
+            this.alert.text = this.$t('unit.forms.nrr')
+            this.alert.saveButtonText = this.$t('global.button.no') as string
+          } else {
+            this.alert.text = error.name
+            this.alert.saveButtonText = this.$t('global.button.ok') as string
+          }
+          this.alert.error = error.status
           this.alert.value = true
         })
         .finally(() => {
@@ -242,6 +245,21 @@ export default Vue.extend({
       this.$router.push(
         `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/list`
       )
+    },
+    generateEntityLink(uuid: string): string {
+      return uuid === '-' ? '-' : `${this.objectType}-${uuid}`
+    }
+  },
+  beforeRouteLeave(to: Route, _from: Route, next: Function) {
+    // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
+    if(this.entityModified.isModified && this.entityModified.dialog) {
+      next()
+    } else if (this.entityModified.isModified) { // If the form was modified and the dialog is closed, show it and abort navigation
+      this.entityModified.target = to
+      this.entityModified.dialog = true
+      next(false)
+    } else { // The form wasn't modified, proceed as if this hook doesn't exist
+      next()
     }
   }
 })

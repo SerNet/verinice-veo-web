@@ -66,7 +66,7 @@ export default {
   'editor.formschema.edit.css.style.text': 'Styles',
   'editor.formschema.edit.input.text': 'Text',
   'editor.formschema.edit.input.text.text': 'Text des Elements',
-  'editor.formschema.edit.input.direction': 'Ausirchtung',
+  'editor.formschema.edit.input.direction': 'Ausrichtung',
   'editor.formschema.edit.input.direction.horizontal': 'Horizontal',
   'editor.formschema.edit.input.direction.vertical': 'Vertikal',
   'editor.formschema.edit.input.headline': 'Input Element anpassen',
@@ -203,7 +203,7 @@ export default {
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 
-  'page.forms.navigation.group.title': 'Inhaltsverzeichnis',
+  'page.forms.navigation.group.title': 'Inhalt',
 
   'search.label': 'verinice. durchsuchen',
 
@@ -244,12 +244,17 @@ export default {
   'unit.index.title': 'Dashboard',
   'unit.select.label': 'Unit',
 
+  'breadcrumbs.all': 'Alle',
   'breadcrumbs.settings': 'Einstellungen',
   'breadcrumbs.help': 'Handbuch',
+  'breadcrumbs.detail_view': 'Detailansicht',
   'breadcrumbs.editor': 'Editoren',
   'breadcrumbs.forms': 'Formulare',
+  'breadcrumbs.list_view': 'Listenansicht',
   'breadcrumbs.objects': 'Objekte',
   'breadcrumbs.objectschema': 'Objektschema',
+  'breadcrumbs.scopes': 'Scopes',
+  'breadcrumbs.tree_view': 'Baumansicht',
   'breadcrumbs.history': 'Verlauf',
   'breadcrumbs.create': 'Erstellen'
 }

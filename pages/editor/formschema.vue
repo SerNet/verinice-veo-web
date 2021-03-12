@@ -352,7 +352,7 @@ export default defineComponent<IProps>({
 
     function downloadSchema() {
       if (downloadButton.value && downloadButton.value !== null) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value))}`
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`
         downloadButton.value.href = data
         downloadButton.value.download = `fs_${formSchema.value?.name || 'download'}.json`
       }

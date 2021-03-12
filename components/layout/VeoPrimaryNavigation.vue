@@ -12,16 +12,20 @@
   >
     <div class="d-flex flex-column fill-height">
       <v-list nav dense :shaped="!miniVariant" :rounded="miniVariant" expand>
-        <template v-for="item in items">
+        <template v-for="(item, index) in items">
           <VeoPrimaryNavigationEntry
             :key="item.name"
             v-bind="item"
             :collapsed.sync="item.collapsed"
+            :mini-variant="miniVariant"
+            @update:collapsed="onUpdateCollapsed(index, $event)"
             :persist-u-i-state="item.persistCollapsedState"
+            @update-mini-variant="setMiniVariant($event)"
           />
         </template>
       </v-list>
-      <v-spacer />
+    </div>
+    <template #append>
       <v-list nav dense class="pa-0">
         <v-divider />
         <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="setMiniVariant(!miniVariant)">
@@ -33,7 +37,7 @@
           <v-list-item-title v-else>{{ $t('global.menu.collapse') }}</v-list-item-title>
         </v-list-item>
       </v-list>
-    </div>
+    </template>
   </v-navigation-drawer>
 </template>
 
@@ -91,6 +95,14 @@ export default Vue.extend({
       this.getNavEntries(this.$route)
     }
   },
+  computed: {
+    objectToToggleObjectFormCollapse() {
+      return {
+        [this.$t('breadcrumbs.objects') as string]: this.$t('breadcrumbs.forms') as string,
+        [this.$t('breadcrumbs.forms') as string]: this.$t('breadcrumbs.objects') as string
+      }
+    }
+  },
   methods: {
     getNavEntries(route: Route) {
       this.items = []
@@ -107,7 +119,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: 'Scopes',
+            name: this.$t('breadcrumbs.scopes') as string,
             icon: 'mdi-archive',
             exact: false,
             to: `/${route.params.unit}/scopes`,
@@ -198,13 +210,13 @@ export default Vue.extend({
     },
 
     async fetchFormTypes(): Promise<INavItem[]> {
-      const routeUnitParam = this.$route.params.unit
+      const routeUnitParam = separateUUIDParam(this.$route.params.unit).id
       return await this.$api.form.fetchAll({ unit: routeUnitParam }).then((formTypes: IVeoFormSchemaMeta[]) =>
         formTypes.map((entry: IVeoFormSchemaMeta) => {
           return {
             name: entry.name,
             exact: false,
-            to: `/${routeUnitParam}/forms/${createUUIDUrlParam('form', entry.id)}/`,
+            to: `/${createUUIDUrlParam('unit', routeUnitParam)}/forms/${createUUIDUrlParam('form', entry.id)}/`,
             disabled: false,
             topLevelItem: false
           }
@@ -214,6 +226,19 @@ export default Vue.extend({
     setMiniVariant(miniVariant: boolean) {
       this.miniVariant = miniVariant
       LocalStorage.primaryNavMiniVariant = miniVariant
+    },
+    onUpdateCollapsed(itemIndex: number, collapsed: boolean) {
+      this.items[itemIndex].collapsed = collapsed
+      this.items[itemIndex].persistCollapsedState?.(collapsed)
+      // Get an index of the opposite forms vs. object
+      const toggleItemIndex = this.items.findIndex(
+        ({ name }) => name === this.objectToToggleObjectFormCollapse[this.items[itemIndex].name]
+      )
+      // If opposite item index exists, the item is opened and the current item was also opened, close the opposite
+      if (toggleItemIndex !== -1 && !this.items[toggleItemIndex].collapsed && !collapsed) {
+        this.items[toggleItemIndex].collapsed = true
+        this.items[toggleItemIndex].persistCollapsedState?.(true)
+      }
     }
   }
 })
