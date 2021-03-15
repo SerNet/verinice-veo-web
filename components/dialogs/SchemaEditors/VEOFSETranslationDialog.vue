@@ -49,6 +49,7 @@
             </v-col>
           </v-row>
         </v-form>
+        <small>{{ $t('editor.dialog.requiredfields') }}</small>
       </div>
     </template>
     <template #dialog-options>
