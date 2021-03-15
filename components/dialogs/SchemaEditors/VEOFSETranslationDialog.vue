@@ -2,49 +2,53 @@
   <VeoDialog :value="value" large :headline="$t('editor.formschema.translation')" @input="onDialogStatus">
     <template #default>
       <div style="min-height: 20vh">
-        <v-row no-gutters class="align-center mt-4">
-          <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"
-              >{{ $t('editor.formschema.translation.edit.language.input.label.text') }}*:</span
-            >
-          </v-col>
-          <v-col :cols="12" :md="5">
-            <v-autocomplete
-              v-model="dialog.language"
-              :items="supportedLanguages"
-              :label="$t('editor.formschema.translation.edit.language.input.label')"
-              required
-            />
-          </v-col>
-        </v-row>
-        <v-row no-gutters class="align-center mt-4">
-          <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"
-              >{{ $t('editor.formschema.translation.edit.supportedlanguages.input.label.text') }}*:</span
-            >
-          </v-col>
-          <v-col :cols="12" :md="5">
-            <v-autocomplete
-              :value="dialog.languages"
-              :items="languageItems"
-              multiple
-              :label="$t('editor.formschema.translation.edit.supportedlanguages.input.label')"
-              required
-              @input="onInputLanguages"
-            />
-          </v-col>
-        </v-row>
+        <v-form v-model="dialog.valid">
+          <v-row no-gutters class="align-center mt-4">
+            <v-col :cols="12" :md="5">
+              <span style="font-size: 1.2rem;"
+                >{{ $t('editor.formschema.translation.edit.language.input.label.text') }}*:</span
+              >
+            </v-col>
+            <v-col :cols="12" :md="5">
+              <v-autocomplete
+                v-model="dialog.language"
+                :items="supportedLanguages"
+                :rules="requiredRule"
+                :label="$t('editor.formschema.translation.edit.language.input.label')"
+                required
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="align-center mt-4">
+            <v-col :cols="12" :md="5">
+              <span style="font-size: 1.2rem;"
+                >{{ $t('editor.formschema.translation.edit.supportedlanguages.input.label.text') }}*:</span
+              >
+            </v-col>
+            <v-col :cols="12" :md="5">
+              <v-autocomplete
+                :value="dialog.languages"
+                :items="languageItems"
+                :rules="requiredRule"
+                multiple
+                :label="$t('editor.formschema.translation.edit.supportedlanguages.input.label')"
+                required
+                @input="onInputLanguages"
+              />
+            </v-col>
+          </v-row>
 
-        <v-row>
-          <v-col v-for="item in translationAsCode" :key="item.name" :cols="12">
-            <v-card outlined :key="item.name">
-              <v-card-title>{{ item.fullName }}</v-card-title>
-              <v-card-text>
-                <CodeEditor :key="item.name" :value="item.code" ref="codeEditor" @input="onInputCode($event, item)" />
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
+          <v-row>
+            <v-col v-for="item in translationAsCode" :key="item.name" :cols="12">
+              <v-card outlined :key="item.name">
+                <v-card-title>{{ item.fullName }}</v-card-title>
+                <v-card-text>
+                  <CodeEditor :key="item.name" :value="item.code" ref="codeEditor" @input="onInputCode($event, item)" />
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-form>
       </div>
     </template>
     <template #dialog-options>
@@ -52,7 +56,7 @@
         {{ $t('global.button.close') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" @click="onSave">
+      <v-btn text color="primary" :disabled="!dialog.valid" @click="onSave">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
@@ -103,6 +107,7 @@ export default Vue.extend({
   data() {
     return {
       dialog: {
+        valid: true,
         translation: {} as ITranslationCollection,
         language: '' as string,
         languages: [] as string[]
@@ -128,6 +133,9 @@ export default Vue.extend({
         fullName: this.languageItems.find(languageItem => languageItem.value === languageCode)?.text as string,
         code: this.dialog.translation[languageCode]
       }))
+    },
+    requiredRule() {
+      return [(v: any) => (Array.isArray(v) ? v.length > 0 : !!v)]
     }
   },
   watch: {
@@ -175,6 +183,10 @@ export default Vue.extend({
           this.dialog.translation[languageCode] = this.emptyObjectString
         }
       })
+      // If currently selected display language is not in the languages array, remove the variable dialog.language
+      if (!this.dialog.languages.includes(this.dialog.language)) {
+        this.dialog.language = ''
+      }
     }
   }
 })
