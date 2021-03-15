@@ -11,7 +11,7 @@
           <v-col :cols="12" :md="5">
             <v-autocomplete
               v-model="dialog.language"
-              :items="languageItems"
+              :items="supportedLanguages"
               :label="$t('editor.formschema.translation.edit.language.input.label')"
               required
             />
@@ -73,6 +73,11 @@ interface ITranslationCollection {
   [key: string]: string
 }
 
+interface IItem {
+  value: string
+  text: string
+}
+
 export default Vue.extend({
   components: {
     VeoDialog
@@ -106,11 +111,16 @@ export default Vue.extend({
     }
   },
   computed: {
-    languageItems() {
+    languageItems(): IItem[] {
       return (this.languages as string[]).map((languageCode: string) => ({
         value: languageCode,
-        text: this.$t(`editor.formschema.translation.language.fullname.${languageCode}`)
+        text: this.$t(`editor.formschema.translation.language.fullname.${languageCode}`) as string
       }))
+    },
+    supportedLanguages(): IItem[] {
+      return this.dialog.languages.map(
+        (language: string) => this.languageItems.find(item => item.value === language) as IItem
+      )
     },
     translationAsCode(): ITranslationItem[] {
       return this.dialog.languages.map((languageCode: string) => ({
