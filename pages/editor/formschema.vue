@@ -146,7 +146,7 @@
           <h3 class="text-center pb-1">{{ $t('editor.formschema.preview') }}</h3>
         </template>
         <template #default>
-          <v-card style="height: 100%" outlined>
+          <v-card style="height: 100%" flat>
             <VeoForm
               v-model="objectData"
               :schema="objectSchema"
