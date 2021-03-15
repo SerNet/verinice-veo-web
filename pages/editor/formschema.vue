@@ -146,7 +146,7 @@
           <h3 class="text-center pb-1">{{ $t('editor.formschema.preview') }}</h3>
         </template>
         <template #default>
-          <v-card style="height: 100%" outlined>
+          <v-card style="height: 100%" flat>
             <VeoForm
               v-model="objectData"
               :schema="objectSchema"
@@ -326,6 +326,10 @@ export default defineComponent<IProps>({
 
     function setFormSchema(schema: IVEOFormSchema) {
       formSchema.value = schema
+      // If a translation for current app language does not exist, initialise it
+      if (!formSchema.value.translation?.[context.root.$i18n.locale]) {
+        setFormTranslation({ ...formSchema.value.translation, ...{ [context.root.$i18n.locale]: {} } })
+      }
       showCreationDialog.value = !objectSchema.value || false
     }
 
@@ -352,7 +356,9 @@ export default defineComponent<IProps>({
 
     function downloadSchema() {
       if (downloadButton.value && downloadButton.value !== null) {
-        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`
+        const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(
+          JSON.stringify(formSchema.value, undefined, 2)
+        )}`
         downloadButton.value.href = data
         downloadButton.value.download = `fs_${formSchema.value?.name || 'download'}.json`
       }

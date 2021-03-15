@@ -1,26 +1,25 @@
-const PRIMARY_NAV_MINI_VARIANT = 'primary-navigation-drawer--mini-variant';
-const NAV_ENTRY_VEO_DATA_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-data-collapsed';
-const NAV_ENTRY_VEO_FORMS_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-forms-collapsed';
+const PRIMARY_NAV_MINI_VARIANT = 'primary-navigation-drawer--mini-variant'
+const NAV_ENTRY_VEO_DATA_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-data-collapsed'
+const NAV_ENTRY_VEO_FORMS_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-forms-collapsed'
 const DEFAULT_UNIT_DOMAINS = 'default-unit-domains'
 
 export default class LocalStorage {
   static clear() {
-    localStorage.clear();
+    localStorage.clear()
   }
 
   static set(key: string, value: string | null) {
-    if(value === null)
-      localStorage.removeItem(key);
-    else
-      localStorage.setItem(key, value);
+    if (value === null) localStorage.removeItem(key)
+    else localStorage.setItem(key, value)
   }
 
   static get(key: string) {
-    return localStorage.getItem(key);
+    return localStorage.getItem(key)
   }
 
-  static getBoolean(key: string) {
-    return LocalStorage.get(key) === true.toString();
+  static getBoolean(key: string, ifNotSet: boolean) {
+    const value = LocalStorage.get(key)
+    return typeof value === 'string' ? LocalStorage.get(key) === true.toString() : ifNotSet
   }
 
   static setBoolean(key: string, value: boolean) {
@@ -40,22 +39,21 @@ export default class LocalStorage {
   }
 
   static get primaryNavMiniVariant() {
-    return LocalStorage.getBoolean(PRIMARY_NAV_MINI_VARIANT)
+    return LocalStorage.getBoolean(PRIMARY_NAV_MINI_VARIANT, false)
   }
-
 
   static get navEntryVeoDataCollapsed() {
-    return LocalStorage.getBoolean(NAV_ENTRY_VEO_DATA_COLLAPSED)
+    return LocalStorage.getBoolean(NAV_ENTRY_VEO_DATA_COLLAPSED, true)
   }
-  
+
   static set navEntryVeoDataCollapsed(value: boolean) {
     LocalStorage.setBoolean(NAV_ENTRY_VEO_DATA_COLLAPSED, value)
   }
 
   static get navEntryVeoFormsCollapsed() {
-    return LocalStorage.getBoolean(NAV_ENTRY_VEO_FORMS_COLLAPSED)
+    return LocalStorage.getBoolean(NAV_ENTRY_VEO_FORMS_COLLAPSED, true)
   }
-  
+
   static set navEntryVeoFormsCollapsed(value: boolean) {
     LocalStorage.setBoolean(NAV_ENTRY_VEO_FORMS_COLLAPSED, value)
   }

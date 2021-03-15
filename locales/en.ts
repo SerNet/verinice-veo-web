@@ -92,7 +92,7 @@ export default {
   'editor.formschema.translation.language.fullname.it': 'Italian',
   'editor.formschema.translation.language.fullname.cs': 'Czech',
   'editor.formschema.translation.edit.language.input.label': 'Language',
-  'editor.formschema.translation.edit.language.input.label.text': 'Select a language',
+  'editor.formschema.translation.edit.language.input.label.text': 'Display language in form schema editor',
   'editor.formschema.translation.edit.supportedlanguages.input.label': 'Languages',
   'editor.formschema.translation.edit.supportedlanguages.input.label.text': 'Supported languages',
   'editor.formschema.wizard.create': 'Create form schema',

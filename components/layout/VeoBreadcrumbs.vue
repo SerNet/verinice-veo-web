@@ -25,7 +25,7 @@
         <template v-if="item.text">
           {{ item.text }}
         </template>
-        <v-icon v-else-if="item.icon" style="color: inherit">{{ item.icon }}</v-icon>
+        <v-icon v-else-if="item.icon" style="color: inherit; line-height: 21px">{{ item.icon }}</v-icon>
       </v-breadcrumbs-item>
     </template>
     <template #divider>
@@ -137,7 +137,7 @@ export default defineComponent<IProps>({
       // "param" has always pattern: type-UUID, where type can be form, process, control, asset, ...
       const paramSeparated = separateUUIDParam(param)
 
-      if(paramSeparated.id === '-') {
+      if (paramSeparated.id === '-') {
         return { [type]: { text: context.root.$t('breadcrumbs.all') as string } }
       }
 
@@ -152,7 +152,7 @@ export default defineComponent<IProps>({
         const displayNameKey = displayNameKeyMap[type]
 
         let text: string
-        if(apiKey === 'entity' && paramSeparated.type === 'scope') {
+        if (apiKey === 'entity' && paramSeparated.type === 'scope') {
           // @ts-ignore
           text = (await context.root.$api.scope.fetch(paramSeparated.id))[displayNameKey]
         } else if (apiKey === 'entity') {
@@ -164,7 +164,6 @@ export default defineComponent<IProps>({
           const api = context.root.$api[apiKey]
           text = (await api.fetch(paramSeparated.id))[displayNameKey]
         }
-        
 
         sessionStorage.setItem(paramSeparated.id, text)
         resolve({ [type]: { text } })
