@@ -37,9 +37,9 @@
     </template>
     <template #item.description="{ item, value }">
       <div class="veo-object-list__description">
-        <v-tooltip v-if="item.description_short" bottom>
+        <v-tooltip v-if="item.descriptionShort" bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.description_short }}</span>
+            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.descriptionShort }}</span>
           </template>
           <template #default>
             <span>{{ value }}</span>
@@ -149,7 +149,7 @@ export default Vue.extend({
     },
     sortingFunction: {
       type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
-      default: () => ((a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name))
+      default: () => (a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name)
     }
   },
   data() {
@@ -159,14 +159,16 @@ export default Vue.extend({
   },
   computed: {
     displayedItems(): IVeoEntity[] {
-      return this.items.map(item => {
-        // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
-        if(item.description && item.description.length >  40) {
-          item.description_short = item.description.substring(0, 40) + '...'
-        }
-        
-        return item
-      }).sort(this.sortingFunction)
+      return this.items
+        .map(item => {
+          // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+          if (item.description && item.description.length > 40) {
+            item.description_short = item.description.substring(0, 40) + '...'
+          }
+
+          return item
+        })
+        .sort(this.sortingFunction)
     },
     editItemLink(): string {
       return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
@@ -175,7 +177,7 @@ export default Vue.extend({
       return [
         {
           text: this.$t('unit.object.list.header.abbreviation'),
-          value: 'abbreviation',
+          value: 'abbreviation'
         },
         {
           text: this.$t('unit.object.list.header.title'),
@@ -195,7 +197,7 @@ export default Vue.extend({
         {
           align: 'end',
           text: this.$t('unit.object.list.header.updatedat'),
-          value: 'date',
+          value: 'date'
         },
         {
           align: 'end',
@@ -247,7 +249,8 @@ export default Vue.extend({
   white-space: nowrap;
 }
 
-.veo-object-list__date {}
+.veo-object-list__date {
+}
 
 .veo-object-list__actions {
   display: flex;
