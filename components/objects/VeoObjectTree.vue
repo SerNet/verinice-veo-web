@@ -24,8 +24,8 @@
           </template>
           <template #default>
             <span class="d-inline-block text-center">
-              {{ $t('object_has_subobjects') }}<br>
-              {{ $t('object_has_subobjects_amount', { amount: item.parts.length }) }}
+              {{ $t('object_has_subobjects') }}<br />
+              {{ $t('object_has_subobjects_amount', { amount: item.entry.parts.length }) }}
             </span>
           </template>
         </v-tooltip>
@@ -79,7 +79,8 @@
                 </span>
               </template>
               <template #default>
-                {{ $t('created_at') }}: {{ formatDate(item.entry.createdAt) }} {{ $t('by') }} {{ item.entry.createdBy }}<br />
+                {{ $t('created_at') }}: {{ formatDate(item.entry.createdAt) }} {{ $t('by') }} {{ item.entry.createdBy
+                }}<br />
                 {{ $t('updated_at') }}: {{ formatDate(item.entry.updatedAt) }} {{ $t('by') }} {{ item.entry.updatedBy }}
               </template>
             </v-tooltip>
@@ -156,7 +157,12 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="doUnlink(item)" v-on="on"  :class="$route.params.entity === '-' ? 'action-unlink' : ''">
+                <v-btn
+                  icon
+                  @click.stop="doUnlink(item)"
+                  v-on="on"
+                  :class="$route.params.entity === '-' ? 'action-unlink' : ''"
+                >
                   <v-icon>
                     mdi-link-off
                   </v-icon>
@@ -253,11 +259,13 @@ export default Vue.extend({
     },
     loadChildren: {
       type: Function,
-      default: () => ((_item: (IVeoEntity | IVeoScope) & { children: (IVeoScope | IVeoEntity)[]}) => { return []})
+      default: () => (_item: (IVeoEntity | IVeoScope) & { children: (IVeoScope | IVeoEntity)[] }) => {
+        return []
+      }
     },
     sortingFunction: {
       type: Function as Prop<(a: ITreeEntry, b: ITreeEntry) => number>,
-      default: () => ((a: ITreeEntry, b: ITreeEntry) => a.entry.name.localeCompare(b.entry.name))
+      default: () => (a: ITreeEntry, b: ITreeEntry) => a.entry.name.localeCompare(b.entry.name)
     },
     editItemLink: {
       type: String,
@@ -280,21 +288,23 @@ export default Vue.extend({
         this.updateItemsBasedOnProp()
       },
       deep: true
-    },
+    }
   },
   methods: {
     updateItemsBasedOnProp() {
-      let id = 0;
+      let id = 0
 
-      this.displayedItems = this.items.map((item: IVeoEntity | IVeoScope) => {
-        if (item.$type === 'scope' && (item as IVeoScope).members.length > 0) {
-          return { entry: item, children: [] as ITreeEntry[], id: ''+id++, type: item.$type }
-        } else if (item.parts && item.parts.length > 0) {
-          return { entry: item, children: [] as ITreeEntry[], id: ''+id++, type: item.$type }
-        } else {
-          return { entry: item, id: ''+id++, type: item.$type }
-        }
-      }).sort(this.sortingFunction)
+      this.displayedItems = this.items
+        .map((item: IVeoEntity | IVeoScope) => {
+          if (item.$type === 'scope' && (item as IVeoScope).members && (item as IVeoScope).members.length > 0) {
+            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.$type }
+          } else if (item.parts && item.parts.length > 0) {
+            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.$type }
+          } else {
+            return { entry: item, id: '' + id++, type: item.$type }
+          }
+        })
+        .sort(this.sortingFunction)
     },
     formatDate(date: string) {
       return (
@@ -314,7 +324,9 @@ export default Vue.extend({
       this.$emit('duplicate', entry.entry, this.getParent(entry.id)?.entry)
     },
     getParent(id: string): ITreeEntry | undefined {
-      return this.displayedItems.find((entry: ITreeEntry) => ((entry.children?.findIndex(child => child.id === id) ?? -1) > -1))
+      return this.displayedItems.find(
+        (entry: ITreeEntry) => (entry.children?.findIndex(child => child.id === id) ?? -1) > -1
+      )
     }
   },
   mounted() {
