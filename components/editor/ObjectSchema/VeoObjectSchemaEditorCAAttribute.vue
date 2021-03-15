@@ -55,7 +55,9 @@
             @input="doUpdate($event, 'enum')"
           >
             <template #label>
-              <span v-html="$t('editor.objectschema.aspect.values.hint')" />
+              <span>
+                {{ $t('editor.objectschema.aspect.values.hint') }}
+              </span>
             </template>
             <template #selection="data">
               <v-chip

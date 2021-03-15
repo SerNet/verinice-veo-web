@@ -17,7 +17,7 @@
       </span>
     </template>
     <template v-if="showParentLink" #body.prepend>
-      <tr @click="$emit('parent')">
+      <tr @click="$emit('navigate-parent')">
         <td>
           <v-icon>mdi-arrow-left</v-icon>
         </td>
@@ -33,10 +33,10 @@
             <v-icon v-on="on">mdi-file-document-multiple</v-icon>
           </template>
           <template #default>
-            <span
-              class="d-inline-block text-center"
-              v-html="$t('object_has_subobjects', { amount: item.parts.length })"
-            />
+            <span class="d-inline-block text-center">
+              {{ $t('object_has_subobjects') }}<br>
+              {{ $t('object_has_subobjects_amount', { amount: item.parts.length }) }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip v-else-if="item.members && item.members.length > 0" bottom>
@@ -44,7 +44,9 @@
             <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
           <template #default>
-            <span class="d-inline-block text-center" v-html="$t('scope_children', { amount: item.members.length })" />
+            <span class="d-inline-block text-center">
+              {{ $t('scope_children', { amount: item.members.length }) }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip v-else-if="item.members" bottom>
@@ -52,7 +54,9 @@
             <v-icon v-on="on">mdi-archive</v-icon>
           </template>
           <template #default>
-            <span v-html="$t('scope_empty')" />
+            <span>
+              {{ $t('scope_empty') }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip v-else bottom>
@@ -60,7 +64,9 @@
             <v-icon v-on="on">mdi-file-document</v-icon>
           </template>
           <template #default>
-            <span v-html="$t('object_has_no_subobjects')" />
+            <span>
+              {{ $t('object_has_no_subobjects') }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip bottom>
@@ -78,9 +84,9 @@
     </template>
     <template #item.description="{ item, value }">
       <div class="veo-object-list__description">
-        <v-tooltip v-if="item.description_short" bottom>
+        <v-tooltip v-if="item.descriptionShort" bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.description_short }}</span>
+            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.descriptionShort }}</span>
           </template>
           <template #default>
             <span>{{ value }}</span>
@@ -105,7 +111,7 @@
       </div>
     </template>
     <template #item.actions="{ item }">
-      <div class="veo-object-list__actions">
+      <div class="d-flex flex-nowrap justify-end">
         <v-tooltip bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="$emit('edit', item)" v-on="on">
@@ -170,7 +176,8 @@
     "no_child_objects": "This object has no sub objects",
     "object_edit": "Edit this object",
     "object_has_no_subobjects": "Standard object",
-    "object_has_subobjects": "Composite object<br>({amount} sub objects)",
+    "object_has_subobjects": "Composite object",
+    "object_has_subobjects_amount": "({amount} sub objects)",
     "parent_object": "Parent object",
     "scope_children": "Scope with members",
     "scope_empty": "Empty scope",
@@ -187,7 +194,8 @@
     "no_child_objects": "Dieses Objekt hat keine Unterobjekte.",
     "object_edit": "Dieses Objekt bearbeiten",
     "object_has_no_subobjects": "Standardobjekt",
-    "object_has_subobjects": "Zusammengesetztes Objekt<br>({amount} Unterobjekte)",
+    "object_has_subobjects": "Zusammengesetztes Objekt",
+    "object_has_subobjects_amount": "({amount} Unterobjekte)",
     "parent_object": "Übergeordnetes Objekt",
     "scope_children": "Scope mit Inhalt",
     "scope_empty": "Scope ohne Inhalt",
@@ -231,7 +239,7 @@ export default Vue.extend({
       return this.items.map(item => {
         // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
         if(item.description && item.description.length >  40) {
-          item.description_short = item.description.substring(0, 40) + '...'
+          item.descriptionShort = item.description.substring(0, 40) + '...'
         }
         
         return item
@@ -318,14 +326,6 @@ export default Vue.extend({
 .veo-object-list__description {
   overflow: hidden;
   white-space: nowrap;
-}
-
-.veo-object-list__date {}
-
-.veo-object-list__actions {
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-end;
 }
 
 ::v-deep .nowrap {

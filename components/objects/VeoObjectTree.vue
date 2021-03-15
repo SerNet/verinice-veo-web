@@ -23,10 +23,10 @@
             <v-icon v-on="on">mdi-file-document-multiple</v-icon>
           </template>
           <template #default>
-            <span
-              class="d-inline-block text-center"
-              v-html="$t('object_has_subobjects', { amount: item.entry.parts.length })"
-            />
+            <span class="d-inline-block text-center">
+              {{ $t('object_has_subobjects') }}<br />
+              {{ $t('object_has_subobjects_amount', { amount: item.entry.parts.length }) }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip v-else-if="item.entry.members && item.entry.members.length > 0" bottom>
@@ -34,7 +34,9 @@
             <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
           <template #default>
-            <span class="d-inline-block text-center" v-html="$t('scope_children', { amount: item.entry.members.length })" />
+            <span class="d-inline-block text-center">
+              {{ $t('scope_children', { amount: item.entry.members.length }) }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip v-else-if="item.entry.members" bottom>
@@ -42,7 +44,9 @@
             <v-icon v-on="on">mdi-archive</v-icon>
           </template>
           <template #default>
-            <span v-html="$t('scope_empty')" />
+            <span>
+              {{ $t('scope_empty') }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip v-else bottom>
@@ -50,7 +54,9 @@
             <v-icon v-on="on">mdi-file-document</v-icon>
           </template>
           <template #default>
-            <span v-html="$t('object_has_no_subobjects')" />
+            <span>
+              {{ $t('object_has_no_subobjects') }}
+            </span>
           </template>
         </v-tooltip>
         <v-tooltip bottom>
@@ -73,7 +79,8 @@
                 </span>
               </template>
               <template #default>
-                {{ $t('created_at') }}: {{ formatDate(item.entry.createdAt) }} {{ $t('by') }} {{ item.entry.createdBy }}<br />
+                {{ $t('created_at') }}: {{ formatDate(item.entry.createdAt) }} {{ $t('by') }} {{ item.entry.createdBy
+                }}<br />
                 {{ $t('updated_at') }}: {{ formatDate(item.entry.updatedAt) }} {{ $t('by') }} {{ item.entry.updatedBy }}
               </template>
             </v-tooltip>
@@ -150,7 +157,12 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="doUnlink(item)" v-on="on"  :class="$route.params.entity === '-' ? 'action-unlink' : ''">
+                <v-btn
+                  icon
+                  @click.stop="doUnlink(item)"
+                  v-on="on"
+                  :class="$route.params.entity === '-' ? 'action-unlink' : ''"
+                >
                   <v-icon>
                     mdi-link-off
                   </v-icon>
@@ -181,7 +193,8 @@
     "object_create_subentity": "Add child object",
     "object_edit": "Edit this object",
     "object_has_no_subobjects": "Standard object",
-    "object_has_subobjects": "Composite object<br>({amount} sub objects)",
+    "object_has_subobjects": "Composite object",
+    "object_has_subobjects_amount": "({amount} sub objects)",
     "parent_object": "Parent object",
     "scope_add": "Link scope",
     "scope_children": "Scope with members",
@@ -203,7 +216,8 @@
     "object_create_subentity": "Unterobjekt hinzufügen",
     "object_edit": "Dieses Objekt bearbeiten",
     "object_has_no_subobjects": "Standardobjekt",
-    "object_has_subobjects": "Zusammengesetztes Objekt<br>({amount} Unterobjekte)",
+    "object_has_subobjects": "Zusammengesetztes Objekt",
+    "object_has_subobjects_amount": "({amount} Unterobjekte)",
     "parent_object": "Übergeordnetes Objekt",
     "scope_add": "Scope verknüpfen",
     "scope_children": "Scope mit Inhalt",
@@ -245,11 +259,13 @@ export default Vue.extend({
     },
     loadChildren: {
       type: Function,
-      default: () => ((_item: (IVeoEntity | IVeoScope) & { children: (IVeoScope | IVeoEntity)[]}) => { return []})
+      default: () => (_item: (IVeoEntity | IVeoScope) & { children: (IVeoScope | IVeoEntity)[] }) => {
+        return []
+      }
     },
     sortingFunction: {
       type: Function as Prop<(a: ITreeEntry, b: ITreeEntry) => number>,
-      default: () => ((a: ITreeEntry, b: ITreeEntry) => a.entry.name.localeCompare(b.entry.name))
+      default: () => (a: ITreeEntry, b: ITreeEntry) => a.entry.name.localeCompare(b.entry.name)
     },
     editItemLink: {
       type: String,
@@ -272,21 +288,23 @@ export default Vue.extend({
         this.updateItemsBasedOnProp()
       },
       deep: true
-    },
+    }
   },
   methods: {
     updateItemsBasedOnProp() {
-      let id = 0;
+      let id = 0
 
-      this.displayedItems = this.items.map((item: IVeoEntity | IVeoScope) => {
-        if (item.$type === 'scope' && (item as IVeoScope).members.length > 0) {
-          return { entry: item, children: [] as ITreeEntry[], id: ''+id++, type: item.$type }
-        } else if (item.parts && item.parts.length > 0) {
-          return { entry: item, children: [] as ITreeEntry[], id: ''+id++, type: item.$type }
-        } else {
-          return { entry: item, id: ''+id++, type: item.$type }
-        }
-      }).sort(this.sortingFunction)
+      this.displayedItems = this.items
+        .map((item: IVeoEntity | IVeoScope) => {
+          if (item.$type === 'scope' && (item as IVeoScope).members && (item as IVeoScope).members.length > 0) {
+            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.$type }
+          } else if (item.parts && item.parts.length > 0) {
+            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.$type }
+          } else {
+            return { entry: item, id: '' + id++, type: item.$type }
+          }
+        })
+        .sort(this.sortingFunction)
     },
     formatDate(date: string) {
       return (
@@ -306,7 +324,9 @@ export default Vue.extend({
       this.$emit('duplicate', entry.entry, this.getParent(entry.id)?.entry)
     },
     getParent(id: string): ITreeEntry | undefined {
-      return this.displayedItems.find((entry: ITreeEntry) => ((entry.children?.findIndex(child => child.id === id) ?? -1) > -1))
+      return this.displayedItems.find(
+        (entry: ITreeEntry) => (entry.children?.findIndex(child => child.id === id) ?? -1) > -1
+      )
     }
   },
   mounted() {
