@@ -1,8 +1,5 @@
 <template>
   <div class="display-1 font-weight-bold">
-    <v-btn fab small :to="`/${$route.params.unit}/help`" color="primary" elevation="0">
-      <v-icon>mdi-arrow-left</v-icon>
-    </v-btn>
     <span class="pl-2" style="vertical-align:bottom;">
       <slot />
     </span>

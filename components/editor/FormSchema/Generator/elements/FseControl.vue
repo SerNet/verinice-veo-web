@@ -1,10 +1,6 @@
 <template>
   <div class="vf-control">
-    <FseFormElement
-      v-bind="$props"
-      v-on="$listeners"
-      @change="$emit('input', $event)"
-    />
+    <FseFormElement v-bind="$props" v-on="$listeners" />
   </div>
 </template>
 
@@ -14,6 +10,8 @@ import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
 import FseFormElement from './Collection/FseFormElement.vue'
 import { BaseObject } from '~/components/forms/utils'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import { IVeoTranslation } from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {
@@ -25,10 +23,14 @@ export default Vue.extend({
       type: Object,
       default: () => undefined
     } as PropOptions<JSONSchema7>,
-    lang: {
+    generalTranslation: {
       type: Object,
-      default: () => undefined
-    } as PropOptions<BaseObject>,
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
     elements: {
       type: Array,
       default: () => []

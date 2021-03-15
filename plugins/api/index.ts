@@ -3,18 +3,17 @@ import { Plugin, Context } from '@nuxt/types'
 
 import { VeoError, VeoErrorTypes } from '~/types/VeoError'
 
-import asset from '~/plugins/api/asset'
-import control from '~/plugins/api/control'
+import entity from '~/plugins/api/entity'
 import form from '~/plugins/api/form'
-import group from '~/plugins/api/group'
-import person from '~/plugins/api/person'
-import process from '~/plugins/api/process'
 import schema from '~/plugins/api/schema'
 import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
+import scope from '~/plugins/api/scope'
+import { User } from '~/plugins/user'
+import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 export function createAPI(context: Context) {
-  return Client.create(context, { asset, control, form, group, person, process, schema, translation, unit })
+  return Client.create(context, { form, entity, schema, translation, unit, scope })
 }
 
 export interface IAPIClient {
@@ -56,19 +55,19 @@ export class Client {
     return _url
   }
 
-  public async req(url: string, options: RequestOptions & { method: 'DELETE' }): Promise<void>
+  public async req(url: string, options: RequestOptions & { method: 'DELETE' }): Promise<any>
   public async req<T = any>(url: string, options?: RequestOptions): Promise<T>
 
   /**
    * Basic request function used by all api namespaces
    */
   public async req(url: string, options: RequestOptions = {}) {
-    const $user = this.context.app.$auth
+    const $user = this.context.app.$user as User
 
     const defaults = {
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer ' + $user.getToken(),
+        Authorization: 'Bearer ' + $user.auth.token,
         'x-client-build': this.build,
         'x-client-version': this.version
       } as Record<string, string>,
@@ -113,7 +112,7 @@ export class Client {
             return this.req(url, { ...options, retry: false })
           }
         } */
-        await $user.logout()
+        await $user.auth.logout('/')
         return Promise.reject(new Error(`Invalid JWT: ${combinedOptions.method || 'GET'} ${reqURL}`))
       } else if (options.method === 'DELETE') {
         return Promise.resolve()

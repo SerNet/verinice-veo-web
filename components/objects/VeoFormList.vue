@@ -1,0 +1,270 @@
+<template>
+  <v-data-table
+    :items="displayedItems"
+    item-key="id"
+    :headers="headers"
+    :items-per-page="itemsPerPage"
+    :loading="loading"
+    class="veo-object-list"
+  >
+    <template #no-data>
+      <span class="text-center">
+        {{ $t('no_objects') }}
+      </span>
+    </template>
+    <template #item.abbreviation="{ item }">
+      <div class="veo-object-list__abbreviation nowrap">
+        <v-tooltip bottom>
+          <template #activator="{ on }">
+            <v-icon v-on="on">mdi-format-list-checks</v-icon>
+          </template>
+          <template #default>
+            <span v-html="$t('form')" />
+          </template>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="{ on }">
+            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.abbreviation }}</span>
+          </template>
+          <template #default>
+            <span>{{ item.abbreviation }}</span>
+          </template>
+        </v-tooltip>
+      </div>
+    </template>
+    <template #item.name="{ value }">
+      <div class="veo-object-list__title">{{ value }}</div>
+    </template>
+    <template #item.description="{ item, value }">
+      <div class="veo-object-list__description">
+        <v-tooltip v-if="item.descriptionShort" bottom>
+          <template #activator="{ on }">
+            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.descriptionShort }}</span>
+          </template>
+          <template #default>
+            <span>{{ value }}</span>
+          </template>
+        </v-tooltip>
+        <span v-else>{{ value }}</span>
+      </div>
+    </template>
+    <template #item.date="{ item }">
+      <div class="veo-object-list__date nowrap">
+        <v-tooltip bottom>
+          <template #activator="{ on }">
+            <span v-on="on">
+              {{ formatDate(item.updatedAt) }}
+            </span>
+          </template>
+          <template #default>
+            {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}<br />
+            {{ $t('updated_at') }}: {{ formatDate(item.updatedAt) }} {{ $t('by') }} {{ item.updatedBy }}
+          </template>
+        </v-tooltip>
+      </div>
+    </template>
+    <template #item.actions="{ item }">
+      <div class="veo-object-list__actions">
+        <v-tooltip bottom>
+          <template #activator="{on}">
+            <v-btn icon @click.stop="$emit('edit', item)" v-on="on">
+              <v-icon>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
+          </template>
+          <template #default>
+            {{ $t('edit') }}
+          </template>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="{on}">
+            <v-btn icon @click.stop="$emit('duplicate', item)" v-on="on">
+              <v-icon>
+                mdi-content-copy
+              </v-icon>
+            </v-btn>
+          </template>
+          <template #default>
+            {{ $t('clone') }}
+          </template>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template #activator="{on}">
+            <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
+              <v-icon>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+          </template>
+          <template #default>
+            {{ $t('delete') }}
+          </template>
+        </v-tooltip>
+      </div>
+    </template>
+  </v-data-table>
+</template>
+<i18n>
+{
+  "en": {
+    "by": "by",
+    "clone": "Clone form",
+    "created_at": "Created",
+    "delete": "Delete form",
+    "edit": "Edit form",
+    "form": "Form",
+    "no_objects": "There are no forms",
+    "object_edit": "Edit this form",
+    "updated_at": "Updated"
+  },
+  "de": {
+    "by": "von",
+    "clone": "Formular klonen",
+    "created_at": "Erstellt",
+    "delete": "Formular löschen",
+    "edit": "Formular bearbeiten",
+    "form": "Formular",
+    "no_objects": "Es existieren keine Formulare!",
+    "object_edit": "Dieses Formular bearbeiten",
+    "updated_at": "Aktualisiert"
+  }
+}
+</i18n>
+<script lang="ts">
+import Vue from 'vue'
+import { Prop } from 'vue/types/options'
+
+import { IVeoEntity } from '~/types/VeoTypes'
+
+export default Vue.extend({
+  props: {
+    items: {
+      type: Array as Prop<IVeoEntity[]>,
+      default: () => []
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    sortingFunction: {
+      type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
+      default: () => (a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name)
+    }
+  },
+  data() {
+    return {
+      itemsPerPage: 10
+    }
+  },
+  computed: {
+    displayedItems(): IVeoEntity[] {
+      return this.items
+        .map(item => {
+          // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+          if (item.description && item.description.length > 40) {
+            item.descriptionShort = item.description.substring(0, 40) + '...'
+          }
+
+          return item
+        })
+        .sort(this.sortingFunction)
+    },
+    editItemLink(): string {
+      return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
+    },
+    headers(): any[] {
+      return [
+        {
+          text: this.$t('unit.object.list.header.abbreviation'),
+          value: 'abbreviation'
+        },
+        {
+          text: this.$t('unit.object.list.header.title'),
+          value: 'name'
+        },
+        {
+          text: this.$t('unit.object.list.header.description'),
+          filterable: false,
+          sortable: false,
+          value: 'description'
+        },
+        {
+          text: this.$t('unit.object.list.header.updatedby'),
+          value: 'updatedBy',
+          class: 'nowrap'
+        },
+        {
+          align: 'end',
+          text: this.$t('unit.object.list.header.updatedat'),
+          value: 'date'
+        },
+        {
+          align: 'end',
+          filterable: false,
+          sortable: false,
+          text: '',
+          value: 'actions',
+          width: 108 /* 3*widthOfButton */
+        }
+      ]
+    }
+  },
+  methods: {
+    formatDate(date: string) {
+      return (
+        new Date(date).toLocaleDateString('de-DE', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }) +
+        ' ' +
+        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+      )
+    }
+  }
+})
+</script>
+<style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
+.veo-object-list__abbreviation {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 65px;
+
+  .veo-object-list__abbreviation--abbreviation {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.veo-object-list__title {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.veo-object-list__description {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.veo-object-list__date {
+}
+
+.veo-object-list__actions {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+::v-deep .nowrap {
+  white-space: nowrap;
+}
+
+::v-deep tbody {
+  tr:hover {
+    background-color: transparent !important;
+  }
+}
+</style>

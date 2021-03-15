@@ -1,10 +1,6 @@
 <template>
   <div v-if="visible" class="vf-input-uri vf-form-element">
-    <ValidationProvider
-      v-slot="{ errors }"
-      :name="options && options.label"
-      :rules="validation"
-    >
+    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
       <v-text-field
         :disabled="disabled"
         :value="value"
@@ -20,13 +16,7 @@
         @click:clear="clear"
       >
         <template #append-outer>
-          <v-btn
-            small
-            :disabled="!isValidUrl || !value"
-            icon
-            :href="value"
-            target="_blank"
-          >
+          <v-btn small :disabled="!isValidUrl || !value" icon :href="value" target="_blank">
             <v-icon>mdi-open-in-new</v-icon>
           </v-btn>
         </template>
@@ -37,35 +27,36 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
-import { BaseObject, IApi } from '~/components/forms/utils'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'InputUri',
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
-    value: {},
-    validation: Object,
+    value: String,
+    name: {
+      type: String,
+      default: ''
+    },
+    schema: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<JSONSchema7>,
+    options: {
+      type: Object,
+      default: () => undefined
+    },
+    validation: {
+      type: Object,
+      default: () => undefined
+    },
     disabled: Boolean,
-    visible: Boolean,
-    api: Object as Prop<IApi>
+    visible: Boolean
   },
   computed: {
     isValidUrl(): boolean {
-      return !(
-        this.validation &&
-        this.validation.objectSchema &&
-        this.validation.objectSchema.errorMsg
-      )
+      return !(this.validation && this.validation.objectSchema && this.validation.objectSchema.errorMsg)
     }
   },
   methods: {
@@ -83,16 +74,9 @@ export const helpers: Helpful<FormElementProps> = {
     // if other fields have the same number of true conditions
     // if other fields are appropriate, they MUST have more true conditions
 
-    return calculateConditionsScore([
-      props.schema.type === 'string',
-      props.schema.format === 'uri'
-    ])
+    return calculateConditionsScore([props.schema.type === 'string', props.schema.format === 'uri'])
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.vf-input-uri {
-  width: 250px;
-}
-</style>
+<style lang="scss" scoped></style>

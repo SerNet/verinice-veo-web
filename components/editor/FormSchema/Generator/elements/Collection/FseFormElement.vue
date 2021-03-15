@@ -2,17 +2,14 @@
   <v-card rounded elevation="0" class="fse-input mx-3 my-2">
     <v-card-text class="pa-0">
       <v-row no-gutters>
-        <v-col
-          cols="auto"
-          class="text-right px-1 fse-input-dragbar"
-          :class="color"
-        >
+        <v-col cols="auto" class="text-right px-1 fse-input-dragbar" :class="color">
           <v-icon class="handle" color="white">mdi-menu</v-icon>
         </v-col>
-        <v-col class="px-2">
-          <div style="white-space: nowrap">
-            <span class="fse-input-title">{{ options && options.label }}</span>
-            <span class="fse-input-type">{{ currentType }}</span>
+        <v-col class="mx-2" style="overflow: auto">
+          <div>
+            <div class="fse-input-title mt-1 mb-1">{{ label }}</div>
+            <div class="fse-input-property-name mb-1">{{ name }}</div>
+            <div class="fse-input-type mb-1">{{ currentType }}</div>
           </div>
         </v-col>
         <v-col cols="auto" class="text-right pr-2">
@@ -26,20 +23,19 @@
       </v-row>
     </v-card-text>
     <VEOFSEEditControlDialog
+      v-if="editDialog"
       v-model="editDialog"
       v-bind="$props"
+      :formSchema="value"
       :type="currentType"
       @edit="doEdit"
+      @update-custom-translation="onUpdateCustomTranslation"
     />
-    <VEOFSEDeleteControlDialog
-      v-model="deleteDialog"
-      :name="name"
-      @delete="doDelete"
-    />
+    <VEOFSEDeleteDialog v-model="deleteDialog" @delete="doDelete" />
   </v-card>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import Vue, { PropOptions } from 'vue'
 import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
@@ -47,18 +43,21 @@ import vjp from 'vue-json-pointer'
 
 import { VEOTypeNameRAW } from 'veo-objectschema-7'
 import { BaseObject } from '~/components/forms/utils'
-import {
-  eligibleInputElements,
-  IInputElement,
-  INPUT_TYPES
-} from '~/types/VEOEditor'
+import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VEOEditor'
 import VEOFSEEditControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEEditControlDialog.vue'
-import VEOFSEDeleteControlDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteControlDialog.vue'
+import VEOFSEDeleteDialog from '~/components/dialogs/SchemaEditors/VEOFSEDeleteDialog.vue'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import {
+  IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItemDeleteEvent,
+  IVEOFormSchemaItemUpdateEvent,
+  IVEOFormSchemaTranslationCollectionItem
+} from 'veo-formschema'
 
 export default Vue.extend({
   components: {
     VEOFSEEditControlDialog,
-    VEOFSEDeleteControlDialog
+    VEOFSEDeleteDialog
   },
   props: {
     name: {
@@ -69,10 +68,14 @@ export default Vue.extend({
       type: Object as Prop<JSONSchema7>,
       required: true
     },
-    lang: {
-      type: Object as Prop<BaseObject>,
+    generalTranslation: {
+      type: Object,
       default: () => {}
-    },
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
     options: {
       type: Object,
       default: () => {}
@@ -84,6 +87,10 @@ export default Vue.extend({
     value: {
       type: Object,
       default: () => undefined
+    },
+    formSchemaPointer: {
+      type: String,
+      default: ''
     },
     disabled: {
       type: Boolean,
@@ -102,7 +109,8 @@ export default Vue.extend({
     return {
       availableElements: [] as IInputElement[],
       editDialog: false as boolean,
-      deleteDialog: false as boolean
+      deleteDialog: false as boolean,
+      label: '' as string
     }
   },
   computed: {
@@ -113,39 +121,53 @@ export default Vue.extend({
       return this.availableElements[0]?.name || 'Unknown'
     },
     type(): VEOTypeNameRAW {
-      return this.schema.type
-        ? (this.schema.type as any)
-        : this.schema.enum
+      return Array.isArray(this.schema.enum)
         ? 'enum'
+        : this.schema.type && !Array.isArray(this.schema.type)
+        ? this.schema.type
         : 'default'
     }
   },
   watch: {
     name() {
       this.availableElements = eligibleInputElements(this.type, this.$props)
+      this.setLabel()
     },
     options() {
       this.availableElements = eligibleInputElements(this.type, this.$props)
+    },
+    generalTranslation() {
+      this.setLabel()
+    },
+    customTranslation() {
+      this.setLabel()
     }
-  },
-  mounted() {
-    this.availableElements = eligibleInputElements(this.type, this.$props)
   },
   methods: {
     showEdit() {
       this.editDialog = true
     },
-    doEdit(data: any) {
-      vjp.set(this.value, '/options', data.options)
+    doEdit(data: IVEOFormSchemaItemUpdateEvent['data']) {
+      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data } as IVEOFormSchemaItemUpdateEvent)
       this.editDialog = false
     },
     showDelete() {
       this.deleteDialog = true
     },
     doDelete() {
-      this.$emit('delete')
+      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVEOFormSchemaItemDeleteEvent)
       this.deleteDialog = false
+    },
+    setLabel(): void {
+      this.label = this.customTranslation?.[this.name] || this.generalTranslation?.[this.name] || this.name
+    },
+    onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent) {
+      this.$emit('update-custom-translation', event)
     }
+  },
+  mounted() {
+    this.availableElements = eligibleInputElements(this.type, this.$props)
+    this.setLabel()
   }
 })
 </script>
@@ -154,7 +176,7 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .fse-input {
-  border: 2px solid $grey;
+  border: 1px solid $grey;
   min-width: 300px;
   overflow: hidden;
 
@@ -164,15 +186,24 @@ export default Vue.extend({
     .col {
       align-items: center;
       display: flex;
-      height: 36px;
+      // height: 36px;
     }
   }
 }
 
 .fse-input-title {
-  color: black;
-  font-size: 1.1rem;
-  font-weight: bold;
-  padding-right: 4px;
+  // color: black;
+  // font-size: 1.1rem;
+  // font-weight: bold;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.fse-input-property-name,
+.fse-input-type {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: rgba(0, 0, 0, 0.6);
 }
 </style>

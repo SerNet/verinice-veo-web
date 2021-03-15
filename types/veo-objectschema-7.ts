@@ -94,12 +94,11 @@ declare module 'veo-objectschema-7' {
     properties: {
       id: JSONSchema7Object
       applicableTo: JSONSchema7Object
-      type: VEOEnumRAW
       domains: VEODomainsRAW
       references: VEOReferencesRAW
       attributes: VEOAttributesRAW
     },
-    additionalAttributes: false
+    additionalProperties: false
     required: ['type']
   }
 
@@ -119,7 +118,6 @@ declare module 'veo-objectschema-7' {
       properties: {
         id: JSONSchema7Object
         applicableTo: JSONSchema7Object
-        type: VEOEnumRAW
         domains: VEOLinkDomainsRAW
         references: VEOReferencesRAW
         abbreviation: VEOStringRAW

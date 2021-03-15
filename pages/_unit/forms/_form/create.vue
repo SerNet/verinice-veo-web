@@ -1,33 +1,46 @@
 <script lang="ts">
-import { ObjectSchemaNames } from '~/types/FormSchema'
-import BaseObjectForm from '~/pages/_unit/forms/_form/_object.vue'
+import { separateUUIDParam } from '~/lib/utils'
+import BaseObjectForm from '~/pages/_unit/forms/_form/_entity.vue'
+import { getSchemaEndpoint } from '~/plugins/api/schema'
 
-export { ObjectSchemaNames }
 export default BaseObjectForm.extend({
   name: 'veo-forms-objectData-create',
   computed: {
-    unit(): string {
+    unitId(): string {
+      return separateUUIDParam(this.$route.params.unit).id
+    },
+    unitRoute() {
       return this.$route.params.unit
+    },
+    formId(): string {
+      return separateUUIDParam(this.$route.params.form).id
+    },
+    formRoute() {
+      return this.$route.params.form
     }
   },
   methods: {
-    async action(objectType: ObjectSchemaNames) {
+    async action(objectType: string) {
       const createdObjectUUID = await this.create(objectType)
       if (createdObjectUUID) {
-        const createdObjectURL = `/${this.unit}/forms/${this.$route.params.form}/${createdObjectUUID}`
-        this.$router.push(createdObjectURL)
-      } else {
-        throw new Error('UUID of the create object does not exist!')
+        this.$router.push(`/${this.unitRoute}/forms/${this.formRoute}`)
       }
     },
-    async create(objectType: ObjectSchemaNames): Promise<string | undefined> {
-      const res = await this.$api[objectType].create({
+    async create(objectType: string): Promise<string | undefined> {
+      return this.$api.entity.create(getSchemaEndpoint(this.objectType || ''), {
         ...this.form.objectData,
         owner: {
-          targetUri: `/units/${this.unit}`
+          targetUri: `/units/${this.unitId}`
         }
+      }).then((data: any) => {
+        return data.resourceId
+      }).catch((error: { status: number; name: string }) => {
+        this.alert.text = error.name
+        this.alert.saveButtonText = this.$t('global.button.ok') as string
+        this.alert.error = 0
+        this.alert.value = true
+        return undefined
       })
-      return res.resourceId
     }
   }
 })

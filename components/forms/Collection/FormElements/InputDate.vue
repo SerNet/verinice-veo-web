@@ -5,15 +5,11 @@
       :close-on-content-click="false"
       transition="scale-transition"
       offset-y
-      max-width="290px"
-      min-width="290px"
+      max-width="350px"
+      min-width="350px"
     >
       <template #activator="{ on }">
-        <ValidationProvider
-          v-slot="{ errors }"
-          :name="options && options.label"
-          :rules="validation"
-        >
+        <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
           <v-text-field
             :value="formattedDate"
             :disabled="disabled"
@@ -31,36 +27,41 @@
           />
         </ValidationProvider>
       </template>
-      <v-date-picker v-model="date" no-title @input="menu = false" />
+      <v-sheet color="white" class="d-flex justify-center">
+        <v-date-picker v-model="date" no-title @input="menu = false" />
+      </v-sheet>
     </v-menu>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import moment from 'moment'
-import { ValidationProvider } from 'vee-validate'
-import { BaseObject, IApi } from '~/components/forms/utils'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
-
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 export default Vue.extend({
   name: 'InputDate',
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
     value: String,
-    validation: Object,
+    name: {
+      type: String,
+      default: ''
+    },
+    schema: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<JSONSchema7>,
+    options: {
+      type: Object,
+      default: () => undefined
+    },
+    validation: {
+      type: Object,
+      default: () => undefined
+    },
     disabled: Boolean,
-    visible: Boolean,
-    api: Object as Prop<IApi>
+    visible: Boolean
   },
   data: () => ({
     menu: false,
@@ -74,9 +75,7 @@ export default Vue.extend({
     },
     formattedDate: {
       get(): string | undefined {
-        return this.momentDate.isValid()
-          ? this.momentDate.format(this.dateFormatInput)
-          : this.value
+        return this.momentDate.isValid() ? this.momentDate.format(this.dateFormatInput) : this.value
       },
       set(newDate: string): void {
         this.emitDateValue(newDate, this.dateFormatInput)
@@ -84,9 +83,7 @@ export default Vue.extend({
     },
     date: {
       get(): string {
-        return this.momentDate.isValid()
-          ? this.momentDate.format(this.dateFormatISO)
-          : ''
+        return this.momentDate.isValid() ? this.momentDate.format(this.dateFormatISO) : ''
       },
       set(newDate: string): void {
         this.emitDateValue(newDate, this.dateFormatISO)
@@ -103,18 +100,14 @@ export default Vue.extend({
   },
   methods: {
     clear() {
-      this.$nextTick(() =>
-        this.$nextTick(() => (this.tempInputValue = undefined))
-      )
+      this.$nextTick(() => this.$nextTick(() => (this.tempInputValue = undefined)))
     },
     setTempInputValue(event: any) {
       this.tempInputValue = event
     },
     emitDateValue(date: string, dateFormat: string) {
       const tempMoment = moment(date, dateFormat, true)
-      const formattedDate = tempMoment.isValid()
-        ? tempMoment.format(this.dateFormatISO)
-        : date
+      const formattedDate = tempMoment.isValid() ? tempMoment.format(this.dateFormatISO) : date
       this.$emit('input', formattedDate)
       this.$emit('change', formattedDate)
     },
@@ -126,16 +119,9 @@ export default Vue.extend({
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
-    return calculateConditionsScore([
-      props.schema.type === 'string',
-      props.schema.format === 'date'
-    ])
+    return calculateConditionsScore([props.schema.type === 'string', props.schema.format === 'date'])
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.vf-input-date {
-  width: 250px;
-}
-</style>
+<style lang="scss" scoped></style>

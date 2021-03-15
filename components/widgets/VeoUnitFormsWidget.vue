@@ -1,7 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title>{{ $t('unit.details.objects') }}</v-card-title>
-    <v-card-text v-if="$fetchState.pending">
+  <VeoWidget :title="$t('unit.details.forms')">
+    <template v-if="$fetchState.pending">
       <table>
         <tr v-for="type of objects" :key="type.id">
           <td>
@@ -12,29 +11,33 @@
           </td>
         </tr>
       </table>
-    </v-card-text>
-    <v-card-text v-else>
+    </template>
+    <template v-else>
       <table>
         <tr v-for="type of objects" :key="type.id">
-          <td>
-            {{ type.name }}:
-          </td>
+          <td>{{ type.name }}:</td>
           <td class="text-right">
-            <nuxt-link :to="`/${$route.params.unit}/forms/${type.id}`"><b>{{ type.items }}</b></nuxt-link>
+            <nuxt-link :to="`/${$route.params.unit}/forms/${createUUIDUrlParam('form', type.id)}`"
+              ><b>{{ type.items }}</b></nuxt-link
+            >
           </td>
         </tr>
       </table>
-    </v-card-text>
-  </v-card>
+    </template>
+  </VeoWidget>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { FormSchemaMetas } from '~/types/FormSchema'
 
-type FormsList = FormSchemaMetas & { items?: number }[]
+import VeoWidget from '~/components/widgets/VeoWidget.vue'
+import { endpoints } from '~/plugins/api/schema'
+import { createUUIDUrlParam } from '~/lib/utils'
 
 export default Vue.extend({
+  components: {
+    VeoWidget
+  },
   props: {
     unit: {
       type: Object,
@@ -43,16 +46,24 @@ export default Vue.extend({
   },
   data() {
     return {
-      objects: [] as FormsList
+      objects: [] as any
     }
   },
   async fetch() {
     this.objects = await this.$api.form.fetchAll({ unit: this.unit.id })
     for (const object of this.objects) {
-      const objectType = object.modelType.toLowerCase()
       // @ts-ignore
-      object.items = (await this.$api[objectType].fetchAll({ unit: this.unit.id })).length
+      const objectType = endpoints[object.modelType.toLowerCase()]
+      object.items = (
+        await this.$api.entity.fetchAll(objectType, {
+          unit: this.unit.id,
+          subType: object.subType
+        })
+      ).length
     }
+  },
+  methods: {
+    createUUIDUrlParam
   }
 })
 </script>

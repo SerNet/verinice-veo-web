@@ -5,16 +5,12 @@
       :close-on-content-click="false"
       transition="scale-transition"
       offset-y
-      max-width="290px"
-      min-width="290px"
+      max-width="350px"
+      min-width="350px"
       @input="resetPicker"
     >
       <template #activator="{ on }">
-        <ValidationProvider
-          v-slot="{ errors }"
-          :name="options && options.label"
-          :rules="validation"
-        >
+        <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
           <v-text-field
             :value="formattedDateTime"
             :label="options && options.label"
@@ -44,12 +40,7 @@
 
       <v-tabs-items v-model="tab">
         <v-tab-item value="tab-1">
-          <v-date-picker
-            v-model="date"
-            no-title
-            full-width
-            @input="tab = 'tab-2'"
-          />
+          <v-date-picker v-model="date" no-title full-width @input="tab = 'tab-2'" />
         </v-tab-item>
         <v-tab-item value="tab-2">
           <v-time-picker ref="timer" v-model="time" format="24hr" full-width />
@@ -61,29 +52,34 @@
 
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
-import { Prop } from 'vue/types/options'
+import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import moment from 'moment'
-import { ValidationProvider } from 'vee-validate'
-import { BaseObject, IApi } from '~/components/forms/utils'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 
 export default (Vue as VueConstructor<Vue & { $refs: { timer: any } }>).extend({
   name: 'InputDateTime',
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
     value: String,
-    validation: Object,
+    name: {
+      type: String,
+      default: ''
+    },
+    schema: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<JSONSchema7>,
+    options: {
+      type: Object,
+      default: () => undefined
+    },
+
+    validation: {
+      type: Object,
+      default: () => undefined
+    },
     disabled: Boolean,
-    visible: Boolean,
-    api: Object as Prop<IApi>
+    visible: Boolean
   },
   data: () => ({
     menu: false,
@@ -99,9 +95,7 @@ export default (Vue as VueConstructor<Vue & { $refs: { timer: any } }>).extend({
     },
     formattedDateTime: {
       get(): string | undefined {
-        return this.momentDate.isValid()
-          ? this.momentDate.format(this.dateTimeFormatInput)
-          : this.value
+        return this.momentDate.isValid() ? this.momentDate.format(this.dateTimeFormatInput) : this.value
       },
       set(newDate: string): void {
         this.emitDateValue(newDate, this.dateTimeFormatInput)
@@ -109,18 +103,13 @@ export default (Vue as VueConstructor<Vue & { $refs: { timer: any } }>).extend({
     },
     date: {
       get(): string {
-        return this.momentDate.isValid()
-          ? this.momentDate.format('YYYY-MM-DD')
-          : ''
+        return this.momentDate.isValid() ? this.momentDate.format('YYYY-MM-DD') : ''
       },
       set(newDate: string): void {
         if (!this.time) {
           this.emitDateValue(`${newDate} 00:00`, this.dateTimePickerFormat)
         } else {
-          this.emitDateValue(
-            `${newDate} ${this.time}`,
-            this.dateTimePickerFormat
-          )
+          this.emitDateValue(`${newDate} ${this.time}`, this.dateTimePickerFormat)
         }
       }
     },
@@ -130,10 +119,7 @@ export default (Vue as VueConstructor<Vue & { $refs: { timer: any } }>).extend({
       },
       set(newTime: string): void {
         if (this.date) {
-          this.emitDateValue(
-            `${this.date} ${newTime}`,
-            this.dateTimePickerFormat
-          )
+          this.emitDateValue(`${this.date} ${newTime}`, this.dateTimePickerFormat)
         }
       }
     }
@@ -148,18 +134,14 @@ export default (Vue as VueConstructor<Vue & { $refs: { timer: any } }>).extend({
   },
   methods: {
     clear() {
-      this.$nextTick(() =>
-        this.$nextTick(() => (this.tempInputValue = undefined))
-      )
+      this.$nextTick(() => this.$nextTick(() => (this.tempInputValue = undefined)))
     },
     setTempInputValue(event: any) {
       this.tempInputValue = event
     },
     emitDateValue(dateTime: string, dateTimeFormat: string) {
       const tempMoment = moment(dateTime, dateTimeFormat, true)
-      const tempFormattedDateTime = tempMoment.isValid()
-        ? tempMoment.format(this.dateTimeFormatISO)
-        : dateTime
+      const tempFormattedDateTime = tempMoment.isValid() ? tempMoment.format(this.dateTimeFormatISO) : dateTime
       this.$emit('input', tempFormattedDateTime)
       this.$emit('change', tempFormattedDateTime)
     },
@@ -177,16 +159,9 @@ export default (Vue as VueConstructor<Vue & { $refs: { timer: any } }>).extend({
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
-    return calculateConditionsScore([
-      props.schema.type === 'string',
-      props.schema.format === 'date-time'
-    ])
+    return calculateConditionsScore([props.schema.type === 'string', props.schema.format === 'date-time'])
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.vf-input-date-time {
-  width: 250px;
-}
-</style>
+<style lang="scss" scoped></style>

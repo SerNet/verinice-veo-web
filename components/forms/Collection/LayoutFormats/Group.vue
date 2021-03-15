@@ -1,31 +1,40 @@
 <template>
-  <div
-    v-if="visible"
-    class="vf-layout vf-group d-flex mx-auto flex-wrap"
-    :class="dynamicClasses"
-    style="max-width: 800px; width: 100%;"
-    :style="options && options.style"
-  >
-    <slot />
-  </div>
+  <v-col v-if="visible" cols="12" md="auto" class="vf-layout vf-group" :id="groupId">
+    <v-row dense class="flex-column" :class="dynamicClasses" :style="options && options.style">
+      <v-col v-if="options && options.label">
+        <h3>{{ options.label }}</h3>
+      </v-col>
+      <v-col>
+        <v-row
+          :dense="options && options.direction === 'horizontal'"
+          :class="directionClass"
+          :style="options && options.style"
+        >
+          <slot />
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-col>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
-import {
-  calculateConditionsScore,
-  Helpful,
-  LayoutProps
-} from '~/components/forms/Collection/utils/helpers'
+
+import { calculateConditionsScore, Helpful, LayoutProps } from '~/components/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'Group',
   props: {
     options: Object,
+    formSchemaPointer: String,
     disabled: Boolean,
     visible: Boolean
+  },
+  data() {
+    return {
+      groupIdPattern: /\//g,
+      replaceWith: '-'
+    }
   },
   computed: {
     directionClass(): string {
@@ -35,19 +44,11 @@ export default Vue.extend({
         return 'flex-column direction-vertical'
       }
     },
-    highlightClass() {
-      if (this.options && this.options.highlight === false) {
-        return 'no-highlight'
-      } else {
-        return 'highlight'
-      }
-    },
     dynamicClasses(): string[] {
-      return [
-        this.directionClass,
-        this.highlightClass,
-        this.options && this.options.class ? this.options.class : ''
-      ]
+      return [this.options && this.options.class ? this.options.class : '']
+    },
+    groupId(): string {
+      return this.formSchemaPointer.slice(2).replace(this.groupIdPattern, this.replaceWith)
     }
   }
 })
@@ -55,9 +56,7 @@ export default Vue.extend({
 export const helpers: Helpful<LayoutProps> = {
   matchingScore(props) {
     return calculateConditionsScore(
-      [
-        typeof props.options !== 'undefined' && props.options.format === 'group'
-      ],
+      [typeof props.options !== 'undefined' && props.options.format === 'group'],
       Number.EPSILON
     )
   }
@@ -65,43 +64,10 @@ export const helpers: Helpful<LayoutProps> = {
 </script>
 
 <style lang="scss" scoped>
-.vf-layout.vf-group.highlight {
+.vf-layout.vf-group > .border {
   border-radius: 5px !important;
-  box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
-    0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12) !important;
-  padding: 10px;
-}
-
-.vf-layout.vf-group.highlight + .vf-layout.vf-group.highlight {
-  margin-top: 16px;
-}
-
-.vf-layout.vf-group.no-highlight {
-}
-
-.direction-vertical > .vf-control {
-  ::v-deep {
-    & > .vf-autocomplete,
-    & > .vf-input-date,
-    & > .vf-input-date-time,
-    & > .vf-input-number,
-    & > .vf-input-text,
-    & > .vf-input-text-multiline,
-    & > .vf-input-uri,
-    & > .vf-markdown-editor,
-    & > .vf-select,
-    & > .vf-tags {
-      margin-top: 12px !important;
-      margin-bottom: 12px !important;
-    }
-
-    & > .vf-array-field,
-    & > .vf-checkbox,
-    & > .vf-links-field,
-    & > .vf-radio {
-      margin-bottom: 12px !important;
-    }
-  }
+  border: 1px dashed #cccccc;
+  padding: 8px;
 }
 
 .direction-horizontal > .vf-control {
@@ -124,9 +90,26 @@ export const helpers: Helpful<LayoutProps> = {
     & > .vf-checkbox,
     & > .vf-links-field,
     & > .vf-radio {
+      display: inline-block;
       margin-top: 12px !important;
       margin-bottom: 12px !important;
     }
+  }
+}
+
+::v-deep {
+  & > .vf-input-text-multiline,
+  & > .vf-markdown-editor,
+  & > .vf-autocomplete,
+  & > .vf-checkbox,
+  & > .vf-input-date,
+  & > .vf-input-date-time,
+  & > .vf-input-number,
+  & > .vf-input-text,
+  & > .vf-input-uri,
+  & > .vf-select,
+  & > .vf-tags {
+    max-width: 100%;
   }
 }
 </style>

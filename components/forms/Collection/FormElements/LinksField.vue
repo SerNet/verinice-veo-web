@@ -5,62 +5,62 @@
     :class="options && options.class"
     :style="options && options.style"
   >
-    <div v-if="options && options.label" class="subtitle-1 mb-2">
-      {{ options && options.label }}
+    <div class="d-flex">
+      <span v-if="options && options.label" class="subtitle-1 mb-2">
+        {{ options && options.label }}
+      </span>
+      <v-spacer />
     </div>
-    <div v-for="(val, i) in value" :key="i" class="d-flex flex-row align-center">
-      <div class="d-inline-block" style="width: 32px">
-        <v-btn v-if="i === value.length - 1" elevation="0" x-small text fab color="primary" @click="addRow">
-          <v-icon>mdi-plus-circle-outline</v-icon>
-        </v-btn>
-      </div>
-      <LinksFieldRow
-        :key="i"
-        :index="i"
-        :name="name"
-        :selected.sync="selected[i]"
-        :schema="schema"
-        :lang="lang"
-        :options="options"
-        :elements="elements"
-        :validation="validation"
-        :value="value[i]"
-        :disabled="disabled"
-        :visible="visible"
-        :api="api"
-        style="flex-basis: 0"
-        @input="onInput"
-      />
-      <v-btn
-        :disabled="!value"
-        elevation="0"
-        x-small
-        text
-        fab
-        color="primary"
-        @click="removeRow(i)"
-      >
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-    </div>
+    <v-list dense class="py-0">
+      <v-list-item v-for="(val, i) in localValue" :key="i" class="links-field-item my-2 pt-2">
+        <v-list-item-content>
+          <LinksFieldRow
+            :key="i"
+            :index="i"
+            :value="localValue[i]"
+            :name="name"
+            :selected.sync="selected[i]"
+            :schema="schema"
+            :options="options"
+            :elements="elements"
+            :validation="validation"
+            :disabled="disabled"
+            :visible="visible"
+            :general-translation="generalTranslation"
+            :custom-translation="customTranslation"
+            :api="api"
+            @input="onInput"
+          />
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn :disabled="!localValue" depressed text fab small @click="removeRow(i)">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
+    <v-btn small text color="primary" @click="addRow()">
+      <v-icon small>mdi-plus</v-icon>
+      <span>{{ $t('forms.input.linkadd') }}</span>
+    </v-btn>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
 import LinksFieldRow from '~/components/forms/Collection/FormElements/LinksFieldRow.vue'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import { UISchemaElement } from '~/types/UISchema'
 
 interface IData {
   selected: string[]
+  localValue: any
 }
 
 export default Vue.extend({
@@ -69,22 +69,49 @@ export default Vue.extend({
     LinksFieldRow
   },
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
-    elements: Array,
-    validation: Object,
     value: {
-      type: Array as Prop<BaseObject[]>
+      type: Array,
+      default: () => []
+    } as PropOptions<BaseObject[]>,
+    name: {
+      type: String,
+      default: ''
+    },
+    schema: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<JSONSchema7>,
+    options: {
+      type: Object,
+      default: () => undefined
+    },
+    validation: {
+      type: Object,
+      default: () => undefined
     },
     disabled: Boolean,
     visible: Boolean,
-    api: Object as Prop<IApi>
+    generalTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    elements: {
+      type: Array,
+      default: () => []
+    } as PropOptions<UISchemaElement[]>,
+    api: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<IApi>
   },
   data(): IData {
     return {
-      selected: []
+      selected: [],
+      localValue: []
     }
   },
   computed: {
@@ -92,32 +119,32 @@ export default Vue.extend({
       return {}
     }
   },
-  mounted() {
+  created() {
     if (!this.value || this.value.length === 0) {
-      this.addRow()
+      this.localValue = [{ ...this.rowToAdd }]
+    } else {
+      this.localValue = JSON.parse(JSON.stringify(this.value))
     }
   },
   methods: {
     addRow() {
-      const value = this.value ? this.value : []
-      value.push({ ...this.rowToAdd })
-      this.$emit('input', value)
+      this.localValue.push({ ...this.rowToAdd })
+      this.$emit('input', this.localValue)
     },
     removeRow(rowIndex: number) {
-      let _value = this.value
-
       // If only one link exists, empty it instead of deleting it.
-      if (_value.length === 1) {
+      if (this.localValue.length === 1) {
         this.selected = []
-        _value = [{ ...this.rowToAdd }]
+        this.localValue = [{ ...this.rowToAdd }]
+        this.$emit('input', undefined)
       } else {
         this.selected.splice(rowIndex, 1)
-        _value.splice(rowIndex, 1)
+        this.localValue.splice(rowIndex, 1)
+        this.$emit('input', this.localValue)
       }
-      this.$emit('input', _value)
     },
     onInput() {
-      this.$emit('input', this.value)
+      this.$emit('input', this.localValue)
     }
   }
 })
@@ -132,17 +159,21 @@ export const helpers: Helpful<FormElementProps> = {
       props.schema.items.properties &&
       props.schema.items.properties
     const isTarget = !!(schemaItemsProperties && schemaItemsProperties.target)
-    return calculateConditionsScore([
-      props.schema.type === 'array',
-      typeof props.elements !== 'undefined',
-      isTarget
-    ])
+    return calculateConditionsScore([props.schema.type === 'array', typeof props.elements !== 'undefined', isTarget])
   }
 }
 </script>
 
 <style lang="scss" scoped>
-::v-deep .vf-control.col {
-  padding: 0 5px 0 0;
+@import '~/assets/vuetify.scss';
+
+.links-field-item {
+  border: 1px solid $grey;
+  border-radius: 4px;
+}
+
+.links-field-item ::v-deep .vf-layout {
+  padding-left: 0;
+  padding-right: 0;
 }
 </style>

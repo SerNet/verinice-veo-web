@@ -1,69 +1,182 @@
 <template>
-  <v-col cols="12">
-    <template v-if="$fetchState.pending">
-      <div class="text-center ma-12">
-        <v-progress-circular indeterminate color="primary" size="50" />
-      </div>
+  <VeoPage :title="$t('breadcrumbs.forms')" fullsize>
+    <template #title>
+      <v-spacer />
+      <v-btn
+        outlined
+        :to="`/${unitRoute}/forms/${formRoute}/create`"
+        color="primary"
+        class="align-self-center mr-4"
+      >
+        {{ $t('unit.forms.create', { type: formName }) }}
+      </v-btn>
     </template>
-
-    <template v-else>
-      <v-btn :to="`/${unit}/forms/${formId}/create`" color="primary" class="mt-6">{{ $t('unit.forms.create', { type: objectType }) }}</v-btn>
-      <v-list two-line max-width="500">
-        <v-list-item v-for="object in objects" :key="object.id" :to="`/${unit}/forms/${formId}/${object.id}`">
-          <v-list-item-avatar>
-            <v-icon dark class="primary">mdi-format-list-checks</v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title class="primary--text text-uppercase font-weight-medium" v-text="object.name" />
-            <v-list-item-subtitle v-text="object.id" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+    <template #default>
+      <v-row dense>
+        <v-col :cols="12" :md="3">
+          <v-select
+            v-model="formType"
+            :label="$t('unit.forms.form')"
+            :items="formTypes"
+            outlined
+            dense
+            @input="changeType()"
+          />
+        </v-col>
+        <v-col :cols="9">
+          <v-text-field :label="$t('unit.forms.search')" outlined dense style="visibility: hidden" />
+        </v-col>
+      </v-row>
+      <VeoFormList
+        :items="objects"
+        :loading="$fetchState.pending"
+        @duplicate="doDuplicateForm"
+        @delete="showDelete"
+        @edit="doEdit"
+      />
+      <DeleteFormDialog v-model="deleteDialog.value" :form="deleteDialog.item" @delete="doDelete" />
     </template>
-    <div v-if="!$fetchState.pending && objects.length === 0" class="display">{{ $t('unit.forms.noprocesses') }}</div>
-  </v-col>
+  </VeoPage>
 </template>
-
+<i18n>
+{
+  "en": {
+    "clone": "Clone",
+    "form_cloned": "Object cloned successfully",
+    "form_duplicate_error": "Failed to duplicate object"
+  },
+  "de": {
+    "clone": "Klon",
+    "form_cloned": "Objekt wurde geklont",
+    "form_duplicate_error": "Objekt konnte nicht erstellt werden"
+  }
+}
+</i18n>
 <script lang="ts">
 import Vue from 'vue'
-import { IBaseObject } from '~/lib/utils'
-import { FormSchema } from '~/types/FormSchema'
+
+import VeoPage from '~/components/layout/VeoPage.vue'
+import VeoFormList from '~/components/objects/VeoFormList.vue'
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
+import { endpoints, getSchemaEndpoint } from '~/plugins/api/schema'
+import DeleteFormDialog from '~/components/objects/VeoDeleteFormDialog.vue'
+import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
+import { VeoEvents } from '~/types/VeoGlobalEvents'
 
 interface IData {
-  formSchema: FormSchema | undefined
+  formSchema: IVeoFormSchema | undefined
   objectType: string | undefined
-  objects: IBaseObject[]
+  objectTypePlural: string | undefined
+  objects: IVeoEntity[]
+  formType: string
+  formTypes: { value: string; text: string }[]
+  deleteDialog: { value: boolean; item: any }
 }
 
 export default Vue.extend({
-  name: 'Forms',
+  components: {
+    VeoPage,
+    VeoFormList,
+    DeleteFormDialog
+  },
   data(): IData {
     return {
       formSchema: undefined,
       objectType: '',
-      objects: []
+      objectTypePlural: '',
+      objects: [],
+      formType: separateUUIDParam(this.$route.params.form).id,
+      formTypes: [],
+      deleteDialog: { value: false, item: undefined },
     }
   },
   async fetch() {
-    this.formSchema = await this.$api.form.fetch(this.$route.params.form)
+    this.formSchema = await this.$api.form.fetch(this.formId)
     this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
-    this.objects = this.objectType && (await this.$api[this.objectType].fetchAll({ unit: this.$route.params.unit }))
+    if (this.formSchema) {
+      // @ts-ignore
+      this.objectTypePlural = endpoints[this.formSchema.modelType.toLowerCase()]
+
+      this.objects = await this.$api.entity.fetchAll(this.objectTypePlural, {
+        unit: this.unitId,
+        subType: this.formSchema.subType
+      })
+    } else {
+      this.objects = []
+    }
+
+    this.formTypes = await this.$api.form.fetchAll({ unit: this.unitId }).then((formTypes: IVeoFormSchemaMeta[]) =>
+      formTypes.map((entry: IVeoFormSchemaMeta) => {
+        return {
+          text: entry.name,
+          value: entry.id
+        }
+      })
+    )
   },
   head() {
     return {
-      title: 'Forms'
+      title: this.$t('breadcrumbs.forms') as string
     }
   },
   computed: {
-    formId() {
-      return this.$route.params.form
+    unitId() {
+      return separateUUIDParam(this.$route.params.unit).id
     },
-    unit() {
+    unitRoute() {
       return this.$route.params.unit
+    },
+    formId() {
+      return separateUUIDParam(this.$route.params.form).id
+    },
+    formRoute(): string {
+      return createUUIDUrlParam('form', this.formType)
+    },
+    formName(): string {
+      return this.formSchema?.name || ''
+    },
+    currentDomain(): string {
+      return this.$user.currentDomain
     }
   },
-  watch: {
-    '$route.params': '$fetch'
+  methods: {
+    doEdit(item: any) {
+      this.$router.push(
+        `/${this.unitRoute}/forms/${this.formRoute}/${createUUIDUrlParam(this.objectType as string, item.id)}`
+      )
+    },
+    showDelete(item: any) {
+      this.deleteDialog.item = item
+      this.deleteDialog.value = true
+    },
+    doDelete(id: number) {
+      this.deleteDialog.value = false
+      if (this.formSchema) {
+        this.$api.entity.delete(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), id).then(() => {
+          this.$fetch()
+        })
+      }
+    },
+    changeType() {
+      this.$router.push(`/${this.unitRoute}/forms/${this.formRoute}`)
+    },
+    doDuplicateForm(item: IVeoEntity) {
+      if(this.formSchema) {
+        const newItem = item
+        item.name = `${item.name} (${this.$t('clone')})`
+        this.$api.entity.create(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), newItem).then(() => {
+          this.$fetch()
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
+            text: this.$t('form_cloned')
+          })
+        }).catch((error: any) => {
+          this.$root.$emit(VeoEvents.ALERT_ERROR, {
+            title: this.$t('form_duplicate_error'),
+            text: JSON.stringify(error)
+          })
+        })
+      }
+    }
   }
 })
 </script>

@@ -1,6 +1,8 @@
 import castArray from 'lodash/castArray'
 import { JSONSchema7 } from 'json-schema'
-import { FormSchema } from '~/types/FormSchema'
+import { IVEOFormSchema } from 'veo-formschema'
+
+import { capitalize as _capitalize } from 'lodash'
 
 interface ICmpFunction {
   (a: any, b: any): number
@@ -99,7 +101,37 @@ export interface IBaseObject {
 
 export interface IForm {
   objectSchema: JSONSchema7
-  formSchema?: FormSchema
+  formSchema?: IVEOFormSchema
   objectData: IBaseObject
   lang?: IBaseObject
+}
+
+export function createUUIDUrlParam(type: string, UUID: string): string {
+  // UUID is exactly 36 characters long
+  // If it exactly 36 characters long (raw UUID), than add type to it, else return it directly, because type is already in it
+  return UUID.length !== 36 ? UUID : `${type.toLocaleLowerCase()}-${UUID}`
+}
+
+interface IUUIDParam {
+  type: string
+  id: string
+}
+
+export function separateUUIDParam(param: string | undefined): IUUIDParam {
+  // if param is not defined, make it string; TODO: check if this can cause bugs
+  const stringParam = param || ''
+  // returns id with 36 characters from the structure type-UUID
+  const id = stringParam.slice(-36)
+  return {
+    type: stringParam.replace(`-${id}`, ''),
+    id: id
+  }
+}
+
+export function capitalize(string: string, ignoreFollowingCharacterCasing: boolean = false) {
+  if(ignoreFollowingCharacterCasing) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  } else {
+    return _capitalize(string)
+  }
 }

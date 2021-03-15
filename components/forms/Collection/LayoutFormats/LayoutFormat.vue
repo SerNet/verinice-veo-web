@@ -15,6 +15,7 @@ export default Vue.extend({
   functional: true,
   props: {
     options: Object,
+    formSchemaPointer: String,
     disabled: Boolean,
     visible: Boolean
   },
@@ -23,9 +24,7 @@ export default Vue.extend({
 
     function appropriateComponent() {
       return components.sort(
-        (a: any, b: any) =>
-          b.helpers.matchingScore({ ...props }) -
-          a.helpers.matchingScore({ ...props })
+        (a: any, b: any) => b.helpers.matchingScore({ ...props }) - a.helpers.matchingScore({ ...props })
       )[0].default
     }
 

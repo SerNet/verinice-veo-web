@@ -4,12 +4,17 @@ import Vue, { VNode, PropOptions } from 'vue'
 import { JSONSchema7 } from 'json-schema'
 import { JsonPointer } from 'json-ptr'
 
-import vjp from 'vue-json-pointer'
 import FseLabel from './elements/FseLabel.vue'
 import FseControl from './elements/FseControl.vue'
 import FseLayout from './elements/FseLayout.vue'
 import { UISchema, UISchemaElement } from '~/types/UISchema'
-import { BaseObject } from '~/components/forms/utils'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import {
+  IVEOFormSchemaCustomTranslationEvent,
+  IVEOFormSchemaItemDeleteEvent,
+  IVEOFormSchemaItemUpdateEvent,
+  IVEOFormSchemaTranslationCollectionItem
+} from 'veo-formschema'
 // import Wrapper from '~/components/forms/Wrapper.vue'
 
 export default Vue.extend({
@@ -23,97 +28,34 @@ export default Vue.extend({
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
-    lang: {
+    generalTranslation: {
       type: Object,
-      default: undefined
-    } as PropOptions<BaseObject>
-  },
-  data() {
-    return {
-      page: 1,
-      localSchema: this.schema,
-      localUI: this.value
-    }
-  },
-  computed: {
-    pages(): UISchemaElement[] | undefined {
-      if (this.value && this.value.elements) {
-        return this.value.elements
-          .filter(
-            el =>
-              el.type === 'Layout' && el.options && el.options.format === 'page'
-          )
-          .map((el, i) => ({
-            ...el,
-            options: { ...el.options, _pageID: i + 1 }
-          }))
-      }
-      return undefined
-    },
-    pagesLength(): number {
-      return this.pages ? this.pages.length : 1
-    }
-  },
-  watch: {
-    schema: {
-      immediate: true,
-      deep: true,
-      handler() {
-        // IMPORTANT! This is needed to update localSchema when schema is updated
-        // Else it cannot detect updated object of schema and does not update veo-form
-        this.localSchema = JSON.parse(JSON.stringify(this.schema))
-      }
-    },
-    lang: {
-      immediate: true,
-      handler() {}
-    }
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>
   },
   methods: {
-    propertyPath(path: string) {
-      // TODO: Better translation from #/properties/name to #/name for values
-      return String(path || '').replace(/\/properties\//g, '/')
+    onDelete(event: IVEOFormSchemaItemDeleteEvent): void {
+      this.$emit('delete', event)
     },
-    setValue(scope: string, v: any): any {
-      if (scope) {
-        // TODO: Here was changed JsonPointer with Vue.set() because of reactivity
-        // Investigate how to work with it JsonPointer, because of JsonPaths
-        // but have vue reactivity
-
-        // console.log(this.value, scope, propertyPath(scope), v );
-        // JsonPointer.set(this.value, propertyPath(scope), v, true);
-
-        vjp.set(this.value, this.propertyPath(scope).replace('#/', '/'), v)
-        this.$emit('input', this.value)
-      }
+    onUpdate(event: IVEOFormSchemaItemUpdateEvent): void {
+      this.$emit('update', event)
     },
-    onDelete(_event: any, formSchemaPointer: string): void {
-      const vjpPointer = formSchemaPointer.replace('#', '')
-      // Not allowed to make changes on the root object
-      if (formSchemaPointer !== '#') {
-        vjp.remove(this.value, vjpPointer)
-      } else {
-        this.$emit('delete', undefined)
-      }
-    },
-    onUpdate(event: any, formSchemaPointer: string): void {
-      this.$emit('update', {
-        payload: event,
-        formSchemaPointer: formSchemaPointer.replace('#', '')
-      })
+    onUpdateCustomTranslation(event: IVEOFormSchemaCustomTranslationEvent): void {
+      this.$emit('update-custom-translation', event)
     }
   },
   render(h): VNode {
-    const createComponent = (
-      element: UISchemaElement,
-      formSchemaPointer: string
-    ): VNode => {
+    const createComponent = (element: UISchemaElement, formSchemaPointer: string, elementLevel: number): VNode => {
       // Create children of layout "elements"
       const createChildren = () => {
         return (
           element.elements &&
           element.elements.map((elem, index) =>
-            createComponent(elem, `${formSchemaPointer}/elements/${index}`)
+            createComponent(elem, `${formSchemaPointer}/elements/${index}`, elementLevel + 1)
           )
         )
       }
@@ -125,11 +67,17 @@ export default Vue.extend({
             {
               props: {
                 options: element.options,
-                formSchema: element,
-                formSchemaPointer
+                value: element,
+                formSchemaPointer,
+                level: elementLevel,
+                name: element.options?.label?.replace('#lang/', ''),
+                customTranslation: this.customTranslation
               },
               on: {
-                delete: (event: any) => this.onDelete(event, formSchemaPointer)
+                delete: (event: IVEOFormSchemaItemDeleteEvent) => this.onDelete(event),
+                update: (event: IVEOFormSchemaItemUpdateEvent) => this.onUpdate(event),
+                'update-custom-translation': (event: IVEOFormSchemaCustomTranslationEvent) =>
+                  this.onUpdateCustomTranslation(event)
               }
             },
             createChildren()
@@ -138,35 +86,22 @@ export default Vue.extend({
           let partOfProps: { [key: string]: any } = {
             name: undefined,
             schema: {},
-            formSchema: element,
             formSchemaPointer,
-            lang: {}
+            generalTranslation: {},
+            customTranslation: {}
           }
 
           if (element.scope) {
             const elementName = element.scope.split('/').pop() as string
-            const elementSchema = JsonPointer.get(
-              this.localSchema,
-              element.scope
-            ) as any
-            const elementValue = JsonPointer.get(
-              this.value,
-              this.propertyPath(element.scope)
-            ) as any
-            const elementParentSchema = JsonPointer.get(
-              this.localSchema,
-              '#'
-            ) as any
-            const isRequired =
-              Array.isArray(elementParentSchema.required) &&
-              elementParentSchema.required.includes(elementName)
+            const elementSchema = JsonPointer.get(this.schema, element.scope) as any
 
             partOfProps = {
+              ...partOfProps,
               value: element,
               name: elementName,
               schema: elementSchema,
-              lang: this.lang
-              // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug
+              generalTranslation: this.generalTranslation,
+              customTranslation: this.customTranslation
             }
           }
           return h(FseControl, {
@@ -177,10 +112,10 @@ export default Vue.extend({
               scope: element.scope || ''
             },
             on: {
-              delete: (event: any) => this.onDelete(event, formSchemaPointer),
-              update: (event: any) => {
-                this.onUpdate(event, formSchemaPointer)
-              }
+              delete: (event: IVEOFormSchemaItemDeleteEvent) => this.onDelete(event),
+              update: (event: IVEOFormSchemaItemUpdateEvent) => this.onUpdate(event),
+              'update-custom-translation': (event: IVEOFormSchemaCustomTranslationEvent) =>
+                this.onUpdateCustomTranslation(event)
             }
           })
         }
@@ -189,10 +124,16 @@ export default Vue.extend({
             props: {
               options: element.options,
               value: element,
-              text: element.text
+              name: element.text.replace('#lang/', ''),
+              text: element.text,
+              formSchemaPointer,
+              customTranslation: this.customTranslation
             },
             on: {
-              delete: (event: any) => this.onDelete(event, formSchemaPointer)
+              delete: (event: IVEOFormSchemaItemDeleteEvent) => this.onDelete(event),
+              update: (event: IVEOFormSchemaItemUpdateEvent) => this.onUpdate(event),
+              'update-custom-translation': (event: IVEOFormSchemaCustomTranslationEvent) =>
+                this.onUpdateCustomTranslation(event)
             }
           })
       }
@@ -204,35 +145,11 @@ export default Vue.extend({
       return null as any
     }
 
-    return createComponent(this.value, '#')
+    return createComponent(this.value, '#', 0)
   }
 })
 </script>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
-
-.veo-editor-header {
-  background-color: white;
-  border-bottom: 2px solid $grey;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  max-height: 200px;
-  overflow: auto;
-}
-
-.veo-editor-header ::v-deep .v-expansion-panel-header {
-  min-height: auto;
-}
-.veo-editor-header
-  ::v-deep
-  .v-expansion-panel--active
-  > .v-expansion-panel-header {
-  min-height: auto;
-}
-
-// .veo-editor-body ::v-deep .v-card {
-//   border: 1px solid $grey-darken-2 !important;
-// }
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts">
 import Vue, { VNode, PropOptions } from 'vue'
-import { JSONSchema7, JSONSchema7Object, JSONSchema7Type } from 'json-schema'
+import { JSONSchema7 } from 'json-schema'
 import { JsonPointer } from 'json-ptr'
 
 import vjp from 'vue-json-pointer'
@@ -12,6 +12,8 @@ import Label from '~/components/forms/Label.vue'
 import Control from '~/components/forms/Control.vue'
 import Layout from '~/components/forms/Layout.vue'
 import Wrapper from '~/components/forms/Wrapper.vue'
+import { IVeoTranslation } from '~/types/VeoTypes'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
 
 interface IErrorMessageElement {
   pointer: string
@@ -51,10 +53,14 @@ export default Vue.extend({
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
-    lang: {
+    generalTranslation: {
       type: Object,
-      default: undefined
-    } as PropOptions<BaseObject>,
+      default: () => {}
+    } as PropOptions<IVeoTranslation>,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
     options: {
       type: Object,
       default: undefined
@@ -80,6 +86,7 @@ export default Vue.extend({
         generator: {
           excludedProperties: [
             '/id$',
+            '/subType$',
             '/type$',
             '/domains$',
             '/owner$',
@@ -94,7 +101,12 @@ export default Vue.extend({
             '/extinguishingTime$',
             '^#/properties/links',
             '/applicableTo$',
-            '/references$'
+            '/references$',
+            '/updatedAt$',
+            '/updatedBy$',
+            '/createdAt$',
+            '/createdBy$',
+            '/parts$'
           ],
           elementsPerPage: -1
         }
@@ -105,10 +117,7 @@ export default Vue.extend({
     pages(): UISchemaElement[] | undefined {
       if (this.localUI && this.localUI.elements) {
         return this.localUI.elements
-          .filter(
-            el =>
-              el.type === 'Layout' && el.options && el.options.format === 'page'
-          )
+          .filter(el => el.type === 'Layout' && el.options && el.options.format === 'page')
           .map((el, i) => ({
             ...el,
             options: { ...el.options, _pageID: i + 1 }
@@ -133,10 +142,7 @@ export default Vue.extend({
       if (this.localUI && this.localUI.elements && this.visiblePages) {
         return {
           ...this.localUI,
-          elements:
-            this.pagesLength > 1
-              ? [this.visiblePages[this.page - 1]]
-              : [...this.localUI.elements]
+          elements: this.pagesLength > 1 ? [this.visiblePages[this.page - 1]] : [...this.localUI.elements]
         }
       } else {
         return { ...this.localUI }
@@ -149,9 +155,7 @@ export default Vue.extend({
       return this.validate(this.value)
     },
     errorsMsgMap(): BaseObject {
-      return !this.valid && this.validate.errors
-        ? this.validate.errors.reduce(this.validationErrorTransform, {})
-        : {}
+      return !this.valid && this.validate.errors ? this.validate.errors.reduce(this.validationErrorTransform, {}) : {}
     },
     mergedOptions(): IOptions {
       return merge(this.defaultOptions, this.options)
@@ -176,16 +180,12 @@ export default Vue.extend({
           this.localUI = this.translate<UISchema>(this.ui)
         } else {
           this.localUI = this.translate<UISchema>(
-            this.generateFormSchema(
-              this.schema,
-              this.mergedOptions.generator.excludedProperties,
-              Mode.VEO
-            )
+            this.generateFormSchema(this.schema, this.mergedOptions.generator.excludedProperties, Mode.VEO)
           )
         }
       }
     },
-    lang: {
+    generalTranslation: {
       immediate: true,
       handler() {
         // this.localSchema = this.translate<JSONSchema7>(this.schema)
@@ -196,10 +196,18 @@ export default Vue.extend({
         }
       }
     },
-    visiblePages(
-      newValue: UISchemaElement[] | undefined,
-      oldValue: UISchemaElement[] | undefined
-    ) {
+    customTranslation: {
+      immediate: true,
+      handler() {
+        // this.localSchema = this.translate<JSONSchema7>(this.schema)
+        if (this.ui) {
+          this.localUI = this.translate<UISchema>(this.ui)
+        } else if (this.localUI) {
+          this.localUI = this.translate<UISchema>(this.localUI)
+        }
+      }
+    },
+    visiblePages(newValue: UISchemaElement[] | undefined, oldValue: UISchemaElement[] | undefined) {
       // TODO: Refactor code to make it more readible and clear
 
       if (typeof oldValue !== 'undefined' && typeof newValue !== 'undefined') {
@@ -207,16 +215,14 @@ export default Vue.extend({
 
         // get old current page to get old current page ID
         const oldCurrentPage = oldValue[this.page - 1]
-        const oldCurrentPageID: number =
-          oldCurrentPage.options && oldCurrentPage.options._pageID
+        const oldCurrentPageID: number = oldCurrentPage.options && oldCurrentPage.options._pageID
 
         // Look in the new array of visible pages and find what the index of old current page is
         const currentPageIndexInNewValue = newValue.findIndex(
           el => el.options && el.options._pageID === oldCurrentPageID
         )
         // if the old current page was found in the new visible pages, adjust this.page, else this.page is 1
-        this.page =
-          currentPageIndexInNewValue !== -1 ? currentPageIndexInNewValue + 1 : 1
+        this.page = currentPageIndexInNewValue !== -1 ? currentPageIndexInNewValue + 1 : 1
       } else {
         // else set the actual to 1 as default
         this.page = 1
@@ -243,18 +249,11 @@ export default Vue.extend({
   },
   created() {
     if (this.value && this.value.customAspects) {
-      const customAspectsProperties = JsonPointer.get(
-        this.localSchema,
-        '#/properties/customAspects/properties'
-      ) as any
+      const customAspectsProperties = JsonPointer.get(this.localSchema, '#/properties/customAspects/properties') as any
       Object.keys(this.value.customAspects)
-        .filter(
-          property =>
-            typeof this.value.customAspects[property].type === 'undefined'
-        )
+        .filter(property => typeof this.value.customAspects[property].type === 'undefined')
         .forEach(property => {
-          const type =
-            customAspectsProperties?.[property]?.properties?.type?.enum?.[0]
+          const type = customAspectsProperties?.[property]?.properties?.type?.enum?.[0]
           if (type) {
             vjp.set(this.value, `/customAspects/${property}/type`, type)
           }
@@ -263,21 +262,15 @@ export default Vue.extend({
   },
   methods: {
     getLangText(langPointer: string): string {
-      return JsonPointer.get(
-        this.lang,
-        langPointer.replace('#lang/', '#/')
-      ) as string
+      const translationKey = langPointer.replace('#lang/', '')
+      return this.customTranslation?.[translationKey] || this.generalTranslation?.[translationKey] || ''
     },
     translate<T>(objectWithLangPointers: JSONSchema7 | UISchemaElement): T {
       return JSON.parse(
         JSON.stringify(objectWithLangPointers).replace(
           /"(#lang\/.*?)"/gi,
           (langMatchWithQuotes: string, langMatchWithoutQuotes: string) => {
-            return (
-              JSON.stringify(this.getLangText(langMatchWithoutQuotes)) ||
-              JSON.stringify(langMatchWithoutQuotes.split('/').pop()) ||
-              'MISSING'
-            )
+            return JSON.stringify(this.getLangText(langMatchWithoutQuotes))
           }
         )
       )
@@ -303,10 +296,7 @@ export default Vue.extend({
         return defaults
       }
 
-      const v = JsonPointer.get(
-        this.value,
-        this.propertyPath(rule.condition.scope)
-      )
+      const v = JsonPointer.get(this.value, this.propertyPath(rule.condition.scope))
 
       // if rule condition is true
       if (ajv.validate(rule.condition.schema, v)) {
@@ -351,9 +341,7 @@ export default Vue.extend({
       }
     },
     validationErrorTransform(accummulator: {}, error: Ajv.ErrorObject) {
-      const keyMatch = error.schemaPath.match(
-        /((.+\/properties\/\w+\b)|(.+(?=\/required)))/g
-      )
+      const keyMatch = error.schemaPath.match(/((.+\/properties\/\w+\b)|(.+(?=\/required)))/g)
       if (!keyMatch) {
         throw new Error('Key does not match in Errors array')
       }
@@ -361,23 +349,13 @@ export default Vue.extend({
       const key =
         error.keyword !== 'required'
           ? keyMatch[0]
-          : `${keyMatch[0]}/properties/${
-              (error.params as RequiredParams).missingProperty
-            }`
+          : `${keyMatch[0]}/properties/${(error.params as RequiredParams).missingProperty}`
 
       return { ...accummulator, [key]: error.message }
     },
-    generateControl(
-      scope: string,
-      items: BaseObject,
-      mode: Mode = Mode.GENERAL
-    ): UISchemaElement {
+    generateControl(scope: string, items: BaseObject, mode: Mode = Mode.GENERAL): UISchemaElement {
       const propertyName = scope.split('/').pop()
-      const label = propertyName
-        ? mode === Mode.VEO
-          ? `#lang/${propertyName}`
-          : propertyName
-        : ''
+      const label = propertyName ? (mode === Mode.VEO ? `#lang/${propertyName}` : propertyName) : ''
       return {
         type: 'Control',
         scope,
@@ -395,9 +373,7 @@ export default Vue.extend({
       const uniqueCustomAspects = [
         ...new Set(
           scopes
-            .filter(scope =>
-              scope.includes('#/properties/customAspects/properties')
-            )
+            .filter(scope => scope.includes('#/properties/customAspects/properties'))
             .map(scope => {
               const matchedCustomAspect = scope.match(regCustomAspect)
               return matchedCustomAspect && matchedCustomAspect[0]
@@ -406,29 +382,16 @@ export default Vue.extend({
       ] as string[]
 
       return [
-        ...content.filter(
-          (el: any) => el.scope && !regCustomAspect.test(el.scope)
-        ),
+        ...content.filter((el: any) => el.scope && !regCustomAspect.test(el.scope)),
         ...uniqueCustomAspects.map(uniqueCustomAspect => {
           return {
             type: 'Layout',
             options: {
               type: 'group',
-              direction: 'vertical'
+              direction: 'vertical',
+              label: uniqueCustomAspect.split('/').pop()
             },
-            elements: [
-              {
-                type: 'Label',
-                text: uniqueCustomAspect.split('/').pop(),
-                options: {
-                  class: 'display',
-                  style: 'color: #8c8c8c'
-                }
-              },
-              ...content.filter(
-                (el: any) => el.scope && el.scope.includes(uniqueCustomAspect)
-              )
-            ]
+            elements: [...content.filter((el: any) => el.scope && el.scope.includes(uniqueCustomAspect))]
           }
         })
       ] as UISchemaElement[]
@@ -444,75 +407,51 @@ export default Vue.extend({
         })
       )
     },
-    generateFormSchema(
-      objectSchema: JSONSchema7,
-      excludedProperties: string[] = [],
-      mode: Mode = Mode.GENERAL
-    ): any {
+    generateFormSchema(objectSchema: JSONSchema7, excludedProperties: string[] = [], mode: Mode = Mode.GENERAL): any {
       const items: BaseObject = {}
       // @ts-ignore
       let schemaMap = Object.keys(JsonPointer.flatten(objectSchema, '#')) // TODO: Is '#' the right argument?
-      const excludedPropertiesRegexp = excludedProperties.map(
-        prop => new RegExp(prop)
-      )
+      const excludedPropertiesRegexp = excludedProperties.map(prop => new RegExp(prop))
       schemaMap =
         excludedPropertiesRegexp.length > 0
-          ? schemaMap.filter(
-              el => !excludedPropertiesRegexp.some(reg => reg.test(el))
-            )
+          ? schemaMap.filter(el => !excludedPropertiesRegexp.some(reg => reg.test(el)))
           : schemaMap
       const scopes = schemaMap
         .filter(el => /#\/(\w|\/)*properties\/\w+$/g.test(el))
-        .filter(
-          (el, i, arr) =>
-            !arr.some(someEl =>
-              new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)
-            )
-        )
+        .filter((el, i, arr) => !arr.some(someEl => new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)))
         .filter(el => {
           if (/\/properties\/\w+\/items\/properties\/\w+$/g.test(el)) {
             const [parent, child] = el.split(/\/items(?=\/properties\/\w+$)/g)
-            items[parent] = items[parent]
-              ? [...items[parent], `#${child}`]
-              : [`#${child}`]
+            items[parent] = items[parent] ? [...items[parent], `#${child}`] : [`#${child}`]
             return false
           } else {
             return true
           }
         })
-      let content = scopes.map(scope =>
-        this.generateControl(scope, items, mode)
-      )
+      let content = scopes.map(scope => this.generateControl(scope, items, mode))
 
       // Generate Groups for each customAspect
       content = this.generateGroups(content, scopes)
 
-      content =
-        this.mergedOptions.generator.elementsPerPage === -1
-          ? content
-          : this.generatePages(content)
+      content = this.mergedOptions.generator.elementsPerPage === -1 ? content : this.generatePages(content)
       return {
         type: 'Layout',
         options: {
           format: 'group',
-          direction: 'vertical',
-          highlight: false
+          direction: 'vertical'
         },
         elements: content
       }
     }
   },
   render(h): VNode {
-    const ui = this.ui
-    const schema = this.schema
-    const value = this.value
-    const lang = this.lang
-
-    const createComponent = (element: UISchemaElement): VNode => {
+    const createComponent = (element: UISchemaElement, formSchemaPointer: string, elementLevel: number): VNode => {
       const createChildren = () => {
         return (
           element.elements &&
-          element.elements.map(elem => createComponent(elem))
+          element.elements.map((elem, index) =>
+            createComponent(elem, `${formSchemaPointer}/elements/${index}`, elementLevel + 1)
+          )
         )
       }
 
@@ -522,7 +461,13 @@ export default Vue.extend({
         case 'Layout':
           return h(
             Layout,
-            { props: { options: element.options, ...rule } },
+            {
+              props: {
+                options: element.options,
+                formSchemaPointer,
+                ...rule
+              }
+            },
             createChildren()
           )
         case 'Control': {
@@ -531,37 +476,26 @@ export default Vue.extend({
             schema: {},
             value: undefined,
             validation: {},
-            lang: {},
+            generalTranslation: undefined,
+            customTranslation: undefined,
             api: {}
           }
 
           if (element.scope) {
             const elementName = element.scope.split('/').pop() as string
-            const elementSchema = JsonPointer.get(
-              this.localSchema,
-              element.scope
-            ) as any
-            const elementValue = JsonPointer.get(
-              value,
-              this.propertyPath(element.scope)
-            ) as any
-            const elementParentSchema = JsonPointer.get(
-              this.localSchema,
-              '#'
-            ) as any
+            const elementSchema = JsonPointer.get(this.localSchema, element.scope) as any
+            const elementValue = JsonPointer.get(this.value, this.propertyPath(element.scope)) as any
+            const elementParentSchema = JsonPointer.get(this.localSchema, '#') as any
             const isRequired =
-              Array.isArray(elementParentSchema.required) &&
-              elementParentSchema.required.includes(elementName)
+              Array.isArray(elementParentSchema.required) && elementParentSchema.required.includes(elementName)
 
             partOfProps = {
               name: elementName,
               schema: elementSchema,
-              lang: this.lang,
+              generalTranslation: this.generalTranslation,
+              customTranslation: this.customTranslation,
               // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug
-              value:
-                typeof elementValue !== 'undefined'
-                  ? elementValue
-                  : elementSchema && elementSchema.default,
+              value: typeof elementValue !== 'undefined' ? elementValue : elementSchema && elementSchema.default,
               validation: {
                 objectSchema: {
                   errorMsg: this.errorsMsgMap[element.scope]
@@ -578,10 +512,8 @@ export default Vue.extend({
               ...partOfProps
             },
             on: {
-              input: (v: any) =>
-                element.scope && this.setValue(element.scope, v),
-              change: (v: any) =>
-                element.scope && this.setValue(element.scope, v)
+              input: (v: any) => element.scope && this.setValue(element.scope, v),
+              change: (v: any) => element.scope && this.setValue(element.scope, v)
             }
           })
         }
@@ -607,7 +539,7 @@ export default Vue.extend({
           input: (v: any) => (this.page = v)
         }
       },
-      [createComponent(this.currentPage)]
+      [createComponent(this.currentPage, '#', 0)]
     )
   }
 })

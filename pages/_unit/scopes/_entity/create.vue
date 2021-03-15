@@ -1,0 +1,224 @@
+<template>
+  <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
+    <v-progress-circular indeterminate color="primary" size="50" />
+  </div>
+  <VeoPage v-else-if="!!entityType" absolute-size :cols="8" :md="8" :xl="8" sticky-header>
+    <template #header>
+      <v-row>
+        <v-col>
+          <h1>{{ $t('object_create', { type: formattedEntityType }) }}</h1>
+        </v-col>
+        <v-spacer />
+        <v-col class="text-right">
+          <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="save()">
+            {{ $t('global.button.save') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </template>
+    <template #default>
+      <VeoForm
+        v-model="form.objectData"
+        :schema="form.objectSchema"
+        :general-translation="form.lang && form.lang[$i18n.locale]"
+        :is-valid.sync="isValid"
+        :error-messages.sync="errorMessages"
+        class="mb-8"
+      />
+      <VeoAlert
+        v-model="alert.value"
+        v-bind="alert"
+        style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
+      >
+        <template #additional-button>
+          <v-btn outlined text color="error" @click="$fetch()">{{ $t('global.button.yes') }}</v-btn>
+        </template>
+      </VeoAlert>
+    </template>
+  </VeoPage>
+  <VeoPage v-else fullsize>
+    <template #default>
+      <v-row class="fill-height flex-column text-center align-center">
+      <v-spacer />
+      <v-col>
+        <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
+      </v-col>
+      <v-col cols="auto" class="text-left">
+        <h3>{{ $t('error.title') }}:</h3>
+        <p>{{ $t('no_type') }}</p>
+        <nuxt-link :to="backLink">{{ $t('global.button.previous') }}</nuxt-link>
+      </v-col>
+      <v-spacer />
+    </v-row>
+    </template>
+  </VeoPage>
+</template>
+<i18n>
+{
+  "de": {
+    "no_type": "Es wurde kein Typ für das neue Objekt festgelegt. Bitte versuchen Sie es erneut.",
+    "object_create": "{type} erstellen"
+  },
+  "en": {
+    "no_type": "There is no type set for the new object. Please try again.",
+    "object_create": "Create {type}"
+  }
+}
+</i18n>
+
+<script lang="ts">
+import Vue from 'vue'
+import { IForm, separateUUIDParam } from '~/lib/utils'
+import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
+import VeoPage from '~/components/layout/VeoPage.vue'
+
+import VeoForm from '~/components/forms/VeoForm.vue'
+import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import { getSchemaEndpoint } from '~/plugins/api/schema'
+import { capitalize } from 'lodash'
+import { IVeoAPIMessage } from '~/types/VeoTypes'
+
+interface IData {
+  form: IForm
+  isValid: boolean
+  errorMessages: IValidationErrorMessage[]
+  saveBtnLoading: boolean
+  alert: VeoEventPayload & { value: boolean }
+}
+
+export default Vue.extend({
+  components: {
+    VeoForm,
+    VeoPage
+  },
+  data(): IData {
+    return {
+      form: {
+        objectSchema: {},
+        objectData: {},
+        lang: {}
+      },
+      isValid: true,
+      errorMessages: [],
+      saveBtnLoading: false,
+      alert: {
+        value: false,
+        text: '',
+        type: 0,
+        title: this.$t('global.appstate.alert.error') as string,
+        saveButtonText: this.$t('global.button.no') as string
+      }
+    }
+  },
+  async fetch() {
+    if(this.entityType) {
+      const objectSchema = await this.$api.schema.fetch(this.entityType.toLowerCase())
+      const { lang } = await this.$api.translation.fetch(['de', 'en'])
+      const objectData = {}
+      this.form = {
+        objectSchema,
+        objectData,
+        lang
+      }
+    }
+    this.alert.value = false
+  },
+  head(): any {
+    return {
+      title: this.title
+    }
+  },
+  computed: {
+    title(): string {
+      return this.$fetchState.pending
+        ? this.$t('breadcrumbs.scopes')
+        : `${this.$t('object_create', { type: this.formattedEntityType })} - ${this.$t('breadcrumbs.scopes')}`
+    },
+    parentEndpoint(): string | undefined {
+      return getSchemaEndpoint(this.parentType)
+    },
+    parentId(): string {
+      return separateUUIDParam(this.$route.params.entity).id
+    },
+    parentType(): string {
+      return separateUUIDParam(this.$route.params.entity).type.toLowerCase()
+    },
+    unitID(): string {
+      return separateUUIDParam(this.$route.params.unit).id
+    },
+    entityEndpoint(): string | undefined {
+      return getSchemaEndpoint(this.entityType)
+    },
+    entityType(): string {
+      return this.$route.query.based_on.toLowerCase()
+    },
+    formattedEntityType(): string {
+      return capitalize(this.entityType)
+    },
+    backLink(): string {
+      const url = this.$route.fullPath.split('/')
+      url.pop()
+      return url.join('/')
+    }
+  },
+  methods: {
+    async save() {
+      this.saveBtnLoading = true
+      this.formatObjectData()
+
+      await this.$api.entity
+        .create(this.entityEndpoint, {
+          ...this.form.objectData,
+          owner: {
+            targetUri: `/units/${this.unitID}`
+          }
+        })
+        .then(async (data: IVeoAPIMessage) => {
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
+          if (this.parentId !== '-') {
+            if(this.parentType === 'scope') {
+              const parent = await this.$api.scope.fetch(this.parentId)
+              parent.members.push({
+                targetUri: `/${this.entityEndpoint}/${data.resourceId}`
+              })
+              this.$api.scope.update(parent.id, parent).finally(() => {
+                this.$router.push(this.backLink)
+              })
+            } else {
+              const parent = await this.$api.entity.fetch(this.parentEndpoint, this.parentId)
+              parent.parts.push({
+                targetUri: `/${this.entityEndpoint}/${data.resourceId}`
+              })
+              this.$api.entity.update(this.parentEndpoint, parent.id, parent).finally(() => {
+                this.$router.push(this.backLink)
+              })
+            }
+            
+          } else {
+            this.$router.push(this.backLink)
+          }
+        })
+        .finally(() => {
+          this.saveBtnLoading = false
+        })
+    },
+    formatObjectData() {
+      // TODO: find better solution
+      //  Add Keys and IDs manually
+      if (this.form.objectData.customAspects) {
+        Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
+          this.form.objectData.customAspects[key] = {
+            ...this.form.objectData.customAspects[key],
+            id: '00000000-0000-0000-0000-000000000000',
+            type: key
+          }
+        })
+      }
+    }
+  }
+})
+</script>
+
+<style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+</style>

@@ -65,11 +65,12 @@ describe('Layout.vue', () => {
 
     const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
     expect(layoutWrapper.exists()).toBe(true)
-    expect(layoutWrapper.classes()).toContain('d-flex')
-    expect(layoutWrapper.classes()).toContain('flex-column')
+    expect(layoutWrapper.classes()).toContain('vf-group')
+    expect(layoutWrapper.classes()).toContain('col-md-auto')
+    expect(layoutWrapper.classes()).toContain('col-12')
 
     const pageSelector = wrapper.findAll(
-      '.vf-wrapper > .vf-layout >  .vf-layout.vf-page'
+      '.vf-wrapper > .vf-layout >  .row > .col > .row > .vf-layout.vf-page'
     )
     expect(pageSelector.exists()).toBe(true)
   })

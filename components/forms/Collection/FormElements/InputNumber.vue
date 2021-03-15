@@ -1,10 +1,6 @@
 <template>
   <div v-if="visible" class="vf-input-number vf-form-element">
-    <ValidationProvider
-      v-slot="{ errors }"
-      :name="options && options.label"
-      :rules="validation"
-    >
+    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
       <v-text-field
         :disabled="disabled"
         :value="value"
@@ -26,27 +22,32 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
-import { BaseObject, IApi } from '~/components/forms/utils'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'InputNumber',
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
-    value: {},
-    validation: Object,
+    value: Number,
+    name: {
+      type: String,
+      default: ''
+    },
+    schema: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<JSONSchema7>,
+    options: {
+      type: Object,
+      default: () => undefined
+    },
+    validation: {
+      type: Object,
+      default: () => undefined
+    },
     disabled: Boolean,
-    visible: Boolean,
-    api: Object as Prop<IApi>
+    visible: Boolean
   },
   methods: {
     clear() {
@@ -61,15 +62,9 @@ export default Vue.extend({
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
-    return calculateConditionsScore([
-      props.schema.type === 'number' || props.schema.type === 'integer'
-    ])
+    return calculateConditionsScore([props.schema.type === 'number' || props.schema.type === 'integer'])
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.vf-input-number {
-  width: 250px;
-}
-</style>
+<style lang="scss" scoped></style>

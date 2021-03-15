@@ -1,28 +1,30 @@
 <template>
-  <FseLayoutFormat
-    v-bind="$props"
-    @input="$emit('input', $event)"
-    @change="$emit('input', $event)"
-    @delete="$emit('delete', $event)"
-  >
+  <FseGroup v-bind="$props" v-on="$listeners">
     <slot />
-  </FseLayoutFormat>
+  </FseGroup>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import FseLayoutFormat from './Collection/LayoutFormats/FseLayoutFormat.vue'
+import { PropOptions } from 'vue/types/options'
+import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
 
 export default Vue.extend({
-  components: {
-    FseLayoutFormat
-  },
   props: {
-    options: { type: Object, default: undefined },
-    formSchema: { type: Object, default: undefined },
+    value: {
+      type: Object,
+      default: () => undefined
+    },
+    name: {
+      type: String
+    },
+    options: Object,
+    customTranslation: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
     formSchemaPointer: String,
-    disabled: Boolean,
-    visible: Boolean
+    level: Number
   }
 })
 </script>

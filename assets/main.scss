@@ -1,9 +1,33 @@
+@import '~/assets/vuetify.scss';
+
 .v-application {
   .__nuxt-error-page {
-      background-color: white !important;
+    background-color: white !important;
     .error {
       border-color: transparent !important;
       background-color: transparent !important;
     }
   }
+
+  .v-main__wrap {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+html {
+  overflow: hidden !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: darken($accent, 27.5%);
+}
+
+.v-navigation-drawer__border {
+  background-color: $grey !important;
 }

@@ -1,14 +1,6 @@
 <template>
-  <div
-    v-if="visible"
-    class="vf-markdown-editor vf-form-element"
-    :class="{ 'is-disabled': disabled }"
-  >
-    <ValidationProvider
-      v-slot="{ errors }"
-      :name="options && options.label"
-      :rules="validation"
-    >
+  <div v-if="visible" class="vf-markdown-editor vf-form-element" :class="{ 'is-disabled': disabled }">
+    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
       <div v-if="options && options.label" class="subtitle-1">
         {{ options && options.label }}
       </div>
@@ -28,36 +20,39 @@
 
 <script lang="ts">
 import Vue, { VueConstructor } from 'vue'
-import { Prop } from 'vue/types/options'
+import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 
 import hljs from 'highlight.js'
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight'
 import { Editor } from '@toast-ui/vue-editor'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
-import { BaseObject, IApi } from '~/components/forms/utils'
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 
-export default (Vue as VueConstructor<
-  Vue & { $refs: { toastuiEditor: any } }
->).extend({
+export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).extend({
   name: 'MarkdownEditor',
   components: {
     editor: Editor
   },
   props: {
-    name: String,
-    schema: Object as Prop<JSONSchema7>,
-    lang: Object as Prop<BaseObject>,
-    options: Object,
-    value: {},
-    validation: Object,
+    value: String,
+    name: {
+      type: String,
+      default: ''
+    },
+    schema: {
+      type: Object,
+      default: () => undefined
+    } as PropOptions<JSONSchema7>,
+    options: {
+      type: Object,
+      default: () => undefined
+    },
+    validation: {
+      type: Object,
+      default: () => undefined
+    },
     disabled: Boolean,
-    visible: Boolean,
-    api: Object as Prop<IApi>
+    visible: Boolean
   },
   data() {
     return {
@@ -93,8 +88,7 @@ export default (Vue as VueConstructor<
               event: 'clearValue',
               tooltip: 'Clear Button',
               text: 'X',
-              style:
-                'background:none;font-weight:900;color: black;font-size: 14px;line-height: 1;'
+              style: 'background:none;font-weight:900;color: black;font-size: 14px;line-height: 1;'
             }
           }
         ]
@@ -124,10 +118,7 @@ export default (Vue as VueConstructor<
       const markdownText = this.invoke('getMarkdown')
       this.$emit(
         'input',
-        (typeof this.value === 'undefined' || this.value === null) &&
-          markdownText === ''
-          ? this.value
-          : markdownText
+        (typeof this.value === 'undefined' || this.value === null) && markdownText === '' ? this.value : markdownText
       )
     },
     invoke(tuiMethodName: string) {
@@ -140,8 +131,7 @@ export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
     return calculateConditionsScore([
       props.schema.type === 'string',
-      typeof props.options !== 'undefined' &&
-        props.options.format === 'markdown'
+      typeof props.options !== 'undefined' && props.options.format === 'markdown'
     ])
   }
 }

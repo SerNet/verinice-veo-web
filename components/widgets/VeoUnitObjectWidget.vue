@@ -1,7 +1,6 @@
 <template>
-  <v-card>
-    <v-card-title>{{ $t('unit.details.objects') }}</v-card-title>
-    <v-card-text v-if="$fetchState.pending">
+  <VeoWidget :title="$t('unit.details.objects')">
+    <template v-if="$fetchState.pending">
       <table>
         <tr v-for="type of objects" :key="type.title">
           <td>
@@ -12,27 +11,33 @@
           </td>
         </tr>
       </table>
-    </v-card-text>
-    <v-card-text v-else>
+    </template>
+    <template v-else>
       <table>
         <tr v-for="type of objects" :key="type.title">
-          <td>
-            {{ type.title }}:
-          </td>
+          <td>{{ type.title }}:</td>
           <td class="text-right">
-            <nuxt-link :to="`/${$route.params.unit}/${type.link}`"><b>{{ type.items }}</b></nuxt-link>
+            <nuxt-link :to="`/${$route.params.unit}/${type.link}`">
+              <b>{{ type.items }}</b>
+            </nuxt-link>
           </td>
         </tr>
       </table>
-    </v-card-text>
-  </v-card>
+    </template>
+  </VeoWidget>
 </template>
 
 <script lang="ts">
+import { capitalize } from 'lodash'
 import Vue from 'vue'
 import { TranslateResult } from 'vue-i18n/types/index'
 
+import VeoWidget from '~/components/widgets/VeoWidget.vue'
+
 export default Vue.extend({
+  components: {
+    VeoWidget
+  },
   props: {
     unit: {
       type: Object,
@@ -41,22 +46,29 @@ export default Vue.extend({
   },
   data() {
     return {
-      objects: [] as { title: TranslateResult, link: string, items: number }[]
+      objects: [] as { title: TranslateResult; link: string; items: number }[]
     }
   },
   async fetch() {
-    await this.$api.schema.fetchAll().then(data => data.knownSchemas.map(async(key: string) => {
-      return {
-        title: this.$t(`unit.data.type.${key}`),
-        link: `data/${key}`,
-        // @ts-ignore
-        items: (await this.$api[key].fetchAll({ unit: this.unit.id })).length
-      }
-    })).then((types) => {
-      Promise.all(types).then((data) => {
-        this.objects = data as any
+    await this.$api.schema
+      .fetchAll()
+      .then(data => {
+        return data.map(async (key: { schemaName: string; endpoint: string }) => ({
+          title: capitalize(key.schemaName),
+          link: `objects/${key.endpoint}`,
+          // @ts-ignore
+          items: (
+            await this.$api.entity.fetchAll(`${key.endpoint}`, {
+              unit: this.unit.id
+            })
+          ).length
+        }))
       })
-    })
+      .then(types => {
+        Promise.all(types).then(data => {
+          this.objects = data as any
+        })
+      })
   }
 })
 </script>

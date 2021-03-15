@@ -1,12 +1,9 @@
 <template>
-  <div class="fill-height d-flex flex-column">
-    <div style="height: 100%; overflow: auto;">
+  <div class="fill-height fill-width d-flex flex-column" style="overflow: hidden;">
+    <div style="flex-grow: 1; overflow: auto;">
       <div class="editor" :style="{ resize: 'vertical', width: '100%' }">
-        <div ref="editor" @keydown.meta.enter="$emit('submit', $event)" @keydown.exact="codeModified()" />
+        <div ref="editor" style="height: 100%" @keyup="onChangedCode($event)" />
       </div>
-    </div>
-    <div class="veo-editor-save-button">
-      <v-btn class="mx-4 my-2" color="primary" :disabled="saveButtonDisabled" @click="updateSchema()">{{ $t('editor.editor.button.save') }}</v-btn>
     </div>
   </div>
 </template>
@@ -31,8 +28,7 @@ import { rectangularSelection } from '@codemirror/next/rectangular-selection'
 import { gotoLineKeymap } from '@codemirror/next/goto-line'
 import { highlightSelectionMatches } from '@codemirror/next/highlight-selection'
 import { defaultHighlighter } from '@codemirror/next/highlight'
-import { defineComponent, onMounted, ref, watchEffect } from '@nuxtjs/composition-api'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
+import { defineComponent, onMounted, ref, watchEffect, watch } from '@nuxtjs/composition-api'
 
 const languageTag = Symbol('language')
 
@@ -46,6 +42,7 @@ interface Props {
   wordwrap?: boolean
   language: typeof basicSetup | false
   error?: CodeError
+  readonly: boolean
 }
 
 export const SELECTION_CHAR = '\uD813'
@@ -55,7 +52,8 @@ export default defineComponent<Props>({
     value: { type: String, default: '' },
     wordwrap: { type: Boolean, default: false },
     language: { type: [Array, Boolean, Object], default: () => json() },
-    error: { type: Object, default: undefined }
+    error: { type: Object, default: undefined },
+    readonly: { type: Boolean, default: false }
   },
   setup(props, context) {
     const editorRef = ref<HTMLDivElement>(null as any)
@@ -74,7 +72,10 @@ export default defineComponent<Props>({
 
     const toDiagnostic = (e: CodeError) => {
       const from = 'position' in e ? Number(e.position) - 1 : -1
-      const to = from === -1 ? $editor.state.doc.toString().length : from + $editor.state.doc.sliceString(from).split(/\s+/)[0].length
+      const to =
+        from === -1
+          ? $editor.state.doc.toString().length
+          : from + $editor.state.doc.sliceString(from).split(/\s+/)[0].length
       const severity = ('severity' in e ? String(e.severity).toLowerCase() : 'error') as any
       const message = e.message
 
@@ -112,26 +113,12 @@ export default defineComponent<Props>({
         )
 
         const selection = selectionMarks.length ? EditorSelection.create(selections) : undefined
-        const transaction = { changes: { from: 0, insert: text, to: $editor.state.doc.length }, selection }
+        const transaction = {
+          changes: { from: 0, insert: text, to: $editor.state.doc.length },
+          selection
+        }
         return transaction as TransactionSpec
       }
-    }
-
-    const saveButtonDisabled = ref(true)
-    function codeModified() {
-      saveButtonDisabled.value = false
-    }
-
-    function updateSchema() {
-      let updatedSchema
-      try {
-        updatedSchema = JSON.parse($editor.state.toJSON().doc)
-        context.emit('schema-updated', updatedSchema)
-        context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, context.root.$i18n.t('editor.code.save.success'))
-      } catch (e) {
-        context.root.$emit(VeoEvents.SNACKBAR_ERROR, `${context.root.$i18n.t('editor.code.save.error')}: ${e}`)
-      }
-      saveButtonDisabled.value = true
     }
 
     onMounted(() => {
@@ -147,7 +134,6 @@ export default defineComponent<Props>({
           return tr.docChanged ? value : value
         }
       })
-
       const editor: EditorView = ($editor = new EditorView({
         state: EditorState.create({
           doc: props.value,
@@ -186,6 +172,17 @@ export default defineComponent<Props>({
         parent: editorRef.value
       }))
 
+      // Make CodeEditor editable/non-editable
+      watch(
+        () => props.readonly,
+        () => {
+          editor.contentDOM.contentEditable = JSON.stringify(!props.readonly)
+        },
+        {
+          immediate: true
+        }
+      )
+
       watchEffect(() => {
         try {
           const transactions = [setText(props.value), setLanguage(props.language)].filter(_ => !!_) as TransactionSpec[]
@@ -198,18 +195,14 @@ export default defineComponent<Props>({
 
       setText(props.value)
       // setError(props.error)
-
-      // Registering event hooks
-      $editor.dom.onpaste = () => {
-        codeModified()
-      }
-
-      $editor.dom.addEventListener('keydown', function(event) {
-        if (event.ctrlKey && event.key === 'z') {
-          codeModified()
-        }
-      })
     })
+
+    function onChangedCode() {
+      const editorText = $editor.state.toJSON().doc
+      if (editorText !== props.value) {
+        context.emit('input', editorText)
+      }
+    }
 
     return {
       editor: editorRef,
@@ -227,9 +220,7 @@ export default defineComponent<Props>({
           $editor.focus()
         })
       },
-      codeModified,
-      saveButtonDisabled,
-      updateSchema
+      onChangedCode
     }
   }
 })
@@ -252,7 +243,15 @@ export default defineComponent<Props>({
   }
 }
 
-.veo-editor-save-button {
-  background-color: rgb(245, 245, 245);
+/*
+ * Super ugly fix for resizes in a v-dialog, as codeMirror next has no refresh
+ * event we could use to make the gutters as big as they should be.
+ */
+::v-deep .cm-gutter-lineNumber {
+  min-height: 150px;
+}
+
+::v-deep .cm-gutterElement-lineNumber:not(:first-child) {
+  min-height: 18px;
 }
 </style>
