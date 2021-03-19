@@ -148,7 +148,7 @@ export default class ObjectSchemaValidator {
   }
 
   private validateBaseSchema(schema: any, context: string) {
-    const requiredKeys: string[] = ['abbreviation', 'description', 'domains', 'id', 'name', 'owner', 'parts', 'subType']
+    const requiredKeys: string[] = ['abbreviation', 'description', 'domains', 'id', 'name', 'owner', 'subType']
 
     for (const key of requiredKeys) {
       if (schema.properties[key] === undefined) {
