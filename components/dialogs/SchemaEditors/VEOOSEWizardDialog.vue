@@ -205,7 +205,7 @@ export default Vue.extend({
     this.dialog = this.value
 
     this.$api.schema
-      .fetchAll()
+      .fetchAll(true)
       .then(data =>
         data.map((value: ISchemaEndpoint) => {
           return {

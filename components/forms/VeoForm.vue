@@ -106,7 +106,10 @@ export default Vue.extend({
             '/updatedBy$',
             '/createdAt$',
             '/createdBy$',
-            '/parts$'
+            '/parts$',
+            '/members$',
+            '/customAspects$',
+            '/links$'
           ],
           elementsPerPage: -1
         }

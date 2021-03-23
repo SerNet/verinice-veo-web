@@ -19,7 +19,7 @@ export const endpoints = {
 export function getSchemaName(endpoint: string): string | undefined {
   for (let key of Object.keys(endpoints)) {
     // @ts-ignore
-    if(endpoints[key] === endpoint) {
+    if (endpoints[key] === endpoint) {
       return key
     }
   }
@@ -32,17 +32,17 @@ export function getSchemaEndpoint(schemaName: string): string | undefined {
   return endpoints[schemaName]
 }
 
-export default function(api: Client) {
+export default function (api: Client) {
   return {
     /**
      * Returns an array of all entity schemas with their corresponding endpoint.
      */
-    fetchAll(): Promise<ISchemaEndpoint[]> {
-      return api.req('/api/schemas').then((data: { knownSchemas: string[] })=> data.knownSchemas.map(schema => ({
+    fetchAll(ignoreMissingEndpoints: boolean = false): Promise<ISchemaEndpoint[]> {
+      return api.req('/api/schemas').then((data: { knownSchemas: string[] }) => data.knownSchemas.map(schema => ({
         schemaName: schema,
         // @ts-ignore
         endpoint: endpoints[schema]
-      })).filter(entry => !!entry.endpoint))
+      })).filter(entry => ignoreMissingEndpoints || !!entry.endpoint))
     },
 
     /**
