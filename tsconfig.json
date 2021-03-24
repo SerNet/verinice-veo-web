@@ -34,5 +34,5 @@
       "./types/veo-formschema"
     ]
   },
-  "exclude": ["coverage",".nuxt", ".gitlab", "dist", "test/e2e"]
+  "exclude": ["coverage", ".nuxt", ".gitlab", "dist", "cypress"]
 }
