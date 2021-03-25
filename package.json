@@ -13,6 +13,7 @@
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore .",
     "precommit": "npm run lint",
     "test": "jest",
+    "test:e2e": "cypress open",
     "test:docker": "docker run -it $(docker build -f test.Dockerfile -q .)",
     "webpack": "nuxt webpack"
   },
