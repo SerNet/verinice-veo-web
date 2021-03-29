@@ -55,11 +55,11 @@ describe('Authentication test', () => {
           session_state: SESSION_STATE,
           scope: 'openid email veo-user profile'
         }
-        // and redirect to redirect_url
+        // Reply default response
         req.reply({
           body: { ...response, session_state: SESSION_STATE }
         })
-      } // and force the response to be: []
+      }
     )
 
     // Keycloak Account Endpoint
@@ -69,7 +69,7 @@ describe('Authentication test', () => {
         url: 'https://veo-keycloak.staging.cpmsys.io/auth/realms/verinice-veo/account'
       },
       req => {
-        // and redirect to redirect_url
+        // and reply currently logged in user
         req.reply({
           username: 'mw',
           firstName: 'Markus',
@@ -78,7 +78,6 @@ describe('Authentication test', () => {
           emailVerified: true,
           attributes: {}
         })
-      } // and force the response to be: []
     )
 
     const units = [
@@ -118,17 +117,18 @@ describe('Authentication test', () => {
     // Veo Units
     cy.intercept(
       {
-        method: 'GET', // intercept all requests to account endpoint
+        method: 'GET', // GET VEO Units
         url: 'https://veo.develop.cpmsys.io/units'
       },
       req => {
-        // and redirect to redirect_url
+        // Reply demo units
         req.reply(units)
-      } // and force the response to be: []
+      }
     )
 
 
     cy.visit('http://localhost:3000')
+    // Compare each link with units
     cy.get<HTMLLinkElement>('.v-list:not(.v-list--nav) a').each((el, i) => {
       const unit = units[i];
       const link = cy.wrap(el);
