@@ -125,7 +125,7 @@ import { capitalize, upperFirst } from 'lodash'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoObjectTree, { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
 import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
-import { IVeoAPIMessage, IVeoEntity, IVeoLink, IVeoScope } from '~/types/VeoTypes'
+import { IVeoAPIMessage, IVeoEntity, IVeoLink } from '~/types/VeoTypes'
 import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
 import VeoUnlinkEntityDialog from '~/components/objects/VeoUnlinkEntityDialog.vue'
 import VeoAddEntityDialog, { IItem } from '~/components/objects/VeoAddEntityDialog.vue'
@@ -136,25 +136,25 @@ import { getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
 
 interface IData {
-  objects: (IVeoEntity | IVeoScope)[]
+  objects: IVeoEntity[]
   addDialog: {
     value: boolean
     items: IItem[]
-    editedItem?: IVeoEntity | IVeoScope
+    editedItem?: IVeoEntity
     eventName: string
   }
   deleteDialog: {
     value: boolean
-    item: undefined | IVeoEntity | IVeoScope
+    item: undefined | IVeoEntity
   }
   unlinkDialog: {
     value: boolean
-    item: undefined | IVeoEntity | IVeoScope
-    parent: undefined | IVeoEntity | IVeoScope
+    item: undefined | IVeoEntity
+    parent: undefined | IVeoEntity
   }
-  currentEntity: undefined | IVeoEntity | IVeoScope
+  currentEntity: undefined | IVeoEntity
   entities: IVeoEntity[]
-  scopes: IVeoScope[]
+  scopes: IVeoEntity[]
   showParentLink: boolean
   activeView: number
   createScopeDialog: {
@@ -228,13 +228,10 @@ export default Vue.extend({
   },
   async fetch() {
     if (this.entityType === '-') {
-      this.objects = await this.$api.scope.fetchAll({
+      this.objects = await this.$api.entity.fetchAll('scopes', {
         unit: this.unitId
       })
       this.currentEntity = undefined
-    } else if (this.entityType === 'scope') {
-      this.objects = await this.$api.scope.fetchScopeMembers(this.entityId)
-      this.currentEntity = await this.$api.scope.fetch(this.entityId)
     } else {
       this.objects = await this.$api.entity.fetchSubEntities(this.entityEndpoint, this.entityId)
       this.currentEntity = await this.$api.entity.fetch(this.entityEndpoint, this.entityId)
@@ -325,7 +322,7 @@ export default Vue.extend({
     navigateDetails() {
       this.$router.push(this.editItemLink)
     },
-    navigateCreate(parent?: IVeoEntity | IVeoScope, objectType?: string) {
+    navigateCreate(parent?: IVeoEntity, objectType?: string) {
       const parentType = parent?.$type || this.entityType
       const parentId = parent?.id || this.entityId
 
@@ -344,21 +341,21 @@ export default Vue.extend({
         })
       }
     },
-    navigateSubEntity(item: IVeoEntity | IVeoScope) {
+    navigateSubEntity(item: IVeoEntity) {
       this.$router.push({
         params: {
           entity: createUUIDUrlParam(item.$type, item.id)
         }
       })
     },
-    navigateSubEntityDetails(item: IVeoEntity | IVeoScope) {
+    navigateSubEntityDetails(item: IVeoEntity) {
       this.$router.push(`/${this.$route.params.unit}/scopes/${createUUIDUrlParam(item.$type, item.id)}/edit`)
     },
     navigateParent() {
       this.$router.back()
     },
     async fetchScopes() {
-      return this.$api.scope.fetchAll({ unit: this.unitId }).then((scopes: IVeoScope[]) => {
+      return this.$api.entity.fetchAll('scopes', { unit: this.unitId }).then((scopes: IVeoEntity[]) => {
         this.scopes = scopes
       })
     },
@@ -399,22 +396,24 @@ export default Vue.extend({
       this.createScopeDialog.value = true
       this.createScopeDialog.parent = parent
     },
-    doCreateScope(scope: IVeoScope) {
-      this.$api.scope
-        .create({
-          ...scope,
-          owner: {
-            targetUri: `/units/${this.unitId}`
-          }
-        })
+    doCreateScope(scope: IVeoEntity) {
+      this.$api.entity
+        .create(
+          'scopes',
+          {
+            ...scope,
+            owner: {
+              targetUri: `/units/${this.unitId}`
+            }
+          })
         .then(async (data: IVeoAPIMessage) => {
           const parentId = this.createScopeDialog.parent?.id || this.entityId
           if (parentId !== '-') {
-            const parent = await this.$api.scope.fetch(parentId)
+            const parent = await this.$api.entity.fetch('scopes', parentId)
             parent.members.push({
               targetUri: `${this.$config.apiUrl}/scopes/${data.resourceId}`
             } as any)
-            this.$api.scope.update(parent.id, parent).then(() => {
+            this.$api.entity.update('scopes', parent.id, parent).then(() => {
               this.$fetch()
               this.createScopeDialog.value = false
             })
@@ -463,9 +462,9 @@ export default Vue.extend({
 
         let links: IVeoLink[]
         if (currentItem.$type === 'scope') {
-          links = (currentItem as IVeoScope).members
+          links = currentItem.members
         } else {
-          links = (currentItem as IVeoEntity).parts
+          links = currentItem.parts
         }
 
         for (const link of links) {
@@ -495,16 +494,16 @@ export default Vue.extend({
         this.addDialog.value = true
       }
     },
-    doAddDialog(entities: IItem[], parent?: IVeoEntity | IVeoScope) {
-      const _parent: IVeoScope | IVeoEntity | undefined = parent || this.addDialog.editedItem
+    doAddDialog(entities: IItem[], parent?: IVeoEntity) {
+      const _parent: IVeoEntity | undefined = parent || this.addDialog.editedItem
 
       if (_parent?.$type === 'scope') {
-        this.doAddScopeMembers(entities, _parent as IVeoScope)
-      } else {
-        this.doAddEntityChildren(entities, _parent as IVeoEntity)
+        this.doAddScopeMembers(entities, _parent)
+      } else if(_parent) {
+        this.doAddEntityChildren(entities, _parent)
       }
     },
-    async doAddScopeMembers(entities: IItem[], parent: IVeoScope) {
+    async doAddScopeMembers(entities: IItem[], parent: IVeoEntity) {
       if (parent) {
         const children = entities.map(_entity => {
           _entity.type = _entity.type === 'scope' ? 'scopes' : _entity.type
@@ -516,14 +515,14 @@ export default Vue.extend({
         // We fetch the parent entity, as not all flows use the properly fetched entity with an etag, however we need one when updating
         // @ts-ignore
         parent.members = children
-        const updatedElementEtag = (await this.$api.scope.fetch(parent.id)).$etag
+        const updatedElementEtag = (await this.$api.entity.fetch('scopes', parent.id)).$etag
 
         if (parent && updatedElementEtag && !(parent as any).$etag) {
           // @ts-ignore
           parent.$etag = updatedElementEtag
         }
-        this.$api.scope
-          .update(parent.id, parent)
+        this.$api.entity
+          .update('scopes', parent.id, parent)
           .catch((error: any) => {
             this.$root.$emit(VeoEvents.ALERT_ERROR, {
               title: this.$t('scope_update_error'),
@@ -567,7 +566,7 @@ export default Vue.extend({
           })
       }
     },
-    showDeleteEntityDialog(item: IVeoEntity | IVeoScope) {
+    showDeleteEntityDialog(item: IVeoEntity) {
       this.deleteDialog.item = item
       this.deleteDialog.value = true
     },
@@ -596,8 +595,8 @@ export default Vue.extend({
     },
     doDeleteScope(id: string) {
       this.deleteDialog.value = false
-      this.$api.scope
-        .delete(id)
+      this.$api.entity
+        .delete('scopes', id)
         .then(() => {
           this.$fetch()
         })
@@ -608,7 +607,7 @@ export default Vue.extend({
           })
         })
     },
-    showUnlinkEntityDialog(item: IVeoEntity | IVeoScope, parent?: IVeoEntity | IVeoScope) {
+    showUnlinkEntityDialog(item: IVeoEntity, parent?: IVeoEntity) {
       this.unlinkDialog.item = item
       this.unlinkDialog.parent = parent || this.currentEntity
       this.unlinkDialog.value = true
@@ -652,19 +651,19 @@ export default Vue.extend({
     async doUnlinkScope(id: string) {
       this.unlinkDialog.value = false
       if (this.unlinkDialog.item && this.unlinkDialog.parent) {
-        ;(this.unlinkDialog.parent as IVeoScope).members = (this.unlinkDialog.parent as IVeoScope).members.filter(
+        this.unlinkDialog.parent.members = this.unlinkDialog.parent.members.filter(
           member => !member.targetUri.includes(id)
         )
 
         // We fetch the parent entity, as not all flows use the properly fetched entity with an etag, however we need one when updating
-        const updatedElementEtag = (await this.$api.scope.fetch(this.unlinkDialog.parent.id)).$etag
+        const updatedElementEtag = (await this.$api.entity.fetch('scopes', this.unlinkDialog.parent.id)).$etag
         if (this.unlinkDialog.parent && updatedElementEtag && !(this.unlinkDialog.parent as any).$etag) {
           // @ts-ignore
           this.unlinkDialog.parent.$etag = updatedElementEtag
         }
 
-        this.$api.scope
-          .update(this.unlinkDialog.parent.id, this.unlinkDialog.parent)
+        this.$api.entity
+          .update('scopes', this.unlinkDialog.parent.id, this.unlinkDialog.parent)
           .then(() => {
             this.$fetch()
           })
@@ -676,16 +675,16 @@ export default Vue.extend({
           })
       }
     },
-    doDuplicate(item: IVeoEntity | IVeoScope, parent?: IVeoEntity) {
+    doDuplicate(item: IVeoEntity, parent?: IVeoEntity) {
       if (item.$type === 'scope') {
-        this.doDuplicateScope(item as IVeoScope, parent)
+        this.doDuplicateScope(item, parent)
       } else {
-        this.doDuplicateEntity(item as IVeoEntity, parent)
+        this.doDuplicateEntity(item, parent)
       }
     },
     doDuplicateEntity(item: IVeoEntity, parentItem?: IVeoEntity) {
       const newItem = item
-      const parent = parentItem || (this.currentEntity as undefined | IVeoEntity | IVeoScope)
+      const parent = parentItem || (this.currentEntity as undefined | IVeoEntity)
 
       item.name = `${item.name} (${this.$t('clone')})`
       return this.$api.entity
@@ -693,7 +692,7 @@ export default Vue.extend({
         .then((newEntity: IVeoAPIMessage) => {
           if (parent && this.$route.entity !== '-') {
             if (parent.$type === 'scope') {
-              const existingChildren = this.getScopeMembersAsItem(parent as IVeoScope)
+              const existingChildren = this.getScopeMembersAsItem(parent)
               this.doAddScopeMembers(
                 [
                   {
@@ -705,7 +704,7 @@ export default Vue.extend({
                   },
                   ...existingChildren
                 ],
-                parent as IVeoScope
+                parent
               ).then(() => {
                 setTimeout(() => {
                   this.$fetch()
@@ -748,16 +747,16 @@ export default Vue.extend({
           })
         })
     },
-    doDuplicateScope(item: IVeoScope, parentItem?: IVeoEntity) {
+    doDuplicateScope(item: IVeoEntity, parentItem?: IVeoEntity) {
       const newItem = item
-      const parent = parentItem || (this.currentEntity as undefined | IVeoEntity | IVeoScope)
+      const parent = parentItem || (this.currentEntity as undefined | IVeoEntity)
       item.name = `${item.name} (${this.$t('clone')})`
-      return this.$api.scope
-        .create(newItem)
+      return this.$api.entity
+        .create('scopes', newItem)
         .then((newEntity: IVeoAPIMessage) => {
           if (parent && this.$route.entity !== '-') {
             if (parent.$type === 'scope') {
-              const existingChildren = this.getScopeMembersAsItem(parent as IVeoScope)
+              const existingChildren = this.getScopeMembersAsItem(parent)
               this.doAddScopeMembers(
                 [
                   {
@@ -769,7 +768,7 @@ export default Vue.extend({
                   },
                   ...existingChildren
                 ],
-                parent as IVeoScope
+                parent
               ).then(() => {
                 setTimeout(() => {
                   this.$fetch()
@@ -822,10 +821,10 @@ export default Vue.extend({
     loadSubEntities(parent: ITreeEntry) {
       let id = 0
       if (parent.entry.$type === 'scope') {
-        return this.$api.scope.fetchScopeMembers(parent.entry.id).then((data: (IVeoEntity | IVeoScope)[]) => {
+        return this.$api.entity.fetchScopeMembers('scopes', parent.entry.id).then((data: IVeoEntity[]) => {
           parent.children = data
-            .map((item: IVeoEntity | IVeoScope) => {
-              if (item.$type === 'scope' && (item as IVeoScope).members.length > 0) {
+            .map((item: IVeoEntity) => {
+              if (item.$type === 'scope' && item.members.length > 0) {
                 return { entry: item, children: [] as ITreeEntry[], id: '' + id++ }
               } else if (item.parts && item.parts.length > 0) {
                 return { entry: item, children: [] as ITreeEntry[], id: parent.id + '.' + id++ }
@@ -841,7 +840,7 @@ export default Vue.extend({
           .then((data: IVeoEntity[]) => {
             parent.children = data
               .map((item: IVeoEntity) => {
-                if (item.$type === 'scope' && (item as IVeoScope).members.length > 0) {
+                if (item.$type === 'scope' && item.members.length > 0) {
                   return { entry: item, children: [] as ITreeEntry[], id: '' + id++ }
                 } else if (item.parts && item.parts.length > 0) {
                   return { entry: item, children: [] as ITreeEntry[], id: parent.id + '.' + id++ }
@@ -853,7 +852,7 @@ export default Vue.extend({
           })
       }
     },
-    getScopeMembersAsItem(scope: IVeoScope): IItem[] {
+    getScopeMembersAsItem(scope: IVeoEntity): IItem[] {
       return (
         scope.members.map((part: IVeoLink) => {
           const destructedLink = part.targetUri.split('/')

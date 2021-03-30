@@ -171,6 +171,7 @@ export default Vue.extend({
         ? await this.$api.entity.fetch(getSchemaEndpoint(this.objectType), this.objectId)
         : {}
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
+      console.log(formSchema)
       this.form = {
         objectSchema,
         formSchema,

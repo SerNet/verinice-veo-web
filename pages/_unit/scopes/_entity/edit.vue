@@ -143,12 +143,7 @@ export default Vue.extend({
     const objectSchema = await this.$api.schema.fetch(this.entityType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
 
-    let objectData
-    if(this.entityType === 'scope') {
-      objectData = await this.$api.scope.fetch(this.entityId)
-    } else {
-      objectData = await this.$api.entity.fetch(this.entityEndpoint, this.entityId)
-    }
+    let objectData = await this.$api.entity.fetch(this.entityEndpoint, this.entityId)
 
     this.form = {
       objectSchema,
@@ -186,8 +181,9 @@ export default Vue.extend({
       this.saveBtnLoading = true
       this.formatObjectData()
 
-      if(this.entityType === 'scope') {
-        this.$api.scope.update(this.entityId, this.form.objectData).then(async (_data: IVeoAPIMessage) => {
+      this.$api.entity
+        .update(this.entityEndpoint, this.entityId, this.form.objectData)
+        .then(async (_data: IVeoAPIMessage) => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
 
           this.$router.back()
@@ -199,22 +195,6 @@ export default Vue.extend({
         .finally(() => {
           this.saveBtnLoading = false
         })
-      } else {
-        this.$api.entity
-          .update(this.entityEndpoint, this.entityId, this.form.objectData)
-          .then(async (_data: IVeoAPIMessage) => {
-            this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
-
-            this.$router.back()
-          })
-          .catch((error: { status: number; name: string }) => {
-            this.alert.text = error.status === 412 ? this.$t('unit.forms.nrr') : ''
-            this.alert.value = true
-          })
-          .finally(() => {
-            this.saveBtnLoading = false
-          })
-      }
     },
     formatObjectData() {
       // TODO: find better solution

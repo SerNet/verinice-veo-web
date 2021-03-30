@@ -44,7 +44,7 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
 import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import { IVeoEntity, IVeoScope } from '~/types/VeoTypes'
+import { IVeoEntity } from '~/types/VeoTypes'
 
 export interface IItem {
   id: string
@@ -74,7 +74,7 @@ export default Vue.extend({
       default: () => []
     },
     editedItem: {
-      type: Object as Prop<IVeoEntity | IVeoScope | undefined>,
+      type: Object as Prop<IVeoEntity | undefined>,
       default: undefined
     },
     eventName: {

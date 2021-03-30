@@ -1,5 +1,6 @@
 import { Client } from '~/plugins/api'
-import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
+import { IVeoAPIMessage, IVeoEntity, IVeoLink } from '~/types/VeoTypes'
+import { getSchemaName } from './schema'
 
 /**
  * This file replaces the individual files for each object schema (at the point
@@ -21,6 +22,17 @@ export default function (api: Client) {
       }).then((result: IVeoEntity[]) => {
         result.forEach((entry: IVeoEntity) => {
           Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
+
+          /*
+          * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+          * members. However we combine both entity types as they get used more or less the same way
+          */
+          if (!entry.parts) {
+            entry.parts = []
+          }
+          if (!entry.members) {
+            entry.members = []
+          }
         })
         return result
       })
@@ -31,6 +43,15 @@ export default function (api: Client) {
      * @param entity
      */
     create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
+      // Remove properties of the object only used in the frontend
+      if (entity.$type === 'scope') {
+        // @ts-ignore
+        delete entity.parts
+      } else {
+        // @ts-ignore
+        delete entity.members
+      }
+
       return api.req(`/api/${objectType}`, {
         method: 'POST',
         json: entity
@@ -44,6 +65,16 @@ export default function (api: Client) {
     fetch(objectType: string, id: string): Promise<IVeoEntity> {
       return api.req(`/api/${objectType}/${id}`).then((result: IVeoEntity) => {
         Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: objectType })
+        /*
+         * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+         * members. However we combine both entity types as they get used more or less the same way
+         */
+        if (!result.parts) {
+          result.parts = []
+        }
+        if (!result.members) {
+          result.members = []
+        }
         return result
       })
     },
@@ -54,6 +85,15 @@ export default function (api: Client) {
      * @param entity
      */
     update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
+      // Remove properties of the object only used in the frontend
+      if (entity.$type === 'scope') {
+        // @ts-ignore
+        delete entity.parts
+      } else {
+        // @ts-ignore
+        delete entity.members
+      }
+
       return api.req(`/api/${objectType}/${id}`, {
         method: 'PUT',
         json: entity
@@ -79,13 +119,52 @@ export default function (api: Client) {
      * @param objectType The type to fetch the entities for.
      * @param id The uuid of the entity to fetch the sub entities for.
      */
-    fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
-      return api.req(`/api/${objectType}/${id}/parts`).then((result: IVeoEntity[]) => {
-        result.forEach((entry: IVeoEntity) => {
-          Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
+    async fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
+      if (objectType === 'scopes') {
+        // Temporary fix until VEO-471 is completed
+        const scope = await this.fetch(objectType, id)
+        const disassembledLinks = scope.members.map((member: IVeoLink) => {
+          const _member = member.targetUri.split('/')
+          return {
+            id: _member.pop(),
+            type: _member.pop()
+          }
         })
-        return result
-      })
+        return api.req(`/api/scopes/${id}/members`).then((result: IVeoEntity[]) => {
+          result.forEach((entry: IVeoEntity) => {
+            Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: getSchemaName(disassembledLinks.find(member => member.id === entry.id)?.type || '') || 'scope' })
+            /*
+             * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+             * members. However we combine both entity types as they get used more or less the same way
+             */
+            if (!entry.parts) {
+              entry.parts = []
+            }
+            if (!entry.members) {
+              entry.members = []
+            }
+          })
+          return result
+        })
+
+      } else {
+        return api.req(`/api/${objectType}/${id}/parts`).then((result: IVeoEntity[]) => {
+          result.forEach((entry: IVeoEntity) => {
+            Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
+            /*
+             * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+             * members. However we combine both entity types as they get used more or less the same way
+             */
+            if (!entry.parts) {
+              entry.parts = []
+            }
+            if (!entry.members) {
+              entry.members = []
+            }
+          })
+          return result
+        })
+      }
     }
   }
 }

@@ -35,10 +35,6 @@ export interface IVeoUnit {
   units: IVeoUnit[]
 }
 
-export interface IVeoScope extends IVeoEntity {
-  members: IVeoLink[]
-}
-
 export interface IVeoEntity {
   id: string
   name: string
@@ -52,7 +48,8 @@ export interface IVeoEntity {
   links: IVeoCustomLinks
   customAspects: IVeoCustomAspects
   subType: IVeoEntitySubtypes
-  parts: IVeoLink[]
+  members: IVeoLink[] // Only contains items if entity is of type scope
+  parts: IVeoLink[] // Only contains items if entity is NOT of type scope
   description: string
   descriptionShort?: string // Frontend only attribute used in VeoObjectList.vue
   $type: string
@@ -136,9 +133,9 @@ export interface IVeoCustomAttributes {
  * NOTE: THESE TYPES ONLY GET USED FOR SCHEMAS, ALL USER DATA WILL USE THE ABOVE types.
  */
 
- /**
-  * 
-  */
+/**
+ * 
+ */
 export interface IVeoObjectSchema {
   $schema: string
   type: JSONSchema7TypeName

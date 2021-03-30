@@ -14,7 +14,14 @@ export const endpoints = {
   person: 'persons',
   process: 'processes',
   scenario: 'scenarios',
+  scope: 'scopes'
 }
+
+/**
+ * Schemas in this array usually get handled differently than "normal" schemas. While we don't treat them differently in
+ * this file, other files in the project might refer to this array
+ */
+export const nonLinkableSchemas = ['scope']
 
 export function getSchemaName(endpoint: string): string | undefined {
   for (let key of Object.keys(endpoints)) {

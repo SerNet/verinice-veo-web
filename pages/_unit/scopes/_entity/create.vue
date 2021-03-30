@@ -176,24 +176,13 @@ export default Vue.extend({
         .then(async (data: IVeoAPIMessage) => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
           if (this.parentId !== '-') {
-            if(this.parentType === 'scope') {
-              const parent = await this.$api.scope.fetch(this.parentId)
-              parent.members.push({
-                targetUri: `/${this.entityEndpoint}/${data.resourceId}`
-              })
-              this.$api.scope.update(parent.id, parent).finally(() => {
-                this.$router.push(this.backLink)
-              })
-            } else {
-              const parent = await this.$api.entity.fetch(this.parentEndpoint, this.parentId)
-              parent.parts.push({
-                targetUri: `/${this.entityEndpoint}/${data.resourceId}`
-              })
-              this.$api.entity.update(this.parentEndpoint, parent.id, parent).finally(() => {
-                this.$router.push(this.backLink)
-              })
-            }
-            
+            const parent = await this.$api.entity.fetch(this.parentEndpoint, this.parentId)
+            parent.parts.push({
+              targetUri: `/${this.entityEndpoint}/${data.resourceId}`
+            })
+            this.$api.entity.update(this.parentEndpoint, parent.id, parent).finally(() => {
+              this.$router.push(this.backLink)
+            })
           } else {
             this.$router.push(this.backLink)
           }

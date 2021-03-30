@@ -152,10 +152,7 @@ export default defineComponent<IProps>({
         const displayNameKey = displayNameKeyMap[type]
 
         let text: string
-        if (apiKey === 'entity' && paramSeparated.type === 'scope') {
-          // @ts-ignore
-          text = (await context.root.$api.scope.fetch(paramSeparated.id))[displayNameKey]
-        } else if (apiKey === 'entity') {
+        if (apiKey === 'entity') {
           const api = context.root.$api[apiKey]
           // @ts-ignore
           text = (await api.fetch(getSchemaEndpoint(paramSeparated.type), paramSeparated.id))[displayNameKey]

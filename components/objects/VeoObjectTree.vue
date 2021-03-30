@@ -232,10 +232,10 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import { IVeoEntity, IVeoScope } from '~/types/VeoTypes'
+import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
-  deleteDialog: { value: boolean; item: IVeoScope | IVeoEntity | undefined }
+  deleteDialog: { value: boolean; item: IVeoEntity | undefined }
   open: string[]
   active: string[]
   displayedItems: ITreeEntry[]
@@ -250,7 +250,7 @@ export interface ITreeEntry {
 export default Vue.extend({
   props: {
     items: {
-      type: Array as Prop<(IVeoEntity | IVeoScope)[]>,
+      type: Array as Prop<IVeoEntity[]>,
       default: () => []
     },
     loading: {
@@ -259,7 +259,7 @@ export default Vue.extend({
     },
     loadChildren: {
       type: Function,
-      default: () => (_item: (IVeoEntity | IVeoScope) & { children: (IVeoScope | IVeoEntity)[] }) => {
+      default: () => (_item: (IVeoEntity) & { children: IVeoEntity[] }) => {
         return []
       }
     },
@@ -295,8 +295,8 @@ export default Vue.extend({
       let id = 0
 
       this.displayedItems = this.items
-        .map((item: IVeoEntity | IVeoScope) => {
-          if (item.$type === 'scope' && (item as IVeoScope).members && (item as IVeoScope).members.length > 0) {
+        .map((item: IVeoEntity) => {
+          if (item.$type === 'scope' && item.members && item.members.length > 0) {
             return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.$type }
           } else if (item.parts && item.parts.length > 0) {
             return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.$type }

@@ -50,6 +50,7 @@ import LocalStorage from '~/util/LocalStorage'
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes'
+import { nonLinkableSchemas } from '~/plugins/api/schema'
 
 export interface INavItem {
   name: string
@@ -195,7 +196,7 @@ export default Vue.extend({
     async fetchDataTypes(): Promise<INavItem[]> {
       const routeUnitParam = this.$route.params.unit
       return this.$api.schema.fetchAll().then(data => {
-        return data.map(entry => {
+        return data.filter(entry => !nonLinkableSchemas.includes(entry.schemaName)).map(entry => {
           return {
             name: capitalize(entry.schemaName),
             exact: false,
