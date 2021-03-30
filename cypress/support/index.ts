@@ -68,50 +68,9 @@ Cypress.Commands.add('auth', () => {
     },
     req => {
       // and reply currently logged in user
-      req.reply({
-        username: 'mw',
-        firstName: 'Markus',
-        lastName: 'Werner',
-        email: 'markus@cpmsys.de',
-        emailVerified: true,
-        attributes: {}
-      })
+      req.reply({ fixture: 'auth/user.json' })
     }
   )
-
-  const units = [
-    {
-      name: 'First unit',
-      createdAt: '2021-03-11T11:41:28.626340Z',
-      createdBy: 'veo-testuser1',
-      updatedAt: '2021-03-11T11:41:28.626340Z',
-      updatedBy: 'veo-testuser1',
-      units: [],
-      domains: [
-        {
-          displayName: 'Placeholder domain - see issue VEO-227',
-          targetUri: '/domains/35d1ae73-2449-4a16-8025-d10810753095'
-        }
-      ],
-      id: 'c32fa284-dfaf-4391-936f-9ecc571efb62'
-    },
-    {
-      name: 'Second Unit',
-      description: 'Just a placeholder unit',
-      createdAt: '2021-03-15T23:42:19.408387Z',
-      createdBy: 'mf',
-      updatedAt: '2021-03-15T23:42:19.408387Z',
-      updatedBy: 'mf',
-      units: [],
-      domains: [
-        {
-          displayName: 'Placeholder domain - see issue VEO-227',
-          targetUri: '/domains/35d1ae73-2449-4a16-8025-d10810753095'
-        }
-      ],
-      id: 'b3aeda30-8177-4a97-ac23-f2f030e51b6e'
-    }
-  ]
 
   // Veo Units
   cy.intercept(
@@ -121,7 +80,7 @@ Cypress.Commands.add('auth', () => {
     },
     req => {
       // Reply demo units
-      req.reply(units)
+      req.reply({ fixture: 'auth/unit.json' })
     }
   )
 })
