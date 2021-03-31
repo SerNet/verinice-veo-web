@@ -1,8 +1,0 @@
-{
-  "username": "veo-testuser1",
-  "firstName": "veo",
-  "lastName": "testuser",
-  "email": "test@local",
-  "emailVerified": true,
-  "attributes": { "locale": ["en"] }
-}
