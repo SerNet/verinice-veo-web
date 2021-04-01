@@ -50,6 +50,11 @@ describe('Authentication test', () => {
       .contains('Weiter')
       .click()
 
+    cy.get<HTMLButtonElement>('button.v-expansion-panel-header').each((el, i) => {
+      const numberOfAttributes = parseInt(el.text().match(/\d+/g)[0], 10)
+      cy.wrap(numberOfAttributes).should('be.above', 0)
+    })
+
     // Compare each link with units
     // cy.get<HTMLLinkElement>('.v-list:not(.v-list--nav) a').each((el, i) => {
     //   const unit = units[i]
