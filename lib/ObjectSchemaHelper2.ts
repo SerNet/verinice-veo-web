@@ -197,16 +197,14 @@ export default class ObjectSchemaHelper {
 
     if (!objectSchema) {
       // @ts-ignore
-      // objectSchema = DEFAULT_SCHEMA
-      // @ts-ignore
       this._schema = DEFAULT_SCHEMA
+      this.loadObjectSchema(DEFAULT_SCHEMA as IVeoObjectSchema)
     } else {
       this._schema = JSON.parse(JSON.stringify(objectSchema))
-      // this._schema.properties.customAspects.properties = {}
-      // this._schema.properties.links.properties = {}
+      this._schema.properties.customAspects.properties = {}
+      this._schema.properties.links.properties = {}
+      this.loadObjectSchema(objectSchema as IVeoObjectSchema)
     }
-
-    this.loadObjectSchema(this._schema as IVeoObjectSchema)
   }
 
   public setTitle(value: string) {
@@ -701,6 +699,8 @@ export default class ObjectSchemaHelper {
   private generateSchema(): IVeoObjectSchema {
     this._schema.title = this._title
     this._schema.description = this._description
+    this._schema.properties.customAspects.properties = {}
+    this._schema.properties.links.properties = {}
     return this._schema
   }
 
