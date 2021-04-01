@@ -50,9 +50,27 @@ describe('Authentication test', () => {
       .contains('Weiter')
       .click()
 
-    cy.get<HTMLButtonElement>('button.v-expansion-panel-header').each((el, i) => {
-      const numberOfAttributes = parseInt(el.text().match(/\d+/g)[0], 10)
-      cy.wrap(numberOfAttributes).should('be.above', 0)
+    cy.fixture('objectschema/process.json').then((schema: any) => {
+      const processRealValues = [
+        { text: 'Standardattribute', numberOfProperties: Object.keys(schema.properties).length - 2 },
+        {
+          text: 'Individuelle Aspekte',
+          numberOfProperties: Object.keys(schema.properties.customAspects.properties).length
+        },
+        { text: 'Individuelle Links', numberOfProperties: Object.keys(schema.properties.links.properties).length }
+      ]
+
+      cy.get<HTMLButtonElement>('button.v-expansion-panel-header').each((el, i) => {
+        const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
+        cy.wrap(expansionPanelText).should(
+          'equal',
+          `${processRealValues[i].text} (${processRealValues[i].numberOfProperties})`
+        )
+        // const numberOfAttributes = parseInt(el.text().match(/\d+/g)[0], 10)
+        // cy.wrap(numberOfAttributes).should('be.above', 0)
+      })
+
+      
     })
 
     // Compare each link with units
