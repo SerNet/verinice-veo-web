@@ -3,15 +3,16 @@
 describe('Authentication test', () => {
   beforeEach(() => {
     cy.auth()
+    cy.fixture('objectschema/process.json').as('processSchema')
   })
-  it('Objectschema', () => {
+  it('Objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
         url: 'https://veo.develop.cpmsys.io/schemas/process?domains=GDPR%2CISO_27001'
       },
       req => {
-        req.reply({ fixture: 'objectschema/process.json' })
+        req.reply(this.processSchema)
       }
     )
 
@@ -22,7 +23,7 @@ describe('Authentication test', () => {
       },
       req => {
         req.reply({
-          knownSchemas: ['control', 'scope', 'asset', 'process', 'incident', 'document', 'person', 'scenario']
+          fixture: 'objectschema/schemas.json'
         })
       }
     )
@@ -50,35 +51,54 @@ describe('Authentication test', () => {
       .contains('Weiter')
       .click()
 
-    cy.fixture('objectschema/process.json').then((schema: any) => {
-      const processRealValues = [
-        { text: 'Standardattribute', numberOfProperties: Object.keys(schema.properties).length - 2 },
-        {
-          text: 'Individuelle Aspekte',
-          numberOfProperties: Object.keys(schema.properties.customAspects.properties).length
-        },
-        { text: 'Individuelle Links', numberOfProperties: Object.keys(schema.properties.links.properties).length }
-      ]
+    const processRealValues = [
+      { text: 'Standardattribute', numberOfProperties: Object.keys(this.processSchema.properties).length - 2 },
+      {
+        text: 'Individuelle Aspekte',
+        numberOfProperties: Object.keys(this.processSchema.properties.customAspects.properties).length
+      },
+      {
+        text: 'Individuelle Links',
+        numberOfProperties: Object.keys(this.processSchema.properties.links.properties).length
+      }
+    ]
 
-      cy.get<HTMLButtonElement>('button.v-expansion-panel-header').each((el, i) => {
-        const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
-        cy.wrap(expansionPanelText).should(
-          'equal',
-          `${processRealValues[i].text} (${processRealValues[i].numberOfProperties})`
-        )
-        // const numberOfAttributes = parseInt(el.text().match(/\d+/g)[0], 10)
-        // cy.wrap(numberOfAttributes).should('be.above', 0)
-      })
+    cy.get<HTMLElement>('.v-expansion-panel').as('expansionPanels')
+    cy.get('@expansionPanels')
+      .find<HTMLElement>('button.v-expansion-panel-header')
+      .as('expansionPanelHeaders')
+    cy.get('@expansionPanels')
+      .find<HTMLDivElement>('.v-expansion-panel-content')
+      .as('expansionPanelContent')
 
-      
+    cy.get('@expansionPanelHeaders').each((el, i) => {
+      const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
+      cy.wrap(expansionPanelText).should(
+        'equal',
+        `${processRealValues[i].text} (${processRealValues[i].numberOfProperties})`
+      )
     })
 
-    // Compare each link with units
-    // cy.get<HTMLLinkElement>('.v-list:not(.v-list--nav) a').each((el, i) => {
-    //   const unit = units[i]
-    //   const link = cy.wrap(el)
-    //   link.should('have.attr', 'href', `/unit-${unit.id}`)
-    //   link.find('.v-list-item__title').should('contain.text', unit.name)
-    // })
+    cy.get('@expansionPanels')
+      .eq(1)
+      .scrollIntoView({ offset: { top: -100, left: 0 } })
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-expansion-panel-content__wrap')
+      .children()
+      .should('have.length', processRealValues[1].numberOfProperties)
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
+      .eq(1)
+      .click()
+    cy.get('.v-dialog__content--active .v-card__actions .v-btn')
+      .eq(1)
+      .click()
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-expansion-panel-content__wrap')
+      .children()
+      .should('have.length', processRealValues[1].numberOfProperties - 1)
   })
 })
