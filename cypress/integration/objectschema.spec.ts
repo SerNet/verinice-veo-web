@@ -1,11 +1,11 @@
 /// <reference path="../support/index.d.ts" />
 
-describe('Authentication test', () => {
+describe('Objectschema', () => {
   beforeEach(() => {
     cy.auth()
     cy.fixture('objectschema/process.json').as('processSchema')
   })
-  it('Objectschema', function() {
+  it('All functionalies from dialog to add/delete/change', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -63,6 +63,9 @@ describe('Authentication test', () => {
       }
     ]
 
+    /**
+     * Define aliases
+     */
     cy.get<HTMLElement>('.v-expansion-panel').as('expansionPanels')
     cy.get('@expansionPanels')
       .find<HTMLElement>('button.v-expansion-panel-header')
@@ -71,6 +74,9 @@ describe('Authentication test', () => {
       .find<HTMLDivElement>('.v-expansion-panel-content')
       .as('expansionPanelContent')
 
+    /**
+     * Test if number expansion panel header are correct with number of attributes
+     */
     cy.get('@expansionPanelHeaders').each((el, i) => {
       const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
       cy.wrap(expansionPanelText).should(
@@ -79,6 +85,9 @@ describe('Authentication test', () => {
       )
     })
 
+    /**
+     * Test customAspect delete
+     */
     cy.get('@expansionPanels')
       .eq(1)
       .scrollIntoView({ offset: { top: -100, left: 0 } })
@@ -100,5 +109,30 @@ describe('Authentication test', () => {
       .find('.v-expansion-panel-content__wrap')
       .children()
       .should('have.length', processRealValues[1].numberOfProperties - 1)
+
+    /**
+     * Test link delete
+     */
+    cy.get('@expansionPanels')
+      .eq(2)
+      .scrollIntoView({ offset: { top: -100, left: 0 } })
+    cy.get('@expansionPanelContent')
+      .eq(2)
+      .find('.v-expansion-panel-content__wrap')
+      .children()
+      .should('have.length', processRealValues[2].numberOfProperties)
+    cy.get('@expansionPanelContent')
+      .eq(2)
+      .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
+      .eq(1)
+      .click()
+    cy.get('.v-dialog__content--active .v-card__actions .v-btn')
+      .eq(1)
+      .click()
+    cy.get('@expansionPanelContent')
+      .eq(2)
+      .find('.v-expansion-panel-content__wrap')
+      .children()
+      .should('have.length', processRealValues[2].numberOfProperties - 1)
   })
 })
