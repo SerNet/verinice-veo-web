@@ -1,5 +1,19 @@
 /// <reference path="../support/index.d.ts" />
 
+import { JsonPointer } from 'json-ptr'
+
+function getCurrentOS(editor: JQuery<HTMLElement>): any {
+  return JSON.parse((editor as any)[0].cmView.view.state.toJSON().doc)
+}
+
+const attributeTypes = [
+  { value: 'string', text: 'Text' },
+  { value: 'boolean', text: 'Wahrheitswert' },
+  { value: 'number', text: 'Zahl' },
+  { value: 'integer', text: 'Ganzzahl' },
+  { value: 'enum', text: 'Auswahl' }
+]
+
 describe('Objectschema', () => {
   beforeEach(() => {
     cy.auth()
@@ -110,29 +124,93 @@ describe('Objectschema', () => {
       .children()
       .should('have.length', processRealValues[1].numberOfProperties - 1)
 
+    cy.get('.editor .cm-content').then(editor => {
+      const currentOS = getCurrentOS(editor)
+      cy.wrap(JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_SensitiveData')).should(
+        'be.undefined'
+      )
+    })
+
     /**
-     * Test link delete
+     * Test changing customAspect name, attribute names, description and types
      */
-    cy.get('@expansionPanels')
-      .eq(2)
-      .scrollIntoView({ offset: { top: -100, left: 0 } })
     cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-expansion-panel-content__wrap')
-      .children()
-      .should('have.length', processRealValues[2].numberOfProperties)
-    cy.get('@expansionPanelContent')
-      .eq(2)
+      .eq(1)
       .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
-      .eq(1)
+      .eq(0)
       .click()
-    cy.get('.v-dialog__content--active .v-card__actions .v-btn')
-      .eq(1)
-      .click()
-    cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-expansion-panel-content__wrap')
-      .children()
-      .should('have.length', processRealValues[2].numberOfProperties - 1)
+    cy.get('.v-dialog--active .v-form > .row > .col-12 > .v-text-field').type('Test')
+    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child').each(
+      (el, wrapperIndex) => {
+        cy.wrap(el)
+          .find('.v-input')
+          .each((inputEl, inputIndex) => {
+            if (inputIndex === 1) {
+              console.log(inputEl)
+              cy.wrap(inputEl).type(`${attributeTypes[wrapperIndex].text}{enter}`)
+            } else {
+              cy.wrap(inputEl).type('Test')
+            }
+          })
+      }
+    )
+    cy.get('.v-dialog--active .v-card__actions .v-btn:last-child').click()
+    cy.wait(1)
+
+    cy.get('.editor .cm-content').then(editor => {
+      const currentOS = getCurrentOS(editor)
+      const aspect = JsonPointer.get(
+        currentOS,
+        '#/properties/customAspects/properties/process_GeneralInformationTest'
+      ) as any
+      cy.wrap(aspect).should('not.be.undefined')
+      const attributes = aspect.properties.attributes.properties
+      cy.wrap(attributes.process_GeneralInformationTest_TagsTest).should('not.be.undefined')
+      cy.wrap(attributes.process_GeneralInformationTest_TagsTest.title).should('eq', 'TagsTest')
+      cy.wrap(attributes.process_GeneralInformationTest_TagsTest.type).should('eq', attributeTypes[0].value)
+
+      cy.wrap(attributes.process_GeneralInformationTest_DocumentTest).should('not.be.undefined')
+      cy.wrap(attributes.process_GeneralInformationTest_DocumentTest.title).should('eq', 'DocumentTest')
+      cy.wrap(attributes.process_GeneralInformationTest_DocumentTest.type).should('eq', attributeTypes[1].value)
+    })
+
+    
+    /**
+     * Test adding customAspect name, attribute names, description and types
+     */
+
+
+
+    // /**
+    //  * Test link delete
+    //  */
+    // cy.get('@expansionPanels')
+    //   .eq(2)
+    //   .scrollIntoView({ offset: { top: -100, left: 0 } })
+    // cy.get('@expansionPanelContent')
+    //   .eq(2)
+    //   .find('.v-expansion-panel-content__wrap')
+    //   .children()
+    //   .should('have.length', processRealValues[2].numberOfProperties)
+    // cy.get('@expansionPanelContent')
+    //   .eq(2)
+    //   .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
+    //   .eq(1)
+    //   .click()
+    // cy.get('.v-dialog__content--active .v-card__actions .v-btn')
+    //   .eq(1)
+    //   .click()
+    // cy.get('@expansionPanelContent')
+    //   .eq(2)
+    //   .find('.v-expansion-panel-content__wrap')
+    //   .children()
+    //   .should('have.length', processRealValues[2].numberOfProperties - 1)
+
+    // cy.get('.editor .cm-content').then(editor => {
+    //   const currentOS = getCurrentOS(editor)
+    //   cy.wrap(JsonPointer.get(currentOS, '#/properties/links/properties/process_ResponsibleDepartment')).should(
+    //     'be.undefined'
+    //   )
+    // })
   })
 })
