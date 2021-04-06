@@ -58,7 +58,7 @@ import Vue from 'vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoFormList from '~/components/objects/VeoFormList.vue'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
-import { endpoints, getSchemaEndpoint } from '~/plugins/api/schema'
+import { endpoints } from '~/plugins/api/schema'
 import DeleteFormDialog from '~/components/objects/VeoDeleteFormDialog.vue'
 import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
@@ -66,7 +66,6 @@ import { VeoEvents } from '~/types/VeoGlobalEvents'
 interface IData {
   formSchema: IVeoFormSchema | undefined
   objectType: string | undefined
-  objectTypePlural: string | undefined
   objects: IVeoEntity[]
   formType: string
   formTypes: { value: string; text: string }[]
@@ -83,7 +82,6 @@ export default Vue.extend({
     return {
       formSchema: undefined,
       objectType: '',
-      objectTypePlural: '',
       objects: [],
       formType: separateUUIDParam(this.$route.params.form).id,
       formTypes: [],
@@ -94,10 +92,7 @@ export default Vue.extend({
     this.formSchema = await this.$api.form.fetch(this.formId)
     this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
     if (this.formSchema) {
-      // @ts-ignore
-      this.objectTypePlural = endpoints[this.formSchema.modelType.toLowerCase()]
-
-      this.objects = await this.$api.entity.fetchAll(this.objectTypePlural, {
+      this.objects = await this.$api.entity.fetchAll(this.formSchema.modelType.toLowerCase(), {
         unit: this.unitId,
         subType: this.formSchema.subType
       })
@@ -152,7 +147,7 @@ export default Vue.extend({
     doDelete(id: number) {
       this.deleteDialog.value = false
       if (this.formSchema) {
-        this.$api.entity.delete(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), id).then(() => {
+        this.$api.entity.delete(this.formSchema.modelType.toLowerCase(), id).then(() => {
           this.$fetch()
         })
       }
@@ -164,7 +159,7 @@ export default Vue.extend({
       if(this.formSchema) {
         const newItem = item
         item.name = `${item.name} (${this.$t('clone')})`
-        this.$api.entity.create(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), newItem).then(() => {
+        this.$api.entity.create(this.formSchema.modelType.toLowerCase(), newItem).then(() => {
           this.$fetch()
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
             text: this.$t('form_cloned')

@@ -95,7 +95,6 @@ import CollapseButton from '~/components/layout/CollapseButton.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
-import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 export interface IValidationErrorMessage {
   pointer: string
@@ -168,7 +167,7 @@ export default Vue.extend({
     if (this.objectType) {
       const objectSchema = await this.$api.schema.fetch(this.objectType)
       const objectData = this.$route.params.entity
-        ? await this.$api.entity.fetch(getSchemaEndpoint(this.objectType), this.objectId)
+        ? await this.$api.entity.fetch(this.objectType, this.objectId)
         : {}
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
       console.log(formSchema)
@@ -234,26 +233,26 @@ export default Vue.extend({
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
         fetchAll: (objectType: string, searchParams?: any) => {
-          return this.$api.entity.fetchAll(getSchemaEndpoint(objectType), {
+          return this.$api.entity.fetchAll(objectType, {
             ...searchParams,
             unit: this.unitId
           })
         },
         create: async (objectType: string, createdObjectData: any) => {
-          const res = await this.$api.entity.create(getSchemaEndpoint(objectType), {
+          const res = await this.$api.entity.create(objectType, {
             ...createdObjectData,
             owner: {
               targetUri: `/units/${this.unitId}`
             }
           })
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
-          return this.$api.entity.fetch(getSchemaEndpoint(objectType), res.resourceId)
+          return this.$api.entity.fetch(objectType, res.resourceId)
         },
         update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.entity.update(getSchemaEndpoint(objectType), updatedObjectData)
+          return this.$api.entity.update(objectType, updatedObjectData)
         },
         delete: (objectType: string, id: string) => {
-          this.$api.entity.delete(getSchemaEndpoint(objectType), id)
+          this.$api.entity.delete(objectType, id)
         }
       }
     },
@@ -281,7 +280,6 @@ export default Vue.extend({
         })
       } else {
         throw new Error('Object Type is not defined in FormSchema')
-        this.saveBtnLoading = false
       }
     },
     async action(objectType: string) {
@@ -289,7 +287,7 @@ export default Vue.extend({
     },
     async save(objectType: string) {
       await this.$api.entity
-        .update(getSchemaEndpoint(objectType), this.objectId, this.form.objectData)
+        .update(objectType, this.objectId, this.form.objectData)
         .then(() => {
           this.formModified.isModified = false
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
@@ -308,7 +306,7 @@ export default Vue.extend({
       this.deleteDialog = false
       this.deleteBtnLoading = true
       await this.$api.entity
-        .delete(getSchemaEndpoint(this.objectType || ''), this.objectId)
+        .delete(this.objectType, this.objectId)
         .then(() => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })
           this.$router.push({

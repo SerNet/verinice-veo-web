@@ -134,9 +134,6 @@ export default Vue.extend({
         ? this.$t('breadcrumbs.scopes')
         : `${this.$t('object_create', { type: this.formattedEntityType })} - ${this.$t('breadcrumbs.scopes')}`
     },
-    parentEndpoint(): string | undefined {
-      return getSchemaEndpoint(this.parentType)
-    },
     parentId(): string {
       return separateUUIDParam(this.$route.params.entity).id
     },
@@ -145,9 +142,6 @@ export default Vue.extend({
     },
     unitID(): string {
       return separateUUIDParam(this.$route.params.unit).id
-    },
-    entityEndpoint(): string | undefined {
-      return getSchemaEndpoint(this.entityType)
     },
     entityType(): string {
       return this.$route.query.based_on.toLowerCase()
@@ -167,7 +161,7 @@ export default Vue.extend({
       this.formatObjectData()
 
       await this.$api.entity
-        .create(this.entityEndpoint, {
+        .create(this.entityType, {
           ...this.form.objectData,
           owner: {
             targetUri: `/units/${this.unitID}`
@@ -176,11 +170,11 @@ export default Vue.extend({
         .then(async (data: IVeoAPIMessage) => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
           if (this.parentId !== '-') {
-            const parent = await this.$api.entity.fetch(this.parentEndpoint, this.parentId)
+            const parent = await this.$api.entity.fetch(this.parentType, this.parentId)
             parent.parts.push({
-              targetUri: `/${this.entityEndpoint}/${data.resourceId}`
+              targetUri: `/${ getSchemaEndpoint(this.entityType) }/${data.resourceId}`
             })
-            this.$api.entity.update(this.parentEndpoint, parent.id, parent).finally(() => {
+            this.$api.entity.update(this.parentType, parent.id, parent).finally(() => {
               this.$router.push(this.backLink)
             })
           } else {

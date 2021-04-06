@@ -1,6 +1,6 @@
 import { Client } from '~/plugins/api'
 import { IVeoAPIMessage, IVeoEntity, IVeoLink } from '~/types/VeoTypes'
-import { getSchemaName } from './schema'
+import { getSchemaEndpoint, getSchemaName } from './schema'
 
 /**
  * This file replaces the individual files for each object schema (at the point
@@ -17,10 +17,12 @@ export default function (api: Client) {
      * @param parent
      */
     fetchAll(objectType: string, params?: Record<string, string>): Promise<IVeoEntity[]> {
-      return api.req(`/api/${objectType}`, {
+      const endpoint = getSchemaEndpoint(objectType) || objectType
+      return api.req(`/api/${endpoint}`, {
         params
       }).then((result: IVeoEntity[]) => {
         result.forEach((entry: IVeoEntity) => {
+          console.log(objectType)
           Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
 
           /*
@@ -43,6 +45,8 @@ export default function (api: Client) {
      * @param entity
      */
     create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
+      const endpoint = getSchemaEndpoint(objectType) || objectType
+
       // Remove properties of the object only used in the frontend
       if (entity.$type === 'scope') {
         // @ts-ignore
@@ -52,7 +56,7 @@ export default function (api: Client) {
         delete entity.members
       }
 
-      return api.req(`/api/${objectType}`, {
+      return api.req(`/api/${endpoint}`, {
         method: 'POST',
         json: entity
       })
@@ -63,7 +67,9 @@ export default function (api: Client) {
      * @param id
      */
     fetch(objectType: string, id: string): Promise<IVeoEntity> {
-      return api.req(`/api/${objectType}/${id}`).then((result: IVeoEntity) => {
+      const endpoint = getSchemaEndpoint(objectType) || objectType
+
+      return api.req(`/api/${endpoint}/${id}`).then((result: IVeoEntity) => {
         Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: objectType })
         /*
          * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
@@ -85,6 +91,8 @@ export default function (api: Client) {
      * @param entity
      */
     update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
+      const endpoint = getSchemaEndpoint(objectType) || objectType
+
       // Remove properties of the object only used in the frontend
       if (entity.$type === 'scope') {
         // @ts-ignore
@@ -94,7 +102,7 @@ export default function (api: Client) {
         delete entity.members
       }
 
-      return api.req(`/api/${objectType}/${id}`, {
+      return api.req(`/api/${endpoint}/${id}`, {
         method: 'PUT',
         json: entity
       }).then((result: IVeoEntity) => {
@@ -108,7 +116,9 @@ export default function (api: Client) {
      * @param id
      */
     delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
-      return api.req(`/api/${objectType}/${id}`, {
+      const endpoint = getSchemaEndpoint(objectType) || objectType
+
+      return api.req(`/api/${endpoint}/${id}`, {
         method: 'DELETE'
       })
     },
@@ -120,9 +130,11 @@ export default function (api: Client) {
      * @param id The uuid of the entity to fetch the sub entities for.
      */
     async fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
-      if (objectType === 'scopes') {
+      const endpoint = getSchemaEndpoint(objectType) || objectType
+
+      if (objectType === 'scope') {
         // Temporary fix until VEO-471 is completed
-        const scope = await this.fetch(objectType, id)
+        const scope = await this.fetch(endpoint, id)
         const disassembledLinks = scope.members.map((member: IVeoLink) => {
           const _member = member.targetUri.split('/')
           return {
@@ -131,6 +143,7 @@ export default function (api: Client) {
           }
         })
         return api.req(`/api/scopes/${id}/members`).then((result: IVeoEntity[]) => {
+          console.log(result)
           result.forEach((entry: IVeoEntity) => {
             Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: getSchemaName(disassembledLinks.find(member => member.id === entry.id)?.type || '') || 'scope' })
             /*
@@ -148,7 +161,7 @@ export default function (api: Client) {
         })
 
       } else {
-        return api.req(`/api/${objectType}/${id}/parts`).then((result: IVeoEntity[]) => {
+        return api.req(`/api/${endpoint}/${id}/parts`).then((result: IVeoEntity[]) => {
           result.forEach((entry: IVeoEntity) => {
             Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
             /*

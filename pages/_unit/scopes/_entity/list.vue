@@ -1,14 +1,17 @@
 <template>
   <VeoPage :title="title" fullsize>
     <VeoEntityModifier v-bind="$data" :fetch-scopes="fetchScopes" :fetch-entities="fetchEntities" :fetch-schemas="fetchSchemas">
-      <VeoObjectList
-        :items="objects"
-        :loading="$fetchState.pending"
-        :show-parent-link="showParentLink"
-        :load-children="loadSubEntities"
-        :sorting-function="sortingFunction"
-        :edit-item-link="editItemLink"
-      />
+      <template #default="{ on }">
+        <VeoObjectList
+          v-on="on"
+          :items="objects"
+          :loading="$fetchState.pending"
+          :show-parent-link="showParentLink"
+          :load-children="loadSubEntities"
+          :sorting-function="sortingFunction"
+          :edit-item-link="editItemLink"
+        />
+      </template>
     </VeoEntityModifier>
   </VeoPage>
 </template>
@@ -18,7 +21,7 @@ import Vue from 'vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoObjectList from '~/components/objects/VeoObjectList.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
-import { getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
+import { ISchemaEndpoint } from '~/plugins/api/schema'
 import { separateUUIDParam } from '~/lib/utils'
 
 interface IData {
@@ -60,13 +63,13 @@ export default Vue.extend({
   },
   async fetch() {
     if (this.entityType === '-') {
-      this.objects = await this.$api.entity.fetchAll('scopes', {
+      this.objects = await this.$api.entity.fetchAll('scope', {
         unit: this.unitId
       })
       this.currentEntity = undefined
     } else {
-      this.objects = await this.$api.entity.fetchSubEntities(this.entityEndpoint, this.entityId)
-      this.currentEntity = await this.$api.entity.fetch(this.entityEndpoint, this.entityId)
+      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId)
+      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId)
     }
   },
   computed: {
@@ -78,9 +81,6 @@ export default Vue.extend({
     },
     entityType(): string {
       return separateUUIDParam(this.$route.params.entity).type
-    },
-    entityEndpoint(): string {
-      return getSchemaEndpoint(this.entityType) || ''
     },
     title(): string {
       return this.currentEntity
@@ -95,7 +95,7 @@ export default Vue.extend({
   },
   methods: {
     async fetchScopes(): Promise<void> {
-      return this.$api.entity.fetchAll('scopes', { unit: this.unitId }).then((scopes: IVeoEntity[]) => {
+      return this.$api.entity.fetchAll('scope', { unit: this.unitId }).then((scopes: IVeoEntity[]) => {
         this.scopes = scopes
       })
     },
@@ -114,7 +114,7 @@ export default Vue.extend({
           }
           break
         default:
-          return (this.entities = await this.$api.entity.fetchAll(this.entityEndpoint, { unit: this.unitId }))
+          return (this.entities = await this.$api.entity.fetchAll(this.entityType, { unit: this.unitId }))
       }
     },
     async fetchSchemas(): Promise<void> {

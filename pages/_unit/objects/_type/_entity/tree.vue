@@ -105,7 +105,7 @@ import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vu
 import VeoUnlinkEntityDialog from '~/components/objects/VeoUnlinkEntityDialog.vue'
 import VeoAddEntityDialog, { IItem } from '~/components/objects/VeoAddEntityDialog.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { getSchemaName } from '~/plugins/api/schema'
+import { getSchemaEndpoint, getSchemaName } from '~/plugins/api/schema'
 import { separateUUIDParam } from '~/lib/utils'
 import { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
 
@@ -330,7 +330,7 @@ export default Vue.extend({
       if (entity) {
         const children = entities.map(_entity => {
           return {
-            targetUri: `/${_entity.type}/${_entity.id}`
+            targetUri: `/${ getSchemaEndpoint(_entity.type) }/${_entity.id}`
           }
         })
 

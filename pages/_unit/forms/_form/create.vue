@@ -1,7 +1,6 @@
 <script lang="ts">
 import { separateUUIDParam } from '~/lib/utils'
 import BaseObjectForm from '~/pages/_unit/forms/_form/_entity.vue'
-import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 export default BaseObjectForm.extend({
   name: 'veo-forms-objectData-create',
@@ -27,7 +26,7 @@ export default BaseObjectForm.extend({
       }
     },
     async create(objectType: string): Promise<string | undefined> {
-      return this.$api.entity.create(getSchemaEndpoint(this.objectType || ''), {
+      return this.$api.entity.create(this.objectType, {
         ...this.form.objectData,
         owner: {
           targetUri: `/units/${this.unitId}`

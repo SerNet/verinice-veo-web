@@ -8,7 +8,7 @@
         {{ $t('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="$emit('delete', item.id)">
+      <v-btn text color="primary" :disabled="!item" @click="deleteEntity">
         {{ $t('global.button.delete') }}
       </v-btn>
     </template>
@@ -73,6 +73,15 @@ export default Vue.extend({
       if (!this.noWatch) {
         this.$emit('input', newValue)
       }
+    }
+  },
+  methods: {
+    deleteEntity() {
+      this.$api.entity.delete(this.item.$type, this.item.id).then(() => {
+        this.$emit('success')
+      }).catch((error) => {
+        this.$emit('error', error)
+      })
     }
   },
   mounted() {

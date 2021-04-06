@@ -38,7 +38,6 @@
 import { ref, defineComponent, watch, Ref, PropOptions, useContext } from '@nuxtjs/composition-api'
 import { capitalize, last, intersection } from 'lodash'
 import { separateUUIDParam } from '~/lib/utils'
-import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 interface IBaseStringObject {
   [key: string]: string
@@ -155,7 +154,7 @@ export default defineComponent<IProps>({
         if (apiKey === 'entity') {
           const api = context.root.$api[apiKey]
           // @ts-ignore
-          text = (await api.fetch(getSchemaEndpoint(paramSeparated.type), paramSeparated.id))[displayNameKey]
+          text = (await api.fetch(paramSeparated.type, paramSeparated.id))[displayNameKey]
         } else {
           // @ts-ignore
           const api = context.root.$api[apiKey]

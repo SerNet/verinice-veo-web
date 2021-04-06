@@ -18,7 +18,7 @@ import Vue from 'vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoObjectTree, { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
-import { getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
+import { ISchemaEndpoint } from '~/plugins/api/schema'
 import { separateUUIDParam } from '~/lib/utils'
 
 interface IData {
@@ -60,13 +60,13 @@ export default Vue.extend({
   },
   async fetch() {
     if (this.entityType === '-') {
-      this.objects = await this.$api.entity.fetchAll('scopes', {
+      this.objects = await this.$api.entity.fetchAll('scope', {
         unit: this.unitId
       })
       this.currentEntity = undefined
     } else {
-      this.objects = await this.$api.entity.fetchSubEntities(this.entityEndpoint, this.entityId)
-      this.currentEntity = await this.$api.entity.fetch(this.entityEndpoint, this.entityId)
+      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId)
+      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId)
     }
   },
   computed: {
@@ -78,9 +78,6 @@ export default Vue.extend({
     },
     entityType(): string {
       return separateUUIDParam(this.$route.params.entity).type
-    },
-    entityEndpoint(): string {
-      return getSchemaEndpoint(this.entityType) || ''
     },
     title(): string {
       return this.currentEntity
@@ -95,7 +92,7 @@ export default Vue.extend({
   },
   methods: {
     async fetchScopes(): Promise<void> {
-      return this.$api.entity.fetchAll('scopes', { unit: this.unitId }).then((scopes: IVeoEntity[]) => {
+      return this.$api.entity.fetchAll('scope', { unit: this.unitId }).then((scopes: IVeoEntity[]) => {
         this.scopes = scopes
       })
     },
@@ -114,7 +111,7 @@ export default Vue.extend({
           }
           break
         default:
-          return (this.entities = await this.$api.entity.fetchAll(this.entityEndpoint, { unit: this.unitId }))
+          return (this.entities = await this.$api.entity.fetchAll(this.entityType, { unit: this.unitId }))
       }
     },
     async fetchSchemas(): Promise<void> {
@@ -132,7 +129,7 @@ export default Vue.extend({
     loadSubEntities(parent: ITreeEntry) {
       let id = 0
       if (parent.entry.$type === 'scope') {
-        return this.$api.entity.fetchScopeMembers('scopes', parent.entry.id).then((data: IVeoEntity[]) => {
+        return this.$api.entity.fetchScopeMembers('scope', parent.entry.id).then((data: IVeoEntity[]) => {
           parent.children = data
             .map((item: IVeoEntity) => {
               if (item.$type === 'scope' && item.members.length > 0) {
@@ -147,7 +144,7 @@ export default Vue.extend({
         })
       } else {
         return this.$api.entity
-          .fetchSubEntities(getSchemaEndpoint(parent.entry.$type) || '', parent.entry.id)
+          .fetchSubEntities(parent.entry.$type || '', parent.entry.id)
           .then((data: IVeoEntity[]) => {
             parent.children = data
               .map((item: IVeoEntity) => {

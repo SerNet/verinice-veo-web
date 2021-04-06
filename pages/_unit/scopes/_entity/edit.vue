@@ -101,7 +101,6 @@ import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
-import { getSchemaEndpoint } from '~/plugins/api/schema'
 import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 interface IData {
@@ -143,7 +142,7 @@ export default Vue.extend({
     const objectSchema = await this.$api.schema.fetch(this.entityType)
     const { lang } = await this.$api.translation.fetch(['de', 'en'])
 
-    let objectData = await this.$api.entity.fetch(this.entityEndpoint, this.entityId)
+    let objectData = await this.$api.entity.fetch(this.entityType, this.entityId)
 
     this.form = {
       objectSchema,
@@ -163,9 +162,6 @@ export default Vue.extend({
         title: this.$fetchState.pending ? this.formattedEntityType : this.form.objectData.name
       })
     },
-    entityEndpoint(): string | undefined {
-      return getSchemaEndpoint(this.entityType)
-    },
     entityId(): string {
       return separateUUIDParam(this.$route.params.entity).id
     },
@@ -182,7 +178,7 @@ export default Vue.extend({
       this.formatObjectData()
 
       this.$api.entity
-        .update(this.entityEndpoint, this.entityId, this.form.objectData)
+        .update(this.entityType, this.entityId, this.form.objectData)
         .then(async (_data: IVeoAPIMessage) => {
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
 
