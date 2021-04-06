@@ -278,7 +278,7 @@ export default Vue.extend({
           this.addDialog.items = this.entities.map(entity => {
             return {
               id: entity.id,
-              type: entity.$type,
+              type: entity.type,
               name: entity.name,
               hidden: false,
               selected: false
@@ -287,7 +287,7 @@ export default Vue.extend({
         }
 
         let links: IVeoLink[]
-        if (currentItem.$type === 'scope') {
+        if (currentItem.type === 'scope') {
           throw new Error("Objects doesn't support Scope management")
         } else {
           links = (currentItem as IVeoEntity).parts
@@ -330,18 +330,18 @@ export default Vue.extend({
         })
 
         // We fetch the parent entity, as not all flows use the properly fetched entity with an etag, however we need one when updating
-        if (entity.$type === 'scope') {
+        if (entity.type === 'scope') {
           throw new Error("Objects doesn't support Scope management")
         } else {
           // @ts-ignore
           entity.parts = children
-          const updatedElementEtag = (await this.$api.entity.fetch(entity.$type, entity.id)).$etag
+          const updatedElementEtag = (await this.$api.entity.fetch(entity.type, entity.id)).$etag
           if (entity && updatedElementEtag && !(entity as any).$etag) {
             // @ts-ignore
             entity.$etag = updatedElementEtag
           }
           this.$api.entity
-            .update(entity.$type, entity?.id, entity)
+            .update(entity.type, entity?.id, entity)
             .catch((error: any) => {
               this.$root.$emit(VeoEvents.ALERT_ERROR, {
                 title: this.$t('object_update_error'),
@@ -426,7 +426,7 @@ export default Vue.extend({
               [
                 {
                   id: newEntity.resourceId,
-                  type: item.$type,
+                  type: item.type,
                   name: item.name,
                   selected: true,
                   hidden: false

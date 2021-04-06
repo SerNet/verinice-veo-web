@@ -77,7 +77,7 @@ export default Vue.extend({
   },
   methods: {
     deleteEntity() {
-      this.$api.entity.delete(this.item.$type, this.item.id).then(() => {
+      this.$api.entity.delete(this.item.type, this.item.id).then(() => {
         this.$emit('success')
       }).catch((error) => {
         this.$emit('error', error)

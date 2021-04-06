@@ -22,9 +22,6 @@ export default function (api: Client) {
         params
       }).then((result: IVeoEntity[]) => {
         result.forEach((entry: IVeoEntity) => {
-          console.log(objectType)
-          Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
-
           /*
           * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
           * members. However we combine both entity types as they get used more or less the same way
@@ -48,7 +45,7 @@ export default function (api: Client) {
       const endpoint = getSchemaEndpoint(objectType) || objectType
 
       // Remove properties of the object only used in the frontend
-      if (entity.$type === 'scope') {
+      if (entity.type === 'scope') {
         // @ts-ignore
         delete entity.parts
       } else {
@@ -70,7 +67,6 @@ export default function (api: Client) {
       const endpoint = getSchemaEndpoint(objectType) || objectType
 
       return api.req(`/api/${endpoint}/${id}`).then((result: IVeoEntity) => {
-        Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: objectType })
         /*
          * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
          * members. However we combine both entity types as they get used more or less the same way
@@ -94,7 +90,7 @@ export default function (api: Client) {
       const endpoint = getSchemaEndpoint(objectType) || objectType
 
       // Remove properties of the object only used in the frontend
-      if (entity.$type === 'scope') {
+      if (entity.type === 'scope') {
         // @ts-ignore
         delete entity.parts
       } else {
@@ -106,7 +102,6 @@ export default function (api: Client) {
         method: 'PUT',
         json: entity
       }).then((result: IVeoEntity) => {
-        Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: objectType })
         return result
       })
     },
@@ -133,19 +128,8 @@ export default function (api: Client) {
       const endpoint = getSchemaEndpoint(objectType) || objectType
 
       if (objectType === 'scope') {
-        // Temporary fix until VEO-471 is completed
-        const scope = await this.fetch(endpoint, id)
-        const disassembledLinks = scope.members.map((member: IVeoLink) => {
-          const _member = member.targetUri.split('/')
-          return {
-            id: _member.pop(),
-            type: _member.pop()
-          }
-        })
         return api.req(`/api/scopes/${id}/members`).then((result: IVeoEntity[]) => {
-          console.log(result)
           result.forEach((entry: IVeoEntity) => {
-            Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: getSchemaName(disassembledLinks.find(member => member.id === entry.id)?.type || '') || 'scope' })
             /*
              * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
              * members. However we combine both entity types as they get used more or less the same way
@@ -163,7 +147,6 @@ export default function (api: Client) {
       } else {
         return api.req(`/api/${endpoint}/${id}/parts`).then((result: IVeoEntity[]) => {
           result.forEach((entry: IVeoEntity) => {
-            Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
             /*
              * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
              * members. However we combine both entity types as they get used more or less the same way

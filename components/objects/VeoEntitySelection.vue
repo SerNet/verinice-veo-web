@@ -199,7 +199,7 @@ export default Vue.extend({
         dummy = dummy.filter(selectedItem => selectedItem.id !== item.id)
         this.$emit('input', dummy)
       } else {
-        dummy.push({ id: item.id, type: item.$type })
+        dummy.push({ id: item.id, type: item.type })
         this.$emit('input', dummy)
       }
     }

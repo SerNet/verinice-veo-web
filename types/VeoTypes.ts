@@ -52,7 +52,7 @@ export interface IVeoEntity {
   parts: IVeoLink[] // Only contains items if entity is NOT of type scope
   description: string
   descriptionShort?: string // Frontend only attribute used in VeoObjectList.vue
-  $type: string
+  type: string
 }
 
 export interface IVeoEntitySubtypes {

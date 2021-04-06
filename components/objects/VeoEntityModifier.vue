@@ -286,8 +286,8 @@ export default Vue.extend({
      * has a different type than the new entity.
      */
     onCreateEntity(type?: string, parent?: IVeoEntity) {
-      if(parent && parent.$type !== 'scope' && parent.$type !== type) {
-        throw new Error(`VeoEntityModifier::onCreateEntity: Tried creating entity of type ${type} whose parent is of type ${parent.$type}`)
+      if(parent && parent.type !== 'scope' && parent.type !== type) {
+        throw new Error(`VeoEntityModifier::onCreateEntity: Tried creating entity of type ${type} whose parent is of type ${parent.type}`)
       }
 
       if(!type) {
@@ -312,7 +312,7 @@ export default Vue.extend({
       if(!entity) {
         this.$router.push(`/${this.$route.params.unit}/scopes/${this.$route.params.entity}/edit`)
       } else {
-        const entityParameter = createUUIDUrlParam(entity.$type, entity.id)
+        const entityParameter = createUUIDUrlParam(entity.type, entity.id)
         this.$router.push(`/${this.$route.params.unit}/scopes/${entityParameter}/edit`)
       }
     },
@@ -323,9 +323,8 @@ export default Vue.extend({
       this.$router.push(`/${this.$route.params.unit}/scopes/${this.$route.params.entity}/tree`)
     },
     onNavigateEntity(item: IVeoEntity) {
-      const entity = createUUIDUrlParam(item.$type, item.id)
-      console.log(item)
-      //this.$router.push(`/${this.$route.params.unit}/scopes/${entity}/list`)
+      const entity = createUUIDUrlParam(item.type, item.id)
+      this.$router.push(`/${this.$route.params.unit}/scopes/${entity}/list`)
     },
     onNavigateParent() {
       this.$router.back()
@@ -335,7 +334,7 @@ export default Vue.extend({
     },
     onAddEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
-        title: this.addEntityDialog.editedEntity?.$type === 'scope' ? this.$t('scope_update_error') : this.$t('object_update_error'),
+        title: this.addEntityDialog.editedEntity?.type === 'scope' ? this.$t('scope_update_error') : this.$t('object_update_error'),
         text: JSON.stringify(error)
       })
     },
@@ -344,7 +343,7 @@ export default Vue.extend({
     },
     onDeleteEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
-        title: this.deleteEntityDialog.item?.$type === 'scope' ? this.$t('scope_delete_error') : this.$t('object_delete_error'),
+        title: this.deleteEntityDialog.item?.type === 'scope' ? this.$t('scope_delete_error') : this.$t('object_delete_error'),
         text: JSON.stringify(error)
       })
     },
@@ -353,7 +352,7 @@ export default Vue.extend({
     },
     onUnlinkEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
-        title: this.unlinkEntityDialog.item?.$type === 'scope' ? this.$t('scope_unlink_error') : this.$t('object_unlink_error'),
+        title: this.unlinkEntityDialog.item?.type === 'scope' ? this.$t('scope_unlink_error') : this.$t('object_unlink_error'),
         text: JSON.stringify(error)
       })
     },
@@ -361,21 +360,21 @@ export default Vue.extend({
       const newEntity = cloneDeep(item)
       newEntity.name = `${item.name} (${this.$t('clone')})`
 
-      this.$api.entity.create(item.$type, newEntity).then(async (result) => {
+      this.$api.entity.create(item.type, newEntity).then(async (result) => {
         if(parent) {
-          const fetchedParent = await this.$api.entity.fetch(parent.$type, parent.id) // We have to refetch the parent in order to get an updated etag.
-          if(fetchedParent.$type === 'scope') {
+          const fetchedParent = await this.$api.entity.fetch(parent.type, parent.id) // We have to refetch the parent in order to get an updated etag.
+          if(fetchedParent.type === 'scope') {
             // @ts-ignore
             fetchedParent.members.push({
-              targetUri: `/${ getSchemaEndpoint(item.$type) }/${result.resourceId}`
+              targetUri: `/${ getSchemaEndpoint(item.type) }/${result.resourceId}`
             })
           } else {
             // @ts-ignore
             fetchedParent.parts.push({
-              targetUri: `/${ getSchemaEndpoint(item.$type) }/${result.resourceId}`
+              targetUri: `/${ getSchemaEndpoint(item.type) }/${result.resourceId}`
             })
           }
-          this.$api.entity.update(parent.$type, parent.id, fetchedParent).then(() => {
+          this.$api.entity.update(parent.type, parent.id, fetchedParent).then(() => {
             this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
               text: this.$t('object_cloned')
             })

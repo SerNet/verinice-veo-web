@@ -296,12 +296,12 @@ export default Vue.extend({
 
       this.displayedItems = this.items
         .map((item: IVeoEntity) => {
-          if (item.$type === 'scope' && item.members && item.members.length > 0) {
-            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.$type }
+          if (item.type === 'scope' && item.members && item.members.length > 0) {
+            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.type }
           } else if (item.parts && item.parts.length > 0) {
-            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.$type }
+            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.type }
           } else {
-            return { entry: item, id: '' + id++, type: item.$type }
+            return { entry: item, id: '' + id++, type: item.type }
           }
         })
         .sort(this.sortingFunction)

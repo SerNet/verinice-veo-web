@@ -87,13 +87,13 @@ export default Vue.extend({
   },
   methods: {
     unlinkEntity() {
-      this.$api.entity.fetch(this.parent.$type, this.parent.id).then((parent: IVeoEntity) => {
-        if(parent.$type === 'scope') {
+      this.$api.entity.fetch(this.parent.type, this.parent.id).then((parent: IVeoEntity) => {
+        if(parent.type === 'scope') {
           parent.members = parent.members.filter(member => !member.targetUri.includes(this.item.id))
         } else {
           parent.parts = parent.parts.filter(part => !part.targetUri.includes(this.item.id))
         }
-        this.$api.entity.update(this.parent.$type, this.parent.id, this.parent).then(() => {
+        this.$api.entity.update(this.parent.type, this.parent.id, this.parent).then(() => {
           this.$emit('success')
         })
       }).catch((error) => {

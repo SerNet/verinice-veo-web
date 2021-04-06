@@ -85,12 +85,12 @@ export default Vue.extend({
     },
     items(): IVeoEntity[] {
       if(this.addType === 'scope') {
-        return this.entities.filter((entity: IVeoEntity) => entity.$type === 'scope')
+        return this.entities.filter((entity: IVeoEntity) => entity.type === 'scope')
       } else if(this.addType === 'entity') {
-        if(this.editedEntity?.$type === 'scope') {
-          return this.entities.filter((entity: IVeoEntity) => entity.$type !== 'scope')
+        if(this.editedEntity?.type === 'scope') {
+          return this.entities.filter((entity: IVeoEntity) => entity.type !== 'scope')
         } else {
-          return this.entities.filter((entity: IVeoEntity) => entity.$type === this.editedEntity?.$type)
+          return this.entities.filter((entity: IVeoEntity) => entity.type === this.editedEntity?.type)
         }
       } else {
         return this.entities
@@ -107,7 +107,7 @@ export default Vue.extend({
         let presetEntities: IVeoLink[]
         if(!this.editedEntity) {
           presetEntities = []
-        } else if(this.editedEntity.$type === 'scope') {
+        } else if(this.editedEntity.type === 'scope') {
           presetEntities = this.editedEntity.members
         } else {
           presetEntities = this.editedEntity.parts
@@ -146,14 +146,14 @@ export default Vue.extend({
       }
 
       this.saving = true
-      const editedEntity = await this.$api.entity.fetch(this.editedEntity.$type, this.editedEntity.id)
+      const editedEntity = await this.$api.entity.fetch(this.editedEntity.type, this.editedEntity.id)
 
       const children = this.selectedItems.map(item => {
         return {
           targetUri: `/${ item.endpoint }/${item.id}`
         }
       })
-      if(this.editedEntity.$type === 'scope') {
+      if(this.editedEntity.type === 'scope') {
         // @ts-ignore
         editedEntity.members = children
       } else {
@@ -161,7 +161,7 @@ export default Vue.extend({
         editedEntity.parts = children
       }
 
-      await this.$api.entity.update(this.editedEntity.$type, this.editedEntity.id, this.editedEntity).then(() => {
+      await this.$api.entity.update(this.editedEntity.type, this.editedEntity.id, this.editedEntity).then(() => {
         this.$emit('success')
       }).catch((error: any) => {
         this.$emit('error', error)

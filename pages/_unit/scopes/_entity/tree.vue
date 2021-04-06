@@ -128,11 +128,11 @@ export default Vue.extend({
     },
     loadSubEntities(parent: ITreeEntry) {
       let id = 0
-      if (parent.entry.$type === 'scope') {
+      if (parent.entry.type === 'scope') {
         return this.$api.entity.fetchScopeMembers('scope', parent.entry.id).then((data: IVeoEntity[]) => {
           parent.children = data
             .map((item: IVeoEntity) => {
-              if (item.$type === 'scope' && item.members.length > 0) {
+              if (item.type === 'scope' && item.members.length > 0) {
                 return { entry: item, children: [] as ITreeEntry[], id: '' + id++ }
               } else if (item.parts && item.parts.length > 0) {
                 return { entry: item, children: [] as ITreeEntry[], id: parent.id + '.' + id++ }
@@ -144,11 +144,11 @@ export default Vue.extend({
         })
       } else {
         return this.$api.entity
-          .fetchSubEntities(parent.entry.$type || '', parent.entry.id)
+          .fetchSubEntities(parent.entry.type || '', parent.entry.id)
           .then((data: IVeoEntity[]) => {
             parent.children = data
               .map((item: IVeoEntity) => {
-                if (item.$type === 'scope' && item.members.length > 0) {
+                if (item.type === 'scope' && item.members.length > 0) {
                   return { entry: item, children: [] as ITreeEntry[], id: '' + id++ }
                 } else if (item.parts && item.parts.length > 0) {
                   return { entry: item, children: [] as ITreeEntry[], id: parent.id + '.' + id++ }
