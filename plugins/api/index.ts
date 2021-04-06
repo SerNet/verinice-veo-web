@@ -9,11 +9,12 @@ import schema from '~/plugins/api/schema'
 import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
 import scope from '~/plugins/api/scope'
+import report from '~/plugins/api/report'
 import { User } from '~/plugins/user'
 import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 export function createAPI(context: Context) {
-  return Client.create(context, { form, entity, schema, translation, unit, scope })
+  return Client.create(context, { form, entity, schema, translation, unit, scope, report })
 }
 
 export interface IAPIClient {
@@ -126,7 +127,7 @@ export class Client {
     }
   }
 
-  async parseResponse<T>(url: string, res: Response): Promise<T & {$etag?: string}> {
+  async parseResponse<T>(url: string, res: Response): Promise<T & { $etag?: string }> {
     const raw = await res.text()
 
     const etag = res.headers.get('etag')
@@ -163,7 +164,7 @@ interface RequestOptions extends RequestInit {
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS'
 }
 
-export default (function(context, inject) {
+export default (function (context, inject) {
   inject('api', createAPI(context))
 } as Plugin)
 

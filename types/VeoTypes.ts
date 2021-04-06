@@ -98,6 +98,17 @@ export interface IVeoFormSchemaEntry {
   elements: IVeoFormSchemaEntry[]
 }
 
+export interface IVeoReportsMeta {
+  [key: string]: IVeoReportMeta
+}
+
+export interface IVeoReportMeta {
+  description: string
+  outputTypes: string[]
+  multipleTargetsSupported: boolean
+  targetTypes: string[]
+}
+
 /**
  * 2. Types of user generated data
  */
@@ -136,9 +147,9 @@ export interface IVeoCustomAttributes {
  * NOTE: THESE TYPES ONLY GET USED FOR SCHEMAS, ALL USER DATA WILL USE THE ABOVE types.
  */
 
- /**
-  * 
-  */
+/**
+ * 
+ */
 export interface IVeoObjectSchema {
   $schema: string
   type: JSONSchema7TypeName
