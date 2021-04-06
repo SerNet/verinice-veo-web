@@ -1,5 +1,6 @@
 /// <reference path="../support/index.d.ts" />
 
+import { times } from 'lodash'
 import { JsonPointer } from 'json-ptr'
 
 function getCurrentOS(editor: JQuery<HTMLElement>): any {
@@ -13,6 +14,90 @@ const attributeTypes = [
   { value: 'integer', text: 'Ganzzahl' },
   { value: 'enum', text: 'Auswahl' }
 ]
+
+const changedAttributes = {
+  process_GeneralInformationTest_TagsTest: {
+    title: 'TagsTest',
+    type: 'string'
+  },
+  process_GeneralInformationTest_DocumentTest: {
+    title: 'DocumentTest',
+    type: 'boolean'
+  }
+}
+
+const addAttributes = [
+  {
+    title: 'process_GeneralInformationTest_a',
+    name: 'a',
+    type: attributeTypes[0],
+    description: 'a'
+  },
+  {
+    title: 'process_GeneralInformationTest_b',
+    name: 'b',
+    type: attributeTypes[1],
+    description: ''
+  },
+  {
+    title: 'process_GeneralInformationTest_c',
+    name: 'c',
+    type: attributeTypes[2],
+    description: 'c'
+  },
+  {
+    title: 'process_GeneralInformationTest_d',
+    name: 'd',
+    type: attributeTypes[3],
+    description: ''
+  },
+  {
+    title: 'process_GeneralInformationTest_e',
+    name: 'e',
+    type: attributeTypes[4],
+    description: 'e',
+    multiple: false,
+    enum: ['a', 'b', 'c', 'd']
+  },
+  {
+    title: 'process_GeneralInformationTest_f',
+    name: 'f',
+    type: attributeTypes[4],
+    description: '',
+    multiple: true,
+    enum: ['a', 'b', 'c', 'd']
+  }
+]
+
+const addedAttributesResultedSchema = {
+  process_GeneralInformationTest_a: {
+    title: 'a',
+    type: 'string'
+  },
+  process_GeneralInformationTest_b: {
+    title: '',
+    type: 'boolean'
+  },
+  process_GeneralInformationTest_c: {
+    title: 'c',
+    type: 'number'
+  },
+  process_GeneralInformationTest_d: {
+    title: '',
+    type: 'integer'
+  },
+  process_GeneralInformationTest_e: {
+    title: 'e',
+    enum: ['a', 'b', 'c', 'd']
+  },
+  process_GeneralInformationTest_f: {
+    title: '',
+    type: 'array',
+    items: {
+      enum: ['a', 'b', 'c', 'd']
+    }
+  }
+}
 
 describe('Objectschema', () => {
   beforeEach(() => {
@@ -140,13 +225,12 @@ describe('Objectschema', () => {
       .eq(0)
       .click()
     cy.get('.v-dialog--active .v-form > .row > .col-12 > .v-text-field').type('Test')
-    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child').each(
+    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each(
       (el, wrapperIndex) => {
         cy.wrap(el)
           .find('.v-input')
           .each((inputEl, inputIndex) => {
             if (inputIndex === 1) {
-              console.log(inputEl)
               cy.wrap(inputEl).type(`${attributeTypes[wrapperIndex].text}{enter}`)
             } else {
               cy.wrap(inputEl).type('Test')
@@ -155,7 +239,75 @@ describe('Objectschema', () => {
       }
     )
     cy.get('.v-dialog--active .v-card__actions .v-btn:last-child').click()
-    cy.wait(1)
+
+    cy.get('.editor .cm-content')
+      .then(editor => {
+        const currentOS = getCurrentOS(editor)
+        const aspect = JsonPointer.get(
+          currentOS,
+          '#/properties/customAspects/properties/process_GeneralInformationTest'
+        ) as any
+        cy.wrap(aspect).should('not.be.undefined')
+        const attributes = aspect.properties.attributes.properties
+        cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(changedAttributes, null, 2))
+      })
+      .pause()
+
+    /**
+     * Test removing and adding customAspect attributes
+     */
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
+      .eq(0)
+      .click()
+    cy.get(
+      '.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn'
+    )
+      .eq(0)
+      .click()
+    cy.get(
+      '.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn'
+    )
+      .eq(0)
+      .click()
+
+    times(6, () => {
+      cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-add-button .v-list-item__action > .v-btn').click()
+    })
+
+    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each(
+      (el, wrapperIndex) => {
+        const currentAttrData = addAttributes[wrapperIndex]
+        cy.wrap(el)
+          .find('.v-input')
+          .eq(0)
+          .type(currentAttrData.name)
+        cy.wrap(el)
+          .find('.v-input')
+          .eq(1)
+          .type(`${currentAttrData.type.text}{enter}`)
+        if (currentAttrData.description) {
+          cy.wrap(el)
+            .find('.v-input')
+            .eq(2)
+            .type(currentAttrData.description)
+        }
+        if (currentAttrData.enum) {
+          if (currentAttrData.multiple) {
+            cy.wrap(el)
+              .find('.v-input')
+              .eq(3)
+              .click()
+          }
+          cy.wrap(el)
+            .find('.v-input')
+            .eq(4)
+            .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
+        }
+      }
+    )
+    cy.get('.v-dialog--active .v-card__actions .v-btn:last-child').click()
 
     cy.get('.editor .cm-content').then(editor => {
       const currentOS = getCurrentOS(editor)
@@ -165,21 +317,8 @@ describe('Objectschema', () => {
       ) as any
       cy.wrap(aspect).should('not.be.undefined')
       const attributes = aspect.properties.attributes.properties
-      cy.wrap(attributes.process_GeneralInformationTest_TagsTest).should('not.be.undefined')
-      cy.wrap(attributes.process_GeneralInformationTest_TagsTest.title).should('eq', 'TagsTest')
-      cy.wrap(attributes.process_GeneralInformationTest_TagsTest.type).should('eq', attributeTypes[0].value)
-
-      cy.wrap(attributes.process_GeneralInformationTest_DocumentTest).should('not.be.undefined')
-      cy.wrap(attributes.process_GeneralInformationTest_DocumentTest.title).should('eq', 'DocumentTest')
-      cy.wrap(attributes.process_GeneralInformationTest_DocumentTest.type).should('eq', attributeTypes[1].value)
+      cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
     })
-
-    
-    /**
-     * Test adding customAspect name, attribute names, description and types
-     */
-
-
 
     // /**
     //  * Test link delete
