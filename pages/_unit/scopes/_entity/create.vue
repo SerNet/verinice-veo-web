@@ -171,9 +171,17 @@ export default Vue.extend({
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
           if (this.parentId !== '-') {
             const parent = await this.$api.entity.fetch(this.parentType, this.parentId)
-            parent.parts.push({
-              targetUri: `/${ getSchemaEndpoint(this.entityType) }/${data.resourceId}`
-            })
+
+            if(this.parentType === 'scope') {
+              parent.members.push({
+                targetUri: `/${ getSchemaEndpoint(this.entityType) }/${data.resourceId}`
+              })
+            } else {
+              parent.parts.push({
+                targetUri: `/${ getSchemaEndpoint(this.entityType) }/${data.resourceId}`
+              })
+            }
+            
             this.$api.entity.update(this.parentType, parent.id, parent).finally(() => {
               this.$router.push(this.backLink)
             })

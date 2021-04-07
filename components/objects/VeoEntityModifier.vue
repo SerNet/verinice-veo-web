@@ -1,50 +1,9 @@
 <template>
   <div>
-    <v-row class="justify-space-between">
-      <v-col cols="auto">
-        <v-btn-toggle mandatory :value="activeView" color="primary" dense>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn v-on="on" @click="onNavigateList">
-                <v-icon>mdi-menu</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('breadcrumbs.list_view') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn v-on="on" @click="onNavigateTree">
-                <v-icon>mdi-file-tree</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('breadcrumbs.tree_view') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn v-on="on" :disabled="entityType === '-'" @click="onEditEntity">
-                <v-icon>mdi-file</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('breadcrumbs.detail_view') }}
-            </template>
-          </v-tooltip>
-        </v-btn-toggle>
-      </v-col>
-      <v-col cols="auto" class="mr-4">
-        <VeoMenuButton
-          v-on="on"
-          :menu-items="menuItems"
-          :button-text="menuButton.text"
-          :button-event="menuButton.event"
-        />
-      </v-col>
-    </v-row>
-    <slot v-bind:on="on" />
+    <VeoEntityDisplayOptions :rootRoute="rootRoute" :current-entity="currentEntity">
+      <slot name="menu-bar" v-bind:on="on" />
+    </VeoEntityDisplayOptions>
+    <slot v-bind:on="on" :current-entity="currentEntity" />
     <VeoDeleteEntityDialog
       v-model="deleteEntityDialog.value"
       v-bind="deleteEntityDialog"
@@ -79,7 +38,7 @@ import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vu
 import VeoUnlinkEntityDialog from '~/components/objects/VeoUnlinkEntityDialog.vue'
 import VeoAddEntityDialog from '~/components/objects/VeoAddEntityDialog.vue'
 import VeoCreateEntityDialog from '~/components/objects/VeoCreateEntityDialog.vue'
-import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
+import VeoEntityDisplayOptions from '~/components/objects/VeoEntityDisplayOptions.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 import { getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
@@ -106,7 +65,8 @@ interface IData {
   }
   on: {
     [key: string]: CallableFunction
-  }
+  },
+  schemas: ISchemaEndpoint[]
 }
 
 export default Vue.extend({
@@ -115,40 +75,20 @@ export default Vue.extend({
     VeoUnlinkEntityDialog,
     VeoAddEntityDialog,
     VeoCreateEntityDialog,
-    VeoMenuButton
+    VeoEntityDisplayOptions
   },
   props: {
     objects: {
       type: Array as Prop<IVeoEntity[]>,
       required: true
     },
-    entities: {
-      type: Array as Prop<IVeoEntity[]>,
-      required: true
-    },
-    scopes: {
-      type: Array as Prop<IVeoEntity[]>,
-      required: true
-    },
-    schemas: {
-      type: Array as Prop<ISchemaEndpoint[]>,
-      required: true
-    },
     currentEntity: {
       type: Object as Prop<undefined | IVeoEntity>,
       default: undefined
     },
-    fetchScopes: {
-      type: Function,
-      default: () => () => {}
-    },
-    fetchEntities: {
-      type: Function,
-      default: () => () => {}
-    },
-    fetchSchemas: {
-      type: Function,
-      default: () => () => {}
+    rootRoute: {
+      type: String,
+      required: true
     }
   },
   data(): IData {
@@ -171,7 +111,8 @@ export default Vue.extend({
         value: false,
         parent: undefined
       },
-      on: {}
+      on: {},
+      schemas: []
     }
   },
   computed: {
@@ -183,74 +124,17 @@ export default Vue.extend({
           return 0
         case 'tree':
           return 1
+        case 'edit':
+          return 2
         default:
           return -1
       }
     },
-    menuItems(): IVeoMenuButtonItem[] {
-      const dummy: IVeoMenuButtonItem[] = []
-
-      // Allow adding (linking) scopes everywhere but root level, add the possibility to add objects there too.
-      if (this.entityType === 'scope') {
-        dummy.push({
-          name: this.$t('scope_add') as string,
-          eventName: 'add-scope',
-          disabled: false
-        })
-
-        // Only add the entity create button if the user is in a scope, as it is the primary choice in entities
-        dummy.push({
-          name: this.$t('object_create') as string,
-          eventName: 'create-entity',
-          disabled: false
-        })
-      }
-
-      // Allow entity management on all levels but the root level
-      if (this.entityType !== '-') {
-        dummy.push({
-          name: this.$t('object_add') as string,
-          eventName: 'add-entity',
-          disabled: false
-        })
-      }
-
-      return dummy
-    },
-    menuButton(): { text: string; event: string } {
-      if (this.entityType !== '-' && this.entityType !== 'scope') {
-        return {
-          text: this.$t('object_create').toString(),
-          event: 'create-entity'
-        }
-      } else {
-        return {
-          text: this.$t('scope_create').toString(),
-          event: 'create-scope'
-        }
-      }
+    routeEnd(): string {
+      return this.activeView === 0 ? 'list' : 'tree'
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
-    },
-    entityId(): string {
-      return separateUUIDParam(this.$route.params.entity).id
-    },
-    entityType(): string {
-      return separateUUIDParam(this.$route.params.entity).type
-    },
-    entityEndpoint(): string {
-      return this.entityType || ''
-    },
-    formattedEntityType(): string {
-      return upperFirst(this.entityType)
-    },
-    title(): string {
-      return this.currentEntity
-        ? this.currentEntity.name
-        : this.entityType !== '-'
-        ? this.entityId
-        : this.$t('breadcrumbs.scopes').toString()
     },
     createEntitySchemas(): string[] {
       return this.schemas.map((schema: ISchemaEndpoint) => {
@@ -259,22 +143,27 @@ export default Vue.extend({
     }
   },
   methods: {
+    fetchSchemas(): Promise<void> {
+      return this.$api.schema.fetchAll(false, { unit: this.unitId }).then((schemas: ISchemaEndpoint[]) => {
+        this.schemas = schemas
+      })
+    },
     /**
      * Registers all event listeners. They either get triggered by the slot component or
      * the menu button on the top of the page.
      */
     registerListeners() {
       this.on = {
-        'create-entity': (type?: string, parent?: IVeoEntity) => this.onCreateEntity(type, parent),
-        'create-scope': (parent?: IVeoEntity) => this.onCreateEntity('scope', parent),
-        'add-entity': ($event: any) => this.showAddDialog('entity', $event),
-        'add-scope': ($event: any) => this.showAddDialog('scope', $event),
-        edit: this.onEditEntity,
-        duplicate: this.onDuplicateEntity,
-        delete: this.showDeleteEntityDialog,
-        unlink: this.showUnlinkEntityDialog,
-        click: this.onNavigateEntity,
-        'navigate-parent': this.onNavigateParent
+        'create-entity': (data: { type: string, parent?: IVeoEntity }) => this.onCreateEntity(data.type, data.parent),
+        'create-scope': (data: { parent?: IVeoEntity }) => this.onCreateEntity('scope', data.parent),
+        'add-entity': (data: { parent: IVeoEntity }) => this.showAddDialog('entity', data.parent),
+        'add-scope': (data: { parent: IVeoEntity }) => this.showAddDialog('scope', data.parent),
+        edit: (data: { item: IVeoEntity }) => this.onEditEntity(data.item),
+        duplicate: (data: { item: IVeoEntity, parent?: IVeoEntity }) => this.onDuplicateEntity(data.item, data.parent),
+        delete: (data: { item: IVeoEntity }) => this.showDeleteEntityDialog(data.item),
+        unlink: (data: { item: IVeoEntity, parent: IVeoEntity }) => this.showUnlinkEntityDialog(data.item, data.parent),
+        click: (data: { item: IVeoEntity }) => this.onNavigateEntity(data.item),
+        'navigate-parent': () => this.onNavigateParent()
       }
     },
     /**
@@ -296,7 +185,7 @@ export default Vue.extend({
       }
 
       this.$router.push({
-        path: `/${this.$route.params.unit}/scopes/${createUUIDUrlParam(this.entityType, this.entityId)}/create`,
+        path: `${this.rootRoute}/${this.$route.params.entity}/create`,
         query: {
           based_on: type
         }
@@ -310,27 +199,22 @@ export default Vue.extend({
      */
     onEditEntity(entity?: IVeoEntity) {
       if(!entity) {
-        this.$router.push(`/${this.$route.params.unit}/scopes/${this.$route.params.entity}/edit`)
+        this.$router.push(`${this.rootRoute}/${this.$route.params.entity}/edit`)
       } else {
         const entityParameter = createUUIDUrlParam(entity.type, entity.id)
-        this.$router.push(`/${this.$route.params.unit}/scopes/${entityParameter}/edit`)
+        this.$router.push(`${this.rootRoute}/${entityParameter}/edit`)
       }
-    },
-    onNavigateList() {
-      this.$router.push(`/${this.$route.params.unit}/scopes/${this.$route.params.entity}/list`)
-    },
-    onNavigateTree() {
-      this.$router.push(`/${this.$route.params.unit}/scopes/${this.$route.params.entity}/tree`)
     },
     onNavigateEntity(item: IVeoEntity) {
       const entity = createUUIDUrlParam(item.type, item.id)
-      this.$router.push(`/${this.$route.params.unit}/scopes/${entity}/list`)
+      this.$router.push(`${this.rootRoute}/${entity}/${this.routeEnd}`)
     },
     onNavigateParent() {
       this.$router.back()
     },
     onAddEntitySuccess() {
       this.addEntityDialog.value = false
+      this.$emit('fetch')
     },
     onAddEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -340,6 +224,7 @@ export default Vue.extend({
     },
     onDeleteEntitySuccess() {
       this.deleteEntityDialog.value = false
+      this.$emit('fetch')
     },
     onDeleteEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -349,6 +234,7 @@ export default Vue.extend({
     },
     onUnlinkEntitySuccess() {
       this.unlinkEntityDialog.value = false
+      this.$emit('fetch')
     },
     onUnlinkEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -375,10 +261,13 @@ export default Vue.extend({
             })
           }
           this.$api.entity.update(parent.type, parent.id, fetchedParent).then(() => {
+            this.$emit('fetch')
             this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
               text: this.$t('object_cloned')
             })
           })
+        } else {
+          this.$emit('fetch')
         }
       }).catch((error: any) => {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -420,15 +309,11 @@ export default Vue.extend({
 {
   "en": {
     "clone": "Clone",
-    "object_add": "Link object",
     "object_cloned": "Object cloned successfully",
-    "object_create": "Create object",
     "object_delete_error": "Failed to delete object",
     "object_duplicate_error": "Failed to duplicate object",
     "object_unlink_error": "Failed to unlink object",
     "object_update_error": "Failed to update object",
-    "scope_add": "Link scope",
-    "scope_create": "Create scope",
     "scope_delete_error": "Failed to delete scope",
     "scope_duplicate_error": "Failed to duplicate scope",
     "scope_unlink_error": "Failed to unlink scope",
@@ -436,16 +321,11 @@ export default Vue.extend({
   },
   "de": {
     "clone": "Klon",
-    "object_add": "Objekt verknüpfen",
     "object_cloned": "Objekt wurde geklont",
-    "object_create": "Objekt erstellen",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_duplicate_error": "Objekt konnte nicht erstellt werden",
     "object_unlink_error": "Verlinkung konnte nicht entfernt werden",
     "object_update_error": "Objekt konnte nicht aktualisiert werden",
-    "scope_add": "Scope verknüpfen",
-    "scope_cloned": "Scope wurde geklont",
-    "scope_create": "Scope erstellen",
     "scope_delete_error": "Scope konnte nicht gelöscht werden",
     "scope_duplicate_error": "Scope konnte nicht erstellt werden",
     "scope_unlink_error": "Verlinkung konnte nicht entfernt werden",

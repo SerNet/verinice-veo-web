@@ -18,7 +18,7 @@
       transition
     >
       <template #prepend="{ item }">
-        <v-tooltip v-if="item.entry.parts && item.entry.parts.length > 0" bottom>
+        <v-tooltip v-if="item.entry.type !== 'scope' && item.entry.parts.length > 0" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-file-document-multiple</v-icon>
           </template>
@@ -29,7 +29,7 @@
             </span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else-if="item.entry.members && item.entry.members.length > 0" bottom>
+        <v-tooltip v-else-if="item.entry.type === 'scope' && item.entry.members.length > 0" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
@@ -39,7 +39,7 @@
             </span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else-if="item.entry.members" bottom>
+        <v-tooltip v-else-if="item.entry.type === 'scope'" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-archive</v-icon>
           </template>
@@ -99,16 +99,16 @@
                   </template>
                   <template #default>
                     <v-list>
-                      <v-list-item v-if="item.type === 'scope'" @click="$emit('add-scope', item.entry)">
+                      <v-list-item v-if="item.type === 'scope'" @click="fireContextualisedEvent('add-scope', item )">
                         <v-list-item-title>{{ $t('scope_add') }}</v-list-item-title>
                       </v-list-item>
-                      <v-list-item v-if="item.type === 'scope'" @click="$emit('create-scope', item.entry)">
+                      <v-list-item v-if="item.type === 'scope'" @click="fireContextualisedEvent('create-scope', item)">
                         <v-list-item-title>{{ $t('scope_create') }}</v-list-item-title>
                       </v-list-item>
-                      <v-list-item @click="$emit('add-entity', item.entry)">
+                      <v-list-item @click="fireContextualisedEvent('add-entity', item)">
                         <v-list-item-title>{{ $t('object_add') }}</v-list-item-title>
                       </v-list-item>
-                      <v-list-item @click="$emit('create-entity', item.entry)">
+                      <v-list-item @click="fireContextualisedEvent('create-entity', item)">
                         <v-list-item-title>{{ $t('object_create') }}</v-list-item-title>
                       </v-list-item>
                     </v-list>
@@ -121,7 +121,7 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="$emit('edit', item.entry)" v-on="on">
+                <v-btn icon @click.stop="$emit('edit', { item: item.entry })" v-on="on">
                   <v-icon>
                     mdi-pencil
                   </v-icon>
@@ -133,7 +133,7 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="doDuplicate(item)" v-on="on">
+                <v-btn icon @click.stop="fireContextualisedEvent('duplicate', item)" v-on="on">
                   <v-icon>
                     mdi-content-copy
                   </v-icon>
@@ -145,7 +145,7 @@
             </v-tooltip>
             <v-tooltip v-if="$route.params.entity === '-'" bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="$emit('delete', item.entry)" v-on="on" class="action-delete">
+                <v-btn icon @click.stop="$emit('delete', { item: item.entry })" v-on="on" class="action-delete">
                   <v-icon>
                     mdi-delete
                   </v-icon>
@@ -159,7 +159,7 @@
               <template #activator="{on}">
                 <v-btn
                   icon
-                  @click.stop="doUnlink(item)"
+                  @click.stop="fireContextualisedEvent('unlink', item)"
                   v-on="on"
                   :class="$route.params.entity === '-' ? 'action-unlink' : ''"
                 >
@@ -317,11 +317,8 @@ export default Vue.extend({
         new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
       )
     },
-    doUnlink(entry: ITreeEntry) {
-      this.$emit('unlink', entry.entry, this.getParent(entry.id)?.entry)
-    },
-    doDuplicate(entry: ITreeEntry) {
-      this.$emit('duplicate', entry.entry, this.getParent(entry.id)?.entry)
+    fireContextualisedEvent(event: string, entry: ITreeEntry) {
+      this.$emit(event, { item: entry.entry, parent: this.getParent(entry.id)})
     },
     getParent(id: string): ITreeEntry | undefined {
       return this.displayedItems.find(

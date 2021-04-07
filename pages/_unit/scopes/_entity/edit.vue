@@ -3,47 +3,11 @@
     <template #default>
       <VeoPage absolute-size :cols="12" :md="8" :xl="8" sticky-header :title="objectTitle">
         <template #default>
-          <v-row class="justify-space-between">
-            <v-col cols="auto">
-              <v-btn-toggle mandatory :value="2" color="primary" dense>
-                <v-tooltip bottom>
-                  <template #activator="{on}">
-                    <v-btn v-on="on" @click="navigateList()">
-                      <v-icon>mdi-menu</v-icon>
-                    </v-btn>
-                  </template>
-                  <template #default>
-                    {{ $t('breadcrumbs.list_view') }}
-                  </template>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="{on}">
-                    <v-btn v-on="on" @click="navigateTree()">
-                      <v-icon>mdi-file-tree</v-icon>
-                    </v-btn>
-                  </template>
-                  <template #default>
-                    {{ $t('breadcrumbs.tree_view') }}
-                  </template>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template #activator="{on}">
-                    <v-btn v-on="on">
-                      <v-icon>mdi-file</v-icon>
-                    </v-btn>
-                  </template>
-                  <template #default>
-                    {{ $t('breadcrumbs.detail_view') }}
-                  </template>
-                </v-tooltip>
-              </v-btn-toggle>
-            </v-col>
-            <v-col cols="auto" class="mr-4">
-              <v-btn color="primary" outlined :disabled="$fetchState.pending" :loading="saveBtnLoading" @click="save()">
-                {{ $t('global.button.save') }}
-              </v-btn>
-            </v-col>
-          </v-row>
+          <VeoEntityDisplayOptions :rootRoute="`/${$route.params.unit}/scopes`" :current-entity="form.objectData">
+            <v-btn color="primary" outlined :disabled="$fetchState.pending" :loading="saveBtnLoading" @click="save()">
+              {{ $t('global.button.save') }}
+            </v-btn>
+          </VeoEntityDisplayOptions>
           <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
             <v-progress-circular indeterminate color="primary" size="50" />
           </div>
@@ -79,16 +43,7 @@
     </template>
   </VeoPageWrapper>
 </template>
-<i18n>
-{
-  "en": {
-    "edit_object": "Edit \"{title}\""
-  },
-  "de": {
-    "edit_object": "\"{title}\" bearbeiten"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { upperFirst } from 'lodash'
@@ -98,6 +53,7 @@ import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
 import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
+import VeoEntityDisplayOptions from '~/components/objects/VeoEntityDisplayOptions.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
@@ -117,7 +73,8 @@ export default Vue.extend({
     VeoPage,
     VeoPageWrapper,
     VeoTabs,
-    VeoObjectHistory
+    VeoObjectHistory,
+    VeoEntityDisplayOptions
   },
   data(): IData {
     return {
@@ -204,20 +161,29 @@ export default Vue.extend({
           }
         })
       }
-    },
-    navigateTree() {
-      this.$router.push(
-        `/${this.$route.params.unit}/scopes/${this.$route.params.entity}/tree`
-      )
-    },
-    navigateList() {
-      this.$router.push(
-        `/${this.$route.params.unit}/scopes/${this.$route.params.entity}/list`
-      )
     }
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "edit_object": "Edit \"{title}\"",
+    "object_add": "Link object",
+    "object_create": "Create object",
+    "scope_add": "Link scope",
+    "scope_create": "Create scope"
+  },
+  "de": {
+    "edit_object": "\"{title}\" bearbeiten",
+    "object_add": "Objekt verknüpfen",
+    "object_create": "Objekt erstellen",
+    "scope_add": "Scope verknüpfen",
+    "scope_create": "Scope erstellen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

@@ -1,6 +1,13 @@
 <template>
   <VeoPage :title="title" fullsize>
-    <VeoEntityModifier v-bind="$data" :fetch-scopes="fetchScopes" :fetch-entities="fetchEntities" :fetch-schemas="fetchSchemas">
+    <VeoEntityModifier v-bind="$data" @fetch="$fetch" :rootRoute="rootRoute">
+      <template #menu-bar="{ on }">
+        <VeoMenuButton
+          v-on="on"
+          :menu-items="menuItems"
+          :primary-item="menuButton"
+        />
+      </template>
       <template #default="{ on }">
         <VeoObjectList
           v-on="on"
@@ -9,7 +16,6 @@
           :show-parent-link="showParentLink"
           :load-children="loadSubEntities"
           :sorting-function="sortingFunction"
-          :edit-item-link="editItemLink"
         />
       </template>
     </VeoEntityModifier>
@@ -21,22 +27,20 @@ import Vue from 'vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoObjectList from '~/components/objects/VeoObjectList.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
-import { ISchemaEndpoint } from '~/plugins/api/schema'
 import { separateUUIDParam } from '~/lib/utils'
+import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
 
 interface IData {
   objects: IVeoEntity[]
   currentEntity: undefined | IVeoEntity
-  entities: IVeoEntity[]
-  scopes: IVeoEntity[]
-  showParentLink: boolean,
-  schemas: ISchemaEndpoint[]
+  showParentLink: boolean
 }
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
   components: {
     VeoPage,
+    VeoMenuButton,
     VeoObjectList
   },
   head(): any {
@@ -48,10 +52,7 @@ export default Vue.extend({
     return {
       objects: [],
       currentEntity: undefined,
-      entities: [],
-      showParentLink: false,
-      scopes: [],
-      schemas: []
+      showParentLink: false
     }
   },
   asyncData({ from, route }) {
@@ -87,50 +88,92 @@ export default Vue.extend({
         ? this.currentEntity.name
         : this.entityType !== '-'
         ? this.entityId
-        : this.$t('breadcrumbs.scopes')
+        : this.$t('breadcrumbs.scopes').toString()
     },
-    editItemLink(): string {
-      return `/${this.$route.params.unit}/scopes/${this.$route.params.entity}/edit`
+    menuButton(): IVeoMenuButtonItem {
+      if (this.entityType !== '-' && this.entityType !== 'scope') {
+        return {
+          name: this.$t('object_create').toString(),
+          event: {
+            name: 'create-entity',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        }
+      } else {
+        return {
+          name: this.$t('scope_create').toString(),
+          event: {
+            name: 'create-scope',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        }
+      }
+    },
+    menuItems(): IVeoMenuButtonItem[] {
+      const dummy: IVeoMenuButtonItem[] = []
+
+      // Allow adding (linking) scopes everywhere but root level, add the possibility to add objects there too.
+      if (this.entityType === 'scope') {
+        dummy.push({
+          name: this.$t('scope_add') as string,
+          event: {
+            name: 'add-scope',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        })
+
+        // Only add the entity create button if the user is in a scope, as it is the primary choice in entities
+        dummy.push({
+          name: this.$t('object_create') as string,
+          event: {
+            name: 'create-entity',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        })
+      }
+
+      // Allow entity management on all levels but the root level
+      if (this.entityType !== '-') {
+        dummy.push({
+          name: this.$t('object_add') as string,
+          event: {
+            name: 'add-entity',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        })
+      }
+
+      return dummy
+    },
+    rootRoute(): string {
+      return `/${this.$route.params.unit}/scopes`
     }
   },
   methods: {
-    async fetchScopes(): Promise<void> {
-      return this.$api.entity.fetchAll('scope', { unit: this.unitId }).then((scopes: IVeoEntity[]) => {
-        this.scopes = scopes
-      })
-    },
-    async fetchEntities(): Promise<void> {
-      switch (this.entityType) {
-        case '-':
-        case 'scope':
-          if (this.schemas.length === 0) {
-            await this.fetchSchemas()
-          }
-
-          for (const schema of this.schemas) {
-            if (schema) {
-              this.entities.push(...(await this.$api.entity.fetchAll(schema.endpoint, { unit: this.unitId })))
-            }
-          }
-          break
-        default:
-          return (this.entities = await this.$api.entity.fetchAll(this.entityType, { unit: this.unitId }))
-      }
-    },
-    async fetchSchemas(): Promise<void> {
-      return this.$api.schema.fetchAll({ unit: this.unitId }).then((schemas: ISchemaEndpoint[]) => {
-        this.schemas = schemas
-      })
-    },
-    loadSubEntities(_parent: any) {
+    loadSubEntities(_parent: IVeoEntity) {
       return []
     },
-    sortingFunction(a: any, b: any) {
-      if (a.members && !b.members) {
+    sortingFunction(a: IVeoEntity, b: IVeoEntity) {
+      if (a.type === 'scope' && b.type !== 'scope') {
         return -1
-      } else if (!a.members && b.members) {
+      } else if (a.type !== 'scope' && b.type === 'scope') {
         return 1
-      } else if (a.parts && b.parts) {
+      } else if (a.type !== 'scope' && b.type !== 'scope') {
         if (a.parts.length > 0 && b.parts.length === 0) {
           return -1
         } else if (a.parts.length === 0 && b.parts.length > 0) {
@@ -143,5 +186,22 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "object_add": "Link object",
+    "object_create": "Create object",
+    "scope_add": "Link scope",
+    "scope_create": "Create scope"
+  },
+  "de": {
+    "object_add": "Objekt verknüpfen",
+    "object_create": "Objekt erstellen",
+    "scope_add": "Scope verknüpfen",
+    "scope_create": "Scope erstellen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped></style>

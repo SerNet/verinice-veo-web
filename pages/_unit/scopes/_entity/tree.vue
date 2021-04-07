@@ -1,14 +1,23 @@
 <template>
   <VeoPage :title="title" fullsize>
-    <VeoEntityModifier v-bind="$data" :fetch-scopes="fetchScopes" :fetch-entities="fetchEntities" :fetch-schemas="fetchSchemas">
-      <VeoObjectTree
-        :items="objects"
-        :loading="$fetchState.pending"
-        :show-parent-link="showParentLink"
-        :load-children="loadSubEntities"
-        :sorting-function="sortingFunction"
-        :edit-item-link="editItemLink"
-      />
+    <VeoEntityModifier v-bind="$data" @fetch="$fetch" :rootRoute="rootRoute">
+      <template #menu-bar="{ on }">
+        <VeoMenuButton
+          v-on="on"
+          :menu-items="menuItems"
+          :primary-item="menuButton"
+        />
+      </template>
+      <template #default="{ on }">
+        <VeoObjectTree
+          v-on="on"
+          :items="objects"
+          :loading="$fetchState.pending"
+          :show-parent-link="showParentLink"
+          :load-children="loadSubEntities"
+          :sorting-function="sortingFunction"
+        />
+      </template>
     </VeoEntityModifier>
   </VeoPage>
 </template>
@@ -18,22 +27,20 @@ import Vue from 'vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoObjectTree, { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
-import { ISchemaEndpoint } from '~/plugins/api/schema'
 import { separateUUIDParam } from '~/lib/utils'
+import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
 
 interface IData {
   objects: IVeoEntity[]
   currentEntity: undefined | IVeoEntity
-  entities: IVeoEntity[]
-  scopes: IVeoEntity[]
   showParentLink: boolean
-  schemas: ISchemaEndpoint[]
 }
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
   components: {
     VeoPage,
+    VeoMenuButton,
     VeoObjectTree
   },
   head(): any {
@@ -45,10 +52,7 @@ export default Vue.extend({
     return {
       objects: [],
       currentEntity: undefined,
-      entities: [],
-      showParentLink: false,
-      scopes: [],
-      schemas: []
+      showParentLink: false
     }
   },
   asyncData({ from, route }) {
@@ -86,39 +90,81 @@ export default Vue.extend({
         ? this.entityId
         : this.$t('breadcrumbs.scopes')
     },
-    editItemLink(): string {
-      return `/${this.$route.params.unit}/scopes/${this.$route.params.entity}/edit`
+    menuButton(): IVeoMenuButtonItem {
+      if (this.entityType !== '-' && this.entityType !== 'scope') {
+        return {
+          name: this.$t('object_create').toString(),
+          event: {
+            name: 'create-entity',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        }
+      } else {
+        return {
+          name: this.$t('scope_create').toString(),
+          event: {
+            name: 'create-scope',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        }
+      }
+    },
+    menuItems(): IVeoMenuButtonItem[] {
+      const dummy: IVeoMenuButtonItem[] = []
+
+      // Allow adding (linking) scopes everywhere but root level, add the possibility to add objects there too.
+      if (this.entityType === 'scope') {
+        dummy.push({
+          name: this.$t('scope_add') as string,
+          event: {
+            name: 'add-scope',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        })
+
+        // Only add the entity create button if the user is in a scope, as it is the primary choice in entities
+        dummy.push({
+          name: this.$t('object_create') as string,
+          event: {
+            name: 'create-entity',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        })
+      }
+
+      // Allow entity management on all levels but the root level
+      if (this.entityType !== '-') {
+        dummy.push({
+          name: this.$t('object_add') as string,
+          event: {
+            name: 'add-entity',
+            params: {
+              parent: this.currentEntity
+            }
+          },
+          disabled: false
+        })
+      }
+
+      return dummy
+    },
+    rootRoute(): string {
+      return `/${this.$route.params.unit}/scopes`
     }
   },
   methods: {
-    async fetchScopes(): Promise<void> {
-      return this.$api.entity.fetchAll('scope', { unit: this.unitId }).then((scopes: IVeoEntity[]) => {
-        this.scopes = scopes
-      })
-    },
-    async fetchEntities(): Promise<void> {
-      switch (this.entityType) {
-        case '-':
-        case 'scope':
-          if (this.schemas.length === 0) {
-            await this.fetchSchemas()
-          }
-
-          for (const schema of this.schemas) {
-            if (schema) {
-              this.entities.push(...(await this.$api.entity.fetchAll(schema.endpoint, { unit: this.unitId })))
-            }
-          }
-          break
-        default:
-          return (this.entities = await this.$api.entity.fetchAll(this.entityType, { unit: this.unitId }))
-      }
-    },
-    async fetchSchemas(): Promise<void> {
-      return this.$api.schema.fetchAll({ unit: this.unitId }).then((schemas: ISchemaEndpoint[]) => {
-        this.schemas = schemas
-      })
-    },
     sortingFunction(a: ITreeEntry, b: ITreeEntry) {
       if (a.entry && b.entry) {
         return a.entry.name.localeCompare(b.entry.name)
@@ -128,8 +174,10 @@ export default Vue.extend({
     },
     loadSubEntities(parent: ITreeEntry) {
       let id = 0
-      if (parent.entry.type === 'scope') {
-        return this.$api.entity.fetchScopeMembers('scope', parent.entry.id).then((data: IVeoEntity[]) => {
+
+      return this.$api.entity
+        .fetchSubEntities(parent.entry.type, parent.entry.id)
+        .then((data: IVeoEntity[]) => {
           parent.children = data
             .map((item: IVeoEntity) => {
               if (item.type === 'scope' && item.members.length > 0) {
@@ -142,26 +190,26 @@ export default Vue.extend({
             })
             .sort(this.sortingFunction)
         })
-      } else {
-        return this.$api.entity
-          .fetchSubEntities(parent.entry.type || '', parent.entry.id)
-          .then((data: IVeoEntity[]) => {
-            parent.children = data
-              .map((item: IVeoEntity) => {
-                if (item.type === 'scope' && item.members.length > 0) {
-                  return { entry: item, children: [] as ITreeEntry[], id: '' + id++ }
-                } else if (item.parts && item.parts.length > 0) {
-                  return { entry: item, children: [] as ITreeEntry[], id: parent.id + '.' + id++ }
-                } else {
-                  return { entry: item, id: parent.id + '.' + id++ }
-                }
-              })
-              .sort(this.sortingFunction)
-          })
-      }
     }
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "object_add": "Link object",
+    "object_create": "Create object",
+    "scope_add": "Link scope",
+    "scope_create": "Create scope"
+  },
+  "de": {
+    "object_add": "Objekt verknüpfen",
+    "object_create": "Objekt erstellen",
+    "scope_add": "Scope verknüpfen",
+    "scope_create": "Scope erstellen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped></style>

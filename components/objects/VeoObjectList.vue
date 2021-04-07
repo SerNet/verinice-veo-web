@@ -6,7 +6,7 @@
     :items-per-page="itemsPerPage"
     :loading="loading"
     class="veo-object-list"
-    @click:row="$emit('click', $event)"
+    @click:row="$emit('click', { item: $event })"
   >
     <template #no-data>
       <span v-if="$route.params.param === '-'" class="text-center">
@@ -28,7 +28,7 @@
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
-        <v-tooltip v-if="item.parts && item.parts.length > 0" bottom>
+        <v-tooltip v-if="item.type !== 'scope' && item.parts.length > 0" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-file-document-multiple</v-icon>
           </template>
@@ -39,7 +39,7 @@
             </span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else-if="item.members && item.members.length > 0" bottom>
+        <v-tooltip v-else-if="item.type === 'scope' && item.members.length > 0" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
@@ -49,7 +49,7 @@
             </span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else-if="item.members" bottom>
+        <v-tooltip v-else-if="item.type === 'scope'" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-archive</v-icon>
           </template>
@@ -114,7 +114,7 @@
       <div class="d-flex flex-nowrap justify-end">
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('edit', item)" v-on="on">
+            <v-btn icon @click.stop="$emit('edit', { item, parent: currentItem })" v-on="on">
               <v-icon>
                 mdi-pencil
               </v-icon>
@@ -126,7 +126,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('duplicate', item)" v-on="on">
+            <v-btn icon @click.stop="$emit('duplicate', { item, parent: currentItem })" v-on="on">
               <v-icon>
                 mdi-content-copy
               </v-icon>
@@ -138,7 +138,7 @@
         </v-tooltip>
         <v-tooltip v-if="$route.params.entity === '-'" bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
+            <v-btn icon @click.stop="$emit('delete', { item, parent: currentItem })" v-on="on">
               <v-icon>
                 mdi-delete
               </v-icon>
@@ -150,7 +150,7 @@
         </v-tooltip>
         <v-tooltip v-else bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('unlink', item)" v-on="on">
+            <v-btn icon @click.stop="$emit('unlink', { item, parent: currentItem })" v-on="on">
               <v-icon>
                 mdi-link-off
               </v-icon>
@@ -227,6 +227,10 @@ export default Vue.extend({
     sortingFunction: {
       type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
       default: () => ((a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name))
+    },
+    currentItem: {
+      type: Object as Prop<IVeoEntity | undefined>,
+      default: undefined
     }
   },
   data() {
