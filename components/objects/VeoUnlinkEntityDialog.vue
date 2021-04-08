@@ -9,26 +9,13 @@
         {{ $t('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="$emit('unlink', item.id)">
+      <v-btn text color="primary" :disabled="!item" @click="unlinkEntity">
         {{ $t('headline') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
-<i18n>
-{
-  "en": {
-  "text1": "Unlinking \"{name}\" only removes the object from \"{parentName}\".",
-  "text2": "If you wish to delete the object, you have to delete it from the root element.",
-  "headline": "Unlink object"
-  },
-  "de": {
-    "text1": "Es wird nur die Verknüpfung von \"{name}\" zu \"{parentName}\" entfernt.",
-    "text2": "Das Objekt kann nur von der obersten Ebene aus gelöscht werden.",
-    "headline": "Verknüpfung entfernen"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
@@ -87,13 +74,13 @@ export default Vue.extend({
   },
   methods: {
     unlinkEntity() {
-      this.$api.entity.fetch(this.parent.type, this.parent.id).then((parent: IVeoEntity) => {
-        if(parent.type === 'scope') {
-          parent.members = parent.members.filter(member => !member.targetUri.includes(this.item.id))
+      this.$api.entity.fetch(this.parent.type, this.parent.id).then((_parent: IVeoEntity) => {
+        if(_parent.type === 'scope') {
+          _parent.members = _parent.members.filter(member => !member.targetUri.includes(this.item.id))
         } else {
-          parent.parts = parent.parts.filter(part => !part.targetUri.includes(this.item.id))
+          _parent.parts = _parent.parts.filter(part => !part.targetUri.includes(this.item.id))
         }
-        this.$api.entity.update(this.parent.type, this.parent.id, this.parent).then(() => {
+        this.$api.entity.update(this.parent.type, this.parent.id, _parent).then(() => {
           this.$emit('success')
         })
       }).catch((error) => {
@@ -106,5 +93,20 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+  "text1": "Unlinking \"{name}\" only removes the object from \"{parentName}\".",
+  "text2": "If you wish to delete the object, you have to delete it from the root element.",
+  "headline": "Unlink object"
+  },
+  "de": {
+    "text1": "Es wird nur die Verknüpfung von \"{name}\" zu \"{parentName}\" entfernt.",
+    "text2": "Das Objekt kann nur von der obersten Ebene aus gelöscht werden.",
+    "headline": "Verknüpfung entfernen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped></style>

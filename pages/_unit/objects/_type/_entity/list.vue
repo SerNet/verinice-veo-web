@@ -5,6 +5,7 @@ import { separateUUIDParam } from '~/lib/utils'
 import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
 import VeoScopesListPage from '~/pages/_unit/scopes/_entity/list.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
+import { getSchemaName } from '~/plugins/api/schema'
 
 interface IData {
   objects: IVeoEntity[]
@@ -56,7 +57,7 @@ export default Vue.extend({
         ? this.currentEntity.name
         : this.entityType !== '-'
         ? this.entityId
-        : this.$t('breadcrumbs.scopes').toString()
+        : this.$t('breadcrumbs.objects').toString()
     },
     menuButton(): IVeoMenuButtonItem {
       return {
@@ -64,6 +65,7 @@ export default Vue.extend({
         event: {
           name: 'create-entity',
           params: {
+            type: getSchemaName(this.objectType),
             parent: this.currentEntity
           }
         },

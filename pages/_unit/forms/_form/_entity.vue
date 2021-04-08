@@ -50,7 +50,7 @@
           @input="formModified.isModified = true"
         />
         <DeleteFormDialog v-model="deleteDialog" :form="form.objectData" @delete="doDelete" />
-        <VeoFormModifiedDialog
+        <VeoEntityModifiedDialog
           v-model="formModified.dialog"
           :item="form.objectData"
           @exit="$router.push(formModified.target)"
@@ -90,7 +90,7 @@ import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
 import DeleteFormDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
-import VeoFormModifiedDialog from '~/components/objects/VeoFormModifiedDialog.vue'
+import VeoEntityModifiedDialog from '~/components/objects/VeoEntityModifiedDialog.vue'
 import CollapseButton from '~/components/layout/CollapseButton.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import VeoForm from '~/components/forms/VeoForm.vue'
@@ -128,7 +128,7 @@ export default Vue.extend({
     VeoTabs,
     DeleteFormDialog,
     CollapseButton,
-    VeoFormModifiedDialog
+    VeoEntityModifiedDialog
   },
   data(): IData {
     return {

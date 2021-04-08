@@ -14,18 +14,7 @@
     </template>
   </VeoDialog>
 </template>
-<i18n>
-{
-  "en": {
-  "text": "Do you really want to delete the object \"{name}\"?",
-  "headline": "Delete object"
-  },
-  "de": {
-    "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",
-    "headline": "Objekt löschen"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
@@ -89,5 +78,18 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+  "text": "Do you really want to delete the object \"{name}\"?",
+  "headline": "Delete object"
+  },
+  "de": {
+    "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",
+    "headline": "Objekt löschen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped></style>

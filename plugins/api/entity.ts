@@ -1,3 +1,4 @@
+import { separateUUIDParam } from '~/lib/utils'
 import { Client } from '~/plugins/api'
 import { IVeoAPIMessage, IVeoEntity, IVeoLink } from '~/types/VeoTypes'
 import { getSchemaEndpoint, getSchemaName } from './schema'
@@ -16,7 +17,16 @@ export default function (api: Client) {
      * Loads all Entities
      * @param parent
      */
-    fetchAll(objectType: string, params?: Record<string, string>): Promise<IVeoEntity[]> {
+    fetchAll(objectType: string, params?: Record<string, string>, noUnit: boolean = false): Promise<IVeoEntity[]> {
+      // Entities don't get accessed without their unit as a context, for this reason we manually add the unit if omitted by the developer.
+      // To override this behaviour, set noUnit to true.
+      if (!params || !params.unit) {
+        params = { ...params, unit: separateUUIDParam(api._context.params.unit).id }
+      }
+      if (noUnit) {
+        delete params.unit
+      }
+
       const endpoint = getSchemaEndpoint(objectType) || objectType
       return api.req(`/api/${endpoint}`, {
         params

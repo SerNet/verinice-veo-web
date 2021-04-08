@@ -18,23 +18,11 @@
         :disabled="!type"
         @click="$emit('create-entity', type)"
       >
-        {{ $t('global.button.save') }}
+        {{ $t('create') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
-<i18n>
-{
-  "en": {
-    "create_entity": "Please specify the type of the new object.",
-    "headline": "Create new object"
-  },
-  "de": {
-    "create_entity": "Bitte wählen Sie den Typ des neuen Objektes.",
-    "headline": "Objekt erstellen"
-  }
-}
-</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
@@ -90,5 +78,20 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "create": "Create",
+    "create_entity": "Please specify the type of the new object.",
+    "headline": "Create new object"
+  },
+  "de": {
+    "create": "Erstellen",
+    "create_entity": "Bitte wählen Sie den Typ des neuen Objektes.",
+    "headline": "Objekt erstellen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped></style>

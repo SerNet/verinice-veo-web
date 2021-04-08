@@ -12,8 +12,8 @@
         <VeoObjectTree
           v-on="on"
           :items="objects"
+          :current-item="currentEntity"
           :loading="$fetchState.pending"
-          :show-parent-link="showParentLink"
           :load-children="loadSubEntities"
           :sorting-function="sortingFunction"
         />
@@ -33,7 +33,6 @@ import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuBu
 interface IData {
   objects: IVeoEntity[]
   currentEntity: undefined | IVeoEntity
-  showParentLink: boolean
 }
 
 export default Vue.extend({
@@ -52,14 +51,6 @@ export default Vue.extend({
     return {
       objects: [],
       currentEntity: undefined,
-      showParentLink: false
-    }
-  },
-  asyncData({ from, route }) {
-    // Super dirty fix in order to allow navigation to parent object if the user clicked on a child previously.
-    // For some reason the page gets recreated completely, rendering beforeRouteUpdate and watch $route completely useless
-    return {
-      showParentLink: route.name === from.name && route.path !== from.path && route.params.entity !== '-'
     }
   },
   async fetch() {

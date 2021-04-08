@@ -10,24 +10,26 @@ import { IVeoEntity } from '~/types/VeoTypes'
 interface IData {
   objects: IVeoEntity[]
   currentEntity: undefined | IVeoEntity
-  showParentLink: boolean
 }
 
 export default Vue.extend({
   name: 'VeoObjectsTreePage',
   extends: VeoScopesTreePage,
-  asyncData({ from, route }) {
-    // Super dirty fix in order to allow navigation to parent object if the user clicked on a child previously.
-    // For some reason the page gets recreated completely, rendering beforeRouteUpdate and watch $route completely useless
-    return {
-      showParentLink: route.name === from.name && route.path !== from.path && route.params.entity !== '-'
-    }
-  },
   data(): IData {
     return {
       objects: [],
-      currentEntity: undefined,
-      showParentLink: false
+      currentEntity: undefined
+    }
+  },
+  async fetch() {
+    if (this.entityType === '-') {
+      this.objects = await this.$api.entity.fetchAll(this.objectType, {
+        unit: this.unitId
+      })
+      this.currentEntity = undefined
+    } else {
+      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId)
+      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId)
     }
   },
   computed: {
@@ -39,6 +41,9 @@ export default Vue.extend({
     },
     entityType(): string {
       return separateUUIDParam(this.$route.params.entity).type
+    },
+    objectType(): string {
+      return this.$route.params.type
     },
     title(): string {
       return this.currentEntity

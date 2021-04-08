@@ -12,6 +12,7 @@
         <VeoObjectList
           v-on="on"
           :items="objects"
+          :current-item="currentEntity"
           :loading="$fetchState.pending"
           :show-parent-link="showParentLink"
           :load-children="loadSubEntities"

@@ -3,7 +3,7 @@
     <VeoEntityDisplayOptions :rootRoute="rootRoute" :current-entity="currentEntity">
       <slot name="menu-bar" v-bind:on="on" />
     </VeoEntityDisplayOptions>
-    <slot v-bind:on="on" :current-entity="currentEntity" />
+    <slot v-bind:on="on" />
     <VeoDeleteEntityDialog
       v-model="deleteEntityDialog.value"
       v-bind="deleteEntityDialog"
@@ -29,6 +29,7 @@
     />
   </div>
 </template>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
@@ -305,6 +306,7 @@ export default Vue.extend({
   }
 })
 </script>
+
 <i18n>
 {
   "en": {
@@ -333,5 +335,6 @@ export default Vue.extend({
   }
 }
 </i18n>
+
 <style lang="scss" scoped>
 </style>

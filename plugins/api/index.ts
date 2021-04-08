@@ -24,6 +24,7 @@ export class Client {
   public baseURL: string
   public baseFormURL: string
   // public sentry: any
+  public _context: Context
 
   static create<T extends Record<keyof T, IAPIClient>>(
     context: Context,
@@ -42,6 +43,7 @@ export class Client {
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '')
     this.baseFormURL = `${context.$config.formsApiUrl}`.replace(/\/$/, '')
     // this.sentry = context.app.$sentry
+    this._context = context
   }
 
   public getURL(url: string) {

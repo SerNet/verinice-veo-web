@@ -105,32 +105,7 @@
     </template>
   </v-data-table>
 </template>
-<i18n>
-{
-  "en": {
-    "by": "by",
-    "clone": "Clone form",
-    "created_at": "Created",
-    "delete": "Delete form",
-    "edit": "Edit form",
-    "form": "Form",
-    "no_objects": "There are no forms",
-    "object_edit": "Edit this form",
-    "updated_at": "Updated"
-  },
-  "de": {
-    "by": "von",
-    "clone": "Formular klonen",
-    "created_at": "Erstellt",
-    "delete": "Formular löschen",
-    "edit": "Formular bearbeiten",
-    "form": "Formular",
-    "no_objects": "Es existieren keine Formulare!",
-    "object_edit": "Dieses Formular bearbeiten",
-    "updated_at": "Aktualisiert"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
@@ -225,6 +200,34 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "by": "by",
+    "clone": "Clone form",
+    "created_at": "Created",
+    "delete": "Delete form",
+    "edit": "Edit form",
+    "form": "Form",
+    "no_objects": "There are no forms",
+    "object_edit": "Edit this form",
+    "updated_at": "Updated"
+  },
+  "de": {
+    "by": "von",
+    "clone": "Formular klonen",
+    "created_at": "Erstellt",
+    "delete": "Formular löschen",
+    "edit": "Formular bearbeiten",
+    "form": "Formular",
+    "no_objects": "Es existieren keine Formulare!",
+    "object_edit": "Dieses Formular bearbeiten",
+    "updated_at": "Aktualisiert"
+  }
+}
+</i18n>
+
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 

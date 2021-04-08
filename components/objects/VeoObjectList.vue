@@ -164,46 +164,7 @@
     </template>
   </v-data-table>
 </template>
-<i18n>
-{
-  "en": {
-    "by": "by",
-    "clone": "Clone object",
-    "created_at": "Created",
-    "delete": "Delete object",
-    "edit": "Edit object",
-    "no_objects": "There are no objects",
-    "no_child_objects": "This object has no sub objects",
-    "object_edit": "Edit this object",
-    "object_has_no_subobjects": "Standard object",
-    "object_has_subobjects": "Composite object",
-    "object_has_subobjects_amount": "({amount} sub objects)",
-    "parent_object": "Parent object",
-    "scope_children": "Scope with members",
-    "scope_empty": "Empty scope",
-    "unlink": "Remove link",
-    "updated_at": "Updated"
-  },
-  "de": {
-    "by": "von",
-    "clone": "Objekt klonen",
-    "created_at": "Erstellt",
-    "delete": "Objekt löschen",
-    "edit": "Objekt bearbeiten",
-    "no_objects": "Es existieren keine Objekte!",
-    "no_child_objects": "Dieses Objekt hat keine Unterobjekte.",
-    "object_edit": "Dieses Objekt bearbeiten",
-    "object_has_no_subobjects": "Standardobjekt",
-    "object_has_subobjects": "Zusammengesetztes Objekt",
-    "object_has_subobjects_amount": "({amount} Unterobjekte)",
-    "parent_object": "Übergeordnetes Objekt",
-    "scope_children": "Scope mit Inhalt",
-    "scope_empty": "Scope ohne Inhalt",
-    "unlink": "Verknüpfung entfernen",
-    "updated_at": "Aktualisiert"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
@@ -304,6 +265,48 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "by": "by",
+    "clone": "Clone object",
+    "created_at": "Created",
+    "delete": "Delete object",
+    "edit": "Edit object",
+    "no_objects": "There are no objects",
+    "no_child_objects": "This object has no sub objects",
+    "object_edit": "Edit this object",
+    "object_has_no_subobjects": "Standard object",
+    "object_has_subobjects": "Composite object",
+    "object_has_subobjects_amount": "({amount} sub objects)",
+    "parent_object": "Parent object",
+    "scope_children": "Scope with members",
+    "scope_empty": "Empty scope",
+    "unlink": "Remove link",
+    "updated_at": "Updated"
+  },
+  "de": {
+    "by": "von",
+    "clone": "Objekt klonen",
+    "created_at": "Erstellt",
+    "delete": "Objekt löschen",
+    "edit": "Objekt bearbeiten",
+    "no_objects": "Es existieren keine Objekte!",
+    "no_child_objects": "Dieses Objekt hat keine Unterobjekte.",
+    "object_edit": "Dieses Objekt bearbeiten",
+    "object_has_no_subobjects": "Standardobjekt",
+    "object_has_subobjects": "Zusammengesetztes Objekt",
+    "object_has_subobjects_amount": "({amount} Unterobjekte)",
+    "parent_object": "Übergeordnetes Objekt",
+    "scope_children": "Scope mit Inhalt",
+    "scope_empty": "Scope ohne Inhalt",
+    "unlink": "Verknüpfung entfernen",
+    "updated_at": "Aktualisiert"
+  }
+}
+</i18n>
+
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
