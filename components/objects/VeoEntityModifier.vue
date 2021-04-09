@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VeoEntityDisplayOptions :rootRoute="rootRoute" :current-entity="currentEntity">
+    <VeoEntityDisplayOptions :rootRoute="rootRoute" :current-entity="currentEntity" :hide-display-options="hideDisplayOptions">
       <slot name="menu-bar" v-bind:on="on" />
     </VeoEntityDisplayOptions>
     <slot v-bind:on="on" />
@@ -90,6 +90,10 @@ export default Vue.extend({
     rootRoute: {
       type: String,
       required: true
+    },
+    hideDisplayOptions: {
+      type: Boolean,
+      default: false
     }
   },
   data(): IData {
@@ -159,7 +163,7 @@ export default Vue.extend({
         'create-scope': (data: { parent?: IVeoEntity }) => this.onCreateEntity('scope', data.parent),
         'add-entity': (data: { parent: IVeoEntity }) => this.showAddDialog('entity', data.parent),
         'add-scope': (data: { parent: IVeoEntity }) => this.showAddDialog('scope', data.parent),
-        edit: (data: { item: IVeoEntity }) => this.onEditEntity(data.item),
+        edit: (data: { item: IVeoEntity, path?: string }) => this.onEditEntity(data.item, data.path),
         duplicate: (data: { item: IVeoEntity, parent?: IVeoEntity }) => this.onDuplicateEntity(data.item, data.parent),
         delete: (data: { item: IVeoEntity }) => this.showDeleteEntityDialog(data.item),
         unlink: (data: { item: IVeoEntity, parent: IVeoEntity }) => this.showUnlinkEntityDialog(data.item, data.parent),
@@ -198,13 +202,17 @@ export default Vue.extend({
      * @params item If an entity is passed, the user will get redirected to the details page of that entity instead.
      * Usually used to directly edit a sub-entity.
      */
-    onEditEntity(entity?: IVeoEntity) {
-      if(!entity) {
-        this.$router.push(`${this.rootRoute}/${this.$route.params.entity}/edit`)
-      } else {
-        const entityParameter = createUUIDUrlParam(entity.type, entity.id)
-        this.$router.push(`${this.rootRoute}/${entityParameter}/edit`)
+    onEditEntity(entity?: IVeoEntity, path?: string) {
+      if(!path) {
+        if(!entity) {
+          path = `${this.rootRoute}/${this.$route.params.entity}/edit`
+        } else {
+          const entityParameter = createUUIDUrlParam(entity.type, entity.id)
+          path = `${this.rootRoute}/${entityParameter}/edit`
+        }
       }
+
+      this.$router.push(path)
     },
     onNavigateEntity(item: IVeoEntity) {
       const entity = createUUIDUrlParam(item.type, item.id)

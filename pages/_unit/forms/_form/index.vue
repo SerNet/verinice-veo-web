@@ -1,31 +1,33 @@
 <template>
   <VeoPage :title="$t('breadcrumbs.forms')" fullsize>
     <template #default>
-      <v-row dense>
-        <v-col :cols="12" :md="3">
-          <v-select
-            v-model="formType"
-            :label="$t('unit.forms.form')"
-            :items="formTypes"
-            outlined
-            dense
-            @input="changeType()"
-          />
-        </v-col>
-        <v-col :cols="9">
-          <v-text-field :label="$t('unit.forms.search')" outlined dense style="visibility: hidden" />
-        </v-col>
-      </v-row>
-      <VeoEntityModifier v-bind="$data" @fetch="$fetch" :rootRoute="rootRoute">
-        <template>
-          <v-btn
-            outlined
-            :to="`/${$route.params.unit}/forms/${$route.params.form}/create`"
-            color="primary"
-            class="align-self-center mr-4"
-          >
-            {{ $t('unit.forms.create', { type: formName }) }}
-          </v-btn>
+      <VeoEntityModifier v-bind="$data" @fetch="$fetch" :rootRoute="rootRoute" hide-display-options>
+        <template #menu-bar>
+          <v-row dense class="justify-space-between">
+            <v-col :cols="12" :md="3">
+              <v-select
+                v-model="formType"
+                :label="$t('unit.forms.form')"
+                :items="formTypes"
+                outlined
+                dense
+                @input="changeType"
+              />
+            </v-col>
+            <v-col cols="auto" class="d-none">
+              <v-text-field :label="$t('unit.forms.search')" outlined dense />
+            </v-col>
+            <v-col cols="auto">
+              <v-btn
+                outlined
+                :to="`/${$route.params.unit}/forms/${$route.params.form}/create`"
+                color="primary"
+                class="align-self-center mr-4"
+              >
+                {{ $t('unit.forms.create', { type: formName }) }}
+              </v-btn>
+            </v-col>
+          </v-row>
         </template>
         <template #default="{ on }">
           <VeoFormList
@@ -35,6 +37,7 @@
             :show-parent-link="false"
             :load-children="loadSubEntities"
             :sorting-function="sortingFunction"
+            :rootRoute="rootRoute"
         />
         </template>
       </VeoEntityModifier>
@@ -47,7 +50,7 @@ import Vue from 'vue'
 
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoFormList from '~/components/objects/VeoFormList.vue'
-import { separateUUIDParam } from '~/lib/utils'
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
 import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
 
 interface IData {
@@ -113,8 +116,9 @@ export default Vue.extend({
     }
   },
   methods: {
-    changeType() {
-      this.$router.push(`/${this.$route.params.unit}/forms/${this.$route.params.form}`)
+    changeType(newType: string) {
+      const newFormParam = createUUIDUrlParam('form', newType)
+      this.$router.push(`/${this.$route.params.unit}/forms/${newFormParam}`)
     },
     loadSubEntities(_parent: IVeoEntity) {
       return []

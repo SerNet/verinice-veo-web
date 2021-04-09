@@ -20,13 +20,13 @@
     >
       <template #header>
         <CollapseButton v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups" v-model="contentsCollapsed" />
-        <v-row>
-          <v-col>
+        <v-row class="justify-space-between">
+          <v-col cols="auto">
             <h1>{{ form.objectData.name }}</h1>
           </v-col>
           <v-spacer />
-          <v-col class="text-right">
-            <v-btn v-if="$route.params.entity" text outlined :loading="deleteBtnLoading" @click="showDeleteDialog()">
+          <v-col cols="auto" class="text-right">
+            <v-btn v-if="$route.params.entity" text outlined :loading="deleteEntityDialog.value === true" @click="showDeleteEntityDialog">
               {{ $t('global.button.delete') }}
             </v-btn>
             <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="onClick">
@@ -49,7 +49,12 @@
           :error-messages.sync="errorMessages"
           @input="formModified.isModified = true"
         />
-        <DeleteFormDialog v-model="deleteDialog" :form="form.objectData" @delete="doDelete" />
+        <VeoDeleteEntityDialog
+          v-model="deleteEntityDialog.value"
+          v-bind="deleteEntityDialog"
+          @success="onDeleteEntitySuccess"
+          @error="onDeleteEntityError"
+        />
         <VeoEntityModifiedDialog
           v-model="formModified.dialog"
           :item="form.objectData"
@@ -70,14 +75,18 @@
     <VeoPage v-if="!$vuetify.breakpoint.xsOnly" :cols="4" :md="4" :xl="4" absolute-size>
       <VeoTabs>
         <template #tabs>
-          <v-tab :to="linkToLinks">{{ $t('unit.data.links') }}</v-tab>
-          <v-tab :to="linkToHistory" :disabled="!$route.params.entity">{{ $t('unit.data.history') }}</v-tab>
+          <v-tab>{{ $t('unit.data.links') }}</v-tab>
+          <v-tab :disabled="!$route.params.entity">{{ $t('unit.data.history') }}</v-tab>
+        </template>
+        <template #items>
+          <v-tab-item>
+            <VeoObjectLinks :object="form.objectData" />
+          </v-tab-item>
+          <v-tab-item>
+            <VeoObjectHistory :object="form.objectData" />
+          </v-tab-item>
         </template>
       </VeoTabs>
-      <nuxt-child
-        v-if="form.objectData"
-        :object="form.objectData"
-      />
     </VeoPage>
   </VeoPageWrapper>
 </template>
@@ -89,12 +98,15 @@ import { Route } from 'vue-router/types/index'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
-import DeleteFormDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
+import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
 import VeoEntityModifiedDialog from '~/components/objects/VeoEntityModifiedDialog.vue'
 import CollapseButton from '~/components/layout/CollapseButton.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import VeoForm from '~/components/forms/VeoForm.vue'
+import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
+import VeoObjectLinks from '~/components/objects/VeoObjectLinks.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import { IVeoEntity } from '~/types/VeoTypes'
 
 export interface IValidationErrorMessage {
   pointer: string
@@ -102,20 +114,21 @@ export interface IValidationErrorMessage {
 }
 
 interface IData {
-  panel: number[]
   objectType: string | undefined
   form: IForm
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  deleteBtnLoading: boolean
-  deleteDialog: boolean
   alert: VeoEventPayload & { value: boolean, error: number }
   contentsCollapsed: boolean
   formModified: {
     isModified: boolean
     dialog: boolean
     target?: Route
+  }
+  deleteEntityDialog: {
+    value: boolean
+    item?: IVeoEntity
   }
 }
 
@@ -126,13 +139,14 @@ export default Vue.extend({
     VeoPageWrapper,
     VeoPage,
     VeoTabs,
-    DeleteFormDialog,
+    VeoDeleteEntityDialog,
     CollapseButton,
-    VeoEntityModifiedDialog
+    VeoEntityModifiedDialog,
+    VeoObjectHistory,
+    VeoObjectLinks
   },
   data(): IData {
     return {
-      panel: [],
       objectType: undefined,
       form: {
         objectSchema: {},
@@ -143,8 +157,6 @@ export default Vue.extend({
       isValid: true,
       errorMessages: [],
       saveBtnLoading: false,
-      deleteBtnLoading: false,
-      deleteDialog: false,
       alert: {
         value: false,
         text: '',
@@ -158,19 +170,22 @@ export default Vue.extend({
         isModified: false,
         dialog: false,
         target: undefined
+      },
+      deleteEntityDialog: {
+        value: false,
+        item: undefined
       }
     }
   },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.formId)
-    this.objectType = formSchema.modelType && formSchema.modelType.toLowerCase()
+    this.objectType = formSchema.modelType.toLowerCase()
     if (this.objectType) {
-      const objectSchema = await this.$api.schema.fetch(this.objectType)
+      const objectSchema = await this.$api.schema.fetch(formSchema.modelType)
       const objectData = this.$route.params.entity
         ? await this.$api.entity.fetch(this.objectType, this.objectId)
         : {}
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
-      console.log(formSchema)
       this.form = {
         objectSchema,
         formSchema,
@@ -256,12 +271,6 @@ export default Vue.extend({
         }
       }
     },
-    linkToLinks(): string {
-      return this.$route.params.entity ? `/${this.unitRoute}/forms/${this.formRoute}/${this.objectRoute}/links` : '#'
-    },
-    linkToHistory(): string {
-      return this.$route.params.entity ? `/${this.unitRoute}/forms/${this.formRoute}/${this.objectRoute}/history` : '#'
-    },
     formSchemaHasGroups(): boolean {
       if(this.form.formSchema?.content.elements) {
         return this.form.formSchema?.content?.elements?.findIndex((element: any) => (element.type === 'Layout' || element.type === 'Group') && element.options.label) > -1
@@ -275,19 +284,16 @@ export default Vue.extend({
       this.saveBtnLoading = true
       this.formatObjectData()
       if (this.objectType) {
-        await this.action(this.objectType).finally(() => {
+        await this.onSave().finally(() => {
           this.saveBtnLoading = false
         })
       } else {
         throw new Error('Object Type is not defined in FormSchema')
       }
     },
-    async action(objectType: string) {
-      await this.save(objectType)
-    },
-    async save(objectType: string) {
-      await this.$api.entity
-        .update(objectType, this.objectId, this.form.objectData)
+    onSave(): Promise<void> {
+      return this.$api.entity
+        .update(this.objectType, this.objectId, this.form.objectData)
         .then(() => {
           this.formModified.isModified = false
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
@@ -299,26 +305,20 @@ export default Vue.extend({
           this.showError(error.status, error.name)
         })
     },
-    showDeleteDialog() {
-      this.deleteDialog = true
+    showDeleteEntityDialog() {
+      this.deleteEntityDialog.item = this.form.objectData as any
+      this.deleteEntityDialog.value = true
     },
-    async doDelete() {
-      this.deleteDialog = false
-      this.deleteBtnLoading = true
-      await this.$api.entity
-        .delete(this.objectType, this.objectId)
-        .then(() => {
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('global.appstate.alert.success') })
-          this.$router.push({
-            path: `/${this.unitRoute}/forms/${this.formRoute}/`
-          })
-        })
-        .catch((error: { status: number; name: string }) => {
-          this.showError(error.status, error.name)
-        })
-        .finally(() => {
-          this.deleteBtnLoading = false
-        })
+    onDeleteEntitySuccess() {
+      this.formModified.isModified = false
+      this.deleteEntityDialog.value = false
+      this.$router.go(-1)
+    },
+    onDeleteEntityError(error: any) {
+      this.$root.$emit(VeoEvents.ALERT_ERROR, {
+        title: this.deleteEntityDialog.item?.type === 'scope' ? this.$t('scope_delete_error') : this.$t('object_delete_error'),
+        text: JSON.stringify(error)
+      })
     },
     showError(status: number, message: string) {
       if(status === 412) {

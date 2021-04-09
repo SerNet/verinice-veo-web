@@ -52,8 +52,10 @@
           <template #tabs>
             <v-tab disabled>{{ $t('unit.data.history') }}</v-tab>
           </template>
+          <template #items>
+            <VeoObjectHistory :object="form.objectData" />
+          </template>
         </VeoTabs>
-        <VeoObjectHistory :object="form.objectData" />
       </VeoPage>
     </template>
   </VeoPageWrapper>

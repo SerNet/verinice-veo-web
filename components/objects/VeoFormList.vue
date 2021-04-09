@@ -67,7 +67,7 @@
       <div class="veo-object-list__actions">
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('edit', item)" v-on="on">
+            <v-btn icon @click.stop="$emit('edit', { item, path: generatePath(item) })" v-on="on">
               <v-icon>
                 mdi-pencil
               </v-icon>
@@ -79,7 +79,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('duplicate', item)" v-on="on">
+            <v-btn icon @click.stop="$emit('duplicate', { item })" v-on="on">
               <v-icon>
                 mdi-content-copy
               </v-icon>
@@ -91,7 +91,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
+            <v-btn icon @click.stop="$emit('delete', { item })" v-on="on">
               <v-icon>
                 mdi-delete
               </v-icon>
@@ -109,6 +109,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import { createUUIDUrlParam } from '~/lib/utils'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 
@@ -125,6 +126,10 @@ export default Vue.extend({
     sortingFunction: {
       type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
       default: () => (a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name)
+    },
+    rootRoute: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -196,6 +201,9 @@ export default Vue.extend({
         ' ' +
         new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
       )
+    },
+    generatePath(entity: IVeoEntity) {
+      return `${this.rootRoute}/${createUUIDUrlParam(entity.type, entity.id)}`
     }
   }
 })
