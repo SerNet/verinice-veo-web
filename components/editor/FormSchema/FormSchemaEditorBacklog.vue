@@ -209,16 +209,57 @@ export default defineComponent<IProps>({
      */
     const objectSchemaPropertiesPatterns = {
       standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description'],
-      regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/i,
-      regexLinks: /^#\/properties\/links\/properties\/\w+$/i,
-      regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/i
+      regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/,
+      regexLinks: /^#\/properties\/links\/properties\/\w+$/,
+      regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/
     }
+
+    // When ObjectSchema is loaded, controls and controlsItems should be initialized to use them in other functions
+    function initializeControls() {
+      const createControl = (key: string, value: any, category: IControl['category']): IControl => {
+        const propertyName = key.split('/').slice(-1)[0]
+        const label = propertyName.split('_').pop() || ''
+        let backlogTitle = propertyName
+
+        if (category !== 'basics') {
+          backlogTitle = backlogTitle.replace(`${props.objectSchema.title.toLowerCase()}_`, '')
+          backlogTitle = backlogTitle.replace('_', ' / ')
+        }
+        return {
+          scope: key,
+          type: Array.isArray(value.enum) ? 'enum' : value.type,
+          label,
+          backlogTitle,
+          propertyName,
+          category,
+          used: false
+        }
+      }
+      Object.entries(JsonPointer.flatten(props.objectSchema, true) as Record<string, any>).forEach(([key, value]) => {
+        if (objectSchemaPropertiesPatterns.standard.includes(key)) {
+          controls.value.push(createControl(key, value, 'basics'))
+        } else if (objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)) {
+          controls.value.push(createControl(key, value, 'aspects'))
+        } else if (objectSchemaPropertiesPatterns.regexLinks.test(key)) {
+          controls.value.push(createControl(key, value, 'links'))
+        } else if (objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)) {
+          const [linksKey, linksAttribute] = key.split('/items/')
+          if (!controlsItems.value[linksKey]) {
+            controlsItems.value[linksKey] = []
+          }
+          controlsItems.value[linksKey].push(createControl(`#/${linksAttribute}`, value, 'links'))
+        }
+      })
+
+      context.emit('controlItems', controlsItems.value)
+    }
+    initializeControls()
 
     watch(
       () => props.formSchema.content,
       () => {
         const usedScopes = Object.entries(JsonPointer.flatten(props.formSchema.content, true))
-          .filter(([key, _value]) => /\/scope$/i.test(key))
+          .filter(([key, _value]) => /\/scope$/.test(key))
           .map(([_key, value]) => value as string)
 
         controls.value.forEach((obj, i) => {
@@ -232,52 +273,6 @@ export default defineComponent<IProps>({
             vjp.set(controls.value, `/${i}/used`, false)
           }
         })
-      },
-      {
-        deep: true,
-        immediate: true
-      }
-    )
-
-    watch(
-      () => props.objectSchema,
-      () => {
-        const createControl = (key: string, value: any, category: IControl['category']): IControl => {
-          const propertyName = key.split('/').slice(-1)[0]
-          const label = propertyName.split('_').pop() || ''
-          let backlogTitle = propertyName
-
-          if (category !== 'basics') {
-            backlogTitle = backlogTitle.replace(`${props.objectSchema.title.toLowerCase()}_`, '')
-            backlogTitle = backlogTitle.replace('_', ' / ')
-          }
-          return {
-            scope: key,
-            type: Array.isArray(value.enum) ? 'enum' : value.type,
-            label,
-            backlogTitle,
-            propertyName,
-            category,
-            used: false
-          }
-        }
-        Object.entries(JsonPointer.flatten(props.objectSchema, true) as Record<string, any>).forEach(([key, value]) => {
-          if (objectSchemaPropertiesPatterns.standard.includes(key)) {
-            controls.value.push(createControl(key, value, 'basics'))
-          } else if (objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)) {
-            controls.value.push(createControl(key, value, 'aspects'))
-          } else if (objectSchemaPropertiesPatterns.regexLinks.test(key)) {
-            controls.value.push(createControl(key, value, 'links'))
-          } else if (objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)) {
-            const [linksKey, linksAttribute] = key.split('/items/')
-            if (!controlsItems.value[linksKey]) {
-              controlsItems.value[linksKey] = []
-            }
-            controlsItems.value[linksKey].push(createControl(`#/${linksAttribute}`, value, 'links'))
-          }
-        })
-
-        context.emit('controlItems', controlsItems.value)
       },
       {
         deep: true,
