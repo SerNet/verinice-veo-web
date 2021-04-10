@@ -1,6 +1,6 @@
 <template>
   <VeoPage :title="title" fullsize>
-    <VeoEntityModifier v-bind="$data" @fetch="$fetch" :rootRoute="rootRoute">
+    <VeoEntityModifier v-bind="$data" :rootRoute="rootRoute" @fetch="handleUpdates">
       <template #menu-bar="{ on }">
         <VeoMenuButton
           v-on="on"
@@ -30,6 +30,7 @@ import VeoObjectList from '~/components/objects/VeoObjectList.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 import { separateUUIDParam } from '~/lib/utils'
 import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
+import { IVeoEntityModifierEvent } from '~/components/objects/VeoEntityModifier.vue'
 
 interface IData {
   objects: IVeoEntity[]
@@ -183,6 +184,9 @@ export default Vue.extend({
       } else {
         return a.name.localeCompare(b.name)
       }
+    },
+    handleUpdates(_event: IVeoEntityModifierEvent) {
+      this.$fetch() 
     }
   }
 })

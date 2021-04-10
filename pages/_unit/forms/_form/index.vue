@@ -1,7 +1,7 @@
 <template>
   <VeoPage :title="$t('breadcrumbs.forms')" fullsize>
     <template #default>
-      <VeoEntityModifier v-bind="$data" @fetch="$fetch" :rootRoute="rootRoute" hide-display-options>
+      <VeoEntityModifier v-bind="$data" :rootRoute="rootRoute" hide-display-options @fetch="$fetch">
         <template #menu-bar>
           <v-row dense class="justify-space-between">
             <v-col :cols="12" :md="3">

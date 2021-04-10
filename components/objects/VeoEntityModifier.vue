@@ -3,7 +3,7 @@
     <VeoEntityDisplayOptions :rootRoute="rootRoute" :current-entity="currentEntity" :hide-display-options="hideDisplayOptions">
       <slot name="menu-bar" v-bind:on="on" />
     </VeoEntityDisplayOptions>
-    <slot v-bind:on="on" />
+    <slot v-bind:on="on" v-bind:entityModifiedEvent="entityModifiedEvent" />
     <VeoDeleteEntityDialog
       v-model="deleteEntityDialog.value"
       v-bind="deleteEntityDialog"
@@ -68,6 +68,20 @@ interface IData {
     [key: string]: CallableFunction
   },
   schemas: ISchemaEndpoint[]
+  entityModifiedEvent?: IVeoEntityModifierEvent
+}
+
+export enum IVeoEntityModifierEventType {
+  ADD,
+  CLONE,
+  DELETE,
+  UNLINK
+}
+
+export interface IVeoEntityModifierEvent {
+  event: IVeoEntityModifierEventType
+  affectedEntities: string[]
+  reloadAll?: boolean
 }
 
 export default Vue.extend({
@@ -117,7 +131,8 @@ export default Vue.extend({
         parent: undefined
       },
       on: {},
-      schemas: []
+      schemas: [],
+      entityModifiedEvent: undefined
     }
   },
   computed: {
@@ -223,7 +238,11 @@ export default Vue.extend({
     },
     onAddEntitySuccess() {
       this.addEntityDialog.value = false
-      this.$emit('fetch')
+      this.entityModifiedEvent = {
+        event: IVeoEntityModifierEventType.ADD,
+        affectedEntities: [this.addEntityDialog.editedEntity?.id || '']
+      }
+      this.$emit('fetch', this.entityModifiedEvent)
     },
     onAddEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -233,7 +252,11 @@ export default Vue.extend({
     },
     onDeleteEntitySuccess() {
       this.deleteEntityDialog.value = false
-      this.$emit('fetch')
+      this.entityModifiedEvent = {
+        event: IVeoEntityModifierEventType.DELETE,
+        affectedEntities: [this.deleteEntityDialog.item?.id || '']
+      }
+      this.$emit('fetch', this.entityModifiedEvent)
     },
     onDeleteEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -243,7 +266,11 @@ export default Vue.extend({
     },
     onUnlinkEntitySuccess() {
       this.unlinkEntityDialog.value = false
-      this.$emit('fetch')
+      this.entityModifiedEvent = {
+        event: IVeoEntityModifierEventType.UNLINK,
+        affectedEntities: [this.unlinkEntityDialog.parent?.id ||'']
+      }
+      this.$emit('fetch', this.entityModifiedEvent)
     },
     onUnlinkEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
@@ -270,13 +297,22 @@ export default Vue.extend({
             })
           }
           this.$api.entity.update(parent.type, parent.id, fetchedParent).then(() => {
-            this.$emit('fetch')
+            this.entityModifiedEvent = {
+              event: IVeoEntityModifierEventType.CLONE,
+              affectedEntities: [parent.id]
+            }
+            this.$emit('fetch', this.entityModifiedEvent)
             this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
               text: this.$t('object_cloned')
             })
           })
         } else {
-          this.$emit('fetch')
+          this.entityModifiedEvent = {
+            event: IVeoEntityModifierEventType.CLONE,
+            affectedEntities: [],
+            reloadAll: true
+          }
+          this.$emit('fetch', this.entityModifiedEvent)
         }
       }).catch((error: any) => {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {

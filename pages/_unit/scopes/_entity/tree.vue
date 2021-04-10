@@ -1,6 +1,6 @@
 <template>
   <VeoPage :title="title" fullsize>
-    <VeoEntityModifier v-bind="$data" @fetch="$fetch" :rootRoute="rootRoute">
+    <VeoEntityModifier v-bind="$data" :rootRoute="rootRoute" @fetch="handleUpdates">
       <template #menu-bar="{ on }">
         <VeoMenuButton
           v-on="on"
@@ -8,7 +8,7 @@
           :primary-item="menuButton"
         />
       </template>
-      <template #default="{ on }">
+      <template #default="{ on, entityModifiedEvent }">
         <VeoObjectTree
           v-on="on"
           :items="objects"
@@ -16,6 +16,7 @@
           :loading="$fetchState.pending"
           :load-children="loadSubEntities"
           :sorting-function="sortingFunction"
+          :entity-modified-event="entityModifiedEvent"
         />
       </template>
     </VeoEntityModifier>
@@ -29,6 +30,7 @@ import VeoObjectTree, { ITreeEntry } from '~/components/objects/VeoObjectTree.vu
 import { IVeoEntity } from '~/types/VeoTypes'
 import { separateUUIDParam } from '~/lib/utils'
 import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
+import { IVeoEntityModifierEvent } from '~/components/objects/VeoEntityModifier.vue'
 
 interface IData {
   objects: IVeoEntity[]
@@ -171,16 +173,21 @@ export default Vue.extend({
         .then((data: IVeoEntity[]) => {
           parent.children = data
             .map((item: IVeoEntity) => {
-              if (item.type === 'scope' && item.members.length > 0) {
-                return { entry: item, children: [] as ITreeEntry[], id: '' + id++ }
-              } else if (item.parts && item.parts.length > 0) {
-                return { entry: item, children: [] as ITreeEntry[], id: parent.id + '.' + id++ }
-              } else {
-                return { entry: item, id: parent.id + '.' + id++ }
+              const dummy: ITreeEntry = { entry: item, id: parent.id + '.' + id++, type: item.type }
+              
+              if (item.members.length > 0 || item.parts.length > 0) {
+                dummy.children = []
               }
+              
+              return dummy
             })
             .sort(this.sortingFunction)
         })
+    },
+    handleUpdates(event: IVeoEntityModifierEvent) {
+      if(event.reloadAll) {
+        this.$fetch()
+      }
     }
   }
 })

@@ -184,6 +184,7 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
 import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntityModifierEvent, IVeoEntityModifierEventType } from './VeoEntityModifier.vue'
 
 interface IData {
   deleteDialog: { value: boolean; item: IVeoEntity | undefined }
@@ -195,6 +196,7 @@ interface IData {
 export interface ITreeEntry {
   entry: IVeoEntity
   id: string
+  type: string
   children?: ITreeEntry[]
 }
 
@@ -225,6 +227,10 @@ export default Vue.extend({
     currentItem: {
       type: Object as Prop<IVeoEntity | undefined>,
       default: undefined
+    },
+    entityModifiedEvent: {
+      type: Object as Prop<IVeoEntityModifierEvent | undefined>,
+      default: undefined
     }
   },
   data(): IData {
@@ -243,6 +249,30 @@ export default Vue.extend({
         this.updateItemsBasedOnProp()
       },
       deep: true
+    },
+    entityModifiedEvent: {
+      deep: true,
+      immediate: true,
+      handler(newValue: IVeoEntityModifierEvent) {
+        if(!newValue) {
+          return
+        }
+
+        switch(newValue.event) {
+          case IVeoEntityModifierEventType.ADD:
+            this.reloadChildren(newValue.affectedEntities[0])
+            break
+          case IVeoEntityModifierEventType.CLONE:
+            this.reloadChildren(newValue.affectedEntities[0])
+            break
+          case IVeoEntityModifierEventType.DELETE:
+            this.removeEntriesWithUUID(newValue.affectedEntities[0])
+            break
+          case IVeoEntityModifierEventType.UNLINK:
+            this.reloadChildren(newValue.affectedEntities[0])
+            break
+        }
+      }
     }
   },
   methods: {
@@ -290,6 +320,40 @@ export default Vue.extend({
         temp = parentEntries.shift()
       }
       return parent
+    },
+    removeEntriesWithUUID(uuid: string, arrayToSearch?: ITreeEntry[]) {
+      if(!arrayToSearch) {
+        arrayToSearch = this.displayedItems
+      }
+
+      for(let i = 0; i < arrayToSearch.length; i++) {
+        if(arrayToSearch[i].entry.id === uuid) {
+          arrayToSearch.splice(i as any, 1);
+          i-- // We have to decrease the index by one, as the next element has been inserted here.
+        } else if (arrayToSearch[i].children) {
+          this.removeEntriesWithUUID(uuid, arrayToSearch[i].children)
+
+          if(arrayToSearch[i].children?.length === 0) {
+            delete arrayToSearch[i].children
+          }
+        }
+      }
+    },
+    reloadChildren(uuid: string, arrayToSearch?: ITreeEntry[]) {
+      console.log('Reloading children for entry with uuid ', uuid)
+      if(!arrayToSearch) {
+        arrayToSearch = this.displayedItems
+      }
+      for(let index in arrayToSearch) {
+        if(arrayToSearch[index].entry.id === uuid) {
+          this.loadChildren(arrayToSearch[index])
+        } else if (arrayToSearch[index].children) {
+          this.reloadChildren(uuid, arrayToSearch[index].children)
+        }
+        if(arrayToSearch[index].children?.length === 0) {
+          delete arrayToSearch[index].children
+        }
+      }
     }
   },
   mounted() {
