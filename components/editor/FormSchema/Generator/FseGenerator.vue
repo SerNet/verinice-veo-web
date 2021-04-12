@@ -99,7 +99,7 @@ export default Vue.extend({
               ...partOfProps,
               value: element,
               name: elementName,
-              schema: elementSchema || {},
+              schema: elementSchema,
               generalTranslation: this.generalTranslation,
               customTranslation: this.customTranslation
             }
