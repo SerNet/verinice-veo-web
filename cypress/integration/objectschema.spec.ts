@@ -99,6 +99,20 @@ const addedAttributesResultedSchema = {
   }
 }
 
+const addTestAspectZweiAttribute = {
+  title: 'process_TestAspectZwei_a',
+  name: 'a',
+  type: attributeTypes[0],
+  description: ''
+}
+
+const TestAspectZweiAttributeSchema = {
+  process_TestAspectZwei_a: {
+    title: '',
+    type: 'string'
+  }
+}
+
 describe('Objectschema', () => {
   beforeEach(() => {
     cy.auth()
@@ -240,18 +254,16 @@ describe('Objectschema', () => {
     )
     cy.get('.v-dialog--active .v-card__actions .v-btn:last-child').click()
 
-    cy.get('.editor .cm-content')
-      .then(editor => {
-        const currentOS = getCurrentOS(editor)
-        const aspect = JsonPointer.get(
-          currentOS,
-          '#/properties/customAspects/properties/process_GeneralInformationTest'
-        ) as any
-        cy.wrap(aspect).should('not.be.undefined')
-        const attributes = aspect.properties.attributes.properties
-        cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(changedAttributes, null, 2))
-      })
-      .pause()
+    cy.get('.editor .cm-content').then(editor => {
+      const currentOS = getCurrentOS(editor)
+      const aspect = JsonPointer.get(
+        currentOS,
+        '#/properties/customAspects/properties/process_GeneralInformationTest'
+      ) as any
+      cy.wrap(aspect).should('not.be.undefined')
+      const attributes = aspect.properties.attributes.properties
+      cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(changedAttributes, null, 2))
+    })
 
     /**
      * Test removing and adding customAspect attributes
@@ -307,7 +319,9 @@ describe('Objectschema', () => {
         }
       }
     )
-    cy.get('.v-dialog--active .v-card__actions .v-btn:last-child').click()
+    cy.get('.v-dialog--active .v-card__actions .v-btn')
+      .last()
+      .click()
 
     cy.get('.editor .cm-content').then(editor => {
       const currentOS = getCurrentOS(editor)
@@ -318,6 +332,85 @@ describe('Objectschema', () => {
       cy.wrap(aspect).should('not.be.undefined')
       const attributes = aspect.properties.attributes.properties
       cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
+    })
+
+    /**
+     * Add new completely new aspect and remove it from dialog
+     */
+    // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
+    // cy.get('@expansionPanelHeaders')
+    //   .find('.v-btn')
+    //   .eq(0)
+    //   .click()
+    // cy.get('.v-dialog--active .v-text-field').type('TestAspectEins{enter}')
+    // cy.get('.v-dialog--active .v-card__actions .v-btn')
+    //   .eq(1)
+    //   .click()
+    // cy.get('@expansionPanelContent')
+    //   .eq(1)
+    //   .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
+    //   .should('not.contain.text', 'TestAspectEins')
+    // cy.get('.editor .cm-content').then(editor => {
+    //   const currentOS = getCurrentOS(editor)
+    //   const aspect = JsonPointer.get(currentOS, '#/properties/customAspects/properties/TestAspectEins') as any
+    //   cy.wrap(aspect).should('be.undefined')
+    // })
+
+    cy.get('@expansionPanelHeaders')
+      .find('.v-btn')
+      .eq(0)
+      .click()
+    cy.get('.v-dialog--active .v-text-field').type('TestAspectZwei{enter}')
+    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-add-button .v-list-item__action > .v-btn').click()
+    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute')
+      .first()
+      .then(el => {
+        const currentAttrData = addTestAspectZweiAttribute
+        cy.wrap(el)
+          .find('.v-input')
+          .eq(0)
+          .type(currentAttrData.name)
+        cy.wrap(el)
+          .find('.v-input')
+          .eq(1)
+          .type(`${currentAttrData.type.text}{enter}`)
+      })
+    cy.get('.v-dialog--active .v-card__actions .v-btn')
+      .last()
+      .click()
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
+      .should('not.contain.text', 'testaspect')
+    cy.get('.editor .cm-content').then(editor => {
+      const currentOS = getCurrentOS(editor)
+      const aspect = JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectZwei') as any
+      cy.wrap(aspect).should('not.be.undefined')
+      const attributes = aspect.properties.attributes.properties
+      cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(TestAspectZweiAttributeSchema, null, 2))
+    })
+
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-expansion-panel-content__wrap > div:last-child .v-list-item__action--stack > .v-btn')
+      .eq(0)
+      .click()
+    cy.get('.v-dialog--active .v-card__actions .v-btn')
+      .first()
+      .click()
+    cy.get('.v-dialog--active')
+      .first()
+      .find('.v-card__actions .v-btn')
+      .eq(1)
+      .click()
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
+      .should('not.contain.text', 'TestAspectZwei')
+    cy.get('.editor .cm-content').then(editor => {
+      const currentOS = getCurrentOS(editor)
+      const aspect = JsonPointer.get(currentOS, '#/properties/customAspects/properties/TestAspectZwei') as any
+      cy.wrap(aspect).should('be.undefined')
     })
 
     // /**
