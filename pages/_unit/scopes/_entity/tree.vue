@@ -165,7 +165,7 @@ export default Vue.extend({
         return 0
       }
     },
-    loadSubEntities(parent: ITreeEntry) {
+    loadSubEntities(parent: ITreeEntry): Promise<void> {
       let id = 0
 
       return this.$api.entity

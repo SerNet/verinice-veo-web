@@ -16,6 +16,7 @@
       :open.sync="open"
       open-on-click
       transition
+      ref="tree"
     >
       <template #prepend="{ item }">
         <v-tooltip v-if="item.entry.type !== 'scope' && item.entry.parts.length > 0" bottom>
@@ -180,8 +181,10 @@
 </template>
 
 <script lang="ts">
+import { cloneDeep } from 'lodash'
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 import { IVeoEntityModifierEvent, IVeoEntityModifierEventType } from './VeoEntityModifier.vue'
@@ -279,7 +282,9 @@ export default Vue.extend({
     updateItemsBasedOnProp() {
       let id = 0
 
-      this.displayedItems = this.items
+      // We have to deep clone, else changes made in updateEntityMembers will get picked up by the items watcher
+      // and the tree will get reset.
+      this.displayedItems = cloneDeep(this.items)
         .map((item: IVeoEntity) => {
           if (item.type === 'scope' && item.members && item.members.length > 0) {
             return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.type }
@@ -339,20 +344,47 @@ export default Vue.extend({
         }
       }
     },
-    reloadChildren(uuid: string, arrayToSearch?: ITreeEntry[]) {
-      console.log('Reloading children for entry with uuid ', uuid)
+    async reloadChildren(uuid: string, arrayToSearch?: ITreeEntry[]) {
+      let firstCall = false
+
       if(!arrayToSearch) {
+        firstCall = true
         arrayToSearch = this.displayedItems
       }
       for(let index in arrayToSearch) {
         if(arrayToSearch[index].entry.id === uuid) {
-          this.loadChildren(arrayToSearch[index])
+          await this.loadChildren(arrayToSearch[index])
+
+          if(arrayToSearch[index].children?.length === 0) {
+            delete arrayToSearch[index].children
+          }
+          this.updateEntityMembers(arrayToSearch[index])
         } else if (arrayToSearch[index].children) {
-          this.reloadChildren(uuid, arrayToSearch[index].children)
+          await this.reloadChildren(uuid, arrayToSearch[index].children)
         }
-        if(arrayToSearch[index].children?.length === 0) {
-          delete arrayToSearch[index].children
-        }
+      }
+
+      if(firstCall) { // We have to create a copy of the current items, else the treeview won't pick up changes in the children and update it's ui.
+        const oldItems = cloneDeep(this.displayedItems)
+        this.displayedItems = []
+        this.displayedItems = oldItems
+      }
+    },
+    updateEntityMembers(updatedItem: ITreeEntry) {
+      if(updatedItem.type === 'scope') {
+        // @ts-ignore
+        updatedItem.entry.members = updatedItem.children?.map(child => {
+          return {
+            targetUri: `/${getSchemaEndpoint(child.entry.type)}/${child.entry.id}`
+          }
+        }) || []
+      } else {
+        // @ts-ignore
+        updatedItem.entry.parts = updatedItem.children?.map(child => {
+          return {
+            targetUri: `/${getSchemaEndpoint(child.entry.type)}/${child.entry.id}`
+          }
+        }) || []
       }
     }
   },
