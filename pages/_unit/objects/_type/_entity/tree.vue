@@ -103,3 +103,16 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "object_add": "Link object",
+    "object_create": "Create child object"
+  },
+  "de": {
+    "object_add": "Objekt verknüpfen",
+    "object_create": "Unterobjekt erstellen"
+  }
+}
+</i18n>

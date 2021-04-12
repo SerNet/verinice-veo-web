@@ -82,8 +82,8 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-  "text": "Do you really want to delete the object \"{name}\"?",
-  "headline": "Delete object"
+    "text": "Do you really want to delete the object \"{name}\"?",
+    "headline": "Delete object"
   },
   "de": {
     "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",

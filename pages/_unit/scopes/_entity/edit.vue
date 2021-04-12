@@ -50,7 +50,7 @@
       <VeoPage absolute-size :cols="12" :md="4" :xl="4">
         <VeoTabs>
           <template #tabs>
-            <v-tab disabled>{{ $t('unit.data.history') }}</v-tab>
+            <v-tab disabled>{{ $t('history') }}</v-tab>
           </template>
           <template #items>
             <VeoObjectHistory :object="form.objectData" />
@@ -122,7 +122,7 @@ export default Vue.extend({
         value: false,
         text: '',
         type: 0,
-        title: this.$t('global.appstate.alert.error') as string,
+        title: this.$t('error.title') as string,
         saveButtonText: this.$t('global.button.no') as string,
         error: 0 as number
       },
@@ -180,7 +180,7 @@ export default Vue.extend({
         .update(this.entityType, this.entityId, this.form.objectData)
         .then(async (_data: IVeoAPIMessage) => {
           this.entityModified.isModified = false
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') })
 
           this.$router.back()
         })
@@ -208,7 +208,7 @@ export default Vue.extend({
     },
     showError(status: number, message: string) {
       if(status === 412) {
-        this.alert.text = this.$t('unit.forms.nrr')
+        this.alert.text = this.$t('global.appstate.alert.nrr')
         this.alert.saveButtonText = this.$t('global.button.no')
       } else {
         this.alert.text = message
@@ -251,18 +251,18 @@ export default Vue.extend({
   "en": {
     "deleted": "Object was deleted successfully.",
     "edit_object": "Edit \"{title}\"",
-    "object_add": "Link object",
-    "object_create": "Create object",
-    "scope_add": "Link scope",
-    "scope_create": "Create scope"
+    "history": "History",
+    "object_delete_error": "Failed to delete object",
+    "object_saved": "Object saved successfully",
+    "scope_delete_error": "Failed to delete scope"
   },
   "de": {
     "deleted": "Objekt wurde erfolgreich gelöscht.",
     "edit_object": "\"{title}\" bearbeiten",
-    "object_add": "Objekt verknüpfen",
-    "object_create": "Objekt erstellen",
-    "scope_add": "Scope verknüpfen",
-    "scope_create": "Scope erstellen"
+    "history": "Verlauf",
+    "object_delete_error": "Objekt konnte nicht gelöscht werden",
+    "object_saved": "Objekt wurde gespeichert!",
+    "scope_delete_error": "Scope konnte nicht gelöscht werden"
   }
 }
 </i18n>

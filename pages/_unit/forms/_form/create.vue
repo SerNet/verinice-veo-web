@@ -47,7 +47,7 @@ export default Vue.extend({
         value: false,
         text: '',
         type: 0,
-        title: this.$t('global.appstate.alert.error') as string,
+        title: this.$t('error.title') as string,
         saveButtonText: this.$t('global.button.no') as string,
         error: 0 as number
       },

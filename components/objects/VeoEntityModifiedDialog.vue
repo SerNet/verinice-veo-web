@@ -73,8 +73,8 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-  "text": "The object {name} has been edited. Do you really want to leave this page?",
-  "headline": "Close"
+    "text": "The object {name} has been edited. Do you really want to leave this page?",
+    "headline": "Close"
   },
   "de": {
     "text": "Das Objekt {name} wurde bearbeitet. Wollen Sie die Seite wirklich verlassen?",

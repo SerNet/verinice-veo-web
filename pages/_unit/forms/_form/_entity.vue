@@ -5,7 +5,7 @@
   <VeoPageWrapper v-else>
     <VeoPage v-if="!contentsCollapsed && formSchemaHasGroups" :cols="2" :md="2" :xl="2" absolute-size>
       <div class="button text-uppercase accent--text font-weight-medium my-2">
-        {{ $t('page.forms.navigation.group.title') }}
+        {{ $t('navigation.title') }}
       </div>
       <VeoFormNavigation :formSchema="form.formSchema && form.formSchema.content" class="mx-n4" />
     </VeoPage>
@@ -75,8 +75,8 @@
     <VeoPage v-if="!$vuetify.breakpoint.xsOnly" :cols="4" :md="4" :xl="4" absolute-size>
       <VeoTabs>
         <template #tabs>
-          <v-tab>{{ $t('unit.data.links') }}</v-tab>
-          <v-tab :disabled="!$route.params.entity">{{ $t('unit.data.history') }}</v-tab>
+          <v-tab>{{ $t('links') }}</v-tab>
+          <v-tab :disabled="!$route.params.entity">{{ $t('history') }}</v-tab>
         </template>
         <template #items>
           <v-tab-item>
@@ -161,7 +161,7 @@ export default Vue.extend({
         value: false,
         text: '',
         type: 0,
-        title: this.$t('global.appstate.alert.error') as string,
+        title: this.$t('error.title') as string,
         saveButtonText: this.$t('global.button.no') as string,
         error: 0 as number
       },
@@ -296,7 +296,7 @@ export default Vue.extend({
         .update(this.objectType, this.objectId, this.form.objectData)
         .then(() => {
           this.formModified.isModified = false
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') })
           this.$router.push({
             path: `/${this.unitRoute}/forms/${this.formRoute}/`
           })
@@ -322,7 +322,7 @@ export default Vue.extend({
     },
     showError(status: number, message: string) {
       if(status === 412) {
-        this.alert.text = this.$t('unit.forms.nrr')
+        this.alert.text = this.$t('global.appstate.alert.nrr')
         this.alert.saveButtonText = this.$t('global.button.no')
       } else {
         this.alert.text = message
@@ -375,5 +375,26 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "history": "History",
+    "links": "Links",
+    "navigation.title": "Contents",
+    "object_delete_error": "Failed to delete object",
+    "object_saved": "Object saved successfully",
+    "scope_delete_error": "Failed to delete scope"
+  },
+  "de": {
+    "history": "Verlauf",
+    "links": "Links",
+    "navigation.title": "Inhalt",
+    "object_delete_error": "Objekt konnte nicht gelöscht werden",
+    "object_saved": "Objekt wurde gespeichert!",
+    "scope_delete_error": "Scope konnte nicht gelöscht werden"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped></style>

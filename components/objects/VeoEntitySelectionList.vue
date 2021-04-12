@@ -162,27 +162,27 @@ export default Vue.extend({
           width: 32
         },
         {
-          text: this.$t('unit.object.list.header.abbreviation'),
+          text: this.$t('objectlist.abbreviation'),
           value: 'abbreviation',
         },
         {
-          text: this.$t('unit.object.list.header.title'),
+          text: this.$t('objectlist.title'),
           value: 'name'
         },
         {
-          text: this.$t('unit.object.list.header.description'),
+          text: this.$t('objectlist.description'),
           filterable: false,
           sortable: false,
           value: 'description'
         },
         {
-          text: this.$t('unit.object.list.header.updatedby'),
+          text: this.$t('objectlist.updatedby'),
           value: 'updatedBy',
           class: 'nowrap'
         },
         {
           align: 'end',
-          text: this.$t('unit.object.list.header.updatedat'),
+          text: this.$t('objectlist.updatedat'),
           value: 'date',
         }
       ]

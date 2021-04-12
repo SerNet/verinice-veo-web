@@ -167,8 +167,8 @@ export default {
   'forms.input.link.targetObject.delete.text': 'Sind sie sicher, dass das Objekt "{object}" gelöscht werden soll?',
   'forms.input.link.targetObject.notFound': 'Nicht gefunden',
 
-  'global.appstate.alert.success': 'Erfolgreich durchgeführt!',
-  'global.appstate.alert.error': 'Ein Fehler ist aufgetreten!',
+  'global.appstate.alert.nrr':
+    'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
   'global.button.cancel': 'Abbrechen',
   'global.button.close': 'Schließen',
   'global.button.delete': 'Löschen',
@@ -183,6 +183,12 @@ export default {
   'global.logout': 'Logout',
   'global.menu.collapse': 'Menü verstecken',
   'global.menu.expand': 'Menü fixieren',
+
+  'objectlist.abbreviation': 'Abk.',
+  'objectlist.description': 'Beschreibung',
+  'objectlist.title': 'Objektname',
+  'objectlist.updatedat': 'Letzte Änderung',
+  'objectlist.updatedby': 'Bearbeiter',
 
   'page.editors.title': 'Editoren',
   'page.editors.calltoaction': 'Was möchten Sie tun?',
@@ -201,16 +207,11 @@ export default {
   'page.settings.version': 'Version',
   'page.settings.build': 'Build',
 
-  'page.forms.navigation.group.title': 'Inhalt',
-
   'search.label': 'verinice. durchsuchen',
 
   'unit.create': 'Neue Unit erstellen',
   'unit.create.short': 'Unit erstellen',
   'unit.created': 'Unit wurde erstellt',
-  'unit.data.history': 'Verlauf',
-  'unit.data.links': 'Links',
-  'unit.data.saved': 'Objekt wurde erfolgreich gespeichert!',
   'unit.details.children': 'Untergeordnete Units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'Bitte tragen Sie eine Beschreibung ein.',
@@ -222,23 +223,9 @@ export default {
   'unit.details.noparent': 'Top-Level Unit',
   'unit.details.objects': 'Objekte',
   'unit.details.parent': 'Übergeordnete Unit',
-  'unit.forms.create': '{type} erstellen',
-  'unit.forms.delete': 'Möchten Sie das Objekt "{name}" wirklich löschen?',
-  'unit.forms.delete.headline': 'Objekt löschen',
-  'unit.forms.form': 'Formular',
-  'unit.forms.search': 'Suche',
-  'unit.forms.nrr':
-    'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
-  'unit.object.list.header.abbreviation': 'Abk.',
-  'unit.object.list.header.description': 'Beschreibung',
-  'unit.object.list.header.title': 'Objektname',
-  'unit.object.list.header.updatedat': 'Letzte Änderung',
-  'unit.object.list.header.updatedby': 'Bearbeiter',
-  'unit.objects.created': 'Erstellt',
   'unit.objects.tooltip.clone': 'Objekt klonen',
   'unit.objects.tooltip.delete': 'Objekt löschen',
   'unit.objects.tooltip.edit': 'Objekt bearbeiten',
-  'unit.objects.updated': 'Bearbeitet',
   'unit.index.title': 'Dashboard',
   'unit.select.label': 'Unit',
 

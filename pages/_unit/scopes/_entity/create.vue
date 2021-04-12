@@ -160,7 +160,7 @@ export default Vue.extend({
         })
         .then(async (data: IVeoAPIMessage) => {
           this.entityModified.isModified = false
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.data.saved') })
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') })
           if (this.parentId !== '-') {
             const parent = await this.$api.entity.fetch(this.parentType, this.parentId)
 
@@ -216,13 +216,15 @@ export default Vue.extend({
 
 <i18n>
 {
-  "de": {
-    "no_type": "Es wurde kein Typ für das neue Objekt festgelegt. Bitte versuchen Sie es erneut.",
-    "object_create": "{type} erstellen"
-  },
   "en": {
     "no_type": "There is no type set for the new object. Please try again.",
-    "object_create": "Create {type}"
+    "object_create": "Create {type}",
+    "object_saved": "Object saved successfully"
+  },
+  "de": {
+    "no_type": "Es wurde kein Typ für das neue Objekt festgelegt. Bitte versuchen Sie es erneut.",
+    "object_create": "{type} erstellen",
+    "object_saved": "Objekt wurde gespeichert!"
   }
 }
 </i18n>

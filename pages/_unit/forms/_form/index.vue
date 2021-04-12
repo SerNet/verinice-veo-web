@@ -7,7 +7,7 @@
             <v-col :cols="12" :md="3">
               <v-select
                 v-model="formType"
-                :label="$t('unit.forms.form')"
+                :label="$t('form')"
                 :items="formTypes"
                 outlined
                 dense
@@ -15,7 +15,7 @@
               />
             </v-col>
             <v-col cols="auto" class="d-none">
-              <v-text-field :label="$t('unit.forms.search')" outlined dense />
+              <v-text-field :label="$t('search')" outlined dense />
             </v-col>
             <v-col cols="auto">
               <v-btn
@@ -24,7 +24,7 @@
                 color="primary"
                 class="align-self-center mr-4"
               >
-                {{ $t('unit.forms.create', { type: formName }) }}
+                {{ $t('create', { type: formName }) }}
               </v-btn>
             </v-col>
           </v-row>
@@ -129,3 +129,18 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "create": "Create {type}",
+    "form": "Form",
+    "search": "Search"
+  },
+  "de": {
+    "create": "{type} erstellen",
+    "form": "Formular",
+    "search": "Suche"
+  }
+}
+</i18n>
