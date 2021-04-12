@@ -15,7 +15,7 @@ Cypress.Commands.add('auth', () => {
   cy.intercept(
     {
       method: 'GET', // intercept all requests to auth endpoint
-      url: 'https://veo-keycloak.staging.cpmsys.io/auth/realms/verinice-veo/protocol/openid-connect/auth'
+      url: 'https://veo-keycloak.staging.cpmsys.io/auth/realms/verinice-veo/protocol/openid-connect/auth*'
     },
     req => {
       const query = new URL(req.url).searchParams
