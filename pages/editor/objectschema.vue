@@ -69,7 +69,7 @@
                     :value="description"
                     dense
                     hide-details
-                    :label="$t('editor.objectschema.create.description')"
+                    :label="$t('description')"
                     @input="updateDescription"
                   />
                 </v-col>
@@ -95,7 +95,7 @@
                 solo-inverted
                 hide-details
                 prepend-inner-icon="mdi-magnify"
-                :label="$t('editor.search.label')"
+                :label="$t('search')"
               />
             </v-col>
             <v-col>
@@ -104,13 +104,13 @@
                 class="caption"
                 dense
                 hide-details
-                :label="$t('editor.hideemptyaspects')"
+                :label="$t('hideemptyaspects')"
               />
             </v-col>
           </v-row>
         </template>
         <template #default>
-          <ObjectSchemaEditor
+          <VeoObjectSchemaEditor
             v-if="schemaIsValid.valid"
             v-model="objectSchemaHelper"
             :search="search"
@@ -122,7 +122,7 @@
               <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
             </v-col>
             <v-col cols="auto" class="text-left">
-              <h3>{{ $t('editor.objectschema.validation.schema.invalid') }}</h3>
+              <h3>{{ $t('schema_invalid') }}</h3>
               <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
                 <v-list-item-content>
                   <v-list-item-title>{{ error.code }}</v-list-item-title>
@@ -149,7 +149,7 @@
       </VeoPage>
     </template>
     <template #helpers>
-      <VEOOSEWizardDialog v-model="showCreationDialog" @completed="setSchema" />
+      <VeoOseWizardDialog v-model="showCreationDialog" @completed="setSchema" />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
     </template>
   </VeoPageWrapper>
@@ -158,11 +158,11 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import CollapseButton from '~/components/layout/CollapseButton.vue'
-import VEOOSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOOSEWizardDialog.vue'
+import CollapseButton from '~/components/layout/VeoCollapseButton.vue'
+import VeoOseWizardDialog from '~/components/editor/ObjectSchema/VeoOseWizardDialog.vue'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
-import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
+import VeoEditorErrorDialog from '~/components/editor/VeoEditorErrorDialog.vue'
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2'
 import { IVeoObjectSchema } from '~/types/VeoTypes'
@@ -170,7 +170,7 @@ import { IVeoObjectSchema } from '~/types/VeoTypes'
 export default Vue.extend({
   components: {
     VeoEditorErrorDialog,
-    VEOOSEWizardDialog,
+    VeoOseWizardDialog,
     CollapseButton,
     VeoPageWrapper,
     VeoPage
@@ -251,7 +251,27 @@ export default Vue.extend({
   }
 })
 </script>
-<style>
+
+<i18n>
+{
+  "en": {
+    "description": "Description",
+    "hideemptyaspects": "Hide empty aspects",
+    "schema_invalid":
+      "Couldn't load schema. Please resolve the following errors and try again.",
+    "search": "Search for a property"
+  },
+  "de": {
+    "description": "Beschreibung",
+    "hideemptyaspects": "Leere Aspekte ausblenden",
+    "schema_invalid":
+      "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
+    "search": "Nach einer Eigenschaft suchen..."
+  }
+}
+</i18n>
+
+<style lang="scss" scoped>
 .ose__code-editor {
   height: 100%;
 }

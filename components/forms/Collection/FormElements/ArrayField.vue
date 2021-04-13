@@ -38,7 +38,7 @@
     </v-list>
     <v-btn small text color="primary" class="vf-btn-add" @click="addRow()">
       <v-icon small>mdi-plus</v-icon>
-      <span>{{ $t('forms.input.array.add') }}</span>
+      <span>{{ $t('add') }}</span>
     </v-btn>
   </div>
 </template>
@@ -49,8 +49,7 @@ import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { BaseObject, IApi } from '~/components/forms/utils'
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
-import { IVeoTranslation } from '~/types/VeoTypes'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
 
 export default Vue.extend({
   name: 'ArrayField',
@@ -73,7 +72,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
     options: Object,
     elements: Array,
     disabled: Boolean,
@@ -136,6 +135,17 @@ export const helpers: Helpful<FormElementProps> = {
   }
 }
 </script>
+
+<i18n>
+{
+  "en": {
+    "add": "Add element"
+  },
+  "de": {
+    "add": "Element hinzufügen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

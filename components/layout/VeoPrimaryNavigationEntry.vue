@@ -129,4 +129,3 @@ export default defineComponent<IProps>({
   }
 })
 </script>
-<style lang="scss" scoped></style>

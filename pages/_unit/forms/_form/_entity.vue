@@ -91,10 +91,10 @@ import VeoPage from '~/components/layout/VeoPage.vue'
 import VeoTabs from '~/components/layout/VeoTabs.vue'
 import DeleteFormDialog from '~/components/objects/VeoDeleteFormDialog.vue'
 import VeoFormModifiedDialog from '~/components/objects/VeoFormModifiedDialog.vue'
-import CollapseButton from '~/components/layout/CollapseButton.vue'
+import VeoCollapseButton from '~/components/layout/VeoCollapseButton.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import VeoForm from '~/components/forms/VeoForm.vue'
-import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 export interface IValidationErrorMessage {
@@ -111,7 +111,7 @@ interface IData {
   saveBtnLoading: boolean
   deleteBtnLoading: boolean
   deleteDialog: boolean
-  alert: VeoEventPayload & { value: boolean, error: number }
+  alert: IVeoEventPayload & { value: boolean, error: number }
   contentsCollapsed: boolean
   formModified: {
     isModified: boolean
@@ -128,7 +128,7 @@ export default Vue.extend({
     VeoPage,
     VeoTabs,
     DeleteFormDialog,
-    CollapseButton,
+    VeoCollapseButton,
     VeoFormModifiedDialog
   },
   data(): IData {

@@ -1,9 +1,9 @@
 <template>
-  <VeoPage :title="$t('page.settings.title')">
+  <VeoPage :title="$t('breadcrumbs.settings')">
     <v-row class="flex-column">
       <v-col class="settings-item">
         <span class="settings-item-description">
-          {{ $t('page.settings.language') }}:
+          {{ $t('language') }}:
         </span>
         <v-select
           :value="$i18n.locale"
@@ -23,13 +23,13 @@
       <v-divider class="mt-8 mb-3 mx-3" />
       <v-col class="settings-item py-1">
         <span class="settings-item-description">
-          {{ $t('page.settings.version') }}:
+          {{ $t('version') }}:
         </span>
         <span style="font-size: 1.2rem;">{{ $config.version }}</span>
       </v-col>
       <v-col class="settings-item py-1">
         <span class="settings-item-description">
-          {{ $t('page.settings.build') }}:
+          {{ $t('build') }}:
         </span>
         <span style="font-size: 1.2rem;">{{ $config.build }}</span>
       </v-col>
@@ -57,11 +57,26 @@ export default Vue.extend({
   async fetch() {},
   head(): any {
     return {
-      title: this.$t('page.settings.title')
+      title: this.$t('breadcrumbs.settings')
     }
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "build": "Build",
+    "language": "Language",
+    "version": "Version"
+  },
+  "de": {
+    "build": "Build",
+    "language": "Sprache",
+    "version": "Version"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 .language-btn {

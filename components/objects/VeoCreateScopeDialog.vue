@@ -48,7 +48,7 @@
 import { trim } from 'lodash'
 import Vue from 'vue'
 
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
+import VeoDialog from '~/components/layout/VeoDialog.vue'
 
 interface IData {
   dialog: boolean

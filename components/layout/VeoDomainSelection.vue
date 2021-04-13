@@ -10,7 +10,7 @@
         dense
         outlined
         hide-details
-        :label="$t('domain.select.label')"
+        :label="$t('label')"
         @input="doChangeDomain"
       />
     </v-list-item-content>
@@ -21,7 +21,7 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { separateUUIDParam } from '~/lib/utils'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoDomain } from '~/types/VeoTypes.ts'
+import { IVeoDomain } from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {
@@ -53,4 +53,13 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<i18n>
+{
+  "en": {
+    "label": "Domain"
+  },
+  "de": {
+    "label": "Domain"
+  }
+}  
+</i18n>

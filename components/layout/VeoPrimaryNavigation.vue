@@ -33,8 +33,8 @@
             <v-icon v-if="miniVariant">mdi-chevron-double-right</v-icon>
             <v-icon v-else>mdi-chevron-double-left</v-icon>
           </v-list-item-icon>
-          <v-list-item-title v-if="miniVariant">{{ $t('global.menu.expand') }}</v-list-item-title>
-          <v-list-item-title v-else>{{ $t('global.menu.collapse') }}</v-list-item-title>
+          <v-list-item-title v-if="miniVariant">{{ $t('fix') }}</v-list-item-title>
+          <v-list-item-title v-else>{{ $t('collapse') }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </template>
@@ -149,14 +149,14 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: this.$t('page.settings.title') as string,
+            name: this.$t('breadcrumbs.settings') as string,
             icon: 'mdi-cog',
             to: `/${routeUnitParam}/settings`,
             disabled: false,
             topLevelItem: true
           },
           {
-            name: this.$t('page.help.title') as string,
+            name: this.$t('breadcrumbs.help') as string,
             icon: 'mdi-help',
             to: `/${routeUnitParam}/help`,
             disabled: false,
@@ -173,7 +173,7 @@ export default Vue.extend({
         })
       } else {
         this.items.push({
-          name: this.$t('page.index.title') as string,
+          name: this.$t('breadcrumbs.index') as string,
           icon: 'mdi-home',
           to: '/',
           exact: true,
@@ -184,7 +184,7 @@ export default Vue.extend({
 
       // Add permanent entries to the nav bar
       this.items.push({
-        name: this.$t('page.editors.title') as string,
+        name: this.$t('breadcrumbs.editor') as string,
         icon: 'mdi-application-cog',
         to: '/editor',
         exact: false,
@@ -216,7 +216,7 @@ export default Vue.extend({
           return {
             name: entry.name,
             exact: false,
-            to: `/${createUUIDUrlParam('unit', routeUnitParam)}/forms/${createUUIDUrlParam('form', entry.id)}/`,
+            to: `/${createUUIDUrlParam('unit', routeUnitParam)}/forms/${createUUIDUrlParam('form', entry?.id || '')}/`,
             disabled: false,
             topLevelItem: false
           }
@@ -243,6 +243,19 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "collapse": "Collapse menu",
+    "fix": "Fix menu"
+  },
+  "de": {
+    "collapse": "Menü verstecken",
+    "fix": "Menü fixieren"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

@@ -1,6 +1,11 @@
-import { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
+export enum ALERT_TYPE {
+  ERROR,
+  INFO,
+  SUCCESS,
+  WARNING
+}
 
-export interface VeoEventPayload {
+export interface IVeoEventPayload {
   type?: ALERT_TYPE,
   text: string,
   title?: string,

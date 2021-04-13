@@ -100,7 +100,7 @@ import VeoTabs from '~/components/layout/VeoTabs.vue'
 import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
-import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 import { IVeoAPIMessage } from '~/types/VeoTypes'
 
@@ -109,7 +109,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: VeoEventPayload & { value: boolean }
+  alert: IVeoEventPayload & { value: boolean }
 }
 
 export default Vue.extend({

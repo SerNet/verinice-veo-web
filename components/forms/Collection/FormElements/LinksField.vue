@@ -41,7 +41,7 @@
     </v-list>
     <v-btn small text color="primary" @click="addRow()">
       <v-icon small>mdi-plus</v-icon>
-      <span>{{ $t('forms.input.linkadd') }}</span>
+      <span>{{ $t('add') }}</span>
     </v-btn>
   </div>
 </template>
@@ -54,8 +54,7 @@ import { calculateConditionsScore, FormElementProps, Helpful } from '~/component
 import { BaseObject, IApi } from '~/components/forms/utils'
 
 import LinksFieldRow from '~/components/forms/Collection/FormElements/LinksFieldRow.vue'
-import { IVeoTranslation } from '~/types/VeoTypes'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
 import { UISchemaElement } from '~/types/UISchema'
 
 interface IData {
@@ -98,7 +97,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
     elements: {
       type: Array,
       default: () => []
@@ -163,6 +162,17 @@ export const helpers: Helpful<FormElementProps> = {
   }
 }
 </script>
+
+<i18n>
+{
+  "en": {
+    "add": "Add link"
+  },
+  "de": {
+    "add": "Link hinzufügen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

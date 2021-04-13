@@ -1,13 +1,13 @@
 <template>
   <VeoPage>
-    <h2>{{ $t('page.editors.calltoaction') }}</h2>
+    <h2>{{ $t('calltoaction') }}</h2>
     <v-list two-line class="overflow-hidden">
       <v-list-item to="/editor/objectschema">
         <v-list-item-content>
           <v-list-item-title class="font-weight-bold">
             {{ $t('editor.objectschema.headline') }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{ $t('editor.objectschema.description') }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ $t('objectschema_description') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
           <v-icon x-large>mdi-chevron-right</v-icon>
@@ -18,7 +18,7 @@
           <v-list-item-title class="font-weight-bold">
             {{ $t('editor.formschema.headline') }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{ $t('editor.formschema.description') }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ $t('formschema_description') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
           <v-icon x-large>mdi-chevron-right</v-icon>
@@ -46,6 +46,21 @@ export default defineComponent<IProps>({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "calltoaction": "What do you want to do?",
+    "formschema_description": "Create, edit, import or export form schemas",
+    "objectschema_description": "Create, edit, import or export object schemas"
+  },
+  "de": {
+    "calltoaction": "Was möchten Sie tun?",
+    "formschema_description": "Formschemas erstellen, bearbeiten, importieren und exportieren",
+    "objectschema_description": "Objektschemas erstellen, bearbeiten, importieren und exportieren"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 .v-list-item__subtitle {

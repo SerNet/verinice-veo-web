@@ -40,7 +40,7 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
+import VeoDialog from '~/components/layout/VeoDialog.vue'
 
 interface IData {
   dialog: boolean
@@ -90,5 +90,3 @@ export default Vue.extend({
   }
 })
 </script>
-
-<style lang="scss" scoped></style>

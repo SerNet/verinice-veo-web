@@ -73,7 +73,7 @@ import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
 import VeoPage from '~/components/layout/VeoPage.vue'
 
 import VeoForm from '~/components/forms/VeoForm.vue'
-import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 import { capitalize } from 'lodash'
 import { IVeoAPIMessage } from '~/types/VeoTypes'
@@ -83,7 +83,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: VeoEventPayload & { value: boolean }
+  alert: IVeoEventPayload & { value: boolean }
 }
 
 export default Vue.extend({

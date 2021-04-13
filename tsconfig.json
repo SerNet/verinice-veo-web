@@ -4,7 +4,11 @@
     "module": "esnext",
     "declaration": false,
     "moduleResolution": "node",
-    "lib": ["esnext", "esnext.asynciterable", "dom"],
+    "lib": [
+      "esnext",
+      "esnext.asynciterable",
+      "dom"
+    ],
     "esModuleInterop": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -15,8 +19,12 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./*"],
-      "@/*": ["./*"]
+      "~/*": [
+        "./*"
+      ],
+      "@/*": [
+        "./*"
+      ]
     },
     "typeRoots": [],
     "types": [
@@ -30,9 +38,14 @@
       "./types/context",
       "vuetify/types",
       "./types/vue-json-pointer",
-      "./types/veo-objectschema-7",
-      "./types/veo-formschema"
+      "./types/VeoTypes"
     ]
   },
-  "exclude": ["coverage",".nuxt", ".gitlab", "dist", "test/e2e"]
+  "exclude": [
+    "coverage",
+    ".nuxt",
+    ".gitlab",
+    "dist",
+    "test/e2e"
+  ]
 }

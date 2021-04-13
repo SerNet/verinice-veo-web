@@ -78,5 +78,3 @@ export const helpers: Helpful<FormElementProps> = {
   }
 }
 </script>
-
-<style lang="scss" scoped></style>

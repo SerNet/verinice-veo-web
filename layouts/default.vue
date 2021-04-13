@@ -48,13 +48,13 @@
 <script lang="ts">
 import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api'
 
-import AppBarLogo from '~/components/layout/AppBarLogo.vue'
+import AppBarLogo from '~/components/layout/VeoAppBarLogo.vue'
 import VeoPrimaryNav from '~/components/layout/VeoPrimaryNavigation.vue'
-import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
-import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
+import AppAccountBtn from '~/components/layout/VeoAppAccountBtn.vue'
+import VeoNewUnitDialog from '~/components/VeoNewUnitDialog.vue'
 import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
-import VeoAlert, { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
-import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import VeoAlert from '~/components/layout/VeoAlert.vue'
+import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
 import { createUUIDUrlParam } from '~/lib/utils'
 
@@ -94,25 +94,25 @@ export default defineComponent<IProps>({
     const snackbar = ref({ value: false, text: '' })
 
     // Alert and snackbar events
-    context.root.$on(VeoEvents.ALERT_ERROR, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.ALERT_ERROR, (payload: IVeoEventPayload) => {
       alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.ERROR
       alert.value.value = true
     })
-    context.root.$on(VeoEvents.ALERT_INFO, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.ALERT_INFO, (payload: IVeoEventPayload) => {
       alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.INFO
       alert.value.value = true
     })
-    context.root.$on(VeoEvents.ALERT_SUCCESS, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.ALERT_SUCCESS, (payload: IVeoEventPayload) => {
       alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.SUCCESS
       alert.value.value = true
     })
-    context.root.$on(VeoEvents.ALERT_WARNING, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.ALERT_WARNING, (payload: IVeoEventPayload) => {
       alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.WARNING
@@ -122,7 +122,7 @@ export default defineComponent<IProps>({
       alert.value.value = false
     })
 
-    context.root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: IVeoEventPayload) => {
       snackbar.value.text = payload.text
       snackbar.value.value = true
     })
