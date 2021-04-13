@@ -19,7 +19,6 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
@@ -28,9 +27,6 @@ interface IData {
 }
 
 export default Vue.extend({
-  components: {
-    VeoDialog
-  },
   props: {
     value: {
       type: Boolean,
@@ -82,5 +78,3 @@ export default Vue.extend({
   }
 }
 </i18n>
-
-<style lang="scss" scoped></style>

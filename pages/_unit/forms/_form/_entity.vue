@@ -95,16 +95,7 @@
 import Vue from 'vue'
 import { Route } from 'vue-router/types/index'
 
-import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
-import VeoPage from '~/components/layout/VeoPage.vue'
-import VeoTabs from '~/components/layout/VeoTabs.vue'
-import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
-import VeoEntityModifiedDialog from '~/components/objects/VeoEntityModifiedDialog.vue'
-import CollapseButton from '~/components/layout/CollapseButton.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
-import VeoForm from '~/components/forms/VeoForm.vue'
-import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
-import VeoObjectLinks from '~/components/objects/VeoObjectLinks.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoEntity } from '~/types/VeoTypes'
 
@@ -134,17 +125,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
-  components: {
-    VeoForm,
-    VeoPageWrapper,
-    VeoPage,
-    VeoTabs,
-    VeoDeleteEntityDialog,
-    CollapseButton,
-    VeoEntityModifiedDialog,
-    VeoObjectHistory,
-    VeoObjectLinks
-  },
   data(): IData {
     return {
       objectType: undefined,
@@ -396,5 +376,3 @@ export default Vue.extend({
   }
 }
 </i18n>
-
-<style lang="scss" scoped></style>

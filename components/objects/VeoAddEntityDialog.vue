@@ -25,8 +25,6 @@
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
-import VeoEntitiySelectionList from '~/components/objects/VeoEntitySelectionList.vue'
 import { endpoints, getSchemaEndpoint, getSchemaName } from '~/plugins/api/schema'
 import { IVeoEntity, IVeoLink } from '~/types/VeoTypes'
 
@@ -40,10 +38,6 @@ interface IData {
 }
 
 export default Vue.extend({
-  components: {
-    VeoDialog,
-    VeoEntitiySelectionList
-  },
   props: {
     value: {
       type: Boolean,
@@ -190,5 +184,3 @@ export default Vue.extend({
   }
 }
 </i18n>
-
-<style lang="scss" scoped></style>

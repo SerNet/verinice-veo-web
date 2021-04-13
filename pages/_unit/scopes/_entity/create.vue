@@ -57,10 +57,6 @@ import { Route } from 'vue-router/types/index'
 
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
-import VeoPage from '~/components/layout/VeoPage.vue'
-
-import VeoEntityModifiedDialog from '~/components/objects/VeoEntityModifiedDialog.vue'
-import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 import { capitalize } from 'lodash'
@@ -80,11 +76,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'VeoScopesCreatePage',
-  components: {
-    VeoForm,
-    VeoPage,
-    VeoEntityModifiedDialog
-  },
   data(): IData {
     return {
       form: {

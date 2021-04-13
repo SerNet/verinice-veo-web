@@ -35,11 +35,6 @@ import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 import { cloneDeep, upperFirst } from 'lodash'
 
-import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
-import VeoUnlinkEntityDialog from '~/components/objects/VeoUnlinkEntityDialog.vue'
-import VeoAddEntityDialog from '~/components/objects/VeoAddEntityDialog.vue'
-import VeoCreateEntityDialog from '~/components/objects/VeoCreateEntityDialog.vue'
-import VeoEntityDisplayOptions from '~/components/objects/VeoEntityDisplayOptions.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 import { getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
@@ -85,13 +80,6 @@ export interface IVeoEntityModifierEvent {
 }
 
 export default Vue.extend({
-  components: {
-    VeoDeleteEntityDialog,
-    VeoUnlinkEntityDialog,
-    VeoAddEntityDialog,
-    VeoCreateEntityDialog,
-    VeoEntityDisplayOptions
-  },
   props: {
     objects: {
       type: Array as Prop<IVeoEntity[]>,
@@ -379,6 +367,3 @@ export default Vue.extend({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-</style>

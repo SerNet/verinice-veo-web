@@ -68,16 +68,8 @@ import { Route } from 'vue-router/types/index'
 
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
-import VeoPage from '~/components/layout/VeoPage.vue'
-import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
-import VeoTabs from '~/components/layout/VeoTabs.vue'
-import VeoObjectHistory from '~/components/objects/VeoObjectHistory.vue'
-import VeoEntityDisplayOptions from '~/components/objects/VeoEntityDisplayOptions.vue'
-import VeoForm from '~/components/forms/VeoForm.vue'
 import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
-import VeoDeleteEntityDialog from '~/components/objects/VeoDeleteEntityDialog.vue'
-import VeoEntityModifiedDialog from '~/components/objects/VeoEntityModifiedDialog.vue'
 
 interface IData {
   form: IForm
@@ -98,16 +90,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'VeoScopesEditPage',
-  components: {
-    VeoForm,
-    VeoPage,
-    VeoPageWrapper,
-    VeoTabs,
-    VeoObjectHistory,
-    VeoEntityDisplayOptions,
-    VeoEntityModifiedDialog,
-    VeoDeleteEntityDialog
-  },
   data(): IData {
     return {
       form: {

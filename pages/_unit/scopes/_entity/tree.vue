@@ -25,11 +25,10 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import VeoPage from '~/components/layout/VeoPage.vue'
-import VeoObjectTree, { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
+import { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 import { separateUUIDParam } from '~/lib/utils'
-import VeoMenuButton, { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
+import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
 import { IVeoEntityModifierEvent } from '~/components/objects/VeoEntityModifier.vue'
 
 interface IData {
@@ -39,11 +38,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
-  components: {
-    VeoPage,
-    VeoMenuButton,
-    VeoObjectTree
-  },
   head(): any {
     return {
       title: `${this.title} - ${this.$t('breadcrumbs.scopes')}`

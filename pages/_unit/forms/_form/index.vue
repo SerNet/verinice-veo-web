@@ -48,8 +48,6 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import VeoPage from '~/components/layout/VeoPage.vue'
-import VeoFormList from '~/components/objects/VeoFormList.vue'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
 import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
 
@@ -62,10 +60,6 @@ interface IData {
 }
 
 export default Vue.extend({
-  components: {
-    VeoPage,
-    VeoFormList,
-  },
   data(): IData {
     return {
       formSchema: undefined,
