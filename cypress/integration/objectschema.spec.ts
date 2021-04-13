@@ -3,6 +3,8 @@
 import { times } from 'lodash'
 import { JsonPointer } from 'json-ptr'
 
+let processRealValues: { text: string; numberOfProperties: number }[] = []
+
 function getCurrentOS(editor: JQuery<HTMLElement>): any {
   return JSON.parse((editor as any)[0].cmView.view.state.toJSON().doc)
 }
@@ -114,18 +116,15 @@ const TestAspectZweiAttributeSchema = {
 }
 
 describe('Objectschema', () => {
-  beforeEach(() => {
+  before(() => {
     cy.auth()
-    cy.fixture('objectschema/process.json').as('processSchema')
-  })
-  it('All functionalies from dialog to add/delete/change', function() {
     cy.intercept(
       {
         method: 'GET',
         url: 'https://veo.develop.cpmsys.io/schemas/process?domains=GDPR%2CISO_27001'
       },
       req => {
-        req.reply(this.processSchema)
+        req.reply({ fixture: 'objectschema/process.json' })
       }
     )
 
@@ -141,6 +140,9 @@ describe('Objectschema', () => {
       }
     )
 
+    /**
+     * Navigate through Wizard to ObjectSchemaEditor
+     */
     cy.visit('http://localhost:3000/editor')
     cy.get<HTMLLinkElement>('.v-main__wrap a.v-list-item.v-list-item--link')
       .first()
@@ -163,19 +165,23 @@ describe('Objectschema', () => {
     cy.get('.v-dialog--active .v-btn__content')
       .contains('Weiter')
       .click()
-
-    const processRealValues = [
-      { text: 'Standardattribute', numberOfProperties: Object.keys(this.processSchema.properties).length - 2 },
-      {
-        text: 'Individuelle Aspekte',
-        numberOfProperties: Object.keys(this.processSchema.properties.customAspects.properties).length
-      },
-      {
-        text: 'Individuelle Links',
-        numberOfProperties: Object.keys(this.processSchema.properties.links.properties).length
-      }
-    ]
-
+  })
+  beforeEach(() => {
+    cy.fixture('objectschema/process.json')
+      .as('processSchema')
+      .then(processSchema => {
+        processRealValues = [
+          { text: 'Standardattribute', numberOfProperties: Object.keys(processSchema.properties).length - 2 },
+          {
+            text: 'Individuelle Aspekte',
+            numberOfProperties: Object.keys(processSchema.properties.customAspects.properties).length
+          },
+          {
+            text: 'Individuelle Links',
+            numberOfProperties: Object.keys(processSchema.properties.links.properties).length
+          }
+        ]
+      })
     /**
      * Define aliases
      */
@@ -186,10 +192,8 @@ describe('Objectschema', () => {
     cy.get('@expansionPanels')
       .find<HTMLDivElement>('.v-expansion-panel-content')
       .as('expansionPanelContent')
-
-    /**
-     * Test if number expansion panel header are correct with number of attributes
-     */
+  })
+  it('compares number of basic properties, aspects and links compy with sum in expansion panel title', function() {
     cy.get('@expansionPanelHeaders').each((el, i) => {
       const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
       cy.wrap(expansionPanelText).should(
@@ -197,10 +201,9 @@ describe('Objectschema', () => {
         `${processRealValues[i].text} (${processRealValues[i].numberOfProperties})`
       )
     })
+  })
 
-    /**
-     * Test customAspect delete
-     */
+  it('deletes aspect with outer delete button', function() {
     cy.get('@expansionPanels')
       .eq(1)
       .scrollIntoView({ offset: { top: -100, left: 0 } })
@@ -229,10 +232,9 @@ describe('Objectschema', () => {
         'be.undefined'
       )
     })
+  })
 
-    /**
-     * Test changing customAspect name, attribute names, description and types
-     */
+  it('changes customAspect name, attribute names, description and types', function() {
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
@@ -264,10 +266,9 @@ describe('Objectschema', () => {
       const attributes = aspect.properties.attributes.properties
       cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(changedAttributes, null, 2))
     })
+  })
 
-    /**
-     * Test removing and adding customAspect attributes
-     */
+  it('removes and adds aspect attributes', function() {
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
@@ -333,29 +334,30 @@ describe('Objectschema', () => {
       const attributes = aspect.properties.attributes.properties
       cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
     })
+  })
 
-    /**
-     * Add new completely new aspect and remove it from dialog
-     */
+  it('opens dialog to create a new apsect and clicks close button to discard changes', function() {
     // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
-    // cy.get('@expansionPanelHeaders')
-    //   .find('.v-btn')
-    //   .eq(0)
-    //   .click()
-    // cy.get('.v-dialog--active .v-text-field').type('TestAspectEins{enter}')
-    // cy.get('.v-dialog--active .v-card__actions .v-btn')
-    //   .eq(1)
-    //   .click()
-    // cy.get('@expansionPanelContent')
-    //   .eq(1)
-    //   .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-    //   .should('not.contain.text', 'TestAspectEins')
-    // cy.get('.editor .cm-content').then(editor => {
-    //   const currentOS = getCurrentOS(editor)
-    //   const aspect = JsonPointer.get(currentOS, '#/properties/customAspects/properties/TestAspectEins') as any
-    //   cy.wrap(aspect).should('be.undefined')
-    // })
+    cy.get('@expansionPanelHeaders')
+      .find('.v-btn')
+      .eq(0)
+      .click()
+    cy.get('.v-dialog--active .v-text-field').type('TestAspectEins{enter}')
+    cy.get('.v-dialog--active .v-card__actions .v-btn')
+      .eq(1)
+      .click()
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
+      .should('not.contain.text', 'TestAspectEins')
+    cy.get('.editor .cm-content').then(editor => {
+      const currentOS = getCurrentOS(editor)
+      const aspect = JsonPointer.get(currentOS, '#/properties/customAspects/properties/TestAspectEins') as any
+      cy.wrap(aspect).should('be.undefined')
+    })
+  })
 
+  it('adds completely new aspect and removes it from dialog with delete button', function() {
     cy.get('@expansionPanelHeaders')
       .find('.v-btn')
       .eq(0)
@@ -412,37 +414,34 @@ describe('Objectschema', () => {
       const aspect = JsonPointer.get(currentOS, '#/properties/customAspects/properties/TestAspectZwei') as any
       cy.wrap(aspect).should('be.undefined')
     })
-
-    // /**
-    //  * Test link delete
-    //  */
-    // cy.get('@expansionPanels')
-    //   .eq(2)
-    //   .scrollIntoView({ offset: { top: -100, left: 0 } })
-    // cy.get('@expansionPanelContent')
-    //   .eq(2)
-    //   .find('.v-expansion-panel-content__wrap')
-    //   .children()
-    //   .should('have.length', processRealValues[2].numberOfProperties)
-    // cy.get('@expansionPanelContent')
-    //   .eq(2)
-    //   .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
-    //   .eq(1)
-    //   .click()
-    // cy.get('.v-dialog__content--active .v-card__actions .v-btn')
-    //   .eq(1)
-    //   .click()
-    // cy.get('@expansionPanelContent')
-    //   .eq(2)
-    //   .find('.v-expansion-panel-content__wrap')
-    //   .children()
-    //   .should('have.length', processRealValues[2].numberOfProperties - 1)
-
-    // cy.get('.editor .cm-content').then(editor => {
-    //   const currentOS = getCurrentOS(editor)
-    //   cy.wrap(JsonPointer.get(currentOS, '#/properties/links/properties/process_ResponsibleDepartment')).should(
-    //     'be.undefined'
-    //   )
-    // })
+  })
+  it('deletes link', function() {
+    cy.get('@expansionPanels')
+      .eq(2)
+      .scrollIntoView({ offset: { top: -100, left: 0 } })
+    cy.get('@expansionPanelContent')
+      .eq(2)
+      .find('.v-expansion-panel-content__wrap')
+      .children()
+      .should('have.length', processRealValues[2].numberOfProperties)
+    cy.get('@expansionPanelContent')
+      .eq(2)
+      .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
+      .eq(1)
+      .click()
+    cy.get('.v-dialog__content--active .v-card__actions .v-btn')
+      .eq(1)
+      .click()
+    cy.get('@expansionPanelContent')
+      .eq(2)
+      .find('.v-expansion-panel-content__wrap')
+      .children()
+      .should('have.length', processRealValues[2].numberOfProperties - 1)
+    cy.get('.editor .cm-content').then(editor => {
+      const currentOS = getCurrentOS(editor)
+      cy.wrap(JsonPointer.get(currentOS, '#/properties/links/properties/process_ResponsibleDepartment')).should(
+        'be.undefined'
+      )
+    })
   })
 })
