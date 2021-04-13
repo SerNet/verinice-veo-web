@@ -94,7 +94,7 @@
           />
         </template>
         <template #default>
-          <FormSchemaEditorBacklog
+          <VeoFseBacklog
             :object-schema="objectSchema"
             :form-schema="formSchema"
             :search-query="searchQuery"
@@ -114,12 +114,12 @@
       >
         <template #header>
           <h3 class="text-center pb-1">{{ $t('controls.current') }}</h3>
-          <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="backlogCollapsed" />
-          <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="previewCollapsed" right />
+          <VeoCollapseButton v-if="!$vuetify.breakpoint.xs" v-model="backlogCollapsed" />
+          <VeoCollapseButton v-if="!$vuetify.breakpoint.xs" v-model="previewCollapsed" right />
         </template>
         <template #default>
           <div class="fill-height fill-width d-flex px-2">
-            <FseGenerator
+            <VeoFseGenerator
               :schema="objectSchema"
               :value="formSchema.content"
               :general-translation="translation && translation.lang[language]"
@@ -188,7 +188,7 @@
         @update-translation="setTranslation"
       />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
-      <VeoFSECodeEditorDialog v-model="showCodeEditor" :code="code" />
+      <VeoFseCodeEditorDialog v-model="showCodeEditor" :code="code" />
       <!-- Important: showTranslationDialog should be in v-if to only run code in the dialog when it is open  -->
       <VeoFseTranslationDialog
         v-if="!$fetchState.pending && showTranslationDialog && formSchema && formSchema.translation"
@@ -199,7 +199,7 @@
         @update-language="setFormLanguage"
         @update-translation="setFormTranslation"
       />
-      <VeoFSESchemaDetailsDialog
+      <VeoFseSchemaDetailsDialog
         v-if="formSchema"
         v-model="showDetailDialog"
         :object-schema="formSchema.modelType"
@@ -215,18 +215,6 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer'
 
-import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
-import VeoPage from '~/components/layout/VeoPage.vue'
-import CollapseButton from '~/components/layout/VeoCollapseButton.vue'
-import FseGenerator from '~/components/editor/FormSchema/Generator/VeoFseGenerator.vue'
-import VeoFormSchemaEditorBacklog from '~/components/editor/FormSchema/VeoFseBacklog.vue'
-import VeoForm from '~/components/forms/VeoForm.vue'
-import VeoEditorErrorDialog from '~/components/editor/VeoEditorErrorDialog.vue'
-import VeoFSECodeEditorDialog from '~/components/editor/FormSchema/VeoFseCodeEditorDialog.vue'
-import VeoFSESchemaDetailsDialog from '~/components/editor/FormSchema/VeoFseSchemaDetailsDialog.vue'
-import VeoFseWizardDialog from '~/components/editor/FormSchema/VeoFseWizardDialog.vue'
-import VeoFseTranslationDialog from '~/components/editor/FormSchema/VeoFseTranslationDialog.vue'
-
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper'
 import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api'
 import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItem, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection, IVeoFormSchemaCustomTranslationEvent } from '~/types/VeoTypes'
@@ -235,19 +223,6 @@ import { JsonPointer } from 'json-ptr'
 interface IProps {}
 
 export default defineComponent<IProps>({
-  components: {
-    VeoPageWrapper,
-    VeoPage,
-    CollapseButton,
-    FseGenerator,
-    VeoFormSchemaEditorBacklog,
-    VeoForm,
-    VeoEditorErrorDialog,
-    VeoFSECodeEditorDialog,
-    VeoFSESchemaDetailsDialog,
-    VeoFseWizardDialog,
-    VeoFseTranslationDialog
-  },
   head(): any {
     return {
       title: this.$t('editor.formschema.headline')

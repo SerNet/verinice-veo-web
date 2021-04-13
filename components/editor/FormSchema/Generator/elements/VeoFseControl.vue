@@ -1,6 +1,6 @@
 <template>
   <div class="vf-control">
-    <FseFormElement v-bind="$props" v-on="$listeners" />
+    <VeoFseFormElement v-bind="$props" v-on="$listeners" />
   </div>
 </template>
 

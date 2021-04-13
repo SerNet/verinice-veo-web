@@ -42,15 +42,9 @@ import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
 
 import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VeoEditor'
-import VeoFseEditControlDialog from '~/components/editor/FormSchema/VeoFseEditControlDialog.vue'
-import VeoFseDeleteDialog from '~/components/editor/FormSchema/VeoFseDeleteDialog.vue'
 import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
 
 export default Vue.extend({
-  components: {
-    VeoFseEditControlDialog,
-    VeoFseDeleteDialog
-  },
   props: {
     name: {
       type: String,

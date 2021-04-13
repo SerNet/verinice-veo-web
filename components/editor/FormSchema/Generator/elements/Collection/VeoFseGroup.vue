@@ -145,11 +145,11 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "dropzone_headline": "Drag in the elements",
+    "dropzone_placeholder": "Drag in the elements",
     "group_name": "Group"
   },
   "de": {
-    "dropzone_headline": "Ziehen Sie die Steuerelemente herein",
+    "dropzone_placeholder": "Ziehen Sie die Steuerelemente herein",
     "group_name": "Gruppe"
   }
 }

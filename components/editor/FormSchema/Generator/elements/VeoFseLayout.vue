@@ -1,7 +1,7 @@
 <template>
-  <FseGroup v-bind="$props" v-on="$listeners">
+  <VeoFseGroup v-bind="$props" v-on="$listeners">
     <slot />
-  </FseGroup>
+  </VeoFseGroup>
 </template>
 
 <script lang="ts">

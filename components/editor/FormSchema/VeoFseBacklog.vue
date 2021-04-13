@@ -30,7 +30,7 @@
                   :clone="onCloneFormElement"
                 >
                   <v-sheet v-for="(el, i) in filteredFormElements" :key="i">
-                    <FormSchemaEditorListItem :title="el.description.title" :styling="el.description" translate />
+                    <VeoFseListItem :title="el.description.title" :styling="el.description" translate />
                   </v-sheet>
                 </Draggable>
               </v-list>
@@ -55,7 +55,7 @@
                   :clone="onCloneControl"
                 >
                   <v-sheet v-for="(el, i) in filteredBasics" :key="i">
-                    <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" translate />
+                    <VeoFseListItem :title="el.backlogTitle" :styling="typeMap[el.type]" translate />
                   </v-sheet>
                 </Draggable>
               </v-list>
@@ -80,7 +80,7 @@
                   :clone="onCloneControl"
                 >
                   <v-sheet v-for="(el, i) in filteredAspects" :key="i">
-                    <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" translate />
+                    <VeoFseListItem :title="el.backlogTitle" :styling="typeMap[el.type]" translate />
                   </v-sheet>
                 </Draggable>
               </v-list>
@@ -105,7 +105,7 @@
                   :clone="onCloneControl"
                 >
                   <v-sheet v-for="(el, i) in filteredLinks" :key="i">
-                    <FormSchemaEditorListItem :title="el.backlogTitle" :styling="typeMap[el.type]" translate />
+                    <VeoFseListItem :title="el.backlogTitle" :styling="typeMap[el.type]" translate />
                   </v-sheet>
                 </Draggable>
               </v-list>

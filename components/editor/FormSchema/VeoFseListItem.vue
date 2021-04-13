@@ -1,5 +1,5 @@
 <template>
-  <EditorListItem :title="title" :styling="styling" :translate="translate" />
+  <VeoEditorListItem :title="title" :styling="styling" :translate="translate" />
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'

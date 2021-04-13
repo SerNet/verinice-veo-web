@@ -22,7 +22,7 @@
         </v-form>
       </v-tab-item>
       <v-tab-item>
-        <SchemaCodeEditor :value="code" @schema-updated="sendSchema" />
+        <VeoSchemaCodeEditor :value="code" @schema-updated="sendSchema" />
       </v-tab-item>
     </template>
   </VeoTabs>

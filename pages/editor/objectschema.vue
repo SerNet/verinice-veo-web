@@ -50,7 +50,7 @@
               {{ $t('editor.schema.warnings') }}
             </template>
           </v-tooltip>
-          <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="collapsed" right />
+          <VeoCollapseButton v-if="!$vuetify.breakpoint.xs" v-model="collapsed" right />
           <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2 fill-width">
             <v-col>
               <v-row class="mx-4">
@@ -60,7 +60,7 @@
                     dense
                     hide-details
                     flat
-                    :label="$t('editor.objectschema.objectschema')"
+                    :label="$t('objectschema')"
                     @input="updateSchemaName"
                   />
                 </v-col>
@@ -145,7 +145,7 @@
         height="100%"
         content-class="ose__code-editor"
       >
-        <SchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
+        <VeoSchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
       </VeoPage>
     </template>
     <template #helpers>
@@ -158,23 +158,11 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import CollapseButton from '~/components/layout/VeoCollapseButton.vue'
-import VeoOseWizardDialog from '~/components/editor/ObjectSchema/VeoOseWizardDialog.vue'
-import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
-import VeoPage from '~/components/layout/VeoPage.vue'
-import VeoEditorErrorDialog from '~/components/editor/VeoEditorErrorDialog.vue'
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2'
 import { IVeoObjectSchema } from '~/types/VeoTypes'
 
 export default Vue.extend({
-  components: {
-    VeoEditorErrorDialog,
-    VeoOseWizardDialog,
-    CollapseButton,
-    VeoPageWrapper,
-    VeoPage
-  },
   data() {
     return {
       collapsed: false as boolean,
@@ -257,6 +245,7 @@ export default Vue.extend({
   "en": {
     "description": "Description",
     "hideemptyaspects": "Hide empty aspects",
+    "objectschema": "Object schema",
     "schema_invalid":
       "Couldn't load schema. Please resolve the following errors and try again.",
     "search": "Search for a property"
@@ -264,6 +253,7 @@ export default Vue.extend({
   "de": {
     "description": "Beschreibung",
     "hideemptyaspects": "Leere Aspekte ausblenden",
+    "objectschema": "Objektschema",
     "schema_invalid":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
     "search": "Nach einer Eigenschaft suchen..."

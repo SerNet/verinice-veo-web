@@ -53,7 +53,7 @@
               <v-spacer />
               <v-btn color="primary" text @click="addAttribute()">
                 <v-icon>mdi-plus-circle-outline</v-icon>
-                <span class="ml-2">{{ $t(`${type}_addproperty`) }}</span>
+                <span class="ml-2">{{ $t('add_attribute') }}</span>
               </v-btn>
             </v-list-item-action>
           </v-list-item>

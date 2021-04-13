@@ -28,16 +28,13 @@ export default {
   'editor.formschema.edit.input.direction.vertical': 'vertical',
   'editor.formschema.edit.input.label': 'Label',
   'editor.formschema.edit.input.label.text': 'Element label',
-  'editor.formschema.formschema': 'Form schema',
   'editor.formschema.headline': 'Form schema editor',
   'editor.formschema.subtype': 'Subtype',
   'editor.formschema.translation': 'Custom translations',
   'editor.objectschema.headline': 'Object schema editor',
-  'editor.objectschema.objectschema': 'Object schema',
   'editor.schema.download': 'Download schema',
   'editor.schema.warnings': 'Warnings',
   'editor.schema.properties': 'Schema properties',
-  'editor.upload.file.format': '(.json)',
 
   'error.title': 'An error occured',
 
@@ -108,5 +105,9 @@ export default {
   'breadcrumbs.scopes': 'Scopes',
   'breadcrumbs.tree_view': 'Tree view',
   'breadcrumbs.history': 'History',
-  'breadcrumbs.create': 'Create'
+  'breadcrumbs.create': 'Create',
+
+  // temporary until the composition api supports <i18n></i18n>
+  "headline_aspect": "Delete aspect",
+  "headline_link": "Delete link"
 }

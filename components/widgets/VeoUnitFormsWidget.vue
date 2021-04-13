@@ -30,14 +30,10 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import VeoWidget from '~/components/widgets/VeoWidget.vue'
 import { endpoints } from '~/plugins/api/schema'
 import { createUUIDUrlParam } from '~/lib/utils'
 
 export default Vue.extend({
-  components: {
-    VeoWidget
-  },
   props: {
     unit: {
       type: Object,

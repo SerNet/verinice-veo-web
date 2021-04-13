@@ -43,7 +43,7 @@
               <v-card outlined :key="item.name">
                 <v-card-title>{{ item.fullName }}</v-card-title>
                 <v-card-text>
-                  <CodeEditor :key="item.name" :value="item.code" ref="codeEditor" @input="onInputCode($event, item)" />
+                  <VeoCodeEditor :key="item.name" :value="item.code" ref="codeEditor" @input="onInputCode($event, item)" />
                 </v-card-text>
               </v-card>
             </v-col>

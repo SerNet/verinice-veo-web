@@ -51,15 +51,11 @@ export default defineComponent<IProps>({
 {
   "en": {
     "delete_aspect": "Do you really want to delete the aspect \"{aspect}\"?",
-    "delete_link": "Do you really want to delete the link \"{link}\"?",
-    "headline_aspect": "Delete aspect",
-    "headline_link": "Delete link"
+    "delete_link": "Do you really want to delete the link \"{link}\"?"
   },
   "de": {
     "delete_aspect": "Möchten Sie den Aspekt \"{aspect}\" wirklich löschen?",
-    "delete_link": "Möchten Sie den Link \"{link}\" wirklich löschen?",
-    "headline_aspect": "Delete aspect",
-    "headline_link": "Delete link"
+    "delete_link": "Möchten Sie den Link \"{link}\" wirklich löschen?"
   }
 }
 </i18n>

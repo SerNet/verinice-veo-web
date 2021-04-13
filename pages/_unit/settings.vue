@@ -40,12 +40,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import VeoPage from '~/components/layout/VeoPage.vue'
-
 export default Vue.extend({
-  components: {
-    VeoPage
-  },
   data() {
     return {
       langs: [

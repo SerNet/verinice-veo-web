@@ -92,7 +92,7 @@
           :group="{ name: 'link-attributes' }"
         >
           <div v-for="(attribute, index) in formSchemaElements" :key="index" class="handle">
-            <Control
+            <VeoFseControl
               :name="attribute.scope.split('/').pop()"
               :schema="getSchema(attribute.scope)"
               :value="attribute"

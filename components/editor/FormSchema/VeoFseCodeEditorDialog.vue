@@ -1,8 +1,8 @@
 <template>
-  <VeoDialog v-model="dialog.value" large fixed-header fixed-footer :headline="$t('editor.formschema.formschema')">
+  <VeoDialog v-model="dialog.value" large fixed-header fixed-footer :headline="$t('formschema')">
     <template #default>
       <div style="min-height: 20vh">
-        <CodeEditor :value="$props.code" readonly />
+        <VeoCodeEditor :value="$props.code" readonly />
       </div>
     </template>
     <template #dialog-options>
@@ -15,8 +15,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
-
-import VeoDialog from '~/components/layout/VeoDialog.vue'
 
 interface IProps {
   value: boolean
@@ -61,6 +59,13 @@ export default defineComponent<IProps>({
 })
 </script>
 
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-</style>
+<i18n>
+{
+  "en": {
+    "formschema": "Form schema"
+  },
+  "de": {
+    "formschema": "Formschema"
+  }
+}
+</i18n>

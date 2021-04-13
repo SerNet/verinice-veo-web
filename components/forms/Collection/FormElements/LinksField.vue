@@ -53,7 +53,6 @@ import { JSONSchema7 } from 'json-schema'
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
-import LinksFieldRow from '~/components/forms/Collection/FormElements/LinksFieldRow.vue'
 import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
 import { UISchemaElement } from '~/types/UISchema'
 
@@ -64,9 +63,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'LinksField',
-  components: {
-    LinksFieldRow
-  },
   props: {
     value: {
       type: Array,

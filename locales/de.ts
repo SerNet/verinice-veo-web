@@ -28,16 +28,13 @@ export default {
   'editor.formschema.edit.input.direction.vertical': 'Vertikal',
   'editor.formschema.edit.input.label': 'Beschriftung',
   'editor.formschema.edit.input.label.text': 'Beschriftung des Elements',
-  'editor.formschema.formschema': 'Formschema',
   'editor.formschema.headline': 'Formschema Editor',
   'editor.formschema.subtype': 'Sub Typ',
   'editor.formschema.translation': 'Benutzerdefinierte Übersetzungen',
   'editor.objectschema.headline': 'Objektschema Editor',
-  'editor.objectschema.objectschema': 'Objektschema',
   'editor.schema.download': 'Schema herunterladen',
   'editor.schema.properties': 'Schema Eigenschaften',
   'editor.schema.warnings': 'Hinweise',
-  'editor.upload.file.format': '(.json)',
 
   'error.title': 'Es ist ein Fehler aufgetreten',
 
@@ -109,5 +106,9 @@ export default {
   'breadcrumbs.scopes': 'Scopes',
   'breadcrumbs.tree_view': 'Baumansicht',
   'breadcrumbs.history': 'Verlauf',
-  'breadcrumbs.create': 'Erstellen'
+  'breadcrumbs.create': 'Erstellen',
+
+  // temporary until the composition api supports <i18n></i18n>
+  "headline_aspect": "Aspekt löschen",
+  "headline_link": "Link löschen"
 }

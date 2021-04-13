@@ -1,6 +1,6 @@
 <template>
   <div class="schema-editor-wrapper d-flex flex-column fill-height">
-    <CodeEditor :value="code" @input="onInput" />
+    <VeoCodeEditor :value="code" @input="onInput" />
     <div v-if="!readonly" class="veo-editor-save-button">
       <v-btn class="mx-4 my-2" color="primary" outlined :disabled="saveButtonDisabled" @click="updateSchema()">{{
         $t('save')

@@ -82,7 +82,7 @@
               <v-col :cols="12">
                 <VeoEditorFileUpload
                   :code="oscode"
-                  :input-label="$t('editor.objectschema.upload.input.file.label')"
+                  :input-label="$t('label_os')"
                   :submit-button-text="$t('import_objectschema')"
                   @schema-uploaded="setObjectSchema"
                 />
@@ -113,7 +113,7 @@
           <p>{{ $t('import.help1') }}</p>
           <VeoEditorFileUpload
             :code="fscode"
-            :input-label="$t('label')"
+            :input-label="$t('label_fs')"
             :clear-input.sync="clearInput"
             @schema-uploaded="doImport1"
           />
@@ -133,7 +133,7 @@
           />
           <VeoEditorFileUpload
             :code="oscode"
-            :input-label="$t('editor.objectschema.upload.input.file.label')"
+            :input-label="$t('label_os')"
             @schema-uploaded="doImport2"
           />
         </v-window-item>
@@ -371,6 +371,7 @@ export default Vue.extend({
     "create": "Create form schema",
     "create.description": "Create a new form schema, either from scratch or a pre-generated layout.",
     "forceownschema": "Don't load existing object schemas from the server",
+    "format": "(.json)",
     "generate.generate": "Generate",
     "generate.none": "Start from scratch",
     "generate.title": "Do you want to generate a form schema?",
@@ -382,7 +383,8 @@ export default Vue.extend({
     "import_objectschema": "Import object schema",
     "import.wrongobjectschema":
       "The uploaded object schema has the wrong type ({objectType}). It has to have the type ({formType}).",
-    "label": "@:editor.formschema.formschema upload @:editor.upload.file.format",
+    "label_fs": "Form schema upload @:format",
+    "label_os": "Object schema upload @:format",
     "modelType.custom": "Custom",
     "invalidos": "Form schema doesn't match object schema",
     "invalidos.content":
@@ -395,6 +397,7 @@ export default Vue.extend({
     "create.description":
       "Neues Formschema erstellen. Entweder leer oder mit vorgenerierten Feldern",
     "forceownschema": "Existierendes Objektschema selbst hochladen.",
+    "format": "(.json)",
     "generate.generate": "Vorgenerieren",
     "generate.none": "Mit leerem Formschema starten",
     "generate.title": "Möchten Sie ein Formschema vorgenerieren?",
@@ -406,7 +409,8 @@ export default Vue.extend({
     "import_objectschema": "Objektschema importieren",
     "import.wrongobjectschema":
       "Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss \"{formType}\" sein.",
-    "label": "@:editor.formschema.formschema hochladen @:editor.upload.file.format",
+    "label_fs": "Formschema hochladen @:format",
+    "label_os": "Objektschema hochladen @:format",
     "modelType.custom": "Eigenes",
     "invalidos": "Formschema stimmt nicht mit existierendem Objektschema überein",
     "invalidos.content":

@@ -31,14 +31,9 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 
-import VeoPage from '~/components/layout/VeoPage.vue'
-
 interface IProps {}
 
 export default defineComponent<IProps>({
-  components: {
-    VeoPage
-  },
   head(): any {
     return {
       title: 'verinice.'

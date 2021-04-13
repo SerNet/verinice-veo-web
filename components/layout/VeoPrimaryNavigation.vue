@@ -47,7 +47,6 @@ import { Route } from 'vue-router'
 import { capitalize } from 'lodash'
 import LocalStorage from '~/util/LocalStorage'
 
-import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes'
 
@@ -65,9 +64,6 @@ export interface INavItem {
 
 export default Vue.extend({
   name: 'VeoPrimaryNavigation',
-  components: {
-    VeoPrimaryNavigationEntry
-  },
   props: {
     right: {
       type: Boolean,
