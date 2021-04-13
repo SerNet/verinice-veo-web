@@ -74,7 +74,7 @@
     </template>
     <template #item.description="{ item }">
       <div class="veo-object-list__description">
-        <v-tooltip v-if="item.descriptionShort" bottom>
+        <v-tooltip v-if="item.entity.descriptionShort" bottom>
           <template #activator="{ on }">
             <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.entity.descriptionShort }}</span>
           </template>

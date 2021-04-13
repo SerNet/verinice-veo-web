@@ -1,5 +1,5 @@
 <template>
-  <VeoDialog v-model="dialog" large :headline="$t('headline')" :persistent="saving" :close-disabled="saving">
+  <VeoDialog v-model="dialog" large :headline="$t('headline')" :persistent="saving" :close-disabled="saving" fixed-header>
     <template #default>
       {{ $t('add_subentities', { name: entityName }) }}
       <VeoEntitySelectionList :selected-items="selectedItems" :items="items" :loading="$fetchState.pending" @new-subentities="onNewSubEntities" />
@@ -74,17 +74,18 @@ export default Vue.extend({
       return this.editedEntity?.name || ''
     },
     items(): IVeoEntity[] {
-      if(this.addType === 'scope') {
-        return this.entities.filter((entity: IVeoEntity) => entity.type === 'scope' && entity.id !== this.editedEntity?.id)
+      let filterFunction: (entity: IVeoEntity) => boolean = () => true
+      if(this.addType === 'scope') { // If the add type is parent, we want to show only scopes
+        filterFunction = (entity: IVeoEntity) => entity.type === 'scope'
       } else if(this.addType === 'entity') {
-        if(this.editedEntity?.type === 'scope') {
-          return this.entities.filter((entity: IVeoEntity) => entity.type !== 'scope' && entity.id !== this.editedEntity?.id)
-        } else {
-          return this.entities.filter((entity: IVeoEntity) => entity.type === this.editedEntity?.type && entity.id !== this.editedEntity?.id)
+        if(this.editedEntity?.type === 'scope') { // If the parent is a scope, show all entities
+          filterFunction = (entity: IVeoEntity) => entity.type !== 'scope'
+        } else { // If the parent is of type other than scope, show only entities of the same type
+          filterFunction = (entity: IVeoEntity) => entity.type === this.editedEntity?.type
         }
-      } else {
-        return this.entities.filter(entity => entity.id !== this.editedEntity?.id && entity.id !== this.editedEntity?.id)
       }
+
+      return this.entities.filter((entity: IVeoEntity) => filterFunction(entity) && entity.id !== this.editedEntity?.id)
     }
   },
   watch: {
