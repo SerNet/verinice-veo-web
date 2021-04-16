@@ -6,10 +6,12 @@ import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
 import VeoScopesTreePage from '~/pages/_unit/scopes/_entity/tree.vue'
 import { ITreeEntry } from '~/components/objects/VeoObjectTree.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
+import { getSchemaName } from '~/plugins/api/schema'
 
 interface IData {
   objects: IVeoEntity[]
-  currentEntity: undefined | IVeoEntity
+  currentEntity: undefined | IVeoEntity,
+  rootEntityType: string
 }
 
 export default Vue.extend({
@@ -18,16 +20,19 @@ export default Vue.extend({
   data(): IData {
     return {
       objects: [],
-      currentEntity: undefined
+      currentEntity: undefined,
+      rootEntityType: ''
     }
   },
   async fetch() {
     if (this.entityType === '-') {
+      this.rootEntityType = getSchemaName(this.objectType) || ''
       this.objects = await this.$api.entity.fetchAll(this.objectType, {
         unit: this.unitId
       })
       this.currentEntity = undefined
     } else {
+      this.rootEntityType = this.entityType
       this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId)
       this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId)
     }

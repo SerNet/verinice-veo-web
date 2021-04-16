@@ -57,6 +57,7 @@ interface IData {
   objects: IVeoEntity[]
   formType: string
   formTypes: { value: string; text: string }[]
+  rootEntityType: string
 }
 
 export default Vue.extend({
@@ -66,14 +67,16 @@ export default Vue.extend({
       objectType: '',
       objects: [],
       formType: separateUUIDParam(this.$route.params.form).id,
-      formTypes: []
+      formTypes: [],
+      rootEntityType: ''
     }
   },
   async fetch() {
     this.formSchema = await this.$api.form.fetch(this.formId)
     this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
     if (this.formSchema) {
-      this.objects = await this.$api.entity.fetchAll(this.formSchema.modelType.toLowerCase(), {
+      this.rootEntityType = this.objectType || ''
+      this.objects = await this.$api.entity.fetchAll(this.objectType, {
         unit: this.unitId,
         subType: this.formSchema.subType
       })

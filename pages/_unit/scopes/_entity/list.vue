@@ -34,6 +34,7 @@ interface IData {
   objects: IVeoEntity[]
   currentEntity: undefined | IVeoEntity
   showParentLink: boolean
+  rootEntityType: string
 }
 
 export default Vue.extend({
@@ -47,7 +48,8 @@ export default Vue.extend({
     return {
       objects: [],
       currentEntity: undefined,
-      showParentLink: false
+      showParentLink: false,
+      rootEntityType: ''
     }
   },
   asyncData({ from, route }) {
@@ -59,11 +61,13 @@ export default Vue.extend({
   },
   async fetch() {
     if (this.entityType === '-') {
+      this.rootEntityType = 'scope'
       this.objects = await this.$api.entity.fetchAll('scope', {
         unit: this.unitId
       })
       this.currentEntity = undefined
     } else {
+      this.rootEntityType = this.entityType
       this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId)
       this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId)
     }

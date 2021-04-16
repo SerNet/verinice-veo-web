@@ -74,16 +74,22 @@ export enum VeoEntityModifierEventType {
   UNLINK
 }
 
+export interface IVeoAffectedEntity {
+  uuid: string
+  type?: string
+}
+
 export interface IVeoEntityModifierEvent {
   event: VeoEntityModifierEventType
-  affectedEntities: string[]
+  affectedEntities: IVeoAffectedEntity[]
   reloadAll?: boolean
+  addToRoot?: boolean
 }
 
 export default Vue.extend({
   props: {
-    objects: {
-      type: Array as Prop<IVeoEntity[]>,
+    rootEntityType: {
+      type: String,
       required: true
     },
     currentEntity: {
@@ -125,14 +131,9 @@ export default Vue.extend({
     }
   },
   computed: {
-    activeView(): number {
-      const routeComponents = this.$route.path.split('/')
-      const componentName = routeComponents[routeComponents.length - 1]
-      
-      return COMPONENT_NAME_VIEW_MAP[componentName] ||-1
-    },
     routeEnd(): string {
-      return this.activeView === 0 ? 'list' : 'tree'
+      const routeComponents = this.$route.path.split('/')
+      return routeComponents[routeComponents.length - 1]
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
@@ -221,7 +222,7 @@ export default Vue.extend({
       this.addEntityDialog.value = false
       this.entityModifiedEvent = {
         event: VeoEntityModifierEventType.ADD,
-        affectedEntities: [this.addEntityDialog.editedEntity?.id || '']
+        affectedEntities: [{ uuid: this.addEntityDialog.editedEntity?.id || '' }]
       }
       this.$emit('fetch', this.entityModifiedEvent)
     },
@@ -235,7 +236,7 @@ export default Vue.extend({
       this.deleteEntityDialog.value = false
       this.entityModifiedEvent = {
         event: VeoEntityModifierEventType.DELETE,
-        affectedEntities: [this.deleteEntityDialog.item?.id || '']
+        affectedEntities: [{ uuid: this.deleteEntityDialog.item?.id || '' }]
       }
       this.$emit('fetch', this.entityModifiedEvent)
     },
@@ -249,7 +250,7 @@ export default Vue.extend({
       this.unlinkEntityDialog.value = false
       this.entityModifiedEvent = {
         event: VeoEntityModifierEventType.UNLINK,
-        affectedEntities: [this.unlinkEntityDialog.parent?.id ||'']
+        affectedEntities: [{ uuid: this.unlinkEntityDialog.parent?.id ||'' }]
       }
       this.$emit('fetch', this.entityModifiedEvent)
     },
@@ -280,7 +281,8 @@ export default Vue.extend({
           this.$api.entity.update(parent.type, parent.id, fetchedParent).then(() => {
             this.entityModifiedEvent = {
               event: VeoEntityModifierEventType.CLONE,
-              affectedEntities: [parent.id]
+              affectedEntities: [{ uuid: result.resourceId, type: item.type }, {uuid: parent.id }],
+              addToRoot: item.type === this.rootEntityType
             }
             this.$emit('fetch', this.entityModifiedEvent)
             this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {

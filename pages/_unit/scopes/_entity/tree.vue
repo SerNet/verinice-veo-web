@@ -34,6 +34,7 @@ import { IVeoEntityModifierEvent } from '~/components/objects/VeoEntityModifier.
 interface IData {
   objects: IVeoEntity[]
   currentEntity: undefined | IVeoEntity
+  rootEntityType: string
 }
 
 export default Vue.extend({
@@ -47,15 +48,18 @@ export default Vue.extend({
     return {
       objects: [],
       currentEntity: undefined,
+      rootEntityType: ''
     }
   },
   async fetch() {
     if (this.entityType === '-') {
+      this.rootEntityType = 'scope'
       this.objects = await this.$api.entity.fetchAll('scope', {
         unit: this.unitId
       })
       this.currentEntity = undefined
     } else {
+      this.rootEntityType = this.entityType
       this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId)
       this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId)
     }
@@ -159,24 +163,21 @@ export default Vue.extend({
         return 0
       }
     },
-    loadSubEntities(parent: ITreeEntry): Promise<void> {
+    async loadSubEntities(parent: ITreeEntry): Promise<void> {
       let id = 0
-
-      return this.$api.entity
-        .fetchSubEntities(parent.entry.type, parent.entry.id)
-        .then((data: IVeoEntity[]) => {
-          parent.children = data
-            .map((item: IVeoEntity) => {
-              const dummy: ITreeEntry = { entry: item, id: parent.id + '.' + id++, type: item.type }
-              
-              if (item.members.length > 0 || item.parts.length > 0) {
-                dummy.children = []
-              }
-              
-              return dummy
-            })
-            .sort(this.sortingFunction)
+      
+      const children: IVeoEntity[] = await this.$api.entity.fetchSubEntities(parent.entry.type, parent.entry.id)
+      parent.children = children
+        .map((item: IVeoEntity) => {
+          const dummy: ITreeEntry = { entry: item, id: parent.id + '.' + id++, type: item.type }
+          
+          if (item.members.length > 0 || item.parts.length > 0) {
+            dummy.children = []
+          }
+          
+          return dummy
         })
+        .sort(this.sortingFunction)
     },
     handleUpdates(event: IVeoEntityModifierEvent) {
       if(event.reloadAll) {

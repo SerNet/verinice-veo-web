@@ -188,7 +188,7 @@ import { formatDate, formatTime } from '~/lib/utils'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 import { IVeoEntity } from '~/types/VeoTypes'
-import { IVeoEntityModifierEvent, VeoEntityModifierEventType } from './VeoEntityModifier.vue'
+import { IVeoAffectedEntity, IVeoEntityModifierEvent, VeoEntityModifierEventType } from './VeoEntityModifier.vue'
 
 interface IData {
   open: string[]
@@ -262,16 +262,22 @@ export default Vue.extend({
 
         switch(newValue.event) {
           case VeoEntityModifierEventType.ADD:
-            this.reloadChildren(newValue.affectedEntities[0])
+            this.reloadChildren(newValue.affectedEntities[0].uuid)
             break
           case VeoEntityModifierEventType.CLONE:
-            this.reloadChildren(newValue.affectedEntities[0])
+            if(newValue.affectedEntities[1]) {
+              this.reloadChildren(newValue.affectedEntities[1].uuid)
+            }
+            
+            if(newValue.addToRoot) {
+              this.addEntityToRoot(newValue.affectedEntities[0])
+            }
             break
           case VeoEntityModifierEventType.DELETE:
-            this.removeEntriesWithUUID(newValue.affectedEntities[0])
+            this.removeEntriesWithUUID(newValue.affectedEntities[0].uuid)
             break
           case VeoEntityModifierEventType.UNLINK:
-            this.reloadChildren(newValue.affectedEntities[0])
+            this.reloadChildren(newValue.affectedEntities[0].uuid)
             break
         }
       }
@@ -333,7 +339,8 @@ export default Vue.extend({
           this.removeEntriesWithUUID(uuid, arrayToSearch[i].children)
 
           if(arrayToSearch[i].children?.length === 0) {
-            delete arrayToSearch[i].children
+            // Disabled, as this causes an issue if at the same time children are loaded. See #162
+            // delete arrayToSearch[i].children
           }
         }
       }
@@ -380,6 +387,11 @@ export default Vue.extend({
           }
         }) || []
       }
+    },
+    async addEntityToRoot({uuid, type}: IVeoAffectedEntity) {
+      const element = await this.$api.entity.fetch(type as string, uuid)
+
+      this.displayedItems.push({ entry: element, type: type as string, id: this.displayedItems.length + '' })
     }
   },
   mounted() {
