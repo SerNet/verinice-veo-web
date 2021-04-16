@@ -103,11 +103,11 @@ export default Vue.extend({
       }
     },
     menuItems(): IVeoMenuButtonItem[] {
-      const dummy: IVeoMenuButtonItem[] = []
+      const menuItems: IVeoMenuButtonItem[] = []
 
       // Allow adding (linking) scopes everywhere but root level, add the possibility to add objects there too.
       if (this.entityType === 'scope') {
-        dummy.push({
+        menuItems.push({
           name: this.$t('scope_add') as string,
           event: {
             name: 'add-scope',
@@ -119,7 +119,7 @@ export default Vue.extend({
         })
 
         // Only add the entity create button if the user is in a scope, as it is the primary choice in entities
-        dummy.push({
+        menuItems.push({
           name: this.$t('object_create') as string,
           event: {
             name: 'create-entity',
@@ -133,7 +133,7 @@ export default Vue.extend({
 
       // Allow entity management on all levels but the root level
       if (this.entityType !== '-') {
-        dummy.push({
+        menuItems.push({
           name: this.$t('object_add') as string,
           event: {
             name: 'add-entity',
@@ -145,7 +145,7 @@ export default Vue.extend({
         })
       }
 
-      return dummy
+      return menuItems
     },
     rootRoute(): string {
       return `/${this.$route.params.unit}/scopes`

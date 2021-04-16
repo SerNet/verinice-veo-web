@@ -302,7 +302,7 @@ export default Vue.extend({
     },
     showError(status: number, message: string) {
       if(status === 412) {
-        this.alert.text = this.$t('global.appstate.alert.nrr')
+        this.alert.text = this.$t('global.appstate.alert.object_modified')
         this.alert.saveButtonText = this.$t('global.button.no')
       } else {
         this.alert.text = message

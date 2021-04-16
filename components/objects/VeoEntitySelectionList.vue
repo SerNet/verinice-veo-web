@@ -107,6 +107,7 @@
 import { clone } from 'lodash'
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import { formatDate, formatTime } from '~/lib/utils'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 
@@ -190,15 +191,7 @@ export default Vue.extend({
   },
   methods: {
     formatDate(date: string) {
-      return (
-        new Date(date).toLocaleDateString('de-DE', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }) +
-        ' ' +
-        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-      )
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
     },
     selectItem(item: { entity: IVeoEntity, selected: boolean }) {
       let dummy = clone(this.selectedItems)

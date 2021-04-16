@@ -1,8 +1,8 @@
 <template>
   <VeoDialog v-model="dialog" :headline="$t('headline')">
     <template #default>
-      {{ $t('text1', { name, parentName }) }}<br>
-      {{ $t('text2') }}
+      {{ $t('text', { name, parentName }) }}<br>
+      {{ $t('hint') }}
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
@@ -93,13 +93,13 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-  "text1": "Unlinking \"{name}\" only removes the object from \"{parentName}\".",
-  "text2": "If you wish to delete the object, you have to delete it from the root element.",
+  "text": "Unlinking \"{name}\" only removes the object from \"{parentName}\".",
+  "hint": "If you wish to delete the object, you have to delete it from the root element.",
   "headline": "Unlink object"
   },
   "de": {
-    "text1": "Es wird nur die Verknüpfung von \"{name}\" zu \"{parentName}\" entfernt.",
-    "text2": "Das Objekt kann nur von der obersten Ebene aus gelöscht werden.",
+    "text": "Es wird nur die Verknüpfung von \"{name}\" zu \"{parentName}\" entfernt.",
+    "hint": "Das Objekt kann nur von der obersten Ebene aus gelöscht werden.",
     "headline": "Verknüpfung entfernen"
   }
 }

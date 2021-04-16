@@ -122,7 +122,7 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="$emit('edit', { item: item.entry })" v-on="on">
+                <v-btn icon @click.stop="fireEvent('edit', item)" v-on="on">
                   <v-icon>
                     mdi-pencil
                   </v-icon>
@@ -146,7 +146,7 @@
             </v-tooltip>
             <v-tooltip v-if="$route.params.entity === '-'" bottom>
               <template #activator="{on}">
-                <v-btn icon @click.stop="$emit('delete', { item: item.entry })" v-on="on" class="action-delete">
+                <v-btn icon @click.stop="fireEvent('delete', item)" v-on="on" class="action-delete">
                   <v-icon>
                     mdi-delete
                   </v-icon>
@@ -184,10 +184,11 @@
 import { cloneDeep } from 'lodash'
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import { formatDate, formatTime } from '~/lib/utils'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 
 import { IVeoEntity } from '~/types/VeoTypes'
-import { IVeoEntityModifierEvent, IVeoEntityModifierEventType } from './VeoEntityModifier.vue'
+import { IVeoEntityModifierEvent, VeoEntityModifierEventType } from './VeoEntityModifier.vue'
 
 interface IData {
   deleteDialog: { value: boolean; item: IVeoEntity | undefined }
@@ -262,16 +263,16 @@ export default Vue.extend({
         }
 
         switch(newValue.event) {
-          case IVeoEntityModifierEventType.ADD:
+          case VeoEntityModifierEventType.ADD:
             this.reloadChildren(newValue.affectedEntities[0])
             break
-          case IVeoEntityModifierEventType.CLONE:
+          case VeoEntityModifierEventType.CLONE:
             this.reloadChildren(newValue.affectedEntities[0])
             break
-          case IVeoEntityModifierEventType.DELETE:
+          case VeoEntityModifierEventType.DELETE:
             this.removeEntriesWithUUID(newValue.affectedEntities[0])
             break
-          case IVeoEntityModifierEventType.UNLINK:
+          case VeoEntityModifierEventType.UNLINK:
             this.reloadChildren(newValue.affectedEntities[0])
             break
         }
@@ -297,18 +298,13 @@ export default Vue.extend({
         .sort(this.sortingFunction)
     },
     formatDate(date: string) {
-      return (
-        new Date(date).toLocaleDateString('de-DE', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }) +
-        ' ' +
-        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-      )
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
+    },
+    fireEvent(event: string, entry: ITreeEntry) {
+      this.$emit(event, entry.entry)
     },
     fireContextualisedEvent(event: string, entry: ITreeEntry) {
-      this.$emit(event, { item: entry.entry, parent: this.getParent(entry.id)?.entry})
+      this.$emit(event, { item: entry.entry, parent: this.getParent(entry.id)?.entry })
     },
     getParent(id: string): ITreeEntry | undefined {
       const parentEntries = id.split('.')

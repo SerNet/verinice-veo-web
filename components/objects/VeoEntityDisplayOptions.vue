@@ -4,7 +4,7 @@
       <v-btn-toggle mandatory :value="activeView" color="primary" dense>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn v-on="on" @click="onNavigateList">
+            <v-btn v-on="on" @click="onNavigate('list')">
               <v-icon>mdi-menu</v-icon>
             </v-btn>
           </template>
@@ -14,7 +14,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn v-on="on" @click="onNavigateTree">
+            <v-btn v-on="on" @click="onNavigate('tree')">
               <v-icon>mdi-file-tree</v-icon>
             </v-btn>
           </template>
@@ -24,7 +24,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn v-on="on" :disabled="!currentEntity" @click="onNavigateEdit">
+            <v-btn v-on="on" :disabled="!currentEntity" @click="onNavigate('edit')">
               <v-icon>mdi-file</v-icon>
             </v-btn>
           </template>
@@ -49,6 +49,8 @@ import { Prop } from 'vue/types/options'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 
+export const COMPONENT_NAME_VIEW_MAP: { [key: string]: number } = {'list': 0, 'tree': 1, 'edit': 2}
+
 export default Vue.extend({
   props: {
     currentEntity: {
@@ -68,27 +70,13 @@ export default Vue.extend({
     activeView(): number {
       const routeComponents = this.$route.path.split('/')
       const componentName = routeComponents[routeComponents.length - 1]
-      switch(componentName) {
-        case 'list':
-          return 0
-        case 'tree':
-          return 1
-        case 'edit':
-          return 2
-        default:
-          return -1
-      }
+      
+      return COMPONENT_NAME_VIEW_MAP[componentName] ||-1
     }
   },
   methods: {
-    onNavigateList() {
-      this.$router.push(`${this.rootRoute}/${this.$route.params.entity}/list`)
-    },
-    onNavigateTree() {
-      this.$router.push(`${this.rootRoute}/${this.$route.params.entity}/tree`)
-    },
-    onNavigateEdit() {
-      this.$router.push(`${this.rootRoute}/${this.$route.params.entity}/edit`)
+    onNavigate(to: 'list' | 'tree' | 'edit') {
+      this.$router.push(`${this.rootRoute}/${this.$route.params.entity}/${to}`)
     }
   }
 })

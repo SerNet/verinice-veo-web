@@ -26,9 +26,9 @@ export function hashObj(data: any, opts: IHashOpts | ICmpFunction = {}): string 
 
   const cmp =
     opts.cmp &&
-    (function(f: ICmpFunction) {
-      return function(node: any) {
-        return function(a: string, b: string) {
+    (function (f: ICmpFunction) {
+      return function (node: any) {
+        return function (a: string, b: string) {
           const aobj = { key: a, value: node[a] }
           const bobj = { key: b, value: node[b] }
           return f(aobj, bobj)
@@ -129,9 +129,21 @@ export function separateUUIDParam(param: string | undefined): IUUIDParam {
 }
 
 export function capitalize(string: string, ignoreFollowingCharacterCasing: boolean = false) {
-  if(ignoreFollowingCharacterCasing) {
+  if (ignoreFollowingCharacterCasing) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   } else {
     return _capitalize(string)
   }
+}
+
+export function formatDate(date: Date) {
+  return date.toLocaleDateString('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  })
+}
+
+export function formatTime(date: Date) {
+  return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
 }

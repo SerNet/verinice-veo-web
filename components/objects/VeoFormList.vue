@@ -67,7 +67,7 @@
       <div class="veo-object-list__actions">
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('edit', { item, path: generatePath(item) })" v-on="on">
+            <v-btn icon @click.stop="sendEvent('edit', item, true)" v-on="on">
               <v-icon>
                 mdi-pencil
               </v-icon>
@@ -79,7 +79,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('duplicate', { item })" v-on="on">
+            <v-btn icon @click.stop="sendEvent('duplicate', item)" v-on="on">
               <v-icon>
                 mdi-content-copy
               </v-icon>
@@ -91,7 +91,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('delete', { item })" v-on="on">
+            <v-btn icon @click.stop="sendEvent('delete', item)" v-on="on">
               <v-icon>
                 mdi-delete
               </v-icon>
@@ -109,7 +109,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
-import { createUUIDUrlParam } from '~/lib/utils'
+import { createUUIDUrlParam, formatDate, formatTime } from '~/lib/utils'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 
@@ -192,18 +192,13 @@ export default Vue.extend({
   },
   methods: {
     formatDate(date: string) {
-      return (
-        new Date(date).toLocaleDateString('de-DE', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }) +
-        ' ' +
-        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-      )
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
     },
     generatePath(entity: IVeoEntity) {
       return `${this.rootRoute}/${createUUIDUrlParam(entity.type, entity.id)}`
+    },
+    sendEvent(event: string, item: IVeoEntity, addPath: boolean = false) {
+      this.$emit(event, { item, path: addPath ? this.generatePath(item) : undefined })
     }
   }
 })

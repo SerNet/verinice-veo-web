@@ -43,7 +43,7 @@ export default Vue.extend({
 {
   "en": {
     "created": "Created",
-    "updted": "Updated"
+    "updated": "Updated"
   },
   "de": {
     "created": "Erstellt",

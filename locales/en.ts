@@ -167,7 +167,7 @@ export default {
   'forms.input.link.targetObject.delete.text': 'Are you sure you want to delete "{object}"?',
   'forms.input.link.targetObject.notFound': 'Not found',
 
-  'global.appstate.alert.nrr': 'This dataset has been edited by another user. Do you want to load the changes?',
+  'global.appstate.alert.object_modified': 'This dataset has been edited by another user. Do you want to load the changes?',
   'global.button.cancel': 'Cancel',
   'global.button.close': 'Close',
   'global.button.delete': 'Delete',

@@ -1,7 +1,7 @@
 <template>
   <VeoDialog v-model="dialog" :headline="$t('headline')">
     <template #default>
-      {{ $t('text', { name: name !== '' ? `"${name}"` : '' }) }}
+      {{ $t('text', { name }) }}
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
@@ -45,7 +45,7 @@ export default Vue.extend({
   },
   computed: {
     name(): string {
-      return this.item?.name ?? ''
+      return this.item?.name ? `"${this.item.name}"` : ''
     }
   },
   watch: {

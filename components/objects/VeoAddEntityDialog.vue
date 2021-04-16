@@ -153,7 +153,7 @@ export default Vue.extend({
         _editedEntity.parts = children
       }
 
-      await this.$api.entity.update(this.editedEntity.type, this.editedEntity.id, _editedEntity).then(() => {
+      this.$api.entity.update(this.editedEntity.type, this.editedEntity.id, _editedEntity).then(() => {
         this.$emit('success')
       }).catch((error: any) => {
         this.$emit('error', error)

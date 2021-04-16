@@ -73,11 +73,11 @@ export default Vue.extend({
       }
     },
     menuItems(): IVeoMenuButtonItem[] {
-      const dummy: IVeoMenuButtonItem[] = []
+      const menuItems: IVeoMenuButtonItem[] = []
 
       // Allow entity management on all levels but the root level
       if (this.entityType !== '-') {
-        dummy.push({
+        menuItems.push({
           name: this.$t('object_add') as string,
           event: {
             name: 'add-entity',
@@ -89,7 +89,7 @@ export default Vue.extend({
         })
       }
 
-      return dummy
+      return menuItems
     },
     rootRoute(): string {
       return `/${this.$route.params.unit}/objects/${this.$route.params.type}`

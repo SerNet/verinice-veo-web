@@ -6,7 +6,7 @@
     :items-per-page="itemsPerPage"
     :loading="loading"
     class="veo-object-list"
-    @click:row="$emit('click', { item: $event })"
+    @click:row="sendEvent('click', $event)"
   >
     <template #no-data>
       <span v-if="$route.params.param === '-'" class="text-center">
@@ -114,7 +114,7 @@
       <div class="d-flex flex-nowrap justify-end">
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('edit', { item, parent: currentItem })" v-on="on">
+            <v-btn icon @click.stop="sendEvent('edit', item, currentItem)" v-on="on">
               <v-icon>
                 mdi-pencil
               </v-icon>
@@ -126,7 +126,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('duplicate', { item, parent: currentItem })" v-on="on">
+            <v-btn icon @click.stop="sendEvent('duplicate', item, currentItem)" v-on="on">
               <v-icon>
                 mdi-content-copy
               </v-icon>
@@ -138,7 +138,7 @@
         </v-tooltip>
         <v-tooltip v-if="$route.params.entity === '-'" bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('delete', { item, parent: currentItem })" v-on="on">
+            <v-btn icon @click.stop="sendEvent('delete', item, currentItem)" v-on="on">
               <v-icon>
                 mdi-delete
               </v-icon>
@@ -150,7 +150,7 @@
         </v-tooltip>
         <v-tooltip v-else bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('unlink', { item, parent: currentItem })" v-on="on">
+            <v-btn icon @click.stop="sendEvent('unlink', item, currentItem)" v-on="on">
               <v-icon>
                 mdi-link-off
               </v-icon>
@@ -168,6 +168,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import { formatDate, formatTime } from '~/lib/utils'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 
@@ -252,15 +253,10 @@ export default Vue.extend({
   },
   methods: {
     formatDate(date: string) {
-      return (
-        new Date(date).toLocaleDateString('de-DE', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }) +
-        ' ' +
-        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-      )
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
+    },
+    sendEvent(event: string, item: IVeoEntity, parent?: IVeoEntity) {
+      this.$emit(event, { item, parent })
     }
   }
 })
