@@ -104,7 +104,6 @@ declare module 'veo-objectschema-7' {
       domains: VEODomainsRAW
       references: VEOReferencesRAW
       attributes: VEOAttributesRAW
-      translations: VEOTranslationsRAW
     },
     additionalProperties: false
     required: ['type']
