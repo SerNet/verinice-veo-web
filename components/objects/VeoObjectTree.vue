@@ -191,7 +191,6 @@ import { IVeoEntity } from '~/types/VeoTypes'
 import { IVeoEntityModifierEvent, VeoEntityModifierEventType } from './VeoEntityModifier.vue'
 
 interface IData {
-  deleteDialog: { value: boolean; item: IVeoEntity | undefined }
   open: string[]
   active: string[]
   displayedItems: ITreeEntry[]
@@ -239,7 +238,6 @@ export default Vue.extend({
   },
   data(): IData {
     return {
-      deleteDialog: { value: false, item: undefined },
       open: [],
       active: [],
       displayedItems: []
@@ -301,7 +299,7 @@ export default Vue.extend({
       return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
     },
     fireEvent(event: string, entry: ITreeEntry) {
-      this.$emit(event, entry.entry)
+      this.$emit(event, { item: entry.entry })
     },
     fireContextualisedEvent(event: string, entry: ITreeEntry) {
       this.$emit(event, { item: entry.entry, parent: this.getParent(entry.id)?.entry })
