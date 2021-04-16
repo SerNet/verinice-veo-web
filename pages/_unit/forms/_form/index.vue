@@ -42,13 +42,13 @@
 {
   "en": {
     "clone": "Clone",
-    "form_cloned": "Object cloned successfully",
-    "form_duplicate_error": "Failed to duplicate object"
+    "formCloned": "Object cloned successfully",
+    "formDuplicateError": "Failed to duplicate object"
   },
   "de": {
     "clone": "Klon",
-    "form_cloned": "Objekt wurde geklont",
-    "form_duplicate_error": "Objekt konnte nicht erstellt werden"
+    "formCloned": "Objekt wurde geklont",
+    "formDuplicateError": "Objekt konnte nicht erstellt werden"
   }
 }
 </i18n>
@@ -167,11 +167,11 @@ export default Vue.extend({
         this.$api.entity.create(getSchemaEndpoint(this.formSchema.modelType.toLowerCase()), newItem).then(() => {
           this.$fetch()
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
-            text: this.$t('form_cloned')
+            text: this.$t('formCloned')
           })
         }).catch((error: any) => {
           this.$root.$emit(VeoEvents.ALERT_ERROR, {
-            title: this.$t('form_duplicate_error'),
+            title: this.$t('formDuplicateError'),
             text: JSON.stringify(error)
           })
         })
