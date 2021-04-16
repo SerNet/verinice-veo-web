@@ -6,7 +6,7 @@
           <v-col cols="12" md="8">
             <v-text-field
               v-model="form.data.name"
-              :label="`${$t('property_name')} *`"
+              :label="`${$t('propertyName')} *`"
               required
               :rules="form.rules.name"
               :prefix="prefix"
@@ -17,7 +17,7 @@
           <v-col class="py-0">
             <v-text-field
               v-model="form.data.description"
-              :label="`${$t('link_description')} *`"
+              :label="`${$t('linkDescription')} *`"
               required
               :rules="form.rules.description"
             />
@@ -25,7 +25,7 @@
           <v-col :cols="4" class="py-0">
             <v-select
               v-model="form.data.targetType"
-              :label="`${$t('link_type')} *`"
+              :label="`${$t('linkType')} *`"
               :items="formattedObjectTypes"
               required
               :rules="form.rules.targetType"
@@ -45,7 +45,7 @@
 
           <v-list-item v-if="editedElement.attributes.length === 0">
             <v-list-item-content class="veo-attribute-list-no-content justify-center">
-              {{ $t(`${type}_noproperties`) }}
+              {{ $t(`noProperties.${type}`) }}
             </v-list-item-content>
           </v-list-item>
           <v-list-item class="veo-attribute-list-add-button">
@@ -53,13 +53,13 @@
               <v-spacer />
               <v-btn color="primary" text @click="addAttribute()">
                 <v-icon>mdi-plus-circle-outline</v-icon>
-                <span class="ml-2">{{ $t('add_attribute') }}</span>
+                <span class="ml-2">{{ $t('addAttribute') }}</span>
               </v-btn>
             </v-list-item-action>
           </v-list-item>
         </v-list>
         <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
-          <span> {{ $t('duplicate_attributes') }}: </span>
+          <span> {{ $t('duplicateAttributes') }}: </span>
           <ul>
             <li v-for="duplicate of duplicates" :key="duplicate">
               {{ duplicate }}
@@ -174,9 +174,9 @@ export default Vue.extend({
   computed: {
     headline(): string {
       if (this.dialog.mode === 'create') {
-        return this.$t(`headline.${this.type}.create`) as string
+        return this.$t(`headlineCreate.${this.type}`) as string
       } else {
-        return this.$t(`headline.${this.type}.edit`, {
+        return this.$t(`headlineEdit.${this.type}`, {
           title: this.item?.title ? `"${this.item?.title}"` : ''
         }) as string
       }
@@ -301,34 +301,51 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "add_attribute": "Add attribute",
-    "aspect_noproperties": "This aspect has no attributes",
-    "delete_aspect": "Delete aspect",
-    "delete_link": "Delete link",
-    "duplicate_attributes": "Attribute titles have to be unique in an aspect or link",
-    "headline.aspect.create": "Create custom aspect",
-    "headline.aspect.edit": "Edit aspect \"{title}\"",
-    "headline.link.create": "Create custom link",
-    "headline.link.edit": "Edit custom link \"{title}\"",
-    "link_description": "Description",
-    "link_noproperties": "This link has no attributes",
-    "link_type": "Link type",
-    "property_name": "Name"
+    "addAttribute": "Add attribute",
+    "delete": {
+      "aspect": "Delete aspect",
+      "link": "Delete link"
+    },
+    "duplicateAttributes": "Attribute titles have to be unique in an aspect or link",
+    "headlineCreate": {
+      "aspect": "Create custom aspect",
+      "link": "Create custom link"
+    },
+    "headlineEdit": {
+      "aspect": "Edit aspect \"{title}\"",
+      "link": "Edit custom link \"{title}\""
+    },
+    "noProperties": {
+      "aspect": "This aspect has no attributes",
+      "link": "This link has no attributes"
+    },
+    "linkDescription": "Description",
+    "linkType": "Link type",
+    "propertyName": "Name"
   },
   "de": {
-    "add_attribute": "Attribut hinzufügen",
-    "aspect_noproperties": "Dieser Aspekt besitzt keine Attribute",
-    "delete_aspect": "Aspekt löschen",
-    "delete_link": "Link löschen",
-    "duplicate_attributes": "Es kann immer nur ein Attribut mit den folgende(n) Titel(n) existieren",
-    "headline.aspect.create": "Individuellen Aspekt erstellen",
-    "headline.aspect.edit": "Aspekt \"{title}\" bearbeiten",
-    "headline.link.create": "Individuellen Link erstellen",
-    "headline.link.edit": "Link \"{title}\" bearbeiten",
-    "link_description": "Linkbeschreibung",
-    "link_noproperties": "Dieser Link besitzt keine Attribute",
-    "link_type": "Typ des Linkziels",
-    "property_name": "Name"
+    "addAttribute": "Attribut hinzufügen",
+    "delete": {
+      "aspect": "Aspekt löschen",
+      "link": "Link löschen"
+    },
+    "duplicateAttributes": "Es kann immer nur ein Attribut mit den folgende(n) Titel(n) existieren",
+    "headlineCreate": {
+      "aspect": "Individuellen Aspekt erstellen",
+      "link": "Individuellen Link erstellen"
+    },
+    "headlineEdit": {
+      "aspect": "Aspekt \"{title}\" bearbeiten",
+      "link": "Link \"{title}\" bearbeiten"
+    },
+    "linkDescription": "Linkbeschreibung",
+    "linkNoProperties": "Dieser Link besitzt keine Attribute",
+    "linkType": "Typ des Linkziels",
+    "noProperties": {
+      "aspect": "Dieser Aspekt besitzt keine Eigenschaften",
+      "link": "Dieser Link besitzt keine Eigenschaften"
+    },
+    "propertyName": "Name"
   }
 }
 </i18n>

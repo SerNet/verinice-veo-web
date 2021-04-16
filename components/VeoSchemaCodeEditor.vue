@@ -3,7 +3,7 @@
     <VeoCodeEditor :value="code" @input="onInput" />
     <div v-if="!readonly" class="veo-editor-save-button">
       <v-btn class="mx-4 my-2" color="primary" outlined :disabled="saveButtonDisabled" @click="updateSchema()">{{
-        $t('save')
+        $t('saveSchema')
       }}</v-btn>
     </div>
   </div>
@@ -54,11 +54,11 @@ export default defineComponent<IProps>({
           context.emit('schema-updated', updatedSchema)
           context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
             title: '',
-            text: context.root.$i18n.t('update_success')
+            text: context.root.$i18n.t('saveSchemaSuccess')
           })
         } catch (e) {
           context.root.$emit(VeoEvents.ALERT_ERROR, {
-            title: context.root.$i18n.t('update_error'),
+            title: context.root.$i18n.t('saveSchemaError'),
             text: e.message
           })
         }
@@ -79,14 +79,14 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "save": "Apply code changes",
-    "update_error": "Couldn't update schema",
-    "update_success": "Schema updated!"
+    "saveSchema": "Apply code changes",
+    "saveSchemaError": "Couldn't update schema",
+    "saveSchemaSuccess": "Schema updated!"
   },
   "de": {
-    "save": "Codeänderungen übernehmen",
-    "update_error": "Das Schema konnte nicht aktualisiert werden",
-    "update_success": "Schema wurde aktualisiert!"
+    "saveSchema": "Codeänderungen übernehmen",
+    "saveSchemaError": "Das Schema konnte nicht aktualisiert werden",
+    "saveSchemaSuccess": "Schema wurde aktualisiert!"
   }
 }
 </i18n>

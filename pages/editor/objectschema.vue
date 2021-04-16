@@ -122,7 +122,7 @@
               <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
             </v-col>
             <v-col cols="auto" class="text-left">
-              <h3>{{ $t('schema_invalid') }}</h3>
+              <h3>{{ $t('invalidObjectSchema') }}</h3>
               <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
                 <v-list-item-content>
                   <v-list-item-title>{{ error.code }}</v-list-item-title>
@@ -246,7 +246,7 @@ export default Vue.extend({
     "description": "Description",
     "hideemptyaspects": "Hide empty aspects",
     "objectschema": "Object schema",
-    "schema_invalid":
+    "invalidObjectSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
     "search": "Search for a property"
   },
@@ -254,7 +254,7 @@ export default Vue.extend({
     "description": "Beschreibung",
     "hideemptyaspects": "Leere Aspekte ausblenden",
     "objectschema": "Objektschema",
-    "schema_invalid":
+    "invalidObjectSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
     "search": "Nach einer Eigenschaft suchen..."
   }

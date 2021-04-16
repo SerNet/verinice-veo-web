@@ -1,10 +1,10 @@
 <template>
-  <VeoDialog v-model="dialog.value" large :headline="$t('headline')">
+  <VeoDialog v-model="dialog.value" large :headline="$t('schemaDetailsHeadline')">
     <template #default>
       <v-form v-model="form.valid" class="mx-4" @submit="doSave()">
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('title_description') }}*: </span>
+            <span style="font-size: 1.2rem;"> {{ $t('schemaName') }}*: </span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-text-field
@@ -12,7 +12,7 @@
               required
               flat
               :rules="form.rules.formSchema"
-              :label="$t('editor.formschema.create.title')"
+              :label="$t('schemaName')"
               @input="formatSchemaName"
             />
           </v-col>
@@ -158,12 +158,12 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "headline": "Formschema details",
-    "title_description": "Name of the new form schema"
+    "schemaDetailsHeadline": "Formschema details",
+    "schemaName": "Name of the form schema"
   },
   "de": {
-    "headline": "Formschema Eigenschaften",
-    "title_description": "Name des Formschemas"
+    "schemaDetailsHeadline": "Formschema Eigenschaften",
+    "schemaName": "Name des Formschemas"
   }
 }
 </i18n>

@@ -18,9 +18,9 @@
             <v-list-item @click="state = 'create-1'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
-                  {{ $t('create_formSchema') }}
+                  {{ $t('createFormSchema') }}
                 </v-list-item-title>
-                <v-list-item-subtitle>{{ $t('create.description') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('createFormSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
                 <v-icon x-large>mdi-chevron-right</v-icon>
@@ -29,9 +29,9 @@
             <v-list-item @click="state = 'import-1'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
-                  {{ $t('import') }}
+                  {{ $t('importFormSchema') }}
                 </v-list-item-title>
-                <v-list-item-subtitle>{{ $t('import.description') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('importFormSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
                 <v-icon x-large>mdi-chevron-right</v-icon>
@@ -40,7 +40,7 @@
           </v-list>
         </v-window-item>
         <v-window-item value="create-1" class="px-4">
-          <h2>{{ $t('create_formSchema') }}</h2>
+          <h2>{{ $t('createFormSchema') }}</h2>
           <v-form v-model="createForm.valid" @submit.prevent="doCreate1()">
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
@@ -82,7 +82,7 @@
               <v-col :cols="12">
                 <VeoEditorFileUpload
                   :code="oscode"
-                  :input-label="$t('label_os')"
+                  :input-label="$t('objectSchemaUploadLabel')"
                   :submit-button-text="$t('import_objectschema')"
                   @schema-uploaded="setObjectSchema"
                 />
@@ -92,31 +92,31 @@
           <small>{{ $t('global.input.requiredfields') }}</small>
         </v-window-item>
         <v-window-item value="import-1" class="px-4">
-          <h2>{{ $t('import') }}</h2>
-          <p>{{ $t('import.help1') }}</p>
+          <h2>{{ $t('importFormSchema') }}</h2>
+          <p>{{ $t('importFormSchemaHelp') }}</p>
           <VeoEditorFileUpload
             :code="fscode"
-            :input-label="$t('label_fs')"
+            :input-label="$t('formSchemaUploadLabel')"
             :clear-input.sync="clearInput"
             @schema-uploaded="doImport1"
           />
-          <v-checkbox v-model="forceOwnSchema" :label="$t('forceownschema')" />
+          <v-checkbox v-model="forceOwnSchema" :label="$t('forceOwnSchema')" />
         </v-window-item>
         <v-window-item value="import-2">
-          <h2>{{ $t('import_objectschema') }}</h2>
-          <p>{{ $t('import.help2') }}</p>
+          <h2>{{ $t('importObjectschema') }}</h2>
+          <p>{{ $t('importObjectSchemaHelp') }}</p>
           <VeoAlert
             v-model="invalidOS"
             :type="1"
-            :title="$t('invalidos')"
-            :text="$t('invalidos.content')"
+            :title="$t('invalidObjectSchema')"
+            :text="$t('invalidObjectSchemaHint')"
             class="my-4"
             flat
             no-close-button
           />
           <VeoEditorFileUpload
             :code="oscode"
-            :input-label="$t('label_os')"
+            :input-label="$t('objectSchemaUploadLabel')"
             @schema-uploaded="doImport2"
           />
         </v-window-item>
@@ -196,7 +196,7 @@ export default Vue.extend({
     objectTypes(): { text: string; value: string }[] {
       return [
         {
-          text: this.$t('modelType.custom') as string,
+          text: this.$t('customObjectSchema') as string,
           value: 'custom'
         },
         ...this.schemas.map((entry: ISchemaEndpoint) => {
@@ -261,7 +261,7 @@ export default Vue.extend({
         this.doCreate2() // We removed the option to choose between an empty form or a generate one, thus we can directly call this method.
       } else {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
-          text: this.$t('objectschema.required')
+          text: this.$t('objectSchemaRequired')
         })
       }
     },
@@ -303,7 +303,7 @@ export default Vue.extend({
     doImport2(schema: IVeoObjectSchema) {
       if (schema.title !== this.formSchema?.modelType) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
-          text: this.$t('import.wrongobjectschema', {
+          text: this.$t('wrongobjectschema', {
             objectType: schema.title,
             formType: this.formSchema?.modelType
           })
@@ -352,54 +352,45 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "create_formSchema": "Create form schema",
-    "create.description": "Create a new form schema",
-    "forceownschema": "Don't load existing object schemas from the server",
+    "createFormSchema": "Create form schema",
+    "createFormSchemaDescription": "Create a new form schema",
+    "forceOwnSchema": "Don't load existing object schemas from the server",
     "format": "(.json)",
-    "generate.generate": "Generate",
-    "generate.none": "Start from scratch",
-    "generate.title": "Do you want to generate a form schema?",
-    "import": "Import form schema",
-    "import.back": "Create a new form schema",
-    "import.description": "Import an existing form schema and modify it.",
-    "import.help1": "Upload the form schema you want to edit.",
-    "import.help2": "Upload the object schema the form schema is based on.",
-    "import_objectschema": "Import object schema",
-    "import.wrongobjectschema":
+    "importFormSchema": "Import form schema",
+    "importFormSchemaDescription": "Import an existing form schema and modify it.",
+    "importFormSchemaHelp": "Upload the form schema you want to edit.",
+    "importObjectSchemaHelp": "Upload the object schema the form schema is based on.",
+    "importObjectschema": "Import object schema",
+    "wrongobjectschema":
       "The uploaded object schema has the wrong type ({objectType}). It has to have the type ({formType}).",
-    "label_fs": "Form schema upload @:format",
-    "label_os": "Object schema upload @:format",
-    "modelType.custom": "Custom",
-    "invalidos": "Form schema doesn't match object schema",
-    "invalidos.content":
+    "formSchemaUploadLabel": "Form schema upload @:format",
+    "objectSchemaUploadLabel": "Object schema upload @:format",
+    "customObjectSchema": "Custom",
+    "invalidObjectSchema": "Form schema doesn't match object schema",
+    "invalidObjectSchemaHint":
       "It seems like the form schema is using properties not present on the remote object schema. Please upload the modified object schema.",
-    "objectschema.required": "You have to specify an object schema!",
+    "objectSchemaRequired": "You have to specify an object schema!",
     "start": "How do you want to start?"
   },
   "de": {
-    "create_formSchema": "Formschema erstellen",
-    "create.description":
-      "Neues Formschema erstellen",
-    "forceownschema": "Existierendes Objektschema selbst hochladen.",
+    "createFormSchema": "Formschema erstellen",
+    "createFormSchemaDescription": "Neues Formschema erstellen",
+    "forceOwnSchema": "Existierendes Objektschema selbst hochladen.",
     "format": "(.json)",
-    "generate.generate": "Vorgenerieren",
-    "generate.none": "Mit leerem Formschema starten",
-    "generate.title": "Möchten Sie ein Formschema vorgenerieren?",
-    "import": "Formschema importieren",
-    "import.back": "Stattdessen ein neues Formschema erstellen",
-    "import.description": "Existierendes Formschema importieren und modifizieren",
-    "import.help1": "Laden Sie hier das Formschema hoch, das Sie Bearbeiten möchten.",
-    "import.help2": "Laden Sie hier das Objektschema hoch, auf dem das Formschema basiert.",
-    "import_objectschema": "Objektschema importieren",
-    "import.wrongobjectschema":
+    "importFormSchema": "Formschema importieren",
+    "importFormSchemaDescription": "Existierendes Formschema importieren und modifizieren",
+    "importFormSchemaHelp": "Laden Sie hier das Formschema hoch, das Sie Bearbeiten möchten.",
+    "importObjectSchemaHelp": "Laden Sie hier das Objektschema hoch, auf dem das Formschema basiert.",
+    "importObjectschema": "Objektschema importieren",
+    "wrongobjectschema":
       "Das hochgeladene Objektschema hat den falschen Typ ({objectType}). Der Typ muss \"{formType}\" sein.",
-    "label_fs": "Formschema hochladen @:format",
-    "label_os": "Objektschema hochladen @:format",
-    "modelType.custom": "Eigenes",
-    "invalidos": "Formschema stimmt nicht mit existierendem Objektschema überein",
-    "invalidos.content":
+    "formSchemaUploadLabel": "Formschema hochladen @:format",
+    "objectSchemaUploadLabel": "Objektschema hochladen @:format",
+    "customObjectSchema": "Eigenes",
+    "invalidObjectSchema": "Formschema stimmt nicht mit existierendem Objektschema überein",
+    "invalidObjectSchemaHint":
       "Das Formschema verwendet Eigenschaften, die nicht im in der Anwendung hinterlegten Objektschema existieren. Bitte laden Sie das modifizierte Objektschema hoch.",
-    "objectschema.required": "Sie müssen ein Objektschema angeben",
+    "objectSchemaRequired": "Sie müssen ein Objektschema angeben",
     "start": "Wie möchten Sie starten?"
   }
 }

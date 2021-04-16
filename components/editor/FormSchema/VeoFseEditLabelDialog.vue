@@ -10,12 +10,12 @@
       <v-form>
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('text_description') }}*: </span>
+            <span style="font-size: 1.2rem;"> {{ $t('labelText') }}*: </span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-text-field
               :value="localCustomTranslation[name]"
-              :label="$t('text')"
+              :label="$t('labelText')"
               required
               @input="onInputText"
             />
@@ -198,12 +198,10 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "text_description": "Element text",
-    "text": "Text"
+    "text": "Label text"
   },
   "de": {
-    "text_description": "Text des Elements",
-    "text": "Text"
+    "text": "Labeltext"
   }
 }
 </i18n>

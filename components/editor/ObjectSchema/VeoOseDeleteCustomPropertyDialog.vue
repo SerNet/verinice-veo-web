@@ -1,7 +1,7 @@
 <template>
   <VeoDialog v-model="dialog.value" :headline="headline">
     <template #default>
-      <span v-text="type === 'aspect' ? $t('delete_aspect', { aspect: title }) : $t('delete_link', { link: title })" />
+      <span>{{ $t(`delete.${type}`, { title }) }}</span>
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.cancel') }}</v-btn>
@@ -55,12 +55,16 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "delete_aspect": "Do you really want to delete the aspect \"{aspect}\"?",
-    "delete_link": "Do you really want to delete the link \"{link}\"?"
+    "delete": {
+      "aspect": "Do you really want to delete the aspect \"{title}\"?",
+      "link": "Do you really want to delete the link \"{title}\"?"
+    }
   },
   "de": {
-    "delete_aspect": "Möchten Sie den Aspekt \"{aspect}\" wirklich löschen?",
-    "delete_link": "Möchten Sie den Link \"{link}\" wirklich löschen?"
+    "delete": {
+      "aspect": "Möchten Sie den Aspekt \"{title}\" wirklich löschen?",
+      "link": "Möchten Sie den Link \"{title}\" wirklich löschen?"
+    }
   }
 }
 </i18n>

@@ -1,7 +1,7 @@
 <template>
   <v-card v-if="level === 0" flat class="fse-group level-0 fill-width fill-height">
     <div v-if="value.elements.length === 0" class="dropzone-placeholder">
-      <div class="dropzone-placeholder-text subtitle-1">{{ $t('dropzone_placeholder') }}</div>
+      <div class="dropzone-placeholder-text subtitle-1">{{ $t('dropzonePlaceholder') }}</div>
     </div>
     <Draggable
       class="dragArea d-flex fill-width fill-height"
@@ -21,7 +21,7 @@
         <v-icon dense small class="handle pr-1">mdi-menu</v-icon>
       </v-col>
       <v-col>
-        <div class="text-caption text-truncate">{{ $t('group_name') }}</div>
+        <div class="text-caption text-truncate">{{ $t('group') }}</div>
       </v-col>
       <v-col cols="auto" class="text-right">
         <v-btn icon x-small @click="showEdit">
@@ -150,12 +150,12 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "dropzone_placeholder": "Drag in the elements",
-    "group_name": "Group"
+    "dropzonePlaceholder": "Drag in the elements",
+    "group": "Group"
   },
   "de": {
-    "dropzone_placeholder": "Ziehen Sie die Steuerelemente herein",
-    "group_name": "Gruppe"
+    "dropzonePlaceholder": "Ziehen Sie die Steuerelemente herein",
+    "group": "Gruppe"
   }
 }
 </i18n>

@@ -1,6 +1,6 @@
 <template>
   <VeoPage :title="$t('breadcrumbs.index')">
-    <div class="body-1 mb-4">{{ $t('chooseunit') }}:</div>
+    <div class="body-1 mb-4">{{ $t('unitpicker') }}:</div>
     <v-data-iterator :search="search" :items="units" item-key="id">
       <template #header>
         <v-text-field
@@ -11,7 +11,7 @@
           solo-inverted
           hide-details
           prepend-inner-icon="mdi-magnify"
-          :label="$t('chooseunit_placeholder')"
+          :label="$t('unitpickerPlaceholder')"
         />
       </template>
       <template #default="{ items }">
@@ -61,12 +61,12 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "chooseunit": "Please choose a unit",
-    "chooseunit_placeholder": "Search for a unit..."
+    "unitpicker": "Please choose a unit",
+    "unitpickerPlaceholder": "Search for a unit..."
   },
   "de": {
-    "chooseunit": "Bitte wählen Sie eine Unit",
-    "chooseunit_placeholder": "Nach einer Unit suchen..."
+    "unitpicker": "Bitte wählen Sie eine Unit",
+    "unitpickerPlaceholder": "Nach einer Unit suchen..."
   }
 }
 </i18n>

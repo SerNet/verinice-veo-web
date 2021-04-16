@@ -5,7 +5,7 @@
         <v-col :cols="8" class="py-0">
           <v-text-field
             :value="form.data.title"
-            :label="`${$t('aspect_name')} *`"
+            :label="`${$t('aspectName')} *`"
             required
             :rules="form.rules.title"
             :prefix="prefix"
@@ -15,7 +15,7 @@
         <v-col :cols="4" class="py-0">
           <v-select
             :value="form.data.type"
-            :label="$t('aspect_type')"
+            :label="$t('aspectType')"
             :items="types"
             @input="doUpdate($event, 'type')"
           />
@@ -25,7 +25,7 @@
         <v-col class="py-0">
           <v-text-field
             :value="form.data.description"
-            :label="$t('aspect_description')"
+            :label="$t('aspectDescription')"
             clearable
             @input="doUpdate($event, 'description')"
           />
@@ -56,7 +56,7 @@
           >
             <template #label>
               <span>
-                {{ $t('values_description') }}
+                {{ $t('valuesHint') }}
               </span>
             </template>
             <template #selection="data">
@@ -195,19 +195,19 @@ export default defineComponent<IProps>({
 {
   "en": {
     "multiple": "Multiple",
-    "aspect_description": "Description",
-    "aspect_name": "attribute name",
-    "aspect_type": "Attribute type",
+    "aspectDescription": "Description",
+    "aspectName": "attribute name",
+    "aspectType": "Attribute type",
     "values": "Available options",
-    "values_description": "Available options (seperate entries with Enter)"
+    "valuesHint": "Available options (seperate entries with Enter)"
   },
   "de": {
     "multiple": "Mehrfachauswahl",
-    "aspect_description": "Beschreobung",
-    "aspect_name": "Name des Attributs",
-    "aspect_type": "Typ des Attributs",
+    "aspectDescription": "Beschreobung",
+    "aspectName": "Name des Attributs",
+    "aspectType": "Typ des Attributs",
     "values": "Auswahlmöglichkeiten",
-    "values_description": "Werte (mit Enter trennen)"
+    "valuesHint": "Werte (mit Enter trennen)"
   }
 }
 </i18n>

@@ -2,7 +2,7 @@
   <VeoDialog
     :key="formSchema.scope"
     v-model="dialog.value"
-    :headline="$t('headline')"
+    :headline="$t('editControlHeadline')"
     large
   >
     <template #default>
@@ -38,15 +38,15 @@
         </v-row>
         <v-row v-if="activeControlType.highlight !== undefined" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">{{ $t('highlight') }}:</span>
+            <span style="font-size: 1.2rem;">{{ $t('highlightControl') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-checkbox v-model="activeControlType.highlight" :label="$t('highlight')" />
+            <v-checkbox v-model="activeControlType.highlight" :label="$t('highlightControl')" />
           </v-col>
         </v-row>
         <v-row v-if="activeControlType.name === 'LinksField'" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">{{ $t('link_attributes_description') }}:</span>
+            <span style="font-size: 1.2rem;">{{ $t('linkAttributes') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-autocomplete
@@ -55,7 +55,7 @@
               :items="linksAttributesItems"
               multiple
               return-object
-              :label="$t('link_attributes')"
+              :label="$t('linkAttributes')"
               @input="onInputLinksAttributes"
             />
           </v-col>
@@ -433,17 +433,15 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "headline": "Edit input element",
-    "highlight": "Highlight element",
-    "link_attributes": "Attributes",
-    "link_attributes_description": "Link attributes",
+    "editControlHeadline": "Edit input element",
+    "highlightControl": "Highlight element",
+    "linkAttributes": "Link attributes",
     "type": "Control type"
   },
   "de": {
-    "headline": "Input Element anpassen",
-    "highlight": "Element hervorheben",
-    "link_attributes": "Attribute",
-    "link_attributes_description": "Linkattribute",
+    "editControlHeadline": "Input Element anpassen",
+    "highlightControl": "Element hervorheben",
+    "linkAttributes": "Linkattribute",
     "type": "Steuerelement Typ"
   }
 }

@@ -1,7 +1,7 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="$t('validation.warnings')" large>
+  <VeoDialog v-model="dialog.value" :headline="$t('schemaValidationWarnings')" large>
     <template #default>
-      <h3>{{ $t('validation.errors') }}:</h3>
+      <h3>{{ $t('schemaValidationErrors') }}:</h3>
       <v-list>
         <v-list-item v-for="(error, index) of $props.validation.errors" :key="`e_${index}`" link>
           <v-list-item-content>
@@ -11,11 +11,11 @@
         </v-list-item>
         <v-list-item v-if="$props.validation.errors.length === 0">
           <v-list-item-content>
-            <v-list-item-title>{{ $t('validation.errors.none') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('schemaValid') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <h3>{{ $t('validation.warnings') }}:</h3>
+      <h3>{{ $t('schemaValidationWarnings') }}:</h3>
       <v-list>
         <v-list-item v-for="(warning, index) of $props.validation.warnings" :key="`w_${index}`" link>
           <v-list-item-content>
@@ -92,14 +92,14 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "validation.errors": "Errors",
-    "validation.errors.none": "No errors found!",
-    "validation.warnings": "Warnings"
+    "schemaValid": "No errors found!",
+    "schemaValidationErrors": "Errors",
+    "schemaValidationWarnings": "Warnings"
   },
   "de": {
-    "validation.errors": "Fehler",
-    "validation.errors.none": "Keine Fehler gefunden!",
-    "validation.warnings": "Warnungen"
+    "schemaValid": "Keine Fehler gefunden!",
+    "schemaValidationErrors": "Fehler",
+    "schemaValidationWarnings": "Warnungen"
   }
 }
 </i18n>

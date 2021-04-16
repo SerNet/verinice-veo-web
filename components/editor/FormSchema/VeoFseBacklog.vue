@@ -2,7 +2,7 @@
   <div class="px-2" style="height: 100%">
     <v-card flat style="height: 100%">
       <div v-show="!controlElementsVisible && searchQuery" class="text-center mt-1">
-        <span class="text--disabled">{{ $t('search_noMatch') }}</span>
+        <span class="text--disabled">{{ $t('searchNoMatch') }}</span>
       </div>
       <div v-show="controlElementsVisible" class="px-4 py-4">
         <v-btn text small @click="onExpandAll">
@@ -15,7 +15,7 @@
       <v-expansion-panels v-model="expansionPanels" accordion multiple flat>
         <v-expansion-panel v-show="filteredFormElements.length">
           <v-expansion-panel-header class="overline">
-            {{ $t('formelements') }} ({{ filteredFormElements.length }})
+            {{ $t('formElements') }} ({{ filteredFormElements.length }})
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card outlined>
@@ -398,14 +398,14 @@ export default defineComponent<IProps>({
   "en": {
     "collapse": "ollapse all",
     "expand": "expand all",
-    "formelements": "form elements",
-    "search_noMatch": "no matching controls"
+    "formElements": "form elements",
+    "searchNoMatch": "no matching controls"
   },
   "de": {
     "collapse": "alle einklappen",
     "expand": "alle ausklappen",
-    "formelements": "steuerelemente",
-    "search_noMatch": "keine passenden Steuerelemente vorhanden"
+    "formElements": "steuerelemente",
+    "searchNoMatch": "keine passenden Steuerelemente vorhanden"
   }
 }
 </i18n>

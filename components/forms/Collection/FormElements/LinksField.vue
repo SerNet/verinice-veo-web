@@ -41,7 +41,7 @@
     </v-list>
     <v-btn small text color="primary" @click="addRow()">
       <v-icon small>mdi-plus</v-icon>
-      <span>{{ $t('add') }}</span>
+      <span>{{ $t('addLink') }}</span>
     </v-btn>
   </div>
 </template>
@@ -169,10 +169,10 @@ export const helpers: Helpful<FormElementProps> = {
 <i18n>
 {
   "en": {
-    "add": "Add link"
+    "addLink": "Add link"
   },
   "de": {
-    "add": "Link hinzufügen"
+    "addLink": "Link hinzufügen"
   }
 }
 </i18n>

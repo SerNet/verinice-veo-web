@@ -18,14 +18,14 @@
       >
         <template #prepend-item>
           <v-btn color="primary" block text tile @click.stop="onDialogOpen('DIALOG_CREATE')">
-            {{ $t('targetObject.create') }}
+            {{ $t('createTargetObject') }}
           </v-btn>
           <v-divider />
         </template>
         <template #no-data>
           <v-list-item>
             <v-list-item-title>
-              {{ $t('targetObject.notFound') }}
+              {{ $t('noTargets') }}
             </v-list-item-title>
           </v-list-item>
         </template>
@@ -62,12 +62,12 @@
       />
     </v-col>
     <v-col v-else class="py-4 pl-1 links-field-row-no-attributes font-italic">
-      {{ $t('noattributes') }}
+      {{ $t('noAttributes') }}
     </v-col>
     <v-dialog :value="!!dialog" persistent max-width="500" @input="dialog = !$event ? false : dialog">
       <v-card v-if="dialog === 'DIALOG_CREATE'">
         <v-card-title class="headline">
-          {{ $t('targetObject.create.headline') }}
+          {{ $t('createTargetObject') }}
         </v-card-title>
         <v-card-text>
           <VeoForm
@@ -98,7 +98,7 @@
 
       <v-card v-else-if="dialog === 'DIALOG_UPDATE'">
         <v-card-title class="headline">
-          {{ $t('targetObject.change.headline') }}
+          {{ $t('updateTargetObject') }}
         </v-card-title>
         <v-card-text>
           <!-- TODO: ObjectSchema and FormSchema for Dialog must come from Server (Person) -->
@@ -131,12 +131,12 @@
 
       <v-card v-else-if="dialog === 'DIALOG_DELETE'">
         <v-card-title>
-          {{ $t('targetObject.delete.headline') }}
+          {{ $t('deleteTargetObject') }}
         </v-card-title>
         <!-- TODO: change name with displayName after it is implemented -->
         <v-card-text>
           {{
-            $t('targetObject.delete.text', {
+            $t('deleteTargetObjectConfirmation', {
               object: itemInDialog && itemInDialog.name
             })
           }}
@@ -413,24 +413,22 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "noattributes": "No child properties",
+    "noAttributes": "No child properties",
     "targetObject": "Target object",
-    "targetObject.change.headline": "Change object",
-    "targetObject.create": "Create",
-    "targetObject.create.headline": "Add a new object",
-    "targetObject.delete.headline": "Delete object",
-    "targetObject.delete.text": "Are you sure you want to delete \"{object}\"?",
-    "targetObject.notFound": "Not found"
+    "createTargetObject": "Create new object",
+    "updateTargetObject": "Change object",
+    "deleteTargetObject": "Delete object",
+    "deleteTargetObjectConfirmation": "Are you sure you want to delete \"{object}\"?",
+    "noTargets": "Not targets found"
   },
   "de": {
-    "noattributes": "Keine weiteren Eigenschaften",
+    "noAttributes": "Keine weiteren Eigenschaften",
     "targetObject": "Zielobjekt",
-    "targetObject.change.headline": "Objekt ändern",
-    "targetObject.create": "Erstellen",
-    "targetObject.create.headline": "Ein neues Objekt anlegen",
-    "targetObject.delete.headline": "Objekt löschen",
-    "targetObject.delete.text": "Sind sie sicher, dass das Objekt \"{object}\" gelöscht werden soll?",
-    "targetObject.notFound": "Nicht gefunden"
+    "updateTargetObject": "Objekt ändern",
+    "createTargetObject": "Ein neues Objekt anlegen",
+    "deleteTargetObject": "Objekt löschen",
+    "deleteTargetObjectConfirmation": "Sind sie sicher, dass das Objekt \"{object}\" gelöscht werden soll?",
+    "noTargets": "Keine Ziele verfügbar"
   }
 }
 </i18n>

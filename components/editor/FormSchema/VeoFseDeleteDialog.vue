@@ -1,7 +1,7 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="$t('headline')">
+  <VeoDialog v-model="dialog.value" :headline="$t('deleteControlHeadline')">
     <template #default>
-      {{ $t('text') }}
+      {{ $t('deleteControlConfirmation') }}
     </template>
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">
@@ -71,12 +71,12 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "headline": "Delete element",
-    "text": "Do you really want to remove the element from the form schema?"
+    "deleteControlHeadline": "Delete element",
+    "deleteControlConfirmation": "Do you really want to remove the element from the form schema?"
   },
   "de": {
-    "headline": "Element löschen",
-    "text": "Möchten Sie das Element wirklich aus dem Formschema entfernen?"
+    "deleteControlHeadline": "Element löschen",
+    "deleteControlConfirmation": "Möchten Sie das Element wirklich aus dem Formschema entfernen?"
   }
 }
 </i18n>

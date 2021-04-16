@@ -18,9 +18,9 @@
             <v-list-item @click="state = 'create'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
-                  {{ $t('create') }}
+                  {{ $t('createObjectSchema') }}
                 </v-list-item-title>
-                <v-list-item-subtitle>{{ $t('create_description') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('createObjectSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
                 <v-icon x-large>mdi-chevron-right</v-icon>
@@ -29,9 +29,9 @@
             <v-list-item @click="state = 'import'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
-                  {{ $t('import') }}
+                  {{ $t('importObjectSchema') }}
                 </v-list-item-title>
-                <v-list-item-subtitle>{{ $t('import_description') }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{ $t('importObjectSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
                 <v-icon x-large>mdi-chevron-right</v-icon>
@@ -41,10 +41,10 @@
         </v-window-item>
         <v-window-item value="create" class="px-4">
           <v-form v-model="createForm.valid" @submit.prevent="createSchema()">
-            <h2>{{ $t('create') }}</h2>
+            <h2>{{ $t('createObjectSchema') }}</h2>
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;"> {{ $t('type_description') }}*: </span>
+                <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-text-field
@@ -57,7 +57,7 @@
             </v-row>
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;"> {{ $t('description_description') }}*: </span>
+                <span style="font-size: 1.2rem;"> {{ $t('description') }}*: </span>
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-text-field
@@ -72,10 +72,10 @@
           <small>{{ $t('global.input.requiredfields') }}</small>
         </v-window-item>
         <v-window-item value="import" class="px-4">
-          <h2>{{ $t('import') }}</h2>
+          <h2>{{ $t('importObjectSchema') }}</h2>
           <v-row no-gutters class="align-center mt-4">
             <v-col :cols="12" :md="5">
-              <span style="font-size: 1.2rem;"> {{ $t('type_description') }}*: </span>
+              <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
             </v-col>
             <v-col :cols="12" :md="5">
               <v-select
@@ -90,7 +90,7 @@
             <v-col :cols="12">
               <VeoEditorFileUpload
                 :code="code"
-                :input-label="$t('label')"
+                :input-label="$t('uploadLabel')"
                 @schema-uploaded="createSchema"
               />
             </v-col>
@@ -98,7 +98,7 @@
           <v-row>
             <v-col>
               <span style="text-decoration: undeline; font-weight: bold; cursor: pointer;" @click="state = 'create'">
-                {{ $t('import_back') }}
+                {{ $t('importObjectSchemaSwitch') }}
               </span>
             </v-col>
           </v-row>
@@ -213,7 +213,7 @@ export default Vue.extend({
       )
       .then((types: any) => {
         types.unshift({
-          text: this.$t('modelType_custom') as string,
+          text: this.$t('customObjectSchema') as string,
           value: 'custom'
         })
         this.objectTypes = types
@@ -257,34 +257,30 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "create": "Create object schema",
-    "create_description": "Create a new object schema from scratch.",
+    "createObjectSchema": "Create object schema",
+    "createObjectSchemaDescription": "Create a new object schema from scratch.",
     "format": "(.json)",
-    "import": "Import object schema",
-    "import_back": "Create a new object schema instead",
-    "import_description": "Import an existing object schema and modify it.",
-    "label_os": "Object schema upload @:format",
-    "modelType_custom": "Custom",
+    "importObjectSchema": "Import object schema",
+    "importObjectSchemaSwitch": "Create a new object schema instead",
+    "importObjectSchemaDescription": "Import an existing object schema and modify it.",
+    "uploadLabel": "Object schema upload @:format",
+    "customObjectSchema": "Custom",
     "start": "How do you want to start?",
     "description": "Description",
-    "description_description": "Description of the schema",
-    "type": "Schema type",
-    "type_description": "Type of the object schema"
+    "type": "Type of the object schema"
   },
   "de": {
-    "create": "Objektschema erstellen",
-    "create_description": "Neues, leeres Objektschema erstellen",
+    "createObjectSchema": "Objektschema erstellen",
+    "createObjectSchemaDescription": "Neues, leeres Objektschema erstellen",
     "format": "(.json)",
-    "import": "Objektschema importieren",
-    "import_back": "Stattdessen ein neues Objektschema erstellen",
-    "import_description": "Bestehendes Objektschema importieren und modifizieren",
-    "label": "Objektschema hochladen @:format",
-    "modelType_custom": "Eigenes",
+    "importObjectSchema": "Objektschema importieren",
+    "importObjectSchemaDescription": "Bestehendes Objektschema importieren und modifizieren",
+    "importObjectSchemaSwitch": "Stattdessen ein neues Objektschema erstellen",
+    "uploadLabel": "Objektschema hochladen @:format",
+    "customObjectSchema": "Eigenes",
     "start": "Wie möchten Sie starten?",
     "description": "Beschreibung",
-    "description_description": "Beschreibung des Schemas",
-    "type": "Schema-Typ",
-    "type_description": "Typ des Objektschemas"
+    "type": "Typ des Objektschemas"
   }
 }
 </i18n>

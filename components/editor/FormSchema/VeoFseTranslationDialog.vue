@@ -6,7 +6,7 @@
           <v-row no-gutters class="align-center mt-4">
             <v-col :cols="12" :md="5">
               <span style="font-size: 1.2rem;"
-                >{{ $t('language.input.label_description') }}*:</span
+                >{{ $t('displayLanguageDescription') }}*:</span
               >
             </v-col>
             <v-col :cols="12" :md="5">
@@ -14,7 +14,7 @@
                 v-model="dialog.language"
                 :items="supportedLanguages"
                 :rules="requiredRule"
-                :label="$t('language.input.label')"
+                :label="$t('displayLanguage')"
                 required
               />
             </v-col>
@@ -22,7 +22,7 @@
           <v-row no-gutters class="align-center mt-4">
             <v-col :cols="12" :md="5">
               <span style="font-size: 1.2rem;"
-                >{{ $t('supportedlanguages.input.label_description') }}*:</span
+                >{{ $t('supportedLanguages') }}*:</span
               >
             </v-col>
             <v-col :cols="12" :md="5">
@@ -31,7 +31,7 @@
                 :items="languageItems"
                 :rules="requiredRule"
                 multiple
-                :label="$t('supportedlanguages.input.label')"
+                :label="$t('supportedLanguages')"
                 required
                 @input="onInputLanguages"
               />
@@ -116,7 +116,7 @@ export default Vue.extend({
     languageItems(): IItem[] {
       return (this.languages as string[]).map((languageCode: string) => ({
         value: languageCode,
-        text: this.$t(`language.fullname.${languageCode}`) as string
+        text: this.$t(`languageName.${languageCode}`) as string
       }))
     },
     supportedLanguages(): IItem[] {
@@ -192,24 +192,27 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "language.fullname.de": "German",
-    "language.fullname.en": "English",
-    "language.fullname.it": "Italian",
-    "language.fullname.cs": "Czech",
-    "language.input.label": "Language",
-    "language.input.label_description": "Display language in form schema editor",
-    "supportedlanguages.input.label": "Languages",
-    "supportedlanguages.input.label_description": "Supported Languages"
+    "languageName": {
+      "de": "German",
+      "en": "English",
+      "it": "Italian",
+      "cs": "Czech"
+    },
+    "languageSelectLabel": "Language",
+    "displayLanguage": "Languages",
+    "displayLanguageDescription": "Display language in form schema editor",
+    "supportedLanguages": "Supported Languages"
   },
   "de": {
-    "language.fullname.de": "Deutsch",
-    "language.fullname.en": "Englisch",
-    "language.fullname.it": "Italienisch",
-    "language.fullname.cs": "Tschechisch",
-    "language.input.label": "Sprache",
-    "language.input.label_description": "Anzeigesprache im Formschema Editor",
-    "supportedlanguages.input.label": "Sprachen",
-    "supportedlanguages.input.label_description": "Unterstützte Sprachen"
+    "languageName": {
+      "de": "Deutsch",
+      "en": "Englisch",
+      "it": "Italienisch",
+      "cs": "Tschechisch"
+    },
+    "displayLanguage": "Sprache",
+    "displayLanguageDescription": "Anzeigesprache im Formschema Editor",
+    "supportedLanguages": "Sprachen"
   }
 }
 </i18n>

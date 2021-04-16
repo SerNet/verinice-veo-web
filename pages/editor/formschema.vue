@@ -27,7 +27,7 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t('schema_code') }}
+          {{ $t('formSchemaCode') }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
@@ -80,7 +80,7 @@
         sticky-header
       >
         <template #header>
-          <h3 class="text-center pb-1">{{ $t('controls.available') }}</h3>
+          <h3 class="text-center pb-1">{{ $t('availableControls') }}</h3>
           <v-text-field
             v-model="searchQuery"
             class="mb-1"
@@ -113,7 +113,7 @@
         content-class="pb-4 px-4"
       >
         <template #header>
-          <h3 class="text-center pb-1">{{ $t('controls.current') }}</h3>
+          <h3 class="text-center pb-1">{{ $t('usedControls') }}</h3>
           <VeoCollapseButton v-if="!$vuetify.breakpoint.xs" v-model="backlogCollapsed" />
           <VeoCollapseButton v-if="!$vuetify.breakpoint.xs" v-model="previewCollapsed" right />
         </template>
@@ -167,7 +167,7 @@
               <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
             </v-col>
             <v-col cols="auto" class="text-left">
-              <h3>{{ $t('schema_invalid') }}</h3>
+              <h3>{{ $t('invalidFormSchema') }}</h3>
               <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
                 <v-list-item-content>
                   <v-list-item-title>{{ error.code }}</v-list-item-title>
@@ -459,20 +459,20 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "controls.available": "Available controls",
-    "controls.current": "Currently used controls",
+    "availableControls": "Available controls",
+    "usedControls": "Currently used controls",
     "preview": "Preview",
-    "schema_code": "Schema code",
-    "schema_invalid":
+    "formSchemaCode": "Schema code",
+    "invalidFormSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
     "search": "Search for a control..."
   },
   "de": {
-    "controls.available": "Verfügbare Steuerelemente",
-    "controls.current": "Verwendete Steuerelemente",
+    "availableControls": "Verfügbare Steuerelemente",
+    "usedControls": "Verwendete Steuerelemente",
     "preview": "Vorschau",
-    "schema_code": "Schema code",
-    "schema_invalid":
+    "formSchemaCode": "Schema code",
+    "invalidFormSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
     "search": "Nach einem Steuerelement suchen"
   }

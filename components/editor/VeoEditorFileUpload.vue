@@ -1,8 +1,8 @@
 <template>
   <VeoTabs>
     <template #tabs>
-      <v-tab>{{ $t('import_file') }}</v-tab>
-      <v-tab>{{ $t('import_code') }}</v-tab>
+      <v-tab>{{ $t('importFile') }}</v-tab>
+      <v-tab>{{ $t('importCode') }}</v-tab>
     </template>
     <template #items>
       <v-tab-item>
@@ -45,10 +45,6 @@ export default Vue.extend({
       type: String,
       required: true
     },
-    submitButtonText: {
-      type: String,
-      default: ''
-    },
     clearInput: {
       type: Boolean,
       default: false
@@ -58,11 +54,6 @@ export default Vue.extend({
     return {
       file: undefined as File | undefined,
       uploading: false as boolean
-    }
-  },
-  computed: {
-    buttonText(): string {
-      return this.submitButtonText || (this.$t('button_text') as string)
     }
   },
   watch: {
@@ -97,7 +88,7 @@ export default Vue.extend({
           this.sendSchema(result)
         }
         fr.onerror = _ => {
-          this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('upload_error'), text: fr.error })
+          this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('uploadError'), text: fr.error })
         }
 
         // Read file
@@ -114,16 +105,14 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "button_text": "Upload",
-    "import_code": "Paste code",
-    "import_file": "Upload file",
-    "upload_error": "Error while uploading file"
+    "importCode": "Paste code",
+    "importFile": "Upload file",
+    "uploadError": "Error while uploading file"
   },
   "de": {
-    "button_text": "Hochladen",
-    "import_code": "Code einfügen",
-    "import_file": "Datei hochladen",
-    "upload_error": "Fehler beim Dateiupload"
+    "importCode": "Code einfügen",
+    "importFile": "Datei hochladen",
+    "uploadError": "Fehler beim Dateiupload"
   }
 }
 </i18n>

@@ -70,7 +70,7 @@
             <v-spacer />
             <v-btn small text color="primary" @click.stop="showAddDialog('link')">
               <v-icon small>mdi-plus</v-icon>
-              <span>{{ $t('customlink_add') }}</span>
+              <span>{{ $t('addCustomLink') }}</span>
             </v-btn>
           </div>
         </v-expansion-panel-header>
@@ -262,7 +262,7 @@ export default defineComponent<IProps>({
         computeProperties()
       } catch (e) {
         context.root.$emit(VeoEvents.ALERT_ERROR, {
-          title: context.root.$i18n.t('create_custom_property_error'),
+          title: context.root.$i18n.t('createCustomPropertyError'),
           text: e
         })
       }
@@ -346,12 +346,12 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "create_custom_property_error": "Couldn't create link/aspect",
-    "customlink_add": "Add link"
+    "createCustomPropertyError": "Couldn't create link/aspect",
+    "addCustomLink": "Add link"
   },
   "de": {
-    "create_custom_property_error": "Der Link/Aspekt konnte nicht erstellt werden",
-    "customlink_add": "Link hinzufügen"
+    "createCustomPropertyError": "Der Link/Aspekt konnte nicht erstellt werden",
+    "addCustomLink": "Link hinzufügen"
   }
 }
 </i18n>
