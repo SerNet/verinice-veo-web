@@ -164,10 +164,17 @@
 import Vue from 'vue'
 import { capitalize, trim } from 'lodash'
 
-import { generateSchema, validate } from '~/lib/FormSchemaHelper'
+import {
+  generateSchema,
+  validate
+} from '~/lib/FormSchemaHelper'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
-import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema } from '~/types/VeoTypes'
+import {
+  IVeoTranslations,
+  IVeoObjectSchema,
+  IVeoFormSchema
+} from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {

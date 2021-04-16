@@ -1,5 +1,8 @@
 import { Client } from '~/plugins/api'
-import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
+import {
+  IVeoAPIMessage,
+  IVeoEntity
+} from '~/types/VeoTypes'
 
 /**
  * This file replaces the individual files for each object schema (at the point

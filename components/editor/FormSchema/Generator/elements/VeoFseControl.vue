@@ -9,7 +9,10 @@ import Vue, { PropOptions } from 'vue'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
 
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
+import {
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslation
+} from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {

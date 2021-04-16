@@ -47,7 +47,10 @@
   </v-col>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent
+} from '@nuxtjs/composition-api'
 
 interface IProps {
   absoluteSize: boolean

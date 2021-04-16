@@ -11,7 +11,10 @@ import { UISchemaElement } from '@/types/UISchema'
 import { IApi } from '~/components/forms/utils'
 
 import FormElement from '~/components/forms/Collection/FormElements/FormElement.vue'
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
+import {
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslation
+} from '~/types/VeoTypes'
 
 export default Vue.extend({
   components: {

@@ -82,7 +82,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, nextTick, Ref } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  ref,
+  computed,
+  watch,
+  nextTick
+} from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 import { INPUT_TYPES } from '~/types/VeoEditor'
 

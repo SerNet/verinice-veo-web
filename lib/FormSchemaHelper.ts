@@ -1,4 +1,10 @@
-import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoFormSchemaTranslationCollectionItem, IVeoObjectSchema } from '~/types/VeoTypes'
+import {
+  IVeoFormSchema,
+  IVeoFormSchemaItem,
+  IVeoFormSchemaTranslationCollection,
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoObjectSchema
+} from '~/types/VeoTypes'
 import FormSchemaValidator from './FormSchemaValidator'
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator'
 

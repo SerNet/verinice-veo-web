@@ -34,7 +34,10 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 
-import { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2'
+import {
+  IVeoOSHCustomAspect,
+  IVeoOSHCustomLink
+} from '~/lib/ObjectSchemaHelper2'
 import { IInputType } from '~/types/VeoEditor'
 import { capitalize } from '~/lib/utils'
 

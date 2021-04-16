@@ -41,8 +41,18 @@ import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
 
-import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VeoEditor'
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
+import {
+  eligibleInputElements,
+  IInputElement,
+  INPUT_TYPES
+} from '~/types/VeoEditor'
+import {
+  IVeoFormSchemaCustomTranslationEvent,
+  IVeoFormSchemaItemDeleteEvent,
+  IVeoFormSchemaItemUpdateEvent,
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslation
+} from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {

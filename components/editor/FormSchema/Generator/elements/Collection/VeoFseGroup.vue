@@ -67,7 +67,12 @@ import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
 import Draggable from 'vuedraggable'
 
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem } from '~/types/VeoTypes'
+import {
+  IVeoFormSchemaCustomTranslationEvent,
+  IVeoFormSchemaItemDeleteEvent,
+  IVeoFormSchemaItemUpdateEvent,
+  IVeoFormSchemaTranslationCollectionItem
+} from '~/types/VeoTypes'
 
 export default Vue.extend({
   name: 'FseGroup',

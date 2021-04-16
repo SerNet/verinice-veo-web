@@ -48,7 +48,10 @@ import Vue from 'vue'
 
 import { separateUUIDParam } from '~/lib/utils'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes'
+import {
+  IVeoDomain,
+  IVeoUnit
+} from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {

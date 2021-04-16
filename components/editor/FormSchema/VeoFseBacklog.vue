@@ -117,13 +117,24 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, PropType, ref, Ref, watch } from '@nuxtjs/composition-api'
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  PropType,
+  ref,
+  Ref,
+  watch
+} from '@nuxtjs/composition-api'
 import { JsonPointer } from 'json-ptr'
 import vjp from 'vue-json-pointer'
 import Draggable from 'vuedraggable'
 import { INPUT_TYPES } from '~/types/VeoEditor'
 import { v4 as uuid } from 'uuid'
-import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes'
+import {
+  IVeoFormSchema,
+  IVeoObjectSchema
+} from '~/types/VeoTypes'
 
 interface IProps {
   searchQuery: string

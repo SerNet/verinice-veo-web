@@ -1,4 +1,7 @@
-import { IVeoFormSchemaItem, IVeoFormSchemaItemOptions } from './VeoTypes'
+import {
+  IVeoFormSchemaItem,
+  IVeoFormSchemaItemOptions
+} from './VeoTypes'
 
 // ===============================
 // File containing multiple helper classes for the object and form schema editors

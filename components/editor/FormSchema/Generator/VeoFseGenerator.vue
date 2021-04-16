@@ -8,7 +8,13 @@ import FseLabel from './elements/VeoFseLabel.vue'
 import FseControl from './elements/VeoFseControl.vue'
 import FseLayout from './elements/VeoFseLayout.vue'
 import { UISchema, UISchemaElement } from '~/types/UISchema'
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
+import {
+  IVeoFormSchemaCustomTranslationEvent,
+  IVeoFormSchemaItemDeleteEvent,
+  IVeoFormSchemaItemUpdateEvent,
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslation
+} from '~/types/VeoTypes'
 
 export default Vue.extend({
   name: 'FseGenerator',

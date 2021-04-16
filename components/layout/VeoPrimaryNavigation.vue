@@ -47,7 +47,10 @@ import { Route } from 'vue-router'
 import { capitalize } from 'lodash'
 import LocalStorage from '~/util/LocalStorage'
 
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
+import {
+  createUUIDUrlParam,
+  separateUUIDParam
+} from '~/lib/utils'
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes'
 
 export interface INavItem {

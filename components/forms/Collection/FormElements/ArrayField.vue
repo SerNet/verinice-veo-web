@@ -47,9 +47,19 @@
 import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
-import { BaseObject, IApi } from '~/components/forms/utils'
-import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
+import {
+  BaseObject,
+  IApi
+} from '~/components/forms/utils'
+import {
+  calculateConditionsScore,
+  FormElementProps,
+  Helpful
+} from '~/components/forms/Collection/utils/helpers'
+import {
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslation
+} from '~/types/VeoTypes'
 
 export default Vue.extend({
   name: 'ArrayField',

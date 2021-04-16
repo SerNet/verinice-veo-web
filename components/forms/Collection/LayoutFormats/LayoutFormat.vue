@@ -1,8 +1,5 @@
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
-import { UISchemaElement } from '@/types/UISchema'
 
 import * as Group from './Group.vue'
 import * as Page from './Page.vue'

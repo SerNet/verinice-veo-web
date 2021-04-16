@@ -92,11 +92,19 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
-import { capitalize, cloneDeep, trim } from 'lodash'
+import {
+  capitalize,
+  cloneDeep,
+  trim
+} from 'lodash'
 
 import { ISchemaEndpoint } from '~/plugins/api/schema'
 
-import { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2'
+import {
+  IVeoOSHCustomAspect,
+  IVeoOSHCustomLink,
+  IVeoOSHCustomProperty
+} from '~/lib/ObjectSchemaHelper2'
 
 interface IData {
   dialog: { value: boolean, mode: 'create' | 'edit' }

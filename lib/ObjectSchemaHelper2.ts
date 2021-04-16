@@ -6,7 +6,9 @@ import {
   IVeoObjectSchemaCustomLink,
   IVeoObjectSchemaProperty
 } from "~/types/VeoTypes";
-import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from "./ObjectSchemaValidator";
+import ObjectSchemaValidator, {
+  VeoSchemaValidatorValidationResult
+} from "./ObjectSchemaValidator";
 
 export interface IVeoOSHCustomAspect {
   title: string

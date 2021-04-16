@@ -139,7 +139,10 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { capitalize, trim } from 'lodash'
+import {
+  capitalize,
+  trim
+} from 'lodash'
 
 import { ISchemaEndpoint } from '~/plugins/api/schema'
 

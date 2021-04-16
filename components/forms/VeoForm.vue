@@ -6,13 +6,20 @@ import { JsonPointer } from 'json-ptr'
 import vjp from 'vue-json-pointer'
 import Ajv, { RequiredParams } from 'ajv'
 import { chunk, merge } from 'lodash'
-import { UISchema, UISchemaElement, UIRule } from '~/types/UISchema'
+import {
+  UISchema,
+  UISchemaElement,
+  UIRule
+} from '~/types/UISchema'
 import { BaseObject, IApi } from '~/components/forms/utils'
 import Label from '~/components/forms/Label.vue'
 import Control from '~/components/forms/Control.vue'
 import Layout from '~/components/forms/Layout.vue'
 import Wrapper from '~/components/forms/Wrapper.vue'
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
+import {
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslation
+} from '~/types/VeoTypes'
 
 interface IErrorMessageElement {
   pointer: string

@@ -168,7 +168,10 @@ import {
   linksFieldDialogObjectSchema,
   linksFieldDialogFormSchema
 } from '~/components/forms/utils'
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
+import {
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslation
+} from '~/types/VeoTypes'
 
 interface ITarget {
   targetUri: string | undefined

@@ -1,7 +1,13 @@
 import defaultsDeep from 'lodash/defaultsDeep'
-import { Plugin, Context } from '@nuxt/types'
+import {
+  Plugin,
+  Context
+} from '@nuxt/types'
 
-import { VeoError, VeoErrorTypes } from '~/types/VeoError'
+import {
+  VeoError,
+  VeoErrorTypes
+} from '~/types/VeoError'
 
 import entity from '~/plugins/api/entity'
 import form from '~/plugins/api/form'
@@ -10,7 +16,6 @@ import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
 import scope from '~/plugins/api/scope'
 import { User } from '~/plugins/user'
-import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 export function createAPI(context: Context) {
   return Client.create(context, { form, entity, schema, translation, unit, scope })

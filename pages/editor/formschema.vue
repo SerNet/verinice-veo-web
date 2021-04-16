@@ -215,9 +215,30 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer'
 
-import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper'
-import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api'
-import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItem, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection, IVeoFormSchemaCustomTranslationEvent } from '~/types/VeoTypes'
+import {
+  validate,
+  deleteElementCustomTranslation
+} from '~/lib/FormSchemaHelper'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  provide,
+  Ref,
+  ref,
+  useFetch,
+  watch
+} from '@nuxtjs/composition-api'
+import {
+  IVeoTranslations,
+  IVeoObjectSchema,
+  IVeoFormSchema,
+  IVeoFormSchemaItemDeleteEvent,
+  IVeoFormSchemaItem,
+  IVeoFormSchemaItemUpdateEvent,
+  IVeoFormSchemaTranslationCollection,
+  IVeoFormSchemaCustomTranslationEvent
+} from '~/types/VeoTypes'
 import { JsonPointer } from 'json-ptr'
 
 interface IProps {}

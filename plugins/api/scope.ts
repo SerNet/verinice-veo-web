@@ -1,6 +1,11 @@
 import { Client } from '~/plugins/api'
 
-import { IVeoAPIMessage, IVeoEntity, IVeoLink, IVeoScope } from '~/types/VeoTypes'
+import {
+  IVeoAPIMessage,
+  IVeoEntity,
+  IVeoLink,
+  IVeoScope
+} from '~/types/VeoTypes'
 import { getSchemaName } from './schema'
 
 export default function (api: Client) {

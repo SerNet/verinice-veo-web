@@ -8,19 +8,48 @@
   </div>
 </template>
 <script lang="ts">
-import { EditorState, EditorView, basicSetup } from '@codemirror/next/basic-setup'
-import { keymap, highlightSpecialChars, indentOnInput } from '@codemirror/next/view'
-import { startCompletion, autocompletion, completionKeymap } from '@codemirror/next/autocomplete'
+import {
+  EditorState,
+  EditorView,
+  basicSetup
+} from '@codemirror/next/basic-setup'
+import {
+  keymap,
+  highlightSpecialChars,
+  indentOnInput
+} from '@codemirror/next/view'
+import {
+  startCompletion,
+  autocompletion,
+  completionKeymap
+} from '@codemirror/next/autocomplete'
 import { json } from '@codemirror/next/lang-json'
-import { setDiagnostics, lintKeymap } from '@codemirror/next/lint'
-import { TransactionSpec, tagExtension, StateField, EditorSelection } from '@codemirror/next/state'
+import {
+  setDiagnostics,
+  lintKeymap
+} from '@codemirror/next/lint'
+import {
+  TransactionSpec,
+  tagExtension,
+  StateField,
+  EditorSelection
+} from '@codemirror/next/state'
 
-import { history, historyKeymap } from '@codemirror/next/history'
-import { foldGutter, foldKeymap } from '@codemirror/next/fold'
+import {
+  history,
+  historyKeymap
+} from '@codemirror/next/history'
+import {
+  foldGutter,
+  foldKeymap
+} from '@codemirror/next/fold'
 import { lineNumbers } from '@codemirror/next/gutter'
 import { defaultKeymap } from '@codemirror/next/commands'
 import { bracketMatching } from '@codemirror/next/matchbrackets'
-import { closeBrackets, closeBracketsKeymap } from '@codemirror/next/closebrackets'
+import {
+  closeBrackets,
+  closeBracketsKeymap
+} from '@codemirror/next/closebrackets'
 import { searchKeymap } from '@codemirror/next/search'
 
 import { commentKeymap } from '@codemirror/next/comment'
@@ -28,7 +57,13 @@ import { rectangularSelection } from '@codemirror/next/rectangular-selection'
 import { gotoLineKeymap } from '@codemirror/next/goto-line'
 import { highlightSelectionMatches } from '@codemirror/next/highlight-selection'
 import { defaultHighlighter } from '@codemirror/next/highlight'
-import { defineComponent, onMounted, ref, watchEffect, watch } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  watchEffect,
+  watch
+} from '@nuxtjs/composition-api'
 
 const languageTag = Symbol('language')
 

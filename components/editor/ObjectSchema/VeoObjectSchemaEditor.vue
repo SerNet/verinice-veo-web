@@ -131,7 +131,10 @@ import ObjectSchemaHelper, {
   IVeoOSHCustomProperty
 } from '~/lib/ObjectSchemaHelper2'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { IInputType, INPUT_TYPES } from '~/types/VeoEditor'
+import {
+  IInputType,
+  INPUT_TYPES
+} from '~/types/VeoEditor'
 
 interface IProps {
   value: ObjectSchemaHelper

@@ -46,9 +46,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  Ref,
+  ref,
+  useContext
+} from '@nuxtjs/composition-api'
 
-import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import {
+  ALERT_TYPE,
+  IVeoEventPayload,
+  VeoEvents
+} from '~/types/VeoGlobalEvents'
 import { createUUIDUrlParam } from '~/lib/utils'
 
 interface IProps {}

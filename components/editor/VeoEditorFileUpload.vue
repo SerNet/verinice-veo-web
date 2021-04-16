@@ -30,7 +30,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoObjectSchema, IVeoFormSchema } from '~/types/VeoTypes'
+import {
+  IVeoObjectSchema,
+  IVeoFormSchema
+} from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {

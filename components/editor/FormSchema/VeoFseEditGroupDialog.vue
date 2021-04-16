@@ -72,12 +72,23 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, Ref, ref, reactive, getCurrentInstance } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  PropType,
+  Ref,
+  ref,
+  reactive,
+  getCurrentInstance
+} from '@nuxtjs/composition-api'
 import { BaseObject } from '~/components/forms/utils'
 import { v4 as uuid } from 'uuid'
 import { JsonPointer } from 'json-ptr'
 import { merge } from 'lodash'
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem } from '~/types/VeoTypes'
+import {
+  IVeoFormSchemaCustomTranslationEvent,
+  IVeoFormSchemaItemUpdateEvent,
+  IVeoFormSchemaTranslationCollectionItem
+} from '~/types/VeoTypes'
 
 interface IProps {
   value: boolean

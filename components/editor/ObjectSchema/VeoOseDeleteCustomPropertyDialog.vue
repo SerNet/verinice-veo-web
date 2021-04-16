@@ -11,7 +11,12 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api'
+import {
+  computed,
+  defineComponent,
+  ref,
+  watch
+} from '@nuxtjs/composition-api'
 
 interface IProps {
   value: boolean,

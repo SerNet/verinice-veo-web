@@ -51,7 +51,11 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  ref,
+  watch
+} from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 
 interface IProps {

@@ -67,7 +67,11 @@
 import { defineComponent, PropType, Ref, ref, reactive } from '@nuxtjs/composition-api'
 
 import { BaseObject } from '~/components/forms/utils'
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem } from '~/types/VeoTypes'
+import {
+  IVeoFormSchemaCustomTranslationEvent,
+  IVeoFormSchemaItemUpdateEvent,
+  IVeoFormSchemaTranslationCollectionItem
+} from '~/types/VeoTypes'
 
 interface IProps {
   value: boolean

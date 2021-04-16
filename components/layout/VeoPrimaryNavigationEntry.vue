@@ -34,7 +34,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, Ref, ref, watch } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  PropType,
+  Ref,
+  ref,
+  watch
+} from '@nuxtjs/composition-api'
 import { INavItem } from './VeoPrimaryNavigation.vue'
 
 interface IProps extends INavItem {
