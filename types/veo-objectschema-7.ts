@@ -89,13 +89,6 @@ declare module 'veo-objectschema-7' {
     }
   }
 
-  export interface VEOTranslationsRAW {
-    type: 'object'
-    properties: {
-      [key: string]: JSONSchema7Object
-    }
-  }
-
   export interface VEOCustomAspectRAW {
     type: 'object'
     properties: {
