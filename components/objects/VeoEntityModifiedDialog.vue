@@ -14,23 +14,11 @@
     </template>
   </VeoDialog>
 </template>
-<i18n>
-{
-  "en": {
-  "text": "The object \"{name}\" has been edited. Do you really want to leave this page?",
-  "headline": "Close"
-  },
-  "de": {
-    "text": "Das Objekt \"{name}\" wurde bearbeitet. Wollen Sie wirklich die Seite verlassen?",
-    "headline": "Verlassen"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
@@ -39,9 +27,6 @@ interface IData {
 }
 
 export default Vue.extend({
-  components: {
-    VeoDialog
-  },
   props: {
     value: {
       type: Boolean,
@@ -60,7 +45,7 @@ export default Vue.extend({
   },
   computed: {
     name(): string {
-      return this.item?.name ?? ''
+      return this.item?.name ? `"${this.item.name}"` : ''
     }
   },
   watch: {
@@ -81,4 +66,15 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<i18n>
+{
+  "en": {
+    "text": "The object {name} has been edited. Do you really want to leave this page?",
+    "headline": "Close"
+  },
+  "de": {
+    "text": "Das Objekt {name} wurde bearbeitet. Wollen Sie die Seite wirklich verlassen?",
+    "headline": "Verlassen"
+  }
+}
+</i18n>

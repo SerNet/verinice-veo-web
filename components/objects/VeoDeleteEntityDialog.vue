@@ -8,29 +8,17 @@
         {{ $t('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="$emit('delete', item.id)">
+      <v-btn text color="primary" :disabled="!item" @click="deleteEntity">
         {{ $t('global.button.delete') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
-<i18n>
-{
-  "en": {
-  "text": "Do you really want to delete the object \"{name}\"?",
-  "headline": "Delete object"
-  },
-  "de": {
-    "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",
-    "headline": "Objekt löschen"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
@@ -39,9 +27,6 @@ interface IData {
 }
 
 export default Vue.extend({
-  components: {
-    VeoDialog
-  },
   props: {
     value: {
       type: Boolean,
@@ -75,10 +60,30 @@ export default Vue.extend({
       }
     }
   },
+  methods: {
+    deleteEntity() {
+      this.$api.entity.delete(this.item.type, this.item.id).then(() => {
+        this.$emit('success')
+      }).catch((error) => {
+        this.$emit('error', error)
+      })
+    }
+  },
   mounted() {
     this.dialog = this.value
   }
 })
 </script>
 
-<style lang="scss" scoped></style>
+<i18n>
+{
+  "en": {
+    "text": "Do you really want to delete the object \"{name}\"?",
+    "headline": "Delete object"
+  },
+  "de": {
+    "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",
+    "headline": "Objekt löschen"
+  }
+}
+</i18n>

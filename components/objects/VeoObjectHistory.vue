@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h4>{{ $t('unit.objects.created') }}</h4>
+    <h4>{{ $t('created') }}</h4>
     <v-row>
       <v-col>
         <v-icon>mdi-account</v-icon>
@@ -12,7 +12,7 @@
       </v-col>
     </v-row>
     <v-divider />
-    <h4>{{ $t('unit.objects.updated') }}</h4>
+    <h4>{{ $t('updated') }}</h4>
     <v-row>
       <v-col>
         <v-icon>mdi-account</v-icon>
@@ -38,6 +38,19 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "created": "Created",
+    "updated": "Updated"
+  },
+  "de": {
+    "created": "Erstellt",
+    "updated": "Bearbeitet"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
