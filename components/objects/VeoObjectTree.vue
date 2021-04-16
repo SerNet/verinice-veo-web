@@ -291,13 +291,8 @@ export default Vue.extend({
       // and the tree will get reset.
       this.displayedItems = cloneDeep(this.items)
         .map((item: IVeoEntity) => {
-          if (item.type === 'scope' && item.members && item.members.length > 0) {
-            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.type }
-          } else if (item.parts && item.parts.length > 0) {
-            return { entry: item, children: [] as ITreeEntry[], id: '' + id++, type: item.type }
-          } else {
-            return { entry: item, id: '' + id++, type: item.type }
-          }
+          id++
+          return this.mapEntityToTreeEntry(item, id)
         })
         .sort(this.sortingFunction)
     },
@@ -371,6 +366,15 @@ export default Vue.extend({
         this.displayedItems = oldItems
       }
     },
+    mapEntityToTreeEntry(entity: IVeoEntity, id: number) {
+      if (entity.type === 'scope' && entity.members && entity.members.length > 0) {
+        return { entry: entity, children: [] as ITreeEntry[], id: '' + id, type: entity.type }
+      } else if (entity.parts && entity.parts.length > 0) {
+        return { entry: entity, children: [] as ITreeEntry[], id: '' + id, type: entity.type }
+      } else {
+        return { entry: entity, id: '' + id, type: entity.type }
+      }
+    },
     updateEntityMembers(updatedItem: ITreeEntry) {
       if(updatedItem.type === 'scope') {
         // @ts-ignore
@@ -391,7 +395,7 @@ export default Vue.extend({
     async addEntityToRoot({uuid, type}: IVeoAffectedEntity) {
       const element = await this.$api.entity.fetch(type as string, uuid)
 
-      this.displayedItems.push({ entry: element, type: type as string, id: this.displayedItems.length + '' })
+      this.displayedItems.push(this.mapEntityToTreeEntry(element, this.displayedItems.length + 1))
     }
   },
   mounted() {
