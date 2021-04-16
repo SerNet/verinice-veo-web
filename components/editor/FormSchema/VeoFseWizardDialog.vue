@@ -18,7 +18,7 @@
             <v-list-item @click="state = 'create-1'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
-                  {{ $t('create') }}
+                  {{ $t('create_formSchema') }}
                 </v-list-item-title>
                 <v-list-item-subtitle>{{ $t('create.description') }}</v-list-item-subtitle>
               </v-list-item-content>
@@ -40,7 +40,7 @@
           </v-list>
         </v-window-item>
         <v-window-item value="create-1" class="px-4">
-          <h2>{{ $t('create') }}</h2>
+          <h2>{{ $t('create_formSchema') }}</h2>
           <v-form v-model="createForm.valid" @submit.prevent="doCreate1()">
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
@@ -90,23 +90,6 @@
             </v-row>
           </v-form>
           <small>{{ $t('global.input.requiredfields') }}</small>
-        </v-window-item>
-        <v-window-item value="create-2" class="px-4">
-          <h2 class="text-center my-8">
-            {{ $t('generate.title') }}
-          </h2>
-          <v-row class="text-center">
-            <v-col>
-              <v-btn color="primary" outlined text @click="doCreate2(false)">
-                {{ $t('generate.none') }}
-              </v-btn>
-            </v-col>
-            <v-col>
-              <v-btn color="primary" outlined text @click="doCreate2(true)">
-                {{ $t('generate.generate') }}
-              </v-btn>
-            </v-col>
-          </v-row>
         </v-window-item>
         <v-window-item value="import-1" class="px-4">
           <h2>{{ $t('import') }}</h2>
@@ -202,7 +185,7 @@ export default Vue.extend({
       formSchema: undefined as IVeoFormSchema | undefined,
       objectSchema: undefined as IVeoObjectSchema | undefined,
       translation: undefined as IVeoTranslations | undefined,
-      state: 'start' as 'start' | 'create-1' | 'create-2' | 'import-1' | 'import-2',
+      state: 'start' as 'start' | 'create-1' | 'import-1' | 'import-2',
       schemas: [] as ISchemaEndpoint[],
       invalidOS: false as boolean,
       forceOwnSchema: false as boolean,
@@ -261,12 +244,6 @@ export default Vue.extend({
     goBack() {
       if (this.state === 'create-1' || this.state === 'import-1') {
         this.state = 'start'
-      } else if (this.state === 'create-2') {
-        if(this.createForm.modelType !== 'custom') {
-          this.objectSchema = undefined
-        }
-        
-        this.state = 'create-1'
       } else if (this.state === 'import-2') {
         this.fscode = ''
         this.oscode = ''
@@ -281,14 +258,14 @@ export default Vue.extend({
         if (this.createForm.modelType !== 'custom') {
           this.objectSchema = await this.$api.schema.fetch(this.createForm.modelType)
         }
-        this.state = 'create-2'
+        this.doCreate2() // We removed the option to choose between an empty form or a generate one, thus we can directly call this method.
       } else {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('objectschema.required')
         })
       }
     },
-    doCreate2(_generateSchema: boolean) {
+    doCreate2() {
       const _subtype =
         !this.createForm.subType || trim(this.createForm.subType).length == 0 ? null : this.createForm.subType
       this.formSchema = generateSchema(
@@ -375,8 +352,8 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "create": "Create form schema",
-    "create.description": "Create a new form schema, either from scratch or a pre-generated layout.",
+    "create_formSchema": "Create form schema",
+    "create.description": "Create a new form schema",
     "forceownschema": "Don't load existing object schemas from the server",
     "format": "(.json)",
     "generate.generate": "Generate",
@@ -400,9 +377,9 @@ export default Vue.extend({
     "start": "How do you want to start?"
   },
   "de": {
-    "create": "Formschema erstellen",
+    "create_formSchema": "Formschema erstellen",
     "create.description":
-      "Neues Formschema erstellen. Entweder leer oder mit vorgenerierten Feldern",
+      "Neues Formschema erstellen",
     "forceownschema": "Existierendes Objektschema selbst hochladen.",
     "format": "(.json)",
     "generate.generate": "Vorgenerieren",

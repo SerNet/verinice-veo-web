@@ -396,16 +396,16 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "collapse": "Collapse all",
-    "expand": "Expand all",
-    "formelements": "Form elements",
-    "search_noMatch": "No matching controls"
+    "collapse": "ollapse all",
+    "expand": "expand all",
+    "formelements": "form elements",
+    "search_noMatch": "no matching controls"
   },
   "de": {
-    "collapse": "Alle einklappen",
-    "expand": "Alle ausklappen",
-    "formelements": "Form elements",
-    "search_noMatch": "Keine passenden Steuerelemente vorhanden"
+    "collapse": "alle einklappen",
+    "expand": "alle ausklappen",
+    "formelements": "steuerelemente",
+    "search_noMatch": "keine passenden Steuerelemente vorhanden"
   }
 }
 </i18n>

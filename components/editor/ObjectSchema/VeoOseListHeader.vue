@@ -66,10 +66,10 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "attributecount": "No attributes | {n} attribute | {n} attributes"
+    "attributecount": "No attributes | one attribute | {n} attributes"
   },
   "de": {
-    "attributecount": "Keine Attribute | {n} Attribut | {n} Attribute"
+    "attributecount": "Keine Attribute | Ein Attribut | {n} Attribute"
   }
 }
 </i18n>

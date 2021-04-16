@@ -424,7 +424,7 @@ export default Vue.extend({
   },
   "de": {
     "noattributes": "Keine weiteren Eigenschaften",
-    "targetObject": "Ziel Objekt",
+    "targetObject": "Zielobjekt",
     "targetObject.change.headline": "Objekt ändern",
     "targetObject.create": "Erstellen",
     "targetObject.create.headline": "Ein neues Objekt anlegen",

@@ -309,11 +309,11 @@ export default Vue.extend({
     "headline.aspect.create": "Create custom aspect",
     "headline.aspect.edit": "Edit aspect \"{title}\"",
     "headline.link.create": "Create custom link",
-    "headline.link.edit": "Edit custom link {title}",
+    "headline.link.edit": "Edit custom link \"{title}\"",
     "link_description": "Description",
     "link_noproperties": "This link has no attributes",
     "link_type": "Link type",
-    "property_name": "Title"
+    "property_name": "Name"
   },
   "de": {
     "add_attribute": "Attribut hinzufügen",
@@ -322,13 +322,13 @@ export default Vue.extend({
     "delete_link": "Link löschen",
     "duplicate_attributes": "Es kann immer nur ein Attribut mit den folgende(n) Titel(n) existieren",
     "headline.aspect.create": "Individuellen Aspekt erstellen",
-    "headline.aspect.edit": "Aspekt {title} bearbeiten",
+    "headline.aspect.edit": "Aspekt \"{title}\" bearbeiten",
     "headline.link.create": "Individuellen Link erstellen",
-    "headline.link.edit": "Link {title} bearbeiten",
+    "headline.link.edit": "Link \"{title}\" bearbeiten",
     "link_description": "Linkbeschreibung",
     "link_noproperties": "Dieser Link besitzt keine Attribute",
     "link_type": "Typ des Linkziels",
-    "property_name": "Titel"
+    "property_name": "Name"
   }
 }
 </i18n>

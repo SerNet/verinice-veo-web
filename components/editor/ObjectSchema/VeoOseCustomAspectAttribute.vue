@@ -5,7 +5,7 @@
         <v-col :cols="8" class="py-0">
           <v-text-field
             :value="form.data.title"
-            :label="`${$t('property_name')} *`"
+            :label="`${$t('aspect_name')} *`"
             required
             :rules="form.rules.title"
             :prefix="prefix"
@@ -15,7 +15,7 @@
         <v-col :cols="4" class="py-0">
           <v-select
             :value="form.data.type"
-            :label="$t('property_type')"
+            :label="$t('aspect_type')"
             :items="types"
             @input="doUpdate($event, 'type')"
           />
@@ -25,7 +25,7 @@
         <v-col class="py-0">
           <v-text-field
             :value="form.data.description"
-            :label="$t('property_description')"
+            :label="$t('aspect_description')"
             clearable
             @input="doUpdate($event, 'description')"
           />
@@ -195,17 +195,17 @@ export default defineComponent<IProps>({
 {
   "en": {
     "multiple": "Multiple",
-    "property_description": "Description",
-    "property_name": "attribute name",
-    "property_type": "Attribute type",
+    "aspect_description": "Description",
+    "aspect_name": "attribute name",
+    "aspect_type": "Attribute type",
     "values": "Available options",
     "values_description": "Available options (seperate entries with Enter)"
   },
   "de": {
     "multiple": "Mehrfachauswahl",
-    "property_description": "Beschreobung",
-    "property_name": "Name des Attributs",
-    "property_type": "Typ des Attributs",
+    "aspect_description": "Beschreobung",
+    "aspect_name": "Name des Attributs",
+    "aspect_type": "Typ des Attributs",
     "values": "Auswahlmöglichkeiten",
     "values_description": "Werte (mit Enter trennen)"
   }

@@ -1,5 +1,5 @@
 <template>
-  <VeoDialog v-model="dialog.value" large fixed-header fixed-footer :headline="$t('formschema')">
+  <VeoDialog v-model="dialog.value" large fixed-header fixed-footer :headline="$t('formSchema')">
     <template #default>
       <div style="min-height: 20vh">
         <VeoCodeEditor :value="$props.code" readonly />
@@ -66,10 +66,10 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "formschema": "Form schema"
+    "formSchema": "Form schema"
   },
   "de": {
-    "formschema": "Formschema"
+    "formSchema": "Formschema"
   }
 }
 </i18n>

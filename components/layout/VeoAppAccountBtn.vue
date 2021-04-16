@@ -94,7 +94,7 @@ export default Vue.extend({
     "logout": "Logout"
   },
   "de": {
-    "logout": "Logout"
+    "logout": "Abmelden"
   }
 }
 </i18n>
