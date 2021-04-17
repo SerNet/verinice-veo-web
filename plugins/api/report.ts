@@ -4,8 +4,7 @@ import { IVeoReportsMeta } from '~/types/VeoTypes'
 export default function (api: Client) {
   return {
     /**
-     * Loads all Forms
-     * @param parent
+     * Loads all reports
      */
     fetchAll(params?: Record<string, string>): Promise<IVeoReportsMeta> {
       return api.req('/api/reports', {
@@ -15,7 +14,7 @@ export default function (api: Client) {
 
     /**
      * Creates a report
-     * @param form
+     * @param type
      * 
      * @returns UUID of the new form
      */

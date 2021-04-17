@@ -44,7 +44,7 @@ export class Client {
     this.version = context.$config.version
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '')
     this.baseFormURL = `${context.$config.formsApiUrl}`.replace(/\/$/, '')
-    this.baseReportURL = `${context.$config.reportsApiUrl}`.replace(/\/$/, '') + '/reports/'
+    this.baseReportURL = `${context.$config.reportsApiUrl}`.replace(/\/$/, '') + '/reports'
     // this.sentry = context.app.$sentry
   }
 
