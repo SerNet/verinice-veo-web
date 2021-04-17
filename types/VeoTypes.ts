@@ -103,7 +103,12 @@ export interface IVeoReportsMeta {
 }
 
 export interface IVeoReportMeta {
-  description: string
+  name: {
+    [key: string]: string
+  }
+  description: {
+    [key: string]: string
+  }
   outputTypes: string[]
   multipleTargetsSupported: boolean
   targetTypes: string[]

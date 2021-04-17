@@ -238,14 +238,13 @@ export default Vue.extend({
       )
     },
     async fetchReportTypes(): Promise<INavItem[]> {
-      const routeUnitParam = separateUUIDParam(this.$route.params.unit).id
-      return await this.$api.report.fetchAll({ unit: routeUnitParam }).then((reportTypes: IVeoReportsMeta) =>
+      return await this.$api.report.fetchAll().then((reportTypes: IVeoReportsMeta) =>
         Object.entries(reportTypes).map(([key, value]) => {
-          console.log(key, value)
+          const name = value.name[this.$i18n.locale] || value.name[0]
           return {
-            name: 'Test',
+            name: name,
             exact: false,
-            to: `/${createUUIDUrlParam('unit', routeUnitParam)}/forms/${createUUIDUrlParam('form', '5')}/`,
+            to: `/${this.$route.params.unit}/reports/${key}/`,
             disabled: false,
             topLevelItem: false
           } 
