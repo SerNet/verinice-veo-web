@@ -18,29 +18,15 @@
         :disabled="!type"
         @click="$emit('create-entity', type)"
       >
-        {{ $t('global.button.save') }}
+        {{ $t('create') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
-<i18n>
-{
-  "en": {
-    "create_entity": "Please specify the type of the new object.",
-    "headline": "Create new object"
-  },
-  "de": {
-    "create_entity": "Bitte wählen Sie den Typ des neuen Objektes.",
-    "headline": "Objekt erstellen"
-  }
-}
-</i18n>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
-
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 
 interface IData {
   dialog: boolean
@@ -49,9 +35,6 @@ interface IData {
 }
 
 export default Vue.extend({
-  components: {
-    VeoDialog
-  },
   props: {
     value: {
       type: Boolean,
@@ -91,4 +74,17 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<i18n>
+{
+  "en": {
+    "create": "Create",
+    "create_entity": "Please specify the type of the new object.",
+    "headline": "Create new object"
+  },
+  "de": {
+    "create": "Erstellen",
+    "create_entity": "Bitte wählen Sie den Typ des neuen Objektes.",
+    "headline": "Objekt erstellen"
+  }
+}
+</i18n>

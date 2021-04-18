@@ -263,7 +263,7 @@ export default Vue.extend({
   mounted() {
     this.dialog = this.value
 
-    this.$api.schema.fetchAll().then((data: ISchemaEndpoint[]) => (this.schemas = data))
+    this.$api.schema.fetchAll(true).then((data: ISchemaEndpoint[]) => (this.schemas = data))
     this.$api.translation.fetch([]).then((translation: IVeoTranslations) => {
       this.translation = translation
     })

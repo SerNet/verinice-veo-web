@@ -35,10 +35,6 @@ export interface IVeoUnit {
   units: IVeoUnit[]
 }
 
-export interface IVeoScope extends IVeoEntity {
-  members: IVeoLink[]
-}
-
 export interface IVeoEntity {
   id: string
   name: string
@@ -52,10 +48,11 @@ export interface IVeoEntity {
   links: IVeoCustomLinks
   customAspects: IVeoCustomAspects
   subType: IVeoEntitySubtypes
-  parts: IVeoLink[]
+  members: IVeoLink[] // Only contains items if entity is of type scope
+  parts: IVeoLink[] // Only contains items if entity is NOT of type scope
   description: string
   descriptionShort?: string // Frontend only attribute used in VeoObjectList.vue
-  $type: string
+  type: string
 }
 
 export interface IVeoEntitySubtypes {
@@ -96,22 +93,6 @@ export interface IVeoFormSchemaEntry {
     [key: string]: string
   }
   elements: IVeoFormSchemaEntry[]
-}
-
-export interface IVeoReportsMeta {
-  [key: string]: IVeoReportMeta
-}
-
-export interface IVeoReportMeta {
-  name: {
-    [key: string]: string
-  }
-  description: {
-    [key: string]: string
-  }
-  outputTypes: string[]
-  multipleTargetsSupported: boolean
-  targetTypes: string[]
 }
 
 /**

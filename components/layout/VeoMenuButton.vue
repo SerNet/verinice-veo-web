@@ -4,11 +4,11 @@
     <v-btn
       :color="color"
       outlined
-      :disabled="disabled"
+      :disabled="primaryItem.disabled"
       class="veo-hierarchical-table__expandable-menu-default-button"
-      @click="$emit(buttonEvent)"
+      @click="$emit(primaryItem.event.name, primaryItem.event.params)"
     >
-      {{ buttonText }}</v-btn
+      {{ primaryItem.name }}</v-btn
     ><v-menu bottom left offset-y>
       <template v-slot:activator="{ on }">
         <v-btn
@@ -26,7 +26,7 @@
           v-for="(item, index) in menuItems"
           :key="index"
           :disabled="item.disabled"
-          @click="$emit(item.eventName)"
+          @click="$emit(item.event.name, item.event.params)"
         >
           <v-list-item-title>{{ item.name }}</v-list-item-title>
         </v-list-item>
@@ -39,7 +39,12 @@ import { defineComponent, PropType } from '@nuxtjs/composition-api'
 
 export interface IVeoMenuButtonItem {
   disabled: boolean
-  eventName: string
+  event: {
+    name: string
+    params: {
+      [key: string]: any
+    }
+  }
   name: string
 }
 
@@ -57,21 +62,13 @@ export default defineComponent<IProps>({
       type: Array as PropType<IVeoMenuButtonItem[]>,
       default: () => []
     },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
     color: {
       type: String,
       default: 'primary'
     },
-    buttonText: {
-      type: String,
+    primaryItem: {
+      type: Object as PropType<IVeoMenuButtonItem>,
       required: true
-    },
-    buttonEvent: {
-      type: String,
-      default: 'click'
     }
   },
   setup(_props, _context) {}
