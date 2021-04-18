@@ -1,7 +1,6 @@
 const PRIMARY_NAV_MINI_VARIANT = 'primary-navigation-drawer--mini-variant'
 const NAV_ENTRY_VEO_DATA_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-data-collapsed'
 const NAV_ENTRY_VEO_FORMS_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-forms-collapsed'
-const NAV_ENTRY_VEO_REPORTS_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-reports-collapsed'
 const DEFAULT_UNIT_DOMAINS = 'default-unit-domains'
 
 export default class LocalStorage {
@@ -57,14 +56,6 @@ export default class LocalStorage {
 
   static set navEntryVeoFormsCollapsed(value: boolean) {
     LocalStorage.setBoolean(NAV_ENTRY_VEO_FORMS_COLLAPSED, value)
-  }
-
-  static get navEntryVeoReportsCollapsed() {
-    return LocalStorage.getBoolean(NAV_ENTRY_VEO_REPORTS_COLLAPSED, true)
-  }
-
-  static set navEntryVeoReportsCollapsed(value: boolean) {
-    LocalStorage.setBoolean(NAV_ENTRY_VEO_REPORTS_COLLAPSED, value)
   }
 
   static get defaultUnitDomains() {

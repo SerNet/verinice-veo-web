@@ -95,22 +95,6 @@ export interface IVeoFormSchemaEntry {
   elements: IVeoFormSchemaEntry[]
 }
 
-export interface IVeoReportsMeta {
-  [key: string]: IVeoReportMeta
-}
-
-export interface IVeoReportMeta {
-  name: {
-    [key: string]: string
-  }
-  description: {
-    [key: string]: string
-  }
-  outputTypes: string[]
-  multipleTargetsSupported: boolean
-  targetTypes: string[]
-}
-
 /**
  * 2. Types of user generated data
  */
