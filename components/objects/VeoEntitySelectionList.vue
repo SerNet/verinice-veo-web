@@ -14,7 +14,8 @@
       </span>
     </template>
     <template #item.select="{ item }">
-      <v-checkbox v-model="item.selected" @click.prevent.stop="selectItem(item)" />
+      <v-radio v-if="singleSelect" v-model="item.selected" @click.prevent.stop="selectItem(item)" />
+      <v-checkbox v-else v-model="item.selected" @click.prevent.stop="selectItem(item)" />
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
@@ -85,6 +86,9 @@
         <span v-else>{{ item.entity.description }}</span>
       </div>
     </template>
+    <template #item.updatedBy="{ item }">
+      {{ item.entity.updatedBy }}
+    </template>
     <template #item.date="{ item }">
       <div class="veo-object-list__date nowrap">
         <v-tooltip bottom>
@@ -131,17 +135,19 @@ export default Vue.extend({
         (a: { entity: IVeoEntity, selected: boolean}, b: { entity: IVeoEntity, selected: boolean}) =>
           a.entity.name.localeCompare(b.entity.name)
         )
+    },
+    singleSelect: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      itemsPerPage: 10,
-      dummy: 0
+      itemsPerPage: 10
     }
   },
   computed: {
     displayedItems(): { entity: IVeoEntity, selected: boolean}[] {
-      this.dummy;
       return this.items.map(item => {
         // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
         if(item.description && item.description.length >  40) {

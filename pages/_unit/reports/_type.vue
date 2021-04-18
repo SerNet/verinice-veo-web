@@ -1,14 +1,21 @@
 <template>
 <VeoPage :title="title" fullsize>
   <template #header>
-    <p v-if="report" class="mt-4">
-      {{ report.description }}
-    </p>
+    <v-row class="justify-space-between">
+      <v-col cols="auto">
+        <p v-if="report" class="mt-4">
+          {{ report.description }}
+        </p>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn outlined color="primary" class="mt-4" :disabled="loading" @click="generateReport">{{ $t('generateReport') }}</v-btn>
+      </v-col>
+    </v-row>
   </template>
   <template #default>
-    <p v-if="report && report.multiselect">{{ $t('hint_multiple') }}</p>
-    <p v-else-if="report">{{ $t('hint_single') }}</p>
-    <VeoEntitySelection v-model="selectedEntities" :items="items" :loading="$fetchState.pending" />
+    <p v-if="report && report.multiselect">{{ $t('hintMultiple') }}</p>
+    <p v-else-if="report">{{ $t('hintSingle') }}</p>
+    <VeoEntitySelectionList v-model="selectedEntities" :items="items" :loading="$fetchState.pending" />
   </template>
 </VeoPage>
 </template>
@@ -28,6 +35,7 @@ interface IData {
     outputFormat: string,
     multiselect: boolean
   }
+  generatingReport: boolean
 }
 
 export default Vue.extend({
@@ -40,7 +48,8 @@ export default Vue.extend({
     return {
       items: [],
       selectedEntities: [],
-      report: undefined
+      report: undefined,
+      generatingReport: false
     }
   },
   async fetch() {
@@ -59,8 +68,8 @@ export default Vue.extend({
         multiselect: _report.multipleTargetsSupported
       }
 
-      for(let type of _report.targetTypes) {
-        this.items = [...this.items, await this.$api.entity.fetchAll(type)]
+      for await(let type of _report.targetTypes) {
+        this.items = [...this.items, ...(await this.$api.entity.fetchAll(type))]
       }
     }
   },
@@ -70,6 +79,16 @@ export default Vue.extend({
     },
     reportId(): string {
       return this.$route.params.type
+    },
+    loading(): boolean {
+      return this.$fetchState.pending || this.generatingReport
+    }
+  },
+  methods: {
+    async generateReport() {
+      this.generatingReport = true
+      console.log(this.selectedEntities)
+      this.generatingReport = false
     }
   }
 })
@@ -79,13 +98,15 @@ export default Vue.extend({
 {
   "en": {
     "create": "Create {type} ({format})",
-    "hint_multiple": "Please select the object you want to create the report for.",
-    "hint_single": "Please select the object you want to create the report for."
+    "generateReport": "Generate report",
+    "hintMultiple": "Please select the object you want to create the report for.",
+    "hintSingle": "Please select the object you want to create the report for."
   },
   "de": {
     "create": "{type} ({format}) erstellen",
-    "hint_multiple": "Bitte wählen Sie die Objekte aus, für die Sie den Report erstellen möchten.",
-    "hint_single": "Bitte wählen Sie das Objekt aus, für das Sie den Report erstellen möchten."
+    "generateReport": "Report generieren",
+    "hintMultiple": "Bitte wählen Sie die Objekte aus, für die Sie den Report erstellen möchten.",
+    "hintSingle": "Bitte wählen Sie das Objekt aus, für das Sie den Report erstellen möchten."
   }
 }
 </i18n>
