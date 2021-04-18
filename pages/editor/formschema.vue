@@ -394,6 +394,7 @@ export default defineComponent<IProps>({
       }
     }
 
+    // TODO: during the refactoring process, look if controlItems here and in Backlog can be removed
     function updateControlItems(items: any) {
       controlItems.value = items
     }

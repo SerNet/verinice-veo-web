@@ -67,7 +67,7 @@
       <div class="veo-object-list__actions">
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('edit', item)" v-on="on">
+            <v-btn icon @click.stop="sendEvent('edit', item, true)" v-on="on">
               <v-icon>
                 mdi-pencil
               </v-icon>
@@ -79,7 +79,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('duplicate', item)" v-on="on">
+            <v-btn icon @click.stop="sendEvent('duplicate', item)" v-on="on">
               <v-icon>
                 mdi-content-copy
               </v-icon>
@@ -91,7 +91,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
+            <v-btn icon @click.stop="sendEvent('delete', item)" v-on="on">
               <v-icon>
                 mdi-delete
               </v-icon>
@@ -105,35 +105,11 @@
     </template>
   </v-data-table>
 </template>
-<i18n>
-{
-  "en": {
-    "by": "by",
-    "clone": "Clone form",
-    "created_at": "Created",
-    "delete": "Delete form",
-    "edit": "Edit form",
-    "form": "Form",
-    "no_objects": "There are no forms",
-    "object_edit": "Edit this form",
-    "updated_at": "Updated"
-  },
-  "de": {
-    "by": "von",
-    "clone": "Formular klonen",
-    "created_at": "Erstellt",
-    "delete": "Formular löschen",
-    "edit": "Formular bearbeiten",
-    "form": "Formular",
-    "no_objects": "Es existieren keine Formulare!",
-    "object_edit": "Dieses Formular bearbeiten",
-    "updated_at": "Aktualisiert"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import { createUUIDUrlParam, formatDate, formatTime } from '~/lib/utils'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 
@@ -150,6 +126,10 @@ export default Vue.extend({
     sortingFunction: {
       type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
       default: () => (a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name)
+    },
+    rootRoute: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -176,27 +156,27 @@ export default Vue.extend({
     headers(): any[] {
       return [
         {
-          text: this.$t('unit.object.list.header.abbreviation'),
+          text: this.$t('objectlist.abbreviation'),
           value: 'abbreviation'
         },
         {
-          text: this.$t('unit.object.list.header.title'),
+          text: this.$t('objectlist.title'),
           value: 'name'
         },
         {
-          text: this.$t('unit.object.list.header.description'),
+          text: this.$t('objectlist.description'),
           filterable: false,
           sortable: false,
           value: 'description'
         },
         {
-          text: this.$t('unit.object.list.header.updatedby'),
+          text: this.$t('objectlist.updatedby'),
           value: 'updatedBy',
           class: 'nowrap'
         },
         {
           align: 'end',
-          text: this.$t('unit.object.list.header.updatedat'),
+          text: this.$t('objectlist.updatedat'),
           value: 'date'
         },
         {
@@ -212,19 +192,45 @@ export default Vue.extend({
   },
   methods: {
     formatDate(date: string) {
-      return (
-        new Date(date).toLocaleDateString('de-DE', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }) +
-        ' ' +
-        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-      )
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
+    },
+    generatePath(entity: IVeoEntity) {
+      return `${this.rootRoute}/${createUUIDUrlParam(entity.type, entity.id)}`
+    },
+    sendEvent(event: string, item: IVeoEntity, addPath: boolean = false) {
+      this.$emit(event, { item, path: addPath ? this.generatePath(item) : undefined })
     }
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "by": "by",
+    "clone": "Clone form",
+    "created_at": "Created",
+    "delete": "Delete form",
+    "edit": "Edit form",
+    "form": "Form",
+    "no_objects": "There are no forms",
+    "object_edit": "Edit this form",
+    "updated_at": "Updated"
+  },
+  "de": {
+    "by": "von",
+    "clone": "Formular klonen",
+    "created_at": "Erstellt",
+    "delete": "Formular löschen",
+    "edit": "Formular bearbeiten",
+    "form": "Formular",
+    "no_objects": "Es existieren keine Formulare!",
+    "object_edit": "Dieses Formular bearbeiten",
+    "updated_at": "Aktualisiert"
+  }
+}
+</i18n>
+
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 

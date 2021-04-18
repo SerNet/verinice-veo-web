@@ -14,32 +14,32 @@
       </span>
     </template>
     <template #item.select="{ item }">
-      <v-checkbox :value="value.some(selectedItem => selectedItem.id === item.id)" @click.prevent />
+      <v-checkbox v-model="item.selected" @click.prevent.stop="selectItem(item)" />
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
-        <v-tooltip v-if="item.parts && item.parts.length > 0" bottom>
+        <v-tooltip v-if="item.entity.type !== 'scope' && item.entity.parts.length > 0" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-file-document-multiple</v-icon>
           </template>
           <template #default>
             <span class="d-inline-block text-center">
               {{ $t('object_has_subobjects') }}<br>
-              {{ $t('object_has_subobjects_amount', { amount: item.parts.length }) }}
+              {{ $t('object_has_subobjects_amount', { amount: item.entity.parts.length }) }}
             </span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else-if="item.members && item.members.length > 0" bottom>
+        <v-tooltip v-else-if="item.entity.type === 'scope' && item.entity.members.length > 0" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
           <template #default>
             <span class="d-inline-block text-center">
-              {{ $t('scope_children', { amount: item.members.length }) }}
+              {{ $t('scope_children', { amount: item.entity.members.length }) }}
             </span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else-if="item.members" bottom>
+        <v-tooltip v-else-if="item.entity.type === 'scope'" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-archive</v-icon>
           </template>
@@ -69,20 +69,20 @@
         </v-tooltip>
       </div>
     </template>
-    <template #item.name="{ value }">
-      <div class="veo-object-list__title">{{ value }}</div>
+    <template #item.name="{ item }">
+      <div class="veo-object-list__title">{{ item.entity.name }}</div>
     </template>
-    <template #item.description="{ item, value }">
+    <template #item.description="{ item }">
       <div class="veo-object-list__description">
-        <v-tooltip v-if="item.descriptionShort" bottom>
+        <v-tooltip v-if="item.entity.descriptionShort" bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.descriptionShort }}</span>
+            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.entity.descriptionShort }}</span>
           </template>
           <template #default>
-            <span>{{ value }}</span>
+            <span>{{ item.entity.description }}</span>
           </template>
         </v-tooltip>
-        <span v-else>{{ value }}</span>
+        <span v-else>{{ item.entity.description }}</span>
       </div>
     </template>
     <template #item.date="{ item }">
@@ -90,28 +90,30 @@
         <v-tooltip bottom>
           <template #activator="{ on }">
             <span v-on="on">
-              {{ formatDate(item.updatedAt) }}
+              {{ formatDate(item.entity.updatedAt) }}
             </span>
           </template>
           <template #default>
-            {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}<br />
-            {{ $t('updated_at') }}: {{ formatDate(item.updatedAt) }} {{ $t('by') }} {{ item.updatedBy }}
+            {{ $t('created_at') }}: {{ formatDate(item.entity.createdAt) }} {{ $t('by') }} {{ item.entity.createdBy }}<br />
+            {{ $t('updated_at') }}: {{ formatDate(item.entity.updatedAt) }} {{ $t('by') }} {{ item.entity.updatedBy }}
           </template>
         </v-tooltip>
       </div>
     </template>
   </v-data-table>
 </template>
+
 <script lang="ts">
 import { clone } from 'lodash'
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import { formatDate, formatTime } from '~/lib/utils'
 
 import { IVeoEntity } from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {
-    value: {
+    selectedItems: {
       type: Array as Prop<{id: string, type: string}[]>,
       default: () => []
     },
@@ -124,24 +126,31 @@ export default Vue.extend({
       default: false
     },
     sortingFunction: {
-      type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
-      default: () => ((a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name))
+      type: Function as Prop<(a: { entity: IVeoEntity, selected: boolean}, b: { entity: IVeoEntity, selected: boolean}) => number>,
+      default: () => (
+        (a: { entity: IVeoEntity, selected: boolean}, b: { entity: IVeoEntity, selected: boolean}) =>
+          a.entity.name.localeCompare(b.entity.name)
+        )
     }
   },
   data() {
     return {
-      itemsPerPage: 10
+      itemsPerPage: 10,
+      dummy: 0
     }
   },
   computed: {
-    displayedItems(): IVeoEntity[] {
+    displayedItems(): { entity: IVeoEntity, selected: boolean}[] {
+      this.dummy;
       return this.items.map(item => {
         // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
         if(item.description && item.description.length >  40) {
           item.descriptionShort = item.description.substring(0, 40) + '...'
         }
         
-        return item
+        return { entity: item, selected: this.selectedItems.some(selectedItem => {
+          return selectedItem.id === item.id
+        } )}
       }).sort(this.sortingFunction)
     },
     headers(): any[] {
@@ -154,27 +163,27 @@ export default Vue.extend({
           width: 32
         },
         {
-          text: this.$t('unit.object.list.header.abbreviation'),
+          text: this.$t('objectlist.abbreviation'),
           value: 'abbreviation',
         },
         {
-          text: this.$t('unit.object.list.header.title'),
+          text: this.$t('objectlist.title'),
           value: 'name'
         },
         {
-          text: this.$t('unit.object.list.header.description'),
+          text: this.$t('objectlist.description'),
           filterable: false,
           sortable: false,
           value: 'description'
         },
         {
-          text: this.$t('unit.object.list.header.updatedby'),
+          text: this.$t('objectlist.updatedby'),
           value: 'updatedBy',
           class: 'nowrap'
         },
         {
           align: 'end',
-          text: this.$t('unit.object.list.header.updatedat'),
+          text: this.$t('objectlist.updatedat'),
           value: 'date',
         }
       ]
@@ -182,30 +191,23 @@ export default Vue.extend({
   },
   methods: {
     formatDate(date: string) {
-      return (
-        new Date(date).toLocaleDateString('de-DE', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }) +
-        ' ' +
-        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-      )
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
     },
-    selectItem(item: IVeoEntity) {
-      let dummy = clone(this.value)
+    selectItem(item: { entity: IVeoEntity, selected: boolean }) {
+      let dummy = clone(this.selectedItems)
 
-      if(dummy.some(selectedItem => selectedItem.id === item.id)) {
-        dummy = dummy.filter(selectedItem => selectedItem.id !== item.id)
-        this.$emit('input', dummy)
+      if(dummy.some(selectedItem => selectedItem.id === item.entity.id)) {
+        dummy = dummy.filter(selectedItem => selectedItem.id !== item.entity.id)
+        this.$emit('new-subentities', dummy)
       } else {
-        dummy.push({ id: item.id, type: item.$type })
-        this.$emit('input', dummy)
+        dummy.push({ id: item.entity.id, type: item.entity.type })
+        this.$emit('new-subentities', dummy)
       }
     }
   }
 })
 </script>
+
 <i18n>
 {
   "en": {
@@ -232,6 +234,7 @@ export default Vue.extend({
   }
 }
 </i18n>
+
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
