@@ -1,7 +1,9 @@
 <template>
   <VeoPage :title="$t('breadcrumbs.reports')" fullsize>
-    <template #default>
+    <template #header>
       <p class="mt-4">{{ $t('hint') }}</p>
+    </template>
+    <template #default>
       <VeoReportList :items="reports" @create-report="createReport" />
     </template>
   </VeoPage>
@@ -32,8 +34,7 @@ export default Vue.extend({
   },
   methods: {
     createReport(reportId: string) {
-      const report = `report-${reportId}`
-      this.$router.push(`/${this.$route.params.unit}/reports/${report}`)
+      this.$router.push(`/${this.$route.params.unit}/reports/${reportId}`)
     }
   }
 })

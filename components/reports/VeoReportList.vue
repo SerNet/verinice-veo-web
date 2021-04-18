@@ -132,14 +132,14 @@ export default Vue.extend({
     "noReports": "There are no reports",
     "outputTypes": "Output format",
     "reportDescription": "Description",
-    "reportName": "Report",
+    "reportName": "Report type",
     "targetTypes": "Available for"
   },
   "de": {
     "noReports": "Es existieren keine Reports",
     "outputTypes": "Ausgabeformat",
     "reportDescription": "Beschreibung",
-    "reportName": "Report",
+    "reportName": "Reporttyp",
     "targetTypes": "Gültig für"
   }
 }
