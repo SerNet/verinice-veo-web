@@ -49,8 +49,8 @@ import LocalStorage from '~/util/LocalStorage'
 
 import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes'
 import { nonLinkableSchemas } from '~/plugins/api/schema'
+import { IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes'
 
 export interface INavItem {
   name: string
@@ -150,6 +150,17 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
+            name: this.$t('breadcrumbs.reports') as string,
+            icon: 'mdi-file-chart',
+            to: undefined,
+            exact: false,
+            disabled: false,
+            childItems: undefined,
+            collapsed: LocalStorage.navEntryVeoReportsCollapsed,
+            persistCollapsedState: (collapsed: boolean) => (LocalStorage.navEntryVeoReportsCollapsed = collapsed),
+            topLevelItem: true
+          },
+          {
             name: this.$t('page.settings.title') as string,
             icon: 'mdi-cog',
             to: `/${routeUnitParam}/settings`,
@@ -171,6 +182,9 @@ export default Vue.extend({
         })
         this.fetchFormTypes().then((data: INavItem[]) => {
           this.items[3].childItems = data
+        })
+        this.fetchReportTypes().then((data: INavItem[]) => {
+          this.items[4].childItems = data
         })
       } else {
         this.items.push({
@@ -221,6 +235,20 @@ export default Vue.extend({
             disabled: false,
             topLevelItem: false
           }
+        })
+      )
+    },
+    async fetchReportTypes(): Promise<INavItem[]> {
+      return await this.$api.report.fetchAll().then((reportTypes: IVeoReportsMeta) =>
+        Object.entries(reportTypes).map(([key, value]) => {
+          const name = value.name[this.$i18n.locale] || value.name[0]
+          return {
+            name: name,
+            exact: false,
+            to: `/${this.$route.params.unit}/reports/${key}/`,
+            disabled: false,
+            topLevelItem: false
+          } 
         })
       )
     },
