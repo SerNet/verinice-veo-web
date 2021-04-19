@@ -1,3 +1,5 @@
+import 'cypress-file-upload'
+
 function createJWT(payload) {
   const header = {
     alg: 'RS256',
