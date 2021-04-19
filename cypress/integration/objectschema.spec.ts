@@ -212,28 +212,22 @@ describe('Objectschema', () => {
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('http://localhost:3000/editor')
-    cy.get<HTMLLinkElement>('.v-main__wrap a.v-list-item.v-list-item--link')
-      .first()
+
+    cy.contains('Objektschema Editor')
+      .closest('.v-list-item.v-list-item--link')
       .should('have.attr', 'href', '/editor/objectschema')
-
-    cy.get<HTMLLinkElement>('.v-main__wrap a.v-list-item.v-list-item--link')
-      .first()
-      .click()
-
-    cy.get('.v-dialog--active #input-86')
-      .parent()
-      .click()
-
-    cy.get('.v-menu__content .v-list-item__title').should('contain.text', 'Process')
-
-    cy.get('.v-menu__content .v-list-item__title')
-      .contains('Process')
-      .click()
-
-    cy.get('.v-dialog--active .v-btn__content')
-      .contains('Weiter')
       .click()
       .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('Schema-Typ')
+        .closest('.v-select')
+        .type('Process{enter}')
+      cy.get('.v-card__actions')
+        .contains('Weiter')
+        .click()
+        .wait(1)
+    })
   })
   beforeEach(() => {
     cy.fixture('objectschema/process.json')
