@@ -17,7 +17,20 @@ const attributeTypes = [
   { value: 'enum', text: 'Auswahl' }
 ]
 
-const changedAttributes = {
+const changedAttributes = [
+  {
+    writeTitle: 'Test',
+    selectType: attributeTypes[0],
+    writeDescription: 'Test'
+  },
+  {
+    writeTitle: 'Test',
+    selectType: attributeTypes[1],
+    writeDescription: 'Test'
+  }
+]
+
+const changedAttributesResultedSchema = {
   process_GeneralInformationTest_TagsTest: {
     title: 'TagsTest',
     type: 'string'
@@ -30,69 +43,63 @@ const changedAttributes = {
 
 const addAttributes = [
   {
-    title: 'process_GeneralInformationTest_a',
-    name: 'a',
-    type: attributeTypes[0],
-    description: 'a'
+    writeTitle: 'a',
+    selectType: attributeTypes[0],
+    writeDescription: 'a'
   },
   {
-    title: 'process_GeneralInformationTest_b',
-    name: 'b',
-    type: attributeTypes[1],
-    description: ''
+    writeTitle: 'b',
+    selectType: attributeTypes[1],
+    writeDescription: ''
   },
   {
-    title: 'process_GeneralInformationTest_c',
-    name: 'c',
-    type: attributeTypes[2],
-    description: 'c'
+    writeTitle: 'c',
+    selectType: attributeTypes[2],
+    writeDescription: 'c'
   },
   {
-    title: 'process_GeneralInformationTest_d',
-    name: 'd',
-    type: attributeTypes[3],
-    description: ''
+    writeTitle: 'd',
+    selectType: attributeTypes[3],
+    writeDescription: ''
   },
   {
-    title: 'process_GeneralInformationTest_e',
-    name: 'e',
-    type: attributeTypes[4],
-    description: 'e',
-    multiple: false,
+    writeTitle: 'e',
+    selectType: attributeTypes[4],
+    writeDescription: 'e',
+    checkMultiple: false,
     enum: ['a', 'b', 'c', 'd']
   },
   {
-    title: 'process_GeneralInformationTest_f',
-    name: 'f',
-    type: attributeTypes[4],
-    description: '',
-    multiple: true,
+    writeTitle: 'f',
+    selectType: attributeTypes[4],
+    writeDescription: '',
+    checkMultiple: true,
     enum: ['a', 'b', 'c', 'd']
   }
 ]
 
 const addedAttributesResultedSchema = {
-  process_GeneralInformationTest_a: {
+  process_AccessAuthorization_a: {
     title: 'a',
     type: 'string'
   },
-  process_GeneralInformationTest_b: {
+  process_AccessAuthorization_b: {
     title: '',
     type: 'boolean'
   },
-  process_GeneralInformationTest_c: {
+  process_AccessAuthorization_c: {
     title: 'c',
     type: 'number'
   },
-  process_GeneralInformationTest_d: {
+  process_AccessAuthorization_d: {
     title: '',
     type: 'integer'
   },
-  process_GeneralInformationTest_e: {
+  process_AccessAuthorization_e: {
     title: 'e',
     enum: ['a', 'b', 'c', 'd']
   },
-  process_GeneralInformationTest_f: {
+  process_AccessAuthorization_f: {
     title: '',
     type: 'array',
     items: {
@@ -101,17 +108,41 @@ const addedAttributesResultedSchema = {
   }
 }
 
-const addTestAspectZweiAttribute = {
-  title: 'process_TestAspectZwei_a',
-  name: 'a',
-  type: attributeTypes[0],
-  description: ''
+const addTestAspectTwoAttribute = {
+  writeTitle: 'a',
+  selectType: attributeTypes[0],
+  writeDescription: 'a'
 }
 
-const TestAspectZweiAttributeSchema = {
-  process_TestAspectZwei_a: {
-    title: '',
+const TestAspectTwoAttributeSchema = {
+  process_TestAspectTwo_a: {
+    title: 'a',
     type: 'string'
+  }
+}
+
+const linkTarget = {
+  type: 'object',
+  title: 'TestId',
+  properties: {
+    targetUri: {
+      type: 'string',
+      title: 'The id of the target object.'
+    },
+    type: {
+      enum: ['Person']
+    }
+  }
+}
+
+const changedLinkAttributesResultedSchema = {
+  process_LegalBasisTest_ExplanationTest: {
+    title: 'ExplanationTest',
+    type: 'string'
+  },
+  process_LegalBasisTest_DocumentTest: {
+    title: 'DocumentTest',
+    type: 'boolean'
   }
 }
 
@@ -165,6 +196,7 @@ describe('Objectschema', () => {
     cy.get('.v-dialog--active .v-btn__content')
       .contains('Weiter')
       .click()
+      .wait(1)
   })
   beforeEach(() => {
     cy.fixture('objectschema/process.json')
@@ -193,7 +225,7 @@ describe('Objectschema', () => {
       .find<HTMLDivElement>('.v-expansion-panel-content')
       .as('expansionPanelContent')
   })
-  it('compares number of basic properties, aspects and links compy with sum in expansion panel title', function() {
+  it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function() {
     cy.get('@expansionPanelHeaders').each((el, i) => {
       const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
       cy.wrap(expansionPanelText).should(
@@ -204,22 +236,21 @@ describe('Objectschema', () => {
   })
 
   it('deletes aspect with outer delete button', function() {
-    cy.get('@expansionPanels')
-      .eq(1)
-      .scrollIntoView({ offset: { top: -100, left: 0 } })
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-expansion-panel-content__wrap')
       .children()
       .should('have.length', processRealValues[1].numberOfProperties)
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
-      .eq(1)
-      .click()
-    cy.get('.v-dialog__content--active .v-card__actions .v-btn')
+    cy.contains('SensitiveData')
+      .closest('.v-list-item')
+      .find('.v-btn')
       .eq(1)
       .click()
+      .wait(1)
+    cy.get('.v-dialog--active .v-card__actions .v-btn')
+      .contains('Löschen')
+      .click()
+      .wait(1)
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-expansion-panel-content__wrap')
@@ -227,221 +258,350 @@ describe('Objectschema', () => {
       .should('have.length', processRealValues[1].numberOfProperties - 1)
 
     cy.get('.editor .cm-content').then(editor => {
-      const currentOS = getCurrentOS(editor)
-      cy.wrap(JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_SensitiveData')).should(
-        'be.undefined'
-      )
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_SensitiveData') || null
+        })
+        .as('aspect')
+        .should('be.null')
     })
   })
 
   it('changes customAspect name, attribute names, description and types', function() {
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
-      .eq(0)
+    cy.contains('GeneralInformation')
+      .closest('.v-list-item')
+      .find('.v-btn')
+      .first()
       .click()
-    cy.get('.v-dialog--active .v-form > .row > .col-12 > .v-text-field').type('Test')
-    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each(
-      (el, wrapperIndex) => {
-        cy.wrap(el)
-          .find('.v-input')
-          .each((inputEl, inputIndex) => {
-            if (inputIndex === 1) {
-              cy.wrap(inputEl).type(`${attributeTypes[wrapperIndex].text}{enter}`)
-            } else {
-              cy.wrap(inputEl).type('Test')
-            }
-          })
-      }
-    )
-    cy.get('.v-dialog--active .v-card__actions .v-btn:last-child').click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('Titel *')
+        .closest('.v-text-field')
+        .type('Test')
+
+      cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
+        cy.wrap(el).within(() => {
+          const currentAttrData = changedAttributes[wrapperIndex]
+          cy.contains('Titel des Attributs *')
+            .closest('.v-text-field')
+            .type(currentAttrData.writeTitle)
+          cy.contains('Attributtyp')
+            .closest('.v-select')
+            .type(`${currentAttrData.selectType.text}{enter}`)
+          cy.contains('Beschreibung')
+            .closest('.v-text-field')
+            .type(currentAttrData.writeDescription)
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('Speichern')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+    })
 
     cy.get('.editor .cm-content').then(editor => {
-      const currentOS = getCurrentOS(editor)
-      const aspect = JsonPointer.get(
-        currentOS,
-        '#/properties/customAspects/properties/process_GeneralInformationTest'
-      ) as any
-      cy.wrap(aspect).should('not.be.undefined')
-      const attributes = aspect.properties.attributes.properties
-      cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(changedAttributes, null, 2))
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return (
+            JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_GeneralInformationTest') || null
+          )
+        })
+        .as('aspect')
+        .should('not.be.null')
+      cy.get('@aspect')
+        .then((aspect: any) => {
+          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+        })
+        .should('eq', JSON.stringify(changedAttributesResultedSchema, null, 2))
     })
   })
 
   it('removes and adds aspect attributes', function() {
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
-      .eq(0)
+    cy.contains('AccessAuthorization')
+      .closest('.v-list-item')
+      .find('.v-btn')
+      .first()
       .click()
-    cy.get(
-      '.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn'
-    )
-      .eq(0)
-      .click()
-    cy.get(
-      '.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn'
-    )
-      .eq(0)
-      .click()
+      .wait(1)
 
-    times(6, () => {
-      cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-add-button .v-list-item__action > .v-btn').click()
-    })
-
-    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each(
-      (el, wrapperIndex) => {
-        const currentAttrData = addAttributes[wrapperIndex]
-        cy.wrap(el)
-          .find('.v-input')
+    cy.get('.v-dialog--active').within(dialogEl => {
+      times(3, () => {
+        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn')
           .eq(0)
-          .type(currentAttrData.name)
-        cy.wrap(el)
-          .find('.v-input')
-          .eq(1)
-          .type(`${currentAttrData.type.text}{enter}`)
-        if (currentAttrData.description) {
-          cy.wrap(el)
-            .find('.v-input')
-            .eq(2)
-            .type(currentAttrData.description)
-        }
-        if (currentAttrData.enum) {
-          if (currentAttrData.multiple) {
-            cy.wrap(el)
-              .find('.v-input')
-              .eq(3)
-              .click()
-          }
-          cy.wrap(el)
-            .find('.v-input')
-            .eq(4)
-            .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
-        }
-      }
-    )
-    cy.get('.v-dialog--active .v-card__actions .v-btn')
-      .last()
-      .click()
+          .click()
+          .wait(1)
+      })
 
-    cy.get('.editor .cm-content').then(editor => {
-      const currentOS = getCurrentOS(editor)
-      const aspect = JsonPointer.get(
-        currentOS,
-        '#/properties/customAspects/properties/process_GeneralInformationTest'
-      ) as any
-      cy.wrap(aspect).should('not.be.undefined')
-      const attributes = aspect.properties.attributes.properties
-      cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
+      times(6, () => {
+        cy.contains('Attribut hinzufügen')
+          .closest('.v-btn')
+          .click()
+          .wait(1)
+      })
+
+      cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
+        cy.wrap(el).within(() => {
+          const currentAttrData = addAttributes[wrapperIndex]
+          cy.contains('Titel des Attributs *')
+            .closest('.v-text-field')
+            .type(currentAttrData.writeTitle)
+          cy.contains('Attributtyp')
+            .closest('.v-select')
+            .type(`${currentAttrData.selectType.text}{enter}`)
+
+          if (currentAttrData.writeDescription) {
+            cy.contains('Beschreibung')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeDescription)
+          }
+          if (currentAttrData.enum) {
+            if (currentAttrData.checkMultiple) {
+              cy.contains('Mehrfachauswahl')
+                .closest('.v-input--checkbox')
+                .click()
+            }
+            cy.contains('Werte (mit Enter trennen)')
+              .closest('.v-autocomplete')
+              .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
+          }
+        })
+      })
+    })
+    cy.get('.v-card__actions')
+      .contains('Speichern')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.editor .cm-content').then(function(editor) {
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_AccessAuthorization') || null
+        })
+        .as('aspect')
+        .should('not.be.null')
+      cy.get('@aspect')
+        .then((aspect: any) => {
+          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+        })
+        .should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
     })
   })
 
-  it('opens dialog to create a new apsect and clicks close button to discard changes', function() {
+  it('opens dialog to create a new aspect and clicks close button to discard changes', function() {
     // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
-    cy.get('@expansionPanelHeaders')
-      .find('.v-btn')
-      .eq(0)
+    cy.contains('Aspekte hinzufügen')
+      .closest('.v-btn')
       .click()
-    cy.get('.v-dialog--active .v-text-field').type('TestAspectEins{enter}')
-    cy.get('.v-dialog--active .v-card__actions .v-btn')
-      .eq(1)
-      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(el => {
+      cy.contains('Titel *')
+        .closest('.v-text-field')
+        .type('TestAspectOne{enter}')
+      cy.get('.v-card__actions')
+        .contains('Schließen')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+    })
+
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('not.contain.text', 'TestAspectEins')
+      .should('not.contain.text', 'TestAspectOne')
+
     cy.get('.editor .cm-content').then(editor => {
-      const currentOS = getCurrentOS(editor)
-      const aspect = JsonPointer.get(currentOS, '#/properties/customAspects/properties/TestAspectEins') as any
-      cy.wrap(aspect).should('be.undefined')
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectOne') || null
+        })
+        .as('aspect')
+        .should('be.null')
     })
   })
 
   it('adds completely new aspect and removes it from dialog with delete button', function() {
-    cy.get('@expansionPanelHeaders')
-      .find('.v-btn')
-      .eq(0)
+    cy.contains('Aspekte hinzufügen')
+      .closest('.v-btn')
       .click()
-    cy.get('.v-dialog--active .v-text-field').type('TestAspectZwei{enter}')
-    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-add-button .v-list-item__action > .v-btn').click()
-    cy.get('.v-dialog--active .v-form .v-list > .veo-attribute-list-attribute')
-      .first()
-      .then(el => {
-        const currentAttrData = addTestAspectZweiAttribute
-        cy.wrap(el)
-          .find('.v-input')
-          .eq(0)
-          .type(currentAttrData.name)
-        cy.wrap(el)
-          .find('.v-input')
-          .eq(1)
-          .type(`${currentAttrData.type.text}{enter}`)
-      })
-    cy.get('.v-dialog--active .v-card__actions .v-btn')
-      .last()
-      .click()
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('not.contain.text', 'testaspect')
-    cy.get('.editor .cm-content').then(editor => {
-      const currentOS = getCurrentOS(editor)
-      const aspect = JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectZwei') as any
-      cy.wrap(aspect).should('not.be.undefined')
-      const attributes = aspect.properties.attributes.properties
-      cy.wrap(JSON.stringify(attributes, null, 2)).should('eq', JSON.stringify(TestAspectZweiAttributeSchema, null, 2))
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('Titel *')
+        .closest('.v-text-field')
+        .type('TestAspectTwo{enter}')
+      cy.contains('Attribut hinzufügen')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+        .first()
+        .then(el => {
+          cy.wrap(el).within(() => {
+            const currentAttrData = addTestAspectTwoAttribute
+            cy.contains('Titel des Attributs *')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeTitle)
+            cy.contains('Attributtyp')
+              .closest('.v-select')
+              .type(`${currentAttrData.selectType.text}{enter}`)
+            cy.contains('Beschreibung')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeDescription)
+          })
+        })
+
+      cy.get('.v-card__actions')
+        .contains('Speichern')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
     })
 
     cy.get('@expansionPanelContent')
       .eq(1)
-      .find('.v-expansion-panel-content__wrap > div:last-child .v-list-item__action--stack > .v-btn')
-      .eq(0)
-      .click()
-    cy.get('.v-dialog--active .v-card__actions .v-btn')
+      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
+      .should('contain.text', 'TestAspectTwo')
+
+    cy.get('.editor .cm-content').then(editor => {
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
+        })
+        .as('aspect')
+        .should('not.be.null')
+      cy.get('@aspect')
+        .then((aspect: any) => {
+          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+        })
+        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema, null, 2))
+    })
+
+    cy.contains('TestAspectTwo')
+      .closest('.v-list-item')
+      .find('.v-btn')
       .first()
       .click()
-    cy.get('.v-dialog--active')
-      .first()
-      .find('.v-card__actions .v-btn')
-      .eq(1)
+      .wait(1)
+    cy.get('.v-dialog--active .v-card__actions')
+      .contains('Aspekt löschen')
       .click()
+      .wait(1)
+    cy.get('.v-dialog--active .v-card__actions')
+      .contains('Löschen')
+      .click()
+      .wait(1)
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('not.contain.text', 'TestAspectZwei')
+      .should('not.contain.text', 'TestAspectTwo')
     cy.get('.editor .cm-content').then(editor => {
-      const currentOS = getCurrentOS(editor)
-      const aspect = JsonPointer.get(currentOS, '#/properties/customAspects/properties/TestAspectZwei') as any
-      cy.wrap(aspect).should('be.undefined')
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
+        })
+        .as('aspect')
+        .should('be.null')
     })
   })
-  it('deletes link', function() {
-    cy.get('@expansionPanels')
-      .eq(2)
-      .scrollIntoView({ offset: { top: -100, left: 0 } })
+
+  it('deletes a link with outer delete button', function() {
     cy.get('@expansionPanelContent')
       .eq(2)
       .find('.v-expansion-panel-content__wrap')
       .children()
       .should('have.length', processRealValues[2].numberOfProperties)
-    cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-expansion-panel-content__wrap > div:first-child .v-list-item__action--stack > .v-btn')
+    cy.contains('ResponsibleDepartment')
+      .closest('.v-list-item')
+      .find('.v-btn')
       .eq(1)
       .click()
-    cy.get('.v-dialog__content--active .v-card__actions .v-btn')
-      .eq(1)
+      .wait(1)
+    cy.get('.v-dialog--active .v-card__actions .v-btn')
+      .contains('Löschen')
       .click()
+      .wait(1)
     cy.get('@expansionPanelContent')
       .eq(2)
       .find('.v-expansion-panel-content__wrap')
       .children()
       .should('have.length', processRealValues[2].numberOfProperties - 1)
+
     cy.get('.editor .cm-content').then(editor => {
-      const currentOS = getCurrentOS(editor)
-      cy.wrap(JsonPointer.get(currentOS, '#/properties/links/properties/process_ResponsibleDepartment')).should(
-        'be.undefined'
-      )
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/links/properties/process_ResponsibleDepartment') || null
+        })
+        .as('link')
+        .should('be.null')
+    })
+  })
+
+  it('changes link name, attribute names, description and types', function() {
+    cy.contains('LegalBasis')
+      .closest('.v-list-item')
+      .find('.v-btn')
+      .first()
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('Titel *')
+        .closest('.v-text-field')
+        .type('Test')
+      cy.contains('Linkbeschreibung *')
+        .closest('.v-text-field')
+        .clear()
+        .type('TestId')
+      cy.contains('Art des Links *')
+        .closest('.v-select')
+        .should('contain.text', 'Control')
+        .type('Person{enter}')
+
+      cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
+        cy.wrap(el).within(() => {
+          const currentAttrData = changedAttributes[wrapperIndex]
+          cy.contains('Titel des Attributs *')
+            .closest('.v-text-field')
+            .type(currentAttrData.writeTitle)
+          cy.contains('Attributtyp')
+            .closest('.v-select')
+            .type(`${currentAttrData.selectType.text}{enter}`)
+          cy.contains('Beschreibung')
+            .closest('.v-text-field')
+            .type(currentAttrData.writeDescription)
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('Speichern')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.editor .cm-content').then(editor => {
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/links/properties/process_LegalBasisTest') || null
+        })
+        .as('link')
+        .should('not.be.null')
+      cy.get('@link').then((link: any) => {
+        cy.wrap(JSON.stringify(link.items.properties.target, null, 2)).should('eq', JSON.stringify(linkTarget, null, 2))
+        cy.wrap(JSON.stringify(link.items.properties.attributes.properties, null, 2)).should(
+          'eq',
+          JSON.stringify(changedLinkAttributesResultedSchema, null, 2)
+        )
+      })
     })
   })
 })
