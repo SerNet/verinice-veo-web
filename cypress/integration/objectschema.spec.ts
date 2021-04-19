@@ -108,7 +108,7 @@ const addedAttributesResultedSchema = {
   }
 }
 
-const addTestAspectTwoAttribute = {
+const addTestTwoAttribute = {
   writeTitle: 'a',
   selectType: attributeTypes[0],
   writeDescription: 'a'
@@ -143,6 +143,43 @@ const changedLinkAttributesResultedSchema = {
   process_LegalBasisTest_DocumentTest: {
     title: 'DocumentTest',
     type: 'boolean'
+  }
+}
+
+const addedLinkAttributesResultedSchema = {
+  process_InternalRecipientLink_a: {
+    title: 'a',
+    type: 'string'
+  },
+  process_InternalRecipientLink_b: {
+    title: '',
+    type: 'boolean'
+  },
+  process_InternalRecipientLink_c: {
+    title: 'c',
+    type: 'number'
+  },
+  process_InternalRecipientLink_d: {
+    title: '',
+    type: 'integer'
+  },
+  process_InternalRecipientLink_e: {
+    title: 'e',
+    enum: ['a', 'b', 'c', 'd']
+  },
+  process_InternalRecipientLink_f: {
+    title: '',
+    type: 'array',
+    items: {
+      enum: ['a', 'b', 'c', 'd']
+    }
+  }
+}
+
+const TestLinkTwoAttributeSchema = {
+  process_TestLinkTwo_a: {
+    title: 'a',
+    type: 'string'
   }
 }
 
@@ -444,7 +481,7 @@ describe('Objectschema', () => {
         .first()
         .then(el => {
           cy.wrap(el).within(() => {
-            const currentAttrData = addTestAspectTwoAttribute
+            const currentAttrData = addTestTwoAttribute
             cy.contains('Titel des Attributs *')
               .closest('.v-text-field')
               .type(currentAttrData.writeTitle)
@@ -606,7 +643,7 @@ describe('Objectschema', () => {
   })
 
   it('removes and adds link attributes', function() {
-    cy.contains('AccessAuthorization')
+    cy.contains('InternalRecipientLink')
       .closest('.v-list-item')
       .find('.v-btn')
       .first()
@@ -666,29 +703,42 @@ describe('Objectschema', () => {
       cy.wrap(getCurrentOS(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_AccessAuthorization') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/process_InternalRecipientLink') || null
         })
-        .as('aspect')
+        .as('link')
         .should('not.be.null')
-      cy.get('@aspect')
-        .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+      cy.get('@link')
+        .then((link: any) => {
+          return JSON.stringify(link.items.properties.attributes.properties, null, 2)
         })
-        .should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(addedLinkAttributesResultedSchema, null, 2))
     })
   })
 
   it('opens dialog to create a new link and clicks close button to discard changes', function() {
     // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
-    cy.contains('Aspekte hinzufügen')
+    cy.contains('Links hinzufügen')
       .closest('.v-btn')
       .click()
       .wait(1)
 
-    cy.get('.v-dialog--active').within(el => {
+    cy.get('.v-dialog--active').within(dialogEl => {
       cy.contains('Titel *')
         .closest('.v-text-field')
-        .type('TestAspectOne{enter}')
+        .type('TestLinkOne')
+      cy.contains('Linkbeschreibung *')
+        .closest('.v-text-field')
+        .type('TestLinkOne Beschreibung')
+      cy.contains('Art des Links *')
+        .closest('.v-select')
+        .type('Control{enter}')
+
+      cy.get('.v-card__actions')
+        .contains('Weiter')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+
       cy.get('.v-card__actions')
         .contains('Schließen')
         .closest('.v-btn')
@@ -697,23 +747,23 @@ describe('Objectschema', () => {
     })
 
     cy.get('@expansionPanelContent')
-      .eq(1)
+      .eq(2)
       .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('not.contain.text', 'TestAspectOne')
+      .should('not.contain.text', 'TestLinkOne')
 
     cy.get('.editor .cm-content').then(editor => {
       cy.wrap(getCurrentOS(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectOne') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkOne') || null
         })
-        .as('aspect')
+        .as('link')
         .should('be.null')
     })
   })
 
   it('adds completely new link and removes it from dialog with delete button', function() {
-    cy.contains('Aspekte hinzufügen')
+    cy.contains('Links hinzufügen')
       .closest('.v-btn')
       .click()
       .wait(1)
@@ -721,7 +771,20 @@ describe('Objectschema', () => {
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.contains('Titel *')
         .closest('.v-text-field')
-        .type('TestAspectTwo{enter}')
+        .type('TestLinkTwo')
+      cy.contains('Linkbeschreibung *')
+        .closest('.v-text-field')
+        .type('TestLinkTwo Beschreibung')
+      cy.contains('Art des Links *')
+        .closest('.v-select')
+        .type('Person{enter}')
+
+      cy.get('.v-card__actions')
+        .contains('Weiter')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+
       cy.contains('Attribut hinzufügen')
         .closest('.v-btn')
         .click()
@@ -730,7 +793,7 @@ describe('Objectschema', () => {
         .first()
         .then(el => {
           cy.wrap(el).within(() => {
-            const currentAttrData = addTestAspectTwoAttribute
+            const currentAttrData = addTestTwoAttribute
             cy.contains('Titel des Attributs *')
               .closest('.v-text-field')
               .type(currentAttrData.writeTitle)
@@ -751,33 +814,33 @@ describe('Objectschema', () => {
     })
 
     cy.get('@expansionPanelContent')
-      .eq(1)
+      .eq(2)
       .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('contain.text', 'TestAspectTwo')
+      .should('contain.text', 'TestLinkTwo')
 
     cy.get('.editor .cm-content').then(editor => {
       cy.wrap(getCurrentOS(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkTwo') || null
         })
-        .as('aspect')
+        .as('link')
         .should('not.be.null')
-      cy.get('@aspect')
-        .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+      cy.get('@link')
+        .then((link: any) => {
+          return JSON.stringify(link.items.properties.attributes.properties, null, 2)
         })
-        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema, null, 2))
+        .should('eq', JSON.stringify(TestLinkTwoAttributeSchema, null, 2))
     })
 
-    cy.contains('TestAspectTwo')
+    cy.contains('TestLinkTwo')
       .closest('.v-list-item')
       .find('.v-btn')
       .first()
       .click()
       .wait(1)
     cy.get('.v-dialog--active .v-card__actions')
-      .contains('Aspekt löschen')
+      .contains('Link löschen')
       .click()
       .wait(1)
     cy.get('.v-dialog--active .v-card__actions')
@@ -787,19 +850,19 @@ describe('Objectschema', () => {
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('not.contain.text', 'TestAspectTwo')
+      .should('not.contain.text', 'TestLinkTwo')
     cy.get('.editor .cm-content').then(editor => {
       cy.wrap(getCurrentOS(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkTwo') || null
         })
-        .as('aspect')
+        .as('link')
         .should('be.null')
     })
   })
 
-  it.only('compares downloaded schema with the actual one', function() {
+  it('compares downloaded schema with the actual one', function() {
     cy.get('.mdi-download')
       .closest('.v-btn')
       .click()
