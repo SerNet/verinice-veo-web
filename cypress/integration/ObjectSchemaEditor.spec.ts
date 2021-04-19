@@ -183,7 +183,7 @@ const TestLinkTwoAttributeSchema = {
   }
 }
 
-describe('Objectschema', () => {
+describe('Objectschema Editor', () => {
   before(() => {
     cy.auth()
     cy.intercept(
