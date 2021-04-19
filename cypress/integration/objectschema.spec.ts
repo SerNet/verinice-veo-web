@@ -604,4 +604,213 @@ describe('Objectschema', () => {
       })
     })
   })
+
+  it('removes and adds link attributes', function() {
+    cy.contains('AccessAuthorization')
+      .closest('.v-list-item')
+      .find('.v-btn')
+      .first()
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      times(3, () => {
+        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn')
+          .eq(0)
+          .click()
+          .wait(1)
+      })
+
+      times(6, () => {
+        cy.contains('Attribut hinzufügen')
+          .closest('.v-btn')
+          .click()
+          .wait(1)
+      })
+
+      cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
+        cy.wrap(el).within(() => {
+          const currentAttrData = addAttributes[wrapperIndex]
+          cy.contains('Titel des Attributs *')
+            .closest('.v-text-field')
+            .type(currentAttrData.writeTitle)
+          cy.contains('Attributtyp')
+            .closest('.v-select')
+            .type(`${currentAttrData.selectType.text}{enter}`)
+
+          if (currentAttrData.writeDescription) {
+            cy.contains('Beschreibung')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeDescription)
+          }
+          if (currentAttrData.enum) {
+            if (currentAttrData.checkMultiple) {
+              cy.contains('Mehrfachauswahl')
+                .closest('.v-input--checkbox')
+                .click()
+            }
+            cy.contains('Werte (mit Enter trennen)')
+              .closest('.v-autocomplete')
+              .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
+          }
+        })
+      })
+    })
+    cy.get('.v-card__actions')
+      .contains('Speichern')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.editor .cm-content').then(function(editor) {
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_AccessAuthorization') || null
+        })
+        .as('aspect')
+        .should('not.be.null')
+      cy.get('@aspect')
+        .then((aspect: any) => {
+          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+        })
+        .should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
+    })
+  })
+
+  it('opens dialog to create a new link and clicks close button to discard changes', function() {
+    // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
+    cy.contains('Aspekte hinzufügen')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(el => {
+      cy.contains('Titel *')
+        .closest('.v-text-field')
+        .type('TestAspectOne{enter}')
+      cy.get('.v-card__actions')
+        .contains('Schließen')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
+      .should('not.contain.text', 'TestAspectOne')
+
+    cy.get('.editor .cm-content').then(editor => {
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectOne') || null
+        })
+        .as('aspect')
+        .should('be.null')
+    })
+  })
+
+  it('adds completely new link and removes it from dialog with delete button', function() {
+    cy.contains('Aspekte hinzufügen')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('Titel *')
+        .closest('.v-text-field')
+        .type('TestAspectTwo{enter}')
+      cy.contains('Attribut hinzufügen')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+        .first()
+        .then(el => {
+          cy.wrap(el).within(() => {
+            const currentAttrData = addTestAspectTwoAttribute
+            cy.contains('Titel des Attributs *')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeTitle)
+            cy.contains('Attributtyp')
+              .closest('.v-select')
+              .type(`${currentAttrData.selectType.text}{enter}`)
+            cy.contains('Beschreibung')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeDescription)
+          })
+        })
+
+      cy.get('.v-card__actions')
+        .contains('Speichern')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
+      .should('contain.text', 'TestAspectTwo')
+
+    cy.get('.editor .cm-content').then(editor => {
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
+        })
+        .as('aspect')
+        .should('not.be.null')
+      cy.get('@aspect')
+        .then((aspect: any) => {
+          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+        })
+        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema, null, 2))
+    })
+
+    cy.contains('TestAspectTwo')
+      .closest('.v-list-item')
+      .find('.v-btn')
+      .first()
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active .v-card__actions')
+      .contains('Aspekt löschen')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active .v-card__actions')
+      .contains('Löschen')
+      .click()
+      .wait(1)
+    cy.get('@expansionPanelContent')
+      .eq(1)
+      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
+      .should('not.contain.text', 'TestAspectTwo')
+    cy.get('.editor .cm-content').then(editor => {
+      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.get('@currentOS')
+        .then(currentOS => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
+        })
+        .as('aspect')
+        .should('be.null')
+    })
+  })
+
+  it.only('compares downloaded schema with the actual one', function() {
+    cy.get('.mdi-download')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.editor .cm-content').then(function(editor) {
+      cy.wrap(getCurrentOS(editor)).then(currentOS => {
+        cy.readFile('cypress/downloads/os_process.json').then(downloadedOS => {
+          cy.wrap(JSON.stringify(currentOS, null, 2)).should('eq', JSON.stringify(downloadedOS, null, 2))
+        })
+      })
+    })
+  })
 })
