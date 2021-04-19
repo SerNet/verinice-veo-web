@@ -1,13 +1,21 @@
 <template>
   <div class="veo-loading-wrapper d-flex align-center justify-center">
     <v-progress-circular size="64" color="primary" indeterminate />
+    <span v-if="text" class="font-size: 1.5rem;">{{ text }}</span>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 
-export default Vue.extend({})
+export default Vue.extend({
+  props: {
+    text: {
+      type: String,
+      default: undefined
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>

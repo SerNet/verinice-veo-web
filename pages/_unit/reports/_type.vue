@@ -13,9 +13,10 @@
     </v-row>
   </template>
   <template #default>
+    <VeoLoadingWrapper v-if="generatingReport" />
     <p v-if="report && report.multiselect">{{ $t('hintMultiple') }}</p>
     <p v-else-if="report">{{ $t('hintSingle') }}</p>
-    <VeoEntitySelectionList v-model="selectedEntities" :items="items" :loading="$fetchState.pending" />
+    <VeoEntitySelectionList :selected-items="selectedEntities" :items="items" :loading="$fetchState.pending" single-select @new-subentities="onNewSubEntities" />
   </template>
 </VeoPage>
 </template>
@@ -24,15 +25,16 @@
 import { upperCase } from 'lodash'
 import Vue from 'vue'
 
-import { IVeoEntity, IVeoReportsMeta } from '~/types/VeoTypes'
+import { IVeoCreateReportData, IVeoEntity, IVeoReportsMeta } from '~/types/VeoTypes'
 
 interface IData {
   items: IVeoEntity[]
-  selectedEntities: IVeoEntity[]
+  selectedEntities: { id: string, type: string }[]
   report?: {
     name: string
     description: string
     outputFormat: string,
+    outputType: string
     multiselect: boolean
   }
   generatingReport: boolean
@@ -65,6 +67,7 @@ export default Vue.extend({
         name: _report.name[this.$i18n.locale],
         description: _report.description[this.$i18n.locale],
         outputFormat: format,
+        outputType: _report.outputTypes[0],
         multiselect: _report.multipleTargetsSupported
       }
 
@@ -87,8 +90,18 @@ export default Vue.extend({
   methods: {
     async generateReport() {
       this.generatingReport = true
-      console.log(this.selectedEntities)
+      if(this.report) {
+        const body: IVeoCreateReportData = {
+          outputType: this.report.outputType,
+          targets: this.selectedEntities
+        }
+        const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: "application/pdf" })
+        window.open(URL.createObjectURL(result))
+      }
       this.generatingReport = false
+    },
+    onNewSubEntities(items: { type: string, id: string }[]) {
+      this.selectedEntities = items
     }
   }
 })

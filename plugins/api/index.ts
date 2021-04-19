@@ -120,7 +120,7 @@ export class Client {
       } else if (options.method === 'DELETE') {
         return Promise.resolve()
       } else {
-        return await this.parseResponse(reqURL, res)
+        return await this.parseResponse(reqURL, res, options)
       }
     } catch (e) {
       // this.sentry.setTag('error_level', 'warning')
@@ -129,20 +129,18 @@ export class Client {
     }
   }
 
-  async parseResponse<T>(url: string, res: Response): Promise<T & { $etag?: string }> {
-    const raw = await res.text()
-
-    const etag = res.headers.get('etag')
-
+  async parseResponse<T>(url: string, res: Response, options: RequestOptions): Promise<T & { $etag?: string }> {
     let parsed
-    try {
-      parsed = raw ? JSON.parse(raw) : true
-      if (typeof parsed === 'object' && etag) {
-        Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag })
-      }
-    } catch (e) {
-      throw new VeoError('Non JSON response')
+
+    switch (options.reponseType) {
+      case VeoApiReponseType.BLOB:
+        parsed = await res.blob()
+        break
+      default:
+        parsed = await this.parseJson(res)
+        break;
     }
+
     if (parsed) {
       if (res.status >= 200 && res.status <= 300) {
         return parsed
@@ -157,13 +155,35 @@ export class Client {
       throw new VeoError('Invalid response')
     }
   }
+
+  async parseJson(res: Response): Promise<any> {
+    const raw = await res.text()
+    const etag = res.headers.get('etag')
+
+    let parsed
+    try {
+      parsed = raw ? JSON.parse(raw) : true
+      if (typeof parsed === 'object' && etag) {
+        Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag })
+      }
+      return parsed
+    } catch (e) {
+      throw new VeoError('Non JSON response')
+    }
+  }
 }
 
-interface RequestOptions extends RequestInit {
+export enum VeoApiReponseType {
+  JSON,
+  BLOB
+}
+
+export interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | undefined>
   json?: any
-  retry?: boolean,
+  retry?: boolean
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS'
+  reponseType?: VeoApiReponseType
 }
 
 export default (function (context, inject) {

@@ -1,5 +1,5 @@
-import { Client } from '~/plugins/api'
-import { IVeoReportsMeta } from '~/types/VeoTypes'
+import { Client, VeoApiReponseType } from '~/plugins/api'
+import { IVeoCreateReportData, IVeoReportsMeta } from '~/types/VeoTypes'
 
 export default function (api: Client) {
   return {
@@ -18,9 +18,11 @@ export default function (api: Client) {
      * 
      * @returns UUID of the new form
      */
-    create(type: string): Promise<string> {
+    create(type: string, body: IVeoCreateReportData): Promise<string> {
       return api.req(`/api/reports/${type}`, {
-        method: 'POST'
+        method: 'POST',
+        json: body,
+        reponseType: VeoApiReponseType.BLOB
       })
     }
   }

@@ -111,6 +111,14 @@ export interface IVeoReportMeta {
   targetTypes: string[]
 }
 
+export interface IVeoCreateReportData {
+  outputType: string
+  targets: {
+    type: string
+    id: string
+  }[]
+}
+
 /**
  * 2. Types of user generated data
  */

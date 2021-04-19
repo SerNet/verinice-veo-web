@@ -6,7 +6,7 @@
     :items-per-page="itemsPerPage"
     :loading="loading"
     class="veo-object-list"
-    @click:row="selectItem($event)"
+    @click:row="selectItem($event, singleSelect)"
   >
     <template #no-data>
       <span class="text-center">
@@ -14,8 +14,17 @@
       </span>
     </template>
     <template #item.select="{ item }">
-      <v-radio v-if="singleSelect" v-model="item.selected" @click.prevent.stop="selectItem(item)" />
-      <v-checkbox v-else v-model="item.selected" @click.prevent.stop="selectItem(item)" />
+      <v-radio-group
+        v-if="singleSelect"
+        v-model="radioSelectedItem"
+      >
+        <v-radio
+          color="primary"
+          :value="item.entity.id"
+          @click="selectItem(item, true)"
+        />
+      </v-radio-group>
+      <v-checkbox v-else v-model="item.selected" @click="selectItem(item)" />
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
@@ -193,16 +202,22 @@ export default Vue.extend({
           value: 'date',
         }
       ]
+    },
+    // As the radio button needs a wrapper and this wapper has no comparator function (even though the docs says it does), we have to dumb it down)
+    radioSelectedItem() {
+      return this.selectedItems[0]?.id
     }
   },
   methods: {
     formatDate(date: string) {
       return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
     },
-    selectItem(item: { entity: IVeoEntity, selected: boolean }) {
+    selectItem(item: { entity: IVeoEntity, selected: boolean }, singleItem: boolean = false) {
       let dummy = clone(this.selectedItems)
 
-      if(dummy.some(selectedItem => selectedItem.id === item.entity.id)) {
+      if(singleItem) {
+        this.$emit('new-subentities', [{ id: item.entity.id, type: item.entity.type }])
+      } else if(dummy.some(selectedItem => selectedItem.id === item.entity.id)) {
         dummy = dummy.filter(selectedItem => selectedItem.id !== item.entity.id)
         this.$emit('new-subentities', dummy)
       } else {
