@@ -125,5 +125,7 @@
       "description": "The username of the user who last updated this object."
     }
   },
-  "required": ["name", "owner"]
+  "required": ["name", "owner"],
+  "title": "Document",
+  "description": "Schema for Document"
 }

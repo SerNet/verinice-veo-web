@@ -2,7 +2,7 @@
 
 import { getCurrentOS } from '../support/utils'
 
-describe('Objectschema Editor', () => {
+describe('Objectschema Wizard', () => {
   before(() => {
     cy.auth()
 
@@ -420,7 +420,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it.only('imports existing scenario objectschema', function() {
+  it('imports existing scenario objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -455,5 +455,4 @@ describe('Objectschema Editor', () => {
       })
     })
   })
-  //
 })
