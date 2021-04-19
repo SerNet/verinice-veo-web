@@ -5,9 +5,7 @@ import { JsonPointer } from 'json-ptr'
 
 let processRealValues: { text: string; numberOfProperties: number }[] = []
 
-function getCurrentOS(editor: JQuery<HTMLElement>): any {
-  return JSON.parse((editor as any)[0].cmView.view.state.toJSON().doc)
-}
+import { getCurrentOS } from '../support/utils'
 
 const attributeTypes = [
   { value: 'string', text: 'Text' },
