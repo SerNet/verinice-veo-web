@@ -1,5 +1,5 @@
-include:
-  - template: Auto-DevOps.gitlab-ci.yml
+# include:
+#   - template: Auto-DevOps.gitlab-ci.yml
 
 variables:
   CODE_QUALITY_DISABLED: "true"
@@ -53,7 +53,7 @@ install:
 # all jobs that actually run tests can use the same definition
 .job_template:
   image: cypress/base:10
-  stage: test_e2e
+  stage: test
   script:
     # print CI environment variables for reference
     - $(npm bin)/print-env CI
