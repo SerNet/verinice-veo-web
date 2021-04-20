@@ -12,9 +12,9 @@ variables:
   npm_config_cache: '$CI_PROJECT_DIR/.npm'
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
-review:
-  environment:
-    auto_stop_in: 4 week
+# review:
+#   environment:
+#     auto_stop_in: 4 week
 
 stages:
   # - build
