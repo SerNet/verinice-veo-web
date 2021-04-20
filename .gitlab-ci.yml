@@ -19,7 +19,7 @@ review:
 stages:
   - build
   - test
-  - build_e2e
+  # - build_e2e
   - test_e2e
   - deploy
   - review
@@ -43,61 +43,67 @@ cache:
     - cache/Cypress
     - node_modules
 
-# this job installs NPM dependencies and Cypress
-install:
-  image: node:12-alpine
-  stage: build_e2e
-  script:
-    - npm install
-    # check Cypress binary path and cached versions
-    # useful to make sure we are not carrying around old versions
-    - npx cypress cache path
-    - npx cypress cache list
-    # - $(npm bin)/print-env CI
-    - npm run cy:verify
-    - npm run cy:info
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: always
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-      when: manual
-
-# all jobs that actually run tests can use the same definition
-.job_template:
-  image: node:12-alpine
+electron:
   stage: test_e2e
   script:
-    # print CI environment variables for reference
-    # - $(npm bin)/print-env CI
-    # start the server in the background
-    - npm run start
-    # run Cypress test in load balancing mode
-    - npm run e2e:record -- --parallel --group "electrons on GitLab CI"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      when: never
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: always
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-      when: manual
-  artifacts:
-    when: always
-    paths:
-      - cypress/videos/**/*.mp4
-      - cypress/screenshots/**/*.png
-    expire_in: 1 day
+    - npm list
 
-# actual job definitions
-# all steps are the same, they come from the template above
-electrons-1:
-  extends: .job_template
-electrons-2:
-  extends: .job_template
-electrons-3:
-  extends: .job_template
-electrons-4:
-  extends: .job_template
-electrons-5:
-  extends: .job_template
+
+# # this job installs NPM dependencies and Cypress
+# install:
+#   image: node:12-alpine
+#   stage: build_e2e
+#   script:
+#     - npm install
+#     # check Cypress binary path and cached versions
+#     # useful to make sure we are not carrying around old versions
+#     - npx cypress cache path
+#     - npx cypress cache list
+#     # - $(npm bin)/print-env CI
+#     - npm run cy:verify
+#     - npm run cy:info
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+#       when: never
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#       when: always
+#     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+#       when: manual
+
+# # all jobs that actually run tests can use the same definition
+# .job_template:
+#   image: node:12-alpine
+#   stage: test_e2e
+#   script:
+#     # print CI environment variables for reference
+#     # - $(npm bin)/print-env CI
+#     # start the server in the background
+#     - npm run start
+#     # run Cypress test in load balancing mode
+#     - npm run e2e:record -- --parallel --group "electrons on GitLab CI"
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+#       when: never
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#       when: always
+#     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+#       when: manual
+#   artifacts:
+#     when: always
+#     paths:
+#       - cypress/videos/**/*.mp4
+#       - cypress/screenshots/**/*.png
+#     expire_in: 1 day
+
+# # actual job definitions
+# # all steps are the same, they come from the template above
+# electrons-1:
+#   extends: .job_template
+# electrons-2:
+#   extends: .job_template
+# electrons-3:
+#   extends: .job_template
+# electrons-4:
+#   extends: .job_template
+# electrons-5:
+#   extends: .job_template
