@@ -1,5 +1,5 @@
-include:
-  - template: Auto-DevOps.gitlab-ci.yml
+# include:
+#   - template: Auto-DevOps.gitlab-ci.yml
 
 variables:
   CODE_QUALITY_DISABLED: 'true'
@@ -44,6 +44,7 @@ cache:
     - node_modules
 
 electron:
+  image: './test_e2e.Dockerfile'
   stage: test_e2e
   script:
     - npm list
@@ -55,7 +56,8 @@ electron:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
       when: manual
 
-      
+
+
 # # this job installs NPM dependencies and Cypress
 # install:
 #   image: node:12-alpine
