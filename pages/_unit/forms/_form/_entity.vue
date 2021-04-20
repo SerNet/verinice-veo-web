@@ -19,7 +19,7 @@
       id="scroll-wrapper"
     >
       <template #header>
-        <CollapseButton v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups" v-model="contentsCollapsed" />
+        <VeoCollapseButton v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups" v-model="contentsCollapsed" />
         <v-row class="justify-space-between">
           <v-col cols="auto">
             <h1>{{ form.objectData.name }}</h1>
