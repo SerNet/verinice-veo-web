@@ -24,4 +24,11 @@ report.xml
 parrots/**/*.tmp.ts
 coverage
 screenshots
+
+# Cypress cache
+*.log
+*.aes
+cypress/screenshots
 cypress/videos
+cypress/logs
+cypress/downloads
