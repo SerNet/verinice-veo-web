@@ -14,7 +14,7 @@
     "precommit": "npm run lint",
     "test": "jest",
     "test:e2e": "cypress run --browser chrome",
-    "e2e:record": "cypress run --record",
+    "e2e:record": "cypress run --record --key v30",
     "start:ci": "serve --no-clipboard --listen ${PORT:-8080}",
     "cy:verify": "cypress verify",
     "cy:info": "cypress info",
