@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ loading }}<br>{{ object }}
     <h4>{{ $t('created') }}</h4>
     <v-row>
       <v-col>
@@ -34,7 +35,31 @@ import { IVeoEntity } from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {
-    object: Object as Prop<IVeoEntity>
+    object: {
+      type: Object as Prop<IVeoEntity>,
+      required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    }
+  },
+  async fetch() {
+    console.log('1', this.object, this.loading)
+    if(this.object && !this.loading) {
+      //const history = await this.$api.history.fetchVersions(this.object)
+      //console.log(history)
+    }
+  },
+  watch: {
+    loading(newValue: boolean) {
+      if(!newValue && this.object) {
+        console.log('2')
+        this.$nextTick().then(() => {
+          this.$fetch()
+        })
+      }
+    }
   }
 })
 </script>

@@ -5,13 +5,14 @@ import { VeoError, VeoErrorTypes } from '~/types/VeoError'
 
 import entity from '~/plugins/api/entity'
 import form from '~/plugins/api/form'
+import history from '~/plugins/api/history'
 import schema from '~/plugins/api/schema'
 import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
 import { User } from '~/plugins/user'
 
 export function createAPI(context: Context) {
-  return Client.create(context, { form, entity, schema, translation, unit })
+  return Client.create(context, { form, entity, history, schema, translation, unit })
 }
 
 export interface IAPIClient {
@@ -23,6 +24,7 @@ export class Client {
   public version: string
   public baseURL: string
   public baseFormURL: string
+  public baseHistoryURL: string
   // public sentry: any
   public _context: Context
 
@@ -42,12 +44,13 @@ export class Client {
     this.version = context.$config.version
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '')
     this.baseFormURL = `${context.$config.formsApiUrl}`.replace(/\/$/, '')
+    this.baseHistoryURL = `${context.$config.historyApiUrl}`.replace(/\/$/, '')
     // this.sentry = context.app.$sentry
     this._context = context
   }
 
   public getURL(url: string) {
-    const _url = String(url).replace(/^\/api\/forms/, this.baseFormURL).replace(/^\/api/, this.baseURL)
+    const _url = String(url).replace(/^\/api\/forms/, this.baseFormURL).replace(/^\/api\/history/, this.baseHistoryURL).replace(/^\/api/, this.baseURL)
     if (_url.startsWith('/')) {
       const loc = window.location
       return `${loc.protocol}//${loc.host}${_url}`

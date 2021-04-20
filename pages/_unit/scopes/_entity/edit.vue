@@ -53,7 +53,7 @@
             <v-tab disabled>{{ $t('history') }}</v-tab>
           </template>
           <template #items>
-            <VeoObjectHistory :object="form.objectData" />
+            <VeoObjectHistory :object="form.objectData" :loading="$fetchState.pending" />
           </template>
         </VeoTabs>
       </VeoPage>
