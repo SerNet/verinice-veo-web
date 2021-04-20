@@ -96,7 +96,7 @@ import Vue from 'vue'
 import { Route } from 'vue-router/types/index'
 
 import { IForm, separateUUIDParam } from '~/lib/utils'
-import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoEntity } from '~/types/VeoTypes'
 
 export interface IValidationErrorMessage {
@@ -110,7 +110,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: VeoEventPayload & { value: boolean, error: number }
+  alert: IVeoEventPayload & { value: boolean, error: number }
   contentsCollapsed: boolean
   formModified: {
     isModified: boolean

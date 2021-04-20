@@ -10,7 +10,7 @@
         item-text="name"
         item-value="id"
         :search-input.sync="search"
-        :label="$t('forms.input.link.targetObject')"
+        :label="$t('targetObject')"
         class="links-field-row-autocomplete"
         dense
         hide-details="auto"
@@ -18,14 +18,14 @@
       >
         <template #prepend-item>
           <v-btn color="primary" block text tile @click.stop="onDialogOpen('DIALOG_CREATE')">
-            {{ $t('forms.input.link.targetObject.create') }}
+            {{ $t('createTargetObject') }}
           </v-btn>
           <v-divider />
         </template>
         <template #no-data>
           <v-list-item>
             <v-list-item-title>
-              {{ $t('forms.input.link.targetObject.notFound') }}
+              {{ $t('noTargets') }}
             </v-list-item-title>
           </v-list-item>
         </template>
@@ -62,12 +62,12 @@
       />
     </v-col>
     <v-col v-else class="py-4 pl-1 links-field-row-no-attributes font-italic">
-      {{ $t('forms.input.link.noattributes') }}
+      {{ $t('noAttributes') }}
     </v-col>
     <v-dialog :value="!!dialog" persistent max-width="500" @input="dialog = !$event ? false : dialog">
       <v-card v-if="dialog === 'DIALOG_CREATE'">
         <v-card-title class="headline">
-          {{ $t('forms.input.link.targetObject.create.headline') }}
+          {{ $t('createTargetObject') }}
         </v-card-title>
         <v-card-text>
           <VeoForm
@@ -98,7 +98,7 @@
 
       <v-card v-else-if="dialog === 'DIALOG_UPDATE'">
         <v-card-title class="headline">
-          {{ $t('forms.input.link.targetObject.change.headline') }}
+          {{ $t('updateTargetObject') }}
         </v-card-title>
         <v-card-text>
           <!-- TODO: ObjectSchema and FormSchema for Dialog must come from Server (Person) -->
@@ -131,12 +131,12 @@
 
       <v-card v-else-if="dialog === 'DIALOG_DELETE'">
         <v-card-title>
-          {{ $t('forms.input.link.targetObject.delete.headline') }}
+          {{ $t('deleteTargetObject') }}
         </v-card-title>
         <!-- TODO: change name with displayName after it is implemented -->
         <v-card-text>
           {{
-            $t('forms.input.link.targetObject.delete.text', {
+            $t('deleteTargetObjectConfirmation', {
               object: itemInDialog && itemInDialog.name
             })
           }}
@@ -168,8 +168,10 @@ import {
   linksFieldDialogObjectSchema,
   linksFieldDialogFormSchema
 } from '~/components/forms/utils'
-import { IVeoTranslation } from '~/types/VeoTypes'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import {
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslation
+} from '~/types/VeoTypes'
 
 interface ITarget {
   targetUri: string | undefined
@@ -239,7 +241,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
     elements: {
       type: Array,
       default: () => []
@@ -407,6 +409,29 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "noAttributes": "No child properties",
+    "targetObject": "Target object",
+    "createTargetObject": "Create new object",
+    "updateTargetObject": "Change object",
+    "deleteTargetObject": "Delete object",
+    "deleteTargetObjectConfirmation": "Are you sure you want to delete \"{object}\"?",
+    "noTargets": "Not targets found"
+  },
+  "de": {
+    "noAttributes": "Keine weiteren Eigenschaften",
+    "targetObject": "Zielobjekt",
+    "updateTargetObject": "Objekt ändern",
+    "createTargetObject": "Ein neues Objekt anlegen",
+    "deleteTargetObject": "Objekt löschen",
+    "deleteTargetObjectConfirmation": "Sind sie sicher, dass das Objekt \"{object}\" gelöscht werden soll?",
+    "noTargets": "Keine Ziele verfügbar"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

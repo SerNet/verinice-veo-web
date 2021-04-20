@@ -1,7 +1,10 @@
 import { Client } from '~/plugins/api'
-import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes'
+import {
+  IVeoFormSchema,
+  IVeoFormSchemaMeta
+} from '~/types/VeoTypes'
 
-export default function(api: Client) {
+export default function (api: Client) {
   return {
     /**
      * Loads all Forms

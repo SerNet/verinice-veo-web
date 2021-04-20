@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar class="veo-app-bar" app clipped-left flat>
       <div class="d-flex">
-        <AppBarLogo class="ml-2" />
+        <VeoAppBarLogo class="ml-2" />
       </div>
     </v-app-bar>
     <v-main>

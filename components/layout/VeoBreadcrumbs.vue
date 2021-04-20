@@ -35,7 +35,13 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, watch, Ref, PropOptions, useContext } from '@nuxtjs/composition-api'
+import {
+  ref,
+  defineComponent,
+  watch,
+  Ref,
+  PropOptions
+} from '@nuxtjs/composition-api'
 import { capitalize, last, intersection } from 'lodash'
 import { separateUUIDParam } from '~/lib/utils'
 

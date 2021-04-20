@@ -26,7 +26,11 @@ import { JSONSchema7 } from 'json-schema'
 import hljs from 'highlight.js'
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight'
 import { Editor } from '@toast-ui/vue-editor'
-import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
+import {
+  calculateConditionsScore,
+  FormElementProps,
+  Helpful
+} from '~/components/forms/Collection/utils/helpers'
 
 export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).extend({
   name: 'MarkdownEditor',

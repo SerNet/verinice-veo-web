@@ -35,7 +35,10 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  PropType
+} from '@nuxtjs/composition-api'
 
 export interface IVeoMenuButtonItem {
   disabled: boolean

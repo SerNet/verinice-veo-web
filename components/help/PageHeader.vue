@@ -13,5 +13,3 @@ export default Vue.extend({
   name: 'PageHeader'
 })
 </script>
-
-<style lang="scss"></style>

@@ -24,7 +24,11 @@
 import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
-import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
+import {
+  calculateConditionsScore,
+  FormElementProps,
+  Helpful
+} from '~/components/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'InputNumber',
@@ -66,5 +70,3 @@ export const helpers: Helpful<FormElementProps> = {
   }
 }
 </script>
-
-<style lang="scss" scoped></style>

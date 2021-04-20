@@ -1,6 +1,6 @@
 <template>
-  <VeoPage :title="$t('page.index.title')">
-    <div class="body-1 mb-4">{{ $t('page.index.chooseunit') }}:</div>
+  <VeoPage :title="$t('breadcrumbs.index')">
+    <div class="body-1 mb-4">{{ $t('unitpicker') }}:</div>
     <v-data-iterator :search="search" :items="units" item-key="id">
       <template #header>
         <v-text-field
@@ -11,7 +11,7 @@
           solo-inverted
           hide-details
           prepend-inner-icon="mdi-magnify"
-          :label="$t('page.index.chooseunitplaceholder')"
+          :label="$t('unitpickerPlaceholder')"
         />
       </template>
       <template #default="{ items }">
@@ -31,14 +31,10 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import VeoPage from '~/components/layout/VeoPage.vue'
 import { createUUIDUrlParam } from '~/lib/utils'
 import { IVeoUnit } from '~/types/VeoTypes'
 
 export default Vue.extend({
-  components: {
-    VeoPage
-  },
   props: {},
   data() {
     return {
@@ -56,10 +52,21 @@ export default Vue.extend({
   },
   head(): any {
     return {
-      title: this.$t('page.index.title')
+      title: this.$t('breadcrumbs.index')
     }
   }
 })
 </script>
 
-<style lang="scss" scoped></style>
+<i18n>
+{
+  "en": {
+    "unitPicker": "Please choose a unit",
+    "unitpickerPlaceholder": "Search for a unit..."
+  },
+  "de": {
+    "unitpicker": "Bitte wählen Sie eine Unit",
+    "unitpickerPlaceholder": "Nach einer Unit suchen..."
+  }
+}
+</i18n>

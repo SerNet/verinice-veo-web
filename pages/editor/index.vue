@@ -1,13 +1,13 @@
 <template>
   <VeoPage>
-    <h2>{{ $t('page.editors.calltoaction') }}</h2>
+    <h2>{{ $t('calltoaction') }}</h2>
     <v-list two-line class="overflow-hidden">
       <v-list-item to="/editor/objectschema">
         <v-list-item-content>
           <v-list-item-title class="font-weight-bold">
             {{ $t('editor.objectschema.headline') }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{ $t('editor.objectschema.description') }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ $t('objectSchemaDescription') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
           <v-icon x-large>mdi-chevron-right</v-icon>
@@ -18,7 +18,7 @@
           <v-list-item-title class="font-weight-bold">
             {{ $t('editor.formschema.headline') }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{ $t('editor.formschema.description') }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ $t('formSchemaDescription') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
           <v-icon x-large>mdi-chevron-right</v-icon>
@@ -31,14 +31,9 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
 
-import VeoPage from '~/components/layout/VeoPage.vue'
-
 interface IProps {}
 
 export default defineComponent<IProps>({
-  components: {
-    VeoPage
-  },
   head(): any {
     return {
       title: 'verinice.'
@@ -46,6 +41,21 @@ export default defineComponent<IProps>({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "calltoaction": "What do you want to do?",
+    "formSchemaDescription": "Create, edit, import or export form schemas",
+    "objectSchemaDescription": "Create, edit, import or export object schemas"
+  },
+  "de": {
+    "calltoaction": "Was möchten Sie tun?",
+    "formSchemaDescription": "Formschemas erstellen, bearbeiten, importieren und exportieren",
+    "objectSchemaDescription": "Objektschemas erstellen, bearbeiten, importieren und exportieren"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 .v-list-item__subtitle {
