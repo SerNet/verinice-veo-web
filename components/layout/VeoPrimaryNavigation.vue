@@ -146,7 +146,6 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-<<<<<<< components/layout/VeoPrimaryNavigation.vue
             name: this.$t('breadcrumbs.reports') as string,
             icon: 'mdi-file-chart',
             to: undefined,
@@ -158,10 +157,7 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: this.$t('page.settings.title') as string,
-=======
             name: this.$t('breadcrumbs.settings') as string,
->>>>>>> components/layout/VeoPrimaryNavigation.vue
             icon: 'mdi-cog',
             to: `/${routeUnitParam}/settings`,
             disabled: false,
