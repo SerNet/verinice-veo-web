@@ -28,19 +28,9 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import VeoPage from '~/components/layout/VeoPage.vue'
-// import VeoUnitWidget from '~/components/widgets/VeoUnitWidget.vue'
-import VeoUnitFormsWidget from '~/components/widgets/VeoUnitFormsWidget.vue'
-import VeoUnitObjectWidget from '~/components/widgets/VeoUnitObjectWidget.vue'
 import { separateUUIDParam } from '~/lib/utils'
 
 export default Vue.extend({
-  components: {
-    // VeoUnitWidget,
-    VeoUnitFormsWidget,
-    VeoUnitObjectWidget,
-    VeoPage
-  },
   data() {
     return {
       unit: {} as any

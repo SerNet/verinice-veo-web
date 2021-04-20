@@ -1,8 +1,11 @@
 import { Client } from '~/plugins/api'
 
-import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes'
+import {
+  IVeoAPIMessage,
+  IVeoUnit
+} from '~/types/VeoTypes'
 
-export default function(api: Client) {
+export default function (api: Client) {
   return {
     /**
      * Loads all Units

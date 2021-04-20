@@ -1,7 +1,13 @@
 import defaultsDeep from 'lodash/defaultsDeep'
-import { Plugin, Context } from '@nuxt/types'
+import {
+  Plugin,
+  Context
+} from '@nuxt/types'
 
-import { VeoError, VeoErrorTypes } from '~/types/VeoError'
+import {
+  VeoError,
+  VeoErrorTypes
+} from '~/types/VeoError'
 
 import entity from '~/plugins/api/entity'
 import form from '~/plugins/api/form'

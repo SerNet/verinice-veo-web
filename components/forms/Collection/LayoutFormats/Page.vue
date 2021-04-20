@@ -12,9 +12,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Prop } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
-import { calculateConditionsScore, Helpful, LayoutProps } from '~/components/forms/Collection/utils/helpers'
+
+import {
+  calculateConditionsScore,
+  Helpful,
+  LayoutProps
+} from '~/components/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'Page',

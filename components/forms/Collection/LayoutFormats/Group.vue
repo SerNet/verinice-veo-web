@@ -20,7 +20,11 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import { calculateConditionsScore, Helpful, LayoutProps } from '~/components/forms/Collection/utils/helpers'
+import {
+  calculateConditionsScore,
+  Helpful,
+  LayoutProps
+} from '~/components/forms/Collection/utils/helpers'
 
 export default Vue.extend({
   name: 'Group',

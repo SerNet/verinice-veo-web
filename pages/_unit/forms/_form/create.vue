@@ -5,7 +5,7 @@ import { Route } from 'vue-router/types/index'
 import VeoEditFormPage from '~/pages/_unit/forms/_form/_entity.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
-import { VeoEventPayload } from '~/types/VeoGlobalEvents'
+import { IVeoEventPayload } from '~/types/VeoGlobalEvents'
 import { upperFirst } from 'lodash'
 
 interface IData {
@@ -14,7 +14,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: VeoEventPayload & { value: boolean, error: number }
+  alert: IVeoEventPayload & { value: boolean, error: number }
   contentsCollapsed: boolean
   formModified: {
     isModified: boolean
