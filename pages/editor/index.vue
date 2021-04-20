@@ -7,7 +7,7 @@
           <v-list-item-title class="font-weight-bold">
             {{ $t('editor.objectschema.headline') }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{ $t('objectschemaDescription') }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ $t('objectSchemaDescription') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
           <v-icon x-large>mdi-chevron-right</v-icon>
