@@ -23,6 +23,19 @@ pipeline {
                 }
             }
         }
+        stage('Test') {
+            agent {
+                dockerfile {
+                    filename 'test.Dockerfile'
+                    args '--entrypoint "" -u 0'
+                }
+            }
+            steps {
+                sh 'cd /usr/src/app && npm run test'
+                sh "cp /usr/src/app/junit.xml $WORKSPACE"
+                junit 'junit.xml'
+            }
+        }
         stage('Dockerimage') {
             agent {
                  label 'docker-image-builder'

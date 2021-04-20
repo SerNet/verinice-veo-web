@@ -19,12 +19,12 @@
       </v-col>
       <v-col>
         <v-btn depressed block color="primary" class="login-button" @click="$user.auth.login('/')">
-          {{ $t('page.login.button.login') }}
+          {{ $t('login') }}
         </v-btn>
       </v-col>
       <v-col>
         <v-btn depressed block @click="$user.auth.register('/')">
-          {{ $t('page.login.button.register') }}
+          {{ $t('register') }}
         </v-btn>
       </v-col>
     </v-row>
@@ -51,6 +51,19 @@ export default Vue.extend({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "login": "Login",
+    "register": "Register"
+  },
+  "de": {
+    "login": "Anmelden",
+    "register": "Registrieren"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

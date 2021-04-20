@@ -1,19 +1,23 @@
 import defaultsDeep from 'lodash/defaultsDeep'
-import { Plugin, Context } from '@nuxt/types'
+import {
+  Plugin,
+  Context
+} from '@nuxt/types'
 
-import { VeoError, VeoErrorTypes } from '~/types/VeoError'
+import {
+  VeoError,
+  VeoErrorTypes
+} from '~/types/VeoError'
 
 import entity from '~/plugins/api/entity'
 import form from '~/plugins/api/form'
 import schema from '~/plugins/api/schema'
 import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
-import scope from '~/plugins/api/scope'
 import { User } from '~/plugins/user'
-import { IVeoAPIMessage } from '~/types/VeoTypes'
 
 export function createAPI(context: Context) {
-  return Client.create(context, { form, entity, schema, translation, unit, scope })
+  return Client.create(context, { form, entity, schema, translation, unit })
 }
 
 export interface IAPIClient {
@@ -26,6 +30,7 @@ export class Client {
   public baseURL: string
   public baseFormURL: string
   // public sentry: any
+  public _context: Context
 
   static create<T extends Record<keyof T, IAPIClient>>(
     context: Context,
@@ -44,6 +49,7 @@ export class Client {
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '')
     this.baseFormURL = `${context.$config.formsApiUrl}`.replace(/\/$/, '')
     // this.sentry = context.app.$sentry
+    this._context = context
   }
 
   public getURL(url: string) {
@@ -126,7 +132,7 @@ export class Client {
     }
   }
 
-  async parseResponse<T>(url: string, res: Response): Promise<T & {$etag?: string}> {
+  async parseResponse<T>(url: string, res: Response): Promise<T & { $etag?: string }> {
     const raw = await res.text()
 
     const etag = res.headers.get('etag')
@@ -163,7 +169,7 @@ interface RequestOptions extends RequestInit {
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS'
 }
 
-export default (function(context, inject) {
+export default (function (context, inject) {
   inject('api', createAPI(context))
 } as Plugin)
 

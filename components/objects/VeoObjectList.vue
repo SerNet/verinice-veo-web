@@ -6,7 +6,7 @@
     :items-per-page="itemsPerPage"
     :loading="loading"
     class="veo-object-list"
-    @click:row="$emit('click', $event)"
+    @click:row="sendEvent('click', $event)"
   >
     <template #no-data>
       <span v-if="$route.params.param === '-'" class="text-center">
@@ -28,7 +28,7 @@
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
-        <v-tooltip v-if="item.parts && item.parts.length > 0" bottom>
+        <v-tooltip v-if="item.type !== 'scope' && item.parts.length > 0" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-file-document-multiple</v-icon>
           </template>
@@ -39,7 +39,7 @@
             </span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else-if="item.members && item.members.length > 0" bottom>
+        <v-tooltip v-else-if="item.type === 'scope' && item.members.length > 0" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
@@ -49,7 +49,7 @@
             </span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else-if="item.members" bottom>
+        <v-tooltip v-else-if="item.type === 'scope'" bottom>
           <template #activator="{ on }">
             <v-icon v-on="on">mdi-archive</v-icon>
           </template>
@@ -114,7 +114,7 @@
       <div class="d-flex flex-nowrap justify-end">
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('edit', item)" v-on="on">
+            <v-btn icon @click.stop="sendEvent('edit', item, currentItem)" v-on="on">
               <v-icon>
                 mdi-pencil
               </v-icon>
@@ -126,7 +126,7 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('duplicate', item)" v-on="on">
+            <v-btn icon @click.stop="sendEvent('duplicate', item, currentItem)" v-on="on">
               <v-icon>
                 mdi-content-copy
               </v-icon>
@@ -138,7 +138,7 @@
         </v-tooltip>
         <v-tooltip v-if="$route.params.entity === '-'" bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
+            <v-btn icon @click.stop="sendEvent('delete', item, currentItem)" v-on="on">
               <v-icon>
                 mdi-delete
               </v-icon>
@@ -150,7 +150,7 @@
         </v-tooltip>
         <v-tooltip v-else bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('unlink', item)" v-on="on">
+            <v-btn icon @click.stop="sendEvent('unlink', item, currentItem)" v-on="on">
               <v-icon>
                 mdi-link-off
               </v-icon>
@@ -164,6 +164,104 @@
     </template>
   </v-data-table>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+import { Prop } from 'vue/types/options'
+import { formatDate, formatTime } from '~/lib/utils'
+
+import { IVeoEntity } from '~/types/VeoTypes'
+
+export default Vue.extend({
+  props: {
+    items: {
+      type: Array as Prop<IVeoEntity[]>,
+      default: () => []
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    showParentLink: {
+      type: Boolean,
+      default: false
+    },
+    sortingFunction: {
+      type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
+      default: () => ((a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name))
+    },
+    currentItem: {
+      type: Object as Prop<IVeoEntity | undefined>,
+      default: undefined
+    }
+  },
+  data() {
+    return {
+      itemsPerPage: 10
+    }
+  },
+  computed: {
+    displayedItems(): IVeoEntity[] {
+      return this.items.map(item => {
+        // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+        if(item.description && item.description.length >  40) {
+          item.descriptionShort = item.description.substring(0, 40) + '...'
+        }
+        
+        return item
+      }).sort(this.sortingFunction)
+    },
+    editItemLink(): string {
+      return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
+    },
+    headers(): any[] {
+      return [
+        {
+          text: this.$t('objectlist.abbreviation'),
+          value: 'abbreviation',
+        },
+        {
+          text: this.$t('objectlist.title'),
+          value: 'name'
+        },
+        {
+          text: this.$t('objectlist.description'),
+          filterable: false,
+          sortable: false,
+          value: 'description'
+        },
+        {
+          text: this.$t('objectlist.updatedby'),
+          value: 'updatedBy',
+          class: 'nowrap'
+        },
+        {
+          align: 'end',
+          text: this.$t('objectlist.updatedat'),
+          value: 'date',
+        },
+        {
+          align: 'end',
+          filterable: false,
+          sortable: false,
+          text: '',
+          value: 'actions',
+          width: 108 /* 3*widthOfButton */
+        }
+      ]
+    }
+  },
+  methods: {
+    formatDate(date: string) {
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
+    },
+    sendEvent(event: string, item: IVeoEntity, parent?: IVeoEntity) {
+      this.$emit(event, { item, parent })
+    }
+  }
+})
+</script>
+
 <i18n>
 {
   "en": {
@@ -204,102 +302,7 @@
   }
 }
 </i18n>
-<script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
 
-import { IVeoEntity } from '~/types/VeoTypes'
-
-export default Vue.extend({
-  props: {
-    items: {
-      type: Array as Prop<IVeoEntity[]>,
-      default: () => []
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    showParentLink: {
-      type: Boolean,
-      default: false
-    },
-    sortingFunction: {
-      type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
-      default: () => ((a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name))
-    }
-  },
-  data() {
-    return {
-      itemsPerPage: 10
-    }
-  },
-  computed: {
-    displayedItems(): IVeoEntity[] {
-      return this.items.map(item => {
-        // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
-        if(item.description && item.description.length >  40) {
-          item.descriptionShort = item.description.substring(0, 40) + '...'
-        }
-        
-        return item
-      }).sort(this.sortingFunction)
-    },
-    editItemLink(): string {
-      return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
-    },
-    headers(): any[] {
-      return [
-        {
-          text: this.$t('unit.object.list.header.abbreviation'),
-          value: 'abbreviation',
-        },
-        {
-          text: this.$t('unit.object.list.header.title'),
-          value: 'name'
-        },
-        {
-          text: this.$t('unit.object.list.header.description'),
-          filterable: false,
-          sortable: false,
-          value: 'description'
-        },
-        {
-          text: this.$t('unit.object.list.header.updatedby'),
-          value: 'updatedBy',
-          class: 'nowrap'
-        },
-        {
-          align: 'end',
-          text: this.$t('unit.object.list.header.updatedat'),
-          value: 'date',
-        },
-        {
-          align: 'end',
-          filterable: false,
-          sortable: false,
-          text: '',
-          value: 'actions',
-          width: 108 /* 3*widthOfButton */
-        }
-      ]
-    }
-  },
-  methods: {
-    formatDate(date: string) {
-      return (
-        new Date(date).toLocaleDateString('de-DE', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }) +
-        ' ' +
-        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-      )
-    }
-  }
-})
-</script>
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 

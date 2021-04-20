@@ -29,13 +29,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
-
-export enum ALERT_TYPE {
-  ERROR,
-  INFO,
-  SUCCESS,
-  WARNING
-}
+import { ALERT_TYPE } from '~/types/VeoGlobalEvents'
 
 export default Vue.extend({
   props: {

@@ -21,12 +21,7 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import VeoWidget from '~/components/widgets/VeoWidget.vue'
-
 export default Vue.extend({
-  components: {
-    VeoWidget
-  },
   props: {
     unit: {
       type: Object,
