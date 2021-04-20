@@ -42,13 +42,13 @@ cache:
     - .npm
     - cache/Cypress
 
-test:
+test_e2e:
   image: cypress/base:10
   stage: test_e2e
   script:
     - npm ci
     # print CI environment variables for reference
-    - $(npm bin)/print-env CI
+    # - $(npm bin)/print-env CI
     # make sure Cypress can run
     - npm run cy:verify
     - npm run build
