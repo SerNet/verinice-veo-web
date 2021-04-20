@@ -9,55 +9,7 @@ variables:
   PRODUCTION_ADDITIONAL_HOSTS: 'veo-web.cpmsys.io'
   AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA'
   K8S_SECRET_VEO_API_USE_PROXY: 'false'
-  npm_config_cache: '$CI_PROJECT_DIR/.npm'
-  CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
 review:
   environment:
     auto_stop_in: 4 week
-
-# first, install Cypress, then run all tests (in parallel)
-
-# to cache both npm modules and Cypress binary we use environment variables
-# to point at the folders we can list as paths in "cache" job settings
-
-# cache using branch name
-# https://gitlab.com/help/ci/caching/index.md
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - .npm
-    - cache/Cypress
-    - node_modules
-
-# this job installs NPM dependencies and Cypress
-install:
-  image: cypress/base:10
-  stage: build
-
-  script:
-    - npm ci
-    # check Cypress binary path and cached versions
-    # useful to make sure we are not carrying around old versions
-    - npx cypress cache path
-    - npx cypress cache list
-    - $(npm bin)/print-env CI
-    - npm run cy:verify
-    - npm run cy:info
-
-test_e2e:
-  image: cypress/base:10
-  stage: test
-  script:
-    # print CI environment variables for reference
-    - $(npm bin)/print-env CI
-    # start the server in the background
-    - npm run start:ci &
-    # run Cypress test in load balancing mode
-    - npm run e2e:record -- --parallel --group "electrons on GitLab CI"
-  artifacts:
-    when: always
-    paths:
-      - cypress/videos/**/*.mp4
-      - cypress/screenshots/**/*.png
-    expire_in: 1 day
