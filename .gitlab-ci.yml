@@ -1,14 +1,25 @@
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+
+variables:
+  CODE_QUALITY_DISABLED: 'true'
+  POSTGRES_ENABLED: 'false'
+  PERFORMANCE_DISABLED: 'true'
+  # TEST_DISABLED: "true"
+  PRODUCTION_ADDITIONAL_HOSTS: 'veo-web.cpmsys.io'
+  AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA'
+  K8S_SECRET_VEO_API_USE_PROXY: 'false'
+  npm_config_cache: '$CI_PROJECT_DIR/.npm'
+  CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
+
+review:
+  environment:
+    auto_stop_in: 4 week
 
 # first, install Cypress, then run all tests (in parallel)
-stages:
-  - build
-  - test_e2e
 
 # to cache both npm modules and Cypress binary we use environment variables
 # to point at the folders we can list as paths in "cache" job settings
-variables:
-  npm_config_cache: "$CI_PROJECT_DIR/.npm"
-  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
 
 # cache using branch name
 # https://gitlab.com/help/ci/caching/index.md
@@ -34,10 +45,9 @@ install:
     - npm run cy:verify
     - npm run cy:info
 
-# all jobs that actually run tests can use the same definition
-.job_template:
+test_e2e:
   image: cypress/base:10
-  stage: test_e2e
+  stage: test
   script:
     # print CI environment variables for reference
     - $(npm bin)/print-env CI
@@ -51,32 +61,3 @@ install:
       - cypress/videos/**/*.mp4
       - cypress/screenshots/**/*.png
     expire_in: 1 day
-
-# actual job definitions
-# all steps are the same, they come from the template above
-electrons-1:
-  extends: .job_template
-electrons-2:
-  extends: .job_template
-electrons-3:
-  extends: .job_template
-electrons-4:
-  extends: .job_template
-electrons-5:
-  extends: .job_template
-
-  include:
-  - template: Auto-DevOps.gitlab-ci.yml
-
-variables:
-  CODE_QUALITY_DISABLED: "true"
-  POSTGRES_ENABLED: "false"
-  PERFORMANCE_DISABLED: "true"
-  # TEST_DISABLED: "true"
-  PRODUCTION_ADDITIONAL_HOSTS: "veo-web.cpmsys.io"
-  AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: "--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHA"
-  K8S_SECRET_VEO_API_USE_PROXY: "false"
-
-review:
-  environment:
-    auto_stop_in: 4 week
