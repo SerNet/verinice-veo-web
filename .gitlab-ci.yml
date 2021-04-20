@@ -45,10 +45,10 @@ cache:
 
 # this job installs NPM dependencies and Cypress
 install:
-  image: cypress/base:10
+  image: node:12-alpine
   stage: build_e2e
   script:
-    - npm ci
+    - npm install
     # check Cypress binary path and cached versions
     # useful to make sure we are not carrying around old versions
     - npx cypress cache path
@@ -59,13 +59,13 @@ install:
 
 # all jobs that actually run tests can use the same definition
 .job_template:
-  image: cypress/base:10
+  image: node:12-alpine
   stage: test_e2e
   script:
     # print CI environment variables for reference
     # - $(npm bin)/print-env CI
     # start the server in the background
-    - npm run start &
+    - npm run start
     # run Cypress test in load balancing mode
     - npm run e2e:record -- --parallel --group "electrons on GitLab CI"
   artifacts:
