@@ -48,6 +48,7 @@ install:
   image: node:12-alpine
   stage: build_e2e
   script:
+    - apk add xvfb
     - npm install
     # check Cypress binary path and cached versions
     # useful to make sure we are not carrying around old versions
