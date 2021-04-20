@@ -17,22 +17,22 @@ review:
     auto_stop_in: 4 week
 
 stages:
-  - build
-  - test
+  # - build
+  # - test
   # - build_e2e
   - test_e2e
-  - deploy
-  - review
-  - dast
-  - staging
-  - canary
-  - production
-  - incremental rollout 10%
-  - incremental rollout 25%
-  - incremental rollout 50%
-  - incremental rollout 100%
-  - performance
-  - cleanup
+  # - deploy
+  # - review
+  # - dast
+  # - staging
+  # - canary
+  # - production
+  # - incremental rollout 10%
+  # - incremental rollout 25%
+  # - incremental rollout 50%
+  # - incremental rollout 100%
+  # - performance
+  # - cleanup
 
 # cache using branch name
 # https://gitlab.com/help/ci/caching/index.md
