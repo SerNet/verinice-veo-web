@@ -61,7 +61,7 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "unitpicker": "Please choose a unit",
+    "unitPicker": "Please choose a unit",
     "unitpickerPlaceholder": "Search for a unit..."
   },
   "de": {
