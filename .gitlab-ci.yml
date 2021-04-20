@@ -45,11 +45,10 @@ cache:
 
 # this job installs NPM dependencies and Cypress
 install:
-  image: node:12-alpine
+  image: cypress/base:10
   stage: build_e2e
   script:
-    - apk add libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-    - npm install
+    - npm ci
     # check Cypress binary path and cached versions
     # useful to make sure we are not carrying around old versions
     - npx cypress cache path
