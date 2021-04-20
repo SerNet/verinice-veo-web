@@ -114,6 +114,7 @@ export default {
   'unit.select.label': 'Unit',
 
   'breadcrumbs.all': 'Alle',
+  'breadcrumbs.reports': 'Reports',
   'breadcrumbs.settings': 'Einstellungen',
   'breadcrumbs.help': 'Handbuch',
   'breadcrumbs.detail_view': 'Detailansicht',
