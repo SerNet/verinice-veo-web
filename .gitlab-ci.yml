@@ -56,6 +56,13 @@ install:
     # - $(npm bin)/print-env CI
     - npm run cy:verify
     - npm run cy:info
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: always
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    when: manual
 
 # all jobs that actually run tests can use the same definition
 .job_template:
@@ -68,6 +75,13 @@ install:
     - npm run start
     # run Cypress test in load balancing mode
     - npm run e2e:record -- --parallel --group "electrons on GitLab CI"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: always
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    when: manual
   artifacts:
     when: always
     paths:
