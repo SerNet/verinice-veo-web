@@ -18,7 +18,7 @@
           <v-list-item-title class="font-weight-bold">
             {{ $t('editor.formschema.headline') }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{ $t('formschemaDescription') }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ $t('formSchemaDescription') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
           <v-icon x-large>mdi-chevron-right</v-icon>
@@ -46,13 +46,13 @@ export default defineComponent<IProps>({
 {
   "en": {
     "calltoaction": "What do you want to do?",
-    "formschemaDescription": "Create, edit, import or export form schemas",
-    "objectschemaDescription": "Create, edit, import or export object schemas"
+    "formSchemaDescription": "Create, edit, import or export form schemas",
+    "objectSchemaDescription": "Create, edit, import or export object schemas"
   },
   "de": {
     "calltoaction": "Was möchten Sie tun?",
-    "formschemaDescription": "Formschemas erstellen, bearbeiten, importieren und exportieren",
-    "objectschemaDescription": "Objektschemas erstellen, bearbeiten, importieren und exportieren"
+    "formSchemaDescription": "Formschemas erstellen, bearbeiten, importieren und exportieren",
+    "objectSchemaDescription": "Objektschemas erstellen, bearbeiten, importieren und exportieren"
   }
 }
 </i18n>
