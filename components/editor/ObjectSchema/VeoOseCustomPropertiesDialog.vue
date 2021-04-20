@@ -77,7 +77,7 @@
     </template>
     <template v-else #dialog-options>
       <v-btn color="primary" outlined @click="$emit('delete-item')">
-        {{ $t(`delete_${type}`) }}
+        {{ $t(`delete.${type}`) }}
       </v-btn>
       <v-spacer />
       <v-btn text color="primary" @click="close()">
@@ -177,7 +177,7 @@ export default Vue.extend({
         return this.$t(`headlineCreate.${this.type}`) as string
       } else {
         return this.$t(`headlineEdit.${this.type}`, {
-          title: this.item?.title ? `"${this.item?.title}"` : ''
+          title: this.item?.title ? `${this.item?.title}` : ''
         }) as string
       }
     },

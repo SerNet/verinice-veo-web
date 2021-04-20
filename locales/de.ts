@@ -130,5 +130,11 @@ export default {
 
   // temporary until the composition api supports <i18n></i18n>
   "headline_aspect": "Aspekt löschen",
-  "headline_link": "Link löschen"
+  "headline_link": "Link löschen",
+  "attributeTypes": {
+    "date": "Datum",
+    "dateTime": "Datum und Uhrzeit",
+    "text": "Text",
+    "uri": "URI"
+  }
 }

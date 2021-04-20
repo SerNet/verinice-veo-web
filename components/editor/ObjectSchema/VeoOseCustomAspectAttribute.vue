@@ -72,6 +72,11 @@
           </v-combobox>
         </v-col>
       </v-row>
+      <v-row v-if="formatOptions.length > 0" class="flex-column">
+        <v-col class="py-0">
+          <v-select :label="$t('inputFormat')" :items="formatOptions" item-text="displayName" item-value="name" />
+        </v-col>
+      </v-row>
     </v-list-item-content>
     <v-list-item-action>
       <v-btn fab depressed text color="black" @click="doDelete()">
@@ -99,6 +104,45 @@ interface IProps {
   aspectName: string
   enum: any[]
   multiple: boolean
+}
+
+interface IInputFormat {
+  name: string
+  properties: {
+    [key: string]: string
+  }
+}
+
+interface IInputFormats {
+  [key: string]: IInputFormat[]
+}
+
+const INPUT_FORMATS: IInputFormats = {
+  string: [
+    {
+      name: 'text',
+      properties: {}
+    },
+    {
+      name: 'date',
+      properties: {
+        format: 'date'
+      }
+    },
+    {
+      name: 'dateTime',
+      properties: {
+        format: 'date-time'
+      }
+    },
+    {
+      name: 'uri',
+      properties: {
+        format: 'uri',
+        pattern: '^(https?|ftp)://'
+      }
+    }
+  ]
 }
 
 export default defineComponent<IProps>({
@@ -178,6 +222,14 @@ export default defineComponent<IProps>({
       )
     }
 
+    // Special operations for all types
+    const formatOptions = computed(() => {
+      return (INPUT_FORMATS[form.value.data.type] || []).map((entry: any) => {
+        entry.displayName = context.root.$i18n.t(`attributeTypes.${entry.name}`)
+        return entry
+      })
+    })
+
     return {
       prefix,
       form,
@@ -185,6 +237,7 @@ export default defineComponent<IProps>({
       doDelete,
       doUpdate,
       attributeTypes,
+      formatOptions,
       removeValueFromEnum
     }
   }
@@ -198,14 +251,16 @@ export default defineComponent<IProps>({
     "aspectDescription": "Description",
     "aspectName": "attribute name",
     "aspectType": "Attribute type",
+    "inputFormat": "Input format",
     "values": "Available options",
     "valuesHint": "Available options (seperate entries with Enter)"
   },
   "de": {
     "multiple": "Mehrfachauswahl",
-    "aspectDescription": "Beschreobung",
+    "aspectDescription": "Beschreibung",
     "aspectName": "Name des Attributs",
     "aspectType": "Typ des Attributs",
+    "inputFormat": "Eingabeformat",
     "values": "Auswahlmöglichkeiten",
     "valuesHint": "Werte (mit Enter trennen)"
   }

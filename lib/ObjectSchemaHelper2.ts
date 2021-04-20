@@ -26,7 +26,9 @@ export interface IVeoOSHCustomProperty {
   description: string
   prefix?: string
   multiple?: string
-  [key: string]: any
+  options?: {
+    [key: string]: string
+  }
 }
 
 export interface IVeoOSHOptions {
