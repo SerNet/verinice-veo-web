@@ -124,6 +124,30 @@ export interface IVeoFormSchemaItemDeleteEvent {
   formSchemaPointer: string
 }
 
+export interface IVeoReportsMeta {
+  [key: string]: IVeoReportMeta
+}
+
+export interface IVeoReportMeta {
+  name: {
+    [key: string]: string
+  }
+  description: {
+    [key: string]: string
+  }
+  outputTypes: string[]
+  multipleTargetsSupported: boolean
+  targetTypes: string[]
+}
+
+export interface IVeoCreateReportData {
+  outputType: string
+  targets: {
+    type: string
+    id: string
+  }[]
+}
+
 /**
  * 2. Types of user generated data
  */

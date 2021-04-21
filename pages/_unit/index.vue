@@ -46,7 +46,7 @@ export default Vue.extend({
   },
   computed: {
     title(): string {
-      return this.unit.name || ''
+      return this.unit.name
     },
     unitId() {
       return separateUUIDParam(this.$route.params.unit).id

@@ -114,6 +114,7 @@ export default {
   'unit.select.label': 'Unit',
 
   'breadcrumbs.all': 'Alle',
+  'breadcrumbs.reports': 'Reports',
   'breadcrumbs.settings': 'Einstellungen',
   'breadcrumbs.help': 'Handbuch',
   'breadcrumbs.detail_view': 'Detailansicht',
@@ -131,6 +132,9 @@ export default {
   // temporary until the composition api supports <i18n></i18n>
   "headline_aspect": "Aspekt löschen",
   "headline_link": "Link löschen",
+
+  "saveSchemaError": "Das Schema konnte nicht aktualisiert werden",
+  "saveSchemaSuccess": "Schema wurde aktualisiert!",
   "attributeTypes": {
     "date": "Datum",
     "dateTime": "Datum und Uhrzeit",
