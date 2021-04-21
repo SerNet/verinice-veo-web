@@ -615,7 +615,7 @@ export default class ObjectSchemaHelper {
         const attribute = aspect.properties.attributes.properties[attributeName]
         dummy.attributes.push({
           ...attribute,
-          title: capitalize(this.cleanAttributeName(attributeName, dummy.title), true),
+          title: this.cleanAttributeName(attributeName, dummy.title),
           description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
@@ -640,7 +640,7 @@ export default class ObjectSchemaHelper {
         const attribute = link.items.properties.attributes.properties[attributeName]
         dummy.attributes.push({
           ...attribute,
-          title: capitalize(this.cleanAttributeName(attributeName, dummy.title), true),
+          title: this.cleanAttributeName(attributeName, dummy.title),
           description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
