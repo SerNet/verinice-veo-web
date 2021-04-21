@@ -35,10 +35,12 @@ stages:
   - cleanup
 
 build:
-  when: never
+  rules:
+    when: never
 
 test:
-  when: never
+  rules:
+    when: never
 
 # cache using branch name
 # https://gitlab.com/help/ci/caching/index.md
