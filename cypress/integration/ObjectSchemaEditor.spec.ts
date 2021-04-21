@@ -211,7 +211,7 @@ describe('Objectschema Editor', () => {
      */
     cy.visit('http://localhost:3000/editor')
 
-    cy.setCookie('i18n_redirected', 'en')
+    cy.setCookie('i18n_redirected', 'de')
 
     cy.contains('.v-list-item.v-list-item--link', 'Objektschema Editor')
       .should('have.attr', 'href', '/editor/objectschema')
