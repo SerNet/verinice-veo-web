@@ -127,13 +127,14 @@ module.exports = {
       { code: 'de', file: 'de.ts', name: 'Deutsch' },
       { code: 'en', file: 'en.ts', name: 'English' }
     ],
-    // detectBrowserLanguage: {
-    //   useCookie: true,
-    //   cookieDomain: null,
-    //   cookieKey: 'i18n_redirected',
-    //   alwaysRedirect: false,
-    //   fallbackLocale: 'de'
-    // },
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieCrossOrigin: true,
+      cookieDomain: null,
+      cookieKey: 'i18n_redirected',
+      alwaysRedirect: true,
+      fallbackLocale: 'de'
+    },
     defaultLocale: 'de',
     lazy: true,
     langDir: 'locales/'
