@@ -46,7 +46,7 @@ test_e2e:
   image: cypress/base:14.15.4
   stage: test_e2e
   before_script:
-    - npm install
+    - npm ci
     - locale -a
     - npm run cy:verify
     - npm run build
