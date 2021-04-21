@@ -17,7 +17,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas'
+        url: /.*\/schemas$/
       },
       req => {
         req.reply({

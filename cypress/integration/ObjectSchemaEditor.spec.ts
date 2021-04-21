@@ -197,9 +197,10 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas'
+        url: /.*\/schemas$/
       },
       req => {
+        console.log(req)
         req.reply({
           fixture: 'objectschema/schemas.json'
         })
