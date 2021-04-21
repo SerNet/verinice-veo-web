@@ -11,12 +11,12 @@ describe('Objectschema Wizard', () => {
      */
     cy.visit('http://localhost:3000/editor', {
       onBeforeLoad(win) {
-        Object.defineProperty(win.navigator, 'language', { value: 'de-DE' });
-        Object.defineProperty(win.navigator, 'languages', { value: ['de'] });
-        Object.defineProperty(win.navigator, 'accept_languages', { value: ['de'] });
+        Object.defineProperty(win.navigator, 'language', { value: 'de-DE' })
+        Object.defineProperty(win.navigator, 'languages', { value: ['de', 'de-DE'] })
+        Object.defineProperty(win.navigator, 'accept_languages', { value: ['de', 'de-DE'] })
       },
       headers: {
-        'Accept-Language': 'de',
+        'Accept-Language': 'de-DE'
       }
     })
   })

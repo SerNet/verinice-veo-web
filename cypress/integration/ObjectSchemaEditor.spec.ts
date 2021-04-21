@@ -212,11 +212,11 @@ describe('Objectschema Editor', () => {
     cy.visit('http://localhost:3000/editor', {
       onBeforeLoad(win) {
         Object.defineProperty(win.navigator, 'language', { value: 'de-DE' })
-        Object.defineProperty(win.navigator, 'languages', { value: ['de'] })
-        Object.defineProperty(win.navigator, 'accept_languages', { value: ['de'] })
+        Object.defineProperty(win.navigator, 'languages', { value: ['de', 'de-DE'] })
+        Object.defineProperty(win.navigator, 'accept_languages', { value: ['de', 'de-DE'] })
       },
       headers: {
-        'Accept-Language': 'de'
+        'Accept-Language': 'de-DE'
       }
     })
 
@@ -273,7 +273,7 @@ describe('Objectschema Editor', () => {
       })
   })
 
-  it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function() {
+  it.only('compares number of basic properties, aspects and links comply with sum in expansion panel title', function() {
     cy.get('@expansionPanelHeaders').each((el, i) => {
       const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
       cy.wrap(expansionPanelText).should(
