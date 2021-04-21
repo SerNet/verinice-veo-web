@@ -227,9 +227,7 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Schema-Typ')
-        .closest('.v-select')
-        .type('Process{enter}')
+      cy.contains('.v-select', 'Typ des Objektschemas').type('Process{enter}')
       cy.get('.v-card__actions')
         .contains('Weiter')
         .click()
@@ -326,17 +324,17 @@ describe('Objectschema Editor', () => {
       .click()
       .wait(1)
     cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Titel *')
+      cy.contains('Name *')
         .closest('.v-text-field')
         .type('Test')
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = changedAttributes[wrapperIndex]
-          cy.contains('Titel des Attributs *')
+          cy.contains('Name des Attributs *')
             .closest('.v-text-field')
             .type(currentAttrData.writeTitle)
-          cy.contains('Attributtyp')
+          cy.contains('Typ des Attributs')
             .closest('.v-select')
             .type(`${currentAttrData.selectType.text}{enter}`)
           cy.contains('Beschreibung')
@@ -395,10 +393,10 @@ describe('Objectschema Editor', () => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = addAttributes[wrapperIndex]
-          cy.contains('Titel des Attributs *')
+          cy.contains('Name des Attributs *')
             .closest('.v-text-field')
             .type(currentAttrData.writeTitle)
-          cy.contains('Attributtyp')
+          cy.contains('Typ des Attributs')
             .closest('.v-select')
             .type(`${currentAttrData.selectType.text}{enter}`)
 
@@ -450,7 +448,7 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(el => {
-      cy.contains('Titel *')
+      cy.contains('Name *')
         .closest('.v-text-field')
         .type('TestAspectOne{enter}')
       cy.get('.v-card__actions')
@@ -483,7 +481,7 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Titel *')
+      cy.contains('Name *')
         .closest('.v-text-field')
         .type('TestAspectTwo{enter}')
       cy.contains('Attribut hinzufügen')
@@ -495,10 +493,10 @@ describe('Objectschema Editor', () => {
         .then(el => {
           cy.wrap(el).within(() => {
             const currentAttrData = addTestTwoAttribute
-            cy.contains('Titel des Attributs *')
+            cy.contains('Name des Attributs *')
               .closest('.v-text-field')
               .type(currentAttrData.writeTitle)
-            cy.contains('Attributtyp')
+            cy.contains('Typ des Attributs')
               .closest('.v-select')
               .type(`${currentAttrData.selectType.text}{enter}`)
             cy.contains('Beschreibung')
@@ -604,14 +602,14 @@ describe('Objectschema Editor', () => {
       .click()
       .wait(1)
     cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Titel *')
+      cy.contains('Name *')
         .closest('.v-text-field')
         .type('Test')
       cy.contains('Linkbeschreibung *')
         .closest('.v-text-field')
         .clear()
         .type('TestId')
-      cy.contains('Art des Links *')
+      cy.contains('Typ des Linkziels *')
         .closest('.v-select')
         .should('contain.text', 'Control')
         .type('Person{enter}')
@@ -619,10 +617,10 @@ describe('Objectschema Editor', () => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = changedAttributes[wrapperIndex]
-          cy.contains('Titel des Attributs *')
+          cy.contains('Name des Attributs *')
             .closest('.v-text-field')
             .type(currentAttrData.writeTitle)
-          cy.contains('Attributtyp')
+          cy.contains('Typ des Attributs')
             .closest('.v-select')
             .type(`${currentAttrData.selectType.text}{enter}`)
           cy.contains('Beschreibung')
@@ -681,10 +679,10 @@ describe('Objectschema Editor', () => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = addAttributes[wrapperIndex]
-          cy.contains('Titel des Attributs *')
+          cy.contains('Name des Attributs *')
             .closest('.v-text-field')
             .type(currentAttrData.writeTitle)
-          cy.contains('Attributtyp')
+          cy.contains('Typ des Attributs')
             .closest('.v-select')
             .type(`${currentAttrData.selectType.text}{enter}`)
 
@@ -730,19 +728,19 @@ describe('Objectschema Editor', () => {
 
   it('opens dialog to create a new link and clicks close button to discard changes', function() {
     // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
-    cy.contains('Links hinzufügen')
+    cy.contains('Link hinzufügen')
       .closest('.v-btn')
       .click()
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Titel *')
+      cy.contains('Name *')
         .closest('.v-text-field')
         .type('TestLinkOne')
       cy.contains('Linkbeschreibung *')
         .closest('.v-text-field')
         .type('TestLinkOne Beschreibung')
-      cy.contains('Art des Links *')
+      cy.contains('Typ des Linkziels *')
         .closest('.v-select')
         .type('Control{enter}')
 
@@ -776,19 +774,19 @@ describe('Objectschema Editor', () => {
   })
 
   it('adds completely new link and removes it from dialog with delete button', function() {
-    cy.contains('Links hinzufügen')
+    cy.contains('Link hinzufügen')
       .closest('.v-btn')
       .click()
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Titel *')
+      cy.contains('Name *')
         .closest('.v-text-field')
         .type('TestLinkTwo')
       cy.contains('Linkbeschreibung *')
         .closest('.v-text-field')
         .type('TestLinkTwo Beschreibung')
-      cy.contains('Art des Links *')
+      cy.contains('Typ des Linkziels *')
         .closest('.v-select')
         .type('Person{enter}')
 
@@ -807,10 +805,10 @@ describe('Objectschema Editor', () => {
         .then(el => {
           cy.wrap(el).within(() => {
             const currentAttrData = addTestTwoAttribute
-            cy.contains('Titel des Attributs *')
+            cy.contains('Name des Attributs *')
               .closest('.v-text-field')
               .type(currentAttrData.writeTitle)
-            cy.contains('Attributtyp')
+            cy.contains('Typ des Attributs')
               .closest('.v-select')
               .type(`${currentAttrData.selectType.text}{enter}`)
             cy.contains('Beschreibung')

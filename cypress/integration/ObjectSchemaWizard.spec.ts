@@ -89,7 +89,7 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Test')
       cy.get('.v-window-item--active')
         .contains('.v-text-field', 'Beschreibung')
@@ -117,7 +117,7 @@ describe('Objectschema Wizard', () => {
   it('imports own objectschema by uploading', function () {
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Eigenes{enter}')
       cy.get('.v-window-item--active')
         .contains('.v-file-input', 'Objektschema hochladen (.json)')
@@ -143,7 +143,7 @@ describe('Objectschema Wizard', () => {
   it('imports own objectschema by inserting code', function () {
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Eigenes{enter}')
       cy.get('.v-window-item--active')
         .contains('.v-tab', 'Code einfügen')
@@ -191,7 +191,7 @@ describe('Objectschema Wizard', () => {
     )
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Control{enter}')
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Weiter')
@@ -227,7 +227,7 @@ describe('Objectschema Wizard', () => {
     )
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Scope{enter}')
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Weiter')
@@ -263,7 +263,7 @@ describe('Objectschema Wizard', () => {
     )
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Asset{enter}')
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Weiter')
@@ -299,7 +299,7 @@ describe('Objectschema Wizard', () => {
     )
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Process{enter}')
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Weiter')
@@ -335,7 +335,7 @@ describe('Objectschema Wizard', () => {
     )
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Incident{enter}')
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Weiter')
@@ -371,7 +371,7 @@ describe('Objectschema Wizard', () => {
     )
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Document{enter}')
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Weiter')
@@ -407,7 +407,7 @@ describe('Objectschema Wizard', () => {
     )
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Person{enter}')
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Weiter')
@@ -443,7 +443,7 @@ describe('Objectschema Wizard', () => {
     )
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Schema-Typ')
+        .contains('.v-text-field', 'Typ des Objektschemas')
         .type('Scenario{enter}')
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Weiter')

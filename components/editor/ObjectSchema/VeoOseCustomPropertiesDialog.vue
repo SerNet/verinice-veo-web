@@ -77,7 +77,7 @@
     </template>
     <template v-else #dialog-options>
       <v-btn color="primary" outlined @click="$emit('delete-item')">
-        {{ $t(`delete_${type}`) }}
+        {{ $t(`delete.${type}`) }}
       </v-btn>
       <v-spacer />
       <v-btn text color="primary" @click="close()">
