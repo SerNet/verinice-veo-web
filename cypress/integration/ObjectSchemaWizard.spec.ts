@@ -173,7 +173,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/control*'
+        url: /.*\/schemas\/control.*/
       },
       req => {
         req.reply({
@@ -209,7 +209,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/scope*'
+        url: /.*\/schemas\/scope.*/
       },
       req => {
         req.reply({
@@ -245,7 +245,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/asset*'
+        url: /.*\/schemas\/asset.*/
       },
       req => {
         req.reply({
@@ -281,7 +281,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/process*'
+        url: /.*\/schemas\/process.*/
       },
       req => {
         req.reply({
@@ -317,7 +317,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/incident*'
+        url: /.*\/schemas\/incident.*/
       },
       req => {
         req.reply({
@@ -353,7 +353,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/document*'
+        url: /.*\/schemas\/document.*/
       },
       req => {
         req.reply({
@@ -389,7 +389,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/person*'
+        url: /.*\/schemas\/person.*/
       },
       req => {
         req.reply({
@@ -425,7 +425,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/scenario*'
+        url: /.*\/schemas\/scenario.*/
       },
       req => {
         req.reply({

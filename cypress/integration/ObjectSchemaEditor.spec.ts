@@ -187,7 +187,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/process?domains=GDPR%2CISO_27001'
+        url: /.*\/schemas\/process.*/
       },
       req => {
         req.reply({ fixture: 'objectschema/process.json' })
