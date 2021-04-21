@@ -14,8 +14,6 @@
     "precommit": "npm run lint",
     "test": "jest",
     "test:e2e": "cypress run",
-    "e2e:record": "cypress run --record --key v30",
-    "start:ci": "serve --no-clipboard --listen ${PORT:-8080}",
     "cy:verify": "cypress verify",
     "cy:info": "cypress info",
     "test:docker": "docker run -it $(docker build -f test.Dockerfile -q .)",

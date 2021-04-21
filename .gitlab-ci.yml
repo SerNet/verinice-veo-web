@@ -63,12 +63,12 @@ test_e2e:
   image: cypress/base:14.15.4
   stage: test_e2e
   script:
-    - npm ci
+    - npm install
+    - npm run build
     # print CI environment variables for reference
     # - $(npm bin)/print-env CI
     # make sure Cypress can run
     - npm run cy:verify
-    - npm run build
     # start the server in the background
     - npm run start &
     # run Cypress test in load balancing mode, pass id to tie jobs together
@@ -81,9 +81,10 @@ test_e2e:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
       when: always
   artifacts:
+    when: always
     paths:
-      - cypress/videos
-      - cypress/screenshots
+      - cypress/videos/**/*.mp4
+      - cypress/screenshots/**/*.png
     expire_in: 1 day
     ##
 # # cache using branch name
