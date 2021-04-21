@@ -34,7 +34,7 @@ describe('Objectschema Wizard', () => {
       .wait(1)
   })
 
-  it.only('ckecks navigation between wizard start, back button, and objectschema create and import', function() {
+  it('ckecks navigation between wizard start, back button, and objectschema create and import', function() {
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-card__actions')
         .contains('Zurück')

@@ -267,7 +267,7 @@ describe('Objectschema Editor', () => {
       })
   })
 
-  it.only('compares number of basic properties, aspects and links comply with sum in expansion panel title', function() {
+  it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function() {
     cy.get('@expansionPanelHeaders').each((el, i) => {
       const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
       cy.wrap(expansionPanelText).should(
