@@ -8,9 +8,7 @@
     class="veo-object-list"
   >
     <template #no-data>
-      <span class="text-center">
-        {{ $t('no_objects') }}
-      </span>
+      <span class="text-center">{{ $t('no_objects') }}</span>
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
@@ -24,7 +22,10 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.abbreviation }}</span>
+            <span
+              v-on="on"
+              class="veo-object-list__abbreviation--abbreviation"
+            >{{ item.abbreviation }}</span>
           </template>
           <template #default>
             <span>{{ item.abbreviation }}</span>
@@ -39,7 +40,10 @@
       <div class="veo-object-list__description">
         <v-tooltip v-if="item.descriptionShort" bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.descriptionShort }}</span>
+            <span
+              v-on="on"
+              class="veo-object-list__abbreviation--abbreviation"
+            >{{ item.descriptionShort }}</span>
           </template>
           <template #default>
             <span>{{ value }}</span>
@@ -52,12 +56,11 @@
       <div class="veo-object-list__date nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <span v-on="on">
-              {{ formatDate(item.updatedAt) }}
-            </span>
+            <span v-on="on">{{ formatDate(item.updatedAt) }}</span>
           </template>
           <template #default>
-            {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}<br />
+            {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}
+            <br />
             {{ $t('updated_at') }}: {{ formatDate(item.updatedAt) }} {{ $t('by') }} {{ item.updatedBy }}
           </template>
         </v-tooltip>
@@ -68,38 +71,26 @@
         <v-tooltip bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="sendEvent('edit', item, true)" v-on="on">
-              <v-icon>
-                mdi-pencil
-              </v-icon>
+              <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('edit') }}
-          </template>
+          <template #default>{{ $t('edit') }}</template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="sendEvent('duplicate', item)" v-on="on">
-              <v-icon>
-                mdi-content-copy
-              </v-icon>
+              <v-icon>mdi-content-copy</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('clone') }}
-          </template>
+          <template #default>{{ $t('clone') }}</template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="sendEvent('delete', item)" v-on="on">
-              <v-icon>
-                mdi-delete
-              </v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('delete') }}
-          </template>
+          <template #default>{{ $t('delete') }}</template>
         </v-tooltip>
       </div>
     </template>
@@ -140,7 +131,7 @@ export default Vue.extend({
   computed: {
     displayedItems(): IVeoEntity[] {
       return this.items
-        .map(item => {
+        .map((item) => {
           // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
           if (item.description && item.description.length > 40) {
             item.descriptionShort = item.description.substring(0, 40) + '...'
@@ -234,6 +225,10 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
+.veo-object-list {
+  cursor: pointer;
+}
+
 .veo-object-list__abbreviation {
   display: flex;
   flex-wrap: nowrap;
@@ -255,9 +250,6 @@ export default Vue.extend({
   white-space: nowrap;
 }
 
-.veo-object-list__date {
-}
-
 .veo-object-list__actions {
   display: flex;
   flex-wrap: nowrap;
@@ -266,11 +258,5 @@ export default Vue.extend({
 
 ::v-deep .nowrap {
   white-space: nowrap;
-}
-
-::v-deep tbody {
-  tr:hover {
-    background-color: transparent !important;
-  }
 }
 </style>
