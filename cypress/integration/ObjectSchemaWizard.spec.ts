@@ -9,7 +9,9 @@ describe('Objectschema Wizard', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('http://localhost:3000/editor')
+    cy.visit('http://localhost:3000/editor').then(() => {
+      cy.setCookie('i18n_redirected', 'de')
+    })
   })
 
   beforeEach(() => {
@@ -24,7 +26,7 @@ describe('Objectschema Wizard', () => {
         })
       }
     )
-    cy.window().then(function (win: any) {
+    cy.window().then(function(win: any) {
       win.$nuxt?.$router?.push('/editor')
     })
     cy.contains('.v-list-item--link', 'Objektschema Editor')
@@ -33,7 +35,7 @@ describe('Objectschema Wizard', () => {
       .wait(1)
   })
 
-  it.only('ckecks navigation between wizard start, back button, and objectschema create and import', function () {
+  it.only('ckecks navigation between wizard start, back button, and objectschema create and import', function() {
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-card__actions')
         .contains('Zurück')
@@ -73,7 +75,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('creates a new objectschema', function () {
+  it('creates a new objectschema', function() {
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
         .contains('Stattdessen ein neues Objektschema erstellen')
@@ -96,7 +98,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Test Beschreibung')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/empty.json').then(emptyOS => {
           cy.wrap(JSON.stringify(emptyOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -105,7 +107,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports own objectschema by uploading', function () {
+  it('imports own objectschema by uploading', function() {
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
         .contains('.v-text-field', 'Typ des Objektschemas')
@@ -122,7 +124,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Test Beschreibung')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/empty.json').then(emptyOS => {
           cy.wrap(JSON.stringify(emptyOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -131,7 +133,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports own objectschema by inserting code', function () {
+  it('imports own objectschema by inserting code', function() {
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
         .contains('.v-text-field', 'Typ des Objektschemas')
@@ -159,7 +161,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Test Beschreibung')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/empty.json').then(emptyOS => {
           cy.wrap(JSON.stringify(emptyOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -168,7 +170,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports existing control objectschema', function () {
+  it('imports existing control objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -195,7 +197,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Schema for Control')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/control.json').then(controlOS => {
           cy.wrap(JSON.stringify(controlOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -204,7 +206,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports existing scope objectschema', function () {
+  it('imports existing scope objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -231,7 +233,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Schema for Scope')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/scope.json').then(scopeOS => {
           cy.wrap(JSON.stringify(scopeOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -240,7 +242,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports existing asset objectschema', function () {
+  it('imports existing asset objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -267,7 +269,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Schema for Asset')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/asset.json').then(assetOS => {
           cy.wrap(JSON.stringify(assetOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -276,7 +278,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports existing process objectschema', function () {
+  it('imports existing process objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -303,7 +305,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Schema for Process')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/proces.json').then(procesOS => {
           cy.wrap(JSON.stringify(procesOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -312,7 +314,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports existing incident objectschema', function () {
+  it('imports existing incident objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -339,7 +341,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Schema for Incident')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/incident.json').then(incidentOS => {
           cy.wrap(JSON.stringify(incidentOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -348,7 +350,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports existing document objectschema', function () {
+  it('imports existing document objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -375,7 +377,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Schema for Document')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/document.json').then(documentOS => {
           cy.wrap(JSON.stringify(documentOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -384,7 +386,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports existing person objectschema', function () {
+  it('imports existing person objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -411,7 +413,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Schema for Person')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/person.json').then(personOS => {
           cy.wrap(JSON.stringify(personOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
@@ -420,7 +422,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports existing scenario objectschema', function () {
+  it('imports existing scenario objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -447,7 +449,7 @@ describe('Objectschema Wizard', () => {
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
       .should('have.value', 'Schema for Scenario')
-    cy.get('.editor .cm-content').then(function (editor) {
+    cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/scenario.json').then(scenarioOS => {
           cy.wrap(JSON.stringify(scenarioOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
