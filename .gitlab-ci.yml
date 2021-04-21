@@ -34,6 +34,12 @@ stages:
   - performance
   - cleanup
 
+build:
+  when: never
+
+test:
+  when: never
+
 # cache using branch name
 # https://gitlab.com/help/ci/caching/index.md
 cache:
