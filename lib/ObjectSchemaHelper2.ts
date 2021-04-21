@@ -1,4 +1,4 @@
-import { merge, upperFirst } from "lodash";
+import { merge } from "lodash";
 
 import {
   IVeoObjectSchema,
@@ -654,7 +654,7 @@ export default class ObjectSchemaHelper {
   private loadBasicProperties(schema: IVeoObjectSchema['properties'], key: string) {
     // @ts-ignore
     const property = schema[key] as IVeoObjectSchemaProperty
-    this._basicProperties.push({ title: upperFirst(key), description: property.description || '', type: this.getAttributeType(property), prefix: '' })
+    this._basicProperties.push({ title: key, description: property.description || '', type: this.getAttributeType(property), prefix: '' })
   }
 
   private getAttributeType(attribute: IVeoObjectSchemaProperty) {
