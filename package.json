@@ -14,7 +14,7 @@
     "precommit": "npm run lint",
     "test": "jest",
     "test:e2e": "cypress run",
-    "test:e2e-ci": "start-server-and-test start 3000 test:e2e",
+    "test:e2e-ci": "export LANG='de_DE.UTF-8' && start-server-and-test start 3000 test:e2e",
     "cy:verify": "cypress verify",
     "cy:info": "cypress info",
     "test:docker": "docker run -it $(docker build -f test.Dockerfile -q .)",
