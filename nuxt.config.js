@@ -117,17 +117,17 @@ module.exports = {
   i18n: {
     strategy: 'no_prefix',
     locales: [
-      { code: 'en', file: 'en.ts', name: 'English' },
-      { code: 'de', file: 'de.ts', name: 'Deutsch' }
+      { code: 'de', file: 'de.ts', name: 'Deutsch' },
+      { code: 'en', file: 'en.ts', name: 'English' }
     ],
     detectBrowserLanguage: {
       useCookie: true,
       cookieDomain: null,
       cookieKey: 'i18n_redirected',
       alwaysRedirect: false,
-      fallbackLocale: 'en'
+      fallbackLocale: 'de'
     },
-    defaultLocale: 'en',
+    defaultLocale: 'de',
     lazy: true,
     langDir: 'locales/'
   },
