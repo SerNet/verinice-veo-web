@@ -634,7 +634,7 @@ export default class ObjectSchemaHelper {
       dummy.attributes = []
       dummy.prefix = `${this._title}_`
       dummy.description = link.items.properties.target.title
-      dummy.targetType = capitalize(link.items.properties.target.properties.type.enum[0])
+      dummy.targetType = link.items.properties.target.properties.type.enum[0]
 
       for (let attributeName in link.items.properties.attributes.properties) {
         const attribute = link.items.properties.attributes.properties[attributeName]
