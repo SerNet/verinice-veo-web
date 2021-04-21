@@ -209,16 +209,7 @@ describe('Objectschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('http://localhost:3000/editor', {
-      onBeforeLoad(win) {
-        Object.defineProperty(win.navigator, 'language', { value: 'de-DE' })
-        Object.defineProperty(win.navigator, 'languages', { value: ['de', 'de-DE'] })
-        Object.defineProperty(win.navigator, 'accept_languages', { value: ['de', 'de-DE'] })
-      },
-      headers: {
-        'Accept-Language': 'de-DE'
-      }
-    })
+    cy.visit('http://localhost:3000/editor')
 
     cy.get('.veo-page-wrapper .v-list').then(el => {
       cy.log(el.html())

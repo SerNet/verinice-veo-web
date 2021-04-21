@@ -9,16 +9,7 @@ describe('Objectschema Wizard', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('http://localhost:3000/editor', {
-      onBeforeLoad(win) {
-        Object.defineProperty(win.navigator, 'language', { value: 'de-DE' })
-        Object.defineProperty(win.navigator, 'languages', { value: ['de', 'de-DE'] })
-        Object.defineProperty(win.navigator, 'accept_languages', { value: ['de', 'de-DE'] })
-      },
-      headers: {
-        'Accept-Language': 'de-DE'
-      }
-    })
+    cy.visit('http://localhost:3000/editor')
   })
 
   beforeEach(() => {
@@ -42,7 +33,7 @@ describe('Objectschema Wizard', () => {
       .wait(1)
   })
 
-  it('ckecks navigation between wizard start, back button, and objectschema create and import', function () {
+  it.only('ckecks navigation between wizard start, back button, and objectschema create and import', function () {
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-card__actions')
         .contains('Zurück')
