@@ -1,7 +1,7 @@
 <template>
   <VeoPageWrapper>
     <template #default>
-      <VeoPage absolute-size :cols="12" :md="8" :xl="8" sticky-header :title="objectTitle">
+      <VeoPage absolute-size :cols="12" :md="8" :xl="8" sticky-header :title="objectTitle" :loading="$fetchState.pending">
         <template #default>
           <VeoEntityDisplayOptions :rootRoute="`/${$route.params.unit}/scopes`" :current-entity="form.objectData">
           <v-btn color="primary" outlined :disabled="$fetchState.pending" :loading="deleteEntityDialog.value === true" @click="showDeleteEntityDialog">

@@ -13,10 +13,13 @@
         :xl="!absoluteSize ? xlarge : 12"
         class="d-flex flex-wrap"
       >
-        <h1 class="d-inline px-4 py-1 flex-grow-0">
+        <v-skeleton-loader v-if="loading" class="px-4 py-1 skeleton-title" type="text" />
+        <template v-else>
+          <h1 class="d-inline px-4 py-1 flex-grow-0">
           {{ title }}
+          <slot name="title" />
         </h1>
-        <slot name="title" />
+        </template>        
       </v-col>
     </v-row>
     <v-row
@@ -41,7 +44,12 @@
         :xl="!absoluteSize ? xlarge : 12"
         :class="contentClass"
       >
-        <slot name="default" />
+        <slot v-if="loading && loadContent" name="loading">
+          <v-skeleton-loader width="100%" type="image" />
+          <v-skeleton-loader type="heading" class="pt-3" height="56" width="100%" />
+          <v-skeleton-loader width="100%" type="image" />
+        </slot>
+        <slot v-else name="default" />
       </v-col>
     </v-row>
   </v-col>
@@ -132,6 +140,20 @@ export default defineComponent<IProps>({
     noPadding: {
       type: Boolean,
       default: false
+    },
+    /**
+     * Shows a skeleton for the title if set to true
+     */
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * If this and loading is set, show a skeleton in the content area. Can be customized with slot#loading
+     */
+    loadContent: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, context) {
@@ -192,5 +214,16 @@ export default defineComponent<IProps>({
 
 .veo-page__header--sticky {
   position: sticky;
+}
+
+.skeleton-title {
+  align-items: center;
+  display: flex;
+  height: 56px;
+  width: 300px;
+
+  ::v-deep .v-skeleton-loader__text {
+    height: 32px;
+  }
 }
 </style>
