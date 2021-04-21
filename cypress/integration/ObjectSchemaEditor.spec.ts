@@ -221,7 +221,7 @@ describe('Objectschema Editor', () => {
     })
 
     cy.get('.veo-page-wrapper .v-list').then(el => {
-      console.log(el.html())
+      cy.log(el.html())
     })
 
     cy.contains('Objektschema Editor')
