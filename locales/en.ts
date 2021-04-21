@@ -132,5 +132,11 @@ export default {
   "headline_aspect": "Delete aspect",
   "headline_link": "Delete link",
   "saveSchemaError": "Couldn't update schema",
-  "saveSchemaSuccess": "Schema updated!"
+  "saveSchemaSuccess": "Schema updated!",
+  "attributeTypes": {
+    "date": "Date",
+    "dateTime": "Date and Time",
+    "text": "Text",
+    "uri": "URI"
+  }
 }

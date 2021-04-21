@@ -177,7 +177,7 @@ export default Vue.extend({
         return this.$t(`headlineCreate.${this.type}`) as string
       } else {
         return this.$t(`headlineEdit.${this.type}`, {
-          title: this.item?.title ? `"${this.item?.title}"` : ''
+          title: this.item?.title ? `${this.item?.title}` : ''
         }) as string
       }
     },

@@ -25,8 +25,9 @@ export interface IVeoOSHCustomProperty {
   type: string
   description: string
   prefix?: string
-  multiple?: string
-  [key: string]: any
+  multiple?: boolean
+  format?: string
+  pattern?: string
 }
 
 export interface IVeoOSHOptions {
