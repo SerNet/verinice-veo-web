@@ -159,9 +159,9 @@ export default Vue.extend({
   },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.formId)
-    this.objectType = formSchema.modelType.toLowerCase()
+    this.objectType = formSchema.modelType
     if (this.objectType) {
-      const objectSchema = await this.$api.schema.fetch(formSchema.modelType.toLowerCase())
+      const objectSchema = await this.$api.schema.fetch(this.objectType)
       const objectData = this.$route.params.entity
         ? await this.$api.entity.fetch(this.objectType, this.objectId)
         : {}

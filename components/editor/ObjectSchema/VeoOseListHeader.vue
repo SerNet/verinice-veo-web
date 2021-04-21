@@ -12,7 +12,7 @@
           {{ $t(`editor.inputtypes.${styling.name}`) }}
         </span>
         <span v-else-if="styling.name">
-          {{ capitalize(styling.name, true) }}
+          {{ upperFirst(styling.name) }}
         </span>
       </v-chip>
     </v-list-item-action>
@@ -33,13 +33,13 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
+import { upperFirst } from 'lodash'
 
 import {
   IVeoOSHCustomAspect,
   IVeoOSHCustomLink
 } from '~/lib/ObjectSchemaHelper2'
 import { IInputType } from '~/types/VeoEditor'
-import { capitalize } from '~/lib/utils'
 
 interface IProps {
   item: IVeoOSHCustomAspect | IVeoOSHCustomLink
@@ -57,7 +57,7 @@ export default defineComponent<IProps>({
   },
   setup() {
     return {
-      capitalize
+      upperFirst
     }
   }
 })

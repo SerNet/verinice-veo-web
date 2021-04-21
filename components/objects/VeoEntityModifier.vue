@@ -39,7 +39,6 @@ import { IVeoEntity } from '~/types/VeoTypes'
 import { getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { COMPONENT_NAME_VIEW_MAP } from './VeoEntityDisplayOptions.vue'
 
 interface IData {
   addEntityDialog: {
@@ -138,9 +137,9 @@ export default Vue.extend({
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
     },
-    createEntitySchemas(): string[] {
+    createEntitySchemas(): { text: string, value: string}[] {
       return this.schemas.map((schema: ISchemaEndpoint) => {
-        return upperFirst(schema.schemaName).toString()
+        return { text: upperFirst(schema.schemaName), value: schema.schemaName }
       })
     }
   },

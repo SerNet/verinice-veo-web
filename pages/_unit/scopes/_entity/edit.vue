@@ -140,7 +140,7 @@ export default Vue.extend({
   computed: {
     objectTitle(): string {
       return this.$t('edit_object', {
-        title: this.$fetchState.pending ? this.formattedEntityType : this.form.objectData.name
+        title: this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.name
       })
     },
     entityId(): string {
@@ -148,9 +148,6 @@ export default Vue.extend({
     },
     entityType(): string {
       return separateUUIDParam(this.$route.params.entity).type
-    },
-    formattedEntityType(): string {
-      return upperFirst(this.entityType)
     }
   },
   methods: {

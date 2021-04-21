@@ -44,12 +44,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router'
-import { capitalize } from 'lodash'
 import LocalStorage from '~/util/LocalStorage'
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
 import { IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes'
 import { nonLinkableSchemas } from '~/plugins/api/schema'
+import { upperFirst } from 'lodash'
 
 export interface INavItem {
   name: string
@@ -208,7 +208,7 @@ export default Vue.extend({
       return this.$api.schema.fetchAll().then(data => {
         return data.filter(entry => !nonLinkableSchemas.includes(entry.schemaName)).map(entry => {
           return {
-            name: capitalize(entry.schemaName),
+            name: upperFirst(entry.schemaName),
             exact: false,
             to: `/${routeUnitParam}/objects/${entry.endpoint}/-/`,
             disabled: false,

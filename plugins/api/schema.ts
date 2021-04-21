@@ -44,14 +44,15 @@ export default function (api: Client) {
     /**
      * Returns an array of all entity schemas with their corresponding endpoint.
      */
-    fetchAll(ignoreMissingEndpoints: boolean = false, params?: Record<string, string>): Promise<ISchemaEndpoint[]> {
-      return api.req('/api/schemas', {
+    async fetchAll(ignoreMissingEndpoints: boolean = false, params?: Record<string, string>): Promise<ISchemaEndpoint[]> {
+      const schemas: { knownSchemas: string[] } = await api.req('/api/schemas', {
         params
-      }).then((data: { knownSchemas: string[] }) => data.knownSchemas.map(schema => ({
+      })
+      return schemas.knownSchemas.map(schema => ({
         schemaName: schema,
         // @ts-ignore
         endpoint: endpoints[schema]
-      })).filter(entry => ignoreMissingEndpoints || !!entry.endpoint))
+      })).filter(entry => ignoreMissingEndpoints || !!entry.endpoint)
     },
 
     /**

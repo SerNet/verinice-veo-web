@@ -27,7 +27,7 @@ export default function (api: Client) {
         delete params.unit
       }
 
-      const endpoint = getSchemaEndpoint(objectType) || objectType
+      const endpoint = (getSchemaEndpoint(objectType) || objectType).toLowerCase()
       return api.req(`/api/${endpoint}`, {
         params
       }).then((result: IVeoEntity[]) => {
@@ -52,7 +52,7 @@ export default function (api: Client) {
      * @param entity
      */
     create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType
+      const endpoint = (getSchemaEndpoint(objectType) || objectType).toLowerCase()
 
       // Remove properties of the object only used in the frontend
       if (entity.type === 'scope') {
@@ -74,7 +74,7 @@ export default function (api: Client) {
      * @param id
      */
     fetch(objectType: string, id: string): Promise<IVeoEntity> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType
+      const endpoint = (getSchemaEndpoint(objectType) || objectType).toLowerCase()
 
       return api.req(`/api/${endpoint}/${id}`).then((result: IVeoEntity) => {
         /*
@@ -97,7 +97,7 @@ export default function (api: Client) {
      * @param entity
      */
     update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType
+      const endpoint = (getSchemaEndpoint(objectType) || objectType).toLowerCase()
 
       // Remove properties of the object only used in the frontend
       if (entity.type === 'scope') {
@@ -121,7 +121,7 @@ export default function (api: Client) {
      * @param id
      */
     delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType
+      const endpoint = (getSchemaEndpoint(objectType) || objectType).toLowerCase()
 
       return api.req(`/api/${endpoint}/${id}`, {
         method: 'DELETE'
@@ -135,7 +135,7 @@ export default function (api: Client) {
      * @param id The uuid of the entity to fetch the sub entities for.
      */
     async fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType
+      const endpoint = (getSchemaEndpoint(objectType) || objectType).toLowerCase()
 
       if (objectType === 'scope') {
         return api.req(`/api/scopes/${id}/members`).then((result: IVeoEntity[]) => {
