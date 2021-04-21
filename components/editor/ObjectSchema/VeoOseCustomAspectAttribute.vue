@@ -203,7 +203,7 @@ export default defineComponent<IProps>({
   },
   "de": {
     "multiple": "Mehrfachauswahl",
-    "aspectDescription": "Beschreobung",
+    "aspectDescription": "Beschreibung",
     "aspectName": "Name des Attributs",
     "aspectType": "Typ des Attributs",
     "values": "Auswahlmöglichkeiten",
