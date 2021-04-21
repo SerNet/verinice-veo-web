@@ -127,6 +127,9 @@ module.exports = {
       { code: 'de', file: 'de.ts', name: 'Deutsch' },
       { code: 'en', file: 'en.ts', name: 'English' }
     ],
+    vueI18n: {
+      fallbackLocale: 'de'
+    },
     detectBrowserLanguage: {
       useCookie: true,
       cookieCrossOrigin: true,
