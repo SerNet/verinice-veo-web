@@ -60,7 +60,7 @@ cache:
     - cache/Cypress
 
 test_e2e:
-  image: cypress/base:10
+  image: cypress/base:14.15.4
   stage: test_e2e
   script:
     - npm ci
