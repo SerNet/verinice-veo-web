@@ -9,9 +9,8 @@ describe('Objectschema Wizard', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('http://localhost:3000/editor').then(() => {
-      cy.setCookie('i18n_redirected', 'de')
-    })
+    cy.visit('http://localhost:3000/editor')
+    cy.setCookie('i18n_redirected', 'de')
   })
 
   beforeEach(() => {
