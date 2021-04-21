@@ -47,7 +47,7 @@ test_e2e:
   before_script:
     - npm ci
     - npm run cy:verify
-    - npm run dev &
+    - npm run build
   script:
     # - npm install
     # - npm run build
@@ -57,7 +57,7 @@ test_e2e:
     # - npm run cy:verify
     # start the server in the background
     # - npm run start &
-    # - npm run dev &
+    - npm run start &
     # run Cypress test in load balancing mode, pass id to tie jobs together
     - npm run test:e2e
   rules:
