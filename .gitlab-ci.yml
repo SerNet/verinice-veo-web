@@ -72,7 +72,7 @@ test_e2e:
     # start the server in the background
     - npm run start &
     # run Cypress test in load balancing mode, pass id to tie jobs together
-    - npm run e2e:record
+    - npm run test:e2e
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
