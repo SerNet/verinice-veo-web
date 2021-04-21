@@ -17,10 +17,9 @@ review:
     auto_stop_in: 4 week
 
 stages:
+  - test_e2e
   - build
   - test
-  # - build_e2e
-  - test_e2e
   - deploy
   - review
   - dast
@@ -71,7 +70,7 @@ test_e2e:
     - npm run cy:verify
     # start the server in the background
     # - npm run start &
-    - npm run dev
+    - npm run dev &
     # run Cypress test in load balancing mode, pass id to tie jobs together
     - npm run test:e2e
   rules:
