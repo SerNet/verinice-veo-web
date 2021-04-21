@@ -46,6 +46,7 @@ test_e2e:
   stage: test_e2e
   before_script:
     - npm ci
+    - locale -a
     - npm run cy:verify
     - npm run build
   script:
