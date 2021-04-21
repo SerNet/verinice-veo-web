@@ -220,6 +220,10 @@ describe('Objectschema Editor', () => {
       }
     })
 
+    cy.get('.veo-page-wrapper .v-list').then(el => {
+      console.log(el.html())
+    })
+
     cy.contains('Objektschema Editor')
       .closest('.v-list-item.v-list-item--link')
       .should('have.attr', 'href', '/editor/objectschema')
