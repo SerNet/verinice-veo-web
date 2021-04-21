@@ -219,9 +219,11 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('.v-select', 'Typ des Objektschemas').type('Process{enter}')
+      cy.contains('.v-select', 'Typ des Objektschemas')
+        .type('Process{enter}')
+        .wait(1)
       cy.get('.v-card__actions')
-        .contains('Weiter')
+        .contains('.v-btn', 'Weiter')
         .click()
         .wait(1)
     })
