@@ -210,7 +210,7 @@ export default class ObjectSchemaHelper {
   }
 
   public setTitle(value: string) {
-    this._title = value.toLowerCase()
+    this._title = value
     this.updateSchemaPrefixes()
   }
 
@@ -584,7 +584,7 @@ export default class ObjectSchemaHelper {
   }
 
   private loadObjectSchema(objectSchema: IVeoObjectSchema) {
-    this._title = objectSchema.title?.toLowerCase()
+    this._title = objectSchema.title
     this._description = objectSchema.description
 
     for (const key in objectSchema.properties) {
