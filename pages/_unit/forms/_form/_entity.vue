@@ -73,7 +73,7 @@
     </VeoPage>
     <v-divider vertical />
     <VeoPage v-if="!$vuetify.breakpoint.xsOnly" :cols="4" :md="4" :xl="4" absolute-size>
-      <VeoTabs>
+      <VeoTabs sticky-tabs>
         <template #tabs>
           <v-tab>{{ $t('links') }}</v-tab>
           <v-tab :disabled="!$route.params.entity">{{ $t('history') }}</v-tab>
@@ -83,7 +83,7 @@
             <VeoObjectLinks :object="form.objectData" />
           </v-tab-item>
           <v-tab-item>
-            <VeoObjectHistory :object="form.objectData" />
+            <VeoObjectHistory :object="form.objectData" :loading="$fetchState.pending" />
           </v-tab-item>
         </template>
       </VeoTabs>

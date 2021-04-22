@@ -1,37 +1,40 @@
 <template>
-  <div>
-    {{ loading }}<br>{{ object }}
-    <h4>{{ $t('created') }}</h4>
-    <v-row>
-      <v-col>
-        <v-icon>mdi-account</v-icon>
-        {{ object.updatedBy }}
-      </v-col>
-      <v-col>
-        <v-icon>mdi-clock-time-four-outline</v-icon>
-        {{ new Date(object.updatedAt).toLocaleString() }}
-      </v-col>
-    </v-row>
-    <v-divider />
-    <h4>{{ $t('updated') }}</h4>
-    <v-row>
-      <v-col>
-        <v-icon>mdi-account</v-icon>
-        {{ object.createdBy }}
-      </v-col>
-      <v-col>
-        <v-icon>mdi-clock-time-four-outline</v-icon>
-        {{ new Date(object.createdAt).toLocaleString() }}
-      </v-col>
-    </v-row>
+  <div v-if="$fetchState.pending">
+    <div v-for="index in [1, 2]" :key="index" class="my-6">
+      <v-skeleton-loader type="heading" />
+      <v-skeleton-loader type="text" class="my-2" />
+      <v-skeleton-loader type="text" />
+    </div>
   </div>
+  <v-list v-else>
+    <div v-for="(version, index) of history" :key="version.version" >
+      <v-divider v-if="index > 0" />
+      <v-list-item three-line>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('version') }} <b>{{ version.version }}</b>: {{ (new Date(version.time)).toLocaleString() }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ $t('by') }} <b>{{ version.author }}</b>
+          </v-list-item-subtitle>
+          <v-list-item-subtitle>
+            {{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </div>
+  </v-list>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes'
+
+interface IData {
+  history: IVeoObjectHistoryEntry[]
+}
 
 export default Vue.extend({
   props: {
@@ -44,17 +47,19 @@ export default Vue.extend({
       default: false
     }
   },
+  data(): IData {
+    return {
+      history: []
+    }
+  },
   async fetch() {
-    console.log('1', this.object, this.loading)
     if(this.object && !this.loading) {
-      //const history = await this.$api.history.fetchVersions(this.object)
-      //console.log(history)
+      this.history = await this.$api.history.fetchVersions(this.object)
     }
   },
   watch: {
     loading(newValue: boolean) {
       if(!newValue && this.object) {
-        console.log('2')
         this.$nextTick().then(() => {
           this.$fetch()
         })
@@ -67,12 +72,24 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "created": "Created",
-    "updated": "Updated"
+    "by": "by",
+    "revisionType": {
+      "CREATION": "Object created",
+      "MODIFICATION": "Object modified",
+      "SOFT_DELETION": "Object soft deleted"
+    },
+    "type": "Type",
+    "version": "Version"
   },
   "de": {
-    "created": "Erstellt",
-    "updated": "Bearbeitet"
+    "by": "by",
+    "revisionType": {
+      "CREATION": "Objekt erstellt",
+      "MODIFICATION": "Objekt bearbeitet",
+      "SOFT_DELETION": "Objekt als gelöscht markiert"
+    },
+    "type": "Art",
+    "version": "Version"
   }
 }
 </i18n>

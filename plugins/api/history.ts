@@ -1,5 +1,5 @@
 import { Client } from '~/plugins/api'
-import { IVeoEntity, IVeoFormSchemaMeta } from '~/types/VeoTypes'
+import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes'
 import { getSchemaEndpoint } from './schema'
 
 export default function (api: Client) {
@@ -9,13 +9,12 @@ export default function (api: Client) {
      * 
      * @param entity The entity to load the versions of.
      */
-    fetchVersions(entity: IVeoEntity, params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+    fetchVersions(entity: IVeoEntity, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
       if (!params) {
         params = {}
       }
-      console.log(entity)
 
-      params.url = `${getSchemaEndpoint(entity.type)}/${entity.id}`
+      params.uri = `/${getSchemaEndpoint(entity.type)}/${entity.id}`
       return api.req('/api/history/revisions/', {
         params
       })
@@ -27,7 +26,12 @@ export default function (api: Client) {
      * @param entity The entity to load the version of.
      * @param version The version of the entity to load.
      */
-    fetchVersion(entity: IVeoEntity, version: string, params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+    fetchVersion(entity: IVeoEntity, version: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
+      if (!params) {
+        params = {}
+      }
+
+      params.uri = `/${getSchemaEndpoint(entity.type)}/${entity.id}`
       return api.req(`/api/history/revisions/version/${version}`, {
         params
       })
@@ -39,7 +43,12 @@ export default function (api: Client) {
      * @param entity The entity to load the version of.
      * @param date The date at which to retrieve the most current version.
      */
-    fetchVersionAt(entity: IVeoEntity, date: string, params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+    fetchVersionAt(entity: IVeoEntity, date: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
+      if (!params) {
+        params = {}
+      }
+
+      params.uri = `/${getSchemaEndpoint(entity.type)}/${entity.id}`
       return api.req(`/api/history/revisions/contemporary/${date}`, {
         params
       })
