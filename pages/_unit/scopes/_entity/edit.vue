@@ -48,12 +48,12 @@
         </template>
       </VeoPage>
       <VeoPage absolute-size :cols="12" :md="4" :xl="4">
-        <VeoTabs>
+        <VeoTabs sticky-tabs>
           <template #tabs>
             <v-tab disabled>{{ $t('history') }}</v-tab>
           </template>
           <template #items>
-            <VeoObjectHistory :object="form.objectData" />
+            <VeoObjectHistory :object="form.objectData" :loading="$fetchState.pending" />
           </template>
         </VeoTabs>
       </VeoPage>

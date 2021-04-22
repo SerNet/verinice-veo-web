@@ -148,6 +148,14 @@ export interface IVeoCreateReportData {
   }[]
 }
 
+export interface IVeoObjectHistoryEntry {
+  author: string
+  content: IVeoObjectSchema
+  time: string
+  type: string
+  version: number
+}
+
 /**
  * 2. Types of user generated data
  */

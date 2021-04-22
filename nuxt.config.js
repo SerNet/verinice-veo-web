@@ -45,6 +45,7 @@ module.exports = {
     build: process.env.CI_COMMIT_SHA || '0000000',
     apiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/api' : (process.env.VEO_API_URL || 'https://veo.develop.cpmsys.io/'),
     formsApiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/formsapi' : (process.env.VEO_FORMS_API_URL || 'https://veo-forms.develop.cpmsys.io/'),
+    historyApiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/historyapi' : (process.env.VEO_HISTORY_API_URL || 'https://veo-history.develop.cpmsys.io/'),
     reportsApiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/reportsapi' : (process.env.VEO_REPORTING_API_URL || 'https://veo-reporting.develop.cpmsys.io/'),
     oidcUrl: process.env.VEO_OIDC_URL || 'https://veo-keycloak.staging.cpmsys.io/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
@@ -226,6 +227,19 @@ module.exports = {
     '/formsapi': {
       target: process.env.VEO_FORMS_API_URL || 'https://veo-forms.develop.verinice.com/',
       pathRewrite: { '^/formsapi': '' },
+      /**
+       * @param {import('http').ClientRequest} proxyReq
+       * @param {import('http').ClientRequest} req
+       * @param {import('http').ServerResponse} res
+       */
+      onProxyReq (proxyReq, _req, _res) {
+        // TODO: Remove when #VEO-80 is fixed
+        proxyReq.removeHeader('Origin')
+      }
+    },
+    '/historyapi': {
+      target: process.env.VEO_HISTORY_API_URL || 'https://veo-history.develop.verinice.com/',
+      pathRewrite: { '^/historyapi': '' },
       /**
        * @param {import('http').ClientRequest} proxyReq
        * @param {import('http').ClientRequest} req
