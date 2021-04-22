@@ -282,7 +282,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it.only('imports existing process objectschema', function() {
+  it('imports existing process objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
