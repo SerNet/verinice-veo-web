@@ -72,6 +72,18 @@
           </v-combobox>
         </v-col>
       </v-row>
+      <v-row v-if="formatOptions.length > 0" class="flex-column">
+        <v-col class="py-0">
+          <v-select
+            :value="currentFormatOption"
+            :label="$t('inputFormat')"
+            :items="formatOptions"
+            item-text="displayName"
+            item-value="name"
+            @input="updateOptions($event)"
+          />
+        </v-col>
+      </v-row>
     </v-list-item-content>
     <v-list-item-action>
       <v-btn fab depressed text color="black" @click="doDelete()">
@@ -87,18 +99,60 @@ import {
   ref,
   computed,
   watch,
-  nextTick
+  nextTick,
+  ComputedRef
 } from '@nuxtjs/composition-api'
-import { trim } from 'lodash'
+import { cloneDeep, trim } from 'lodash'
+import { IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2'
 import { INPUT_TYPES } from '~/types/VeoEditor'
 
-interface IProps {
-  title: string
-  type: string
-  description: string
+interface IProps extends IVeoOSHCustomProperty {
   aspectName: string
   enum: any[]
-  multiple: boolean
+}
+
+interface IInputFormat {
+  name: string
+  options: {
+    [key: string]: string | undefined
+  }
+}
+
+interface IInputFormats {
+  [key: string]: IInputFormat[]
+}
+
+const INPUT_FORMATS: IInputFormats = {
+  string: [
+    {
+      name: 'text',
+      options: {
+        format: undefined,
+        pattern: undefined
+      }
+    },
+    {
+      name: 'date',
+      options: {
+        format: 'date',
+        pattern: undefined
+      }
+    },
+    {
+      name: 'dateTime',
+      options: {
+        format: 'date-time',
+        pattern: undefined
+      }
+    },
+    {
+      name: 'uri',
+      options: {
+        format: 'uri',
+        pattern: '^(https?|ftp)://'
+      }
+    }
+  ]
 }
 
 export default defineComponent<IProps>({
@@ -108,7 +162,9 @@ export default defineComponent<IProps>({
     description: { type: String, default: '' },
     aspectName: { type: String, required: true },
     enum: { type: Array, default: () => [] },
-    multiple: { type: Boolean, default: false }
+    multiple: { type: Boolean, default: false },
+    format: { type: String, default: undefined },
+    pattern: { type: String, default: undefined }
   },
   setup(props, context) {
     const prefix = computed(() => props.aspectName + '_')
@@ -157,11 +213,38 @@ export default defineComponent<IProps>({
       context.emit('delete')
     }
 
-    function doUpdate(value: any, property: string) {
+    function doObjectUpdate(newObject: any) {
       const object = { ...form.value.data } as any
+
+      // Delete properties only used for ui
       delete object.aspectName
-      object[property] = value
+
+      // Iterate over every element in the new object. If set to undefined, delete the key, else set the value for the update.
+      for(let key in newObject) {
+        if(newObject[key] === undefined) {
+          delete object[key]
+        } else {
+          object[key] = newObject[key]
+        }
+      }
+
+      // If the object type changes, we have to delete all custom properties belonging to the previous type
+      if(newObject.type && newObject.type !== form.value.data.type) {
+        const newProperties = INPUT_FORMATS[newObject.type]?.find(item => !item.options.format)?.options || {}
+        const oldProperties = INPUT_FORMATS[form.value.data.type]?.find(item => item.options.format === form.value.data.format)?.options || {}
+
+        // Iterate over new 
+        for(let key in object) {
+          if(oldProperties[key] && !newProperties[key]) {
+            delete object[key]
+          }
+        }
+      }
       context.emit('update', object)
+    }
+
+    function doUpdate(value: any, property: string) {
+      doObjectUpdate({ [property]: value })
     }
 
     // special operations for enums
@@ -178,6 +261,26 @@ export default defineComponent<IProps>({
       )
     }
 
+    function updateOptions(formatType: string) {
+      const object = cloneDeep(formatOptions.value.find(item => item.name === formatType))
+      if(object) {
+        doObjectUpdate(object.options)
+      }
+    }
+
+    // Special operations for all types
+    const formatOptions: ComputedRef<IInputFormat[]> = computed(() => {
+      return (INPUT_FORMATS[form.value.data.type] || []).map((entry: any) => {
+        entry.displayName = context.root.$i18n.t(`attributeTypes.${entry.name}`)
+        return entry
+      })
+    })
+
+    const currentFormatOption: ComputedRef<string | undefined> = computed(() => {
+      // We have to iterate over every object in the formatOptions array and only if the format property matches, we have the correct one.
+      return formatOptions.value.find(item => item.options.format === form.value.data.format)?.name
+    })
+
     return {
       prefix,
       form,
@@ -185,7 +288,10 @@ export default defineComponent<IProps>({
       doDelete,
       doUpdate,
       attributeTypes,
-      removeValueFromEnum
+      formatOptions,
+      removeValueFromEnum,
+      updateOptions,
+      currentFormatOption
     }
   }
 })
@@ -198,6 +304,7 @@ export default defineComponent<IProps>({
     "aspectDescription": "Description",
     "aspectName": "attribute name",
     "aspectType": "Attribute type",
+    "inputFormat": "Input format",
     "values": "Available options",
     "valuesHint": "Available options (seperate entries with Enter)"
   },
@@ -206,6 +313,7 @@ export default defineComponent<IProps>({
     "aspectDescription": "Beschreibung",
     "aspectName": "Name des Attributs",
     "aspectType": "Typ des Attributs",
+    "inputFormat": "Eingabeformat",
     "values": "Auswahlmöglichkeiten",
     "valuesHint": "Werte (mit Enter trennen)"
   }

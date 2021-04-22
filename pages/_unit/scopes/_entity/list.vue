@@ -1,5 +1,5 @@
 <template>
-  <VeoPage :title="title" fullsize>
+  <VeoPage :title="title" fullsize :loading="$fetchState.pending">
     <VeoEntityModifier v-bind="$data" :rootRoute="rootRoute" @fetch="handleUpdates">
       <template #menu-bar="{ on }">
         <VeoMenuButton
@@ -83,11 +83,7 @@ export default Vue.extend({
       return separateUUIDParam(this.$route.params.entity).type
     },
     title(): string {
-      return this.currentEntity
-        ? this.currentEntity.name
-        : this.entityType !== '-'
-        ? this.entityId
-        : this.$t('breadcrumbs.scopes').toString()
+      return this.currentEntity?.name || this.$t('breadcrumbs.scopes').toString()
     },
     menuButton(): IVeoMenuButtonItem {
       if (this.entityType !== '-' && this.entityType !== 'scope') {

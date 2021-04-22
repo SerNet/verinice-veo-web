@@ -130,5 +130,13 @@ export default {
 
   // temporary until the composition api supports <i18n></i18n>
   "headline_aspect": "Delete aspect",
-  "headline_link": "Delete link"
+  "headline_link": "Delete link",
+  "saveSchemaError": "Couldn't update schema",
+  "saveSchemaSuccess": "Schema updated!",
+  "attributeTypes": {
+    "date": "Date",
+    "dateTime": "Date and Time",
+    "text": "Text",
+    "uri": "URI"
+  }
 }

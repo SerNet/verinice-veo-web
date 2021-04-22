@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'fill-width': fullsize }">
+  <div :class="{'fill-width': fullsize, 'veo-tab-sticky': stickyTabs }">
     <v-tabs v-model="activeTab">
       <slot name="tabs" />
     </v-tabs>
@@ -28,6 +28,10 @@ export default defineComponent<IProps>({
     startItem: {
       type: Number,
       default: 0
+    },
+    stickyTabs: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props) {
@@ -37,3 +41,19 @@ export default defineComponent<IProps>({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.veo-tab-sticky {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.v-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+</style>

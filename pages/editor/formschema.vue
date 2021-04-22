@@ -16,9 +16,7 @@
             </v-btn>
           </a>
         </template>
-        <template #default>
-          {{ $t('editor.schema.download') }}
-        </template>
+        <template #default>{{ $t('editor.schema.download') }}</template>
       </v-tooltip>
       <v-tooltip bottom>
         <template #activator="{on}">
@@ -26,9 +24,7 @@
             <v-icon>mdi-code-tags</v-icon>
           </v-btn>
         </template>
-        <template #default>
-          {{ $t('formSchemaCode') }}
-        </template>
+        <template #default>{{ $t('formSchemaCode') }}</template>
       </v-tooltip>
       <v-tooltip bottom>
         <template #activator="{on}">
@@ -44,9 +40,7 @@
             <v-icon>mdi-alert-circle-outline</v-icon>
           </v-btn>
         </template>
-        <template #default>
-          {{ $t('editor.schema.warnings') }}
-        </template>
+        <template #default>{{ $t('editor.schema.warnings') }}</template>
       </v-tooltip>
       <v-tooltip bottom>
         <template #activator="{on}">
@@ -54,9 +48,7 @@
             <v-icon>mdi-translate</v-icon>
           </v-btn>
         </template>
-        <template #default>
-          {{ $t('editor.formschema.translation') }}
-        </template>
+        <template #default>{{ $t('editor.formschema.translation') }}</template>
       </v-tooltip>
       <v-tooltip bottom>
         <template #activator="{on}">
@@ -64,9 +56,7 @@
             <v-icon>mdi-wrench</v-icon>
           </v-btn>
         </template>
-        <template #default>
-          {{ $t('editor.schema.properties') }}
-        </template>
+        <template #default>{{ $t('editor.schema.properties') }}</template>
       </v-tooltip>
     </template>
     <template v-if="formSchema && objectSchema && schemaIsValid.valid" #default>
@@ -160,7 +150,15 @@
       </VeoPage>
     </template>
     <template v-else-if="!schemaIsValid.valid" #default>
-      <VeoPage v-if="formSchema" sticky-header absolute-size fullsize no-padding :cols="12" content-class="px-4">
+      <VeoPage
+        v-if="formSchema"
+        sticky-header
+        absolute-size
+        fullsize
+        no-padding
+        :cols="12"
+        content-class="px-4"
+      >
         <template #default>
           <v-row class="fill-height flex-column text-center align-center px-8">
             <v-col cols="auto" style="flex-grow: 0">
@@ -215,20 +213,8 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer'
 
-import {
-  validate,
-  deleteElementCustomTranslation
-} from '~/lib/FormSchemaHelper'
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  provide,
-  Ref,
-  ref,
-  useFetch,
-  watch
-} from '@nuxtjs/composition-api'
+import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper'
+import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api'
 import {
   IVeoTranslations,
   IVeoObjectSchema,
@@ -287,7 +273,7 @@ export default defineComponent<IProps>({
 
     watch(
       () => context.root.$i18n.locale,
-      newLanguageVal => {
+      (newLanguageVal) => {
         language.value = newLanguageVal
       }
     )
@@ -332,7 +318,7 @@ export default defineComponent<IProps>({
 
     function updateSchemaName(value: string) {
       if (formSchema.value) {
-        formSchema.value.name = value.toLowerCase()
+        formSchema.value.name = value
       }
     }
 
@@ -362,7 +348,7 @@ export default defineComponent<IProps>({
         deleteElementCustomTranslation(
           elementFormSchema,
           formSchema.value.translation[language.value],
-          updatedCustomTranslationValue => {
+          (updatedCustomTranslationValue) => {
             onUpdateCustomTranslation(updatedCustomTranslationValue)
           }
         )

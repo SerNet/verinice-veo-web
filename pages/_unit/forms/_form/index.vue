@@ -72,7 +72,7 @@ export default Vue.extend({
   },
   async fetch() {
     this.formSchema = await this.$api.form.fetch(this.formId)
-    this.objectType = this.formSchema && this.formSchema.modelType.toLowerCase()
+    this.objectType = this.formSchema && this.formSchema.modelType
     if (this.formSchema) {
       this.rootEntityType = this.objectType || ''
       this.objects = await this.$api.entity.fetchAll(this.objectType, {

@@ -57,11 +57,7 @@ export default Vue.extend({
       return this.$route.params.type
     },
     title(): string {
-      return this.currentEntity
-        ? this.currentEntity.name
-        : this.entityType !== '-'
-        ? this.entityId
-        : this.$t('breadcrumbs.objects').toString()
+      return this.currentEntity?.name || this.$t('breadcrumbs.objects').toString()
     },
     menuButton(): IVeoMenuButtonItem {
       return {

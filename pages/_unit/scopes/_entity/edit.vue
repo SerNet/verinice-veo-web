@@ -1,7 +1,7 @@
 <template>
   <VeoPageWrapper>
     <template #default>
-      <VeoPage absolute-size :cols="12" :md="8" :xl="8" sticky-header :title="objectTitle">
+      <VeoPage absolute-size :cols="12" :md="8" :xl="8" sticky-header :title="objectTitle" :loading="$fetchState.pending">
         <template #default>
           <VeoEntityDisplayOptions :rootRoute="`/${$route.params.unit}/scopes`" :current-entity="form.objectData">
           <v-btn color="primary" outlined :disabled="$fetchState.pending" :loading="deleteEntityDialog.value === true" @click="showDeleteEntityDialog">
@@ -48,12 +48,12 @@
         </template>
       </VeoPage>
       <VeoPage absolute-size :cols="12" :md="4" :xl="4">
-        <VeoTabs>
+        <VeoTabs sticky-tabs>
           <template #tabs>
             <v-tab disabled>{{ $t('history') }}</v-tab>
           </template>
           <template #items>
-            <VeoObjectHistory :object="form.objectData" />
+            <VeoObjectHistory :object="form.objectData" :loading="$fetchState.pending" />
           </template>
         </VeoTabs>
       </VeoPage>
@@ -140,7 +140,7 @@ export default Vue.extend({
   computed: {
     objectTitle(): string {
       return this.$t('edit_object', {
-        title: this.$fetchState.pending ? this.formattedEntityType : this.form.objectData.name
+        title: this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.name
       })
     },
     entityId(): string {
@@ -148,9 +148,6 @@ export default Vue.extend({
     },
     entityType(): string {
       return separateUUIDParam(this.$route.params.entity).type
-    },
-    formattedEntityType(): string {
-      return upperFirst(this.entityType)
     }
   },
   methods: {
