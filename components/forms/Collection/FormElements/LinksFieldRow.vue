@@ -296,7 +296,7 @@ export default Vue.extend({
       // TODO: replace this function by the line below, after target.type in ObjectSchema is replaced by "person", "process", etc
       // return (this.schema.items as any).properties.target.properties
       //   .type.enum[0]
-      return (this.schema.items as any).properties.target.properties.type.enum[0].toLowerCase()
+      return (this.schema.items as any).properties.target.properties.type.enum[0]
     },
     target(): ITarget | undefined {
       return {

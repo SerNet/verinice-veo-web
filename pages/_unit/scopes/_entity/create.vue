@@ -95,7 +95,7 @@ export default Vue.extend({
   },
   async fetch() {
     if(this.entityType) {
-      const objectSchema = await this.$api.schema.fetch(this.entityType.toLowerCase())
+      const objectSchema = await this.$api.schema.fetch(this.entityType)
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
       const objectData = {}
       this.form = {
@@ -120,13 +120,13 @@ export default Vue.extend({
       return separateUUIDParam(this.$route.params.entity).id
     },
     parentType(): string {
-      return separateUUIDParam(this.$route.params.entity).type.toLowerCase()
+      return separateUUIDParam(this.$route.params.entity).type
     },
     unitID(): string {
       return separateUUIDParam(this.$route.params.unit).id
     },
     entityType(): string {
-      return this.$route.query.based_on.toLowerCase()
+      return this.$route.query.based_on
     },
     formattedEntityType(): string {
       return capitalize(this.entityType)

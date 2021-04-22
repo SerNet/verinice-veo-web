@@ -4,30 +4,33 @@
       <v-form v-model="form.valid" class="mx-4" @submit="doSave()">
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('schemaName') }}*: </span>
+            <span style="font-size: 1.2rem;">{{ $t('schemaName') }}*:</span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-text-field
-              :value="form.data.formSchema"
+              v-model="form.data.formSchema"
               required
               flat
               :rules="form.rules.formSchema"
               :label="$t('schemaName')"
-              @input="formatSchemaName"
             />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.subtype') }}: </span>
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.subtype') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-text-field v-model="form.data.subType" :label="$t('editor.formschema.subtype')" flat />
+            <v-text-field
+              v-model="form.data.subType"
+              :label="$t('editor.formschema.subtype')"
+              flat
+            />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.text') }}*: </span>
+            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.text') }}*:</span>
           </v-col>
           <v-col :cols="12" :md="5">
             <v-text-field
@@ -46,16 +49,17 @@
     <template #dialog-options>
       <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.cancel') }}</v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!form.valid" @click="doSave()">{{ $t('global.button.save') }}</v-btn>
+      <v-btn
+        text
+        color="primary"
+        :disabled="!form.valid"
+        @click="doSave()"
+      >{{ $t('global.button.save') }}</v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  watch
-} from '@nuxtjs/composition-api'
+import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
 import { trim } from 'lodash'
 
 interface IProps {
@@ -146,11 +150,7 @@ export default defineComponent<IProps>({
       context.emit('input', false)
     }
 
-    function formatSchemaName(val: string) {
-      form.value.data.formSchema = val.toLowerCase()
-    }
-
-    return { dialog, doSave, form, formatSchemaName }
+    return { dialog, doSave, form }
   }
 })
 </script>

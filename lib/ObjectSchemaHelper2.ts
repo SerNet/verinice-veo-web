@@ -1,5 +1,5 @@
 import { merge } from "lodash";
-import { capitalize } from '~/lib/utils'
+
 import {
   IVeoObjectSchema,
   IVeoObjectSchemaCustomAspect,
@@ -211,7 +211,7 @@ export default class ObjectSchemaHelper {
   }
 
   public setTitle(value: string) {
-    this._title = value.toLowerCase()
+    this._title = value
     this.updateSchemaPrefixes()
   }
 
@@ -585,7 +585,7 @@ export default class ObjectSchemaHelper {
   }
 
   private loadObjectSchema(objectSchema: IVeoObjectSchema) {
-    this._title = objectSchema.title?.toLowerCase()
+    this._title = objectSchema.title
     this._description = objectSchema.description
 
     for (const key in objectSchema.properties) {
@@ -655,7 +655,7 @@ export default class ObjectSchemaHelper {
   private loadBasicProperties(schema: IVeoObjectSchema['properties'], key: string) {
     // @ts-ignore
     const property = schema[key] as IVeoObjectSchemaProperty
-    this._basicProperties.push({ title: capitalize(key, true), description: property.description || '', type: this.getAttributeType(property), prefix: '' })
+    this._basicProperties.push({ title: key, description: property.description || '', type: this.getAttributeType(property), prefix: '' })
   }
 
   private getAttributeType(attribute: IVeoObjectSchemaProperty) {

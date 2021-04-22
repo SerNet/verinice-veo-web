@@ -16,7 +16,7 @@ export function generateSchema(
 ): IVeoFormSchema {
   return {
     name,
-    modelType,
+    modelType: modelType.toLowerCase(), // We manually transform everything to lower case here, as this property should ALWAYS refer to the technical id of the object schema
     subType,
     translation,
     content: {

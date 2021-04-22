@@ -11,15 +11,11 @@
     <template #default>
       <v-window v-model="state">
         <v-window-item value="start" class="py-4">
-          <h2>
-            {{ $t('start') }}
-          </h2>
+          <h2>{{ $t('start') }}</h2>
           <v-list two-line class="px-0 overflow-hidden">
             <v-list-item @click="state = 'create-1'">
               <v-list-item-content>
-                <v-list-item-title class="font-weight-bold">
-                  {{ $t('createFormSchema') }}
-                </v-list-item-title>
+                <v-list-item-title class="font-weight-bold">{{ $t('createFormSchema') }}</v-list-item-title>
                 <v-list-item-subtitle>{{ $t('createFormSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
@@ -28,9 +24,7 @@
             </v-list-item>
             <v-list-item @click="state = 'import-1'">
               <v-list-item-content>
-                <v-list-item-title class="font-weight-bold">
-                  {{ $t('importFormSchema') }}
-                </v-list-item-title>
+                <v-list-item-title class="font-weight-bold">{{ $t('importFormSchema') }}</v-list-item-title>
                 <v-list-item-subtitle>{{ $t('importFormSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
@@ -44,29 +38,31 @@
           <v-form v-model="createForm.valid" @submit.prevent="doCreate1()">
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.create.title.text') }}*: </span>
+                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.title.text') }}*:</span>
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-text-field
-                  :value="createForm.title"
+                  v-model="createForm.title"
                   :label="$t('editor.formschema.create.title')"
                   :rules="createForm.rules.title"
-                  @input="formatSchemaName"
                   required
                 />
               </v-col>
             </v-row>
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.subtype') }}: </span>
+                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.subtype') }}:</span>
               </v-col>
               <v-col :cols="12" :md="5">
-                <v-text-field v-model="createForm.subType" :label="$t('editor.formschema.subtype')" />
+                <v-text-field
+                  v-model="createForm.subType"
+                  :label="$t('editor.formschema.subtype')"
+                />
               </v-col>
             </v-row>
             <v-row no-gutters class="align-center mt-4">
               <v-col :cols="12" :md="5">
-                <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.create.type.text') }}*: </span>
+                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.text') }}*:</span>
               </v-col>
               <v-col :cols="12" :md="5">
                 <v-select
@@ -124,9 +120,12 @@
     </template>
     <template #dialog-options>
       <span />
-      <v-btn v-if="state !== 'start'" text color="primary" @click="goBack()">
-        {{ $t('global.button.previous') }}
-      </v-btn>
+      <v-btn
+        v-if="state !== 'start'"
+        text
+        color="primary"
+        @click="goBack()"
+      >{{ $t('global.button.previous') }}</v-btn>
       <v-spacer />
       <v-btn
         v-if="state === 'create-1'"
@@ -136,9 +135,7 @@
         text
         :disabled="!createForm.valid || (createForm.modelType === 'custom' && !objectSchema)"
         @click="doCreate1()"
-      >
-        {{ $t('global.button.next') }}
-      </v-btn>
+      >{{ $t('global.button.next') }}</v-btn>
     </template>
   </VeoDialog>
 </template>
@@ -147,17 +144,10 @@
 import Vue from 'vue'
 import { capitalize, trim } from 'lodash'
 
-import {
-  generateSchema,
-  validate
-} from '~/lib/FormSchemaHelper'
+import { generateSchema, validate } from '~/lib/FormSchemaHelper'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
-import {
-  IVeoTranslations,
-  IVeoObjectSchema,
-  IVeoFormSchema
-} from '~/types/VeoTypes'
+import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema } from '~/types/VeoTypes'
 
 export default Vue.extend({
   props: {
@@ -341,9 +331,6 @@ export default Vue.extend({
     onClose() {
       this.$router.push('/editor')
       return true
-    },
-    formatSchemaName(val: string) {
-      this.createForm.title = val.toLowerCase()
     }
   }
 })
