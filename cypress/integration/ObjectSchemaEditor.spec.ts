@@ -200,7 +200,6 @@ describe('Objectschema Editor', () => {
         url: /.*\/schemas$/
       },
       req => {
-        console.log(req)
         req.reply({
           fixture: 'objectschema/schemas.json'
         })
@@ -211,7 +210,6 @@ describe('Objectschema Editor', () => {
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('http://localhost:3000/editor')
-    // cy.setCookie('i18n_redirected', 'de')
 
     cy.contains('.v-list-item--link', 'Objektschema Editor')
       .should('have.attr', 'href', '/editor/objectschema')
