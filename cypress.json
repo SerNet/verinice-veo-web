@@ -4,5 +4,6 @@
   "scrollBehavior": "center",
   "videoCompression": false,
   "defaultCommandTimeout": 6000,
-  "requestTimeout": 6000
+  "requestTimeout": 6000,
+  "chromeWebSecurity": false
 }
