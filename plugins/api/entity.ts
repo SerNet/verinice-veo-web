@@ -1,7 +1,7 @@
 import { separateUUIDParam } from '~/lib/utils'
 import { Client } from '~/plugins/api'
-import { IVeoAPIMessage, IVeoEntity, IVeoLink } from '~/types/VeoTypes'
-import { getSchemaEndpoint, getSchemaName } from './schema'
+import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
+import { getSchemaEndpoint } from './schema'
 
 /**
  * This file replaces the individual files for each object schema (at the point

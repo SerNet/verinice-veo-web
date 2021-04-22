@@ -6,7 +6,6 @@
 import Vue from 'vue'
 
 export default Vue.extend({
-  components: {},
   layout: 'none',
   props: {},
   mounted() {

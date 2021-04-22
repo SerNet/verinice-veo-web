@@ -6,7 +6,9 @@ import {
   IVeoObjectSchemaCustomLink,
   IVeoObjectSchemaProperty
 } from "~/types/VeoTypes";
-import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from "./ObjectSchemaValidator";
+import ObjectSchemaValidator, {
+  VeoSchemaValidatorValidationResult
+} from "./ObjectSchemaValidator";
 
 export interface IVeoOSHCustomAspect {
   title: string
@@ -23,8 +25,9 @@ export interface IVeoOSHCustomProperty {
   type: string
   description: string
   prefix?: string
-  multiple?: string
-  [key: string]: any
+  multiple?: boolean
+  format?: string
+  pattern?: string
 }
 
 export interface IVeoOSHOptions {
@@ -197,16 +200,14 @@ export default class ObjectSchemaHelper {
 
     if (!objectSchema) {
       // @ts-ignore
-      objectSchema = DEFAULT_SCHEMA
-      // @ts-ignore
       this._schema = DEFAULT_SCHEMA
+      this.loadObjectSchema(DEFAULT_SCHEMA as IVeoObjectSchema)
     } else {
-      this._schema = objectSchema
+      this._schema = JSON.parse(JSON.stringify(objectSchema))
       this._schema.properties.customAspects.properties = {}
       this._schema.properties.links.properties = {}
+      this.loadObjectSchema(objectSchema as IVeoObjectSchema)
     }
-
-    this.loadObjectSchema(objectSchema as IVeoObjectSchema)
   }
 
   public setTitle(value: string) {
@@ -615,7 +616,7 @@ export default class ObjectSchemaHelper {
         const attribute = aspect.properties.attributes.properties[attributeName]
         dummy.attributes.push({
           ...attribute,
-          title: capitalize(this.cleanAttributeName(attributeName, dummy.title), true),
+          title: this.cleanAttributeName(attributeName, dummy.title),
           description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
@@ -634,13 +635,13 @@ export default class ObjectSchemaHelper {
       dummy.attributes = []
       dummy.prefix = `${this._title}_`
       dummy.description = link.items.properties.target.title
-      dummy.targetType = capitalize(link.items.properties.target.properties.type.enum[0])
+      dummy.targetType = link.items.properties.target.properties.type.enum[0]
 
       for (let attributeName in link.items.properties.attributes.properties) {
         const attribute = link.items.properties.attributes.properties[attributeName]
         dummy.attributes.push({
           ...attribute,
-          title: capitalize(this.cleanAttributeName(attributeName, dummy.title), true),
+          title: this.cleanAttributeName(attributeName, dummy.title),
           description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
@@ -701,6 +702,8 @@ export default class ObjectSchemaHelper {
   private generateSchema(): IVeoObjectSchema {
     this._schema.title = this._title
     this._schema.description = this._description
+    this._schema.properties.customAspects.properties = {}
+    this._schema.properties.links.properties = {}
     return this._schema
   }
 

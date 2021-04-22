@@ -6,7 +6,7 @@
     :items-per-page="itemsPerPage"
     :loading="loading"
     class="veo-object-list"
-    @click:row="selectItem($event)"
+    @click:row="selectItem($event, singleSelect)"
   >
     <template #no-data>
       <span class="text-center">
@@ -14,7 +14,17 @@
       </span>
     </template>
     <template #item.select="{ item }">
-      <v-checkbox v-model="item.selected" @click.prevent.stop="selectItem(item)" />
+      <v-radio-group
+        v-if="singleSelect"
+        v-model="radioSelectedItem"
+      >
+        <v-radio
+          color="primary"
+          :value="item.entity.id"
+          @click="selectItem(item, true)"
+        />
+      </v-radio-group>
+      <v-checkbox v-else v-model="item.selected" @click="selectItem(item)" />
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
@@ -85,6 +95,9 @@
         <span v-else>{{ item.entity.description }}</span>
       </div>
     </template>
+    <template #item.updatedBy="{ item }">
+      {{ item.entity.updatedBy }}
+    </template>
     <template #item.date="{ item }">
       <div class="veo-object-list__date nowrap">
         <v-tooltip bottom>
@@ -131,17 +144,19 @@ export default Vue.extend({
         (a: { entity: IVeoEntity, selected: boolean}, b: { entity: IVeoEntity, selected: boolean}) =>
           a.entity.name.localeCompare(b.entity.name)
         )
+    },
+    singleSelect: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      itemsPerPage: 10,
-      dummy: 0
+      itemsPerPage: 10
     }
   },
   computed: {
     displayedItems(): { entity: IVeoEntity, selected: boolean}[] {
-      this.dummy;
       return this.items.map(item => {
         // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
         if(item.description && item.description.length >  40) {
@@ -187,16 +202,22 @@ export default Vue.extend({
           value: 'date',
         }
       ]
+    },
+    // As the radio button needs a wrapper and this wapper has no comparator function (even though the docs says it does), we have to dumb it down)
+    radioSelectedItem() {
+      return this.selectedItems[0]?.id
     }
   },
   methods: {
     formatDate(date: string) {
       return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
     },
-    selectItem(item: { entity: IVeoEntity, selected: boolean }) {
+    selectItem(item: { entity: IVeoEntity, selected: boolean }, singleItem: boolean = false) {
       let dummy = clone(this.selectedItems)
 
-      if(dummy.some(selectedItem => selectedItem.id === item.entity.id)) {
+      if(singleItem) {
+        this.$emit('new-subentities', [{ id: item.entity.id, type: item.entity.type }])
+      } else if(dummy.some(selectedItem => selectedItem.id === item.entity.id)) {
         dummy = dummy.filter(selectedItem => selectedItem.id !== item.entity.id)
         this.$emit('new-subentities', dummy)
       } else {

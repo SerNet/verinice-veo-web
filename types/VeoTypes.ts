@@ -8,6 +8,8 @@
 
 import { JSONSchema7TypeName } from "json-schema";
 
+export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string
+
 /**
  * 1. Basic / global types
  */
@@ -77,22 +79,73 @@ export interface IVeoTranslation {
 }
 
 export interface IVeoFormSchemaMeta {
-  id: string
+  id?: string
   modelType: string
   name: string
   subType: string | null
 }
 
 export interface IVeoFormSchema extends IVeoFormSchemaMeta {
-  content: IVeoFormSchemaEntry
+  content: IVeoFormSchemaItem,
+  translation: IVeoFormSchemaTranslationCollection
 }
 
-export interface IVeoFormSchemaEntry {
-  type?: string
-  options: {
+export interface IVeoFormSchemaItem {
+  type: IVeoFormSchemaContentType
+  text?: string
+  options: IVeoFormSchemaItemOptions
+  elements?: IVeoFormSchemaItem[]
+}
+
+export interface IVeoFormSchemaItemOptions {
+  label?: string
+  format?: string
+  direction?: string
+}
+
+export interface IVeoFormSchemaTranslationCollectionItem {
+  [key: string]: string
+}
+
+export interface IVeoFormSchemaTranslationCollection {
+  [key: string]: IVeoFormSchemaTranslationCollectionItem
+}
+
+export interface IVeoFormSchemaCustomTranslationEvent {
+  [key: string]: string | undefined
+}
+
+export interface IVeoFormSchemaItemUpdateEvent {
+  formSchemaPointer: string
+  data: IVeoFormSchemaItem
+}
+
+export interface IVeoFormSchemaItemDeleteEvent {
+  formSchemaPointer: string
+}
+
+export interface IVeoReportsMeta {
+  [key: string]: IVeoReportMeta
+}
+
+export interface IVeoReportMeta {
+  name: {
     [key: string]: string
   }
-  elements: IVeoFormSchemaEntry[]
+  description: {
+    [key: string]: string
+  }
+  outputTypes: string[]
+  multipleTargetsSupported: boolean
+  targetTypes: string[]
+}
+
+export interface IVeoCreateReportData {
+  outputType: string
+  targets: {
+    type: string
+    id: string
+  }[]
 }
 
 export interface IVeoObjectHistoryEntry {

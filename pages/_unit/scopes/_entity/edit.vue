@@ -1,7 +1,7 @@
 <template>
   <VeoPageWrapper>
     <template #default>
-      <VeoPage absolute-size :cols="12" :md="8" :xl="8" sticky-header :title="objectTitle">
+      <VeoPage absolute-size :cols="12" :md="8" :xl="8" sticky-header :title="objectTitle" :loading="$fetchState.pending">
         <template #default>
           <VeoEntityDisplayOptions :rootRoute="`/${$route.params.unit}/scopes`" :current-entity="form.objectData">
           <v-btn color="primary" outlined :disabled="$fetchState.pending" :loading="deleteEntityDialog.value === true" @click="showDeleteEntityDialog">
@@ -68,7 +68,7 @@ import { Route } from 'vue-router/types/index'
 
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
-import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
+import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
@@ -76,7 +76,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: VeoEventPayload & { value: boolean, error: number }
+  alert: IVeoEventPayload & { value: boolean, error: number }
   entityModified: {
     isModified: boolean
     dialog: boolean

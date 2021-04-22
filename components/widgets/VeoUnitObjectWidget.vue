@@ -32,12 +32,7 @@ import { capitalize } from 'lodash'
 import Vue from 'vue'
 import { TranslateResult } from 'vue-i18n/types/index'
 
-import VeoWidget from '~/components/widgets/VeoWidget.vue'
-
 export default Vue.extend({
-  components: {
-    VeoWidget
-  },
   props: {
     unit: {
       type: Object,

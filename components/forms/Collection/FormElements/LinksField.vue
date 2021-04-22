@@ -41,7 +41,7 @@
     </v-list>
     <v-btn small text color="primary" @click="addRow()">
       <v-icon small>mdi-plus</v-icon>
-      <span>{{ $t('forms.input.linkadd') }}</span>
+      <span>{{ $t('addLink') }}</span>
     </v-btn>
   </div>
 </template>
@@ -50,12 +50,17 @@
 import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
-import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
+import {
+  calculateConditionsScore,
+  FormElementProps,
+  Helpful
+} from '~/components/forms/Collection/utils/helpers'
 import { BaseObject, IApi } from '~/components/forms/utils'
 
-import LinksFieldRow from '~/components/forms/Collection/FormElements/LinksFieldRow.vue'
-import { IVeoTranslation } from '~/types/VeoTypes'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import {
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslation
+} from '~/types/VeoTypes'
 import { UISchemaElement } from '~/types/UISchema'
 
 interface IData {
@@ -65,9 +70,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'LinksField',
-  components: {
-    LinksFieldRow
-  },
   props: {
     value: {
       type: Array,
@@ -98,7 +100,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
     elements: {
       type: Array,
       default: () => []
@@ -163,6 +165,17 @@ export const helpers: Helpful<FormElementProps> = {
   }
 }
 </script>
+
+<i18n>
+{
+  "en": {
+    "addLink": "Add link"
+  },
+  "de": {
+    "addLink": "Link hinzufügen"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

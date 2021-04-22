@@ -1,7 +1,13 @@
 import defaultsDeep from 'lodash/defaultsDeep'
-import { Plugin, Context } from '@nuxt/types'
+import {
+  Plugin,
+  Context
+} from '@nuxt/types'
 
-import { VeoError, VeoErrorTypes } from '~/types/VeoError'
+import {
+  VeoError,
+  VeoErrorTypes
+} from '~/types/VeoError'
 
 import entity from '~/plugins/api/entity'
 import form from '~/plugins/api/form'
@@ -9,10 +15,11 @@ import history from '~/plugins/api/history'
 import schema from '~/plugins/api/schema'
 import translation from '~/plugins/api/translation'
 import unit from '~/plugins/api/unit'
+import report from '~/plugins/api/report'
 import { User } from '~/plugins/user'
 
 export function createAPI(context: Context) {
-  return Client.create(context, { form, entity, history, schema, translation, unit })
+  return Client.create(context, { form, entity, history, schema, translation, unit, report })
 }
 
 export interface IAPIClient {
@@ -25,6 +32,7 @@ export class Client {
   public baseURL: string
   public baseFormURL: string
   public baseHistoryURL: string
+  public baseReportURL: string
   // public sentry: any
   public _context: Context
 
@@ -45,12 +53,13 @@ export class Client {
     this.baseURL = `${context.$config.apiUrl}`.replace(/\/$/, '')
     this.baseFormURL = `${context.$config.formsApiUrl}`.replace(/\/$/, '')
     this.baseHistoryURL = `${context.$config.historyApiUrl}`.replace(/\/$/, '')
+    this.baseReportURL = `${context.$config.reportsApiUrl}`.replace(/\/$/, '') + '/reports'
     // this.sentry = context.app.$sentry
     this._context = context
   }
 
   public getURL(url: string) {
-    const _url = String(url).replace(/^\/api\/forms/, this.baseFormURL).replace(/^\/api\/history/, this.baseHistoryURL).replace(/^\/api/, this.baseURL)
+    const _url = String(url).replace(/^\/api\/forms/, this.baseFormURL).replace(/^\/api\/history/, this.baseHistoryURL).replace(/^\/api\/reports/, this.baseReportURL).replace(/^\/api/, this.baseURL)
     if (_url.startsWith('/')) {
       const loc = window.location
       return `${loc.protocol}//${loc.host}${_url}`
@@ -120,7 +129,7 @@ export class Client {
       } else if (options.method === 'DELETE') {
         return Promise.resolve()
       } else {
-        return await this.parseResponse(reqURL, res)
+        return await this.parseResponse(reqURL, res, options)
       }
     } catch (e) {
       // this.sentry.setTag('error_level', 'warning')
@@ -129,20 +138,18 @@ export class Client {
     }
   }
 
-  async parseResponse<T>(url: string, res: Response): Promise<T & { $etag?: string }> {
-    const raw = await res.text()
-
-    const etag = res.headers.get('etag')
-
+  async parseResponse<T>(url: string, res: Response, options: RequestOptions): Promise<T & { $etag?: string }> {
     let parsed
-    try {
-      parsed = raw ? JSON.parse(raw) : true
-      if (typeof parsed === 'object' && etag) {
-        Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag })
-      }
-    } catch (e) {
-      throw new VeoError('Non JSON response')
+
+    switch (options.reponseType) {
+      case VeoApiReponseType.BLOB:
+        parsed = await res.blob()
+        break
+      default:
+        parsed = await this.parseJson(res)
+        break;
     }
+
     if (parsed) {
       if (res.status >= 200 && res.status <= 300) {
         return parsed
@@ -157,13 +164,35 @@ export class Client {
       throw new VeoError('Invalid response')
     }
   }
+
+  async parseJson(res: Response): Promise<any> {
+    const raw = await res.text()
+    const etag = res.headers.get('etag')
+
+    let parsed
+    try {
+      parsed = raw ? JSON.parse(raw) : true
+      if (typeof parsed === 'object' && etag) {
+        Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag })
+      }
+      return parsed
+    } catch (e) {
+      throw new VeoError('Non JSON response')
+    }
+  }
 }
 
-interface RequestOptions extends RequestInit {
+export enum VeoApiReponseType {
+  JSON,
+  BLOB
+}
+
+export interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | undefined>
   json?: any
-  retry?: boolean,
+  retry?: boolean
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS'
+  reponseType?: VeoApiReponseType
 }
 
 export default (function (context, inject) {

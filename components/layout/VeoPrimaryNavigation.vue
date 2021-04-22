@@ -33,8 +33,8 @@
             <v-icon v-if="miniVariant">mdi-chevron-double-right</v-icon>
             <v-icon v-else>mdi-chevron-double-left</v-icon>
           </v-list-item-icon>
-          <v-list-item-title v-if="miniVariant">{{ $t('global.menu.expand') }}</v-list-item-title>
-          <v-list-item-title v-else>{{ $t('global.menu.collapse') }}</v-list-item-title>
+          <v-list-item-title v-if="miniVariant">{{ $t('fix') }}</v-list-item-title>
+          <v-list-item-title v-else>{{ $t('collapse') }}</v-list-item-title>
         </v-list-item>
       </v-list>
     </template>
@@ -47,9 +47,8 @@ import { Route } from 'vue-router'
 import { capitalize } from 'lodash'
 import LocalStorage from '~/util/LocalStorage'
 
-import VeoPrimaryNavigationEntry from '~/components/layout/VeoPrimaryNavigationEntry.vue'
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes'
+import { IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes'
 import { nonLinkableSchemas } from '~/plugins/api/schema'
 
 export interface INavItem {
@@ -66,9 +65,6 @@ export interface INavItem {
 
 export default Vue.extend({
   name: 'VeoPrimaryNavigation',
-  components: {
-    VeoPrimaryNavigationEntry
-  },
   props: {
     right: {
       type: Boolean,
@@ -150,14 +146,25 @@ export default Vue.extend({
             topLevelItem: true
           },
           {
-            name: this.$t('page.settings.title') as string,
+            name: this.$t('breadcrumbs.reports') as string,
+            icon: 'mdi-file-chart',
+            to: undefined,
+            exact: false,
+            disabled: false,
+            childItems: undefined,
+            collapsed: LocalStorage.navEntryVeoReportsCollapsed,
+            persistCollapsedState: (collapsed: boolean) => (LocalStorage.navEntryVeoReportsCollapsed = collapsed),
+            topLevelItem: true
+          },
+          {
+            name: this.$t('breadcrumbs.settings') as string,
             icon: 'mdi-cog',
             to: `/${routeUnitParam}/settings`,
             disabled: false,
             topLevelItem: true
           },
           {
-            name: this.$t('page.help.title') as string,
+            name: this.$t('breadcrumbs.help') as string,
             icon: 'mdi-help',
             to: `/${routeUnitParam}/help`,
             disabled: false,
@@ -172,9 +179,12 @@ export default Vue.extend({
         this.fetchFormTypes().then((data: INavItem[]) => {
           this.items[3].childItems = data
         })
+        this.fetchReportTypes().then((data: INavItem[]) => {
+          this.items[4].childItems = data
+        })
       } else {
         this.items.push({
-          name: this.$t('page.index.title') as string,
+          name: this.$t('breadcrumbs.index') as string,
           icon: 'mdi-home',
           to: '/',
           exact: true,
@@ -185,7 +195,7 @@ export default Vue.extend({
 
       // Add permanent entries to the nav bar
       this.items.push({
-        name: this.$t('page.editors.title') as string,
+        name: this.$t('breadcrumbs.editor') as string,
         icon: 'mdi-application-cog',
         to: '/editor',
         exact: false,
@@ -217,10 +227,24 @@ export default Vue.extend({
           return {
             name: entry.name,
             exact: false,
-            to: `/${createUUIDUrlParam('unit', routeUnitParam)}/forms/${createUUIDUrlParam('form', entry.id)}/`,
+            to: `/${createUUIDUrlParam('unit', routeUnitParam)}/forms/${createUUIDUrlParam('form', entry?.id || '')}/`,
             disabled: false,
             topLevelItem: false
           }
+        })
+      )
+    },
+    async fetchReportTypes(): Promise<INavItem[]> {
+      return await this.$api.report.fetchAll().then((reportTypes: IVeoReportsMeta) =>
+        Object.entries(reportTypes).map(([key, value]) => {
+          const name = value.name[this.$i18n.locale] || value.name[0]
+          return {
+            name: name,
+            exact: false,
+            to: `/${this.$route.params.unit}/reports/${key}/`,
+            disabled: false,
+            topLevelItem: false
+          } 
         })
       )
     },
@@ -231,19 +255,31 @@ export default Vue.extend({
     onUpdateCollapsed(itemIndex: number, collapsed: boolean) {
       this.items[itemIndex].collapsed = collapsed
       this.items[itemIndex].persistCollapsedState?.(collapsed)
-      // Get an index of the opposite forms vs. object
-      const toggleItemIndex = this.items.findIndex(
-        ({ name }) => name === this.objectToToggleObjectFormCollapse[this.items[itemIndex].name]
-      )
-      // If opposite item index exists, the item is opened and the current item was also opened, close the opposite
-      if (toggleItemIndex !== -1 && !this.items[toggleItemIndex].collapsed && !collapsed) {
-        this.items[toggleItemIndex].collapsed = true
-        this.items[toggleItemIndex].persistCollapsedState?.(true)
-      }
+
+      // As only one item should be expanded at a time, we collapse all other
+      this.items.forEach((item, index) => {
+        if(item.collapsed === false && index !== itemIndex) {
+          this.items[index].collapsed = true
+          this.items[index].persistCollapsedState?.(true)
+        }
+      })
     }
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "collapse": "Collapse menu",
+    "fix": "Fix menu"
+  },
+  "de": {
+    "collapse": "Menü verstecken",
+    "fix": "Menü fixieren"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

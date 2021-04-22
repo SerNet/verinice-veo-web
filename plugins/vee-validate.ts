@@ -1,5 +1,8 @@
 import Vue from 'vue'
-import { ValidationProvider, extend } from 'vee-validate'
+import {
+  ValidationProvider,
+  extend
+} from 'vee-validate'
 
 export function install(vue: typeof Vue) {
   extend('objectSchema', {
@@ -14,6 +17,6 @@ export function install(vue: typeof Vue) {
   vue.component('ValidationProvider', ValidationProvider)
 }
 
-export default function() {
+export default function () {
   install(Vue)
 }
