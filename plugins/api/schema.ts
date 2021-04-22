@@ -6,6 +6,8 @@ export interface ISchemaEndpoint {
   endpoint: string
 }
 
+// The key might be different to the title of the object schema defined in its title property. However this key
+// should be seen as a technical id and is ALWAYS lowercase
 export const endpoints = {
   asset: 'assets',
   control: 'controls',
