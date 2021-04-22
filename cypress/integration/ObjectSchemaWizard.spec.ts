@@ -90,7 +90,8 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Test')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -99,7 +100,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/empty.json').then(emptyOS => {
-          cy.wrap(JSON.stringify(emptyOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(emptyOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
@@ -116,7 +117,8 @@ describe('Objectschema Wizard', () => {
         .attachFile('objectschema/process.json')
         .wait(2000)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Test')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -125,7 +127,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/empty.json').then(emptyOS => {
-          cy.wrap(JSON.stringify(emptyOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(emptyOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
@@ -146,14 +148,15 @@ describe('Objectschema Wizard', () => {
         .then((el: any) => {
           cy.fixture('objectschema/empty.json').then(emptyOS => {
             // TODO: this is a hack to load OS in Code Editor. It needs a better solution
-            el[0].__vue__.$emit('input', JSON.stringify(emptyOS, null, 2))
+            el[0].__vue__.$emit('input', JSON.stringify(emptyOS))
           })
         })
       cy.contains('.v-btn', 'Codeänderungen übernehmen')
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Test')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -162,7 +165,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/empty.json').then(emptyOS => {
-          cy.wrap(JSON.stringify(emptyOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(emptyOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
@@ -189,7 +192,8 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Control')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -198,7 +202,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/control.json').then(controlOS => {
-          cy.wrap(JSON.stringify(controlOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(controlOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
@@ -225,7 +229,8 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Scope')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -234,7 +239,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/scope.json').then(scopeOS => {
-          cy.wrap(JSON.stringify(scopeOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(scopeOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
@@ -261,7 +266,8 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Asset')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -270,13 +276,13 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/asset.json').then(assetOS => {
-          cy.wrap(JSON.stringify(assetOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(assetOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
   })
 
-  it('imports existing process objectschema', function() {
+  it.only('imports existing process objectschema', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -297,7 +303,9 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Process')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -305,8 +313,8 @@ describe('Objectschema Wizard', () => {
       .should('have.value', 'Schema for Process')
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
-        cy.fixture('objectschema/proces.json').then(procesOS => {
-          cy.wrap(JSON.stringify(procesOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+        cy.fixture('objectschema/process.json').then(procesOS => {
+          cy.wrap(JSON.stringify(procesOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
@@ -333,7 +341,8 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Incident')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -342,7 +351,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/incident.json').then(incidentOS => {
-          cy.wrap(JSON.stringify(incidentOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(incidentOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
@@ -369,7 +378,8 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Document')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -378,7 +388,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/document.json').then(documentOS => {
-          cy.wrap(JSON.stringify(documentOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(documentOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
@@ -405,7 +415,8 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Person')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -414,7 +425,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/person.json').then(personOS => {
-          cy.wrap(JSON.stringify(personOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(personOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })
@@ -441,7 +452,8 @@ describe('Objectschema Wizard', () => {
         .click()
         .wait(1)
     })
-    cy.contains('.v-text-field', 'Objektschema')
+    cy.get('.veo-page__title')
+      .contains('.v-text-field', 'Objektschema')
       .find('input')
       .should('have.value', 'Scenario')
     cy.contains('.v-text-field', 'Beschreibung')
@@ -450,7 +462,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/scenario.json').then(scenarioOS => {
-          cy.wrap(JSON.stringify(scenarioOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
+          cy.wrap(JSON.stringify(scenarioOS)).should('eq', JSON.stringify(currentOS))
         })
       })
     })

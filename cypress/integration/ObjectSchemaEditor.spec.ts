@@ -353,9 +353,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@aspect')
         .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+          return JSON.stringify(aspect.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(changedAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(changedAttributesResultedSchema))
     })
   })
 
@@ -426,9 +426,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@aspect')
         .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+          return JSON.stringify(aspect.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(addedAttributesResultedSchema))
     })
   })
 
@@ -519,9 +519,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@aspect')
         .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+          return JSON.stringify(aspect.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema, null, 2))
+        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema))
     })
 
     cy.contains('TestAspectTwo')
@@ -636,10 +636,10 @@ describe('Objectschema Editor', () => {
         .as('link')
         .should('not.be.null')
       cy.get('@link').then((link: any) => {
-        cy.wrap(JSON.stringify(link.items.properties.target, null, 2)).should('eq', JSON.stringify(linkTarget, null, 2))
-        cy.wrap(JSON.stringify(link.items.properties.attributes.properties, null, 2)).should(
+        cy.wrap(JSON.stringify(link.items.properties.target)).should('eq', JSON.stringify(linkTarget))
+        cy.wrap(JSON.stringify(link.items.properties.attributes.properties)).should(
           'eq',
-          JSON.stringify(changedLinkAttributesResultedSchema, null, 2)
+          JSON.stringify(changedLinkAttributesResultedSchema)
         )
       })
     })
@@ -712,9 +712,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@link')
         .then((link: any) => {
-          return JSON.stringify(link.items.properties.attributes.properties, null, 2)
+          return JSON.stringify(link.items.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(addedLinkAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(addedLinkAttributesResultedSchema))
     })
   })
 
@@ -831,9 +831,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@link')
         .then((link: any) => {
-          return JSON.stringify(link.items.properties.attributes.properties, null, 2)
+          return JSON.stringify(link.items.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(TestLinkTwoAttributeSchema, null, 2))
+        .should('eq', JSON.stringify(TestLinkTwoAttributeSchema))
     })
 
     cy.contains('TestLinkTwo')
@@ -874,7 +874,7 @@ describe('Objectschema Editor', () => {
     cy.get('.editor .cm-content').then(function(editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.readFile('cypress/downloads/os_process.json').then(downloadedOS => {
-          cy.wrap(JSON.stringify(currentOS, null, 2)).should('eq', JSON.stringify(downloadedOS, null, 2))
+          cy.wrap(JSON.stringify(currentOS)).should('eq', JSON.stringify(downloadedOS))
         })
       })
     })
