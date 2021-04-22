@@ -45,6 +45,8 @@ cache:
 test_e2e:
   image: cypress/base:14.15.4
   stage: test_e2e
+  tags: 
+    - 'cpmsys01'
   before_script:
     - npm ci
     - locale -a
