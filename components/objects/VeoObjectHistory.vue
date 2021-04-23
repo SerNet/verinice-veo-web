@@ -54,7 +54,10 @@ export default Vue.extend({
   },
   async fetch() {
     if(this.object && !this.loading) {
-      this.history = await this.$api.history.fetchVersions(this.object)
+      this.history = (await this.$api.history.fetchVersions(this.object))
+        .sort((a: IVeoObjectHistoryEntry, b: IVeoObjectHistoryEntry) => {
+          return a.version > b.version ? -1 : a.version < b.version ? 1 : 0
+        })
     }
   },
   watch: {
