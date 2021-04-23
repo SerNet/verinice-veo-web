@@ -1,6 +1,6 @@
 {
   "name": "Test Formschema",
-  "modelType": "process",
+  "modelType": "test",
   "subType": "TF",
   "translation": {
     "de": {}

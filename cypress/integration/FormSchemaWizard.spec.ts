@@ -215,4 +215,620 @@ describe('Formschema Wizard', () => {
         .wait(1)
     })
   })
+
+  it('creates a new formschema based on control objectschema', function() {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/schemas\/control.*/
+      },
+      req => {
+        req.reply({
+          fixture: 'objectschema/control.json'
+        })
+      }
+    )
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-window-item--active')
+        .contains('Formschema erstellen')
+        .closest('.v-list-item--link')
+        .click()
+        .wait(1)
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Name des Formschemas')
+        .type('Test Formschema')
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Sub Typ')
+        .type('TF')
+      cy.get('.v-window-item--active')
+        .contains('.v-select', 'Objektschematyp')
+        .type('Control{enter}')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Weiter')
+        .click()
+        .wait(1)
+    })
+    cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+    cy.get('.mdi-wrench')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('.v-text-field', 'Name des Formschemas')
+        .find('input')
+        .should('have.value', 'Test Formschema')
+      cy.contains('.v-text-field', 'Sub Typ')
+        .find('input')
+        .should('have.value', 'TF')
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp')
+        .find('input')
+        .should('have.value', 'control')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Abbrechen')
+        .click()
+        .wait(1)
+    })
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getCurrentOS(editor)).then(currentOS => {
+          cy.fixture('formschema/empty.json').then(emptyOS => {
+            cy.wrap(emptyOS)
+              .then((modifiedEmptyOS: any) => {
+                modifiedEmptyOS.modelType = 'control'
+                return JSON.stringify(modifiedEmptyOS)
+              })
+              .should('eq', JSON.stringify(currentOS))
+          })
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+  })
+
+  it('creates a new formschema based on scope objectschema', function() {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/schemas\/scope.*/
+      },
+      req => {
+        req.reply({
+          fixture: 'objectschema/scope.json'
+        })
+      }
+    )
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-window-item--active')
+        .contains('Formschema erstellen')
+        .closest('.v-list-item--link')
+        .click()
+        .wait(1)
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Name des Formschemas')
+        .type('Test Formschema')
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Sub Typ')
+        .type('TF')
+      cy.get('.v-window-item--active')
+        .contains('.v-select', 'Objektschematyp')
+        .type('Scope{enter}')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Weiter')
+        .click()
+        .wait(1)
+    })
+    cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+    cy.get('.mdi-wrench')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('.v-text-field', 'Name des Formschemas')
+        .find('input')
+        .should('have.value', 'Test Formschema')
+      cy.contains('.v-text-field', 'Sub Typ')
+        .find('input')
+        .should('have.value', 'TF')
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp')
+        .find('input')
+        .should('have.value', 'scope')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Abbrechen')
+        .click()
+        .wait(1)
+    })
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getCurrentOS(editor)).then(currentOS => {
+          cy.fixture('formschema/empty.json').then(emptyOS => {
+            cy.wrap(emptyOS)
+              .then((modifiedEmptyOS: any) => {
+                modifiedEmptyOS.modelType = 'scope'
+                return JSON.stringify(modifiedEmptyOS)
+              })
+              .should('eq', JSON.stringify(currentOS))
+          })
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+  })
+
+  it('creates a new formschema based on asset objectschema', function() {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/schemas\/asset.*/
+      },
+      req => {
+        req.reply({
+          fixture: 'objectschema/asset.json'
+        })
+      }
+    )
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-window-item--active')
+        .contains('Formschema erstellen')
+        .closest('.v-list-item--link')
+        .click()
+        .wait(1)
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Name des Formschemas')
+        .type('Test Formschema')
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Sub Typ')
+        .type('TF')
+      cy.get('.v-window-item--active')
+        .contains('.v-select', 'Objektschematyp')
+        .type('Asset{enter}')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Weiter')
+        .click()
+        .wait(1)
+    })
+    cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+    cy.get('.mdi-wrench')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('.v-text-field', 'Name des Formschemas')
+        .find('input')
+        .should('have.value', 'Test Formschema')
+      cy.contains('.v-text-field', 'Sub Typ')
+        .find('input')
+        .should('have.value', 'TF')
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp')
+        .find('input')
+        .should('have.value', 'asset')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Abbrechen')
+        .click()
+        .wait(1)
+    })
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getCurrentOS(editor)).then(currentOS => {
+          cy.fixture('formschema/empty.json').then(emptyOS => {
+            cy.wrap(emptyOS)
+              .then((modifiedEmptyOS: any) => {
+                modifiedEmptyOS.modelType = 'asset'
+                return JSON.stringify(modifiedEmptyOS)
+              })
+              .should('eq', JSON.stringify(currentOS))
+          })
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+  })
+
+  it('creates a new formschema based on process objectschema', function() {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/schemas\/process.*/
+      },
+      req => {
+        req.reply({
+          fixture: 'objectschema/process.json'
+        })
+      }
+    )
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-window-item--active')
+        .contains('Formschema erstellen')
+        .closest('.v-list-item--link')
+        .click()
+        .wait(1)
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Name des Formschemas')
+        .type('Test Formschema')
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Sub Typ')
+        .type('TF')
+      cy.get('.v-window-item--active')
+        .contains('.v-select', 'Objektschematyp')
+        .type('Process{enter}')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Weiter')
+        .click()
+        .wait(1)
+    })
+    cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+    cy.get('.mdi-wrench')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('.v-text-field', 'Name des Formschemas')
+        .find('input')
+        .should('have.value', 'Test Formschema')
+      cy.contains('.v-text-field', 'Sub Typ')
+        .find('input')
+        .should('have.value', 'TF')
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp')
+        .find('input')
+        .should('have.value', 'process')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Abbrechen')
+        .click()
+        .wait(1)
+    })
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getCurrentOS(editor)).then(currentOS => {
+          cy.fixture('formschema/empty.json').then(emptyOS => {
+            cy.wrap(emptyOS)
+              .then((modifiedEmptyOS: any) => {
+                modifiedEmptyOS.modelType = 'process'
+                return JSON.stringify(modifiedEmptyOS)
+              })
+              .should('eq', JSON.stringify(currentOS))
+          })
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+  })
+
+  it('creates a new formschema based on incident objectschema', function() {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/schemas\/incident.*/
+      },
+      req => {
+        req.reply({
+          fixture: 'objectschema/incident.json'
+        })
+      }
+    )
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-window-item--active')
+        .contains('Formschema erstellen')
+        .closest('.v-list-item--link')
+        .click()
+        .wait(1)
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Name des Formschemas')
+        .type('Test Formschema')
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Sub Typ')
+        .type('TF')
+      cy.get('.v-window-item--active')
+        .contains('.v-select', 'Objektschematyp')
+        .type('Incident{enter}')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Weiter')
+        .click()
+        .wait(1)
+    })
+    cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+    cy.get('.mdi-wrench')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('.v-text-field', 'Name des Formschemas')
+        .find('input')
+        .should('have.value', 'Test Formschema')
+      cy.contains('.v-text-field', 'Sub Typ')
+        .find('input')
+        .should('have.value', 'TF')
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp')
+        .find('input')
+        .should('have.value', 'incident')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Abbrechen')
+        .click()
+        .wait(1)
+    })
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getCurrentOS(editor)).then(currentOS => {
+          cy.fixture('formschema/empty.json').then(emptyOS => {
+            cy.wrap(emptyOS)
+              .then((modifiedEmptyOS: any) => {
+                modifiedEmptyOS.modelType = 'incident'
+                return JSON.stringify(modifiedEmptyOS)
+              })
+              .should('eq', JSON.stringify(currentOS))
+          })
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+  })
+
+  it('creates a new formschema based on document objectschema', function() {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/schemas\/document.*/
+      },
+      req => {
+        req.reply({
+          fixture: 'objectschema/document.json'
+        })
+      }
+    )
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-window-item--active')
+        .contains('Formschema erstellen')
+        .closest('.v-list-item--link')
+        .click()
+        .wait(1)
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Name des Formschemas')
+        .type('Test Formschema')
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Sub Typ')
+        .type('TF')
+      cy.get('.v-window-item--active')
+        .contains('.v-select', 'Objektschematyp')
+        .type('Document{enter}')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Weiter')
+        .click()
+        .wait(1)
+    })
+    cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+    cy.get('.mdi-wrench')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('.v-text-field', 'Name des Formschemas')
+        .find('input')
+        .should('have.value', 'Test Formschema')
+      cy.contains('.v-text-field', 'Sub Typ')
+        .find('input')
+        .should('have.value', 'TF')
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp')
+        .find('input')
+        .should('have.value', 'document')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Abbrechen')
+        .click()
+        .wait(1)
+    })
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getCurrentOS(editor)).then(currentOS => {
+          cy.fixture('formschema/empty.json').then(emptyOS => {
+            cy.wrap(emptyOS)
+              .then((modifiedEmptyOS: any) => {
+                modifiedEmptyOS.modelType = 'document'
+                return JSON.stringify(modifiedEmptyOS)
+              })
+              .should('eq', JSON.stringify(currentOS))
+          })
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+  })
+
+  it('creates a new formschema based on person objectschema', function() {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/schemas\/person.*/
+      },
+      req => {
+        req.reply({
+          fixture: 'objectschema/person.json'
+        })
+      }
+    )
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-window-item--active')
+        .contains('Formschema erstellen')
+        .closest('.v-list-item--link')
+        .click()
+        .wait(1)
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Name des Formschemas')
+        .type('Test Formschema')
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Sub Typ')
+        .type('TF')
+      cy.get('.v-window-item--active')
+        .contains('.v-select', 'Objektschematyp')
+        .type('Person{enter}')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Weiter')
+        .click()
+        .wait(1)
+    })
+    cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+    cy.get('.mdi-wrench')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('.v-text-field', 'Name des Formschemas')
+        .find('input')
+        .should('have.value', 'Test Formschema')
+      cy.contains('.v-text-field', 'Sub Typ')
+        .find('input')
+        .should('have.value', 'TF')
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp')
+        .find('input')
+        .should('have.value', 'person')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Abbrechen')
+        .click()
+        .wait(1)
+    })
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getCurrentOS(editor)).then(currentOS => {
+          cy.fixture('formschema/empty.json').then(emptyOS => {
+            cy.wrap(emptyOS)
+              .then((modifiedEmptyOS: any) => {
+                modifiedEmptyOS.modelType = 'person'
+                return JSON.stringify(modifiedEmptyOS)
+              })
+              .should('eq', JSON.stringify(currentOS))
+          })
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+  })
+
+  it('creates a new formschema based on scenario objectschema', function() {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/schemas\/scenario.*/
+      },
+      req => {
+        req.reply({
+          fixture: 'objectschema/scenario.json'
+        })
+      }
+    )
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-window-item--active')
+        .contains('Formschema erstellen')
+        .closest('.v-list-item--link')
+        .click()
+        .wait(1)
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Name des Formschemas')
+        .type('Test Formschema')
+      cy.get('.v-window-item--active')
+        .contains('.v-text-field', 'Sub Typ')
+        .type('TF')
+      cy.get('.v-window-item--active')
+        .contains('.v-select', 'Objektschematyp')
+        .type('Scenario{enter}')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Weiter')
+        .click()
+        .wait(1)
+    })
+    cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+    cy.get('.mdi-wrench')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.contains('.v-text-field', 'Name des Formschemas')
+        .find('input')
+        .should('have.value', 'Test Formschema')
+      cy.contains('.v-text-field', 'Sub Typ')
+        .find('input')
+        .should('have.value', 'TF')
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp')
+        .find('input')
+        .should('have.value', 'scenario')
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Abbrechen')
+        .click()
+        .wait(1)
+    })
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getCurrentOS(editor)).then(currentOS => {
+          cy.fixture('formschema/empty.json').then(emptyOS => {
+            cy.wrap(emptyOS)
+              .then((modifiedEmptyOS: any) => {
+                modifiedEmptyOS.modelType = 'scenario'
+                return JSON.stringify(modifiedEmptyOS)
+              })
+              .should('eq', JSON.stringify(currentOS))
+          })
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+  })
 })
