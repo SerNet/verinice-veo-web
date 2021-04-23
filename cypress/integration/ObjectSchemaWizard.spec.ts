@@ -114,7 +114,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active')
         .contains('.v-file-input', 'Objektschema hochladen (.json)')
         .find('input[type="file"]')
-        .attachFile('objectschema/process.json')
+        .attachFile('objectschema/empty.json')
         .wait(2000)
     })
     cy.get('.veo-page__title')
