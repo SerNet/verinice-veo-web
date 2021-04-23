@@ -128,7 +128,7 @@ const linkTarget = {
       title: 'The id of the target object.'
     },
     type: {
-      enum: ['Person']
+      enum: ['person']
     }
   }
 }
