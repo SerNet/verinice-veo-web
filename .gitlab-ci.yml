@@ -47,6 +47,9 @@ test_e2e:
   stage: test_e2e
   tags: 
     - 'cpmsys01'
+  variables:
+    VEO_API_USE_PROXY: "false"
+    VEO_API_URL: https://veo.develop.cpmsys.io/
   before_script:
     - npm ci
     - locale -a
