@@ -79,7 +79,7 @@
                 <VeoEditorFileUpload
                   :code="oscode"
                   :input-label="$t('objectSchemaUploadLabel')"
-                  :submit-button-text="$t('import_objectschema')"
+                  :submit-button-text="$t('importObjectschema')"
                   @schema-uploaded="setObjectSchema"
                 />
               </v-col>
