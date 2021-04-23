@@ -1,6 +1,6 @@
 /// <reference path="../support/index.d.ts" />
 
-import { getCurrentOS } from '../support/utils'
+import { getEditorData } from '../support/utils'
 
 describe('Formschema Wizard', () => {
   before(() => {
@@ -126,9 +126,9 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(JSON.stringify(emptyOS)).should('eq', JSON.stringify(currentOS))
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(JSON.stringify(emptyFS)).should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -203,9 +203,9 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(JSON.stringify(emptyOS)).should('eq', JSON.stringify(currentOS))
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(JSON.stringify(emptyFS)).should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -275,14 +275,14 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(emptyOS)
-              .then((modifiedEmptyOS: any) => {
-                modifiedEmptyOS.modelType = 'control'
-                return JSON.stringify(modifiedEmptyOS)
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(emptyFS)
+              .then((modifiedEmptyFS: any) => {
+                modifiedEmptyFS.modelType = 'control'
+                return JSON.stringify(modifiedEmptyFS)
               })
-              .should('eq', JSON.stringify(currentOS))
+              .should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -352,14 +352,14 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(emptyOS)
-              .then((modifiedEmptyOS: any) => {
-                modifiedEmptyOS.modelType = 'scope'
-                return JSON.stringify(modifiedEmptyOS)
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(emptyFS)
+              .then((modifiedEmptyFS: any) => {
+                modifiedEmptyFS.modelType = 'scope'
+                return JSON.stringify(modifiedEmptyFS)
               })
-              .should('eq', JSON.stringify(currentOS))
+              .should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -429,14 +429,14 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(emptyOS)
-              .then((modifiedEmptyOS: any) => {
-                modifiedEmptyOS.modelType = 'asset'
-                return JSON.stringify(modifiedEmptyOS)
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(emptyFS)
+              .then((modifiedEmptyFS: any) => {
+                modifiedEmptyFS.modelType = 'asset'
+                return JSON.stringify(modifiedEmptyFS)
               })
-              .should('eq', JSON.stringify(currentOS))
+              .should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -506,14 +506,14 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(emptyOS)
-              .then((modifiedEmptyOS: any) => {
-                modifiedEmptyOS.modelType = 'process'
-                return JSON.stringify(modifiedEmptyOS)
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(emptyFS)
+              .then((modifiedEmptyFS: any) => {
+                modifiedEmptyFS.modelType = 'process'
+                return JSON.stringify(modifiedEmptyFS)
               })
-              .should('eq', JSON.stringify(currentOS))
+              .should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -583,14 +583,14 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(emptyOS)
-              .then((modifiedEmptyOS: any) => {
-                modifiedEmptyOS.modelType = 'incident'
-                return JSON.stringify(modifiedEmptyOS)
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(emptyFS)
+              .then((modifiedEmptyFS: any) => {
+                modifiedEmptyFS.modelType = 'incident'
+                return JSON.stringify(modifiedEmptyFS)
               })
-              .should('eq', JSON.stringify(currentOS))
+              .should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -660,14 +660,14 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(emptyOS)
-              .then((modifiedEmptyOS: any) => {
-                modifiedEmptyOS.modelType = 'document'
-                return JSON.stringify(modifiedEmptyOS)
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(emptyFS)
+              .then((modifiedEmptyFS: any) => {
+                modifiedEmptyFS.modelType = 'document'
+                return JSON.stringify(modifiedEmptyFS)
               })
-              .should('eq', JSON.stringify(currentOS))
+              .should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -737,14 +737,14 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(emptyOS)
-              .then((modifiedEmptyOS: any) => {
-                modifiedEmptyOS.modelType = 'person'
-                return JSON.stringify(modifiedEmptyOS)
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(emptyFS)
+              .then((modifiedEmptyFS: any) => {
+                modifiedEmptyFS.modelType = 'person'
+                return JSON.stringify(modifiedEmptyFS)
               })
-              .should('eq', JSON.stringify(currentOS))
+              .should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -814,14 +814,14 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty.json').then(emptyOS => {
-            cy.wrap(emptyOS)
-              .then((modifiedEmptyOS: any) => {
-                modifiedEmptyOS.modelType = 'scenario'
-                return JSON.stringify(modifiedEmptyOS)
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty.json').then(emptyFS => {
+            cy.wrap(emptyFS)
+              .then((modifiedEmptyFS: any) => {
+                modifiedEmptyFS.modelType = 'scenario'
+                return JSON.stringify(modifiedEmptyFS)
               })
-              .should('eq', JSON.stringify(currentOS))
+              .should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -883,9 +883,9 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty-process.json').then(emptyProcessOS => {
-            cy.wrap(JSON.stringify(emptyProcessOS)).should('eq', JSON.stringify(currentOS))
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty-process.json').then(emptyProcessFS => {
+            cy.wrap(JSON.stringify(emptyProcessFS)).should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -922,9 +922,9 @@ describe('Formschema Wizard', () => {
         .find('.editor .cm-content')
         .closest('.d-flex.flex-column')
         .then((el: any) => {
-          cy.fixture('formschema/empty-process.json').then(emptyProcessOS => {
+          cy.fixture('formschema/empty-process.json').then(emptyProcessFS => {
             // TODO: this is a hack to load OS in Code Editor. It needs a better solution
-            el[0].__vue__.$emit('input', JSON.stringify(emptyProcessOS))
+            el[0].__vue__.$emit('input', JSON.stringify(emptyProcessFS))
           })
         })
       cy.contains('.v-btn', 'Codeänderungen übernehmen')
@@ -958,9 +958,9 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
+        cy.wrap(getEditorData(editor)).then(currentFS => {
           cy.fixture('formschema/empty-process.json').then(emptyProcessOS => {
-            cy.wrap(JSON.stringify(emptyProcessOS)).should('eq', JSON.stringify(currentOS))
+            cy.wrap(JSON.stringify(emptyProcessOS)).should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -1031,9 +1031,9 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty-process.json').then(emptyProcessOS => {
-            cy.wrap(JSON.stringify(emptyProcessOS)).should('eq', JSON.stringify(currentOS))
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty-process.json').then(emptyProcessFS => {
+            cy.wrap(JSON.stringify(emptyProcessFS)).should('eq', JSON.stringify(currentFS))
           })
         })
       })
@@ -1115,9 +1115,9 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getCurrentOS(editor)).then(currentOS => {
-          cy.fixture('formschema/empty-process.json').then(emptyProcessOS => {
-            cy.wrap(JSON.stringify(emptyProcessOS)).should('eq', JSON.stringify(currentOS))
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/empty-process.json').then(emptyProcessFS => {
+            cy.wrap(JSON.stringify(emptyProcessFS)).should('eq', JSON.stringify(currentFS))
           })
         })
       })
