@@ -86,3 +86,22 @@ Cypress.Commands.add('auth', () => {
     }
   )
 })
+
+Cypress.Commands.add('drag', { prevSubject: true }, subject => {
+  cy.wrap(subject)
+    .trigger('pointerdown', {
+      which: 1,
+      button: 0
+    })
+    .trigger('dragstart')
+})
+
+Cypress.Commands.add('drop', { prevSubject: true }, subject => {
+  cy.wrap(subject)
+    .trigger('dragover', 'bottom')
+    .trigger('drop')
+    .trigger('pointerup', {
+      which: 1,
+      button: 0
+    })
+})

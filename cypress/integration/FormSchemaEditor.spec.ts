@@ -296,71 +296,24 @@ describe('Formschema Editor', () => {
         .wait(2000)
     })
 
-    //cy.contains('.v-expansion-panel-header', 'Individuelle Aspekte').click()
-    //cy.contains('.v-expansion-panel-header', 'Individuelle Links').click()
-    cy.contains('.v-btn', 'alle ausklappen').click()
     cy.wait(1000)
-    /*cy.get('.drag-form-elements')
-      .contains('.v-sheet > .v-list-item', 'group')
-      .trigger('dragenter')
 
-    cy.get('.dropzone')
-      .trigger('drop', {
-        type: 'drop',
-        which: 1,
-        button: 0,
-        buttons: 0,
-        clientX: 882,
-        clientY: 263,
-        screenX: 1350,
-        screenY: 457,
-        pageX: 882,
-        pageY: 263,
-        x: 882,
-        y: 263,
-        force: true
-      })
-      .trigger('mouseup', { force: true })*/
+    cy.contains('.v-sheet', 'group').drag()
+    cy.get('.dropzone').drop()
 
-    cy.contains('.v-sheet', 'process / SensitiveData_secrecy203STGB').then(dragElement => {
-      return cy
-        // Find the drag area inside the group labeled with "Gruppen Titel"
-        .contains('.fse-group', 'Gruppen Titel')
-        .find('.dragArea')
-        .then(dropZone => {
-          return (
-            cy
-              .wrap(dragElement[0])
-              // Trigger left mouse button press on dragElement
-              .trigger('pointerdown', {
-                which: 1,
-                button: 0
-              })
-              // Trigger dragstart on dragElement
-              .trigger('dragstart')
-              .then(() => {
-                return (
-                  cy
-                    .wrap(dropZone[0])
-                    // Signal dropZone that an element is being dragged over the bottom of the list
-                    .trigger('dragover', 'bottom')
-                    .then(() => {
-                      return (
-                        cy
-                          .wrap(dropZone[0])
-                          // Drop the element
-                          .trigger('drop')
-                          // Release the mouse button
-                          .trigger('pointerup', {
-                            which: 1,
-                            button: 0
-                          })
-                      )
-                    })
-                )
-              })
-          )
-        })
-    })
+    // cy.contains('.v-sheet', 'group')
+    //   .trigger('pointerdown', {
+    //     which: 1,
+    //     button: 0
+    //   })
+    //   .trigger('dragstart')
+
+    // cy.get('.dropzone')
+    //   .trigger('dragover', 'bottom')
+    //   .trigger('drop')
+    //   .trigger('pointerup', {
+    //     which: 1,
+    //     button: 0
+    //   })
   })
 })
