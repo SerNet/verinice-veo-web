@@ -4,7 +4,7 @@
       <div class="dropzone-placeholder-text subtitle-1">{{ $t('dropzonePlaceholder') }}</div>
     </div>
     <Draggable
-      class="dragArea d-flex fill-width fill-height"
+      class="dragArea d-flex fill-width fill-height dropzone"
       tag="div"
       style="overflow: auto;"
       :list="value.elements"
@@ -180,6 +180,6 @@ export default Vue.extend({
 }
 
 .level-0 {
-  border: 0
+  border: 0;
 }
 </style>

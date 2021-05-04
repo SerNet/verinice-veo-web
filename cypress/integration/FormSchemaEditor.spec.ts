@@ -223,7 +223,7 @@ describe('Formschema Editor', () => {
       .wait(1)
   })
 
-  it.only('compares downloaded schema with the actual one', function() {
+  it('compares downloaded schema with the actual one', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -269,5 +269,56 @@ describe('Formschema Editor', () => {
         .click()
         .wait(1)
     })
+  })
+
+  it.only('drags and drops form element into dropzone', function() {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/schemas\/process.*/
+      },
+      req => {
+        req.reply({
+          fixture: 'objectschema/process.json'
+        })
+      }
+    )
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-window-item--active')
+        .contains('Formschema importieren')
+        .closest('.v-list-item--link')
+        .click()
+        .wait(1)
+      cy.get('.v-window-item--active')
+        .contains('.v-file-input', 'Formschema hochladen (.json)')
+        .find('input[type="file"]')
+        .attachFile('formschema/minimal.json')
+        .wait(2000)
+    })
+
+    cy.contains('.v-expansion-panel-header', 'Individuelle Aspekte').click()
+    cy.contains('.v-expansion-panel-header', 'Individuelle Links').click()
+    cy.wait(1000)
+    cy.get('.drag-form-elements')
+      .contains('.v-sheet > .v-list-item', 'group')
+      .trigger('dragenter')
+
+    cy.get('.dropzone')
+      .trigger('drop', {
+        type: 'drop',
+        which: 1,
+        button: 0,
+        buttons: 0,
+        clientX: 882,
+        clientY: 263,
+        screenX: 1350,
+        screenY: 457,
+        pageX: 882,
+        pageY: 263,
+        x: 882,
+        y: 263,
+        force: true
+      })
+      .trigger('mouseup', { force: true })
   })
 })
