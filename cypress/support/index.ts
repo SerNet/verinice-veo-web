@@ -99,7 +99,7 @@ Cypress.Commands.add('drag', { prevSubject: true }, subject => {
 Cypress.Commands.add('drop', { prevSubject: true }, subject => {
   cy.wrap(subject)
     .trigger('dragover', 'bottom')
-    .trigger('drop')
+    .trigger('drop', { force: true })
     .trigger('pointerup', {
       which: 1,
       button: 0
