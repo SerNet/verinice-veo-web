@@ -2,6 +2,8 @@
 
 import { getEditorData } from '../support/utils'
 
+const textOrGroupLangRegex = /#lang\/(group|text)_[a-zA-Z0-9._-]+/g
+
 describe('Formschema Editor', () => {
   before(() => {
     cy.auth()
@@ -84,6 +86,9 @@ describe('Formschema Editor', () => {
     cy.contains('.v-sheet', 'process / ProcessingDetails_typeOfSurvey').drag()
     cy.get('.dropzone').drop()
 
+    cy.contains('.v-sheet', 'process / InternalRecipientLink').drag()
+    cy.get('.dropzone').drop()
+
     cy.contains('.v-sheet', 'process / TypeOfDataProcessed').drag()
     cy.get('.dropzone').drop()
 
@@ -136,6 +141,27 @@ describe('Formschema Editor', () => {
       .find('.dragArea')
       .eq(1)
       .drop()
+
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).then(currentFS => {
+          cy.fixture('formschema/drag-and-drop.json').then(compareFS => {
+            cy.wrap(JSON.stringify(currentFS).replace(textOrGroupLangRegex, '')).should(
+              'eq',
+              JSON.stringify(compareFS).replace(textOrGroupLangRegex, '')
+            )
+          })
+        })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
   })
 })
 

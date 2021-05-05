@@ -1,0 +1,92 @@
+{
+  "name": "Test Formschema",
+  "modelType": "process",
+  "subType": "TF",
+  "translation": {
+    "de": {}
+  },
+  "content": {
+    "type": "Layout",
+    "options": {
+      "format": "group",
+      "direction": "vertical"
+    },
+    "elements": [
+      {
+        "type": "Label",
+        "text": "#lang/text_c0c574b3-13a0-41f4-ab34-1d9c1ccabd29"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/name",
+        "options": {
+          "label": "#lang/name"
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_comment",
+        "options": {
+          "label": "#lang/process_SensitiveData_comment"
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/links/properties/process_InternalRecipientLink",
+        "options": {
+          "label": "#lang/process_InternalRecipientLink"
+        },
+        "elements": []
+      },
+      {
+        "type": "Layout",
+        "options": {
+          "format": "group"
+        },
+        "elements": [
+          {
+            "type": "Layout",
+            "options": {
+              "format": "group"
+            },
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/description",
+                "options": {
+                  "label": "#lang/description"
+                }
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_SensitiveData",
+                "options": {
+                  "label": "#lang/process_SensitiveData_SensitiveData"
+                }
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_typeOfSurvey",
+                "options": {
+                  "label": "#lang/process_ProcessingDetails_typeOfSurvey"
+                }
+              }
+            ]
+          },
+          {
+            "type": "Label",
+            "text": "#lang/text_840b358d-773c-40dd-817f-2104fa567303"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/links/properties/process_TypeOfDataProcessed",
+            "options": {
+              "label": "#lang/process_TypeOfDataProcessed"
+            },
+            "elements": []
+          }
+        ]
+      }
+    ]
+  }
+}
