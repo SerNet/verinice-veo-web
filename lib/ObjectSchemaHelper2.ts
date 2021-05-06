@@ -482,7 +482,6 @@ export default class ObjectSchemaHelper {
           dummy.items = { enum: dummy.enum }
           delete dummy.enum
         } else {
-          delete dummy.type
           delete dummy.items
         }
       } else {
@@ -573,7 +572,6 @@ export default class ObjectSchemaHelper {
           dummy.items = { enum: dummy.enum }
           delete dummy.enum
         } else {
-          delete dummy.type
           delete dummy.items
         }
       } else {
