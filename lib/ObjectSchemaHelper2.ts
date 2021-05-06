@@ -618,15 +618,24 @@ export default class ObjectSchemaHelper {
 
       for (let attributeName in aspect.properties.attributes.properties) {
         const attribute = aspect.properties.attributes.properties[attributeName]
-        dummy.attributes.push({
+
+        const toPush = {
           ...attribute,
           title: this.cleanAttributeName(attributeName, dummy.title),
           description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
-        })
-      }
+        } as any
 
+        // Multi selects are stored as arrays, os we have to manually transform them to an enum.
+        if (toPush.type === 'array' && toPush.items.enum) {
+          toPush.enum = toPush.items.enum
+          toPush.multiple = true
+          toPush.type = 'enum'
+        }
+
+        dummy.attributes.push(toPush)
+      }
       this._customAspects.push(dummy)
     }
   }
@@ -643,15 +652,24 @@ export default class ObjectSchemaHelper {
 
       for (let attributeName in link.items.properties.attributes.properties) {
         const attribute = link.items.properties.attributes.properties[attributeName]
-        dummy.attributes.push({
+
+        const toPush = {
           ...attribute,
           title: this.cleanAttributeName(attributeName, dummy.title),
           description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
-        })
-      }
+        } as any
 
+        // Multi selects are stored as arrays, os we have to manually transform them to an enum.
+        if (toPush.type === 'array' && toPush.items.enum) {
+          toPush.enum = toPush.items.enum
+          toPush.multiple = true
+          toPush.type = 'enum'
+        }
+
+        dummy.attributes.push(toPush)
+      }
       this._customLinks.push(dummy)
     }
   }
