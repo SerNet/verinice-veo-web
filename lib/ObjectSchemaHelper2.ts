@@ -480,7 +480,10 @@ export default class ObjectSchemaHelper {
         if (!!dummy.multiple) {
           dummy.type = 'array'
           dummy.items = { enum: dummy.enum }
-          dummy.enum
+          delete dummy.enum
+        } else {
+          delete dummy.type
+          delete dummy.items
         }
       } else {
         delete dummy.enum
@@ -569,6 +572,9 @@ export default class ObjectSchemaHelper {
           dummy.type = 'array'
           dummy.items = { enum: dummy.enum }
           delete dummy.enum
+        } else {
+          delete dummy.type
+          delete dummy.items
         }
       } else {
         delete dummy.enum
