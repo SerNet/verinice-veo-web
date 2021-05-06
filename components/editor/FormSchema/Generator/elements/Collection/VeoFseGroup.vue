@@ -112,7 +112,8 @@ export default Vue.extend({
   },
   computed: {
     directionClass(): string {
-      if (this.options && this.options.direction === 'horizontal') {
+      // TODO: this.options does not trigger this computed property, when data is updated.
+      if (this.value.options && this.value.options.direction === 'horizontal') {
         return 'flex-row direction-horizontal'
       } else {
         return 'flex-column direction-vertical'

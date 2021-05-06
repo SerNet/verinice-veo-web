@@ -7,10 +7,17 @@ declare namespace Cypress {
     auth(): void
 
     /**
+     * Custom command to load FormSchemaEditor with a specific FormSchema
+     * @example cy.loadFse('formschema/empty.json')
+     */
+    loadFse(formSchemaPath: string): void
+
+    /**
      * Custom command to start dragging the element (often used before cy.get('.dropzone').drop() to drop the element)
      * @example cy.get('.someelement').drag()
      */
     drag(): JQuery<HTMLElement>
+
     /**
      * Custom command to end dragging the element (often used after cy.get('.someelement').drag() to start dragging the element)
      * @example cy.get('.dropzone').drop()

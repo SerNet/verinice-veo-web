@@ -105,3 +105,62 @@ Cypress.Commands.add('drop', { prevSubject: true }, subject => {
       button: 0
     })
 })
+
+Cypress.Commands.add('loadFse', formSchemaPath => {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/translations.*/
+    },
+    req => {
+      req.reply({
+        fixture: 'objectschema/translations.json'
+      })
+    }
+  )
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/schemas$/
+    },
+    req => {
+      req.reply({
+        fixture: 'objectschema/schemas.json'
+      })
+    }
+  )
+
+  cy.window().then(function(win: any) {
+    win.$nuxt?.$router?.push('/editor')
+  })
+
+  cy.contains('.v-list-item--link', 'Formschema Editor')
+    .should('have.attr', 'href', '/editor/formschema')
+    .click()
+    .wait(1)
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/schemas\/process.*/
+    },
+    req => {
+      req.reply({
+        fixture: 'objectschema/process.json'
+      })
+    }
+  )
+  cy.get('.v-dialog--active').within(dialogEl => {
+    cy.get('.v-window-item--active')
+      .contains('Formschema importieren')
+      .closest('.v-list-item--link')
+      .click()
+      .wait(1)
+    cy.get('.v-window-item--active')
+      .contains('.v-file-input', 'Formschema hochladen (.json)')
+      .find('input[type="file"]')
+      .attachFile(formSchemaPath)
+      .wait(2000)
+  })
+  cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+})

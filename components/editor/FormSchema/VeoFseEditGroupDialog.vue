@@ -26,7 +26,11 @@
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.direction') }}*:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-autocomplete v-model="formData.direction" :items="directionItems" />
+            <v-autocomplete
+              v-model="formData.direction"
+              :items="directionItems"
+              :label="$t('editor.formschema.edit.input.direction')"
+            />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center">
