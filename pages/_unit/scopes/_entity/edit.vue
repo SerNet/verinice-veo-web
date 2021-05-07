@@ -1,17 +1,39 @@
 <template>
   <VeoPageWrapper>
     <template #default>
-      <VeoPage absolute-size :cols="12" :md="8" :xl="8" sticky-header :title="objectTitle" :loading="$fetchState.pending">
+      <VeoPage
+        absolute-size
+        :cols="12"
+        :md="8"
+        :xl="8"
+        sticky-header
+        :title="objectTitle"
+        :loading="$fetchState.pending"
+      >
         <template #default>
-          <VeoEntityDisplayOptions :rootRoute="`/${$route.params.unit}/scopes`" :current-entity="form.objectData">
-          <v-btn color="primary" outlined :disabled="$fetchState.pending" :loading="deleteEntityDialog.value === true" @click="showDeleteEntityDialog">
-              {{ $t('global.button.delete') }}
-            </v-btn>
-            <v-btn color="primary" outlined :disabled="$fetchState.pending" :loading="saveBtnLoading" @click="doSaveEntity">
-              {{ $t('global.button.save') }}
-            </v-btn>
+          <VeoEntityDisplayOptions
+            :rootRoute="`/${$route.params.unit}/scopes`"
+            :current-entity="form.objectData"
+          >
+            <v-btn
+              color="primary"
+              outlined
+              :disabled="$fetchState.pending"
+              :loading="deleteEntityDialog.value === true"
+              @click="showDeleteEntityDialog"
+            >{{ $t('global.button.delete') }}</v-btn>
+            <v-btn
+              color="primary"
+              outlined
+              :disabled="$fetchState.pending"
+              :loading="saveBtnLoading"
+              @click="doSaveEntity"
+            >{{ $t('global.button.save') }}</v-btn>
           </VeoEntityDisplayOptions>
-          <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
+          <div
+            v-if="$fetchState.pending"
+            class="fill-width fill-height d-flex justify-center align-center"
+          >
             <v-progress-circular indeterminate color="primary" size="50" />
           </div>
           <div v-else>
@@ -38,6 +60,7 @@
               :item="form.objectData"
               @exit="$router.push(entityModified.target)"
             />
+            <WindowUnloadPrevention :value="entityModified.isModified" />
             <VeoDeleteEntityDialog
               v-model="deleteEntityDialog.value"
               v-bind="deleteEntityDialog"
@@ -76,7 +99,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: IVeoEventPayload & { value: boolean, error: number }
+  alert: IVeoEventPayload & { value: boolean; error: number }
   entityModified: {
     isModified: boolean
     dialog: boolean
@@ -181,12 +204,15 @@ export default Vue.extend({
     },
     onDeleteEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
-        title: this.deleteEntityDialog.item?.type === 'scope' ? this.$t('scope_delete_error') : this.$t('object_delete_error'),
+        title:
+          this.deleteEntityDialog.item?.type === 'scope'
+            ? this.$t('scope_delete_error')
+            : this.$t('object_delete_error'),
         text: JSON.stringify(error)
       })
     },
     showError(status: number, message: string) {
-      if(status === 412) {
+      if (status === 412) {
         this.alert.text = this.$t('global.appstate.alert.object_modified')
         this.alert.saveButtonText = this.$t('global.button.no')
       } else {
@@ -212,13 +238,15 @@ export default Vue.extend({
   },
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if(this.entityModified.isModified && this.entityModified.dialog) {
+    if (this.entityModified.isModified && this.entityModified.dialog) {
       next()
-    } else if (this.entityModified.isModified) { // If the form was modified and the dialog is closed, show it and abort navigation
+    } else if (this.entityModified.isModified) {
+      // If the form was modified and the dialog is closed, show it and abort navigation
       this.entityModified.target = to
       this.entityModified.dialog = true
       next(false)
-    } else { // The form wasn't modified, proceed as if this hook doesn't exist
+    } else {
+      // The form wasn't modified, proceed as if this hook doesn't exist
       next()
     }
   }

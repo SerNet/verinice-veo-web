@@ -3,10 +3,16 @@
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPageWrapper v-else>
-    <VeoPage v-if="!contentsCollapsed && formSchemaHasGroups" :cols="2" :md="2" :xl="2" absolute-size>
-      <div class="button text-uppercase accent--text font-weight-medium my-2">
-        {{ $t('navigation.title') }}
-      </div>
+    <VeoPage
+      v-if="!contentsCollapsed && formSchemaHasGroups"
+      :cols="2"
+      :md="2"
+      :xl="2"
+      absolute-size
+    >
+      <div
+        class="button text-uppercase accent--text font-weight-medium my-2"
+      >{{ $t('navigation.title') }}</div>
       <VeoFormNavigation :formSchema="form.formSchema && form.formSchema.content" class="mx-n4" />
     </VeoPage>
     <v-divider vertical />
@@ -19,19 +25,30 @@
       id="scroll-wrapper"
     >
       <template #header>
-        <VeoCollapseButton v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups" v-model="contentsCollapsed" />
+        <VeoCollapseButton
+          v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups"
+          v-model="contentsCollapsed"
+        />
         <v-row class="justify-space-between">
           <v-col cols="auto">
             <h1>{{ form.objectData.name }}</h1>
           </v-col>
           <v-spacer />
           <v-col cols="auto" class="text-right">
-            <v-btn v-if="$route.params.entity" text outlined :loading="deleteEntityDialog.value === true" @click="showDeleteEntityDialog">
-              {{ $t('global.button.delete') }}
-            </v-btn>
-            <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="onClick">
-              {{ $t('global.button.save') }}
-            </v-btn>
+            <v-btn
+              v-if="$route.params.entity"
+              text
+              outlined
+              :loading="deleteEntityDialog.value === true"
+              @click="showDeleteEntityDialog"
+            >{{ $t('global.button.delete') }}</v-btn>
+            <v-btn
+              color="primary"
+              outlined
+              text
+              :loading="saveBtnLoading"
+              @click="onClick"
+            >{{ $t('global.button.save') }}</v-btn>
           </v-col>
         </v-row>
       </template>
@@ -60,6 +77,7 @@
           :item="form.objectData"
           @exit="$router.push(formModified.target)"
         />
+        <WindowUnloadPrevention :value="formModified.isModified" />
         <VeoAlert
           v-model="alert.value"
           v-bind="alert"
@@ -110,7 +128,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: IVeoEventPayload & { value: boolean, error: number }
+  alert: IVeoEventPayload & { value: boolean; error: number }
   contentsCollapsed: boolean
   formModified: {
     isModified: boolean
@@ -162,9 +180,7 @@ export default Vue.extend({
     this.objectType = formSchema.modelType
     if (this.objectType) {
       const objectSchema = await this.$api.schema.fetch(this.objectType)
-      const objectData = this.$route.params.entity
-        ? await this.$api.entity.fetch(this.objectType, this.objectId)
-        : {}
+      const objectData = this.$route.params.entity ? await this.$api.entity.fetch(this.objectType, this.objectId) : {}
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
       this.form = {
         objectSchema,
@@ -252,8 +268,12 @@ export default Vue.extend({
       }
     },
     formSchemaHasGroups(): boolean {
-      if(this.form.formSchema?.content.elements) {
-        return this.form.formSchema?.content?.elements?.findIndex((element: any) => (element.type === 'Layout' || element.type === 'Group') && element.options.label) > -1
+      if (this.form.formSchema?.content.elements) {
+        return (
+          this.form.formSchema?.content?.elements?.findIndex(
+            (element: any) => (element.type === 'Layout' || element.type === 'Group') && element.options.label
+          ) > -1
+        )
       } else {
         return false
       }
@@ -296,12 +316,15 @@ export default Vue.extend({
     },
     onDeleteEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
-        title: this.deleteEntityDialog.item?.type === 'scope' ? this.$t('scope_delete_error') : this.$t('object_delete_error'),
+        title:
+          this.deleteEntityDialog.item?.type === 'scope'
+            ? this.$t('scope_delete_error')
+            : this.$t('object_delete_error'),
         text: JSON.stringify(error)
       })
     },
     showError(status: number, message: string) {
-      if(status === 412) {
+      if (status === 412) {
         this.alert.text = this.$t('global.appstate.alert.object_modified')
         this.alert.saveButtonText = this.$t('global.button.no')
       } else {
@@ -343,13 +366,15 @@ export default Vue.extend({
   },
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if(this.formModified.isModified && this.formModified.dialog) {
+    if (this.formModified.isModified && this.formModified.dialog) {
       next()
-    } else if (this.formModified.isModified) { // If the form was modified and the dialog is closed, show it and abort navigation
+    } else if (this.formModified.isModified) {
+      // If the form was modified and the dialog is closed, show it and abort navigation
       this.formModified.target = to
       this.formModified.dialog = true
       next(false)
-    } else { // The form wasn't modified, proceed as if this hook doesn't exist
+    } else {
+      // The form wasn't modified, proceed as if this hook doesn't exist
       next()
     }
   }
