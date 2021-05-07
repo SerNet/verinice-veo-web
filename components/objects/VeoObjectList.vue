@@ -9,11 +9,10 @@
     @click:row="sendEvent('click', $event)"
   >
     <template #no-data>
-      <span v-if="$route.params.param === '-'" class="text-center">
-        {{ $t('no_objects') }}
-      </span>
+      <span v-if="$route.params.param === '-'" class="text-center">{{ $t('no_objects') }}</span>
       <span v-else class="text-center">
-        {{ $t('no_child_objects') }} <nuxt-link :to="editItemLink">{{ $t('object_edit') }}</nuxt-link>
+        {{ $t('no_child_objects') }}
+        <nuxt-link :to="editItemLink">{{ $t('object_edit') }}</nuxt-link>
       </span>
     </template>
     <template v-if="showParentLink" #body.prepend>
@@ -34,7 +33,8 @@
           </template>
           <template #default>
             <span class="d-inline-block text-center">
-              {{ $t('object_has_subobjects') }}<br>
+              {{ $t('object_has_subobjects') }}
+              <br />
               {{ $t('object_has_subobjects_amount', { amount: item.parts.length }) }}
             </span>
           </template>
@@ -44,9 +44,9 @@
             <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
           <template #default>
-            <span class="d-inline-block text-center">
-              {{ $t('scope_children', { amount: item.members.length }) }}
-            </span>
+            <span
+              class="d-inline-block text-center"
+            >{{ $t('scope_children', { amount: item.members.length }) }}</span>
           </template>
         </v-tooltip>
         <v-tooltip v-else-if="item.type === 'scope'" bottom>
@@ -54,9 +54,7 @@
             <v-icon v-on="on">mdi-archive</v-icon>
           </template>
           <template #default>
-            <span>
-              {{ $t('scope_empty') }}
-            </span>
+            <span>{{ $t('scope_empty') }}</span>
           </template>
         </v-tooltip>
         <v-tooltip v-else bottom>
@@ -64,14 +62,15 @@
             <v-icon v-on="on">mdi-file-document</v-icon>
           </template>
           <template #default>
-            <span>
-              {{ $t('object_has_no_subobjects') }}
-            </span>
+            <span>{{ $t('object_has_no_subobjects') }}</span>
           </template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.abbreviation }}</span>
+            <span
+              v-on="on"
+              class="veo-object-list__abbreviation--abbreviation"
+            >{{ item.abbreviation }}</span>
           </template>
           <template #default>
             <span>{{ item.abbreviation }}</span>
@@ -86,7 +85,10 @@
       <div class="veo-object-list__description">
         <v-tooltip v-if="item.descriptionShort" bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.descriptionShort }}</span>
+            <span
+              v-on="on"
+              class="veo-object-list__abbreviation--abbreviation"
+            >{{ item.descriptionShort }}</span>
           </template>
           <template #default>
             <span>{{ value }}</span>
@@ -95,16 +97,15 @@
         <span v-else>{{ value }}</span>
       </div>
     </template>
-    <template #item.date="{ item }">
-      <div class="veo-object-list__date nowrap">
+    <template #item.updatedAt="{ item }">
+      <div class="veo-object-list__updated-at nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <span v-on="on">
-              {{ formatDate(item.updatedAt) }}
-            </span>
+            <span v-on="on">{{ formatDate(item.updatedAt) }}</span>
           </template>
           <template #default>
-            {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}<br />
+            {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}
+            <br />
             {{ $t('updated_at') }}: {{ formatDate(item.updatedAt) }} {{ $t('by') }} {{ item.updatedBy }}
           </template>
         </v-tooltip>
@@ -115,50 +116,34 @@
         <v-tooltip bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="sendEvent('edit', item, currentItem)" v-on="on">
-              <v-icon>
-                mdi-pencil
-              </v-icon>
+              <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('edit') }}
-          </template>
+          <template #default>{{ $t('edit') }}</template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="sendEvent('duplicate', item, currentItem)" v-on="on">
-              <v-icon>
-                mdi-content-copy
-              </v-icon>
+              <v-icon>mdi-content-copy</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('clone') }}
-          </template>
+          <template #default>{{ $t('clone') }}</template>
         </v-tooltip>
         <v-tooltip v-if="$route.params.entity === '-'" bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="sendEvent('delete', item, currentItem)" v-on="on">
-              <v-icon>
-                mdi-delete
-              </v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('delete') }}
-          </template>
+          <template #default>{{ $t('delete') }}</template>
         </v-tooltip>
         <v-tooltip v-else bottom>
           <template #activator="{on}">
             <v-btn icon @click.stop="sendEvent('unlink', item, currentItem)" v-on="on">
-              <v-icon>
-                mdi-link-off
-              </v-icon>
+              <v-icon>mdi-link-off</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('unlink') }}
-          </template>
+          <template #default>{{ $t('unlink') }}</template>
         </v-tooltip>
       </div>
     </template>
@@ -188,7 +173,7 @@ export default Vue.extend({
     },
     sortingFunction: {
       type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
-      default: () => ((a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name))
+      default: () => (a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name)
     },
     currentItem: {
       type: Object as Prop<IVeoEntity | undefined>,
@@ -202,14 +187,16 @@ export default Vue.extend({
   },
   computed: {
     displayedItems(): IVeoEntity[] {
-      return this.items.map(item => {
-        // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
-        if(item.description && item.description.length >  40) {
-          item.descriptionShort = item.description.substring(0, 40) + '...'
-        }
-        
-        return item
-      }).sort(this.sortingFunction)
+      return this.items
+        .map((item) => {
+          // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+          if (item.description && item.description.length > 40) {
+            item.descriptionShort = item.description.substring(0, 40) + '...'
+          }
+
+          return item
+        })
+        .sort(this.sortingFunction)
     },
     editItemLink(): string {
       return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
@@ -218,7 +205,7 @@ export default Vue.extend({
       return [
         {
           text: this.$t('objectlist.abbreviation'),
-          value: 'abbreviation',
+          value: 'abbreviation'
         },
         {
           text: this.$t('objectlist.title'),
@@ -238,7 +225,7 @@ export default Vue.extend({
         {
           align: 'end',
           text: this.$t('objectlist.updatedat'),
-          value: 'date',
+          value: 'updatedAt'
         },
         {
           align: 'end',
