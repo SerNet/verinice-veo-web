@@ -52,8 +52,8 @@
         <span v-else>{{ value }}</span>
       </div>
     </template>
-    <template #item.date="{ item }">
-      <div class="veo-object-list__date nowrap">
+    <template #item.updatedAt="{ item }">
+      <div class="veo-object-list__updated-at nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
             <span v-on="on">{{ formatDate(item.updatedAt) }}</span>
@@ -168,7 +168,7 @@ export default Vue.extend({
         {
           align: 'end',
           text: this.$t('objectlist.updatedat'),
-          value: 'date'
+          value: 'updatedAt'
         },
         {
           align: 'end',
