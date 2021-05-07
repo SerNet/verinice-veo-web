@@ -77,7 +77,7 @@
           :item="form.objectData"
           @exit="$router.push(formModified.target)"
         />
-        <WindowUnloadPrevention :value="formModified.isModified" />
+        <VeoWindowUnloadPrevention :value="formModified.isModified" />
         <VeoAlert
           v-model="alert.value"
           v-bind="alert"

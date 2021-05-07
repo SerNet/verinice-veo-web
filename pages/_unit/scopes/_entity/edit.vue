@@ -60,7 +60,7 @@
               :item="form.objectData"
               @exit="$router.push(entityModified.target)"
             />
-            <WindowUnloadPrevention :value="entityModified.isModified" />
+            <VeoWindowUnloadPrevention :value="entityModified.isModified" />
             <VeoDeleteEntityDialog
               v-model="deleteEntityDialog.value"
               v-bind="deleteEntityDialog"

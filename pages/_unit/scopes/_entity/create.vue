@@ -35,7 +35,7 @@
         :item="form.objectData"
         @exit="$router.push(entityModified.target)"
       />
-      <WindowUnloadPrevention :value="entityModified.isModified" />
+      <VeoWindowUnloadPrevention :value="entityModified.isModified" />
     </template>
   </VeoPage>
   <VeoPage v-else fullsize>
