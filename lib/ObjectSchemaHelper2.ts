@@ -627,7 +627,7 @@ export default class ObjectSchemaHelper {
           prefix: `${dummy.prefix}${dummy.title}_`
         } as any
 
-        // Multi selects are stored as arrays, os we have to manually transform them to an enum.
+        // Multi selects are stored as arrays, so we have to manually transform them to an enum.
         if (toPush.type === 'array' && toPush.items.enum) {
           toPush.enum = toPush.items.enum
           toPush.multiple = true
