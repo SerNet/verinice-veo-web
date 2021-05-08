@@ -53,8 +53,7 @@
                 v-for="(attribute, index2) of aspect.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
-                :title="attribute.title"
-                :description="attribute.description"
+                v-bind="attribute"
                 :styling="newItemTypes[attribute.type]"
                 two-line
                 translate
@@ -288,6 +287,14 @@ export default defineComponent<IProps>({
         objectSchemaHelper.value.updateCustomAspectAttributes(object.item.title, object.item.attributes)
       } else {
         objectSchemaHelper.value.updateCustomLink(object.item.title, object.item as IVeoOSHCustomLink)
+      }
+
+      // Add a translation key for each attribute (already existing keys won't be overwritten)
+      for(let attribute of object.item.attributes) {
+        objectSchemaHelper.value.addTranslation(
+          `${attribute.prefix}${attribute.title}`,
+          `${attribute.description}`
+        );
       }
 
       objectSchemaDialog.value.value = false

@@ -59,7 +59,7 @@ import { BaseObject, IApi } from '~/components/forms/utils'
 
 import {
   IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslation
+  IVeoTranslationCollection
 } from '~/types/VeoTypes'
 import { UISchemaElement } from '~/types/UISchema'
 
@@ -96,7 +96,7 @@ export default Vue.extend({
     generalTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoTranslation>,
+    } as PropOptions<IVeoTranslationCollection>,
     customTranslation: {
       type: Object,
       default: () => {}

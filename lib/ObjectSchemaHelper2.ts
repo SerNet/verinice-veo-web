@@ -4,7 +4,9 @@ import {
   IVeoObjectSchema,
   IVeoObjectSchemaCustomAspect,
   IVeoObjectSchemaCustomLink,
-  IVeoObjectSchemaProperty
+  IVeoObjectSchemaProperty,
+  IVeoObjectSchemaTranslations,
+  IVeoTranslationCollection
 } from "~/types/VeoTypes";
 import ObjectSchemaValidator, {
   VeoSchemaValidatorValidationResult
@@ -33,6 +35,7 @@ export interface IVeoOSHCustomProperty {
 export interface IVeoOSHOptions {
   customAspectsKey?: string
   customLinksKey?: string
+  translationsKey?: string
 }
 
 const DEFAULT_SCHEMA = {
@@ -186,6 +189,8 @@ export default class ObjectSchemaHelper {
 
   private _basicProperties: IVeoOSHCustomProperty[]
 
+  private _translations: { [key: string]: IVeoTranslationCollection }
+
   private _options: IVeoOSHOptions
 
   constructor(objectSchema?: IVeoObjectSchema, options?: IVeoOSHOptions) {
@@ -194,8 +199,9 @@ export default class ObjectSchemaHelper {
     this._customAspects = []
     this._customLinks = []
     this._basicProperties = []
+    this._translations = {}
 
-    this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links' }
+    this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links', translationsKey: 'translations' }
     merge(this._options, options)
 
     if (!objectSchema) {
@@ -343,6 +349,23 @@ export default class ObjectSchemaHelper {
     }
   }
 
+  public addTranslation(key: string, initialValue: string) {
+    for (let language of Object.keys(this._translations)) {
+      // Only add new translation if id doesn't exist yet
+      if (!this._translations[language][key]) {
+        this._translations[language][key] = initialValue
+      }
+    }
+  }
+
+  public updateTranslations(language: string, translations: IVeoTranslationCollection) {
+    this._translations[language] = translations
+  }
+
+  public removeLanguage(language: string) {
+    delete this._translations[language]
+  }
+
   public getCustomLinks(): IVeoOSHCustomLink[] {
     return this._customLinks
   }
@@ -355,6 +378,22 @@ export default class ObjectSchemaHelper {
     return this._basicProperties
   }
 
+  public getLanguages(): string[] {
+    return Object.keys(this._translations)
+  }
+
+  public getTranslations(language: string): IVeoTranslationCollection {
+    return this._translations[language];
+  }
+
+  public getTranslation(language: string, key: string): string | undefined {
+    return this._translations[language]?.[key];
+  }
+
+  public getAllTranslations(): IVeoObjectSchemaTranslations {
+    return this._translations
+  }
+
   public toSchema(): IVeoObjectSchema {
     const dummy: IVeoObjectSchema = this.generateSchema()
 
@@ -364,6 +403,10 @@ export default class ObjectSchemaHelper {
 
     for (const link of this._customLinks) {
       this.addLinkToSchema(dummy, link)
+    }
+
+    if (Object.keys(this._translations).length > 0) {
+      dummy.properties.translations = this._translations
     }
 
     return dummy
@@ -480,7 +523,9 @@ export default class ObjectSchemaHelper {
         if (!!dummy.multiple) {
           dummy.type = 'array'
           dummy.items = { enum: dummy.enum }
-          dummy.enum
+          delete dummy.enum
+        } else {
+          delete dummy.items
         }
       } else {
         delete dummy.enum
@@ -569,6 +614,8 @@ export default class ObjectSchemaHelper {
           dummy.type = 'array'
           dummy.items = { enum: dummy.enum }
           delete dummy.enum
+        } else {
+          delete dummy.items
         }
       } else {
         delete dummy.enum
@@ -598,6 +645,9 @@ export default class ObjectSchemaHelper {
           // @ts-ignore
           this.loadCustomLinks(objectSchema.properties[key])
           break
+        case this._options.translationsKey:
+          // @ts-ignore
+          this.loadTranslations(objectSchema.properties[key])
         default:
           this.loadBasicProperties(objectSchema.properties, key)
       }
@@ -614,15 +664,24 @@ export default class ObjectSchemaHelper {
 
       for (let attributeName in aspect.properties.attributes.properties) {
         const attribute = aspect.properties.attributes.properties[attributeName]
-        dummy.attributes.push({
+
+        const toPush = {
           ...attribute,
           title: this.cleanAttributeName(attributeName, dummy.title),
           description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
-        })
-      }
+        } as any
 
+        // Multi selects are stored as arrays, os we have to manually transform them to an enum.
+        if (toPush.type === 'array' && toPush.items.enum) {
+          toPush.enum = toPush.items.enum
+          toPush.multiple = true
+          toPush.type = 'enum'
+        }
+
+        dummy.attributes.push(toPush)
+      }
       this._customAspects.push(dummy)
     }
   }
@@ -639,15 +698,24 @@ export default class ObjectSchemaHelper {
 
       for (let attributeName in link.items.properties.attributes.properties) {
         const attribute = link.items.properties.attributes.properties[attributeName]
-        dummy.attributes.push({
+
+        const toPush = {
           ...attribute,
           title: this.cleanAttributeName(attributeName, dummy.title),
           description: attribute.title,
           type: this.getAttributeType(attribute),
           prefix: `${dummy.prefix}${dummy.title}_`
-        })
-      }
+        } as any
 
+        // Multi selects are stored as arrays, os we have to manually transform them to an enum.
+        if (toPush.type === 'array' && toPush.items.enum) {
+          toPush.enum = toPush.items.enum
+          toPush.multiple = true
+          toPush.type = 'enum'
+        }
+
+        dummy.attributes.push(toPush)
+      }
       this._customLinks.push(dummy)
     }
   }
@@ -656,6 +724,10 @@ export default class ObjectSchemaHelper {
     // @ts-ignore
     const property = schema[key] as IVeoObjectSchemaProperty
     this._basicProperties.push({ title: key, description: property.description || '', type: this.getAttributeType(property), prefix: '' })
+  }
+
+  private loadTranslations(translations: IVeoObjectSchemaTranslations) {
+    this._translations = translations
   }
 
   private getAttributeType(attribute: IVeoObjectSchemaProperty) {
