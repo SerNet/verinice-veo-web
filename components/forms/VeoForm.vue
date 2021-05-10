@@ -206,7 +206,7 @@ export default Vue.extend({
   methods: {
     getLangText(langPointer: string): string {
       const translationKey = langPointer.replace('#lang/', '')
-      return this.customTranslation?.[translationKey] || this.generalTranslation?.[translationKey] || ''
+      return this.customTranslation?.[translationKey] || this.generalTranslation?.[translationKey] || translationKey
     },
     translate<T>(objectWithLangPointers: JSONSchema7 | UISchemaElement): T {
       return JSON.parse(
