@@ -23,5 +23,19 @@ declare namespace Cypress {
      * @example cy.get('.dropzone').drop()
      */
     drop(): JQuery<HTMLElement>
+
+    /**
+     * Custom command to extend .toMatchSnapshot() functionality by removing dynamic attributes from HTML
+     * @example cy.get('.vf-wrapper').toMatchHtmlSnapshot()
+     */
+    toMatchHtmlSnapshot(
+      options?: Partial<{
+        ignoreExtralFields: boolean
+        ignoreExtraArrayItems: boolean
+        normalizeJson: boolean
+        replace: any
+        name: string
+      }>
+    ): Cypress.Chainable<null>
   }
 }

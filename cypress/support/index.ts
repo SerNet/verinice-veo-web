@@ -165,3 +165,11 @@ Cypress.Commands.add('loadFse', formSchemaPath => {
   })
   cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
 })
+
+Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, options) => {
+  cy.wrap(
+    Cypress.$(
+      Cypress.$.parseHTML(subject[0].outerHTML.replace(/(input-\d+|list-\d+)/g, '').replace(/data-v-\w+/g, 'data-v-123abc4d'))
+    )
+  ).toMatchSnapshot(options)
+})

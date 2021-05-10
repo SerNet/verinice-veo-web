@@ -2,7 +2,39 @@
 
 import { getEditorData } from '../support/utils'
 
-const textOrGroupLangRegex = /#lang\/(group|text)_[a-zA-Z0-9._-]+/g
+const textOrGroupLangRegex = /(group|text)_[a-zA-Z0-9._-]+/g
+
+const translationsAdded = {
+  name: 'Name Test',
+  process_GeneralInformation_document: 'Dokument Test',
+  process_ProcessingDetails_surveyConductedOn: 'Erhebung durchgeführt am Test',
+  process_SensitiveData_SensitiveData: 'Datenverarbeitung besonders sensitiver Daten? Test',
+  process_ProcessingDetails_typeOfSurvey: 'Art der Erhebung Test',
+  process_InternalRecipientLink: 'Empfänger Intern Test',
+  process_SensitiveData_comment: 'Bemerkungen Test',
+  process_SensitiveData_notification3343GDPR: 'Meldeverfahren Art. 33,34 DS-GVO? Test',
+  'text_45b08d55-78ff-430e-a8ae-cb6faaee497d': 'Text 1 Test',
+  'text_bff6d345-b0f7-401f-8473-a9acb5694b2e': 'Text 2 Test',
+  'group_53731d24-172a-4a7f-b45f-fcddd434434c': 'Gruppe 1 Test',
+  'group_860ed628-c439-440c-a429-fb4a132f85af': 'Gruppe 2 Test'
+}
+
+const translationsChanged = {
+  name: 'Name Test',
+  process_GeneralInformation_document: 'Dokument Test geändert',
+  process_ProcessingDetails_surveyConductedOn: 'Erhebung durchgeführt am Test geändert',
+  process_SensitiveData_SensitiveData: 'Datenverarbeitung besonders sensitiver Daten? Test geändert',
+  process_ProcessingDetails_typeOfSurvey: 'Art der Erhebung Test geändert',
+  process_InternalRecipientLink: 'Empfänger Intern Test geändert',
+  process_SensitiveData_comment: 'Bemerkungen Test geändert',
+  process_SensitiveData_notification3343GDPR: 'Meldeverfahren Art. 33,34 DS-GVO? Test geändert',
+  'text_45b08d55-78ff-430e-a8ae-cb6faaee497d': 'Text 1 Test geändert',
+  'text_bff6d345-b0f7-401f-8473-a9acb5694b2e': 'Text 2 Test geändert',
+  'group_53731d24-172a-4a7f-b45f-fcddd434434c': 'Gruppe 1 Test geändert',
+  'group_860ed628-c439-440c-a429-fb4a132f85af': 'Gruppe 2 Test geändert'
+}
+
+const translationsDeleted = {}
 
 describe('Formschema Editor', () => {
   before(() => {
@@ -110,6 +142,10 @@ describe('Formschema Editor', () => {
         .click()
         .wait(1)
     })
+
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot()
   })
 
   it('opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them', function() {
@@ -128,7 +164,9 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
-    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'InputText - VeoForm' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'InputText - VeoForm' })
 
     cy.contains('.fse-input', 'Name')
       .should('contain.text', 'Name name InputText')
@@ -170,7 +208,9 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
-    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'InputTextMultiline - VeoForm' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'InputTextMultiline - VeoForm' })
 
     cy.contains('.fse-input', 'Name Test 1')
       .should('contain.text', 'Name Test 1 name InputTextMultiline')
@@ -210,7 +250,9 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
-    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'MarkdownEditor - VeoForm' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'MarkdownEditor - VeoForm' })
 
     cy.contains('.fse-input', 'Name Test 2').should('contain.text', 'Name Test 2 name MarkdownEditor')
   })
@@ -254,7 +296,9 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
-    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'InputUri - VeoForm' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'InputUri - VeoForm' })
 
     cy.contains('.fse-input', 'Dokument Test').should(
       'contain.text',
@@ -304,7 +348,9 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
-    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'InputUri - VeoForm' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'InputUri - VeoForm' })
 
     cy.contains('.fse-input', 'Erhebung durchgeführt am Test').should(
       'contain.text',
@@ -354,7 +400,9 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
-    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'Checkbox - VeoForm' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'Checkbox - VeoForm' })
 
     cy.contains('.fse-input', 'Datenverarbeitung besonders sensitiver Daten? Test').should(
       'contain.text',
@@ -379,7 +427,9 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
-    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'Select - VeoForm' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'Select - VeoForm' })
 
     cy.contains('.fse-input', 'Art der Erhebung')
       .should('contain.text', 'Art der Erhebung process_ProcessingDetails_typeOfSurvey Select')
@@ -421,7 +471,9 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
-    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'Radio - VeoForm' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'Radio - VeoForm' })
 
     cy.contains('.fse-input', 'Art der Erhebung Test 1')
       .should('contain.text', 'Art der Erhebung Test 1 process_ProcessingDetails_typeOfSurvey Radio')
@@ -461,7 +513,9 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
-    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'Autocomplete - VeoForm' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'Autocomplete - VeoForm' })
 
     cy.contains('.fse-input', 'Art der Erhebung Test 2').should(
       'contain.text',
@@ -529,7 +583,7 @@ describe('Formschema Editor', () => {
 
     cy.get('.vf-wrapper')
       .eq(0)
-      .toMatchSnapshot({ name: 'LinksField - VeoForm' })
+      .toMatchHtmlSnapshot({ name: 'LinksField - VeoForm' })
 
     cy.contains('.fse-input', 'Empfänger Intern Test').should(
       'contain.text',
@@ -585,7 +639,7 @@ describe('Formschema Editor', () => {
 
     cy.get('.vf-wrapper')
       .eq(0)
-      .toMatchSnapshot({ name: 'Label 1 - VeoForm' })
+      .toMatchHtmlSnapshot({ name: 'Label 1 - VeoForm' })
 
     cy.get('.fse-label')
       .eq(1)
@@ -629,7 +683,7 @@ describe('Formschema Editor', () => {
 
     cy.get('.vf-wrapper')
       .eq(0)
-      .toMatchSnapshot({ name: 'Label 2 - VeoForm' })
+      .toMatchHtmlSnapshot({ name: 'Label 2 - VeoForm' })
 
     cy.get('.fse-label')
       .eq(1)
@@ -688,7 +742,9 @@ describe('Formschema Editor', () => {
       .wait(1)
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Group 1 - FS' })
+        cy.wrap(JSON.parse(JSON.stringify(getEditorData(editor)).replace(textOrGroupLangRegex, ''))).toMatchSnapshot({
+          name: 'Group 1 - FS'
+        })
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -698,7 +754,7 @@ describe('Formschema Editor', () => {
 
     cy.get('.vf-wrapper')
       .eq(0)
-      .toMatchSnapshot({ name: 'Group 1 - VeoForm' })
+      .toMatchHtmlSnapshot({ name: 'Group 1 - VeoForm' })
 
     cy.get('.dropzone')
       .find('.fse-group')
@@ -750,7 +806,9 @@ describe('Formschema Editor', () => {
       .wait(1)
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Group 2 - FS' })
+        cy.wrap(JSON.parse(JSON.stringify(getEditorData(editor)).replace(textOrGroupLangRegex, ''))).toMatchSnapshot({
+          name: 'Group 2 - FS'
+        })
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -760,7 +818,7 @@ describe('Formschema Editor', () => {
 
     cy.get('.vf-wrapper')
       .eq(0)
-      .toMatchSnapshot({ name: 'Group 2 - VeoForm' })
+      .toMatchHtmlSnapshot({ name: 'Group 2 - VeoForm' })
 
     cy.get('.dropzone')
       .find('.fse-group')
@@ -814,6 +872,84 @@ describe('Formschema Editor', () => {
     cy.get('.dropzone')
       .find('.fse-input')
       .should('have.length', 0)
+  })
+
+  it('adds, updates, deletes translations', function() {
+    cy.loadFse('formschema/dialogs.json')
+    // Add translations
+    cy.get('.mdi-translate')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Translations initial empty' })
+
+        // TODO: this is a hack to load OS in Code Editor. It needs a better solution
+        const el = editor.closest('.d-flex.flex-column') as any
+        el[0].__vue__.$emit('input', JSON.stringify(translationsAdded, null, 2))
+      })
+
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Speichern')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.dropzone').toMatchHtmlSnapshot({ name: 'Translations added - FSE' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'Translations added - VeoForm' })
+
+    // Change translations
+    cy.get('.mdi-translate')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Translations added' })
+
+        // TODO: this is a hack to load OS in Code Editor. It needs a better solution
+        const el = editor.closest('.d-flex.flex-column') as any
+        el[0].__vue__.$emit('input', JSON.stringify(translationsChanged, null, 2))
+      })
+
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Speichern')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.dropzone').toMatchHtmlSnapshot({ name: 'Translations changed - FSE' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'Translations changed - VeoForm' })
+
+    // Delete translations
+    cy.get('.mdi-translate')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Translations deleted' })
+
+        // TODO: this is a hack to load OS in Code Editor. It needs a better solution
+        const el = editor.closest('.d-flex.flex-column') as any
+        el[0].__vue__.$emit('input', JSON.stringify(translationsDeleted, null, 2))
+      })
+
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Speichern')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.dropzone').toMatchHtmlSnapshot({ name: 'Translations deleted - FSE' })
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchHtmlSnapshot({ name: 'Translations deleted - VeoForm' })
   })
 
   it('compares downloaded schema with the actual one', function() {
