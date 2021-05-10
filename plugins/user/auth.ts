@@ -44,12 +44,10 @@ export class Auth {
 
     // Register hooks.
     // If the onTokenExpired event occures, the plugin tries to refresh the user's token. If it fails it tries to reauthenticate the user.
-    this._keycloak.onTokenExpired = async() => {
+    this._keycloak.onTokenExpired = async () => {
       try {
-        await this._keycloak.updateToken(3600)
+        await this._keycloak.updateToken(300)
       } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log('logged out')
         await this.init()
       }
     }
@@ -59,6 +57,10 @@ export class Auth {
     }
 
     this._initialized = true
+  }
+
+  public async refreshSession() {
+    await this._keycloak.updateToken(300)
   }
 
   /**
@@ -92,6 +94,7 @@ export class Auth {
   public async logout(destination?: string, absolute: boolean = false): Promise<void> {
     LocalStorage.clear();
     await this._keycloak.logout({ redirectUri: `${(absolute ? '' : window.location.origin)}${destination}` })
+    this._keycloak.clearToken()
   }
 
   /**
@@ -124,12 +127,13 @@ export class Auth {
   /**
    * Loads the profile of the logged in user (such as firstname, lastname and mail address). Fails if the user is not authenticated.
    */
-  private async loadUserProfile() {
-    await this._keycloak.loadUserProfile().then((profile) => {
+  public async loadUserProfile() {
+    try {
+      const profile = await this._keycloak.loadUserProfile()
       this._profile = profile
-    }).catch(() => {
-      throw new Error('Error while fetching user profile')
-    })
+    } catch (e) {
+      throw new Error('Error while fetching user profile. User is possibly not logged in!')
+    }
   }
 }
 
