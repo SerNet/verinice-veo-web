@@ -13,7 +13,7 @@ import {
   IVeoFormSchemaItemDeleteEvent,
   IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslationCollection
+  IVeoTranslation
 } from '~/types/VeoTypes'
 
 export default Vue.extend({
@@ -30,7 +30,7 @@ export default Vue.extend({
     generalTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoTranslationCollection>,
+    } as PropOptions<IVeoTranslation>,
     customTranslation: {
       type: Object,
       default: () => {}

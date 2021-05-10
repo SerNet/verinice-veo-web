@@ -301,7 +301,7 @@ export default defineComponent<IProps>({
 {
   "en": {
     "multiple": "Multiple",
-    "aspectDescription": "Description (Fallback)",
+    "aspectDescription": "Description",
     "aspectName": "attribute name",
     "aspectType": "Attribute type",
     "inputFormat": "Input format",
@@ -310,7 +310,7 @@ export default defineComponent<IProps>({
   },
   "de": {
     "multiple": "Mehrfachauswahl",
-    "aspectDescription": "Beschreibung (Fallback)",
+    "aspectDescription": "Beschreibung",
     "aspectName": "Name des Attributs",
     "aspectType": "Typ des Attributs",
     "inputFormat": "Eingabeformat",

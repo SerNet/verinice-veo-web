@@ -4,9 +4,7 @@ import {
   IVeoObjectSchema,
   IVeoObjectSchemaCustomAspect,
   IVeoObjectSchemaCustomLink,
-  IVeoObjectSchemaProperty,
-  IVeoObjectSchemaTranslations,
-  IVeoTranslationCollection
+  IVeoObjectSchemaProperty
 } from "~/types/VeoTypes";
 import ObjectSchemaValidator, {
   VeoSchemaValidatorValidationResult
@@ -35,7 +33,6 @@ export interface IVeoOSHCustomProperty {
 export interface IVeoOSHOptions {
   customAspectsKey?: string
   customLinksKey?: string
-  translationsKey?: string
 }
 
 const DEFAULT_SCHEMA = {
@@ -191,8 +188,6 @@ export default class ObjectSchemaHelper {
 
   private _basicProperties: IVeoOSHCustomProperty[]
 
-  private _translations: { [key: string]: IVeoTranslationCollection }
-
   private _options: IVeoOSHOptions
 
   constructor(objectSchema?: IVeoObjectSchema, options?: IVeoOSHOptions) {
@@ -202,9 +197,8 @@ export default class ObjectSchemaHelper {
     this._customAspects = []
     this._customLinks = []
     this._basicProperties = []
-    this._translations = {}
 
-    this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links', translationsKey: 'translations' }
+    this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links' }
     merge(this._options, options)
 
     if (!objectSchema) {
@@ -353,23 +347,6 @@ export default class ObjectSchemaHelper {
     }
   }
 
-  public addTranslation(key: string, initialValue: string) {
-    for (let language of Object.keys(this._translations)) {
-      // Only add new translation if id doesn't exist yet
-      if (!this._translations[language][key]) {
-        this._translations[language][key] = initialValue
-      }
-    }
-  }
-
-  public updateTranslations(language: string, translations: IVeoTranslationCollection) {
-    this._translations[language] = translations
-  }
-
-  public removeLanguage(language: string) {
-    delete this._translations[language]
-  }
-
   public getCustomLinks(): IVeoOSHCustomLink[] {
     return this._customLinks
   }
@@ -382,22 +359,6 @@ export default class ObjectSchemaHelper {
     return this._basicProperties
   }
 
-  public getLanguages(): string[] {
-    return Object.keys(this._translations)
-  }
-
-  public getTranslations(language: string): IVeoTranslationCollection {
-    return this._translations[language];
-  }
-
-  public getTranslation(language: string, key: string): string | undefined {
-    return this._translations[language]?.[key];
-  }
-
-  public getAllTranslations(): IVeoObjectSchemaTranslations {
-    return this._translations
-  }
-
   public toSchema(): IVeoObjectSchema {
     const dummy: IVeoObjectSchema = this.generateSchema()
 
@@ -407,10 +368,6 @@ export default class ObjectSchemaHelper {
 
     for (const link of this._customLinks) {
       this.addLinkToSchema(dummy, link)
-    }
-
-    if (Object.keys(this._translations).length > 0) {
-      dummy.properties.translations = this._translations
     }
 
     return dummy
@@ -650,9 +607,6 @@ export default class ObjectSchemaHelper {
           // @ts-ignore
           this.loadCustomLinks(objectSchema.properties[key])
           break
-        case this._options.translationsKey:
-          // @ts-ignore
-          this.loadTranslations(objectSchema.properties[key])
         default:
           this.loadBasicProperties(objectSchema.properties, key)
       }
@@ -729,10 +683,6 @@ export default class ObjectSchemaHelper {
     // @ts-ignore
     const property = schema[key] as IVeoObjectSchemaProperty
     this._basicProperties.push({ title: key, description: property.description || '', type: this.getAttributeType(property), prefix: '' })
-  }
-
-  private loadTranslations(translations: IVeoObjectSchemaTranslations) {
-    this._translations = translations
   }
 
   private getAttributeType(attribute: IVeoObjectSchemaProperty) {
