@@ -22,7 +22,7 @@ import { ContextListener } from '~/components/forms/Collection/utils/helpers'
 import { IApi } from '~/components/forms/utils'
 import {
   IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslation
+  IVeoTranslationCollection
 } from '~/types/VeoTypes'
 
 const components = [
@@ -71,7 +71,7 @@ export default Vue.extend({
     generalTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoTranslation>,
+    } as PropOptions<IVeoTranslationCollection>,
     customTranslation: {
       type: Object,
       default: () => {}

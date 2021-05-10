@@ -10,13 +10,9 @@
         </v-col>
         <v-spacer />
         <v-col class="text-right">
-          <v-btn
-            color="primary"
-            outlined
-            text
-            :loading="saveBtnLoading"
-            @click="save()"
-          >{{ $t('global.button.save') }}</v-btn>
+          <v-btn color="primary" outlined text :loading="saveBtnLoading" @click="save()">
+            {{ $t('global.button.save') }}
+          </v-btn>
         </v-col>
       </v-row>
     </template>
@@ -35,23 +31,22 @@
         :item="form.objectData"
         @exit="$router.push(entityModified.target)"
       />
-      <VeoWindowUnloadPrevention :value="entityModified.isModified" />
     </template>
   </VeoPage>
   <VeoPage v-else fullsize>
     <template #default>
       <v-row class="fill-height flex-column text-center align-center">
-        <v-spacer />
-        <v-col>
-          <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
-        </v-col>
-        <v-col cols="auto" class="text-left">
-          <h3>{{ $t('error.title') }}:</h3>
-          <p>{{ $t('no_type') }}</p>
-          <nuxt-link :to="backLink">{{ $t('global.button.previous') }}</nuxt-link>
-        </v-col>
-        <v-spacer />
-      </v-row>
+      <v-spacer />
+      <v-col>
+        <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
+      </v-col>
+      <v-col cols="auto" class="text-left">
+        <h3>{{ $t('error.title') }}:</h3>
+        <p>{{ $t('no_type') }}</p>
+        <nuxt-link :to="backLink">{{ $t('global.button.previous') }}</nuxt-link>
+      </v-col>
+      <v-spacer />
+    </v-row>
     </template>
   </VeoPage>
 </template>
@@ -99,7 +94,7 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    if (this.entityType) {
+    if(this.entityType) {
       const objectSchema = await this.$api.schema.fetch(this.entityType)
       const { lang } = await this.$api.translation.fetch(['de', 'en'])
       const objectData = {}
@@ -160,16 +155,16 @@ export default Vue.extend({
           if (this.parentId !== '-') {
             const parent = await this.$api.entity.fetch(this.parentType, this.parentId)
 
-            if (this.parentType === 'scope') {
+            if(this.parentType === 'scope') {
               parent.members.push({
-                targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
+                targetUri: `/${ getSchemaEndpoint(this.entityType) }/${data.resourceId}`
               })
             } else {
               parent.parts.push({
-                targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
+                targetUri: `/${ getSchemaEndpoint(this.entityType) }/${data.resourceId}`
               })
             }
-
+            
             this.$api.entity.update(this.parentType, parent.id, parent).finally(() => {
               this.$router.push(this.backLink)
             })
@@ -197,15 +192,13 @@ export default Vue.extend({
   },
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if (this.entityModified.isModified && this.entityModified.dialog) {
+    if(this.entityModified.isModified && this.entityModified.dialog) {
       next()
-    } else if (this.entityModified.isModified) {
-      // If the form was modified and the dialog is closed, show it and abort navigation
+    } else if (this.entityModified.isModified) { // If the form was modified and the dialog is closed, show it and abort navigation
       this.entityModified.target = to
       this.entityModified.dialog = true
       next(false)
-    } else {
-      // The form wasn't modified, proceed as if this hook doesn't exist
+    } else { // The form wasn't modified, proceed as if this hook doesn't exist
       next()
     }
   }

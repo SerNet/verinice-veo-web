@@ -67,9 +67,8 @@ export default class ObjectSchemaValidator {
   }
 
   private validateName(schemaName: string, linkTitle: string, context: string): void {
-    const id = snakeCase(schemaName)
-    if (!linkTitle.includes(id + '_')) {
-      this.warnings.push({ code: 'W_INCORRECT_NAMING', message: `${linkTitle} is not following the naming conventions (<schema id>_<link/aspect name>) ${context}` })
+    if (!linkTitle.includes(snakeCase(schemaName) + '_')) {
+      this.warnings.push({ code: 'W_INCORRECT_NAMING', message: `${linkTitle} is not following the naming conventions (<schema name>_<link/aspect name>) ${context}` })
     }
   }
 
@@ -95,7 +94,7 @@ export default class ObjectSchemaValidator {
 
       for (const attribute of Object.keys(attributes)) {
         if (!attributes[attribute].title) {
-          this.warnings.push({ code: 'E_LINK_ATTRIBUTE_INVALID', message: `The attribute title of ${context}.${attribute} is missing.` })
+          this.errors.push({ code: 'E_LINK_ATTRIBUTE_INVALID', message: `The attribute title of ${context}.${attribute} is missing.` })
         }
         this.validateType(attributes[attribute], `${context}.${attribute}`)
       }

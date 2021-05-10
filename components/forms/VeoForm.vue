@@ -18,7 +18,7 @@ import Layout from '~/components/forms/Layout.vue'
 import Wrapper from '~/components/forms/Wrapper.vue'
 import {
   IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslation
+  IVeoTranslationCollection
 } from '~/types/VeoTypes'
 
 interface IErrorMessageElement {
@@ -62,7 +62,7 @@ export default Vue.extend({
     generalTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoTranslation>,
+    } as PropOptions<IVeoTranslationCollection>,
     customTranslation: {
       type: Object,
       default: () => {}
