@@ -39,6 +39,14 @@
         "elements": []
       },
       {
+        "type": "Control",
+        "scope": "#/properties/links/properties/process_TypeOfDataProcessed",
+        "options": {
+          "label": "#lang/process_TypeOfDataProcessed"
+        },
+        "elements": []
+      },
+      {
         "type": "Layout",
         "options": {
           "format": "group"
@@ -76,14 +84,6 @@
           {
             "type": "Label",
             "text": "#lang/text_840b358d-773c-40dd-817f-2104fa567303"
-          },
-          {
-            "type": "Control",
-            "scope": "#/properties/links/properties/process_TypeOfDataProcessed",
-            "options": {
-              "label": "#lang/process_TypeOfDataProcessed"
-            },
-            "elements": []
           }
         ]
       }

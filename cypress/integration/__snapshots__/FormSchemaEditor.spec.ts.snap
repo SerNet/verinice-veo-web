@@ -188,9 +188,128 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
               </button>
             </div>
           </div>
+          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
+              <div data-v-123abc4d="" class="d-flex">
+                <span data-v-123abc4d="" class="subtitle-1 mb-2">
+                  Art der verarbeiteten Daten
+                </span>
+                <div data-v-123abc4d="" class="spacer"></div>
+              </div>
+              <div
+                data-v-123abc4d=""
+                role="list"
+                class="v-list py-0 v-sheet theme--light v-list--dense"
+              >
+                <div
+                  data-v-123abc4d=""
+                  tabindex="-1"
+                  role="listitem"
+                  class="links-field-item my-2 pt-2 v-list-item theme--light"
+                >
+                  <div data-v-123abc4d="" class="v-list-item__content">
+                    <div data-v-123abc4d="" class="row flex-column row--dense">
+                      <div data-v-123abc4d="" class="col">
+                        <div
+                          data-v-123abc4d=""
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                        >
+                          <div class="v-input__control">
+                            <div
+                              role="combobox"
+                              aria-haspopup="listbox"
+                              aria-expanded="false"
+                              aria-owns=""
+                              class="v-input__slot"
+                            >
+                              <div class="v-select__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Zielobjekt</label
+                                ><input id="" type="text" autocomplete="off" />
+                                <div class="v-input__append-inner">
+                                  <div
+                                    class="v-input__icon v-input__icon--clear"
+                                  >
+                                    <button
+                                      disabled="disabled"
+                                      type="button"
+                                      aria-label="clear icon"
+                                      class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                                    ></button>
+                                  </div>
+                                </div>
+                                <div class="v-input__append-inner">
+                                  <div
+                                    class="v-input__icon v-input__icon--append"
+                                  >
+                                    <i
+                                      aria-hidden="true"
+                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
+                                    ></i>
+                                  </div>
+                                </div>
+                                <input type="hidden" />
+                              </div>
+                              <div class="v-menu"><!----></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        data-v-123abc4d=""
+                        class="py-4 pl-1 links-field-row-no-attributes font-italic col"
+                      >
+                        Keine weiteren Eigenschaften
+                      </div>
+                      <div
+                        data-v-123abc4d=""
+                        role="dialog"
+                        class="v-dialog__container"
+                      >
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="v-list-item__action">
+                    <button
+                      data-v-123abc4d=""
+                      type="button"
+                      class="v-btn v-btn--depressed v-btn--fab v-btn--flat v-btn--round v-btn--text theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><i
+                          data-v-123abc4d=""
+                          aria-hidden="true"
+                          class="v-icon notranslate mdi mdi-delete theme--light"
+                        ></i
+                      ></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                data-v-123abc4d=""
+                type="button"
+                class="v-btn v-btn--flat v-btn--text theme--light v-size--small primary--text"
+              >
+                <span class="v-btn__content"
+                  ><i
+                    data-v-123abc4d=""
+                    aria-hidden="true"
+                    class="v-icon notranslate mdi mdi-plus theme--light"
+                    style="font-size: 16px;"
+                  ></i>
+                  <span data-v-123abc4d="">Link hinzufügen</span></span
+                >
+              </button>
+            </div>
+          </div>
           <div
             data-v-123abc4d=""
-            id="elements-4"
+            id="elements-5"
             class="vf-layout vf-group col-md-auto col-12"
           >
             <div data-v-123abc4d="" class="row flex-column row--dense">
@@ -202,7 +321,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                 >
                   <div
                     data-v-123abc4d=""
-                    id="elements-4-elements-0"
+                    id="elements-5-elements-0"
                     class="vf-layout vf-group col-md-auto col-12"
                   >
                     <div data-v-123abc4d="" class="row flex-column row--dense">
@@ -375,135 +494,6 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="vf-label"></div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
-                    <div
-                      data-v-123abc4d=""
-                      class="vf-links-field vf-form-element"
-                    >
-                      <div data-v-123abc4d="" class="d-flex">
-                        <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                          Art der verarbeiteten Daten
-                        </span>
-                        <div data-v-123abc4d="" class="spacer"></div>
-                      </div>
-                      <div
-                        data-v-123abc4d=""
-                        role="list"
-                        class="v-list py-0 v-sheet theme--light v-list--dense"
-                      >
-                        <div
-                          data-v-123abc4d=""
-                          tabindex="-1"
-                          role="listitem"
-                          class="links-field-item my-2 pt-2 v-list-item theme--light"
-                        >
-                          <div data-v-123abc4d="" class="v-list-item__content">
-                            <div
-                              data-v-123abc4d=""
-                              class="row flex-column row--dense"
-                            >
-                              <div data-v-123abc4d="" class="col">
-                                <div
-                                  data-v-123abc4d=""
-                                  class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
-                                >
-                                  <div class="v-input__control">
-                                    <div
-                                      role="combobox"
-                                      aria-haspopup="listbox"
-                                      aria-expanded="false"
-                                      aria-owns=""
-                                      class="v-input__slot"
-                                    >
-                                      <div class="v-select__slot">
-                                        <label
-                                          for=""
-                                          class="v-label theme--light"
-                                          style="left: 0px; right: auto; position: absolute;"
-                                          >Zielobjekt</label
-                                        ><input
-                                          id=""
-                                          type="text"
-                                          autocomplete="off"
-                                        />
-                                        <div class="v-input__append-inner">
-                                          <div
-                                            class="v-input__icon v-input__icon--clear"
-                                          >
-                                            <button
-                                              disabled="disabled"
-                                              type="button"
-                                              aria-label="clear icon"
-                                              class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
-                                            ></button>
-                                          </div>
-                                        </div>
-                                        <div class="v-input__append-inner">
-                                          <div
-                                            class="v-input__icon v-input__icon--append"
-                                          >
-                                            <i
-                                              aria-hidden="true"
-                                              class="v-icon notranslate mdi mdi-menu-down theme--light"
-                                            ></i>
-                                          </div>
-                                        </div>
-                                        <input type="hidden" />
-                                      </div>
-                                      <div class="v-menu"><!----></div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                data-v-123abc4d=""
-                                class="py-4 pl-1 links-field-row-no-attributes font-italic col"
-                              >
-                                Keine weiteren Eigenschaften
-                              </div>
-                              <div
-                                data-v-123abc4d=""
-                                role="dialog"
-                                class="v-dialog__container"
-                              >
-                                <!---->
-                              </div>
-                            </div>
-                          </div>
-                          <div data-v-123abc4d="" class="v-list-item__action">
-                            <button
-                              data-v-123abc4d=""
-                              type="button"
-                              class="v-btn v-btn--depressed v-btn--fab v-btn--flat v-btn--round v-btn--text theme--light v-size--small"
-                            >
-                              <span class="v-btn__content"
-                                ><i
-                                  data-v-123abc4d=""
-                                  aria-hidden="true"
-                                  class="v-icon notranslate mdi mdi-delete theme--light"
-                                ></i
-                              ></span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        data-v-123abc4d=""
-                        type="button"
-                        class="v-btn v-btn--flat v-btn--text theme--light v-size--small primary--text"
-                      >
-                        <span class="v-btn__content"
-                          ><i
-                            data-v-123abc4d=""
-                            aria-hidden="true"
-                            class="v-icon notranslate mdi mdi-plus theme--light"
-                            style="font-size: 16px;"
-                          ></i>
-                          <span data-v-123abc4d="">Link hinzufügen</span></span
-                        >
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

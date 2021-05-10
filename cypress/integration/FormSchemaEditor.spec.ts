@@ -106,15 +106,6 @@ describe('Formschema Editor', () => {
       .eq(0)
       .drop()
 
-    cy.contains('.fse-input', 'Art der verarbeiteten Daten')
-      .find('.handle')
-      .drag()
-    cy.get('.dropzone')
-      .find('.dragArea')
-      .eq(0)
-      .wait(1000)
-      .drop()
-
     cy.contains('.fse-input', 'Art der Erhebung')
       .find('.handle')
       .drag()
