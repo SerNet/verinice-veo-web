@@ -171,7 +171,6 @@ export default Vue.extend({
   methods: {
     onSave() {
       for(const [language, translations] of Object.entries(this.data.translations)) {
-        console.log('Saving')
         this.objectSchemaHelper.updateTranslations(language, translations)
       }
 
