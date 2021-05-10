@@ -1,5 +1,11 @@
+import { VNode, CreateElement } from 'vue'
 import { JSONSchema7 } from 'json-schema'
-import { UISchema } from '~/types/UISchema'
+import { UIRule, UISchema, UISchemaElement } from '~/types/UISchema'
+import Ajv from 'ajv'
+import { JsonPointer } from 'json-ptr'
+import Label from '~/components/forms/Label.vue'
+import Control from '~/components/forms/Control.vue'
+import Layout from '~/components/forms/Layout.vue'
 
 type defaultType = string | boolean | number | undefined | null
 
@@ -13,9 +19,7 @@ export interface ILinksFieldDialogNewObject {
   description?: string
 }
 
-export interface ILinksFieldDialogUpdatedObject
-  extends ILinksFieldDialogNewObject,
-    BaseObject {
+export interface ILinksFieldDialogUpdatedObject extends ILinksFieldDialogNewObject, BaseObject {
   name?: string
   abbreviation?: string
   description?: string
@@ -29,25 +33,13 @@ export interface ISearchParams {
 }
 
 export interface IApi {
-  fetchAll(
-    objectType: string,
-    searchParams?: ISearchParams
-  ): Promise<BaseObject[]>
-  create(
-    objectType: string,
-    createdObjectData: ILinksFieldDialogNewObject
-  ): Promise<BaseObject>
-  update(
-    objectType: string,
-    updatedObjectData: ILinksFieldDialogUpdatedObject
-  ): Promise<void>
+  fetchAll(objectType: string, searchParams?: ISearchParams): Promise<BaseObject[]>
+  create(objectType: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject>
+  update(objectType: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void>
   delete(objectType: string, id: string): Promise<void>
 }
 
-export function isContain(
-  array: defaultType[],
-  elementToContain: defaultType[] | defaultType
-) {
+export function isContain(array: defaultType[], elementToContain: defaultType[] | defaultType) {
   if (Array.isArray(elementToContain)) {
     // Check if every element of elementToContain is in array included
     return elementToContain.every(el => array.includes(el))
@@ -101,4 +93,159 @@ export const linksFieldDialogFormSchema: UISchema = {
       }
     }
   ]
+}
+
+// Evaluate Rule
+export const ajv = new Ajv({
+  allErrors: true,
+  jsonPointers: true,
+  strictKeywords: true
+})
+
+export function propertyPath(path: string) {
+  // TODO: Better translation from #/properties/name to #/name for values
+  return String(path || '').replace(/\/properties\//g, '/')
+}
+
+export interface IRule {
+  visible: boolean
+  disabled: boolean
+}
+
+export function evaluateRule(value: any, rule: UIRule | undefined) {
+  const defaults = {
+    visible: true,
+    disabled: false
+  }
+  if (!rule) {
+    return defaults
+  }
+
+  if (!['HIDE', 'SHOW', 'DISABLE', 'ENABLE'].includes(rule.effect)) {
+    console.error(
+      `Your rule effect "${rule.effect}" is not available!`,
+      'Only these rule effects are permitted: "SHOW", "HIDE", "ENABLED", "DISABLED".'
+    )
+    return defaults
+  }
+
+  const v = JsonPointer.get(value, propertyPath(rule.condition.scope))
+
+  // if rule condition is true
+  if (ajv.validate(rule.condition.schema, v)) {
+    switch (rule.effect) {
+      case 'HIDE':
+        return { ...defaults, visible: false }
+      case 'SHOW':
+        return { ...defaults, visible: true }
+      case 'DISABLE':
+        return { ...defaults, disabled: true }
+      case 'ENABLE':
+        return { ...defaults, disabled: false }
+    }
+  } else {
+    // if rule condition is false
+    // This means that SHOW and ENANBLE must be deactivated, because of above defined defaults
+    switch (rule.effect) {
+      case 'HIDE':
+        return { ...defaults }
+      case 'SHOW':
+        return { ...defaults, visible: false }
+      case 'DISABLE':
+        return { ...defaults }
+      case 'ENABLE':
+        return { ...defaults, disabled: true }
+    }
+  }
+}
+
+// Generate Formschema
+export enum Mode {
+  GENERAL = 'GENERAL',
+  VEO = 'VEO'
+}
+
+function generateControl(scope: string, items: BaseObject, mode: Mode = Mode.GENERAL): UISchemaElement {
+  const propertyName = scope.split('/').pop()
+  const label = propertyName ? (mode === Mode.VEO ? `#lang/${propertyName}` : propertyName) : ''
+  return {
+    type: 'Control',
+    scope,
+    options: {
+      label
+    },
+    // Add property only if condition(here: items[scope]) is true https://stackoverflow.com/a/40560953/6072503
+    ...(items[scope] && {
+      elements: items[scope].map(generateControl)
+    })
+  }
+}
+
+function generateGroups(content: UISchemaElement[], scopes: string[]) {
+  const regCustomAspect = /#\/properties\/customAspects\/properties\/\w+/
+  const uniqueCustomAspects = [
+    ...new Set(
+      scopes
+        .filter(scope => scope.includes('#/properties/customAspects/properties'))
+        .map(scope => {
+          const matchedCustomAspect = scope.match(regCustomAspect)
+          return matchedCustomAspect && matchedCustomAspect[0]
+        })
+    )
+  ] as string[]
+
+  return [
+    ...content.filter((el: any) => el.scope && !regCustomAspect.test(el.scope)),
+    ...uniqueCustomAspects.map(uniqueCustomAspect => {
+      return {
+        type: 'Layout',
+        options: {
+          type: 'group',
+          direction: 'vertical',
+          label: uniqueCustomAspect.split('/').pop()
+        },
+        elements: [...content.filter((el: any) => el.scope && el.scope.includes(uniqueCustomAspect))]
+      }
+    })
+  ] as UISchemaElement[]
+}
+
+export function generateFormSchema(
+  objectSchema: JSONSchema7,
+  excludedProperties: string[] = [],
+  mode: Mode = Mode.GENERAL
+): any {
+  const items: BaseObject = {}
+  // @ts-ignore
+  let schemaMap = Object.keys(JsonPointer.flatten(objectSchema, '#'))
+  const excludedPropertiesRegexp = excludedProperties.map(prop => new RegExp(prop))
+  schemaMap =
+    excludedPropertiesRegexp.length > 0
+      ? schemaMap.filter(el => !excludedPropertiesRegexp.some(reg => reg.test(el)))
+      : schemaMap
+  const scopes = schemaMap
+    .filter(el => /#\/(\w|\/)*properties\/\w+$/g.test(el))
+    .filter((el, i, arr) => !arr.some(someEl => new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)))
+    .filter(el => {
+      if (/\/properties\/\w+\/items\/properties\/\w+$/g.test(el)) {
+        const [parent, child] = el.split(/\/items(?=\/properties\/\w+$)/g)
+        items[parent] = items[parent] ? [...items[parent], `#${child}`] : [`#${child}`]
+        return false
+      } else {
+        return true
+      }
+    })
+  let content = scopes.map(scope => generateControl(scope, items, mode))
+
+  // Generate Groups for each customAspect
+  // TODO: should be added the same for links
+  content = generateGroups(content, scopes)
+  return {
+    type: 'Layout',
+    options: {
+      format: 'group',
+      direction: 'vertical'
+    },
+    elements: content
+  }
 }
