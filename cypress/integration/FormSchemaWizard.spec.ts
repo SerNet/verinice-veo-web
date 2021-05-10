@@ -998,8 +998,7 @@ describe('Formschema Wizard', () => {
         .find('input[type="file"]')
         .attachFile('formschema/empty-process.json')
         .wait(2000)
-      cy.get('.v-window-item--active')
-        .contains('.v-file-input', 'Objektschema hochladen (.json)')
+      cy.contains('.v-window-item--active .v-file-input', 'Objektschema hochladen (.json)')
         .find('input[type="file"]')
         .attachFile('objectschema/process.json')
         .wait(2000)
@@ -1044,7 +1043,7 @@ describe('Formschema Wizard', () => {
     })
   })
 
-  it('imports a formschema by uploading based on process objectschema by code insterting ', function() {
+  it.only('imports a formschema by uploading based on process objectschema by code insterting ', function() {
     cy.intercept(
       {
         method: 'GET',
@@ -1071,8 +1070,8 @@ describe('Formschema Wizard', () => {
         .find('input[type="file"]')
         .attachFile('formschema/empty-process.json')
         .wait(2000)
-      cy.get('.v-window-item--active')
-        .contains('.v-tab', 'Code einfügen')
+      cy.contains('h2', 'Objektschema importieren')
+      cy.contains('.v-window-item--active .v-tab', 'Code einfügen')
         .click()
         .wait(1)
       cy.get('.v-window-item--active')
