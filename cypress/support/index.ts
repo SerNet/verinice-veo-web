@@ -103,7 +103,8 @@ Cypress.Commands.add('drop', { prevSubject: true }, subject => {
     .trigger('drop', 'bottom', { scrollBehavior: 'bottom', force: true })
     .trigger('pointerup', {
       which: 1,
-      button: 0
+      button: 0,
+      force: true
     })
 })
 
