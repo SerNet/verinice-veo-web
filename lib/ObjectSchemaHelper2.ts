@@ -1,4 +1,4 @@
-import { merge } from "lodash";
+import { merge, snakeCase } from "lodash";
 
 import {
   IVeoObjectSchema,
@@ -181,6 +181,8 @@ export default class ObjectSchemaHelper {
 
   private _title: string
 
+  private _id: string // We use the title in all lowercase as a technical id
+
   private _description: string
 
   private _customAspects: IVeoOSHCustomAspect[]
@@ -195,6 +197,7 @@ export default class ObjectSchemaHelper {
 
   constructor(objectSchema?: IVeoObjectSchema, options?: IVeoOSHOptions) {
     this._title = ''
+    this._id = ''
     this._description = ''
     this._customAspects = []
     this._customLinks = []
@@ -218,6 +221,7 @@ export default class ObjectSchemaHelper {
 
   public setTitle(value: string) {
     this._title = value
+    this._id = snakeCase(value)
     this.updateSchemaPrefixes()
   }
 
@@ -236,7 +240,7 @@ export default class ObjectSchemaHelper {
   public addCustomAspect(name: string) {
     const aspect: IVeoOSHCustomAspect = {
       title: name,
-      prefix: `${this._title}_`,
+      prefix: `${this._id}_`,
       attributes: []
     }
     this._customAspects.push(aspect)
@@ -248,7 +252,7 @@ export default class ObjectSchemaHelper {
     if (aspectIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomAspect: Aspect "${aspectName}" not found!`)
     } else {
-      aspect.prefix = `${this._title}_`
+      aspect.prefix = `${this._id}_`
       this._customAspects[aspectIndex] = aspect
       this.updateAspectAttributePrefixes(aspectIndex)
     }
@@ -297,7 +301,7 @@ export default class ObjectSchemaHelper {
   public addCustomLink(name: string, type: string, description: string) {
     const link: IVeoOSHCustomLink = {
       title: name,
-      prefix: `${this._title}_`,
+      prefix: `${this._id}_`,
       attributes: [],
       targetType: type,
       description
@@ -311,7 +315,7 @@ export default class ObjectSchemaHelper {
     if (linkIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomLink: Link "${linkName}" not found!`)
     } else {
-      link.prefix = `${this._title}_`
+      link.prefix = `${this._id}_`
       this._customLinks[linkIndex] = link
       this.updateCustomLinkAttributes(linkName, link.attributes)
     }
@@ -633,6 +637,7 @@ export default class ObjectSchemaHelper {
 
   private loadObjectSchema(objectSchema: IVeoObjectSchema) {
     this._title = objectSchema.title
+    this._id = snakeCase(objectSchema.title)
     this._description = objectSchema.description
 
     for (const key in objectSchema.properties) {
@@ -660,7 +665,7 @@ export default class ObjectSchemaHelper {
       const dummy: any = {}
       dummy.title = this.cleanCustomObjectName(aspectName)
       dummy.attributes = []
-      dummy.prefix = `${this._title}_`
+      dummy.prefix = `${this._id}_`
 
       for (let attributeName in aspect.properties.attributes.properties) {
         const attribute = aspect.properties.attributes.properties[attributeName]
@@ -673,7 +678,7 @@ export default class ObjectSchemaHelper {
           prefix: `${dummy.prefix}${dummy.title}_`
         } as any
 
-        // Multi selects are stored as arrays, os we have to manually transform them to an enum.
+        // Multi selects are stored as arrays, so we have to manually transform them to an enum.
         if (toPush.type === 'array' && toPush.items.enum) {
           toPush.enum = toPush.items.enum
           toPush.multiple = true
@@ -692,7 +697,7 @@ export default class ObjectSchemaHelper {
       const dummy: any = {}
       dummy.title = this.cleanCustomObjectName(linkName)
       dummy.attributes = []
-      dummy.prefix = `${this._title}_`
+      dummy.prefix = `${this._id}_`
       dummy.description = link.items.properties.target.title
       dummy.targetType = link.items.properties.target.properties.type.enum[0]
 
@@ -735,11 +740,11 @@ export default class ObjectSchemaHelper {
   }
 
   private cleanCustomObjectName(customObjectName: string) {
-    return customObjectName.replace(`${this._title}_`, '')
+    return customObjectName.replace(`${this._id}_`, '')
   }
 
   private cleanAttributeName(attributeName: string, customObjectName: string) {
-    return attributeName.replace(`${this._title}_`, '').replace(`${customObjectName}_`, '')
+    return attributeName.replace(`${this._id}_`, '').replace(`${customObjectName}_`, '')
   }
 
   private updateAspectAttributePrefixes(aspectIndex: number) {
@@ -756,12 +761,12 @@ export default class ObjectSchemaHelper {
 
   private updateSchemaPrefixes() {
     for (const aspectIndex in this._customAspects) {
-      this._customAspects[aspectIndex].prefix = `${this._title}_`
+      this._customAspects[aspectIndex].prefix = `${this._id}_`
       this.updateAspectAttributePrefixes(aspectIndex as unknown as number)
     }
 
     for (const linkIndex in this._customLinks) {
-      this._customLinks[linkIndex].prefix = `${this._title}_`
+      this._customLinks[linkIndex].prefix = `${this._id}_`
       this.updateLinkAttributePrefixes(linkIndex as unknown as number)
     }
   }
