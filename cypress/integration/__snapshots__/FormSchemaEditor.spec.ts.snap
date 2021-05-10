@@ -2859,7 +2859,7 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
                                 id=""
                                 role="radio"
                                 type="radio"
-                                name="radio-3199"
+                                name=""
                                 value="process_ProcessingDetails_typeOfSurvey_newsurvey"
                               />
                               <div
@@ -2885,7 +2885,7 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
                                 id=""
                                 role="radio"
                                 type="radio"
-                                name="radio-3199"
+                                name=""
                                 value="process_ProcessingDetails_typeOfSurvey_change"
                               />
                               <div

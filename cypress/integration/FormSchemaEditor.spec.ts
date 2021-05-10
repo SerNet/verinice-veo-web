@@ -148,7 +148,7 @@ describe('Formschema Editor', () => {
       .toMatchHtmlSnapshot()
   })
 
-  it('opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them', function() {
+  it.only('opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them', function() {
     cy.loadFse('formschema/elements/input-text-multiline-markdown.json')
     cy.get('.mdi-code-tags')
       .closest('.v-btn')
