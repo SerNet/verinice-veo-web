@@ -94,7 +94,7 @@ export default class ObjectSchemaValidator {
 
       for (const attribute of Object.keys(attributes)) {
         if (!attributes[attribute].title) {
-          this.errors.push({ code: 'E_LINK_ATTRIBUTE_INVALID', message: `The attribute title of ${context}.${attribute} is missing.` })
+          this.warnings.push({ code: 'E_LINK_ATTRIBUTE_INVALID', message: `The attribute title of ${context}.${attribute} is missing.` })
         }
         this.validateType(attributes[attribute], `${context}.${attribute}`)
       }
