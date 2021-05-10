@@ -67,8 +67,7 @@ export const linksFieldDialogFormSchema: UISchema = {
   type: 'Layout',
   options: {
     format: 'group',
-    direction: 'vertical',
-    highlight: false
+    direction: 'vertical'
   },
   elements: [
     {
@@ -202,9 +201,16 @@ function generateGroups(content: UISchemaElement[], scopes: string[]) {
         options: {
           type: 'group',
           direction: 'vertical',
-          label: uniqueCustomAspect.split('/').pop()
+          class: 'border'
         },
-        elements: [...content.filter((el: any) => el.scope && el.scope.includes(uniqueCustomAspect))]
+        elements: [
+          {
+            type: 'Label',
+            text: uniqueCustomAspect.split('/').pop(),
+            options: { class: 'font-italic accent--text text-body-2 ml-3' }
+          },
+          ...content.filter((el: any) => el.scope && el.scope.includes(uniqueCustomAspect))
+        ]
       }
     })
   ] as UISchemaElement[]
