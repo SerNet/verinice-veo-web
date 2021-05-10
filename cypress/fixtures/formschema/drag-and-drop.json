@@ -32,6 +32,13 @@
       },
       {
         "type": "Control",
+        "scope": "#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_typeOfSurvey",
+        "options": {
+          "label": "#lang/process_ProcessingDetails_typeOfSurvey"
+        }
+      },
+      {
+        "type": "Control",
         "scope": "#/properties/links/properties/process_InternalRecipientLink",
         "options": {
           "label": "#lang/process_InternalRecipientLink"
@@ -70,13 +77,6 @@
                 "scope": "#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_SensitiveData",
                 "options": {
                   "label": "#lang/process_SensitiveData_SensitiveData"
-                }
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_typeOfSurvey",
-                "options": {
-                  "label": "#lang/process_ProcessingDetails_typeOfSurvey"
                 }
               }
             ]
