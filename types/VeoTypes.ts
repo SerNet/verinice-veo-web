@@ -70,8 +70,12 @@ export interface IVeoLink {
 
 export interface IVeoTranslations {
   lang: {
-    [key: string]: IVeoTranslationCollection
+    [key: string]: IVeoTranslation
   }
+}
+
+export interface IVeoTranslation {
+  [key: string]: string
 }
 
 export interface IVeoFormSchemaMeta {
@@ -211,7 +215,6 @@ export interface IVeoObjectSchema {
     subType: IVeoObjectSchemaProperty
     updatedAt: IVeoObjectSchemaProperty
     updatedBy: IVeoObjectSchemaProperty
-    translations?: IVeoObjectSchemaTranslations
   }
   required: string[]
   title: string
@@ -278,12 +281,4 @@ export interface IVeoObjectSchemaObject extends IVeoObjectSchemaProperty {
 export interface IVeoObjectSchemaArray extends IVeoObjectSchemaProperty {
   type: 'array'
   items: any
-}
-
-export interface IVeoObjectSchemaTranslations {
-  [key: string]: IVeoTranslationCollection
-}
-
-export interface IVeoTranslationCollection {
-  [key: string]: string
 }

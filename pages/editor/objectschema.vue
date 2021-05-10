@@ -50,14 +50,6 @@
               {{ $t('editor.schema.warnings') }}
             </template>
           </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn icon large color="primary" @click="showTranslationDialog = true" v-on="on">
-                <v-icon>mdi-translate</v-icon>
-              </v-btn>
-            </template>
-            <template #default>{{ $t('translations') }}</template>
-          </v-tooltip>
           <VeoCollapseButton v-if="!$vuetify.breakpoint.xs" v-model="collapsed" right />
           <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2 fill-width">
             <v-col>
@@ -159,15 +151,6 @@
     <template #helpers>
       <VeoOseWizardDialog v-model="showCreationDialog" @completed="setSchema" />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
-      <VeoOseTranslationDialog
-        v-if="!$fetchState.pending && showTranslationDialog"
-        v-model="showTranslationDialog"
-        :current-display-language="displayLanguage"
-        :available-languages="availableLanguages"
-        :object-schema-helper="objectSchemaHelper"
-        @display-language-changed="onDisplayLanguageUpdate"
-        @schema-updated="updateCode"
-      />
     </template>
   </VeoPageWrapper>
 </template>
@@ -178,7 +161,6 @@ import Vue from 'vue'
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2'
 import { IVeoObjectSchema } from '~/types/VeoTypes'
-import { computed } from '@nuxtjs/composition-api'
 
 export default Vue.extend({
   data() {
@@ -186,18 +168,12 @@ export default Vue.extend({
       collapsed: false as boolean,
       showCreationDialog: false as boolean,
       showErrorDialog: false as boolean,
-      showTranslationDialog: false as boolean,
       hideEmptyAspects: false as boolean,
       search: '' as string,
       objectSchemaHelper: undefined as ObjectSchemaHelper | undefined,
       code: '' as string,
-      schemaIsValid: { valid: false, errors: [], warnings: [] } as VeoSchemaValidatorValidationResult,
-      availableLanguages: [] as string[],
-      displayLanguage: this.$i18n.locale as string
+      schemaIsValid: { valid: false, errors: [], warnings: [] } as VeoSchemaValidatorValidationResult
     }
-  },
-  async fetch() {
-    this.availableLanguages = Object.keys((await this.$api.translation.fetch([]))?.lang)
   },
   head(): any {
     return {
@@ -212,19 +188,8 @@ export default Vue.extend({
       return this.objectSchemaHelper?.getDescription() || ''
     }
   },
-  watch: {
-    '$i18n.locale'(newValue) {
-      this.displayLanguage = newValue
-    }
-  },
   mounted() {
     this.showCreationDialog = true
-  },
-  provide(): any {
-    return {
-      displayLanguage:  computed(() => this.displayLanguage),
-      objectSchemaHelper: computed(() => this.objectSchemaHelper)
-    }
   },
   methods: {
     setSchema(data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) {
@@ -270,9 +235,6 @@ export default Vue.extend({
     },
     validate() {
       this.schemaIsValid = this.objectSchemaHelper?.validate() || { valid: false, errors: [], warnings: [] }
-    },
-    onDisplayLanguageUpdate(newLanguage: string) {
-      this.displayLanguage = newLanguage
     }
   }
 })
@@ -286,8 +248,7 @@ export default Vue.extend({
     "objectschema": "Object schema",
     "invalidObjectSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
-    "search": "Search for a property",
-    "translations": "Translations"
+    "search": "Search for a property"
   },
   "de": {
     "description": "Beschreibung",
@@ -295,8 +256,7 @@ export default Vue.extend({
     "objectschema": "Objektschema",
     "invalidObjectSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
-    "search": "Nach einer Eigenschaft suchen...",
-    "translations": "Übersetzungen"
+    "search": "Nach einer Eigenschaft suchen..."
   }
 }
 </i18n>
