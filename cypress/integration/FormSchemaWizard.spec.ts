@@ -1043,7 +1043,7 @@ describe('Formschema Wizard', () => {
     })
   })
 
-  it.only('imports a formschema by uploading based on process objectschema by code insterting ', function() {
+  it('imports a formschema by uploading based on process objectschema by code insterting ', function() {
     cy.intercept(
       {
         method: 'GET',
