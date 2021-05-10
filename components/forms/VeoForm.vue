@@ -5,21 +5,14 @@ import { JsonPointer } from 'json-ptr'
 
 import vjp from 'vue-json-pointer'
 import Ajv, { RequiredParams } from 'ajv'
-import { chunk, merge } from 'lodash'
-import {
-  UISchema,
-  UISchemaElement,
-  UIRule
-} from '~/types/UISchema'
+import { merge } from 'lodash'
+import { UISchema, UISchemaElement, UIRule } from '~/types/UISchema'
 import { BaseObject, IApi } from '~/components/forms/utils'
 import Label from '~/components/forms/Label.vue'
 import Control from '~/components/forms/Control.vue'
 import Layout from '~/components/forms/Layout.vue'
 import Wrapper from '~/components/forms/Wrapper.vue'
-import {
-  IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslation
-} from '~/types/VeoTypes'
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
 
 interface IErrorMessageElement {
   pointer: string
@@ -40,7 +33,6 @@ enum Mode {
 interface IOptions {
   generator: {
     excludedProperties?: string[]
-    elementsPerPage?: number
   }
 }
 
@@ -85,7 +77,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      page: 1,
       localSchema: this.schema,
       localUI: this.ui,
       defaultOptions: {
@@ -116,47 +107,12 @@ export default Vue.extend({
             '/members$',
             '/customAspects$',
             '/links$'
-          ],
-          elementsPerPage: -1
+          ]
         }
       }
     }
   },
   computed: {
-    pages(): UISchemaElement[] | undefined {
-      if (this.localUI && this.localUI.elements) {
-        return this.localUI.elements
-          .filter(el => el.type === 'Layout' && el.options && el.options.format === 'page')
-          .map((el, i) => ({
-            ...el,
-            options: { ...el.options, _pageID: i + 1 }
-          }))
-      }
-      return undefined
-    },
-    visiblePages(): UISchemaElement[] | undefined {
-      if (this.pages && this.pages.length >= 1) {
-        return this.pages.filter(
-          // TODO: it is a question, how Vue knows, what internally (rules) in function changes,
-          // it works now, but it can probably cause BUGs, and then needs to pay ATTENTION!!!
-          el => this.evaluateRule(el.rule).visible === true
-        )
-      }
-      return undefined
-    },
-    pagesLength(): number {
-      return this.visiblePages ? this.visiblePages.length : 1
-    },
-    currentPage(): UISchemaElement {
-      if (this.localUI && this.localUI.elements && this.visiblePages) {
-        return {
-          ...this.localUI,
-          elements: this.pagesLength > 1 ? [this.visiblePages[this.page - 1]] : [...this.localUI.elements]
-        }
-      } else {
-        return { ...this.localUI }
-      }
-    },
     validate(): Ajv.ValidateFunction {
       return ajv.compile(this.localSchema)
     },
@@ -181,7 +137,7 @@ export default Vue.extend({
     },
     ui: {
       immediate: true,
-      // TODO: deep property is important to check for changes in FormSchema to update the form (import for live updates in FormSchemaEditor).
+      // deep property is important to check for changes in FormSchema to update the form (import for live updates in FormSchemaEditor).
       // if it causes problems or performance issues, should be removed and another solution found
       deep: true,
       handler() {
@@ -197,7 +153,6 @@ export default Vue.extend({
     generalTranslation: {
       immediate: true,
       handler() {
-        // this.localSchema = this.translate<JSONSchema7>(this.schema)
         if (this.ui) {
           this.localUI = this.translate<UISchema>(this.ui)
         } else if (this.localUI) {
@@ -208,33 +163,11 @@ export default Vue.extend({
     customTranslation: {
       immediate: true,
       handler() {
-        // this.localSchema = this.translate<JSONSchema7>(this.schema)
         if (this.ui) {
           this.localUI = this.translate<UISchema>(this.ui)
         } else if (this.localUI) {
           this.localUI = this.translate<UISchema>(this.localUI)
         }
-      }
-    },
-    visiblePages(newValue: UISchemaElement[] | undefined, oldValue: UISchemaElement[] | undefined) {
-      // TODO: Refactor code to make it more readible and clear
-
-      if (typeof oldValue !== 'undefined' && typeof newValue !== 'undefined') {
-        // if both oldValue and newValue are defined, only then is important to k
-
-        // get old current page to get old current page ID
-        const oldCurrentPage = oldValue[this.page - 1]
-        const oldCurrentPageID: number = oldCurrentPage.options && oldCurrentPage.options._pageID
-
-        // Look in the new array of visible pages and find what the index of old current page is
-        const currentPageIndexInNewValue = newValue.findIndex(
-          el => el.options && el.options._pageID === oldCurrentPageID
-        )
-        // if the old current page was found in the new visible pages, adjust this.page, else this.page is 1
-        this.page = currentPageIndexInNewValue !== -1 ? currentPageIndexInNewValue + 1 : 1
-      } else {
-        // else set the actual to 1 as default
-        this.page = 1
       }
     },
     valid: {
@@ -257,6 +190,7 @@ export default Vue.extend({
     }
   },
   created() {
+    // TODO: check if can be removed
     if (this.value && this.value.customAspects) {
       const customAspectsProperties = JsonPointer.get(this.localSchema, '#/properties/customAspects/properties') as any
       Object.keys(this.value.customAspects)
@@ -333,8 +267,6 @@ export default Vue.extend({
             return { ...defaults, disabled: true }
         }
       }
-
-      return defaults
     },
     setValue(scope: string, v: any) {
       if (scope) {
@@ -405,17 +337,6 @@ export default Vue.extend({
         })
       ] as UISchemaElement[]
     },
-    generatePages(content: UISchemaElement[]) {
-      return chunk(content, this.mergedOptions.generator.elementsPerPage).map(
-        (pageContent): UISchemaElement => ({
-          type: 'Layout',
-          options: {
-            format: 'page'
-          },
-          elements: pageContent
-        })
-      )
-    },
     generateFormSchema(objectSchema: JSONSchema7, excludedProperties: string[] = [], mode: Mode = Mode.GENERAL): any {
       const items: BaseObject = {}
       // @ts-ignore
@@ -440,9 +361,8 @@ export default Vue.extend({
       let content = scopes.map(scope => this.generateControl(scope, items, mode))
 
       // Generate Groups for each customAspect
+      // TODO: should be added the same for links
       content = this.generateGroups(content, scopes)
-
-      content = this.mergedOptions.generator.elementsPerPage === -1 ? content : this.generatePages(content)
       return {
         type: 'Layout',
         options: {
@@ -537,19 +457,7 @@ export default Vue.extend({
       }
     }
 
-    return h(
-      Wrapper,
-      {
-        props: {
-          page: this.page,
-          length: this.pagesLength
-        },
-        on: {
-          input: (v: any) => (this.page = v)
-        }
-      },
-      [createComponent(this.currentPage, '#', 0)]
-    )
+    return h(Wrapper, [createComponent(this.localUI, '#', 0)])
   }
 })
 </script>
