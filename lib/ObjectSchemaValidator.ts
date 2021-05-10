@@ -1,4 +1,4 @@
-import { isArray, isObject } from 'lodash'
+import { isArray, isObject, snakeCase } from 'lodash'
 import ObjectSchemaHelper from './ObjectSchemaHelper2'
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string, value: any }
@@ -67,8 +67,9 @@ export default class ObjectSchemaValidator {
   }
 
   private validateName(schemaName: string, linkTitle: string, context: string): void {
-    if (!linkTitle.includes(schemaName + '_')) {
-      this.warnings.push({ code: 'W_INCORRECT_NAMING', message: `${linkTitle} is not following the naming conventions (<schema name>_<link/aspect name>) ${context}` })
+    const id = snakeCase(schemaName)
+    if (!linkTitle.includes(id + '_')) {
+      this.warnings.push({ code: 'W_INCORRECT_NAMING', message: `${linkTitle} is not following the naming conventions (<schema id>_<link/aspect name>) ${context}` })
     }
   }
 
