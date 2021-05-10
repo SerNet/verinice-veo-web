@@ -113,7 +113,23 @@ describe('Formschema Editor', () => {
   })
 
   it('opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them', function() {
-    cy.loadFse('formschema/dialogs.json')
+    cy.loadFse('formschema/elements/input-text-multiline-markdown.json')
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'InputText - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'InputText - VeoForm' })
+
     cy.contains('.fse-input', 'Name')
       .should('contain.text', 'Name name InputText')
       .find('.mdi-pencil')
@@ -140,6 +156,22 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'InputTextMultiline - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'InputTextMultiline - VeoForm' })
+
     cy.contains('.fse-input', 'Name Test 1')
       .should('contain.text', 'Name Test 1 name InputTextMultiline')
       .find('.mdi-pencil')
@@ -164,11 +196,27 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'MarkdownEditor - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'MarkdownEditor - VeoForm' })
+
     cy.contains('.fse-input', 'Name Test 2').should('contain.text', 'Name Test 2 name MarkdownEditor')
   })
 
   it('opens InputUri dialogs, changes data in dialogs and save them', function() {
-    cy.loadFse('formschema/dialogs.json')
+    cy.loadFse('formschema/elements/input-uri.json')
     cy.contains('.fse-input', 'Dokument')
       .should('contain.text', 'Dokument process_GeneralInformation_document InputUri')
       .find('.mdi-pencil')
@@ -191,6 +239,23 @@ describe('Formschema Editor', () => {
         .click()
         .wait(1)
     })
+
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'InputUri - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'InputUri - VeoForm' })
+
     cy.contains('.fse-input', 'Dokument Test').should(
       'contain.text',
       'Dokument Test process_GeneralInformation_document InputUri'
@@ -198,7 +263,7 @@ describe('Formschema Editor', () => {
   })
 
   it('opens InputDate dialogs, changes data in dialogs and save them', function() {
-    cy.loadFse('formschema/dialogs.json')
+    cy.loadFse('formschema/elements/input-date.json')
     cy.contains('.fse-input', 'Erhebung durchgeführt am')
       .should('contain.text', 'Erhebung durchgeführt am process_ProcessingDetails_surveyConductedOn InputDate')
       .find('.mdi-pencil')
@@ -225,6 +290,22 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'InputUri - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'InputUri - VeoForm' })
+
     cy.contains('.fse-input', 'Erhebung durchgeführt am Test').should(
       'contain.text',
       'Erhebung durchgeführt am Test process_ProcessingDetails_surveyConductedOn InputDate'
@@ -232,7 +313,7 @@ describe('Formschema Editor', () => {
   })
 
   it('opens Checkbox dialogs, changes data in dialogs and save them', function() {
-    cy.loadFse('formschema/dialogs.json')
+    cy.loadFse('formschema/elements/checkbox.json')
     cy.contains('.fse-input', 'Datenverarbeitung besonders sensitiver Daten?')
       .should(
         'contain.text',
@@ -258,6 +339,23 @@ describe('Formschema Editor', () => {
         .click()
         .wait(1)
     })
+
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Checkbox - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'Checkbox - VeoForm' })
+
     cy.contains('.fse-input', 'Datenverarbeitung besonders sensitiver Daten? Test').should(
       'contain.text',
       'Datenverarbeitung besonders sensitiver Daten? Test process_SensitiveData_SensitiveData Checkbox'
@@ -265,7 +363,24 @@ describe('Formschema Editor', () => {
   })
 
   it('opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them', function() {
-    cy.loadFse('formschema/dialogs.json')
+    cy.loadFse('formschema/elements/select-radio-autocomplete.json')
+
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Select - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'Select - VeoForm' })
+
     cy.contains('.fse-input', 'Art der Erhebung')
       .should('contain.text', 'Art der Erhebung process_ProcessingDetails_typeOfSurvey Select')
       .find('.mdi-pencil')
@@ -292,6 +407,22 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Radio - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'Radio - VeoForm' })
+
     cy.contains('.fse-input', 'Art der Erhebung Test 1')
       .should('contain.text', 'Art der Erhebung Test 1 process_ProcessingDetails_typeOfSurvey Radio')
       .find('.mdi-pencil')
@@ -316,6 +447,22 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Autocomplete - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper').toMatchSnapshot({ name: 'Autocomplete - VeoForm' })
+
     cy.contains('.fse-input', 'Art der Erhebung Test 2').should(
       'contain.text',
       'Art der Erhebung Test 2 process_ProcessingDetails_typeOfSurvey Autocomplete'
@@ -323,7 +470,7 @@ describe('Formschema Editor', () => {
   })
 
   it('opens LinksField dialogs, changes data in dialogs and save them', function() {
-    cy.loadFse('formschema/dialogs.json')
+    cy.loadFse('formschema/elements/links-field.json')
     cy.contains('.fse-input', 'Empfänger Intern')
       .should('contain.text', 'Empfänger Intern process_InternalRecipientLink LinksField')
       .find('.mdi-pencil')
@@ -366,6 +513,24 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'LinksField - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchSnapshot({ name: 'LinksField - VeoForm' })
+
     cy.contains('.fse-input', 'Empfänger Intern Test').should(
       'contain.text',
       'Empfänger Intern Test process_InternalRecipientLink LinksField'
@@ -373,7 +538,7 @@ describe('Formschema Editor', () => {
   })
 
   it('opens FseLabel dialogs, changes data in dialogs and save them', function() {
-    cy.loadFse('formschema/dialogs.json')
+    cy.loadFse('formschema/elements/label.json')
     cy.get('.fse-label')
       .eq(0)
       .should('not.contain.text')
@@ -404,6 +569,24 @@ describe('Formschema Editor', () => {
       .eq(0)
       .should('contain.text', 'Text 1 für das Textelement')
 
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Label 1 - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchSnapshot({ name: 'Label 1 - VeoForm' })
+
     cy.get('.fse-label')
       .eq(1)
       .should('not.contain.text')
@@ -430,13 +613,31 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Label 2 - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchSnapshot({ name: 'Label 2 - VeoForm' })
+
     cy.get('.fse-label')
       .eq(1)
       .should('contain.text', 'Text 2 für das Textelement')
   })
 
   it('opens FseGroup dialogs, changes data in dialogs and save them', function() {
-    cy.loadFse('formschema/dialogs.json')
+    cy.loadFse('formschema/elements/group.json')
     cy.get('.dropzone')
       .find('.fse-group')
       .eq(0)
@@ -480,6 +681,24 @@ describe('Formschema Editor', () => {
         .click()
         .wait(1)
     })
+
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Group 1 - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchSnapshot({ name: 'Group 1 - VeoForm' })
 
     cy.get('.dropzone')
       .find('.fse-group')
@@ -525,6 +744,24 @@ describe('Formschema Editor', () => {
         .wait(1)
     })
 
+    cy.get('.mdi-code-tags')
+      .closest('.v-btn')
+      .click()
+      .wait(1)
+    cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.editor .cm-content').then(function(editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Group 2 - FS' })
+      })
+      cy.get('.v-card__actions')
+        .contains('.v-btn', 'Schließen')
+        .click()
+        .wait(1)
+    })
+
+    cy.get('.vf-wrapper')
+      .eq(0)
+      .toMatchSnapshot({ name: 'Group 2 - VeoForm' })
+
     cy.get('.dropzone')
       .find('.fse-group')
       .eq(1)
@@ -568,9 +805,15 @@ describe('Formschema Editor', () => {
       .click()
       .wait(1)
 
-    cy.get('.dropzone').find('.fse-label').should('have.length', 0)
-    cy.get('.dropzone').find('.fse-group').should('have.length', 0)
-    cy.get('.dropzone').find('.fse-input').should('have.length', 0)
+    cy.get('.dropzone')
+      .find('.fse-label')
+      .should('have.length', 0)
+    cy.get('.dropzone')
+      .find('.fse-group')
+      .should('have.length', 0)
+    cy.get('.dropzone')
+      .find('.fse-input')
+      .should('have.length', 0)
   })
 
   it('compares downloaded schema with the actual one', function() {
@@ -579,22 +822,9 @@ describe('Formschema Editor', () => {
       .closest('.v-btn')
       .click()
       .wait(1)
-    cy.get('.mdi-code-tags')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
-    cy.get('.v-dialog--active').within(dialogEl => {
-      cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.readFile('cypress/downloads/fs_Test Formschema.json').then(downloadedFS => {
-            cy.wrap(JSON.stringify(currentFS)).should('eq', JSON.stringify(downloadedFS))
-          })
-        })
-      })
-      cy.get('.v-card__actions')
-        .contains('.v-btn', 'Schließen')
-        .click()
-        .wait(1)
+
+    cy.readFile('cypress/downloads/fs_Test Formschema.json').then(downloadedFS => {
+      cy.wrap(downloadedFS).toMatchSnapshot()
     })
   })
 })

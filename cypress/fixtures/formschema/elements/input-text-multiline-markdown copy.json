@@ -1,0 +1,24 @@
+{
+  "name": "Test Formschema",
+  "modelType": "process",
+  "subType": "TF",
+  "translation": {
+    "de": {}
+  },
+  "content": {
+    "type": "Layout",
+    "options": {
+      "format": "group",
+      "direction": "vertical"
+    },
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/name",
+        "options": {
+          "label": "#lang/name"
+        }
+      }
+    ]
+  }
+}

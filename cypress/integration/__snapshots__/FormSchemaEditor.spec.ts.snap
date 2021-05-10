@@ -1,0 +1,3255 @@
+exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "label": "#lang/name"
+        },
+        "scope": "#/properties/name",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {}
+  }
+};
+
+exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them #1`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-5a29a09c=""
+              class="vf-form-element vf-input-text"
+              data-v-ce4a82ec=""
+            >
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for="input-477"
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Name</label
+                        ><input id="input-477" type="text" />
+                      </div>
+                      <div class="v-input__append-inner">
+                        <div class="v-input__icon v-input__icon--clear">
+                          <button
+                            disabled="disabled"
+                            type="button"
+                            aria-label="clear icon"
+                            class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                          ></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them #2`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "format": "multiline",
+          "label": "#lang/name"
+        },
+        "scope": "#/properties/name",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "name": "Name Test 1"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them #3`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-483ffa54=""
+              data-v-5a29a09c=""
+              class="vf-input-text-multiline vf-form-element"
+              data-v-ce4a82ec=""
+            >
+              <span data-v-483ffa54=""
+                ><div
+                  data-v-483ffa54=""
+                  class="v-input v-textarea v-textarea--auto-grow v-textarea--no-resize v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for="input-521"
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Name Test 1</label
+                        ><textarea
+                          id="input-521"
+                          rows="3"
+                          style="max-height: calc(280px); height: 72px;"
+                        ></textarea>
+                      </div>
+                      <div class="v-input__append-inner">
+                        <div class="v-input__icon v-input__icon--clear">
+                          <button
+                            disabled="disabled"
+                            type="button"
+                            aria-label="clear icon"
+                            class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                          ></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them #4`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "format": "markdown",
+          "label": "#lang/name"
+        },
+        "scope": "#/properties/name",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "name": "Name Test 2"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them #5`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-5a29a09c=""
+              class="vf-markdown-editor vf-form-element"
+              data-v-ce4a82ec=""
+            >
+              <span
+                ><div class="subtitle-1">
+                  Name Test 2
+                </div>
+                <div style="box-sizing: border-box; height: 300px;">
+                  <div class="tui-editor-defaultUI">
+                    <div class="te-toolbar-section">
+                      <div
+                        class="te-markdown-tab-section"
+                        style="display: none;"
+                      >
+                        <div class="te-tab">
+                          <button
+                            type="button"
+                            data-index="0"
+                            class="te-tab-active"
+                          >
+                            Write</button
+                          ><button type="button" data-index="1">Preview</button>
+                        </div>
+                      </div>
+                      <div class="tui-editor-defaultUI-toolbar">
+                        <button
+                          class="tui-heading tui-toolbar-icons"
+                          type="button"
+                        ></button
+                        ><button
+                          class="tui-bold tui-toolbar-icons"
+                          type="button"
+                        ></button
+                        ><button
+                          class="tui-italic tui-toolbar-icons"
+                          type="button"
+                        ></button
+                        ><button
+                          class="tui-strike tui-toolbar-icons"
+                          type="button"
+                        ></button>
+                        <div class="tui-toolbar-divider"></div>
+                        <button
+                          class="tui-hrline tui-toolbar-icons"
+                          type="button"
+                        ></button
+                        ><button
+                          class="tui-quote tui-toolbar-icons"
+                          type="button"
+                        ></button>
+                        <div class="tui-toolbar-divider"></div>
+                        <button
+                          class="tui-ul tui-toolbar-icons"
+                          type="button"
+                        ></button
+                        ><button
+                          class="tui-ol tui-toolbar-icons"
+                          type="button"
+                        ></button
+                        ><button
+                          class="tui-more tui-toolbar-icons"
+                          type="button"
+                        ></button>
+                        <div
+                          class="tui-popup-wrapper te-dropdown-toolbar"
+                          style="display: none;"
+                        >
+                          <div class="tui-popup-body">
+                            <div class="tui-editor-defaultUI-toolbar">
+                              <button
+                                class="tui-task tui-toolbar-icons"
+                                type="button"
+                              ></button
+                              ><button
+                                class="tui-indent tui-toolbar-icons"
+                                type="button"
+                              ></button
+                              ><button
+                                class="tui-outdent tui-toolbar-icons"
+                                type="button"
+                              ></button>
+                              <div class="tui-toolbar-divider"></div>
+                              <button
+                                class="tui-table tui-toolbar-icons"
+                                type="button"
+                              ></button
+                              ><button
+                                class="tui-image tui-toolbar-icons"
+                                type="button"
+                              ></button
+                              ><button
+                                class="tui-link tui-toolbar-icons"
+                                type="button"
+                              ></button>
+                              <div class="tui-toolbar-divider"></div>
+                              <button
+                                class="tui-code tui-toolbar-icons"
+                                type="button"
+                              ></button
+                              ><button
+                                class="tui-codeblock tui-toolbar-icons"
+                                type="button"
+                              ></button>
+                              <div class="tui-toolbar-divider"></div>
+                              <button
+                                class="tui-custom-clear tui-toolbar-icons"
+                                type="button"
+                                style="background:none;font-weight:900;color: black;font-size: 14px;line-height: 1;"
+                              >
+                                X
+                              </button>
+                              <div
+                                class="tui-toolbar-divider"
+                                style="display: inline-block;"
+                              ></div>
+                              <button
+                                class="tui-scrollsync active"
+                                type="button"
+                                style="display: inline-block;"
+                              ></button>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="tui-popup-wrapper te-popup-add-table"
+                          style="display: none; position: absolute; width: 181px;"
+                        >
+                          <div class="tui-popup-body">
+                            <div class="te-table-selection">
+                              <div
+                                class="te-table-header"
+                                style="height: 17px; width: 151px;"
+                              ></div>
+                              <div
+                                class="te-table-body"
+                                style="height: 120px; width: 151px;"
+                              ></div>
+                              <div class="te-selection-area"></div>
+                            </div>
+                            <p class="te-description"></p>
+                          </div>
+                        </div>
+                        <div
+                          class="tui-popup-wrapper te-heading-add"
+                          style="display: none; position: absolute;"
+                        >
+                          <div class="tui-popup-body">
+                            <ul>
+                              <li data-value="1" data-type="Heading">
+                                <h1>Heading 1</h1>
+                              </li>
+                              <li data-value="2" data-type="Heading">
+                                <h2>Heading 2</h2>
+                              </li>
+                              <li data-value="3" data-type="Heading">
+                                <h3>Heading 3</h3>
+                              </li>
+                              <li data-value="4" data-type="Heading">
+                                <h4>Heading 4</h4>
+                              </li>
+                              <li data-value="5" data-type="Heading">
+                                <h5>Heading 5</h5>
+                              </li>
+                              <li data-value="6" data-type="Heading">
+                                <h6>Heading 6</h6>
+                              </li>
+                              <li data-type="Paragraph">
+                                <div>Paragraph</div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="te-editor-section">
+                      <div class="tui-editor te-md-mode">
+                        <div class="te-md-container te-preview-style-vertical">
+                          <div class="te-editor te-tab-active">
+                            <textarea style="display: none;"></textarea>
+                            <div
+                              class="CodeMirror cm-s-default CodeMirror-wrap"
+                              style="min-height: 246px;"
+                            >
+                              <div
+                                style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 18px; left: 25px;"
+                              >
+                                <textarea
+                                  autocorrect="off"
+                                  autocapitalize="off"
+                                  spellcheck="false"
+                                  tabindex="0"
+                                  style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"
+                                ></textarea>
+                              </div>
+                              <div
+                                class="CodeMirror-vscrollbar"
+                                tabindex="-1"
+                                cm-not-content="true"
+                                style="bottom: 0px; width: 12px; pointer-events: none;"
+                              >
+                                <div style="min-width: 1px; height: 0px;"></div>
+                              </div>
+                              <div
+                                class="CodeMirror-hscrollbar"
+                                tabindex="-1"
+                                cm-not-content="true"
+                                style="height: 12px; pointer-events: none;"
+                              >
+                                <div
+                                  style="height: 100%; min-height: 1px; width: 0px;"
+                                ></div>
+                              </div>
+                              <div
+                                class="CodeMirror-scrollbar-filler"
+                                cm-not-content="true"
+                              ></div>
+                              <div
+                                class="CodeMirror-gutter-filler"
+                                cm-not-content="true"
+                              ></div>
+                              <div class="CodeMirror-scroll" tabindex="-1">
+                                <div
+                                  class="CodeMirror-sizer"
+                                  style="margin-left: 0px; margin-bottom: 0px; border-right-width: 50px; min-height: 55px; padding-right: 0px; padding-bottom: 0px;"
+                                >
+                                  <div style="position: relative; top: 0px;">
+                                    <div
+                                      class="CodeMirror-lines"
+                                      role="presentation"
+                                    >
+                                      <div
+                                        role="presentation"
+                                        style="position: relative; outline: none;"
+                                      >
+                                        <div class="CodeMirror-measure">
+                                          <pre
+                                            class="CodeMirror-line-like"
+                                          ><span>xxxxxxxxxx</span></pre>
+                                        </div>
+                                        <div class="CodeMirror-measure"></div>
+                                        <div
+                                          style="position: relative; z-index: 1;"
+                                        ></div>
+                                        <div class="CodeMirror-cursors">
+                                          <div
+                                            class="CodeMirror-cursor"
+                                            style="left: 25px; top: 0px; height: 19px;"
+                                          >
+                                            &nbsp;
+                                          </div>
+                                        </div>
+                                        <div
+                                          class="CodeMirror-code"
+                                          role="presentation"
+                                          style="text-rendering: auto;"
+                                        >
+                                          <pre
+                                            class=" CodeMirror-line "
+                                            role="presentation"
+                                          ><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  style="position: absolute; height: 50px; width: 1px; border-bottom: 0px solid transparent; top: 55px;"
+                                ></div>
+                                <div
+                                  class="CodeMirror-gutters"
+                                  style="display: none; height: 105px;"
+                                ></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="te-md-splitter"></div>
+                          <div class="te-preview" style="min-height: 246px;">
+                            <div class="tui-editor-contents"></div>
+                          </div>
+                        </div>
+                        <div class="te-ww-container">
+                          <div class="te-editor" style="position: relative;">
+                            <div
+                              contenteditable="true"
+                              class="tui-editor-contents tui-editor-contents-placeholder"
+                              style="min-height: 246px;"
+                            >
+                              <div><br /></div>
+                            </div>
+                            <div
+                              class="te-ww-block-overlay code-block-header"
+                              style="position: absolute; display: none; z-index: 1;"
+                            >
+                              <span>text</span
+                              ><button type="button">Editor</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="te-mode-switch-section" style="display: block;">
+                      <div class="te-mode-switch">
+                        <button
+                          class="te-switch-button markdown active"
+                          type="button"
+                        >
+                          Markdown</button
+                        ><button class="te-switch-button wysiwyg" type="button">
+                          WYSIWYG
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      class="tui-popup-wrapper te-popup-add-link tui-editor-popup"
+                      style="display: none;"
+                    >
+                      <div class="tui-popup-header">
+                        <span class="tui-popup-title">Insert link</span>
+                        <div class="tui-popup-header-buttons">
+                          <button
+                            type="button"
+                            class="tui-popup-close-button"
+                          ></button>
+                        </div>
+                      </div>
+                      <div class="tui-popup-body">
+                        <label for="url">URL</label>
+                        <input type="text" class="te-url-input" />
+                        <label for="linkText">Link text</label>
+                        <input type="text" class="te-link-text-input" />
+                        <div class="te-button-section">
+                          <button type="button" class="te-ok-button">OK</button>
+                          <button type="button" class="te-close-button">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="tui-popup-wrapper te-popup-add-image tui-editor-popup"
+                      style="display: none;"
+                    >
+                      <div class="tui-popup-header">
+                        <span class="tui-popup-title">Insert image</span>
+                        <div class="tui-popup-header-buttons">
+                          <button
+                            type="button"
+                            class="tui-popup-close-button"
+                          ></button>
+                        </div>
+                      </div>
+                      <div class="tui-popup-body">
+                        <div class="te-tab-section">
+                          <div class="te-tab">
+                            <button
+                              type="button"
+                              data-index="0"
+                              class="te-tab-active"
+                            >
+                              File</button
+                            ><button type="button" data-index="1">URL</button>
+                          </div>
+                        </div>
+                        <div class="te-url-type">
+                          <label for="">Image URL</label>
+                          <input type="text" class="te-image-url-input" />
+                        </div>
+                        <div class="te-file-type te-tab-active">
+                          <label for="">Select image file</label>
+                          <input
+                            type="file"
+                            class="te-image-file-input"
+                            accept="image/*"
+                          />
+                        </div>
+                        <label for="url">Description</label>
+                        <input type="text" class="te-alt-text-input" />
+                        <div class="te-button-section">
+                          <button type="button" class="te-ok-button">OK</button>
+                          <button type="button" class="te-close-button">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="tui-popup-wrapper te-popup-table-utils"
+                      style="display: none;"
+                    >
+                      <div class="tui-popup-body">
+                        <button type="button" class="te-table-add-row">
+                          Add row
+                        </button>
+                        <button type="button" class="te-table-add-col">
+                          Add col
+                        </button>
+                        <button type="button" class="te-table-remove-row">
+                          Remove row
+                        </button>
+                        <button type="button" class="te-table-remove-col">
+                          Remove col
+                        </button>
+                        <hr />
+                        <button type="button" class="te-table-col-align-left">
+                          Align left
+                        </button>
+                        <button type="button" class="te-table-col-align-center">
+                          Align center
+                        </button>
+                        <button type="button" class="te-table-col-align-right">
+                          Align right
+                        </button>
+                        <hr />
+                        <button type="button" class="te-table-remove">
+                          Remove table
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      class="tui-popup-wrapper te-popup-code-block-languages"
+                      style="display: none; z-index: 10000;"
+                    >
+                      <div class="tui-popup-body">
+                        <button
+                          type="button"
+                          class="te-popup-code-block-lang-1c active"
+                          data-lang="1c"
+                        >
+                          1c</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-abnf"
+                          data-lang="abnf"
+                        >
+                          abnf</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-accesslog"
+                          data-lang="accesslog"
+                        >
+                          accesslog</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-actionscript"
+                          data-lang="actionscript"
+                        >
+                          actionscript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-ada"
+                          data-lang="ada"
+                        >
+                          ada</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-angelscript"
+                          data-lang="angelscript"
+                        >
+                          angelscript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-apache"
+                          data-lang="apache"
+                        >
+                          apache</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-applescript"
+                          data-lang="applescript"
+                        >
+                          applescript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-arcade"
+                          data-lang="arcade"
+                        >
+                          arcade</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-c-like"
+                          data-lang="c-like"
+                        >
+                          c-like</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-cpp"
+                          data-lang="cpp"
+                        >
+                          cpp</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-arduino"
+                          data-lang="arduino"
+                        >
+                          arduino</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-armasm"
+                          data-lang="armasm"
+                        >
+                          armasm</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-xml"
+                          data-lang="xml"
+                        >
+                          xml</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-asciidoc"
+                          data-lang="asciidoc"
+                        >
+                          asciidoc</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-aspectj"
+                          data-lang="aspectj"
+                        >
+                          aspectj</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-autohotkey"
+                          data-lang="autohotkey"
+                        >
+                          autohotkey</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-autoit"
+                          data-lang="autoit"
+                        >
+                          autoit</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-avrasm"
+                          data-lang="avrasm"
+                        >
+                          avrasm</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-awk"
+                          data-lang="awk"
+                        >
+                          awk</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-axapta"
+                          data-lang="axapta"
+                        >
+                          axapta</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-bash"
+                          data-lang="bash"
+                        >
+                          bash</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-basic"
+                          data-lang="basic"
+                        >
+                          basic</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-bnf"
+                          data-lang="bnf"
+                        >
+                          bnf</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-brainfuck"
+                          data-lang="brainfuck"
+                        >
+                          brainfuck</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-c"
+                          data-lang="c"
+                        >
+                          c</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-cal"
+                          data-lang="cal"
+                        >
+                          cal</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-capnproto"
+                          data-lang="capnproto"
+                        >
+                          capnproto</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-ceylon"
+                          data-lang="ceylon"
+                        >
+                          ceylon</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-clean"
+                          data-lang="clean"
+                        >
+                          clean</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-clojure"
+                          data-lang="clojure"
+                        >
+                          clojure</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-clojure-repl"
+                          data-lang="clojure-repl"
+                        >
+                          clojure-repl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-cmake"
+                          data-lang="cmake"
+                        >
+                          cmake</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-coffeescript"
+                          data-lang="coffeescript"
+                        >
+                          coffeescript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-coq"
+                          data-lang="coq"
+                        >
+                          coq</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-cos"
+                          data-lang="cos"
+                        >
+                          cos</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-crmsh"
+                          data-lang="crmsh"
+                        >
+                          crmsh</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-crystal"
+                          data-lang="crystal"
+                        >
+                          crystal</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-csharp"
+                          data-lang="csharp"
+                        >
+                          csharp</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-csp"
+                          data-lang="csp"
+                        >
+                          csp</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-css"
+                          data-lang="css"
+                        >
+                          css</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-d"
+                          data-lang="d"
+                        >
+                          d</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-markdown"
+                          data-lang="markdown"
+                        >
+                          markdown</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-dart"
+                          data-lang="dart"
+                        >
+                          dart</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-delphi"
+                          data-lang="delphi"
+                        >
+                          delphi</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-diff"
+                          data-lang="diff"
+                        >
+                          diff</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-django"
+                          data-lang="django"
+                        >
+                          django</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-dns"
+                          data-lang="dns"
+                        >
+                          dns</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-dockerfile"
+                          data-lang="dockerfile"
+                        >
+                          dockerfile</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-dos"
+                          data-lang="dos"
+                        >
+                          dos</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-dsconfig"
+                          data-lang="dsconfig"
+                        >
+                          dsconfig</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-dts"
+                          data-lang="dts"
+                        >
+                          dts</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-dust"
+                          data-lang="dust"
+                        >
+                          dust</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-ebnf"
+                          data-lang="ebnf"
+                        >
+                          ebnf</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-elixir"
+                          data-lang="elixir"
+                        >
+                          elixir</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-elm"
+                          data-lang="elm"
+                        >
+                          elm</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-ruby"
+                          data-lang="ruby"
+                        >
+                          ruby</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-erb"
+                          data-lang="erb"
+                        >
+                          erb</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-erlang-repl"
+                          data-lang="erlang-repl"
+                        >
+                          erlang-repl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-erlang"
+                          data-lang="erlang"
+                        >
+                          erlang</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-excel"
+                          data-lang="excel"
+                        >
+                          excel</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-fix"
+                          data-lang="fix"
+                        >
+                          fix</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-flix"
+                          data-lang="flix"
+                        >
+                          flix</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-fortran"
+                          data-lang="fortran"
+                        >
+                          fortran</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-fsharp"
+                          data-lang="fsharp"
+                        >
+                          fsharp</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-gams"
+                          data-lang="gams"
+                        >
+                          gams</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-gauss"
+                          data-lang="gauss"
+                        >
+                          gauss</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-gcode"
+                          data-lang="gcode"
+                        >
+                          gcode</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-gherkin"
+                          data-lang="gherkin"
+                        >
+                          gherkin</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-glsl"
+                          data-lang="glsl"
+                        >
+                          glsl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-gml"
+                          data-lang="gml"
+                        >
+                          gml</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-go"
+                          data-lang="go"
+                        >
+                          go</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-golo"
+                          data-lang="golo"
+                        >
+                          golo</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-gradle"
+                          data-lang="gradle"
+                        >
+                          gradle</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-groovy"
+                          data-lang="groovy"
+                        >
+                          groovy</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-haml"
+                          data-lang="haml"
+                        >
+                          haml</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-handlebars"
+                          data-lang="handlebars"
+                        >
+                          handlebars</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-haskell"
+                          data-lang="haskell"
+                        >
+                          haskell</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-haxe"
+                          data-lang="haxe"
+                        >
+                          haxe</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-hsp"
+                          data-lang="hsp"
+                        >
+                          hsp</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-htmlbars"
+                          data-lang="htmlbars"
+                        >
+                          htmlbars</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-http"
+                          data-lang="http"
+                        >
+                          http</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-hy"
+                          data-lang="hy"
+                        >
+                          hy</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-inform7"
+                          data-lang="inform7"
+                        >
+                          inform7</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-ini"
+                          data-lang="ini"
+                        >
+                          ini</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-irpf90"
+                          data-lang="irpf90"
+                        >
+                          irpf90</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-isbl"
+                          data-lang="isbl"
+                        >
+                          isbl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-java"
+                          data-lang="java"
+                        >
+                          java</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-javascript"
+                          data-lang="javascript"
+                        >
+                          javascript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-jboss-cli"
+                          data-lang="jboss-cli"
+                        >
+                          jboss-cli</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-json"
+                          data-lang="json"
+                        >
+                          json</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-julia"
+                          data-lang="julia"
+                        >
+                          julia</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-julia-repl"
+                          data-lang="julia-repl"
+                        >
+                          julia-repl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-kotlin"
+                          data-lang="kotlin"
+                        >
+                          kotlin</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-lasso"
+                          data-lang="lasso"
+                        >
+                          lasso</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-latex"
+                          data-lang="latex"
+                        >
+                          latex</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-ldif"
+                          data-lang="ldif"
+                        >
+                          ldif</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-leaf"
+                          data-lang="leaf"
+                        >
+                          leaf</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-less"
+                          data-lang="less"
+                        >
+                          less</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-lisp"
+                          data-lang="lisp"
+                        >
+                          lisp</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-livecodeserver"
+                          data-lang="livecodeserver"
+                        >
+                          livecodeserver</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-livescript"
+                          data-lang="livescript"
+                        >
+                          livescript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-llvm"
+                          data-lang="llvm"
+                        >
+                          llvm</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-lsl"
+                          data-lang="lsl"
+                        >
+                          lsl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-lua"
+                          data-lang="lua"
+                        >
+                          lua</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-makefile"
+                          data-lang="makefile"
+                        >
+                          makefile</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-mathematica"
+                          data-lang="mathematica"
+                        >
+                          mathematica</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-matlab"
+                          data-lang="matlab"
+                        >
+                          matlab</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-maxima"
+                          data-lang="maxima"
+                        >
+                          maxima</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-mel"
+                          data-lang="mel"
+                        >
+                          mel</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-mercury"
+                          data-lang="mercury"
+                        >
+                          mercury</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-mipsasm"
+                          data-lang="mipsasm"
+                        >
+                          mipsasm</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-mizar"
+                          data-lang="mizar"
+                        >
+                          mizar</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-perl"
+                          data-lang="perl"
+                        >
+                          perl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-mojolicious"
+                          data-lang="mojolicious"
+                        >
+                          mojolicious</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-monkey"
+                          data-lang="monkey"
+                        >
+                          monkey</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-moonscript"
+                          data-lang="moonscript"
+                        >
+                          moonscript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-n1ql"
+                          data-lang="n1ql"
+                        >
+                          n1ql</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-nginx"
+                          data-lang="nginx"
+                        >
+                          nginx</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-nim"
+                          data-lang="nim"
+                        >
+                          nim</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-nix"
+                          data-lang="nix"
+                        >
+                          nix</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-nsis"
+                          data-lang="nsis"
+                        >
+                          nsis</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-objectivec"
+                          data-lang="objectivec"
+                        >
+                          objectivec</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-ocaml"
+                          data-lang="ocaml"
+                        >
+                          ocaml</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-openscad"
+                          data-lang="openscad"
+                        >
+                          openscad</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-oxygene"
+                          data-lang="oxygene"
+                        >
+                          oxygene</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-parser3"
+                          data-lang="parser3"
+                        >
+                          parser3</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-pf"
+                          data-lang="pf"
+                        >
+                          pf</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-pgsql"
+                          data-lang="pgsql"
+                        >
+                          pgsql</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-php"
+                          data-lang="php"
+                        >
+                          php</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-php-template"
+                          data-lang="php-template"
+                        >
+                          php-template</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-plaintext"
+                          data-lang="plaintext"
+                        >
+                          plaintext</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-pony"
+                          data-lang="pony"
+                        >
+                          pony</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-powershell"
+                          data-lang="powershell"
+                        >
+                          powershell</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-processing"
+                          data-lang="processing"
+                        >
+                          processing</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-profile"
+                          data-lang="profile"
+                        >
+                          profile</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-prolog"
+                          data-lang="prolog"
+                        >
+                          prolog</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-properties"
+                          data-lang="properties"
+                        >
+                          properties</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-protobuf"
+                          data-lang="protobuf"
+                        >
+                          protobuf</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-puppet"
+                          data-lang="puppet"
+                        >
+                          puppet</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-purebasic"
+                          data-lang="purebasic"
+                        >
+                          purebasic</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-python"
+                          data-lang="python"
+                        >
+                          python</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-python-repl"
+                          data-lang="python-repl"
+                        >
+                          python-repl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-q"
+                          data-lang="q"
+                        >
+                          q</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-qml"
+                          data-lang="qml"
+                        >
+                          qml</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-r"
+                          data-lang="r"
+                        >
+                          r</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-reasonml"
+                          data-lang="reasonml"
+                        >
+                          reasonml</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-rib"
+                          data-lang="rib"
+                        >
+                          rib</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-roboconf"
+                          data-lang="roboconf"
+                        >
+                          roboconf</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-routeros"
+                          data-lang="routeros"
+                        >
+                          routeros</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-rsl"
+                          data-lang="rsl"
+                        >
+                          rsl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-ruleslanguage"
+                          data-lang="ruleslanguage"
+                        >
+                          ruleslanguage</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-rust"
+                          data-lang="rust"
+                        >
+                          rust</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-sas"
+                          data-lang="sas"
+                        >
+                          sas</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-scala"
+                          data-lang="scala"
+                        >
+                          scala</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-scheme"
+                          data-lang="scheme"
+                        >
+                          scheme</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-scilab"
+                          data-lang="scilab"
+                        >
+                          scilab</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-scss"
+                          data-lang="scss"
+                        >
+                          scss</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-shell"
+                          data-lang="shell"
+                        >
+                          shell</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-smali"
+                          data-lang="smali"
+                        >
+                          smali</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-smalltalk"
+                          data-lang="smalltalk"
+                        >
+                          smalltalk</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-sml"
+                          data-lang="sml"
+                        >
+                          sml</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-sqf"
+                          data-lang="sqf"
+                        >
+                          sqf</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-sql"
+                          data-lang="sql"
+                        >
+                          sql</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-stan"
+                          data-lang="stan"
+                        >
+                          stan</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-stata"
+                          data-lang="stata"
+                        >
+                          stata</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-step21"
+                          data-lang="step21"
+                        >
+                          step21</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-stylus"
+                          data-lang="stylus"
+                        >
+                          stylus</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-subunit"
+                          data-lang="subunit"
+                        >
+                          subunit</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-swift"
+                          data-lang="swift"
+                        >
+                          swift</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-taggerscript"
+                          data-lang="taggerscript"
+                        >
+                          taggerscript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-yaml"
+                          data-lang="yaml"
+                        >
+                          yaml</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-tap"
+                          data-lang="tap"
+                        >
+                          tap</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-tcl"
+                          data-lang="tcl"
+                        >
+                          tcl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-thrift"
+                          data-lang="thrift"
+                        >
+                          thrift</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-tp"
+                          data-lang="tp"
+                        >
+                          tp</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-twig"
+                          data-lang="twig"
+                        >
+                          twig</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-typescript"
+                          data-lang="typescript"
+                        >
+                          typescript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-vala"
+                          data-lang="vala"
+                        >
+                          vala</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-vbnet"
+                          data-lang="vbnet"
+                        >
+                          vbnet</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-vbscript"
+                          data-lang="vbscript"
+                        >
+                          vbscript</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-vbscript-html"
+                          data-lang="vbscript-html"
+                        >
+                          vbscript-html</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-verilog"
+                          data-lang="verilog"
+                        >
+                          verilog</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-vhdl"
+                          data-lang="vhdl"
+                        >
+                          vhdl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-vim"
+                          data-lang="vim"
+                        >
+                          vim</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-x86asm"
+                          data-lang="x86asm"
+                        >
+                          x86asm</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-xl"
+                          data-lang="xl"
+                        >
+                          xl</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-xquery"
+                          data-lang="xquery"
+                        >
+                          xquery</button
+                        ><button
+                          type="button"
+                          class="te-popup-code-block-lang-zephir"
+                          data-lang="zephir"
+                        >
+                          zephir
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      class="tui-popup-modal-background tui-popup-code-block-editor"
+                      style="display: none;"
+                    >
+                      <div class="tui-popup-wrapper">
+                        <div class="tui-popup-header">
+                          <span class="tui-popup-title"
+                            >CodeBlock Editor<span
+                              class="te-input-language"
+                              style="display: inline-block;"
+                              ><input
+                                type="text"
+                                maxlength="20"
+                                placeholder="Choose language"/></span
+                          ></span>
+                          <div class="tui-popup-header-buttons">
+                            <button
+                              type="button"
+                              class="popup-editor-toggle-scroll active"
+                              style="display: inline-block;"
+                            ></button>
+                            <button
+                              type="button"
+                              class="popup-editor-toggle-preview active"
+                            ></button>
+                            <button
+                              type="button"
+                              class="popup-editor-toggle-fit"
+                            ></button>
+                            <button
+                              type="button"
+                              class="tui-popup-close-button"
+                            ></button>
+                          </div>
+                        </div>
+                        <div class="tui-popup-body">
+                          <div class="popup-editor-body">
+                            <div class="tui-split-scroll scroll-sync">
+                              <div class="tui-split-scroll-wrapper">
+                                <div class="tui-split-scroll-content">
+                                  <div
+                                    class="popup-editor-editor-wrapper tui-split-content-left"
+                                  >
+                                    <textarea style="display: none;"></textarea>
+                                    <div
+                                      class="CodeMirror cm-s-default CodeMirror-wrap"
+                                    >
+                                      <div
+                                        style="overflow: hidden; position: relative; width: 3px; height: 0px;"
+                                      >
+                                        <textarea
+                                          autocorrect="off"
+                                          autocapitalize="off"
+                                          spellcheck="false"
+                                          tabindex="0"
+                                          style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"
+                                        ></textarea>
+                                      </div>
+                                      <div
+                                        class="CodeMirror-vscrollbar"
+                                        tabindex="-1"
+                                        cm-not-content="true"
+                                      >
+                                        <div style="min-width: 1px;"></div>
+                                      </div>
+                                      <div
+                                        class="CodeMirror-hscrollbar"
+                                        tabindex="-1"
+                                        cm-not-content="true"
+                                      >
+                                        <div
+                                          style="height: 100%; min-height: 1px;"
+                                        ></div>
+                                      </div>
+                                      <div
+                                        class="CodeMirror-scrollbar-filler"
+                                        cm-not-content="true"
+                                      ></div>
+                                      <div
+                                        class="CodeMirror-gutter-filler"
+                                        cm-not-content="true"
+                                      ></div>
+                                      <div
+                                        class="CodeMirror-scroll"
+                                        tabindex="-1"
+                                      >
+                                        <div
+                                          class="CodeMirror-sizer"
+                                          style="margin-left: 0px;"
+                                        >
+                                          <div style="position: relative;">
+                                            <div
+                                              class="CodeMirror-lines"
+                                              role="presentation"
+                                            >
+                                              <div
+                                                role="presentation"
+                                                style="position: relative; outline: none;"
+                                              >
+                                                <div class="CodeMirror-measure">
+                                                  <pre
+                                                    class="CodeMirror-line-like"
+                                                  ><span>xxxxxxxxxx</span></pre>
+                                                </div>
+                                                <div
+                                                  class="CodeMirror-measure"
+                                                ></div>
+                                                <div
+                                                  style="position: relative; z-index: 1;"
+                                                ></div>
+                                                <div
+                                                  class="CodeMirror-cursors"
+                                                ></div>
+                                                <div
+                                                  class="CodeMirror-code"
+                                                  role="presentation"
+                                                ></div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div
+                                          style="position: absolute; height: 50px; width: 1px;"
+                                        ></div>
+                                        <div
+                                          class="CodeMirror-gutters"
+                                          style="display: none;"
+                                        ></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="tui-split-content-right"
+                                    style="top: 0px;"
+                                  >
+                                    <div class="tui-editor-contents"></div>
+                                  </div>
+                                </div>
+                                <div class="tui-splitter"></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="te-button-section">
+                            <button type="button" class="te-ok-button">
+                              OK
+                            </button>
+                            <button type="button" class="te-close-button">
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div></span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens InputUri dialogs, changes data in dialogs and save them #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "label": "#lang/process_GeneralInformation_document"
+        },
+        "scope": "#/properties/customAspects/properties/process_GeneralInformation/properties/attributes/properties/process_GeneralInformation_document",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "process_GeneralInformation_document": "Dokument Test"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens InputUri dialogs, changes data in dialogs and save them #1`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-5a29a09c=""
+              class="vf-input-uri vf-form-element"
+              data-v-ce4a82ec=""
+            >
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for="input-477"
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Dokument Test</label
+                        ><input id="input-477" type="text" />
+                      </div>
+                      <div class="v-input__append-inner">
+                        <div class="v-input__icon v-input__icon--clear">
+                          <button
+                            disabled="disabled"
+                            type="button"
+                            aria-label="clear icon"
+                            class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                          ></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="v-input__append-outer">
+                    <button
+                      target="_blank"
+                      type="button"
+                      disabled="disabled"
+                      class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><i
+                          aria-hidden="true"
+                          class="v-icon notranslate mdi mdi-open-in-new theme--light"
+                        ></i
+                      ></span>
+                    </button>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens InputDate dialogs, changes data in dialogs and save them #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "label": "#lang/process_ProcessingDetails_surveyConductedOn"
+        },
+        "scope": "#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_surveyConductedOn",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "process_ProcessingDetails_surveyConductedOn": "Erhebung durchgeführt am Test"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens InputDate dialogs, changes data in dialogs and save them #1`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-5a29a09c=""
+              class="vf-input-date vf-form-element"
+              data-v-ce4a82ec=""
+            >
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__prepend-outer">
+                    <div class="v-input__icon v-input__icon--prepend">
+                      <i
+                        aria-hidden="true"
+                        class="v-icon notranslate mdi mdi-calendar theme--light"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for="input-478"
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Erhebung durchgeführt am Test</label
+                        ><input id="input-478" type="text" />
+                      </div>
+                      <div class="v-input__append-inner">
+                        <div class="v-input__icon v-input__icon--clear">
+                          <button
+                            disabled="disabled"
+                            type="button"
+                            aria-label="clear icon"
+                            class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                          ></button>
+                        </div>
+                      </div>
+                    </div>
+                  </div></div
+              ></span>
+              <div class="v-menu"><!----></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens Checkbox dialogs, changes data in dialogs and save them #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "label": "#lang/process_SensitiveData_SensitiveData"
+        },
+        "scope": "#/properties/customAspects/properties/process_SensitiveData/properties/attributes/properties/process_SensitiveData_SensitiveData",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "process_SensitiveData_SensitiveData": "Datenverarbeitung besonders sensitiver Daten? Test"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens Checkbox dialogs, changes data in dialogs and save them #1`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-5a29a09c=""
+              class="vf-checkbox vf-form-element"
+              data-v-ce4a82ec=""
+            >
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-input--selection-controls__input">
+                        <i
+                          aria-hidden="true"
+                          class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
+                        ></i
+                        ><input
+                          aria-checked="mixed"
+                          id="input-477"
+                          role="checkbox"
+                          type="checkbox"
+                          value=""
+                        />
+                        <div class="v-input--selection-controls__ripple"></div>
+                      </div>
+                      <label
+                        for="input-477"
+                        class="v-label theme--light"
+                        style="left: 0px; right: auto; position: relative;"
+                        >Datenverarbeitung besonders sensitiver Daten?
+                        Test</label
+                      >
+                    </div>
+                  </div>
+                  <div class="v-input__append-outer">
+                    <div>
+                      <button
+                        type="button"
+                        class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                      ></button>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "label": "#lang/process_ProcessingDetails_typeOfSurvey"
+        },
+        "scope": "#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_typeOfSurvey",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {}
+  }
+};
+
+exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them #1`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-5a29a09c=""
+              class="vf-select vf-form-element"
+              data-v-ce4a82ec=""
+            >
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select"
+                >
+                  <div class="v-input__control">
+                    <div
+                      role="button"
+                      aria-haspopup="listbox"
+                      aria-expanded="false"
+                      aria-owns="list-477"
+                      class="v-input__slot"
+                    >
+                      <div class="v-select__slot">
+                        <label
+                          for="input-477"
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Art der Erhebung</label
+                        >
+                        <div class="v-select__selections">
+                          <input
+                            id="input-477"
+                            readonly="readonly"
+                            type="text"
+                            aria-readonly="false"
+                            autocomplete="off"
+                          />
+                        </div>
+                        <div class="v-input__append-inner">
+                          <div class="v-input__icon v-input__icon--clear">
+                            <button
+                              disabled="disabled"
+                              type="button"
+                              aria-label="clear icon"
+                              class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                            ></button>
+                          </div>
+                        </div>
+                        <div class="v-input__append-inner">
+                          <div class="v-input__icon v-input__icon--append">
+                            <i
+                              aria-hidden="true"
+                              class="v-icon notranslate mdi mdi-menu-down theme--light"
+                            ></i>
+                          </div>
+                        </div>
+                        <input type="hidden" />
+                      </div>
+                      <div class="v-menu"><!----></div>
+                    </div>
+                  </div>
+                </div></span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them #2`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "format": "radio",
+          "label": "#lang/process_ProcessingDetails_typeOfSurvey"
+        },
+        "scope": "#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_typeOfSurvey",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "process_ProcessingDetails_typeOfSurvey": "Art der Erhebung Test 1"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them #3`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-5a29a09c=""
+              class="vf-radio vf-form-element"
+              data-v-ce4a82ec=""
+            >
+              <span
+                ><div class="subtitle-1">
+                  Art der Erhebung Test 1
+                </div>
+                <div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--radio-group v-input--radio-group--row"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot" style="height: auto;">
+                      <div
+                        role="radiogroup"
+                        aria-labelledby="input-528"
+                        class="v-input--radio-group__input"
+                      >
+                        <span
+                          ><div class="v-radio theme--light">
+                            <div class="v-input--selection-controls__input">
+                              <i
+                                aria-hidden="true"
+                                class="v-icon notranslate v-icon--dense mdi mdi-radiobox-blank theme--light"
+                              ></i
+                              ><input
+                                aria-checked="false"
+                                id="input-530"
+                                role="radio"
+                                type="radio"
+                                name="radio-528"
+                                value="process_ProcessingDetails_typeOfSurvey_newsurvey"
+                              />
+                              <div
+                                class="v-input--selection-controls__ripple"
+                              ></div>
+                            </div>
+                            <label
+                              for="input-530"
+                              class="v-label theme--light"
+                              style="left: 0px; right: auto; position: relative;"
+                              >Neuerhebung</label
+                            >
+                          </div></span
+                        ><span
+                          ><div class="v-radio theme--light">
+                            <div class="v-input--selection-controls__input">
+                              <i
+                                aria-hidden="true"
+                                class="v-icon notranslate v-icon--dense mdi mdi-radiobox-blank theme--light"
+                              ></i
+                              ><input
+                                aria-checked="false"
+                                id="input-533"
+                                role="radio"
+                                type="radio"
+                                name="radio-528"
+                                value="process_ProcessingDetails_typeOfSurvey_change"
+                              />
+                              <div
+                                class="v-input--selection-controls__ripple"
+                              ></div>
+                            </div>
+                            <label
+                              for="input-533"
+                              class="v-label theme--light"
+                              style="left: 0px; right: auto; position: relative;"
+                              >Änderung</label
+                            >
+                          </div></span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="v-input__append-outer">
+                    <div>
+                      <button
+                        type="button"
+                        class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                      ></button>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them #4`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "format": "autocomplete",
+          "label": "#lang/process_ProcessingDetails_typeOfSurvey"
+        },
+        "scope": "#/properties/customAspects/properties/process_ProcessingDetails/properties/attributes/properties/process_ProcessingDetails_typeOfSurvey",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "process_ProcessingDetails_typeOfSurvey": "Art der Erhebung Test 2"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them #5`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-5a29a09c=""
+              class="vf-autocomplete vf-form-element"
+              data-v-ce4a82ec=""
+            >
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                >
+                  <div class="v-input__control">
+                    <div
+                      role="combobox"
+                      aria-haspopup="listbox"
+                      aria-expanded="false"
+                      aria-owns="list-572"
+                      class="v-input__slot"
+                    >
+                      <div class="v-select__slot">
+                        <label
+                          for="input-572"
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Art der Erhebung Test 2</label
+                        ><input id="input-572" type="text" autocomplete="off" />
+                        <div class="v-input__append-inner">
+                          <div class="v-input__icon v-input__icon--clear">
+                            <button
+                              disabled="disabled"
+                              type="button"
+                              aria-label="clear icon"
+                              class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                            ></button>
+                          </div>
+                        </div>
+                        <div class="v-input__append-inner">
+                          <div class="v-input__icon v-input__icon--append">
+                            <i
+                              aria-hidden="true"
+                              class="v-icon notranslate mdi mdi-menu-down theme--light"
+                            ></i>
+                          </div>
+                        </div>
+                        <input type="hidden" />
+                      </div>
+                      <div class="v-menu"><!----></div>
+                    </div>
+                  </div>
+                </div></span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs and save them #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "elements": [
+          {
+            "options": {
+              "label": "#lang/process_InternalRecipient_purpose"
+            },
+            "scope": "#/properties/attributes/properties/process_InternalRecipient_purpose",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/process_InternalRecipient_explanation"
+            },
+            "scope": "#/properties/attributes/properties/process_InternalRecipient_explanation",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/process_InternalRecipient_document"
+            },
+            "scope": "#/properties/attributes/properties/process_InternalRecipient_document",
+            "type": "Control"
+          }
+        ],
+        "options": {
+          "direction": "vertical",
+          "label": "#lang/process_InternalRecipientLink"
+        },
+        "scope": "#/properties/links/properties/process_InternalRecipientLink",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "process_InternalRecipientLink": "Empfänger Intern Test"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs and save them #1`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-5a29a09c=""
+            class="vf-control col-md-auto col-12"
+            data-v-077ffd0c=""
+          >
+            <div
+              data-v-67a5f13f=""
+              data-v-5a29a09c=""
+              class="vf-links-field vf-form-element"
+              data-v-ce4a82ec=""
+            >
+              <div data-v-67a5f13f="" class="d-flex">
+                <span data-v-67a5f13f="" class="subtitle-1 mb-2">
+                  Empfänger Intern Test
+                </span>
+                <div data-v-67a5f13f="" class="spacer"></div>
+              </div>
+              <div
+                data-v-67a5f13f=""
+                role="list"
+                class="v-list py-0 v-sheet theme--light v-list--dense"
+              >
+                <div
+                  data-v-67a5f13f=""
+                  tabindex="-1"
+                  role="listitem"
+                  class="links-field-item my-2 pt-2 v-list-item theme--light"
+                >
+                  <div data-v-67a5f13f="" class="v-list-item__content">
+                    <div
+                      data-v-0c58734b=""
+                      data-v-67a5f13f=""
+                      class="row flex-column row--dense"
+                    >
+                      <div data-v-0c58734b="" class="col">
+                        <div
+                          data-v-0c58734b=""
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                        >
+                          <div class="v-input__control">
+                            <div
+                              role="combobox"
+                              aria-haspopup="listbox"
+                              aria-expanded="false"
+                              aria-owns="list-481"
+                              class="v-input__slot"
+                            >
+                              <div class="v-select__slot">
+                                <label
+                                  for="input-481"
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Zielobjekt</label
+                                ><input
+                                  id="input-481"
+                                  type="text"
+                                  autocomplete="off"
+                                />
+                                <div class="v-input__append-inner">
+                                  <div
+                                    class="v-input__icon v-input__icon--clear"
+                                  >
+                                    <button
+                                      disabled="disabled"
+                                      type="button"
+                                      aria-label="clear icon"
+                                      class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                                    ></button>
+                                  </div>
+                                </div>
+                                <div class="v-input__append-inner">
+                                  <div
+                                    class="v-input__icon v-input__icon--append"
+                                  >
+                                    <i
+                                      aria-hidden="true"
+                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
+                                    ></i>
+                                  </div>
+                                </div>
+                                <input type="hidden" />
+                              </div>
+                              <div class="v-menu"><!----></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div data-v-0c58734b="" class="col">
+                        <div
+                          data-v-9fc27830=""
+                          data-v-0c58734b=""
+                          class="vf-wrapper d-flex flex-column"
+                        >
+                          <!---->
+                          <div
+                            data-v-077ffd0c=""
+                            id=""
+                            class="vf-layout vf-group col-md-auto col-12"
+                            data-v-7d7db8c4=""
+                            data-v-9fc27830=""
+                          >
+                            <div
+                              data-v-077ffd0c=""
+                              class="row flex-column row--dense"
+                            >
+                              <!---->
+                              <div data-v-077ffd0c="" class="col">
+                                <div
+                                  data-v-077ffd0c=""
+                                  class="row flex-column direction-vertical"
+                                >
+                                  <div
+                                    data-v-5a29a09c=""
+                                    class="vf-control col-md-auto col-12"
+                                    data-v-077ffd0c=""
+                                  >
+                                    <div
+                                      data-v-5a29a09c=""
+                                      class="vf-form-element vf-input-text"
+                                      data-v-ce4a82ec=""
+                                    >
+                                      <span
+                                        ><div
+                                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                                        >
+                                          <div class="v-input__control">
+                                            <div class="v-input__slot">
+                                              <div class="v-text-field__slot">
+                                                <label
+                                                  for="input-586"
+                                                  class="v-label theme--light"
+                                                  style="left: 0px; right: auto; position: absolute;"
+                                                  >Zweck des internen
+                                                  Datentransfers</label
+                                                ><input
+                                                  id="input-586"
+                                                  type="text"
+                                                />
+                                              </div>
+                                              <div
+                                                class="v-input__append-inner"
+                                              >
+                                                <div
+                                                  class="v-input__icon v-input__icon--clear"
+                                                >
+                                                  <button
+                                                    disabled="disabled"
+                                                    type="button"
+                                                    aria-label="clear icon"
+                                                    class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                                                  ></button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div></div
+                                      ></span>
+                                    </div>
+                                  </div>
+                                  <div
+                                    data-v-5a29a09c=""
+                                    class="vf-control col-md-auto col-12"
+                                    data-v-077ffd0c=""
+                                  >
+                                    <div
+                                      data-v-5a29a09c=""
+                                      class="vf-form-element vf-input-text"
+                                      data-v-ce4a82ec=""
+                                    >
+                                      <span
+                                        ><div
+                                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                                        >
+                                          <div class="v-input__control">
+                                            <div class="v-input__slot">
+                                              <div class="v-text-field__slot">
+                                                <label
+                                                  for="input-591"
+                                                  class="v-label theme--light"
+                                                  style="left: 0px; right: auto; position: absolute;"
+                                                  >Erläuterung</label
+                                                ><input
+                                                  id="input-591"
+                                                  type="text"
+                                                />
+                                              </div>
+                                              <div
+                                                class="v-input__append-inner"
+                                              >
+                                                <div
+                                                  class="v-input__icon v-input__icon--clear"
+                                                >
+                                                  <button
+                                                    disabled="disabled"
+                                                    type="button"
+                                                    aria-label="clear icon"
+                                                    class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                                                  ></button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div></div
+                                      ></span>
+                                    </div>
+                                  </div>
+                                  <div
+                                    data-v-5a29a09c=""
+                                    class="vf-control col-md-auto col-12"
+                                    data-v-077ffd0c=""
+                                  >
+                                    <div
+                                      data-v-5a29a09c=""
+                                      class="vf-input-uri vf-form-element"
+                                      data-v-ce4a82ec=""
+                                    >
+                                      <span
+                                        ><div
+                                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                                        >
+                                          <div class="v-input__control">
+                                            <div class="v-input__slot">
+                                              <div class="v-text-field__slot">
+                                                <label
+                                                  for="input-596"
+                                                  class="v-label theme--light"
+                                                  style="left: 0px; right: auto; position: absolute;"
+                                                  >Dokument</label
+                                                ><input
+                                                  id="input-596"
+                                                  type="text"
+                                                />
+                                              </div>
+                                              <div
+                                                class="v-input__append-inner"
+                                              >
+                                                <div
+                                                  class="v-input__icon v-input__icon--clear"
+                                                >
+                                                  <button
+                                                    disabled="disabled"
+                                                    type="button"
+                                                    aria-label="clear icon"
+                                                    class="v-icon notranslate v-icon--disabled v-icon--link mdi mdi-close theme--light"
+                                                  ></button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="v-input__append-outer">
+                                            <button
+                                              target="_blank"
+                                              type="button"
+                                              disabled="disabled"
+                                              class="v-btn v-btn--disabled v-btn--flat v-btn--icon v-btn--round theme--light v-size--small"
+                                            >
+                                              <span class="v-btn__content"
+                                                ><i
+                                                  aria-hidden="true"
+                                                  class="v-icon notranslate mdi mdi-open-in-new theme--light"
+                                                ></i
+                                              ></span>
+                                            </button>
+                                          </div></div
+                                      ></span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!---->
+                        </div>
+                      </div>
+                      <div
+                        data-v-0c58734b=""
+                        role="dialog"
+                        class="v-dialog__container"
+                      >
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                  <div data-v-67a5f13f="" class="v-list-item__action">
+                    <button
+                      data-v-67a5f13f=""
+                      type="button"
+                      class="v-btn v-btn--depressed v-btn--fab v-btn--flat v-btn--round v-btn--text theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><i
+                          data-v-67a5f13f=""
+                          aria-hidden="true"
+                          class="v-icon notranslate mdi mdi-delete theme--light"
+                        ></i
+                      ></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                data-v-67a5f13f=""
+                type="button"
+                class="v-btn v-btn--flat v-btn--text theme--light v-size--small primary--text"
+              >
+                <span class="v-btn__content"
+                  ><i
+                    data-v-67a5f13f=""
+                    aria-hidden="true"
+                    class="v-icon notranslate mdi mdi-plus theme--light"
+                    style="font-size: 16px;"
+                  ></i>
+                  <span data-v-67a5f13f="">Link hinzufügen</span></span
+                >
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens FseLabel dialogs, changes data in dialogs and save them #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "class": "class1 class2 class3",
+          "style": "color:green;margin-left:50px;font-size:20px"
+        },
+        "text": "#lang/text_45b08d55-78ff-430e-a8ae-cb6faaee497d",
+        "type": "Label"
+      },
+      {
+        "text": "#lang/text_bff6d345-b0f7-401f-8473-a9acb5694b2e",
+        "type": "Label"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "text_45b08d55-78ff-430e-a8ae-cb6faaee497d": "Text 1 für das Textelement"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens FseLabel dialogs, changes data in dialogs and save them #1`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-3b671109=""
+            class="vf-label class1 class2 class3"
+            data-v-077ffd0c=""
+            style="color: green; margin-left: 50px; font-size: 20px;"
+          >
+            Text 1 für das Textelement
+          </div>
+          <div data-v-3b671109="" class="vf-label" data-v-077ffd0c=""></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > opens FseLabel dialogs, changes data in dialogs and save them #2`] =
+{
+  "content": {
+    "elements": [
+      {
+        "options": {
+          "class": "class1 class2 class3",
+          "style": "color:green;margin-left:50px;font-size:20px"
+        },
+        "text": "#lang/text_45b08d55-78ff-430e-a8ae-cb6faaee497d",
+        "type": "Label"
+      },
+      {
+        "options": {
+          "class": "class1 class2 class3",
+          "style": "color:blue;margin-left:80px;font-size:14px"
+        },
+        "text": "#lang/text_bff6d345-b0f7-401f-8473-a9acb5694b2e",
+        "type": "Label"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "text_45b08d55-78ff-430e-a8ae-cb6faaee497d": "Text 1 für das Textelement",
+      "text_bff6d345-b0f7-401f-8473-a9acb5694b2e": "Text 2 für das Textelement"
+    }
+  }
+};
+
+exports[`Formschema Editor > opens FseLabel dialogs, changes data in dialogs and save them #3`] = `
+<div
+  data-v-9fc27830=""
+  data-v-6b76c29e=""
+  class="vf-wrapper d-flex flex-column"
+>
+  <!---->
+  <div
+    data-v-077ffd0c=""
+    id=""
+    class="vf-layout vf-group col-md-auto col-12"
+    data-v-7d7db8c4=""
+    data-v-9fc27830=""
+  >
+    <div data-v-077ffd0c="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-077ffd0c="" class="col">
+        <div data-v-077ffd0c="" class="row flex-column direction-vertical">
+          <div
+            data-v-3b671109=""
+            class="vf-label class1 class2 class3"
+            data-v-077ffd0c=""
+            style="color: green; margin-left: 50px; font-size: 20px;"
+          >
+            Text 1 für das Textelement
+          </div>
+          <div
+            data-v-3b671109=""
+            class="vf-label class1 class2 class3"
+            data-v-077ffd0c=""
+            style="color: blue; margin-left: 80px; font-size: 14px;"
+          >
+            Text 2 für das Textelement
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!---->
+</div>
+`;
+
+exports[`Formschema Editor > compares downloaded schema with the actual one #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
+        "type": "Label"
+      },
+      {
+        "elements": [
+          {
+            "options": {
+              "label": "#lang/description"
+            },
+            "scope": "#/properties/description",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/name"
+            },
+            "scope": "#/properties/name",
+            "type": "Control"
+          }
+        ],
+        "options": {
+          "format": "group",
+          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
+        },
+        "type": "Layout"
+      },
+      {
+        "options": {
+          "label": "#lang/abbreviation"
+        },
+        "scope": "#/properties/abbreviation",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": "Test Formschema",
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
+      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
+    }
+  }
+};
