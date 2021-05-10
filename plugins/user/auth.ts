@@ -46,7 +46,7 @@ export class Auth {
     // If the onTokenExpired event occures, the plugin tries to refresh the user's token. If it fails it tries to reauthenticate the user.
     this._keycloak.onTokenExpired = async () => {
       try {
-        await this._keycloak.updateToken(300)
+        await this.refreshSession()
       } catch (e) {
         await this.init()
       }
