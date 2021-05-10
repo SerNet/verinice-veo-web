@@ -169,7 +169,7 @@ Cypress.Commands.add('loadFse', formSchemaPath => {
 Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, options) => {
   cy.wrap(
     Cypress.$(
-      Cypress.$.parseHTML(subject[0].outerHTML.replace(/(input-\d+|list-\d+)/g, '').replace(/data-v-\w+/g, 'data-v-123abc4d'))
+      Cypress.$.parseHTML(subject[0].outerHTML.replace(/(input-\d+|list-\d+|radio-\d+)/g, '').replace(/data-v-\w+/g, 'data-v-123abc4d'))
     )
   ).toMatchSnapshot(options)
 })
