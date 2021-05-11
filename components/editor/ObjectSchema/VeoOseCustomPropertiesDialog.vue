@@ -100,11 +100,12 @@ import {
 
 import { ISchemaEndpoint } from '~/plugins/api/schema'
 
-import {
+import ObjectSchemaHelper, {
   IVeoOSHCustomAspect,
   IVeoOSHCustomLink,
   IVeoOSHCustomProperty
 } from '~/lib/ObjectSchemaHelper2'
+import { Ref } from '@vue/composition-api'
 
 interface IData {
   dialog: { value: boolean, mode: 'create' | 'edit' }
@@ -172,6 +173,7 @@ export default Vue.extend({
       duplicates: []
     } as IData
   },
+  inject: ['objectSchemaHelper', 'displayLanguage'],
   async fetch() {
     this.objectTypes = await this.$api.schema.fetchAll()
   },
@@ -213,6 +215,21 @@ export default Vue.extend({
           this.form.data.targetType = (this.editedElement as IVeoOSHCustomLink).targetType
           this.form.data.description = (this.editedElement as IVeoOSHCustomLink).description
         }
+
+        // Load the localized description for each attribute
+        for (let attributeIndex in this.editedElement.attributes) {
+          if(this.editedElement) {
+            // @ts-ignore
+            const objectSchemaHelper: Ref<ObjectSchemaHelper> = this.objectSchemaHelper
+            // @ts-ignore
+            const displayLanguage: Ref<string> = this.displayLanguage
+
+            this.editedElement.attributes[attributeIndex].description = objectSchemaHelper.value.getTranslation(
+              displayLanguage.value,
+              `${this.editedElement.attributes[attributeIndex].prefix}${this.editedElement.attributes[attributeIndex].title}`
+            ) || ''
+          }
+        }
       }
     },
     'dialog.value'(newValue: boolean) {
@@ -233,6 +250,21 @@ export default Vue.extend({
         if (this.type === 'link') {
           this.form.data.targetType = (newValue as IVeoOSHCustomLink).targetType
           this.form.data.description = (newValue as IVeoOSHCustomLink).description
+        }
+
+        // Load the localized description for each attribute
+        for (let attributeIndex in newValue.attributes) {
+          if(this.editedElement) {
+            // @ts-ignore
+            const objectSchemaHelper: Ref<ObjectSchemaHelper> = this.objectSchemaHelper
+            // @ts-ignore
+            const displayLanguage: Ref<string> = this.displayLanguage
+
+            this.editedElement.attributes[attributeIndex].description = objectSchemaHelper.value.getTranslation(
+              displayLanguage.value,
+              `${newValue.attributes[attributeIndex].prefix}${newValue.attributes[attributeIndex].title}`
+            ) || ''
+          }
         }
       } else {
         this.clearForm()

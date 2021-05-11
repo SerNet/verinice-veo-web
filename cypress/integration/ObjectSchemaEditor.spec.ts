@@ -5,7 +5,7 @@ import { JsonPointer } from 'json-ptr'
 
 let processRealValues: { text: string; numberOfProperties: number }[] = []
 
-import { getCurrentOS } from '../support/utils'
+import { getEditorData } from '../support/utils'
 
 const attributeTypes = [
   { value: 'string', text: 'Text' },
@@ -187,7 +187,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/process?domains=GDPR%2CISO_27001'
+        url: /.*\/schemas\/process.*/
       },
       req => {
         req.reply({ fixture: 'objectschema/process.json' })
@@ -197,7 +197,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas'
+        url: /.*\/schemas$/
       },
       req => {
         req.reply({
@@ -209,27 +209,19 @@ describe('Objectschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('http://localhost:3000/editor', {
-      onBeforeLoad(win) {
-        Object.defineProperty(win.navigator, 'language', { value: 'de-DE' })
-        Object.defineProperty(win.navigator, 'languages', { value: ['de'] })
-        Object.defineProperty(win.navigator, 'accept_languages', { value: ['de'] })
-      },
-      headers: {
-        'Accept-Language': 'de'
-      }
-    })
+    cy.visit('/editor')
 
-    cy.contains('Objektschema Editor')
-      .closest('.v-list-item.v-list-item--link')
+    cy.contains('.v-list-item--link', 'Objektschema Editor')
       .should('have.attr', 'href', '/editor/objectschema')
       .click()
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('.v-select', 'Typ des Objektschemas').type('Process{enter}')
+      cy.contains('.v-select', 'Typ des Objektschemas')
+        .type('Process{enter}')
+        .wait(1)
       cy.get('.v-card__actions')
-        .contains('Weiter')
+        .contains('.v-btn', 'Weiter')
         .click()
         .wait(1)
     })
@@ -273,7 +265,7 @@ describe('Objectschema Editor', () => {
       })
   })
 
-  it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function () {
+  it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function() {
     cy.get('@expansionPanelHeaders').each((el, i) => {
       const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
       cy.wrap(expansionPanelText).should(
@@ -283,7 +275,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('deletes aspect with outer delete button', function () {
+  it('deletes aspect with outer delete button', function() {
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-expansion-panel-content__wrap')
@@ -306,7 +298,7 @@ describe('Objectschema Editor', () => {
       .should('have.length', processRealValues[1].numberOfProperties - 1)
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_SensitiveData') || null
@@ -316,7 +308,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('changes customAspect name, attribute names, description and types', function () {
+  it('changes customAspect name, attribute names, description and types', function() {
     cy.contains('GeneralInformation')
       .closest('.v-list-item')
       .find('.v-btn')
@@ -350,7 +342,7 @@ describe('Objectschema Editor', () => {
     })
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return (
@@ -361,13 +353,13 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@aspect')
         .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+          return JSON.stringify(aspect.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(changedAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(changedAttributesResultedSchema))
     })
   })
 
-  it('removes and adds aspect attributes', function () {
+  it('removes and adds aspect attributes', function() {
     cy.contains('AccessAuthorization')
       .closest('.v-list-item')
       .find('.v-btn')
@@ -424,8 +416,8 @@ describe('Objectschema Editor', () => {
       .click()
       .wait(1)
 
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then(function(editor) {
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_AccessAuthorization') || null
@@ -434,13 +426,13 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@aspect')
         .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+          return JSON.stringify(aspect.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(addedAttributesResultedSchema))
     })
   })
 
-  it('opens dialog to create a new aspect and clicks close button to discard changes', function () {
+  it('opens dialog to create a new aspect and clicks close button to discard changes', function() {
     cy.contains('Aspekte hinzufügen')
       .closest('.v-btn')
       .click()
@@ -463,7 +455,7 @@ describe('Objectschema Editor', () => {
       .should('not.contain.text', 'TestAspectOne')
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectOne') || null
@@ -473,7 +465,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('adds completely new aspect and removes it from dialog with delete button', function () {
+  it('adds completely new aspect and removes it from dialog with delete button', function() {
     cy.contains('Aspekte hinzufügen')
       .closest('.v-btn')
       .click()
@@ -517,7 +509,7 @@ describe('Objectschema Editor', () => {
       .should('contain.text', 'TestAspectTwo')
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
@@ -526,9 +518,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@aspect')
         .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+          return JSON.stringify(aspect.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema, null, 2))
+        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema))
     })
 
     cy.contains('TestAspectTwo')
@@ -550,7 +542,7 @@ describe('Objectschema Editor', () => {
       .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
       .should('not.contain.text', 'TestAspectTwo')
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
@@ -560,7 +552,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('deletes a link with outer delete button', function () {
+  it('deletes a link with outer delete button', function() {
     cy.get('@expansionPanelContent')
       .eq(2)
       .find('.v-expansion-panel-content__wrap')
@@ -583,7 +575,7 @@ describe('Objectschema Editor', () => {
       .should('have.length', processRealValues[2].numberOfProperties - 1)
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_ResponsibleDepartment') || null
@@ -593,7 +585,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('changes link name, attribute names, description and types', function () {
+  it('changes link name, attribute names, description and types', function() {
     cy.contains('LegalBasis')
       .closest('.v-list-item')
       .find('.v-btn')
@@ -635,7 +627,7 @@ describe('Objectschema Editor', () => {
     })
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_LegalBasisTest') || null
@@ -643,16 +635,16 @@ describe('Objectschema Editor', () => {
         .as('link')
         .should('not.be.null')
       cy.get('@link').then((link: any) => {
-        cy.wrap(JSON.stringify(link.items.properties.target, null, 2)).should('eq', JSON.stringify(linkTarget, null, 2))
-        cy.wrap(JSON.stringify(link.items.properties.attributes.properties, null, 2)).should(
+        cy.wrap(JSON.stringify(link.items.properties.target)).should('eq', JSON.stringify(linkTarget))
+        cy.wrap(JSON.stringify(link.items.properties.attributes.properties)).should(
           'eq',
-          JSON.stringify(changedLinkAttributesResultedSchema, null, 2)
+          JSON.stringify(changedLinkAttributesResultedSchema)
         )
       })
     })
   })
 
-  it('removes and adds link attributes', function () {
+  it('removes and adds link attributes', function() {
     cy.contains('InternalRecipientLink')
       .closest('.v-list-item')
       .find('.v-btn')
@@ -709,8 +701,8 @@ describe('Objectschema Editor', () => {
       .click()
       .wait(1)
 
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then(function(editor) {
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_InternalRecipientLink') || null
@@ -719,13 +711,13 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@link')
         .then((link: any) => {
-          return JSON.stringify(link.items.properties.attributes.properties, null, 2)
+          return JSON.stringify(link.items.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(addedLinkAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(addedLinkAttributesResultedSchema))
     })
   })
 
-  it('opens dialog to create a new link and clicks close button to discard changes', function () {
+  it('opens dialog to create a new link and clicks close button to discard changes', function() {
     cy.contains('Link hinzufügen')
       .closest('.v-btn')
       .click()
@@ -761,7 +753,7 @@ describe('Objectschema Editor', () => {
       .should('not.contain.text', 'TestLinkOne')
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkOne') || null
@@ -771,7 +763,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('adds completely new link and removes it from dialog with delete button', function () {
+  it('adds completely new link and removes it from dialog with delete button', function() {
     cy.contains('Link hinzufügen')
       .closest('.v-btn')
       .click()
@@ -828,7 +820,7 @@ describe('Objectschema Editor', () => {
       .should('contain.text', 'TestLinkTwo')
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkTwo') || null
@@ -837,9 +829,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@link')
         .then((link: any) => {
-          return JSON.stringify(link.items.properties.attributes.properties, null, 2)
+          return JSON.stringify(link.items.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(TestLinkTwoAttributeSchema, null, 2))
+        .should('eq', JSON.stringify(TestLinkTwoAttributeSchema))
     })
 
     cy.contains('TestLinkTwo')
@@ -861,7 +853,7 @@ describe('Objectschema Editor', () => {
       .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
       .should('not.contain.text', 'TestLinkTwo')
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkTwo') || null
@@ -871,16 +863,16 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('compares downloaded schema with the actual one', function () {
+  it('compares downloaded schema with the actual one', function() {
     cy.get('.mdi-download')
       .closest('.v-btn')
       .click()
       .wait(1)
 
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getCurrentOS(editor)).then(currentOS => {
+    cy.get('.editor .cm-content').then(function(editor) {
+      cy.wrap(getEditorData(editor)).then(currentOS => {
         cy.readFile('cypress/downloads/os_Process.json').then(downloadedOS => {
-          cy.wrap(JSON.stringify(currentOS, null, 2)).should('eq', JSON.stringify(downloadedOS, null, 2))
+          cy.wrap(JSON.stringify(currentOS)).should('eq', JSON.stringify(downloadedOS))
         })
       })
     })

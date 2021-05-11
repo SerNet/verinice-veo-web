@@ -1,0 +1,16 @@
+{
+  "name": "Test Formschema",
+  "modelType": "test",
+  "subType": "TF",
+  "translation": {
+    "de": {}
+  },
+  "content": {
+    "type": "Layout",
+    "options": {
+      "format": "group",
+      "direction": "vertical"
+    },
+    "elements": []
+  }
+}

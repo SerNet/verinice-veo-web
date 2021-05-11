@@ -53,8 +53,7 @@
                 v-for="(attribute, index2) of aspect.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
-                :title="attribute.title"
-                :description="attribute.description"
+                v-bind="attribute"
                 :styling="newItemTypes[attribute.type]"
                 two-line
                 translate
@@ -96,8 +95,7 @@
                 v-for="(attribute, index2) of link.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
-                :title="attribute.title"
-                :description="attribute.description"
+                v-bind="attribute"
                 :styling="newItemTypes[attribute.type]"
                 two-line
                 translate
@@ -123,7 +121,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, Ref, watch } from '@nuxtjs/composition-api'
 
 import ObjectSchemaHelper, {
   IVeoOSHCustomAspect,
@@ -186,6 +184,7 @@ export default defineComponent<IProps>({
      */
     // @ts-ignore
     const objectSchemaHelper: Ref<ObjectSchemaHelper> = ref(props.value)
+    const displayLanguage: Ref<string> | undefined = inject('displayLanguage');
 
     const customAspects: Ref<EditorPropertyItem[]> = ref([])
     const customLinks: Ref<EditorPropertyItem[]> = ref([])
@@ -307,12 +306,47 @@ export default defineComponent<IProps>({
         } else {
           objectSchemaHelper.value.renameCustomLink(object.id, object.item.title)
         }
+        objectSchemaHelper.value.removeTranslationsContainingKey(object.id)
       }
 
       if (objectSchemaDialog.value.type === 'aspect') {
         objectSchemaHelper.value.updateCustomAspectAttributes(object.item.title, object.item.attributes)
       } else {
         objectSchemaHelper.value.updateCustomLink(object.item.title, object.item as IVeoOSHCustomLink)
+      }
+
+      // Add a translation key for each attribute
+      if(displayLanguage) {
+        for(let attribute of object.item.attributes) {
+          if(attribute.description && attribute.description !== '') {
+            objectSchemaHelper.value.updateTranslation(
+              displayLanguage.value,
+              `${attribute.prefix}${attribute.title}`,
+              `${attribute.description}`,
+            );
+          } else {
+            objectSchemaHelper.value.removeTranslation(`${attribute.prefix}${attribute.title}`)
+          }
+
+          if(attribute.type === 'enum' && attribute.enum) {
+            for(const option of attribute.enum) {
+              objectSchemaHelper.value.addTranslation(
+                option,
+                option,
+                displayLanguage.value
+              )
+            }
+          }
+        }
+
+        // Remove translations of renamed attributes
+        if(original) {
+          for(let oldAttribute of original.attributes) {
+            if(!object.item.attributes.find(item => item.title === oldAttribute.title)) {
+              objectSchemaHelper.value.removeTranslation(`${oldAttribute.prefix}${oldAttribute.title}`)
+            }
+          }
+        }
       }
 
       objectSchemaDialog.value.value = false

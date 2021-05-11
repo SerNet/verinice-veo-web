@@ -1,4 +1,5 @@
 import 'cypress-file-upload'
+import 'cypress-plugin-snapshots/commands'
 
 function createJWT(payload) {
   const header = {
@@ -85,4 +86,94 @@ Cypress.Commands.add('auth', () => {
       req.reply({ fixture: 'auth/unit.json' })
     }
   )
+})
+
+Cypress.Commands.add('drag', { prevSubject: true }, subject => {
+  cy.wrap(subject)
+    .trigger('pointerdown', {
+      which: 1,
+      button: 0
+    })
+    .trigger('dragstart')
+})
+
+Cypress.Commands.add('drop', { prevSubject: true }, subject => {
+  cy.wrap(subject)
+    .trigger('dragover', 'bottom', { scrollBehavior: 'bottom' })
+    .trigger('drop', 'bottom', { scrollBehavior: 'bottom' })
+    .trigger('pointerup', {
+      which: 1,
+      button: 0
+    })
+})
+
+Cypress.Commands.add('loadFse', formSchemaPath => {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/translations.*/
+    },
+    req => {
+      req.reply({
+        fixture: 'objectschema/translations.json'
+      })
+    }
+  )
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/schemas$/
+    },
+    req => {
+      req.reply({
+        fixture: 'objectschema/schemas.json'
+      })
+    }
+  )
+
+  cy.window().then(function(win: any) {
+    win.$nuxt?.$router?.push('/editor')
+  })
+
+  cy.contains('.v-list-item--link', 'Formschema Editor')
+    .should('have.attr', 'href', '/editor/formschema')
+    .click()
+    .wait(1)
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/schemas\/process.*/
+    },
+    req => {
+      req.reply({
+        fixture: 'objectschema/process.json'
+      })
+    }
+  )
+  cy.get('.v-dialog--active').within(dialogEl => {
+    cy.get('.v-window-item--active')
+      .contains('Formschema importieren')
+      .closest('.v-list-item--link')
+      .click()
+      .wait(1)
+    cy.get('.v-window-item--active')
+      .contains('.v-file-input', 'Formschema hochladen (.json)')
+      .find('input[type="file"]')
+      .attachFile(formSchemaPath)
+      .wait(2000)
+  })
+  cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
+})
+
+const textGroupRegExp = /(text|group)_[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi
+
+Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, options) => {
+  cy.wrap(
+    Cypress.$(
+      Cypress.$.parseHTML(
+        subject[0].outerHTML.replace(/(input-\d+|list-\d+|radio-\d+)/g, '').replace(/data-v-\w+/g, 'data-v-123abc4d').replace(textGroupRegExp, 'dynamic_text_group_title')
+      )
+    )
+  ).toMatchSnapshot(options)
 })

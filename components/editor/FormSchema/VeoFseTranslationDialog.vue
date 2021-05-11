@@ -67,14 +67,12 @@
 import { isEmpty } from 'lodash'
 import Vue from 'vue'
 
+import { IVeoTranslationCollection } from '~/types/VeoTypes'
+
 interface ITranslationItem {
   name: string
   fullName: string
   code: string
-}
-
-interface ITranslationCollection {
-  [key: string]: string
 }
 
 interface IItem {
@@ -105,7 +103,7 @@ export default Vue.extend({
     return {
       dialog: {
         valid: true,
-        translation: {} as ITranslationCollection,
+        translation: {} as IVeoTranslationCollection,
         language: '' as string,
         languages: [] as string[]
       },
