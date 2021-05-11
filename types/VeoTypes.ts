@@ -41,6 +41,7 @@ export interface IVeoEntity {
   id: string
   name: string
   abbreviation: string
+  displayName: string
   createdAt: string
   createdBy: string
   updatedAt: string

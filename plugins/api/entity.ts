@@ -43,6 +43,7 @@ export default function (api: Client) {
           if (!entry.members) {
             entry.members = []
           }
+          entry.displayName = `${entry.abbreviation} ${entry.name}`
         })
         return result
       })
@@ -90,6 +91,7 @@ export default function (api: Client) {
         if (!result.members) {
           result.members = []
         }
+        result.displayName = `${result.abbreviation} ${result.name}`
         return result
       })
     },
@@ -156,6 +158,7 @@ export default function (api: Client) {
             if (!entry.members) {
               entry.members = []
             }
+            entry.displayName = `${entry.abbreviation} ${entry.name}`
           })
           return result
         })
@@ -173,6 +176,7 @@ export default function (api: Client) {
             if (!entry.members) {
               entry.members = []
             }
+            entry.displayName = `${entry.abbreviation} ${entry.name}`
           })
           return result
         })

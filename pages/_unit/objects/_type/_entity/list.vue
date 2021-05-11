@@ -27,7 +27,7 @@ export default Vue.extend({
       objects: [],
       currentEntity: undefined,
       showParentLink: false,
-      rootEntityType : ''
+      rootEntityType: ''
     }
   },
   async fetch() {
@@ -57,7 +57,7 @@ export default Vue.extend({
       return this.$route.params.type
     },
     title(): string {
-      return this.currentEntity?.name || this.$t('breadcrumbs.objects').toString()
+      return this.currentEntity?.displayName || this.$t('breadcrumbs.objects').toString()
     },
     menuButton(): IVeoMenuButtonItem {
       return {

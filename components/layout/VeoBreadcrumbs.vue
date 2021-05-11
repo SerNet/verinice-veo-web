@@ -3,9 +3,7 @@
     <template #item="{ item }">
       <v-menu v-if="item.menuItems" offset-y>
         <template #activator="{ on, attrs }">
-          <v-btn color="primary" x-small text v-bind="attrs" v-on="on">
-            {{ item.text }}
-          </v-btn>
+          <v-btn color="primary" x-small text v-bind="attrs" v-on="on">{{ item.text }}</v-btn>
         </template>
         <v-list dense class="py-0">
           <v-list-item
@@ -14,17 +12,22 @@
             :exact="menuItem.exact"
             :key="index"
           >
-            <v-list-item-title v-if="menuItem.text" class="primary--text font-weight-regular">{{
+            <v-list-item-title v-if="menuItem.text" class="primary--text font-weight-regular">
+              {{
               menuItem.text
-            }}</v-list-item-title>
+              }}
+            </v-list-item-title>
             <v-icon v-else-if="menuItem.icon" small class="primary--text">{{ menuItem.icon }}</v-icon>
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-breadcrumbs-item v-if="!item.menuItems" :to="item.to" :disabled="item.disabled" :exact="item.exact">
-        <template v-if="item.text">
-          {{ item.text }}
-        </template>
+      <v-breadcrumbs-item
+        v-if="!item.menuItems"
+        :to="item.to"
+        :disabled="item.disabled"
+        :exact="item.exact"
+      >
+        <template v-if="item.text">{{ item.text }}</template>
         <v-icon v-else-if="item.icon" style="color: inherit; line-height: 21px">{{ item.icon }}</v-icon>
       </v-breadcrumbs-item>
     </template>
@@ -35,13 +38,7 @@
 </template>
 
 <script lang="ts">
-import {
-  ref,
-  defineComponent,
-  watch,
-  Ref,
-  PropOptions
-} from '@nuxtjs/composition-api'
+import { ref, defineComponent, watch, Ref, PropOptions } from '@nuxtjs/composition-api'
 import { capitalize, last, intersection } from 'lodash'
 import { separateUUIDParam } from '~/lib/utils'
 
@@ -110,8 +107,8 @@ export default defineComponent<IProps>({
     // KeyMap for definition of object properties which represent displayName
     const displayNameKeyMap = {
       ':form': 'name',
-      ':entity': 'name', // TODO: change to displayName after implemented
-      ':id': 'name' // TODO: change to displayName after implemented
+      ':entity': 'displayName',
+      ':id': 'displayName'
     }
 
     // KeyMap for definition of KEY in $api.KEY.fetch()
@@ -152,7 +149,7 @@ export default defineComponent<IProps>({
       }
 
       // If a parameter title is not cached, send request to server and cache it in Session Storage
-      return new Promise<ICustomBreadcrumbTextEntry>(async resolve => {
+      return new Promise<ICustomBreadcrumbTextEntry>(async (resolve) => {
         const apiKey = apiKeyMap[type]
         const displayNameKey = displayNameKeyMap[type]
 
@@ -185,17 +182,17 @@ export default defineComponent<IProps>({
     function generatItemRoute(routes: string[], params: IBaseStringObject, index: number): string {
       return `/${routes
         .slice(0, index + 1)
-        .map(route => params[route] || route)
+        .map((route) => params[route] || route)
         .join('/')}/`
     }
 
     // Generate custom breadcrumbs if a user externally defined component props "customBreadcrumbs"
     function generateCustomBreadcrumb(pathTemplate: string, params: IBaseStringObject) {
-      return _props.customBreadcrumbs[pathTemplate].map(item => {
+      return _props.customBreadcrumbs[pathTemplate].map((item) => {
         return {
           ...defaultListItem,
           ...item,
-          to: item.to.replace(/:\w+/g, paramKey => params[paramKey])
+          to: item.to.replace(/:\w+/g, (paramKey) => params[paramKey])
         }
       })
     }

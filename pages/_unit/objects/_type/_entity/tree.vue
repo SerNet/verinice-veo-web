@@ -10,7 +10,7 @@ import { getSchemaName } from '~/plugins/api/schema'
 
 interface IData {
   objects: IVeoEntity[]
-  currentEntity: undefined | IVeoEntity,
+  currentEntity: undefined | IVeoEntity
   rootEntityType: string
 }
 
@@ -51,7 +51,7 @@ export default Vue.extend({
       return this.$route.params.type
     },
     title(): string {
-      return this.currentEntity?.name || this.$t('breadcrumbs.objects').toString()
+      return this.currentEntity?.displayName || this.$t('breadcrumbs.objects').toString()
     },
     menuButton(): IVeoMenuButtonItem {
       return {

@@ -1,16 +1,15 @@
 <template>
   <VeoDialog v-model="dialog" :headline="$t('headline')">
-    <template #default>
-      {{ $t('text', { name }) }}
-    </template>
+    <template #default>{{ $t('text', { displayName }) }}</template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('input', false)">
-        {{ $t('global.button.no') }}
-      </v-btn>
+      <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.no') }}</v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="$emit('exit', item.id)">
-        {{ $t('global.button.yes') }}
-      </v-btn>
+      <v-btn
+        text
+        color="primary"
+        :disabled="!item"
+        @click="$emit('exit', item.id)"
+      >{{ $t('global.button.yes') }}</v-btn>
     </template>
   </VeoDialog>
 </template>
@@ -44,8 +43,8 @@ export default Vue.extend({
     }
   },
   computed: {
-    name(): string {
-      return this.item?.name ? `"${this.item.name}"` : ''
+    displayName(): string {
+      return this.item?.displayName ? `"${this.item.displayName}"` : ''
     }
   },
   watch: {
@@ -69,11 +68,11 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "text": "The object {name} has been edited. Do you really want to leave this page?",
+    "text": "The object {displayName} has been edited. Do you really want to leave this page?",
     "headline": "Close"
   },
   "de": {
-    "text": "Das Objekt {name} wurde bearbeitet. Wollen Sie die Seite wirklich verlassen?",
+    "text": "Das Objekt {displayName} wurde bearbeitet. Wollen Sie die Seite wirklich verlassen?",
     "headline": "Verlassen"
   }
 }
