@@ -6,5 +6,6 @@
   "videoCompression": false,
   "defaultCommandTimeout": 6000,
   "requestTimeout": 6000,
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "ignoreTestFiles": ["**/__snapshots__/*", "**/__image_snapshots__/*"]
 }
