@@ -95,8 +95,7 @@
                 v-for="(attribute, index2) of link.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
                 :key="index2"
-                :title="attribute.title"
-                :description="attribute.description"
+                v-bind="attribute"
                 :styling="newItemTypes[attribute.type]"
                 two-line
                 translate
