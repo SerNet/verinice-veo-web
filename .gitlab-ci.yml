@@ -11,6 +11,7 @@ variables:
   K8S_SECRET_VEO_API_USE_PROXY: 'false'
   npm_config_cache: '$CI_PROJECT_DIR/.npm' # for cypress tests
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
+  CYPRESS_BASE_URL: ''
 
 review:
   environment:
@@ -36,15 +37,8 @@ test:e2e:
     VEO_API_URL: https://veo.develop.cpmsys.io/
   script:
     - npm ci
-    - echo $CI_COMMIT_REF_SLUG
-    - echo $CI_ENVIRONMENT_SLUG
-    - echo $CI_ENVIRONMENT_URL
-    - echo $CI_COMMIT_REF_NAME
-    - echo http://$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-    - echo http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
-    - echo http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
-    - cat environment_url.txt
-    - npm run test:e2e -- --config baseUrl="https://131-review-164-veo-49-6ankbc.on.nbrx.de"
+    - CYPRESS_BASE_URL=$(cat environment_url.txt)
+    - npm run test:e2e -- --config baseUrl="$CYPRESS_BASE_URL"
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
