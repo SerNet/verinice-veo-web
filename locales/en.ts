@@ -18,7 +18,6 @@ export default {
   'editor.formschema.create.title.text': 'Name of the new form schema',
   'editor.formschema.create.type': 'Object schema type',
   'editor.formschema.create.type.text': 'Type of the object schema',
-  'editor.formschema.edit.text.headline': 'Edit text element',
   'editor.formschema.edit.css.class': 'CSS classes',
   'editor.formschema.edit.css.style': 'CSS styles',
   'editor.formschema.edit.css.class.text': 'Classes',

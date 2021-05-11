@@ -97,7 +97,7 @@ export class Client {
     }
 
     if (options.retry === undefined) {
-      // options.retry = true
+      options.retry = true
     }
 
     const combinedOptions = defaultsDeep(options, defaults)
@@ -119,12 +119,23 @@ export class Client {
       const res = await fetch(reqURL, combinedOptions)
       status = res.status
       if (Number(res.status) === 401) {
-        /* if (options.retry) {
-          if (await $user.refreshSession()) {
-            return this.req(url, { ...options, retry: false })
+        // Check whether the error was returned because of keycloak or an invalid api endpoint configuration
+        try {
+          await $user.auth.loadUserProfile()
+        } catch (e) { // If the user profile couldn't get loaded, the session seems to be invalid, so we try to refresh it
+          if (options.retry) {
+            try {
+              await $user.auth.refreshSession()
+              return this.req(url, { ...options, retry: false })
+            } catch (e) {
+              console.error('Couldn\'t refresh session');
+              await $user.auth.logout('/');
+            }
+          } else if (options.retry === false) {
+            await $user.auth.logout('/')
           }
-        } */
-        await $user.auth.logout('/')
+        }
+
         return Promise.reject(new Error(`Invalid JWT: ${combinedOptions.method || 'GET'} ${reqURL}`))
       } else if (options.method === 'DELETE') {
         return Promise.resolve()
