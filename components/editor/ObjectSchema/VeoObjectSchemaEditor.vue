@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, watch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, Ref, watch } from '@nuxtjs/composition-api'
 
 import ObjectSchemaHelper, {
   IVeoOSHCustomAspect,
@@ -134,6 +134,7 @@ import {
   IInputType,
   INPUT_TYPES
 } from '~/types/VeoEditor'
+import { cloneDeep } from 'lodash'
 
 interface IProps {
   value: ObjectSchemaHelper
@@ -184,6 +185,7 @@ export default defineComponent<IProps>({
      */
     // @ts-ignore
     const objectSchemaHelper: Ref<ObjectSchemaHelper> = ref(props.value)
+    const displayLanguage: Ref<string> | undefined = inject('displayLanguage');
 
     const customAspects: Ref<EditorPropertyItem[]> = ref([])
     const customLinks: Ref<EditorPropertyItem[]> = ref([])
@@ -275,12 +277,21 @@ export default defineComponent<IProps>({
     }
 
     function doEditItem(object: { item: IVeoOSHCustomAspect | IVeoOSHCustomLink; id: string }) {
+      let original;
+
+      if(objectSchemaDialog.value.type === 'aspect') {
+        original = cloneDeep(objectSchemaHelper.value.getCustomAspect(object.id))
+      } else {
+        original = cloneDeep(objectSchemaHelper.value.getCustomLink(object.id))
+      }
+
       if (object.item.title !== object.id) {
         if (objectSchemaDialog.value.type === 'aspect') {
           objectSchemaHelper.value.renameCustomAspect(object.id, object.item.title)
         } else {
           objectSchemaHelper.value.renameCustomLink(object.id, object.item.title)
         }
+        objectSchemaHelper.value.removeTranslationsContainingKey(object.id)
       }
 
       if (objectSchemaDialog.value.type === 'aspect') {
@@ -289,12 +300,34 @@ export default defineComponent<IProps>({
         objectSchemaHelper.value.updateCustomLink(object.item.title, object.item as IVeoOSHCustomLink)
       }
 
-      // Add a translation key for each attribute (already existing keys won't be overwritten)
-      for(let attribute of object.item.attributes) {
-        objectSchemaHelper.value.addTranslation(
-          `${attribute.prefix}${attribute.title}`,
-          `${attribute.description}`
-        );
+      // Add a translation key for each attribute
+      if(displayLanguage) {
+        for(let attribute of object.item.attributes) {
+          objectSchemaHelper.value.updateTranslation(
+            displayLanguage.value,
+            `${attribute.prefix}${attribute.title}`,
+            `${attribute.description}`,
+          );
+
+          if(attribute.type === 'enum' && attribute.enum) {
+            for(const option of attribute.enum) {
+              objectSchemaHelper.value.addTranslation(
+                `${attribute.prefix}${attribute.title}_${option}`,
+                option,
+                displayLanguage.value
+              )
+            }
+          }
+        }
+
+        // Remove translations of renamed attributes
+        if(original) {
+          for(let oldAttribute of original.attributes) {
+            if(!object.item.attributes.find(item => item.title === oldAttribute.title)) {
+              objectSchemaHelper.value.removeTranslation(`${oldAttribute.prefix}${oldAttribute.title}`)
+            }
+          }
+        }
       }
 
       objectSchemaDialog.value.value = false
