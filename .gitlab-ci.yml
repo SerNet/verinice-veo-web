@@ -35,7 +35,8 @@ test:e2e:
     VEO_API_USE_PROXY: 'false'
     VEO_API_URL: https://veo.develop.cpmsys.io/
   script:
-    - echo $EXTERNAL_URL
+    - npm ci
+    - echo $CI_COMMIT_REF_SLUG
     - npm run test:e2e -- --config baseUrl="https://131-review-164-veo-49-6ankbc.on.nbrx.de"
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
