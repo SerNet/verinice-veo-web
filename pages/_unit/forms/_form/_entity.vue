@@ -124,6 +124,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router/types/index'
+import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils'
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
@@ -387,6 +388,9 @@ export default Vue.extend({
         this.revisionCache = content // cache revision for use after modified-dialog is closed with "yes"
         this.formModified.revisionDialog = true
       } else {
+        if (isRevision && !this.validateRevisionSchema(content)) {
+          return
+        }
         // fill form with revision or newest data
         this.isRevision = isRevision
         if (isRevision) {
@@ -397,11 +401,24 @@ export default Vue.extend({
       }
     },
     async showRevisionAfterDialog() {
+      // close dialog without action if revision schema is invalid
+      if (!this.validateRevisionSchema(this.revisionCache)) {
+        this.formModified.revisionDialog = false
+        return
+      }
       // fill form with cached revision data and clsoe dialog
       this.isRevision = true
       this.form.objectData = this.revisionCache
       this.formModified.revisionDialog = false
       this.formModified.isModified = false
+    },
+    validateRevisionSchema(revision: IBaseObject) {
+      const validator = new ObjectSchemaValidator()
+      const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision)
+      if (!isValid) {
+        this.showError(500, this.$t('revision_incompatible'))
+      }
+      return isValid
     }
   },
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
@@ -429,7 +446,8 @@ export default Vue.extend({
     "navigation.title": "Contents",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
-    "scope_delete_error": "Failed to delete scope"
+    "scope_delete_error": "Failed to delete scope",
+    "revision_incompatible": "The revision is incompatible to the schema and cannot be shown."
   },
   "de": {
     "history": "Verlauf",
@@ -437,7 +455,8 @@ export default Vue.extend({
     "navigation.title": "Inhalt",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
-    "scope_delete_error": "Scope konnte nicht gelöscht werden"
+    "scope_delete_error": "Scope konnte nicht gelöscht werden",
+    "revision_incompatible": "Die Version ist inkompatibel zum Schema und kann daher nicht angezeigt werden."
   }
 }
 </i18n>

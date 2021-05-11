@@ -1,4 +1,5 @@
 import { isArray, isObject } from 'lodash'
+import { IVeoObjectSchema } from '~/types/VeoTypes'
 import ObjectSchemaHelper from './ObjectSchemaHelper2'
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string, value: any }
@@ -27,6 +28,30 @@ export interface VeoSchemaValidatorValidationResult {
 export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = []
   private warnings: VeoSchemaValidatorMessage[] = []
+
+  public fitsObjectSchema(schema: any, data: any): boolean {
+    let isFitting = true
+    for (let attribute in data) {
+      if (!schema.properties[attribute]) {
+        isFitting = false
+      }
+      if (attribute === 'customAspects') {
+        for (let customAspect in data.customAspects) {
+          if (!schema.properties.customAspects.properties[customAspect]) {
+            isFitting = false
+          }
+        }
+      }
+      if (attribute === 'links') {
+        for (let link in data.links) {
+          if (!schema.properties.links.properties[link]) {
+            isFitting = false
+          }
+        }
+      }
+    }
+    return false
+  }
 
   public validate(schema: any, context: string = 'schema'): VeoSchemaValidatorValidationResult {
     if (!schema.title) {
