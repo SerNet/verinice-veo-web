@@ -50,7 +50,7 @@ export default class ObjectSchemaValidator {
         }
       }
     }
-    return false
+    return isFitting
   }
 
   public validate(schema: any, context: string = 'schema'): VeoSchemaValidatorValidationResult {
