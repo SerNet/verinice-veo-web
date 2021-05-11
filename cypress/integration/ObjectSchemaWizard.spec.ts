@@ -9,7 +9,7 @@ describe('Objectschema Wizard', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('http://localhost:3000/editor')
+    cy.visit('/editor')
   })
 
   beforeEach(() => {

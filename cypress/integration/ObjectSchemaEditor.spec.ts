@@ -209,7 +209,7 @@ describe('Objectschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('http://localhost:3000/editor')
+    cy.visit('/editor')
 
     cy.contains('.v-list-item--link', 'Objektschema Editor')
       .should('have.attr', 'href', '/editor/objectschema')

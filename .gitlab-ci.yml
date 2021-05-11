@@ -17,22 +17,6 @@ review:
     auto_stop_in: 4 week
 
 # for cypress tests
-stages:
-  - test_e2e
-  - build
-  - test
-  - deploy
-  - review
-  - dast
-  - staging
-  - canary
-  - production
-  - incremental rollout 10%
-  - incremental rollout 25%
-  - incremental rollout 50%
-  - incremental rollout 100%
-  - performance
-  - cleanup
 
 # cache using branch name
 # https://gitlab.com/help/ci/caching/index.md
@@ -42,29 +26,17 @@ cache:
     - .npm
     - cache/Cypress
 
-test_e2e:
+test:e2e
   image: cypress/base:14.15.4
-  stage: test_e2e
+  stage: performance
   tags: 
     - 'cpmsys01'
   variables:
     VEO_API_USE_PROXY: "false"
     VEO_API_URL: https://veo.develop.cpmsys.io/
-  before_script:
-    - npm ci
-    - locale -a
-    - npm run cy:verify
-    - npm run build
   script:
-    # - npm install
-    # - npm run build
-    # print CI environment variables for reference
-    # - $(npm bin)/print-env CI
-    # make sure Cypress can run
-    # - npm run cy:verify
-    # start the server in the background
-    # - npm run start &
-    - npm run test:e2e-ci
+    echo $EXTERNAL_URL
+    npm run test:e2e -- --config baseUrl="https://131-review-164-veo-49-6ankbc.on.nbrx.de"
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
@@ -78,3 +50,40 @@ test_e2e:
       - cypress/videos/**/*.mp4
       - cypress/screenshots/**/*.png
     expire_in: 1 day
+
+
+# test_e2e:
+#   image: cypress/base:14.15.4
+#   stage: test_e2e
+#   tags: 
+#     - 'cpmsys01'
+#   variables:
+#     VEO_API_USE_PROXY: "false"
+#     VEO_API_URL: https://veo.develop.cpmsys.io/
+#   before_script:
+#     - npm ci
+#     - npm run cy:verify
+#     - npm run build
+#   script:
+#     # - npm install
+#     # - npm run build
+#     # print CI environment variables for reference
+#     # - $(npm bin)/print-env CI
+#     # make sure Cypress can run
+#     # - npm run cy:verify
+#     # start the server in the background
+#     # - npm run start &
+#     - npm run test:e2e-ci
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+#       when: never
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#       when: always
+#     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+#       when: always
+#   artifacts:
+#     when: always
+#     paths:
+#       - cypress/videos/**/*.mp4
+#       - cypress/screenshots/**/*.png
+#     expire_in: 1 day
