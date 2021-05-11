@@ -1,0 +1,25 @@
+{
+  "name": "Test Formschema",
+  "modelType": "process",
+  "subType": "TF",
+  "translation": {
+    "de": {}
+  },
+  "content": {
+    "type": "Layout",
+    "options": {
+      "format": "group",
+      "direction": "vertical"
+    },
+    "elements": [
+      {
+        "type": "Label",
+        "text": "#lang/text_45b08d55-78ff-430e-a8ae-cb6faaee497d"
+      },
+      {
+        "type": "Label",
+        "text": "#lang/text_bff6d345-b0f7-401f-8473-a9acb5694b2e"
+      }
+    ]
+  }
+}

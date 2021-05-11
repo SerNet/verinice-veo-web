@@ -1,5 +1,5 @@
 <template>
-  <LayoutFormat v-bind="$props" @input="$emit('input', $event)" @change="$emit('input', $event)">
+  <LayoutFormat v-bind="$props" v-on="$listeners">
     <slot />
   </LayoutFormat>
 </template>

@@ -1,0 +1,25 @@
+{
+  "name": "Test Formschema",
+  "modelType": "process",
+  "subType": "TF",
+  "translation": {
+    "de": {}
+  },
+  "content": {
+    "type": "Layout",
+    "options": {
+      "format": "group",
+      "direction": "vertical"
+    },
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/links/properties/process_InternalRecipientLink",
+        "options": {
+          "label": "#lang/process_InternalRecipientLink"
+        },
+        "elements": []
+      }
+    ]
+  }
+}

@@ -57,10 +57,7 @@ export default Vue.extend({
         {
           cols: '4',
           title: 'Layouts:',
-          items: [
-            { to: HELP_ROOT + '/layouts/group', title: 'Group' },
-            { to: HELP_ROOT + '/layouts/page', title: 'Page' }
-          ]
+          items: [{ to: HELP_ROOT + '/layouts/group', title: 'Group' }]
         },
         {
           cols: '4',

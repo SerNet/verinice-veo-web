@@ -2,7 +2,7 @@
   <VeoDialog
     :key="formSchemaPointer"
     :value="value"
-    :headline="$t('editor.formschema.edit.text.headline')"
+    :headline="$t('editLabelHeadline')"
     large
     @input="onDialogChanged"
   >
@@ -10,15 +10,10 @@
       <v-form>
         <v-row no-gutters class="align-center mt-4">
           <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;"> {{ $t('labelText') }}*: </span>
+            <span style="font-size: 1.2rem;"> {{ $t('text') }}*: </span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-text-field
-              :value="localCustomTranslation[name]"
-              :label="$t('labelText')"
-              required
-              @input="onInputText"
-            />
+            <v-text-field :value="localCustomTranslation[name]" :label="$t('input')" required @input="onInputText" />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center">
@@ -198,10 +193,15 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "text": "Label text"
+    "editLabelHeadline": "Edit text element",
+    "text": "Element text",
+    "input": "Text"
   },
   "de": {
-    "text": "Labeltext"
+    "editLabelHeadline": "Text Element anpassen",
+    "text": "Text des Elements",
+    "input": "Text"
+
   }
 }
 </i18n>
