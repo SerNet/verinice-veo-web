@@ -1,17 +1,39 @@
 <template>
   <VeoPageWrapper>
     <template #default>
-      <VeoPage absolute-size :cols="12" :md="8" :xl="8" sticky-header :title="objectTitle" :loading="$fetchState.pending">
+      <VeoPage
+        absolute-size
+        :cols="12"
+        :md="8"
+        :xl="8"
+        sticky-header
+        :title="objectTitle"
+        :loading="$fetchState.pending"
+      >
         <template #default>
-          <VeoEntityDisplayOptions :rootRoute="`/${$route.params.unit}/scopes`" :current-entity="form.objectData">
-          <v-btn color="primary" outlined :disabled="$fetchState.pending" :loading="deleteEntityDialog.value === true" @click="showDeleteEntityDialog">
-              {{ $t('global.button.delete') }}
-            </v-btn>
-            <v-btn color="primary" outlined :disabled="$fetchState.pending" :loading="saveBtnLoading" @click="doSaveEntity">
-              {{ $t('global.button.save') }}
-            </v-btn>
+          <VeoEntityDisplayOptions
+            :rootRoute="`/${$route.params.unit}/scopes`"
+            :current-entity="form.objectData"
+          >
+            <v-btn
+              color="primary"
+              outlined
+              :disabled="$fetchState.pending || isRevision"
+              :loading="deleteEntityDialog.value === true"
+              @click="showDeleteEntityDialog"
+            >{{ $t('global.button.delete') }}</v-btn>
+            <v-btn
+              color="primary"
+              outlined
+              :disabled="$fetchState.pending || isRevision"
+              :loading="saveBtnLoading"
+              @click="doSaveEntity"
+            >{{ $t('global.button.save') }}</v-btn>
           </VeoEntityDisplayOptions>
-          <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
+          <div
+            v-if="$fetchState.pending"
+            class="fill-width fill-height d-flex justify-center align-center"
+          >
             <v-progress-circular indeterminate color="primary" size="50" />
           </div>
           <div v-else>
@@ -22,6 +44,7 @@
               :is-valid.sync="isValid"
               :error-messages.sync="errorMessages"
               class="mb-8"
+              :disabled="isRevision"
               @input="entityModified.isModified = true"
             />
             <VeoAlert
@@ -38,6 +61,12 @@
               :item="form.objectData"
               @exit="$router.push(entityModified.target)"
             />
+            <!-- seperate modified dialog for version switching to avoid interferences -->
+            <VeoEntityModifiedDialog
+              v-model="entityModified.revisionDialog"
+              :item="form.objectData"
+              @exit="showRevisionAfterDialog()"
+            />
             <VeoDeleteEntityDialog
               v-model="deleteEntityDialog.value"
               v-bind="deleteEntityDialog"
@@ -53,7 +82,11 @@
             <v-tab disabled>{{ $t('history') }}</v-tab>
           </template>
           <template #items>
-            <VeoObjectHistory :object="form.objectData" :loading="$fetchState.pending" />
+            <VeoObjectHistory
+              :object="form.objectData"
+              :loading="$fetchState.pending"
+              @show-revision="showRevision"
+            />
           </template>
         </VeoTabs>
       </VeoPage>
@@ -66,7 +99,7 @@ import Vue from 'vue'
 import { upperFirst } from 'lodash'
 import { Route } from 'vue-router/types/index'
 
-import { IForm, separateUUIDParam } from '~/lib/utils'
+import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
@@ -74,12 +107,15 @@ import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
 interface IData {
   form: IForm
   isValid: boolean
+  isRevision: boolean
+  revisionCache: IBaseObject
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: IVeoEventPayload & { value: boolean, error: number }
+  alert: IVeoEventPayload & { value: boolean; error: number }
   entityModified: {
     isModified: boolean
     dialog: boolean
+    revisionDialog: boolean
     target?: Route
   }
   deleteEntityDialog: {
@@ -98,6 +134,8 @@ export default Vue.extend({
         lang: {}
       },
       isValid: true,
+      isRevision: false,
+      revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
       alert: {
@@ -111,6 +149,7 @@ export default Vue.extend({
       entityModified: {
         isModified: false,
         dialog: false,
+        revisionDialog: false,
         target: undefined
       },
       deleteEntityDialog: {
@@ -181,12 +220,15 @@ export default Vue.extend({
     },
     onDeleteEntityError(error: any) {
       this.$root.$emit(VeoEvents.ALERT_ERROR, {
-        title: this.deleteEntityDialog.item?.type === 'scope' ? this.$t('scope_delete_error') : this.$t('object_delete_error'),
+        title:
+          this.deleteEntityDialog.item?.type === 'scope'
+            ? this.$t('scope_delete_error')
+            : this.$t('object_delete_error'),
         text: JSON.stringify(error)
       })
     },
     showError(status: number, message: string) {
-      if(status === 412) {
+      if (status === 412) {
         this.alert.text = this.$t('global.appstate.alert.object_modified')
         this.alert.saveButtonText = this.$t('global.button.no')
       } else {
@@ -208,17 +250,41 @@ export default Vue.extend({
           }
         })
       }
+    },
+    async showRevision(_event: any, content: IBaseObject, isRevision: boolean) {
+      // show modified dialog before switching versions if needed
+      if (this.entityModified.isModified) {
+        this.revisionCache = content // cache revision for use after modified-dialog is closed with "yes"
+        this.entityModified.revisionDialog = true
+      } else {
+        // fill form with revision or newest data
+        this.isRevision = isRevision
+        if (isRevision) {
+          this.form.objectData = content // show revision content in form
+        } else {
+          await this.$fetch() // refetch newest version from entity endpoint, not history
+        }
+      }
+    },
+    async showRevisionAfterDialog() {
+      // fill form with cached revision data and clsoe dialog
+      this.isRevision = true
+      this.form.objectData = this.revisionCache
+      this.entityModified.revisionDialog = false
+      this.entityModified.isModified = false
     }
   },
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if(this.entityModified.isModified && this.entityModified.dialog) {
+    if (this.entityModified.isModified && this.entityModified.dialog) {
       next()
-    } else if (this.entityModified.isModified) { // If the form was modified and the dialog is closed, show it and abort navigation
+    } else if (this.entityModified.isModified) {
+      // If the form was modified and the dialog is closed, show it and abort navigation
       this.entityModified.target = to
       this.entityModified.dialog = true
       next(false)
-    } else { // The form wasn't modified, proceed as if this hook doesn't exist
+    } else {
+      // The form wasn't modified, proceed as if this hook doesn't exist
       next()
     }
   }

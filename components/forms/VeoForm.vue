@@ -6,20 +6,13 @@ import { JsonPointer } from 'json-ptr'
 import vjp from 'vue-json-pointer'
 import Ajv, { RequiredParams } from 'ajv'
 import { chunk, merge } from 'lodash'
-import {
-  UISchema,
-  UISchemaElement,
-  UIRule
-} from '~/types/UISchema'
+import { UISchema, UISchemaElement, UIRule } from '~/types/UISchema'
 import { BaseObject, IApi } from '~/components/forms/utils'
 import Label from '~/components/forms/Label.vue'
 import Control from '~/components/forms/Control.vue'
 import Layout from '~/components/forms/Layout.vue'
 import Wrapper from '~/components/forms/Wrapper.vue'
-import {
-  IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslation
-} from '~/types/VeoTypes'
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
 
 interface IErrorMessageElement {
   pointer: string
@@ -59,6 +52,7 @@ export default Vue.extend({
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
+    disabled: Boolean,
     generalTranslation: {
       type: Object,
       default: () => {}
@@ -126,7 +120,7 @@ export default Vue.extend({
     pages(): UISchemaElement[] | undefined {
       if (this.localUI && this.localUI.elements) {
         return this.localUI.elements
-          .filter(el => el.type === 'Layout' && el.options && el.options.format === 'page')
+          .filter((el) => el.type === 'Layout' && el.options && el.options.format === 'page')
           .map((el, i) => ({
             ...el,
             options: { ...el.options, _pageID: i + 1 }
@@ -139,7 +133,7 @@ export default Vue.extend({
         return this.pages.filter(
           // TODO: it is a question, how Vue knows, what internally (rules) in function changes,
           // it works now, but it can probably cause BUGs, and then needs to pay ATTENTION!!!
-          el => this.evaluateRule(el.rule).visible === true
+          (el) => this.evaluateRule(el.rule).visible === true
         )
       }
       return undefined
@@ -228,7 +222,7 @@ export default Vue.extend({
 
         // Look in the new array of visible pages and find what the index of old current page is
         const currentPageIndexInNewValue = newValue.findIndex(
-          el => el.options && el.options._pageID === oldCurrentPageID
+          (el) => el.options && el.options._pageID === oldCurrentPageID
         )
         // if the old current page was found in the new visible pages, adjust this.page, else this.page is 1
         this.page = currentPageIndexInNewValue !== -1 ? currentPageIndexInNewValue + 1 : 1
@@ -260,8 +254,8 @@ export default Vue.extend({
     if (this.value && this.value.customAspects) {
       const customAspectsProperties = JsonPointer.get(this.localSchema, '#/properties/customAspects/properties') as any
       Object.keys(this.value.customAspects)
-        .filter(property => typeof this.value.customAspects[property].type === 'undefined')
-        .forEach(property => {
+        .filter((property) => typeof this.value.customAspects[property].type === 'undefined')
+        .forEach((property) => {
           const type = customAspectsProperties?.[property]?.properties?.type?.enum?.[0]
           if (type) {
             vjp.set(this.value, `/customAspects/${property}/type`, type)
@@ -382,8 +376,8 @@ export default Vue.extend({
       const uniqueCustomAspects = [
         ...new Set(
           scopes
-            .filter(scope => scope.includes('#/properties/customAspects/properties'))
-            .map(scope => {
+            .filter((scope) => scope.includes('#/properties/customAspects/properties'))
+            .map((scope) => {
               const matchedCustomAspect = scope.match(regCustomAspect)
               return matchedCustomAspect && matchedCustomAspect[0]
             })
@@ -392,7 +386,7 @@ export default Vue.extend({
 
       return [
         ...content.filter((el: any) => el.scope && !regCustomAspect.test(el.scope)),
-        ...uniqueCustomAspects.map(uniqueCustomAspect => {
+        ...uniqueCustomAspects.map((uniqueCustomAspect) => {
           return {
             type: 'Layout',
             options: {
@@ -420,15 +414,15 @@ export default Vue.extend({
       const items: BaseObject = {}
       // @ts-ignore
       let schemaMap = Object.keys(JsonPointer.flatten(objectSchema, '#')) // TODO: Is '#' the right argument?
-      const excludedPropertiesRegexp = excludedProperties.map(prop => new RegExp(prop))
+      const excludedPropertiesRegexp = excludedProperties.map((prop) => new RegExp(prop))
       schemaMap =
         excludedPropertiesRegexp.length > 0
-          ? schemaMap.filter(el => !excludedPropertiesRegexp.some(reg => reg.test(el)))
+          ? schemaMap.filter((el) => !excludedPropertiesRegexp.some((reg) => reg.test(el)))
           : schemaMap
       const scopes = schemaMap
-        .filter(el => /#\/(\w|\/)*properties\/\w+$/g.test(el))
-        .filter((el, i, arr) => !arr.some(someEl => new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)))
-        .filter(el => {
+        .filter((el) => /#\/(\w|\/)*properties\/\w+$/g.test(el))
+        .filter((el, i, arr) => !arr.some((someEl) => new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)))
+        .filter((el) => {
           if (/\/properties\/\w+\/items\/properties\/\w+$/g.test(el)) {
             const [parent, child] = el.split(/\/items(?=\/properties\/\w+$)/g)
             items[parent] = items[parent] ? [...items[parent], `#${child}`] : [`#${child}`]
@@ -437,7 +431,7 @@ export default Vue.extend({
             return true
           }
         })
-      let content = scopes.map(scope => this.generateControl(scope, items, mode))
+      let content = scopes.map((scope) => this.generateControl(scope, items, mode))
 
       // Generate Groups for each customAspect
       content = this.generateGroups(content, scopes)
@@ -518,6 +512,7 @@ export default Vue.extend({
               ...rule,
               elements: element.elements,
               options: element.options,
+              disabled: this.disabled,
               ...partOfProps
             },
             on: {

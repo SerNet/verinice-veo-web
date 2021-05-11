@@ -7,22 +7,27 @@
     </div>
   </div>
   <v-list v-else>
-    <div v-for="(version, index) of history" :key="version.version" >
-      <v-divider v-if="index > 0" />
-      <v-list-item three-line>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ $t('version') }} <b>{{ version.version }}</b>: {{ (new Date(version.time)).toLocaleString() }}
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            {{ $t('by') }} <b>{{ version.author }}</b>
-          </v-list-item-subtitle>
-          <v-list-item-subtitle>
-            {{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-    </div>
+    <v-list-item-group color="primary" :value="0" mandatory>
+      <div v-for="(version, index) of history" :key="version.changeNumber">
+        <v-divider v-if="index > 0" />
+        <v-list-item three-line>
+          <v-list-item-content
+            @click="$emit('show-revision', {}, version.content, index === 0 ? false : true)"
+          >
+            <v-list-item-title>
+              {{ $t('version') }}
+              <b>{{ version.changeNumber }}</b>
+              : {{ (new Date(version.time)).toLocaleString() }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              {{ $t('by') }}
+              <b>{{ version.author }}</b>
+            </v-list-item-subtitle>
+            <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </div>
+    </v-list-item-group>
   </v-list>
 </template>
 
@@ -53,16 +58,17 @@ export default Vue.extend({
     }
   },
   async fetch() {
-    if(this.object && !this.loading) {
-      this.history = (await this.$api.history.fetchVersions(this.object))
-        .sort((a: IVeoObjectHistoryEntry, b: IVeoObjectHistoryEntry) => {
-          return a.version > b.version ? -1 : a.version < b.version ? 1 : 0
-        })
+    if (this.object && !this.loading) {
+      this.history = (await this.$api.history.fetchVersions(this.object)).sort(
+        (a: IVeoObjectHistoryEntry, b: IVeoObjectHistoryEntry) => {
+          return a.changeNumber > b.changeNumber ? -1 : a.changeNumber < b.changeNumber ? 1 : 0
+        }
+      )
     }
   },
   watch: {
     loading(newValue: boolean) {
-      if(!newValue && this.object) {
+      if (!newValue && this.object) {
         this.$nextTick().then(() => {
           this.$fetch()
         })

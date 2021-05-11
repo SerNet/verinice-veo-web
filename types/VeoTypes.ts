@@ -153,7 +153,7 @@ export interface IVeoObjectHistoryEntry {
   content: IVeoObjectSchema
   time: string
   type: string
-  version: number
+  changeNumber: number
 }
 
 /**
