@@ -312,7 +312,7 @@ export default defineComponent<IProps>({
           if(attribute.type === 'enum' && attribute.enum) {
             for(const option of attribute.enum) {
               objectSchemaHelper.value.addTranslation(
-                `${attribute.prefix}${attribute.title}_${option}`,
+                option,
                 option,
                 displayLanguage.value
               )
