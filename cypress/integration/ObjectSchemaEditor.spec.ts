@@ -645,7 +645,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it.skip('removes and adds link attributes', function() {
+  it('removes and adds link attributes', function() {
     cy.contains('InternalRecipientLink')
       .closest('.v-list-item')
       .find('.v-btn')
