@@ -1,6 +1,10 @@
 {
-  "projectId": "v30",
-  "viewportWidth": 1200,
-  "viewportHeight": 800,
-  "scrollBehavior": "center"
+  "baseUrl": "http://localhost:3000",
+  "viewportWidth": 1440,
+  "viewportHeight": 796,
+  "scrollBehavior": "center",
+  "videoCompression": false,
+  "defaultCommandTimeout": 6000,
+  "requestTimeout": 6000,
+  "chromeWebSecurity": false
 }

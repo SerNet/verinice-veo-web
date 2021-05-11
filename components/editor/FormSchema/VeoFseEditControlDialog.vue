@@ -27,6 +27,7 @@
           <v-col :cols="12" :md="5">
             <v-select
               v-model="activeControlType.name"
+              :label="$t('typeInput')"
               :disabled="alternatives.length === 1"
               :append-icon="alternatives.length === 1 ? '' : undefined"
               :items="alternatives"
@@ -72,7 +73,11 @@
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.direction') }}:</span>
           </v-col>
           <v-col :cols="12" :md="5">
-            <v-autocomplete v-model="activeControlType.direction" :items="directionItems" />
+            <v-autocomplete
+              v-model="activeControlType.direction"
+              :items="directionItems"
+              :label="$t('editor.formschema.edit.input.direction')"
+            />
           </v-col>
         </v-row>
       </v-form>
@@ -157,7 +162,7 @@ interface IProps {
 export default defineComponent<IProps>({
   components: {
     Draggable,
-    Control: (): Promise<any> => import('~/components/editor/FormSchema/Generator/elements/VeoFseControl.vue')
+    VeoFseControl: (): Promise<any> => import('~/components/editor/FormSchema/Generator/elements/VeoFseControl.vue')
   },
   props: {
     value: {
@@ -436,13 +441,16 @@ export default defineComponent<IProps>({
     "editControlHeadline": "Edit input element",
     "highlightControl": "Highlight element",
     "linkAttributes": "Link attributes",
-    "type": "Control type"
+    "type": "Control type",
+    "typeInput": "Typ"
   },
   "de": {
     "editControlHeadline": "Input Element anpassen",
     "highlightControl": "Element hervorheben",
     "linkAttributes": "Linkattribute",
-    "type": "Steuerelement Typ"
+    "type": "Steuerelement Typ",
+    "typeInput": "Typ"
+
   }
 }
 </i18n>

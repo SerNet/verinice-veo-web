@@ -5,7 +5,7 @@ import { JsonPointer } from 'json-ptr'
 
 let processRealValues: { text: string; numberOfProperties: number }[] = []
 
-import { getCurrentOS } from '../support/utils'
+import { getEditorData } from '../support/utils'
 
 const attributeTypes = [
   { value: 'string', text: 'Text' },
@@ -128,7 +128,7 @@ const linkTarget = {
       title: 'The id of the target object.'
     },
     type: {
-      enum: ['Person']
+      enum: ['person']
     }
   }
 }
@@ -187,7 +187,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas/process?domains=GDPR%2CISO_27001'
+        url: /.*\/schemas\/process.*/
       },
       req => {
         req.reply({ fixture: 'objectschema/process.json' })
@@ -197,7 +197,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/schemas'
+        url: /.*\/schemas$/
       },
       req => {
         req.reply({
@@ -209,27 +209,19 @@ describe('Objectschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('http://localhost:3000/editor', {
-      onBeforeLoad(win) {
-        Object.defineProperty(win.navigator, 'language', { value: 'de-DE' })
-        Object.defineProperty(win.navigator, 'languages', { value: ['de'] })
-        Object.defineProperty(win.navigator, 'accept_languages', { value: ['de'] })
-      },
-      headers: {
-        'Accept-Language': 'de'
-      }
-    })
+    cy.visit('/editor')
 
-    cy.contains('Objektschema Editor')
-      .closest('.v-list-item.v-list-item--link')
+    cy.contains('.v-list-item--link', 'Objektschema Editor')
       .should('have.attr', 'href', '/editor/objectschema')
       .click()
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('.v-select', 'Typ des Objektschemas').type('Process{enter}')
+      cy.contains('.v-select', 'Typ des Objektschemas')
+        .type('Process{enter}')
+        .wait(1)
       cy.get('.v-card__actions')
-        .contains('Weiter')
+        .contains('.v-btn', 'Weiter')
         .click()
         .wait(1)
     })
@@ -306,7 +298,7 @@ describe('Objectschema Editor', () => {
       .should('have.length', processRealValues[1].numberOfProperties - 1)
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_SensitiveData') || null
@@ -350,7 +342,7 @@ describe('Objectschema Editor', () => {
     })
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return (
@@ -361,9 +353,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@aspect')
         .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+          return JSON.stringify(aspect.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(changedAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(changedAttributesResultedSchema))
     })
   })
 
@@ -425,7 +417,7 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_AccessAuthorization') || null
@@ -434,9 +426,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@aspect')
         .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+          return JSON.stringify(aspect.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(addedAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(addedAttributesResultedSchema))
     })
   })
 
@@ -464,7 +456,7 @@ describe('Objectschema Editor', () => {
       .should('not.contain.text', 'TestAspectOne')
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectOne') || null
@@ -518,7 +510,7 @@ describe('Objectschema Editor', () => {
       .should('contain.text', 'TestAspectTwo')
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
@@ -527,9 +519,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@aspect')
         .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties, null, 2)
+          return JSON.stringify(aspect.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema, null, 2))
+        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema))
     })
 
     cy.contains('TestAspectTwo')
@@ -551,7 +543,7 @@ describe('Objectschema Editor', () => {
       .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
       .should('not.contain.text', 'TestAspectTwo')
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
@@ -584,7 +576,7 @@ describe('Objectschema Editor', () => {
       .should('have.length', processRealValues[2].numberOfProperties - 1)
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_ResponsibleDepartment') || null
@@ -636,7 +628,7 @@ describe('Objectschema Editor', () => {
     })
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_LegalBasisTest') || null
@@ -644,10 +636,10 @@ describe('Objectschema Editor', () => {
         .as('link')
         .should('not.be.null')
       cy.get('@link').then((link: any) => {
-        cy.wrap(JSON.stringify(link.items.properties.target, null, 2)).should('eq', JSON.stringify(linkTarget, null, 2))
-        cy.wrap(JSON.stringify(link.items.properties.attributes.properties, null, 2)).should(
+        cy.wrap(JSON.stringify(link.items.properties.target)).should('eq', JSON.stringify(linkTarget))
+        cy.wrap(JSON.stringify(link.items.properties.attributes.properties)).should(
           'eq',
-          JSON.stringify(changedLinkAttributesResultedSchema, null, 2)
+          JSON.stringify(changedLinkAttributesResultedSchema)
         )
       })
     })
@@ -711,7 +703,7 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_InternalRecipientLink') || null
@@ -720,9 +712,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@link')
         .then((link: any) => {
-          return JSON.stringify(link.items.properties.attributes.properties, null, 2)
+          return JSON.stringify(link.items.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(addedLinkAttributesResultedSchema, null, 2))
+        .should('eq', JSON.stringify(addedLinkAttributesResultedSchema))
     })
   })
 
@@ -763,7 +755,7 @@ describe('Objectschema Editor', () => {
       .should('not.contain.text', 'TestLinkOne')
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkOne') || null
@@ -830,7 +822,7 @@ describe('Objectschema Editor', () => {
       .should('contain.text', 'TestLinkTwo')
 
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkTwo') || null
@@ -839,9 +831,9 @@ describe('Objectschema Editor', () => {
         .should('not.be.null')
       cy.get('@link')
         .then((link: any) => {
-          return JSON.stringify(link.items.properties.attributes.properties, null, 2)
+          return JSON.stringify(link.items.properties.attributes.properties)
         })
-        .should('eq', JSON.stringify(TestLinkTwoAttributeSchema, null, 2))
+        .should('eq', JSON.stringify(TestLinkTwoAttributeSchema))
     })
 
     cy.contains('TestLinkTwo')
@@ -863,7 +855,7 @@ describe('Objectschema Editor', () => {
       .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
       .should('not.contain.text', 'TestLinkTwo')
     cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getCurrentOS(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
           return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkTwo') || null
@@ -880,9 +872,9 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getCurrentOS(editor)).then(currentOS => {
+      cy.wrap(getEditorData(editor)).then(currentOS => {
         cy.readFile('cypress/downloads/os_process.json').then(downloadedOS => {
-          cy.wrap(JSON.stringify(currentOS, null, 2)).should('eq', JSON.stringify(downloadedOS, null, 2))
+          cy.wrap(JSON.stringify(currentOS)).should('eq', JSON.stringify(downloadedOS))
         })
       })
     })

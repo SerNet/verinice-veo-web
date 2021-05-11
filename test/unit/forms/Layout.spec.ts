@@ -10,7 +10,7 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify()
 
 describe('Layout.vue', () => {
-  it('should render certain layout', async() => {
+  it('should render certain layout', async () => {
     const form: Renderable = {
       schema: {
         properties: {
@@ -102,9 +102,7 @@ describe('Layout.vue', () => {
 
     expect(layoutWrapper.exists()).toBe(true)
 
-    const horitontalLayoutSelector = wrapper.find(
-      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-layout.vf-page > .vf-layout > .row > .col > .row'
-    )
+    const horitontalLayoutSelector = wrapper.find('#elements-0-elements-1.vf-group .row.direction-horizontal')
     expect(horitontalLayoutSelector.exists()).toBe(true)
     expect(horitontalLayoutSelector.classes()).toContain('flex-row')
     expect(horitontalLayoutSelector.classes()).toContain('direction-horizontal')

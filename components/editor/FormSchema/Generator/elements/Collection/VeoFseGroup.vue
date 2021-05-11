@@ -4,7 +4,7 @@
       <div class="dropzone-placeholder-text subtitle-1">{{ $t('dropzonePlaceholder') }}</div>
     </div>
     <Draggable
-      class="dragArea d-flex fill-width fill-height"
+      class="dragArea d-flex fill-width fill-height dropzone"
       tag="div"
       style="overflow: auto;"
       :list="value.elements"
@@ -112,7 +112,8 @@ export default Vue.extend({
   },
   computed: {
     directionClass(): string {
-      if (this.options && this.options.direction === 'horizontal') {
+      // TODO: this.options does not trigger this computed property, when data is updated.
+      if (this.value.options && this.value.options.direction === 'horizontal') {
         return 'flex-row direction-horizontal'
       } else {
         return 'flex-column direction-vertical'
@@ -180,6 +181,6 @@ export default Vue.extend({
 }
 
 .level-0 {
-  border: 0
+  border: 0;
 }
 </style>
