@@ -114,7 +114,7 @@ describe('Objectschema Wizard', () => {
     })
   })
 
-  it('imports own objectschema by uploading', function () {
+  it('imports own objectschema by uploading', function () { // TODO
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.v-window-item--active')
         .contains('.v-text-field', 'Typ des Objektschemas')
@@ -122,7 +122,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active')
         .contains('.v-file-input', 'Objektschema hochladen (.json)')
         .find('input[type="file"]')
-        .attachFile('objectschema/process.json')
+        .attachFile('objectschema/empty.json')
         .wait(2000)
     })
     cy.contains('.v-text-field', 'Objektschema')
@@ -239,7 +239,7 @@ describe('Objectschema Wizard', () => {
       .should('have.value', 'Scope')
     cy.contains('.v-text-field', 'Beschreibung')
       .find('input')
-      .should('have.value', 'Schema for Scope')
+      .should('have.value', 'Schema for scope')
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.fixture('objectschema/scope.json').then(scopeOS => {
@@ -314,7 +314,7 @@ describe('Objectschema Wizard', () => {
       .should('have.value', 'Schema for Process')
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
-        cy.fixture('objectschema/proces.json').then(procesOS => {
+        cy.fixture('objectschema/process.json').then(procesOS => {
           cy.wrap(JSON.stringify(procesOS, null, 2)).should('eq', JSON.stringify(currentOS, null, 2))
         })
       })

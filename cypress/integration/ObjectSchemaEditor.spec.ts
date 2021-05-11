@@ -134,11 +134,11 @@ const linkTarget = {
 }
 
 const changedLinkAttributesResultedSchema = {
-  process_LegalBasisTest_ExplanationTest: {
+  process_LegalBasisTest_explanationTest: {
     title: 'ExplanationTest',
     type: 'string'
   },
-  process_LegalBasisTest_DocumentTest: {
+  process_LegalBasisTest_documentTest: {
     title: 'DocumentTest',
     type: 'boolean'
   }
@@ -440,8 +440,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it.only('opens dialog to create a new aspect and clicks close button to discard changes', function () {
-    // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
+  it('opens dialog to create a new aspect and clicks close button to discard changes', function () {
     cy.contains('Aspekte hinzufügen')
       .closest('.v-btn')
       .click()
@@ -727,7 +726,6 @@ describe('Objectschema Editor', () => {
   })
 
   it('opens dialog to create a new link and clicks close button to discard changes', function () {
-    // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
     cy.contains('Link hinzufügen')
       .closest('.v-btn')
       .click()
@@ -881,7 +879,7 @@ describe('Objectschema Editor', () => {
 
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
-        cy.readFile('cypress/downloads/os_process.json').then(downloadedOS => {
+        cy.readFile('cypress/downloads/os_Process.json').then(downloadedOS => {
           cy.wrap(JSON.stringify(currentOS, null, 2)).should('eq', JSON.stringify(downloadedOS, null, 2))
         })
       })
