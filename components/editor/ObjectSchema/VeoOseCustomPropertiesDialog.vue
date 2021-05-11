@@ -76,7 +76,7 @@
       </v-btn>
     </template>
     <template v-else #dialog-options>
-      <v-btn color="primary" outlined @click="$emit('delete-item')">
+      <v-btn v-if="!hideDeleteButton" color="primary" outlined @click="$emit('delete-item')">
         {{ $t(`delete.${type}`) }}
       </v-btn>
       <v-spacer />
@@ -144,6 +144,10 @@ export default Vue.extend({
     type: {
       type: String,
       required: true
+    },
+    hideDeleteButton: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

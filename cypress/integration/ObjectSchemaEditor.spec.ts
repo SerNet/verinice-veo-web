@@ -29,11 +29,11 @@ const changedAttributes = [
 ]
 
 const changedAttributesResultedSchema = {
-  process_GeneralInformationTest_TagsTest: {
+  process_GeneralInformationTest_tagsTest: {
     title: 'TagsTest',
     type: 'string'
   },
-  process_GeneralInformationTest_DocumentTest: {
+  process_GeneralInformationTest_documentTest: {
     title: 'DocumentTest',
     type: 'boolean'
   }
@@ -128,7 +128,7 @@ const linkTarget = {
       title: 'The id of the target object.'
     },
     type: {
-      enum: ['Person']
+      enum: ['person']
     }
   }
 }
@@ -273,7 +273,7 @@ describe('Objectschema Editor', () => {
       })
   })
 
-  it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function() {
+  it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function () {
     cy.get('@expansionPanelHeaders').each((el, i) => {
       const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
       cy.wrap(expansionPanelText).should(
@@ -283,7 +283,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('deletes aspect with outer delete button', function() {
+  it('deletes aspect with outer delete button', function () {
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-expansion-panel-content__wrap')
@@ -316,7 +316,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('changes customAspect name, attribute names, description and types', function() {
+  it('changes customAspect name, attribute names, description and types', function () {
     cy.contains('GeneralInformation')
       .closest('.v-list-item')
       .find('.v-btn')
@@ -367,7 +367,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('removes and adds aspect attributes', function() {
+  it('removes and adds aspect attributes', function () {
     cy.contains('AccessAuthorization')
       .closest('.v-list-item')
       .find('.v-btn')
@@ -424,7 +424,7 @@ describe('Objectschema Editor', () => {
       .click()
       .wait(1)
 
-    cy.get('.editor .cm-content').then(function(editor) {
+    cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getCurrentOS(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
@@ -440,7 +440,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('opens dialog to create a new aspect and clicks close button to discard changes', function() {
+  it.only('opens dialog to create a new aspect and clicks close button to discard changes', function () {
     // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
     cy.contains('Aspekte hinzufügen')
       .closest('.v-btn')
@@ -474,7 +474,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('adds completely new aspect and removes it from dialog with delete button', function() {
+  it('adds completely new aspect and removes it from dialog with delete button', function () {
     cy.contains('Aspekte hinzufügen')
       .closest('.v-btn')
       .click()
@@ -561,7 +561,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('deletes a link with outer delete button', function() {
+  it('deletes a link with outer delete button', function () {
     cy.get('@expansionPanelContent')
       .eq(2)
       .find('.v-expansion-panel-content__wrap')
@@ -594,7 +594,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('changes link name, attribute names, description and types', function() {
+  it('changes link name, attribute names, description and types', function () {
     cy.contains('LegalBasis')
       .closest('.v-list-item')
       .find('.v-btn')
@@ -653,7 +653,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('removes and adds link attributes', function() {
+  it('removes and adds link attributes', function () {
     cy.contains('InternalRecipientLink')
       .closest('.v-list-item')
       .find('.v-btn')
@@ -710,7 +710,7 @@ describe('Objectschema Editor', () => {
       .click()
       .wait(1)
 
-    cy.get('.editor .cm-content').then(function(editor) {
+    cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getCurrentOS(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
@@ -726,7 +726,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('opens dialog to create a new link and clicks close button to discard changes', function() {
+  it('opens dialog to create a new link and clicks close button to discard changes', function () {
     // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
     cy.contains('Link hinzufügen')
       .closest('.v-btn')
@@ -773,7 +773,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('adds completely new link and removes it from dialog with delete button', function() {
+  it('adds completely new link and removes it from dialog with delete button', function () {
     cy.contains('Link hinzufügen')
       .closest('.v-btn')
       .click()
@@ -873,13 +873,13 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it('compares downloaded schema with the actual one', function() {
+  it('compares downloaded schema with the actual one', function () {
     cy.get('.mdi-download')
       .closest('.v-btn')
       .click()
       .wait(1)
 
-    cy.get('.editor .cm-content').then(function(editor) {
+    cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getCurrentOS(editor)).then(currentOS => {
         cy.readFile('cypress/downloads/os_process.json').then(downloadedOS => {
           cy.wrap(JSON.stringify(currentOS, null, 2)).should('eq', JSON.stringify(downloadedOS, null, 2))
