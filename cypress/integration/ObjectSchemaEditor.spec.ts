@@ -28,17 +28,6 @@ const changedAttributes = [
   }
 ]
 
-const changedAttributesResultedSchema = {
-  process_GeneralInformationTest_TagsTest: {
-    title: 'TagsTest',
-    type: 'string'
-  },
-  process_GeneralInformationTest_DocumentTest: {
-    title: 'DocumentTest',
-    type: 'boolean'
-  }
-}
-
 const addAttributes = [
   {
     writeTitle: 'a',
@@ -76,109 +65,10 @@ const addAttributes = [
   }
 ]
 
-const addedAttributesResultedSchema = {
-  process_AccessAuthorization_a: {
-    title: 'a',
-    type: 'string'
-  },
-  process_AccessAuthorization_b: {
-    title: '',
-    type: 'boolean'
-  },
-  process_AccessAuthorization_c: {
-    title: 'c',
-    type: 'number'
-  },
-  process_AccessAuthorization_d: {
-    title: '',
-    type: 'integer'
-  },
-  process_AccessAuthorization_e: {
-    title: 'e',
-    enum: ['a', 'b', 'c', 'd']
-  },
-  process_AccessAuthorization_f: {
-    title: '',
-    type: 'array',
-    items: {
-      enum: ['a', 'b', 'c', 'd']
-    }
-  }
-}
-
 const addTestTwoAttribute = {
   writeTitle: 'a',
   selectType: attributeTypes[0],
   writeDescription: 'a'
-}
-
-const TestAspectTwoAttributeSchema = {
-  process_TestAspectTwo_a: {
-    title: 'a',
-    type: 'string'
-  }
-}
-
-const linkTarget = {
-  type: 'object',
-  title: 'TestId',
-  properties: {
-    targetUri: {
-      type: 'string',
-      title: 'The id of the target object.'
-    },
-    type: {
-      enum: ['person']
-    }
-  }
-}
-
-const changedLinkAttributesResultedSchema = {
-  process_LegalBasisTest_ExplanationTest: {
-    title: 'ExplanationTest',
-    type: 'string'
-  },
-  process_LegalBasisTest_DocumentTest: {
-    title: 'DocumentTest',
-    type: 'boolean'
-  }
-}
-
-const addedLinkAttributesResultedSchema = {
-  process_InternalRecipientLink_a: {
-    title: 'a',
-    type: 'string'
-  },
-  process_InternalRecipientLink_b: {
-    title: '',
-    type: 'boolean'
-  },
-  process_InternalRecipientLink_c: {
-    title: 'c',
-    type: 'number'
-  },
-  process_InternalRecipientLink_d: {
-    title: '',
-    type: 'integer'
-  },
-  process_InternalRecipientLink_e: {
-    title: 'e',
-    enum: ['a', 'b', 'c', 'd']
-  },
-  process_InternalRecipientLink_f: {
-    title: '',
-    type: 'array',
-    items: {
-      enum: ['a', 'b', 'c', 'd']
-    }
-  }
-}
-
-const TestLinkTwoAttributeSchema = {
-  process_TestLinkTwo_a: {
-    title: 'a',
-    type: 'string'
-  }
 }
 
 describe('Objectschema Editor', () => {
@@ -351,11 +241,9 @@ describe('Objectschema Editor', () => {
         })
         .as('aspect')
         .should('not.be.null')
-      cy.get('@aspect')
-        .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties)
-        })
-        .should('eq', JSON.stringify(changedAttributesResultedSchema))
+      cy.get('@aspect').then((aspect: any) => {
+        cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot()
+      })
     })
   })
 
@@ -424,16 +312,13 @@ describe('Objectschema Editor', () => {
         })
         .as('aspect')
         .should('not.be.null')
-      cy.get('@aspect')
-        .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties)
-        })
-        .should('eq', JSON.stringify(addedAttributesResultedSchema))
+      cy.get('@aspect').then((aspect: any) => {
+        cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot()
+      })
     })
   })
 
   it('opens dialog to create a new aspect and clicks close button to discard changes', function() {
-    // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
     cy.contains('Aspekte hinzufügen')
       .closest('.v-btn')
       .click()
@@ -517,11 +402,9 @@ describe('Objectschema Editor', () => {
         })
         .as('aspect')
         .should('not.be.null')
-      cy.get('@aspect')
-        .then((aspect: any) => {
-          return JSON.stringify(aspect.properties.attributes.properties)
-        })
-        .should('eq', JSON.stringify(TestAspectTwoAttributeSchema))
+      cy.get('@aspect').then((aspect: any) => {
+        cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot()
+      })
     })
 
     cy.contains('TestAspectTwo')
@@ -636,11 +519,8 @@ describe('Objectschema Editor', () => {
         .as('link')
         .should('not.be.null')
       cy.get('@link').then((link: any) => {
-        cy.wrap(JSON.stringify(link.items.properties.target)).should('eq', JSON.stringify(linkTarget))
-        cy.wrap(JSON.stringify(link.items.properties.attributes.properties)).should(
-          'eq',
-          JSON.stringify(changedLinkAttributesResultedSchema)
-        )
+        cy.wrap(link.items.properties.target).toMatchSnapshot()
+        cy.wrap(link.items.properties.attributes.properties).toMatchSnapshot()
       })
     })
   })
@@ -710,16 +590,13 @@ describe('Objectschema Editor', () => {
         })
         .as('link')
         .should('not.be.null')
-      cy.get('@link')
-        .then((link: any) => {
-          return JSON.stringify(link.items.properties.attributes.properties)
-        })
-        .should('eq', JSON.stringify(addedLinkAttributesResultedSchema))
+      cy.get('@link').then((link: any) => {
+        cy.wrap(link.items.properties.attributes.properties).toMatchSnapshot()
+      })
     })
   })
 
   it('opens dialog to create a new link and clicks close button to discard changes', function() {
-    // TODO: fix bug of adding customAspect into ObjectSchema despite clicking on "close"
     cy.contains('Link hinzufügen')
       .closest('.v-btn')
       .click()
@@ -829,11 +706,9 @@ describe('Objectschema Editor', () => {
         })
         .as('link')
         .should('not.be.null')
-      cy.get('@link')
-        .then((link: any) => {
-          return JSON.stringify(link.items.properties.attributes.properties)
-        })
-        .should('eq', JSON.stringify(TestLinkTwoAttributeSchema))
+      cy.get('@link').then((link: any) => {
+        cy.wrap(link.items.properties.attributes.properties).toMatchSnapshot()
+      })
     })
 
     cy.contains('TestLinkTwo')
@@ -870,13 +745,6 @@ describe('Objectschema Editor', () => {
       .closest('.v-btn')
       .click()
       .wait(1)
-
-    cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.readFile('cypress/downloads/os_process.json').then(downloadedOS => {
-          cy.wrap(JSON.stringify(currentOS)).should('eq', JSON.stringify(downloadedOS))
-        })
-      })
-    })
+    cy.readFile('cypress/downloads/os_Process.json').toMatchSnapshot()
   })
 })

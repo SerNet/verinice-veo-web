@@ -50,7 +50,9 @@
                     "description": "The resource URL of the referenced domain."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               },
               "uniqueItems": true
             },
@@ -67,7 +69,9 @@
                     "description": "The resource URL of the referenced object."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               }
             },
             "attributes": {
@@ -126,7 +130,9 @@
                     "description": "The resource URL of the referenced domain."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               },
               "uniqueItems": true
             },
@@ -143,7 +149,9 @@
                     "description": "The resource URL of the referenced object."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               }
             },
             "attributes": {
@@ -195,7 +203,9 @@
                     "description": "The resource URL of the referenced domain."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               },
               "uniqueItems": true
             },
@@ -212,7 +222,9 @@
                     "description": "The resource URL of the referenced object."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               }
             },
             "attributes": {
@@ -268,7 +280,9 @@
                     "description": "The resource URL of the referenced domain."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               },
               "uniqueItems": true
             },
@@ -285,7 +299,9 @@
                     "description": "The resource URL of the referenced object."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               }
             },
             "attributes": {
@@ -332,7 +348,9 @@
                     "description": "The resource URL of the referenced domain."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               },
               "uniqueItems": true
             },
@@ -349,7 +367,9 @@
                     "description": "The resource URL of the referenced object."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               }
             },
             "attributes": {
@@ -421,7 +441,9 @@
                     "description": "The resource URL of the referenced domain."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               },
               "uniqueItems": true
             },
@@ -438,7 +460,9 @@
                     "description": "The resource URL of the referenced object."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               }
             },
             "attributes": {
@@ -498,7 +522,9 @@
                     "description": "The resource URL of the referenced domain."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               },
               "uniqueItems": true
             },
@@ -515,7 +541,9 @@
                     "description": "The resource URL of the referenced object."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               }
             },
             "attributes": {
@@ -562,7 +590,9 @@
                     "description": "The resource URL of the referenced domain."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               },
               "uniqueItems": true
             },
@@ -579,7 +609,9 @@
                     "description": "The resource URL of the referenced object."
                   }
                 },
-                "required": ["targetUri"]
+                "required": [
+                  "targetUri"
+                ]
               }
             },
             "attributes": {
@@ -621,7 +653,9 @@
             "description": "The resource URL of the referenced domains."
           }
         },
-        "required": ["targetUri"],
+        "required": [
+          "targetUri"
+        ],
         "description": "A reference to a domain"
       }
     },
@@ -667,7 +701,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -684,7 +720,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -711,7 +749,9 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["person"]
+                    "enum": [
+                      "person"
+                    ]
                   }
                 }
               },
@@ -721,7 +761,9 @@
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_TypeOfDataProcessed": {
@@ -757,7 +799,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -774,7 +818,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -801,7 +847,9 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["asset"]
+                    "enum": [
+                      "asset"
+                    ]
                   }
                 }
               },
@@ -811,7 +859,9 @@
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_AffectedParties": {
@@ -847,7 +897,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -864,7 +916,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -900,13 +954,17 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["person"]
+                    "enum": [
+                      "person"
+                    ]
                   }
                 }
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_LegalBasis": {
@@ -956,7 +1014,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -973,7 +1033,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -1000,13 +1062,17 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["control"]
+                    "enum": [
+                      "control"
+                    ]
                   }
                 }
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_LegalBasisForProcessingSensitiveData": {
@@ -1042,7 +1108,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -1059,7 +1127,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -1086,7 +1156,9 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["control"]
+                    "enum": [
+                      "control"
+                    ]
                   }
                 }
               },
@@ -1096,7 +1168,9 @@
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_InternalRecipientLink": {
@@ -1150,7 +1224,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -1167,7 +1243,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -1194,13 +1272,17 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["person"]
+                    "enum": [
+                      "person"
+                    ]
                   }
                 }
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_DataCategories": {
@@ -1236,7 +1318,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -1253,7 +1337,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -1301,13 +1387,17 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["asset"]
+                    "enum": [
+                      "asset"
+                    ]
                   }
                 }
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_TypeOfSensitiveData": {
@@ -1343,7 +1433,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -1360,7 +1452,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -1387,7 +1481,9 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["asset"]
+                    "enum": [
+                      "asset"
+                    ]
                   }
                 }
               },
@@ -1397,7 +1493,9 @@
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_ExternalRecipientLink": {
@@ -1468,7 +1566,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -1485,7 +1585,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -1512,13 +1614,17 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["person"]
+                    "enum": [
+                      "person"
+                    ]
                   }
                 }
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_jointResponsiblePersons": {
@@ -1554,7 +1660,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -1571,7 +1679,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -1598,7 +1708,9 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["person"]
+                    "enum": [
+                      "person"
+                    ]
                   }
                 }
               },
@@ -1608,7 +1720,9 @@
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_LegalBasisForProcessingInThirdCountry": {
@@ -1644,7 +1758,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -1661,7 +1777,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -1688,7 +1806,9 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["control"]
+                    "enum": [
+                      "control"
+                    ]
                   }
                 }
               },
@@ -1698,7 +1818,9 @@
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         },
         "process_TypeOfDataTransmitted": {
@@ -1734,7 +1856,9 @@
                       "description": "The resource URL of the referenced domain."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 },
                 "uniqueItems": true
               },
@@ -1751,7 +1875,9 @@
                       "description": "The resource URL of the referenced object."
                     }
                   },
-                  "required": ["targetUri"]
+                  "required": [
+                    "targetUri"
+                  ]
                 }
               },
               "abbreviation": {
@@ -1778,7 +1904,9 @@
                     "title": "The id of the target object."
                   },
                   "type": {
-                    "enum": ["asset"]
+                    "enum": [
+                      "asset"
+                    ]
                   }
                 }
               },
@@ -1788,7 +1916,9 @@
               }
             },
             "additionalProperties": false,
-            "required": ["target"]
+            "required": [
+              "target"
+            ]
           }
         }
       }
@@ -1815,7 +1945,9 @@
           "description": "The resource URL of the referenced unit."
         }
       },
-      "required": ["targetUri"],
+      "required": [
+        "targetUri"
+      ],
       "description": "A reference to the unit containing this entity."
     },
     "parts": {
@@ -1838,7 +1970,9 @@
             "description": "The resource URL of the referenced entity."
           }
         },
-        "required": ["targetUri"],
+        "required": [
+          "targetUri"
+        ],
         "description": "A reference to an entity's part"
       }
     },
@@ -1853,14 +1987,17 @@
     },
     "updatedAt": {
       "type": "string",
-      "description": "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved."
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
     },
     "updatedBy": {
       "type": "string",
       "description": "The username of the user who last updated this object."
     }
   },
-  "required": ["name", "owner"],
+  "required": [
+    "name",
+    "owner"
+  ],
   "title": "Process",
   "description": "Schema for Process"
 }

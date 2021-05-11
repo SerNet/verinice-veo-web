@@ -233,7 +233,8 @@ export default defineComponent<IProps>({
       value: false,
       item: {} as any,
       mode: 'create' as 'create' | 'edit',
-      type: 'aspect' as 'aspect' | 'link'
+      type: 'aspect' as 'aspect' | 'link',
+      hideDeleteButton: false as boolean
     })
 
     function showAddDialog(type: 'aspect' | 'link') {
@@ -252,12 +253,14 @@ export default defineComponent<IProps>({
       try {
         if (objectSchemaDialog.value.type === 'aspect') {
           objectSchemaHelper.value.addCustomAspect(form.name)
-          objectSchemaDialog.value.item = objectSchemaHelper.value.getCustomAspect(form.name)
+          objectSchemaDialog.value.item = cloneDeep(objectSchemaHelper.value.getCustomAspect(form.name))
+          objectSchemaHelper.value.removeCustomAspect(form.name)
         } else {
           objectSchemaHelper.value.addCustomLink(form.name, form.targetType || '', form.description || '')
-          objectSchemaDialog.value.item = objectSchemaHelper.value.getCustomLink(form.name)
+          objectSchemaDialog.value.item = cloneDeep(objectSchemaHelper.value.getCustomLink(form.name))
+          objectSchemaHelper.value.removeCustomLink(form.name)
         }
-        showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type)
+        showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type, true)
         context.emit('schema-updated')
         computeProperties()
       } catch (e) {
@@ -268,11 +271,12 @@ export default defineComponent<IProps>({
       }
     }
 
-    function showEditDialog(aspect: IVeoOSHCustomAspect | IVeoOSHCustomLink, type: 'aspect' | 'link') {
+    function showEditDialog(aspect: IVeoOSHCustomAspect | IVeoOSHCustomLink, type: 'aspect' | 'link', hideDeleteButton: boolean = false) {
       objectSchemaDialog.value.mode = 'edit'
       objectSchemaDialog.value.item = aspect
       objectSchemaDialog.value.value = true
       objectSchemaDialog.value.type = type
+      objectSchemaDialog.value.hideDeleteButton = hideDeleteButton
     }
 
     function doEditItem(object: { item: IVeoOSHCustomAspect | IVeoOSHCustomLink; id: string }) {
@@ -280,8 +284,20 @@ export default defineComponent<IProps>({
 
       if(objectSchemaDialog.value.type === 'aspect') {
         original = cloneDeep(objectSchemaHelper.value.getCustomAspect(object.id))
+        if(!original) {
+          objectSchemaHelper.value.addCustomAspect(object.id)
+          original = cloneDeep(objectSchemaHelper.value.getCustomAspect(object.id))
+        }
       } else {
         original = cloneDeep(objectSchemaHelper.value.getCustomLink(object.id))
+        if(!original) {
+          objectSchemaHelper.value.addCustomLink(
+            object.id,
+            (object.item as IVeoOSHCustomLink).targetType,
+            (object.item as IVeoOSHCustomLink).description
+          )
+          original = cloneDeep(objectSchemaHelper.value.getCustomLink(object.id))
+        }
       }
 
       if (object.item.title !== object.id) {
@@ -416,3 +432,7 @@ export default defineComponent<IProps>({
   }
 }
 </style>
+
+function deepClone(arg0: IVeoOSHCustomLink|undefined): any {
+  throw new Error('Function not implemented.')
+}

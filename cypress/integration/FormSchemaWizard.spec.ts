@@ -126,11 +126,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(JSON.stringify(emptyFS)).should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -203,11 +199,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(JSON.stringify(emptyFS)).should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -275,16 +267,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(emptyFS)
-              .then((modifiedEmptyFS: any) => {
-                modifiedEmptyFS.modelType = 'control'
-                return JSON.stringify(modifiedEmptyFS)
-              })
-              .should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -352,16 +335,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(emptyFS)
-              .then((modifiedEmptyFS: any) => {
-                modifiedEmptyFS.modelType = 'scope'
-                return JSON.stringify(modifiedEmptyFS)
-              })
-              .should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -429,16 +403,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(emptyFS)
-              .then((modifiedEmptyFS: any) => {
-                modifiedEmptyFS.modelType = 'asset'
-                return JSON.stringify(modifiedEmptyFS)
-              })
-              .should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -506,16 +471,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(emptyFS)
-              .then((modifiedEmptyFS: any) => {
-                modifiedEmptyFS.modelType = 'process'
-                return JSON.stringify(modifiedEmptyFS)
-              })
-              .should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -583,16 +539,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(emptyFS)
-              .then((modifiedEmptyFS: any) => {
-                modifiedEmptyFS.modelType = 'incident'
-                return JSON.stringify(modifiedEmptyFS)
-              })
-              .should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -660,16 +607,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(emptyFS)
-              .then((modifiedEmptyFS: any) => {
-                modifiedEmptyFS.modelType = 'document'
-                return JSON.stringify(modifiedEmptyFS)
-              })
-              .should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -737,16 +675,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(emptyFS)
-              .then((modifiedEmptyFS: any) => {
-                modifiedEmptyFS.modelType = 'person'
-                return JSON.stringify(modifiedEmptyFS)
-              })
-              .should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -814,16 +743,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty.json').then(emptyFS => {
-            cy.wrap(emptyFS)
-              .then((modifiedEmptyFS: any) => {
-                modifiedEmptyFS.modelType = 'scenario'
-                return JSON.stringify(modifiedEmptyFS)
-              })
-              .should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -883,11 +803,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty-process.json').then(emptyProcessFS => {
-            cy.wrap(JSON.stringify(emptyProcessFS)).should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -958,11 +874,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty-process.json').then(emptyProcessOS => {
-            cy.wrap(JSON.stringify(emptyProcessOS)).should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -1030,11 +942,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty-process.json').then(emptyProcessFS => {
-            cy.wrap(JSON.stringify(emptyProcessFS)).should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
@@ -1114,11 +1022,7 @@ describe('Formschema Wizard', () => {
 
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/empty-process.json').then(emptyProcessFS => {
-            cy.wrap(JSON.stringify(emptyProcessFS)).should('eq', JSON.stringify(currentFS))
-          })
-        })
+        cy.wrap(getEditorData(editor)).toMatchSnapshot()
       })
       cy.get('.v-card__actions')
         .contains('.v-btn', 'Schließen')
