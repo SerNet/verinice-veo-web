@@ -12,7 +12,7 @@
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore .",
     "precommit": "npm run lint",
-    "test": "",
+    "test": "jest",
     "test:e2e": "export LANG='de_DE.UTF-8' && cypress run",
     "test:e2e-ci": "start-server-and-test start 3000 test:e2e",
     "cy:verify": "cypress verify",
