@@ -33,13 +33,13 @@
           />
         </v-list-item-content>
         <v-list-item-action>
-          <v-btn :disabled="!localValue" depressed text fab small @click="removeRow(i)">
+          <v-btn :disabled="!localValue || disabled" depressed text fab small @click="removeRow(i)">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
     </v-list>
-    <v-btn small text color="primary" @click="addRow()">
+    <v-btn small text :disabled="disabled" color="primary" @click="addRow()">
       <v-icon small>mdi-plus</v-icon>
       <span>{{ $t('addLink') }}</span>
     </v-btn>

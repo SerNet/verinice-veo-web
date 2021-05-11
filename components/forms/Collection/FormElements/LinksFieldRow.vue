@@ -12,6 +12,7 @@
         :search-input.sync="search"
         :label="$t('targetObject')"
         class="links-field-row-autocomplete"
+        :disabled="disabled"
         dense
         hide-details="auto"
         clearable
@@ -38,10 +39,10 @@
             </v-list-item-content>
             <v-list-item-action>
               <div class="autocomplete-list-item-action-buttons">
-                <v-btn icon x-small text color="primary" class="mr-2" @click.stop="onDialogOpen('DIALOG_UPDATE', item)">
+                <v-btn icon x-small text color="primary" class="mr-2" :disabled="disabled" @click.stop="onDialogOpen('DIALOG_UPDATE', item)">
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn icon x-small text color="primary" class="mr-2" @click.stop="onDialogOpen('DIALOG_DELETE', item)">
+                <v-btn icon x-small text color="primary" class="mr-2" :disabled="disabled" @click.stop="onDialogOpen('DIALOG_DELETE', item)">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </div>
@@ -58,6 +59,7 @@
         :general-translation="generalTranslation"
         :custom-translation="customTranslation"
         :api="api"
+        :disabled="disabled"
         @input="onInput"
       />
     </v-col>
@@ -76,6 +78,7 @@
             :ui="linksFieldDialogFormSchema"
             :general-translation="generalTranslation"
             :custom-translation="customTranslation"
+            :disabled="disabled"
             :api="api"
           />
         </v-card-text>
@@ -109,6 +112,7 @@
             :general-translation="generalTranslation"
             :custom-translation="customTranslation"
             :api="api"
+            :disabled="disabled"
           />
         </v-card-text>
         <v-card-actions>
