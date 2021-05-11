@@ -26,17 +26,17 @@ cache:
     - .npm
     - cache/Cypress
 
-test:e2e
+test:e2e:
   image: cypress/base:14.15.4
   stage: performance
-  tags: 
+  tags:
     - 'cpmsys01'
   variables:
-    VEO_API_USE_PROXY: "false"
+    VEO_API_USE_PROXY: 'false'
     VEO_API_URL: https://veo.develop.cpmsys.io/
   script:
-    echo $EXTERNAL_URL
-    npm run test:e2e -- --config baseUrl="https://131-review-164-veo-49-6ankbc.on.nbrx.de"
+    - echo $EXTERNAL_URL
+    - npm run test:e2e -- --config baseUrl="https://131-review-164-veo-49-6ankbc.on.nbrx.de"
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: never
@@ -50,12 +50,10 @@ test:e2e
       - cypress/videos/**/*.mp4
       - cypress/screenshots/**/*.png
     expire_in: 1 day
-
-
 # test_e2e:
 #   image: cypress/base:14.15.4
 #   stage: test_e2e
-#   tags: 
+#   tags:
 #     - 'cpmsys01'
 #   variables:
 #     VEO_API_USE_PROXY: "false"
