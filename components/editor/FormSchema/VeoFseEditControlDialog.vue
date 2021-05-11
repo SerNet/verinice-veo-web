@@ -143,7 +143,7 @@ import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItem,
   IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslation
+  IVeoTranslationCollection
 } from '~/types/VeoTypes'
 import { differenceBy } from 'lodash'
 import { deleteElementCustomTranslation } from '~/lib/FormSchemaHelper'
@@ -154,7 +154,7 @@ interface IProps {
   options: any
   schema: any
   formSchema: any
-  generalTranslation: IVeoTranslation
+  generalTranslation: IVeoTranslationCollection
   customTranslation: IVeoFormSchemaTranslationCollectionItem
   type: string
 }

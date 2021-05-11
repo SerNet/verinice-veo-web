@@ -21,7 +21,10 @@ import Label from '~/components/forms/Label.vue'
 import Control from '~/components/forms/Control.vue'
 import Layout from '~/components/forms/Layout.vue'
 import Wrapper from '~/components/forms/Wrapper.vue'
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslation } from '~/types/VeoTypes'
+import {
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslationCollection
+} from '~/types/VeoTypes'
 
 interface IErrorMessageElement {
   pointer: string
@@ -52,7 +55,7 @@ export default Vue.extend({
     generalTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoTranslation>,
+    } as PropOptions<IVeoTranslationCollection>,
     customTranslation: {
       type: Object,
       default: () => {}
