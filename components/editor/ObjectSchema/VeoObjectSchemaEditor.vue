@@ -302,11 +302,15 @@ export default defineComponent<IProps>({
       // Add a translation key for each attribute
       if(displayLanguage) {
         for(let attribute of object.item.attributes) {
-          objectSchemaHelper.value.updateTranslation(
-            displayLanguage.value,
-            `${attribute.prefix}${attribute.title}`,
-            `${attribute.description}`,
-          );
+          if(attribute.description && attribute.description !== '') {
+            objectSchemaHelper.value.updateTranslation(
+              displayLanguage.value,
+              `${attribute.prefix}${attribute.title}`,
+              `${attribute.description}`,
+            );
+          } else {
+            objectSchemaHelper.value.removeTranslation(`${attribute.prefix}${attribute.title}`)
+          }
 
           if(attribute.type === 'enum' && attribute.enum) {
             for(const option of attribute.enum) {
