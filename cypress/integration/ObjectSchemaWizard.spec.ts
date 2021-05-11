@@ -98,11 +98,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Test Beschreibung')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/empty.json').then(emptyOS => {
-          cy.wrap(JSON.stringify(emptyOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -126,11 +122,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Test Beschreibung')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/empty.json').then(emptyOS => {
-          cy.wrap(JSON.stringify(emptyOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -164,11 +156,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Test Beschreibung')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/empty.json').then(emptyOS => {
-          cy.wrap(JSON.stringify(emptyOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -201,11 +189,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Schema for Control')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/control.json').then(controlOS => {
-          cy.wrap(JSON.stringify(controlOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -238,11 +222,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Schema for scope')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/scope.json').then(scopeOS => {
-          cy.wrap(JSON.stringify(scopeOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -275,11 +255,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Schema for Asset')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/asset.json').then(assetOS => {
-          cy.wrap(JSON.stringify(assetOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -313,11 +289,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Schema for Process')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/process.json').then(procesOS => {
-          // cy.wrap(JSON.stringify(procesOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -350,11 +322,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Schema for Incident')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/incident.json').then(incidentOS => {
-          cy.wrap(JSON.stringify(incidentOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -387,11 +355,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Schema for Document')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/document.json').then(documentOS => {
-          cy.wrap(JSON.stringify(documentOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -424,11 +388,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Schema for Person')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/person.json').then(personOS => {
-          cy.wrap(JSON.stringify(personOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 
@@ -461,11 +421,7 @@ describe('Objectschema Wizard', () => {
       .find('input')
       .should('have.value', 'Schema for Scenario')
     cy.get('.editor .cm-content').then(function(editor) {
-      cy.wrap(getEditorData(editor)).then(currentOS => {
-        cy.fixture('objectschema/scenario.json').then(scenarioOS => {
-          cy.wrap(JSON.stringify(scenarioOS)).should('eq', JSON.stringify(currentOS))
-        })
-      })
+      cy.wrap(getEditorData(editor)).toMatchSnapshot()
     })
   })
 })

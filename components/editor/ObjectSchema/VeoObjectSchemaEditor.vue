@@ -283,20 +283,20 @@ export default defineComponent<IProps>({
       let original;
 
       if(objectSchemaDialog.value.type === 'aspect') {
-        original = objectSchemaHelper.value.getCustomAspect(object.id)
+        original = cloneDeep(objectSchemaHelper.value.getCustomAspect(object.id))
         if(!original) {
           objectSchemaHelper.value.addCustomAspect(object.id)
-          original = objectSchemaHelper.value.getCustomAspect(object.id)
+          original = cloneDeep(objectSchemaHelper.value.getCustomAspect(object.id))
         }
       } else {
-        original = objectSchemaHelper.value.getCustomLink(object.id)
+        original = cloneDeep(objectSchemaHelper.value.getCustomLink(object.id))
         if(!original) {
           objectSchemaHelper.value.addCustomLink(
             object.id,
             (object.item as IVeoOSHCustomLink).targetType,
             (object.item as IVeoOSHCustomLink).description
           )
-          original = objectSchemaHelper.value.getCustomLink(object.id)
+          original = cloneDeep(objectSchemaHelper.value.getCustomLink(object.id))
         }
       }
 
