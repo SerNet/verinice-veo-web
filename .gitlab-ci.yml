@@ -37,7 +37,12 @@ test:e2e:
   script:
     - npm ci
     - echo $CI_COMMIT_REF_SLUG
+    - echo $CI_ENVIRONMENT_SLUG
     - echo $CI_ENVIRONMENT_URL
+    - echo $CI_COMMIT_REF_NAME
+    - echo http://$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+    - echo http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
+    - echo http://$CI_PROJECT_PATH_SLUG.$KUBE_INGRESS_BASE_DOMAIN
     - cat environment_url.txt
     - npm run test:e2e -- --config baseUrl="https://131-review-164-veo-49-6ankbc.on.nbrx.de"
   rules:
