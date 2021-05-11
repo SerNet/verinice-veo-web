@@ -178,6 +178,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Input Element anpassen')
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
@@ -222,6 +223,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Input Element anpassen')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
         .should('have.value', 'Name Test 1')
@@ -273,6 +275,7 @@ describe('Formschema Editor', () => {
       .click()
       .wait(1)
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Input Element anpassen')
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
@@ -323,6 +326,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Input Element anpassen')
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
@@ -377,6 +381,7 @@ describe('Formschema Editor', () => {
       .click()
       .wait(1)
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Input Element anpassen')
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
@@ -446,6 +451,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Input Element anpassen')
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
@@ -490,6 +496,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Input Element anpassen')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
         .should('have.value', 'Art der Erhebung Test 1')
@@ -540,6 +547,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Input Element anpassen')
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
@@ -609,6 +617,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Text Element anpassen')
       cy.get('.v-form').should('contain.text', 'Text des Elements*:')
       cy.contains('.v-text-field', 'Text').type('Text 1 für das Textelement')
 
@@ -657,6 +666,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Text Element anpassen')
       cy.get('.v-form').should('contain.text', 'Text des Elements*:')
       cy.contains('.v-text-field', 'Text').type('Text 2 für das Textelement')
 
@@ -717,6 +727,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Gruppen Element anpassen')
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements:')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
@@ -790,6 +801,7 @@ describe('Formschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      cy.get('.v-card__title').should('contain.text', 'Gruppen Element anpassen')
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
         .should('not.have.value')
@@ -844,6 +856,7 @@ describe('Formschema Editor', () => {
       .closest('.v-btn')
       .click()
       .wait(1)
+    cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen')
     cy.get('.v-dialog--active .v-card__actions')
       .contains('.v-btn', 'Löschen')
       .click()
@@ -855,6 +868,7 @@ describe('Formschema Editor', () => {
       .closest('.v-btn')
       .click()
       .wait(1)
+    cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen')
     cy.get('.v-dialog--active .v-card__actions')
       .contains('.v-btn', 'Löschen')
       .click()
@@ -865,6 +879,7 @@ describe('Formschema Editor', () => {
       .closest('.v-btn')
       .click()
       .wait(1)
+    cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen')
     cy.get('.v-dialog--active .v-card__actions')
       .contains('.v-btn', 'Löschen')
       .click()

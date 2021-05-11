@@ -166,11 +166,13 @@ Cypress.Commands.add('loadFse', formSchemaPath => {
   cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema')
 })
 
+const textGroupRegExp = /(text|group)_[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi
+
 Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, options) => {
   cy.wrap(
     Cypress.$(
       Cypress.$.parseHTML(
-        subject[0].outerHTML.replace(/(input-\d+|list-\d+|radio-\d+)/g, '').replace(/data-v-\w+/g, 'data-v-123abc4d')
+        subject[0].outerHTML.replace(/(input-\d+|list-\d+|radio-\d+)/g, '').replace(/data-v-\w+/g, 'data-v-123abc4d').replace(textGroupRegExp, 'dynamic_text_group_title')
       )
     )
   ).toMatchSnapshot(options)

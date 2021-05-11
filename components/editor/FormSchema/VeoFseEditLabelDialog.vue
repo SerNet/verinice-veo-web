@@ -2,7 +2,7 @@
   <VeoDialog
     :key="formSchemaPointer"
     :value="value"
-    :headline="$t('editor.formschema.edit.text.headline')"
+    :headline="$t('editLabelHeadline')"
     large
     @input="onDialogChanged"
   >
@@ -193,10 +193,12 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
+    "editLabelHeadline": "Edit text element",
     "text": "Element text",
     "input": "Text"
   },
   "de": {
+    "editLabelHeadline": "Text Element anpassen",
     "text": "Text des Elements",
     "input": "Text"
 

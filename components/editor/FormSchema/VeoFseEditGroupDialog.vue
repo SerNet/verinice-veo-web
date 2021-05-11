@@ -2,7 +2,7 @@
   <VeoDialog
     :key="formSchemaPointer"
     :value="value"
-    :headline="$t('editor.formschema.edit.text.headline')"
+    :headline="$t('editGroupHeadline')"
     large
     @input="onDialogChanged"
   >
@@ -255,6 +255,18 @@ export default defineComponent<IProps>({
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "editGroupHeadline": "Edit group element"
+  },
+  "de": {
+    "editGroupHeadline": "Gruppen Element anpassen"
+
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
