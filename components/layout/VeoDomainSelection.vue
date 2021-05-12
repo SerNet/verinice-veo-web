@@ -37,7 +37,7 @@ export default Vue.extend({
     availableDomains(): { displayName: string; domainId: string }[] {
       return this.domains.map((entry: IVeoDomain) => ({
         displayName: entry.displayName,
-        domainId: entry.targetUri.replace('/domains/', '')
+        domainId: entry.targetUri.split('/').pop() as string
       }))
     },
     unitIsSet(): boolean {
