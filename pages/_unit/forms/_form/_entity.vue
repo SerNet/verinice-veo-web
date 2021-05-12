@@ -31,7 +31,7 @@
         />
         <v-row class="justify-space-between">
           <v-col cols="auto">
-            <h1>{{ form.objectData.name }}</h1>
+            <h1>{{ form.objectData.displayName }}</h1>
           </v-col>
           <v-spacer />
           <v-col cols="auto" class="text-right">
@@ -220,7 +220,7 @@ export default Vue.extend({
     title(): string {
       return this.$fetchState.pending
         ? this.$t('breadcrumbs.forms')
-        : `${this.form.objectData.name} - ${this.$t('breadcrumbs.forms')}`
+        : `${this.form.objectData.displayName} - ${this.$t('breadcrumbs.forms')}`
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id

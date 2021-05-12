@@ -2,11 +2,7 @@
   <VeoPage :title="title" fullsize :loading="$fetchState.pending">
     <VeoEntityModifier v-bind="$data" :rootRoute="rootRoute" @fetch="handleUpdates">
       <template #menu-bar="{ on }">
-        <VeoMenuButton
-          v-on="on"
-          :menu-items="menuItems"
-          :primary-item="menuButton"
-        />
+        <VeoMenuButton v-on="on" :menu-items="menuItems" :primary-item="menuButton" />
       </template>
       <template #default="{ on }">
         <VeoObjectList
@@ -83,7 +79,7 @@ export default Vue.extend({
       return separateUUIDParam(this.$route.params.entity).type
     },
     title(): string {
-      return this.currentEntity?.name || this.$t('breadcrumbs.scopes').toString()
+      return this.currentEntity?.displayName || this.$t('breadcrumbs.scopes').toString()
     },
     menuButton(): IVeoMenuButtonItem {
       if (this.entityType !== '-' && this.entityType !== 'scope') {
@@ -179,7 +175,7 @@ export default Vue.extend({
       }
     },
     handleUpdates(_event: IVeoEntityModifierEvent) {
-      this.$fetch() 
+      this.$fetch()
     }
   }
 })

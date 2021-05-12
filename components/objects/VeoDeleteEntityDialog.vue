@@ -1,16 +1,15 @@
 <template>
   <VeoDialog v-model="dialog" :headline="$t('headline')">
-    <template #default>
-      {{ $t('text', { name }) }}
-    </template>
+    <template #default>{{ $t('text', { displayName }) }}</template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('input', false)">
-        {{ $t('global.button.no') }}
-      </v-btn>
+      <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.no') }}</v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="deleteEntity">
-        {{ $t('global.button.delete') }}
-      </v-btn>
+      <v-btn
+        text
+        color="primary"
+        :disabled="!item"
+        @click="deleteEntity"
+      >{{ $t('global.button.delete') }}</v-btn>
     </template>
   </VeoDialog>
 </template>
@@ -44,8 +43,8 @@ export default Vue.extend({
     } as IData
   },
   computed: {
-    name(): string {
-      return this.item?.name ?? ''
+    displayName(): string {
+      return this.item?.displayName ?? ''
     }
   },
   watch: {
@@ -62,11 +61,14 @@ export default Vue.extend({
   },
   methods: {
     deleteEntity() {
-      this.$api.entity.delete(this.item.type, this.item.id).then(() => {
-        this.$emit('success')
-      }).catch((error) => {
-        this.$emit('error', error)
-      })
+      this.$api.entity
+        .delete(this.item.type, this.item.id)
+        .then(() => {
+          this.$emit('success')
+        })
+        .catch((error) => {
+          this.$emit('error', error)
+        })
     }
   },
   mounted() {
@@ -78,11 +80,11 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "text": "Do you really want to delete the object \"{name}\"?",
+    "text": "Do you really want to delete the object \"{displayName}\"?",
     "headline": "Delete object"
   },
   "de": {
-    "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",
+    "text": "Möchten Sie das Objekt \"{displayName}\" wirklich löschen?",
     "headline": "Objekt löschen"
   }
 }

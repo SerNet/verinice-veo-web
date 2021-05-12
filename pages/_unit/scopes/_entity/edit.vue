@@ -163,7 +163,7 @@ export default Vue.extend({
   computed: {
     objectTitle(): string {
       return this.$t('edit_object', {
-        title: this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.name
+        title: this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.displayName
       })
     },
     entityId(): string {

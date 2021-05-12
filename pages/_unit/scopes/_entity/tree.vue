@@ -2,11 +2,7 @@
   <VeoPage :title="title" fullsize :loading="$fetchState.pending">
     <VeoEntityModifier v-bind="$data" :rootRoute="rootRoute" @fetch="handleUpdates">
       <template #menu-bar="{ on }">
-        <VeoMenuButton
-          v-on="on"
-          :menu-items="menuItems"
-          :primary-item="menuButton"
-        />
+        <VeoMenuButton v-on="on" :menu-items="menuItems" :primary-item="menuButton" />
       </template>
       <template #default="{ on, entityModifiedEvent }">
         <VeoObjectTree
@@ -75,7 +71,7 @@ export default Vue.extend({
       return separateUUIDParam(this.$route.params.entity).type
     },
     title(): string {
-      return this.currentEntity?.name || this.$t('breadcrumbs.scopes').toString()
+      return this.currentEntity?.displayName || this.$t('breadcrumbs.scopes').toString()
     },
     menuButton(): IVeoMenuButtonItem {
       if (this.entityType !== '-' && this.entityType !== 'scope') {
@@ -161,22 +157,22 @@ export default Vue.extend({
     },
     async loadSubEntities(parent: ITreeEntry): Promise<void> {
       let id = 0
-      
+
       const children: IVeoEntity[] = await this.$api.entity.fetchSubEntities(parent.entry.type, parent.entry.id)
       parent.children = children
         .map((item: IVeoEntity) => {
           const dummy: ITreeEntry = { entry: item, id: parent.id + '.' + id++, type: item.type }
-          
+
           if (item.members.length > 0 || item.parts.length > 0) {
             dummy.children = []
           }
-          
+
           return dummy
         })
         .sort(this.sortingFunction)
     },
     handleUpdates(event: IVeoEntityModifierEvent) {
-      if(event.reloadAll) {
+      if (event.reloadAll) {
         this.$fetch()
       }
     }
