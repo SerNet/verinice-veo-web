@@ -24,15 +24,15 @@ export default function (api: Client) {
      * Loads a specific version of a given entity.
      * 
      * @param entity The entity to load the version of.
-     * @param version The version of the entity to load.
+     * @param changeNumber The version of the entity to load.
      */
-    fetchVersion(entity: IVeoEntity, version: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
+    fetchVersion(entity: IVeoEntity, changeNumber: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
       if (!params) {
         params = {}
       }
 
       params.uri = `/${getSchemaEndpoint(entity.type)}/${entity.id}`
-      return api.req(`/api/history/revisions/version/${version}`, {
+      return api.req(`/api/history/revisions/change/${changeNumber}`, {
         params
       })
     },

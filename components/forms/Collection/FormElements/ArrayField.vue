@@ -26,17 +26,18 @@
             :general-translation="generalTranslation"
             :custom-translation="customTranslation"
             :api="api"
+            :disabled="disabled"
             @input="onInput"
           />
         </v-list-item-content>
         <v-list-item-action>
-          <v-btn depressed text fab small class="vf-btn-remove" @click="removeRow(i)">
+          <v-btn depressed text fab small :disabled="disabled" class="vf-btn-remove" @click="removeRow(i)">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
     </v-list>
-    <v-btn small text color="primary" class="vf-btn-add" @click="addRow()">
+    <v-btn small text color="primary" :disabled="disabled" class="vf-btn-add" @click="addRow()">
       <v-icon small>mdi-plus</v-icon>
       <span>{{ $t('addElement') }}</span>
     </v-btn>

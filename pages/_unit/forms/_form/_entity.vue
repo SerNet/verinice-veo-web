@@ -3,8 +3,16 @@
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPageWrapper v-else>
-    <VeoPage v-if="!contentsCollapsed && formSchemaHasGroups" :cols="2" :md="2" :xl="2" absolute-size>
-      <div class="button text-uppercase accent--text font-weight-medium my-2">{{ $t('navigation.title') }}</div>
+    <VeoPage
+      v-if="!contentsCollapsed && formSchemaHasGroups"
+      :cols="2"
+      :md="2"
+      :xl="2"
+      absolute-size
+    >
+      <div
+        class="button text-uppercase accent--text font-weight-medium my-2"
+      >{{ $t('navigation.title') }}</div>
       <VeoFormNavigation
         :formSchema="form.formSchema && form.formSchema.content"
         :custom-translation="
@@ -38,6 +46,7 @@
               text
               outlined
               :loading="deleteEntityDialog.value === true"
+              :disabled="isRevision"
               @click="showDeleteEntityDialog"
             >{{ $t('global.button.delete') }}</v-btn>
             <v-btn
@@ -45,6 +54,7 @@
               outlined
               text
               :loading="saveBtnLoading"
+              :disabled="isRevision"
               @click="onClick"
             >{{ $t('global.button.save') }}</v-btn>
           </v-col>
@@ -62,6 +72,7 @@
           :api="dynamicAPI"
           :is-valid.sync="isValid"
           :error-messages.sync="errorMessages"
+          :disabled="isRevision"
           @input="formModified.isModified = true"
         />
         <VeoDeleteEntityDialog
@@ -76,6 +87,12 @@
           @exit="$router.push(formModified.target)"
         />
         <VeoWindowUnloadPrevention :value="formModified.isModified" />
+        <!-- seperate modified dialog for version switching to avoid interferences -->
+        <VeoEntityModifiedDialog
+          v-model="formModified.revisionDialog"
+          :item="form.objectData"
+          @exit="showRevisionAfterDialog()"
+        />
         <VeoAlert
           v-model="alert.value"
           v-bind="alert"
@@ -99,7 +116,11 @@
             <VeoObjectLinks :object="form.objectData" />
           </v-tab-item>
           <v-tab-item>
-            <VeoObjectHistory :object="form.objectData" :loading="$fetchState.pending" />
+            <VeoObjectHistory
+              :object="form.objectData"
+              :loading="$fetchState.pending"
+              @show-revision="showRevision"
+            />
           </v-tab-item>
         </template>
       </VeoTabs>
@@ -110,8 +131,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router/types/index'
+import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
 
-import { IForm, separateUUIDParam } from '~/lib/utils'
+import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils'
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoEntity } from '~/types/VeoTypes'
 
@@ -124,6 +146,8 @@ interface IData {
   objectType: string | undefined
   form: IForm
   isValid: boolean
+  isRevision: boolean
+  revisionCache: IBaseObject
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
   alert: IVeoEventPayload & { value: boolean; error: number }
@@ -131,6 +155,7 @@ interface IData {
   formModified: {
     isModified: boolean
     dialog: boolean
+    revisionDialog: boolean
     target?: Route
   }
   deleteEntityDialog: {
@@ -151,6 +176,8 @@ export default Vue.extend({
         lang: {}
       },
       isValid: true,
+      isRevision: false,
+      revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
       alert: {
@@ -165,6 +192,7 @@ export default Vue.extend({
       formModified: {
         isModified: false,
         dialog: false,
+        revisionDialog: false,
         target: undefined
       },
       deleteEntityDialog: {
@@ -360,6 +388,44 @@ export default Vue.extend({
           }
         })
       }
+    },
+    async showRevision(_event: any, content: IBaseObject, isRevision: boolean) {
+      // show modified dialog before switching versions if needed
+      if (this.formModified.isModified) {
+        this.revisionCache = content // cache revision for use after modified-dialog is closed with "yes"
+        this.formModified.revisionDialog = true
+      } else {
+        if (isRevision && !this.validateRevisionSchema(content)) {
+          return
+        }
+        // fill form with revision or newest data
+        this.isRevision = isRevision
+        if (isRevision) {
+          this.form.objectData = content // show revision content in form
+        } else {
+          await this.$fetch() // refetch newest version from entity endpoint, not history
+        }
+      }
+    },
+    async showRevisionAfterDialog() {
+      // close dialog without action if revision schema is invalid
+      if (!this.validateRevisionSchema(this.revisionCache)) {
+        this.formModified.revisionDialog = false
+        return
+      }
+      // fill form with cached revision data and clsoe dialog
+      this.isRevision = true
+      this.form.objectData = this.revisionCache
+      this.formModified.revisionDialog = false
+      this.formModified.isModified = false
+    },
+    validateRevisionSchema(revision: IBaseObject) {
+      const validator = new ObjectSchemaValidator()
+      const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision)
+      if (!isValid) {
+        this.showError(500, this.$t('revision_incompatible'))
+      }
+      return isValid
     }
   },
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
@@ -387,7 +453,8 @@ export default Vue.extend({
     "navigation.title": "Contents",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
-    "scope_delete_error": "Failed to delete scope"
+    "scope_delete_error": "Failed to delete scope",
+    "revision_incompatible": "The revision is incompatible to the schema and cannot be shown."
   },
   "de": {
     "history": "Verlauf",
@@ -395,7 +462,8 @@ export default Vue.extend({
     "navigation.title": "Inhalt",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
-    "scope_delete_error": "Scope konnte nicht gelöscht werden"
+    "scope_delete_error": "Scope konnte nicht gelöscht werden",
+    "revision_incompatible": "Die Version ist inkompatibel zum Schema und kann daher nicht angezeigt werden."
   }
 }
 </i18n>
