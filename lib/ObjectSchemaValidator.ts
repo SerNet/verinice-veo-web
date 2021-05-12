@@ -31,22 +31,40 @@ export default class ObjectSchemaValidator {
 
   public fitsObjectSchema(schema: any, data: any): boolean {
     let isFitting = true
+    const helper = new ObjectSchemaHelper(schema)
+
     for (let attribute in data) {
-      if (!schema.properties[attribute]) {
-        isFitting = false
-      }
       if (attribute === 'customAspects') {
         for (let customAspect in data.customAspects) {
-          if (!schema.properties.customAspects.properties[customAspect]) {
+          // check if custom aspect exists
+          if (!helper.getCustomAspect(customAspect)) {
             isFitting = false
+            continue
+          }
+          // check if all attributes of custom aspect exist
+          for (let customAspectAttribute in data.customAspects[customAspect].attributes) {
+            if (!helper.getCustomAspect(customAspect)?.attributes.find(a => (a.prefix + a.title).endsWith(customAspectAttribute))) {
+              isFitting = false
+            }
           }
         }
-      }
-      if (attribute === 'links') {
+      } else if (attribute === 'links') {
         for (let link in data.links) {
-          if (!schema.properties.links.properties[link]) {
+          // check if custom link exists
+          if (!helper.getCustomLink(link)) {
             isFitting = false
+            continue
           }
+          // check if all attributes of custom link exists
+          for (let linkAttribute in data.links[link].attributes) {
+            if (!helper.getCustomLink(link)?.attributes.find(a => (a.prefix + a.title).endsWith(linkAttribute))) {
+              isFitting = false
+            }
+          }
+        }
+      } else {
+        if (!helper.getBasicProperties().map(b => b.title).includes(attribute)) {
+          isFitting = false
         }
       }
     }
