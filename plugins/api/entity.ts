@@ -118,6 +118,17 @@ export default function (api: Client) {
         method: 'PUT',
         json: entity
       }).then((result: IVeoEntity) => {
+        /*
+         * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+         * members. However we combine both entity types as they get used more or less the same way
+         */
+        if (!result.parts) {
+          result.parts = []
+        }
+        if (!result.members) {
+          result.members = []
+        }
+        result.displayName = `${result.abbreviation} ${result.name}`
         return result
       })
     },
