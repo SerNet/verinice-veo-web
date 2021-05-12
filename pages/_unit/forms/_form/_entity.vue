@@ -3,17 +3,15 @@
     <v-progress-circular indeterminate color="primary" size="50" />
   </div>
   <VeoPageWrapper v-else>
-    <VeoPage
-      v-if="!contentsCollapsed && formSchemaHasGroups"
-      :cols="2"
-      :md="2"
-      :xl="2"
-      absolute-size
-    >
-      <div
-        class="button text-uppercase accent--text font-weight-medium my-2"
-      >{{ $t('navigation.title') }}</div>
-      <VeoFormNavigation :formSchema="form.formSchema && form.formSchema.content" class="mx-n4" />
+    <VeoPage v-if="!contentsCollapsed && formSchemaHasGroups" :cols="2" :md="2" :xl="2" absolute-size>
+      <div class="button text-uppercase accent--text font-weight-medium my-2">{{ $t('navigation.title') }}</div>
+      <VeoFormNavigation
+        :formSchema="form.formSchema && form.formSchema.content"
+        :custom-translation="
+          form.formSchema && form.formSchema.translation && form.formSchema.translation[$i18n.locale]
+        "
+        class="mx-n4"
+      />
     </VeoPage>
     <v-divider vertical />
     <VeoPage
