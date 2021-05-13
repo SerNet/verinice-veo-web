@@ -26,7 +26,7 @@ export default function (api: Client) {
      * @param entity The entity to load the version of.
      * @param changeNumber The version of the entity to load.
      */
-    fetchVersion(entity: IVeoEntity, changeNumber: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
+    fetchVersion(entity: IVeoEntity, changeNumber: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry> {
       if (!params) {
         params = {}
       }
@@ -43,7 +43,7 @@ export default function (api: Client) {
      * @param entity The entity to load the version of.
      * @param date The date at which to retrieve the most current version.
      */
-    fetchVersionAt(entity: IVeoEntity, date: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
+    fetchVersionAt(entity: IVeoEntity, date: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry> {
       if (!params) {
         params = {}
       }

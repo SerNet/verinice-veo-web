@@ -147,7 +147,7 @@ export interface IVeoCreateReportData {
 
 export interface IVeoObjectHistoryEntry {
   author: string
-  content: IVeoObjectSchema
+  content: IVeoEntity
   time: string
   type: string
   changeNumber: number

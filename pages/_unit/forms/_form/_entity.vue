@@ -402,6 +402,7 @@ export default Vue.extend({
         this.isRevision = isRevision
         if (isRevision) {
           this.form.objectData = content // show revision content in form
+          this.form.objectData.displayName = `${content.abbreviation} ${content.name}`
         } else {
           await this.$fetch() // refetch newest version from entity endpoint, not history
         }
@@ -421,6 +422,8 @@ export default Vue.extend({
     },
     validateRevisionSchema(revision: IBaseObject) {
       const validator = new ObjectSchemaValidator()
+
+      delete revision.displayName
       const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision)
       if (!isValid) {
         this.showError(500, this.$t('revision_incompatible'))
