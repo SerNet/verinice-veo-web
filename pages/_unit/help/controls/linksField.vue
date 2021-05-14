@@ -294,8 +294,7 @@ export default Vue.extend({
           type: 'Layout',
           options: {
             direction: 'vertical',
-            format: 'group',
-            highlight: false
+            format: 'group'
           },
           elements: [
             {

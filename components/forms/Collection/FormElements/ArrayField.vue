@@ -98,8 +98,7 @@ export default Vue.extend({
         type: 'Layout',
         options: {
           direction: this.options && this.options.direction === 'vertical' ? 'vertical' : 'horizontal',
-          format: 'group',
-          highlight: false
+          format: 'group'
         },
         elements: this.elements
       }

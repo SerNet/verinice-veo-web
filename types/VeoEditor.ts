@@ -136,7 +136,7 @@ const INPUT_ELEMENTS = [
   {
     name: 'LinksField',
     type: ['array'],
-    options: { format: 'group', direction: 'vertical', highlight: false },
+    options: { format: 'group', direction: 'vertical' },
     weight: (weights) => {
       const schemaItemsProperties =
         weights.schema &&

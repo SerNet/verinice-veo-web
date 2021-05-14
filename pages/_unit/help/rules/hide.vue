@@ -39,8 +39,7 @@ export default Vue.extend({
           type: 'Layout',
           options: {
             format: 'group',
-            direction: 'vertical',
-            highlight: false
+            direction: 'vertical'
           },
           elements: [
             {
