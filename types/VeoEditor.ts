@@ -51,7 +51,6 @@ export interface IInputElement {
   options?: {
     direction?: string
     format?: string
-    highlight?: boolean
   }
   weight: (weights: IInputElementInfo) => number
 }
