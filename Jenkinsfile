@@ -2,7 +2,15 @@
 // - OAuth Credentials plugin, org.jenkins-ci.plugins:oauth-credentials:0.4
 // - Google Container Registry Auth0, google-container-registry-auth:0.3
 
-
+def withDockerNetwork(Closure inner) {
+  try {
+    networkId = UUID.randomUUID().toString()
+    sh "docker network create ${networkId}"
+    inner.call(networkId)
+  } finally {
+    sh "docker network rm ${networkId}"
+  }
+}
 
 pipeline {
     agent none
@@ -69,13 +77,13 @@ pipeline {
                                     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                                         sh "npm ci"
                                         def cypressOptions = [ reporter:'junit',
-                                            reporterOptions: [
-                                                mochaFile: 'out/junit.xml'
-                                            ],
-                                            baseUrl: "http://veo-web-${n}:5000",
-                                            video: false,
-                                            screenshotsFolder: 'out/screenshots'
-                                        ]
+                                                               reporterOptions: [
+                                                                 mochaFile: 'out/junit.xml'
+                                                               ],
+                                                               baseUrl: "http://veo-web-${n}:5000",
+                                                               video: false,
+                                                               screenshotsFolder: 'out/screenshots'
+                                                             ]
                                         def cypressOptionsStr = groovy.json.JsonOutput.toJson(cypressOptions)
                                         sh "npm run test:e2e -- --config '${cypressOptionsStr}'"
                                     }
