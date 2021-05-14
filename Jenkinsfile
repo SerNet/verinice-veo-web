@@ -57,6 +57,45 @@ pipeline {
                 }
             }
         }
+        stage('End-to-end tests') {
+            agent any
+            steps {
+                sh 'mkdir -p $WORKSPACE/out'
+                script {
+                    withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
+                        withDockerNetwork{ n ->
+                            docker.image("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}").withRun("--network ${n} --name veo-web-${n}") {
+                                docker.build('veo-web-e2e-tests', '-f e2e.Dockerfile .').inside("--network ${n} -w $WORKSPACE -e no_proxy=localhost,127.0.0.1,veo-web-${n} -e LANG=de_DE.UTF-8") {
+                                    catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                                        sh "npm ci"
+                                        def cypressOptions = [ reporter:'junit',
+                                            reporterOptions: [
+                                                mochaFile: 'out/junit.xml'
+                                            ],
+                                            baseUrl: "http://veo-web-${n}:5000",
+                                            video: false,
+                                            screenshotsFolder: 'out/screenshots'
+                                        ]
+                                        def cypressOptionsStr = groovy.json.JsonOutput.toJson(cypressOptions)
+                                        sh "npm run test:e2e -- --config '${cypressOptionsStr}'"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            post {
+                always {
+                    dir ('out'){
+                        sh script: "cp -rt . /home/appuser/.npm/_logs/", returnStatus: true
+                        archiveArtifacts artifacts: '_logs/*,screenshots/**/*.png', allowEmptyArchive: true
+                        junit testResults: 'junit.xml'
+                        deleteDir()
+                    }
+                }
+            }
+        }
         stage('Trigger Deployment') {
             agent any
             when {
