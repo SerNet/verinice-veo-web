@@ -130,13 +130,8 @@ describe('Formschema Editor', () => {
       .wait(1)
     cy.get('.v-dialog--active').within(dialogEl => {
       cy.get('.editor .cm-content').then(function(editor) {
-        cy.wrap(getEditorData(editor)).then(currentFS => {
-          cy.fixture('formschema/drag-and-drop.json').then(compareFS => {
-            cy.wrap(JSON.stringify(currentFS).replace(textOrGroupLangRegex, '')).should(
-              'eq',
-              JSON.stringify(compareFS).replace(textOrGroupLangRegex, '')
-            )
-          })
+        cy.wrap(JSON.parse(JSON.stringify(getEditorData(editor)).replace(textOrGroupLangRegex, ''))).toMatchSnapshot({
+          name: 'Drag and Drop - FS'
         })
       })
       cy.get('.v-card__actions')
@@ -147,7 +142,7 @@ describe('Formschema Editor', () => {
 
     cy.get('.vf-wrapper')
       .eq(0)
-      .toMatchHtmlSnapshot()
+      .toMatchHtmlSnapshot({ name: 'Drag and Drop - VeoForm' })
   })
 
   it('opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them', function() {
