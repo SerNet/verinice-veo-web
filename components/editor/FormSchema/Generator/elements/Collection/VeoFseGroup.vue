@@ -24,6 +24,9 @@
         <div class="text-caption text-truncate">{{ $t('group') }}</div>
       </v-col>
       <v-col cols="auto" class="text-right">
+        <v-btn v-if="ruleDisplayIcon" icon x-small disabled>
+          <v-icon dense small>{{ ruleDisplayIcon }}</v-icon>
+        </v-btn>
         <v-btn icon x-small @click="showEdit">
           <v-icon dense small>mdi-pencil</v-icon>
         </v-btn>
@@ -66,6 +69,7 @@
 import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
 import Draggable from 'vuedraggable'
+import { getRuleEffectIcons } from '~/lib/FormSchemaHelper'
 
 import {
   IVeoFormSchemaCustomTranslationEvent,
@@ -121,6 +125,9 @@ export default Vue.extend({
     },
     dynamicClasses(): string[] {
       return [this.directionClass]
+    },
+    ruleDisplayIcon(): string | undefined {
+      return getRuleEffectIcons(this.value?.rule?.effect)
     }
   },
   methods: {

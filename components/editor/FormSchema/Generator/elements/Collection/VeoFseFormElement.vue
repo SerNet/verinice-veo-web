@@ -13,7 +13,7 @@
           </div>
         </v-col>
         <v-col cols="auto" class="text-right pr-2">
-          <v-btn icon x-small disabled>
+          <v-btn v-if="ruleDisplayIcon" icon x-small disabled>
             <v-icon dense small>{{ ruleDisplayIcon }}</v-icon>
           </v-btn>
           <v-btn icon x-small @click="showEdit">

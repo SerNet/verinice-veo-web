@@ -1,11 +1,5 @@
 <template>
-  <VeoDialog
-    :key="formSchemaPointer"
-    :value="value"
-    :headline="$t('editGroupHeadline')"
-    large
-    @input="onDialogChanged"
-  >
+  <VeoDialog :key="formSchemaPointer" :value="value" :headline="$t('editGroupHeadline')" large @input="onDialogChanged">
     <template #default>
       <v-form>
         <v-row no-gutters class="align-center mt-4">
@@ -61,6 +55,7 @@
             />
           </v-col>
         </v-row>
+        <VeoFseConditions v-model="formData.rule" />
       </v-form>
       <small>{{ $t('global.input.requiredfields') }}</small>
     </template>
@@ -76,14 +71,7 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  PropType,
-  Ref,
-  ref,
-  reactive,
-  getCurrentInstance
-} from '@nuxtjs/composition-api'
+import { defineComponent, PropType, Ref, ref, reactive, getCurrentInstance } from '@nuxtjs/composition-api'
 import { BaseObject } from '~/components/forms/utils'
 import { v4 as uuid } from 'uuid'
 import { JsonPointer } from 'json-ptr'
@@ -172,7 +160,8 @@ export default defineComponent<IProps>({
       label: (localName.value && props.customTranslation?.[localName.value]) as string | undefined,
       direction: getValue('#/options/direction', defaults.direction),
       class: getAsArray('class') as string[],
-      style: getAsArray('style') as string[]
+      style: getAsArray('style') as string[],
+      rule: getValue('#/rule', undefined)
     })
 
     // Transform array values of class/style backwards to string
@@ -198,6 +187,9 @@ export default defineComponent<IProps>({
       ;['class', 'style'].forEach((propName: any) => {
         transformedValues[propName] = getAsString(propName)
       })
+
+      // Remove rule property, because it does not belongs to options
+      delete transformedValues.rule
 
       // Set label property in transformed values to the pointer of form translations.
       if (localName.value) {
@@ -235,6 +227,12 @@ export default defineComponent<IProps>({
         }
       } else {
         updateData = { ...updateData, options }
+      }
+      // Add rule at the end of the element data if the rule exists, otherwise remove it from the element data
+      if (formData.rule) {
+        updateData = { ...updateData, rule: formData.rule }
+      } else {
+        delete updateData['rule']
       }
       const updateTranslation: IVeoFormSchemaCustomTranslationEvent = JSON.parse(
         JSON.stringify(localCustomTranslation.value)

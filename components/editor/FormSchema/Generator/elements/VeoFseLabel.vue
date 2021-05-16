@@ -10,6 +10,9 @@
         </div>
       </v-col>
       <v-col cols="auto" class="text-right">
+        <v-btn v-if="ruleDisplayIcon" icon x-small disabled>
+          <v-icon dense small>{{ ruleDisplayIcon }}</v-icon>
+        </v-btn>
         <v-btn icon x-small @click="showEdit">
           <v-icon dense small>mdi-pencil</v-icon>
         </v-btn>
@@ -35,6 +38,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
+import { getRuleEffectIcons } from '~/lib/FormSchemaHelper'
 
 import {
   IVeoFormSchemaCustomTranslationEvent,
@@ -74,6 +78,11 @@ export default Vue.extend({
       handler() {
         this.setLabel()
       }
+    }
+  },
+  computed: {
+    ruleDisplayIcon(): string | undefined {
+      return getRuleEffectIcons(this.value?.rule?.effect)
     }
   },
   methods: {

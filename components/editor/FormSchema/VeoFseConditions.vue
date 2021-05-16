@@ -164,9 +164,13 @@ export default defineComponent<IProps>({
         return rule.value.condition?.scope
       },
       set(newScope) {
-        vjp.set(rule.value, '/condition/scope', newScope)
-        // Define /condition/schema as an empty object to reset the selection values in the "value" field, when scope was changed
-        vjp.set(rule.value, '/condition/schema', {})
+        // Update only if the new selected scope is not the same as the previous one
+        if (newScope !== rule.value.condition?.scope) {
+          vjp.set(rule.value, '/condition/scope', newScope)
+          // define /condition/schema as an empty object to reset the selection values in the "value" field, when scope was changed
+          vjp.set(rule.value, '/condition/schema', {})
+        }
+        // Emit event always
         emitRule(rule.value)
       }
     })
