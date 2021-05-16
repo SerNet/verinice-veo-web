@@ -37,14 +37,6 @@
             />
           </v-col>
         </v-row>
-        <v-row v-if="activeControlType.highlight !== undefined" no-gutters class="align-center">
-          <v-col :cols="12" :md="5">
-            <span style="font-size: 1.2rem;">{{ $t('highlightControl') }}:</span>
-          </v-col>
-          <v-col :cols="12" :md="5">
-            <v-checkbox v-model="activeControlType.highlight" :label="$t('highlightControl')" />
-          </v-col>
-        </v-row>
         <v-row v-if="activeControlType.name === 'LinksField'" no-gutters class="align-center">
           <v-col :cols="12" :md="5">
             <span style="font-size: 1.2rem;">{{ $t('linkAttributes') }}:</span>
@@ -80,6 +72,7 @@
             />
           </v-col>
         </v-row>
+        <VeoFseConditions v-model="activeControlType.rule" :current-scope="formSchema.scope" />
       </v-form>
       <small>{{ $t('global.input.requiredfields') }}</small>
 
@@ -199,6 +192,7 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    // TODO: Refactor the component
     /**
      * General variables
      */
@@ -222,6 +216,7 @@ export default defineComponent<IProps>({
       const transformedValues = JSON.parse(JSON.stringify(values))
       // name is only used for activeControlType but not in option, therefore it should be deleted before saving
       delete transformedValues.name
+      delete transformedValues.rule
       Object.entries(values).forEach(([key, val]) => {
         if (defaults.hasOwnProperty(key)) {
           transformedValues[key] = val === defaults[key] ? undefined : val
@@ -258,12 +253,14 @@ export default defineComponent<IProps>({
     /**
      * Control types related stuff
      */
+    // TODO: this (also transformValues()) should be refactored and should like the structure as of FormSchema 
     const activeControlType: Ref<IControlType> = ref({
       name: props.type,
       format: props.options.format,
       ...((props.type === 'Radio' || props.type === 'LinksField') && {
         direction: getValue('#/options/direction', defaults.direction)
-      })
+      }),
+      rule: getValue('#/rule', undefined)
     })
 
     watch(
@@ -286,13 +283,6 @@ export default defineComponent<IProps>({
         value: 'horizontal'
       }
     ])
-
-    watch(
-      () => props.type,
-      (val: string) => {
-        activeControlType.value.name = val
-      }
-    )
 
     function updateActiveControlType() {
       const newType = alternatives.value.find(item => item.name === activeControlType.value.name)
@@ -411,6 +401,12 @@ export default defineComponent<IProps>({
       if (activeControlType.value.name === 'LinksField') {
         updateData = { ...updateData, elements: linksField.formSchemaElements.value }
       }
+      // Add rule at the end of the element data if the rule exists, otherwise remove it from the element data
+      if (activeControlType.value.rule) {
+        updateData = { ...updateData, rule: activeControlType.value.rule }
+      } else {
+        delete updateData['rule']
+      }
       const updateTranslation: IVeoFormSchemaCustomTranslationEvent = JSON.parse(
         JSON.stringify(localCustomTranslation.value)
       )
@@ -439,14 +435,12 @@ export default defineComponent<IProps>({
 {
   "en": {
     "editControlHeadline": "Edit input element",
-    "highlightControl": "Highlight element",
     "linkAttributes": "Link attributes",
     "type": "Control type",
     "typeInput": "Typ"
   },
   "de": {
     "editControlHeadline": "Input Element anpassen",
-    "highlightControl": "Element hervorheben",
     "linkAttributes": "Linkattribute",
     "type": "Steuerelement Typ",
     "typeInput": "Typ"

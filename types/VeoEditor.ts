@@ -1,6 +1,7 @@
 import {
   IVeoFormSchemaItem,
-  IVeoFormSchemaItemOptions
+  IVeoFormSchemaItemOptions,
+  IVeoFromSchemaItemRule
 } from './VeoTypes'
 
 // ===============================
@@ -230,7 +231,8 @@ interface IControlTypeAlternative {
 export interface IControlType {
   name: string,
   format?: string,
-  direction?: string
+  direction?: string,
+  rule?: IVeoFromSchemaItemRule
 }
 
 /**

@@ -87,11 +87,20 @@ export interface IVeoFormSchema extends IVeoFormSchemaMeta {
   translation: IVeoFormSchemaTranslationCollection
 }
 
+export interface IVeoFromSchemaItemRule {
+  effect: 'SHOW' | 'HIDE'
+  condition: {
+    scope: string
+    schema: { enum: (string|boolean|number)[] }
+  }
+}
+
 export interface IVeoFormSchemaItem {
   type: IVeoFormSchemaContentType
   text?: string
   options: IVeoFormSchemaItemOptions
   elements?: IVeoFormSchemaItem[]
+  rule?: IVeoFromSchemaItemRule
 }
 
 export interface IVeoFormSchemaItemOptions {
