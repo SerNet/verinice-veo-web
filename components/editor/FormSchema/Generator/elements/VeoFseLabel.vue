@@ -6,13 +6,10 @@
       </v-col>
       <v-col>
         <div class="text-caption text-truncate">
-          {{ label }}
+          {{ label }} <VeoFseRuleDisplay v-if="ruleDisplayIcon" :value="ruleDisplayIcon" />
         </div>
       </v-col>
       <v-col cols="auto" class="text-right">
-        <v-btn v-if="ruleDisplayIcon" icon x-small disabled>
-          <v-icon dense small>{{ ruleDisplayIcon }}</v-icon>
-        </v-btn>
         <v-btn icon x-small @click="showEdit">
           <v-icon dense small>mdi-pencil</v-icon>
         </v-btn>

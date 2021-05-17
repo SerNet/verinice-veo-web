@@ -1845,11 +1845,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               </div>
               <div data-v-123abc4d="" class="fse-input-type mb-1">
                 InputText
+                <!---->
               </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -1912,11 +1912,13 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               <div data-v-123abc4d="" class="fse-input-property-name mb-1">
                 process_GeneralInformation_document
               </div>
-              <div data-v-123abc4d="" class="fse-input-type mb-1">InputUri</div>
+              <div data-v-123abc4d="" class="fse-input-type mb-1">
+                InputUri
+                <!---->
+              </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -1981,11 +1983,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               </div>
               <div data-v-123abc4d="" class="fse-input-type mb-1">
                 InputDate
+                <!---->
               </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -2048,11 +2050,13 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               <div data-v-123abc4d="" class="fse-input-property-name mb-1">
                 process_SensitiveData_SensitiveData
               </div>
-              <div data-v-123abc4d="" class="fse-input-type mb-1">Checkbox</div>
+              <div data-v-123abc4d="" class="fse-input-type mb-1">
+                Checkbox
+                <!---->
+              </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -2115,11 +2119,13 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               <div data-v-123abc4d="" class="fse-input-property-name mb-1">
                 process_ProcessingDetails_typeOfSurvey
               </div>
-              <div data-v-123abc4d="" class="fse-input-type mb-1">Select</div>
+              <div data-v-123abc4d="" class="fse-input-type mb-1">
+                Select
+                <!---->
+              </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -2184,11 +2190,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               </div>
               <div data-v-123abc4d="" class="fse-input-type mb-1">
                 LinksField
+                <!---->
               </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -2242,10 +2248,10 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="text-caption text-truncate">
           Text 1 Test
+          <!---->
         </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -2297,10 +2303,10 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="text-caption text-truncate">
           Text 2 Test
+          <!---->
         </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -2350,10 +2356,12 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
         ></i>
       </div>
       <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="text-caption text-truncate">Gruppe</div>
+        <div data-v-123abc4d="" class="text-caption text-truncate">
+          Gruppe
+          <!---->
+        </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -2426,11 +2434,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         InputText
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -2502,11 +2510,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         Checkbox
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -2566,10 +2574,12 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
         ></i>
       </div>
       <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="text-caption text-truncate">Gruppe</div>
+        <div data-v-123abc4d="" class="text-caption text-truncate">
+          Gruppe
+          <!---->
+        </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -2642,11 +2652,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         InputText
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -2718,11 +2728,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         InputText
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -3352,11 +3362,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               </div>
               <div data-v-123abc4d="" class="fse-input-type mb-1">
                 InputText
+                <!---->
               </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -3419,11 +3429,13 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               <div data-v-123abc4d="" class="fse-input-property-name mb-1">
                 process_GeneralInformation_document
               </div>
-              <div data-v-123abc4d="" class="fse-input-type mb-1">InputUri</div>
+              <div data-v-123abc4d="" class="fse-input-type mb-1">
+                InputUri
+                <!---->
+              </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -3488,11 +3500,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               </div>
               <div data-v-123abc4d="" class="fse-input-type mb-1">
                 InputDate
+                <!---->
               </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -3555,11 +3567,13 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               <div data-v-123abc4d="" class="fse-input-property-name mb-1">
                 process_SensitiveData_SensitiveData
               </div>
-              <div data-v-123abc4d="" class="fse-input-type mb-1">Checkbox</div>
+              <div data-v-123abc4d="" class="fse-input-type mb-1">
+                Checkbox
+                <!---->
+              </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -3622,11 +3636,13 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               <div data-v-123abc4d="" class="fse-input-property-name mb-1">
                 process_ProcessingDetails_typeOfSurvey
               </div>
-              <div data-v-123abc4d="" class="fse-input-type mb-1">Select</div>
+              <div data-v-123abc4d="" class="fse-input-type mb-1">
+                Select
+                <!---->
+              </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -3691,11 +3707,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               </div>
               <div data-v-123abc4d="" class="fse-input-type mb-1">
                 LinksField
+                <!---->
               </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -3749,10 +3765,10 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="text-caption text-truncate">
           Text 1 Test geändert
+          <!---->
         </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -3804,10 +3820,10 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="text-caption text-truncate">
           Text 2 Test geändert
+          <!---->
         </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -3857,10 +3873,12 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
         ></i>
       </div>
       <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="text-caption text-truncate">Gruppe</div>
+        <div data-v-123abc4d="" class="text-caption text-truncate">
+          Gruppe
+          <!---->
+        </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -3933,11 +3951,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         InputText
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -4009,11 +4027,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         Checkbox
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -4073,10 +4091,12 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
         ></i>
       </div>
       <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="text-caption text-truncate">Gruppe</div>
+        <div data-v-123abc4d="" class="text-caption text-truncate">
+          Gruppe
+          <!---->
+        </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -4149,11 +4169,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         InputText
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -4225,11 +4245,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         InputText
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -4860,11 +4880,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               </div>
               <div data-v-123abc4d="" class="fse-input-type mb-1">
                 InputText
+                <!---->
               </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -4927,11 +4947,13 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               <div data-v-123abc4d="" class="fse-input-property-name mb-1">
                 process_GeneralInformation_document
               </div>
-              <div data-v-123abc4d="" class="fse-input-type mb-1">InputUri</div>
+              <div data-v-123abc4d="" class="fse-input-type mb-1">
+                InputUri
+                <!---->
+              </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -4996,11 +5018,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               </div>
               <div data-v-123abc4d="" class="fse-input-type mb-1">
                 InputDate
+                <!---->
               </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -5063,11 +5085,13 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               <div data-v-123abc4d="" class="fse-input-property-name mb-1">
                 process_SensitiveData_SensitiveData
               </div>
-              <div data-v-123abc4d="" class="fse-input-type mb-1">Checkbox</div>
+              <div data-v-123abc4d="" class="fse-input-type mb-1">
+                Checkbox
+                <!---->
+              </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -5130,11 +5154,13 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               <div data-v-123abc4d="" class="fse-input-property-name mb-1">
                 process_ProcessingDetails_typeOfSurvey
               </div>
-              <div data-v-123abc4d="" class="fse-input-type mb-1">Select</div>
+              <div data-v-123abc4d="" class="fse-input-type mb-1">
+                Select
+                <!---->
+              </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -5199,11 +5225,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               </div>
               <div data-v-123abc4d="" class="fse-input-type mb-1">
                 LinksField
+                <!---->
               </div>
             </div>
           </div>
           <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-            <!---->
             <button
               data-v-123abc4d=""
               type="button"
@@ -5255,10 +5281,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
         ></i>
       </div>
       <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="text-caption text-truncate"></div>
+        <div data-v-123abc4d="" class="text-caption text-truncate">
+          <!---->
+        </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -5308,10 +5335,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
         ></i>
       </div>
       <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="text-caption text-truncate"></div>
+        <div data-v-123abc4d="" class="text-caption text-truncate">
+          <!---->
+        </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -5361,10 +5389,12 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
         ></i>
       </div>
       <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="text-caption text-truncate">Gruppe</div>
+        <div data-v-123abc4d="" class="text-caption text-truncate">
+          Gruppe
+          <!---->
+        </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -5437,11 +5467,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         InputText
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -5513,11 +5543,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         Checkbox
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -5577,10 +5607,12 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
         ></i>
       </div>
       <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="text-caption text-truncate">Gruppe</div>
+        <div data-v-123abc4d="" class="text-caption text-truncate">
+          Gruppe
+          <!---->
+        </div>
       </div>
       <div data-v-123abc4d="" class="text-right col col-auto">
-        <!---->
         <button
           data-v-123abc4d=""
           type="button"
@@ -5653,11 +5685,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         InputText
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"
@@ -5729,11 +5761,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                       </div>
                       <div data-v-123abc4d="" class="fse-input-type mb-1">
                         InputText
+                        <!---->
                       </div>
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="text-right pr-2 col col-auto">
-                    <!---->
                     <button
                       data-v-123abc4d=""
                       type="button"

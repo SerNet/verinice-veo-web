@@ -21,12 +21,11 @@
         <v-icon dense small class="handle pr-1">mdi-menu</v-icon>
       </v-col>
       <v-col>
-        <div class="text-caption text-truncate">{{ $t('group') }}</div>
+        <div class="text-caption text-truncate">
+          {{ $t('group') }} <VeoFseRuleDisplay v-if="ruleDisplayIcon" :value="ruleDisplayIcon" />
+        </div>
       </v-col>
       <v-col cols="auto" class="text-right">
-        <v-btn v-if="ruleDisplayIcon" icon x-small disabled>
-          <v-icon dense small>{{ ruleDisplayIcon }}</v-icon>
-        </v-btn>
         <v-btn icon x-small @click="showEdit">
           <v-icon dense small>mdi-pencil</v-icon>
         </v-btn>

@@ -9,13 +9,12 @@
           <div>
             <div class="fse-input-title mt-1 mb-1">{{ label }}</div>
             <div class="fse-input-property-name mb-1">{{ name }}</div>
-            <div class="fse-input-type mb-1">{{ currentType }}</div>
+            <div class="fse-input-type mb-1">
+              {{ currentType }} <VeoFseRuleDisplay v-if="ruleDisplayIcon" :value="ruleDisplayIcon" />
+            </div>
           </div>
         </v-col>
         <v-col cols="auto" class="text-right pr-2">
-          <v-btn v-if="ruleDisplayIcon" icon x-small disabled>
-            <v-icon dense small>{{ ruleDisplayIcon }}</v-icon>
-          </v-btn>
           <v-btn icon x-small @click="showEdit">
             <v-icon dense small>mdi-pencil</v-icon>
           </v-btn>
@@ -44,11 +43,7 @@ import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
 
-import {
-  eligibleInputElements,
-  IInputElement,
-  INPUT_TYPES
-} from '~/types/VeoEditor'
+import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VeoEditor'
 import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItemDeleteEvent,
