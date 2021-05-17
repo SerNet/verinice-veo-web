@@ -82,7 +82,8 @@ pipeline {
                                                                ],
                                                                baseUrl: "http://veo-web-${n}:5000",
                                                                video: false,
-                                                               screenshotsFolder: 'out/screenshots'
+                                                               screenshotsFolder: 'out/screenshots',
+                                                               defaultCommandTimeout: 10000
                                                              ]
                                         def cypressOptionsStr = groovy.json.JsonOutput.toJson(cypressOptions)
                                         sh "npm run test:e2e -- --config '${cypressOptionsStr}'"
