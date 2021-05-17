@@ -86,7 +86,7 @@ export default Vue.extend({
                   // "" + "elements-0"
                   // "elements" + "-elements-0"
                   initialId: `${this.initialId}${this.initialId ? '-' : ''}elements-${index}`,
-                  text: this.customTranslation[el.options.label.replace('#lang/', '')] || el.options.label,
+                  text: this.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
                   layout: el
                 }
               : {} // This is generated for non LayoutGroup elements and filtered in the next step

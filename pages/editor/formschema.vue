@@ -267,6 +267,8 @@ export default defineComponent<IProps>({
      */
     const objectSchema: Ref<IVeoObjectSchema | undefined> = ref(undefined)
     const formSchema: Ref<IVeoFormSchema | undefined> = ref(undefined)
+    provide('mainObjectSchema', objectSchema)
+    provide('mainFormSchema', formSchema)
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined)
     const objectData = ref({})
     const language = ref(context.root.$i18n.locale)

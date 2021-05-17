@@ -269,7 +269,7 @@ export default defineComponent<IProps>({
       () => props.formSchema.content,
       () => {
         const usedScopes = Object.entries(JsonPointer.flatten(props.formSchema.content, true))
-          .filter(([key, _value]) => /\/scope$/.test(key))
+          .filter(([key, _value]) => /elements\/\d+\/scope$/.test(key))
           .map(([_key, value]) => value as string)
 
         controls.value.forEach((obj, i) => {

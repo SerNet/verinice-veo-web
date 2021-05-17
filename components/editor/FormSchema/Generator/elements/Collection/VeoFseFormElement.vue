@@ -9,7 +9,9 @@
           <div>
             <div class="fse-input-title mt-1 mb-1">{{ label }}</div>
             <div class="fse-input-property-name mb-1">{{ name }}</div>
-            <div class="fse-input-type mb-1">{{ currentType }}</div>
+            <div class="fse-input-type mb-1">
+              {{ currentType }} <VeoFseRuleDisplay v-if="ruleDisplayIcon" :value="ruleDisplayIcon" />
+            </div>
           </div>
         </v-col>
         <v-col cols="auto" class="text-right pr-2">
@@ -41,11 +43,7 @@ import { Prop } from 'vue/types/options'
 import { JSONSchema7 } from 'json-schema'
 import { UISchemaElement } from '@/types/UISchema'
 
-import {
-  eligibleInputElements,
-  IInputElement,
-  INPUT_TYPES
-} from '~/types/VeoEditor'
+import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VeoEditor'
 import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItemDeleteEvent,
@@ -53,6 +51,7 @@ import {
   IVeoFormSchemaTranslationCollectionItem,
   IVeoTranslationCollection
 } from '~/types/VeoTypes'
+import { getRuleEffectIcons } from '~/lib/FormSchemaHelper'
 
 export default Vue.extend({
   props: {
@@ -122,6 +121,9 @@ export default Vue.extend({
         : this.schema.type && !Array.isArray(this.schema.type)
         ? this.schema.type
         : 'default'
+    },
+    ruleDisplayIcon(): string | undefined {
+      return getRuleEffectIcons(this.value?.rule?.effect)
     }
   },
   watch: {

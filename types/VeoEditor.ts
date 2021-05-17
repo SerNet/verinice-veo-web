@@ -1,6 +1,7 @@
 import {
   IVeoFormSchemaItem,
-  IVeoFormSchemaItemOptions
+  IVeoFormSchemaItemOptions,
+  IVeoFromSchemaItemRule
 } from './VeoTypes'
 
 // ===============================
@@ -51,7 +52,6 @@ export interface IInputElement {
   options?: {
     direction?: string
     format?: string
-    highlight?: boolean
   }
   weight: (weights: IInputElementInfo) => number
 }
@@ -136,7 +136,7 @@ const INPUT_ELEMENTS = [
   {
     name: 'LinksField',
     type: ['array'],
-    options: { format: 'group', direction: 'vertical', highlight: false },
+    options: { format: 'group', direction: 'vertical' },
     weight: (weights) => {
       const schemaItemsProperties =
         weights.schema &&
@@ -231,7 +231,8 @@ interface IControlTypeAlternative {
 export interface IControlType {
   name: string,
   format?: string,
-  direction?: string
+  direction?: string,
+  rule?: IVeoFromSchemaItemRule
 }
 
 /**

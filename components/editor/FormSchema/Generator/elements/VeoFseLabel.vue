@@ -6,7 +6,7 @@
       </v-col>
       <v-col>
         <div class="text-caption text-truncate">
-          {{ label }}
+          {{ label }} <VeoFseRuleDisplay v-if="ruleDisplayIcon" :value="ruleDisplayIcon" />
         </div>
       </v-col>
       <v-col cols="auto" class="text-right">
@@ -35,6 +35,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
+import { getRuleEffectIcons } from '~/lib/FormSchemaHelper'
 
 import {
   IVeoFormSchemaCustomTranslationEvent,
@@ -74,6 +75,11 @@ export default Vue.extend({
       handler() {
         this.setLabel()
       }
+    }
+  },
+  computed: {
+    ruleDisplayIcon(): string | undefined {
+      return getRuleEffectIcons(this.value?.rule?.effect)
     }
   },
   methods: {

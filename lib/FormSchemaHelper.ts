@@ -3,6 +3,7 @@ import {
   IVeoFormSchemaItem,
   IVeoFormSchemaTranslationCollection,
   IVeoFormSchemaTranslationCollectionItem,
+  IVeoFromSchemaItemRule,
   IVeoObjectSchema
 } from '~/types/VeoTypes'
 import FormSchemaValidator from './FormSchemaValidator'
@@ -57,4 +58,13 @@ export function deleteElementCustomTranslation(
     })
     callbackUpdateCustomTranslation(localCustomTranslation)
   }
+}
+
+export const ruleEffectIcons = {
+  SHOW: 'mdi-eye-outline',
+  HIDE: 'mdi-eye-off-outline'
+}
+
+export function getRuleEffectIcons(ruleEffect: IVeoFromSchemaItemRule['effect']) {
+  return ruleEffect ? ruleEffectIcons[ruleEffect] : undefined
 }
