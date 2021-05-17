@@ -166,7 +166,9 @@ describe('Formschema Editor', () => {
       .toMatchHtmlSnapshot({ name: 'InputText - VeoForm' })
 
     cy.contains('.fse-input', 'Name')
-      .should('contain.text', 'Name name InputText')
+      .should('contain.text', 'Name')
+      .should('contain.text', 'name')
+      .should('contain.text', 'InputText')
       .find('.mdi-pencil')
       .closest('.v-btn')
       .click()
@@ -211,7 +213,9 @@ describe('Formschema Editor', () => {
       .toMatchHtmlSnapshot({ name: 'InputTextMultiline - VeoForm' })
 
     cy.contains('.fse-input', 'Name Test 1')
-      .should('contain.text', 'Name Test 1 name InputTextMultiline')
+      .should('contain.text', 'Name Test 1')
+      .should('contain.text', 'name')
+      .should('contain.text', 'InputTextMultiline')
       .find('.mdi-pencil')
       .closest('.v-btn')
       .click()
@@ -258,13 +262,18 @@ describe('Formschema Editor', () => {
       .find('.vf-markdown-editor')
       .should('not.be.null')
 
-    cy.contains('.fse-input', 'Name Test 2').should('contain.text', 'Name Test 2 name MarkdownEditor')
+    cy.contains('.fse-input', 'Name Test 2')
+      .should('contain.text', 'Name Test 2')
+      .should('contain.text', 'name')
+      .should('contain.text', 'MarkdownEditor')
   })
 
   it('opens InputUri dialogs, changes data in dialogs and save them', function() {
     cy.loadFse('formschema/elements/input-uri.json')
     cy.contains('.fse-input', 'Dokument')
-      .should('contain.text', 'Dokument process_GeneralInformation_document InputUri')
+      .should('contain.text', 'Dokument')
+      .should('contain.text', 'process_GeneralInformation_document')
+      .should('contain.text', 'InputUri')
       .find('.mdi-pencil')
       .closest('.v-btn')
       .click()
@@ -305,16 +314,18 @@ describe('Formschema Editor', () => {
       .eq(0)
       .toMatchHtmlSnapshot({ name: 'InputUri - VeoForm' })
 
-    cy.contains('.fse-input', 'Dokument Test').should(
-      'contain.text',
-      'Dokument Test process_GeneralInformation_document InputUri'
-    )
+    cy.contains('.fse-input', 'Dokument Test')
+      .should('contain.text', 'Dokument Test')
+      .should('contain.text', 'process_GeneralInformation_document')
+      .should('contain.text', 'InputUri')
   })
 
   it('opens InputDate dialogs, changes data in dialogs and save them', function() {
     cy.loadFse('formschema/elements/input-date.json')
     cy.contains('.fse-input', 'Erhebung durchgeführt am')
-      .should('contain.text', 'Erhebung durchgeführt am process_ProcessingDetails_surveyConductedOn InputDate')
+      .should('contain.text', 'Erhebung durchgeführt am')
+      .should('contain.text', 'process_ProcessingDetails_surveyConductedOn')
+      .should('contain.text', 'InputDate')
       .find('.mdi-pencil')
       .closest('.v-btn')
       .click()
@@ -358,19 +369,18 @@ describe('Formschema Editor', () => {
       .eq(0)
       .toMatchHtmlSnapshot({ name: 'InputUri - VeoForm' })
 
-    cy.contains('.fse-input', 'Erhebung durchgeführt am Test').should(
-      'contain.text',
-      'Erhebung durchgeführt am Test process_ProcessingDetails_surveyConductedOn InputDate'
-    )
+    cy.contains('.fse-input', 'Erhebung durchgeführt am Test')
+      .should('contain.text', 'Erhebung durchgeführt am Test')
+      .should('contain.text', 'process_ProcessingDetails_surveyConductedOn')
+      .should('contain.text', 'InputDate')
   })
 
   it('opens Checkbox dialogs, changes data in dialogs and save them', function() {
     cy.loadFse('formschema/elements/checkbox.json')
     cy.contains('.fse-input', 'Datenverarbeitung besonders sensitiver Daten?')
-      .should(
-        'contain.text',
-        'Datenverarbeitung besonders sensitiver Daten? process_SensitiveData_SensitiveData Checkbox'
-      )
+      .should('contain.text', 'Datenverarbeitung besonders sensitiver Daten?')
+      .should('contain.text', 'process_SensitiveData_SensitiveData')
+      .should('contain.text', 'Checkbox')
       .find('.mdi-pencil')
       .closest('.v-btn')
       .click()
@@ -411,10 +421,10 @@ describe('Formschema Editor', () => {
       .eq(0)
       .toMatchHtmlSnapshot({ name: 'Checkbox - VeoForm' })
 
-    cy.contains('.fse-input', 'Datenverarbeitung besonders sensitiver Daten? Test').should(
-      'contain.text',
-      'Datenverarbeitung besonders sensitiver Daten? Test process_SensitiveData_SensitiveData Checkbox'
-    )
+    cy.contains('.fse-input', 'Datenverarbeitung besonders sensitiver Daten? Test')
+      .should('contain.text', 'Datenverarbeitung besonders sensitiver Daten? Test')
+      .should('contain.text', 'process_SensitiveData_SensitiveData')
+      .should('contain.text', 'Checkbox')
   })
 
   it('opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them', function() {
@@ -439,7 +449,9 @@ describe('Formschema Editor', () => {
       .toMatchHtmlSnapshot({ name: 'Select - VeoForm' })
 
     cy.contains('.fse-input', 'Art der Erhebung')
-      .should('contain.text', 'Art der Erhebung process_ProcessingDetails_typeOfSurvey Select')
+      .should('contain.text', 'Art der Erhebung')
+      .should('contain.text', 'process_ProcessingDetails_typeOfSurvey')
+      .should('contain.text', 'Select')
       .find('.mdi-pencil')
       .closest('.v-btn')
       .click()
@@ -484,7 +496,9 @@ describe('Formschema Editor', () => {
       .toMatchHtmlSnapshot({ name: 'Radio - VeoForm' })
 
     cy.contains('.fse-input', 'Art der Erhebung Test 1')
-      .should('contain.text', 'Art der Erhebung Test 1 process_ProcessingDetails_typeOfSurvey Radio')
+      .should('contain.text', 'Art der Erhebung Test 1')
+      .should('contain.text', 'process_ProcessingDetails_typeOfSurvey')
+      .should('contain.text', 'Radio')
       .find('.mdi-pencil')
       .closest('.v-btn')
       .click()
@@ -526,16 +540,18 @@ describe('Formschema Editor', () => {
       .eq(0)
       .toMatchHtmlSnapshot({ name: 'Autocomplete - VeoForm' })
 
-    cy.contains('.fse-input', 'Art der Erhebung Test 2').should(
-      'contain.text',
-      'Art der Erhebung Test 2 process_ProcessingDetails_typeOfSurvey Autocomplete'
-    )
+    cy.contains('.fse-input', 'Art der Erhebung Test 2')
+      .should('contain.text', 'Art der Erhebung Test 2')
+      .should('contain.text', 'process_ProcessingDetails_typeOfSurvey')
+      .should('contain.text', 'Autocomplete')
   })
 
   it('opens LinksField dialogs, changes data in dialogs and save them', function() {
     cy.loadFse('formschema/elements/links-field.json')
     cy.contains('.fse-input', 'Empfänger Intern')
-      .should('contain.text', 'Empfänger Intern process_InternalRecipientLink LinksField')
+      .should('contain.text', 'Empfänger Intern')
+      .should('contain.text', 'process_InternalRecipientLink')
+      .should('contain.text', 'LinksField')
       .find('.mdi-pencil')
       .closest('.v-btn')
       .click()
@@ -595,10 +611,10 @@ describe('Formschema Editor', () => {
       .eq(0)
       .toMatchHtmlSnapshot({ name: 'LinksField - VeoForm' })
 
-    cy.contains('.fse-input', 'Empfänger Intern Test').should(
-      'contain.text',
-      'Empfänger Intern Test process_InternalRecipientLink LinksField'
-    )
+    cy.contains('.fse-input', 'Empfänger Intern Test')
+      .should('contain.text', 'Empfänger Intern Test')
+      .should('contain.text', 'process_InternalRecipientLink')
+      .should('contain.text', 'LinksField')
   })
 
   it('opens FseLabel dialogs, changes data in dialogs and save them', function() {
