@@ -142,7 +142,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { capitalize, trim } from 'lodash'
+import { capitalize, snakeCase, trim } from 'lodash'
 
 import { generateSchema, validate } from '~/lib/FormSchemaHelper'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
@@ -291,7 +291,7 @@ export default Vue.extend({
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     doImport2(schema: IVeoObjectSchema) {
-      if (schema.title.toLowerCase() !== this.formSchema?.modelType) {
+      if (snakeCase(schema.title) !== snakeCase(this.formSchema?.modelType)) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('wrongobjectschema', {
             objectType: schema.title,
