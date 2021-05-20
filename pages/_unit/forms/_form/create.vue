@@ -1,47 +1,105 @@
 <script lang="ts">
-import { separateUUIDParam } from '~/lib/utils'
-import BaseObjectForm from '~/pages/_unit/forms/_form/_entity.vue'
-import { getSchemaEndpoint } from '~/plugins/api/schema'
+import Vue from 'vue'
+import { Route } from 'vue-router/types/index'
 
-export default BaseObjectForm.extend({
+import VeoEditFormPage from '~/pages/_unit/forms/_form/_entity.vue'
+import { IForm, separateUUIDParam } from '~/lib/utils'
+import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
+import { IVeoEventPayload } from '~/types/VeoGlobalEvents'
+import { upperFirst } from 'lodash'
+
+interface IData {
+  objectType: string | undefined
+  form: IForm
+  isValid: boolean
+  errorMessages: IValidationErrorMessage[]
+  saveBtnLoading: boolean
+  alert: IVeoEventPayload & { value: boolean, error: number }
+  contentsCollapsed: boolean
+  formModified: {
+    isModified: boolean
+    dialog: boolean
+    target?: Route
+  }
+}
+
+export default Vue.extend({
   name: 'veo-forms-objectData-create',
+  extends: VeoEditFormPage,
+  head(): any {
+    return {
+      title: this.title
+    }
+  },
+  data(): IData {
+    return {
+      objectType: undefined,
+      form: {
+        objectSchema: {},
+        objectData: {},
+        formSchema: undefined,
+        lang: {}
+      },
+      isValid: true,
+      errorMessages: [],
+      saveBtnLoading: false,
+      alert: {
+        value: false,
+        text: '',
+        type: 0,
+        title: this.$t('error.title') as string,
+        saveButtonText: this.$t('global.button.no') as string,
+        error: 0 as number
+      },
+      contentsCollapsed: false as boolean,
+      formModified: {
+        isModified: false,
+        dialog: false,
+        target: undefined
+      }
+    }
+  },
   computed: {
+    title(): string {
+      return this.$fetchState.pending
+        ? this.$t('create_form').toString()
+        : this.$t('create_form_type', { type: upperFirst(this.objectType) }).toString()
+    },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
-    },
-    unitRoute() {
-      return this.$route.params.unit
-    },
-    formId(): string {
-      return separateUUIDParam(this.$route.params.form).id
-    },
-    formRoute() {
-      return this.$route.params.form
     }
   },
   methods: {
-    async action(objectType: string) {
-      const createdObjectUUID = await this.create(objectType)
-      if (createdObjectUUID) {
-        this.$router.push(`/${this.unitRoute}/forms/${this.formRoute}`)
-      }
-    },
-    async create(objectType: string): Promise<string | undefined> {
-      return this.$api.entity.create(getSchemaEndpoint(this.objectType || ''), {
+    onSave(): Promise<void> {
+      return this.$api.entity.create(this.objectType || '', {
         ...this.form.objectData,
+        // @ts-ignore
         owner: {
           targetUri: `/units/${this.unitId}`
         }
-      }).then((data: any) => {
-        return data.resourceId
+      }).then(() => {
+        this.formModified.isModified = false
+        this.$router.push(`/${this.$route.params.unit}/forms/${this.$route.params.form}`)
       }).catch((error: { status: number; name: string }) => {
         this.alert.text = error.name
         this.alert.saveButtonText = this.$t('global.button.ok') as string
         this.alert.error = 0
         this.alert.value = true
-        return undefined
       })
     }
   }
 })
 </script>
+
+<i18n>
+{
+  "en": {
+    "create_form": "Create object",
+    "create_form_type": "Create {type}"
+  },
+  "de": {
+    "create_form": "Objekt erstellen",
+    "create_form_type": "{type} erstellen"
+  }
+}
+</i18n>

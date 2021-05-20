@@ -50,7 +50,15 @@
               {{ $t('editor.schema.warnings') }}
             </template>
           </v-tooltip>
-          <CollapseButton v-if="!$vuetify.breakpoint.xs" v-model="collapsed" right />
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn icon large color="primary" @click="showTranslationDialog = true" v-on="on">
+                <v-icon>mdi-translate</v-icon>
+              </v-btn>
+            </template>
+            <template #default>{{ $t('translations') }}</template>
+          </v-tooltip>
+          <VeoCollapseButton v-if="!$vuetify.breakpoint.xs" v-model="collapsed" right />
           <v-row v-if="schemaIsValid.valid" no-gutters class="flex-column overflow-hidden mt-2 fill-width">
             <v-col>
               <v-row class="mx-4">
@@ -60,7 +68,7 @@
                     dense
                     hide-details
                     flat
-                    :label="$t('editor.objectschema.objectschema')"
+                    :label="$t('objectschema')"
                     @input="updateSchemaName"
                   />
                 </v-col>
@@ -69,7 +77,7 @@
                     :value="description"
                     dense
                     hide-details
-                    :label="$t('editor.objectschema.create.description')"
+                    :label="$t('description')"
                     @input="updateDescription"
                   />
                 </v-col>
@@ -95,7 +103,7 @@
                 solo-inverted
                 hide-details
                 prepend-inner-icon="mdi-magnify"
-                :label="$t('editor.search.label')"
+                :label="$t('search')"
               />
             </v-col>
             <v-col>
@@ -104,13 +112,13 @@
                 class="caption"
                 dense
                 hide-details
-                :label="$t('editor.hideemptyaspects')"
+                :label="$t('hideemptyaspects')"
               />
             </v-col>
           </v-row>
         </template>
         <template #default>
-          <ObjectSchemaEditor
+          <VeoObjectSchemaEditor
             v-if="schemaIsValid.valid"
             v-model="objectSchemaHelper"
             :search="search"
@@ -122,7 +130,7 @@
               <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
             </v-col>
             <v-col cols="auto" class="text-left">
-              <h3>{{ $t('editor.objectschema.validation.schema.invalid') }}</h3>
+              <h3>{{ $t('invalidObjectSchema') }}</h3>
               <v-list-item v-for="(error, index) of schemaIsValid.errors" :key="`e_${index}`" link>
                 <v-list-item-content>
                   <v-list-item-title>{{ error.code }}</v-list-item-title>
@@ -145,12 +153,21 @@
         height="100%"
         content-class="ose__code-editor"
       >
-        <SchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
+        <VeoSchemaCodeEditor v-model="code" @schema-updated="updateSchema" />
       </VeoPage>
     </template>
     <template #helpers>
-      <VEOOSEWizardDialog v-model="showCreationDialog" @completed="setSchema" />
+      <VeoOseWizardDialog v-model="showCreationDialog" @completed="setSchema" />
       <VeoEditorErrorDialog v-model="showErrorDialog" :validation="schemaIsValid" />
+      <VeoOseTranslationDialog
+        v-if="!$fetchState.pending && showTranslationDialog"
+        v-model="showTranslationDialog"
+        :current-display-language="displayLanguage"
+        :available-languages="availableLanguages"
+        :object-schema-helper="objectSchemaHelper"
+        @display-language-changed="onDisplayLanguageUpdate"
+        @schema-updated="updateCode"
+      />
     </template>
   </VeoPageWrapper>
 </template>
@@ -158,34 +175,29 @@
 <script lang="ts">
 import Vue from 'vue'
 
-import CollapseButton from '~/components/layout/CollapseButton.vue'
-import VEOOSEWizardDialog from '~/components/dialogs/SchemaEditors/VEOOSEWizardDialog.vue'
-import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
-import VeoPage from '~/components/layout/VeoPage.vue'
-import VeoEditorErrorDialog from '~/components/dialogs/SchemaEditors/VeoEditorErrorDialog.vue'
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator'
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2'
 import { IVeoObjectSchema } from '~/types/VeoTypes'
+import { computed } from '@nuxtjs/composition-api'
 
 export default Vue.extend({
-  components: {
-    VeoEditorErrorDialog,
-    VEOOSEWizardDialog,
-    CollapseButton,
-    VeoPageWrapper,
-    VeoPage
-  },
   data() {
     return {
       collapsed: false as boolean,
       showCreationDialog: false as boolean,
       showErrorDialog: false as boolean,
+      showTranslationDialog: false as boolean,
       hideEmptyAspects: false as boolean,
       search: '' as string,
       objectSchemaHelper: undefined as ObjectSchemaHelper | undefined,
       code: '' as string,
-      schemaIsValid: { valid: false, errors: [], warnings: [] } as VeoSchemaValidatorValidationResult
+      schemaIsValid: { valid: false, errors: [], warnings: [] } as VeoSchemaValidatorValidationResult,
+      availableLanguages: [] as string[],
+      displayLanguage: this.$i18n.locale as string
     }
+  },
+  async fetch() {
+    this.availableLanguages = Object.keys((await this.$api.translation.fetch([]))?.lang)
   },
   head(): any {
     return {
@@ -200,8 +212,19 @@ export default Vue.extend({
       return this.objectSchemaHelper?.getDescription() || ''
     }
   },
+  watch: {
+    '$i18n.locale'(newValue) {
+      this.displayLanguage = newValue
+    }
+  },
   mounted() {
     this.showCreationDialog = true
+  },
+  provide(): any {
+    return {
+      displayLanguage:  computed(() => this.displayLanguage),
+      objectSchemaHelper: computed(() => this.objectSchemaHelper)
+    }
   },
   methods: {
     setSchema(data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) {
@@ -212,6 +235,11 @@ export default Vue.extend({
         this.objectSchemaHelper.setTitle(data.meta.type)
         this.objectSchemaHelper.setDescription(data.meta.description)
       }
+
+      if(this.objectSchemaHelper.getLanguages().length === 0) {
+        this.objectSchemaHelper.updateTranslations(this.$i18n.locale, {})
+      }
+
       this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2)
       this.validate()
     },
@@ -247,11 +275,38 @@ export default Vue.extend({
     },
     validate() {
       this.schemaIsValid = this.objectSchemaHelper?.validate() || { valid: false, errors: [], warnings: [] }
+    },
+    onDisplayLanguageUpdate(newLanguage: string) {
+      this.displayLanguage = newLanguage
     }
   }
 })
 </script>
-<style>
+
+<i18n>
+{
+  "en": {
+    "description": "Description",
+    "hideemptyaspects": "Hide empty aspects",
+    "objectschema": "Object schema",
+    "invalidObjectSchema":
+      "Couldn't load schema. Please resolve the following errors and try again.",
+    "search": "Search for a property",
+    "translations": "Translations"
+  },
+  "de": {
+    "description": "Beschreibung",
+    "hideemptyaspects": "Leere Aspekte ausblenden",
+    "objectschema": "Objektschema",
+    "invalidObjectSchema":
+      "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
+    "search": "Nach einer Eigenschaft suchen...",
+    "translations": "Übersetzungen"
+  }
+}
+</i18n>
+
+<style lang="scss" scoped>
 .ose__code-editor {
   height: 100%;
 }

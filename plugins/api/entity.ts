@@ -1,5 +1,7 @@
+import { separateUUIDParam } from '~/lib/utils'
 import { Client } from '~/plugins/api'
 import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes'
+import { getSchemaEndpoint } from './schema'
 
 /**
  * This file replaces the individual files for each object schema (at the point
@@ -15,12 +17,33 @@ export default function (api: Client) {
      * Loads all Entities
      * @param parent
      */
-    fetchAll(objectType: string, params?: Record<string, string>): Promise<IVeoEntity[]> {
-      return api.req(`/api/${objectType}`, {
+    fetchAll(objectType: string, params?: Record<string, string>, noUnit: boolean = false): Promise<IVeoEntity[]> {
+      // Entities don't get accessed without their unit as a context, for this reason we manually add the unit if omitted by the developer.
+      // To override this behaviour, set noUnit to true.
+      if (!params || !params.unit) {
+        params = { ...params, unit: separateUUIDParam(api._context.params.unit).id }
+      }
+      if (noUnit) {
+        delete params.unit
+      }
+
+      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
+      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase()
+      return api.req(`/api/${endpoint}`, {
         params
       }).then((result: IVeoEntity[]) => {
         result.forEach((entry: IVeoEntity) => {
-          Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
+          /*
+          * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+          * members. However we combine both entity types as they get used more or less the same way
+          */
+          if (!entry.parts) {
+            entry.parts = []
+          }
+          if (!entry.members) {
+            entry.members = []
+          }
+          entry.displayName = `${entry.abbreviation} ${entry.name}`
         })
         return result
       })
@@ -31,7 +54,19 @@ export default function (api: Client) {
      * @param entity
      */
     create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
-      return api.req(`/api/${objectType}`, {
+      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
+      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase()
+
+      // Remove properties of the object only used in the frontend
+      if (entity.type === 'scope') {
+        // @ts-ignore
+        delete entity.parts
+      } else {
+        // @ts-ignore
+        delete entity.members
+      }
+
+      return api.req(`/api/${endpoint}`, {
         method: 'POST',
         json: entity
       })
@@ -42,8 +77,21 @@ export default function (api: Client) {
      * @param id
      */
     fetch(objectType: string, id: string): Promise<IVeoEntity> {
-      return api.req(`/api/${objectType}/${id}`).then((result: IVeoEntity) => {
-        Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: objectType })
+      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
+      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase()
+
+      return api.req(`/api/${endpoint}/${id}`).then((result: IVeoEntity) => {
+        /*
+         * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+         * members. However we combine both entity types as they get used more or less the same way
+         */
+        if (!result.parts) {
+          result.parts = []
+        }
+        if (!result.members) {
+          result.members = []
+        }
+        result.displayName = `${result.abbreviation} ${result.name}`
         return result
       })
     },
@@ -54,11 +102,33 @@ export default function (api: Client) {
      * @param entity
      */
     update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
-      return api.req(`/api/${objectType}/${id}`, {
+      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
+      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase()
+
+      // Remove properties of the object only used in the frontend
+      if (entity.type === 'scope') {
+        // @ts-ignore
+        delete entity.parts
+      } else {
+        // @ts-ignore
+        delete entity.members
+      }
+
+      return api.req(`/api/${endpoint}/${id}`, {
         method: 'PUT',
         json: entity
       }).then((result: IVeoEntity) => {
-        Object.defineProperty(result, '$type', { enumerable: false, configurable: false, value: objectType })
+        /*
+         * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+         * members. However we combine both entity types as they get used more or less the same way
+         */
+        if (!result.parts) {
+          result.parts = []
+        }
+        if (!result.members) {
+          result.members = []
+        }
+        result.displayName = `${result.abbreviation} ${result.name}`
         return result
       })
     },
@@ -68,7 +138,10 @@ export default function (api: Client) {
      * @param id
      */
     delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
-      return api.req(`/api/${objectType}/${id}`, {
+      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
+      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase()
+
+      return api.req(`/api/${endpoint}/${id}`, {
         method: 'DELETE'
       })
     },
@@ -79,13 +152,46 @@ export default function (api: Client) {
      * @param objectType The type to fetch the entities for.
      * @param id The uuid of the entity to fetch the sub entities for.
      */
-    fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
-      return api.req(`/api/${objectType}/${id}/parts`).then((result: IVeoEntity[]) => {
-        result.forEach((entry: IVeoEntity) => {
-          Object.defineProperty(entry, '$type', { enumerable: false, configurable: false, value: objectType })
+    async fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
+      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
+      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase()
+
+      if (objectType === 'scope') {
+        return api.req(`/api/scopes/${id}/members`).then((result: IVeoEntity[]) => {
+          result.forEach((entry: IVeoEntity) => {
+            /*
+             * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+             * members. However we combine both entity types as they get used more or less the same way
+             */
+            if (!entry.parts) {
+              entry.parts = []
+            }
+            if (!entry.members) {
+              entry.members = []
+            }
+            entry.displayName = `${entry.abbreviation} ${entry.name}`
+          })
+          return result
         })
-        return result
-      })
+
+      } else {
+        return api.req(`/api/${endpoint}/${id}/parts`).then((result: IVeoEntity[]) => {
+          result.forEach((entry: IVeoEntity) => {
+            /*
+             * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+             * members. However we combine both entity types as they get used more or less the same way
+             */
+            if (!entry.parts) {
+              entry.parts = []
+            }
+            if (!entry.members) {
+              entry.members = []
+            }
+            entry.displayName = `${entry.abbreviation} ${entry.name}`
+          })
+          return result
+        })
+      }
     }
   }
 }

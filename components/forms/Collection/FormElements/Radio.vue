@@ -32,10 +32,16 @@
 <script lang="ts">
 import Vue from 'vue'
 import { PropOptions } from 'vue/types/options'
-import { JSONSchema7, JSONSchema7Type } from 'json-schema'
-import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers'
-import { IVeoTranslation } from '~/types/VeoTypes'
-import { IVEOFormSchemaTranslationCollectionItem } from 'veo-formschema'
+import { JSONSchema7 } from 'json-schema'
+import {
+  calculateConditionsScore,
+  FormElementProps,
+  Helpful
+} from '~/components/forms/Collection/utils/helpers'
+import {
+  IVeoFormSchemaTranslationCollectionItem,
+  IVeoTranslationCollection
+} from '~/types/VeoTypes'
 
 interface IItem {
   value: string | number | boolean
@@ -62,11 +68,11 @@ export default Vue.extend({
     generalTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoTranslation>,
+    } as PropOptions<IVeoTranslationCollection>,
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVEOFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
     options: {
       type: Object,
       default: () => undefined
@@ -140,5 +146,3 @@ export const helpers: Helpful<FormElementProps> = {
   }
 }
 </script>
-
-<style lang="scss" scoped></style>

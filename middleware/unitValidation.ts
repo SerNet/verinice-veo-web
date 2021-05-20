@@ -19,7 +19,7 @@ export default (async function({ redirect, route, $user, $api }) {
     if ($user.currentDomain === undefined) {
       $api.unit.fetch(unitId).then(unit => {
         if (unit.domains[0]) {
-          $user.currentDomain = unit.domains[0].targetUri.replace('/domains/', '')
+          $user.currentDomain = unit.domains[0].targetUri.split('/').pop() as string
         }
       })
     }

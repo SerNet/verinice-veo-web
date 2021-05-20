@@ -8,9 +8,7 @@
     class="veo-object-list"
   >
     <template #no-data>
-      <span class="text-center">
-        {{ $t('no_objects') }}
-      </span>
+      <span class="text-center">{{ $t('no_objects') }}</span>
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
@@ -24,7 +22,10 @@
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.abbreviation }}</span>
+            <span
+              v-on="on"
+              class="veo-object-list__abbreviation--abbreviation"
+            >{{ item.abbreviation }}</span>
           </template>
           <template #default>
             <span>{{ item.abbreviation }}</span>
@@ -39,7 +40,10 @@
       <div class="veo-object-list__description">
         <v-tooltip v-if="item.descriptionShort" bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.descriptionShort }}</span>
+            <span
+              v-on="on"
+              class="veo-object-list__abbreviation--abbreviation"
+            >{{ item.descriptionShort }}</span>
           </template>
           <template #default>
             <span>{{ value }}</span>
@@ -48,16 +52,15 @@
         <span v-else>{{ value }}</span>
       </div>
     </template>
-    <template #item.date="{ item }">
-      <div class="veo-object-list__date nowrap">
+    <template #item.updatedAt="{ item }">
+      <div class="veo-object-list__updated-at nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <span v-on="on">
-              {{ formatDate(item.updatedAt) }}
-            </span>
+            <span v-on="on">{{ formatDate(item.updatedAt) }}</span>
           </template>
           <template #default>
-            {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}<br />
+            {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}
+            <br />
             {{ $t('updated_at') }}: {{ formatDate(item.updatedAt) }} {{ $t('by') }} {{ item.updatedBy }}
           </template>
         </v-tooltip>
@@ -67,44 +70,131 @@
       <div class="veo-object-list__actions">
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('edit', item)" v-on="on">
-              <v-icon>
-                mdi-pencil
-              </v-icon>
+            <v-btn icon @click.stop="sendEvent('edit', item, true)" v-on="on">
+              <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('edit') }}
-          </template>
+          <template #default>{{ $t('edit') }}</template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('duplicate', item)" v-on="on">
-              <v-icon>
-                mdi-content-copy
-              </v-icon>
+            <v-btn icon @click.stop="sendEvent('duplicate', item)" v-on="on">
+              <v-icon>mdi-content-copy</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('clone') }}
-          </template>
+          <template #default>{{ $t('clone') }}</template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="$emit('delete', item)" v-on="on">
-              <v-icon>
-                mdi-delete
-              </v-icon>
+            <v-btn icon @click.stop="sendEvent('delete', item)" v-on="on">
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
-          <template #default>
-            {{ $t('delete') }}
-          </template>
+          <template #default>{{ $t('delete') }}</template>
         </v-tooltip>
       </div>
     </template>
   </v-data-table>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+import { Prop } from 'vue/types/options'
+import { createUUIDUrlParam, formatDate, formatTime } from '~/lib/utils'
+
+import { IVeoEntity } from '~/types/VeoTypes'
+
+export default Vue.extend({
+  props: {
+    items: {
+      type: Array as Prop<IVeoEntity[]>,
+      default: () => []
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    sortingFunction: {
+      type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
+      default: () => (a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name)
+    },
+    rootRoute: {
+      type: String,
+      required: true
+    }
+  },
+  data() {
+    return {
+      itemsPerPage: 10
+    }
+  },
+  computed: {
+    displayedItems(): IVeoEntity[] {
+      return this.items
+        .map((item) => {
+          // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+          if (item.description && item.description.length > 40) {
+            item.descriptionShort = item.description.substring(0, 40) + '...'
+          }
+
+          return item
+        })
+        .sort(this.sortingFunction)
+    },
+    editItemLink(): string {
+      return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
+    },
+    headers(): any[] {
+      return [
+        {
+          text: this.$t('objectlist.abbreviation'),
+          value: 'abbreviation'
+        },
+        {
+          text: this.$t('objectlist.title'),
+          value: 'name'
+        },
+        {
+          text: this.$t('objectlist.description'),
+          filterable: false,
+          sortable: false,
+          value: 'description'
+        },
+        {
+          text: this.$t('objectlist.updatedby'),
+          value: 'updatedBy',
+          class: 'nowrap'
+        },
+        {
+          align: 'end',
+          text: this.$t('objectlist.updatedat'),
+          value: 'updatedAt'
+        },
+        {
+          align: 'end',
+          filterable: false,
+          sortable: false,
+          text: '',
+          value: 'actions',
+          width: 108 /* 3*widthOfButton */
+        }
+      ]
+    }
+  },
+  methods: {
+    formatDate(date: string) {
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
+    },
+    generatePath(entity: IVeoEntity) {
+      return `${this.rootRoute}/${createUUIDUrlParam(entity.type, entity.id)}`
+    },
+    sendEvent(event: string, item: IVeoEntity, addPath: boolean = false) {
+      this.$emit(event, { item, path: addPath ? this.generatePath(item) : undefined })
+    }
+  }
+})
+</script>
+
 <i18n>
 {
   "en": {
@@ -131,102 +221,13 @@
   }
 }
 </i18n>
-<script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
 
-import { IVeoEntity } from '~/types/VeoTypes'
-
-export default Vue.extend({
-  props: {
-    items: {
-      type: Array as Prop<IVeoEntity[]>,
-      default: () => []
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    sortingFunction: {
-      type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
-      default: () => (a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name)
-    }
-  },
-  data() {
-    return {
-      itemsPerPage: 10
-    }
-  },
-  computed: {
-    displayedItems(): IVeoEntity[] {
-      return this.items
-        .map(item => {
-          // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
-          if (item.description && item.description.length > 40) {
-            item.descriptionShort = item.description.substring(0, 40) + '...'
-          }
-
-          return item
-        })
-        .sort(this.sortingFunction)
-    },
-    editItemLink(): string {
-      return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
-    },
-    headers(): any[] {
-      return [
-        {
-          text: this.$t('unit.object.list.header.abbreviation'),
-          value: 'abbreviation'
-        },
-        {
-          text: this.$t('unit.object.list.header.title'),
-          value: 'name'
-        },
-        {
-          text: this.$t('unit.object.list.header.description'),
-          filterable: false,
-          sortable: false,
-          value: 'description'
-        },
-        {
-          text: this.$t('unit.object.list.header.updatedby'),
-          value: 'updatedBy',
-          class: 'nowrap'
-        },
-        {
-          align: 'end',
-          text: this.$t('unit.object.list.header.updatedat'),
-          value: 'date'
-        },
-        {
-          align: 'end',
-          filterable: false,
-          sortable: false,
-          text: '',
-          value: 'actions',
-          width: 108 /* 3*widthOfButton */
-        }
-      ]
-    }
-  },
-  methods: {
-    formatDate(date: string) {
-      return (
-        new Date(date).toLocaleDateString('de-DE', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }) +
-        ' ' +
-        new Date(date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-      )
-    }
-  }
-})
-</script>
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
+
+.veo-object-list {
+  cursor: pointer;
+}
 
 .veo-object-list__abbreviation {
   display: flex;
@@ -249,9 +250,6 @@ export default Vue.extend({
   white-space: nowrap;
 }
 
-.veo-object-list__date {
-}
-
 .veo-object-list__actions {
   display: flex;
   flex-wrap: nowrap;
@@ -260,11 +258,5 @@ export default Vue.extend({
 
 ::v-deep .nowrap {
   white-space: nowrap;
-}
-
-::v-deep tbody {
-  tr:hover {
-    background-color: transparent !important;
-  }
 }
 </style>

@@ -9,6 +9,7 @@
       <VeoFormNavigation
         v-if="nestingLevel < 0"
         :formSchema="item.layout"
+        :custom-translation="customTranslation"
         :initialId="item.initialId"
         :key="item.initialId + '1'"
         :nestingLevel="nextNestingLevel"
@@ -44,6 +45,10 @@ export default Vue.extend({
     formSchema: {
       type: Object,
       required: true
+    },
+    customTranslation: {
+      type: Object,
+      default: () => {}
     },
     initialId: {
       type: String,
@@ -81,7 +86,7 @@ export default Vue.extend({
                   // "" + "elements-0"
                   // "elements" + "-elements-0"
                   initialId: `${this.initialId}${this.initialId ? '-' : ''}elements-${index}`,
-                  text: el.options.label,
+                  text: this.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
                   layout: el
                 }
               : {} // This is generated for non LayoutGroup elements and filtered in the next step

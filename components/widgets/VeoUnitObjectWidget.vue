@@ -28,16 +28,11 @@
 </template>
 
 <script lang="ts">
-import { capitalize } from 'lodash'
+import { upperFirst } from 'lodash'
 import Vue from 'vue'
 import { TranslateResult } from 'vue-i18n/types/index'
 
-import VeoWidget from '~/components/widgets/VeoWidget.vue'
-
 export default Vue.extend({
-  components: {
-    VeoWidget
-  },
   props: {
     unit: {
       type: Object,
@@ -54,7 +49,7 @@ export default Vue.extend({
       .fetchAll()
       .then(data => {
         return data.map(async (key: { schemaName: string; endpoint: string }) => ({
-          title: capitalize(key.schemaName),
+          title: upperFirst(key.schemaName),
           link: `objects/${key.endpoint}`,
           // @ts-ignore
           items: (

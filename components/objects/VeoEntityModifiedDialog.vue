@@ -1,36 +1,23 @@
 <template>
   <VeoDialog v-model="dialog" :headline="$t('headline')">
-    <template #default>
-      {{ $t('text', { name }) }}
-    </template>
+    <template #default>{{ $t('text', { displayName }) }}</template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('input', false)">
-        {{ $t('global.button.no') }}
-      </v-btn>
+      <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.no') }}</v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="$emit('exit', item.id)">
-        {{ $t('global.button.yes') }}
-      </v-btn>
+      <v-btn
+        text
+        color="primary"
+        :disabled="!item"
+        @click="$emit('exit', item.id)"
+      >{{ $t('global.button.yes') }}</v-btn>
     </template>
   </VeoDialog>
 </template>
-<i18n>
-{
-  "en": {
-  "text": "The object \"{name}\" has been edited. Do you really want to leave this page?",
-  "headline": "Close"
-  },
-  "de": {
-    "text": "Das Objekt \"{name}\" wurde bearbeitet. Wollen Sie wirklich die Seite verlassen?",
-    "headline": "Verlassen"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
@@ -39,9 +26,6 @@ interface IData {
 }
 
 export default Vue.extend({
-  components: {
-    VeoDialog
-  },
   props: {
     value: {
       type: Boolean,
@@ -59,8 +43,8 @@ export default Vue.extend({
     }
   },
   computed: {
-    name(): string {
-      return this.item?.name ?? ''
+    displayName(): string {
+      return this.item?.displayName ? `"${this.item.displayName}"` : ''
     }
   },
   watch: {
@@ -81,4 +65,15 @@ export default Vue.extend({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<i18n>
+{
+  "en": {
+    "text": "The object {displayName} has been edited. Do you really want to leave this page?",
+    "headline": "Close"
+  },
+  "de": {
+    "text": "Das Objekt {displayName} wurde bearbeitet. Wollen Sie die Seite wirklich verlassen?",
+    "headline": "Verlassen"
+  }
+}
+</i18n>

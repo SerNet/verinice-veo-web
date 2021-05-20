@@ -1,36 +1,23 @@
 <template>
   <VeoDialog v-model="dialog" :headline="$t('headline')">
-    <template #default>
-      {{ $t('text', { name }) }}
-    </template>
+    <template #default>{{ $t('text', { displayName }) }}</template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('input', false)">
-        {{ $t('global.button.no') }}
-      </v-btn>
+      <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.no') }}</v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!item" @click="$emit('delete', item.id)">
-        {{ $t('global.button.delete') }}
-      </v-btn>
+      <v-btn
+        text
+        color="primary"
+        :disabled="!item"
+        @click="deleteEntity"
+      >{{ $t('global.button.delete') }}</v-btn>
     </template>
   </VeoDialog>
 </template>
-<i18n>
-{
-  "en": {
-  "text": "Do you really want to delete the object \"{name}\"?",
-  "headline": "Delete object"
-  },
-  "de": {
-    "text": "Möchten Sie das Objekt \"{name}\" wirklich löschen?",
-    "headline": "Objekt löschen"
-  }
-}
-</i18n>
+
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
 
-import VeoDialog from '~/components/dialogs/VeoDialog.vue'
 import { IVeoEntity } from '~/types/VeoTypes'
 
 interface IData {
@@ -39,9 +26,6 @@ interface IData {
 }
 
 export default Vue.extend({
-  components: {
-    VeoDialog
-  },
   props: {
     value: {
       type: Boolean,
@@ -59,8 +43,8 @@ export default Vue.extend({
     } as IData
   },
   computed: {
-    name(): string {
-      return this.item?.name ?? ''
+    displayName(): string {
+      return this.item?.displayName ?? ''
     }
   },
   watch: {
@@ -75,10 +59,33 @@ export default Vue.extend({
       }
     }
   },
+  methods: {
+    deleteEntity() {
+      this.$api.entity
+        .delete(this.item.type, this.item.id)
+        .then(() => {
+          this.$emit('success')
+        })
+        .catch((error) => {
+          this.$emit('error', error)
+        })
+    }
+  },
   mounted() {
     this.dialog = this.value
   }
 })
 </script>
 
-<style lang="scss" scoped></style>
+<i18n>
+{
+  "en": {
+    "text": "Do you really want to delete the object \"{displayName}\"?",
+    "headline": "Delete object"
+  },
+  "de": {
+    "text": "Möchten Sie das Objekt \"{displayName}\" wirklich löschen?",
+    "headline": "Objekt löschen"
+  }
+}
+</i18n>

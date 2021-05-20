@@ -14,16 +14,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import PageHeader from '~/components/help/PageHeader.vue'
-import VeoForm from '~/components/forms/VeoForm.vue'
-import FormDescription from '~/components/help/FormDescription.vue'
 
 export default Vue.extend({
-  components: {
-    VeoForm,
-    FormDescription,
-    PageHeader
-  },
   data() {
     return {
       form: {

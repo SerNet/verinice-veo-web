@@ -4,7 +4,7 @@
       <div class="d-flex">
         <v-app-bar-nav-icon v-if="$vuetify.breakpoint.xs" @click="drawer = true" />
         <nuxt-link to="/" class="text-decoration-none">
-          <AppBarLogo class="ml-2" />
+          <VeoAppBarLogo class="ml-2" />
         </nuxt-link>
       </div>
       <div class="d-flex align-center" style="width: 60%; max-width: 500px; cursor: no-drop">
@@ -18,7 +18,7 @@
           style="visibility: hidden"
         />
       </div>
-      <AppAccountBtn
+      <VeoAppAccountBtn
         v-if="$user.auth.profile"
         :username="$user.auth.profile.username"
         :prename="$user.auth.profile.firstName"
@@ -28,7 +28,7 @@
       />
       <span v-else />
     </v-app-bar>
-    <VeoPrimaryNav v-model="drawer" />
+    <VeoPrimaryNavigation v-model="drawer" />
     <v-main style="max-height: 100vh;" class="overflow-hidden">
       <VeoBreadcrumbs />
       <VeoPageWrapper>
@@ -46,30 +46,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api'
+import {
+  defineComponent,
+  Ref,
+  ref,
+  useContext
+} from '@nuxtjs/composition-api'
 
-import AppBarLogo from '~/components/layout/AppBarLogo.vue'
-import VeoPrimaryNav from '~/components/layout/VeoPrimaryNavigation.vue'
-import AppAccountBtn from '~/components/layout/AppAccountBtn.vue'
-import VeoNewUnitDialog from '~/components/dialogs/VeoNewUnitDialog.vue'
-import VeoSnackbar from '~/components/layout/VeoSnackbar.vue'
-import VeoAlert, { ALERT_TYPE } from '~/components/layout/VeoAlert.vue'
-import { VeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
-import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue'
+import {
+  ALERT_TYPE,
+  IVeoEventPayload,
+  VeoEvents
+} from '~/types/VeoGlobalEvents'
 import { createUUIDUrlParam } from '~/lib/utils'
 
 interface IProps {}
 
 export default defineComponent<IProps>({
-  components: {
-    AppBarLogo,
-    VeoPrimaryNav,
-    AppAccountBtn,
-    VeoNewUnitDialog,
-    VeoSnackbar,
-    VeoAlert,
-    VeoPageWrapper
-  },
   setup(_props, context) {
     const { $user } = useContext()
     //
@@ -94,25 +87,25 @@ export default defineComponent<IProps>({
     const snackbar = ref({ value: false, text: '' })
 
     // Alert and snackbar events
-    context.root.$on(VeoEvents.ALERT_ERROR, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.ALERT_ERROR, (payload: IVeoEventPayload) => {
       alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.ERROR
       alert.value.value = true
     })
-    context.root.$on(VeoEvents.ALERT_INFO, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.ALERT_INFO, (payload: IVeoEventPayload) => {
       alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.INFO
       alert.value.value = true
     })
-    context.root.$on(VeoEvents.ALERT_SUCCESS, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.ALERT_SUCCESS, (payload: IVeoEventPayload) => {
       alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.SUCCESS
       alert.value.value = true
     })
-    context.root.$on(VeoEvents.ALERT_WARNING, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.ALERT_WARNING, (payload: IVeoEventPayload) => {
       alert.value.text = payload.text
       alert.value.title = payload.title || ''
       alert.value.type = ALERT_TYPE.WARNING
@@ -122,7 +115,7 @@ export default defineComponent<IProps>({
       alert.value.value = false
     })
 
-    context.root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: VeoEventPayload) => {
+    context.root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: IVeoEventPayload) => {
       snackbar.value.text = payload.text
       snackbar.value.value = true
     })

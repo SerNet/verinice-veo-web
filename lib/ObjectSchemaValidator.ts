@@ -1,4 +1,4 @@
-import { isArray, isObject } from 'lodash'
+import { isArray, isObject, snakeCase } from 'lodash'
 import ObjectSchemaHelper from './ObjectSchemaHelper2'
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string, value: any }
@@ -27,6 +27,50 @@ export interface VeoSchemaValidatorValidationResult {
 export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = []
   private warnings: VeoSchemaValidatorMessage[] = []
+
+  public fitsObjectSchema(schema: any, data: any): boolean {
+    let isFitting = true
+    const helper = new ObjectSchemaHelper(schema)
+
+    for (let attribute in data) {
+      if (attribute === 'customAspects') {
+        for (let customAspect in data.customAspects) {
+          const customAspectTitle = customAspect.split('_').pop() || ''
+          // check if custom aspect exists
+          if (!helper.getCustomAspect(customAspectTitle)) {
+            isFitting = false
+            continue
+          }
+          // check if all attributes of custom aspect exist
+          for (let customAspectAttribute in data.customAspects[customAspect].attributes) {
+            if (!helper.getCustomAspect(customAspectTitle)?.attributes.find(a => (a.prefix + a.title).endsWith(customAspectAttribute))) {
+              isFitting = false
+            }
+          }
+        }
+      } else if (attribute === 'links') {
+        for (let link in data.links) {
+          const linkTitle = link.split('_').pop() || ''
+          // check if custom link exists
+          if (!helper.getCustomLink(linkTitle)) {
+            isFitting = false
+            continue
+          }
+          // check if all attributes of custom link exists
+          for (let linkAttribute in data.links[link].attributes) {
+            if (!helper.getCustomLink(linkTitle)?.attributes.find(a => (a.prefix + a.title).endsWith(linkAttribute))) {
+              isFitting = false
+            }
+          }
+        }
+      } else {
+        if (!helper.getBasicProperties().map(b => b.title).includes(attribute)) {
+          isFitting = false
+        }
+      }
+    }
+    return isFitting
+  }
 
   public validate(schema: any, context: string = 'schema'): VeoSchemaValidatorValidationResult {
     if (!schema.title) {
@@ -67,7 +111,7 @@ export default class ObjectSchemaValidator {
   }
 
   private validateName(schemaName: string, linkTitle: string, context: string): void {
-    if (!linkTitle.includes(schemaName + '_')) {
+    if (!linkTitle.includes(snakeCase(schemaName) + '_')) {
       this.warnings.push({ code: 'W_INCORRECT_NAMING', message: `${linkTitle} is not following the naming conventions (<schema name>_<link/aspect name>) ${context}` })
     }
   }
@@ -93,9 +137,6 @@ export default class ObjectSchemaValidator {
       }
 
       for (const attribute of Object.keys(attributes)) {
-        if (!attributes[attribute].title) {
-          this.errors.push({ code: 'E_LINK_ATTRIBUTE_INVALID', message: `The attribute title of ${context}.${attribute} is missing.` })
-        }
         this.validateType(attributes[attribute], `${context}.${attribute}`)
       }
     }
@@ -115,9 +156,6 @@ export default class ObjectSchemaValidator {
     }
 
     for (const attribute of Object.keys(attributes)) {
-      if (!attributes[attribute].title) {
-        this.warnings.push({ code: 'E_ASPECT_ATTRIBUTE_INVALID', message: `The attribute title of ${context}.${attribute} is missing.` })
-      }
       this.validateType(attributes[attribute], `${context}.${attribute}`)
     }
   }
@@ -148,7 +186,7 @@ export default class ObjectSchemaValidator {
   }
 
   private validateBaseSchema(schema: any, context: string) {
-    const requiredKeys: string[] = ['abbreviation', 'description', 'domains', 'id', 'name', 'owner', 'parts', 'subType']
+    const requiredKeys: string[] = ['abbreviation', 'description', 'domains', 'id', 'name', 'owner', 'subType']
 
     for (const key of requiredKeys) {
       if (schema.properties[key] === undefined) {

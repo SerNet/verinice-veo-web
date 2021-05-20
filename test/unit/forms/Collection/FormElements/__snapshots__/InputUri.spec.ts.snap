@@ -4,8 +4,6 @@ exports[`InputUri.vue should be rendered InputUri field: Initial render 1`] = `
 <div
   class="vf-wrapper d-flex flex-column"
 >
-  <!---->
-   
   <div
     class="vf-control col-md-auto col-12"
   >
@@ -74,7 +72,5 @@ exports[`InputUri.vue should be rendered InputUri field: Initial render 1`] = `
       </span>
     </div>
   </div>
-   
-  <!---->
 </div>
 `;

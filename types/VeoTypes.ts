@@ -8,6 +8,8 @@
 
 import { JSONSchema7TypeName } from "json-schema";
 
+export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string
+
 /**
  * 1. Basic / global types
  */
@@ -35,14 +37,11 @@ export interface IVeoUnit {
   units: IVeoUnit[]
 }
 
-export interface IVeoScope extends IVeoEntity {
-  members: IVeoLink[]
-}
-
 export interface IVeoEntity {
   id: string
   name: string
   abbreviation: string
+  displayName: string
   createdAt: string
   createdBy: string
   updatedAt: string
@@ -52,10 +51,11 @@ export interface IVeoEntity {
   links: IVeoCustomLinks
   customAspects: IVeoCustomAspects
   subType: IVeoEntitySubtypes
-  parts: IVeoLink[]
+  members: IVeoLink[] // Only contains items if entity is of type scope
+  parts: IVeoLink[] // Only contains items if entity is NOT of type scope
   description: string
   descriptionShort?: string // Frontend only attribute used in VeoObjectList.vue
-  $type: string
+  type: string
 }
 
 export interface IVeoEntitySubtypes {
@@ -71,31 +71,95 @@ export interface IVeoLink {
 
 export interface IVeoTranslations {
   lang: {
-    [key: string]: IVeoTranslation
+    [key: string]: IVeoTranslationCollection
   }
 }
 
-export interface IVeoTranslation {
-  [key: string]: string
-}
-
 export interface IVeoFormSchemaMeta {
-  id: string
+  id?: string
   modelType: string
   name: string
   subType: string | null
 }
 
 export interface IVeoFormSchema extends IVeoFormSchemaMeta {
-  content: IVeoFormSchemaEntry
+  content: IVeoFormSchemaItem,
+  translation: IVeoFormSchemaTranslationCollection
 }
 
-export interface IVeoFormSchemaEntry {
-  type?: string
-  options: {
+export interface IVeoFromSchemaItemRule {
+  effect: 'SHOW' | 'HIDE'
+  condition: {
+    scope: string
+    schema: { enum: (string|boolean|number)[] }
+  }
+}
+
+export interface IVeoFormSchemaItem {
+  type: IVeoFormSchemaContentType
+  text?: string
+  options: IVeoFormSchemaItemOptions
+  elements?: IVeoFormSchemaItem[]
+  rule?: IVeoFromSchemaItemRule
+}
+
+export interface IVeoFormSchemaItemOptions {
+  label?: string
+  format?: string
+  direction?: string
+}
+
+export interface IVeoFormSchemaTranslationCollectionItem {
+  [key: string]: string
+}
+
+export interface IVeoFormSchemaTranslationCollection {
+  [key: string]: IVeoFormSchemaTranslationCollectionItem
+}
+
+export interface IVeoFormSchemaCustomTranslationEvent {
+  [key: string]: string | undefined
+}
+
+export interface IVeoFormSchemaItemUpdateEvent {
+  formSchemaPointer: string
+  data: IVeoFormSchemaItem
+}
+
+export interface IVeoFormSchemaItemDeleteEvent {
+  formSchemaPointer: string
+}
+
+export interface IVeoReportsMeta {
+  [key: string]: IVeoReportMeta
+}
+
+export interface IVeoReportMeta {
+  name: {
     [key: string]: string
   }
-  elements: IVeoFormSchemaEntry[]
+  description: {
+    [key: string]: string
+  }
+  outputTypes: string[]
+  multipleTargetsSupported: boolean
+  targetTypes: string[]
+}
+
+export interface IVeoCreateReportData {
+  outputType: string
+  targets: {
+    type: string
+    id: string
+  }[]
+}
+
+export interface IVeoObjectHistoryEntry {
+  author: string
+  content: IVeoEntity
+  time: string
+  type: string
+  changeNumber: number
 }
 
 /**
@@ -136,9 +200,9 @@ export interface IVeoCustomAttributes {
  * NOTE: THESE TYPES ONLY GET USED FOR SCHEMAS, ALL USER DATA WILL USE THE ABOVE types.
  */
 
- /**
-  * 
-  */
+/**
+ * 
+ */
 export interface IVeoObjectSchema {
   $schema: string
   type: JSONSchema7TypeName
@@ -157,6 +221,7 @@ export interface IVeoObjectSchema {
     subType: IVeoObjectSchemaProperty
     updatedAt: IVeoObjectSchemaProperty
     updatedBy: IVeoObjectSchemaProperty
+    translations?: IVeoObjectSchemaTranslations
   }
   required: string[]
   title: string
@@ -223,4 +288,12 @@ export interface IVeoObjectSchemaObject extends IVeoObjectSchemaProperty {
 export interface IVeoObjectSchemaArray extends IVeoObjectSchemaProperty {
   type: 'array'
   items: any
+}
+
+export interface IVeoObjectSchemaTranslations {
+  [key: string]: IVeoTranslationCollection
+}
+
+export interface IVeoTranslationCollection {
+  [key: string]: string
 }
