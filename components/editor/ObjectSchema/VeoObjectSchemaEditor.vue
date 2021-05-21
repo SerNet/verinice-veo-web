@@ -47,7 +47,7 @@
               <VeoOseListHeader
                 v-bind="aspect"
                 @edit-item="showEditDialog(aspect.item, 'aspect')"
-                @delete-item="showDeleteDialog(aspect.item, 'aspect')"
+                @delete-item="showDeleteDialog(aspect.item.title, 'aspect')"
               />
               <VeoOseListItem
                 v-for="(attribute, index2) of aspect.item.attributes"
@@ -89,7 +89,7 @@
                   color: 'black'
                 }"
                 @edit-item="showEditDialog(link.item, 'link')"
-                @delete-item="showDeleteDialog(link.item, 'link')"
+                @delete-item="showDeleteDialog(link.item.title, 'link')"
               />
               <VeoOseListItem
                 v-for="(attribute, index2) of link.item.attributes"
@@ -108,9 +108,9 @@
     <VeoOseCustomPropertiesDialog
       v-model="objectSchemaDialog.value"
       v-bind="objectSchemaDialog"
-      @create-node="doAddItem"
-      @save-node="doEditItem"
-      @delete-item="showDeleteDialog(objectSchemaDialog.item, objectSchemaDialog.type)"
+      @success="onEditPropertySuccess"
+      @error="onEditPropertyError"
+      @delete="showDeleteDialog(objectSchemaDialog.propertyId, objectSchemaDialog.type)"
     />
     <VeoOseDeleteCustomPropertyDialog
       v-model="deleteDialog.value"
@@ -133,10 +133,8 @@ import {
   IInputType,
   INPUT_TYPES
 } from '~/types/VeoEditor'
-import { cloneDeep } from 'lodash'
 
 interface IProps {
-  value: ObjectSchemaHelper
   search: string
   hideEmptyAspects: boolean
 }
@@ -148,10 +146,6 @@ interface EditorPropertyItem {
 
 export default defineComponent<IProps>({
   props: {
-    value: {
-      type: Object,
-      required: true
-    },
     search: {
       type: String,
       default: ''
@@ -161,7 +155,7 @@ export default defineComponent<IProps>({
       default: false
     }
   },
-  setup(props, context) {
+  setup(_props, context) {
     function itemContainsAttributeTitle(item: EditorPropertyItem, title: string): boolean {
       return (
         !title ||
@@ -183,8 +177,7 @@ export default defineComponent<IProps>({
      * schema related stuff
      */
     // @ts-ignore
-    const objectSchemaHelper: Ref<ObjectSchemaHelper> = ref(props.value)
-    const displayLanguage: Ref<string> | undefined = inject('displayLanguage');
+    const objectSchemaHelper: Ref<ObjectSchemaHelper> = inject('objectSchemaHelper')
 
     const customAspects: Ref<EditorPropertyItem[]> = ref([])
     const customLinks: Ref<EditorPropertyItem[]> = ref([])
@@ -194,7 +187,7 @@ export default defineComponent<IProps>({
 
     computeProperties()
     watch(
-      () => props.value,
+      () => objectSchemaHelper.value,
       (val: ObjectSchemaHelper) => {
         objectSchemaHelper.value = val
         computeProperties()
@@ -231,17 +224,14 @@ export default defineComponent<IProps>({
      */
     const objectSchemaDialog = ref({
       value: false,
-      item: {} as any,
-      mode: 'create' as 'create' | 'edit',
       type: 'aspect' as 'aspect' | 'link',
-      hideDeleteButton: false as boolean
+      propertyId: undefined as undefined | string
     })
 
     function showAddDialog(type: 'aspect' | 'link') {
-      objectSchemaDialog.value.mode = 'create'
       objectSchemaDialog.value.value = true
-      objectSchemaDialog.value.item = undefined
       objectSchemaDialog.value.type = type
+      objectSchemaDialog.value.propertyId = undefined
     }
 
     // Removing types from the new item type selection as they are purely used as a fallback.
@@ -249,108 +239,23 @@ export default defineComponent<IProps>({
     delete newItemTypes.value.default
     delete newItemTypes.value.null
 
-    function doAddItem(form: { name: string; targetType?: string; description?: string }) {
-      try {
-        if (objectSchemaDialog.value.type === 'aspect') {
-          objectSchemaHelper.value.addCustomAspect(form.name)
-          objectSchemaDialog.value.item = cloneDeep(objectSchemaHelper.value.getCustomAspect(form.name))
-          objectSchemaHelper.value.removeCustomAspect(form.name)
-        } else {
-          objectSchemaHelper.value.addCustomLink(form.name, form.targetType || '', form.description || '')
-          objectSchemaDialog.value.item = cloneDeep(objectSchemaHelper.value.getCustomLink(form.name))
-          objectSchemaHelper.value.removeCustomLink(form.name)
-        }
-        showEditDialog(objectSchemaDialog.value.item, objectSchemaDialog.value.type, true)
-        context.emit('schema-updated')
-        computeProperties()
-      } catch (e) {
-        context.root.$emit(VeoEvents.ALERT_ERROR, {
-          title: context.root.$i18n.t('createCustomPropertyError'),
-          text: e
-        })
-      }
-    }
-
-    function showEditDialog(aspect: IVeoOSHCustomAspect | IVeoOSHCustomLink, type: 'aspect' | 'link', hideDeleteButton: boolean = false) {
-      objectSchemaDialog.value.mode = 'edit'
-      objectSchemaDialog.value.item = aspect
+    function showEditDialog(property: IVeoOSHCustomAspect | IVeoOSHCustomLink, type: 'aspect' | 'link') {
       objectSchemaDialog.value.value = true
       objectSchemaDialog.value.type = type
-      objectSchemaDialog.value.hideDeleteButton = hideDeleteButton
+      objectSchemaDialog.value.propertyId = property.title
     }
 
-    function doEditItem(object: { item: IVeoOSHCustomAspect | IVeoOSHCustomLink; id: string }) {
-      let original;
+    function onEditPropertyError(e: any) {
+      context.root.$emit(VeoEvents.ALERT_ERROR, {
+        title: context.root.$i18n.t('createCustomPropertyError'),
+        text: e
+      })
+    }
 
-      if(objectSchemaDialog.value.type === 'aspect') {
-        original = cloneDeep(objectSchemaHelper.value.getCustomAspect(object.id))
-        if(!original) {
-          objectSchemaHelper.value.addCustomAspect(object.id)
-          original = cloneDeep(objectSchemaHelper.value.getCustomAspect(object.id))
-        }
-      } else {
-        original = cloneDeep(objectSchemaHelper.value.getCustomLink(object.id))
-        if(!original) {
-          objectSchemaHelper.value.addCustomLink(
-            object.id,
-            (object.item as IVeoOSHCustomLink).targetType,
-            (object.item as IVeoOSHCustomLink).description
-          )
-          original = cloneDeep(objectSchemaHelper.value.getCustomLink(object.id))
-        }
-      }
-
-      if (object.item.title !== object.id) {
-        if (objectSchemaDialog.value.type === 'aspect') {
-          objectSchemaHelper.value.renameCustomAspect(object.id, object.item.title)
-        } else {
-          objectSchemaHelper.value.renameCustomLink(object.id, object.item.title)
-        }
-        objectSchemaHelper.value.removeTranslationsContainingKey(object.id)
-      }
-
-      if (objectSchemaDialog.value.type === 'aspect') {
-        objectSchemaHelper.value.updateCustomAspectAttributes(object.item.title, object.item.attributes)
-      } else {
-        objectSchemaHelper.value.updateCustomLink(object.item.title, object.item as IVeoOSHCustomLink)
-      }
-
-      // Add a translation key for each attribute
-      if(displayLanguage) {
-        for(let attribute of object.item.attributes) {
-          if(attribute.description && attribute.description !== '') {
-            objectSchemaHelper.value.updateTranslation(
-              displayLanguage.value,
-              `${attribute.prefix}${attribute.title}`,
-              `${attribute.description}`,
-            );
-          } else {
-            objectSchemaHelper.value.removeTranslation(`${attribute.prefix}${attribute.title}`)
-          }
-
-          if(attribute.type === 'enum' && attribute.enum) {
-            for(const option of attribute.enum) {
-              objectSchemaHelper.value.addTranslation(
-                option,
-                option,
-                displayLanguage.value
-              )
-            }
-          }
-        }
-
-        // Remove translations of renamed attributes
-        if(original) {
-          for(let oldAttribute of original.attributes) {
-            if(!object.item.attributes.find(item => item.title === oldAttribute.title)) {
-              objectSchemaHelper.value.removeTranslation(`${oldAttribute.prefix}${oldAttribute.title}`)
-            }
-          }
-        }
-      }
-
+    function onEditPropertySuccess() {
       objectSchemaDialog.value.value = false
-      objectSchemaDialog.value.item = undefined // Set to undefined so the new item gets picked up
+      // Set it to undefined so that in the component changes in the aspect will get picked up if the same property gets edited right after this
+      objectSchemaDialog.value.propertyId = undefined
       context.emit('schema-updated')
       computeProperties()
     }
@@ -363,9 +268,9 @@ export default defineComponent<IProps>({
       title: '',
       type: 'aspect' as 'link' | 'aspect'
     })
-    function showDeleteDialog(item: IVeoOSHCustomAspect | IVeoOSHCustomLink, type: 'aspect' | 'link') {
+    function showDeleteDialog(propertyId: string, type: 'aspect' | 'link') {
       deleteDialog.value.type = type
-      deleteDialog.value.title = item.title
+      deleteDialog.value.title = (type === 'aspect' ? objectSchemaHelper.value.getCustomAspect(propertyId)?.title : objectSchemaHelper.value.getCustomLink(propertyId)?.title) || ''
       deleteDialog.value.value = true
     }
 
@@ -387,9 +292,9 @@ export default defineComponent<IProps>({
       objectSchemaDialog,
       expansionPanels,
       showAddDialog,
-      doAddItem,
+      onEditPropertyError,
+      onEditPropertySuccess,
       showEditDialog,
-      doEditItem,
       newItemTypes,
       basicProps,
       customAspects,

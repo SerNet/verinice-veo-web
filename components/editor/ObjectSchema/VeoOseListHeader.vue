@@ -18,12 +18,12 @@
     </v-list-item-action>
 
     <v-list-item-action class="ml-0 d-flex flex-row">
-      <v-btn icon @click="$emit('edit-item', $event)">
+      <v-btn class="edit-button" icon @click="$emit('edit-item', $event)">
         <v-icon>
           mdi-pencil
         </v-icon>
       </v-btn>
-      <v-btn icon @click="$emit('delete-item', $event)">
+      <v-btn class="delete-button" icon @click="$emit('delete-item', $event)">
         <v-icon>
           mdi-delete
         </v-icon>

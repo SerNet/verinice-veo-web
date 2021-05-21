@@ -52,7 +52,7 @@
           </v-tooltip>
           <v-tooltip bottom>
             <template #activator="{on}">
-              <v-btn icon large color="primary" @click="showTranslationDialog = true" v-on="on">
+              <v-btn icon large class="translate-button" color="primary" @click="showTranslationDialog = true" v-on="on">
                 <v-icon>mdi-translate</v-icon>
               </v-btn>
             </template>
@@ -120,7 +120,6 @@
         <template #default>
           <VeoObjectSchemaEditor
             v-if="schemaIsValid.valid"
-            v-model="objectSchemaHelper"
             :search="search"
             :hide-empty-aspects="hideEmptyAspects"
             @schema-updated="updateCode"
@@ -164,7 +163,6 @@
         v-model="showTranslationDialog"
         :current-display-language="displayLanguage"
         :available-languages="availableLanguages"
-        :object-schema-helper="objectSchemaHelper"
         @display-language-changed="onDisplayLanguageUpdate"
         @schema-updated="updateCode"
       />

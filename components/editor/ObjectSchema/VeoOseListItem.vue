@@ -7,7 +7,7 @@
   </VeoEditorListItem>
 </template>
 <script lang="ts">
-import { defineComponent, inject, ref, Ref, watch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, onMounted, ref, Ref, watch } from '@nuxtjs/composition-api'
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2'
 import { IInputType } from '~/types/VeoEditor'
 
@@ -67,9 +67,13 @@ export default defineComponent<IProps>({
           `${props.prefix}${props.title}`
         );
 
-        localizedDescription.value = _localizedDescription ?? localizedDescription.value
+        localizedDescription.value = _localizedDescription || props.description || ''
       }
     }
+
+    onMounted(() => {
+      i18n();
+    });
 
     return {
       localizedDescription
