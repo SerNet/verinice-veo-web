@@ -140,6 +140,12 @@ describe('Objectschema Editor', () => {
         ]
         testSchema = _testSchema
       })
+
+    cy.fixture('objectschema/os_empty.json')
+      .as('testSchema')
+      .then(_emptySchema => {
+        emptySchema = _emptySchema
+      })
   })
   beforeEach(() => {
     // Reset the schema before each test to restore the original state
@@ -149,6 +155,12 @@ describe('Objectschema Editor', () => {
       .then((el: any) => {
         el[0].__vue__.$emit('input', JSON.stringify(testSchema, undefined, 2))
       })
+
+    cy.get('.veo-editor-save-button')
+      .contains('.v-btn__content', 'Codeänderungen übernehmen')
+      .closest('.v-btn').
+      click()
+      .wait(1)
 
     /**
      * Define aliases
@@ -182,7 +194,7 @@ describe('Objectschema Editor', () => {
     })
   })
 
-  it.only('deletes aspect with outer delete button', function () {
+  it('deletes aspect with outer delete button', function () {
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-expansion-panel-content__wrap')
@@ -207,10 +219,9 @@ describe('Objectschema Editor', () => {
     cy.get('.editor .cm-content').then(editor => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt2')
+        .should((currentOS) => {
+          expect(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1')).to.be.undefined;
         })
-        .should('be.undefined')
     })
   })
 
@@ -229,15 +240,17 @@ describe('Objectschema Editor', () => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = changedAttributes[wrapperIndex]
-          cy.contains('Name des Attributs *')
-            .closest('.v-text-field')
-            .type(currentAttrData.writeTitle)
-          cy.contains('Typ des Attributs')
-            .closest('.v-select')
-            .type(`${currentAttrData.selectType.text}{enter}`)
-          cy.contains('Beschreibung')
-            .closest('.v-text-field')
-            .type(currentAttrData.writeDescription)
+          if (currentAttrData) {
+            cy.contains('Name des Attributs *')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeTitle)
+            cy.contains('Typ des Attributs')
+              .closest('.v-select')
+              .type(`${currentAttrData.selectType.text}{enter}`)
+            cy.contains('Beschreibung')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeDescription)
+          }
         })
       })
       cy.get('.v-card__actions')
@@ -250,21 +263,22 @@ describe('Objectschema Editor', () => {
     cy.get('.editor .cm-content').then(editor => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
-        .then(currentOS => {
-          return (
-            JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_GeneralInformationTest') || null
-          )
+        .should((currentOS) => {
+          expect(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1Test')).to.not.be.undefined;
         })
+
+      cy.get('@currentOS')
+        .then((currentOS) => JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1Test'))
         .as('aspect')
-        .should('not.be.null')
-      cy.get('@aspect').then((aspect: any) => {
-        cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot()
-      })
+        .then((aspect: any) => {
+          cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot()
+        })
     })
   })
 
   it('removes and adds aspect attributes', function () {
-    cy.contains('AccessAuthorization')
+    // Open aspect
+    cy.contains('Aspekt1')
       .closest('.v-list-item')
       .find('.v-btn')
       .first()
@@ -272,6 +286,7 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
+      // Delete all 3 existing attributes
       times(3, () => {
         cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn')
           .eq(0)
@@ -279,6 +294,7 @@ describe('Objectschema Editor', () => {
           .wait(1)
       })
 
+      // Add 6 new attributes
       times(6, () => {
         cy.contains('Attribut hinzufügen')
           .closest('.v-btn')
@@ -289,27 +305,29 @@ describe('Objectschema Editor', () => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = addAttributes[wrapperIndex]
-          cy.contains('Name des Attributs *')
-            .closest('.v-text-field')
-            .type(currentAttrData.writeTitle)
-          cy.contains('Typ des Attributs')
-            .closest('.v-select')
-            .type(`${currentAttrData.selectType.text}{enter}`)
-
-          if (currentAttrData.writeDescription) {
-            cy.contains('Beschreibung')
+          if (currentAttrData) {
+            cy.contains('Name des Attributs *')
               .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
-          }
-          if (currentAttrData.enum) {
-            if (currentAttrData.checkMultiple) {
-              cy.contains('Mehrfachauswahl')
-                .closest('.v-input--checkbox')
-                .click()
+              .type(currentAttrData.writeTitle)
+            cy.contains('Typ des Attributs')
+              .closest('.v-select')
+              .type(`${currentAttrData.selectType.text}{enter}`)
+
+            if (currentAttrData.writeDescription) {
+              cy.contains('Beschreibung')
+                .closest('.v-text-field')
+                .type(currentAttrData.writeDescription)
             }
-            cy.contains('Werte (mit Enter trennen)')
-              .closest('.v-autocomplete')
-              .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
+            if (currentAttrData.enum) {
+              if (currentAttrData.checkMultiple) {
+                cy.contains('Mehrfachauswahl')
+                  .closest('.v-input--checkbox')
+                  .click()
+              }
+              cy.contains('Werte (mit Enter trennen)')
+                .closest('.v-autocomplete')
+                .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
+            }
           }
         })
       })
@@ -324,7 +342,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_AccessAuthorization') || null
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1') || null
         })
         .as('aspect')
         .should('not.be.null')
@@ -360,7 +378,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectOne') || null
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectOne') || null
         })
         .as('aspect')
         .should('be.null')
@@ -414,7 +432,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectTwo') || null
         })
         .as('aspect')
         .should('not.be.null')
@@ -445,7 +463,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/process_TestAspectTwo') || null
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectTwo') || null
         })
         .as('aspect')
         .should('be.null')
@@ -458,7 +476,7 @@ describe('Objectschema Editor', () => {
       .find('.v-expansion-panel-content__wrap')
       .children()
       .should('have.length', schemaRealValues[2].numberOfProperties)
-    cy.contains('ResponsibleDepartment')
+    cy.contains('Link1')
       .closest('.v-list-item')
       .find('.v-btn')
       .eq(1)
@@ -478,7 +496,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/process_ResponsibleDepartment') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1') || null
         })
         .as('link')
         .should('be.null')
@@ -486,7 +504,7 @@ describe('Objectschema Editor', () => {
   })
 
   it('changes link name, attribute names, description and types', function () {
-    cy.contains('LegalBasis')
+    cy.contains('Link1')
       .closest('.v-list-item')
       .find('.v-btn')
       .first()
@@ -502,21 +520,23 @@ describe('Objectschema Editor', () => {
         .type('TestId')
       cy.contains('Typ des Linkziels *')
         .closest('.v-select')
-        .should('contain.text', 'Control')
+        .should('contain.text', 'Scope')
         .type('Person{enter}')
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = changedAttributes[wrapperIndex]
-          cy.contains('Name des Attributs *')
-            .closest('.v-text-field')
-            .type(currentAttrData.writeTitle)
-          cy.contains('Typ des Attributs')
-            .closest('.v-select')
-            .type(`${currentAttrData.selectType.text}{enter}`)
-          cy.contains('Beschreibung')
-            .closest('.v-text-field')
-            .type(currentAttrData.writeDescription)
+          if (currentAttrData) {
+            cy.contains('Name des Attributs *')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeTitle)
+            cy.contains('Typ des Attributs')
+              .closest('.v-select')
+              .type(`${currentAttrData.selectType.text}{enter}`)
+            cy.contains('Beschreibung')
+              .closest('.v-text-field')
+              .type(currentAttrData.writeDescription)
+          }
         })
       })
       cy.get('.v-card__actions')
@@ -530,7 +550,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/process_LegalBasisTest') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1Test') || null
         })
         .as('link')
         .should('not.be.null')
@@ -542,7 +562,7 @@ describe('Objectschema Editor', () => {
   })
 
   it('removes and adds link attributes', function () {
-    cy.contains('InternalRecipientLink')
+    cy.contains('Link1')
       .closest('.v-list-item')
       .find('.v-btn')
       .first()
@@ -550,7 +570,7 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     cy.get('.v-dialog--active').within(dialogEl => {
-      times(3, () => {
+      times(2, () => {
         cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn')
           .eq(0)
           .click()
@@ -567,27 +587,29 @@ describe('Objectschema Editor', () => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = addAttributes[wrapperIndex]
-          cy.contains('Name des Attributs *')
-            .closest('.v-text-field')
-            .type(currentAttrData.writeTitle)
-          cy.contains('Typ des Attributs')
-            .closest('.v-select')
-            .type(`${currentAttrData.selectType.text}{enter}`)
-
-          if (currentAttrData.writeDescription) {
-            cy.contains('Beschreibung')
+          if (currentAttrData) {
+            cy.contains('Name des Attributs *')
               .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
-          }
-          if (currentAttrData.enum) {
-            if (currentAttrData.checkMultiple) {
-              cy.contains('Mehrfachauswahl')
-                .closest('.v-input--checkbox')
-                .click()
+              .type(currentAttrData.writeTitle)
+            cy.contains('Typ des Attributs')
+              .closest('.v-select')
+              .type(`${currentAttrData.selectType.text}{enter}`)
+
+            if (currentAttrData.writeDescription) {
+              cy.contains('Beschreibung')
+                .closest('.v-text-field')
+                .type(currentAttrData.writeDescription)
             }
-            cy.contains('Werte (mit Enter trennen)')
-              .closest('.v-autocomplete')
-              .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
+            if (currentAttrData.enum) {
+              if (currentAttrData.checkMultiple) {
+                cy.contains('Mehrfachauswahl')
+                  .closest('.v-input--checkbox')
+                  .click()
+              }
+              cy.contains('Werte (mit Enter trennen)')
+                .closest('.v-autocomplete')
+                .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
+            }
           }
         })
       })
@@ -602,7 +624,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/process_InternalRecipientLink') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1') || null
         })
         .as('link')
         .should('not.be.null')
@@ -651,7 +673,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkOne') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkOne') || null
         })
         .as('link')
         .should('be.null')
@@ -718,7 +740,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkTwo') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkTwo') || null
         })
         .as('link')
         .should('not.be.null')
@@ -749,7 +771,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/process_TestLinkTwo') || null
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkTwo') || null
         })
         .as('link')
         .should('be.null')
@@ -761,10 +783,24 @@ describe('Objectschema Editor', () => {
       .closest('.v-btn')
       .click()
       .wait(1)
-    cy.readFile('cypress/downloads/os_Process.json').toMatchSnapshot()
+    cy.readFile('cypress/downloads/os_testSchema.json').toMatchSnapshot()
   })
 
-  it('adds a translated description to a new aspect attribute for EN and DE via the dialog', function () {
+  it.only('adds a translated description to a new aspect attribute for EN and DE via the dialog', function () {
+    // Reset the schema before each test to restore the original state
+    cy.get('.editor')
+      .find('.cm-content')
+      .closest('.d-flex.flex-column')
+      .then((el: any) => {
+        el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2))
+      })
+
+    cy.get('.veo-editor-save-button')
+      .contains('.v-btn__content', 'Codeänderungen übernehmen')
+      .closest('.v-btn').
+      click()
+      .wait(1)
+
     const currentAttrData = addAttributes[4]
 
     cy.contains('Aspekte hinzufügen')
@@ -815,12 +851,12 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/process_TestAspectTwo_${currentAttrData.writeTitle}`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null
         })
         .should('not.be.null')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/process_TestAspectTwo_${currentAttrData.writeTitle}`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null
         })
         .should('be.null')
       for (const enumEntry of currentAttrData.enum) {
@@ -902,12 +938,12 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/process_TestAspectTwo_${currentAttrData.writeTitle}`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null
         })
         .should('not.be.null')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/process_TestAspectTwo_${currentAttrData.writeTitle}`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null
         })
         .should('not.be.null')
       for (const enumEntry of currentAttrData.enum) {
@@ -956,7 +992,21 @@ describe('Objectschema Editor', () => {
       .should('contain.html', '<span></span>')
   })
 
-  it('adds a translated description to a new link attribute for EN and DE via the dialog', function () {
+  it.only('adds a translated description to a new link attribute for EN and DE via the dialog', function () {
+    // Reset the schema before each test to restore the original state
+    cy.get('.editor')
+      .find('.cm-content')
+      .closest('.d-flex.flex-column')
+      .then((el: any) => {
+        el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2))
+      })
+
+    cy.get('.veo-editor-save-button')
+      .contains('.v-btn__content', 'Codeänderungen übernehmen')
+      .closest('.v-btn').
+      click()
+      .wait(1)
+
     const currentAttrData = addAttributes[4]
 
     cy.contains('Link hinzufügen')
@@ -1022,24 +1072,24 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/process_TestLinkTwo_${currentAttrData.writeTitle}`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null
         })
         .should('not.be.null')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/process_TestLinkTwo_${currentAttrData.writeTitle}`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null
         })
         .should('be.null')
 
       // Check for link description
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/process_TestLinkTwo`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo`) || null
         })
         .should('not.be.null')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/process_TestLinkTwo`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo`) || null
         })
         .should('be.null')
       for (const enumEntry of currentAttrData.enum) {
@@ -1128,24 +1178,24 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/process_TestLinkTwo_${currentAttrData.writeTitle}`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null
         })
         .should('not.be.null')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/process_TestLinkTwo_${currentAttrData.writeTitle}`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null
         })
         .should('not.be.null')
 
       // Link description
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/process_TestLinkTwo`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo`) || null
         })
         .should('not.be.null')
       cy.get('@currentOS')
         .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/process_TestLinkTwo`) || null
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo`) || null
         })
         .should('not.be.null')
 
