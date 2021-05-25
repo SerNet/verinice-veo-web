@@ -803,6 +803,24 @@ describe('Objectschema Editor', () => {
 
     const currentAttrData = addAttributes[4]
 
+    // Switch default language to de
+    cy.get('.translate-button')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(_dialogEl => {
+      cy.get('.v-autocomplete')
+        .contains('Sprache')
+        .closest('.v-autocomplete')
+        .type('Deutsch{enter}')
+
+      cy.get('.v-card__actions')
+        .contains('Speichern')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+    })
+
     cy.contains('Aspekte hinzufügen')
       .closest('.v-btn')
       .click()
@@ -1008,6 +1026,24 @@ describe('Objectschema Editor', () => {
       .wait(1)
 
     const currentAttrData = addAttributes[4]
+
+    // Switch default language to de
+    cy.get('.translate-button')
+      .click()
+      .wait(1)
+
+    cy.get('.v-dialog--active').within(_dialogEl => {
+      cy.get('.v-autocomplete')
+        .contains('Sprache')
+        .closest('.v-autocomplete')
+        .type('Deutsch{enter}')
+
+      cy.get('.v-card__actions')
+        .contains('Speichern')
+        .closest('.v-btn')
+        .click()
+        .wait(1)
+    })
 
     cy.contains('Link hinzufügen')
       .closest('.v-btn')

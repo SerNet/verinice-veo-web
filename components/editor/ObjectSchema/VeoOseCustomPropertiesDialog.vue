@@ -33,7 +33,10 @@
           </v-col>
         </v-row>
         <v-list v-if="dialogMode === 'edit'" dense class="py-0">
-          <template v-for="(attribute, index) of form.data.attributes" class="veo-attribute-list-attribute my-2">
+          <template
+            v-for="(attribute, index) of form.data.attributes"
+            class="veo-attribute-list-attribute my-2"
+          >
             <VeoOseCustomAspectAttribute
               v-bind="attribute"
               :key="index"
@@ -44,9 +47,9 @@
           </template>
 
           <v-list-item v-if="form.data.attributes.length === 0">
-            <v-list-item-content class="veo-attribute-list-no-content justify-center">
-              {{ $t(`noProperties.${type}`) }}
-            </v-list-item-content>
+            <v-list-item-content
+              class="veo-attribute-list-no-content justify-center"
+            >{{ $t(`noProperties.${type}`) }}</v-list-item-content>
           </v-list-item>
           <v-list-item class="veo-attribute-list-add-button">
             <v-list-item-action>
@@ -58,34 +61,45 @@
             </v-list-item-action>
           </v-list-item>
         </v-list>
-        <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" border="left" colored-border>
-          <span> {{ $t('duplicateAttributes') }}: </span>
+        <v-alert
+          v-if="duplicates.length > 0"
+          type="error"
+          class="mb-4 mt-6"
+          border="left"
+          colored-border
+        >
+          <span>{{ $t('duplicateAttributes') }}:</span>
           <ul>
-            <li v-for="duplicate of duplicates" :key="duplicate">
-              {{ duplicate }}
-            </li>
+            <li v-for="duplicate of duplicates" :key="duplicate">{{ duplicate }}</li>
           </ul>
         </v-alert>
       </v-form>
       <small>{{ $t('global.input.requiredfields') }}</small>
     </template>
     <template #dialog-options>
-      <v-btn v-if="propertyId" color="primary" outlined @click="$emit('delete')">
-        {{ $t(`delete.${type}`) }}
-      </v-btn>
+      <v-btn
+        v-if="propertyId"
+        color="primary"
+        outlined
+        @click="$emit('delete')"
+      >{{ $t(`delete.${type}`) }}</v-btn>
       <v-spacer />
       <template v-if="dialogMode === 'edit'">
-        <v-btn text color="primary" @click="close()">
-          {{ $t('global.button.close') }}
-        </v-btn>
-        <v-btn text color="primary" :disabled="!form.valid || duplicates.length > 0" @click="saveProperty()">
-          {{ $t('global.button.save') }}
-        </v-btn>
+        <v-btn text color="primary" @click="close()">{{ $t('global.button.close') }}</v-btn>
+        <v-btn
+          text
+          color="primary"
+          :disabled="!form.valid || duplicates.length > 0"
+          @click="saveProperty()"
+        >{{ $t('global.button.save') }}</v-btn>
       </template>
       <template v-else>
-        <v-btn text color="primary" :disabled="!form.valid" @click="dialogMode = 'edit'">
-          {{ $t('global.button.next') }}
-        </v-btn>
+        <v-btn
+          text
+          color="primary"
+          :disabled="!form.valid"
+          @click="dialogMode = 'edit'"
+        >{{ $t('global.button.next') }}</v-btn>
       </template>
     </template>
   </VeoDialog>
@@ -93,11 +107,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
-import {
-  capitalize,
-  cloneDeep,
-  trim
-} from 'lodash'
+import { capitalize, cloneDeep, trim } from 'lodash'
 
 import { ISchemaEndpoint } from '~/plugins/api/schema'
 import ObjectSchemaHelper, {
@@ -126,14 +136,14 @@ export default Vue.extend({
     // See: https://github.com/vuejs/vue/issues/8969
     objectSchemaHelper: {
       type: Object as Prop<Ref<ObjectSchemaHelper>>,
-      default: undefined,
+      default: undefined
     },
     // Doesn't actually get passed as a prop but injected by DI. However Typescript can't handle that so we define it here.
     // The default value gets overwritte by DI
     // See: https://github.com/vuejs/vue/issues/8969
     displayLanguage: {
       type: Object as Prop<Ref<string>>,
-      default: undefined,
+      default: undefined
     }
   },
   data() {
@@ -187,7 +197,7 @@ export default Vue.extend({
     aspectPrefix(): string {
       return `${this.prefix}${this.form.data.title}`
     },
-    formattedObjectTypes(): { text: string, value: string }[] {
+    formattedObjectTypes(): { text: string; value: string }[] {
       return this.objectTypes.map((value: ISchemaEndpoint) => ({
         text: capitalize(value.schemaName),
         value: value.schemaName
@@ -196,36 +206,40 @@ export default Vue.extend({
   },
   watch: {
     value(newValue: boolean) {
-      if(!this.propertyId) {
+      if (!this.propertyId) {
         this.editedProperty = undefined
       } else {
-        this.editedProperty = cloneDeep(this.objectSchemaHelper.value.getCustomAspect(this.propertyId) || this.objectSchemaHelper.value.getCustomLink(this.propertyId))
+        this.editedProperty = cloneDeep(
+          this.objectSchemaHelper.value.getCustomAspect(this.propertyId) ||
+            this.objectSchemaHelper.value.getCustomLink(this.propertyId)
+        )
       }
 
-      if(!newValue) {
-        this.form.data.description = '';
-        this.form.data.targetType = '';
-        this.form.data.title = '';
-        this.form.data.attributes = [];
-      } else if(this.editedProperty) {
+      if (!newValue) {
+        this.form.data.description = ''
+        this.form.data.targetType = ''
+        this.form.data.title = ''
+        this.form.data.attributes = []
+      } else if (this.editedProperty) {
         this.dialogMode = 'edit'
         // We have to explicitly set the properties missing in IVeoOSHCustomAspect
-        this.form.data = { description: '', targetType: '', ...cloneDeep(this.editedProperty)}
+        this.form.data = { description: '', targetType: '', ...cloneDeep(this.editedProperty) }
 
         // Load the translated link description if it is a link (Only if not set. Will only be set on old schemas as fallback)
-        if(this.type === 'link' && !this.form.data.description) {
+        if (this.type === 'link' && !this.form.data.description) {
           this.form.data.description = this.objectSchemaHelper.value.getTranslation(
             this.displayLanguage.value,
             `${this.form.data.prefix}${this.form.data.title}`
-          );
+          )
         }
-        
+
         for (let attributeIndex in this.form.data.attributes) {
           // Load the localized description for each attribute
-          this.form.data.attributes[attributeIndex].description = this.objectSchemaHelper.value.getTranslation(
-            this.displayLanguage.value,
-            `${this.form.data.attributes[attributeIndex].prefix}${this.form.data.attributes[attributeIndex].title}`
-          ) || ''
+          this.form.data.attributes[attributeIndex].description =
+            this.objectSchemaHelper.value.getTranslation(
+              this.displayLanguage.value,
+              `${this.form.data.attributes[attributeIndex].prefix}${this.form.data.attributes[attributeIndex].title}`
+            ) || ''
 
           // Set the originalId property to later differentiate between new, deleted and renamed attributes
           this.form.data.attributes[attributeIndex].originalId = this.form.data.attributes[attributeIndex].title
@@ -240,16 +254,16 @@ export default Vue.extend({
       this.$emit('input', false)
     },
     onSubmit() {
-      if(this.dialogMode === 'create') {
+      if (this.dialogMode === 'create') {
         this.dialogMode = 'edit'
       } else {
-        this.saveProperty
+        this.saveProperty()
       }
     },
     saveProperty() {
       try {
-        if(!this.editedProperty) {
-          if(this.type === 'aspect') {
+        if (!this.editedProperty) {
+          if (this.type === 'aspect') {
             this.objectSchemaHelper.value.addCustomAspect(this.form.data.title)
 
             // Set the prefix so that it won't be overwritten with undefined in the following updateCustomAspect
@@ -263,12 +277,12 @@ export default Vue.extend({
             this.form.data.prefix = link?.prefix
           }
         } else {
-          if(this.type === 'aspect') {
-            if(this.editedProperty.title !== this.form.data.title) {
+          if (this.type === 'aspect') {
+            if (this.editedProperty.title !== this.form.data.title) {
               this.objectSchemaHelper.value.renameCustomAspect(this.editedProperty.title, this.form.data.title)
             }
           } else {
-            if(this.editedProperty.title !== this.form.data.title) {
+            if (this.editedProperty.title !== this.form.data.title) {
               this.objectSchemaHelper.value.renameCustomLink(this.editedProperty.title, this.form.data.title)
             }
           }
@@ -281,7 +295,7 @@ export default Vue.extend({
           delete attribute.description
         }
 
-        if(this.type === 'aspect') {
+        if (this.type === 'aspect') {
           this.objectSchemaHelper.value.updateCustomAspect(this.form.data.title, toSave)
         } else {
           delete toSave.description
@@ -289,24 +303,24 @@ export default Vue.extend({
         }
 
         // Update translations
-        const attributePrefix = `${this.form.data.prefix}${this.form.data.title}_`;
+        const attributePrefix = `${this.form.data.prefix}${this.form.data.title}_`
 
-        if(this.type === 'link') {
-          if(!this.editedProperty) {
+        if (this.type === 'link') {
+          if (!this.editedProperty) {
             this.objectSchemaHelper.value.addTranslation(
               `${this.form.data.prefix}${this.form.data.title}`,
               this.form.data.description || '',
               this.displayLanguage.value
-            );
-          } else if(this.editedProperty && this.editedProperty.title !== this.form.data.title) {
+            )
+          } else if (this.editedProperty && this.editedProperty.title !== this.form.data.title) {
             this.objectSchemaHelper.value.changeTranslationKey(
               `${this.editedProperty.prefix}${this.editedProperty.title}`,
               `${this.form.data.prefix}${this.form.data.title}`
             )
           }
-          
-          if(this.editedProperty) {
-            if(this.form.data.description && this.form.data.description !== '') {
+
+          if (this.editedProperty) {
+            if (this.form.data.description && this.form.data.description !== '') {
               this.objectSchemaHelper.value.updateTranslation(
                 this.displayLanguage.value,
                 `${this.form.data.prefix}${this.form.data.title}`,
@@ -321,59 +335,55 @@ export default Vue.extend({
           }
         }
 
-        for(let attribute of this.form.data.attributes) {
+        for (let attribute of this.form.data.attributes) {
           // Update translation key if aspect/link title changed across all languages
-          if(attribute.originalId && this.editedProperty && this.editedProperty.title !== this.form.data.title) {
+          if (attribute.originalId && this.editedProperty && this.editedProperty.title !== this.form.data.title) {
             this.objectSchemaHelper.value.changeTranslationKey(
               `${this.editedProperty.prefix}${this.editedProperty.title}_${attribute.originalId}`,
-              `${attributePrefix}${attribute.originalId}`,
-            );
+              `${attributePrefix}${attribute.originalId}`
+            )
           }
 
           // Update translation key if attribute title changed across all languages
-          if(attribute.originalId && attribute.originalId !== attribute.title) {
+          if (attribute.originalId && attribute.originalId !== attribute.title) {
             this.objectSchemaHelper.value.changeTranslationKey(
               `${attributePrefix}${attribute.originalId}`,
               `${attributePrefix}${attribute.title}`
-            );
+            )
           }
 
           // If a description is set, save it for the current language
-          if(attribute.description && attribute.description !== '') {    
+          if (attribute.description && attribute.description !== '') {
             this.objectSchemaHelper.value.updateTranslation(
               this.displayLanguage.value,
               `${attributePrefix}${attribute.title}`,
-              `${attribute.description}`,
-            );
-
-          } else { // If no description is set, remove it if it exists (fail silent if not found)
+              `${attribute.description}`
+            )
+          } else {
+            // If no description is set, remove it if it exists (fail silent if not found)
             this.objectSchemaHelper.value.removeTranslation(
               `${attributePrefix}${attribute.title}`,
               this.displayLanguage.value
-            );
+            )
           }
 
           // Add a key for each enum entry
-          if(attribute.type === 'enum' && attribute.enum) {
-            for(const option of attribute.enum) {
-              this.objectSchemaHelper.value.addTranslation(
-                option,
-                option,
-                this.displayLanguage.value
-              )
+          if (attribute.type === 'enum' && attribute.enum) {
+            for (const option of attribute.enum) {
+              this.objectSchemaHelper.value.addTranslation(option, option, this.displayLanguage.value)
             }
           }
         }
 
         // Remove language keys not present in the updated attribute lists
-        if(this.editedProperty) {
-          for(let attribute of this.editedProperty?.attributes) {
-            if(!this.form.data.attributes.find(attribute2 => attribute2.originalId === attribute.title)) {
+        if (this.editedProperty) {
+          for (let attribute of this.editedProperty?.attributes) {
+            if (!this.form.data.attributes.find((attribute2) => attribute2.originalId === attribute.title)) {
               this.objectSchemaHelper.value.removeTranslation(`${attribute.prefix}${attribute.title}`)
             }
           }
         }
-        
+
         this.$emit('success')
       } catch (e) {
         this.$emit('error', e)
@@ -397,8 +407,12 @@ export default Vue.extend({
     checkForDuplicate() {
       this.duplicates = []
 
-      for(let attribute1 of this.form.data.attributes) {
-        if (this.form.data.attributes.filter((attribute2: IVeoOSHCustomProperty) => attribute2.title.toLowerCase() === attribute1.title.toLowerCase()).length > 1) {
+      for (let attribute1 of this.form.data.attributes) {
+        if (
+          this.form.data.attributes.filter(
+            (attribute2: IVeoOSHCustomProperty) => attribute2.title.toLowerCase() === attribute1.title.toLowerCase()
+          ).length > 1
+        ) {
           const duplicateTitle = attribute1.title.toLowerCase()
           if (!this.duplicates.includes(duplicateTitle)) {
             this.duplicates.push(duplicateTitle)
