@@ -99,6 +99,7 @@
               :formSchema="attribute"
               :generalTranslation="generalTranslation"
               :customTranslation="localCustomTranslation"
+              @update="onLinksAttributeUpdate(index, $event)"
               @delete="onLinksAttributeDelete(index, attribute.scope)"
               @update-custom-translation="onUpdateLinksCustomTranslation"
             />
@@ -135,6 +136,7 @@ import { BaseObject } from '~/components/forms/utils'
 import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItem,
+  IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollectionItem,
   IVeoTranslationCollection
 } from '~/types/VeoTypes'
@@ -384,6 +386,10 @@ export default defineComponent<IProps>({
           1
         )
         linksField.formSchemaElements.value.splice(index, 1)
+      }
+
+      linksField.onLinksAttributeUpdate = function(index: number, payload: IVeoFormSchemaItemUpdateEvent) {
+        linksField.formSchemaElements.value[index] = payload.data
       }
 
       linksField.onUpdateLinksCustomTranslation = function(event: IVeoFormSchemaTranslationCollectionItem) {
