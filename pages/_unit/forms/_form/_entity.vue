@@ -62,6 +62,7 @@
       </template>
       <template #default>
         <VeoForm
+          v-if="canShowData"
           v-model="form.objectData"
           :schema="form.objectSchema"
           :ui="form.formSchema && form.formSchema.content"
@@ -75,6 +76,10 @@
           :disabled="isRevision"
           @input="formModified.isModified = true"
         />
+        <div v-else class="fill-height text-center d-flex flex-column">
+          <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
+          <h3 class="text-left">{{ $t('incompatibleFormSchema', { objectType }) }}</h3>
+        </div>
         <VeoDeleteEntityDialog
           v-model="deleteEntityDialog.value"
           v-bind="deleteEntityDialog"
@@ -266,6 +271,9 @@ export default Vue.extend({
     objectRoute() {
       return this.$route.params.entity
     },
+    canShowData(): boolean {
+      return this.validateRevisionSchema(this.form.objectData, false)
+    },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
@@ -402,7 +410,7 @@ export default Vue.extend({
         this.isRevision = isRevision
         if (isRevision) {
           this.form.objectData = content // show revision content in form
-          this.form.objectData.displayName = `${content.abbreviation} ${content.name}`
+          this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`
         } else {
           await this.$fetch() // refetch newest version from entity endpoint, not history
         }
@@ -420,12 +428,12 @@ export default Vue.extend({
       this.formModified.revisionDialog = false
       this.formModified.isModified = false
     },
-    validateRevisionSchema(revision: IBaseObject) {
+    validateRevisionSchema(revision: IBaseObject, showError: boolean = true) {
       const validator = new ObjectSchemaValidator()
 
       delete revision.displayName
       const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision)
-      if (!isValid) {
+      if (!isValid && showError) {
         this.showError(500, this.$t('revision_incompatible'))
       }
       return isValid
@@ -452,6 +460,7 @@ export default Vue.extend({
 {
   "en": {
     "history": "History",
+    "incompatibleFormSchema": "The form is incompatible to the object schema \"{objectType}\" and cannot be displayed!",
     "links": "Links",
     "navigation.title": "Contents",
     "object_delete_error": "Failed to delete object",
@@ -461,6 +470,7 @@ export default Vue.extend({
   },
   "de": {
     "history": "Verlauf",
+    "incompatibleFormSchema": "Das Formular ist inkompatibel zum Objektschema \"{objectType}\" und kann deshalb nicht angezeigt werden!",
     "links": "Links",
     "navigation.title": "Inhalt",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",

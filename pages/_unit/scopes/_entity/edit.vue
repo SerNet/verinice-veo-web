@@ -266,7 +266,7 @@ export default Vue.extend({
         this.isRevision = isRevision
         if (isRevision) {
           this.form.objectData = content // show revision content in form
-          this.form.objectData.displayName = `${content.abbreviation} ${content.name}`
+          this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`
         } else {
           await this.$fetch() // refetch newest version from entity endpoint, not history
         }
