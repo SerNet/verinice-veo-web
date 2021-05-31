@@ -63,8 +63,9 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { cloneDeep } from 'lodash'
 import Vue from 'vue'
+import { Ref } from '@nuxtjs/composition-api'
+import { cloneDeep } from 'lodash'
 import { Prop } from 'vue/types/options'
 
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2'
@@ -81,10 +82,6 @@ export default Vue.extend({
       type: Boolean,
       required: true
     },
-    objectSchemaHelper: {
-      type: ObjectSchemaHelper,
-      required: true
-    },
     availableLanguages: {
       type: Array as Prop<string[]>,
       default: () => []
@@ -92,8 +89,16 @@ export default Vue.extend({
     currentDisplayLanguage: {
       type: String,
       default: ''
+    },
+    // Doesn't actually get passed as a prop but injected by DI. However Typescript can't handle that so we define it here.
+    // The default value gets overwritte by DI
+    // See: https://github.com/vuejs/vue/issues/8969
+    objectSchemaHelper: {
+      type: Object as Prop<Ref<ObjectSchemaHelper>>,
+      default: undefined,
     }
   },
+  inject: ['objectSchemaHelper'],
   data() {
     return {
       data: {
@@ -134,7 +139,7 @@ export default Vue.extend({
       // Make sure all supported languages contain an entry in the translations object.
       for (let language of newValue) {
         if (!this.data.translations[language]) {
-          const savedTranslations = this.objectSchemaHelper.getTranslations(language)
+          const savedTranslations = this.objectSchemaHelper.value.getTranslations(language)
           if (savedTranslations) {
             this.data.translations[language] = cloneDeep(savedTranslations)
           } else {
@@ -171,7 +176,7 @@ export default Vue.extend({
   methods: {
     onSave() {
       for(const [language, translations] of Object.entries(this.data.translations)) {
-        this.objectSchemaHelper.updateTranslations(language, translations)
+        this.objectSchemaHelper.value.updateTranslations(language, translations)
       }
 
       this.$emit('input', false)
@@ -184,9 +189,9 @@ export default Vue.extend({
     }
   },
   mounted() {
-    this.data.supportedLanguages = this.objectSchemaHelper.getLanguages()
+    this.data.supportedLanguages = this.objectSchemaHelper.value.getLanguages() || []
     this.data.displayLanguage = this.currentDisplayLanguage
-    this.data.translations = cloneDeep(this.objectSchemaHelper.getAllTranslations())
+    this.data.translations = cloneDeep(this.objectSchemaHelper.value.getAllTranslations() || {})
 
   }
 })
