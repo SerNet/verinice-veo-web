@@ -1,11 +1,10 @@
 <template>
   <div class="pa-4 pl-0">
     <div v-if="displayedItems.length === 0">
-      <span v-if="$route.params.entity === '-'" class="text-center">
-        {{ $t('no_objects') }}
-      </span>
+      <span v-if="$route.params.entity === '-'" class="text-center">{{ $t('no_objects') }}</span>
       <span v-else class="text-center">
-        {{ $t('no_child_objects') }} <nuxt-link :to="editItemLink">{{ $t('object_edit') }}</nuxt-link>
+        {{ $t('no_child_objects') }}
+        <nuxt-link :to="editItemLink">{{ $t('object_edit') }}</nuxt-link>
       </span>
     </div>
     <v-treeview
@@ -25,7 +24,8 @@
           </template>
           <template #default>
             <span class="d-inline-block text-center">
-              {{ $t('object_has_subobjects') }}<br />
+              {{ $t('object_has_subobjects') }}
+              <br />
               {{ $t('object_has_subobjects_amount', { amount: item.entry.parts.length }) }}
             </span>
           </template>
@@ -35,9 +35,9 @@
             <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
           </template>
           <template #default>
-            <span class="d-inline-block text-center">
-              {{ $t('scope_children', { amount: item.entry.members.length }) }}
-            </span>
+            <span
+              class="d-inline-block text-center"
+            >{{ $t('scope_children', { amount: item.entry.members.length }) }}</span>
           </template>
         </v-tooltip>
         <v-tooltip v-else-if="item.entry.type === 'scope'" bottom>
@@ -45,9 +45,7 @@
             <v-icon v-on="on">mdi-archive</v-icon>
           </template>
           <template #default>
-            <span>
-              {{ $t('scope_empty') }}
-            </span>
+            <span>{{ $t('scope_empty') }}</span>
           </template>
         </v-tooltip>
         <v-tooltip v-else bottom>
@@ -55,14 +53,15 @@
             <v-icon v-on="on">mdi-file-document</v-icon>
           </template>
           <template #default>
-            <span>
-              {{ $t('object_has_no_subobjects') }}
-            </span>
+            <span>{{ $t('object_has_no_subobjects') }}</span>
           </template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <span v-on="on" class="veo-object-list__abbreviation--abbreviation">{{ item.entry.abbreviation }}</span>
+            <span
+              v-on="on"
+              class="veo-object-list__abbreviation--abbreviation"
+            >{{ item.entry.abbreviation }}</span>
           </template>
           <template #default>
             <span>{{ item.entry.abbreviation }}</span>
@@ -71,17 +70,16 @@
       </template>
       <template #label="{ item }">
         <div class="tree-item d-flex justify-space-between align-center">
-          <div>
+          <div class="d-flex text-truncate">
             <b>{{ item.entry.name }}</b>
             <v-tooltip bottom>
               <template #activator="{ on }">
-                <span v-on="on">
-                  {{ formatDate(item.entry.updatedAt) }}
-                </span>
+                <span class="ml-2" v-on="on">{{ formatDate(item.entry.updatedAt) }}</span>
               </template>
               <template #default>
                 {{ $t('created_at') }}: {{ formatDate(item.entry.createdAt) }} {{ $t('by') }} {{ item.entry.createdBy
-                }}<br />
+                }}
+                <br />
                 {{ $t('updated_at') }}: {{ formatDate(item.entry.updatedAt) }} {{ $t('by') }} {{ item.entry.updatedBy }}
               </template>
             </v-tooltip>
@@ -93,17 +91,21 @@
                 <v-menu bottom left offset-y>
                   <template v-slot:activator="menuOn">
                     <v-btn icon v-on="{ ...menuOn.on, ...tooltipOn.on }">
-                      <v-icon>
-                        mdi-plus
-                      </v-icon>
+                      <v-icon>mdi-plus</v-icon>
                     </v-btn>
                   </template>
                   <template #default>
                     <v-list>
-                      <v-list-item v-if="item.type === 'scope'" @click="$emit('add-scope', { parent: item.entry })">
+                      <v-list-item
+                        v-if="item.type === 'scope'"
+                        @click="$emit('add-scope', { parent: item.entry })"
+                      >
                         <v-list-item-title>{{ $t('scope_add') }}</v-list-item-title>
                       </v-list-item>
-                      <v-list-item v-if="item.type === 'scope'" @click="$emit('create-scope', { parent: item.entry })">
+                      <v-list-item
+                        v-if="item.type === 'scope'"
+                        @click="$emit('create-scope', { parent: item.entry })"
+                      >
                         <v-list-item-title>{{ $t('scope_create') }}</v-list-item-title>
                       </v-list-item>
                       <v-list-item @click="$emit('add-entity', { parent: item.entry })">
@@ -116,45 +118,31 @@
                   </template>
                 </v-menu>
               </template>
-              <template #default>
-                {{ $t('object_create_subentity') }}
-              </template>
+              <template #default>{{ $t('object_create_subentity') }}</template>
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
                 <v-btn icon @click.stop="fireEvent('edit', item)" v-on="on">
-                  <v-icon>
-                    mdi-pencil
-                  </v-icon>
+                  <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </template>
-              <template #default>
-                {{ $t('edit') }}
-              </template>
+              <template #default>{{ $t('edit') }}</template>
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
                 <v-btn icon @click.stop="fireContextualisedEvent('duplicate', item)" v-on="on">
-                  <v-icon>
-                    mdi-content-copy
-                  </v-icon>
+                  <v-icon>mdi-content-copy</v-icon>
                 </v-btn>
               </template>
-              <template #default>
-                {{ $t('clone') }}
-              </template>
+              <template #default>{{ $t('clone') }}</template>
             </v-tooltip>
             <v-tooltip v-if="$route.params.entity === '-'" bottom>
               <template #activator="{on}">
                 <v-btn icon @click.stop="fireEvent('delete', item)" v-on="on" class="action-delete">
-                  <v-icon>
-                    mdi-delete
-                  </v-icon>
+                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
-              <template #default>
-                {{ $t('delete') }}
-              </template>
+              <template #default>{{ $t('delete') }}</template>
             </v-tooltip>
             <v-tooltip bottom>
               <template #activator="{on}">
@@ -164,14 +152,10 @@
                   v-on="on"
                   :class="$route.params.entity === '-' ? 'action-unlink' : ''"
                 >
-                  <v-icon>
-                    mdi-link-off
-                  </v-icon>
+                  <v-icon>mdi-link-off</v-icon>
                 </v-btn>
               </template>
-              <template #default>
-                {{ $t('unlink') }}
-              </template>
+              <template #default>{{ $t('unlink') }}</template>
             </v-tooltip>
           </div>
         </div>
@@ -215,7 +199,7 @@ export default Vue.extend({
     },
     loadChildren: {
       type: Function,
-      default: () => (_item: (IVeoEntity) & { children: IVeoEntity[] }) => {
+      default: () => (_item: IVeoEntity & { children: IVeoEntity[] }) => {
         return []
       }
     },
@@ -256,20 +240,20 @@ export default Vue.extend({
       deep: true,
       immediate: true,
       handler(newValue: IVeoEntityModifierEvent) {
-        if(!newValue) {
+        if (!newValue) {
           return
         }
 
-        switch(newValue.event) {
+        switch (newValue.event) {
           case VeoEntityModifierEventType.ADD:
             this.reloadChildren(newValue.affectedEntities[0].uuid)
             break
           case VeoEntityModifierEventType.CLONE:
-            if(newValue.affectedEntities[1]) {
+            if (newValue.affectedEntities[1]) {
               this.reloadChildren(newValue.affectedEntities[1].uuid)
             }
-            
-            if(newValue.addToRoot) {
+
+            if (newValue.addToRoot) {
               this.addEntityToRoot(newValue.affectedEntities[0])
             }
             break
@@ -312,28 +296,28 @@ export default Vue.extend({
       let parent = this.displayedItems.find(entry => entry.id === nextId)
       let temp = parentEntries.shift()
 
-      while(temp) {
-        if(temp) {
+      while (temp) {
+        if (temp) {
           nextId += '.' + temp
         }
-        parent  = parent?.children?.find(entry => entry.id === nextId)
+        parent = parent?.children?.find(entry => entry.id === nextId)
         temp = parentEntries.shift()
       }
       return parent
     },
     removeEntriesWithUUID(uuid: string, arrayToSearch?: ITreeEntry[]) {
-      if(!arrayToSearch) {
+      if (!arrayToSearch) {
         arrayToSearch = this.displayedItems
       }
 
-      for(let i = 0; i < arrayToSearch.length; i++) {
-        if(arrayToSearch[i].entry.id === uuid) {
-          arrayToSearch.splice(i as any, 1);
+      for (let i = 0; i < arrayToSearch.length; i++) {
+        if (arrayToSearch[i].entry.id === uuid) {
+          arrayToSearch.splice(i as any, 1)
           i-- // We have to decrease the index by one, as the next element has been inserted here.
         } else if (arrayToSearch[i].children) {
           this.removeEntriesWithUUID(uuid, arrayToSearch[i].children)
 
-          if(arrayToSearch[i].children?.length === 0) {
+          if (arrayToSearch[i].children?.length === 0) {
             // Disabled, as this causes an issue if at the same time children are loaded. See #162
             // delete arrayToSearch[i].children
           }
@@ -343,15 +327,15 @@ export default Vue.extend({
     async reloadChildren(uuid: string, arrayToSearch?: ITreeEntry[]) {
       let firstCall = false
 
-      if(!arrayToSearch) {
+      if (!arrayToSearch) {
         firstCall = true
         arrayToSearch = this.displayedItems
       }
-      for(let index in arrayToSearch) {
-        if(arrayToSearch[index].entry.id === uuid) {
+      for (let index in arrayToSearch) {
+        if (arrayToSearch[index].entry.id === uuid) {
           await this.loadChildren(arrayToSearch[index])
 
-          if(arrayToSearch[index].children?.length === 0) {
+          if (arrayToSearch[index].children?.length === 0) {
             delete arrayToSearch[index].children
           }
           this.updateEntityMembers(arrayToSearch[index])
@@ -360,7 +344,8 @@ export default Vue.extend({
         }
       }
 
-      if(firstCall) { // We have to create a copy of the current items, else the treeview won't pick up changes in the children and update it's ui.
+      if (firstCall) {
+        // We have to create a copy of the current items, else the treeview won't pick up changes in the children and update it's ui.
         const oldItems = cloneDeep(this.displayedItems)
         this.displayedItems = []
         this.displayedItems = oldItems
@@ -376,23 +361,25 @@ export default Vue.extend({
       }
     },
     updateEntityMembers(updatedItem: ITreeEntry) {
-      if(updatedItem.type === 'scope') {
+      if (updatedItem.type === 'scope') {
         // @ts-ignore
-        updatedItem.entry.members = updatedItem.children?.map(child => {
-          return {
-            targetUri: `/${getSchemaEndpoint(child.entry.type)}/${child.entry.id}`
-          }
-        }) || []
+        updatedItem.entry.members =
+          updatedItem.children?.map(child => {
+            return {
+              targetUri: `/${getSchemaEndpoint(child.entry.type)}/${child.entry.id}`
+            }
+          }) || []
       } else {
         // @ts-ignore
-        updatedItem.entry.parts = updatedItem.children?.map(child => {
-          return {
-            targetUri: `/${getSchemaEndpoint(child.entry.type)}/${child.entry.id}`
-          }
-        }) || []
+        updatedItem.entry.parts =
+          updatedItem.children?.map(child => {
+            return {
+              targetUri: `/${getSchemaEndpoint(child.entry.type)}/${child.entry.id}`
+            }
+          }) || []
       }
     },
-    async addEntityToRoot({uuid, type}: IVeoAffectedEntity) {
+    async addEntityToRoot({ uuid, type }: IVeoAffectedEntity) {
       const element = await this.$api.entity.fetch(type as string, uuid)
 
       this.displayedItems.push(this.mapEntityToTreeEntry(element, this.displayedItems.length + 1))
