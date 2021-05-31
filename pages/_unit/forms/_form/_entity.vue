@@ -136,6 +136,7 @@ import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils'
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoEntity } from '~/types/VeoTypes'
+import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin'
 
 export interface IValidationErrorMessage {
   pointer: string
@@ -143,7 +144,7 @@ export interface IValidationErrorMessage {
 }
 
 interface IData {
-  objectType: string | undefined
+  objectType: string
   form: IForm
   isValid: boolean
   isRevision: boolean
@@ -156,7 +157,7 @@ interface IData {
     isModified: boolean
     dialog: boolean
     revisionDialog: boolean
-    target?: Route
+    target?: any
   }
   deleteEntityDialog: {
     value: boolean
@@ -166,9 +167,10 @@ interface IData {
 
 export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
+  mixins: [ VeoReactiveFormActionMixin ],
   data(): IData {
     return {
-      objectType: undefined,
+      objectType: '',
       form: {
         objectSchema: {},
         objectData: {},
@@ -216,7 +218,7 @@ export default Vue.extend({
       }
 
       // Add subtype to object data so it gets saved
-      if (this.form.formSchema?.subType) {
+      if (this.form.formSchema?.subType && this.$user.currentDomain) {
         // Sub type is not set yet, if the object is created
         if (!this.form.objectData.subType) {
           this.form.objectData.subType = { [this.$user.currentDomain]: this.form.formSchema?.subType }
@@ -245,25 +247,25 @@ export default Vue.extend({
   computed: {
     title(): string {
       return this.$fetchState.pending
-        ? this.$t('breadcrumbs.forms')
+        ? this.$t('breadcrumbs.forms').toString()
         : `${this.form.objectData.displayName} - ${this.$t('breadcrumbs.forms')}`
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
     },
-    unitRoute() {
+    unitRoute(): string {
       return this.$route.params.unit
     },
     formId(): string {
       return separateUUIDParam(this.$route.params.form).id
     },
-    formRoute() {
+    formRoute(): string {
       return this.$route.params.form
     },
     objectId(): string {
       return separateUUIDParam(this.$route.params.entity).id
     },
-    objectRoute() {
+    objectRoute(): string {
       return this.$route.params.entity
     },
     dynamicAPI(): any {
@@ -286,7 +288,7 @@ export default Vue.extend({
           return this.$api.entity.fetch(objectType, res.resourceId)
         },
         update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.entity.update(objectType, updatedObjectData)
+          return this.$api.entity.update(objectType, this.objectId, updatedObjectData)
         },
         delete: (objectType: string, id: string) => {
           this.$api.entity.delete(objectType, id)
@@ -319,7 +321,7 @@ export default Vue.extend({
     },
     onSave(): Promise<void> {
       return this.$api.entity
-        .update(this.objectType, this.objectId, this.form.objectData)
+        .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
         .then(() => {
           this.formModified.isModified = false
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') })
@@ -351,11 +353,11 @@ export default Vue.extend({
     },
     showError(status: number, message: string) {
       if (status === 412) {
-        this.alert.text = this.$t('global.appstate.alert.object_modified')
-        this.alert.saveButtonText = this.$t('global.button.no')
+        this.alert.text = this.$t('global.appstate.alert.object_modified').toString()
+        this.alert.saveButtonText = this.$t('global.button.no').toString()
       } else {
         this.alert.text = message
-        this.alert.saveButtonText = this.$t('global.button.ok')
+        this.alert.saveButtonText = this.$t('global.button.ok').toString()
       }
       this.alert.error = status
       this.alert.value = true
@@ -426,7 +428,7 @@ export default Vue.extend({
       delete revision.displayName
       const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision)
       if (!isValid) {
-        this.showError(500, this.$t('revision_incompatible'))
+        this.showError(500, this.$t('revision_incompatible').toString())
       }
       return isValid
     }

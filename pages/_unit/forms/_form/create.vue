@@ -1,12 +1,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router/types/index'
+import { upperFirst } from 'lodash'
 
 import VeoEditFormPage from '~/pages/_unit/forms/_form/_entity.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
 import { IVeoEventPayload } from '~/types/VeoGlobalEvents'
-import { upperFirst } from 'lodash'
 
 interface IData {
   objectType: string | undefined
