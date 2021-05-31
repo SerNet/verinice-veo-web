@@ -1,24 +1,34 @@
 <template>
-<VeoPage :title="title" fullsize>
-  <template #header>
-    <v-row class="justify-space-between">
-      <v-col cols="auto">
-        <p v-if="report" class="mt-4">
-          {{ report.description }}
-        </p>
-      </v-col>
-      <v-col cols="auto">
-        <v-btn outlined color="primary" class="mt-4" :disabled="loading" @click="generateReport">{{ $t('generateReport') }}</v-btn>
-      </v-col>
-    </v-row>
-  </template>
-  <template #default>
-    <VeoLoadingWrapper v-if="generatingReport" />
-    <p v-if="report && report.multiselect">{{ $t('hintMultiple') }}</p>
-    <p v-else-if="report">{{ $t('hintSingle') }}</p>
-    <VeoEntitySelectionList :selected-items="selectedEntities" :items="items" :loading="$fetchState.pending" single-select @new-subentities="onNewSubEntities" />
-  </template>
-</VeoPage>
+  <VeoPage :title="title" fullsize>
+    <template #header>
+      <v-row class="justify-space-between">
+        <v-col cols="auto">
+          <p v-if="report" class="mt-4">{{ report.description }}</p>
+        </v-col>
+        <v-col cols="auto">
+          <v-btn
+            outlined
+            color="primary"
+            class="mt-4"
+            :disabled="loading || !selectedEntities.length"
+            @click="generateReport"
+          >{{ $t('generateReport') }}</v-btn>
+        </v-col>
+      </v-row>
+    </template>
+    <template #default>
+      <VeoLoadingWrapper v-if="generatingReport" />
+      <p v-if="report && report.multiselect">{{ $t('hintMultiple') }}</p>
+      <p v-else-if="report">{{ $t('hintSingle') }}</p>
+      <VeoEntitySelectionList
+        :selected-items="selectedEntities"
+        :items="items"
+        :loading="$fetchState.pending"
+        single-select
+        @new-subentities="onNewSubEntities"
+      />
+    </template>
+  </VeoPage>
 </template>
 
 <script lang="ts">
@@ -29,11 +39,11 @@ import { IVeoCreateReportData, IVeoEntity, IVeoReportsMeta } from '~/types/VeoTy
 
 interface IData {
   items: IVeoEntity[]
-  selectedEntities: { id: string, type: string }[]
+  selectedEntities: { id: string; type: string }[]
   report?: {
     name: string
     description: string
-    outputFormat: string,
+    outputFormat: string
     outputType: string
     multiselect: boolean
   }
@@ -57,12 +67,14 @@ export default Vue.extend({
   async fetch() {
     const reports: IVeoReportsMeta = await this.$api.report.fetchAll()
     const _report = reports[this.reportId]
-    const format = _report.outputTypes.map(type => {
-      const formatParts = type.split('/')
-      return formatParts[formatParts.length - 1]
-    }).join(', ')
+    const format = _report.outputTypes
+      .map(type => {
+        const formatParts = type.split('/')
+        return formatParts[formatParts.length - 1]
+      })
+      .join(', ')
 
-    if(_report) {
+    if (_report) {
       this.report = {
         name: _report.name[this.$i18n.locale],
         description: _report.description[this.$i18n.locale],
@@ -71,14 +83,14 @@ export default Vue.extend({
         multiselect: _report.multipleTargetsSupported
       }
 
-      for await(let type of _report.targetTypes) {
+      for await (let type of _report.targetTypes) {
         this.items = [...this.items, ...(await this.$api.entity.fetchAll(type))]
       }
     }
   },
   computed: {
     title(): string {
-      return this.$t('create', { type: this.report?.name || '' , format: upperCase(this.report?.outputFormat || '') })
+      return this.$t('create', { type: this.report?.name || '', format: upperCase(this.report?.outputFormat || '') })
     },
     reportId(): string {
       return this.$route.params.type
@@ -90,17 +102,17 @@ export default Vue.extend({
   methods: {
     async generateReport() {
       this.generatingReport = true
-      if(this.report) {
+      if (this.report) {
         const body: IVeoCreateReportData = {
           outputType: this.report.outputType,
           targets: this.selectedEntities
         }
-        const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: "application/pdf" })
+        const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: 'application/pdf' })
         window.open(URL.createObjectURL(result))
       }
       this.generatingReport = false
     },
-    onNewSubEntities(items: { type: string, id: string }[]) {
+    onNewSubEntities(items: { type: string; id: string }[]) {
       this.selectedEntities = items
     }
   }
