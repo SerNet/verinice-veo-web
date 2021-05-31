@@ -97,6 +97,7 @@
               :options="attribute.options"
               :scope="attribute.scope"
               :formSchema="attribute"
+              :formSchemaPointer="`${formSchemaPointer}/elements/${index}`"
               :generalTranslation="generalTranslation"
               :customTranslation="localCustomTranslation"
               @update="onLinksAttributeUpdate(index, $event)"
@@ -179,6 +180,10 @@ export default defineComponent<IProps>({
     formSchema: {
       type: Object,
       required: true
+    },
+    formSchemaPointer: {
+      type: String,
+      default: ''
     },
     generalTranslation: {
       type: Object,
@@ -345,23 +350,34 @@ export default defineComponent<IProps>({
       )
 
       linksField.onInputLinksAttributes = function(event: any) {
-        // Get attributes which were deleted in the autocomplete element
+        // Get attributes which were deleted in the autocomplete element (array, but always 1 element)
         const deletedLinksAttributes: IVeoFormSchemaItem[] = differenceBy<any>(
           linksField.formSchemaElements.value,
           event,
           'scope'
         )
-        linksField.formSchemaElements.value = []
-        event.forEach((obj: any) => {
-          linksField.formSchemaElements.value.push({
+        // Get attributes which were added in the autocomplete element (array, but always 1 element)
+        const addedLinkAttributes: IVeoFormSchemaItem[] = differenceBy<any>(
+          event,
+          linksField.formSchemaElements.value,
+          'scope'
+        )
+        // Scopes of Link Attributes which have not changed after update in autocomplete
+        const currentLinkAttributesScopes: string[] = event.map((el: any) => el.scope)
+        // Generate new FormSchema of Links Attributes by selecting the formSchema values of already existing attributes
+        // and creating new formSchema values in autocomplete added new attributes
+        linksField.formSchemaElements.value = [
+          ...linksField.formSchemaElements.value.filter((el: any) => currentLinkAttributesScopes.includes(el.scope)),
+          ...addedLinkAttributes.map((obj: any) => ({
             type: 'Control',
             scope: obj.scope,
             options: {
               label: `#lang/${obj.propertyName}`
             }
-          })
-        })
+          }))
+        ]
 
+        // Remove translations for link Attributes which were removed
         deletedLinksAttributes.forEach(deletedElementFormSchema => {
           deleteElementCustomTranslation(
             deletedElementFormSchema,
