@@ -12,14 +12,19 @@
       <span class="text-center">{{ $t('no_objects') }}</span>
     </template>
     <template #item.select="{ item }">
-      <v-radio-group v-if="singleSelect" v-model="radioSelectedItem" class="ml-1">
+      <v-radio-group v-if="singleSelect" v-model="radioSelectedItem">
         <v-radio color="primary" :value="item.entity.id" @click="selectItem(item, true)" />
       </v-radio-group>
       <v-checkbox v-else v-model="item.selected" @click="selectItem(item)" />
     </template>
     <template #header.select>
       <v-fade-transition>
-        <v-btn v-show="selectedItems.length" icon @click="$emit('new-subentities', [])">
+        <v-btn
+          v-show="selectedItems.length"
+          icon
+          @click="$emit('new-subentities', [])"
+          style="margin-left: -6px;"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-fade-transition>
