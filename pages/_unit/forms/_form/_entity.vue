@@ -41,14 +41,7 @@
           </v-col>
           <v-spacer />
           <v-col cols="auto" class="text-right">
-            <v-btn
-              v-if="$route.params.entity"
-              text
-              outlined
-              :loading="deleteEntityDialog.value === true"
-              :disabled="isRevision"
-              @click="showDeleteEntityDialog"
-            >{{ $t('global.button.delete') }}</v-btn>
+            <v-btn text outlined @click="$router.go(-1)">{{ $t('global.button.discard') }}</v-btn>
             <v-btn
               color="primary"
               outlined
@@ -56,7 +49,7 @@
               :loading="saveBtnLoading"
               :disabled="isRevision"
               @click="onClick"
-            >{{ $t('global.button.save') }}</v-btn>
+            >{{ saveBtnText }}</v-btn>
           </v-col>
         </v-row>
       </template>
@@ -74,12 +67,6 @@
           :error-messages.sync="errorMessages"
           :disabled="isRevision"
           @input="formModified.isModified = true"
-        />
-        <VeoDeleteEntityDialog
-          v-model="deleteEntityDialog.value"
-          v-bind="deleteEntityDialog"
-          @success="onDeleteEntitySuccess"
-          @error="onDeleteEntityError"
         />
         <VeoEntityModifiedDialog
           v-model="formModified.dialog"
@@ -158,10 +145,6 @@ interface IData {
     revisionDialog: boolean
     target?: Route
   }
-  deleteEntityDialog: {
-    value: boolean
-    item?: IVeoEntity
-  }
 }
 
 export default Vue.extend({
@@ -194,10 +177,6 @@ export default Vue.extend({
         dialog: false,
         revisionDialog: false,
         target: undefined
-      },
-      deleteEntityDialog: {
-        value: false,
-        item: undefined
       }
     }
   },
@@ -303,6 +282,9 @@ export default Vue.extend({
       } else {
         return false
       }
+    },
+    saveBtnText(): string {
+      return this.$t('global.button.apply').toString()
     }
   },
   methods: {
@@ -330,24 +312,6 @@ export default Vue.extend({
         .catch((error: { status: number; name: string }) => {
           this.showError(error.status, error.name)
         })
-    },
-    showDeleteEntityDialog() {
-      this.deleteEntityDialog.item = this.form.objectData as any
-      this.deleteEntityDialog.value = true
-    },
-    onDeleteEntitySuccess() {
-      this.formModified.isModified = false
-      this.deleteEntityDialog.value = false
-      this.$router.go(-1)
-    },
-    onDeleteEntityError(error: any) {
-      this.$root.$emit(VeoEvents.ALERT_ERROR, {
-        title:
-          this.deleteEntityDialog.item?.type === 'scope'
-            ? this.$t('scope_delete_error')
-            : this.$t('object_delete_error'),
-        text: JSON.stringify(error)
-      })
     },
     showError(status: number, message: string) {
       if (status === 412) {
