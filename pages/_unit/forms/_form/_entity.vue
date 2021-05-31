@@ -37,7 +37,8 @@
         />
         <v-row class="justify-space-between">
           <v-col cols="auto">
-            <h1>{{ form.objectData.displayName }}</h1>
+            <h1 v-if="!isRevision">{{ form.objectData.displayName }}</h1>
+            <h1 v-else>{{ form.objectData.displayName }} ({{ $t('revision') }})</h1>
           </v-col>
           <v-spacer />
           <v-col cols="auto" class="text-right">
@@ -50,13 +51,22 @@
               @click="showDeleteEntityDialog"
             >{{ $t('global.button.delete') }}</v-btn>
             <v-btn
+              v-if="!isRevision"
               color="primary"
               outlined
               text
               :loading="saveBtnLoading"
-              :disabled="isRevision"
               @click="onClick"
             >{{ $t('global.button.save') }}</v-btn>
+            <v-btn
+              v-else
+              color="primary"
+              outlined
+              text
+              :loading="saveBtnLoading"
+              :disabled="!allowRestoration"
+              @click="onClick"
+            >{{ $t('restore') }}</v-btn>
           </v-col>
         </v-row>
       </template>
@@ -73,7 +83,7 @@
           :api="dynamicAPI"
           :is-valid.sync="isValid"
           :error-messages.sync="errorMessages"
-          :disabled="isRevision"
+          :disabled="isRevision && !allowRestoration"
           @input="formModified.isModified = true"
         />
         <div v-else class="fill-height text-center d-flex flex-column">
@@ -123,6 +133,7 @@
           <v-tab-item>
             <VeoObjectHistory
               :object="form.objectData"
+              :schema="form.objectSchema"
               :loading="$fetchState.pending"
               @show-revision="showRevision"
             />
@@ -153,6 +164,7 @@ interface IData {
   form: IForm
   isValid: boolean
   isRevision: boolean
+  allowRestoration: boolean
   revisionCache: IBaseObject
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
@@ -183,6 +195,7 @@ export default Vue.extend({
       },
       isValid: true,
       isRevision: false,
+      allowRestoration: false,
       revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
@@ -250,9 +263,15 @@ export default Vue.extend({
   },
   computed: {
     title(): string {
-      return this.$fetchState.pending
+      const entity = this.$fetchState.pending
         ? this.$t('breadcrumbs.forms')
-        : `${this.form.objectData.displayName} - ${this.$t('breadcrumbs.forms')}`
+        : this.form.objectData.displayName
+      return [
+        entity,
+        ...((this.isRevision) ? [`(${this.$t('revision')})`] : []),
+        '-',
+        this.$t('breadcrumbs.forms')
+      ].join(' ')
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
@@ -400,7 +419,7 @@ export default Vue.extend({
         })
       }
     },
-    async showRevision(_event: any, content: IBaseObject, isRevision: boolean) {
+    async showRevision(_event: any, content: IBaseObject, isRevision: boolean, allowRestoration: boolean = false) {
       // show modified dialog before switching versions if needed
       if (this.formModified.isModified) {
         this.revisionCache = content // cache revision for use after modified-dialog is closed with "yes"
@@ -411,7 +430,9 @@ export default Vue.extend({
         }
         // fill form with revision or newest data
         this.isRevision = isRevision
+        this.allowRestoration = allowRestoration
         if (isRevision) {
+          content.$etag = this.form.objectData.$etag // We have to give the etag to the new object in order to make it saveable
           this.form.objectData = content // show revision content in form
           this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`
         } else {
@@ -469,6 +490,8 @@ export default Vue.extend({
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
     "scope_delete_error": "Failed to delete scope",
+    "restore": "Restore",
+    "revision": "old version",
     "revision_incompatible": "The revision is incompatible to the schema and cannot be shown."
   },
   "de": {
@@ -479,6 +502,8 @@ export default Vue.extend({
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
     "scope_delete_error": "Scope konnte nicht gelöscht werden",
+    "restore": "Wiederherstellen",
+    "revision": "alte Version",
     "revision_incompatible": "Die Version ist inkompatibel zum Schema und kann daher nicht angezeigt werden."
   }
 }

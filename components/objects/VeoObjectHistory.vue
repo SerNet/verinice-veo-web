@@ -30,7 +30,7 @@
               <v-col class="text-right" cols="12" sm="2">
                 <v-tooltip v-if="canShowData(version.content)" bottom>
                   <template #activator="{ on }">
-                    <v-btn icon v-on="on">
+                    <v-btn @click.stop="$emit('show-revision', {}, version.content, index === 0 ? false : true, true)" icon v-on="on">
                       <v-icon>mdi-undo</v-icon>
                     </v-btn>
                   </template>
@@ -101,7 +101,6 @@ export default Vue.extend({
   },
   methods: {
     canShowData(data: IBaseObject): boolean {
-      console.log(data)
       return this.validator.fitsObjectSchema(this.schema, data)
     }
   }
