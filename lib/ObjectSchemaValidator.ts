@@ -24,6 +24,13 @@ export interface VeoSchemaValidatorValidationResult {
   warnings: VeoSchemaValidatorMessage[]
 }
 
+/*
+ * If a property is missing on an object schema that is set in an object. It can't be restored or viewed. However some
+ * Properties are added in later on on the backend side to provide some sort of meta data.
+ * Those won't exist in the scheme so they should get ignored if checking an object.
+ */
+const NON_REQUIRED_PROPERTIES = ['members', 'parts', 'designator', 'type']
+
 export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = []
   private warnings: VeoSchemaValidatorMessage[] = []
@@ -33,6 +40,9 @@ export default class ObjectSchemaValidator {
     const helper = new ObjectSchemaHelper(schema)
 
     for (let attribute in data) {
+      if (NON_REQUIRED_PROPERTIES.includes(attribute)) {
+        continue;
+      }
       if (attribute === 'customAspects') {
         for (let customAspect in data.customAspects) {
           const customAspectTitle = customAspect.split('_').pop() || ''

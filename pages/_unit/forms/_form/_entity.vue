@@ -134,6 +134,7 @@
 </template>
 
 <script lang="ts">
+import { cloneDeep } from 'lodash'
 import Vue from 'vue'
 import { Route } from 'vue-router/types/index'
 import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
@@ -272,7 +273,9 @@ export default Vue.extend({
       return this.$route.params.entity
     },
     canShowData(): boolean {
-      return this.validateRevisionSchema(this.form.objectData, false)
+      const dummy = cloneDeep(this.form.objectData)
+      delete dummy.displayName
+      return this.validateRevisionSchema(dummy, false)
     },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
