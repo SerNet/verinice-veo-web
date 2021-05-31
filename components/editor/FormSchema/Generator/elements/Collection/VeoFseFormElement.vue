@@ -29,6 +29,7 @@
       v-model="editDialog"
       v-bind="$props"
       :formSchema="value"
+      :formSchemaPointer="formSchemaPointer"
       :type="currentType"
       @edit="doEdit"
       @update-custom-translation="onUpdateCustomTranslation"
