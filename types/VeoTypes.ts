@@ -7,6 +7,7 @@
  */
 
 import { JSONSchema7TypeName } from "json-schema";
+import { IBaseObject } from "~/lib/utils";
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string
 
@@ -91,7 +92,7 @@ export interface IVeoFromSchemaItemRule {
   effect: 'SHOW' | 'HIDE'
   condition: {
     scope: string
-    schema: { enum: (string|boolean|number)[] }
+    schema: { enum: (string | boolean | number)[] }
   }
 }
 
@@ -192,6 +193,11 @@ export interface IVeoCustomAspect extends IVeoCustomObject {
 // Later on, there are plans to use numbers and booleans as well.
 export interface IVeoCustomAttributes {
   [key: string]: string
+}
+
+export interface IVeoReactiveFormAction {
+  attributeName: string
+  handler: (newValue: string, newObject: IBaseObject, oldObject: IBaseObject) => void
 }
 
 /**

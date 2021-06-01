@@ -1,4 +1,4 @@
-import { merge, snakeCase } from "lodash";
+import { cloneDeep, merge, snakeCase } from "lodash";
 
 import {
   IVeoObjectSchema,
@@ -19,18 +19,19 @@ export interface IVeoOSHCustomAspect {
 }
 
 export interface IVeoOSHCustomLink extends IVeoOSHCustomAspect {
-  description: string
+  description?: string
   targetType: string
 }
 export interface IVeoOSHCustomProperty {
   title: string
   type: string
-  description: string
+  description?: string
   prefix?: string
   multiple?: boolean
   format?: string
   pattern?: string
   enum?: any[]
+  originalId?: string
 }
 
 export interface IVeoOSHOptions {
@@ -220,6 +221,10 @@ export default class ObjectSchemaHelper {
     }
   }
 
+  public getId(): string {
+    return this._id
+  }
+
   public setTitle(value: string) {
     this._title = value
     this._id = snakeCase(value)
@@ -253,8 +258,9 @@ export default class ObjectSchemaHelper {
     if (aspectIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomAspect: Aspect "${aspectName}" not found!`)
     } else {
+      aspect.title = aspectName // Make sure this method won't rename the aspect, as there are special operations to be executed if that happens
       aspect.prefix = `${this._id}_`
-      this._customAspects[aspectIndex] = aspect
+      this._customAspects[aspectIndex] = cloneDeep(aspect)
       this.updateAspectAttributePrefixes(aspectIndex)
     }
   }
@@ -299,13 +305,12 @@ export default class ObjectSchemaHelper {
     return this._customAspects.find(item => item.title === name)
   }
 
-  public addCustomLink(name: string, type: string, description: string) {
+  public addCustomLink(name: string, type: string) {
     const link: IVeoOSHCustomLink = {
       title: name,
       prefix: `${this._id}_`,
       attributes: [],
-      targetType: type,
-      description
+      targetType: type
     }
     this._customLinks.push(link)
   }
@@ -316,8 +321,9 @@ export default class ObjectSchemaHelper {
     if (linkIndex === -1) {
       throw new Error(`ObjectSchemaHelper2::updateCustomLink: Link "${linkName}" not found!`)
     } else {
+      link.title = linkName // Make sure this method won't rename the aspect, as there are special operations to be executed if that happens
       link.prefix = `${this._id}_`
-      this._customLinks[linkIndex] = link
+      this._customLinks[linkIndex] = cloneDeep(link)
       this.updateCustomLinkAttributes(linkName, link.attributes)
     }
   }
@@ -377,6 +383,13 @@ export default class ObjectSchemaHelper {
 
   public updateTranslations(language: string, translations: IVeoTranslationCollection) {
     this._translations[language] = translations
+  }
+
+  public changeTranslationKey(oldKey: string, newKey: string) {
+    for (let language of Object.keys(this._translations)) {
+      this._translations[language][newKey] = this._translations[language][oldKey]
+      delete this._translations[language][oldKey]
+    }
   }
 
   public removeTranslation(key: string, language?: string) {

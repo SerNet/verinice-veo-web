@@ -1,4 +1,3 @@
-exports[`Objectschema Editor > compares downloaded schema with the actual one #0`] =
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
@@ -236,6 +235,7 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                   ]
                 },
                 "test_schema_Aspekt3_Attribut2": {
+                  "type": "array",
                   "items": {
                     "enum": [
                       "a",
@@ -244,8 +244,7 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                       "d",
                       "e"
                     ]
-                  },
-                  "type": "array"
+                  }
                 }
               }
             }
@@ -529,130 +528,4 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
   ],
   "title": "testSchema",
   "description": "NBRX Integration Test Schema v1.0 2021-05-21"
-};
-
-exports[`Objectschema Editor > changes customAspect name, attribute names, description and types #0`] =
-{
-  "test_schema_Aspekt1Test_Attribut1Test": {
-    "type": "string"
-  },
-  "test_schema_Aspekt1Test_Attribut2Test": {
-    "type": "boolean"
-  },
-  "test_schema_Aspekt1Test_Attribut3": {
-    "type": "string",
-    "format": "date-time"
-  }
 }
-
-exports[`Objectschema Editor > removes and adds aspect attributes #0`] =
-{
-  "test_schema_Aspekt1_a": {
-    "type": "string"
-  },
-  "test_schema_Aspekt1_b": {
-    "type": "boolean"
-  },
-  "test_schema_Aspekt1_c": {
-    "type": "number"
-  },
-  "test_schema_Aspekt1_d": {
-    "type": "integer"
-  },
-  "test_schema_Aspekt1_e": {
-    "enum": [
-      "a",
-      "b",
-      "c",
-      "d"
-    ]
-  },
-  "test_schema_Aspekt1_f": {
-    "type": "array",
-    "items": {
-      "enum": [
-        "a",
-        "b",
-        "c",
-        "d"
-      ]
-    }
-  }
-};
-
-exports[`Objectschema Editor > adds completely new aspect and removes it from dialog with delete button #0`] =
-{
-  "test_schema_TestAspectTwo_a": {
-    "type": "string"
-  }
-};
-
-exports[`Objectschema Editor > changes link name, attribute names, description and types #0`] =
-{
-  "properties": {
-    "targetUri": {
-      "title": "The id of the target object.",
-      "type": "string"
-    },
-    "type": {
-      "enum": [
-        "person"
-      ]
-    }
-  },
-  "type": "object"
-};
-
-exports[`Objectschema Editor > changes link name, attribute names, description and types #1`] =
-{
-  "test_schema_Link1Test_Attribut1Test": {
-    "type": "string",
-    "format": "uri",
-    "pattern": "^(https?|ftp)://"
-  },
-  "test_schema_Link1Test_Attribut2Test": {
-    "type": "boolean"
-  }
-};
-
-exports[`Objectschema Editor > removes and adds link attributes #0`] =
-{
-  "test_schema_Link1_a": {
-    "type": "string"
-  },
-  "test_schema_Link1_b": {
-    "type": "boolean"
-  },
-  "test_schema_Link1_c": {
-    "type": "number"
-  },
-  "test_schema_Link1_d": {
-    "type": "integer"
-  },
-  "test_schema_Link1_e": {
-    "enum": [
-      "a",
-      "b",
-      "c",
-      "d"
-    ]
-  },
-  "test_schema_Link1_f": {
-    "type": "array",
-    "items": {
-      "enum": [
-        "a",
-        "b",
-        "c",
-        "d"
-      ]
-    }
-  }
-};
-
-exports[`Objectschema Editor > adds completely new link and removes it from dialog with delete button #0`] =
-{
-  "test_schema_TestLinkTwo_a": {
-    "type": "string"
-  }
-};

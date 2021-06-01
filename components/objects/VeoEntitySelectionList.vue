@@ -12,10 +12,22 @@
       <span class="text-center">{{ $t('no_objects') }}</span>
     </template>
     <template #item.select="{ item }">
-      <v-radio-group v-if="singleSelect" v-model="radioSelectedItem">
-        <v-radio color="primary" :value="item.entity.id" @click="selectItem(item, true)" />
+      <v-radio-group v-if="singleSelect" :value="radioSelectedItem">
+        <v-radio color="primary" :value="item.entity.id" @click.stop="selectItem(item, true)" />
       </v-radio-group>
-      <v-checkbox v-else v-model="item.selected" @click="selectItem(item)" />
+      <v-checkbox v-else v-model="item.selected" @click.stop="selectItem(item)" />
+    </template>
+    <template #header.select>
+      <v-fade-transition>
+        <v-btn
+          v-show="selectedItems.length"
+          icon
+          @click="$emit('new-subentities', [])"
+          style="margin-left: -6px;"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-fade-transition>
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
@@ -152,7 +164,7 @@ export default Vue.extend({
   computed: {
     displayedItems(): { entity: IVeoEntity; selected: boolean }[] {
       return this.items
-        .map((item) => {
+        .map(item => {
           // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
           if (item.description && item.description.length > 40) {
             item.descriptionShort = item.description.substring(0, 40) + '...'
@@ -160,7 +172,7 @@ export default Vue.extend({
 
           return {
             entity: item,
-            selected: this.selectedItems.some((selectedItem) => {
+            selected: this.selectedItems.some(selectedItem => {
               return selectedItem.id === item.id
             })
           }
@@ -216,8 +228,8 @@ export default Vue.extend({
 
       if (singleItem) {
         this.$emit('new-subentities', [{ id: item.entity.id, type: item.entity.type }])
-      } else if (dummy.some((selectedItem) => selectedItem.id === item.entity.id)) {
-        dummy = dummy.filter((selectedItem) => selectedItem.id !== item.entity.id)
+      } else if (dummy.some(selectedItem => selectedItem.id === item.entity.id)) {
+        dummy = dummy.filter(selectedItem => selectedItem.id !== item.entity.id)
         this.$emit('new-subentities', dummy)
       } else {
         dummy.push({ id: item.entity.id, type: item.entity.type })

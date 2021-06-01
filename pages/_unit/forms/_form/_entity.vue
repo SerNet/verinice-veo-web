@@ -42,14 +42,7 @@
           </v-col>
           <v-spacer />
           <v-col cols="auto" class="text-right">
-            <v-btn
-              v-if="$route.params.entity"
-              text
-              outlined
-              :loading="deleteEntityDialog.value === true"
-              :disabled="isRevision"
-              @click="showDeleteEntityDialog"
-            >{{ $t('global.button.delete') }}</v-btn>
+            <v-btn text outlined @click="$router.go(-1)">{{ $t('global.button.discard') }}</v-btn>
             <v-btn
               v-if="!isRevision"
               color="primary"
@@ -57,7 +50,7 @@
               text
               :loading="saveBtnLoading"
               @click="onClick"
-            >{{ $t('global.button.save') }}</v-btn>
+            >{{ saveBtnText }}</v-btn>
             <v-btn
               v-else
               color="primary"
@@ -90,12 +83,6 @@
           <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
           <h3 class="text-left">{{ $t('incompatibleFormSchema', { objectType }) }}</h3>
         </div>
-        <VeoDeleteEntityDialog
-          v-model="deleteEntityDialog.value"
-          v-bind="deleteEntityDialog"
-          @success="onDeleteEntitySuccess"
-          @error="onDeleteEntityError"
-        />
         <VeoEntityModifiedDialog
           v-model="formModified.dialog"
           :item="form.objectData"
@@ -153,6 +140,7 @@ import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils'
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
 import { IVeoEntity } from '~/types/VeoTypes'
+import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin'
 
 export interface IValidationErrorMessage {
   pointer: string
@@ -160,7 +148,7 @@ export interface IValidationErrorMessage {
 }
 
 interface IData {
-  objectType: string | undefined
+  objectType: string
   form: IForm
   isValid: boolean
   isRevision: boolean
@@ -174,19 +162,16 @@ interface IData {
     isModified: boolean
     dialog: boolean
     revisionDialog: boolean
-    target?: Route
-  }
-  deleteEntityDialog: {
-    value: boolean
-    item?: IVeoEntity
+    target?: any
   }
 }
 
 export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
+  mixins: [ VeoReactiveFormActionMixin ],
   data(): IData {
     return {
-      objectType: undefined,
+      objectType: '',
       form: {
         objectSchema: {},
         objectData: {},
@@ -213,10 +198,6 @@ export default Vue.extend({
         dialog: false,
         revisionDialog: false,
         target: undefined
-      },
-      deleteEntityDialog: {
-        value: false,
-        item: undefined
       }
     }
   },
@@ -235,7 +216,7 @@ export default Vue.extend({
       }
 
       // Add subtype to object data so it gets saved
-      if (this.form.formSchema?.subType) {
+      if (this.form.formSchema?.subType && this.$user.currentDomain) {
         // Sub type is not set yet, if the object is created
         if (!this.form.objectData.subType) {
           this.form.objectData.subType = { [this.$user.currentDomain]: this.form.formSchema?.subType }
@@ -276,19 +257,19 @@ export default Vue.extend({
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
     },
-    unitRoute() {
+    unitRoute(): string {
       return this.$route.params.unit
     },
     formId(): string {
       return separateUUIDParam(this.$route.params.form).id
     },
-    formRoute() {
+    formRoute(): string {
       return this.$route.params.form
     },
     objectId(): string {
       return separateUUIDParam(this.$route.params.entity).id
     },
-    objectRoute() {
+    objectRoute(): string {
       return this.$route.params.entity
     },
     canShowData(): boolean {
@@ -316,7 +297,7 @@ export default Vue.extend({
           return this.$api.entity.fetch(objectType, res.resourceId)
         },
         update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.entity.update(objectType, updatedObjectData)
+          return this.$api.entity.update(objectType, this.objectId, updatedObjectData)
         },
         delete: (objectType: string, id: string) => {
           this.$api.entity.delete(objectType, id)
@@ -333,6 +314,9 @@ export default Vue.extend({
       } else {
         return false
       }
+    },
+    saveBtnText(): string {
+      return this.$t('global.button.apply').toString()
     }
   },
   methods: {
@@ -349,7 +333,7 @@ export default Vue.extend({
     },
     onSave(): Promise<void> {
       return this.$api.entity
-        .update(this.objectType, this.objectId, this.form.objectData)
+        .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
         .then(() => {
           this.formModified.isModified = false
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') })
@@ -361,31 +345,13 @@ export default Vue.extend({
           this.showError(error.status, error.name)
         })
     },
-    showDeleteEntityDialog() {
-      this.deleteEntityDialog.item = this.form.objectData as any
-      this.deleteEntityDialog.value = true
-    },
-    onDeleteEntitySuccess() {
-      this.formModified.isModified = false
-      this.deleteEntityDialog.value = false
-      this.$router.go(-1)
-    },
-    onDeleteEntityError(error: any) {
-      this.$root.$emit(VeoEvents.ALERT_ERROR, {
-        title:
-          this.deleteEntityDialog.item?.type === 'scope'
-            ? this.$t('scope_delete_error')
-            : this.$t('object_delete_error'),
-        text: JSON.stringify(error)
-      })
-    },
     showError(status: number, message: string) {
       if (status === 412) {
-        this.alert.text = this.$t('global.appstate.alert.object_modified')
-        this.alert.saveButtonText = this.$t('global.button.no')
+        this.alert.text = this.$t('global.appstate.alert.object_modified').toString()
+        this.alert.saveButtonText = this.$t('global.button.no').toString()
       } else {
         this.alert.text = message
-        this.alert.saveButtonText = this.$t('global.button.ok')
+        this.alert.saveButtonText = this.$t('global.button.ok').toString()
       }
       this.alert.error = status
       this.alert.value = true
@@ -432,6 +398,7 @@ export default Vue.extend({
         this.isRevision = isRevision
         this.allowRestoration = allowRestoration
         if (isRevision) {
+          // @ts-ignore
           content.$etag = this.form.objectData.$etag // We have to give the etag to the new object in order to make it saveable
           this.form.objectData = content // show revision content in form
           this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`
@@ -458,7 +425,7 @@ export default Vue.extend({
       delete revision.displayName
       const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision)
       if (!isValid && showError) {
-        this.showError(500, this.$t('revision_incompatible'))
+        this.showError(500, this.$t('revision_incompatible').toString())
       }
       return isValid
     }

@@ -129,7 +129,7 @@ export default class ObjectSchemaValidator {
   private validateLink(link: any, context: string): void {
     if (!link.items.properties) {
       this.errors.push({ code: 'E_LINK_INVALID', message: `The custom link "${context}" is missing its properties.` })
-    } else if (!link.items.properties.target.title || !link.items.properties.target.properties.type.enum) {
+    } else if (!link.items.properties.target.properties.type.enum) {
       this.errors.push({ code: 'E_LINK_TARGET_INVALID', message: `The custom links (${context}) target is missing or malformed.` })
     } else {
       const dummy = ObjectSchemaHelper.generateLinkSchema({

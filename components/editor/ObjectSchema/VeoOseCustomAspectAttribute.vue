@@ -157,14 +157,42 @@ const INPUT_FORMATS: IInputFormats = {
 
 export default defineComponent<IProps>({
   props: {
-    title: { type: String, default: '' },
-    type: { type: String, default: 'enum' },
-    description: { type: String, default: '' },
-    aspectName: { type: String, required: true },
-    enum: { type: Array, default: () => [] },
-    multiple: { type: Boolean, default: false },
-    format: { type: String, default: undefined },
-    pattern: { type: String, default: undefined }
+    title: {
+      type: String,
+      default: ''
+    },
+    type: {
+      type: String,
+      default: 'enum'
+    },
+    description: {
+      type: String,
+      default: ''
+    },
+    aspectName: {
+      type: String,
+      required: true
+    },
+    enum: {
+      type: Array,
+      default: () => []
+    },
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    format: {
+      type: String,
+      default: undefined
+    },
+    pattern: {
+      type: String,
+      default: undefined
+    },
+    originalId: {
+      type: String,
+      default: undefined
+    }
   },
   setup(props, context) {
     const prefix = computed(() => props.aspectName + '_')
@@ -214,7 +242,7 @@ export default defineComponent<IProps>({
     }
 
     function doObjectUpdate(newObject: any) {
-      const object = { ...form.value.data } as any
+      const object = { ...form.value.data, originalId: props.originalId } as any
 
       // Delete properties only used for ui
       delete object.aspectName

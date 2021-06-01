@@ -16,7 +16,7 @@
             text
             :loading="saveBtnLoading"
             @click="save()"
-          >{{ $t('global.button.save') }}</v-btn>
+          >{{ $t('global.button.create') }}</v-btn>
         </v-col>
       </v-row>
     </template>
@@ -66,6 +66,7 @@ import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { getSchemaEndpoint } from '~/plugins/api/schema'
 import { capitalize } from 'lodash'
 import { IVeoAPIMessage } from '~/types/VeoTypes'
+import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin'
 
 interface IData {
   form: IForm
@@ -75,12 +76,13 @@ interface IData {
   entityModified: {
     isModified: boolean
     dialog: boolean
-    target?: Route
+    target?: any
   }
 }
 
 export default Vue.extend({
   name: 'VeoScopesCreatePage',
+  mixins: [ VeoReactiveFormActionMixin ],
   data(): IData {
     return {
       form: {
@@ -118,7 +120,7 @@ export default Vue.extend({
   computed: {
     title(): string {
       return this.$fetchState.pending
-        ? this.$t('breadcrumbs.scopes')
+        ? this.$t('breadcrumbs.scopes').toString()
         : `${this.$t('object_create', { type: this.formattedEntityType })} - ${this.$t('breadcrumbs.scopes')}`
     },
     parentId(): string {
@@ -131,7 +133,7 @@ export default Vue.extend({
       return separateUUIDParam(this.$route.params.unit).id
     },
     entityType(): string {
-      return this.$route.query.based_on
+      return this.$route.query.based_on as string
     },
     formattedEntityType(): string {
       return capitalize(this.entityType)
@@ -150,6 +152,7 @@ export default Vue.extend({
       await this.$api.entity
         .create(this.entityType, {
           ...this.form.objectData,
+          // @ts-ignore
           owner: {
             targetUri: `/units/${this.unitID}`
           }
@@ -161,10 +164,12 @@ export default Vue.extend({
             const parent = await this.$api.entity.fetch(this.parentType, this.parentId)
 
             if (this.parentType === 'scope') {
+              // @ts-ignore
               parent.members.push({
                 targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
               })
             } else {
+              // @ts-ignore
               parent.parts.push({
                 targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
               })

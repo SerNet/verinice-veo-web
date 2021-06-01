@@ -1,12 +1,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Route } from 'vue-router/types/index'
+import { upperFirst } from 'lodash'
 
 import VeoEditFormPage from '~/pages/_unit/forms/_form/_entity.vue'
 import { IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
 import { IVeoEventPayload } from '~/types/VeoGlobalEvents'
-import { upperFirst } from 'lodash'
 
 interface IData {
   objectType: string | undefined
@@ -14,7 +14,7 @@ interface IData {
   isValid: boolean
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
-  alert: IVeoEventPayload & { value: boolean, error: number }
+  alert: IVeoEventPayload & { value: boolean; error: number }
   contentsCollapsed: boolean
   formModified: {
     isModified: boolean
@@ -67,25 +67,31 @@ export default Vue.extend({
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
+    },
+    saveBtnText(): string {
+      return this.$t('global.button.create').toString()
     }
   },
   methods: {
     onSave(): Promise<void> {
-      return this.$api.entity.create(this.objectType || '', {
-        ...this.form.objectData,
-        // @ts-ignore
-        owner: {
-          targetUri: `/units/${this.unitId}`
-        }
-      }).then(() => {
-        this.formModified.isModified = false
-        this.$router.push(`/${this.$route.params.unit}/forms/${this.$route.params.form}`)
-      }).catch((error: { status: number; name: string }) => {
-        this.alert.text = error.name
-        this.alert.saveButtonText = this.$t('global.button.ok') as string
-        this.alert.error = 0
-        this.alert.value = true
-      })
+      return this.$api.entity
+        .create(this.objectType || '', {
+          ...this.form.objectData,
+          // @ts-ignore
+          owner: {
+            targetUri: `/units/${this.unitId}`
+          }
+        })
+        .then(() => {
+          this.formModified.isModified = false
+          this.$router.push(`/${this.$route.params.unit}/forms/${this.$route.params.form}`)
+        })
+        .catch((error: { status: number; name: string }) => {
+          this.alert.text = error.name
+          this.alert.saveButtonText = this.$t('global.button.ok') as string
+          this.alert.error = 0
+          this.alert.value = true
+        })
     }
   }
 })
