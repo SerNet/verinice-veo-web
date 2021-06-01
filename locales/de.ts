@@ -54,12 +54,15 @@ export default {
   'global.appstate.alert.error': 'Ein Fehler ist aufgetreten!',
   'global.button.cancel': 'Abbrechen',
   'global.button.close': 'Schließen',
+  'global.button.create': 'Erstellen',
   'global.button.delete': 'Löschen',
   'global.button.next': 'Weiter',
   'global.button.no': 'Nein',
   'global.button.ok': 'Okay',
   'global.button.previous': 'Zurück',
+  'global.button.discard': 'Verwerfen',
   'global.button.save': 'Speichern',
+  'global.button.apply': 'Übernehmen',
   'global.button.yes': 'Ja',
   'global.input.required': 'Das Feld muss ausgefüllt werden',
   'global.input.requiredfields': '* Pflichtfelder',
@@ -129,15 +132,15 @@ export default {
   'breadcrumbs.create': 'Erstellen',
 
   // temporary until the composition api supports <i18n></i18n>
-  "headline_aspect": "Aspekt löschen",
-  "headline_link": "Link löschen",
+  headline_aspect: 'Aspekt löschen',
+  headline_link: 'Link löschen',
 
-  "saveSchemaError": "Das Schema konnte nicht aktualisiert werden",
-  "saveSchemaSuccess": "Schema wurde aktualisiert!",
-  "attributeTypes": {
-    "date": "Datum",
-    "dateTime": "Datum und Uhrzeit",
-    "text": "Text",
-    "uri": "URI"
+  saveSchemaError: 'Das Schema konnte nicht aktualisiert werden',
+  saveSchemaSuccess: 'Schema wurde aktualisiert!',
+  attributeTypes: {
+    date: 'Datum',
+    dateTime: 'Datum und Uhrzeit',
+    text: 'Text',
+    uri: 'URI'
   }
 }

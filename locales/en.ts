@@ -48,17 +48,21 @@ export default {
   'forms.input.link.targetObject.delete.text': 'Are you sure you want to delete "{object}"?',
   'forms.input.link.targetObject.notFound': 'Not found',
 
-  'global.appstate.alert.object_modified': 'This dataset has been edited by another user. Do you want to load the changes?',
+  'global.appstate.alert.object_modified':
+    'This dataset has been edited by another user. Do you want to load the changes?',
   'global.appstate.alert.success': 'Action successfull!',
   'global.appstate.alert.error': 'An error occured!',
   'global.button.cancel': 'Cancel',
   'global.button.close': 'Close',
+  'global.button.create': 'Create',
   'global.button.delete': 'Delete',
   'global.button.next': 'Next',
   'global.button.no': 'No',
   'global.button.ok': 'Okay',
+  'global.button.discard': 'Discard',
   'global.button.previous': 'Previous',
   'global.button.save': 'Save',
+  'global.button.apply': 'Apply',
   'global.button.yes': 'Yes',
   'global.input.required': 'The field is required',
   'global.input.requiredfields': '* Required fields',
@@ -128,14 +132,14 @@ export default {
   'breadcrumbs.create': 'Create',
 
   // temporary until the composition api supports <i18n></i18n>
-  "headline_aspect": "Delete aspect",
-  "headline_link": "Delete link",
-  "saveSchemaError": "Couldn't update schema",
-  "saveSchemaSuccess": "Schema updated!",
-  "attributeTypes": {
-    "date": "Date",
-    "dateTime": "Date and Time",
-    "text": "Text",
-    "uri": "URI"
+  headline_aspect: 'Delete aspect',
+  headline_link: 'Delete link',
+  saveSchemaError: "Couldn't update schema",
+  saveSchemaSuccess: 'Schema updated!',
+  attributeTypes: {
+    date: 'Date',
+    dateTime: 'Date and Time',
+    text: 'Text',
+    uri: 'URI'
   }
 }

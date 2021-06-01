@@ -15,20 +15,14 @@
             :rootRoute="`/${$route.params.unit}/scopes`"
             :current-entity="form.objectData"
           >
-            <v-btn
-              color="primary"
-              outlined
-              :disabled="$fetchState.pending || isRevision"
-              :loading="deleteEntityDialog.value === true"
-              @click="showDeleteEntityDialog"
-            >{{ $t('global.button.delete') }}</v-btn>
+            <v-btn text outlined @click="$router.go(-1)">{{ $t('global.button.discard') }}</v-btn>
             <v-btn
               color="primary"
               outlined
               :disabled="$fetchState.pending || isRevision"
               :loading="saveBtnLoading"
               @click="doSaveEntity"
-            >{{ $t('global.button.save') }}</v-btn>
+            >{{ $t('global.button.apply') }}</v-btn>
           </VeoEntityDisplayOptions>
           <div
             v-if="$fetchState.pending"
@@ -67,12 +61,6 @@
               v-model="entityModified.revisionDialog"
               :item="form.objectData"
               @exit="showRevisionAfterDialog()"
-            />
-            <VeoDeleteEntityDialog
-              v-model="deleteEntityDialog.value"
-              v-bind="deleteEntityDialog"
-              @success="onDeleteEntitySuccess"
-              @error="onDeleteEntityError"
             />
           </div>
         </template>
@@ -121,10 +109,6 @@ interface IData {
     revisionDialog: boolean
     target?: any
   }
-  deleteEntityDialog: {
-    value: boolean
-    item?: IVeoEntity
-  }
 }
 
 export default Vue.extend({
@@ -155,10 +139,6 @@ export default Vue.extend({
         dialog: false,
         revisionDialog: false,
         target: undefined
-      },
-      deleteEntityDialog: {
-        value: false,
-        item: undefined
       }
     }
   },
@@ -212,24 +192,6 @@ export default Vue.extend({
         .finally(() => {
           this.saveBtnLoading = false
         })
-    },
-    showDeleteEntityDialog() {
-      this.deleteEntityDialog.item = this.form.objectData as any
-      this.deleteEntityDialog.value = true
-    },
-    onDeleteEntitySuccess() {
-      this.entityModified.isModified = false
-      this.deleteEntityDialog.value = false
-      this.$router.go(-2)
-    },
-    onDeleteEntityError(error: any) {
-      this.$root.$emit(VeoEvents.ALERT_ERROR, {
-        title:
-          this.deleteEntityDialog.item?.type === 'scope'
-            ? this.$t('scope_delete_error')
-            : this.$t('object_delete_error'),
-        text: JSON.stringify(error)
-      })
     },
     showError(status: number, message: string) {
       if (status === 412) {
