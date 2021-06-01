@@ -97,6 +97,7 @@ export interface IVeoFromSchemaItemRule {
 
 export interface IVeoFormSchemaItem {
   type: IVeoFormSchemaContentType
+  scope?: string
   text?: string
   options: IVeoFormSchemaItemOptions
   elements?: IVeoFormSchemaItem[]
