@@ -87,7 +87,7 @@ export interface IVeoFormSchema extends IVeoFormSchemaMeta {
   translation: IVeoFormSchemaTranslationCollection
 }
 
-export interface IVeoFromSchemaItemRule {
+export interface IVeoFormSchemaItemRule {
   effect: 'SHOW' | 'HIDE'
   condition: {
     scope: string
@@ -101,7 +101,7 @@ export interface IVeoFormSchemaItem {
   text?: string
   options: IVeoFormSchemaItemOptions
   elements?: IVeoFormSchemaItem[]
-  rule?: IVeoFromSchemaItemRule
+  rule?: IVeoFormSchemaItemRule
 }
 
 export interface IVeoFormSchemaItemOptions {

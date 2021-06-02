@@ -3,7 +3,7 @@ import {
   IVeoFormSchemaItem,
   IVeoFormSchemaTranslationCollection,
   IVeoFormSchemaTranslationCollectionItem,
-  IVeoFromSchemaItemRule,
+  IVeoFormSchemaItemRule,
   IVeoObjectSchema
 } from '~/types/VeoTypes'
 import FormSchemaValidator from './FormSchemaValidator'
@@ -65,6 +65,6 @@ export const ruleEffectIcons = {
   HIDE: 'mdi-eye-off-outline'
 }
 
-export function getRuleEffectIcons(ruleEffect: IVeoFromSchemaItemRule['effect']) {
+export function getRuleEffectIcons(ruleEffect: IVeoFormSchemaItemRule['effect']) {
   return ruleEffect ? ruleEffectIcons[ruleEffect] : undefined
 }

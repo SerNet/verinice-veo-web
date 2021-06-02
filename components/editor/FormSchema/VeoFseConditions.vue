@@ -57,7 +57,7 @@ import { JsonPointer } from 'json-ptr'
 import { cloneDeep, orderBy } from 'lodash'
 import vjp from 'vue-json-pointer'
 
-import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFromSchemaItemRule, IVeoObjectSchema, IVeoObjectSchemaProperty } from '~/types/VeoTypes'
+import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoObjectSchemaProperty } from '~/types/VeoTypes'
 
 interface IConditionScopeItem {
   type: 'boolean' | 'enum'
@@ -66,16 +66,16 @@ interface IConditionScopeItem {
   enum: (string | boolean | number)[]
 }
 
-interface IVeoFromSchemaItemRuleLocal {
-  effect?: IVeoFromSchemaItemRule['effect']
+interface IVeoFormSchemaItemRuleLocal {
+  effect?: IVeoFormSchemaItemRule['effect']
   condition?: {
-    scope?: IVeoFromSchemaItemRule['condition']['scope']
-    schema?: IVeoFromSchemaItemRule['condition']['schema']
+    scope?: IVeoFormSchemaItemRule['condition']['scope']
+    schema?: IVeoFormSchemaItemRule['condition']['schema']
   }
 }
 
 interface IProps {
-  value: IVeoFromSchemaItemRule
+  value: IVeoFormSchemaItemRule
   currentScope: string | undefined
 }
 
@@ -100,7 +100,7 @@ export default defineComponent<IProps>({
       props.currentScope ? linksAttributesScopes.value?.includes(props.currentScope) : undefined
     )
 
-    function emitRule(rule: IVeoFromSchemaItemRuleLocal) {
+    function emitRule(rule: IVeoFormSchemaItemRuleLocal) {
       if (rule.effect && rule.condition?.schema && rule.condition.schema?.enum?.length > 0) {
         context.emit('input', rule)
       } else {
@@ -108,7 +108,7 @@ export default defineComponent<IProps>({
       }
     }
 
-    const rule: Ref<IVeoFromSchemaItemRuleLocal> = ref(cloneDeep(props.value))
+    const rule: Ref<IVeoFormSchemaItemRuleLocal> = ref(cloneDeep(props.value))
 
     const vm = getCurrentInstance()
     const displayTypeItems = computed(() => [
@@ -119,7 +119,7 @@ export default defineComponent<IProps>({
       get() {
         return rule.value.effect
       },
-      set(newEffect: IVeoFromSchemaItemRule['effect'] | undefined) {
+      set(newEffect: IVeoFormSchemaItemRule['effect'] | undefined) {
         if (newEffect) {
           vjp.set(rule.value, '/effect', newEffect)
         } else if (newEffect && typeof rule.value.effect === 'undefined') {
@@ -196,7 +196,7 @@ export default defineComponent<IProps>({
     )
     // Enable reactivity for defining and getting the value from "enum" in the rule object
     const conditionValue: WritableComputedRef<
-      IVeoFromSchemaItemRule['condition']['schema']['enum'] | undefined
+      IVeoFormSchemaItemRule['condition']['schema']['enum'] | undefined
     > = computed({
       get() {
         return rule.value.condition?.schema?.enum
@@ -226,7 +226,7 @@ export default defineComponent<IProps>({
     "displayType": "Type of conditional display",
     "displayTypeInput": "Type",
     "displayTypes": {
-      "show": "Ehow",
+      "show": "Show",
       "hide": "Hide"
     },
     "condition": "Condition",
