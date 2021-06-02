@@ -124,7 +124,8 @@ import {
   ref,
   watch,
   getCurrentInstance,
-  inject
+  inject,
+  provide
 } from '@nuxtjs/composition-api'
 import Draggable from 'vuedraggable'
 import { JsonPointer } from 'json-ptr'
@@ -348,6 +349,10 @@ export default defineComponent<IProps>({
           }
         }
       )
+
+      // Provide linkScope and linksAttributes for VeoFseConditions to generate conditions for linksAttributes in a Dialog
+      provide('linkScope', props.formSchema.scope)
+      provide('linksAttributes', linksField.formSchemaElements)
 
       linksField.onInputLinksAttributes = function(event: any) {
         // Get attributes which were deleted in the autocomplete element (array, but always 1 element)

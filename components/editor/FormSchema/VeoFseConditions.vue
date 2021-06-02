@@ -57,7 +57,7 @@ import { JsonPointer } from 'json-ptr'
 import { cloneDeep, orderBy } from 'lodash'
 import vjp from 'vue-json-pointer'
 
-import { IVeoFormSchema, IVeoFromSchemaItemRule, IVeoObjectSchema, IVeoObjectSchemaProperty } from '~/types/VeoTypes'
+import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoObjectSchemaProperty } from '~/types/VeoTypes'
 
 interface IConditionScopeItem {
   type: 'boolean' | 'enum'
@@ -66,16 +66,16 @@ interface IConditionScopeItem {
   enum: (string | boolean | number)[]
 }
 
-interface IVeoFromSchemaItemRuleLocal {
-  effect?: IVeoFromSchemaItemRule['effect']
+interface IVeoFormSchemaItemRuleLocal {
+  effect?: IVeoFormSchemaItemRule['effect']
   condition?: {
-    scope?: IVeoFromSchemaItemRule['condition']['scope']
-    schema?: IVeoFromSchemaItemRule['condition']['schema']
+    scope?: IVeoFormSchemaItemRule['condition']['scope']
+    schema?: IVeoFormSchemaItemRule['condition']['schema']
   }
 }
 
 interface IProps {
-  value: IVeoFromSchemaItemRule
+  value: IVeoFormSchemaItemRule
   currentScope: string | undefined
 }
 
@@ -92,8 +92,15 @@ export default defineComponent<IProps>({
   setup(props, context) {
     const mainObjectSchema: Ref<IVeoObjectSchema> | undefined = inject('mainObjectSchema')
     const mainFormSchema: Ref<IVeoFormSchema> | undefined = inject('mainFormSchema')
+    // These are LinksField Edit Dialog specific, when Links Attributes are edited
+    const linkScope = inject('linkScope', null) as string | null
+    const linksAttributes = inject('linksAttributes', null) as Ref<IVeoFormSchemaItem[]> | null
+    const linksAttributesScopes = computed(() => linksAttributes?.value?.map(attribute => attribute.scope as string))
+    const isCurrentLinkAttribute = computed(() =>
+      props.currentScope ? linksAttributesScopes.value?.includes(props.currentScope) : undefined
+    )
 
-    function emitRule(rule: IVeoFromSchemaItemRuleLocal) {
+    function emitRule(rule: IVeoFormSchemaItemRuleLocal) {
       if (rule.effect && rule.condition?.schema && rule.condition.schema?.enum?.length > 0) {
         context.emit('input', rule)
       } else {
@@ -101,7 +108,7 @@ export default defineComponent<IProps>({
       }
     }
 
-    const rule: Ref<IVeoFromSchemaItemRuleLocal> = ref(cloneDeep(props.value))
+    const rule: Ref<IVeoFormSchemaItemRuleLocal> = ref(cloneDeep(props.value))
 
     const vm = getCurrentInstance()
     const displayTypeItems = computed(() => [
@@ -112,7 +119,7 @@ export default defineComponent<IProps>({
       get() {
         return rule.value.effect
       },
-      set(newEffect: IVeoFromSchemaItemRule['effect'] | undefined) {
+      set(newEffect: IVeoFormSchemaItemRule['effect'] | undefined) {
         if (newEffect) {
           vjp.set(rule.value, '/effect', newEffect)
         } else if (newEffect && typeof rule.value.effect === 'undefined') {
@@ -125,8 +132,11 @@ export default defineComponent<IProps>({
     })
 
     // Get all scopes which are used in FormSchema
+    // or in case of LinksField: scopes of selected Links Attributes which are selected in LinksField Edit Dialog 
     const usedScopes: Ref<string[]> = ref([])
-    usedScopes.value = Object.entries(JsonPointer.flatten(mainFormSchema?.value?.content, true) as Record<string, any>)
+    usedScopes.value = isCurrentLinkAttribute.value
+      ? linksAttributesScopes.value || []
+      : Object.entries(JsonPointer.flatten(mainFormSchema?.value?.content, true) as Record<string, any>)
       .filter(([key, _value]) => /elements\/\d+\/scope$/.test(key))
       .map(([_key, value]) => value as string)
     // Current Scope of elements Checkbox & Enum should not be shown in the list of scopes,
@@ -138,7 +148,12 @@ export default defineComponent<IProps>({
     // Generate items which include description of boolean/enum object with scope, name and enum (for selections)
     const conditionScopeItems: Ref<IConditionScopeItem[]> = ref([])
     usedScopes.value.forEach(scope => {
-      const osProperty = JsonPointer.get(mainObjectSchema?.value, scope) as IVeoObjectSchemaProperty
+      // osProperty is normally value of "scope" in OS
+      // However, in case of Links Attributes the scope is the composition of linksScope and linkAttribute scope
+      const osProperty = JsonPointer.get(
+        mainObjectSchema?.value,
+        isCurrentLinkAttribute.value ? `${linkScope}${scope.replace('#/', '/items/')}` : scope
+      ) as IVeoObjectSchemaProperty
       if (osProperty?.type === 'boolean') {
         conditionScopeItems.value.push({
           type: 'boolean',
@@ -181,7 +196,7 @@ export default defineComponent<IProps>({
     )
     // Enable reactivity for defining and getting the value from "enum" in the rule object
     const conditionValue: WritableComputedRef<
-      IVeoFromSchemaItemRule['condition']['schema']['enum'] | undefined
+      IVeoFormSchemaItemRule['condition']['schema']['enum'] | undefined
     > = computed({
       get() {
         return rule.value.condition?.schema?.enum
@@ -211,7 +226,7 @@ export default defineComponent<IProps>({
     "displayType": "Type of conditional display",
     "displayTypeInput": "Type",
     "displayTypes": {
-      "show": "Ehow",
+      "show": "Show",
       "hide": "Hide"
     },
     "condition": "Condition",
