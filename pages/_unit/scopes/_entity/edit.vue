@@ -102,7 +102,7 @@ import { Route } from 'vue-router/types/index'
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils'
 import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes'
 import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin'
 
@@ -111,6 +111,7 @@ interface IData {
   isValid: boolean
   isRevision: boolean
   allowRestoration: boolean
+  revisionVersion: number
   revisionCache: IBaseObject
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
@@ -136,6 +137,7 @@ export default Vue.extend({
       isValid: true,
       isRevision: false,
       allowRestoration: false,
+      revisionVersion: 0,
       revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
@@ -179,7 +181,7 @@ export default Vue.extend({
         this.$t('edit_object', {
           title: this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.displayName
         }),
-        ...((this.isRevision) ? [`(${this.$t('revision')})`] : [])
+        ...((this.isRevision) ? [`(${this.$t('revision')} ${this.revisionVersion})`] : [])
       ].join(' ')
     },
     entityId(): string {
@@ -233,7 +235,9 @@ export default Vue.extend({
         })
       }
     },
-    async showRevision(_event: any, content: IBaseObject, isRevision: boolean, allowRestoration: boolean = false) {
+    async showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean, allowRestoration: boolean = false) {
+      const content = revision.content
+
       // show modified dialog before switching versions if needed
       if (this.entityModified.isModified) {
         this.revisionCache = content // cache revision for use after modified-dialog is closed with "yes"
@@ -244,15 +248,13 @@ export default Vue.extend({
         }
         // fill form with revision or newest data
         this.isRevision = isRevision
+        this.revisionVersion = revision.changeNumber
         this.allowRestoration = allowRestoration
-        if (isRevision) {
-          // @ts-ignore
-          content.$etag = this.form.objectData.$etag // We have to give the etag to the new object in order to make it saveable
-          this.form.objectData = content // show revision content in form
-          this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`
-        } else {
-          await this.$fetch() // refetch newest version from entity endpoint, not history
-        }
+          
+        // @ts-ignore
+        content.$etag = this.form.objectData.$etag // We have to give the etag to the new object in order to make it saveable
+        this.form.objectData = content // show revision content in form
+        this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`
       }
     },
     async showRevisionAfterDialog() {
@@ -305,7 +307,7 @@ export default Vue.extend({
     "object_saved": "Object saved successfully",
     "scope_delete_error": "Failed to delete scope",
     "restore": "Restore",
-    "revision": "old version",
+    "revision": "version",
     "revision_incompatible": "The revision is incompatible to the schema and cannot be shown."
   },
   "de": {
@@ -316,7 +318,7 @@ export default Vue.extend({
     "object_saved": "Objekt wurde gespeichert!",
     "scope_delete_error": "Scope konnte nicht gelöscht werden",
     "restore": "Wiederherstellen",
-    "revision": "alte Version",
+    "revision": "Version",
     "revision_incompatible": "Die Version ist inkompatibel zum Schema und kann daher nicht angezeigt werden."
   }
 }

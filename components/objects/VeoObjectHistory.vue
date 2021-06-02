@@ -12,7 +12,7 @@
         <v-divider v-if="index > 0" />
         <v-list-item three-line>
           <v-list-item-content
-            @click="$emit('show-revision', {}, version.content, index === 0 ? false : true)"
+            @click="$emit('show-revision', {}, version, index === 0 ? false : true)"
           >
             <v-list-item-title>
               {{ $t('version') }}
@@ -30,7 +30,7 @@
               <v-col class="text-right" cols="12" sm="2">
                 <v-tooltip v-if="canShowData(version.content)" bottom>
                   <template #activator="{ on }">
-                    <v-btn @click.stop="$emit('show-revision', {}, version.content, index === 0 ? false : true, true)" icon v-on="on">
+                    <v-btn @click.stop="$emit('show-revision', {}, version, index === 0 ? false : true, true)" icon v-on="on">
                       <v-icon>mdi-undo</v-icon>
                     </v-btn>
                   </template>
