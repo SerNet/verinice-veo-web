@@ -37,24 +37,35 @@
         />
         <v-row class="justify-space-between">
           <v-col cols="auto">
-            <h1>{{ form.objectData.displayName }}</h1>
+            <h1 v-if="!isRevision">{{ form.objectData.displayName }}</h1>
+            <h1 v-else>{{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})</h1>
           </v-col>
           <v-spacer />
           <v-col cols="auto" class="text-right">
             <v-btn text outlined @click="$router.go(-1)">{{ $t('global.button.discard') }}</v-btn>
             <v-btn
+              v-if="!isRevision"
               color="primary"
               outlined
               text
               :loading="saveBtnLoading"
-              :disabled="isRevision"
               @click="onClick"
             >{{ saveBtnText }}</v-btn>
+            <v-btn
+              v-else
+              color="primary"
+              outlined
+              text
+              :loading="saveBtnLoading"
+              :disabled="!allowRestoration"
+              @click="onClick"
+            >{{ $t('restore') }}</v-btn>
           </v-col>
         </v-row>
       </template>
       <template #default>
         <VeoForm
+          v-if="canShowData"
           v-model="form.objectData"
           :schema="form.objectSchema"
           :ui="form.formSchema && form.formSchema.content"
@@ -65,9 +76,13 @@
           :api="dynamicAPI"
           :is-valid.sync="isValid"
           :error-messages.sync="errorMessages"
-          :disabled="isRevision"
+          :disabled="isRevision && !allowRestoration"
           @input="formModified.isModified = true"
         />
+        <div v-else class="fill-height text-center d-flex flex-column">
+          <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
+          <h3 class="text-left">{{ $t('incompatibleFormSchema', { objectType }) }}</h3>
+        </div>
         <VeoEntityModifiedDialog
           v-model="formModified.dialog"
           :item="form.objectData"
@@ -105,6 +120,7 @@
           <v-tab-item>
             <VeoObjectHistory
               :object="form.objectData"
+              :schema="form.objectSchema"
               :loading="$fetchState.pending"
               @show-revision="showRevision"
             />
@@ -116,13 +132,14 @@
 </template>
 
 <script lang="ts">
+import { cloneDeep } from 'lodash'
 import Vue from 'vue'
 import { Route } from 'vue-router/types/index'
 import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils'
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes'
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin'
 
 export interface IValidationErrorMessage {
@@ -135,6 +152,8 @@ interface IData {
   form: IForm
   isValid: boolean
   isRevision: boolean
+  allowRestoration: boolean
+  revisionVersion: number
   revisionCache: IBaseObject
   errorMessages: IValidationErrorMessage[]
   saveBtnLoading: boolean
@@ -162,6 +181,8 @@ export default Vue.extend({
       },
       isValid: true,
       isRevision: false,
+      allowRestoration: false,
+      revisionVersion: 0,
       revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
@@ -225,9 +246,15 @@ export default Vue.extend({
   },
   computed: {
     title(): string {
-      return this.$fetchState.pending
-        ? this.$t('breadcrumbs.forms').toString()
-        : `${this.form.objectData.displayName} - ${this.$t('breadcrumbs.forms')}`
+      const entity = this.$fetchState.pending
+        ? this.$t('breadcrumbs.forms')
+        : this.form.objectData.displayName
+      return [
+        entity,
+        ...((this.isRevision) ? [`(${this.$t('revision')} ${this.revisionVersion})`] : []),
+        '-',
+        this.$t('breadcrumbs.forms')
+      ].join(' ')
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id
@@ -246,6 +273,11 @@ export default Vue.extend({
     },
     objectRoute(): string {
       return this.$route.params.entity
+    },
+    canShowData(): boolean {
+      const dummy = cloneDeep(this.form.objectData)
+      delete dummy.displayName
+      return this.validateRevisionSchema(dummy, false)
     },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
@@ -355,7 +387,9 @@ export default Vue.extend({
         })
       }
     },
-    async showRevision(_event: any, content: IBaseObject, isRevision: boolean) {
+    async showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean, allowRestoration: boolean = false) {
+      const content = revision.content
+
       // show modified dialog before switching versions if needed
       if (this.formModified.isModified) {
         this.revisionCache = content // cache revision for use after modified-dialog is closed with "yes"
@@ -366,12 +400,14 @@ export default Vue.extend({
         }
         // fill form with revision or newest data
         this.isRevision = isRevision
-        if (isRevision) {
-          this.form.objectData = content // show revision content in form
-          this.form.objectData.displayName = `${content.abbreviation} ${content.name}`
-        } else {
-          await this.$fetch() // refetch newest version from entity endpoint, not history
-        }
+        console.log(revision)
+        this.revisionVersion = revision.changeNumber
+        this.allowRestoration = allowRestoration
+        
+        // @ts-ignore
+        content.$etag = this.form.objectData.$etag // We have to give the etag to the new object in order to make it saveable
+        this.form.objectData = content // show revision content in form
+        this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`
       }
     },
     async showRevisionAfterDialog() {
@@ -386,12 +422,12 @@ export default Vue.extend({
       this.formModified.revisionDialog = false
       this.formModified.isModified = false
     },
-    validateRevisionSchema(revision: IBaseObject) {
+    validateRevisionSchema(revision: IBaseObject, showError: boolean = true) {
       const validator = new ObjectSchemaValidator()
 
       delete revision.displayName
       const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision)
-      if (!isValid) {
+      if (!isValid && showError) {
         this.showError(500, this.$t('revision_incompatible').toString())
       }
       return isValid
@@ -418,20 +454,26 @@ export default Vue.extend({
 {
   "en": {
     "history": "History",
+    "incompatibleFormSchema": "The form is incompatible to the object schema \"{objectType}\" and cannot be displayed!",
     "links": "Links",
     "navigation.title": "Contents",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
     "scope_delete_error": "Failed to delete scope",
+    "restore": "Restore",
+    "revision": "version",
     "revision_incompatible": "The revision is incompatible to the schema and cannot be shown."
   },
   "de": {
     "history": "Verlauf",
+    "incompatibleFormSchema": "Das Formular ist inkompatibel zum Objektschema \"{objectType}\" und kann deshalb nicht angezeigt werden!",
     "links": "Links",
     "navigation.title": "Inhalt",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
     "scope_delete_error": "Scope konnte nicht gelöscht werden",
+    "restore": "Wiederherstellen",
+    "revision": "Version",
     "revision_incompatible": "Die Version ist inkompatibel zum Schema und kann daher nicht angezeigt werden."
   }
 }

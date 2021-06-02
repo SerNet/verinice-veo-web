@@ -12,7 +12,7 @@
         <v-divider v-if="index > 0" />
         <v-list-item three-line>
           <v-list-item-content
-            @click="$emit('show-revision', {}, version.content, index === 0 ? false : true)"
+            @click="$emit('show-revision', {}, version, index === 0 ? false : true)"
           >
             <v-list-item-title>
               {{ $t('version') }}
@@ -23,7 +23,23 @@
               {{ $t('by') }}
               <b>{{ version.author }}</b>
             </v-list-item-subtitle>
-            <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
+            <v-row no-gutters>
+              <v-col cols="12" sm="10">
+                <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
+              </v-col>
+              <v-col class="text-right" cols="12" sm="2">
+                <v-tooltip v-if="canShowData(version.content)" bottom>
+                  <template #activator="{ on }">
+                    <v-btn @click.stop="$emit('show-revision', {}, version, index === 0 ? false : true, true)" icon v-on="on">
+                      <v-icon>mdi-undo</v-icon>
+                    </v-btn>
+                  </template>
+                  <template #default>
+                    {{ $t('restoreRevision') }}
+                  </template>
+                </v-tooltip>
+              </v-col>
+            </v-row>
           </v-list-item-content>
         </v-list-item>
       </div>
@@ -34,11 +50,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Prop } from 'vue/types/options'
+import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
+import { IBaseObject } from '~/lib/utils'
 
-import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes'
+import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes'
 
 interface IData {
   history: IVeoObjectHistoryEntry[]
+  validator: ObjectSchemaValidator
 }
 
 export default Vue.extend({
@@ -50,11 +69,16 @@ export default Vue.extend({
     loading: {
       type: Boolean,
       default: false
+    },
+    schema: {
+      type: Object as Prop<IVeoObjectSchema>,
+      default: () => {}
     }
   },
   data(): IData {
     return {
-      history: []
+      history: [],
+      validator: new ObjectSchemaValidator()
     }
   },
   async fetch() {
@@ -74,6 +98,11 @@ export default Vue.extend({
         })
       }
     }
+  },
+  methods: {
+    canShowData(data: IBaseObject): boolean {
+      return this.validator.fitsObjectSchema(this.schema, data)
+    }
   }
 })
 </script>
@@ -82,6 +111,7 @@ export default Vue.extend({
 {
   "en": {
     "by": "by",
+    "restoreRevision": "Restore version",
     "revisionType": {
       "CREATION": "Object created",
       "MODIFICATION": "Object modified",
@@ -92,6 +122,7 @@ export default Vue.extend({
   },
   "de": {
     "by": "by",
+    "restoreRevision": "Version wiederherstellen",
     "revisionType": {
       "CREATION": "Objekt erstellt",
       "MODIFICATION": "Objekt bearbeitet",
