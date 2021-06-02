@@ -38,7 +38,7 @@
         <v-row class="justify-space-between">
           <v-col cols="auto">
             <h1 v-if="!isRevision">{{ form.objectData.displayName }}</h1>
-            <h1 v-else>{{ form.objectData.displayName }} ({{ $t('revision') }})</h1>
+            <h1 v-else>{{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})</h1>
           </v-col>
           <v-spacer />
           <v-col cols="auto" class="text-right">
@@ -400,6 +400,7 @@ export default Vue.extend({
         }
         // fill form with revision or newest data
         this.isRevision = isRevision
+        console.log(revision)
         this.revisionVersion = revision.changeNumber
         this.allowRestoration = allowRestoration
         
