@@ -142,12 +142,18 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { capitalize, snakeCase, trim } from 'lodash'
+import { capitalize, cloneDeep, merge, snakeCase, trim } from 'lodash'
 
 import { generateSchema, validate } from '~/lib/FormSchemaHelper'
 import { VeoEvents } from '~/types/VeoGlobalEvents'
 import { ISchemaEndpoint } from '~/plugins/api/schema'
-import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema } from '~/types/VeoTypes'
+import {
+  IVeoTranslations,
+  IVeoObjectSchema,
+  IVeoFormSchema,
+  IVeoObjectSchemaTranslations
+} from '~/types/VeoTypes'
+import { JsonPointer } from 'json-ptr'
 
 export default Vue.extend({
   props: {
@@ -316,8 +322,28 @@ export default Vue.extend({
       }
     },
     setObjectSchema(schema: IVeoObjectSchema) {
-      this.oscode = JSON.stringify(schema, undefined, 2)
-      this.objectSchema = schema
+      let objectSchema = cloneDeep(schema)
+      // os specific translation within by user uploaded OS
+      const osTranslation = cloneDeep(
+        JsonPointer.get(objectSchema, '#/properties/translations') as IVeoObjectSchemaTranslations | undefined
+      )
+      // The variable mergedOsTranslation serves to merge general and OS specific translations uploaded by a user. Initial value is general translation object
+      let mergedOsTranslation = cloneDeep(this.translation)
+      // If osTranslation exists merge general and OS specific translations
+      if (osTranslation) {
+        // Remove "translations" property from by user uploaded OS to avoid validation errors (it is not conform with JsonSchema standard)
+        JsonPointer.unset(objectSchema, '#/properties/translations')
+        if (mergedOsTranslation?.lang) {
+          // If general translations exists, merge general with OS specific ones (general ones will be overwritten)
+          mergedOsTranslation.lang = merge(mergedOsTranslation.lang, osTranslation)
+        } else {
+          // If general translations do not exists, translations will be the same as OS specific translations
+          mergedOsTranslation = { lang: { ...osTranslation } }
+        }
+      }
+      this.translation = mergedOsTranslation
+      this.oscode = JSON.stringify(objectSchema, undefined, 2)
+      this.objectSchema = objectSchema
     },
     setFormSchema(schema: IVeoFormSchema) {
       this.fscode = JSON.stringify(schema, undefined, 2)
