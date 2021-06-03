@@ -214,8 +214,8 @@
   </v-data-table>
 </template>
 
-// TODO: something is wrong hier with ESLint
 <script lang="ts">
+// TODO: something is wrong hier with ESLint
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { formatDate, formatTime } from '~/lib/utils';
