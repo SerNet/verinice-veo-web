@@ -4,25 +4,25 @@ declare namespace Cypress {
      * Custom command to mock authorization by visiting pages
      * @example authorize all tests automatically -> before(() => { cy.auth() })
      */
-    auth(): void
+    auth(): void;
 
     /**
      * Custom command to load FormSchemaEditor with a specific FormSchema
      * @example cy.loadFse('formschema/empty.json')
      */
-    loadFse(formSchemaPath: string): void
+    loadFse(formSchemaPath: string): void;
 
     /**
      * Custom command to start dragging the element (often used before cy.get('.dropzone').drop() to drop the element)
      * @example cy.get('.someelement').drag()
      */
-    drag(): JQuery<HTMLElement>
+    drag(): JQuery<HTMLElement>;
 
     /**
      * Custom command to end dragging the element (often used after cy.get('.someelement').drag() to start dragging the element)
      * @example cy.get('.dropzone').drop()
      */
-    drop(): JQuery<HTMLElement>
+    drop(): JQuery<HTMLElement>;
 
     /**
      * Custom command to extend .toMatchSnapshot() functionality by removing dynamic attributes from HTML
@@ -30,12 +30,12 @@ declare namespace Cypress {
      */
     toMatchHtmlSnapshot(
       options?: Partial<{
-        ignoreExtralFields: boolean
-        ignoreExtraArrayItems: boolean
-        normalizeJson: boolean
-        replace: any
-        name: string
+        ignoreExtralFields: boolean;
+        ignoreExtraArrayItems: boolean;
+        normalizeJson: boolean;
+        replace: any;
+        name: string;
       }>
-    ): Cypress.Chainable<null>
+    ): Cypress.Chainable<null>;
   }
 }

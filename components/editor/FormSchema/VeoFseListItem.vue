@@ -1,15 +1,19 @@
 <template>
-  <VeoEditorListItem :title="title" :styling="styling" :translate="translate" />
+  <VeoEditorListItem
+    :title="title"
+    :styling="styling"
+    :translate="translate"
+  />
 </template>
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api';
 
-import { IInputType } from '~/types/VeoEditor'
+import { IInputType } from '~/types/VeoEditor';
 
 interface IProps {
-  title: string
-  styling: IInputType
-  translate: boolean
+  title: string;
+  styling: IInputType;
+  translate: boolean;
 }
 
 export default defineComponent<IProps>({
@@ -26,5 +30,5 @@ export default defineComponent<IProps>({
       default: false
     }
   }
-})
+});
 </script>

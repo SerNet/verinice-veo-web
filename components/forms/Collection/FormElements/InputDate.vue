@@ -1,5 +1,8 @@
 <template>
-  <div v-if="visible" class="vf-input-date vf-form-element">
+  <div
+    v-if="visible"
+    class="vf-input-date vf-form-element"
+  >
     <v-menu
       v-model="menu"
       :close-on-content-click="false"
@@ -9,7 +12,11 @@
       min-width="350px"
     >
       <template #activator="{ on }">
-        <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
+        <ValidationProvider
+          v-slot="{ errors }"
+          :name="options && options.label"
+          :rules="validation"
+        >
           <v-text-field
             :value="formattedDate"
             :disabled="disabled"
@@ -27,23 +34,26 @@
           />
         </ValidationProvider>
       </template>
-      <v-sheet color="white" class="d-flex justify-center">
-        <v-date-picker v-model="date" no-title @input="menu = false" />
+      <v-sheet
+        color="white"
+        class="d-flex justify-center"
+      >
+        <v-date-picker
+          v-model="date"
+          no-title
+          @input="menu = false"
+        />
       </v-sheet>
     </v-menu>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { PropOptions } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
-import moment from 'moment'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import Vue from 'vue';
+import { PropOptions } from 'vue/types/options';
+import { JSONSchema7 } from 'json-schema';
+import moment from 'moment';
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
 
 export default Vue.extend({
   name: 'InputDate',
@@ -76,22 +86,22 @@ export default Vue.extend({
   }),
   computed: {
     momentDate() {
-      return moment(this.value, this.dateFormatISO, true)
+      return moment(this.value, this.dateFormatISO, true);
     },
     formattedDate: {
       get(): string | undefined {
-        return this.momentDate.isValid() ? this.momentDate.format(this.dateFormatInput) : this.value
+        return this.momentDate.isValid() ? this.momentDate.format(this.dateFormatInput) : this.value;
       },
       set(newDate: string): void {
-        this.emitDateValue(newDate, this.dateFormatInput)
+        this.emitDateValue(newDate, this.dateFormatInput);
       }
     },
     date: {
       get(): string {
-        return this.momentDate.isValid() ? this.momentDate.format(this.dateFormatISO) : ''
+        return this.momentDate.isValid() ? this.momentDate.format(this.dateFormatISO) : '';
       },
       set(newDate: string): void {
-        this.emitDateValue(newDate, this.dateFormatISO)
+        this.emitDateValue(newDate, this.dateFormatISO);
       }
     }
   },
@@ -99,32 +109,32 @@ export default Vue.extend({
     formattedDate: {
       immediate: true,
       handler(newValue) {
-        this.tempInputValue = newValue
+        this.tempInputValue = newValue;
       }
     }
   },
   methods: {
     clear() {
-      this.$nextTick(() => this.$nextTick(() => (this.tempInputValue = undefined)))
+      this.$nextTick(() => this.$nextTick(() => (this.tempInputValue = undefined)));
     },
     setTempInputValue(event: any) {
-      this.tempInputValue = event
+      this.tempInputValue = event;
     },
     emitDateValue(date: string, dateFormat: string) {
-      const tempMoment = moment(date, dateFormat, true)
-      const formattedDate = tempMoment.isValid() ? tempMoment.format(this.dateFormatISO) : date
-      this.$emit('input', formattedDate)
-      this.$emit('change', formattedDate)
+      const tempMoment = moment(date, dateFormat, true);
+      const formattedDate = tempMoment.isValid() ? tempMoment.format(this.dateFormatISO) : date;
+      this.$emit('input', formattedDate);
+      this.$emit('change', formattedDate);
     },
     onBlur() {
-      this.formattedDate = this.tempInputValue
+      this.formattedDate = this.tempInputValue;
     }
   }
-})
+});
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
-    return calculateConditionsScore([props.schema.type === 'string', props.schema.format === 'date'])
+    return calculateConditionsScore([props.schema.type === 'string', props.schema.format === 'date']);
   }
-}
+};
 </script>

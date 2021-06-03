@@ -1,7 +1,10 @@
 <template>
   <VeoPage>
     <h2>{{ $t('calltoaction') }}</h2>
-    <v-list two-line class="overflow-hidden">
+    <v-list
+      two-line
+      class="overflow-hidden"
+    >
       <v-list-item to="/editor/objectschema">
         <v-list-item-content>
           <v-list-item-title class="font-weight-bold">
@@ -10,7 +13,9 @@
           <v-list-item-subtitle>{{ $t('objectSchemaDescription') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
-          <v-icon x-large>mdi-chevron-right</v-icon>
+          <v-icon x-large>
+            mdi-chevron-right
+          </v-icon>
         </v-list-item-action>
       </v-list-item>
       <v-list-item to="/editor/formschema">
@@ -21,7 +26,9 @@
           <v-list-item-subtitle>{{ $t('formSchemaDescription') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
-          <v-icon x-large>mdi-chevron-right</v-icon>
+          <v-icon x-large>
+            mdi-chevron-right
+          </v-icon>
         </v-list-item-action>
       </v-list-item>
     </v-list>
@@ -29,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api';
 
 interface IProps {}
 
@@ -37,9 +44,9 @@ export default defineComponent<IProps>({
   head(): any {
     return {
       title: 'verinice.'
-    }
+    };
   }
-})
+});
 </script>
 
 <i18n>

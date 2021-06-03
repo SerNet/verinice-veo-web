@@ -1,13 +1,20 @@
 <template>
   <v-tooltip bottom>
-    <template v-slot:activator="{ on, attrs }">
-      <v-icon dense small v-bind="attrs" v-on="on">{{ value }}</v-icon>
+    <template #activator="{ on, attrs }">
+      <v-icon
+        dense
+        small
+        v-bind="attrs"
+        v-on="on"
+      >
+        {{ value }}
+      </v-icon>
     </template>
     <span>{{ $t(ruleEffectName) }}</span>
   </v-tooltip>
 </template>
 <script lang="ts">
-import Vue, { PropType } from 'vue'
+import Vue, { PropType } from 'vue';
 
 export default Vue.extend({
   props: {
@@ -21,14 +28,14 @@ export default Vue.extend({
         'mdi-eye-outline': 'SHOW',
         'mdi-eye-off-outline': 'HIDE'
       }
-    }
+    };
   },
   computed: {
     ruleEffectName(): string {
-      return this.ruleIconsMap[this.value]
+      return this.ruleIconsMap[this.value];
     }
   }
-})
+});
 </script>
 
 <i18n>

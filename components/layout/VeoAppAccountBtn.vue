@@ -1,5 +1,8 @@
 <template>
-  <div style="flex-basis: 0;" class="mr-0 text-right flex-grow-1">
+  <div
+    style="flex-basis: 0;"
+    class="mr-0 text-right flex-grow-1"
+  >
     <v-menu
       v-model="value"
       :close-on-content-click="false"
@@ -9,8 +12,15 @@
       origin="top right"
     >
       <template #activator="{ on }">
-        <v-btn icon dark v-on="on">
-          <v-avatar size="48" color="secondary">
+        <v-btn
+          icon
+          dark
+          v-on="on"
+        >
+          <v-avatar
+            size="48"
+            color="secondary"
+          >
             <span class="white--text headline">{{ username.substr(0, 1).toUpperCase() }}</span>
           </v-avatar>
         </v-btn>
@@ -19,7 +29,9 @@
         <v-list>
           <v-list-item>
             <v-list-item-avatar color="secondary">
-              <v-icon class="white--text headline">{{ username.substr(0, 1).toUpperCase() }}</v-icon>
+              <v-icon class="white--text headline">
+                {{ username.substr(0, 1).toUpperCase() }}
+              </v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
               <span>
@@ -36,7 +48,13 @@
         <v-divider />
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" text @click="$emit('logout')">{{ $t('logout') }}</v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="$emit('logout')"
+          >
+            {{ $t('logout') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-menu>
@@ -44,14 +62,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
-import { separateUUIDParam } from '~/lib/utils'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
-import {
-  IVeoDomain,
-  IVeoUnit
-} from '~/types/VeoTypes'
+import { separateUUIDParam } from '~/lib/utils';
+import { VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -64,28 +79,24 @@ export default Vue.extend({
     return {
       value: false,
       units: [] as IVeoUnit[]
-    }
+    };
   },
   async fetch() {
-    this.units = await this.$api.unit.fetchAll()
+    this.units = await this.$api.unit.fetchAll();
   },
   computed: {
     currentUnitDomains(): IVeoDomain[] {
-      return (
-        this.units.find(
-          (unit: IVeoUnit) => unit.id === (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id)
-        )?.domains || []
-      )
+      return this.units.find((unit: IVeoUnit) => unit.id === (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id))?.domains || [];
     }
   },
   mounted() {
     this.$root.$on(VeoEvents.UNIT_CHANGED, () => {
       this.$nextTick(() => {
-        this.$fetch()
-      })
-    })
+        this.$fetch();
+      });
+    });
   }
-})
+});
 </script>
 
 <i18n>

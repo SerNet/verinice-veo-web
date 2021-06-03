@@ -1,306 +1,304 @@
 /**
  * Table of contents
- * 
+ *
  * 1. Basic / global types
  * 2. Types of user generated data (custom aspects/custom links)
  * 3. Objectschema / formschema types
  */
 
-import { JSONSchema7TypeName } from "json-schema";
-import { IBaseObject } from "~/lib/utils";
+import { JSONSchema7TypeName } from 'json-schema';
+import { IBaseObject } from '~/lib/utils';
 
-export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string
+export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
 /**
  * 1. Basic / global types
  */
 export interface IVeoAPIMessage {
-  success: boolean
-  resourceId: string
-  message: string
+  success: boolean;
+  resourceId: string;
+  message: string;
 }
 
 export interface IVeoDomain {
-  displayName: string
-  searchesUri: string
-  targetUri: string
+  displayName: string;
+  searchesUri: string;
+  targetUri: string;
 }
 
 export interface IVeoUnit {
-  id: string
-  createdAt: string
-  createdBy: string
-  updatedAt: string
-  updatedBy: string
-  name: string
-  description: string
-  domains: IVeoDomain[]
-  units: IVeoUnit[]
+  id: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+  name: string;
+  description: string;
+  domains: IVeoDomain[];
+  units: IVeoUnit[];
 }
 
 export interface IVeoEntity {
-  id: string
-  name: string
-  abbreviation: string
-  displayName: string
-  createdAt: string
-  createdBy: string
-  updatedAt: string
-  updatedBy: string
-  domains: IVeoDomain[]
-  owner: IVeoLink
-  links: IVeoCustomLinks
-  customAspects: IVeoCustomAspects
-  subType: IVeoEntitySubtypes
-  members: IVeoLink[] // Only contains items if entity is of type scope
-  parts: IVeoLink[] // Only contains items if entity is NOT of type scope
-  description: string
-  descriptionShort?: string // Frontend only attribute used in VeoObjectList.vue
-  type: string
+  id: string;
+  name: string;
+  abbreviation: string;
+  displayName: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+  domains: IVeoDomain[];
+  owner: IVeoLink;
+  links: IVeoCustomLinks;
+  customAspects: IVeoCustomAspects;
+  subType: IVeoEntitySubtypes;
+  members: IVeoLink[]; // Only contains items if entity is of type scope
+  parts: IVeoLink[]; // Only contains items if entity is NOT of type scope
+  description: string;
+  descriptionShort?: string; // Frontend only attribute used in VeoObjectList.vue
+  type: string;
 }
 
 export interface IVeoEntitySubtypes {
-  [key: string]: string
+  [key: string]: string;
 }
 
 export interface IVeoLink {
-  displayName: string
-  resourcesUri: string
-  targetUri: string
-  searchesUri: string
+  displayName: string;
+  resourcesUri: string;
+  targetUri: string;
+  searchesUri: string;
 }
 
 export interface IVeoTranslations {
   lang: {
-    [key: string]: IVeoTranslationCollection
-  }
+    [key: string]: IVeoTranslationCollection;
+  };
 }
 
 export interface IVeoFormSchemaMeta {
-  id?: string
-  modelType: string
-  name: string
-  subType: string | null
+  id?: string;
+  modelType: string;
+  name: string;
+  subType: string | null;
 }
 
 export interface IVeoFormSchema extends IVeoFormSchemaMeta {
-  content: IVeoFormSchemaItem,
-  translation: IVeoFormSchemaTranslationCollection
+  content: IVeoFormSchemaItem;
+  translation: IVeoFormSchemaTranslationCollection;
 }
 
 export interface IVeoFormSchemaItemRule {
-  effect: 'SHOW' | 'HIDE'
+  effect: 'SHOW' | 'HIDE';
   condition: {
-    scope: string
-    schema: { enum: (string | boolean | number)[] }
-  }
+    scope: string;
+    schema: { enum: (string | boolean | number)[] };
+  };
 }
 
 export interface IVeoFormSchemaItem {
-  type: IVeoFormSchemaContentType
-  scope?: string
-  text?: string
-  options: IVeoFormSchemaItemOptions
-  elements?: IVeoFormSchemaItem[]
-  rule?: IVeoFormSchemaItemRule
+  type: IVeoFormSchemaContentType;
+  scope?: string;
+  text?: string;
+  options: IVeoFormSchemaItemOptions;
+  elements?: IVeoFormSchemaItem[];
+  rule?: IVeoFormSchemaItemRule;
 }
 
 export interface IVeoFormSchemaItemOptions {
-  label?: string
-  format?: string
-  direction?: string
+  label?: string;
+  format?: string;
+  direction?: string;
 }
 
 export interface IVeoFormSchemaTranslationCollectionItem {
-  [key: string]: string
+  [key: string]: string;
 }
 
 export interface IVeoFormSchemaTranslationCollection {
-  [key: string]: IVeoFormSchemaTranslationCollectionItem
+  [key: string]: IVeoFormSchemaTranslationCollectionItem;
 }
 
 export interface IVeoFormSchemaCustomTranslationEvent {
-  [key: string]: string | undefined
+  [key: string]: string | undefined;
 }
 
 export interface IVeoFormSchemaItemUpdateEvent {
-  formSchemaPointer: string
-  data: IVeoFormSchemaItem
+  formSchemaPointer: string;
+  data: IVeoFormSchemaItem;
 }
 
 export interface IVeoFormSchemaItemDeleteEvent {
-  formSchemaPointer: string
+  formSchemaPointer: string;
 }
 
 export interface IVeoReportsMeta {
-  [key: string]: IVeoReportMeta
+  [key: string]: IVeoReportMeta;
 }
 
 export interface IVeoReportMeta {
   name: {
-    [key: string]: string
-  }
+    [key: string]: string;
+  };
   description: {
-    [key: string]: string
-  }
-  outputTypes: string[]
-  multipleTargetsSupported: boolean
-  targetTypes: string[]
+    [key: string]: string;
+  };
+  outputTypes: string[];
+  multipleTargetsSupported: boolean;
+  targetTypes: string[];
 }
 
 export interface IVeoCreateReportData {
-  outputType: string
+  outputType: string;
   targets: {
-    type: string
-    id: string
-  }[]
+    type: string;
+    id: string;
+  }[];
 }
 
 export interface IVeoObjectHistoryEntry {
-  author: string
-  content: IVeoEntity
-  time: string
-  type: string
-  changeNumber: number
+  author: string;
+  content: IVeoEntity;
+  time: string;
+  type: string;
+  changeNumber: number;
 }
 
 /**
  * 2. Types of user generated data
  */
 interface IVeoCustomObject {
-  applicableTo: IVeoLink[]
-  attributes: IVeoCustomAttributes
-  domains: IVeoDomain[]
+  applicableTo: IVeoLink[];
+  attributes: IVeoCustomAttributes;
+  domains: IVeoDomain[];
 }
 
 export interface IVeoCustomLinks {
-  [key: string]: IVeoCustomLink
+  [key: string]: IVeoCustomLink;
 }
 
 export interface IVeoCustomLink extends IVeoCustomObject {
-  name: string
-  target: IVeoLink
+  name: string;
+  target: IVeoLink;
 }
 
 export interface IVeoCustomAspects {
-  [key: string]: IVeoCustomAspect
+  [key: string]: IVeoCustomAspect;
 }
 
-export interface IVeoCustomAspect extends IVeoCustomObject {
-
-}
+export interface IVeoCustomAspect extends IVeoCustomObject {}
 
 // At the moment, we only use strings in the frontend for custom attributes.
 // Later on, there are plans to use numbers and booleans as well.
 export interface IVeoCustomAttributes {
-  [key: string]: string
+  [key: string]: string;
 }
 
 export interface IVeoReactiveFormAction {
-  attributeName: string
-  handler: (newValue: string, newObject: IBaseObject, oldObject: IBaseObject) => void
+  attributeName: string;
+  handler: (newValue: string, newObject: IBaseObject, oldObject: IBaseObject) => void;
 }
 
 /**
  * 3. Objectschema and formschema types
- * 
+ *
  * NOTE: THESE TYPES ONLY GET USED FOR SCHEMAS, ALL USER DATA WILL USE THE ABOVE types.
  */
 
 /**
- * 
+ *
  */
 export interface IVeoObjectSchema {
-  $schema: string
-  type: JSONSchema7TypeName
+  $schema: string;
+  type: JSONSchema7TypeName;
   properties: {
-    abbreviation: IVeoObjectSchemaProperty
-    createdAt: IVeoObjectSchemaProperty
-    createdBy: IVeoObjectSchemaProperty
-    customAspects: IVeoObjectSchemaCustomObjects
-    description: IVeoObjectSchemaProperty
-    domains: IVeoObjectSchemaArray
-    id: IVeoObjectSchemaProperty
-    links: IVeoObjectSchemaCustomObjects
-    name: IVeoObjectSchemaProperty
-    owner: IVeoObjectSchemaObject
-    parts: IVeoObjectSchemaArray
-    subType: IVeoObjectSchemaProperty
-    updatedAt: IVeoObjectSchemaProperty
-    updatedBy: IVeoObjectSchemaProperty
-    translations?: IVeoObjectSchemaTranslations
-  }
-  required: string[]
-  title: string
-  description: string
+    abbreviation: IVeoObjectSchemaProperty;
+    createdAt: IVeoObjectSchemaProperty;
+    createdBy: IVeoObjectSchemaProperty;
+    customAspects: IVeoObjectSchemaCustomObjects;
+    description: IVeoObjectSchemaProperty;
+    domains: IVeoObjectSchemaArray;
+    id: IVeoObjectSchemaProperty;
+    links: IVeoObjectSchemaCustomObjects;
+    name: IVeoObjectSchemaProperty;
+    owner: IVeoObjectSchemaObject;
+    parts: IVeoObjectSchemaArray;
+    subType: IVeoObjectSchemaProperty;
+    updatedAt: IVeoObjectSchemaProperty;
+    updatedBy: IVeoObjectSchemaProperty;
+    translations?: IVeoObjectSchemaTranslations;
+  };
+  required: string[];
+  title: string;
+  description: string;
 }
 
 export interface IVeoObjectSchemaProperty {
-  type?: JSONSchema7TypeName
-  title?: string
-  description?: string
-  pattern?: string
-  [key: string]: any
+  type?: JSONSchema7TypeName;
+  title?: string;
+  description?: string;
+  pattern?: string;
+  [key: string]: any;
 }
 
 export interface IVeoObjectSchemaCustomObjects {
-  type: JSONSchema7TypeName
-  title: string
-  description: string
+  type: JSONSchema7TypeName;
+  title: string;
+  description: string;
   properties: {
-    [key: string]: IVeoObjectSchemaCustomAspect | IVeoObjectSchemaCustomLink
-  }
+    [key: string]: IVeoObjectSchemaCustomAspect | IVeoObjectSchemaCustomLink;
+  };
 }
 
 export interface IVeoObjectSchemaCustomAspect {
-  type: 'object'
+  type: 'object';
   properties: {
-    id: IVeoObjectSchemaProperty
-    applicableTo: IVeoObjectSchemaArray
-    domains: IVeoObjectSchemaArray
-    references: IVeoObjectSchemaArray
-    attributes: IVeoObjectSchemaObject
-  }
-  additionalProperties: boolean
-  required: string[]
+    id: IVeoObjectSchemaProperty;
+    applicableTo: IVeoObjectSchemaArray;
+    domains: IVeoObjectSchemaArray;
+    references: IVeoObjectSchemaArray;
+    attributes: IVeoObjectSchemaObject;
+  };
+  additionalProperties: boolean;
+  required: string[];
 }
 
 export interface IVeoObjectSchemaCustomLink {
-  type: 'array',
+  type: 'array';
   items: {
-    type: 'object'
+    type: 'object';
     properties: {
-      id: IVeoObjectSchemaProperty
-      applicableTo: IVeoObjectSchemaArray
-      domains: IVeoObjectSchemaArray
-      references: IVeoObjectSchemaArray
-      abbreviation: IVeoObjectSchemaProperty
-      description: IVeoObjectSchemaProperty
-      name: IVeoObjectSchemaProperty
-      target: IVeoObjectSchemaObject
-      attributes: IVeoObjectSchemaObject
-    }
-    additionalProperties: boolean
-    required: string[]
-  }
+      id: IVeoObjectSchemaProperty;
+      applicableTo: IVeoObjectSchemaArray;
+      domains: IVeoObjectSchemaArray;
+      references: IVeoObjectSchemaArray;
+      abbreviation: IVeoObjectSchemaProperty;
+      description: IVeoObjectSchemaProperty;
+      name: IVeoObjectSchemaProperty;
+      target: IVeoObjectSchemaObject;
+      attributes: IVeoObjectSchemaObject;
+    };
+    additionalProperties: boolean;
+    required: string[];
+  };
 }
 
 export interface IVeoObjectSchemaObject extends IVeoObjectSchemaProperty {
-  type: 'object'
+  type: 'object';
   properties: {
-    [key: string]: IVeoObjectSchemaProperty
-  }
+    [key: string]: IVeoObjectSchemaProperty;
+  };
 }
 
 export interface IVeoObjectSchemaArray extends IVeoObjectSchemaProperty {
-  type: 'array'
-  items: any
+  type: 'array';
+  items: any;
 }
 
 export interface IVeoObjectSchemaTranslations {
-  [key: string]: IVeoTranslationCollection
+  [key: string]: IVeoTranslationCollection;
 }
 
 export interface IVeoTranslationCollection {
-  [key: string]: string
+  [key: string]: string;
 }

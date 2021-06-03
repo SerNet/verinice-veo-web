@@ -1,28 +1,35 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="$t('deleteControlHeadline')">
+  <VeoDialog
+    v-model="dialog.value"
+    :headline="$t('deleteControlHeadline')"
+  >
     <template #default>
       {{ $t('deleteControlConfirmation') }}
     </template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('input', false)">
+      <v-btn
+        text
+        color="primary"
+        @click="$emit('input', false)"
+      >
         {{ $t('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" @click="$emit('delete')">
+      <v-btn
+        text
+        color="primary"
+        @click="$emit('delete')"
+      >
         {{ $t('global.button.delete') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  watch
-} from '@nuxtjs/composition-api'
+import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
 
 interface IProps {
-  value: boolean
+  value: boolean;
 }
 
 export default defineComponent<IProps>({
@@ -36,36 +43,36 @@ export default defineComponent<IProps>({
     /**
      * Common dialog stuff (opening and closing)
      */
-    const dialog = ref({ value: props.value })
+    const dialog = ref({ value: props.value });
 
     watch(
       () => props.value,
       (val: boolean) => {
-        dialog.value.value = val
+        dialog.value.value = val;
       }
-    )
+    );
 
     watch(
       () => dialog.value.value,
       (val: boolean) => {
         if (!val) {
-          context.emit('input', val)
+          context.emit('input', val);
         }
       }
-    )
+    );
 
     watch(
       () => dialog.value.value,
       (val: boolean) => {
         if (!val) {
-          context.emit('input', val)
+          context.emit('input', val);
         }
       }
-    )
+    );
 
-    return { dialog }
+    return { dialog };
   }
-})
+});
 </script>
 
 <i18n>

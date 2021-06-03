@@ -1,6 +1,17 @@
 <template>
-  <v-col v-if="visible" cols="12" md="auto" class="vf-layout vf-group" :id="groupId">
-    <v-row dense class="flex-column" :class="dynamicClasses" :style="options && options.style">
+  <v-col
+    v-if="visible"
+    :id="groupId"
+    cols="12"
+    md="auto"
+    class="vf-layout vf-group"
+  >
+    <v-row
+      dense
+      class="flex-column"
+      :class="dynamicClasses"
+      :style="options && options.style"
+    >
       <v-col v-if="options && options.label">
         <h3>{{ options.label }}</h3>
       </v-col>
@@ -18,13 +29,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
-import {
-  calculateConditionsScore,
-  Helpful,
-  LayoutProps
-} from '~/components/forms/Collection/utils/helpers'
+import { calculateConditionsScore, Helpful, LayoutProps } from '~/components/forms/Collection/utils/helpers';
 
 export default Vue.extend({
   name: 'Group',
@@ -38,33 +45,30 @@ export default Vue.extend({
     return {
       groupIdPattern: /\//g,
       replaceWith: '-'
-    }
+    };
   },
   computed: {
     directionClass(): string {
       if (this.options && this.options.direction === 'horizontal') {
-        return 'flex-row direction-horizontal'
+        return 'flex-row direction-horizontal';
       } else {
-        return 'flex-column direction-vertical'
+        return 'flex-column direction-vertical';
       }
     },
     dynamicClasses(): string[] {
-      return [this.options && this.options.class ? this.options.class : '']
+      return [this.options && this.options.class ? this.options.class : ''];
     },
     groupId(): string {
-      return this.formSchemaPointer.slice(2).replace(this.groupIdPattern, this.replaceWith)
+      return this.formSchemaPointer.slice(2).replace(this.groupIdPattern, this.replaceWith);
     }
   }
-})
+});
 
 export const helpers: Helpful<LayoutProps> = {
   matchingScore(props) {
-    return calculateConditionsScore(
-      [typeof props.options !== 'undefined' && props.options.format === 'group'],
-      Number.EPSILON
-    )
+    return calculateConditionsScore([typeof props.options !== 'undefined' && props.options.format === 'group'], Number.EPSILON);
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

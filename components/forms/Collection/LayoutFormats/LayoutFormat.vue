@@ -1,9 +1,9 @@
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
-import * as Group from './Group.vue'
+import * as Group from './Group.vue';
 
-const components = [Group]
+const components = [Group];
 
 export default Vue.extend({
   name: 'LayoutFormat',
@@ -15,12 +15,10 @@ export default Vue.extend({
     visible: Boolean
   },
   render(h, context) {
-    const props = context.props
+    const props = context.props;
 
     function appropriateComponent() {
-      return components.sort(
-        (a: any, b: any) => b.helpers.matchingScore({ ...props }) - a.helpers.matchingScore({ ...props })
-      )[0].default
+      return components.sort((a: any, b: any) => b.helpers.matchingScore({ ...props }) - a.helpers.matchingScore({ ...props }))[0].default;
     }
 
     return h(
@@ -30,9 +28,9 @@ export default Vue.extend({
         on: {}
       },
       context.children
-    )
+    );
   }
-})
+});
 </script>
 
 <style scoped></style>

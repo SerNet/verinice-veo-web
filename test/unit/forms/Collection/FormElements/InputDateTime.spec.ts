@@ -1,17 +1,17 @@
-import Vue from 'vue'
-import { mount } from '@vue/test-utils'
-import Vuetify from 'vuetify'
-import flushPromises from 'flush-promises'
+import Vue from 'vue';
+import { mount } from '@vue/test-utils';
+import Vuetify from 'vuetify';
+import flushPromises from 'flush-promises';
 
-import { install as VeeValidate } from '@/plugins/vee-validate'
-import VeoForm from '~/components/forms/VeoForm.vue'
-import { Renderable } from '~/types/renderable'
-Vue.use(VeeValidate)
-Vue.use(Vuetify)
-const vuetify = new Vuetify()
+import { install as VeeValidate } from '@/plugins/vee-validate';
+import VeoForm from '~/components/forms/VeoForm.vue';
+import { Renderable } from '~/types/renderable';
+Vue.use(VeeValidate);
+Vue.use(Vuetify);
+const vuetify = new Vuetify();
 
 describe('InputDateTime.vue', () => {
-  it('should render input-date-time element for date-times', async() => {
+  it('should render input-date-time element for date-times', async () => {
     const form: Renderable = {
       schema: {
         properties: {
@@ -40,39 +40,35 @@ describe('InputDateTime.vue', () => {
       value: {
         dueDateTime: '2020-08-05T12:05:00+02:00'
       }
-    }
+    };
 
     const wrapper = mount(VeoForm, {
       vuetify,
       propsData: { ...form }
-    })
+    });
 
     // Fixes immediate:true bugs with setProps() of vue test utils
     // https://github.com/vuejs/vue-test-utils/issues/1140#issuecomment-544156893
-    wrapper.vm.$parent.$forceUpdate()
-    await wrapper.vm.$nextTick()
+    wrapper.vm.$parent.$forceUpdate();
+    await wrapper.vm.$nextTick();
 
-    const el = wrapper.find(
-      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control .v-input.v-text-field input'
-    )
+    const el = wrapper.find('.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control .v-input.v-text-field input');
 
-    expect(el.exists()).toBe(true)
+    expect(el.exists()).toBe(true);
 
-    const inputElement = wrapper.find(
-      '.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control .v-input.v-text-field input'
-    ).element as HTMLInputElement
+    const inputElement = wrapper.find('.vf-wrapper > .vf-layout > .row > .col > .row > .vf-control .v-input.v-text-field input').element as HTMLInputElement;
 
-    expect(wrapper.element).toMatchSnapshot('Initial render')
+    expect(wrapper.element).toMatchSnapshot('Initial render');
 
-    expect(inputElement.value).toBe('2020-08-05T12:05:00+02:00')
+    expect(inputElement.value).toBe('2020-08-05T12:05:00+02:00');
 
     wrapper.setProps({
       value: { dueDateTime: '1999-08-05T12:05:00+02:00' }
-    })
-    await flushPromises()
+    });
+    await flushPromises();
 
-    expect(wrapper.element).toMatchSnapshot('Updated DateTime')
+    expect(wrapper.element).toMatchSnapshot('Updated DateTime');
 
-    expect(inputElement.value).toBe('1999-08-05T12:05:00+02:00')
-  })
-})
+    expect(inputElement.value).toBe('1999-08-05T12:05:00+02:00');
+  });
+});

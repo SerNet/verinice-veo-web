@@ -1,5 +1,8 @@
 <template>
-  <VeoDialog v-model="dialog" :headline="$t('headline')">
+  <VeoDialog
+    v-model="dialog"
+    :headline="$t('headline')"
+  >
     <template #default>
       {{ $t('create_entity') }}
       <v-select
@@ -8,7 +11,11 @@
       />
     </template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('input', false)">
+      <v-btn
+        text
+        color="primary"
+        @click="$emit('input', false)"
+      >
         {{ $t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
@@ -25,13 +32,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
 
 interface IData {
-  dialog: boolean
-  noWatch: boolean
-  type?: string
+  dialog: boolean;
+  noWatch: boolean;
+  type?: string;
 }
 
 export default Vue.extend({
@@ -50,28 +57,28 @@ export default Vue.extend({
       dialog: false,
       noWatch: false,
       type: undefined
-    } as IData
+    } as IData;
   },
   watch: {
     value(newValue: boolean) {
-      this.noWatch = true
-      this.dialog = newValue
-      this.noWatch = false
+      this.noWatch = true;
+      this.dialog = newValue;
+      this.noWatch = false;
     },
     dialog(newValue: boolean) {
       if (!this.noWatch) {
-        this.$emit('input', newValue)
+        this.$emit('input', newValue);
       }
 
       if (newValue) {
-        this.type = undefined
+        this.type = undefined;
       }
     }
   },
   mounted() {
-    this.dialog = this.value
+    this.dialog = this.value;
   }
-})
+});
 </script>
 
 <i18n>

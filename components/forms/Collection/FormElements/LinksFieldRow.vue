@@ -1,5 +1,8 @@
 <template>
-  <v-row dense class="flex-column">
+  <v-row
+    dense
+    class="flex-column"
+  >
     <v-col>
       <!-- TODO: change name with displayName after it is implemented -->
       <v-autocomplete
@@ -18,7 +21,13 @@
         clearable
       >
         <template #prepend-item>
-          <v-btn color="primary" block text tile @click.stop="onDialogOpen('DIALOG_CREATE')">
+          <v-btn
+            color="primary"
+            block
+            text
+            tile
+            @click.stop="onDialogOpen('DIALOG_CREATE')"
+          >
             {{ $t('createTargetObject') }}
           </v-btn>
           <v-divider />
@@ -32,17 +41,37 @@
         </template>
 
         <template #item="{ item, on, attrs }">
-          <v-list-item v-bind="attrs" class="autocomplete-list-item" v-on="on">
+          <v-list-item
+            v-bind="attrs"
+            class="autocomplete-list-item"
+            v-on="on"
+          >
             <v-list-item-content>
               <!-- TODO: change name with displayName after it is implemented -->
               <v-list-item-title v-text="item.name" />
             </v-list-item-content>
             <v-list-item-action>
               <div class="autocomplete-list-item-action-buttons">
-                <v-btn icon x-small text color="primary" class="mr-2" :disabled="disabled" @click.stop="onDialogOpen('DIALOG_UPDATE', item)">
+                <v-btn
+                  icon
+                  x-small
+                  text
+                  color="primary"
+                  class="mr-2"
+                  :disabled="disabled"
+                  @click.stop="onDialogOpen('DIALOG_UPDATE', item)"
+                >
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn icon x-small text color="primary" class="mr-2" :disabled="disabled" @click.stop="onDialogOpen('DIALOG_DELETE', item)">
+                <v-btn
+                  icon
+                  x-small
+                  text
+                  color="primary"
+                  class="mr-2"
+                  :disabled="disabled"
+                  @click.stop="onDialogOpen('DIALOG_DELETE', item)"
+                >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </div>
@@ -63,10 +92,18 @@
         @input="onInput"
       />
     </v-col>
-    <v-col v-else class="py-4 pl-1 links-field-row-no-attributes font-italic">
+    <v-col
+      v-else
+      class="py-4 pl-1 links-field-row-no-attributes font-italic"
+    >
       {{ $t('noAttributes') }}
     </v-col>
-    <v-dialog :value="!!dialog" persistent max-width="500" @input="dialog = !$event ? false : dialog">
+    <v-dialog
+      :value="!!dialog"
+      persistent
+      max-width="500"
+      @input="dialog = !$event ? false : dialog"
+    >
       <v-card v-if="dialog === 'DIALOG_CREATE'">
         <v-card-title class="headline">
           {{ $t('createTargetObject') }}
@@ -84,7 +121,11 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" text @click="onDialogCancel">
+          <v-btn
+            color="primary"
+            text
+            @click="onDialogCancel"
+          >
             {{ $t('global.button.cancel') }}
           </v-btn>
           <v-btn
@@ -117,7 +158,11 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" text @click="onDialogCancel">
+          <v-btn
+            color="primary"
+            text
+            @click="onDialogCancel"
+          >
             {{ $t('global.button.cancel') }}
           </v-btn>
           <!-- TODO: change name with displayName after it is implemented -->
@@ -147,10 +192,19 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" text @click="onDialogCancel">
+          <v-btn
+            color="primary"
+            text
+            @click="onDialogCancel"
+          >
             {{ $t('global.button.cancel') }}
           </v-btn>
-          <v-btn color="primary" :loading="dialogLoading" text @click="onDialogAcceptDelete">
+          <v-btn
+            color="primary"
+            :loading="dialogLoading"
+            text
+            @click="onDialogAcceptDelete"
+          >
             {{ $t('global.button.delete') }}
           </v-btn>
         </v-card-actions>
@@ -161,52 +215,43 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue'
-import { JSONSchema7 } from 'json-schema'
-import vjp from 'vue-json-pointer'
-import { UISchema, UISchemaElement } from '@/types/UISchema'
-import {
-  BaseObject,
-  IApi,
-  ILinksFieldDialogNewObject,
-  linksFieldDialogObjectSchema,
-  linksFieldDialogFormSchema
-} from '~/components/forms/utils'
-import {
-  IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslationCollection
-} from '~/types/VeoTypes'
+import Vue, { PropOptions } from 'vue';
+import { JSONSchema7 } from 'json-schema';
+import vjp from 'vue-json-pointer';
+import { UISchema, UISchemaElement } from '@/types/UISchema';
+import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 interface ITarget {
-  targetUri: string | undefined
-  type: string
+  targetUri: string | undefined;
+  type: string;
 }
 
 interface IItem {
-  name: string
+  name: string;
   // TODO: activate displayName after it is implemented
   // displayName: string
   owner: {
-    targetUri: string
-  }
-  id: string
-  [key: string]: any
+    targetUri: string;
+  };
+  id: string;
+  [key: string]: any;
 }
 
-type DialogEnum = 'DIALOG_CREATE' | 'DIALOG_UPDATE' | 'DIALOG_DELETE'
+type DialogEnum = 'DIALOG_CREATE' | 'DIALOG_UPDATE' | 'DIALOG_DELETE';
 
 interface IData {
-  dialog: DialogEnum | false
-  loading: boolean
-  dialogLoading: boolean
-  search: string | undefined
-  items: IItem[]
-  itemInDialog: IItem | undefined
-  newObject: ILinksFieldDialogNewObject
-  targetId: string | undefined
-  objectTypePluralMap: BaseObject
-  linksFieldDialogObjectSchema: JSONSchema7
-  linksFieldDialogFormSchema: UISchema
+  dialog: DialogEnum | false;
+  loading: boolean;
+  dialogLoading: boolean;
+  search: string | undefined;
+  items: IItem[];
+  itemInDialog: IItem | undefined;
+  newObject: ILinksFieldDialogNewObject;
+  targetId: string | undefined;
+  objectTypePluralMap: BaseObject;
+  linksFieldDialogObjectSchema: JSONSchema7;
+  linksFieldDialogFormSchema: UISchema;
 }
 
 export default Vue.extend({
@@ -274,13 +319,11 @@ export default Vue.extend({
       },
       linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
       linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema }
-    }
+    };
   },
   computed: {
     directionClass(): string {
-      return this.options && this.options.direction === 'vertical'
-        ? 'flex-column direction-vertical'
-        : 'flex-row direction-horizontal'
+      return this.options && this.options.direction === 'vertical' ? 'flex-column direction-vertical' : 'flex-row direction-horizontal';
     },
     ui() {
       return {
@@ -290,52 +333,52 @@ export default Vue.extend({
           format: 'group'
         },
         elements: this.elements
-      }
+      };
     },
     targetUri(): string | undefined {
-      return this.targetId ? `/${this.objectTypePluralMap[this.targetType]}/${this.targetId}` : undefined
+      return this.targetId ? `/${this.objectTypePluralMap[this.targetType]}/${this.targetId}` : undefined;
     },
     targetType(): string {
       // TODO: replace this function by the line below, after target.type in ObjectSchema is replaced by "person", "process", etc
       // return (this.schema.items as any).properties.target.properties
       //   .type.enum[0]
-      return (this.schema.items as any).properties.target.properties.type.enum[0]
+      return (this.schema.items as any).properties.target.properties.type.enum[0];
     },
     target(): ITarget | undefined {
       return {
         targetUri: this.targetUri,
         type: this.targetType
         // TODO: Missing name?
-      }
+      };
     },
     selected: {
       get() {
-        const selected = this.value?.target?.targetUri?.split('/')?.pop()
-        return selected || undefined
+        const selected = this.value?.target?.targetUri?.split('/')?.pop();
+        return selected || undefined;
       },
       set(val: string | undefined) {
-        this.onInputAutocomplete(val)
+        this.onInputAutocomplete(val);
       }
     }
   },
   watch: {
     value: {
       async handler(v: BaseObject) {
-        const displayName = v?.target?.displayName
-        await this.fetchItems(displayName)
+        const displayName = v?.target?.displayName;
+        await this.fetchItems(displayName);
       },
       immediate: true
     },
     search: {
       async handler(val: string | undefined | null) {
         if (val) {
-          const item = this.items.find(el => el.name === val)
+          const item = this.items.find((el) => el.name === val);
           //  TODO: change name with displayName after it is implemented
           if (!item || (item && item.id !== this.selected)) {
-            await this.fetchItems(val)
+            await this.fetchItems(val);
           }
         } else {
-          await this.fetchItems()
+          await this.fetchItems();
         }
       },
       immediate: true
@@ -343,74 +386,74 @@ export default Vue.extend({
   },
   methods: {
     async fetchItems(filter?: string) {
-      this.loading = true
+      this.loading = true;
       try {
-        const displayFilter = filter ? { displayName: filter } : undefined
+        const displayFilter = filter ? { displayName: filter } : undefined;
         // TODO: Limit result count with pagination API
-        const items = (await this.api.fetchAll(this.targetType, displayFilter)) as IItem[]
-        this.items = items.slice(0, 100)
+        const items = (await this.api.fetchAll(this.targetType, displayFilter)) as IItem[];
+        this.items = items.slice(0, 100);
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
     onInput(event: any) {
-      this.$emit('input', event)
+      this.$emit('input', event);
     },
     onDialogOpen(dialogType: DialogEnum, item?: IItem) {
-      this.dialog = dialogType
+      this.dialog = dialogType;
 
       if (item) {
-        this.itemInDialog = item
+        this.itemInDialog = item;
       }
     },
     onDialogCancel() {
-      this.dialog = false
-      this.newObject = {}
-      this.itemInDialog = undefined
+      this.dialog = false;
+      this.newObject = {};
+      this.itemInDialog = undefined;
     },
     async onDialogAcceptCreate() {
-      this.dialogLoading = true
+      this.dialogLoading = true;
       if (this.newObject) {
-        const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem
-        this.items.push(createItem)
-        this.selected = createItem.id
+        const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem;
+        this.items.push(createItem);
+        this.selected = createItem.id;
       }
-      this.dialogLoading = false
-      this.dialog = false
-      this.newObject = {}
+      this.dialogLoading = false;
+      this.dialog = false;
+      this.newObject = {};
     },
     async onDialogAcceptUpdate() {
-      this.dialogLoading = true
+      this.dialogLoading = true;
       if (this.itemInDialog) {
-        await this.api.update(this.targetType, this.itemInDialog)
-        const itemIndex = this.items.findIndex(item => this.itemInDialog && item.id === this.itemInDialog.id)
-        this.items.splice(itemIndex, 1, this.itemInDialog)
+        await this.api.update(this.targetType, this.itemInDialog);
+        const itemIndex = this.items.findIndex((item) => this.itemInDialog && item.id === this.itemInDialog.id);
+        this.items.splice(itemIndex, 1, this.itemInDialog);
       }
-      this.dialogLoading = false
-      this.dialog = false
-      this.newObject = {}
+      this.dialogLoading = false;
+      this.dialog = false;
+      this.newObject = {};
     },
     async onDialogAcceptDelete() {
-      this.dialogLoading = true
+      this.dialogLoading = true;
       if (this.itemInDialog) {
-        await this.api.delete(this.targetType, this.itemInDialog.id)
-        const itemIndex = this.items.findIndex(item => this.itemInDialog && item.id === this.itemInDialog.id)
-        this.items.splice(itemIndex, 1)
+        await this.api.delete(this.targetType, this.itemInDialog.id);
+        const itemIndex = this.items.findIndex((item) => this.itemInDialog && item.id === this.itemInDialog.id);
+        this.items.splice(itemIndex, 1);
       }
-      this.dialogLoading = false
-      this.dialog = false
-      this.newObject = {}
+      this.dialogLoading = false;
+      this.dialog = false;
+      this.newObject = {};
     },
     onInputAutocomplete(event: string | undefined) {
-      this.targetId = event
+      this.targetId = event;
       vjp.set(this.value, '/target', {
         ...this.target,
         targetUri: this.targetUri
-      })
-      this.$emit('input', this.value)
+      });
+      this.$emit('input', this.value);
     }
   }
-})
+});
 </script>
 
 <i18n>

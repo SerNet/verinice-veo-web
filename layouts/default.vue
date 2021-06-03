@@ -1,13 +1,27 @@
 <template>
   <v-app>
-    <v-app-bar class="veo-app-bar" app clipped-left flat>
+    <v-app-bar
+      class="veo-app-bar"
+      app
+      clipped-left
+      flat
+    >
       <div class="d-flex">
-        <v-app-bar-nav-icon v-if="$vuetify.breakpoint.xs" @click="drawer = true" />
-        <nuxt-link to="/" class="text-decoration-none">
+        <v-app-bar-nav-icon
+          v-if="$vuetify.breakpoint.xs"
+          @click="drawer = true"
+        />
+        <nuxt-link
+          to="/"
+          class="text-decoration-none"
+        >
           <VeoAppBarLogo class="ml-2" />
         </nuxt-link>
       </div>
-      <div class="d-flex align-center" style="width: 60%; max-width: 500px; cursor: no-drop">
+      <div
+        class="d-flex align-center"
+        style="width: 60%; max-width: 500px; cursor: no-drop"
+      >
         <v-text-field
           :label="$t('search.label')"
           hide-details
@@ -29,118 +43,118 @@
       <span v-else />
     </v-app-bar>
     <VeoPrimaryNavigation v-model="drawer" />
-    <v-main style="max-height: 100vh;" class="overflow-hidden">
+    <v-main
+      style="max-height: 100vh;"
+      class="overflow-hidden"
+    >
       <VeoBreadcrumbs />
       <VeoPageWrapper>
         <nuxt />
       </VeoPageWrapper>
     </v-main>
-    <VeoSnackbar v-model="snackbar.value" v-bind="snackbar" />
+    <VeoSnackbar
+      v-model="snackbar.value"
+      v-bind="snackbar"
+    />
     <VeoAlert
       v-model="alert.value"
       v-bind="alert"
       style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
     />
-    <VeoNewUnitDialog v-model="newUnitDialog.value" v-bind="newUnitDialog" />
+    <VeoNewUnitDialog
+      v-model="newUnitDialog.value"
+      v-bind="newUnitDialog"
+    />
   </v-app>
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  Ref,
-  ref,
-  useContext
-} from '@nuxtjs/composition-api'
+import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
 
-import {
-  ALERT_TYPE,
-  IVeoEventPayload,
-  VeoEvents
-} from '~/types/VeoGlobalEvents'
-import { createUUIDUrlParam } from '~/lib/utils'
+import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { createUUIDUrlParam } from '~/lib/utils';
 
 interface IProps {}
 
 export default defineComponent<IProps>({
   setup(_props, context) {
-    const { $user } = useContext()
+    const { $user } = useContext();
     //
     // Global navigation
     //
-    const drawer: Ref<boolean> = ref(false)
+    const drawer: Ref<boolean> = ref(false);
 
     //
     // Unit creation and navigation
     //
-    const newUnitDialog = ref({ value: false, persistent: false })
+    const newUnitDialog = ref({ value: false, persistent: false });
 
     function createUnit(persistent: boolean = false) {
-      newUnitDialog.value.value = true
-      newUnitDialog.value.persistent = persistent
+      newUnitDialog.value.value = true;
+      newUnitDialog.value.persistent = persistent;
     }
 
     //
     // Handling of global events
     //
-    const alert = ref({ value: false, text: '', title: '', type: ALERT_TYPE.INFO })
-    const snackbar = ref({ value: false, text: '' })
+    const alert = ref({ value: false, text: '', title: '', type: ALERT_TYPE.INFO });
+    const snackbar = ref({ value: false, text: '' });
 
     // Alert and snackbar events
     context.root.$on(VeoEvents.ALERT_ERROR, (payload: IVeoEventPayload) => {
-      alert.value.text = payload.text
-      alert.value.title = payload.title || ''
-      alert.value.type = ALERT_TYPE.ERROR
-      alert.value.value = true
-    })
+      alert.value.text = payload.text;
+      alert.value.title = payload.title || '';
+      alert.value.type = ALERT_TYPE.ERROR;
+      alert.value.value = true;
+    });
     context.root.$on(VeoEvents.ALERT_INFO, (payload: IVeoEventPayload) => {
-      alert.value.text = payload.text
-      alert.value.title = payload.title || ''
-      alert.value.type = ALERT_TYPE.INFO
-      alert.value.value = true
-    })
+      alert.value.text = payload.text;
+      alert.value.title = payload.title || '';
+      alert.value.type = ALERT_TYPE.INFO;
+      alert.value.value = true;
+    });
     context.root.$on(VeoEvents.ALERT_SUCCESS, (payload: IVeoEventPayload) => {
-      alert.value.text = payload.text
-      alert.value.title = payload.title || ''
-      alert.value.type = ALERT_TYPE.SUCCESS
-      alert.value.value = true
-    })
+      alert.value.text = payload.text;
+      alert.value.title = payload.title || '';
+      alert.value.type = ALERT_TYPE.SUCCESS;
+      alert.value.value = true;
+    });
     context.root.$on(VeoEvents.ALERT_WARNING, (payload: IVeoEventPayload) => {
-      alert.value.text = payload.text
-      alert.value.title = payload.title || ''
-      alert.value.type = ALERT_TYPE.WARNING
-      alert.value.value = true
-    })
+      alert.value.text = payload.text;
+      alert.value.title = payload.title || '';
+      alert.value.type = ALERT_TYPE.WARNING;
+      alert.value.value = true;
+    });
     context.root.$on(VeoEvents.ALERT_CLOSE, () => {
-      alert.value.value = false
-    })
+      alert.value.value = false;
+    });
 
     context.root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: IVeoEventPayload) => {
-      snackbar.value.text = payload.text
-      snackbar.value.value = true
-    })
+      snackbar.value.text = payload.text;
+      snackbar.value.value = true;
+    });
     context.root.$on(VeoEvents.SNACKBAR_CLOSE, () => {
-      snackbar.value.value = false
-    })
+      snackbar.value.value = false;
+    });
 
     // UI related events (unit switch/creation)
     context.root.$on(VeoEvents.UNIT_CREATE, (persistent: boolean) => {
-      createUnit(persistent)
-    })
+      createUnit(persistent);
+    });
 
     context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
-      $user.currentDomain = undefined
-      context.root.$router.push('/' + createUUIDUrlParam('unit', newUnit))
-    })
+      $user.currentDomain = undefined;
+      context.root.$router.push('/' + createUUIDUrlParam('unit', newUnit));
+    });
 
-    return { alert, drawer, newUnitDialog, snackbar }
+    return { alert, drawer, newUnitDialog, snackbar };
   },
   head() {
     return {
       titleTemplate: '%s - verinice.'
-    }
+    };
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

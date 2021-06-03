@@ -1,13 +1,27 @@
 <template>
-  <div class="fill-width" style="display: contents;">
-    <v-expansion-panels accordion multiple :value="expansionPanels" flat>
+  <div
+    class="fill-width"
+    style="display: contents;"
+  >
+    <v-expansion-panels
+      accordion
+      multiple
+      :value="expansionPanels"
+      flat
+    >
       <v-expansion-panel>
-        <v-expansion-panel-header class="overline"
-          >{{ $t('editor.basicproperties') }} ({{ basicProps.length }})</v-expansion-panel-header
+        <v-expansion-panel-header
+          class="overline"
         >
+          {{ $t('editor.basicproperties') }} ({{ basicProps.length }})
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-card outlined>
-            <v-list class="py-0" dense disabled>
+            <v-list
+              class="py-0"
+              dense
+              disabled
+            >
               <VeoOseListItem
                 v-for="(child, index) of basicProps"
                 v-show="attributeContainsTitle(child.item, search)"
@@ -27,8 +41,15 @@
           {{ $t('editor.customaspects') }} ({{ customAspects.length }})
           <div class="d-flex">
             <v-spacer />
-            <v-btn small text color="primary" @click.stop="showAddDialog('aspect')">
-              <v-icon small>mdi-plus</v-icon>
+            <v-btn
+              small
+              text
+              color="primary"
+              @click.stop="showAddDialog('aspect')"
+            >
+              <v-icon small>
+                mdi-plus
+              </v-icon>
               <span>{{ $t('editor.customaspects.add') }}</span>
             </v-btn>
           </div>
@@ -43,7 +64,10 @@
             class="mb-2"
             outlined
           >
-            <v-list class="py-0" dense>
+            <v-list
+              class="py-0"
+              dense
+            >
               <VeoOseListHeader
                 v-bind="aspect"
                 @edit-item="showEditDialog(aspect.item, 'aspect')"
@@ -67,8 +91,15 @@
           {{ $t('editor.customlinks') }} ({{ customLinks.length }})
           <div class="d-flex">
             <v-spacer />
-            <v-btn small text color="primary" @click.stop="showAddDialog('link')">
-              <v-icon small>mdi-plus</v-icon>
+            <v-btn
+              small
+              text
+              color="primary"
+              @click.stop="showAddDialog('link')"
+            >
+              <v-icon small>
+                mdi-plus
+              </v-icon>
               <span>{{ $t('addCustomLink') }}</span>
             </v-btn>
           </div>
@@ -81,7 +112,10 @@
             class="mb-2"
             outlined
           >
-            <v-list class="py-0" dense>
+            <v-list
+              class="py-0"
+              dense
+            >
               <VeoOseListHeader
                 v-bind="link"
                 :styling="{
@@ -121,27 +155,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref, Ref, watch } from '@nuxtjs/composition-api'
+import { defineComponent, inject, ref, Ref, watch } from '@nuxtjs/composition-api';
 
-import ObjectSchemaHelper, {
-  IVeoOSHCustomAspect,
-  IVeoOSHCustomLink,
-  IVeoOSHCustomProperty
-} from '~/lib/ObjectSchemaHelper2'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
-import {
-  IInputType,
-  INPUT_TYPES
-} from '~/types/VeoEditor'
+import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
+import { VeoEvents } from '~/types/VeoGlobalEvents';
+import { IInputType, INPUT_TYPES } from '~/types/VeoEditor';
 
 interface IProps {
-  search: string
-  hideEmptyAspects: boolean
+  search: string;
+  hideEmptyAspects: boolean;
 }
 
 interface EditorPropertyItem {
-  item: IVeoOSHCustomAspect | IVeoOSHCustomLink | IVeoOSHCustomProperty
-  styling?: IInputType
+  item: IVeoOSHCustomAspect | IVeoOSHCustomLink | IVeoOSHCustomProperty;
+  styling?: IInputType;
 }
 
 export default defineComponent<IProps>({
@@ -161,38 +188,34 @@ export default defineComponent<IProps>({
         !title ||
         title.length === 0 ||
         item.item.title.toLowerCase().includes(title.toLowerCase()) ||
-        (item.item as IVeoOSHCustomAspect | IVeoOSHCustomLink).attributes.some((attribute: IVeoOSHCustomProperty) =>
-          attributeContainsTitle(attribute, title)
-        )
-      )
+        (item.item as IVeoOSHCustomAspect | IVeoOSHCustomLink).attributes.some((attribute: IVeoOSHCustomProperty) => attributeContainsTitle(attribute, title))
+      );
     }
 
     function attributeContainsTitle(property: IVeoOSHCustomProperty, title: string) {
-      return (
-        !title || title.length === 0 || (property.title && property.title.toLowerCase().includes(title.toLowerCase()))
-      )
+      return !title || title.length === 0 || (property.title && property.title.toLowerCase().includes(title.toLowerCase()));
     }
 
     /**
      * schema related stuff
      */
     // @ts-ignore
-    const objectSchemaHelper: Ref<ObjectSchemaHelper> = inject('objectSchemaHelper')
+    const objectSchemaHelper: Ref<ObjectSchemaHelper> = inject('objectSchemaHelper');
 
-    const customAspects: Ref<EditorPropertyItem[]> = ref([])
-    const customLinks: Ref<EditorPropertyItem[]> = ref([])
-    const basicProps: Ref<EditorPropertyItem[]> = ref([])
+    const customAspects: Ref<EditorPropertyItem[]> = ref([]);
+    const customLinks: Ref<EditorPropertyItem[]> = ref([]);
+    const basicProps: Ref<EditorPropertyItem[]> = ref([]);
 
-    const expansionPanels = ref([0, 1, 2])
+    const expansionPanels = ref([0, 1, 2]);
 
-    computeProperties()
+    computeProperties();
     watch(
       () => objectSchemaHelper.value,
       (val: ObjectSchemaHelper) => {
-        objectSchemaHelper.value = val
-        computeProperties()
+        objectSchemaHelper.value = val;
+        computeProperties();
       }
-    )
+    );
 
     // Sadly computed refs wouldn't catch schema updates, so we have to deal with it on our own.
     function computeProperties() {
@@ -200,23 +223,23 @@ export default defineComponent<IProps>({
         return {
           item: entry,
           styling: undefined
-        }
-      })
+        };
+      });
       customLinks.value = objectSchemaHelper.value.getCustomLinks().map((entry: IVeoOSHCustomLink) => {
         // @ts-ignore
-        entry.type = entry.targetType
+        entry.type = entry.targetType;
         return {
           item: entry,
           styling: undefined
-        }
-      })
+        };
+      });
       basicProps.value = objectSchemaHelper.value.getBasicProperties().map((entry: IVeoOSHCustomProperty) => {
         return {
           item: entry,
           // @ts-ignore
           styling: INPUT_TYPES[entry.type]
-        }
-      })
+        };
+      });
     }
 
     /**
@@ -226,38 +249,38 @@ export default defineComponent<IProps>({
       value: false,
       type: 'aspect' as 'aspect' | 'link',
       propertyId: undefined as undefined | string
-    })
+    });
 
     function showAddDialog(type: 'aspect' | 'link') {
-      objectSchemaDialog.value.value = true
-      objectSchemaDialog.value.type = type
-      objectSchemaDialog.value.propertyId = undefined
+      objectSchemaDialog.value.value = true;
+      objectSchemaDialog.value.type = type;
+      objectSchemaDialog.value.propertyId = undefined;
     }
 
     // Removing types from the new item type selection as they are purely used as a fallback.
-    const newItemTypes: Ref<any> = ref(JSON.parse(JSON.stringify(INPUT_TYPES)))
-    delete newItemTypes.value.default
-    delete newItemTypes.value.null
+    const newItemTypes: Ref<any> = ref(JSON.parse(JSON.stringify(INPUT_TYPES)));
+    delete newItemTypes.value.default;
+    delete newItemTypes.value.null;
 
     function showEditDialog(property: IVeoOSHCustomAspect | IVeoOSHCustomLink, type: 'aspect' | 'link') {
-      objectSchemaDialog.value.value = true
-      objectSchemaDialog.value.type = type
-      objectSchemaDialog.value.propertyId = property.title
+      objectSchemaDialog.value.value = true;
+      objectSchemaDialog.value.type = type;
+      objectSchemaDialog.value.propertyId = property.title;
     }
 
     function onEditPropertyError(e: any) {
       context.root.$emit(VeoEvents.ALERT_ERROR, {
         title: context.root.$i18n.t('createCustomPropertyError'),
         text: e
-      })
+      });
     }
 
     function onEditPropertySuccess() {
-      objectSchemaDialog.value.value = false
+      objectSchemaDialog.value.value = false;
       // Set it to undefined so that in the component changes in the aspect will get picked up if the same property gets edited right after this
-      objectSchemaDialog.value.propertyId = undefined
-      context.emit('schema-updated')
-      computeProperties()
+      objectSchemaDialog.value.propertyId = undefined;
+      context.emit('schema-updated');
+      computeProperties();
     }
 
     /**
@@ -267,23 +290,24 @@ export default defineComponent<IProps>({
       value: false,
       title: '',
       type: 'aspect' as 'link' | 'aspect'
-    })
+    });
     function showDeleteDialog(propertyId: string, type: 'aspect' | 'link') {
-      deleteDialog.value.type = type
-      deleteDialog.value.title = (type === 'aspect' ? objectSchemaHelper.value.getCustomAspect(propertyId)?.title : objectSchemaHelper.value.getCustomLink(propertyId)?.title) || ''
-      deleteDialog.value.value = true
+      deleteDialog.value.type = type;
+      deleteDialog.value.title =
+        (type === 'aspect' ? objectSchemaHelper.value.getCustomAspect(propertyId)?.title : objectSchemaHelper.value.getCustomLink(propertyId)?.title) || '';
+      deleteDialog.value.value = true;
     }
 
     function doDeleteItem() {
-      objectSchemaDialog.value.value = false
+      objectSchemaDialog.value.value = false;
       if (deleteDialog.value.type === 'aspect') {
-        objectSchemaHelper.value.removeCustomAspect(deleteDialog.value.title)
+        objectSchemaHelper.value.removeCustomAspect(deleteDialog.value.title);
       } else {
-        objectSchemaHelper.value.removeCustomLink(deleteDialog.value.title)
+        objectSchemaHelper.value.removeCustomLink(deleteDialog.value.title);
       }
-      deleteDialog.value.value = false
-      context.emit('schema-updated')
-      computeProperties()
+      deleteDialog.value.value = false;
+      context.emit('schema-updated');
+      computeProperties();
     }
 
     return {
@@ -302,9 +326,9 @@ export default defineComponent<IProps>({
       deleteDialog,
       showDeleteDialog,
       doDeleteItem
-    }
+    };
   }
-})
+});
 </script>
 
 <i18n>

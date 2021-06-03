@@ -1,41 +1,49 @@
 <template>
-  <v-list dense class="pa-0">
+  <v-list
+    dense
+    class="pa-0"
+  >
     <template v-for="item in items">
-      <v-list-item :key="item.initialId + '0'" @click="onClick(item.initialId)">
+      <v-list-item
+        :key="item.initialId + '0'"
+        @click="onClick(item.initialId)"
+      >
         <v-list-item-content>
-          <v-list-item-title :class="currentLevelLeftMargin">{{ item.text }}</v-list-item-title>
+          <v-list-item-title :class="currentLevelLeftMargin">
+            {{ item.text }}
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <VeoFormNavigation
         v-if="nestingLevel < 0"
-        :formSchema="item.layout"
-        :custom-translation="customTranslation"
-        :initialId="item.initialId"
         :key="item.initialId + '1'"
-        :nestingLevel="nextNestingLevel"
+        :form-schema="item.layout"
+        :custom-translation="customTranslation"
+        :initial-id="item.initialId"
+        :nesting-level="nextNestingLevel"
       />
     </template>
   </v-list>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { UISchema } from '~/types/UISchema'
+import Vue from 'vue';
+import { UISchema } from '~/types/UISchema';
 
 interface IItem {
-  initialId: string
-  text: string
-  layout: UISchema
+  initialId: string;
+  text: string;
+  layout: UISchema;
 }
 
 interface IProps {
-  formSchema: UISchema
-  initialFormSchemaPointer: string
+  formSchema: UISchema;
+  initialFormSchemaPointer: string;
 }
 
 interface IData {
-  items: IItem[]
-  scrollWrapper: HTMLElement | null
+  items: IItem[];
+  scrollWrapper: HTMLElement | null;
 }
 
 export default Vue.extend({
@@ -63,14 +71,14 @@ export default Vue.extend({
     return {
       items: [],
       scrollWrapper: null
-    }
+    };
   },
   computed: {
     nextNestingLevel(): number {
-      return this.nestingLevel + 1
+      return this.nestingLevel + 1;
     },
     currentLevelLeftMargin(): string {
-      return `ml-${this.nestingLevel * 4}`
+      return `ml-${this.nestingLevel * 4}`;
     }
   },
   watch: {
@@ -89,35 +97,35 @@ export default Vue.extend({
                   text: this.customTranslation[el.options?.label?.replace('#lang/', '')] || el.options?.label,
                   layout: el
                 }
-              : {} // This is generated for non LayoutGroup elements and filtered in the next step
+              : {}; // This is generated for non LayoutGroup elements and filtered in the next step
           })
-          .filter((el: any) => !!el.text)
-      }
-    }
-  },
-  methods: {
-    onClick(groupId: string) {
-      this.scroll(groupId)
-    },
-    scroll(groupId: string): void {
-      // Scroll problems with sticky header solve with https://github.com/iamdustan/smoothscroll/issues/47#issuecomment-350810238
-      // What we want to scroll to
-      const item = document.getElementById(groupId)
-      // The wrapper we will scroll inside
-      const wrapper = this.scrollWrapper
-      const header = this.scrollWrapper?.getElementsByClassName('veo-page__header')[0] as HTMLElement | null
-      if (item && wrapper && header) {
-        // header.offsetHeight =  extra distance from top (=sticky-header height)
-        let count = item.offsetTop - wrapper.scrollTop - header.offsetHeight
-        wrapper.scrollBy({ top: count, left: 0, behavior: 'smooth' })
+          .filter((el: any) => !!el.text);
       }
     }
   },
   mounted() {
     // Cache scrollWrapper element
-    this.scrollWrapper = document.getElementById('scroll-wrapper')
+    this.scrollWrapper = document.getElementById('scroll-wrapper');
+  },
+  methods: {
+    onClick(groupId: string) {
+      this.scroll(groupId);
+    },
+    scroll(groupId: string): void {
+      // Scroll problems with sticky header solve with https://github.com/iamdustan/smoothscroll/issues/47#issuecomment-350810238
+      // What we want to scroll to
+      const item = document.getElementById(groupId);
+      // The wrapper we will scroll inside
+      const wrapper = this.scrollWrapper;
+      const header = this.scrollWrapper?.getElementsByClassName('veo-page__header')[0] as HTMLElement | null;
+      if (item && wrapper && header) {
+        // header.offsetHeight =  extra distance from top (=sticky-header height)
+        const count = item.offsetTop - wrapper.scrollTop - header.offsetHeight;
+        wrapper.scrollBy({ top: count, left: 0, behavior: 'smooth' });
+      }
+    }
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

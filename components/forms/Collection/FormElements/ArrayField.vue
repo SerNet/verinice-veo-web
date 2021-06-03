@@ -6,12 +6,18 @@
     :style="options && options.style"
   >
     <div class="d-flex">
-      <span v-if="options && options.label" class="subtitle-1 mb-2">
+      <span
+        v-if="options && options.label"
+        class="subtitle-1 mb-2"
+      >
         {{ options && options.label }}
       </span>
       <v-spacer />
     </div>
-    <v-list dense class="py-0 ml-2">
+    <v-list
+      dense
+      class="py-0 ml-2"
+    >
       <v-list-item
         v-for="(val, i) in value"
         :key="i"
@@ -31,36 +37,43 @@
           />
         </v-list-item-content>
         <v-list-item-action>
-          <v-btn depressed text fab small :disabled="disabled" class="vf-btn-remove" @click="removeRow(i)">
+          <v-btn
+            depressed
+            text
+            fab
+            small
+            :disabled="disabled"
+            class="vf-btn-remove"
+            @click="removeRow(i)"
+          >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
     </v-list>
-    <v-btn small text color="primary" :disabled="disabled" class="vf-btn-add" @click="addRow()">
-      <v-icon small>mdi-plus</v-icon>
+    <v-btn
+      small
+      text
+      color="primary"
+      :disabled="disabled"
+      class="vf-btn-add"
+      @click="addRow()"
+    >
+      <v-icon small>
+        mdi-plus
+      </v-icon>
       <span>{{ $t('addElement') }}</span>
     </v-btn>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { PropOptions } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
-import {
-  BaseObject,
-  IApi
-} from '~/components/forms/utils'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
-import {
-  IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslationCollection
-} from '~/types/VeoTypes'
+import Vue from 'vue';
+import { PropOptions } from 'vue/types/options';
+import { JSONSchema7 } from 'json-schema';
+import { BaseObject, IApi } from '~/components/forms/utils';
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default Vue.extend({
   name: 'ArrayField',
@@ -101,7 +114,7 @@ export default Vue.extend({
           format: 'group'
         },
         elements: this.elements
-      }
+      };
     },
     rowToAdd(): {} {
       return (
@@ -114,36 +127,36 @@ export default Vue.extend({
         this.schema.items.default instanceof Object && {
           ...this.schema.items.default
         }
-      )
+      );
     },
     isDefaultRow(): boolean[] {
-      return this.value.map(val => JSON.stringify(val) === JSON.stringify(this.rowToAdd))
+      return this.value.map((val) => JSON.stringify(val) === JSON.stringify(this.rowToAdd));
     }
   },
   methods: {
     addRow() {
-      const value = this.value ? this.value : []
-      value.push({ ...this.rowToAdd })
-      this.$emit('input', value)
+      const value = this.value ? this.value : [];
+      value.push({ ...this.rowToAdd });
+      this.$emit('input', value);
     },
     removeRow(rowIndex: number) {
-      this.value.splice(rowIndex, 1)
-      this.$emit('input', this.value)
+      this.value.splice(rowIndex, 1);
+      this.$emit('input', this.value);
     },
     onInput(event: any) {
-      this.$emit('input', this.value)
+      this.$emit('input', this.value);
     },
     isRowExist() {
-      return this.value
+      return this.value;
     }
   }
-})
+});
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
-    return calculateConditionsScore([props.schema.type === 'array', typeof props.elements !== 'undefined'])
+    return calculateConditionsScore([props.schema.type === 'array', typeof props.elements !== 'undefined']);
   }
-}
+};
 </script>
 
 <i18n>

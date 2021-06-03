@@ -1,7 +1,16 @@
 <template>
-  <v-card v-if="level === 0" flat class="fse-group level-0 fill-width fill-height">
-    <div v-if="value.elements.length === 0" class="dropzone-placeholder">
-      <div class="dropzone-placeholder-text subtitle-1">{{ $t('dropzonePlaceholder') }}</div>
+  <v-card
+    v-if="level === 0"
+    flat
+    class="fse-group level-0 fill-width fill-height"
+  >
+    <div
+      v-if="value.elements.length === 0"
+      class="dropzone-placeholder"
+    >
+      <div class="dropzone-placeholder-text subtitle-1">
+        {{ $t('dropzonePlaceholder') }}
+      </div>
     </div>
     <Draggable
       class="dragArea d-flex fill-width fill-height dropzone"
@@ -15,28 +24,70 @@
       <slot />
     </Draggable>
   </v-card>
-  <v-card v-else elevation="0" class="fse-group mx-3 my-2 px-2 pb-2">
-    <v-row no-gutters align="center">
+  <v-card
+    v-else
+    elevation="0"
+    class="fse-group mx-3 my-2 px-2 pb-2"
+  >
+    <v-row
+      no-gutters
+      align="center"
+    >
       <v-col cols="auto">
-        <v-icon dense small class="handle pr-1">mdi-menu</v-icon>
+        <v-icon
+          dense
+          small
+          class="handle pr-1"
+        >
+          mdi-menu
+        </v-icon>
       </v-col>
       <v-col>
         <div class="text-caption text-truncate">
-          {{ $t('group') }} <VeoFseRuleDisplay v-if="ruleDisplayIcon" :value="ruleDisplayIcon" />
+          {{ $t('group') }} <VeoFseRuleDisplay
+            v-if="ruleDisplayIcon"
+            :value="ruleDisplayIcon"
+          />
         </div>
       </v-col>
-      <v-col cols="auto" class="text-right">
-        <v-btn icon x-small @click="showEdit">
-          <v-icon dense small>mdi-pencil</v-icon>
+      <v-col
+        cols="auto"
+        class="text-right"
+      >
+        <v-btn
+          icon
+          x-small
+          @click="showEdit"
+        >
+          <v-icon
+            dense
+            small
+          >
+            mdi-pencil
+          </v-icon>
         </v-btn>
-        <v-btn icon x-small @click="showDelete">
-          <v-icon dense small>mdi-delete</v-icon>
+        <v-btn
+          icon
+          x-small
+          @click="showDelete"
+        >
+          <v-icon
+            dense
+            small
+          >
+            mdi-delete
+          </v-icon>
         </v-btn>
       </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col>
-        <div v-if="label" class="text-subtitle-1 mb-2">{{ label }}</div>
+        <div
+          v-if="label"
+          class="text-subtitle-1 mb-2"
+        >
+          {{ label }}
+        </div>
         <Draggable
           class="dragArea d-flex"
           tag="div"
@@ -53,29 +104,27 @@
 
     <VeoFseEditGroupDialog
       v-if="editDialog"
-      v-bind="$props"
       v-model="editDialog"
-      :formSchema="value"
+      v-bind="$props"
+      :form-schema="value"
       :name="name"
       @edit="onEdit"
       @update-custom-translation="onUpdateCustomTranslation"
     />
-    <VeoFseDeleteDialog v-model="deleteDialog" @delete="onDelete" />
+    <VeoFseDeleteDialog
+      v-model="deleteDialog"
+      @delete="onDelete"
+    />
   </v-card>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { PropOptions } from 'vue/types/options'
-import Draggable from 'vuedraggable'
-import { getRuleEffectIcons } from '~/lib/FormSchemaHelper'
+import Vue from 'vue';
+import { PropOptions } from 'vue/types/options';
+import Draggable from 'vuedraggable';
+import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
-import {
-  IVeoFormSchemaCustomTranslationEvent,
-  IVeoFormSchemaItemDeleteEvent,
-  IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollectionItem
-} from '~/types/VeoTypes'
+import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem } from '~/types/VeoTypes';
 
 export default Vue.extend({
   name: 'FseGroup',
@@ -103,55 +152,55 @@ export default Vue.extend({
       editDialog: false,
       deleteDialog: false,
       label: ''
+    };
+  },
+  computed: {
+    directionClass(): string {
+      // TODO: this.options does not trigger this computed property, when data is updated.
+      if (this.value.options && this.value.options.direction === 'horizontal') {
+        return 'flex-row direction-horizontal';
+      } else {
+        return 'flex-column direction-vertical';
+      }
+    },
+    dynamicClasses(): string[] {
+      return [this.directionClass];
+    },
+    ruleDisplayIcon(): string | undefined {
+      return getRuleEffectIcons(this.value?.rule?.effect);
     }
   },
   watch: {
     customTranslation: {
       immediate: true,
       handler() {
-        this.setLabel()
+        this.setLabel();
       }
-    }
-  },
-  computed: {
-    directionClass(): string {
-      // TODO: this.options does not trigger this computed property, when data is updated.
-      if (this.value.options && this.value.options.direction === 'horizontal') {
-        return 'flex-row direction-horizontal'
-      } else {
-        return 'flex-column direction-vertical'
-      }
-    },
-    dynamicClasses(): string[] {
-      return [this.directionClass]
-    },
-    ruleDisplayIcon(): string | undefined {
-      return getRuleEffectIcons(this.value?.rule?.effect)
     }
   },
   methods: {
     showEdit() {
-      this.editDialog = true
+      this.editDialog = true;
     },
     showDelete() {
-      this.deleteDialog = true
+      this.deleteDialog = true;
     },
     onEdit(data: IVeoFormSchemaItemUpdateEvent['data']) {
-      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data } as IVeoFormSchemaItemUpdateEvent)
-      this.editDialog = false
+      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data } as IVeoFormSchemaItemUpdateEvent);
+      this.editDialog = false;
     },
     onDelete() {
-      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVeoFormSchemaItemDeleteEvent)
-      this.deleteDialog = false
+      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVeoFormSchemaItemDeleteEvent);
+      this.deleteDialog = false;
     },
     onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
-      this.$emit('update-custom-translation', event)
+      this.$emit('update-custom-translation', event);
     },
     setLabel() {
-      this.label = (this.name && this.customTranslation?.[this.name]) || ''
+      this.label = (this.name && this.customTranslation?.[this.name]) || '';
     }
   }
-})
+});
 </script>
 
 <i18n>

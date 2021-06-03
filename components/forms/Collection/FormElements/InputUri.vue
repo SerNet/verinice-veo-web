@@ -1,6 +1,13 @@
 <template>
-  <div v-if="visible" class="vf-input-uri vf-form-element">
-    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
+  <div
+    v-if="visible"
+    class="vf-input-uri vf-form-element"
+  >
+    <ValidationProvider
+      v-slot="{ errors }"
+      :name="options && options.label"
+      :rules="validation"
+    >
       <v-text-field
         :disabled="disabled"
         :value="value"
@@ -16,7 +23,13 @@
         @click:clear="clear"
       >
         <template #append-outer>
-          <v-btn small :disabled="!isValidUrl || !value" icon :href="value" target="_blank">
+          <v-btn
+            small
+            :disabled="!isValidUrl || !value"
+            icon
+            :href="value"
+            target="_blank"
+          >
             <v-icon>mdi-open-in-new</v-icon>
           </v-btn>
         </template>
@@ -26,14 +39,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { PropOptions } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import Vue from 'vue';
+import { PropOptions } from 'vue/types/options';
+import { JSONSchema7 } from 'json-schema';
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
 
 export default Vue.extend({
   name: 'InputUri',
@@ -60,17 +69,17 @@ export default Vue.extend({
   },
   computed: {
     isValidUrl(): boolean {
-      return !(this.validation && this.validation.objectSchema && this.validation.objectSchema.errorMsg)
+      return !(this.validation && this.validation.objectSchema && this.validation.objectSchema.errorMsg);
     }
   },
   methods: {
     clear() {
       // TODO: it needs two nested $nextTick()-s to work properly and update value to undefined.
       // Check if there is other easier way. This function is implemented  in all other FormElements. Check them also.
-      this.$nextTick(() => this.$nextTick(() => this.$emit('input', undefined)))
+      this.$nextTick(() => this.$nextTick(() => this.$emit('input', undefined)));
     }
   }
-})
+});
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
@@ -78,7 +87,7 @@ export const helpers: Helpful<FormElementProps> = {
     // if other fields have the same number of true conditions
     // if other fields are appropriate, they MUST have more true conditions
 
-    return calculateConditionsScore([props.schema.type === 'string', props.schema.format === 'uri'])
+    return calculateConditionsScore([props.schema.type === 'string', props.schema.format === 'uri']);
   }
-}
+};
 </script>

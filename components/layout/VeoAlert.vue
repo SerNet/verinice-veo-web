@@ -9,15 +9,34 @@
     class="veo-alert"
     :icon="alertIcon"
   >
-    <v-row no-gutters class="justify-lg-space-between">
-      <v-col cols="auto" class="accent--text">
+    <v-row
+      no-gutters
+      class="justify-lg-space-between"
+    >
+      <v-col
+        cols="auto"
+        class="accent--text"
+      >
         <h3 v-text="title" />
         <slot />
-        <p v-if="text" class="mb-0 accent--text" v-html="text" />
+        <p
+          v-if="text"
+          class="mb-0 accent--text"
+          v-html="text"
+        />
       </v-col>
-      <v-col v-if="!noCloseButton" cols="auto" class="ml-6 align-self-center">
+      <v-col
+        v-if="!noCloseButton"
+        cols="auto"
+        class="ml-6 align-self-center"
+      >
         <slot name="additional-button" />
-        <v-btn outlined text :color="alertColor" @click="$emit('input', false)">
+        <v-btn
+          outlined
+          text
+          :color="alertColor"
+          @click="$emit('input', false)"
+        >
           <span v-if="saveButtonText">{{ saveButtonText }}</span>
           <span v-else>{{ $t('global.button.ok') }}</span>
         </v-btn>
@@ -27,9 +46,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
-import { ALERT_TYPE } from '~/types/VeoGlobalEvents'
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
+import { ALERT_TYPE } from '~/types/VeoGlobalEvents';
 
 export default Vue.extend({
   props: {
@@ -66,33 +85,33 @@ export default Vue.extend({
     alertColor(): string {
       switch (this.type) {
         case 0:
-          return 'primary'
+          return 'primary';
         case 1:
-          return 'primary'
+          return 'primary';
         case 2:
-          return 'success'
+          return 'success';
         case 3:
-          return 'warning'
+          return 'warning';
         default:
-          return 'primary'
+          return 'primary';
       }
     },
     alertIcon(): string {
       switch (this.type) {
         case 0:
-          return 'mdi-alert-circle-outline'
+          return 'mdi-alert-circle-outline';
         case 1:
-          return 'mdi-information-outline'
+          return 'mdi-information-outline';
         case 2:
-          return 'mdi-check-circle-outline'
+          return 'mdi-check-circle-outline';
         case 3:
-          return 'mdi-alert-circle-outline'
+          return 'mdi-alert-circle-outline';
         default:
-          return 'mdi-information-outline'
+          return 'mdi-information-outline';
       }
     }
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

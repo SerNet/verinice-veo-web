@@ -1,43 +1,51 @@
 <template>
-  <VeoPage :title="$t('breadcrumbs.reports')" fullsize>
+  <VeoPage
+    :title="$t('breadcrumbs.reports')"
+    fullsize
+  >
     <template #header>
-      <p class="mt-4">{{ $t('hint') }}</p>
+      <p class="mt-4">
+        {{ $t('hint') }}
+      </p>
     </template>
     <template #default>
-      <VeoReportList :items="reports" @create-report="createReport" />
+      <VeoReportList
+        :items="reports"
+        @create-report="createReport"
+      />
     </template>
   </VeoPage>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
-import { IVeoReportsMeta } from '~/types/VeoTypes'
+import { IVeoReportsMeta } from '~/types/VeoTypes';
 
 interface IData {
-  reports: IVeoReportsMeta
+  reports: IVeoReportsMeta;
 }
 
 export default Vue.extend({
   data(): IData {
     return {
       reports: {}
-    }
+    };
+  },
+  async fetch() {
+    this.reports = await this.$api.report.fetchAll();
   },
   head(): any {
     return {
       title: this.$t('breadcrumbs.reports')
-    }
-  },
-  async fetch() {
-    this.reports = await this.$api.report.fetchAll()
+    };
   },
   methods: {
     createReport(reportId: string) {
-      this.$router.push(`/${this.$route.params.unit}/reports/${reportId}`)
+      this.$router.push(`/${this.$route.params.unit}/reports/${reportId}`);
     }
   }
-})
+});
 </script>
 
 <i18n>

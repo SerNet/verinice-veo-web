@@ -9,14 +9,11 @@
   </div>
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  ref
-} from '@nuxtjs/composition-api'
+import { defineComponent, ref } from '@nuxtjs/composition-api';
 
 interface IProps {
-  fullsize: boolean
-  startItem: number
+  fullsize: boolean;
+  startItem: number;
 }
 
 export default defineComponent<IProps>({
@@ -35,11 +32,11 @@ export default defineComponent<IProps>({
     }
   },
   setup(props) {
-    const activeTab = ref(props.startItem)
+    const activeTab = ref(props.startItem);
 
-    return { activeTab }
+    return { activeTab };
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

@@ -6,10 +6,10 @@ export enum ALERT_TYPE {
 }
 
 export interface IVeoEventPayload {
-  type?: ALERT_TYPE,
-  text: string,
-  title?: string,
-  saveButtonText?: string
+  type?: ALERT_TYPE;
+  text: string;
+  title?: string;
+  saveButtonText?: string;
 }
 
 export const VeoEvents = {
@@ -24,4 +24,4 @@ export const VeoEvents = {
   DOMAIN_CHANGED: 'domain_changed',
   UNIT_CREATE: 'unit-create',
   UNIT_CHANGED: 'unit_changed'
-}
+};

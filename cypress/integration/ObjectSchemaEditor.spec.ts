@@ -1,14 +1,14 @@
 /// <reference path="../support/index.d.ts" />
 
-import { times } from 'lodash'
-import { JsonPointer } from 'json-ptr'
+import { times } from 'lodash';
+import { JsonPointer } from 'json-ptr';
+
+import { getEditorData } from '../support/utils';
 
 let testSchema = '{}';
 let emptySchema = '{}';
 
-let schemaRealValues: { text: string; numberOfProperties: number }[] = []
-
-import { getEditorData } from '../support/utils'
+let schemaRealValues: { text: string; numberOfProperties: number }[] = [];
 
 const attributeTypes = [
   { value: 'string', text: 'Text' },
@@ -16,7 +16,7 @@ const attributeTypes = [
   { value: 'number', text: 'Zahl' },
   { value: 'integer', text: 'Ganzzahl' },
   { value: 'enum', text: 'Auswahl' }
-]
+];
 
 const changedAttributes = [
   {
@@ -29,7 +29,7 @@ const changedAttributes = [
     selectType: attributeTypes[1],
     writeDescription: 'Test'
   }
-]
+];
 
 const addAttributes = [
   {
@@ -66,67 +66,58 @@ const addAttributes = [
     checkMultiple: true,
     enum: ['a', 'b', 'c', 'd']
   }
-]
+];
 
 const addTestTwoAttribute = {
   writeTitle: 'a',
   selectType: attributeTypes[0],
   writeDescription: 'a'
-}
+};
 
 describe('Objectschema Editor', () => {
   before(() => {
-    cy.auth()
+    cy.auth();
 
     cy.intercept(
       {
         method: 'GET',
         url: /.*\/schemas$/
       },
-      req => {
+      (req) => {
         req.reply({
           fixture: 'objectschema/schemas.json'
-        })
+        });
       }
-    )
+    );
 
     cy.intercept(
       {
         method: 'GET',
         url: /.*\/translations(.*)$/
       },
-      req => {
+      (req) => {
         req.reply({
           fixture: 'translations/translation.json'
-        })
+        });
       }
-    )
+    );
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('/editor')
+    cy.visit('/editor');
 
-    cy.contains('.v-list-item--link', 'Objektschema Editor')
-      .should('have.attr', 'href', '/editor/objectschema')
-      .click()
-      .wait(1)
+    cy.contains('.v-list-item--link', 'Objektschema Editor').should('have.attr', 'href', '/editor/objectschema').click().wait(1);
 
     // Upload os_testSchema as schema
-    cy.get('.v-dialog--active').within(dialogEl => {
-      cy.get('.v-window-item--active')
-        .contains('.v-text-field', 'Typ des Objektschemas')
-        .type('Eigenes{enter}')
-      cy.get('.v-window-item--active')
-        .contains('.v-file-input', 'Objektschema hochladen (.json)')
-        .find('input[type="file"]')
-        .attachFile('objectschema/os_testSchema.json')
-        .wait(6)
-    })
+    cy.get('.v-dialog--active').within((dialogEl) => {
+      cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Eigenes{enter}');
+      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/os_testSchema.json').wait(6);
+    });
 
     cy.fixture('objectschema/os_testSchema.json')
       .as('testSchema')
-      .then(_testSchema => {
+      .then((_testSchema) => {
         schemaRealValues = [
           { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 2 },
           {
@@ -137,38 +128,32 @@ describe('Objectschema Editor', () => {
             text: 'Individuelle Links',
             numberOfProperties: Object.keys(_testSchema.properties.links.properties).length
           }
-        ]
-        testSchema = _testSchema
-      })
+        ];
+        testSchema = _testSchema;
+      });
 
     cy.fixture('objectschema/os_empty.json')
       .as('testSchema')
-      .then(_emptySchema => {
-        emptySchema = _emptySchema
-      })
-  })
+      .then((_emptySchema) => {
+        emptySchema = _emptySchema;
+      });
+  });
   beforeEach(() => {
     // Reset the schema before each test to restore the original state
     cy.get('.editor')
       .find('.cm-content')
       .closest('.d-flex.flex-column')
       .then((el: any) => {
-        el[0].__vue__.$emit('input', JSON.stringify(testSchema, undefined, 2))
-      })
+        el[0].__vue__.$emit('input', JSON.stringify(testSchema, undefined, 2));
+      });
 
-    cy.get('.veo-editor-save-button')
-      .contains('.v-btn__content', 'Codeänderungen übernehmen')
-      .closest('.v-btn').
-      click()
-      .wait(1)
+    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click().wait(1);
 
     /**
      * Define aliases
      */
-    cy.get<HTMLElement>('.v-expansion-panel').as('expansionPanels')
-    cy.get('@expansionPanels')
-      .find<HTMLElement>('button.v-expansion-panel-header')
-      .as('expansionPanelHeaders')
+    cy.get<HTMLElement>('.v-expansion-panel').as('expansionPanels');
+    cy.get('@expansionPanels').find<HTMLElement>('button.v-expansion-panel-header').as('expansionPanelHeaders');
     cy.get('@expansionPanels')
       .find<HTMLDivElement>('.v-expansion-panel-content')
       .as('expansionPanelContent')
@@ -177,614 +162,384 @@ describe('Objectschema Editor', () => {
         // This enables the next text to continue and work.
         // A Better solution would be to make all tests completely independent from each other
         if (cy.$$('.v-dialog--active')?.[0]) {
-          cy.$$('.v-dialog--active .v-card__title i.mdi-close')
-            .closest('.v-btn')?.[0]
-            ?.click()
+          cy.$$('.v-dialog--active .v-card__title i.mdi-close').closest('.v-btn')?.[0]?.click();
         }
-      })
-  })
+      });
+  });
 
   it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function () {
     cy.get('@expansionPanelHeaders').each((el, i) => {
-      const expansionPanelText = el[0].childNodes[0].nodeValue.trim()
-      cy.wrap(expansionPanelText).should(
-        'equal',
-        `${schemaRealValues[i].text} (${schemaRealValues[i].numberOfProperties})`
-      )
-    })
-  })
+      const expansionPanelText = el[0].childNodes[0].nodeValue.trim();
+      cy.wrap(expansionPanelText).should('equal', `${schemaRealValues[i].text} (${schemaRealValues[i].numberOfProperties})`);
+    });
+  });
 
   it('deletes aspect with outer delete button', function () {
+    cy.get('@expansionPanelContent').eq(1).find('.v-expansion-panel-content__wrap').children().should('have.length', schemaRealValues[1].numberOfProperties);
+    cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').eq(1).click().wait(1);
+    cy.get('.v-dialog--active .v-card__actions .v-btn').contains('Löschen').click().wait(1);
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-expansion-panel-content__wrap')
       .children()
-      .should('have.length', schemaRealValues[1].numberOfProperties)
-    cy.contains('Aspekt1')
-      .closest('.v-list-item')
-      .find('.v-btn')
-      .eq(1)
-      .click()
-      .wait(1)
-    cy.get('.v-dialog--active .v-card__actions .v-btn')
-      .contains('Löschen')
-      .click()
-      .wait(1)
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-expansion-panel-content__wrap')
-      .children()
-      .should('have.length', schemaRealValues[1].numberOfProperties - 1)
+      .should('have.length', schemaRealValues[1].numberOfProperties - 1);
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
-      cy.get('@currentOS')
-        .should((currentOS) => {
-          expect(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1')).to.be.undefined;
-        })
-    })
-  })
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
+      cy.get('@currentOS').should((currentOS) => {
+        expect(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1')).to.be.undefined;
+      });
+    });
+  });
 
   it('changes customAspect name, attribute names, description and types', function () {
-    cy.contains('Aspekt1')
-      .closest('.v-list-item')
-      .find('.v-btn')
-      .first()
-      .click()
-      .wait(1)
-    cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Name *')
-        .closest('.v-text-field')
-        .type('Test')
+    cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').first().click().wait(1);
+    cy.get('.v-dialog--active').within((dialogEl) => {
+      cy.contains('Name *').closest('.v-text-field').type('Test');
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
-          const currentAttrData = changedAttributes[wrapperIndex]
+          const currentAttrData = changedAttributes[wrapperIndex];
           if (currentAttrData) {
-            cy.contains('Name des Attributs *')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeTitle)
-            cy.contains('Typ des Attributs')
-              .closest('.v-select')
-              .type(`${currentAttrData.selectType.text}{enter}`)
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
+            cy.contains('Name des Attributs *').closest('.v-text-field').type(currentAttrData.writeTitle);
+            cy.contains('Typ des Attributs').closest('.v-select').type(`${currentAttrData.selectType.text}{enter}`);
+            cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
           }
-        })
-      })
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+        });
+      });
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
-      cy.get('@currentOS')
-        .should((currentOS) => {
-          expect(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1Test')).to.not.be.undefined;
-        })
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
+      cy.get('@currentOS').should((currentOS) => {
+        expect(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1Test')).to.not.be.undefined;
+      });
 
       cy.get('@currentOS')
         .then((currentOS) => JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1Test'))
         .as('aspect')
         .then((aspect: any) => {
-          cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot()
-        })
-    })
-  })
+          cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot();
+        });
+    });
+  });
 
   it('removes and adds aspect attributes', function () {
     // Open aspect
-    cy.contains('Aspekt1')
-      .closest('.v-list-item')
-      .find('.v-btn')
-      .first()
-      .click()
-      .wait(1)
+    cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').first().click().wait(1);
 
-    cy.get('.v-dialog--active').within(dialogEl => {
+    cy.get('.v-dialog--active').within((dialogEl) => {
       // Delete all 3 existing attributes
       times(3, () => {
-        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn')
-          .eq(0)
-          .click()
-          .wait(1)
-      })
+        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn').eq(0).click().wait(1);
+      });
 
       // Add 6 new attributes
       times(6, () => {
-        cy.contains('Attribut hinzufügen')
-          .closest('.v-btn')
-          .click()
-          .wait(1)
-      })
+        cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
+      });
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
-          const currentAttrData = addAttributes[wrapperIndex]
+          const currentAttrData = addAttributes[wrapperIndex];
           if (currentAttrData) {
-            cy.contains('Name des Attributs *')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeTitle)
-            cy.contains('Typ des Attributs')
-              .closest('.v-select')
-              .type(`${currentAttrData.selectType.text}{enter}`)
+            cy.contains('Name des Attributs *').closest('.v-text-field').type(currentAttrData.writeTitle);
+            cy.contains('Typ des Attributs').closest('.v-select').type(`${currentAttrData.selectType.text}{enter}`);
 
             if (currentAttrData.writeDescription) {
-              cy.contains('Beschreibung')
-                .closest('.v-text-field')
-                .type(currentAttrData.writeDescription)
+              cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
             }
             if (currentAttrData.enum) {
               if (currentAttrData.checkMultiple) {
-                cy.contains('Mehrfachauswahl')
-                  .closest('.v-input--checkbox')
-                  .click()
+                cy.contains('Mehrfachauswahl').closest('.v-input--checkbox').click();
               }
               cy.contains('Werte (mit Enter trennen)')
                 .closest('.v-autocomplete')
-                .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
+                .type(`${currentAttrData.enum.join('{enter}')}{enter}`);
             }
           }
-        })
-      })
-    })
-    cy.get('.v-card__actions')
-      .contains('Speichern')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
+        });
+      });
+    });
+    cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
 
     cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1') || null;
         })
         .as('aspect')
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@aspect').then((aspect: any) => {
-        cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot()
-      })
-    })
-  })
+        cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot();
+      });
+    });
+  });
 
   it('opens dialog to create a new aspect and clicks close button to discard changes', function () {
-    cy.contains('Aspekte hinzufügen')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
+    cy.contains('Aspekte hinzufügen').closest('.v-btn').click().wait(1);
 
-    cy.get('.v-dialog--active').within(el => {
-      cy.contains('Name *')
-        .closest('.v-text-field')
-        .type('TestAspectOne{enter}')
-      cy.get('.v-card__actions')
-        .contains('Schließen')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+    cy.get('.v-dialog--active').within((el) => {
+      cy.contains('Name *').closest('.v-text-field').type('TestAspectOne{enter}');
+      cy.get('.v-card__actions').contains('Schließen').closest('.v-btn').click().wait(1);
+    });
 
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('not.contain.text', 'TestAspectOne')
+    cy.get('@expansionPanelContent').eq(1).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('not.contain.text', 'TestAspectOne');
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectOne') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectOne') || null;
         })
         .as('aspect')
-        .should('be.null')
-    })
-  })
+        .should('be.null');
+    });
+  });
 
   it('adds completely new aspect and removes it from dialog with delete button', function () {
-    cy.contains('Aspekte hinzufügen')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
+    cy.contains('Aspekte hinzufügen').closest('.v-btn').click().wait(1);
 
-    cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Name *')
-        .closest('.v-text-field')
-        .type('TestAspectTwo{enter}')
-      cy.contains('Attribut hinzufügen')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
+    cy.get('.v-dialog--active').within((dialogEl) => {
+      cy.contains('Name *').closest('.v-text-field').type('TestAspectTwo{enter}');
+      cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
-        .then(el => {
+        .then((el) => {
           cy.wrap(el).within(() => {
-            const currentAttrData = addTestTwoAttribute
-            cy.contains('Name des Attributs *')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeTitle)
-            cy.contains('Typ des Attributs')
-              .closest('.v-select')
-              .type(`${currentAttrData.selectType.text}{enter}`)
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
-          })
-        })
+            const currentAttrData = addTestTwoAttribute;
+            cy.contains('Name des Attributs *').closest('.v-text-field').type(currentAttrData.writeTitle);
+            cy.contains('Typ des Attributs').closest('.v-select').type(`${currentAttrData.selectType.text}{enter}`);
+            cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
+          });
+        });
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('contain.text', 'TestAspectTwo')
+    cy.get('@expansionPanelContent').eq(1).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('contain.text', 'TestAspectTwo');
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectTwo') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectTwo') || null;
         })
         .as('aspect')
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@aspect').then((aspect: any) => {
-        cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot()
-      })
-    })
+        cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot();
+      });
+    });
 
-    cy.contains('TestAspectTwo')
-      .closest('.v-list-item')
-      .find('.v-btn')
-      .first()
-      .click()
-      .wait(1)
-    cy.get('.v-dialog--active .v-card__actions')
-      .contains('Aspekt löschen')
-      .click()
-      .wait(1)
-    cy.get('.v-dialog--active .v-card__actions')
-      .contains('Löschen')
-      .click()
-      .wait(1)
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('not.contain.text', 'TestAspectTwo')
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.contains('TestAspectTwo').closest('.v-list-item').find('.v-btn').first().click().wait(1);
+    cy.get('.v-dialog--active .v-card__actions').contains('Aspekt löschen').click().wait(1);
+    cy.get('.v-dialog--active .v-card__actions').contains('Löschen').click().wait(1);
+    cy.get('@expansionPanelContent').eq(1).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('not.contain.text', 'TestAspectTwo');
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectTwo') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectTwo') || null;
         })
         .as('aspect')
-        .should('be.null')
-    })
-  })
+        .should('be.null');
+    });
+  });
 
   it('deletes a link with outer delete button', function () {
+    cy.get('@expansionPanelContent').eq(2).find('.v-expansion-panel-content__wrap').children().should('have.length', schemaRealValues[2].numberOfProperties);
+    cy.contains('Link1').closest('.v-list-item').find('.v-btn').eq(1).click().wait(1);
+    cy.get('.v-dialog--active .v-card__actions .v-btn').contains('Löschen').click().wait(1);
     cy.get('@expansionPanelContent')
       .eq(2)
       .find('.v-expansion-panel-content__wrap')
       .children()
-      .should('have.length', schemaRealValues[2].numberOfProperties)
-    cy.contains('Link1')
-      .closest('.v-list-item')
-      .find('.v-btn')
-      .eq(1)
-      .click()
-      .wait(1)
-    cy.get('.v-dialog--active .v-card__actions .v-btn')
-      .contains('Löschen')
-      .click()
-      .wait(1)
-    cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-expansion-panel-content__wrap')
-      .children()
-      .should('have.length', schemaRealValues[2].numberOfProperties - 1)
+      .should('have.length', schemaRealValues[2].numberOfProperties - 1);
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1') || null;
         })
         .as('link')
-        .should('be.null')
-    })
-  })
+        .should('be.null');
+    });
+  });
 
   it('changes link name, attribute names, description and types', function () {
-    cy.contains('Link1')
-      .closest('.v-list-item')
-      .find('.v-btn')
-      .first()
-      .click()
-      .wait(1)
-    cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Name *')
-        .closest('.v-text-field')
-        .type('Test')
-      cy.contains('Linkbeschreibung *')
-        .closest('.v-text-field')
-        .clear()
-        .type('TestId')
-      cy.contains('Typ des Linkziels *')
-        .closest('.v-select')
-        .should('contain.text', 'Scope')
-        .type('Person{enter}')
+    cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click().wait(1);
+    cy.get('.v-dialog--active').within((dialogEl) => {
+      cy.contains('Name *').closest('.v-text-field').type('Test');
+      cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
+      cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Person{enter}');
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
-          const currentAttrData = changedAttributes[wrapperIndex]
+          const currentAttrData = changedAttributes[wrapperIndex];
           if (currentAttrData) {
-            cy.contains('Name des Attributs *')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeTitle)
-            cy.contains('Typ des Attributs')
-              .closest('.v-select')
-              .type(`${currentAttrData.selectType.text}{enter}`)
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
+            cy.contains('Name des Attributs *').closest('.v-text-field').type(currentAttrData.writeTitle);
+            cy.contains('Typ des Attributs').closest('.v-select').type(`${currentAttrData.selectType.text}{enter}`);
+            cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
           }
-        })
-      })
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+        });
+      });
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1Test') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1Test') || null;
         })
         .as('link')
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@link').then((link: any) => {
-        cy.wrap(link.items.properties.target).toMatchSnapshot()
-        cy.wrap(link.items.properties.attributes.properties).toMatchSnapshot()
-      })
-    })
-  })
+        cy.wrap(link.items.properties.target).toMatchSnapshot();
+        cy.wrap(link.items.properties.attributes.properties).toMatchSnapshot();
+      });
+    });
+  });
 
   it('removes and adds link attributes', function () {
-    cy.contains('Link1')
-      .closest('.v-list-item')
-      .find('.v-btn')
-      .first()
-      .click()
-      .wait(1)
+    cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click().wait(1);
 
-    cy.get('.v-dialog--active').within(dialogEl => {
+    cy.get('.v-dialog--active').within((dialogEl) => {
       times(2, () => {
-        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn')
-          .eq(0)
-          .click()
-          .wait(1)
-      })
+        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn').eq(0).click().wait(1);
+      });
 
       times(6, () => {
-        cy.contains('Attribut hinzufügen')
-          .closest('.v-btn')
-          .click()
-          .wait(1)
-      })
+        cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
+      });
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
-          const currentAttrData = addAttributes[wrapperIndex]
+          const currentAttrData = addAttributes[wrapperIndex];
           if (currentAttrData) {
-            cy.contains('Name des Attributs *')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeTitle)
-            cy.contains('Typ des Attributs')
-              .closest('.v-select')
-              .type(`${currentAttrData.selectType.text}{enter}`)
+            cy.contains('Name des Attributs *').closest('.v-text-field').type(currentAttrData.writeTitle);
+            cy.contains('Typ des Attributs').closest('.v-select').type(`${currentAttrData.selectType.text}{enter}`);
 
             if (currentAttrData.writeDescription) {
-              cy.contains('Beschreibung')
-                .closest('.v-text-field')
-                .type(currentAttrData.writeDescription)
+              cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
             }
             if (currentAttrData.enum) {
               if (currentAttrData.checkMultiple) {
-                cy.contains('Mehrfachauswahl')
-                  .closest('.v-input--checkbox')
-                  .click()
+                cy.contains('Mehrfachauswahl').closest('.v-input--checkbox').click();
               }
               cy.contains('Werte (mit Enter trennen)')
                 .closest('.v-autocomplete')
-                .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
+                .type(`${currentAttrData.enum.join('{enter}')}{enter}`);
             }
           }
-        })
-      })
-    })
-    cy.get('.v-card__actions')
-      .contains('Speichern')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
+        });
+      });
+    });
+    cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
 
     cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1') || null;
         })
         .as('link')
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@link').then((link: any) => {
-        cy.wrap(link.items.properties.attributes.properties).toMatchSnapshot()
-      })
-    })
-  })
+        cy.wrap(link.items.properties.attributes.properties).toMatchSnapshot();
+      });
+    });
+  });
 
   it('opens dialog to create a new link and clicks close button to discard changes', function () {
-    cy.contains('Link hinzufügen')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
+    cy.contains('Link hinzufügen').closest('.v-btn').click().wait(1);
 
-    cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Name *')
-        .closest('.v-text-field')
-        .type('TestLinkOne')
-      cy.contains('Linkbeschreibung *')
-        .closest('.v-text-field')
-        .type('TestLinkOne Beschreibung')
-      cy.contains('Typ des Linkziels *')
-        .closest('.v-select')
-        .type('Control{enter}')
+    cy.get('.v-dialog--active').within((dialogEl) => {
+      cy.contains('Name *').closest('.v-text-field').type('TestLinkOne');
+      cy.contains('Linkbeschreibung *').closest('.v-text-field').type('TestLinkOne Beschreibung');
+      cy.contains('Typ des Linkziels *').closest('.v-select').type('Control{enter}');
 
-      cy.get('.v-card__actions')
-        .contains('Weiter')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
+      cy.get('.v-card__actions').contains('Weiter').closest('.v-btn').click().wait(1);
 
-      cy.get('.v-card__actions')
-        .contains('Schließen')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Schließen').closest('.v-btn').click().wait(1);
+    });
 
-    cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('not.contain.text', 'TestLinkOne')
+    cy.get('@expansionPanelContent').eq(2).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('not.contain.text', 'TestLinkOne');
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkOne') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkOne') || null;
         })
         .as('link')
-        .should('be.null')
-    })
-  })
+        .should('be.null');
+    });
+  });
 
   it('adds completely new link and removes it from dialog with delete button', function () {
-    cy.contains('Link hinzufügen')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
+    cy.contains('Link hinzufügen').closest('.v-btn').click().wait(1);
 
-    cy.get('.v-dialog--active').within(dialogEl => {
-      cy.contains('Name *')
-        .closest('.v-text-field')
-        .type('TestLinkTwo')
-      cy.contains('Linkbeschreibung *')
-        .closest('.v-text-field')
-        .type('TestLinkTwo Beschreibung')
-      cy.contains('Typ des Linkziels *')
-        .closest('.v-select')
-        .type('Person{enter}')
+    cy.get('.v-dialog--active').within((dialogEl) => {
+      cy.contains('Name *').closest('.v-text-field').type('TestLinkTwo');
+      cy.contains('Linkbeschreibung *').closest('.v-text-field').type('TestLinkTwo Beschreibung');
+      cy.contains('Typ des Linkziels *').closest('.v-select').type('Person{enter}');
 
-      cy.get('.v-card__actions')
-        .contains('Weiter')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
+      cy.get('.v-card__actions').contains('Weiter').closest('.v-btn').click().wait(1);
 
-      cy.contains('Attribut hinzufügen')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
+      cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
-        .then(el => {
+        .then((el) => {
           cy.wrap(el).within(() => {
-            const currentAttrData = addTestTwoAttribute
-            cy.contains('Name des Attributs *')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeTitle)
-            cy.contains('Typ des Attributs')
-              .closest('.v-select')
-              .type(`${currentAttrData.selectType.text}{enter}`)
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
-          })
-        })
+            const currentAttrData = addTestTwoAttribute;
+            cy.contains('Name des Attributs *').closest('.v-text-field').type(currentAttrData.writeTitle);
+            cy.contains('Typ des Attributs').closest('.v-select').type(`${currentAttrData.selectType.text}{enter}`);
+            cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
+          });
+        });
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
-    cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('contain.text', 'TestLinkTwo')
+    cy.get('@expansionPanelContent').eq(2).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('contain.text', 'TestLinkTwo');
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkTwo') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkTwo') || null;
         })
         .as('link')
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@link').then((link: any) => {
-        cy.wrap(link.items.properties.attributes.properties).toMatchSnapshot()
-      })
-    })
+        cy.wrap(link.items.properties.attributes.properties).toMatchSnapshot();
+      });
+    });
 
-    cy.contains('TestLinkTwo')
-      .closest('.v-list-item')
-      .find('.v-btn')
-      .first()
-      .click()
-      .wait(1)
-    cy.get('.v-dialog--active .v-card__actions')
-      .contains('Link löschen')
-      .click()
-      .wait(1)
-    cy.get('.v-dialog--active .v-card__actions')
-      .contains('Löschen')
-      .click()
-      .wait(1)
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title')
-      .should('not.contain.text', 'TestLinkTwo')
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.contains('TestLinkTwo').closest('.v-list-item').find('.v-btn').first().click().wait(1);
+    cy.get('.v-dialog--active .v-card__actions').contains('Link löschen').click().wait(1);
+    cy.get('.v-dialog--active .v-card__actions').contains('Löschen').click().wait(1);
+    cy.get('@expansionPanelContent').eq(1).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('not.contain.text', 'TestLinkTwo');
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkTwo') || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkTwo') || null;
         })
         .as('link')
-        .should('be.null')
-    })
-  })
+        .should('be.null');
+    });
+  });
 
   it('compares downloaded schema with the actual one', function () {
-    cy.get('.mdi-download')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
-    cy.readFile('cypress/downloads/os_testSchema.json').toMatchSnapshot()
-  })
+    cy.get('.mdi-download').closest('.v-btn').click().wait(1);
+    cy.readFile('cypress/downloads/os_testSchema.json').toMatchSnapshot();
+  });
 
   it.only('adds a translated description to a new aspect attribute for EN and DE via the dialog', function () {
     // Reset the schema before each test to restore the original state
@@ -792,223 +547,154 @@ describe('Objectschema Editor', () => {
       .find('.cm-content')
       .closest('.d-flex.flex-column')
       .then((el: any) => {
-        el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2))
-      })
+        el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2));
+      });
 
-    cy.get('.veo-editor-save-button')
-      .contains('.v-btn__content', 'Codeänderungen übernehmen')
-      .closest('.v-btn').
-      click()
-      .wait(1)
+    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click().wait(1);
 
-    const currentAttrData = addAttributes[4]
+    const currentAttrData = addAttributes[4];
 
     // Switch default language to de
-    cy.get('.translate-button')
-      .click()
-      .wait(1)
+    cy.get('.translate-button').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
-      cy.get('.v-autocomplete')
-        .contains('Sprache')
-        .closest('.v-autocomplete')
-        .type('Deutsch{enter}')
+    cy.get('.v-dialog--active').within((_dialogEl) => {
+      cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Deutsch{enter}');
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
-    cy.contains('Aspekte hinzufügen')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
+    cy.contains('Aspekte hinzufügen').closest('.v-btn').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
-      cy.contains('Name *')
-        .closest('.v-text-field')
-        .type('TestAspectTwo{enter}')
-      cy.contains('Attribut hinzufügen')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
+    cy.get('.v-dialog--active').within((_dialogEl) => {
+      cy.contains('Name *').closest('.v-text-field').type('TestAspectTwo{enter}');
+      cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
-        .then(el => {
+        .then((el) => {
           cy.wrap(el).within(() => {
-            cy.contains('Name des Attributs *')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeTitle)
-            cy.contains('Typ des Attributs')
-              .closest('.v-select')
-              .type(`${currentAttrData.selectType.text}{enter}`)
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
+            cy.contains('Name des Attributs *').closest('.v-text-field').type(currentAttrData.writeTitle);
+            cy.contains('Typ des Attributs').closest('.v-select').type(`${currentAttrData.selectType.text}{enter}`);
+            cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
             cy.contains('Werte (mit Enter trennen)')
               .closest('.v-autocomplete')
-              .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
-          })
-        })
+              .type(`${currentAttrData.enum.join('{enter}')}{enter}`);
+          });
+        });
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle')
-      .should('contain.text', currentAttrData.writeDescription)
+      .should('contain.text', currentAttrData.writeDescription);
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null;
         })
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null;
         })
-        .should('be.null')
+        .should('be.null');
       for (const enumEntry of currentAttrData.enum) {
         cy.get('@currentOS')
-          .then(currentOS => {
-            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null
+          .then((currentOS) => {
+            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null;
           })
-          .should('not.be.null')
+          .should('not.be.null');
         cy.get('@currentOS')
-          .then(currentOS => {
-            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null
+          .then((currentOS) => {
+            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null;
           })
-          .should('be.null')
+          .should('be.null');
       }
-    })
+    });
 
     // Switch default language
-    cy.get('.translate-button')
-      .click()
-      .wait(1)
+    cy.get('.translate-button').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
-      cy.get('.v-autocomplete')
-        .contains('Sprachen')
-        .closest('.v-autocomplete')
-        .type('Englisch{enter}')
+    cy.get('.v-dialog--active').within((_dialogEl) => {
+      cy.get('.v-autocomplete').contains('Sprachen').closest('.v-autocomplete').type('Englisch{enter}');
 
-      cy.get('.v-autocomplete')
-        .contains('Sprache')
-        .closest('.v-autocomplete')
-        .type('Englisch{enter}')
+      cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Englisch{enter}');
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
     // Expansion panel description should be empty
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle')
-      .should('contain.html', '<span></span>')
+    cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle').should('contain.html', '<span></span>');
 
     // Add english translations
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-card:last-child .v-list-item:first-child .edit-button')
-      .click()
-      .wait(1)
+    cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:first-child .edit-button').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
+    cy.get('.v-dialog--active').within((_dialogEl) => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
-        .then(el => {
+        .then((el) => {
           cy.wrap(el).within(() => {
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
-          })
-        })
+            cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
+          });
+        });
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
     // Expansion panel description should have content
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle')
-      .should('contain.text', currentAttrData.writeDescription)
+      .should('contain.text', currentAttrData.writeDescription);
 
     // Editor should contain translation object with the english and german keys
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null;
         })
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestAspectTwo_${currentAttrData.writeTitle}`) || null;
         })
-        .should('not.be.null')
+        .should('not.be.null');
       for (const enumEntry of currentAttrData.enum) {
         cy.get('@currentOS')
-          .then(currentOS => {
-            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null
+          .then((currentOS) => {
+            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null;
           })
-          .should('not.be.null')
+          .should('not.be.null');
         cy.get('@currentOS')
-          .then(currentOS => {
-            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null
+          .then((currentOS) => {
+            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null;
           })
-          .should('not.be.null')
+          .should('not.be.null');
       }
-    })
+    });
 
     // Remove english translations
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-card:last-child .v-list-item:first-child .edit-button')
-      .click()
-      .wait(1)
+    cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:first-child .edit-button').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
+    cy.get('.v-dialog--active').within((_dialogEl) => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
-        .then(el => {
+        .then((el) => {
           cy.wrap(el).within(() => {
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type('{selectall}{backspace}')
-          })
-        })
+            cy.contains('Beschreibung').closest('.v-text-field').type('{selectall}{backspace}');
+          });
+        });
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
     // Expansion panel description should be empty
-    cy.get('@expansionPanelContent')
-      .eq(1)
-      .find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle')
-      .should('contain.html', '<span></span>')
-  })
+    cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle').should('contain.html', '<span></span>');
+  });
 
   it.only('adds a translated description to a new link attribute for EN and DE via the dialog', function () {
     // Reset the schema before each test to restore the original state
@@ -1016,268 +702,187 @@ describe('Objectschema Editor', () => {
       .find('.cm-content')
       .closest('.d-flex.flex-column')
       .then((el: any) => {
-        el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2))
-      })
+        el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2));
+      });
 
-    cy.get('.veo-editor-save-button')
-      .contains('.v-btn__content', 'Codeänderungen übernehmen')
-      .closest('.v-btn').
-      click()
-      .wait(1)
+    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click().wait(1);
 
-    const currentAttrData = addAttributes[4]
+    const currentAttrData = addAttributes[4];
 
     // Switch default language to de
-    cy.get('.translate-button')
-      .click()
-      .wait(1)
+    cy.get('.translate-button').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
-      cy.get('.v-autocomplete')
-        .contains('Sprache')
-        .closest('.v-autocomplete')
-        .type('Deutsch{enter}')
+    cy.get('.v-dialog--active').within((_dialogEl) => {
+      cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Deutsch{enter}');
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
-    cy.contains('Link hinzufügen')
-      .closest('.v-btn')
-      .click()
-      .wait(1)
+    cy.contains('Link hinzufügen').closest('.v-btn').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
-      cy.contains('Name *')
-        .closest('.v-text-field')
-        .type('TestLinkTwo')
+    cy.get('.v-dialog--active').within((_dialogEl) => {
+      cy.contains('Name *').closest('.v-text-field').type('TestLinkTwo');
 
-      cy.contains('Linkbeschreibung *')
-        .closest('.v-text-field')
-        .clear()
-        .type('TestId')
+      cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
 
-      cy.contains('Typ des Linkziels *')
-        .closest('.v-select')
-        .type('Control{enter}')
+      cy.contains('Typ des Linkziels *').closest('.v-select').type('Control{enter}');
 
-      cy.contains('Weiter')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
+      cy.contains('Weiter').closest('.v-btn').click().wait(1);
 
-      cy.contains('Attribut hinzufügen')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
+      cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
-        .then(el => {
+        .then((el) => {
           cy.wrap(el).within(() => {
-            cy.contains('Name des Attributs *')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeTitle)
-            cy.contains('Typ des Attributs')
-              .closest('.v-select')
-              .type(`${currentAttrData.selectType.text}{enter}`)
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
+            cy.contains('Name des Attributs *').closest('.v-text-field').type(currentAttrData.writeTitle);
+            cy.contains('Typ des Attributs').closest('.v-select').type(`${currentAttrData.selectType.text}{enter}`);
+            cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
             cy.contains('Werte (mit Enter trennen)')
               .closest('.v-autocomplete')
-              .type(`${currentAttrData.enum.join('{enter}')}{enter}`)
-          })
-        })
+              .type(`${currentAttrData.enum.join('{enter}')}{enter}`);
+          });
+        });
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
     cy.get('@expansionPanelContent')
       .eq(2)
       .find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle')
-      .should('contain.text', currentAttrData.writeDescription)
+      .should('contain.text', currentAttrData.writeDescription);
 
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null;
         })
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null;
         })
-        .should('be.null')
+        .should('be.null');
 
       // Check for link description
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo`) || null;
         })
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo`) || null;
         })
-        .should('be.null')
+        .should('be.null');
       for (const enumEntry of currentAttrData.enum) {
         cy.get('@currentOS')
-          .then(currentOS => {
-            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null
+          .then((currentOS) => {
+            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null;
           })
-          .should('not.be.null')
+          .should('not.be.null');
         cy.get('@currentOS')
-          .then(currentOS => {
-            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null
+          .then((currentOS) => {
+            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null;
           })
-          .should('be.null')
+          .should('be.null');
       }
-    })
+    });
 
     // Switch default language
-    cy.get('.translate-button')
-      .click()
-      .wait(1)
+    cy.get('.translate-button').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
-      cy.get('.v-autocomplete')
-        .contains('Sprachen')
-        .closest('.v-autocomplete')
-        .type('Englisch{enter}')
+    cy.get('.v-dialog--active').within((_dialogEl) => {
+      cy.get('.v-autocomplete').contains('Sprachen').closest('.v-autocomplete').type('Englisch{enter}');
 
-      cy.get('.v-autocomplete')
-        .contains('Sprache')
-        .closest('.v-autocomplete')
-        .type('Englisch{enter}')
+      cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Englisch{enter}');
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
     // Expansion panel description should be empty
-    cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle')
-      .should('contain.html', '<span></span>')
+    cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle').should('contain.html', '<span></span>');
 
     // Add english translations
-    cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-card:last-child .v-list-item:first-child .edit-button')
-      .click()
-      .wait(1)
+    cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:first-child .edit-button').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
-
+    cy.get('.v-dialog--active').within((_dialogEl) => {
       // Add english link description
-      cy.contains('Linkbeschreibung *')
-        .closest('.v-text-field')
-        .should('have.value', '')
-        .type('TestId')
+      cy.contains('Linkbeschreibung *').closest('.v-text-field').should('have.value', '').type('TestId');
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
-        .then(el => {
+        .then((el) => {
           cy.wrap(el).within(() => {
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type(currentAttrData.writeDescription)
-          })
-        })
+            cy.contains('Beschreibung').closest('.v-text-field').type(currentAttrData.writeDescription);
+          });
+        });
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
     // Expansion panel description should have content
     cy.get('@expansionPanelContent')
       .eq(2)
       .find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle')
-      .should('contain.text', currentAttrData.writeDescription)
+      .should('contain.text', currentAttrData.writeDescription);
 
     // Editor should contain translation object with the english and german keys
-    cy.get('.editor .cm-content').then(editor => {
-      cy.wrap(getEditorData(editor)).as('currentOS')
+    cy.get('.editor .cm-content').then((editor) => {
+      cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null;
         })
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null;
         })
-        .should('not.be.null')
+        .should('not.be.null');
 
       // Link description
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo`) || null;
         })
-        .should('not.be.null')
+        .should('not.be.null');
       cy.get('@currentOS')
-        .then(currentOS => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo`) || null
+        .then((currentOS) => {
+          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo`) || null;
         })
-        .should('not.be.null')
+        .should('not.be.null');
 
       for (const enumEntry of currentAttrData.enum) {
         cy.get('@currentOS')
-          .then(currentOS => {
-            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null
+          .then((currentOS) => {
+            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null;
           })
-          .should('not.be.null')
+          .should('not.be.null');
         cy.get('@currentOS')
-          .then(currentOS => {
-            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null
+          .then((currentOS) => {
+            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null;
           })
-          .should('not.be.null')
+          .should('not.be.null');
       }
-    })
+    });
 
     // Remove english translations
-    cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-card:last-child .v-list-item:first-child .edit-button')
-      .click()
-      .wait(1)
+    cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:first-child .edit-button').click().wait(1);
 
-    cy.get('.v-dialog--active').within(_dialogEl => {
+    cy.get('.v-dialog--active').within((_dialogEl) => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
-        .then(el => {
+        .then((el) => {
           cy.wrap(el).within(() => {
-            cy.contains('Beschreibung')
-              .closest('.v-text-field')
-              .type('{selectall}{backspace}')
-          })
-        })
+            cy.contains('Beschreibung').closest('.v-text-field').type('{selectall}{backspace}');
+          });
+        });
 
-      cy.get('.v-card__actions')
-        .contains('Speichern')
-        .closest('.v-btn')
-        .click()
-        .wait(1)
-    })
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    });
 
     // Expansion panel description should be empty
-    cy.get('@expansionPanelContent')
-      .eq(2)
-      .find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle')
-      .should('contain.html', '<span></span>')
-  })
-})
+    cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle').should('contain.html', '<span></span>');
+  });
+});

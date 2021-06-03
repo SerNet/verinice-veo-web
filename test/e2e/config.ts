@@ -1,13 +1,13 @@
-import * as fs from 'fs'
+import * as fs from 'fs';
 
 function readFile(filename: string) {
   try {
-    return fs.readFileSync(filename).toString('utf8')
+    return fs.readFileSync(filename).toString('utf8');
   } catch (e) {
-    return undefined
+    return undefined;
   }
 }
 
 export default {
   BASE_URL: process.env.BASE_URL || readFile('environment_url.txt') || 'http://localhost:3000'
-}
+};

@@ -11,30 +11,52 @@
     v-on="$listeners"
   >
     <div class="d-flex flex-column fill-height">
-      <v-list nav dense :shaped="!miniVariant" :rounded="miniVariant" expand>
+      <v-list
+        nav
+        dense
+        :shaped="!miniVariant"
+        :rounded="miniVariant"
+        expand
+      >
         <template v-for="(item, index) in items">
           <VeoPrimaryNavigationEntry
             :key="item.name"
             v-bind="item"
             :collapsed.sync="item.collapsed"
             :mini-variant="miniVariant"
-            @update:collapsed="onUpdateCollapsed(index, $event)"
             :persist-u-i-state="item.persistCollapsedState"
+            @update:collapsed="onUpdateCollapsed(index, $event)"
             @update-mini-variant="setMiniVariant($event)"
           />
         </template>
       </v-list>
     </div>
     <template #append>
-      <v-list nav dense class="pa-0">
+      <v-list
+        nav
+        dense
+        class="pa-0"
+      >
         <v-divider />
-        <v-list-item v-if="!$vuetify.breakpoint.xs" class="pl-4" @click="setMiniVariant(!miniVariant)">
+        <v-list-item
+          v-if="!$vuetify.breakpoint.xs"
+          class="pl-4"
+          @click="setMiniVariant(!miniVariant)"
+        >
           <v-list-item-icon>
-            <v-icon v-if="miniVariant">mdi-chevron-double-right</v-icon>
-            <v-icon v-else>mdi-chevron-double-left</v-icon>
+            <v-icon v-if="miniVariant">
+              mdi-chevron-double-right
+            </v-icon>
+            <v-icon v-else>
+              mdi-chevron-double-left
+            </v-icon>
           </v-list-item-icon>
-          <v-list-item-title v-if="miniVariant">{{ $t('fix') }}</v-list-item-title>
-          <v-list-item-title v-else>{{ $t('collapse') }}</v-list-item-title>
+          <v-list-item-title v-if="miniVariant">
+            {{ $t('fix') }}
+          </v-list-item-title>
+          <v-list-item-title v-else>
+            {{ $t('collapse') }}
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </template>
@@ -42,25 +64,25 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Route } from 'vue-router'
-import LocalStorage from '~/util/LocalStorage'
+import Vue from 'vue';
+import { Route } from 'vue-router';
+import { upperFirst } from 'lodash';
+import LocalStorage from '~/util/LocalStorage';
 
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils'
-import { IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes'
-import { nonLinkableSchemas } from '~/plugins/api/schema'
-import { upperFirst } from 'lodash'
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
+import { nonLinkableSchemas } from '~/plugins/api/schema';
 
 export interface INavItem {
-  name: string
-  icon?: string
-  exact?: boolean
-  to?: string
-  disabled: boolean
-  childItems?: INavItem[]
-  collapsed?: boolean
-  topLevelItem: boolean
-  persistCollapsedState?: (collapsed: boolean) => void
+  name: string;
+  icon?: string;
+  exact?: boolean;
+  to?: string;
+  disabled: boolean;
+  childItems?: INavItem[];
+  collapsed?: boolean;
+  topLevelItem: boolean;
+  persistCollapsedState?: (collapsed: boolean) => void;
 }
 
 export default Vue.extend({
@@ -79,33 +101,33 @@ export default Vue.extend({
     return {
       miniVariant: LocalStorage.primaryNavMiniVariant,
       items: [] as INavItem[]
-    }
-  },
-  watch: {
-    '$route.params.unit'() {
-      this.getNavEntries(this.$route)
-    }
-  },
-  mounted() {
-    this.getNavEntries(this.$route)
-    this.$i18n.onLanguageSwitched = () => {
-      this.getNavEntries(this.$route)
-    }
+    };
   },
   computed: {
     objectToToggleObjectFormCollapse() {
       return {
         [this.$t('breadcrumbs.objects') as string]: this.$t('breadcrumbs.forms') as string,
         [this.$t('breadcrumbs.forms') as string]: this.$t('breadcrumbs.objects') as string
-      }
+      };
     }
+  },
+  watch: {
+    '$route.params.unit'() {
+      this.getNavEntries(this.$route);
+    }
+  },
+  mounted() {
+    this.getNavEntries(this.$route);
+    this.$i18n.onLanguageSwitched = () => {
+      this.getNavEntries(this.$route);
+    };
   },
   methods: {
     getNavEntries(route: Route) {
-      this.items = []
+      this.items = [];
       // Only show nav links belonging to units if a unit is selected
       if ((route.params.unit && separateUUIDParam(route.params.unit).id) !== undefined) {
-        const routeUnitParam = route.params.unit
+        const routeUnitParam = route.params.unit;
         this.items = [
           {
             name: this.$t('unit.index.title') as string,
@@ -170,18 +192,18 @@ export default Vue.extend({
             disabled: false,
             topLevelItem: true
           }
-        ]
+        ];
 
         // Async loading of child elements (done now as to not block the rendering of the menu)
         this.fetchDataTypes().then((data: INavItem[]) => {
-          this.items[2].childItems = data
-        })
+          this.items[2].childItems = data;
+        });
         this.fetchFormTypes().then((data: INavItem[]) => {
-          this.items[3].childItems = data
-        })
+          this.items[3].childItems = data;
+        });
         this.fetchReportTypes().then((data: INavItem[]) => {
-          this.items[4].childItems = data
-        })
+          this.items[4].childItems = data;
+        });
       } else {
         this.items.push({
           name: this.$t('breadcrumbs.index') as string,
@@ -190,7 +212,7 @@ export default Vue.extend({
           exact: true,
           disabled: false,
           topLevelItem: true
-        })
+        });
       }
 
       // Add permanent entries to the nav bar
@@ -201,27 +223,29 @@ export default Vue.extend({
         exact: false,
         disabled: false,
         topLevelItem: true
-      })
+      });
     },
     async fetchDataTypes(): Promise<INavItem[]> {
-      const routeUnitParam = this.$route.params.unit
-      return this.$api.schema.fetchAll().then(data => {
-        return data.filter(entry => !nonLinkableSchemas.includes(entry.schemaName)).map(entry => {
-          return {
-            name: upperFirst(entry.schemaName),
-            exact: false,
-            to: `/${routeUnitParam}/objects/${entry.endpoint}/-/`,
-            disabled: false,
-            childItems: undefined,
-            collapsed: false,
-            topLevelItem: false
-          }
-        })
-      })
+      const routeUnitParam = this.$route.params.unit;
+      return this.$api.schema.fetchAll().then((data) => {
+        return data
+          .filter((entry) => !nonLinkableSchemas.includes(entry.schemaName))
+          .map((entry) => {
+            return {
+              name: upperFirst(entry.schemaName),
+              exact: false,
+              to: `/${routeUnitParam}/objects/${entry.endpoint}/-/`,
+              disabled: false,
+              childItems: undefined,
+              collapsed: false,
+              topLevelItem: false
+            };
+          });
+      });
     },
 
     async fetchFormTypes(): Promise<INavItem[]> {
-      const routeUnitParam = separateUUIDParam(this.$route.params.unit).id
+      const routeUnitParam = separateUUIDParam(this.$route.params.unit).id;
       return await this.$api.form.fetchAll({ unit: routeUnitParam }).then((formTypes: IVeoFormSchemaMeta[]) =>
         formTypes.map((entry: IVeoFormSchemaMeta) => {
           return {
@@ -230,42 +254,42 @@ export default Vue.extend({
             to: `/${createUUIDUrlParam('unit', routeUnitParam)}/forms/${createUUIDUrlParam('form', entry?.id || '')}/`,
             disabled: false,
             topLevelItem: false
-          }
+          };
         })
-      )
+      );
     },
     async fetchReportTypes(): Promise<INavItem[]> {
       return await this.$api.report.fetchAll().then((reportTypes: IVeoReportsMeta) =>
         Object.entries(reportTypes).map(([key, value]) => {
-          const name = value.name[this.$i18n.locale] || value.name[0]
+          const name = value.name[this.$i18n.locale] || value.name[0];
           return {
-            name: name,
+            name,
             exact: false,
             to: `/${this.$route.params.unit}/reports/${key}/`,
             disabled: false,
             topLevelItem: false
-          } 
+          };
         })
-      )
+      );
     },
     setMiniVariant(miniVariant: boolean) {
-      this.miniVariant = miniVariant
-      LocalStorage.primaryNavMiniVariant = miniVariant
+      this.miniVariant = miniVariant;
+      LocalStorage.primaryNavMiniVariant = miniVariant;
     },
     onUpdateCollapsed(itemIndex: number, collapsed: boolean) {
-      this.items[itemIndex].collapsed = collapsed
-      this.items[itemIndex].persistCollapsedState?.(collapsed)
+      this.items[itemIndex].collapsed = collapsed;
+      this.items[itemIndex].persistCollapsedState?.(collapsed);
 
       // As only one item should be expanded at a time, we collapse all other
       this.items.forEach((item, index) => {
-        if(item.collapsed === false && index !== itemIndex) {
-          this.items[index].collapsed = true
-          this.items[index].persistCollapsedState?.(true)
+        if (item.collapsed === false && index !== itemIndex) {
+          this.items[index].collapsed = true;
+          this.items[index].persistCollapsedState?.(true);
         }
-      })
+      });
     }
   }
-})
+});
 </script>
 
 <i18n>

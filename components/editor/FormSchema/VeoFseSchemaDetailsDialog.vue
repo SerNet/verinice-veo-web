@@ -1,12 +1,29 @@
 <template>
-  <VeoDialog v-model="dialog.value" large :headline="$t('schemaDetailsHeadline')">
+  <VeoDialog
+    v-model="dialog.value"
+    large
+    :headline="$t('schemaDetailsHeadline')"
+  >
     <template #default>
-      <v-form v-model="form.valid" class="mx-4" @submit="doSave()">
-        <v-row no-gutters class="align-center mt-4">
-          <v-col :cols="12" :md="5">
+      <v-form
+        v-model="form.valid"
+        class="mx-4"
+        @submit="doSave()"
+      >
+        <v-row
+          no-gutters
+          class="align-center mt-4"
+        >
+          <v-col
+            :cols="12"
+            :md="5"
+          >
             <span style="font-size: 1.2rem;">{{ $t('schemaName') }}*:</span>
           </v-col>
-          <v-col :cols="12" :md="5">
+          <v-col
+            :cols="12"
+            :md="5"
+          >
             <v-text-field
               v-model="form.data.formSchema"
               required
@@ -16,11 +33,20 @@
             />
           </v-col>
         </v-row>
-        <v-row no-gutters class="align-center mt-4">
-          <v-col :cols="12" :md="5">
+        <v-row
+          no-gutters
+          class="align-center mt-4"
+        >
+          <v-col
+            :cols="12"
+            :md="5"
+          >
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.subtype') }}:</span>
           </v-col>
-          <v-col :cols="12" :md="5">
+          <v-col
+            :cols="12"
+            :md="5"
+          >
             <v-text-field
               v-model="form.data.subType"
               :label="$t('editor.formschema.subtype')"
@@ -28,11 +54,20 @@
             />
           </v-col>
         </v-row>
-        <v-row no-gutters class="align-center mt-4">
-          <v-col :cols="12" :md="5">
+        <v-row
+          no-gutters
+          class="align-center mt-4"
+        >
+          <v-col
+            :cols="12"
+            :md="5"
+          >
             <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.text') }}*:</span>
           </v-col>
-          <v-col :cols="12" :md="5">
+          <v-col
+            :cols="12"
+            :md="5"
+          >
             <v-text-field
               :value="objectSchema"
               flat
@@ -47,26 +82,34 @@
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.cancel') }}</v-btn>
+      <v-btn
+        text
+        color="primary"
+        @click="$emit('input', false)"
+      >
+        {{ $t('global.button.cancel') }}
+      </v-btn>
       <v-spacer />
       <v-btn
         text
         color="primary"
         :disabled="!form.valid"
         @click="doSave()"
-      >{{ $t('global.button.save') }}</v-btn>
+      >
+        {{ $t('global.button.save') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
-import { trim } from 'lodash'
+import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { trim } from 'lodash';
 
 interface IProps {
-  value: boolean
-  objectSchema: string
-  formSchema: string
-  subtype: string
+  value: boolean;
+  objectSchema: string;
+  formSchema: string;
+  subtype: string;
 }
 
 export default defineComponent<IProps>({
@@ -92,7 +135,7 @@ export default defineComponent<IProps>({
     /**
      * Common dialog stuff (opening and closing)
      */
-    const dialog = ref({ value: props.value })
+    const dialog = ref({ value: props.value });
 
     const form = ref({
       data: {
@@ -103,56 +146,56 @@ export default defineComponent<IProps>({
         formSchema: [(input: string) => trim(input).length > 0 || context.root.$t('global.input.required')]
       },
       valid: false
-    })
+    });
 
     watch(
       () => props.value,
       (val: boolean) => {
-        dialog.value.value = val
+        dialog.value.value = val;
       }
-    )
+    );
 
     watch(
       () => dialog.value.value,
       (val: boolean) => {
         if (!val) {
-          context.emit('input', val)
+          context.emit('input', val);
         }
       }
-    )
+    );
 
     watch(
       () => dialog.value.value,
       (val: boolean) => {
         if (!val) {
-          context.emit('input', val)
+          context.emit('input', val);
         }
       }
-    )
+    );
 
     watch(
       () => props.formSchema,
       (val: string) => {
-        form.value.data.formSchema = val
+        form.value.data.formSchema = val;
       }
-    )
+    );
 
     watch(
       () => props.subtype,
       (val: string) => {
-        form.value.data.subType = val
+        form.value.data.subType = val;
       }
-    )
+    );
 
     function doSave() {
-      context.emit('update-subtype', form.value.data.subType)
-      context.emit('update-schema-name', form.value.data.formSchema)
-      context.emit('input', false)
+      context.emit('update-subtype', form.value.data.subType);
+      context.emit('update-schema-name', form.value.data.formSchema);
+      context.emit('input', false);
     }
 
-    return { dialog, doSave, form }
+    return { dialog, doSave, form };
   }
-})
+});
 </script>
 
 <i18n>

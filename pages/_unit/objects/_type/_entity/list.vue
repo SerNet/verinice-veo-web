@@ -1,63 +1,63 @@
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
-import { separateUUIDParam } from '~/lib/utils'
-import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
-import VeoScopesListPage from '~/pages/_unit/scopes/_entity/list.vue'
-import { IVeoEntity } from '~/types/VeoTypes'
-import { getSchemaName } from '~/plugins/api/schema'
+import { separateUUIDParam } from '~/lib/utils';
+import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
+import VeoScopesListPage from '~/pages/_unit/scopes/_entity/list.vue';
+import { IVeoEntity } from '~/types/VeoTypes';
+import { getSchemaName } from '~/plugins/api/schema';
 
 interface IData {
-  objects: IVeoEntity[]
-  currentEntity: undefined | IVeoEntity
-  showParentLink: boolean
-  rootEntityType: string
+  objects: IVeoEntity[];
+  currentEntity: undefined | IVeoEntity;
+  showParentLink: boolean;
+  rootEntityType: string;
 }
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
   extends: VeoScopesListPage,
-  head(): any {
-    return {
-      title: `${this.title} - ${this.$t('breadcrumbs.objects')}`
-    }
-  },
   data(): IData {
     return {
       objects: [],
       currentEntity: undefined,
       showParentLink: false,
       rootEntityType: ''
-    }
+    };
   },
   async fetch() {
     if (this.entityType === '-') {
-      this.rootEntityType = getSchemaName(this.objectType) || ''
+      this.rootEntityType = getSchemaName(this.objectType) || '';
       this.objects = await this.$api.entity.fetchAll(this.objectType, {
         unit: this.unitId
-      })
-      this.currentEntity = undefined
+      });
+      this.currentEntity = undefined;
     } else {
-      this.rootEntityType = this.entityType
-      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId)
-      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId)
+      this.rootEntityType = this.entityType;
+      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId);
+      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
     }
+  },
+  head(): any {
+    return {
+      title: `${this.title} - ${this.$t('breadcrumbs.objects')}`
+    };
   },
   computed: {
     unitId(): string {
-      return separateUUIDParam(this.$route.params.unit).id
+      return separateUUIDParam(this.$route.params.unit).id;
     },
     entityId(): string {
-      return separateUUIDParam(this.$route.params.entity).id
+      return separateUUIDParam(this.$route.params.entity).id;
     },
     entityType(): string {
-      return separateUUIDParam(this.$route.params.entity).type
+      return separateUUIDParam(this.$route.params.entity).type;
     },
     objectType(): string {
-      return this.$route.params.type
+      return this.$route.params.type;
     },
     title(): string {
-      return this.currentEntity?.displayName || this.$t('breadcrumbs.objects').toString()
+      return this.currentEntity?.displayName || this.$t('breadcrumbs.objects').toString();
     },
     menuButton(): IVeoMenuButtonItem {
       return {
@@ -70,10 +70,10 @@ export default Vue.extend({
           }
         },
         disabled: false
-      }
+      };
     },
     menuItems(): IVeoMenuButtonItem[] {
-      const menuItems: IVeoMenuButtonItem[] = []
+      const menuItems: IVeoMenuButtonItem[] = [];
 
       // Allow entity management on all levels but the root level
       if (this.entityType !== '-') {
@@ -86,27 +86,27 @@ export default Vue.extend({
             }
           },
           disabled: false
-        })
+        });
       }
 
-      return menuItems
+      return menuItems;
     },
     rootRoute(): string {
-      return `/${this.$route.params.unit}/objects/${this.$route.params.type}`
+      return `/${this.$route.params.unit}/objects/${this.$route.params.type}`;
     }
   },
   methods: {
     sortingFunction(a: IVeoEntity, b: IVeoEntity) {
       if (a.parts.length > 0 && b.parts.length === 0) {
-        return -1
+        return -1;
       } else if (a.parts.length === 0 && b.parts.length > 0) {
-        return 1
+        return 1;
       } else {
-        return a.name.localeCompare(b.name)
+        return a.name.localeCompare(b.name);
       }
     }
   }
-})
+});
 </script>
 
 <i18n>

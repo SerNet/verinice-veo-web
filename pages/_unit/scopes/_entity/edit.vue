@@ -12,10 +12,16 @@
       >
         <template #default>
           <VeoEntityDisplayOptions
-            :rootRoute="`/${$route.params.unit}/scopes`"
+            :root-route="`/${$route.params.unit}/scopes`"
             :current-entity="form.objectData"
           >
-            <v-btn text outlined @click="$router.go(-1)">{{ $t('global.button.discard') }}</v-btn>
+            <v-btn
+              text
+              outlined
+              @click="$router.go(-1)"
+            >
+              {{ $t('global.button.discard') }}
+            </v-btn>
             <v-btn
               v-if="!isRevision"
               color="primary"
@@ -23,7 +29,9 @@
               :disabled="$fetchState.pending"
               :loading="saveBtnLoading"
               @click="doSaveEntity"
-            >{{ $t('global.button.apply') }}</v-btn>
+            >
+              {{ $t('global.button.apply') }}
+            </v-btn>
             <v-btn
               v-else
               color="primary"
@@ -32,13 +40,19 @@
               :loading="saveBtnLoading"
               :disabled="!allowRestoration"
               @click="doSaveEntity"
-            >{{ $t('restore') }}</v-btn>
+            >
+              {{ $t('restore') }}
+            </v-btn>
           </VeoEntityDisplayOptions>
           <div
             v-if="$fetchState.pending"
             class="fill-width fill-height d-flex justify-center align-center"
           >
-            <v-progress-circular indeterminate color="primary" size="50" />
+            <v-progress-circular
+              indeterminate
+              color="primary"
+              size="50"
+            />
           </div>
           <div v-else>
             <VeoForm
@@ -56,8 +70,18 @@
               v-bind="alert"
               style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
             >
-              <template v-if="alert.error === 412" #additional-button>
-                <v-btn outlined text color="error" @click="$fetch()">{{ $t('global.button.yes') }}</v-btn>
+              <template
+                v-if="alert.error === 412"
+                #additional-button
+              >
+                <v-btn
+                  outlined
+                  text
+                  color="error"
+                  @click="$fetch()"
+                >
+                  {{ $t('global.button.yes') }}
+                </v-btn>
               </template>
             </VeoAlert>
             <VeoEntityModifiedDialog
@@ -75,10 +99,17 @@
           </div>
         </template>
       </VeoPage>
-      <VeoPage absolute-size :cols="12" :md="4" :xl="4">
+      <VeoPage
+        absolute-size
+        :cols="12"
+        :md="4"
+        :xl="4"
+      >
         <VeoTabs sticky-tabs>
           <template #tabs>
-            <v-tab disabled>{{ $t('history') }}</v-tab>
+            <v-tab disabled>
+              {{ $t('history') }}
+            </v-tab>
           </template>
           <template #items>
             <VeoObjectHistory
@@ -95,38 +126,52 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { upperFirst } from 'lodash'
-import { Route } from 'vue-router/types/index'
+import Vue from 'vue';
+import { upperFirst } from 'lodash';
+import { Route } from 'vue-router/types/index';
 
-import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils'
-import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
-import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes'
-import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
-import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin'
+import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
+import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue';
+import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
+import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
 
 interface IData {
-  form: IForm
-  isValid: boolean
-  isRevision: boolean
-  allowRestoration: boolean
-  revisionVersion: number
-  revisionCache: IBaseObject
-  errorMessages: IValidationErrorMessage[]
-  saveBtnLoading: boolean
-  alert: IVeoEventPayload & { value: boolean; error: number }
+  form: IForm;
+  isValid: boolean;
+  isRevision: boolean;
+  allowRestoration: boolean;
+  revisionVersion: number;
+  revisionCache: IBaseObject;
+  errorMessages: IValidationErrorMessage[];
+  saveBtnLoading: boolean;
+  alert: IVeoEventPayload & { value: boolean; error: number };
   entityModified: {
-    isModified: boolean
-    dialog: boolean
-    revisionDialog: boolean
-    target?: any
-  }
+    isModified: boolean;
+    dialog: boolean;
+    revisionDialog: boolean;
+    target?: any;
+  };
 }
 
 export default Vue.extend({
   name: 'VeoScopesEditPage',
-  mixins: [ VeoReactiveFormActionMixin ],
+  mixins: [VeoReactiveFormActionMixin],
+  beforeRouteLeave(to: Route, _from: Route, next: Function) {
+    // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
+    if (this.entityModified.isModified && this.entityModified.dialog) {
+      next();
+    } else if (this.entityModified.isModified) {
+      // If the form was modified and the dialog is closed, show it and abort navigation
+      this.entityModified.target = to;
+      this.entityModified.dialog = true;
+      next(false);
+    } else {
+      // The form wasn't modified, proceed as if this hook doesn't exist
+      next();
+    }
+  },
   data(): IData {
     return {
       form: {
@@ -155,25 +200,25 @@ export default Vue.extend({
         revisionDialog: false,
         target: undefined
       }
-    }
+    };
   },
   async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.entityType)
-    const { lang } = await this.$api.translation.fetch(['de', 'en'])
+    const objectSchema = await this.$api.schema.fetch(this.entityType);
+    const { lang } = await this.$api.translation.fetch(['de', 'en']);
 
-    let objectData = await this.$api.entity.fetch(this.entityType, this.entityId)
+    const objectData = await this.$api.entity.fetch(this.entityType, this.entityId);
 
     this.form = {
       objectSchema,
       objectData,
       lang
-    }
-    this.alert.value = false
+    };
+    this.alert.value = false;
   },
   head(): any {
     return {
       title: this.objectTitle
-    }
+    };
   },
   computed: {
     objectTitle(): string {
@@ -181,46 +226,46 @@ export default Vue.extend({
         this.$t('edit_object', {
           title: this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.displayName
         }),
-        ...((this.isRevision) ? [`(${this.$t('revision')} ${this.revisionVersion})`] : [])
-      ].join(' ')
+        ...(this.isRevision ? [`(${this.$t('revision')} ${this.revisionVersion})`] : [])
+      ].join(' ');
     },
     entityId(): string {
-      return separateUUIDParam(this.$route.params.entity).id
+      return separateUUIDParam(this.$route.params.entity).id;
     },
     entityType(): string {
-      return separateUUIDParam(this.$route.params.entity).type
+      return separateUUIDParam(this.$route.params.entity).type;
     }
   },
   methods: {
     doSaveEntity() {
-      this.saveBtnLoading = true
-      this.formatObjectData()
+      this.saveBtnLoading = true;
+      this.formatObjectData();
 
       this.$api.entity
         .update(this.entityType, this.entityId, this.form.objectData as IVeoEntity)
         .then(() => {
-          this.entityModified.isModified = false
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') })
+          this.entityModified.isModified = false;
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
-          this.$router.back()
+          this.$router.back();
         })
         .catch((error: { status: number; name: string }) => {
-          this.showError(error.status, error.name)
+          this.showError(error.status, error.name);
         })
         .finally(() => {
-          this.saveBtnLoading = false
-        })
+          this.saveBtnLoading = false;
+        });
     },
     showError(status: number, message: string) {
       if (status === 412) {
-        this.alert.text = this.$t('global.appstate.alert.object_modified').toString()
-        this.alert.saveButtonText = this.$t('global.button.no').toString()
+        this.alert.text = this.$t('global.appstate.alert.object_modified').toString();
+        this.alert.saveButtonText = this.$t('global.button.no').toString();
       } else {
-        this.alert.text = message
-        this.alert.saveButtonText = this.$t('global.button.ok').toString()
+        this.alert.text = message;
+        this.alert.saveButtonText = this.$t('global.button.ok').toString();
       }
-      this.alert.error = status
-      this.alert.value = true
+      this.alert.error = status;
+      this.alert.value = true;
     },
     formatObjectData() {
       // TODO: find better solution
@@ -231,70 +276,56 @@ export default Vue.extend({
             ...this.form.objectData.customAspects[key],
             id: '00000000-0000-0000-0000-000000000000',
             type: key
-          }
-        })
+          };
+        });
       }
     },
     async showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean, allowRestoration: boolean = false) {
-      const content = revision.content
+      const content = revision.content;
 
       // show modified dialog before switching versions if needed
       if (this.entityModified.isModified) {
-        this.revisionCache = content // cache revision for use after modified-dialog is closed with "yes"
-        this.entityModified.revisionDialog = true
+        this.revisionCache = content; // cache revision for use after modified-dialog is closed with "yes"
+        this.entityModified.revisionDialog = true;
       } else {
         if (isRevision && !this.validateRevisionSchema(content)) {
-          return
+          return;
         }
         // fill form with revision or newest data
-        this.isRevision = isRevision
-        this.revisionVersion = revision.changeNumber
-        this.allowRestoration = allowRestoration
-          
+        this.isRevision = isRevision;
+        this.revisionVersion = revision.changeNumber;
+        this.allowRestoration = allowRestoration;
+
         // @ts-ignore
-        content.$etag = this.form.objectData.$etag // We have to give the etag to the new object in order to make it saveable
-        this.form.objectData = content // show revision content in form
-        this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`
+        content.$etag = this.form.objectData.$etag; // We have to give the etag to the new object in order to make it saveable
+        this.form.objectData = content; // show revision content in form
+        this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`;
       }
     },
     async showRevisionAfterDialog() {
       // close dialog without action if revision schema is invalid
       if (!this.validateRevisionSchema(this.revisionCache)) {
-        this.entityModified.revisionDialog = false
-        return
+        this.entityModified.revisionDialog = false;
+        return;
       }
       // fill form with cached revision data and close dialog
-      this.isRevision = true
-      this.form.objectData = this.revisionCache
-      this.entityModified.revisionDialog = false
-      this.entityModified.isModified = false
+      this.isRevision = true;
+      this.form.objectData = this.revisionCache;
+      this.entityModified.revisionDialog = false;
+      this.entityModified.isModified = false;
     },
     validateRevisionSchema(revision: IBaseObject) {
-      const validator = new ObjectSchemaValidator()
+      const validator = new ObjectSchemaValidator();
 
-      delete revision.displayName
-      const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision)
+      delete revision.displayName;
+      const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision);
       if (!isValid) {
-        this.showError(500, this.$t('revision_incompatible').toString())
+        this.showError(500, this.$t('revision_incompatible').toString());
       }
-      return isValid
-    }
-  },
-  beforeRouteLeave(to: Route, _from: Route, next: Function) {
-    // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if (this.entityModified.isModified && this.entityModified.dialog) {
-      next()
-    } else if (this.entityModified.isModified) {
-      // If the form was modified and the dialog is closed, show it and abort navigation
-      this.entityModified.target = to
-      this.entityModified.dialog = true
-      next(false)
-    } else {
-      // The form wasn't modified, proceed as if this hook doesn't exist
-      next()
+      return isValid;
     }
   }
-})
+});
 </script>
 
 <i18n>

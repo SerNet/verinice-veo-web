@@ -2,7 +2,11 @@
   <div style="display: contents">
     <v-list-item>
       <v-list-item-title class="d-flex justify-end">
-        <v-btn color="primary" text @click="doCreateUnit()">
+        <v-btn
+          color="primary"
+          text
+          @click="doCreateUnit()"
+        >
           <v-icon>mdi-plus</v-icon> {{ $t('unit.create.short') }}
         </v-btn>
       </v-list-item-title>
@@ -26,12 +30,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
 
-import { IVeoUnit } from '~/types/VeoTypes'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { separateUUIDParam } from '~/lib/utils'
+import { IVeoUnit } from '~/types/VeoTypes';
+import { VeoEvents } from '~/types/VeoGlobalEvents';
+import { separateUUIDParam } from '~/lib/utils';
 
 export default Vue.extend({
   props: {
@@ -42,16 +46,16 @@ export default Vue.extend({
   },
   computed: {
     unit(): string | undefined {
-      return (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id) || '-'
+      return (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id) || '-';
     }
   },
   methods: {
     doChangeUnit(unit: string) {
-      this.$root.$emit(VeoEvents.UNIT_CHANGED, unit)
+      this.$root.$emit(VeoEvents.UNIT_CHANGED, unit);
     },
     doCreateUnit(persistent: boolean = false) {
-      this.$root.$emit(VeoEvents.UNIT_CREATE, persistent)
+      this.$root.$emit(VeoEvents.UNIT_CREATE, persistent);
     }
   }
-})
+});
 </script>

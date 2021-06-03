@@ -2,19 +2,31 @@
   <VeoWidget :title="$t('unit.details.objects')">
     <template v-if="$fetchState.pending">
       <table>
-        <tr v-for="type of objects" :key="type.title">
+        <tr
+          v-for="type of objects"
+          :key="type.title"
+        >
           <td>
-            <v-skeleton-loader type="text" width="150" />
+            <v-skeleton-loader
+              type="text"
+              width="150"
+            />
           </td>
           <td class="text-right">
-            <v-skeleton-loader type="text" width="10" />
+            <v-skeleton-loader
+              type="text"
+              width="10"
+            />
           </td>
         </tr>
       </table>
     </template>
     <template v-else>
       <table>
-        <tr v-for="type of objects" :key="type.title">
+        <tr
+          v-for="type of objects"
+          :key="type.title"
+        >
           <td>{{ type.title }}:</td>
           <td class="text-right">
             <nuxt-link :to="`/${$route.params.unit}/${type.link}`">
@@ -28,9 +40,9 @@
 </template>
 
 <script lang="ts">
-import { upperFirst } from 'lodash'
-import Vue from 'vue'
-import { TranslateResult } from 'vue-i18n/types/index'
+import { upperFirst } from 'lodash';
+import Vue from 'vue';
+import { TranslateResult } from 'vue-i18n/types/index';
 
 export default Vue.extend({
   props: {
@@ -42,12 +54,12 @@ export default Vue.extend({
   data() {
     return {
       objects: [] as { title: TranslateResult; link: string; items: number }[]
-    }
+    };
   },
   async fetch() {
     await this.$api.schema
       .fetchAll()
-      .then(data => {
+      .then((data) => {
         return data.map(async (key: { schemaName: string; endpoint: string }) => ({
           title: upperFirst(key.schemaName),
           link: `objects/${key.endpoint}`,
@@ -57,15 +69,15 @@ export default Vue.extend({
               unit: this.unit.id
             })
           ).length
-        }))
+        }));
       })
-      .then(types => {
-        Promise.all(types).then(data => {
-          this.objects = data as any
-        })
-      })
+      .then((types) => {
+        Promise.all(types).then((data) => {
+          this.objects = data as any;
+        });
+      });
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

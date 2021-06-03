@@ -2200,7 +2200,7 @@ declare module 'testcafe' {
    * @param init - Selector initializer.
    * @param options - Selector options.
    */
-  export const Selector: SelectorFactory
+  export const Selector: SelectorFactory;
 
   /**
    * Creates a client function.
@@ -2208,20 +2208,20 @@ declare module 'testcafe' {
    * @param fn - Function code.
    * @param options - Function options.
    */
-  export const ClientFunction: ClientFunctionFactory
+  export const ClientFunction: ClientFunctionFactory;
 
   /**
    * Creates a request mock
    */
-  export const RequestMock: RequestMockFactory
+  export const RequestMock: RequestMockFactory;
 
   /**
    * Creates a request logger
    */
-  export const RequestLogger: RequestLoggerFactory
+  export const RequestLogger: RequestLoggerFactory;
 
   /** The RequestHook class used to create a custom HTTP request hook **/
-  export const RequestHook: RequestHookConstructor
+  export const RequestHook: RequestHookConstructor;
 
   /**
    * Creates a user role.
@@ -2231,22 +2231,22 @@ declare module 'testcafe' {
    * @param fn `t` - The test controller used to access test run API.
    * @param options - Role options.
    */
-  export const Role: RoleFactory
+  export const Role: RoleFactory;
 
   /**
    * The test controller used to access test run API.
    */
-  export const t: TestController
+  export const t: TestController;
 
-  const createTestCafe: TestCafeFactory
+  const createTestCafe: TestCafeFactory;
 
-  export default createTestCafe
+  export default createTestCafe;
 }
 
 //
 
-declare const fixture: FixtureFn
-declare const test: TestFn
+declare const fixture: FixtureFn;
+declare const test: TestFn;
 
 declare module 'testcafe' {
   global {
@@ -4128,7 +4128,7 @@ declare module 'testcafe' {
      * @param init - Selector initializer.
      * @param options - Selector options.
      */
-    export const Selector: SelectorFactory
+    export const Selector: SelectorFactory;
 
     /**
      * Creates a client function.
@@ -4136,7 +4136,7 @@ declare module 'testcafe' {
      * @param fn - Function code.
      * @param options - Function options.
      */
-    export const ClientFunction: ClientFunctionFactory
+    export const ClientFunction: ClientFunctionFactory;
   }
 }
 
@@ -6017,15 +6017,15 @@ declare module 'testcafe' {
     /**
      * Creates a request mock
      */
-    export const RequestMock: RequestMockFactory
+    export const RequestMock: RequestMockFactory;
 
     /**
      * Creates a request logger
      */
-    export const RequestLogger: RequestLoggerFactory
+    export const RequestLogger: RequestLoggerFactory;
 
     /** The RequestHook class used to create a custom HTTP request hook **/
-    export const RequestHook: RequestHookConstructor
+    export const RequestHook: RequestHookConstructor;
 
     /**
      * Creates a user role.
@@ -6035,12 +6035,12 @@ declare module 'testcafe' {
      * @param fn `t` - The test controller used to access test run API.
      * @param options - Role options.
      */
-    export const Role: RoleFactory
+    export const Role: RoleFactory;
 
     /**
      * The test controller used to access test run API.
      */
-    export const t: TestController
+    export const t: TestController;
   }
 
   /**
@@ -6049,7 +6049,7 @@ declare module 'testcafe' {
    * @param init - Selector initializer.
    * @param options - Selector options.
    */
-  export const Selector: SelectorFactory
+  export const Selector: SelectorFactory;
 
   /**
    * Creates a client function.
@@ -6057,20 +6057,20 @@ declare module 'testcafe' {
    * @param fn - Function code.
    * @param options - Function options.
    */
-  export const ClientFunction: ClientFunctionFactory
+  export const ClientFunction: ClientFunctionFactory;
 
   /**
    * Creates a request mock
    */
-  export const RequestMock: RequestMockFactory
+  export const RequestMock: RequestMockFactory;
 
   /**
    * Creates a request logger
    */
-  export const RequestLogger: RequestLoggerFactory
+  export const RequestLogger: RequestLoggerFactory;
 
   /** The RequestHook class used to create a custom HTTP request hook **/
-  export const RequestHook: RequestHookConstructor
+  export const RequestHook: RequestHookConstructor;
 
   /**
    * Creates a user role.
@@ -6080,10 +6080,10 @@ declare module 'testcafe' {
    * @param fn `t` - The test controller used to access test run API.
    * @param options - Role options.
    */
-  export const Role: RoleFactory
+  export const Role: RoleFactory;
 
   /**
    * The test controller used to access test run API.
    */
-  export const t: TestController
+  export const t: TestController;
 }

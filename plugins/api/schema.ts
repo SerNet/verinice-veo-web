@@ -1,9 +1,9 @@
-import { Client } from '~/plugins/api'
-import { IVeoObjectSchema } from '~/types/VeoTypes'
+import { Client } from '~/plugins/api';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 
 export interface ISchemaEndpoint {
-  schemaName: string
-  endpoint: string
+  schemaName: string;
+  endpoint: string;
 }
 
 // The key might be different to the title of the object schema defined in its title property. However this key
@@ -17,28 +17,28 @@ export const endpoints = {
   process: 'processes',
   scenario: 'scenarios',
   scope: 'scopes'
-}
+};
 
 /**
  * Schemas in this array usually get handled differently than "normal" schemas. While we don't treat them differently in
  * this file, other files in the project might refer to this array
  */
-export const nonLinkableSchemas = ['scope']
+export const nonLinkableSchemas = ['scope'];
 
 export function getSchemaName(endpoint: string): string | undefined {
-  for (let key of Object.keys(endpoints)) {
+  for (const key of Object.keys(endpoints)) {
     // @ts-ignore
     if (endpoints[key] === endpoint) {
-      return key
+      return key;
     }
   }
 
-  return undefined
+  return undefined;
 }
 
 export function getSchemaEndpoint(schemaName: string): string | undefined {
   // @ts-ignore
-  return endpoints[schemaName]
+  return endpoints[schemaName];
 }
 
 export default function (api: Client) {
@@ -49,12 +49,14 @@ export default function (api: Client) {
     async fetchAll(ignoreMissingEndpoints: boolean = false, params?: Record<string, string>): Promise<ISchemaEndpoint[]> {
       const schemas: { knownSchemas: string[] } = await api.req('/api/schemas', {
         params
-      })
-      return schemas.knownSchemas.map(schema => ({
-        schemaName: schema,
-        // @ts-ignore
-        endpoint: endpoints[schema]
-      })).filter(entry => ignoreMissingEndpoints || !!entry.endpoint)
+      });
+      return schemas.knownSchemas
+        .map((schema) => ({
+          schemaName: schema,
+          // @ts-ignore
+          endpoint: endpoints[schema]
+        }))
+        .filter((entry) => ignoreMissingEndpoints || !!entry.endpoint);
     },
 
     /**
@@ -66,7 +68,7 @@ export default function (api: Client) {
         params: {
           domains: 'GDPR,ISO_27001'
         }
-      })
+      });
     }
-  }
+  };
 }

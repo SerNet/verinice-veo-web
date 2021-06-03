@@ -48,8 +48,7 @@ export default {
   'forms.input.link.targetObject.delete.text': 'Are you sure you want to delete "{object}"?',
   'forms.input.link.targetObject.notFound': 'Not found',
 
-  'global.appstate.alert.object_modified':
-    'This dataset has been edited by another user. Do you want to load the changes?',
+  'global.appstate.alert.object_modified': 'This dataset has been edited by another user. Do you want to load the changes?',
   'global.appstate.alert.success': 'Action successfull!',
   'global.appstate.alert.error': 'An error occured!',
   'global.button.cancel': 'Cancel',
@@ -142,4 +141,4 @@ export default {
     text: 'Text',
     uri: 'URI'
   }
-}
+};

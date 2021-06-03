@@ -2,24 +2,38 @@
   <VeoWidget :title="$t('unit.details.forms')">
     <template v-if="$fetchState.pending">
       <table>
-        <tr v-for="type of objects" :key="type.id">
+        <tr
+          v-for="type of objects"
+          :key="type.id"
+        >
           <td>
-            <v-skeleton-loader type="text" width="150" />
+            <v-skeleton-loader
+              type="text"
+              width="150"
+            />
           </td>
           <td class="text-right">
-            <v-skeleton-loader type="text" width="10" />
+            <v-skeleton-loader
+              type="text"
+              width="10"
+            />
           </td>
         </tr>
       </table>
     </template>
     <template v-else>
       <table>
-        <tr v-for="type of objects" :key="type.id">
+        <tr
+          v-for="type of objects"
+          :key="type.id"
+        >
           <td>{{ type.name }}:</td>
           <td class="text-right">
-            <nuxt-link :to="`/${$route.params.unit}/forms/${createUUIDUrlParam('form', type.id)}`"
-              ><b>{{ type.items }}</b></nuxt-link
+            <nuxt-link
+              :to="`/${$route.params.unit}/forms/${createUUIDUrlParam('form', type.id)}`"
             >
+              <b>{{ type.items }}</b>
+            </nuxt-link>
           </td>
         </tr>
       </table>
@@ -28,10 +42,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
-import { endpoints } from '~/plugins/api/schema'
-import { createUUIDUrlParam } from '~/lib/utils'
+import { endpoints } from '~/plugins/api/schema';
+import { createUUIDUrlParam } from '~/lib/utils';
 
 export default Vue.extend({
   props: {
@@ -43,25 +57,25 @@ export default Vue.extend({
   data() {
     return {
       objects: [] as any
-    }
+    };
   },
   async fetch() {
-    this.objects = await this.$api.form.fetchAll({ unit: this.unit.id })
+    this.objects = await this.$api.form.fetchAll({ unit: this.unit.id });
     for (const object of this.objects) {
       // @ts-ignore
-      const objectType = endpoints[object.modelType.toLowerCase()]
+      const objectType = endpoints[object.modelType.toLowerCase()];
       object.items = (
         await this.$api.entity.fetchAll(objectType, {
           unit: this.unit.id,
           subType: object.subType
         })
-      ).length
+      ).length;
     }
   },
   methods: {
     createUUIDUrlParam
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>
