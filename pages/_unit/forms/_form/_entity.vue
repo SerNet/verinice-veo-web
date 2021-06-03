@@ -42,7 +42,7 @@
           </v-col>
           <v-spacer />
           <v-col cols="auto" class="text-right">
-            <v-btn text outlined @click="$router.go(-1)">{{ $t('global.button.discard') }}</v-btn>
+            <v-btn text outlined @click="doDiscard">{{ $t('global.button.discard') }}</v-btn>
             <v-btn
               v-if="!isRevision"
               color="primary"
@@ -322,6 +322,10 @@ export default Vue.extend({
     }
   },
   methods: {
+    doDiscard() {
+      this.formModified.isModified = false;
+      this.$router.go(-1);
+    },
     async onClick() {
       this.saveBtnLoading = true
       this.formatObjectData()

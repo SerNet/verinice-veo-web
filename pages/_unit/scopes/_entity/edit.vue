@@ -15,7 +15,7 @@
             :rootRoute="`/${$route.params.unit}/scopes`"
             :current-entity="form.objectData"
           >
-            <v-btn text outlined @click="$router.go(-1)">{{ $t('global.button.discard') }}</v-btn>
+            <v-btn text outlined @click="doDiscard">{{ $t('global.button.discard') }}</v-btn>
             <v-btn
               v-if="!isRevision"
               color="primary"
@@ -192,6 +192,10 @@ export default Vue.extend({
     }
   },
   methods: {
+    doDiscard() {
+      this.entityModified.isModified = false;
+      this.$router.go(-1);
+    },
     doSaveEntity() {
       this.saveBtnLoading = true
       this.formatObjectData()
