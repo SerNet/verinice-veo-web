@@ -50,6 +50,25 @@ import { getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 
+export enum VeoEntityModifierEventType {
+  ADD,
+  CLONE,
+  DELETE,
+  UNLINK
+}
+
+export interface IVeoAffectedEntity {
+  uuid: string;
+  type?: string;
+}
+
+export interface IVeoEntityModifierEvent {
+  event: VeoEntityModifierEventType;
+  affectedEntities: IVeoAffectedEntity[];
+  reloadAll?: boolean;
+  addToRoot?: boolean;
+}
+
 interface IData {
   addEntityDialog: {
     value: boolean;
@@ -74,25 +93,6 @@ interface IData {
   };
   schemas: ISchemaEndpoint[];
   entityModifiedEvent?: IVeoEntityModifierEvent;
-}
-
-export enum VeoEntityModifierEventType {
-  ADD,
-  CLONE,
-  DELETE,
-  UNLINK
-}
-
-export interface IVeoAffectedEntity {
-  uuid: string;
-  type?: string;
-}
-
-export interface IVeoEntityModifierEvent {
-  event: VeoEntityModifierEventType;
-  affectedEntities: IVeoAffectedEntity[];
-  reloadAll?: boolean;
-  addToRoot?: boolean;
 }
 
 export default Vue.extend({

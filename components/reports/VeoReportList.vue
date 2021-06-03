@@ -13,10 +13,10 @@
         {{ $t('noReports') }}
       </span>
     </template>
-    <template #item.name="{ value }">
+    <template #[`item.name`]="{ value }">
       <b>{{ value }}</b>
     </template>
-    <template #item.description="{ item, value }">
+    <template #[`item.description`]="{ item, value }">
       <div class="veo-report-list__description">
         <v-tooltip
           v-if="item.descriptionShort"
@@ -35,7 +35,7 @@
         <span v-else>{{ value }}</span>
       </div>
     </template>
-    <template #item.outputTypes="{ value }">
+    <template #[`item.outputTypes`]="{ value }">
       {{ toUpper(value) }}
     </template>
   </v-data-table>

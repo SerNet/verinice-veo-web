@@ -22,7 +22,7 @@
         <p
           v-if="text"
           class="mb-0 accent--text"
-          v-html="text"
+          v-text="text"
         />
       </v-col>
       <v-col

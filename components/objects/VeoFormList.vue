@@ -10,7 +10,7 @@
     <template #no-data>
       <span class="text-center">{{ $t('no_objects') }}</span>
     </template>
-    <template #item.abbreviation="{ item }">
+    <template #[`item.abbreviation`]="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
@@ -19,7 +19,7 @@
             </v-icon>
           </template>
           <template #default>
-            <span v-html="$t('form')" />
+            <span>{{ $t('form') }}</span>
           </template>
         </v-tooltip>
         <v-tooltip bottom>
@@ -35,12 +35,12 @@
         </v-tooltip>
       </div>
     </template>
-    <template #item.name="{ value }">
+    <template #[`item.name`]="{ value }">
       <div class="veo-object-list__title">
         {{ value }}
       </div>
     </template>
-    <template #item.description="{ item, value }">
+    <template #[`item.description`]="{ item, value }">
       <div class="veo-object-list__description">
         <v-tooltip
           v-if="item.descriptionShort"
@@ -59,7 +59,7 @@
         <span v-else>{{ value }}</span>
       </div>
     </template>
-    <template #item.updatedAt="{ item }">
+    <template #[`item.updatedAt`]="{ item }">
       <div class="veo-object-list__updated-at nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
@@ -73,7 +73,7 @@
         </v-tooltip>
       </div>
     </template>
-    <template #item.actions="{ item }">
+    <template #[`item.actions`]="{ item }">
       <div class="veo-object-list__actions">
         <v-tooltip bottom>
           <template #activator="{on}">

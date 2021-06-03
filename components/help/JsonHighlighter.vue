@@ -1,10 +1,12 @@
 <template>
   <div class="json-highlighter">
     <pre class="language-json">
+      <!-- eslint-disable vue/no-v-html -->
       <code
-class="language-json"
-v-html="textAsHighlighterHTML"
-/>
+        class="language-json"
+        v-html="textAsHighlighterHTML"
+      />
+    <!-- eslint-enable -->
     </pre>
   </div>
 </template>
