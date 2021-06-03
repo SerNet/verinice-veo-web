@@ -144,16 +144,21 @@ export default defineComponent<IProps>({
       required: true
     },
     name: {
-      type: String
+      type: String,
+      default: undefined
     },
     options: {
-      type: Object as PropType<any>
+      type: Object as PropType<any>,
+      default: undefined
     },
     formSchema: {
       type: Object,
       required: true
     },
-    formSchemaPointer: String,
+    formSchemaPointer: {
+      type: String,
+      default: undefined
+    },
     customTranslation: {
       type: Object,
       default: () => {}

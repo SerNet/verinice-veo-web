@@ -81,7 +81,8 @@ export default defineComponent<IProps>({
       required: true
     },
     persistUIState: {
-      type: Function
+      type: Function,
+      default: undefined
     }
   },
   setup(props, context) {

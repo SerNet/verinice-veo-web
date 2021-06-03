@@ -19,7 +19,8 @@ import Vue, { PropType } from 'vue';
 export default Vue.extend({
   props: {
     value: {
-      type: String as PropType<'mdi-eye-outline' | 'mdi-eye-off-outline'>
+      type: String as PropType<'mdi-eye-outline' | 'mdi-eye-off-outline'>,
+      default: undefined
     }
   },
   data() {

@@ -159,6 +159,7 @@ import { ISchemaEndpoint } from '~/plugins/api/schema';
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 
 export default Vue.extend({
+  inject: ['objectSchemaHelper', 'displayLanguage'],
   props: {
     value: {
       type: Boolean,
@@ -210,7 +211,6 @@ export default Vue.extend({
       editedProperty: undefined as undefined | IVeoOSHCustomAspect | IVeoOSHCustomLink
     };
   },
-  inject: ['objectSchemaHelper', 'displayLanguage'],
   async fetch() {
     this.objectTypes = await this.$api.schema.fetchAll();
   },

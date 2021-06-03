@@ -70,7 +70,10 @@ interface ITranslateLabelItem {
 export default Vue.extend({
   name: 'Radio',
   props: {
-    value: String,
+    value: {
+      type: String,
+      default: undefined
+    },
     name: {
       type: String,
       default: ''

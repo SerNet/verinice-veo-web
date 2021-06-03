@@ -83,11 +83,16 @@ export default Vue.extend({
   },
   props: {
     value: {
-      type: Array
+      type: Array,
+      default: undefined
     } as PropOptions<BaseObject[]>,
-    name: String,
+    name: {
+      type: String,
+      default: undefined
+    },
     schema: {
-      type: Object
+      type: Object,
+      default: undefined
     } as PropOptions<JSONSchema7>,
     generalTranslation: {
       type: Object,
@@ -97,12 +102,19 @@ export default Vue.extend({
       type: Object,
       default: () => {}
     } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
-    options: Object,
-    elements: Array,
+    options: {
+      type: Object,
+      default: undefined
+    },
+    elements: {
+      type: Array,
+      default: undefined
+    },
     disabled: Boolean,
     visible: Boolean,
     api: {
-      type: Object
+      type: Object,
+      default: undefined
     } as PropOptions<IApi>
   },
   computed: {

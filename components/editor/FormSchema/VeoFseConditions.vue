@@ -109,7 +109,8 @@ export default defineComponent<IProps>({
       default: () => ({})
     },
     currentScope: {
-      type: String
+      type: String,
+      default: undefined
     }
   },
   setup(props, context) {

@@ -85,7 +85,10 @@ import { calculateConditionsScore, FormElementProps, Helpful } from '~/component
 export default (Vue as VueConstructor<Vue & { $refs: { timer: any } }>).extend({
   name: 'InputDateTime',
   props: {
-    value: String,
+    value: {
+      type: String,
+      default: undefined
+    },
     name: {
       type: String,
       default: ''

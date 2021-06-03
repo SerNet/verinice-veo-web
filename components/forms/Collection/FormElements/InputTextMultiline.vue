@@ -38,7 +38,10 @@ import { calculateConditionsScore, FormElementProps, Helpful } from '~/component
 export default (Vue as VueConstructor<Vue & { $refs: { textarea: any } }>).extend({
   name: 'InputTextMultiline',
   props: {
-    value: String,
+    value: {
+      type: String,
+      default: undefined
+    },
     name: {
       type: String,
       default: ''
@@ -96,6 +99,7 @@ export default (Vue as VueConstructor<Vue & { $refs: { textarea: any } }>).exten
             if (this.$refs.textarea) {
               this.$refs.textarea.$refs.input.style.maxHeight = this.maxHeight;
             } else {
+              // eslint-disable-next-line no-console
               console.warn('Could not find $refs.textarea element in InputTextMultiline');
             }
           }

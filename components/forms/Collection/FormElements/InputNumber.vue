@@ -36,7 +36,10 @@ import { calculateConditionsScore, FormElementProps, Helpful } from '~/component
 export default Vue.extend({
   name: 'InputNumber',
   props: {
-    value: Number,
+    value: {
+      type: Number,
+      default: undefined
+    },
     name: {
       type: String,
       default: ''

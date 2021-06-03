@@ -52,7 +52,8 @@ interface IProps {
 export default defineComponent<IProps>({
   props: {
     title: {
-      type: String
+      type: String,
+      default: undefined
     },
     twoLine: {
       type: Boolean

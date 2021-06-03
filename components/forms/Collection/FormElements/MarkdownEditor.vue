@@ -45,7 +45,10 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
     editor: Editor
   },
   props: {
-    value: String,
+    value: {
+      type: String,
+      default: undefined
+    },
     name: {
       type: String,
       default: ''

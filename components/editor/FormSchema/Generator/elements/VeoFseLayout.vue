@@ -19,15 +19,25 @@ export default Vue.extend({
       default: () => undefined
     },
     name: {
-      type: String
+      type: String,
+      default: undefined
     },
-    options: Object,
+    options: {
+      type: Object,
+      default: undefined
+    },
     customTranslation: {
       type: Object,
       default: () => {}
     } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
-    formSchemaPointer: String,
-    level: Number
+    formSchemaPointer: {
+      type: String,
+      default: undefined
+    },
+    level: {
+      type: Number,
+      default: undefined
+    }
   }
 });
 </script>

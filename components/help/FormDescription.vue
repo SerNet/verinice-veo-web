@@ -40,9 +40,18 @@ export default Vue.extend({
     JsonHighlighter
   },
   props: {
-    objectSchema: Object,
-    formSchema: Object,
-    data: Object
+    objectSchema: {
+      type: Object,
+      default: undefined
+    },
+    formSchema: {
+      type: Object,
+      default: undefined
+    },
+    data: {
+      type: Object,
+      default: undefined
+    }
   },
   computed: {
     objectSchemaStringified(): string {

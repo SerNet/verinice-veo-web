@@ -113,7 +113,8 @@ interface IProps {
 export default defineComponent<IProps>({
   props: {
     customBreadcrumbs: {
-      type: Object
+      type: Object,
+      default: undefined
     } as PropOptions<ICustomBreadcrumbEntry>
   },
   setup(_props, context) {

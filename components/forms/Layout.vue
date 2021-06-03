@@ -18,7 +18,10 @@ export default Vue.extend({
   },
   props: {
     options: { type: Object, default: undefined },
-    formSchemaPointer: String,
+    formSchemaPointer: {
+      type: String,
+      default: undefined
+    },
     disabled: Boolean,
     visible: Boolean
   }

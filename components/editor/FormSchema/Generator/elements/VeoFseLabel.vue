@@ -85,12 +85,18 @@ export default Vue.extend({
       type: String,
       required: true
     },
-    options: Object,
+    options: {
+      type: Object,
+      default: undefined
+    },
     customTranslation: {
       type: Object,
       default: () => {}
     } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
-    formSchemaPointer: String
+    formSchemaPointer: {
+      type: String,
+      default: undefined
+    }
   },
   data() {
     return {

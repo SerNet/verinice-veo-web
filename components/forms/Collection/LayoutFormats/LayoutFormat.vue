@@ -9,8 +9,14 @@ export default Vue.extend({
   name: 'LayoutFormat',
   functional: true,
   props: {
-    options: Object,
-    formSchemaPointer: String,
+    options: {
+      type: Object,
+      default: undefined
+    },
+    formSchemaPointer: {
+      type: String,
+      default: undefined
+    },
     disabled: Boolean,
     visible: Boolean
   },

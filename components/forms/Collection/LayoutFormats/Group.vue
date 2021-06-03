@@ -36,8 +36,14 @@ import { calculateConditionsScore, Helpful, LayoutProps } from '~/components/for
 export default Vue.extend({
   name: 'Group',
   props: {
-    options: Object,
-    formSchemaPointer: String,
+    options: {
+      type: Object,
+      default: undefined
+    },
+    formSchemaPointer: {
+      type: String,
+      default: undefined
+    },
     disabled: Boolean,
     visible: Boolean
   },

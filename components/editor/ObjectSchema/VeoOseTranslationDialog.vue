@@ -115,6 +115,7 @@ interface IItem {
 }
 
 export default Vue.extend({
+  inject: ['objectSchemaHelper'],
   props: {
     value: {
       type: Boolean,
@@ -136,7 +137,6 @@ export default Vue.extend({
       default: undefined
     }
   },
-  inject: ['objectSchemaHelper'],
   data() {
     return {
       data: {

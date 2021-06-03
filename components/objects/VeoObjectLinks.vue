@@ -10,7 +10,10 @@ import { IVeoEntity } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
-    object: Object as Prop<IVeoEntity>
+    object: {
+      type: Object as Prop<IVeoEntity>,
+      default: undefined
+    }
   }
 });
 </script>
