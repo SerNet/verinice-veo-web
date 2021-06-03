@@ -242,7 +242,7 @@ export default defineComponent<IProps>({
         transformedValues.label = `#lang/${localName.value}`;
       }
       Object.entries(transformedValues)
-        .filter(([key, val]) => defaults.hasOwnProperty(key) && val === defaults[key])
+        .filter(([key, val]) => Object.prototype.hasOwnProperty.call(defaults, key) && val === defaults[key])
         .forEach(([key, _]) => {
           // Properties with "null" values will be removed from the object
           transformedValues[key] = null;
@@ -268,7 +268,7 @@ export default defineComponent<IProps>({
       const formSchema = JSON.parse(JSON.stringify(props.formSchema));
       let updateData: any = { ...formSchema };
       if (Object.keys(options).length === 0) {
-        if (updateData.hasOwnProperty('options')) {
+        if (Object.prototype.hasOwnProperty.call(updateData, 'options')) {
           delete updateData.options;
         }
       } else {

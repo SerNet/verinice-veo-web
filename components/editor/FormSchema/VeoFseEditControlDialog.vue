@@ -266,7 +266,7 @@ export default defineComponent<IProps>({
       delete transformedValues.name;
       delete transformedValues.rule;
       Object.entries(values).forEach(([key, val]) => {
-        if (defaults.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(defaults, key)) {
           transformedValues[key] = val === defaults[key] ? undefined : val;
         }
       });

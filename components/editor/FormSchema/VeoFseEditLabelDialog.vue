@@ -192,7 +192,7 @@ export default defineComponent<IProps>({
 
       delete transformedValues.text;
       Object.entries(transformedValues).forEach(([key, val]) => {
-        if (defaults.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(defaults, key)) {
           if (val === defaults[key]) {
             delete transformedValues[key];
           }
@@ -216,7 +216,7 @@ export default defineComponent<IProps>({
       const formSchema = JSON.parse(JSON.stringify(props.formSchema));
       let updateData: any = { ...formSchema };
       if (Object.keys(options).length === 0) {
-        if (updateData.hasOwnProperty('options')) {
+        if (Object.prototype.hasOwnProperty.call(updateData, 'options')) {
           delete updateData.options;
         }
       } else {
