@@ -20,6 +20,12 @@
     "test:docker": "docker run -it $(docker build -f test.Dockerfile -q .)",
     "webpack": "nuxt webpack"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint:js",
+      "commit-msg": "nbrx-commit-lint"
+    }
+  },
   "dependencies": {
     "@codemirror/next": "^0.14.0",
     "@mdi/font": "^5.8.55",
@@ -99,11 +105,5 @@
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3",
     "vue-jest": "^3.0.7"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint:js",
-      "commit-msg": "nbrx-commit-lint"
-    }
   }
 }

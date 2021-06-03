@@ -1,13 +1,20 @@
 {
   "gitlab.instanceUrl": "https://git.cpmsys.de",
   "vetur.format.defaultFormatter.html": "prettyhtml",
-  "editor.rulers": [120],
+  "editor.rulers": [
+    120
+  ],
   "vetur.experimental.templateInterpolationService": true,
   "editor.formatOnSave": true,
-  "eslint.validate": ["vue", "javascript", "typescript", "html"],
+  "eslint.validate": [
+    "vue",
+    "javascript",
+    "typescript",
+    "html"
+  ],
   "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
   "vetur.format.defaultFormatter.js": "vscode-typescript",
-  "vetur.validation.template": true,
+  "vetur.validation.template": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },

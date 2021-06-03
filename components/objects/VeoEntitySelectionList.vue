@@ -11,7 +11,7 @@
     <template #no-data>
       <span class="text-center">{{ $t('no_objects') }}</span>
     </template>
-    <template #[`item.select`]="{ item }">
+    <template #item.select="{ item }">
       <v-radio-group
         v-if="singleSelect"
         :value="radioSelectedItem"
@@ -28,7 +28,7 @@
         @click.stop="selectItem(item)"
       />
     </template>
-    <template #[`header.select`]>
+    <template #header.select>
       <v-fade-transition>
         <v-btn
           v-show="selectedItems.length"
@@ -40,7 +40,7 @@
         </v-btn>
       </v-fade-transition>
     </template>
-    <template #[`item.abbreviation`]="{ item }">
+    <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
         <v-tooltip
           v-if="item.entity.type !== 'scope' && item.entity.parts.length > 0"
@@ -113,12 +113,12 @@
         </v-tooltip>
       </div>
     </template>
-    <template #[`item.name`]="{ item }">
+    <template #item.name="{ item }">
       <div class="veo-object-list__title">
         {{ item.entity.name }}
       </div>
     </template>
-    <template #[`item.description`]="{ item }">
+    <template #item.description="{ item }">
       <div class="veo-object-list__description">
         <v-tooltip
           v-if="item.entity.descriptionShort"
@@ -137,10 +137,10 @@
         <span v-else>{{ item.entity.description }}</span>
       </div>
     </template>
-    <template #[`item.updatedBy`]="{ item }">
+    <template #item.updatedBy="{ item }">
       {{ item.entity.updatedBy }}
     </template>
-    <template #[`item.entity.updatedAt`]="{ item }">
+    <template #item.entitypdatedAt="{ item }">
       <div class="veo-object-list__updated-at nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">

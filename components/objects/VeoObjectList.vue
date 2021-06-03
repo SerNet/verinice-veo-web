@@ -23,7 +23,7 @@
     </template>
     <template
       v-if="showParentLink"
-      #[`body.prepend`]
+      #body.prepend
     >
       <tr @click="$emit('navigate-parent')">
         <td>
@@ -34,7 +34,7 @@
         </td>
       </tr>
     </template>
-    <template #[`item.abbreviation`]="{ item }">
+    <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
         <v-tooltip
           v-if="item.type !== 'scope' && item.parts.length > 0"
@@ -107,12 +107,12 @@
         </v-tooltip>
       </div>
     </template>
-    <template #[`item.name`]="{ value }">
+    <template #item.name="{ value }">
       <div class="veo-object-list__title">
         {{ value }}
       </div>
     </template>
-    <template #[`item.description`]="{ item, value }">
+    <template #item.description="{ item, value }">
       <div class="veo-object-list__description">
         <v-tooltip
           v-if="item.descriptionShort"
@@ -131,7 +131,7 @@
         <span v-else>{{ value }}</span>
       </div>
     </template>
-    <template #[`item.updatedAt`]="{ item }">
+    <template #item.updatedAt="{ item }">
       <div class="veo-object-list__updated-at nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
@@ -145,7 +145,7 @@
         </v-tooltip>
       </div>
     </template>
-    <template #[`item.actions`]="{ item }">
+    <template #item.actions="{ item }">
       <div class="d-flex flex-nowrap justify-end">
         <v-tooltip bottom>
           <template #activator="{on}">
@@ -215,7 +215,6 @@
 </template>
 
 <script lang="ts">
-// TODO: something is wrong hier with ESLint
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { formatDate, formatTime } from '~/lib/utils';
