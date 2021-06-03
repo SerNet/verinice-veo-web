@@ -181,22 +181,23 @@ export default defineComponent<IProps>({
         return { [type]: { text: sessionStorage.getItem(paramSeparated.id) as string } };
       }
 
-      // If a parameter title is not cached, send request to server and cache it in Session Storage
-      return new Promise<ICustomBreadcrumbTextEntry>(async (resolve) => {
-        const apiKey = apiKeyMap[type];
-        const displayNameKey = displayNameKeyMap[type];
+      // Otherwise, If a parameter title is not cached, send request to server and cache it in Session Storage
+      const apiKey = apiKeyMap[type];
+      const displayNameKey = displayNameKeyMap[type];
 
-        let text: string;
-        if (apiKey === 'entity') {
-          const api = context.root.$api[apiKey];
-          // @ts-ignore
-          text = (await api.fetch(paramSeparated.type, paramSeparated.id))[displayNameKey];
-        } else {
-          // @ts-ignore
-          const api = context.root.$api[apiKey];
-          text = (await api.fetch(paramSeparated.id))[displayNameKey];
-        }
+      let text: string;
+      if (apiKey === 'entity') {
+        const api = context.root.$api[apiKey];
+        // @ts-ignore
+        text = (await api.fetch(paramSeparated.type, paramSeparated.id))[displayNameKey];
+      } else {
+        // @ts-ignore
+        const api = context.root.$api[apiKey];
+        text = (await api.fetch(paramSeparated.id))[displayNameKey];
+      }
+      sessionStorage.setItem(paramSeparated.id, text);
 
+      return new Promise<ICustomBreadcrumbTextEntry>((resolve) => {
         sessionStorage.setItem(paramSeparated.id, text);
         resolve({ [type]: { text } });
       });
@@ -284,7 +285,7 @@ export default defineComponent<IProps>({
 
         breadcrumbItems.value = collapseBreadcrumb(listItems);
       } else {
-        console.warn('Pathtemplate is undefined in Breadcrumbs');
+        // console.warn('Pathtemplate is undefined in Breadcrumbs');
         breadcrumbItems.value = [];
       }
     }

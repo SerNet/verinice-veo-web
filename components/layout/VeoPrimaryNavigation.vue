@@ -225,7 +225,7 @@ export default Vue.extend({
         topLevelItem: true
       });
     },
-    async fetchDataTypes(): Promise<INavItem[]> {
+    fetchDataTypes(): Promise<INavItem[]> {
       const routeUnitParam = this.$route.params.unit;
       return this.$api.schema.fetchAll().then((data) => {
         return data

@@ -444,7 +444,7 @@ export default Vue.extend({
         });
       }
     },
-    async showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean, allowRestoration: boolean = false) {
+    showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean, allowRestoration: boolean = false) {
       const content = revision.content;
 
       // show modified dialog before switching versions if needed
@@ -457,7 +457,6 @@ export default Vue.extend({
         }
         // fill form with revision or newest data
         this.isRevision = isRevision;
-        console.log(revision);
         this.revisionVersion = revision.changeNumber;
         this.allowRestoration = allowRestoration;
 
@@ -467,7 +466,7 @@ export default Vue.extend({
         this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`;
       }
     },
-    async showRevisionAfterDialog() {
+    showRevisionAfterDialog() {
       // close dialog without action if revision schema is invalid
       if (!this.validateRevisionSchema(this.revisionCache)) {
         this.formModified.revisionDialog = false;

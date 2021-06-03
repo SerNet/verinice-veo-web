@@ -335,7 +335,7 @@ export default Vue.extend({
       this.createEntityDialog.value = true;
       this.createEntityDialog.parent = parent;
     },
-    async showAddDialog(type: 'entity' | 'scope', parent: IVeoEntity) {
+    showAddDialog(type: 'entity' | 'scope', parent: IVeoEntity) {
       if (parent) {
         this.addEntityDialog.addType = type;
         this.addEntityDialog.editedEntity = parent;

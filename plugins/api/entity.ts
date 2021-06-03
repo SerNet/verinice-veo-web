@@ -156,7 +156,7 @@ export default function (api: Client) {
      * @param objectType The type to fetch the entities for.
      * @param id The uuid of the entity to fetch the sub entities for.
      */
-    async fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
+    fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
       // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
       const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase();
 
