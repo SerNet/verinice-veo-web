@@ -22,7 +22,8 @@ import { EditorState, EditorView, basicSetup } from '@codemirror/next/basic-setu
 import { keymap, highlightSpecialChars, indentOnInput } from '@codemirror/next/view';
 import { startCompletion, autocompletion, completionKeymap } from '@codemirror/next/autocomplete';
 import { json } from '@codemirror/next/lang-json';
-import { setDiagnostics, lintKeymap } from '@codemirror/next/lint';
+import { lintKeymap } from '@codemirror/next/lint';
+// eslint-disable-next-line import/named
 import { TransactionSpec, tagExtension, StateField, EditorSelection } from '@codemirror/next/state';
 
 import { history, historyKeymap } from '@codemirror/next/history';
@@ -80,33 +81,31 @@ export default defineComponent<Props>({
       };
     }
 
-    const toDiagnostic = (e: CodeError) => {
-      const from = 'position' in e ? Number(e.position) - 1 : -1;
-      const to = from === -1 ? $editor.state.doc.toString().length : from + $editor.state.doc.sliceString(from).split(/\s+/)[0].length;
-      const severity = ('severity' in e ? String(e.severity).toLowerCase() : 'error') as any;
-      const message = e.message;
+    // const toDiagnostic = (e: CodeError) => {
+    //   const from = 'position' in e ? Number(e.position) - 1 : -1;
+    //   const to = from === -1 ? $editor.state.doc.toString().length : from + $editor.state.doc.sliceString(from).split(/\s+/)[0].length;
+    //   const severity = ('severity' in e ? String(e.severity).toLowerCase() : 'error') as any;
+    //   const message = e.message;
 
-      return { from: Math.max(0, from), to, severity, message };
-    };
+    //   return { from: Math.max(0, from), to, severity, message };
+    // };
 
-    function setError(e: CodeError | undefined) {
-      if (!$editor) {
-        return;
-      }
-      try {
-        const tr = setDiagnostics($editor.state, e ? [toDiagnostic(e)] : []);
-        return tr as TransactionSpec;
-      } catch (e) {
-        return undefined;
-      }
-    }
+    // function setError(e: CodeError | undefined) {
+    //   if (!$editor) {
+    //     return;
+    //   }
+    //   try {
+    //     const tr = setDiagnostics($editor.state, e ? [toDiagnostic(e)] : []);
+    //     return tr as TransactionSpec;
+    //   } catch (e) {
+    //     return undefined;
+    //   }
+    // }
 
     function setText(value: string, force: boolean = false) {
       if (force || $editor.state.doc.toString() !== value) {
         const regex = new RegExp(SELECTION_CHAR, 'g');
-        const text = value.replace(regex, (...args) => {
-          return '';
-        });
+        const text = value.replace(regex, '');
 
         const selectionMarks = [...value.matchAll(regex)];
         const selections = selectionMarks.reduce(

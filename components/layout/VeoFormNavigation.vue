@@ -36,11 +36,6 @@ interface IItem {
   layout: UISchema;
 }
 
-interface IProps {
-  formSchema: UISchema;
-  initialFormSchemaPointer: string;
-}
-
 interface IData {
   items: IItem[];
   scrollWrapper: HTMLElement | null;

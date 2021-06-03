@@ -140,10 +140,11 @@ export default Vue.extend({
       this.$emit('input', value);
     },
     removeRow(rowIndex: number) {
-      this.value.splice(rowIndex, 1);
-      this.$emit('input', this.value);
+      const value = this.value;
+      value.splice(rowIndex, 1);
+      this.$emit('input', value);
     },
-    onInput(event: any) {
+    onInput() {
       this.$emit('input', this.value);
     },
     isRowExist() {

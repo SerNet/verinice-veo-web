@@ -14,6 +14,7 @@ const vuetify = new Vuetify();
 const i18n = new VueI18n();
 
 // TODO: Fix broken tests
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ignore = (...args: any[]) => {};
 
 describe('ArrayField.vue', () => {

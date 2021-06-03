@@ -10,16 +10,6 @@ import {
   IVeoTranslationCollection
 } from '~/types/VeoTypes';
 
-export interface IVeoOSHCustomAspect {
-  title: string;
-  attributes: IVeoOSHCustomProperty[];
-  prefix?: string;
-}
-
-export interface IVeoOSHCustomLink extends IVeoOSHCustomAspect {
-  description?: string;
-  targetType: string;
-}
 export interface IVeoOSHCustomProperty {
   title: string;
   type: string;
@@ -30,6 +20,17 @@ export interface IVeoOSHCustomProperty {
   pattern?: string;
   enum?: any[];
   originalId?: string;
+}
+
+export interface IVeoOSHCustomAspect {
+  title: string;
+  attributes: IVeoOSHCustomProperty[];
+  prefix?: string;
+}
+
+export interface IVeoOSHCustomLink extends IVeoOSHCustomAspect {
+  description?: string;
+  targetType: string;
 }
 
 export interface IVeoOSHOptions {
@@ -700,6 +701,7 @@ export default class ObjectSchemaHelper {
         case this._options.translationsKey:
           // @ts-ignore
           this.loadTranslations(objectSchema.properties[key]);
+          break;
         default:
           this.loadBasicProperties(objectSchema.properties, key);
       }

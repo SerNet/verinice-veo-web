@@ -1,5 +1,17 @@
 import { JSONSchema7 } from 'json-schema';
+
+// eslint-disable-next-line no-use-before-define
+export type UISchemaElement = Layout | Control | Label;
+
 export type UISchema = UISchemaElement;
+
+export interface UIRule {
+  effect: 'HIDE' | 'SHOW' | 'DISABLE' | 'ENABLE';
+  condition: {
+    scope: string;
+    schema: JSONSchema7;
+  };
+}
 
 export interface UIElement {
   type: string;
@@ -30,13 +42,3 @@ export interface Label extends UIElement {
     [key: string]: any;
   };
 }
-
-export interface UIRule {
-  effect: 'HIDE' | 'SHOW' | 'DISABLE' | 'ENABLE';
-  condition: {
-    scope: string;
-    schema: JSONSchema7;
-  };
-}
-
-export type UISchemaElement = Layout | Control | Label;

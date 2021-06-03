@@ -502,7 +502,8 @@ export default Vue.extend({
     delay(ms: number): Promise<void> {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    async fetchAll(objectType: string, searchParams?: ISearchParams): Promise<BaseObject[]> {
+    // _ is objectType but here is not used
+    async fetchAll(_: string, searchParams?: ISearchParams): Promise<BaseObject[]> {
       await this.delay(2000);
       return new Promise((resolve, reject) => {
         const res = searchParams
@@ -515,11 +516,11 @@ export default Vue.extend({
         if (res) {
           resolve(res);
         } else {
-          reject('Search parameters are not defined!');
+          reject(new Error('Search parameters are not defined!'));
         }
       });
     },
-    async create(objectType: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject> {
+    async create(_: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject> {
       await this.delay(2000);
       return new Promise((resolve, reject) => {
         if (createdObjectData.name) {
@@ -544,11 +545,11 @@ export default Vue.extend({
           this.items.push(newItem);
           resolve(newItem);
         } else {
-          reject('Name is not defined!');
+          reject(new Error('Name is not defined!'));
         }
       });
     },
-    async update(objectType: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void> {
+    async update(_: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void> {
       await this.delay(2000);
       return new Promise((resolve, reject) => {
         if (updatedObjectData.name) {
@@ -558,11 +559,11 @@ export default Vue.extend({
           this.items[itemIndex] = updatedObjectData as any;
           resolve();
         } else {
-          reject('Name is not defined!');
+          reject(new Error('Name is not defined!'));
         }
       });
     },
-    async delete(objectType: string, id: string): Promise<void> {
+    async delete(_: string, id: string): Promise<void> {
       await this.delay(2000);
       return new Promise((resolve) => {
         const itemIndex = this.items.findIndex((item) => item.id === id);

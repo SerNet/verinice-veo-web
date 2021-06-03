@@ -115,31 +115,31 @@ export default Vue.extend({
     direction: {
       immediate: true,
       handler() {
-        this.update(this.form.formSchema, '/options/direction', this.direction);
+        this.update('/options/direction', this.direction);
       }
     },
     border: {
       immediate: true,
       handler() {
         if (this.border) {
-          this.update(this.form.formSchema, '/options/class', 'border');
+          this.update('/options/class', 'border');
         } else {
-          this.update(this.form.formSchema, '/options/class', undefined);
+          this.update('/options/class', undefined);
         }
       }
     }
   },
   methods: {
-    update(object: any, jsonPointer: string, value: any): void {
+    update(jsonPointer: string, value: any): void {
       vjp.set(this.form.formSchema, jsonPointer, value);
       this.form.formSchema = { ...this.form.formSchema };
     },
     onInputGroupTitle(event: any) {
       this.groupTitle = event;
       if (event) {
-        this.update(this.form.formSchema, '/options/label', event);
+        this.update('/options/label', event);
       } else {
-        this.update(this.form.formSchema, '/options/label', undefined);
+        this.update('/options/label', undefined);
       }
     }
   }

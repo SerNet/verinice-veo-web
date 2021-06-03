@@ -236,17 +236,17 @@ import { getSchemaEndpoint } from '~/plugins/api/schema';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 
-interface IData {
-  open: string[];
-  active: string[];
-  displayedItems: ITreeEntry[];
-}
-
 export interface ITreeEntry {
   entry: IVeoEntity;
   id: string;
   type: string;
   children?: ITreeEntry[];
+}
+
+interface IData {
+  open: string[];
+  active: string[];
+  displayedItems: ITreeEntry[];
 }
 
 export default Vue.extend({

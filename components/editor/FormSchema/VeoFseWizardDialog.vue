@@ -314,7 +314,7 @@ export default Vue.extend({
       }
     },
     doCreate2() {
-      const _subtype = !this.createForm.subType || trim(this.createForm.subType).length == 0 ? null : this.createForm.subType;
+      const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? null : this.createForm.subType;
       this.formSchema = generateSchema(this.createForm.title, this.objectSchema?.title || this.createForm.modelType, _subtype);
       this.emitSchemas();
     },

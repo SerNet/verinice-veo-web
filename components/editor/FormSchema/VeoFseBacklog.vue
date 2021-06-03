@@ -205,16 +205,6 @@ interface IProps {
   objectSchema: IVeoObjectSchema;
 }
 
-export interface IUnused {
-  basics: IControl[];
-  aspects: IControl[];
-  links: IControl[];
-}
-
-export interface IControlItem {
-  [key: string]: IControl[];
-}
-
 export interface IControl {
   scope: string;
   // TODO: These types are assumed for us to describe easily property type, however e.g. "type: enum" does not exist in JSONSchema standard
@@ -227,7 +217,20 @@ export interface IControl {
   used: boolean;
 }
 
+export interface IUnused {
+  basics: IControl[];
+  aspects: IControl[];
+  links: IControl[];
+}
+
+export interface IControlItem {
+  [key: string]: IControl[];
+}
+
 export default defineComponent<IProps>({
+  components: {
+    Draggable
+  },
   props: {
     searchQuery: {
       type: String,
@@ -241,9 +244,6 @@ export default defineComponent<IProps>({
       type: Object as PropType<IVeoObjectSchema>,
       required: true
     }
-  },
-  components: {
-    Draggable
   },
   setup(props, context) {
     const typeMap = ref(INPUT_TYPES);

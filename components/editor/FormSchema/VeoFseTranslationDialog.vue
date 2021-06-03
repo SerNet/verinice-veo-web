@@ -200,7 +200,7 @@ export default Vue.extend({
     onSave() {
       const translationJSON = Object.fromEntries(
         Object.entries(this.dialog.translation)
-          .filter(([key, value]) => this.dialog.languages.includes(key))
+          .filter(([key, _]) => this.dialog.languages.includes(key))
           .map(([key, value]) => [key, JSON.parse(value as string)])
       );
       this.$emit('update-language', this.dialog.language);

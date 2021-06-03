@@ -373,13 +373,9 @@ export default defineComponent<IProps>({
         })
       );
 
-      if (linksField.formSchemaElements.value.length > 0) {
-        const dragElements = linksField.formSchemaElements;
-      }
-
       watch(
         () => linksField.linksAttributes.value,
-        (newVal, oldVal) => {
+        (newVal) => {
           if (newVal.length === 0) {
             activeControlType.value.direction = undefined;
           } else {

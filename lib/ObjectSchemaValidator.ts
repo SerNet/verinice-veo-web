@@ -99,9 +99,9 @@ export default class ObjectSchemaValidator {
 
   private validateCustomAspects(schema: any, context: string): void {
     if (!schema.properties.customAspects) {
-      this.errors.push({ code: 'E_ASPECTS_MISSING', message: `The custom aspects property couldn\'t be found (Searched for ${context}.properties.customAspects` });
+      this.errors.push({ code: 'E_ASPECTS_MISSING', message: `The custom aspects property couldn't be found (Searched for ${context}.properties.customAspects` });
     } else if (!schema.properties.customAspects.properties) {
-      this.errors.push({ code: 'E_ASPECTS_MISSING', message: `The custom aspects property couldn\'t be found (Searched for ${context}.properties.customAspects.properties` });
+      this.errors.push({ code: 'E_ASPECTS_MISSING', message: `The custom aspects property couldn't be found (Searched for ${context}.properties.customAspects.properties` });
     } else {
       for (const aspect of Object.keys(schema.properties.customAspects.properties)) {
         this.validateName(schema.title, aspect, `${context}.properties.customAspects.properties.${aspect}`);
@@ -112,9 +112,9 @@ export default class ObjectSchemaValidator {
 
   private validateCustomLinks(schema: any, context: string): void {
     if (!schema.properties.links) {
-      this.errors.push({ code: 'E_LINKS_MISSING', message: `The custom links property couldn\'t be found (Searched for ${context}.properties.links` });
+      this.errors.push({ code: 'E_LINKS_MISSING', message: `The custom links property couldn't be found (Searched for ${context}.properties.links` });
     } else if (!schema.properties.links.properties) {
-      this.errors.push({ code: 'E_LINKS_MISSING', message: `The custom links property couldn\'t be found (Searched for ${context}.properties.links.properties` });
+      this.errors.push({ code: 'E_LINKS_MISSING', message: `The custom links property couldn't be found (Searched for ${context}.properties.links.properties` });
     } else {
       for (const link of Object.keys(schema.properties.links.properties)) {
         this.validateName(schema.title, link, `${context}.links.properties.${link}`);

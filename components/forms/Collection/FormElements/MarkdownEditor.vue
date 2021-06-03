@@ -125,7 +125,7 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
     clear() {
       this.$emit('input', undefined);
     },
-    onChange(event: any) {
+    onChange() {
       const markdownText = this.invoke('getMarkdown');
       this.$emit('input', (typeof this.value === 'undefined' || this.value === null) && markdownText === '' ? this.value : markdownText);
     },

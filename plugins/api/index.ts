@@ -17,7 +17,22 @@ export function createAPI(context: Context) {
 }
 
 export interface IAPIClient {
+  // eslint-disable-next-line no-use-before-define
   (api: Client): Object;
+}
+
+export enum VeoApiReponseType {
+  JSON,
+  BLOB
+}
+
+// eslint-disable-next-line no-undef
+export interface RequestOptions extends RequestInit {
+  params?: Record<string, string | number | undefined>;
+  json?: any;
+  retry?: boolean;
+  method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
+  reponseType?: VeoApiReponseType;
 }
 
 export class Client {
@@ -62,13 +77,10 @@ export class Client {
     return _url;
   }
 
-  public async req(url: string, options: RequestOptions & { method: 'DELETE' }): Promise<any>;
-  public async req<T = any>(url: string, options?: RequestOptions): Promise<T>;
-
   /**
    * Basic request function used by all api namespaces
    */
-  public async req(url: string, options: RequestOptions = {}) {
+  public async req(url: string, options: RequestOptions = {}): Promise<any> {
     const $user = this.context.app.$user as User;
 
     const defaults = {
@@ -124,6 +136,7 @@ export class Client {
               await $user.auth.refreshSession();
               return this.req(url, { ...options, retry: false });
             } catch (e) {
+              // eslint-disable-next-line no-console
               console.error("Couldn't refresh session");
               await $user.auth.logout('/');
             }
@@ -187,19 +200,6 @@ export class Client {
       throw new VeoError('Non JSON response');
     }
   }
-}
-
-export enum VeoApiReponseType {
-  JSON,
-  BLOB
-}
-
-export interface RequestOptions extends RequestInit {
-  params?: Record<string, string | number | undefined>;
-  json?: any;
-  retry?: boolean;
-  method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
-  reponseType?: VeoApiReponseType;
 }
 
 export default (function (context, inject) {

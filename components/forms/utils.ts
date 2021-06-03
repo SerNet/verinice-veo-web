@@ -1,11 +1,7 @@
-import { VNode, CreateElement } from 'vue';
 import { JSONSchema7 } from 'json-schema';
 import Ajv from 'ajv';
 import { JsonPointer } from 'json-ptr';
 import { UIRule, UISchema, UISchemaElement } from '~/types/UISchema';
-import Label from '~/components/forms/Label.vue';
-import Control from '~/components/forms/Control.vue';
-import Layout from '~/components/forms/Layout.vue';
 
 type defaultType = string | boolean | number | undefined | null;
 
@@ -121,6 +117,7 @@ export function evaluateRule(value: any, rule: UIRule | undefined) {
   }
 
   if (!['HIDE', 'SHOW', 'DISABLE', 'ENABLE'].includes(rule.effect)) {
+    // eslint-disable-next-line no-console
     console.error(`Your rule effect "${rule.effect}" is not available!`, 'Only these rule effects are permitted: "SHOW", "HIDE", "ENABLED", "DISABLED".');
     return defaults;
   }
@@ -221,7 +218,7 @@ export function generateFormSchema(objectSchema: JSONSchema7, excludedProperties
   schemaMap = excludedPropertiesRegexp.length > 0 ? schemaMap.filter((el) => !excludedPropertiesRegexp.some((reg) => reg.test(el))) : schemaMap;
   const scopes = schemaMap
     .filter((el) => /#\/(\w|\/)*properties\/\w+$/g.test(el))
-    .filter((el, i, arr) => !arr.some((someEl) => new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)))
+    .filter((el, _, arr) => !arr.some((someEl) => new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)))
     .filter((el) => {
       if (/\/properties\/\w+\/items\/properties\/\w+$/g.test(el)) {
         const [parent, child] = el.split(/\/items(?=\/properties\/\w+$)/g);

@@ -1,6 +1,4 @@
 declare module 'vue-json-pointer' {
-  const api: API;
-
   interface API {
     (obj: any, pointer: string): any;
     (obj: any, pointer: string, value: any): void;
@@ -50,5 +48,6 @@ declare module 'vue-json-pointer' {
     compile(str: string[]): string;
   }
 
+  const api: API;
   export = api;
 }

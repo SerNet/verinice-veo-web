@@ -8,12 +8,12 @@
       #header
     >
       <v-tooltip bottom>
-        <template #activator="{on}">
+        <template #activator="{ on }">
           <a
             ref="downloadButton"
             href="#"
             class="text-decoration-none"
-            style="vertical-align: bottom;"
+            style="vertical-align: bottom"
             @click="downloadSchema()"
             v-on="on"
           >
@@ -27,11 +27,11 @@
           </a>
         </template>
         <template #default>
-          {{ $t('editor.schema.download') }}
+          {{ $t("editor.schema.download") }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{on}">
+        <template #activator="{ on }">
           <v-btn
             icon
             large
@@ -43,11 +43,11 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t('formSchemaCode') }}
+          {{ $t("formSchemaCode") }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{on}">
+        <template #activator="{ on }">
           <v-btn
             v-if="schemaIsValid.warnings.length > 0"
             icon
@@ -61,11 +61,11 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t('editor.schema.warnings') }}
+          {{ $t("editor.schema.warnings") }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{on}">
+        <template #activator="{ on }">
           <v-btn
             icon
             large
@@ -77,11 +77,11 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t('editor.formschema.translation') }}
+          {{ $t("editor.formschema.translation") }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
-        <template #activator="{on}">
+        <template #activator="{ on }">
           <v-btn
             icon
             large
@@ -93,7 +93,7 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t('editor.schema.properties') }}
+          {{ $t("editor.schema.properties") }}
         </template>
       </v-tooltip>
     </template>
@@ -112,7 +112,7 @@
       >
         <template #header>
           <h3 class="text-center pb-1">
-            {{ $t('availableControls') }}
+            {{ $t("availableControls") }}
           </h3>
           <v-text-field
             v-model="searchQuery"
@@ -147,7 +147,7 @@
       >
         <template #header>
           <h3 class="text-center pb-1">
-            {{ $t('usedControls') }}
+            {{ $t("usedControls") }}
           </h3>
           <VeoCollapseButton
             v-if="!$vuetify.breakpoint.xs"
@@ -186,7 +186,7 @@
       >
         <template #header>
           <h3 class="text-center pb-1">
-            {{ $t('preview') }}
+            {{ $t("preview") }}
           </h3>
         </template>
         <template #default>
@@ -226,7 +226,7 @@
               style="flex-grow: 0"
             >
               <v-icon
-                style="font-size: 8rem; opacity: 0.5;"
+                style="font-size: 8rem; opacity: 0.5"
                 color="primary"
               >
                 mdi-information-outline
@@ -236,7 +236,7 @@
               cols="auto"
               class="text-left"
             >
-              <h3>{{ $t('invalidFormSchema') }}</h3>
+              <h3>{{ $t("invalidFormSchema") }}</h3>
               <v-list-item
                 v-for="(error, index) of schemaIsValid.errors"
                 :key="`e_${index}`"
@@ -376,7 +376,10 @@ export default defineComponent<IProps>({
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
       if (!formSchema.value.translation?.[context.root.$i18n.locale]) {
-        setFormTranslation({ ...formSchema.value.translation, ...{ [context.root.$i18n.locale]: {} } });
+        setFormTranslation({
+          ...formSchema.value.translation,
+          ...{ [context.root.$i18n.locale]: {} }
+        });
       }
       showCreationDialog.value = !objectSchema.value || false;
     }
@@ -448,7 +451,7 @@ export default defineComponent<IProps>({
       showTranslationDialog.value = true;
     }
 
-    const { fetch, fetchState } = useFetch(async () => {
+    useFetch(async () => {
       avaliableLanguages.value = Object.keys((await context.root.$api.translation.fetch([]))?.lang);
     });
 

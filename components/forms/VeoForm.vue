@@ -184,7 +184,7 @@ export default Vue.extend({
     },
     translate<T>(objectWithLangPointers: JSONSchema7 | UISchemaElement): T {
       return JSON.parse(
-        JSON.stringify(objectWithLangPointers).replace(/"(#lang\/.*?)"/gi, (langMatchWithQuotes: string, langMatchWithoutQuotes: string) => {
+        JSON.stringify(objectWithLangPointers).replace(/"(#lang\/.*?)"/gi, (_: string, langMatchWithoutQuotes: string) => {
           return JSON.stringify(this.getLangText(langMatchWithoutQuotes));
         })
       );
@@ -234,8 +234,6 @@ export default Vue.extend({
         const elementName = element.scope.split('/').pop() as string;
         const elementSchema: any = JsonPointer.get(this.localSchema, element.scope);
         const elementValue: any = JsonPointer.get(this.value, propertyPath(element.scope));
-        const elementParentSchema: any = JsonPointer.get(this.localSchema, '#');
-        const isRequired = Array.isArray(elementParentSchema.required) && elementParentSchema.required.includes(elementName);
 
         partOfProps = {
           name: elementName,
