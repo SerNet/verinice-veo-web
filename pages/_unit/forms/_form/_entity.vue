@@ -61,7 +61,7 @@
             <v-btn
               text
               outlined
-              @click="$router.go(-1)"
+              @click="doDiscard"
             >
               {{ $t('global.button.discard') }}
             </v-btn>
@@ -379,6 +379,10 @@ export default Vue.extend({
     }
   },
   methods: {
+    doDiscard() {
+      this.formModified.isModified = false;
+      this.$router.go(-1);
+    },
     async onClick() {
       this.saveBtnLoading = true;
       this.formatObjectData();

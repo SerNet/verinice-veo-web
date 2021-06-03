@@ -23,6 +23,13 @@
         <v-spacer />
         <v-col class="text-right">
           <v-btn
+            text
+            outlined
+            @click="doDiscard"
+          >
+            {{ $t('global.button.discard') }}
+          </v-btn>
+          <v-btn
             color="primary"
             outlined
             text
@@ -186,6 +193,10 @@ export default Vue.extend({
     }
   },
   methods: {
+    doDiscard() {
+      this.entityModified.isModified = false;
+      this.$router.go(-1);
+    },
     async save() {
       this.saveBtnLoading = true;
       this.formatObjectData();
