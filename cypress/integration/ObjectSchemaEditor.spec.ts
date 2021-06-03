@@ -107,12 +107,12 @@ describe('Objectschema Editor', () => {
      */
     cy.visit('/editor');
 
-    cy.contains('.v-list-item--link', 'Objektschema Editor').should('have.attr', 'href', '/editor/objectschema').click().wait(1);
+    cy.contains('.v-list-item--link', 'Objektschema Editor').should('have.attr', 'href', '/editor/objectschema').click();
 
     // Upload os_testSchema as schema
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Eigenes{enter}');
-      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/os_testSchema.json').wait(6);
+      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/os_testSchema.json');
     });
 
     cy.fixture('objectschema/os_testSchema.json')
@@ -147,7 +147,7 @@ describe('Objectschema Editor', () => {
         el[0].__vue__.$emit('input', JSON.stringify(testSchema, undefined, 2));
       });
 
-    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click().wait(1);
+    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click();
 
     /**
      * Define aliases
@@ -176,8 +176,8 @@ describe('Objectschema Editor', () => {
 
   it('deletes aspect with outer delete button', function () {
     cy.get('@expansionPanelContent').eq(1).find('.v-expansion-panel-content__wrap').children().should('have.length', schemaRealValues[1].numberOfProperties);
-    cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').eq(1).click().wait(1);
-    cy.get('.v-dialog--active .v-card__actions .v-btn').contains('Löschen').click().wait(1);
+    cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').eq(1).click();
+    cy.get('.v-dialog--active .v-card__actions .v-btn').contains('Löschen').click();
     cy.get('@expansionPanelContent')
       .eq(1)
       .find('.v-expansion-panel-content__wrap')
@@ -186,15 +186,15 @@ describe('Objectschema Editor', () => {
 
     cy.get('.editor .cm-content').then((editor) => {
       cy.wrap(getEditorData(editor)).as('currentOS');
-      cy.get('@currentOS').should((currentOS) => {
-        expect(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1')).to.be.undefined;
+      cy.get('@currentOS').then((currentOS) => {
+        cy.wrap(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1')).should('be.undefined');
       });
     });
   });
 
   it('changes customAspect name, attribute names, description and types', function () {
-    cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').first().click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').first().click();
+    cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
@@ -207,13 +207,13 @@ describe('Objectschema Editor', () => {
           }
         });
       });
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     cy.get('.editor .cm-content').then((editor) => {
       cy.wrap(getEditorData(editor)).as('currentOS');
-      cy.get('@currentOS').should((currentOS) => {
-        expect(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1Test')).to.not.be.undefined;
+      cy.get('@currentOS').then((currentOS) => {
+        cy.wrap(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1Test')).should('not.be.undefined');
       });
 
       cy.get('@currentOS')
@@ -227,17 +227,17 @@ describe('Objectschema Editor', () => {
 
   it('removes and adds aspect attributes', function () {
     // Open aspect
-    cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').first().click().wait(1);
+    cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').first().click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       // Delete all 3 existing attributes
       times(3, () => {
-        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn').eq(0).click().wait(1);
+        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn').eq(0).click();
       });
 
       // Add 6 new attributes
       times(6, () => {
-        cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
+        cy.contains('Attribut hinzufügen').closest('.v-btn').click();
       });
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
@@ -262,7 +262,7 @@ describe('Objectschema Editor', () => {
         });
       });
     });
-    cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
 
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).as('currentOS');
@@ -279,11 +279,11 @@ describe('Objectschema Editor', () => {
   });
 
   it('opens dialog to create a new aspect and clicks close button to discard changes', function () {
-    cy.contains('Aspekte hinzufügen').closest('.v-btn').click().wait(1);
+    cy.contains('Aspekte hinzufügen').closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((el) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestAspectOne{enter}');
-      cy.get('.v-card__actions').contains('Schließen').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Schließen').closest('.v-btn').click();
     });
 
     cy.get('@expansionPanelContent').eq(1).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('not.contain.text', 'TestAspectOne');
@@ -300,11 +300,11 @@ describe('Objectschema Editor', () => {
   });
 
   it('adds completely new aspect and removes it from dialog with delete button', function () {
-    cy.contains('Aspekte hinzufügen').closest('.v-btn').click().wait(1);
+    cy.contains('Aspekte hinzufügen').closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestAspectTwo{enter}');
-      cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
+      cy.contains('Attribut hinzufügen').closest('.v-btn').click();
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
         .then((el) => {
@@ -316,7 +316,7 @@ describe('Objectschema Editor', () => {
           });
         });
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     cy.get('@expansionPanelContent').eq(1).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('contain.text', 'TestAspectTwo');
@@ -334,9 +334,9 @@ describe('Objectschema Editor', () => {
       });
     });
 
-    cy.contains('TestAspectTwo').closest('.v-list-item').find('.v-btn').first().click().wait(1);
-    cy.get('.v-dialog--active .v-card__actions').contains('Aspekt löschen').click().wait(1);
-    cy.get('.v-dialog--active .v-card__actions').contains('Löschen').click().wait(1);
+    cy.contains('TestAspectTwo').closest('.v-list-item').find('.v-btn').first().click();
+    cy.get('.v-dialog--active .v-card__actions').contains('Aspekt löschen').click();
+    cy.get('.v-dialog--active .v-card__actions').contains('Löschen').click();
     cy.get('@expansionPanelContent').eq(1).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('not.contain.text', 'TestAspectTwo');
     cy.get('.editor .cm-content').then((editor) => {
       cy.wrap(getEditorData(editor)).as('currentOS');
@@ -351,8 +351,8 @@ describe('Objectschema Editor', () => {
 
   it('deletes a link with outer delete button', function () {
     cy.get('@expansionPanelContent').eq(2).find('.v-expansion-panel-content__wrap').children().should('have.length', schemaRealValues[2].numberOfProperties);
-    cy.contains('Link1').closest('.v-list-item').find('.v-btn').eq(1).click().wait(1);
-    cy.get('.v-dialog--active .v-card__actions .v-btn').contains('Löschen').click().wait(1);
+    cy.contains('Link1').closest('.v-list-item').find('.v-btn').eq(1).click();
+    cy.get('.v-dialog--active .v-card__actions .v-btn').contains('Löschen').click();
     cy.get('@expansionPanelContent')
       .eq(2)
       .find('.v-expansion-panel-content__wrap')
@@ -371,8 +371,8 @@ describe('Objectschema Editor', () => {
   });
 
   it('changes link name, attribute names, description and types', function () {
-    cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click();
+    cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');
       cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
       cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Person{enter}');
@@ -387,7 +387,7 @@ describe('Objectschema Editor', () => {
           }
         });
       });
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     cy.get('.editor .cm-content').then((editor) => {
@@ -406,15 +406,15 @@ describe('Objectschema Editor', () => {
   });
 
   it('removes and adds link attributes', function () {
-    cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click().wait(1);
+    cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       times(2, () => {
-        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn').eq(0).click().wait(1);
+        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn').eq(0).click();
       });
 
       times(6, () => {
-        cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
+        cy.contains('Attribut hinzufügen').closest('.v-btn').click();
       });
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
@@ -439,7 +439,7 @@ describe('Objectschema Editor', () => {
         });
       });
     });
-    cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+    cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
 
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).as('currentOS');
@@ -456,16 +456,16 @@ describe('Objectschema Editor', () => {
   });
 
   it('opens dialog to create a new link and clicks close button to discard changes', function () {
-    cy.contains('Link hinzufügen').closest('.v-btn').click().wait(1);
+    cy.contains('Link hinzufügen').closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestLinkOne');
       cy.contains('Linkbeschreibung *').closest('.v-text-field').type('TestLinkOne Beschreibung');
       cy.contains('Typ des Linkziels *').closest('.v-select').type('Control{enter}');
 
-      cy.get('.v-card__actions').contains('Weiter').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Weiter').closest('.v-btn').click();
 
-      cy.get('.v-card__actions').contains('Schließen').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Schließen').closest('.v-btn').click();
     });
 
     cy.get('@expansionPanelContent').eq(2).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('not.contain.text', 'TestLinkOne');
@@ -482,16 +482,16 @@ describe('Objectschema Editor', () => {
   });
 
   it('adds completely new link and removes it from dialog with delete button', function () {
-    cy.contains('Link hinzufügen').closest('.v-btn').click().wait(1);
+    cy.contains('Link hinzufügen').closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestLinkTwo');
       cy.contains('Linkbeschreibung *').closest('.v-text-field').type('TestLinkTwo Beschreibung');
       cy.contains('Typ des Linkziels *').closest('.v-select').type('Person{enter}');
 
-      cy.get('.v-card__actions').contains('Weiter').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Weiter').closest('.v-btn').click();
 
-      cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
+      cy.contains('Attribut hinzufügen').closest('.v-btn').click();
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
         .then((el) => {
@@ -503,7 +503,7 @@ describe('Objectschema Editor', () => {
           });
         });
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     cy.get('@expansionPanelContent').eq(2).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('contain.text', 'TestLinkTwo');
@@ -521,9 +521,9 @@ describe('Objectschema Editor', () => {
       });
     });
 
-    cy.contains('TestLinkTwo').closest('.v-list-item').find('.v-btn').first().click().wait(1);
-    cy.get('.v-dialog--active .v-card__actions').contains('Link löschen').click().wait(1);
-    cy.get('.v-dialog--active .v-card__actions').contains('Löschen').click().wait(1);
+    cy.contains('TestLinkTwo').closest('.v-list-item').find('.v-btn').first().click();
+    cy.get('.v-dialog--active .v-card__actions').contains('Link löschen').click();
+    cy.get('.v-dialog--active .v-card__actions').contains('Löschen').click();
     cy.get('@expansionPanelContent').eq(1).find('.v-card .v-list-item:first-child .v-list-item__content .v-list-item__title').should('not.contain.text', 'TestLinkTwo');
     cy.get('.editor .cm-content').then((editor) => {
       cy.wrap(getEditorData(editor)).as('currentOS');
@@ -537,7 +537,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('compares downloaded schema with the actual one', function () {
-    cy.get('.mdi-download').closest('.v-btn').click().wait(1);
+    cy.get('.mdi-download').closest('.v-btn').click();
     cy.readFile('cypress/downloads/os_testSchema.json').toMatchSnapshot();
   });
 
@@ -550,24 +550,24 @@ describe('Objectschema Editor', () => {
         el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2));
       });
 
-    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click().wait(1);
+    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click();
 
     const currentAttrData = addAttributes[4];
 
     // Switch default language to de
-    cy.get('.translate-button').click().wait(1);
+    cy.get('.translate-button').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Deutsch{enter}');
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
-    cy.contains('Aspekte hinzufügen').closest('.v-btn').click().wait(1);
+    cy.contains('Aspekte hinzufügen').closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestAspectTwo{enter}');
-      cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
+      cy.contains('Attribut hinzufügen').closest('.v-btn').click();
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
         .then((el) => {
@@ -581,7 +581,7 @@ describe('Objectschema Editor', () => {
           });
         });
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     cy.get('@expansionPanelContent')
@@ -616,23 +616,23 @@ describe('Objectschema Editor', () => {
     });
 
     // Switch default language
-    cy.get('.translate-button').click().wait(1);
+    cy.get('.translate-button').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-autocomplete').contains('Sprachen').closest('.v-autocomplete').type('Englisch{enter}');
 
       cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Englisch{enter}');
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     // Expansion panel description should be empty
     cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle').should('contain.html', '<span></span>');
 
     // Add english translations
-    cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:first-child .edit-button').click().wait(1);
+    cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:first-child .edit-button').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
         .then((el) => {
@@ -641,7 +641,7 @@ describe('Objectschema Editor', () => {
           });
         });
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     // Expansion panel description should have content
@@ -678,9 +678,9 @@ describe('Objectschema Editor', () => {
     });
 
     // Remove english translations
-    cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:first-child .edit-button').click().wait(1);
+    cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:first-child .edit-button').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
         .then((el) => {
@@ -689,7 +689,7 @@ describe('Objectschema Editor', () => {
           });
         });
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     // Expansion panel description should be empty
@@ -705,31 +705,31 @@ describe('Objectschema Editor', () => {
         el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2));
       });
 
-    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click().wait(1);
+    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click();
 
     const currentAttrData = addAttributes[4];
 
     // Switch default language to de
-    cy.get('.translate-button').click().wait(1);
+    cy.get('.translate-button').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Deutsch{enter}');
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
-    cy.contains('Link hinzufügen').closest('.v-btn').click().wait(1);
+    cy.contains('Link hinzufügen').closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestLinkTwo');
 
       cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
 
       cy.contains('Typ des Linkziels *').closest('.v-select').type('Control{enter}');
 
-      cy.contains('Weiter').closest('.v-btn').click().wait(1);
+      cy.contains('Weiter').closest('.v-btn').click();
 
-      cy.contains('Attribut hinzufügen').closest('.v-btn').click().wait(1);
+      cy.contains('Attribut hinzufügen').closest('.v-btn').click();
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
         .then((el) => {
@@ -743,7 +743,7 @@ describe('Objectschema Editor', () => {
           });
         });
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     cy.get('@expansionPanelContent')
@@ -790,23 +790,23 @@ describe('Objectschema Editor', () => {
     });
 
     // Switch default language
-    cy.get('.translate-button').click().wait(1);
+    cy.get('.translate-button').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-autocomplete').contains('Sprachen').closest('.v-autocomplete').type('Englisch{enter}');
 
       cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Englisch{enter}');
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     // Expansion panel description should be empty
     cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle').should('contain.html', '<span></span>');
 
     // Add english translations
-    cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:first-child .edit-button').click().wait(1);
+    cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:first-child .edit-button').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       // Add english link description
       cy.contains('Linkbeschreibung *').closest('.v-text-field').should('have.value', '').type('TestId');
 
@@ -818,7 +818,7 @@ describe('Objectschema Editor', () => {
           });
         });
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     // Expansion panel description should have content
@@ -868,9 +868,9 @@ describe('Objectschema Editor', () => {
     });
 
     // Remove english translations
-    cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:first-child .edit-button').click().wait(1);
+    cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:first-child .edit-button').click();
 
-    cy.get('.v-dialog--active').within((_dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
         .then((el) => {
@@ -879,7 +879,7 @@ describe('Objectschema Editor', () => {
           });
         });
 
-      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click().wait(1);
+      cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
 
     // Expansion panel description should be empty

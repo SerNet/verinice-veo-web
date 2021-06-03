@@ -27,29 +27,29 @@ describe('Objectschema Wizard', () => {
     cy.window().then(function (win: any) {
       win.$nuxt?.$router?.push('/editor');
     });
-    cy.contains('.v-list-item--link', 'Objektschema Editor').should('have.attr', 'href', '/editor/objectschema').click().wait(1);
+    cy.contains('.v-list-item--link', 'Objektschema Editor').should('have.attr', 'href', '/editor/objectschema').click();
   });
 
   it('ckecks navigation between wizard start, back button, and objectschema create and import', function () {
-    cy.get('.v-dialog--active').within((dialogEl) => {
-      cy.get('.v-card__actions').contains('Zurück').click().wait(1);
+    cy.get('.v-dialog--active').within(() => {
+      cy.get('.v-card__actions').contains('Zurück').click();
       cy.get('.v-window-item--active').find('.v-list-item.v-list-item--link').should('contain.text', 'Objektschema erstellen').should('contain.text', 'Objektschema importieren');
-      cy.get('.v-window-item--active').contains('Objektschema erstellen').closest('.v-list-item--link').click().wait(1);
+      cy.get('.v-window-item--active').contains('Objektschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').find('h2').should('contain.text', 'Objektschema erstellen');
-      cy.get('.v-card__actions').contains('Zurück').click().wait(1);
-      cy.get('.v-window-item--active').contains('Objektschema importieren').closest('.v-list-item--link').click().wait(1);
+      cy.get('.v-card__actions').contains('Zurück').click();
+      cy.get('.v-window-item--active').contains('Objektschema importieren').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').find('h2').should('contain.text', 'Objektschema importieren');
-      cy.get('.v-window-item--active').contains('Stattdessen ein neues Objektschema erstellen').click().wait(1);
+      cy.get('.v-window-item--active').contains('Stattdessen ein neues Objektschema erstellen').click();
       cy.get('.v-window-item--active').find('h2').should('contain.text', 'Objektschema erstellen');
     });
   });
 
   it('creates a new objectschema', function () {
-    cy.get('.v-dialog--active').within((dialogEl) => {
-      cy.get('.v-window-item--active').contains('Stattdessen ein neues Objektschema erstellen').click().wait(1);
+    cy.get('.v-dialog--active').within(() => {
+      cy.get('.v-window-item--active').contains('Stattdessen ein neues Objektschema erstellen').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Test');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Beschreibung').type('Test Beschreibung');
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Test');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Test Beschreibung');
@@ -60,9 +60,9 @@ describe('Objectschema Wizard', () => {
 
   it('imports own objectschema by uploading', function () {
     // TODO
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Eigenes{enter}');
-      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/empty.json').wait(2000);
+      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/empty.json');
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Test');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Test Beschreibung');
@@ -72,9 +72,9 @@ describe('Objectschema Wizard', () => {
   });
 
   it('imports own objectschema by inserting code', function () {
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Eigenes{enter}');
-      cy.get('.v-window-item--active').contains('.v-tab', 'Code einfügen').click().wait(1);
+      cy.get('.v-window-item--active').contains('.v-tab', 'Code einfügen').click();
       cy.get('.v-window-item--active')
         .find('.editor .cm-content')
         .closest('.d-flex.flex-column')
@@ -84,7 +84,7 @@ describe('Objectschema Wizard', () => {
             el[0].__vue__.$emit('input', JSON.stringify(emptyOS));
           });
         });
-      cy.contains('.v-btn', 'Codeänderungen übernehmen').click().wait(1);
+      cy.contains('.v-btn', 'Codeänderungen übernehmen').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Test');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Test Beschreibung');
@@ -105,9 +105,9 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Control{enter}');
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Control');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Control');
@@ -128,9 +128,9 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scope{enter}');
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Scope');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for scope');
@@ -151,9 +151,9 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Asset{enter}');
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Asset');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Asset');
@@ -174,9 +174,9 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Process{enter}');
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
 
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Process');
@@ -198,9 +198,9 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Incident{enter}');
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Incident');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Incident');
@@ -221,9 +221,9 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Document{enter}');
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Document');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Document');
@@ -244,9 +244,9 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Person{enter}');
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Person');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Person');
@@ -267,9 +267,9 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scenario{enter}');
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Scenario');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Scenario');

@@ -22,7 +22,7 @@ Cypress.Commands.add('auth', () => {
     },
     (req) => {
       const query = new URL(req.url).searchParams;
-      const redirect_uri = query.get('redirect_uri');
+      const redirectUri = query.get('redirect_uri');
       const state = query.get('state');
       nonce = query.get('nonce'); // keycloak-js generated a nonce that we need to include in our access token
 
@@ -31,7 +31,7 @@ Cypress.Commands.add('auth', () => {
       req.reply({
         statusCode: 302,
         headers: {
-          location: `${redirect_uri}#state=${state}&session_state=${SESSION_STATE}&code=${CODE}`
+          location: `${redirectUri}#state=${state}&session_state=${SESSION_STATE}&code=${CODE}`
         }
       });
     }
@@ -132,7 +132,7 @@ Cypress.Commands.add('loadFse', (formSchemaPath) => {
     win.$nuxt?.$router?.push('/editor');
   });
 
-  cy.contains('.v-list-item--link', 'Formschema Editor').should('have.attr', 'href', '/editor/formschema').click().wait(1);
+  cy.contains('.v-list-item--link', 'Formschema Editor').should('have.attr', 'href', '/editor/formschema').click();
 
   cy.intercept(
     {
@@ -145,9 +145,9 @@ Cypress.Commands.add('loadFse', (formSchemaPath) => {
       });
     }
   );
-  cy.get('.v-dialog--active').within((dialogEl) => {
-    cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click().wait(1);
-    cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile(formSchemaPath).wait(2000);
+  cy.get('.v-dialog--active').within(() => {
+    cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
+    cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile(formSchemaPath);
   });
   cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema');
 });

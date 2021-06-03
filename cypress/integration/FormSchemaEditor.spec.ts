@@ -105,14 +105,14 @@ describe('Formschema Editor', () => {
     //   .eq(1)
     //   .drop()
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(JSON.parse(JSON.stringify(getEditorData(editor)).replace(textOrGroupLangRegex, ''))).toMatchSnapshot({
           name: 'Drag and Drop - FS'
         });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Drag and Drop - VeoForm' });
@@ -120,12 +120,12 @@ describe('Formschema Editor', () => {
 
   it('opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them', function () {
     cy.loadFse('formschema/elements/input-text-multiline-markdown.json');
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'InputText - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'InputText - VeoForm' });
@@ -136,10 +136,9 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'InputText')
       .find('.mdi-pencil')
       .closest('.v-btn')
-      .click()
-      .wait(1);
+      .click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Input Element anpassen');
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:');
       cy.contains('.v-text-field', 'Beschriftung').find('input').should('have.value', 'Name').closest('.v-text-field').type('{selectall}{backspace}Name Test 1');
@@ -147,15 +146,15 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Steuerelement Typ:');
       cy.contains('.v-select', 'Typ').should('contain.text', 'InputText').type('InputTextMultiline{enter}');
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'InputTextMultiline - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'InputTextMultiline - VeoForm' });
@@ -166,10 +165,9 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'InputTextMultiline')
       .find('.mdi-pencil')
       .closest('.v-btn')
-      .click()
-      .wait(1);
+      .click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Input Element anpassen');
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
@@ -179,15 +177,15 @@ describe('Formschema Editor', () => {
 
       cy.contains('.v-select', 'Typ').should('contain.text', 'InputTextMultiline').type('MarkdownEditor{enter}');
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'MarkdownEditor - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     // TODO: MarkdownEditor generates different styles and classes depending on Windows/Mac/Linux scrollbars, therefore difficult with SnapshotTest
@@ -207,23 +205,22 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'InputUri')
       .find('.mdi-pencil')
       .closest('.v-btn')
-      .click()
-      .wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+      .click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Input Element anpassen');
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:');
       cy.contains('.v-text-field', 'Beschriftung').find('input').should('have.value', 'Dokument').closest('.v-text-field').type('{selectall}{backspace}Dokument Test');
       cy.get('.v-form').should('contain.text', 'Steuerelement Typ:');
       cy.contains('.v-select', 'Typ').should('have.class', 'v-input--is-disabled').should('contain.text', 'InputUri');
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'InputUri - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'InputUri - VeoForm' });
@@ -242,10 +239,9 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'InputDate')
       .find('.mdi-pencil')
       .closest('.v-btn')
-      .click()
-      .wait(1);
+      .click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Input Element anpassen');
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:');
       cy.contains('.v-text-field', 'Beschriftung')
@@ -257,15 +253,15 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Steuerelement Typ:');
       cy.contains('.v-select', 'Typ').should('have.class', 'v-input--is-disabled').should('contain.text', 'InputDate');
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'InputUri - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'InputUri - VeoForm' });
@@ -284,9 +280,8 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'Checkbox')
       .find('.mdi-pencil')
       .closest('.v-btn')
-      .click()
-      .wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+      .click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Input Element anpassen');
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:');
       cy.contains('.v-text-field', 'Beschriftung')
@@ -296,15 +291,15 @@ describe('Formschema Editor', () => {
         .type('{selectall}{backspace}Datenverarbeitung besonders sensitiver Daten? Test');
       cy.get('.v-form').should('contain.text', 'Steuerelement Typ:');
       cy.contains('.v-select', 'Typ').should('have.class', 'v-input--is-disabled').should('contain.text', 'Checkbox');
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Checkbox - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Checkbox - VeoForm' });
@@ -318,12 +313,12 @@ describe('Formschema Editor', () => {
   it('opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them', function () {
     cy.loadFse('formschema/elements/select-radio-autocomplete.json');
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Select - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Select - VeoForm' });
@@ -334,10 +329,9 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'Select')
       .find('.mdi-pencil')
       .closest('.v-btn')
-      .click()
-      .wait(1);
+      .click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Input Element anpassen');
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:');
       cy.contains('.v-text-field', 'Beschriftung')
@@ -349,15 +343,15 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Steuerelement Typ:');
       cy.contains('.v-select', 'Typ').should('contain.text', 'Select').type('Radio{enter}');
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Radio - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Radio - VeoForm' });
@@ -368,10 +362,9 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'Radio')
       .find('.mdi-pencil')
       .closest('.v-btn')
-      .click()
-      .wait(1);
+      .click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Input Element anpassen');
       cy.contains('.v-text-field', 'Beschriftung')
         .find('input')
@@ -381,15 +374,15 @@ describe('Formschema Editor', () => {
 
       cy.contains('.v-select', 'Typ').should('contain.text', 'Radio').type('Autocomplete{enter}');
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Autocomplete - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Autocomplete - VeoForm' });
@@ -408,10 +401,9 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'LinksField')
       .find('.mdi-pencil')
       .closest('.v-btn')
-      .click()
-      .wait(1);
+      .click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Input Element anpassen');
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements*:');
       cy.contains('.v-text-field', 'Beschriftung')
@@ -431,15 +423,15 @@ describe('Formschema Editor', () => {
 
       cy.get('.dragArea').find('.fse-input').should('have.length', 3);
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'LinksField - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'LinksField - VeoForm' });
@@ -452,9 +444,9 @@ describe('Formschema Editor', () => {
 
   it('opens FseLabel dialogs, changes data in dialogs and save them', function () {
     cy.loadFse('formschema/elements/label.json');
-    cy.get('.fse-label').eq(0).should('not.contain.text').find('.mdi-pencil').closest('.v-btn').click().wait(1);
+    cy.get('.fse-label').eq(0).should('not.contain.text').find('.mdi-pencil').closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Text Element anpassen');
       cy.get('.v-form').should('contain.text', 'Text des Elements*:');
       cy.contains('.v-text-field', 'Text').type('Text 1 für das Textelement');
@@ -465,24 +457,24 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'CSS Styles:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Styles').type('color:green{enter}margin-left:50px{enter}font-size:20px{enter}');
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
     cy.get('.fse-label').eq(0).should('contain.text', 'Text 1 für das Textelement');
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Label 1 - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Label 1 - VeoForm' });
 
-    cy.get('.fse-label').eq(1).should('not.contain.text').find('.mdi-pencil').closest('.v-btn').click().wait(1);
+    cy.get('.fse-label').eq(1).should('not.contain.text').find('.mdi-pencil').closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Text Element anpassen');
       cy.get('.v-form').should('contain.text', 'Text des Elements*:');
       cy.contains('.v-text-field', 'Text').type('Text 2 für das Textelement');
@@ -493,15 +485,15 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'CSS Styles:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Styles').type('color:blue{enter}margin-left:80px{enter}font-size:14px{enter}');
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Label 2 - FS' });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Label 2 - VeoForm' });
@@ -513,9 +505,9 @@ describe('Formschema Editor', () => {
     cy.loadFse('formschema/elements/group.json');
     cy.get('.dropzone').find('.fse-group').eq(0).find('.dragArea').should('have.class', 'flex-column direction-vertical').find('.fse-input').should('have.length', 2);
 
-    cy.get('.dropzone').find('.fse-group').eq(0).find('.mdi-pencil').eq(0).closest('.v-btn').click().wait(1);
+    cy.get('.dropzone').find('.fse-group').eq(0).find('.mdi-pencil').eq(0).closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Gruppen Element anpassen');
       cy.get('.v-form').should('contain.text', 'Beschriftung des Elements:');
       cy.contains('.v-text-field', 'Beschriftung').find('input').should('not.have.value').closest('.v-text-field').type('Gruppe Test 1');
@@ -529,17 +521,17 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'CSS Styles:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Styles').type('margin-left:20px{enter}');
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(JSON.parse(JSON.stringify(getEditorData(editor)).replace(textOrGroupLangRegex, ''))).toMatchSnapshot({
           name: 'Group 1 - FS'
         });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Group 1 - VeoForm' });
@@ -555,26 +547,26 @@ describe('Formschema Editor', () => {
 
     cy.get('.dropzone').find('.fse-group').eq(1).find('.dragArea').should('have.class', 'flex-column direction-vertical').find('.fse-input').should('have.length', 2);
 
-    cy.get('.dropzone').find('.fse-group').eq(1).find('.mdi-pencil').eq(0).closest('.v-btn').click().wait(1);
+    cy.get('.dropzone').find('.fse-group').eq(1).find('.mdi-pencil').eq(0).closest('.v-btn').click();
 
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__title').should('contain.text', 'Gruppen Element anpassen');
       cy.contains('.v-text-field', 'Beschriftung').find('input').should('not.have.value').closest('.v-text-field').type('Gruppe Test 2');
 
       cy.get('.v-form').should('contain.text', 'Ausrichtung*:');
       cy.contains('.v-autocomplete', 'Ausrichtung').find('input').should('have.value', 'Vertikal');
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('.mdi-code-tags').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(JSON.parse(JSON.stringify(getEditorData(editor)).replace(textOrGroupLangRegex, ''))).toMatchSnapshot({
           name: 'Group 2 - FS'
         });
       });
-      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
 
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Group 2 - VeoForm' });
@@ -591,17 +583,17 @@ describe('Formschema Editor', () => {
 
   it('deletes elements', function () {
     cy.loadFse('formschema/minimal.json');
-    cy.get('.fse-label').find('.mdi-delete').closest('.v-btn').click().wait(1);
+    cy.get('.fse-label').find('.mdi-delete').closest('.v-btn').click();
     cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen');
-    cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click().wait(1);
+    cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click();
 
-    cy.get('.fse-group').find('.mdi-delete').eq(0).closest('.v-btn').click().wait(1);
+    cy.get('.fse-group').find('.mdi-delete').eq(0).closest('.v-btn').click();
     cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen');
-    cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click().wait(1);
+    cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click();
 
-    cy.get('.fse-input').find('.mdi-delete').closest('.v-btn').click().wait(1);
+    cy.get('.fse-input').find('.mdi-delete').closest('.v-btn').click();
     cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen');
-    cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click().wait(1);
+    cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click();
 
     cy.get('.dropzone').find('.fse-label').should('have.length', 0);
     cy.get('.dropzone').find('.fse-group').should('have.length', 0);
@@ -611,8 +603,8 @@ describe('Formschema Editor', () => {
   it('adds, updates, deletes translations', function () {
     cy.loadFse('formschema/dialogs.json');
     // Add translations
-    cy.get('.mdi-translate').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-translate').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Translations initial empty' });
 
@@ -621,15 +613,15 @@ describe('Formschema Editor', () => {
         el[0].__vue__.$emit('input', JSON.stringify(translationsAdded, null, 2));
       });
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
     cy.get('.dropzone').toMatchHtmlSnapshot({ name: 'Translations added - FSE' });
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Translations added - VeoForm' });
 
     // Change translations
-    cy.get('.mdi-translate').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-translate').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Translations added' });
 
@@ -638,15 +630,15 @@ describe('Formschema Editor', () => {
         el[0].__vue__.$emit('input', JSON.stringify(translationsChanged, null, 2));
       });
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
     cy.get('.dropzone').toMatchHtmlSnapshot({ name: 'Translations changed - FSE' });
     cy.get('.vf-wrapper').eq(0).toMatchHtmlSnapshot({ name: 'Translations changed - VeoForm' });
 
     // Delete translations
-    cy.get('.mdi-translate').closest('.v-btn').click().wait(1);
-    cy.get('.v-dialog--active').within((dialogEl) => {
+    cy.get('.mdi-translate').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
         cy.wrap(getEditorData(editor)).toMatchSnapshot({ name: 'Translations deleted' });
 
@@ -655,7 +647,7 @@ describe('Formschema Editor', () => {
         el[0].__vue__.$emit('input', JSON.stringify(translationsDeleted, null, 2));
       });
 
-      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click().wait(1);
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
     cy.get('.dropzone').toMatchHtmlSnapshot({ name: 'Translations deleted - FSE' });
@@ -664,7 +656,7 @@ describe('Formschema Editor', () => {
 
   it('compares downloaded schema with the actual one', function () {
     cy.loadFse('formschema/minimal.json');
-    cy.get('.mdi-download').closest('.v-btn').click().wait(1);
+    cy.get('.mdi-download').closest('.v-btn').click();
 
     cy.readFile('cypress/downloads/fs_Test Formschema.json').then((downloadedFS) => {
       cy.wrap(downloadedFS).toMatchSnapshot();
