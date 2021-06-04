@@ -441,7 +441,7 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
-    "collapse": "ollapse all",
+    "collapse": "collapse all",
     "expand": "expand all",
     "formElements": "form elements",
     "searchNoMatch": "no matching controls"
