@@ -1,14 +1,14 @@
-import Vue from 'vue'
-import { mount } from '@vue/test-utils'
-import Vuetify from 'vuetify'
-import flushPromises from 'flush-promises'
-import VeoForm from '~/components/forms/VeoForm.vue'
+import Vue from 'vue';
+import { mount } from '@vue/test-utils';
+import Vuetify from 'vuetify';
+import flushPromises from 'flush-promises';
+import VeoForm from '~/components/forms/VeoForm.vue';
 
-import { install as VeeValidate } from '~/plugins/vee-validate'
-import { Renderable } from '~/types/renderable'
-Vue.use(VeeValidate)
-Vue.use(Vuetify)
-const vuetify = new Vuetify()
+import { install as VeeValidate } from '~/plugins/vee-validate';
+import { Renderable } from '~/types/renderable';
+Vue.use(VeeValidate);
+Vue.use(Vuetify);
+const vuetify = new Vuetify();
 
 describe('Label.vue', () => {
   it('should render label component for static text', async () => {
@@ -23,30 +23,27 @@ describe('Label.vue', () => {
         elements: [
           {
             type: 'Label',
-            text:
-              'This is a Label text. \nYou can write here any static text!!!'
+            text: 'This is a Label text. \nYou can write here any static text!!!'
           }
         ]
       },
       value: {}
-    }
+    };
 
     const wrapper = mount(VeoForm, {
       propsData: { ...form }
-    })
+    });
 
     // Fixes immediate:true bugs with setProps() of vue test utils
     // https://github.com/vuejs/vue-test-utils/issues/1140#issuecomment-544156893
-    wrapper.vm.$parent.$forceUpdate()
-    await wrapper.vm.$nextTick()
+    wrapper.vm.$parent.$forceUpdate();
+    await wrapper.vm.$nextTick();
 
-    const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
-    expect(layoutWrapper.find('.vf-label').exists()).toBe(true)
-    expect(layoutWrapper.find('.vf-label').exists()).toBe(true)
-    expect(layoutWrapper.find('.vf-label').text()).toBe(
-      'This is a Label text. \nYou can write here any static text!!!'
-    )
-  })
+    const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout');
+    expect(layoutWrapper.find('.vf-label').exists()).toBe(true);
+    expect(layoutWrapper.find('.vf-label').exists()).toBe(true);
+    expect(layoutWrapper.find('.vf-label').text()).toBe('This is a Label text. \nYou can write here any static text!!!');
+  });
 
   it("should add classes to label component in all 3 vue format: {}, [], '' ", async () => {
     const form1: Renderable = {
@@ -60,8 +57,7 @@ describe('Label.vue', () => {
         elements: [
           {
             type: 'Label',
-            text:
-              'This is a Label text. \nYou can write here any static text!!!',
+            text: 'This is a Label text. \nYou can write here any static text!!!',
             options: {
               class: {
                 display: true,
@@ -72,7 +68,7 @@ describe('Label.vue', () => {
         ]
       },
       value: {}
-    }
+    };
 
     const form2: Renderable = {
       schema: {},
@@ -85,8 +81,7 @@ describe('Label.vue', () => {
         elements: [
           {
             type: 'Label',
-            text:
-              'This is a Label text. \nYou can write here any static text!!!',
+            text: 'This is a Label text. \nYou can write here any static text!!!',
             options: {
               class: ['display-1', 'text-center']
             }
@@ -94,7 +89,7 @@ describe('Label.vue', () => {
         ]
       },
       value: {}
-    }
+    };
 
     const form3: Renderable = {
       schema: {},
@@ -107,8 +102,7 @@ describe('Label.vue', () => {
         elements: [
           {
             type: 'Label',
-            text:
-              'This is a Label text. \nYou can write here any static text!!!',
+            text: 'This is a Label text. \nYou can write here any static text!!!',
             options: {
               class: 'display-2 text-left'
             }
@@ -116,31 +110,31 @@ describe('Label.vue', () => {
         ]
       },
       value: {}
-    }
+    };
 
     const wrapper = mount(VeoForm, {
       vuetify,
       propsData: { ...form1 }
-    })
+    });
 
     // Fixes immediate:true bugs with setProps() of vue test utils
     // https://github.com/vuejs/vue-test-utils/issues/1140#issuecomment-544156893
-    wrapper.vm.$parent.$forceUpdate()
-    await wrapper.vm.$nextTick()
+    wrapper.vm.$parent.$forceUpdate();
+    await wrapper.vm.$nextTick();
 
-    const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
-    const labelTextElement = layoutWrapper.find('.vf-label')
-    expect(labelTextElement.classes()).toContain('display')
-    expect(labelTextElement.classes()).toContain('text-right')
-    wrapper.setProps({ ...form2 })
-    await flushPromises()
-    expect(labelTextElement.classes()).toContain('display-1')
-    expect(labelTextElement.classes()).toContain('text-center')
-    wrapper.setProps({ ...form3 })
-    await flushPromises()
-    expect(labelTextElement.classes()).toContain('display-2')
-    expect(labelTextElement.classes()).toContain('text-left')
-  })
+    const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout');
+    const labelTextElement = layoutWrapper.find('.vf-label');
+    expect(labelTextElement.classes()).toContain('display');
+    expect(labelTextElement.classes()).toContain('text-right');
+    wrapper.setProps({ ...form2 });
+    await flushPromises();
+    expect(labelTextElement.classes()).toContain('display-1');
+    expect(labelTextElement.classes()).toContain('text-center');
+    wrapper.setProps({ ...form3 });
+    await flushPromises();
+    expect(labelTextElement.classes()).toContain('display-2');
+    expect(labelTextElement.classes()).toContain('text-left');
+  });
 
   it("should add style to label component in all 3 vue format: {}, [], '' ", async () => {
     const form1: Renderable = {
@@ -154,8 +148,7 @@ describe('Label.vue', () => {
         elements: [
           {
             type: 'Label',
-            text:
-              'This is a Label text. \nYou can write here any static text!!!',
+            text: 'This is a Label text. \nYou can write here any static text!!!',
             options: {
               style: {
                 fontSize: '14px',
@@ -166,7 +159,7 @@ describe('Label.vue', () => {
         ]
       },
       value: {}
-    }
+    };
 
     const form2: Renderable = {
       schema: {},
@@ -179,8 +172,7 @@ describe('Label.vue', () => {
         elements: [
           {
             type: 'Label',
-            text:
-              'This is a Label text. \nYou can write here any static text!!!',
+            text: 'This is a Label text. \nYou can write here any static text!!!',
             options: {
               style: [{ fontSize: '16px' }, { textAlign: 'center' }]
             }
@@ -188,7 +180,7 @@ describe('Label.vue', () => {
         ]
       },
       value: {}
-    }
+    };
 
     const form3: Renderable = {
       schema: {},
@@ -201,8 +193,7 @@ describe('Label.vue', () => {
         elements: [
           {
             type: 'Label',
-            text:
-              'This is a Label text. \nYou can write here any static text!!!',
+            text: 'This is a Label text. \nYou can write here any static text!!!',
             options: {
               style: 'font-size: 18px; text-align: left;'
             }
@@ -210,29 +201,29 @@ describe('Label.vue', () => {
         ]
       },
       value: {}
-    }
+    };
 
     const wrapper = mount(VeoForm, {
       vuetify,
       propsData: { ...form1 }
-    })
+    });
 
     // Fixes immediate:true bugs with setProps() of vue test utils
     // https://github.com/vuejs/vue-test-utils/issues/1140#issuecomment-544156893
-    wrapper.vm.$parent.$forceUpdate()
-    await wrapper.vm.$nextTick()
+    wrapper.vm.$parent.$forceUpdate();
+    await wrapper.vm.$nextTick();
 
-    const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout')
-    const labelTextElement = layoutWrapper.find('.vf-label')
-    expect(labelTextElement.attributes().style).toContain('font-size: 14px;')
-    expect(labelTextElement.attributes().style).toContain('text-align: right;')
-    wrapper.setProps({ ...form2 })
-    await flushPromises()
-    expect(labelTextElement.attributes().style).toContain('font-size: 16px;')
-    expect(labelTextElement.attributes().style).toContain('text-align: center;')
-    wrapper.setProps({ ...form3 })
-    await flushPromises()
-    expect(labelTextElement.attributes().style).toContain('font-size: 18px;')
-    expect(labelTextElement.attributes().style).toContain('text-align: left;')
-  })
-})
+    const layoutWrapper = wrapper.find('.vf-wrapper > .vf-layout');
+    const labelTextElement = layoutWrapper.find('.vf-label');
+    expect(labelTextElement.attributes().style).toContain('font-size: 14px;');
+    expect(labelTextElement.attributes().style).toContain('text-align: right;');
+    wrapper.setProps({ ...form2 });
+    await flushPromises();
+    expect(labelTextElement.attributes().style).toContain('font-size: 16px;');
+    expect(labelTextElement.attributes().style).toContain('text-align: center;');
+    wrapper.setProps({ ...form3 });
+    await flushPromises();
+    expect(labelTextElement.attributes().style).toContain('font-size: 18px;');
+    expect(labelTextElement.attributes().style).toContain('text-align: left;');
+  });
+});

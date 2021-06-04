@@ -2,7 +2,9 @@
   <div class="wrapper">
     <v-row class="flex-column text-center">
       <v-col>
-        <h1 class="mb-6 primary--text">verinice.</h1>
+        <h1 class="mb-6 primary--text">
+          verinice.
+        </h1>
       </v-col>
       <v-col class="d-flex justify-end mb-6">
         <v-select
@@ -18,12 +20,22 @@
         />
       </v-col>
       <v-col>
-        <v-btn depressed block color="primary" class="login-button" @click="$user.auth.login('/')">
+        <v-btn
+          depressed
+          block
+          color="primary"
+          class="login-button"
+          @click="$user.auth.login('/')"
+        >
           {{ $t('login') }}
         </v-btn>
       </v-col>
       <v-col>
-        <v-btn depressed block @click="$user.auth.register('/')">
+        <v-btn
+          depressed
+          block
+          @click="$user.auth.register('/')"
+        >
           {{ $t('register') }}
         </v-btn>
       </v-col>
@@ -32,7 +44,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   layout: 'plain',
@@ -42,14 +54,14 @@ export default Vue.extend({
         { value: 'en', text: 'English' },
         { value: 'de', text: 'Deutsch' }
       ]
-    }
+    };
   },
   head(): any {
     return {
       title: 'verinice.'
-    }
+    };
   }
-})
+});
 </script>
 
 <i18n>

@@ -5,9 +5,17 @@
         <PageHeader>Links Field</PageHeader>
       </v-col>
       <v-col cols="12">
-        <v-switch v-model="isVertical" label="Vertical" hide-details color="primary" />
+        <v-switch
+          v-model="isVertical"
+          label="Vertical"
+          hide-details
+          color="primary"
+        />
       </v-col>
-      <v-col cols="auto" class="docs-form-sector">
+      <v-col
+        cols="auto"
+        class="docs-form-sector"
+      >
         <VeoForm
           v-model="dynamicForm.data"
           :schema="dynamicForm.objectSchema"
@@ -26,16 +34,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { v4 as uuidv4 } from 'uuid'
+import Vue from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 
-import {
-  BaseObject,
-  IApi,
-  ILinksFieldDialogNewObject,
-  ILinksFieldDialogUpdatedObject,
-  ISearchParams
-} from '~/components/forms/utils'
+import { BaseObject, IApi, ILinksFieldDialogNewObject, ILinksFieldDialogUpdatedObject, ISearchParams } from '~/components/forms/utils';
 
 export default Vue.extend({
   data() {
@@ -478,14 +480,14 @@ export default Vue.extend({
         }
       },
       isVertical: false
-    }
+    };
   },
   computed: {
     dynamicForm(): any {
       if (this.isVertical) {
-        return this.formVertical
+        return this.formVertical;
       }
-      return this.form
+      return this.form;
     },
     api(): IApi {
       return {
@@ -493,15 +495,16 @@ export default Vue.extend({
         create: this.create,
         update: this.update,
         delete: this.delete
-      }
+      };
     }
   },
   methods: {
     delay(ms: number): Promise<void> {
-      return new Promise(resolve => setTimeout(resolve, ms))
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    async fetchAll(objectType: string, searchParams?: ISearchParams): Promise<BaseObject[]> {
-      await this.delay(2000)
+    // _ is objectType but here is not used
+    async fetchAll(_: string, searchParams?: ISearchParams): Promise<BaseObject[]> {
+      await this.delay(2000);
       return new Promise((resolve, reject) => {
         const res = searchParams
           ? this.items.filter((el: any) =>
@@ -509,16 +512,16 @@ export default Vue.extend({
               // el.displayName.toLowerCase().includes(searchParams.displayName.toLowerCase()),
               el.name.toLowerCase().includes(searchParams.displayName.toLowerCase())
             )
-          : this.items
+          : this.items;
         if (res) {
-          resolve(res)
+          resolve(res);
         } else {
-          reject('Search parameters are not defined!')
+          reject(new Error('Search parameters are not defined!'));
         }
-      })
+      });
     },
-    async create(objectType: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject> {
-      await this.delay(2000)
+    async create(_: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject> {
+      await this.delay(2000);
       return new Promise((resolve, reject) => {
         if (createdObjectData.name) {
           const newItem = {
@@ -538,38 +541,38 @@ export default Vue.extend({
                 targetUri: '/units/88bb6ff8-e1be-46ac-87fb-998cff1eac23'
               }
             ]
-          }
-          this.items.push(newItem)
-          resolve(newItem)
+          };
+          this.items.push(newItem);
+          resolve(newItem);
         } else {
-          reject('Name is not defined!')
+          reject(new Error('Name is not defined!'));
         }
-      })
+      });
     },
-    async update(objectType: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void> {
-      await this.delay(2000)
+    async update(_: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void> {
+      await this.delay(2000);
       return new Promise((resolve, reject) => {
         if (updatedObjectData.name) {
-          const itemIndex = this.items.findIndex(item => item.id === updatedObjectData.id)
+          const itemIndex = this.items.findIndex((item) => item.id === updatedObjectData.id);
           // TODO:uncomment the line below after displayName is implemented
           // updatedObjectData.displayName = updatedObjectData.name
-          this.items[itemIndex] = updatedObjectData as any
-          resolve()
+          this.items[itemIndex] = updatedObjectData as any;
+          resolve();
         } else {
-          reject('Name is not defined!')
+          reject(new Error('Name is not defined!'));
         }
-      })
+      });
     },
-    async delete(objectType: string, id: string): Promise<void> {
-      await this.delay(2000)
-      return new Promise(resolve => {
-        const itemIndex = this.items.findIndex(item => item.id === id)
-        this.items.splice(itemIndex, 1)
-        resolve()
-      })
+    async delete(_: string, id: string): Promise<void> {
+      await this.delay(2000);
+      return new Promise((resolve) => {
+        const itemIndex = this.items.findIndex((item) => item.id === id);
+        this.items.splice(itemIndex, 1);
+        resolve();
+      });
     }
   }
-})
+});
 </script>
 
 <style lang="scss"></style>

@@ -7,10 +7,10 @@
   </v-card>
 </template>
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api';
 
 interface IProps {
-    title: String
+  title: String;
 }
 
 export default defineComponent<IProps>({
@@ -20,7 +20,7 @@ export default defineComponent<IProps>({
       required: true
     }
   }
-})
+});
 </script>
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

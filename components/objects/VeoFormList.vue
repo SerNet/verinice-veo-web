@@ -14,17 +14,19 @@
       <div class="veo-object-list__abbreviation nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
-            <v-icon v-on="on">mdi-format-list-checks</v-icon>
+            <v-icon v-on="on">
+              mdi-format-list-checks
+            </v-icon>
           </template>
           <template #default>
-            <span v-html="$t('form')" />
+            <span>{{ $t('form') }}</span>
           </template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{ on }">
             <span
-              v-on="on"
               class="veo-object-list__abbreviation--abbreviation"
+              v-on="on"
             >{{ item.abbreviation }}</span>
           </template>
           <template #default>
@@ -34,15 +36,20 @@
       </div>
     </template>
     <template #item.name="{ value }">
-      <div class="veo-object-list__title">{{ value }}</div>
+      <div class="veo-object-list__title">
+        {{ value }}
+      </div>
     </template>
     <template #item.description="{ item, value }">
       <div class="veo-object-list__description">
-        <v-tooltip v-if="item.descriptionShort" bottom>
+        <v-tooltip
+          v-if="item.descriptionShort"
+          bottom
+        >
           <template #activator="{ on }">
             <span
-              v-on="on"
               class="veo-object-list__abbreviation--abbreviation"
+              v-on="on"
             >{{ item.descriptionShort }}</span>
           </template>
           <template #default>
@@ -60,7 +67,7 @@
           </template>
           <template #default>
             {{ $t('created_at') }}: {{ formatDate(item.createdAt) }} {{ $t('by') }} {{ item.createdBy }}
-            <br />
+            <br>
             {{ $t('updated_at') }}: {{ formatDate(item.updatedAt) }} {{ $t('by') }} {{ item.updatedBy }}
           </template>
         </v-tooltip>
@@ -70,27 +77,45 @@
       <div class="veo-object-list__actions">
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="sendEvent('edit', item, true)" v-on="on">
+            <v-btn
+              icon
+              @click.stop="sendEvent('edit', item, true)"
+              v-on="on"
+            >
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
-          <template #default>{{ $t('edit') }}</template>
+          <template #default>
+            {{ $t('edit') }}
+          </template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="sendEvent('duplicate', item)" v-on="on">
+            <v-btn
+              icon
+              @click.stop="sendEvent('duplicate', item)"
+              v-on="on"
+            >
               <v-icon>mdi-content-copy</v-icon>
             </v-btn>
           </template>
-          <template #default>{{ $t('clone') }}</template>
+          <template #default>
+            {{ $t('clone') }}
+          </template>
         </v-tooltip>
         <v-tooltip bottom>
           <template #activator="{on}">
-            <v-btn icon @click.stop="sendEvent('delete', item)" v-on="on">
+            <v-btn
+              icon
+              @click.stop="sendEvent('delete', item)"
+              v-on="on"
+            >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
-          <template #default>{{ $t('delete') }}</template>
+          <template #default>
+            {{ $t('delete') }}
+          </template>
         </v-tooltip>
       </div>
     </template>
@@ -98,11 +123,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
-import { createUUIDUrlParam, formatDate, formatTime } from '~/lib/utils'
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
+import { createUUIDUrlParam, formatDate, formatTime } from '~/lib/utils';
 
-import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntity } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -126,7 +151,7 @@ export default Vue.extend({
   data() {
     return {
       itemsPerPage: 10
-    }
+    };
   },
   computed: {
     displayedItems(): IVeoEntity[] {
@@ -134,15 +159,15 @@ export default Vue.extend({
         .map((item) => {
           // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
           if (item.description && item.description.length > 40) {
-            item.descriptionShort = item.description.substring(0, 40) + '...'
+            item.descriptionShort = item.description.substring(0, 40) + '...';
           }
 
-          return item
+          return item;
         })
-        .sort(this.sortingFunction)
+        .sort(this.sortingFunction);
     },
     editItemLink(): string {
-      return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`
+      return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`;
     },
     headers(): any[] {
       return [
@@ -178,21 +203,21 @@ export default Vue.extend({
           value: 'actions',
           width: 108 /* 3*widthOfButton */
         }
-      ]
+      ];
     }
   },
   methods: {
     formatDate(date: string) {
-      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
     },
     generatePath(entity: IVeoEntity) {
-      return `${this.rootRoute}/${createUUIDUrlParam(entity.type, entity.id)}`
+      return `${this.rootRoute}/${createUUIDUrlParam(entity.type, entity.id)}`;
     },
     sendEvent(event: string, item: IVeoEntity, addPath: boolean = false) {
-      this.$emit(event, { item, path: addPath ? this.generatePath(item) : undefined })
+      this.$emit(event, { item, path: addPath ? this.generatePath(item) : undefined });
     }
   }
-})
+});
 </script>
 
 <i18n>

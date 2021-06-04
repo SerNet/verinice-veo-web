@@ -1,6 +1,11 @@
 <template>
   <v-app>
-    <v-app-bar class="veo-app-bar" app clipped-left flat>
+    <v-app-bar
+      class="veo-app-bar"
+      app
+      clipped-left
+      flat
+    >
       <div class="d-flex">
         <VeoAppBarLogo class="ml-2" />
       </div>
@@ -12,14 +17,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 export default Vue.extend({
   head() {
     return {
       titleTemplate: '%s - verinice.'
-    }
+    };
   }
-})
+});
 </script>
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

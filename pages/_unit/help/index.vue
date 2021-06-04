@@ -2,15 +2,25 @@
   <VeoPage fullsize>
     <v-row>
       <v-col cols="12">
-        <div class="display-1 font-weight-bold">Dokumentation</div>
+        <div class="display-1 font-weight-bold">
+          Dokumentation
+        </div>
       </v-col>
-      <v-col v-for="(doc, i) in docs" :key="i">
+      <v-col
+        v-for="(doc, i) in docs"
+        :key="i"
+      >
         <v-list color="transparent">
           <v-subheader class="font-weight-black font-italic black--text">
             {{ doc.title }}
           </v-subheader>
           <v-list-item-group>
-            <v-list-item v-for="(item, j) in doc.items" :key="j" :to="item.to" :ripple="true">
+            <v-list-item
+              v-for="(item, j) in doc.items"
+              :key="j"
+              :to="item.to"
+              :ripple="true"
+            >
               <v-list-item-content>
                 <v-list-item-title v-text="item.title" />
               </v-list-item-content>
@@ -23,12 +33,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   name: 'Docs',
   data() {
-    const HELP_ROOT = `/${this.$route.params.unit}/help`
+    const HELP_ROOT = `/${this.$route.params.unit}/help`;
     return {
       docs: [
         {
@@ -88,9 +98,9 @@ export default Vue.extend({
           ]
         }
       ]
-    }
+    };
   }
-})
+});
 </script>
 
 <style lang="scss"></style>

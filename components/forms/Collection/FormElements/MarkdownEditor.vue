@@ -1,7 +1,18 @@
 <template>
-  <div v-if="visible" class="vf-markdown-editor vf-form-element" :class="{ 'is-disabled': disabled }">
-    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
-      <div v-if="options && options.label" class="subtitle-1">
+  <div
+    v-if="visible"
+    class="vf-markdown-editor vf-form-element"
+    :class="{ 'is-disabled': disabled }"
+  >
+    <ValidationProvider
+      v-slot="{ errors }"
+      :name="options && options.label"
+      :rules="validation"
+    >
+      <div
+        v-if="options && options.label"
+        class="subtitle-1"
+      >
         {{ options && options.label }}
       </div>
       <editor
@@ -19,18 +30,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { VueConstructor } from 'vue'
-import { PropOptions } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
+import Vue, { VueConstructor } from 'vue';
+import { PropOptions } from 'vue/types/options';
+import { JSONSchema7 } from 'json-schema';
 
-import hljs from 'highlight.js'
-import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight'
-import { Editor } from '@toast-ui/vue-editor'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import hljs from 'highlight.js';
+import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
+import { Editor } from '@toast-ui/vue-editor';
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
 
 export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).extend({
   name: 'MarkdownEditor',
@@ -38,7 +45,10 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
     editor: Editor
   },
   props: {
-    value: String,
+    value: {
+      type: String,
+      default: undefined
+    },
     name: {
       type: String,
       default: ''
@@ -97,48 +107,42 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
           }
         ]
       }
-    }
+    };
   },
   watch: {
     value: {
       immediate: true,
       handler(value) {
         if (this.$refs.toastuiEditor) {
-          this.$refs.toastuiEditor.invoke('setMarkdown', value)
+          this.$refs.toastuiEditor.invoke('setMarkdown', value);
         }
       }
     }
   },
   mounted() {
-    const eventManager = this.$refs.toastuiEditor.editor.eventManager
-    eventManager.addEventType('clearValue')
-    eventManager.listen('clearValue', this.clear)
+    const eventManager = this.$refs.toastuiEditor.editor.eventManager;
+    eventManager.addEventType('clearValue');
+    eventManager.listen('clearValue', this.clear);
   },
   methods: {
     clear() {
-      this.$emit('input', undefined)
+      this.$emit('input', undefined);
     },
-    onChange(event: any) {
-      const markdownText = this.invoke('getMarkdown')
-      this.$emit(
-        'input',
-        (typeof this.value === 'undefined' || this.value === null) && markdownText === '' ? this.value : markdownText
-      )
+    onChange() {
+      const markdownText = this.invoke('getMarkdown');
+      this.$emit('input', (typeof this.value === 'undefined' || this.value === null) && markdownText === '' ? this.value : markdownText);
     },
     invoke(tuiMethodName: string) {
-      return this.$refs.toastuiEditor.invoke(tuiMethodName)
+      return this.$refs.toastuiEditor.invoke(tuiMethodName);
     }
   }
-})
+});
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
-    return calculateConditionsScore([
-      props.schema.type === 'string',
-      typeof props.options !== 'undefined' && props.options.format === 'markdown'
-    ])
+    return calculateConditionsScore([props.schema.type === 'string', typeof props.options !== 'undefined' && props.options.format === 'markdown']);
   }
-}
+};
 </script>
 
 <style lang="scss">

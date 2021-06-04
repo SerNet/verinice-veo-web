@@ -2,7 +2,10 @@
   <v-list-item class="veo-attribute-list-attribute my-2">
     <v-list-item-content>
       <v-row>
-        <v-col :cols="8" class="py-0">
+        <v-col
+          :cols="8"
+          class="py-0"
+        >
           <v-text-field
             :value="form.data.title"
             :label="`${$t('aspectName')} *`"
@@ -12,7 +15,10 @@
             @input="doUpdate($event, 'title')"
           />
         </v-col>
-        <v-col :cols="4" class="py-0">
+        <v-col
+          :cols="4"
+          class="py-0"
+        >
           <v-select
             :value="form.data.type"
             :label="$t('aspectType')"
@@ -31,7 +37,10 @@
           />
         </v-col>
       </v-row>
-      <v-row v-if="form.data.type === 'enum'" class="flex-column">
+      <v-row
+        v-if="form.data.type === 'enum'"
+        class="flex-column"
+      >
         <v-col class="py-0 d-flex align-center">
           <h3>{{ $t('values') }}</h3>
           <v-checkbox
@@ -72,7 +81,10 @@
           </v-combobox>
         </v-col>
       </v-row>
-      <v-row v-if="formatOptions.length > 0" class="flex-column">
+      <v-row
+        v-if="formatOptions.length > 0"
+        class="flex-column"
+      >
         <v-col class="py-0">
           <v-select
             :value="currentFormatOption"
@@ -86,7 +98,13 @@
       </v-row>
     </v-list-item-content>
     <v-list-item-action>
-      <v-btn fab depressed text color="black" @click="doDelete()">
+      <v-btn
+        fab
+        depressed
+        text
+        color="black"
+        @click="doDelete()"
+      >
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </v-list-item-action>
@@ -94,32 +112,25 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  computed,
-  watch,
-  nextTick,
-  ComputedRef
-} from '@nuxtjs/composition-api'
-import { cloneDeep, trim } from 'lodash'
-import { IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2'
-import { INPUT_TYPES } from '~/types/VeoEditor'
+import { defineComponent, ref, computed, watch, nextTick, ComputedRef } from '@nuxtjs/composition-api';
+import { cloneDeep, trim } from 'lodash';
+import { IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
+import { INPUT_TYPES } from '~/types/VeoEditor';
 
 interface IProps extends IVeoOSHCustomProperty {
-  aspectName: string
-  enum: any[]
+  aspectName: string;
+  enum: any[];
 }
 
 interface IInputFormat {
-  name: string
+  name: string;
   options: {
-    [key: string]: string | undefined
-  }
+    [key: string]: string | undefined;
+  };
 }
 
 interface IInputFormats {
-  [key: string]: IInputFormat[]
+  [key: string]: IInputFormat[];
 }
 
 const INPUT_FORMATS: IInputFormats = {
@@ -153,7 +164,7 @@ const INPUT_FORMATS: IInputFormats = {
       }
     }
   ]
-}
+};
 
 export default defineComponent<IProps>({
   props: {
@@ -195,20 +206,20 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
-    const prefix = computed(() => props.aspectName + '_')
+    const prefix = computed(() => props.aspectName + '_');
 
     watch(
       props,
       (newValue: any) => {
-        form.value.data = { ...newValue }
+        form.value.data = { ...newValue };
         nextTick().then(() => {
-          form.value.data.multiple = newValue.multiple
-        })
+          form.value.data.multiple = newValue.multiple;
+        });
       },
       {
         deep: true
       }
-    )
+    );
 
     const form = ref({
       data: {
@@ -217,62 +228,62 @@ export default defineComponent<IProps>({
       rules: {
         title: [(value: string) => trim(value).length > 0]
       }
-    })
+    });
 
     nextTick().then(() => {
-      form.value.data.multiple = props.multiple
-    })
+      form.value.data.multiple = props.multiple;
+    });
 
     const types = computed(() => {
-      const dummy: { text: string; value: string }[] = []
-      const availableTypes = INPUT_TYPES as any
+      const dummy: { text: string; value: string }[] = [];
+      const availableTypes = INPUT_TYPES as any;
       for (const entry in availableTypes) {
         if (!['null', 'unknown', 'array', 'object'].includes(availableTypes[entry].name)) {
           dummy.push({
             text: context.root.$t(`editor.inputtypes.${availableTypes[entry].name}`) as string,
             value: availableTypes[entry].name
-          })
+          });
         }
       }
-      return dummy
-    })
+      return dummy;
+    });
 
     function doDelete() {
-      context.emit('delete')
+      context.emit('delete');
     }
 
     function doObjectUpdate(newObject: any) {
-      const object = { ...form.value.data, originalId: props.originalId } as any
+      const object = { ...form.value.data, originalId: props.originalId } as any;
 
       // Delete properties only used for ui
-      delete object.aspectName
+      delete object.aspectName;
 
       // Iterate over every element in the new object. If set to undefined, delete the key, else set the value for the update.
-      for(let key in newObject) {
-        if(newObject[key] === undefined) {
-          delete object[key]
+      for (const key in newObject) {
+        if (newObject[key] === undefined) {
+          delete object[key];
         } else {
-          object[key] = newObject[key]
+          object[key] = newObject[key];
         }
       }
 
       // If the object type changes, we have to delete all custom properties belonging to the previous type
-      if(newObject.type && newObject.type !== form.value.data.type) {
-        const newProperties = INPUT_FORMATS[newObject.type]?.find(item => !item.options.format)?.options || {}
-        const oldProperties = INPUT_FORMATS[form.value.data.type]?.find(item => item.options.format === form.value.data.format)?.options || {}
+      if (newObject.type && newObject.type !== form.value.data.type) {
+        const newProperties = INPUT_FORMATS[newObject.type]?.find((item) => !item.options.format)?.options || {};
+        const oldProperties = INPUT_FORMATS[form.value.data.type]?.find((item) => item.options.format === form.value.data.format)?.options || {};
 
-        // Iterate over new 
-        for(let key in object) {
-          if(oldProperties[key] && !newProperties[key]) {
-            delete object[key]
+        // Iterate over new
+        for (const key in object) {
+          if (oldProperties[key] && !newProperties[key]) {
+            delete object[key];
           }
         }
       }
-      context.emit('update', object)
+      context.emit('update', object);
     }
 
     function doUpdate(value: any, property: string) {
-      doObjectUpdate({ [property]: value })
+      doObjectUpdate({ [property]: value });
     }
 
     // special operations for enums
@@ -280,34 +291,34 @@ export default defineComponent<IProps>({
       { text: 'Zahl', value: 'number' },
       { text: 'Ganzzahl', value: 'integer' },
       { text: 'Text', value: 'string' }
-    ])
+    ]);
 
     function removeValueFromEnum(value: string) {
       doUpdate(
-        props.enum.filter(entry => entry !== value),
+        props.enum.filter((entry) => entry !== value),
         'enum'
-      )
+      );
     }
 
     function updateOptions(formatType: string) {
-      const object = cloneDeep(formatOptions.value.find(item => item.name === formatType))
-      if(object) {
-        doObjectUpdate(object.options)
+      const object = cloneDeep(formatOptions.value.find((item) => item.name === formatType));
+      if (object) {
+        doObjectUpdate(object.options);
       }
     }
 
     // Special operations for all types
     const formatOptions: ComputedRef<IInputFormat[]> = computed(() => {
       return (INPUT_FORMATS[form.value.data.type] || []).map((entry: any) => {
-        entry.displayName = context.root.$i18n.t(`attributeTypes.${entry.name}`)
-        return entry
-      })
-    })
+        entry.displayName = context.root.$i18n.t(`attributeTypes.${entry.name}`);
+        return entry;
+      });
+    });
 
     const currentFormatOption: ComputedRef<string | undefined> = computed(() => {
       // We have to iterate over every object in the formatOptions array and only if the format property matches, we have the correct one.
-      return formatOptions.value.find(item => item.options.format === form.value.data.format)?.name
-    })
+      return formatOptions.value.find((item) => item.options.format === form.value.data.format)?.name;
+    });
 
     return {
       prefix,
@@ -320,9 +331,9 @@ export default defineComponent<IProps>({
       removeValueFromEnum,
       updateOptions,
       currentFormatOption
-    }
+    };
   }
-})
+});
 </script>
 
 <i18n>

@@ -1,27 +1,37 @@
 <template>
-  <VeoDialog v-model="dialog.value" :headline="headline">
+  <VeoDialog
+    v-model="dialog.value"
+    :headline="headline"
+  >
     <template #default>
       <span>{{ $t(`delete.${type}`, { title }) }}</span>
     </template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.cancel') }}</v-btn>
+      <v-btn
+        text
+        color="primary"
+        @click="$emit('input', false)"
+      >
+        {{ $t('global.button.cancel') }}
+      </v-btn>
       <v-spacer />
-      <v-btn text color="primary" @click="$emit('delete-item')">{{ $t('global.button.delete') }}</v-btn>
+      <v-btn
+        text
+        color="primary"
+        @click="$emit('delete-item')"
+      >
+        {{ $t('global.button.delete') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  ref,
-  watch
-} from '@nuxtjs/composition-api'
+import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api';
 
 interface IProps {
-  value: boolean,
-  title: string,
-  type: 'aspect' | 'link'
+  value: boolean;
+  title: string;
+  type: 'aspect' | 'link';
 }
 
 export default defineComponent<IProps>({
@@ -31,25 +41,31 @@ export default defineComponent<IProps>({
     type: { type: String, required: true }
   },
   setup(props, context) {
-    const dialog = ref({ value: props.value })
+    const dialog = ref({ value: props.value });
 
-    watch(() => props.value, (val: boolean) => {
-      dialog.value.value = val
-    })
-
-    watch(() => dialog.value.value, (val: boolean) => {
-      if (!val) {
-        context.emit('input', val)
+    watch(
+      () => props.value,
+      (val: boolean) => {
+        dialog.value.value = val;
       }
-    })
+    );
+
+    watch(
+      () => dialog.value.value,
+      (val: boolean) => {
+        if (!val) {
+          context.emit('input', val);
+        }
+      }
+    );
 
     const headline = computed(() => {
-      return props.type ? context.root.$t(`headline_${props.type}`) : ''
-    })
+      return props.type ? context.root.$t(`headline_${props.type}`) : '';
+    });
 
-    return { dialog, headline }
+    return { dialog, headline };
   }
-})
+});
 </script>
 
 <i18n>

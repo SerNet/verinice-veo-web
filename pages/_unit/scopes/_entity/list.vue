@@ -1,44 +1,58 @@
 <template>
-  <VeoPage :title="title" fullsize :loading="$fetchState.pending">
-    <VeoEntityModifier v-bind="$data" :rootRoute="rootRoute" @fetch="handleUpdates">
+  <VeoPage
+    :title="title"
+    fullsize
+    :loading="$fetchState.pending"
+  >
+    <VeoEntityModifier
+      v-bind="$data"
+      :root-route="rootRoute"
+      @fetch="handleUpdates"
+    >
       <template #menu-bar="{ on }">
-        <VeoMenuButton v-on="on" :menu-items="menuItems" :primary-item="menuButton" />
+        <VeoMenuButton
+          :menu-items="menuItems"
+          :primary-item="menuButton"
+          v-on="on"
+        />
       </template>
       <template #default="{ on }">
         <VeoObjectList
-          v-on="on"
           :items="objects"
           :current-item="currentEntity"
           :loading="$fetchState.pending"
           :show-parent-link="showParentLink"
           :load-children="loadSubEntities"
           :sorting-function="sortingFunction"
+          v-on="on"
         />
       </template>
     </VeoEntityModifier>
   </VeoPage>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
-import { IVeoEntity } from '~/types/VeoTypes'
-import { separateUUIDParam } from '~/lib/utils'
-import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue'
-import { IVeoEntityModifierEvent } from '~/components/objects/VeoEntityModifier.vue'
+import { IVeoEntity } from '~/types/VeoTypes';
+import { separateUUIDParam } from '~/lib/utils';
+import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
+import { IVeoEntityModifierEvent } from '~/components/objects/VeoEntityModifier.vue';
 
 interface IData {
-  objects: IVeoEntity[]
-  currentEntity: undefined | IVeoEntity
-  showParentLink: boolean
-  rootEntityType: string
+  objects: IVeoEntity[];
+  currentEntity: undefined | IVeoEntity;
+  showParentLink: boolean;
+  rootEntityType: string;
 }
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
-  head(): any {
+  asyncData({ from, route }) {
+    // Super dirty fix in order to allow navigation to parent object if the user clicked on a child previously.
+    // For some reason the page gets recreated completely, rendering beforeRouteUpdate and watch $route completely useless
     return {
-      title: `${this.title} - ${this.$t('breadcrumbs.scopes')}`
-    }
+      showParentLink: route.name === from.name && route.path !== from.path && route.params.entity !== '-'
+    };
   },
   data(): IData {
     return {
@@ -46,40 +60,38 @@ export default Vue.extend({
       currentEntity: undefined,
       showParentLink: false,
       rootEntityType: ''
-    }
-  },
-  asyncData({ from, route }) {
-    // Super dirty fix in order to allow navigation to parent object if the user clicked on a child previously.
-    // For some reason the page gets recreated completely, rendering beforeRouteUpdate and watch $route completely useless
-    return {
-      showParentLink: route.name === from.name && route.path !== from.path && route.params.entity !== '-'
-    }
+    };
   },
   async fetch() {
     if (this.entityType === '-') {
-      this.rootEntityType = 'scope'
+      this.rootEntityType = 'scope';
       this.objects = await this.$api.entity.fetchAll('scope', {
         unit: this.unitId
-      })
-      this.currentEntity = undefined
+      });
+      this.currentEntity = undefined;
     } else {
-      this.rootEntityType = this.entityType
-      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId)
-      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId)
+      this.rootEntityType = this.entityType;
+      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId);
+      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
     }
+  },
+  head(): any {
+    return {
+      title: `${this.title} - ${this.$t('breadcrumbs.scopes')}`
+    };
   },
   computed: {
     unitId(): string {
-      return separateUUIDParam(this.$route.params.unit).id
+      return separateUUIDParam(this.$route.params.unit).id;
     },
     entityId(): string {
-      return separateUUIDParam(this.$route.params.entity).id
+      return separateUUIDParam(this.$route.params.entity).id;
     },
     entityType(): string {
-      return separateUUIDParam(this.$route.params.entity).type
+      return separateUUIDParam(this.$route.params.entity).type;
     },
     title(): string {
-      return this.currentEntity?.displayName || this.$t('breadcrumbs.scopes').toString()
+      return this.currentEntity?.displayName || this.$t('breadcrumbs.scopes').toString();
     },
     menuButton(): IVeoMenuButtonItem {
       if (this.entityType !== '-' && this.entityType !== 'scope') {
@@ -92,7 +104,7 @@ export default Vue.extend({
             }
           },
           disabled: false
-        }
+        };
       } else {
         return {
           name: this.$t('scope_create').toString(),
@@ -103,11 +115,11 @@ export default Vue.extend({
             }
           },
           disabled: false
-        }
+        };
       }
     },
     menuItems(): IVeoMenuButtonItem[] {
-      const menuItems: IVeoMenuButtonItem[] = []
+      const menuItems: IVeoMenuButtonItem[] = [];
 
       // Allow adding (linking) scopes everywhere but root level, add the possibility to add objects there too.
       if (this.entityType === 'scope') {
@@ -120,7 +132,7 @@ export default Vue.extend({
             }
           },
           disabled: false
-        })
+        });
 
         // Only add the entity create button if the user is in a scope, as it is the primary choice in entities
         menuItems.push({
@@ -132,7 +144,7 @@ export default Vue.extend({
             }
           },
           disabled: false
-        })
+        });
       }
 
       // Allow entity management on all levels but the root level
@@ -146,39 +158,39 @@ export default Vue.extend({
             }
           },
           disabled: false
-        })
+        });
       }
 
-      return menuItems
+      return menuItems;
     },
     rootRoute(): string {
-      return `/${this.$route.params.unit}/scopes`
+      return `/${this.$route.params.unit}/scopes`;
     }
   },
   methods: {
     loadSubEntities(_parent: IVeoEntity) {
-      return []
+      return [];
     },
     sortingFunction(a: IVeoEntity, b: IVeoEntity) {
       if (a.type === 'scope' && b.type !== 'scope') {
-        return -1
+        return -1;
       } else if (a.type !== 'scope' && b.type === 'scope') {
-        return 1
+        return 1;
       } else if (a.type !== 'scope' && b.type !== 'scope') {
         if (a.parts.length > 0 && b.parts.length === 0) {
-          return -1
+          return -1;
         } else if (a.parts.length === 0 && b.parts.length > 0) {
-          return 1
+          return 1;
         }
       } else {
-        return a.name.localeCompare(b.name)
+        return a.name.localeCompare(b.name);
       }
     },
     handleUpdates(_event: IVeoEntityModifierEvent) {
-      this.$fetch()
+      this.$fetch();
     }
   }
-})
+});
 </script>
 
 <i18n>

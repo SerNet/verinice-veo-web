@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   props: {
@@ -15,17 +15,17 @@ export default Vue.extend({
   watch: {
     value: {
       handler(value) {
-        if (!window) return
+        if (!window) return;
 
-        window.onbeforeunload = value ? () => this.$t('unsavedChanges') : null
+        window.onbeforeunload = value ? () => this.$t('unsavedChanges') : null;
       },
       immediate: true
     }
   },
   beforeDestroy() {
-    if (window) window.onbeforeunload = null
+    if (window) window.onbeforeunload = null;
   }
-})
+});
 </script>
 
 <i18n>

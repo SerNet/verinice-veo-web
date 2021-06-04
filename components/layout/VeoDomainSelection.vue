@@ -17,11 +17,11 @@
   </v-list-item>
 </template>
 <script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
-import { separateUUIDParam } from '~/lib/utils'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { IVeoDomain } from '~/types/VeoTypes'
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
+import { separateUUIDParam } from '~/lib/utils';
+import { VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoDomain } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -32,25 +32,25 @@ export default Vue.extend({
   },
   computed: {
     currentDomain(): string | undefined {
-      return this.$user.currentDomain
+      return this.$user.currentDomain;
     },
     availableDomains(): { displayName: string; domainId: string }[] {
       return this.domains.map((entry: IVeoDomain) => ({
         displayName: entry.displayName,
         domainId: entry.targetUri.split('/').pop() as string
-      }))
+      }));
     },
     unitIsSet(): boolean {
-      return (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id) !== undefined
+      return (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id) !== undefined;
     }
   },
   methods: {
     doChangeDomain(domain: string) {
-      this.$user.currentDomain = domain
-      this.$emit(VeoEvents.DOMAIN_CHANGED, domain)
+      this.$user.currentDomain = domain;
+      this.$emit(VeoEvents.DOMAIN_CHANGED, domain);
     }
   }
-})
+});
 </script>
 
 <i18n>

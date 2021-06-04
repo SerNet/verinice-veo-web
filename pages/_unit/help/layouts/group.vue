@@ -17,30 +17,51 @@
             />
           </v-col>
           <v-col cols="auto">
-            <v-switch v-model="border" label="Border" hide-details color="primary" />
+            <v-switch
+              v-model="border"
+              label="Border"
+              hide-details
+              color="primary"
+            />
           </v-col>
-          <v-col cols="2" class="ml-10">
+          <v-col
+            cols="2"
+            class="ml-10"
+          >
             <v-text-field
               :value="groupTitle"
               label="Group title"
               hide-details
               clearable
               @input="onInputGroupTitle"
-            ></v-text-field>
+            />
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
-        <VeoForm v-model="form.data" :schema="form.objectSchema" :ui="form.formSchema" />
+      <v-col
+        cols="12"
+        sm="6"
+        lg="4"
+        class="docs-form-sector"
+      >
+        <VeoForm
+          v-model="form.data"
+          :schema="form.objectSchema"
+          :ui="form.formSchema"
+        />
       </v-col>
     </v-row>
-    <FormDescription :object-schema="form.objectSchema" :form-schema="form.formSchema" :data="form.data" />
+    <FormDescription
+      :object-schema="form.objectSchema"
+      :form-schema="form.formSchema"
+      :data="form.data"
+    />
   </VeoPage>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import vjp from 'vue-json-pointer'
+import Vue from 'vue';
+import vjp from 'vue-json-pointer';
 
 export default Vue.extend({
   data() {
@@ -88,41 +109,41 @@ export default Vue.extend({
       direction: 'vertical',
       border: false,
       groupTitle: undefined
-    }
+    };
   },
   watch: {
     direction: {
       immediate: true,
       handler() {
-        this.update(this.form.formSchema, '/options/direction', this.direction)
+        this.update('/options/direction', this.direction);
       }
     },
     border: {
       immediate: true,
       handler() {
         if (this.border) {
-          this.update(this.form.formSchema, '/options/class', 'border')
+          this.update('/options/class', 'border');
         } else {
-          this.update(this.form.formSchema, '/options/class', undefined)
+          this.update('/options/class', undefined);
         }
       }
     }
   },
   methods: {
-    update(object: any, jsonPointer: string, value: any): void {
-      vjp.set(this.form.formSchema, jsonPointer, value)
-      this.form.formSchema = { ...this.form.formSchema }
+    update(jsonPointer: string, value: any): void {
+      vjp.set(this.form.formSchema, jsonPointer, value);
+      this.form.formSchema = { ...this.form.formSchema };
     },
     onInputGroupTitle(event: any) {
-      this.groupTitle = event
+      this.groupTitle = event;
       if (event) {
-        this.update(this.form.formSchema, '/options/label', event)
+        this.update('/options/label', event);
       } else {
-        this.update(this.form.formSchema, '/options/label', undefined)
+        this.update('/options/label', undefined);
       }
     }
   }
-})
+});
 </script>
 
 <style lang="scss"></style>

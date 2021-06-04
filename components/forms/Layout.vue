@@ -1,13 +1,16 @@
 <template>
-  <LayoutFormat v-bind="$props" v-on="$listeners">
+  <LayoutFormat
+    v-bind="$props"
+    v-on="$listeners"
+  >
     <slot />
   </LayoutFormat>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
-import LayoutFormat from '~/components/forms/Collection/LayoutFormats/LayoutFormat.vue'
+import LayoutFormat from '~/components/forms/Collection/LayoutFormats/LayoutFormat.vue';
 
 export default Vue.extend({
   components: {
@@ -15,9 +18,12 @@ export default Vue.extend({
   },
   props: {
     options: { type: Object, default: undefined },
-    formSchemaPointer: String,
+    formSchemaPointer: {
+      type: String,
+      default: undefined
+    },
     disabled: Boolean,
     visible: Boolean
   }
-})
+});
 </script>

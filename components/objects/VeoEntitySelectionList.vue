@@ -12,18 +12,29 @@
       <span class="text-center">{{ $t('no_objects') }}</span>
     </template>
     <template #item.select="{ item }">
-      <v-radio-group v-if="singleSelect" :value="radioSelectedItem">
-        <v-radio color="primary" :value="item.entity.id" @click.stop="selectItem(item, true)" />
+      <v-radio-group
+        v-if="singleSelect"
+        :value="radioSelectedItem"
+      >
+        <v-radio
+          color="primary"
+          :value="item.entity.id"
+          @click.stop="selectItem(item, true)"
+        />
       </v-radio-group>
-      <v-checkbox v-else v-model="item.selected" @click.stop="selectItem(item)" />
+      <v-checkbox
+        v-else
+        v-model="item.selected"
+        @click.stop="selectItem(item)"
+      />
     </template>
     <template #header.select>
       <v-fade-transition>
         <v-btn
           v-show="selectedItems.length"
           icon
-          @click="$emit('new-subentities', [])"
           style="margin-left: -6px;"
+          @click="$emit('new-subentities', [])"
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -31,14 +42,19 @@
     </template>
     <template #item.abbreviation="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
-        <v-tooltip v-if="item.entity.type !== 'scope' && item.entity.parts.length > 0" bottom>
+        <v-tooltip
+          v-if="item.entity.type !== 'scope' && item.entity.parts.length > 0"
+          bottom
+        >
           <template #activator="{ on }">
-            <v-icon v-on="on">mdi-file-document-multiple</v-icon>
+            <v-icon v-on="on">
+              mdi-file-document-multiple
+            </v-icon>
           </template>
           <template #default>
             <span class="d-inline-block text-center">
               {{ $t('object_has_subobjects') }}
-              <br />
+              <br>
               {{ $t('object_has_subobjects_amount', { amount: item.entity.parts.length }) }}
             </span>
           </template>
@@ -48,7 +64,9 @@
           bottom
         >
           <template #activator="{ on }">
-            <v-icon v-on="on">mdi-archive-arrow-down</v-icon>
+            <v-icon v-on="on">
+              mdi-archive-arrow-down
+            </v-icon>
           </template>
           <template #default>
             <span
@@ -56,17 +74,27 @@
             >{{ $t('scope_children', { amount: item.entity.members.length }) }}</span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else-if="item.entity.type === 'scope'" bottom>
+        <v-tooltip
+          v-else-if="item.entity.type === 'scope'"
+          bottom
+        >
           <template #activator="{ on }">
-            <v-icon v-on="on">mdi-archive</v-icon>
+            <v-icon v-on="on">
+              mdi-archive
+            </v-icon>
           </template>
           <template #default>
             <span>{{ $t('scope_empty') }}</span>
           </template>
         </v-tooltip>
-        <v-tooltip v-else bottom>
+        <v-tooltip
+          v-else
+          bottom
+        >
           <template #activator="{ on }">
-            <v-icon v-on="on">mdi-file-document</v-icon>
+            <v-icon v-on="on">
+              mdi-file-document
+            </v-icon>
           </template>
           <template #default>
             <span>{{ $t('object_has_no_subobjects') }}</span>
@@ -75,8 +103,8 @@
         <v-tooltip bottom>
           <template #activator="{ on }">
             <span
-              v-on="on"
               class="veo-object-list__abbreviation--abbreviation"
+              v-on="on"
             >{{ item.abbreviation }}</span>
           </template>
           <template #default>
@@ -86,15 +114,20 @@
       </div>
     </template>
     <template #item.name="{ item }">
-      <div class="veo-object-list__title">{{ item.entity.name }}</div>
+      <div class="veo-object-list__title">
+        {{ item.entity.name }}
+      </div>
     </template>
     <template #item.description="{ item }">
       <div class="veo-object-list__description">
-        <v-tooltip v-if="item.entity.descriptionShort" bottom>
+        <v-tooltip
+          v-if="item.entity.descriptionShort"
+          bottom
+        >
           <template #activator="{ on }">
             <span
-              v-on="on"
               class="veo-object-list__abbreviation--abbreviation"
+              v-on="on"
             >{{ item.entity.descriptionShort }}</span>
           </template>
           <template #default>
@@ -104,8 +137,10 @@
         <span v-else>{{ item.entity.description }}</span>
       </div>
     </template>
-    <template #item.updatedBy="{ item }">{{ item.entity.updatedBy }}</template>
-    <template #item.entity.updatedAt="{ item }">
+    <template #item.updatedBy="{ item }">
+      {{ item.entity.updatedBy }}
+    </template>
+    <template #item.entitypdatedAt="{ item }">
       <div class="veo-object-list__updated-at nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
@@ -113,7 +148,7 @@
           </template>
           <template #default>
             {{ $t('created_at') }}: {{ formatDate(item.entity.createdAt) }} {{ $t('by') }} {{ item.entity.createdBy }}
-            <br />
+            <br>
             {{ $t('updated_at') }}: {{ formatDate(item.entity.updatedAt) }} {{ $t('by') }} {{ item.entity.updatedBy }}
           </template>
         </v-tooltip>
@@ -123,12 +158,12 @@
 </template>
 
 <script lang="ts">
-import { clone } from 'lodash'
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
-import { formatDate, formatTime } from '~/lib/utils'
+import { clone } from 'lodash';
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
+import { formatDate, formatTime } from '~/lib/utils';
 
-import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntity } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -145,11 +180,8 @@ export default Vue.extend({
       default: false
     },
     sortingFunction: {
-      type: Function as Prop<
-        (a: { entity: IVeoEntity; selected: boolean }, b: { entity: IVeoEntity; selected: boolean }) => number
-      >,
-      default: () => (a: { entity: IVeoEntity; selected: boolean }, b: { entity: IVeoEntity; selected: boolean }) =>
-        a.entity.name.localeCompare(b.entity.name)
+      type: Function as Prop<(a: { entity: IVeoEntity; selected: boolean }, b: { entity: IVeoEntity; selected: boolean }) => number>,
+      default: () => (a: { entity: IVeoEntity; selected: boolean }, b: { entity: IVeoEntity; selected: boolean }) => a.entity.name.localeCompare(b.entity.name)
     },
     singleSelect: {
       type: Boolean,
@@ -159,25 +191,25 @@ export default Vue.extend({
   data() {
     return {
       itemsPerPage: 10
-    }
+    };
   },
   computed: {
     displayedItems(): { entity: IVeoEntity; selected: boolean }[] {
       return this.items
-        .map(item => {
+        .map((item) => {
           // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
           if (item.description && item.description.length > 40) {
-            item.descriptionShort = item.description.substring(0, 40) + '...'
+            item.descriptionShort = item.description.substring(0, 40) + '...';
           }
 
           return {
             entity: item,
-            selected: this.selectedItems.some(selectedItem => {
-              return selectedItem.id === item.id
+            selected: this.selectedItems.some((selectedItem) => {
+              return selectedItem.id === item.id;
             })
-          }
+          };
         })
-        .sort(this.sortingFunction)
+        .sort(this.sortingFunction);
     },
     headers(): any[] {
       return [
@@ -212,32 +244,32 @@ export default Vue.extend({
           text: this.$t('objectlist.updatedat'),
           value: 'entity.updatedAt'
         }
-      ]
+      ];
     },
     // As the radio button needs a wrapper and this wapper has no comparator function (even though the docs says it does), we have to dumb it down)
     radioSelectedItem() {
-      return this.selectedItems[0]?.id
+      return this.selectedItems[0]?.id;
     }
   },
   methods: {
     formatDate(date: string) {
-      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date))
+      return formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
     },
     selectItem(item: { entity: IVeoEntity; selected: boolean }, singleItem: boolean = false) {
-      let dummy = clone(this.selectedItems)
+      let dummy = clone(this.selectedItems);
 
       if (singleItem) {
-        this.$emit('new-subentities', [{ id: item.entity.id, type: item.entity.type }])
-      } else if (dummy.some(selectedItem => selectedItem.id === item.entity.id)) {
-        dummy = dummy.filter(selectedItem => selectedItem.id !== item.entity.id)
-        this.$emit('new-subentities', dummy)
+        this.$emit('new-subentities', [{ id: item.entity.id, type: item.entity.type }]);
+      } else if (dummy.some((selectedItem) => selectedItem.id === item.entity.id)) {
+        dummy = dummy.filter((selectedItem) => selectedItem.id !== item.entity.id);
+        this.$emit('new-subentities', dummy);
       } else {
-        dummy.push({ id: item.entity.id, type: item.entity.type })
-        this.$emit('new-subentities', dummy)
+        dummy.push({ id: item.entity.id, type: item.entity.type });
+        this.$emit('new-subentities', dummy);
       }
     }
   }
-})
+});
 </script>
 
 <i18n>

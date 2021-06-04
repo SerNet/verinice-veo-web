@@ -1,5 +1,5 @@
-import Keycloak from 'keycloak-js'
-import LocalStorage from '~/util/LocalStorage'
+import Keycloak from 'keycloak-js';
+import LocalStorage from '~/util/LocalStorage';
 
 /**
  * This class handles all authentication related stuff.
@@ -27,8 +27,8 @@ export class Auth {
    * @param config Contains keycloak adapter configuration set in the nuxt.config.js
    */
   constructor(config: Keycloak.KeycloakConfig) {
-    this._keycloak = Keycloak(config)
-    this._initialized = false
+    this._keycloak = Keycloak(config);
+    this._initialized = false;
   }
 
   /**
@@ -39,28 +39,28 @@ export class Auth {
    */
   public async init(): Promise<void> {
     await this._keycloak.init({ onLoad: 'check-sso', silentCheckSsoRedirectUri: window.location.origin + '/sso', checkLoginIframe: false }).catch((error) => {
-      throw new Error(`Error while setting up authentication provider: ${error}`)
-    })
+      throw new Error(`Error while setting up authentication provider: ${error}`);
+    });
 
     // Register hooks.
     // If the onTokenExpired event occures, the plugin tries to refresh the user's token. If it fails it tries to reauthenticate the user.
     this._keycloak.onTokenExpired = async () => {
       try {
-        await this.refreshSession()
+        await this.refreshSession();
       } catch (e) {
-        await this.init()
+        await this.init();
       }
-    }
+    };
 
     if (this._keycloak.authenticated) {
-      await this.loadUserProfile()
+      await this.loadUserProfile();
     }
 
-    this._initialized = true
+    this._initialized = true;
   }
 
   public async refreshSession() {
-    await this._keycloak.updateToken(300)
+    await this._keycloak.updateToken(300);
   }
 
   /**
@@ -70,8 +70,8 @@ export class Auth {
    * @param absolute If set to true, the passed destination gets interpreted as an absolute url, else it gets interpreted as an absolute path within the app.
    */
   public async login(destination?: string, absolute: boolean = false): Promise<void> {
-    await this._keycloak.login({ redirectUri: `${absolute ? '' : window.location.origin}${destination}` })
-    await this.loadUserProfile()
+    await this._keycloak.login({ redirectUri: `${absolute ? '' : window.location.origin}${destination}` });
+    await this.loadUserProfile();
   }
 
   /**
@@ -82,7 +82,7 @@ export class Auth {
    * @param absolute If set to true, the passed destination gets interpreted as an absolute url, else it gets interpreted as an absolute path within the app.
    */
   public async register(destination?: string, absolute: boolean = false): Promise<void> {
-    await this._keycloak.login({ redirectUri: `${absolute ? '' : window.location.origin}${destination}`, action: 'register' })
+    await this._keycloak.login({ redirectUri: `${absolute ? '' : window.location.origin}${destination}`, action: 'register' });
   }
 
   /**
@@ -93,47 +93,44 @@ export class Auth {
    */
   public async logout(destination?: string, absolute: boolean = false): Promise<void> {
     LocalStorage.clear();
-    await this._keycloak.logout({ redirectUri: `${(absolute ? '' : window.location.origin)}${destination}` })
-    this._keycloak.clearToken()
+    await this._keycloak.logout({ redirectUri: `${absolute ? '' : window.location.origin}${destination}` });
+    this._keycloak.clearToken();
   }
 
   /**
    * Returns whether the user is authenticated or not. If the plugin hasn't been properly initialized yet, it returns false.
    */
   public get authenticated(): boolean {
-    return this._keycloak.authenticated || false
+    return this._keycloak.authenticated || false;
   }
 
   /**
    * Returns whether the plugin has been fully initialized.
    */
   public get initialized(): boolean {
-    return this._initialized
+    return this._initialized;
   }
 
   /**
    * Returns the token used for api communication. If the user isn't logged in, it returns undefined.
    */
   public get token(): string | undefined {
-    return this._keycloak.token
+    return this._keycloak.token;
   }
 
   public get profile(): Keycloak.KeycloakProfile | undefined {
-    return this._profile
+    return this._profile;
   }
-
-
 
   /**
    * Loads the profile of the logged in user (such as firstname, lastname and mail address). Fails if the user is not authenticated.
    */
   public async loadUserProfile() {
     try {
-      const profile = await this._keycloak.loadUserProfile()
-      this._profile = profile
+      const profile = await this._keycloak.loadUserProfile();
+      this._profile = profile;
     } catch (e) {
-      throw new Error('Error while fetching user profile. User is possibly not logged in!')
+      throw new Error('Error while fetching user profile. User is possibly not logged in!');
     }
   }
 }
-

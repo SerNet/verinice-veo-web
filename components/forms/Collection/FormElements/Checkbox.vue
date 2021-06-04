@@ -1,6 +1,13 @@
 <template>
-  <div v-if="visible" class="vf-checkbox vf-form-element">
-    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
+  <div
+    v-if="visible"
+    class="vf-checkbox vf-form-element"
+  >
+    <ValidationProvider
+      v-slot="{ errors }"
+      :name="options && options.label"
+      :rules="validation"
+    >
       <v-checkbox
         :input-value="value"
         :error-messages="errors[0]"
@@ -16,7 +23,9 @@
         @change="$emit('input', $event)"
       >
         <div slot="append">
-          <v-icon @click="clear">mdi-close</v-icon>
+          <v-icon @click="clear">
+            mdi-close
+          </v-icon>
         </div>
       </v-checkbox>
     </ValidationProvider>
@@ -24,14 +33,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { PropOptions } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
+import Vue from 'vue';
+import { PropOptions } from 'vue/types/options';
+import { JSONSchema7 } from 'json-schema';
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
 
 export default Vue.extend({
   name: 'Checkbox',
@@ -59,25 +64,25 @@ export default Vue.extend({
   data() {
     return {
       indeterminate: this.value === undefined
-    }
+    };
   },
   watch: {
     value(val) {
       this.$nextTick(() => {
-        return (this.indeterminate = val === undefined)
-      })
+        return (this.indeterminate = val === undefined);
+      });
     }
   },
   methods: {
     clear() {
-      this.$nextTick(() => this.$nextTick(() => this.$emit('input', undefined)))
+      this.$nextTick(() => this.$nextTick(() => this.$emit('input', undefined)));
     }
   }
-})
+});
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
-    return calculateConditionsScore([props.schema.type === 'boolean'])
+    return calculateConditionsScore([props.schema.type === 'boolean']);
   }
-}
+};
 </script>

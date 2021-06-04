@@ -1,8 +1,5 @@
-import { Client } from '~/plugins/api'
-import {
-  IVeoFormSchema,
-  IVeoFormSchemaMeta
-} from '~/types/VeoTypes'
+import { Client } from '~/plugins/api';
+import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export default function (api: Client) {
   return {
@@ -13,19 +10,19 @@ export default function (api: Client) {
     fetchAll(params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
       return api.req('/api/forms', {
         params
-      })
+      });
     },
 
     /**
      * Creates a form
      * @param form
-     * 
+     *
      * @returns UUID of the new form
      */
     create(form: IVeoFormSchema): Promise<string> {
       return api.req('/api/forms', {
         json: form
-      })
+      });
     },
 
     /**
@@ -33,7 +30,7 @@ export default function (api: Client) {
      * @param id
      */
     fetch(id: string): Promise<IVeoFormSchema> {
-      return api.req(`/api/forms/${id}`)
+      return api.req(`/api/forms/${id}`);
     },
 
     /**
@@ -45,7 +42,7 @@ export default function (api: Client) {
       return api.req(`/api/forms/${id}`, {
         method: 'PUT',
         json: form
-      })
+      });
     },
 
     /**
@@ -55,7 +52,7 @@ export default function (api: Client) {
     delete(id: string): Promise<void> {
       return api.req(`/api/forms/${id}`, {
         method: 'DELETE'
-      })
+      });
     }
-  }
+  };
 }

@@ -5,10 +5,24 @@
         <PageHeader>Select</PageHeader>
       </v-col>
       <v-col cols="12">
-        <v-switch v-model="isMultiselect" label="Multiselect" hide-details color="primary" />
+        <v-switch
+          v-model="isMultiselect"
+          label="Multiselect"
+          hide-details
+          color="primary"
+        />
       </v-col>
-      <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
-        <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" />
+      <v-col
+        cols="12"
+        sm="6"
+        lg="4"
+        class="docs-form-sector"
+      >
+        <VeoForm
+          v-model="dynamicForm.data"
+          :schema="dynamicForm.objectSchema"
+          :ui="dynamicForm.formSchema"
+        />
       </v-col>
     </v-row>
     <FormDescription
@@ -20,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   data() {
@@ -69,17 +83,17 @@ export default Vue.extend({
         }
       },
       isMultiselect: false
-    }
+    };
   },
   computed: {
     dynamicForm(): any {
       if (this.isMultiselect) {
-        return this.formMultiselect
+        return this.formMultiselect;
       }
-      return this.form
+      return this.form;
     }
   }
-})
+});
 </script>
 
 <style lang="scss"></style>

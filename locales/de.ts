@@ -48,8 +48,7 @@ export default {
   'forms.input.link.targetObject.delete.text': 'Sind sie sicher, dass das Objekt "{object}" gelöscht werden soll?',
   'forms.input.link.targetObject.notFound': 'Nicht gefunden',
 
-  'global.appstate.alert.object_modified':
-    'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
+  'global.appstate.alert.object_modified': 'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
   'global.appstate.alert.success': 'Erfolgreich durchgeführt!',
   'global.appstate.alert.error': 'Ein Fehler ist aufgetreten!',
   'global.button.cancel': 'Abbrechen',
@@ -143,4 +142,4 @@ export default {
     text: 'Text',
     uri: 'URI'
   }
-}
+};

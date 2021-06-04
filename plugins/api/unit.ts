@@ -1,9 +1,6 @@
-import { Client } from '~/plugins/api'
+import { Client } from '~/plugins/api';
 
-import {
-  IVeoAPIMessage,
-  IVeoUnit
-} from '~/types/VeoTypes'
+import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
 
 export default function (api: Client) {
   return {
@@ -14,7 +11,7 @@ export default function (api: Client) {
     fetchAll(params?: Record<string, string>): Promise<IVeoUnit[]> {
       return api.req('/api/units', {
         params
-      })
+      });
     },
 
     /**
@@ -25,7 +22,7 @@ export default function (api: Client) {
       return api.req('/api/units', {
         method: 'POST',
         json: unit
-      })
+      });
     },
 
     /**
@@ -33,7 +30,7 @@ export default function (api: Client) {
      * @param id
      */
     fetch(id: string): Promise<IVeoUnit> {
-      return api.req(`/api/units/${id}`)
+      return api.req(`/api/units/${id}`);
     },
 
     /**
@@ -45,7 +42,7 @@ export default function (api: Client) {
       return api.req(`/api/units/${id}`, {
         method: 'PUT',
         json: unit
-      })
+      });
     },
 
     /**
@@ -55,7 +52,7 @@ export default function (api: Client) {
     delete(id: string): Promise<IVeoAPIMessage> {
       return api.req(`/api/units/${id}`, {
         method: 'DELETE'
-      })
+      });
     }
-  }
+  };
 }

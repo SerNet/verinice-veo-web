@@ -1,23 +1,49 @@
 <template>
-  <v-breadcrumbs :items="breadcrumbItems" class="px-4 py-3">
+  <v-breadcrumbs
+    :items="breadcrumbItems"
+    class="px-4 py-3"
+  >
     <template #item="{ item }">
-      <v-menu v-if="item.menuItems" offset-y>
+      <v-menu
+        v-if="item.menuItems"
+        offset-y
+      >
         <template #activator="{ on, attrs }">
-          <v-btn color="primary" x-small text v-bind="attrs" v-on="on">{{ item.text }}</v-btn>
+          <v-btn
+            color="primary"
+            x-small
+            text
+            v-bind="attrs"
+            v-on="on"
+          >
+            {{ item.text }}
+          </v-btn>
         </template>
-        <v-list dense class="py-0">
+        <v-list
+          dense
+          class="py-0"
+        >
           <v-list-item
             v-for="(menuItem, index) in item.menuItems"
+            :key="index"
             :to="menuItem.to"
             :exact="menuItem.exact"
-            :key="index"
           >
-            <v-list-item-title v-if="menuItem.text" class="primary--text font-weight-regular">
+            <v-list-item-title
+              v-if="menuItem.text"
+              class="primary--text font-weight-regular"
+            >
               {{
-              menuItem.text
+                menuItem.text
               }}
             </v-list-item-title>
-            <v-icon v-else-if="menuItem.icon" small class="primary--text">{{ menuItem.icon }}</v-icon>
+            <v-icon
+              v-else-if="menuItem.icon"
+              small
+              class="primary--text"
+            >
+              {{ menuItem.icon }}
+            </v-icon>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -27,8 +53,15 @@
         :disabled="item.disabled"
         :exact="item.exact"
       >
-        <template v-if="item.text">{{ item.text }}</template>
-        <v-icon v-else-if="item.icon" style="color: inherit; line-height: 21px">{{ item.icon }}</v-icon>
+        <template v-if="item.text">
+          {{ item.text }}
+        </template>
+        <v-icon
+          v-else-if="item.icon"
+          style="color: inherit; line-height: 21px"
+        >
+          {{ item.icon }}
+        </v-icon>
       </v-breadcrumbs-item>
     </template>
     <template #divider>
@@ -38,49 +71,50 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, watch, Ref, PropOptions } from '@nuxtjs/composition-api'
-import { capitalize, last, intersection } from 'lodash'
-import { separateUUIDParam } from '~/lib/utils'
+import { ref, defineComponent, watch, Ref, PropOptions } from '@nuxtjs/composition-api';
+import { capitalize, last, intersection } from 'lodash';
+import { separateUUIDParam } from '~/lib/utils';
 
 interface IBaseStringObject {
-  [key: string]: string
+  [key: string]: string;
 }
 
 interface IBaseBreadcrumbEntry {
-  text: string
-  to: string
-  icon?: string
+  text: string;
+  to: string;
+  icon?: string;
 }
 
 interface IBreadcrumbEntry extends IBaseBreadcrumbEntry {
-  disabled: boolean
-  exact: boolean
+  disabled: boolean;
+  exact: boolean;
 }
 
 // TODO: check if :group should be added here, after groups are implemented
-type ParamsWithUUID = ':form' | ':entity' | ':id'
+type ParamsWithUUID = ':form' | ':entity' | ':id';
 
 interface ICustomBreadcrumbEntry {
-  [key: string]: IBaseBreadcrumbEntry[]
+  [key: string]: IBaseBreadcrumbEntry[];
 }
 
 interface ICollapsedBreadcrumbEntry {
-  text: string
-  menuItems: IBreadcrumbEntry[]
+  text: string;
+  menuItems: IBreadcrumbEntry[];
 }
 
 interface ICustomBreadcrumbTextEntry {
-  [key: string]: { text: string; icon?: string }
+  [key: string]: { text: string; icon?: string };
 }
 
 interface IProps {
-  customBreadcrumbs: ICustomBreadcrumbEntry
+  customBreadcrumbs: ICustomBreadcrumbEntry;
 }
 
 export default defineComponent<IProps>({
   props: {
     customBreadcrumbs: {
-      type: Object
+      type: Object,
+      default: undefined
     } as PropOptions<ICustomBreadcrumbEntry>
   },
   setup(_props, context) {
@@ -98,37 +132,37 @@ export default defineComponent<IProps>({
       objects: { text: context.root.$t('breadcrumbs.objects') as string },
       list: { text: context.root.$t('breadcrumbs.list_view') as string },
       tree: { text: context.root.$t('breadcrumbs.tree_view') as string }
-    }
+    };
 
     // TODO: check if :group should be added here, after groups are implemented
     // Definition of route fragments in path, which is represented with UUID in standard path
-    const paramsWithUUID: ParamsWithUUID[] = [':form', ':entity', ':id']
+    const paramsWithUUID: ParamsWithUUID[] = [':form', ':entity', ':id'];
 
     // KeyMap for definition of object properties which represent displayName
     const displayNameKeyMap = {
       ':form': 'name',
       ':entity': 'displayName',
       ':id': 'displayName'
-    }
+    };
 
     // KeyMap for definition of KEY in $api.KEY.fetch()
     const apiKeyMap = {
       ':form': 'form',
       ':entity': 'entity',
       ':id': 'entity'
-    }
+    };
 
     // Default properties for Breadcrumb listItem
-    const defaultListItem = { exact: true, disabled: false }
+    const defaultListItem = { exact: true, disabled: false };
 
     // Definition of collapse threshold for breadrumb listItems
-    const collapseThreshold = 6
+    const collapseThreshold = 6;
 
     /**
      * Definitions of variables
      */
 
-    const breadcrumbItems: Ref<(IBreadcrumbEntry | ICollapsedBreadcrumbEntry)[]> = ref([])
+    const breadcrumbItems: Ref<(IBreadcrumbEntry | ICollapsedBreadcrumbEntry)[]> = ref([]);
 
     /**
      * Definitions of functions
@@ -137,45 +171,43 @@ export default defineComponent<IProps>({
     // Receive a titel of a dynamic parameter value (type-UUID) from server and cache it
     async function getUUIDParamTitel(type: ParamsWithUUID, param: string) {
       // "param" has always pattern: type-UUID, where type can be form, process, control, asset, ...
-      const paramSeparated = separateUUIDParam(param)
+      const paramSeparated = separateUUIDParam(param);
 
       if (paramSeparated.id === '-') {
-        return { [type]: { text: context.root.$t('breadcrumbs.all') as string } }
+        return { [type]: { text: context.root.$t('breadcrumbs.all') as string } };
       }
 
       // If a parameter title is already cached, return its value
       if (sessionStorage.getItem(paramSeparated.id)) {
-        return { [type]: { text: sessionStorage.getItem(paramSeparated.id) as string } }
+        return { [type]: { text: sessionStorage.getItem(paramSeparated.id) as string } };
       }
 
-      // If a parameter title is not cached, send request to server and cache it in Session Storage
-      return new Promise<ICustomBreadcrumbTextEntry>(async (resolve) => {
-        const apiKey = apiKeyMap[type]
-        const displayNameKey = displayNameKeyMap[type]
+      // Otherwise, If a parameter title is not cached, send request to server and cache it in Session Storage
+      const apiKey = apiKeyMap[type];
+      const displayNameKey = displayNameKeyMap[type];
 
-        let text: string
-        if (apiKey === 'entity') {
-          const api = context.root.$api[apiKey]
-          // @ts-ignore
-          text = (await api.fetch(paramSeparated.type, paramSeparated.id))[displayNameKey]
-        } else {
-          // @ts-ignore
-          const api = context.root.$api[apiKey]
-          text = (await api.fetch(paramSeparated.id))[displayNameKey]
-        }
+      let text: string;
+      if (apiKey === 'entity') {
+        const api = context.root.$api[apiKey];
+        // @ts-ignore
+        text = (await api.fetch(paramSeparated.type, paramSeparated.id))[displayNameKey];
+      } else {
+        // @ts-ignore
+        const api = context.root.$api[apiKey];
+        text = (await api.fetch(paramSeparated.id))[displayNameKey];
+      }
+      sessionStorage.setItem(paramSeparated.id, text);
 
-        sessionStorage.setItem(paramSeparated.id, text)
-        resolve({ [type]: { text } })
-      })
+      return new Promise<ICustomBreadcrumbTextEntry>((resolve) => {
+        sessionStorage.setItem(paramSeparated.id, text);
+        resolve({ [type]: { text } });
+      });
     }
 
     // Get text for listItem: it can be custom text, translation or just parameters from route path (forms, :unit, ...)
     function getText(params: IBaseStringObject, param: string) {
-      const text: string =
-        params[param] ||
-        (context.root.$i18n.te('breadcrumbs.' + param) && (context.root.$i18n.t('breadcrumbs.' + param) as string)) ||
-        param
-      return capitalize(text)
+      const text: string = params[param] || (context.root.$i18n.te('breadcrumbs.' + param) && (context.root.$i18n.t('breadcrumbs.' + param) as string)) || param;
+      return capitalize(text);
     }
 
     // Generate route paths for each listItem of standard breadcrumbs
@@ -183,7 +215,7 @@ export default defineComponent<IProps>({
       return `/${routes
         .slice(0, index + 1)
         .map((route) => params[route] || route)
-        .join('/')}/`
+        .join('/')}/`;
     }
 
     // Generate custom breadcrumbs if a user externally defined component props "customBreadcrumbs"
@@ -193,77 +225,69 @@ export default defineComponent<IProps>({
           ...defaultListItem,
           ...item,
           to: item.to.replace(/:\w+/g, (paramKey) => params[paramKey])
-        }
-      })
+        };
+      });
     }
 
     // Generate standard (dynamic) breadcrumbs with translations, dynamic titels for UUID parameters and custom text
-    async function generateStandardBreadcrumb(
-      pathTemplate: string,
-      params: IBaseStringObject
-    ): Promise<IBreadcrumbEntry[]> {
+    async function generateStandardBreadcrumb(pathTemplate: string, params: IBaseStringObject): Promise<IBreadcrumbEntry[]> {
       // Keys from path in general form Dynamic (e.g. - :unit, :object), Static (e.g. - forms, objects)
-      const routes: string[] = pathTemplate.split('/').filter((el: string) => el !== '')
+      const routes: string[] = pathTemplate.split('/').filter((el: string) => el !== '');
 
       // Parameters from with UUID which currently exist in route path
-      const usedParamsWithUUID = intersection(paramsWithUUID, routes) as ParamsWithUUID[]
+      const usedParamsWithUUID = intersection(paramsWithUUID, routes) as ParamsWithUUID[];
 
       // Load titels for UUID parameters dynamically
       const dynamicUUIDTitels = await Promise.all(
         usedParamsWithUUID.map((param: ParamsWithUUID) => {
-          return getUUIDParamTitel(param, params[param])
+          return getUUIDParamTitel(param, params[param]);
         })
-      )
+      );
       // Add these titels with their parameter names to breadcrumsReplacement object to replace default values with dynamic ones in the loop
       dynamicUUIDTitels.forEach((titelObject: ICustomBreadcrumbTextEntry) => {
-        breadcrumbsReplacement = { ...breadcrumbsReplacement, ...titelObject }
-      })
+        breadcrumbsReplacement = { ...breadcrumbsReplacement, ...titelObject };
+      });
 
       // Generate for each route parameter dynamic breadcrumbs listItem
       return routes.map((param: string, i: number) => {
-        const item = breadcrumbsReplacement[param]
-          ? { ...breadcrumbsReplacement[param] }
-          : { text: getText(params, param) }
+        const item = breadcrumbsReplacement[param] ? { ...breadcrumbsReplacement[param] } : { text: getText(params, param) };
         return {
           ...defaultListItem,
           ...item,
           to: generatItemRoute(routes, params, i)
-        }
-      })
+        };
+      });
     }
 
     // Collapse breadcrumbs listItems, if number of them is higher than the custom threshold, else return original listItems
     function collapseBreadcrumb(listItems: IBreadcrumbEntry[]): (ICollapsedBreadcrumbEntry | IBreadcrumbEntry)[] {
-      const numberOfNotCollapsedListItems = collapseThreshold - 2
-      const sliceEndIndexForCollapsedListItems = listItems.length - numberOfNotCollapsedListItems
+      const numberOfNotCollapsedListItems = collapseThreshold - 2;
+      const sliceEndIndexForCollapsedListItems = listItems.length - numberOfNotCollapsedListItems;
       // If list items are longer than required, listItems should be collapsed
       return listItems.length >= collapseThreshold
-        ? [
-            { text: '•••', menuItems: listItems.slice(0, sliceEndIndexForCollapsedListItems) },
-            ...listItems.slice(sliceEndIndexForCollapsedListItems)
-          ]
-        : listItems
+        ? [{ text: '•••', menuItems: listItems.slice(0, sliceEndIndexForCollapsedListItems) }, ...listItems.slice(sliceEndIndexForCollapsedListItems)]
+        : listItems;
     }
 
     async function createBreadcrumbs() {
       // Parameters map from route path
-      const params: IBaseStringObject = {}
+      const params: IBaseStringObject = {};
       Object.entries(context.root.$route.params).forEach(([key, value]) => {
-        params[`:${key}`] = value
-      })
+        params[`:${key}`] = value;
+      });
 
       // Pathtemplate is general definition of current path without real values (e.g. /:unit/forms/:form)
-      const pathTemplate = last(context.root.$route.matched)?.path
+      const pathTemplate = last(context.root.$route.matched)?.path;
       if (pathTemplate) {
         const listItems: IBreadcrumbEntry[] =
           _props.customBreadcrumbs && _props.customBreadcrumbs[pathTemplate]
             ? generateCustomBreadcrumb(pathTemplate, params)
-            : await generateStandardBreadcrumb(pathTemplate, params)
+            : await generateStandardBreadcrumb(pathTemplate, params);
 
-        breadcrumbItems.value = collapseBreadcrumb(listItems)
+        breadcrumbItems.value = collapseBreadcrumb(listItems);
       } else {
-        console.warn('Pathtemplate is undefined in Breadcrumbs')
-        breadcrumbItems.value = []
+        // console.warn('Pathtemplate is undefined in Breadcrumbs');
+        breadcrumbItems.value = [];
       }
     }
 
@@ -274,25 +298,25 @@ export default defineComponent<IProps>({
     watch(
       () => context.root.$route.fullPath,
       async () => {
-        await createBreadcrumbs()
+        await createBreadcrumbs();
       },
       { immediate: true }
-    )
+    );
 
     watch(
       () => context.root.$i18n.locale,
       () => {
-        createBreadcrumbs()
+        createBreadcrumbs();
       }
-    )
+    );
 
     /**
      * Definition of returned values to templace
      */
 
-    return { breadcrumbItems }
+    return { breadcrumbItems };
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,13 @@
 <template>
-  <div v-if="visible" class="vf-tags vf-form-element">
-    <ValidationProvider v-slot="{ errors }" :name="options && options.label" :rules="validation">
+  <div
+    v-if="visible"
+    class="vf-tags vf-form-element"
+  >
+    <ValidationProvider
+      v-slot="{ errors }"
+      :name="options && options.label"
+      :rules="validation"
+    >
       <v-combobox
         :disabled="disabled"
         :value="value"
@@ -25,26 +32,19 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue'
-import { JSONSchema7 } from 'json-schema'
-import {
-  calculateConditionsScore,
-  FormElementProps,
-  Helpful
-} from '~/components/forms/Collection/utils/helpers'
-import {
-  IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslationCollection
-} from '~/types/VeoTypes'
+import Vue, { PropOptions } from 'vue';
+import { JSONSchema7 } from 'json-schema';
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 interface IItem {
-  value: string | number | boolean
-  text: string | number | boolean
+  value: string | number | boolean;
+  text: string | number | boolean;
 }
 
 interface ITranslateLabelItem {
-  value: string
-  text: string
+  value: string;
+  text: string;
 }
 
 export default Vue.extend({
@@ -83,42 +83,37 @@ export default Vue.extend({
   },
   computed: {
     isItemsWithCustomizedLabels(): boolean {
-      return !!(this.options && Array.isArray(this.options.enum))
+      return !!(this.options && Array.isArray(this.options.enum));
     },
     enum(): string[] {
-      if (
-        this.schema.items &&
-        !Array.isArray(this.schema.items) &&
-        this.schema.items instanceof Object &&
-        typeof this.schema.items.anyOf !== 'undefined'
-      ) {
-        const objWithEnum = this.schema.items.anyOf.find(o => o instanceof Object && o.enum)
+      if (this.schema.items && !Array.isArray(this.schema.items) && this.schema.items instanceof Object && typeof this.schema.items.anyOf !== 'undefined') {
+        const objWithEnum = this.schema.items.anyOf.find((o) => o instanceof Object && o.enum);
         if (objWithEnum instanceof Object && Array.isArray(objWithEnum.enum)) {
-          return [...objWithEnum.enum] as string[]
+          return [...objWithEnum.enum] as string[];
         }
       }
-      return []
+      return [];
     },
     items(): IItem[] {
       if (this.enum?.length > 0) {
-        return this.generateItems(this.enum)
+        return this.generateItems(this.enum);
       } else {
-        return []
+        return [];
       }
     }
   },
   methods: {
     clear() {
-      this.$nextTick(() => this.$nextTick(() => this.$emit('input', undefined)))
+      this.$nextTick(() => this.$nextTick(() => this.$emit('input', undefined)));
     },
     getCustomizedLabelItems(schemaEnum: string[]) {
       if (this.options && Array.isArray(this.options.enum)) {
         return schemaEnum.map((val: any, i: number) => ({
           value: val,
           text: this.options.enum[i]
-        }))
+        }));
       } else {
-        return []
+        return [];
       }
     },
     getTranslatedLabelItems(schemaEnum: string[]): ITranslateLabelItem[] {
@@ -127,28 +122,24 @@ export default Vue.extend({
         return {
           value: translationKey,
           text: this.customTranslation?.[translationKey] || this.generalTranslation?.[translationKey] || translationKey
-        }
-      })
+        };
+      });
     },
     generateItems(schemaEnum: string[]): IItem[] {
-      return this.isItemsWithCustomizedLabels
-        ? this.getCustomizedLabelItems(schemaEnum)
-        : this.getTranslatedLabelItems(schemaEnum)
+      return this.isItemsWithCustomizedLabels ? this.getCustomizedLabelItems(schemaEnum) : this.getTranslatedLabelItems(schemaEnum);
     }
   }
-})
+});
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
     return calculateConditionsScore([
       props.schema.type === 'array',
       !!props.schema.items,
-      props.schema.items instanceof Object &&
-        !Array.isArray(props.schema.items) &&
-        typeof props.schema.items.anyOf !== 'undefined'
-    ])
+      props.schema.items instanceof Object && !Array.isArray(props.schema.items) && typeof props.schema.items.anyOf !== 'undefined'
+    ]);
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

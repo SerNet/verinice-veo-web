@@ -1,36 +1,31 @@
 <script lang="ts">
-import Vue from 'vue'
-import { Route } from 'vue-router/types/index'
-import { upperFirst } from 'lodash'
+import Vue from 'vue';
+import { Route } from 'vue-router/types/index';
+import { upperFirst } from 'lodash';
 
-import VeoEditFormPage from '~/pages/_unit/forms/_form/_entity.vue'
-import { IForm, separateUUIDParam } from '~/lib/utils'
-import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
-import { IVeoEventPayload } from '~/types/VeoGlobalEvents'
+import VeoEditFormPage, { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue';
+import { IForm, separateUUIDParam } from '~/lib/utils';
+
+import { IVeoEventPayload } from '~/types/VeoGlobalEvents';
 
 interface IData {
-  objectType: string | undefined
-  form: IForm
-  isValid: boolean
-  errorMessages: IValidationErrorMessage[]
-  saveBtnLoading: boolean
-  alert: IVeoEventPayload & { value: boolean; error: number }
-  contentsCollapsed: boolean
+  objectType: string | undefined;
+  form: IForm;
+  isValid: boolean;
+  errorMessages: IValidationErrorMessage[];
+  saveBtnLoading: boolean;
+  alert: IVeoEventPayload & { value: boolean; error: number };
+  contentsCollapsed: boolean;
   formModified: {
-    isModified: boolean
-    dialog: boolean
-    target?: Route
-  }
+    isModified: boolean;
+    dialog: boolean;
+    target?: Route;
+  };
 }
 
 export default Vue.extend({
-  name: 'veo-forms-objectData-create',
+  name: 'VeoFormsObjectDataCreate',
   extends: VeoEditFormPage,
-  head(): any {
-    return {
-      title: this.title
-    }
-  },
   data(): IData {
     return {
       objectType: undefined,
@@ -57,19 +52,22 @@ export default Vue.extend({
         dialog: false,
         target: undefined
       }
-    }
+    };
+  },
+  head(): any {
+    return {
+      title: this.title
+    };
   },
   computed: {
     title(): string {
-      return this.$fetchState.pending
-        ? this.$t('create_form').toString()
-        : this.$t('create_form_type', { type: upperFirst(this.objectType) }).toString()
+      return this.$fetchState.pending ? this.$t('create_form').toString() : this.$t('create_form_type', { type: upperFirst(this.objectType) }).toString();
     },
     unitId(): string {
-      return separateUUIDParam(this.$route.params.unit).id
+      return separateUUIDParam(this.$route.params.unit).id;
     },
     saveBtnText(): string {
-      return this.$t('global.button.create').toString()
+      return this.$t('global.button.create').toString();
     }
   },
   methods: {
@@ -83,18 +81,18 @@ export default Vue.extend({
           }
         })
         .then(() => {
-          this.formModified.isModified = false
-          this.$router.push(`/${this.$route.params.unit}/forms/${this.$route.params.form}`)
+          this.formModified.isModified = false;
+          this.$router.push(`/${this.$route.params.unit}/forms/${this.$route.params.form}`);
         })
         .catch((error: { status: number; name: string }) => {
-          this.alert.text = error.name
-          this.alert.saveButtonText = this.$t('global.button.ok') as string
-          this.alert.error = 0
-          this.alert.value = true
-        })
+          this.alert.text = error.name;
+          this.alert.saveButtonText = this.$t('global.button.ok') as string;
+          this.alert.error = 0;
+          this.alert.value = true;
+        });
     }
   }
-})
+});
 </script>
 
 <i18n>

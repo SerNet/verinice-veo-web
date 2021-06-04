@@ -1,14 +1,28 @@
 <template>
   <div v-if="$fetchState.pending">
-    <div v-for="index in [1, 2]" :key="index" class="my-6">
+    <div
+      v-for="index in [1, 2]"
+      :key="index"
+      class="my-6"
+    >
       <v-skeleton-loader type="heading" />
-      <v-skeleton-loader type="text" class="my-2" />
+      <v-skeleton-loader
+        type="text"
+        class="my-2"
+      />
       <v-skeleton-loader type="text" />
     </div>
   </div>
   <v-list v-else>
-    <v-list-item-group color="primary" :value="0" mandatory>
-      <div v-for="(version, index) of history" :key="version.changeNumber">
+    <v-list-item-group
+      color="primary"
+      :value="0"
+      mandatory
+    >
+      <div
+        v-for="(version, index) of history"
+        :key="version.changeNumber"
+      >
         <v-divider v-if="index > 0" />
         <v-list-item three-line>
           <v-list-item-content
@@ -24,13 +38,27 @@
               <b>{{ version.author }}</b>
             </v-list-item-subtitle>
             <v-row no-gutters>
-              <v-col cols="12" sm="10">
+              <v-col
+                cols="12"
+                sm="10"
+              >
                 <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
               </v-col>
-              <v-col class="text-right" cols="12" sm="2">
-                <v-tooltip v-if="canShowData(version.content)" bottom>
+              <v-col
+                class="text-right"
+                cols="12"
+                sm="2"
+              >
+                <v-tooltip
+                  v-if="canShowData(version.content)"
+                  bottom
+                >
                   <template #activator="{ on }">
-                    <v-btn @click.stop="$emit('show-revision', {}, version, index === 0 ? false : true, true)" icon v-on="on">
+                    <v-btn
+                      icon
+                      @click.stop="$emit('show-revision', {}, version, index === 0 ? false : true, true)"
+                      v-on="on"
+                    >
                       <v-icon>mdi-undo</v-icon>
                     </v-btn>
                   </template>
@@ -48,16 +76,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
-import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator'
-import { IBaseObject } from '~/lib/utils'
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
+import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
+import { IBaseObject } from '~/lib/utils';
 
-import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes'
+import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes';
 
 interface IData {
-  history: IVeoObjectHistoryEntry[]
-  validator: ObjectSchemaValidator
+  history: IVeoObjectHistoryEntry[];
+  validator: ObjectSchemaValidator;
 }
 
 export default Vue.extend({
@@ -79,32 +107,30 @@ export default Vue.extend({
     return {
       history: [],
       validator: new ObjectSchemaValidator()
-    }
+    };
   },
   async fetch() {
     if (this.object && !this.loading) {
-      this.history = (await this.$api.history.fetchVersions(this.object)).sort(
-        (a: IVeoObjectHistoryEntry, b: IVeoObjectHistoryEntry) => {
-          return a.changeNumber > b.changeNumber ? -1 : a.changeNumber < b.changeNumber ? 1 : 0
-        }
-      )
+      this.history = (await this.$api.history.fetchVersions(this.object)).sort((a: IVeoObjectHistoryEntry, b: IVeoObjectHistoryEntry) => {
+        return a.changeNumber > b.changeNumber ? -1 : a.changeNumber < b.changeNumber ? 1 : 0;
+      });
     }
   },
   watch: {
     loading(newValue: boolean) {
       if (!newValue && this.object) {
         this.$nextTick().then(() => {
-          this.$fetch()
-        })
+          this.$fetch();
+        });
       }
     }
   },
   methods: {
     canShowData(data: IBaseObject): boolean {
-      return this.validator.fitsObjectSchema(this.schema, data)
+      return this.validator.fitsObjectSchema(this.schema, data);
     }
   }
-})
+});
 </script>
 
 <i18n>
