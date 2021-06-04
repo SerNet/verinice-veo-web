@@ -93,7 +93,7 @@ export default Vue.extend({
       const computedFullNameOld = trim(`${givenNameOld} ${familyNameOld}`);
       const computedFullNameNew = trim(`${givenNameNew} ${familyNameNew}`);
 
-      if (fullnameOld === computedFullNameOld) {
+      if (fullnameOld === computedFullNameOld || fullnameOld === '' || fullnameOld === undefined) {
         vjp.set(newObject, '/name', computedFullNameNew);
       }
     }
