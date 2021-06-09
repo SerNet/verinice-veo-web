@@ -3,7 +3,7 @@
     dense
     class="flex-column"
   >
-    <v-col>
+    <v-col :class="noAttributesClass">
       <!-- TODO: change name with displayName after it is implemented -->
       <v-autocomplete
         :key="index"
@@ -91,12 +91,6 @@
         :disabled="disabled"
         @input="onInput"
       />
-    </v-col>
-    <v-col
-      v-else
-      class="py-4 pl-1 links-field-row-no-attributes font-italic"
-    >
-      {{ $t('noAttributes') }}
     </v-col>
     <v-dialog
       :value="!!dialog"
@@ -359,6 +353,9 @@ export default Vue.extend({
       set(val: string | undefined) {
         this.onInputAutocomplete(val);
       }
+    },
+    noAttributesClass(): string {
+      return this.ui.elements.length === 0 ? 'mb-4' : '';
     }
   },
   watch: {
@@ -459,7 +456,6 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "noAttributes": "No child properties",
     "targetObject": "Target object",
     "createTargetObject": "Create new object",
     "updateTargetObject": "Change object",
@@ -468,7 +464,6 @@ export default Vue.extend({
     "noTargets": "Not targets found"
   },
   "de": {
-    "noAttributes": "Keine weiteren Eigenschaften",
     "targetObject": "Zielobjekt",
     "updateTargetObject": "Objekt ändern",
     "createTargetObject": "Ein neues Objekt anlegen",
@@ -512,9 +507,5 @@ export default Vue.extend({
 
 .links-field-row-autocomplete {
   max-width: 350px;
-}
-
-.links-field-row-no-attributes {
-  color: $grey;
 }
 </style>
