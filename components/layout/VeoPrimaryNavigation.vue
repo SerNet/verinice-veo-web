@@ -109,6 +109,9 @@ export default Vue.extend({
         [this.$t('breadcrumbs.objects') as string]: this.$t('breadcrumbs.forms') as string,
         [this.$t('breadcrumbs.forms') as string]: this.$t('breadcrumbs.objects') as string
       };
+    },
+    domainId(): string {
+      return separateUUIDParam(this.$route.params.domain).id;
     }
   },
   watch: {
@@ -243,10 +246,9 @@ export default Vue.extend({
           });
       });
     },
-
     async fetchFormTypes(): Promise<INavItem[]> {
       const routeUnitParam = separateUUIDParam(this.$route.params.unit).id;
-      return await this.$api.form.fetchAll({ unit: routeUnitParam }).then((formTypes: IVeoFormSchemaMeta[]) =>
+      return await this.$api.form.fetchAll(this.domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
         formTypes.map((entry: IVeoFormSchemaMeta) => {
           return {
             name: entry.name,

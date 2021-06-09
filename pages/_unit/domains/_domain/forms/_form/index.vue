@@ -104,7 +104,7 @@ export default Vue.extend({
       this.objects = [];
     }
 
-    this.formTypes = await this.$api.form.fetchAll({ unit: this.unitId }).then((formTypes: IVeoFormSchemaMeta[]) =>
+    this.formTypes = await this.$api.form.fetchAll(this.domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
       formTypes.map((entry: IVeoFormSchemaMeta) => {
         return {
           text: entry.name,
@@ -121,6 +121,9 @@ export default Vue.extend({
   computed: {
     unitId() {
       return separateUUIDParam(this.$route.params.unit).id;
+    },
+    domainId() {
+      return separateUUIDParam(this.$route.params.domain).id;
     },
     formId() {
       return separateUUIDParam(this.$route.params.form).id;

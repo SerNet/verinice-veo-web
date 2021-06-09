@@ -22,9 +22,15 @@ export interface IVeoLink {
 }
 
 export interface IVeoDomain {
-  displayName: string;
-  searchesUri: string;
-  targetUri: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+  name: string;
+  abbreviation: string;
+  description: string;
+  catalogs: any[];
+  id: string;
 }
 
 // At the moment, we only use strings in the frontend for custom attributes.
@@ -36,7 +42,7 @@ export interface IVeoCustomAttributes {
 interface IVeoCustomObject {
   applicableTo: IVeoLink[];
   attributes: IVeoCustomAttributes;
-  domains: IVeoDomain[];
+  domains: IVeoLink[];
 }
 
 export interface IVeoCustomLink extends IVeoCustomObject {
@@ -177,7 +183,7 @@ export interface IVeoUnit {
   updatedBy: string;
   name: string;
   description: string;
-  domains: IVeoDomain[];
+  domains: IVeoLink[];
   units: IVeoUnit[];
 }
 
@@ -194,7 +200,7 @@ export interface IVeoEntity {
   createdBy: string;
   updatedAt: string;
   updatedBy: string;
-  domains: IVeoDomain[];
+  domains: IVeoLink[];
   owner: IVeoLink;
   links: IVeoCustomLinks;
   customAspects: IVeoCustomAspects;

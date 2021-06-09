@@ -43,7 +43,6 @@
           </v-list-item>
           <v-divider />
           <VeoUnitSelection :units="units" />
-          <VeoDomainSelection :domains="currentUnitDomains" />
         </v-list>
         <v-divider />
         <v-card-actions>
@@ -64,9 +63,8 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import { separateUUIDParam } from '~/lib/utils';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
+import { IVeoUnit } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -83,11 +81,6 @@ export default Vue.extend({
   },
   async fetch() {
     this.units = await this.$api.unit.fetchAll();
-  },
-  computed: {
-    currentUnitDomains(): IVeoDomain[] {
-      return this.units.find((unit: IVeoUnit) => unit.id === (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id))?.domains || [];
-    }
   },
   mounted() {
     this.$root.$on(VeoEvents.UNIT_CHANGED, () => {

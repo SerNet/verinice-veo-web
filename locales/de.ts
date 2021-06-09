@@ -100,7 +100,6 @@ export default {
   'unit.details.children': 'Untergeordnete Units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'Bitte tragen Sie eine Beschreibung ein.',
-  'unit.details.forms': 'Formulare',
   'unit.details.name': 'Name der Unit',
   'unit.details.name.required': 'Bitte tragen Sie einen Unit Namen ein.',
   'unit.details.nochild': 'Keine untegeordneten Units vorhanden',

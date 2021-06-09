@@ -100,7 +100,6 @@ export default {
   'unit.details.children': 'Child units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'A unit description is required!',
-  'unit.details.forms': 'Forms',
   'unit.details.name': 'Unit name',
   'unit.details.name.required': 'A unit name is required!',
   'unit.details.nochild': 'No child units',

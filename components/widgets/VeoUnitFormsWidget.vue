@@ -1,5 +1,5 @@
 <template>
-  <VeoWidget :title="$t('unit.details.forms')">
+  <VeoWidget :title="$t('forms', { domain: domain.name })">
     <template v-if="$fetchState.pending">
       <table>
         <tr
@@ -30,10 +30,18 @@
           <td>{{ type.name }}:</td>
           <td class="text-right">
             <nuxt-link
-              :to="`/${$route.params.unit}/forms/${createUUIDUrlParam('form', type.id)}`"
+              :to="`/${$route.params.unit}/domains/${createUUIDUrlParam('domain', domain.id)}/forms/${createUUIDUrlParam('form', type.id)}`"
             >
               <b>{{ type.items }}</b>
             </nuxt-link>
+          </td>
+        </tr>
+        <tr v-if="objects.length === 0">
+          <td
+            colspan="2"
+            class="font-italic"
+          >
+            {{ $t('noForms') }}
           </td>
         </tr>
       </table>
@@ -43,14 +51,20 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { Prop } from 'vue/types/options';
 
 import { endpoints } from '~/plugins/api/schema';
 import { createUUIDUrlParam } from '~/lib/utils';
+import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
     unit: {
-      type: Object,
+      type: Object as Prop<IVeoUnit>,
+      required: true
+    },
+    domain: {
+      type: Object as Prop<IVeoDomain>,
       required: true
     }
   },
@@ -60,7 +74,7 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    this.objects = await this.$api.form.fetchAll({ unit: this.unit.id });
+    this.objects = await this.$api.form.fetchAll(this.domain.id);
     for (const object of this.objects) {
       // @ts-ignore
       const objectType = endpoints[object.modelType.toLowerCase()];
@@ -77,6 +91,19 @@ export default Vue.extend({
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "forms": "Forms in {domain}",
+    "noForms": "No forms existing"
+  },
+  "de": {
+    "forms": "Formulare in {domain}",
+    "noForms": "Keine Formulare vorhanden"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 table {

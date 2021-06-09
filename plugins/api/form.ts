@@ -7,7 +7,15 @@ export default function (api: Client) {
      * Loads all Forms
      * @param parent
      */
-    fetchAll(params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+    fetchAll(domain?: string, params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+      if (domain) {
+        if (!params) {
+          params = {};
+        }
+
+        params.domainId = domain;
+      }
+
       return api.req('/api/forms', {
         params
       });
