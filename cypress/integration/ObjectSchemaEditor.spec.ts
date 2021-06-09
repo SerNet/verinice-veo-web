@@ -119,7 +119,8 @@ describe('Objectschema Editor', () => {
       .as('testSchema')
       .then((_testSchema) => {
         schemaRealValues = [
-          { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 2 },
+          // -3 = customAspects, customLinks, translations
+          { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 3 },
           {
             text: 'Individuelle Aspekte',
             numberOfProperties: Object.keys(_testSchema.properties.customAspects.properties).length
@@ -541,7 +542,7 @@ describe('Objectschema Editor', () => {
     cy.readFile('cypress/downloads/os_testSchema.json').toMatchSnapshot();
   });
 
-  it.only('adds a translated description to a new aspect attribute for EN and DE via the dialog', function () {
+  it('adds a translated description to a new aspect attribute for EN and DE via the dialog', function () {
     // Reset the schema before each test to restore the original state
     cy.get('.editor')
       .find('.cm-content')
@@ -696,7 +697,7 @@ describe('Objectschema Editor', () => {
     cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:last-child .v-list-item__content .v-list-item__subtitle').should('contain.html', '<span></span>');
   });
 
-  it.only('adds a translated description to a new link attribute for EN and DE via the dialog', function () {
+  it('adds a translated description to a new link attribute for EN and DE via the dialog', function () {
     // Reset the schema before each test to restore the original state
     cy.get('.editor')
       .find('.cm-content')

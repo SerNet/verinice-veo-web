@@ -72,6 +72,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "asset_AssetCommons_AssetNum": {
@@ -234,6 +235,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -324,6 +326,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -414,6 +417,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -504,6 +508,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -594,6 +599,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -684,6 +690,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -774,6 +781,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -864,6 +872,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -954,6 +963,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
