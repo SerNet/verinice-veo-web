@@ -180,6 +180,14 @@ export default Vue.extend({
       }
 
       this.getNavEntries(this.$route);
+    },
+    '$route.params.domain'(newValue: string) {
+      // Close domain selection menu if the user leaves the unit context
+      if (!newValue) {
+        this.domainSelection = false;
+      }
+
+      this.getNavEntries(this.$route);
     }
   },
   mounted() {
