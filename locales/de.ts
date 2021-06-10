@@ -114,6 +114,7 @@ export default {
   'unit.select.label': 'Unit',
 
   'breadcrumbs.all': 'Alle',
+  'breadcrumbs.catalogs': 'Kataloge',
   'breadcrumbs.reports': 'Reports',
   'breadcrumbs.settings': 'Einstellungen',
   'breadcrumbs.help': 'Handbuch',
@@ -122,6 +123,7 @@ export default {
   'breadcrumbs.forms': 'Formulare',
   'breadcrumbs.index': 'Unitauswahl',
   'breadcrumbs.list_view': 'Listenansicht',
+  'breadcrumbs.more_modules': 'Weitere Module',
   'breadcrumbs.objects': 'Objekte',
   'breadcrumbs.objectschema': 'Objektschema',
   'breadcrumbs.scopes': 'Scopes',

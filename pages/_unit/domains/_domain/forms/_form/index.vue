@@ -41,7 +41,7 @@
             <v-col cols="auto">
               <v-btn
                 outlined
-                :to="`/${$route.params.unit}/forms/${$route.params.form}/create`"
+                :to="`/${$route.params.unit}/domains/${$route.params.domain}/forms/${$route.params.form}/create`"
                 color="primary"
                 class="align-self-center mr-4"
               >
@@ -132,13 +132,13 @@ export default Vue.extend({
       return this.formSchema?.name || '';
     },
     rootRoute(): string {
-      return `/${this.$route.params.unit}/forms/${this.$route.params.form}`;
+      return `/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`;
     }
   },
   methods: {
     changeType(newType: string) {
       const newFormParam = createUUIDUrlParam('form', newType);
-      this.$router.push(`/${this.$route.params.unit}/forms/${newFormParam}`);
+      this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${newFormParam}`);
     },
     loadSubEntities(_parent: IVeoEntity) {
       return [];

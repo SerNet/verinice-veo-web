@@ -82,7 +82,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.formModified.isModified = false;
-          this.$router.push(`/${this.$route.params.unit}/forms/${this.$route.params.form}`);
+          this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`);
         })
         .catch((error: { status: number; name: string }) => {
           this.alert.text = error.name;

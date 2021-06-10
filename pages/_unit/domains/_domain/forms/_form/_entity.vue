@@ -404,7 +404,7 @@ export default Vue.extend({
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
           this.$router.push({
-            path: `/${this.unitRoute}/forms/${this.formRoute}/`
+            path: `/${this.unitRoute}/domains/${this.$route.params.domain}/forms/${this.formRoute}/`
           });
         })
         .catch((error: { status: number; name: string }) => {
