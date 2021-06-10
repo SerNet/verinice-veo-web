@@ -72,6 +72,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "person_contactInformation_Email": {
@@ -152,6 +153,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "person_commons_City": {
@@ -251,6 +253,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "person_dataProtectionOfficer_Affiliation": {

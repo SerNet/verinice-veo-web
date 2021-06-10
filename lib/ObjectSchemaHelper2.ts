@@ -546,6 +546,7 @@ export default class ObjectSchemaHelper {
             }
           },
           attributes: {
+            additionalProperties: false,
             type: 'object',
             properties: {}
           }
@@ -642,6 +643,7 @@ export default class ObjectSchemaHelper {
           }
         },
         attributes: {
+          additionalProperties: false,
           type: 'object',
           properties: {}
         }
