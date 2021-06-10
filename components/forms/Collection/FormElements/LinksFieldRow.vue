@@ -221,6 +221,7 @@ import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
 import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
 import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { getSchemaEndpoint } from '~/plugins/api/schema';
 
 interface ITarget {
   targetUri: string | undefined;
@@ -249,7 +250,6 @@ interface IData {
   itemInDialog: IItem | undefined;
   newObject: ILinksFieldDialogNewObject;
   targetId: string | undefined;
-  objectTypePluralMap: BaseObject;
   linksFieldDialogObjectSchema: JSONSchema7;
   linksFieldDialogFormSchema: UISchema;
 }
@@ -311,12 +311,6 @@ export default Vue.extend({
       itemInDialog: undefined,
       newObject: {},
       targetId: undefined,
-      objectTypePluralMap: {
-        process: 'processes',
-        person: 'persons',
-        asset: 'assets',
-        control: 'controls'
-      },
       linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
       linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema }
     };
@@ -336,7 +330,7 @@ export default Vue.extend({
       };
     },
     targetUri(): string | undefined {
-      return this.targetId ? `/${this.objectTypePluralMap[this.targetType]}/${this.targetId}` : undefined;
+      return this.targetId ? `/${getSchemaEndpoint(this.targetType)}/${this.targetId}` : undefined;
     },
     targetType(): string {
       // TODO: replace this function by the line below, after target.type in ObjectSchema is replaced by "person", "process", etc
