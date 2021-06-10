@@ -1,5 +1,12 @@
 <template>
-  <v-spacer v-if="name === 'spacer'" />
+  <v-spacer
+    v-if="name === 'spacer'"
+    class="mt-8"
+  />
+  <v-divider
+    v-else-if="name === 'divider'"
+    class="mt-8"
+  />
   <v-list-item
     v-else-if="childItems === undefined"
     class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"

@@ -1,9 +1,9 @@
+<template>
+  <p>asdfs123</p>
+</template>
+
 <script lang="ts">
 import Vue from 'vue';
 
-export default Vue.extend({
-  middleware({ route, redirect }) {
-    redirect(`/${route.params.unit}`);
-  }
-});
+export default Vue.extend({});
 </script>

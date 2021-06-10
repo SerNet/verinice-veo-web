@@ -115,6 +115,7 @@ export default {
 
   'breadcrumbs.all': 'Alle',
   'breadcrumbs.catalogs': 'Kataloge',
+  'breadcrumbs.domain': 'Domäne',
   'breadcrumbs.reports': 'Reports',
   'breadcrumbs.settings': 'Einstellungen',
   'breadcrumbs.help': 'Handbuch',

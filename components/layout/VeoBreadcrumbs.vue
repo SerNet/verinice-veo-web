@@ -128,10 +128,11 @@ export default defineComponent<IProps>({
     // Define which keys from path should be replaces with custom Text
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
       ':unit': { text: '', icon: 'mdi-home' },
-      forms: { text: context.root.$t('breadcrumbs.forms') as string },
-      objects: { text: context.root.$t('breadcrumbs.objects') as string },
-      list: { text: context.root.$t('breadcrumbs.list_view') as string },
-      tree: { text: context.root.$t('breadcrumbs.tree_view') as string }
+      forms: { text: context.root.$t('breadcrumbs.forms').toString() },
+      objects: { text: context.root.$t('breadcrumbs.objects').toString() },
+      list: { text: context.root.$t('breadcrumbs.list_view').toString() },
+      tree: { text: context.root.$t('breadcrumbs.tree_view').toString() },
+      domains: { text: context.root.$t('breadcrumbs.domain').toString() }
     };
 
     // TODO: check if :group should be added here, after groups are implemented

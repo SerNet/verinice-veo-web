@@ -24,12 +24,12 @@ export default class LocalStorage {
     LocalStorage.set(key, value.toString());
   }
 
-  static getString(key: string) {
-    return LocalStorage.get(key);
+  static getNumber(key: string) {
+    return Number(LocalStorage.get(key));
   }
 
-  static setString(key: string, value: string) {
-    LocalStorage.set(key, value);
+  static setNumber(key: string, value: number) {
+    LocalStorage.set(key, value + '');
   }
 
   static getObject(key: string) {
@@ -49,10 +49,10 @@ export default class LocalStorage {
   }
 
   static get expandedNavEntry() {
-    return LocalStorage.getString(NAV_ENTRY_EXPANDED) || '';
+    return LocalStorage.getNumber(NAV_ENTRY_EXPANDED) || -1;
   }
 
-  static set expandedNavEntry(value: string) {
-    LocalStorage.setString(NAV_ENTRY_EXPANDED, value);
+  static set expandedNavEntry(value: number) {
+    LocalStorage.setNumber(NAV_ENTRY_EXPANDED, value);
   }
 }
