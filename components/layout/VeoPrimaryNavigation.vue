@@ -13,56 +13,35 @@
     <template #default>
       <div class="d-flex flex-column fill-height">
         <!-- Current domain -->
-        <div class="d-flex flex-row">
-          <div class="flex-grow-1 py-2 px-4">
-            <span>{{ $t('breadcrumbs.domain') }}</span><br>
-            <span style="font-size: 1.3rem;">
-              {{ currentDomainName }}
-            </span>
-          </div>
-          <v-btn
+        <div>
+          <span class="mx-3">{{ $t('breadcrumbs.domain') }}</span><br>
+          <v-select
+            :value="domainId"
             :disabled="!$route.params.unit"
-            class="mx-3 mb-2 align-self-end"
-            icon
-            @click="domainSelection = !domainSelection"
+            :items="domains"
+            item-text="name"
+            item-value="id"
+            solo
+            flat
+            hide-details
+            style="font-size: 1.3rem;"
+            placeholder="-"
+            :menu-props="{closeOnContentClick: true, 'max-width': '256px', 'content-class': 'veo-primary-navigation__domain-selection-menu'}"
+            @change="onDomainChange"
           >
-            <v-icon v-if="!domainSelection">
-              mdi-menu-down
-            </v-icon>
-            <v-icon v-else>
-              mdi-menu-up
-            </v-icon>
-          </v-btn>
+            <template #append-item>
+              <v-divider class="mt-6" />
+              <v-list-item
+                :to="`/${$route.params.unit}/domains/more`"
+                exact-active-class="veo-active-link-item"
+              >
+                {{ $t('breadcrumbs.more_modules') }}
+              </v-list-item>
+            </template>
+          </v-select>
         </div>
-        <!-- Domain selection -->
-        <v-list v-if="domainSelection">
-          <v-list-item>
-            <v-list-item-title class="font-weight-bold text-center">
-              {{ $t('domain_selection') }}
-            </v-list-item-title>
-          </v-list-item>
-          <v-list-item
-            v-for="domain of domains"
-            :key="domain.id"
-            :to="`/${$route.params.unit}/domains/${createUUIDUrlParam('domain', domain.id)}`"
-            exact-active-class="veo-active-link-item"
-            @click="domainSelection = false"
-          >
-            <v-list-item-title>
-              {{ domain.name }}
-            </v-list-item-title>
-          </v-list-item>
-          <v-divider class="mt-4" />
-          <v-list-item
-            :to="`/${$route.params.unit}/domains/more`"
-            exact-active-class="veo-active-link-item"
-          >
-            {{ $t('breadcrumbs.more_modules') }}
-          </v-list-item>
-        </v-list>
         <!-- Default menu -->
         <v-list
-          v-else
           nav
           dense
           :shaped="!miniVariant"
@@ -153,40 +132,20 @@ export default Vue.extend({
   data() {
     return {
       miniVariant: LocalStorage.primaryNavMiniVariant,
-      domainSelection: false as boolean,
       domains: [] as IVeoDomain[],
       items: [] as INavItem[]
     };
   },
   computed: {
-    objectToToggleObjectFormCollapse() {
-      return {
-        [this.$t('breadcrumbs.objects') as string]: this.$t('breadcrumbs.forms') as string,
-        [this.$t('breadcrumbs.forms') as string]: this.$t('breadcrumbs.objects') as string
-      };
-    },
     domainId(): string {
       return separateUUIDParam(this.$route.params.domain).id;
-    },
-    currentDomainName(): string {
-      return this.domains.find((domain: IVeoDomain) => domain.id === this.domainId)?.name || '-';
     }
   },
   watch: {
-    '$route.params.unit'(newValue: string) {
-      // Close domain selection menu if the user leaves the unit context
-      if (!newValue) {
-        this.domainSelection = false;
-      }
-
+    '$route.params.unit'() {
       this.getNavEntries(this.$route);
     },
-    '$route.params.domain'(newValue: string) {
-      // Close domain selection menu if the user leaves the unit context
-      if (!newValue) {
-        this.domainSelection = false;
-      }
-
+    '$route.params.domain'() {
       this.getNavEntries(this.$route);
     }
   },
@@ -391,6 +350,9 @@ export default Vue.extend({
           this.items[index].persistCollapsedState?.(true);
         }
       });
+    },
+    onDomainChange(domainId: string) {
+      this.$router.push(`/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}`);
     }
   }
 });
@@ -433,5 +395,11 @@ export default Vue.extend({
   .v-list-item__title {
     color: rgba(0, 0, 0, 0.87) !important;
   }
+}
+</style>
+
+<style lang="scss">
+.veo-primary-navigation__domain-selection-menu {
+  left: 0 !important;
 }
 </style>

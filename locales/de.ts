@@ -110,7 +110,7 @@ export default {
   'unit.objects.tooltip.clone': 'Objekt klonen',
   'unit.objects.tooltip.delete': 'Objekt löschen',
   'unit.objects.tooltip.edit': 'Objekt bearbeiten',
-  'unit.index.title': 'Dashboard',
+  'unit.index.title': 'Unit Dashboard',
   'unit.select.label': 'Unit',
 
   'breadcrumbs.all': 'Alle',
