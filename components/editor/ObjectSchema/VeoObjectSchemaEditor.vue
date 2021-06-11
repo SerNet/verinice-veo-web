@@ -119,7 +119,7 @@
               <VeoOseListHeader
                 v-bind="link"
                 :styling="{
-                  name: link.item.targetType,
+                  name: formattedLinkHeader(link.item),
                   color: 'black'
                 }"
                 @edit-item="showEditDialog(link.item, 'link')"
@@ -242,6 +242,16 @@ export default defineComponent<IProps>({
       });
     }
 
+    function formattedLinkHeader(link: IVeoOSHCustomLink): string {
+      let toReturn = link.targetType;
+
+      if (link.subType && link.subType !== '') {
+        toReturn += ` (${link.subType})`;
+      }
+
+      return toReturn;
+    }
+
     /**
      * Editing customAspects and customLinks
      */
@@ -325,7 +335,8 @@ export default defineComponent<IProps>({
       customLinks,
       deleteDialog,
       showDeleteDialog,
-      doDeleteItem
+      doDeleteItem,
+      formattedLinkHeader
     };
   }
 });
