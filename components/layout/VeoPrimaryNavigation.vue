@@ -13,11 +13,10 @@
     <template #default>
       <div class="d-flex flex-column fill-height">
         <!-- Current domain -->
-        <div>
+        <div v-if="$route.params.unit">
           <span class="mx-3">{{ $t('breadcrumbs.domain') }}</span><br>
           <v-select
             :value="domainId"
-            :disabled="!$route.params.unit"
             :items="domains"
             item-text="name"
             item-value="id"
