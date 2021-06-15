@@ -1,0 +1,54 @@
+{
+  "name": "testSchema",
+  "modelType": "testschema",
+  "subType": "st",
+  "translation": {
+    "de": {}
+  },
+  "content": {
+    "type": "Layout",
+    "options": {
+      "format": "group",
+      "direction": "vertical"
+    },
+    "elements": [
+      {
+        "type": "Layout",
+        "options": {
+          "format": "group"
+        },
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/abbreviation",
+            "options": {
+              "label": "#lang/abbreviation"
+            }
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/name",
+            "options": {
+              "label": "#lang/name"
+            }
+          }
+        ]
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/description",
+        "options": {
+          "label": "#lang/description"
+        }
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/links/properties/test_schema_Link1",
+        "options": {
+          "label": "#lang/test_schema_Link1"
+        },
+        "elements": []
+      }
+    ]
+  }
+}

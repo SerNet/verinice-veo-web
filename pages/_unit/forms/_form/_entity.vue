@@ -190,6 +190,8 @@ import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import localObjectSchema from '~/components/objects/os_TestSchema.json';
+import localFormSchema from '~/components/objects/fs_testSchema.json';
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
 
 export interface IValidationErrorMessage {
@@ -268,10 +270,12 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    const formSchema = await this.$api.form.fetch(this.formId);
+    // const formSchema = await this.$api.form.fetch(this.formId);
+    const formSchema = localFormSchema;
     this.objectType = formSchema.modelType;
     if (this.objectType) {
-      const objectSchema = await this.$api.schema.fetch(this.objectType);
+      // const objectSchema = await this.$api.schema.fetch(this.objectType);
+      const objectSchema = localObjectSchema;
       const objectData = this.$route.params.entity ? await this.$api.entity.fetch(this.objectType, this.objectId) : {};
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       this.form = {
