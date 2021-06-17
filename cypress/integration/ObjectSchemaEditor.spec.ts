@@ -153,7 +153,8 @@ describe('Objectschema Editor', () => {
       .as('testSchema')
       .then((_testSchema) => {
         schemaRealValues = [
-          { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 2 },
+          // -3 = customAspects, customLinks, translations
+          { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 3 },
           {
             text: 'Individuelle Aspekte',
             numberOfProperties: Object.keys(_testSchema.properties.customAspects.properties).length

@@ -83,7 +83,7 @@ export default Vue.extend({
           unit: this.unit.id,
           subType: object.subType
         })
-      ).length;
+      ).items.length;
     }
   },
   methods: {

@@ -21,7 +21,7 @@
             size="48"
             color="secondary"
           >
-            <span class="white--text headline">{{ username.substr(0, 1).toUpperCase() }}</span>
+            <span class="white--text headline">{{ initials }}</span>
           </v-avatar>
         </v-btn>
       </template>
@@ -30,7 +30,7 @@
           <v-list-item>
             <v-list-item-avatar color="secondary">
               <v-icon class="white--text headline">
-                {{ username.substr(0, 1).toUpperCase() }}
+                {{ initials }}
               </v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
@@ -81,6 +81,11 @@ export default Vue.extend({
   },
   async fetch() {
     this.units = await this.$api.unit.fetchAll();
+  },
+  computed: {
+    initials(): string {
+      return this.prename.substring(0, 1) + this.lastname.substring(0, 1);
+    }
   },
   mounted() {
     this.$root.$on(VeoEvents.UNIT_CHANGED, () => {

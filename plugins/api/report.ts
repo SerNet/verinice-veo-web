@@ -5,6 +5,9 @@ export default function (api: Client) {
   return {
     /**
      * Loads all reports
+     *
+     * NOT PAGINATED
+     *
      */
     fetchAll(params?: Record<string, string>): Promise<IVeoReportsMeta> {
       return api.req('/api/reports', {
@@ -14,6 +17,9 @@ export default function (api: Client) {
 
     /**
      * Creates a report
+     *
+     * NOT PAGINATED
+     *
      * @param type
      *
      * @returns UUID of the new form

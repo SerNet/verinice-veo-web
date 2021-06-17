@@ -65,9 +65,11 @@ export default Vue.extend({
   async fetch() {
     if (this.entityType === '-') {
       this.rootEntityType = 'scope';
-      this.objects = await this.$api.entity.fetchAll('scope', {
-        unit: this.unitId
-      });
+      this.objects = (
+        await this.$api.entity.fetchAll('scope', {
+          unit: this.unitId
+        })
+      ).items;
       this.currentEntity = undefined;
     } else {
       this.rootEntityType = this.entityType;

@@ -72,6 +72,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "control_ControlDataProtectionObjectivesEugdpr_ControlDataProtectionObjectivesEugdprPseudonymization": {
@@ -231,6 +232,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -321,6 +323,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -411,6 +414,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -501,6 +505,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -591,6 +596,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -681,6 +687,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -771,6 +778,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }

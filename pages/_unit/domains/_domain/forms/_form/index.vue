@@ -96,10 +96,12 @@ export default Vue.extend({
     this.objectType = this.formSchema && this.formSchema.modelType;
     if (this.formSchema) {
       this.rootEntityType = this.objectType || '';
-      this.objects = await this.$api.entity.fetchAll(this.objectType, {
-        unit: this.unitId,
-        subType: this.formSchema.subType
-      });
+      this.objects = (
+        await this.$api.entity.fetchAll(this.objectType, {
+          unit: this.unitId,
+          subType: this.formSchema.subType
+        })
+      ).items;
     } else {
       this.objects = [];
     }

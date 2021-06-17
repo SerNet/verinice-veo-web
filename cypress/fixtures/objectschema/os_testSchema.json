@@ -76,6 +76,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "test_schema_Aspekt1_Attribut1": {
@@ -151,6 +152,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "test_schema_Aspekt2_Attribut1": {
@@ -223,6 +225,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "test_schema_Aspekt3_Attribut1": {
@@ -378,6 +381,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {
                   "test_schema_Link1_Attribut1": {

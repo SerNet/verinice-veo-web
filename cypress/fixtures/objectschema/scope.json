@@ -72,6 +72,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "scope_thirdCountry_Status": {
@@ -135,6 +136,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "scope_contactInformation_Email": {
@@ -215,6 +217,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "scope_commons_City": {
@@ -362,6 +365,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -452,6 +456,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -542,6 +547,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -632,6 +638,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }

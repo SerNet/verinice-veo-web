@@ -162,15 +162,11 @@
     >
       <VeoTabs sticky-tabs>
         <template #tabs>
-          <v-tab>{{ $t('links') }}</v-tab>
           <v-tab :disabled="!$route.params.entity">
             {{ $t('history') }}
           </v-tab>
         </template>
         <template #items>
-          <v-tab-item>
-            <VeoObjectLinks :object="form.objectData" />
-          </v-tab-item>
           <v-tab-item>
             <VeoObjectHistory
               :object="form.objectData"
@@ -346,11 +342,12 @@ export default Vue.extend({
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
-        fetchAll: (objectType: string, searchParams?: any) => {
-          return this.$api.entity.fetchAll(objectType, {
+        fetchAll: async (objectType: string, searchParams?: any) => {
+          const entities = await this.$api.entity.fetchAll(objectType, {
             ...searchParams,
             unit: this.unitId
           });
+          return entities.items;
         },
         create: async (objectType: string, createdObjectData: any) => {
           const res = await this.$api.entity.create(objectType, {
@@ -504,7 +501,6 @@ export default Vue.extend({
   "en": {
     "history": "History",
     "incompatibleFormSchema": "The form is incompatible to the object schema \"{objectType}\" and cannot be displayed!",
-    "links": "Links",
     "navigation.title": "Contents",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
@@ -516,7 +512,6 @@ export default Vue.extend({
   "de": {
     "history": "Verlauf",
     "incompatibleFormSchema": "Das Formular ist inkompatibel zum Objektschema \"{objectType}\" und kann deshalb nicht angezeigt werden!",
-    "links": "Links",
     "navigation.title": "Inhalt",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",

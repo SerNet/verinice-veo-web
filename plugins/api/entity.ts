@@ -1,7 +1,7 @@
 import { getSchemaEndpoint } from './schema';
 import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
-import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 /**
  * This file replaces the individual files for each object schema (at the point
@@ -15,9 +15,12 @@ export default function (api: Client) {
   return {
     /**
      * Loads all Entities
+     *
+     * PAGINATED
+     *
      * @param parent
      */
-    fetchAll(objectType: string, params?: Record<string, string>, noUnit: boolean = false): Promise<IVeoEntity[]> {
+    fetchAll(objectType: string, params?: Record<string, string>, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       // Entities don't get accessed without their unit as a context, for this reason we manually add the unit if omitted by the developer.
       // To override this behaviour, set noUnit to true.
       if (!params || !params.unit) {
@@ -33,8 +36,8 @@ export default function (api: Client) {
         .req(`/api/${endpoint}`, {
           params
         })
-        .then((result: IVeoEntity[]) => {
-          result.forEach((entry: IVeoEntity) => {
+        .then((result: IVeoPaginatedResponse<IVeoEntity[]>) => {
+          result.items.forEach((entry: IVeoEntity) => {
             /*
              * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
              * members. However we combine both entity types as they get used more or less the same way

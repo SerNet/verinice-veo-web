@@ -457,6 +457,7 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "control_ControlDataProtectionObjectivesEugdpr_ControlDataProtectionObjectivesEugdprAvailability": {
                   "type": "boolean"
@@ -591,6 +592,7 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -689,6 +691,7 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -787,6 +790,7 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -885,6 +889,7 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -983,6 +988,7 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -1081,6 +1087,7 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -1179,6 +1186,7 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -1377,6 +1385,7 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "scope_commons_City": {
                   "type": "string"
@@ -1455,6 +1464,7 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "scope_contactInformation_Email": {
                   "type": "string"
@@ -1534,6 +1544,7 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "scope_thirdCountry_Status": {
                   "type": "boolean"
@@ -1647,6 +1658,7 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -1745,6 +1757,7 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -1843,6 +1856,7 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -1941,6 +1955,7 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -2134,6 +2149,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "asset_AssetCommons_AssetNum": {
                   "type": "string"
@@ -2275,6 +2291,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -2373,6 +2390,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -2471,6 +2489,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -2569,6 +2588,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -2667,6 +2687,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -2765,6 +2786,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -2863,6 +2885,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -2961,6 +2984,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -3059,6 +3083,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -3257,6 +3282,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "process_AccessAuthorization_Document": {
                   "format": "uri",
@@ -3330,6 +3356,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "process_ExternalRecipient_ExternalRecipient": {
                   "type": "boolean"
@@ -3396,6 +3423,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "process_GeneralInformation_document": {
                   "format": "uri",
@@ -3466,6 +3494,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "process_InformationObligations_document": {
                   "format": "uri",
@@ -3539,6 +3568,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "process_InternalRecipient_InternalRecipient": {
                   "type": "boolean"
@@ -3605,6 +3635,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "process_JointControllership_jointResponsiblePersons": {
                   "type": "boolean"
@@ -3671,6 +3702,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "process_ProcessingDetails_comment": {
                   "type": "string"
@@ -3758,6 +3790,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "process_SensitiveData_SensitiveData": {
                   "type": "boolean"
@@ -3880,6 +3913,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {
                   "process_AffectedParties_supplementaryInformation": {
                     "type": "string"
@@ -3982,6 +4016,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {
                   "process_DataCategories_comment": {
                     "type": "string"
@@ -4094,6 +4129,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {
                   "process_ExternalRecipientLink_ExternalRecipient_dataprocessingagreement": {
                     "type": "boolean"
@@ -4216,6 +4252,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {
                   "process_InternalRecipientLink_InternalRecipient_document": {
                     "format": "uri",
@@ -4325,6 +4362,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {
                   "process_LegalBasis_document": {
                     "format": "uri",
@@ -4431,6 +4469,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -4529,6 +4568,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -4627,6 +4667,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -4725,6 +4766,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -4823,6 +4865,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -4921,6 +4964,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -5019,6 +5063,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "type": "array"
               },
               "attributes": {
+                "additionalProperties": false,
                 "properties": {},
                 "type": "object"
               },
@@ -5507,6 +5552,7 @@ exports[`Objectschema Wizard > imports existing person objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "person_commons_City": {
                   "type": "string"
@@ -5605,6 +5651,7 @@ exports[`Objectschema Wizard > imports existing person objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "person_contactInformation_Email": {
                   "type": "string"
@@ -5684,6 +5731,7 @@ exports[`Objectschema Wizard > imports existing person objectschema #0`] =
               "type": "array"
             },
             "attributes": {
+              "additionalProperties": false,
               "properties": {
                 "person_dataProtectionOfficer_Affiliation": {
                   "enum": [
