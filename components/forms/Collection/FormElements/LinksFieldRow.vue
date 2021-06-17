@@ -343,7 +343,7 @@ export default Vue.extend({
       return (this.schema.items as any).properties.target.properties.type.enum[0];
     },
     subType(): string | undefined {
-      return (this.schema.items as any).properties.target.properties.subType.enum[0];
+      return (this.schema.items as any).properties.target.properties.subType?.enum[0];
     },
     target(): ITarget | undefined {
       return {

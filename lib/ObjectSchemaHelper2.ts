@@ -544,9 +544,6 @@ export default class ObjectSchemaHelper {
               },
               type: {
                 enum: [link.targetType]
-              },
-              subType: {
-                enum: [...(link.subType && link.subType !== '' ? [link.subType] : [])]
               }
             }
           },
@@ -560,6 +557,13 @@ export default class ObjectSchemaHelper {
         required: ['target']
       }
     };
+
+    // Add optional properties
+    if (link.subType && link.subType !== '') {
+      schemaLink.items.properties.target.properties.subType = {
+        enum: [link.subType]
+      };
+    }
 
     for (const attribute of link.attributes) {
       // @ts-ignore
