@@ -95,6 +95,7 @@ export default Vue.extend({
             '/createdBy$',
             '/parts$',
             '/members$',
+            '/designator$',
             '/customAspects$',
             '/links$'
           ]

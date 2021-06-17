@@ -45,6 +45,9 @@ export default function (api: Client) {
   return {
     /**
      * Returns an array of all entity schemas with their corresponding endpoint.
+     *
+     * NOT PAGINATED
+     *
      */
     async fetchAll(ignoreMissingEndpoints: boolean = false, params?: Record<string, string>): Promise<ISchemaEndpoint[]> {
       const schemas: { knownSchemas: string[] } = await api.req('/api/schemas', {
@@ -61,6 +64,9 @@ export default function (api: Client) {
 
     /**
      * Retrieves an entity schema.
+     *
+     * NOT PAGINATED
+     *
      * @param type
      */
     fetch(type: string): Promise<IVeoObjectSchema> {

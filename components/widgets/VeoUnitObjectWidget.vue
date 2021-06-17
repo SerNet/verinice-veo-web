@@ -68,7 +68,7 @@ export default Vue.extend({
             await this.$api.entity.fetchAll(`${key.endpoint}`, {
               unit: this.unit.id
             })
-          ).length
+          ).items.length
         }));
       })
       .then((types) => {

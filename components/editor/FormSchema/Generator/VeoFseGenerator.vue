@@ -1,5 +1,4 @@
 <script lang="ts">
-// import NestedDraggable from '~/components/editor/FormSchema/NestedDraggable.vue'
 import Vue, { VNode, PropOptions } from 'vue';
 import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
