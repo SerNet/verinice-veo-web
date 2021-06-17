@@ -28,9 +28,11 @@ export default Vue.extend({
   async fetch() {
     if (this.entityType === '-') {
       this.rootEntityType = getSchemaName(this.objectType) || '';
-      this.objects = await this.$api.entity.fetchAll(this.objectType, {
-        unit: this.unitId
-      });
+      this.objects = (
+        await this.$api.entity.fetchAll(this.objectType, {
+          unit: this.unitId
+        })
+      ).items;
       this.currentEntity = undefined;
     } else {
       this.rootEntityType = this.entityType;

@@ -83,7 +83,7 @@ export default Vue.extend({
     this.entities = [];
     for (const index in endpoints) {
       // @ts-ignore
-      this.entities.push(...(await this.$api.entity.fetchAll(endpoints[index])));
+      this.entities.push(...(await this.$api.entity.fetchAll(endpoints[index])).items);
     }
   },
   computed: {
@@ -137,9 +137,9 @@ export default Vue.extend({
           this.loading = true;
           this.$api.schema
             .fetchAll()
-            .then(async (data) => {
-              return await data.forEach(async (schema) => {
-                this.entities = [...this.entities, ...(await this.$api.entity.fetchAll(schema.endpoint))];
+            .then((data) => {
+              return data.forEach(async (schema) => {
+                this.entities = [...this.entities, ...(await this.$api.entity.fetchAll(schema.endpoint)).items];
               });
             })
             .finally(() => {
