@@ -238,7 +238,7 @@ export default Vue.extend({
 
         partOfProps = {
           name: elementName,
-          schema: elementSchema,
+          schema: elementSchema ?? {},
           generalTranslation: this.generalTranslation,
           customTranslation: this.customTranslation,
           // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug

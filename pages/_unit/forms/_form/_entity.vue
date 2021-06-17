@@ -189,8 +189,9 @@ import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
-import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes';
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
+import { validate } from '~/lib/FormSchemaHelper';
 
 export interface IValidationErrorMessage {
   pointer: string;
@@ -334,7 +335,8 @@ export default Vue.extend({
     canShowData(): boolean {
       const dummy = cloneDeep(this.form.objectData);
       delete dummy.displayName;
-      return this.validateRevisionSchema(dummy, false);
+      // Object data has to fit object schema AND form schema has to fit object schema
+      return this.validateRevisionSchema(dummy, false) && validate(this.form.formSchema as IVeoFormSchema, this.form.objectSchema as IVeoObjectSchema).valid;
     },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
