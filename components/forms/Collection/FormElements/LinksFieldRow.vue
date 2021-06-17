@@ -28,7 +28,12 @@
             tile
             @click.stop="onDialogOpen('DIALOG_CREATE')"
           >
-            {{ $t('createTargetObject') }}
+            <span v-if="currentForm">
+              {{ $t('createTargetForm', { type: currentForm.name }) }}
+            </span>
+            <span v-else>
+              {{ $t('createTargetObject') }}
+            </span>
           </v-btn>
           <v-divider />
         </template>
@@ -214,7 +219,7 @@ import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
 import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 interface ITarget {
   targetUri: string | undefined;
@@ -246,6 +251,7 @@ interface IData {
   objectTypePluralMap: BaseObject;
   linksFieldDialogObjectSchema: JSONSchema7;
   linksFieldDialogFormSchema: UISchema;
+  currentForm: IVeoFormSchemaMeta | undefined;
 }
 
 export default Vue.extend({
@@ -312,7 +318,8 @@ export default Vue.extend({
         control: 'controls'
       },
       linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
-      linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema }
+      linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema },
+      currentForm: undefined
     };
   },
   computed: {
@@ -395,6 +402,11 @@ export default Vue.extend({
         // TODO: Limit result count with pagination API
         const items = (await this.api.fetchAll(this.targetType, filters)) as IItem[];
         this.items = items.slice(0, 100);
+
+        if (this.subType) {
+          const forms = await this.$api.form.fetchAll();
+          this.currentForm = forms.find((form) => form.subType === this.subType);
+        }
       } finally {
         this.loading = false;
       }
@@ -464,6 +476,7 @@ export default Vue.extend({
   "en": {
     "targetObject": "Target object",
     "createTargetObject": "Create new object",
+    "createTargetForm": "Create {type}",
     "updateTargetObject": "Change object",
     "deleteTargetObject": "Delete object",
     "deleteTargetObjectConfirmation": "Are you sure you want to delete \"{object}\"?",
@@ -473,6 +486,7 @@ export default Vue.extend({
     "targetObject": "Zielobjekt",
     "updateTargetObject": "Objekt ändern",
     "createTargetObject": "Ein neues Objekt anlegen",
+    "createTargetForm": "{type} erstellen",
     "deleteTargetObject": "Objekt löschen",
     "deleteTargetObjectConfirmation": "Sind sie sicher, dass das Objekt \"{object}\" gelöscht werden soll?",
     "noTargets": "Keine Ziele verfügbar"
