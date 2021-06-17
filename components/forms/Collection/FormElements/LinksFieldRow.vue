@@ -333,9 +333,6 @@ export default Vue.extend({
       return this.targetId ? `/${this.objectTypePluralMap[this.targetType]}/${this.targetId}` : undefined;
     },
     targetType(): string {
-      // TODO: replace this function by the line below, after target.type in ObjectSchema is replaced by "person", "process", etc
-      // return (this.schema.items as any).properties.target.properties
-      //   .type.enum[0]
       return (this.schema.items as any).properties.target.properties.type.enum[0];
     },
     subType(): string | undefined {
@@ -387,10 +384,16 @@ export default Vue.extend({
   methods: {
     async fetchItems(filter?: string) {
       this.loading = true;
+
+      // Filter out the display name of the currently edited object
+      const filters = {
+        ...(filter ? { displayName: filter } : {}),
+        ...(this.subType ? { subType: this.subType } : {})
+      };
+
       try {
-        const displayFilter = filter ? { displayName: filter } : undefined;
         // TODO: Limit result count with pagination API
-        const items = (await this.api.fetchAll(this.targetType, displayFilter)) as IItem[];
+        const items = (await this.api.fetchAll(this.targetType, filters)) as IItem[];
         this.items = items.slice(0, 100);
       } finally {
         this.loading = false;

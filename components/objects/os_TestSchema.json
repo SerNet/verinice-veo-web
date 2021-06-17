@@ -145,7 +145,7 @@
                   },
                   "subType": {
                     "enum": [
-                      "DSGVO_AV"
+                      "SCP_ResponsibleBody"
                     ]
                   }
                 }

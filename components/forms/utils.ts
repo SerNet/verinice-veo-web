@@ -2,6 +2,7 @@ import { JSONSchema7 } from 'json-schema';
 import Ajv from 'ajv';
 import { JsonPointer } from 'json-ptr';
 import { UIRule, UISchema, UISchemaElement } from '~/types/UISchema';
+import { IBaseObject } from '~/lib/utils';
 
 type defaultType = string | boolean | number | undefined | null;
 
@@ -24,12 +25,8 @@ export interface ILinksFieldDialogUpdatedObject extends ILinksFieldDialogNewObje
   id: string;
 }
 
-export interface ISearchParams {
-  displayName: string;
-}
-
 export interface IApi {
-  fetchAll(objectType: string, searchParams?: ISearchParams): Promise<BaseObject[]>;
+  fetchAll(objectType: string, searchParams?: IBaseObject): Promise<BaseObject[]>;
   create(objectType: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject>;
   update(objectType: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void>;
   delete(objectType: string, id: string): Promise<void>;
