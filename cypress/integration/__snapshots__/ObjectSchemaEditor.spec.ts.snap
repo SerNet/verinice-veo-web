@@ -600,7 +600,12 @@ exports[`Objectschema Editor > changes link name, attribute names, description a
     },
     "type": {
       "enum": [
-        "person"
+        "control"
+      ]
+    },
+    "subType": {
+      "enum": [
+        "DSGVO_TOM"
       ]
     }
   },
