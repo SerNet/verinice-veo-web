@@ -6,6 +6,9 @@ export default function (api: Client) {
   return {
     /**
      * Loads all Units
+     *
+     * NOT PAGINATED
+     *
      * @param parent
      */
     fetchAll(params?: Record<string, string>): Promise<IVeoUnit[]> {
@@ -16,6 +19,9 @@ export default function (api: Client) {
 
     /**
      * Creates a Unit
+     *
+     * NOT PAGINATED
+     *
      * @param unit
      */
     create(unit: Object): Promise<void> {
@@ -27,6 +33,9 @@ export default function (api: Client) {
 
     /**
      * Loads an Unit
+     *
+     * NOT PAGINATED
+     *
      * @param id
      */
     fetch(id: string): Promise<IVeoUnit> {
@@ -35,6 +44,9 @@ export default function (api: Client) {
 
     /**
      * Updates a Unit
+     *
+     * NOT PAGINATED
+     *
      * @param id
      * @param unit
      */
@@ -47,6 +59,9 @@ export default function (api: Client) {
 
     /**
      * Deletes a Unit
+     *
+     * NOT PAGINATED
+     *
      * @param id
      */
     delete(id: string): Promise<IVeoAPIMessage> {
