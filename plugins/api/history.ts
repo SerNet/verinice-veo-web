@@ -7,6 +7,8 @@ export default function (api: Client) {
     /**
      * Loads all versions for a given entity.
      *
+     * NOT PAGINATED
+     *
      * @param entity The entity to load the versions of.
      */
     fetchVersions(entity: IVeoEntity, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
@@ -22,6 +24,8 @@ export default function (api: Client) {
 
     /**
      * Loads a specific version of a given entity.
+     *
+     * NOT PAGINATED
      *
      * @param entity The entity to load the version of.
      * @param changeNumber The version of the entity to load.
@@ -39,6 +43,8 @@ export default function (api: Client) {
 
     /**
      * Loads the newest version of the given entity at a point in time.
+     *
+     * NOT PAGINATED
      *
      * @param entity The entity to load the version of.
      * @param date The date at which to retrieve the most current version.

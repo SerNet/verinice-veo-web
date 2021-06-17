@@ -93,7 +93,7 @@ export default Vue.extend({
       };
 
       for await (const type of _report.targetTypes) {
-        this.items = [...this.items, ...(await this.$api.entity.fetchAll(type))];
+        this.items = [...this.items, ...(await this.$api.entity.fetchAll(type)).items];
       }
     }
   },

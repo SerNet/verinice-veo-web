@@ -59,6 +59,13 @@ export interface IVeoReactiveFormAction {
   handler: (newValue: string, newObject: IBaseObject, oldObject: IBaseObject) => void;
 }
 
+export interface IVeoPaginatedResponse<T> {
+  items: T;
+  totalItemCount: number;
+  pageCount: number;
+  page: number;
+}
+
 /**
  * 2. Objectschema and formschema types
  *
