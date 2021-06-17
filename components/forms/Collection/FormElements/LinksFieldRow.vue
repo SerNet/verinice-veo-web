@@ -429,6 +429,14 @@ export default Vue.extend({
     async onDialogAcceptCreate() {
       this.dialogLoading = true;
       if (this.newObject) {
+        if (this.$user.currentDomain) {
+          this.newObject.domains = [{ targetUri: `/domains/${this.$user.currentDomain}` }];
+
+          if (this.subType) {
+            this.newObject.subType = { [this.$user.currentDomain]: this.subType };
+          }
+        }
+
         const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem;
         this.items.push(createItem);
         this.selected = createItem.id;

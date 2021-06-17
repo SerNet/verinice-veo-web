@@ -14,6 +14,8 @@ export interface ILinksFieldDialogNewObject {
   name?: string;
   abbreviation?: string;
   description?: string;
+  subType?: { [key: string]: string };
+  domains?: { targetUri: string }[];
 }
 
 export interface ILinksFieldDialogUpdatedObject extends ILinksFieldDialogNewObject, BaseObject {
