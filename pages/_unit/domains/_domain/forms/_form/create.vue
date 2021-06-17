@@ -3,7 +3,7 @@ import Vue from 'vue';
 import { Route } from 'vue-router/types/index';
 import { upperFirst } from 'lodash';
 
-import VeoEditFormPage, { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue';
+import VeoEditFormPage, { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { IForm, separateUUIDParam } from '~/lib/utils';
 
 import { IVeoEventPayload } from '~/types/VeoGlobalEvents';
@@ -82,7 +82,7 @@ export default Vue.extend({
         })
         .then(() => {
           this.formModified.isModified = false;
-          this.$router.push(`/${this.$route.params.unit}/forms/${this.$route.params.form}`);
+          this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`);
         })
         .catch((error: { status: number; name: string }) => {
           this.alert.text = error.name;

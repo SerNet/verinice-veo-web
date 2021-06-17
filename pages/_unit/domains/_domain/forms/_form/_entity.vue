@@ -282,17 +282,17 @@ export default Vue.extend({
       };
 
       // Add subtype to object data so it gets saved
-      if (this.form.formSchema?.subType && this.$user.currentDomain) {
+      if (this.form.formSchema?.subType) {
         // Sub type is not set yet, if the object is created
         if (!this.form.objectData.subType) {
-          this.form.objectData.subType = { [this.$user.currentDomain]: this.form.formSchema?.subType };
+          this.form.objectData.subType = { [this.domainId]: this.form.formSchema?.subType };
         } else {
-          this.form.objectData.subType[this.$user.currentDomain] = this.form.formSchema?.subType;
+          this.form.objectData.subType[this.domainId] = this.form.formSchema?.subType;
         }
       }
 
       // Add domain to object data so it gets saved
-      const domainObject = { targetUri: `/domains/${this.$user.currentDomain}` };
+      const domainObject = { targetUri: `/domains/${this.domainId}` };
       if (!this.form.objectData.domains) {
         this.form.objectData.domains = [domainObject];
       } else {
@@ -315,6 +315,9 @@ export default Vue.extend({
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id;
+    },
+    domainId(): string {
+      return separateUUIDParam(this.$route.params.domain).id;
     },
     unitRoute(): string {
       return this.$route.params.unit;
@@ -398,7 +401,7 @@ export default Vue.extend({
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
           this.$router.push({
-            path: `/${this.unitRoute}/forms/${this.formRoute}/`
+            path: `/${this.unitRoute}/domains/${this.$route.params.domain}/forms/${this.formRoute}/`
           });
         })
         .catch((error: { status: number; name: string }) => {

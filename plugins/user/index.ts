@@ -1,7 +1,6 @@
 import { Plugin } from '@nuxt/types';
 import Keycloak from 'keycloak-js';
 import { Auth } from './auth';
-import LocalStorage from '~/util/LocalStorage';
 
 /**
  * This class handles all authentication related stuff.
@@ -11,8 +10,6 @@ import LocalStorage from '~/util/LocalStorage';
 export class User {
   private _auth: Auth;
 
-  private _currentDomain?: string = undefined;
-
   private _currentUnit?: string = undefined;
 
   constructor(config: Keycloak.KeycloakConfig) {
@@ -21,30 +18,6 @@ export class User {
 
   public get auth(): Auth {
     return this._auth;
-  }
-
-  public get currentDomain(): string | undefined {
-    const defaultDomains = LocalStorage.defaultUnitDomains as any;
-
-    // We only need to fetch the current domain from local storage if it isn't already set, else we can just use the property in this class as it's more efficient
-    if (!this._currentDomain) {
-      if (this._currentUnit && Object.keys(defaultDomains).includes(this._currentUnit)) {
-        return defaultDomains[this._currentUnit];
-      }
-    }
-
-    return this._currentDomain;
-  }
-
-  public set currentDomain(value: string | undefined) {
-    this._currentDomain = value;
-
-    // Save the current domain to local storage
-    if (this._currentDomain && this._currentUnit) {
-      const defaultDomains = LocalStorage.defaultUnitDomains as any;
-      defaultDomains[this._currentUnit] = this._currentDomain;
-      LocalStorage.defaultUnitDomains = defaultDomains;
-    }
   }
 
   public get unit(): string | undefined {

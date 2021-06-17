@@ -91,7 +91,7 @@ interface IBreadcrumbEntry extends IBaseBreadcrumbEntry {
 }
 
 // TODO: check if :group should be added here, after groups are implemented
-type ParamsWithUUID = ':form' | ':entity' | ':id';
+type ParamsWithUUID = ':form' | ':entity' | ':id' | ':domain';
 
 interface ICustomBreadcrumbEntry {
   [key: string]: IBaseBreadcrumbEntry[];
@@ -128,28 +128,31 @@ export default defineComponent<IProps>({
     // Define which keys from path should be replaces with custom Text
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
       ':unit': { text: '', icon: 'mdi-home' },
-      forms: { text: context.root.$t('breadcrumbs.forms') as string },
-      objects: { text: context.root.$t('breadcrumbs.objects') as string },
-      list: { text: context.root.$t('breadcrumbs.list_view') as string },
-      tree: { text: context.root.$t('breadcrumbs.tree_view') as string }
+      forms: { text: context.root.$t('breadcrumbs.forms').toString() },
+      objects: { text: context.root.$t('breadcrumbs.objects').toString() },
+      list: { text: context.root.$t('breadcrumbs.list_view').toString() },
+      tree: { text: context.root.$t('breadcrumbs.tree_view').toString() },
+      domains: { text: context.root.$t('breadcrumbs.domain').toString() }
     };
 
     // TODO: check if :group should be added here, after groups are implemented
     // Definition of route fragments in path, which is represented with UUID in standard path
-    const paramsWithUUID: ParamsWithUUID[] = [':form', ':entity', ':id'];
+    const paramsWithUUID: ParamsWithUUID[] = [':form', ':entity', ':id', ':domain'];
 
     // KeyMap for definition of object properties which represent displayName
     const displayNameKeyMap = {
       ':form': 'name',
       ':entity': 'displayName',
-      ':id': 'displayName'
+      ':id': 'displayName',
+      ':domain': 'name'
     };
 
     // KeyMap for definition of KEY in $api.KEY.fetch()
     const apiKeyMap = {
       ':form': 'form',
       ':entity': 'entity',
-      ':id': 'entity'
+      ':id': 'entity',
+      ':domain': 'domain'
     };
 
     // Default properties for Breadcrumb listItem
@@ -276,7 +279,7 @@ export default defineComponent<IProps>({
         params[`:${key}`] = value;
       });
 
-      // Pathtemplate is general definition of current path without real values (e.g. /:unit/forms/:form)
+      // Pathtemplate is general definition of current path without real values (e.g. /:unit/domains/:domain/forms/:form)
       const pathTemplate = last(context.root.$route.matched)?.path;
       if (pathTemplate) {
         const listItems: IBreadcrumbEntry[] =

@@ -102,6 +102,40 @@ describe('Objectschema Editor', () => {
       }
     );
 
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /https:\/\/veo-forms.develop.cpmsys.io\/.*/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'forms/fetchAllForms.json'
+        });
+      }
+    );
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'https://veo-reporting.develop.cpmsys.io/reports'
+      },
+      (req) => {
+        req.reply({
+          fixture: 'reports/fetchAllReports.json'
+        });
+      }
+    );
+    cy.intercept(
+      {
+        method: 'GET',
+        url: 'https://veo.develop.cpmsys.io/domains/'
+      },
+      (req) => {
+        req.reply({
+          fixture: 'default/fetchAllDomains.json'
+        });
+      }
+    );
+
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */

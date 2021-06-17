@@ -1,8 +1,5 @@
 const PRIMARY_NAV_MINI_VARIANT = 'primary-navigation-drawer--mini-variant';
-const NAV_ENTRY_VEO_DATA_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-data-collapsed';
-const NAV_ENTRY_VEO_FORMS_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-forms-collapsed';
-const NAV_ENTRY_VEO_REPORTS_COLLAPSED = 'primary-navigation-drawer--nav-entry-veo-reports-collapsed';
-const DEFAULT_UNIT_DOMAINS = 'default-unit-domains';
+const NAV_ENTRY_EXPANDED = 'primary-navigation-drawer--nav-entry-expanded';
 
 export default class LocalStorage {
   static clear() {
@@ -27,6 +24,14 @@ export default class LocalStorage {
     LocalStorage.set(key, value.toString());
   }
 
+  static getNumber(key: string) {
+    return Number(LocalStorage.get(key));
+  }
+
+  static setNumber(key: string, value: number) {
+    LocalStorage.set(key, value + '');
+  }
+
   static getObject(key: string) {
     return JSON.parse(LocalStorage.get(key) || '{}');
   }
@@ -43,35 +48,11 @@ export default class LocalStorage {
     return LocalStorage.getBoolean(PRIMARY_NAV_MINI_VARIANT, false);
   }
 
-  static get navEntryVeoDataCollapsed() {
-    return LocalStorage.getBoolean(NAV_ENTRY_VEO_DATA_COLLAPSED, true);
+  static get expandedNavEntry() {
+    return LocalStorage.getNumber(NAV_ENTRY_EXPANDED) || -1;
   }
 
-  static set navEntryVeoDataCollapsed(value: boolean) {
-    LocalStorage.setBoolean(NAV_ENTRY_VEO_DATA_COLLAPSED, value);
-  }
-
-  static get navEntryVeoFormsCollapsed() {
-    return LocalStorage.getBoolean(NAV_ENTRY_VEO_FORMS_COLLAPSED, true);
-  }
-
-  static set navEntryVeoFormsCollapsed(value: boolean) {
-    LocalStorage.setBoolean(NAV_ENTRY_VEO_FORMS_COLLAPSED, value);
-  }
-
-  static get navEntryVeoReportsCollapsed() {
-    return LocalStorage.getBoolean(NAV_ENTRY_VEO_REPORTS_COLLAPSED, true);
-  }
-
-  static set navEntryVeoReportsCollapsed(value: boolean) {
-    LocalStorage.setBoolean(NAV_ENTRY_VEO_REPORTS_COLLAPSED, value);
-  }
-
-  static get defaultUnitDomains() {
-    return LocalStorage.getObject(DEFAULT_UNIT_DOMAINS);
-  }
-
-  static set defaultUnitDomains(value: Object) {
-    LocalStorage.setObject(DEFAULT_UNIT_DOMAINS, value);
+  static set expandedNavEntry(value: number) {
+    LocalStorage.setNumber(NAV_ENTRY_EXPANDED, value);
   }
 }

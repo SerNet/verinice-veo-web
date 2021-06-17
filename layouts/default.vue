@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { defineComponent, Ref, ref } from '@nuxtjs/composition-api';
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam } from '~/lib/utils';
@@ -78,7 +78,6 @@ interface IProps {}
 
 export default defineComponent<IProps>({
   setup(_props, context) {
-    const { $user } = useContext();
     //
     // Global navigation
     //
@@ -143,7 +142,6 @@ export default defineComponent<IProps>({
     });
 
     context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
-      $user.currentDomain = undefined;
       context.root.$router.push('/' + createUUIDUrlParam('unit', newUnit));
     });
 
