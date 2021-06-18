@@ -24,7 +24,7 @@
             flat
             hide-details
             style="font-size: 1.3rem;"
-            placeholder="-"
+            :placeholder="$t('noDomainSelected')"
             :menu-props="{closeOnContentClick: true, 'max-width': '256px', 'content-class': 'veo-primary-navigation__domain-selection-menu'}"
             @change="onDomainChange"
           >
@@ -371,13 +371,15 @@ export default Vue.extend({
     "collapse": "Collapse menu",
     "domain_selection": "Domain selection",
     "fix": "Fix menu",
-    "noChildItems": "No sub items"
+    "noChildItems": "No sub items",
+    "noDomainSelected": "No domain selected"
   },
   "de": {
     "collapse": "Menü verstecken",
     "domain_selection": "Domainauswahl",
     "fix": "Menü fixieren",
-    "noChildItems": "Keine Einträge vorhanden"
+    "noChildItems": "Keine Einträge vorhanden",
+    "noDomainSelected": "Keine Domain ausgewählt"
   }
 }
 </i18n>
