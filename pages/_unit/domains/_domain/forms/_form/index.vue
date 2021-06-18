@@ -41,7 +41,7 @@
             <v-col cols="auto">
               <v-btn
                 outlined
-                :to="`/${$route.params.unit}/forms/${$route.params.form}/create`"
+                :to="`/${$route.params.unit}/domains/${$route.params.domain}/forms/${$route.params.form}/create`"
                 color="primary"
                 class="align-self-center mr-4"
               >
@@ -106,7 +106,7 @@ export default Vue.extend({
       this.objects = [];
     }
 
-    this.formTypes = await this.$api.form.fetchAll({ unit: this.unitId }).then((formTypes: IVeoFormSchemaMeta[]) =>
+    this.formTypes = await this.$api.form.fetchAll(this.domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
       formTypes.map((entry: IVeoFormSchemaMeta) => {
         return {
           text: entry.name,
@@ -124,6 +124,9 @@ export default Vue.extend({
     unitId() {
       return separateUUIDParam(this.$route.params.unit).id;
     },
+    domainId() {
+      return separateUUIDParam(this.$route.params.domain).id;
+    },
     formId() {
       return separateUUIDParam(this.$route.params.form).id;
     },
@@ -131,13 +134,13 @@ export default Vue.extend({
       return this.formSchema?.name || '';
     },
     rootRoute(): string {
-      return `/${this.$route.params.unit}/forms/${this.$route.params.form}`;
+      return `/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`;
     }
   },
   methods: {
     changeType(newType: string) {
       const newFormParam = createUUIDUrlParam('form', newType);
-      this.$router.push(`/${this.$route.params.unit}/forms/${newFormParam}`);
+      this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${newFormParam}`);
     },
     loadSubEntities(_parent: IVeoEntity) {
       return [];

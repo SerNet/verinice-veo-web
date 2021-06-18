@@ -96,7 +96,7 @@ import { Route } from 'vue-router/types/index';
 
 import { capitalize } from 'lodash';
 import { IForm, separateUUIDParam } from '~/lib/utils';
-import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue';
+import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { getSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoAPIMessage } from '~/types/VeoTypes';

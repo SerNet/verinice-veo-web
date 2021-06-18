@@ -1,6 +1,15 @@
 <template>
+  <v-spacer
+    v-if="name === 'spacer'"
+    class="mt-8"
+  />
+  <v-divider
+    v-else-if="name === 'divider'"
+    class="mt-8"
+  />
   <v-list-item
-    v-if="childItems === undefined"
+    v-else-if="childItems === undefined"
+    class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
     :to="to"
     :exact="exact"
     :disabled="disabled"
@@ -14,15 +23,18 @@
   <v-list-group
     v-else
     :key="name"
+    class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
     :value="expanded"
     no-action
-    :prepend-icon="icon"
+    :prepend-icon="topLevelItem ? icon : undefiend"
     active-class="veo-active-link-group"
     :sub-group="!topLevelItem"
     @input="onInputExpanded"
   >
     <template #activator>
-      <v-list-item-title>{{ name }}</v-list-item-title>
+      <v-list-item-title>
+        {{ name }}
+      </v-list-item-title>
     </template>
     <VeoPrimaryNavigationEntry
       v-for="child of childItems"
@@ -130,3 +142,9 @@ export default defineComponent<IProps>({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.veo-primary-navigation__menu-item {
+  flex-basis: auto;
+}
+</style>

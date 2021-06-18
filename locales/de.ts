@@ -94,13 +94,14 @@ export default {
 
   'search.label': 'verinice. durchsuchen',
 
+  'domain.index.title': 'Modul Dashboard',
+
   'unit.create': 'Neue Unit erstellen',
   'unit.create.short': 'Unit erstellen',
   'unit.created': 'Unit wurde erstellt',
   'unit.details.children': 'Untergeordnete Units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'Bitte tragen Sie eine Beschreibung ein.',
-  'unit.details.forms': 'Formulare',
   'unit.details.name': 'Name der Unit',
   'unit.details.name.required': 'Bitte tragen Sie einen Unit Namen ein.',
   'unit.details.nochild': 'Keine untegeordneten Units vorhanden',
@@ -111,10 +112,12 @@ export default {
   'unit.objects.tooltip.clone': 'Objekt klonen',
   'unit.objects.tooltip.delete': 'Objekt löschen',
   'unit.objects.tooltip.edit': 'Objekt bearbeiten',
-  'unit.index.title': 'Dashboard',
+  'unit.index.title': 'Unit Dashboard',
   'unit.select.label': 'Unit',
 
   'breadcrumbs.all': 'Alle',
+  'breadcrumbs.catalogs': 'Kataloge',
+  'breadcrumbs.domain': 'Modul',
   'breadcrumbs.reports': 'Reports',
   'breadcrumbs.settings': 'Einstellungen',
   'breadcrumbs.help': 'Handbuch',
@@ -123,6 +126,7 @@ export default {
   'breadcrumbs.forms': 'Formulare',
   'breadcrumbs.index': 'Unitauswahl',
   'breadcrumbs.list_view': 'Listenansicht',
+  'breadcrumbs.more_modules': 'Weitere Module',
   'breadcrumbs.objects': 'Objekte',
   'breadcrumbs.objectschema': 'Objektschema',
   'breadcrumbs.scopes': 'Scopes',

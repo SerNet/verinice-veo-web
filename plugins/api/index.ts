@@ -10,10 +10,11 @@ import schema from '~/plugins/api/schema';
 import translation from '~/plugins/api/translation';
 import unit from '~/plugins/api/unit';
 import report from '~/plugins/api/report';
+import domain from '~/plugins/api/domain';
 import { User } from '~/plugins/user';
 
 export function createAPI(context: Context) {
-  return Client.create(context, { form, entity, history, schema, translation, unit, report });
+  return Client.create(context, { form, entity, history, schema, translation, unit, report, domain });
 }
 
 export interface IAPIClient {

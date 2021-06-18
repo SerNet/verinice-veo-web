@@ -94,13 +94,14 @@ export default {
 
   'search.label': 'Search verinice.',
 
+  'domain.index.title': 'Modul Dashboard',
+
   'unit.create': 'Create new unit',
   'unit.create.short': 'Create unit',
   'unit.created': 'Unit was created',
   'unit.details.children': 'Child units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'A unit description is required!',
-  'unit.details.forms': 'Forms',
   'unit.details.name': 'Unit name',
   'unit.details.name.required': 'A unit name is required!',
   'unit.details.nochild': 'No child units',
@@ -111,10 +112,12 @@ export default {
   'unit.objects.tooltip.clone': 'Clone object',
   'unit.objects.tooltip.delete': 'Delete object',
   'unit.objects.tooltip.edit': 'Edit object',
-  'unit.index.title': 'Dashboard',
+  'unit.index.title': 'Unit Dashboard',
   'unit.select.label': 'Unit',
 
   'breadcrumbs.all': 'All',
+  'breadcrumbs.catalogs': 'Catalogs',
+  'breadcrumbs.domain': 'Module',
   'breadcrumbs.reports': 'Reports',
   'breadcrumbs.settings': 'Settings',
   'breadcrumbs.help': 'Manual',
@@ -123,6 +126,7 @@ export default {
   'breadcrumbs.forms': 'Forms',
   'breadcrumbs.index': 'Unit selection',
   'breadcrumbs.list_view': 'List view',
+  'breadcrumbs.more_modules': 'More modules',
   'breadcrumbs.objects': 'Objects',
   'breadcrumbs.objectschema': 'Object schema',
   'breadcrumbs.scopes': 'Scopes',
