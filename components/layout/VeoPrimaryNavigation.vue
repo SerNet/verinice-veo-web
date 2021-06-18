@@ -369,17 +369,15 @@ export default Vue.extend({
 {
   "en": {
     "collapse": "Collapse menu",
-    "domain_selection": "Domain selection",
     "fix": "Fix menu",
     "noChildItems": "No sub items",
     "noDomainSelected": "No domain selected"
   },
   "de": {
     "collapse": "Menü verstecken",
-    "domain_selection": "Domainauswahl",
     "fix": "Menü fixieren",
     "noChildItems": "Keine Einträge vorhanden",
-    "noDomainSelected": "Keine Domain ausgewählt"
+    "noDomainSelected": "Keine Domäne ausgewählt"
   }
 }
 </i18n>
