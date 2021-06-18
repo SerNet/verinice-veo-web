@@ -230,7 +230,7 @@ export interface IVeoFormSchemaMeta {
   modelType: string;
   name: string;
   subType: string | null;
-  domainId: string;
+  domainId?: string;
 }
 
 export interface IVeoFormSchemaItemOptions {
