@@ -14,7 +14,11 @@
       <div class="d-flex flex-column fill-height">
         <!-- Current domain -->
         <div v-if="$route.params.unit">
-          <span class="mx-3">{{ $t('breadcrumbs.domain') }}</span><br>
+          <span
+            v-if="$route.name !== 'unit-domains-more'"
+            class="mx-3"
+          >{{ $t('breadcrumbs.domain') }}</span>
+          <br v-else>
           <v-select
             :value="domainId"
             :items="domains"
@@ -23,8 +27,8 @@
             solo
             flat
             hide-details
-            style="font-size: 1.3rem;"
-            :placeholder="$t('noDomainSelected')"
+            style="font-size: 1.2rem;"
+            :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
             :menu-props="{closeOnContentClick: true, 'max-width': '256px', 'content-class': 'veo-primary-navigation__domain-selection-menu'}"
             @change="onDomainChange"
           >
@@ -160,11 +164,19 @@ export default Vue.extend({
       const routeUnitParam = route.params.unit;
       const domainId = separateUUIDParam(route.params.domain).id;
 
-      const dashboard: INavItem = {
+      const unitDashboard: INavItem = {
         name: this.$t('unit.index.title').toString(),
-        icon: 'mdi-view-dashboard',
+        icon: 'mdi-home',
         exact: true,
         to: `/${routeUnitParam}/`,
+        disabled: false,
+        topLevelItem: true
+      };
+      const domainDashboard: INavItem = {
+        name: this.$t('domain.index.title').toString(),
+        icon: 'mdi-view-dashboard',
+        exact: true,
+        to: `/${routeUnitParam}/domains/${route.params.domain}`,
         disabled: false,
         topLevelItem: true
       };
@@ -259,8 +271,8 @@ export default Vue.extend({
       this.domains = await this.$api.domain.fetchAll();
 
       this.items = [
-        ...(domainId ? [forms, reports, divider] : []),
-        ...(routeUnitParam ? [dashboard, scopes, objects] : []),
+        ...(domainId ? [domainDashboard, forms, reports] : []),
+        ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
         ...(!routeUnitParam ? [unitSelection] : []),
         spacer,
         ...(routeUnitParam ? [settings, help] : []),
@@ -371,13 +383,13 @@ export default Vue.extend({
     "collapse": "Collapse menu",
     "fix": "Fix menu",
     "noChildItems": "No sub items",
-    "noDomainSelected": "No domain selected"
+    "noDomainSelected": "No module selected"
   },
   "de": {
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
     "noChildItems": "Keine Einträge vorhanden",
-    "noDomainSelected": "Keine Domäne ausgewählt"
+    "noDomainSelected": "Kein Modul ausgewählt"
   }
 }
 </i18n>

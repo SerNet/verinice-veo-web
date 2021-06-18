@@ -71,10 +71,10 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "domainOverview": "Domain overview"
+    "domainOverview": "Module overview"
   },
   "de": {
-    "domainOverview": "Domainübersicht"
+    "domainOverview": "Modulübersicht"
   }
 }
 </i18n>
