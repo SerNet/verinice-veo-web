@@ -15,10 +15,8 @@
         <!-- Current domain -->
         <div v-if="$route.params.unit">
           <span
-            v-if="$route.name !== 'unit-domains-more'"
             class="mx-3"
           >{{ $t('breadcrumbs.domain') }}</span>
-          <br v-else>
           <v-select
             :value="domainId"
             :items="domains"
