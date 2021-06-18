@@ -50,7 +50,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo\.develop.\.\w+\.\w+\/domains/
+        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
       },
       (req) => {
         req.reply({

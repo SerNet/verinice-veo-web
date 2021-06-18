@@ -105,7 +105,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
+        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\//
       },
       (req) => {
         req.reply({
@@ -127,7 +127,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo\.develop.\.\w+\.\w+\/domains/
+        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
       },
       (req) => {
         req.reply({
