@@ -559,7 +559,7 @@ export default class ObjectSchemaHelper {
     };
 
     // Add optional properties
-    if (link.subType && link.subType !== '') {
+    if (link.subType) {
       schemaLink.items.properties.target.properties.subType = {
         enum: [link.subType]
       };

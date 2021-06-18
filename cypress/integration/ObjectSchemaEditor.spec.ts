@@ -105,7 +105,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo-forms.develop.cpmsys.io\/.*/
+        url: /https:\/\/veo-forms\.develop\.\/.*/
       },
       (req) => {
         req.reply({

@@ -245,7 +245,7 @@ export default defineComponent<IProps>({
     function formattedLinkHeader(link: IVeoOSHCustomLink): string {
       let toReturn = link.targetType;
 
-      if (link.subType && link.subType !== '') {
+      if (link.subType) {
         toReturn += ` (${link.subType})`;
       }
 
