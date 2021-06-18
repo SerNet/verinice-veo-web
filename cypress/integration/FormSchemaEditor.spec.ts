@@ -50,7 +50,7 @@ describe('Formschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo-forms.develop.cpmsys.io\/.*/
+        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
       },
       (req) => {
         req.reply({
@@ -61,7 +61,7 @@ describe('Formschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo-reporting.develop.cpmsys.io/reports'
+        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
       },
       (req) => {
         req.reply({
@@ -72,7 +72,7 @@ describe('Formschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/domains/'
+        url: /https:\/\/veo\.develop.\.\w+\.\w+\/domains/
       },
       (req) => {
         req.reply({
@@ -82,7 +82,7 @@ describe('Formschema Editor', () => {
     );
   });
 
-  it('drags and drops elements into dropzone and nests in each other', function () {
+  it.only('drags and drops elements into dropzone and nests in each other', function () {
     cy.loadFse('formschema/empty-process.json');
     cy.contains('.v-sheet', 'text').drag();
     cy.get('.dropzone').drop();
