@@ -105,7 +105,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\/.*/
+        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
       },
       (req) => {
         req.reply({
@@ -383,7 +383,7 @@ describe('Objectschema Editor', () => {
     });
   });
 
-  it('changes link name, attribute names, description and types', function () {
+  it.only('changes link name, attribute names, description and types', function () {
     cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');

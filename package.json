@@ -14,6 +14,7 @@
     "precommit": "npm run lint",
     "test": "jest",
     "test:e2e": "export LANG='de_DE.UTF-8' && cypress run",
+    "test:e2e-open": "export LANG='de_DE.UTF-8' && cypress open",
     "test:e2e-ci": "start-server-and-test start 3000 test:e2e",
     "cy:verify": "cypress verify",
     "cy:info": "cypress info",
