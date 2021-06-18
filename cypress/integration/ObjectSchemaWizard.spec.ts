@@ -24,7 +24,17 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/translations.*/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'objectschema/translations.json'
+        });
+      }
+    );
     cy.intercept(
       {
         method: 'GET',
