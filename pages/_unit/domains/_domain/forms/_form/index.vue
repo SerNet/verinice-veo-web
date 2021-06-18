@@ -8,7 +8,7 @@
         v-bind="$data"
         :root-route="rootRoute"
         hide-display-options
-        @fetch="$fetch"
+        @fetch="onFetch"
       >
         <template #menu-bar>
           <v-row
@@ -69,12 +69,12 @@
 import Vue from 'vue';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 interface IData {
   formSchema: IVeoFormSchema | undefined;
   objectType: string | undefined;
-  objects: IVeoEntity[];
+  objects: IVeoPaginatedResponse<IVeoEntity[]>;
   formType: string;
   formTypes: { value: string; text: string }[];
   rootEntityType: string;
@@ -85,7 +85,7 @@ export default Vue.extend({
     return {
       formSchema: undefined,
       objectType: '',
-      objects: [],
+      objects: { items: [], page: 0, pageCount: 0, totalItemCount: 0 },
       formType: separateUUIDParam(this.$route.params.form).id,
       formTypes: [],
       rootEntityType: ''
@@ -96,14 +96,12 @@ export default Vue.extend({
     this.objectType = this.formSchema && this.formSchema.modelType;
     if (this.formSchema) {
       this.rootEntityType = this.objectType || '';
-      this.objects = (
-        await this.$api.entity.fetchAll(this.objectType, {
-          unit: this.unitId,
-          subType: this.formSchema.subType
-        })
-      ).items;
+      this.objects = await this.$api.entity.fetchAll(this.objectType, 0, {
+        unit: this.unitId,
+        subType: this.formSchema.subType
+      });
     } else {
-      this.objects = [];
+      this.objects = { items: [], page: 0, pageCount: 0, totalItemCount: 0 };
     }
 
     this.formTypes = await this.$api.form.fetchAll(this.domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
@@ -147,6 +145,9 @@ export default Vue.extend({
     },
     sortingFunction(a: IVeoEntity, b: IVeoEntity) {
       return a.name.localeCompare(b.name);
+    },
+    onFetch(options: any) {
+      console.log('1', options);
     }
   }
 });

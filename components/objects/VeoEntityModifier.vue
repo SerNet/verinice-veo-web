@@ -57,6 +57,11 @@ export enum VeoEntityModifierEventType {
   UNLINK
 }
 
+export enum VeoPaginationEventType {
+  PAGE_CHANGE,
+  SIZE_CHANGE
+}
+
 export interface IVeoAffectedEntity {
   uuid: string;
   type?: string;
@@ -67,6 +72,11 @@ export interface IVeoEntityModifierEvent {
   affectedEntities: IVeoAffectedEntity[];
   reloadAll?: boolean;
   addToRoot?: boolean;
+}
+
+export interface IVeoPaginationEvent {
+  event: VeoPaginationEventType;
+  replace?: boolean;
 }
 
 interface IData {
@@ -177,7 +187,9 @@ export default Vue.extend({
         delete: (data: { item: IVeoEntity }) => this.showDeleteEntityDialog(data.item),
         unlink: (data: { item: IVeoEntity; parent: IVeoEntity }) => this.showUnlinkEntityDialog(data.item, data.parent),
         click: (data: { item: IVeoEntity }) => this.onNavigateEntity(data.item),
-        'navigate-parent': () => this.onNavigateParent()
+        'navigate-parent': () => this.onNavigateParent(),
+        'page-change': (data: { newPage: number; replaceOldData?: boolean }) => this.onPageChange(data.newPage, data.replaceOldData),
+        'page-size-change': (data: { replaceOldData?: boolean }) => this.onPageChangeSizeChange(data.replaceOldData)
       };
     },
     /**
@@ -229,6 +241,19 @@ export default Vue.extend({
     },
     onNavigateParent() {
       this.$router.back();
+    },
+    onPageChange(newPage: number, replaceOldData: boolean = true) {
+      this.$emit('fetch', {
+        event: VeoPaginationEventType.PAGE_CHANGE,
+        page: newPage,
+        replaceOldData
+      });
+    },
+    onPageChangeSizeChange(replaceOldData: boolean = true) {
+      this.$emit('fetch', {
+        event: VeoPaginationEventType.SIZE_CHANGE,
+        replaceOldData
+      });
     },
     onAddEntitySuccess() {
       this.addEntityDialog.value = false;

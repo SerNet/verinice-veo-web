@@ -12,6 +12,8 @@ export class User {
 
   private _currentUnit?: string = undefined;
 
+  private _tablePageSize: number = 25;
+
   constructor(config: Keycloak.KeycloakConfig) {
     this._auth = new Auth(config);
   }
@@ -26,6 +28,14 @@ export class User {
 
   public set unit(value: string | undefined) {
     this._currentUnit = value;
+  }
+
+  public get tablePageSize(): number {
+    return this._tablePageSize;
+  }
+
+  public set tablePageSize(value: number) {
+    this._tablePageSize = value;
   }
 }
 

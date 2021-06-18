@@ -43,14 +43,14 @@ import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 
 import { endpoints, getSchemaEndpoint, getSchemaName } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 interface IData {
   dialog: boolean;
   noWatch: boolean;
   selectedItems: { id: string; type: string }[];
   saving: boolean;
-  entities: IVeoEntity[];
+  entities: IVeoPaginatedResponse<IVeoEntity[]>;
   loading: boolean;
 }
 
@@ -75,12 +75,12 @@ export default Vue.extend({
       noWatch: false,
       selectedItems: [],
       saving: false,
-      entities: [],
+      entities: { items: [], page: 0, pageCount: 0, totalItemCount: 0 },
       loading: false
     };
   },
   async fetch() {
-    this.entities = [];
+    this.entities = { items: [], page: 0, pageCount: 0, totalItemCount: 0 };
     for (const index in endpoints) {
       // @ts-ignore
       this.entities.push(...(await this.$api.entity.fetchAll(endpoints[index])).items);

@@ -1,7 +1,13 @@
 import { getSchemaEndpoint } from './schema';
 import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
-import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
+
+export interface IVeoEntityRequestParams extends IVeoPaginationOptions {
+  displayName?: string;
+  subType?: string;
+  unit?: string;
+}
 
 /**
  * This file replaces the individual files for each object schema (at the point
@@ -20,15 +26,14 @@ export default function (api: Client) {
      *
      * @param parent
      */
-    fetchAll(objectType: string, params?: Record<string, string>, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
+    fetchAll(objectType: string, page: number = 0, params: IVeoEntityRequestParams = {}, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       // Entities don't get accessed without their unit as a context, for this reason we manually add the unit if omitted by the developer.
       // To override this behaviour, set noUnit to true.
-      if (!params || !params.unit) {
-        params = { ...params, unit: separateUUIDParam(api._context.params.unit).id };
+      if (!params.unit && !noUnit) {
+        params.unit = separateUUIDParam(api._context.params.unit).id;
       }
-      if (noUnit) {
-        delete params.unit;
-      }
+
+      params = { ...params, page, size: api._context.$user.tablePageSize };
 
       // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
       const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase();

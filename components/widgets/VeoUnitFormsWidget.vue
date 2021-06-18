@@ -79,7 +79,7 @@ export default Vue.extend({
       // @ts-ignore
       const objectType = endpoints[object.modelType.toLowerCase()];
       object.items = (
-        await this.$api.entity.fetchAll(objectType, {
+        await this.$api.entity.fetchAll(objectType, 0, {
           unit: this.unit.id,
           subType: object.subType
         })

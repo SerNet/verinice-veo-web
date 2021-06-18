@@ -1,10 +1,12 @@
 <template>
   <v-data-table
-    :items="displayedItems"
+    :items="displayedItems.items"
     item-key="id"
     :headers="headers"
-    :items-per-page="itemsPerPage"
+    :items-per-page.sync="itemsPerPage"
     :loading="loading"
+    :page.sync="page"
+    :server-items-length="items.totalItemCount"
     class="veo-object-list"
   >
     <template #no-data>
@@ -127,13 +129,13 @@ import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { createUUIDUrlParam, formatDate, formatTime } from '~/lib/utils';
 
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
     items: {
-      type: Array as Prop<IVeoEntity[]>,
-      default: () => []
+      type: Object as Prop<IVeoPaginatedResponse<IVeoEntity[]>>,
+      default: () => ({ items: [], page: 0, pageCount: 0, totalItemCount: 0 })
     },
     loading: {
       type: Boolean,
@@ -148,14 +150,9 @@ export default Vue.extend({
       required: true
     }
   },
-  data() {
-    return {
-      itemsPerPage: 10
-    };
-  },
   computed: {
-    displayedItems(): IVeoEntity[] {
-      return this.items
+    displayedItems(): IVeoPaginatedResponse<IVeoEntity[]> {
+      this.items.items
         .map((item) => {
           // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
           if (item.description && item.description.length > 40) {
@@ -165,6 +162,25 @@ export default Vue.extend({
           return item;
         })
         .sort(this.sortingFunction);
+
+      return this.items;
+    },
+    itemsPerPage: {
+      set(size: number) {
+        this.$user.tablePageSize = size;
+        this.$emit('page-size-change', {});
+      },
+      get(): number {
+        return this.$user.tablePageSize;
+      }
+    },
+    page: {
+      set(page: number) {
+        this.$emit('page-change', { newPage: page });
+      },
+      get(): number {
+        return this.items.page;
+      }
     },
     editItemLink(): string {
       return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`;
