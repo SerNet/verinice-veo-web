@@ -105,7 +105,7 @@ describe('Objectschema Editor', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo-forms.develop.cpmsys.io\/.*/
+        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
       },
       (req) => {
         req.reply({
@@ -410,7 +410,8 @@ describe('Objectschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');
       cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
-      cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Person{enter}');
+      cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Control{enter}');
+      cy.contains('Link Subtyp').closest('.v-select').type('TOM{enter}');
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {

@@ -49,6 +49,17 @@
               :rules="form.rules.targetType"
             />
           </v-col>
+          <v-col
+            cols="4"
+            class="py-0"
+          >
+            <v-select
+              v-model="form.data.subType"
+              :disabled="!form.data.targetType || form.data.targetType === ''"
+              :label="`${$t('linkSubType')}`"
+              :items="filteredFormSchemas"
+            />
+          </v-col>
         </v-row>
         <v-list
           v-if="dialogMode === 'edit'"
@@ -157,6 +168,7 @@ import { capitalize, cloneDeep, trim } from 'lodash';
 import { Ref } from '@nuxtjs/composition-api';
 import { ISchemaEndpoint } from '~/plugins/api/schema';
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
+import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export default Vue.extend({
   inject: ['objectSchemaHelper', 'displayLanguage'],
@@ -195,6 +207,7 @@ export default Vue.extend({
         data: {
           title: '',
           targetType: '',
+          targetSubType: '',
           description: '',
           attributes: []
         } as IVeoOSHCustomLink,
@@ -205,6 +218,7 @@ export default Vue.extend({
         } as { [key: string]: ((input: string) => boolean)[] }
       },
       objectTypes: [] as ISchemaEndpoint[],
+      formSchemas: [] as IVeoFormSchemaMeta[],
       duplicates: [] as string[],
       dialogMode: 'create' as 'create' | 'edit',
       // Not computed, as changing the aspect/link title would make this undefined -> we want more control
@@ -213,6 +227,7 @@ export default Vue.extend({
   },
   async fetch() {
     this.objectTypes = await this.$api.schema.fetchAll();
+    this.formSchemas = await this.$api.form.fetchGlobal();
   },
   computed: {
     dialog: {
@@ -243,6 +258,23 @@ export default Vue.extend({
         text: capitalize(value.schemaName),
         value: value.schemaName
       }));
+    },
+    filteredFormSchemas(): { text: string; value: string }[] {
+      let schemas = this.formSchemas;
+      if (this.form.data.targetType && this.form.data.targetType !== '') {
+        schemas = schemas.filter((schema: IVeoFormSchemaMeta) => schema.modelType.toLowerCase() === this.form.data.targetType);
+      }
+
+      const schemasWithSubTypFormatted = schemas
+        .map((schema: IVeoFormSchemaMeta) => ({
+          text: schema.name,
+          value: schema.subType
+        }))
+        .filter((schema) => schema.value !== null) as { text: string; value: string }[];
+
+      schemasWithSubTypFormatted.unshift({ text: this.$t('no_subtype').toString(), value: '' });
+
+      return schemasWithSubTypFormatted;
     }
   },
   watch: {
@@ -256,12 +288,13 @@ export default Vue.extend({
       if (!newValue) {
         this.form.data.description = '';
         this.form.data.targetType = '';
+        this.form.data.subType = '';
         this.form.data.title = '';
         this.form.data.attributes = [];
       } else if (this.editedProperty) {
         this.dialogMode = 'edit';
         // We have to explicitly set the properties missing in IVeoOSHCustomAspect
-        this.form.data = { description: '', targetType: '', ...cloneDeep(this.editedProperty) };
+        this.form.data = { description: '', targetType: '', subType: '', ...cloneDeep(this.editedProperty) };
 
         // Load the translated link description if it is a link (Only if not set. Will only be set on old schemas as fallback)
         if (this.type === 'link' && !this.form.data.description) {
@@ -305,7 +338,7 @@ export default Vue.extend({
             const aspect = this.objectSchemaHelper.value.getCustomAspect(this.form.data.title);
             this.form.data.prefix = aspect?.prefix;
           } else {
-            this.objectSchemaHelper.value.addCustomLink(this.form.data.title, this.form.data.targetType);
+            this.objectSchemaHelper.value.addCustomLink(this.form.data.title, this.form.data.targetType, this.form.data.subType);
 
             // Set the prefix so that it won't be overwritten with undefined in the following updateCustomLink
             const link = this.objectSchemaHelper.value.getCustomLink(this.form.data.title);
@@ -448,7 +481,9 @@ export default Vue.extend({
       "aspect": "This aspect has no attributes",
       "link": "This link has no attributes"
     },
+    "no_subtype": "No subtype",
     "linkDescription": "Description",
+    "linkSubType": "Link Subtype",
     "linkType": "Link type",
     "propertyName": "Name"
   },
@@ -468,12 +503,13 @@ export default Vue.extend({
       "link": "Link \"{title}\" bearbeiten"
     },
     "linkDescription": "Linkbeschreibung",
-    "linkNoProperties": "Dieser Link besitzt keine Attribute",
+    "linkSubType": "Link Subtyp",
     "linkType": "Typ des Linkziels",
     "noProperties": {
       "aspect": "Dieser Aspekt besitzt keine Eigenschaften",
       "link": "Dieser Link besitzt keine Eigenschaften"
     },
+    "no_subtype": "Kein spezieller Subtyp",
     "propertyName": "Name"
   }
 }
