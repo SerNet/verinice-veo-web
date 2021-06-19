@@ -501,7 +501,7 @@ describe('Formschema Editor', () => {
     cy.get('.fse-label').eq(1).should('contain.text', 'Text 2 für das Textelement');
   });
 
-  it.only('opens FseGroup dialogs, changes data in dialogs and save them', function () {
+  it('opens FseGroup dialogs, changes data in dialogs and save them', function () {
     cy.loadFse('formschema/elements/group.json');
     cy.get('.dropzone').find('.fse-group').eq(0).find('.dragArea').should('have.class', 'flex-column direction-vertical').find('.fse-input').should('have.length', 2);
 
