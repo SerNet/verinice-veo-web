@@ -501,7 +501,7 @@ describe('Formschema Editor', () => {
     cy.get('.fse-label').eq(1).should('contain.text', 'Text 2 für das Textelement');
   });
 
-  it('opens FseGroup dialogs, changes data in dialogs and save them', function () {
+  it.only('opens FseGroup dialogs, changes data in dialogs and save them', function () {
     cy.loadFse('formschema/elements/group.json');
     cy.get('.dropzone').find('.fse-group').eq(0).find('.dragArea').should('have.class', 'flex-column direction-vertical').find('.fse-input').should('have.length', 2);
 
@@ -579,6 +579,15 @@ describe('Formschema Editor', () => {
       .should('have.class', 'flex-column direction-vertical')
       .find('.fse-input')
       .should('have.length', 2);
+
+    // Regression test for veo#226 bug
+    cy.contains('.v-sheet', 'group').drag();
+    cy.contains('.fse-group', 'Gruppe Test 1').drop();
+    cy.get('.dropzone').find('.fse-group').eq(1).toMatchHtmlSnapshot({ name: 'Group newly added 1 - FSE' });
+
+    cy.contains('.v-sheet', 'group').drag();
+    cy.contains('.fse-group', 'Gruppe Test 2').drop();
+    cy.get('.dropzone').find('.fse-group').eq(3).toMatchHtmlSnapshot({ name: 'Group newly added 2 - FSE' });
   });
 
   it('deletes elements', function () {

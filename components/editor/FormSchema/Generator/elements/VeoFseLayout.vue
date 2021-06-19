@@ -1,6 +1,7 @@
 <template>
   <VeoFseGroup
     v-bind="$props"
+    :key="name"
     v-on="$listeners"
   >
     <slot />

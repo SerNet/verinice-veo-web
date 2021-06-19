@@ -6912,3 +6912,139 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
   </div>
 </div>
 `;
+
+exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and save them #4`] = `
+<div
+  data-v-123abc4d=""
+  class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+>
+  <div data-v-123abc4d="" class="row no-gutters align-center">
+    <div data-v-123abc4d="" class="col col-auto">
+      <i
+        data-v-123abc4d=""
+        aria-hidden="true"
+        class="v-icon notranslate handle pr-1 v-icon--dense mdi mdi-menu theme--light"
+        style="font-size: 16px;"
+      ></i>
+    </div>
+    <div data-v-123abc4d="" class="col">
+      <div data-v-123abc4d="" class="text-caption text-truncate">
+        Gruppe
+        <!---->
+      </div>
+    </div>
+    <div data-v-123abc4d="" class="text-right col col-auto">
+      <button
+        data-v-123abc4d=""
+        type="button"
+        class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"
+      >
+        <span class="v-btn__content"
+          ><i
+            data-v-123abc4d=""
+            aria-hidden="true"
+            class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
+            style="font-size: 16px;"
+          ></i
+        ></span>
+      </button>
+      <button
+        data-v-123abc4d=""
+        type="button"
+        class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"
+      >
+        <span class="v-btn__content"
+          ><i
+            data-v-123abc4d=""
+            aria-hidden="true"
+            class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+            style="font-size: 16px;"
+          ></i
+        ></span>
+      </button>
+    </div>
+  </div>
+  <div data-v-123abc4d="" class="row no-gutters">
+    <div data-v-123abc4d="" class="col">
+      <!---->
+      <div
+        data-v-123abc4d=""
+        class="dragArea d-flex flex-column direction-vertical"
+        style="overflow: auto; min-height: 100px;"
+      ></div>
+    </div>
+  </div>
+  <!---->
+  <div data-v-123abc4d="" role="dialog" class="v-dialog__container">
+    <!---->
+  </div>
+</div>
+`;
+
+exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and save them #5`] = `
+<div
+  data-v-123abc4d=""
+  class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+>
+  <div data-v-123abc4d="" class="row no-gutters align-center">
+    <div data-v-123abc4d="" class="col col-auto">
+      <i
+        data-v-123abc4d=""
+        aria-hidden="true"
+        class="v-icon notranslate handle pr-1 v-icon--dense mdi mdi-menu theme--light"
+        style="font-size: 16px;"
+      ></i>
+    </div>
+    <div data-v-123abc4d="" class="col">
+      <div data-v-123abc4d="" class="text-caption text-truncate">
+        Gruppe
+        <!---->
+      </div>
+    </div>
+    <div data-v-123abc4d="" class="text-right col col-auto">
+      <button
+        data-v-123abc4d=""
+        type="button"
+        class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"
+      >
+        <span class="v-btn__content"
+          ><i
+            data-v-123abc4d=""
+            aria-hidden="true"
+            class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
+            style="font-size: 16px;"
+          ></i
+        ></span>
+      </button>
+      <button
+        data-v-123abc4d=""
+        type="button"
+        class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--x-small"
+      >
+        <span class="v-btn__content"
+          ><i
+            data-v-123abc4d=""
+            aria-hidden="true"
+            class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+            style="font-size: 16px;"
+          ></i
+        ></span>
+      </button>
+    </div>
+  </div>
+  <div data-v-123abc4d="" class="row no-gutters">
+    <div data-v-123abc4d="" class="col">
+      <!---->
+      <div
+        data-v-123abc4d=""
+        class="dragArea d-flex flex-column direction-vertical"
+        style="overflow: auto; min-height: 100px;"
+      ></div>
+    </div>
+  </div>
+  <!---->
+  <div data-v-123abc4d="" role="dialog" class="v-dialog__container">
+    <!---->
+  </div>
+</div>
+`;
