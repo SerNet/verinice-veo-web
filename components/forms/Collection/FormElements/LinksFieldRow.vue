@@ -210,7 +210,6 @@
       </v-card>
     </v-dialog>
   </v-row>
-  <!--<div class="d-flex" :class="directionClass">-->
 </template>
 
 <script lang="ts">
@@ -318,14 +317,10 @@ export default Vue.extend({
     };
   },
   computed: {
-    directionClass(): string {
-      return this.options && this.options.direction === 'vertical' ? 'flex-column direction-vertical' : 'flex-row direction-horizontal';
-    },
     ui() {
       return {
         type: 'Layout',
         options: {
-          direction: this.options && this.options.direction === 'vertical' ? 'vertical' : 'horizontal',
           format: 'group'
         },
         elements: this.elements
@@ -520,14 +515,6 @@ export default Vue.extend({
 .vf-links-field .direction-vertical > .links-field-row-autocomplete {
   margin-top: 12px !important;
   margin-bottom: 12px !important;
-}
-.vf-links-field .direction-horizontal > .links-field-row-autocomplete {
-  margin-top: 12px !important;
-  margin-bottom: 12px !important;
-}
-
-.vf-links-field .direction-horizontal ::v-deep .vf-control {
-  margin: 0 0 0 5px;
 }
 
 .links-field-row-autocomplete {
