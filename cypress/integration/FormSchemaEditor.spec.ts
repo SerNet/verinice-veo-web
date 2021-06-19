@@ -454,9 +454,6 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Linkattribute:');
       cy.contains('.v-autocomplete', 'Linkattribute').type('{downarrow}{enter}{downarrow}{enter}{downarrow}{enter}{esc}').should('contain.text', 'purpose, explanation, document');
 
-      cy.get('.v-form').should('contain.text', 'Ausrichtung:');
-      cy.contains('.v-autocomplete', 'Ausrichtung').find('input').should('have.value', 'Horizontal').closest('.v-autocomplete').type('Vertikal{enter}');
-
       cy.get('.dragArea').find('.fse-input').should('have.length', 3);
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
