@@ -24,11 +24,21 @@ describe('Objectschema Wizard', () => {
         });
       }
     );
-
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo-forms.develop.cpmsys.io\/.*/
+        url: /.*\/translations.*/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'objectschema/translations.json'
+        });
+      }
+    );
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
       },
       (req) => {
         req.reply({
@@ -39,7 +49,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo-reporting.develop.cpmsys.io/reports'
+        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
       },
       (req) => {
         req.reply({
@@ -50,7 +60,7 @@ describe('Objectschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: 'https://veo.develop.cpmsys.io/domains/'
+        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
       },
       (req) => {
         req.reply({

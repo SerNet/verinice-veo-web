@@ -94,6 +94,8 @@ export default {
 
   'search.label': 'Search verinice.',
 
+  'domain.index.title': 'Modul Dashboard',
+
   'unit.create': 'Create new unit',
   'unit.create.short': 'Create unit',
   'unit.created': 'Unit was created',
@@ -115,7 +117,7 @@ export default {
 
   'breadcrumbs.all': 'All',
   'breadcrumbs.catalogs': 'Catalogs',
-  'breadcrumbs.domain': 'Domain',
+  'breadcrumbs.domain': 'Module',
   'breadcrumbs.reports': 'Reports',
   'breadcrumbs.settings': 'Settings',
   'breadcrumbs.help': 'Manual',

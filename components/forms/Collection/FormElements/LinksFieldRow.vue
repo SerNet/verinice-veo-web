@@ -28,7 +28,12 @@
             tile
             @click.stop="onDialogOpen('DIALOG_CREATE')"
           >
-            {{ $t('createTargetObject') }}
+            <span v-if="currentForm">
+              {{ $t('createTargetForm', { type: currentForm.name }) }}
+            </span>
+            <span v-else>
+              {{ $t('createTargetObject') }}
+            </span>
           </v-btn>
           <v-divider />
         </template>
@@ -214,7 +219,9 @@ import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
 import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { getSchemaEndpoint } from '~/plugins/api/schema';
+import { separateUUIDParam } from '~/lib/utils';
 
 interface ITarget {
   targetUri: string | undefined;
@@ -243,9 +250,9 @@ interface IData {
   itemInDialog: IItem | undefined;
   newObject: ILinksFieldDialogNewObject;
   targetId: string | undefined;
-  objectTypePluralMap: BaseObject;
   linksFieldDialogObjectSchema: JSONSchema7;
   linksFieldDialogFormSchema: UISchema;
+  currentForm: IVeoFormSchemaMeta | undefined;
 }
 
 export default Vue.extend({
@@ -305,14 +312,9 @@ export default Vue.extend({
       itemInDialog: undefined,
       newObject: {},
       targetId: undefined,
-      objectTypePluralMap: {
-        process: 'processes',
-        person: 'persons',
-        asset: 'assets',
-        control: 'controls'
-      },
       linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
-      linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema }
+      linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema },
+      currentForm: undefined
     };
   },
   computed: {
@@ -330,13 +332,16 @@ export default Vue.extend({
       };
     },
     targetUri(): string | undefined {
-      return this.targetId ? `/${this.objectTypePluralMap[this.targetType]}/${this.targetId}` : undefined;
+      return this.targetId ? `/${getSchemaEndpoint(this.targetType)}/${this.targetId}` : undefined;
     },
     targetType(): string {
-      // TODO: replace this function by the line below, after target.type in ObjectSchema is replaced by "person", "process", etc
-      // return (this.schema.items as any).properties.target.properties
-      //   .type.enum[0]
       return (this.schema.items as any).properties.target.properties.type.enum[0];
+    },
+    subType(): string | undefined {
+      return (this.schema.items as any).properties.target.properties.subType?.enum[0];
+    },
+    domainId(): string {
+      return separateUUIDParam(this.$route.params.domain).id;
     },
     target(): ITarget | undefined {
       return {
@@ -384,11 +389,22 @@ export default Vue.extend({
   methods: {
     async fetchItems(filter?: string) {
       this.loading = true;
+
+      // Filter out the display name of the currently edited object
+      const filters = {
+        ...(filter ? { displayName: filter } : {}),
+        ...(this.subType ? { subType: this.subType } : {})
+      };
+
       try {
-        const displayFilter = filter ? { displayName: filter } : undefined;
         // TODO: Limit result count with pagination API
-        const items = (await this.api.fetchAll(this.targetType, displayFilter)) as IItem[];
+        const items = (await this.api.fetchAll(this.targetType, filters)) as IItem[];
         this.items = items.slice(0, 100);
+
+        if (this.subType) {
+          const forms = await this.$api.form.fetchAll();
+          this.currentForm = forms.find((form) => form.subType === this.subType);
+        }
       } finally {
         this.loading = false;
       }
@@ -411,6 +427,13 @@ export default Vue.extend({
     async onDialogAcceptCreate() {
       this.dialogLoading = true;
       if (this.newObject) {
+        const domainObject = { targetUri: `/domains/${this.domainId}` };
+        this.newObject.domains = [domainObject];
+
+        if (this.subType) {
+          this.newObject.subType = { [this.domainId]: this.subType };
+        }
+
         const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem;
         this.items.push(createItem);
         this.selected = createItem.id;
@@ -458,6 +481,7 @@ export default Vue.extend({
   "en": {
     "targetObject": "Target object",
     "createTargetObject": "Create new object",
+    "createTargetForm": "Create {type}",
     "updateTargetObject": "Change object",
     "deleteTargetObject": "Delete object",
     "deleteTargetObjectConfirmation": "Are you sure you want to delete \"{object}\"?",
@@ -467,6 +491,7 @@ export default Vue.extend({
     "targetObject": "Zielobjekt",
     "updateTargetObject": "Objekt ändern",
     "createTargetObject": "Ein neues Objekt anlegen",
+    "createTargetForm": "{type} erstellen",
     "deleteTargetObject": "Objekt löschen",
     "deleteTargetObjectConfirmation": "Sind sie sicher, dass das Objekt \"{object}\" gelöscht werden soll?",
     "noTargets": "Keine Ziele verfügbar"

@@ -28,6 +28,16 @@ export default function (api: Client) {
     },
 
     /**
+     * Loads all Forms REGARDLESS of domain
+     * @param parent
+     */
+    fetchGlobal(params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+      return api.req('/api/forms', {
+        params
+      });
+    },
+
+    /**
      * Creates a form
      *
      * NOT PAGINATED

@@ -14,7 +14,9 @@
       <div class="d-flex flex-column fill-height">
         <!-- Current domain -->
         <div v-if="$route.params.unit">
-          <span class="mx-3">{{ $t('breadcrumbs.domain') }}</span><br>
+          <span
+            class="mx-3"
+          >{{ $t('breadcrumbs.domain') }}</span>
           <v-select
             :value="domainId"
             :items="domains"
@@ -23,8 +25,8 @@
             solo
             flat
             hide-details
-            style="font-size: 1.3rem;"
-            placeholder="-"
+            style="font-size: 1.2rem;"
+            :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
             :menu-props="{closeOnContentClick: true, 'max-width': '256px', 'content-class': 'veo-primary-navigation__domain-selection-menu'}"
             @change="onDomainChange"
           >
@@ -160,11 +162,19 @@ export default Vue.extend({
       const routeUnitParam = route.params.unit;
       const domainId = separateUUIDParam(route.params.domain).id;
 
-      const dashboard: INavItem = {
+      const unitDashboard: INavItem = {
         name: this.$t('unit.index.title').toString(),
-        icon: 'mdi-view-dashboard',
+        icon: 'mdi-home',
         exact: true,
         to: `/${routeUnitParam}/`,
+        disabled: false,
+        topLevelItem: true
+      };
+      const domainDashboard: INavItem = {
+        name: this.$t('domain.index.title').toString(),
+        icon: 'mdi-view-dashboard',
+        exact: true,
+        to: `/${routeUnitParam}/domains/${route.params.domain}`,
         disabled: false,
         topLevelItem: true
       };
@@ -233,7 +243,7 @@ export default Vue.extend({
       };
 
       const forms = {
-        name: this.$t('breadcrumbs.forms') as string,
+        name: this.$t('breadcrumbs.forms').toString(),
         icon: 'mdi-format-list-checks',
         to: undefined,
         exact: false,
@@ -245,7 +255,7 @@ export default Vue.extend({
       };
 
       const reports = {
-        name: this.$t('breadcrumbs.reports') as string,
+        name: this.$t('breadcrumbs.reports').toString(),
         icon: 'mdi-file-chart',
         to: undefined,
         exact: false,
@@ -259,8 +269,8 @@ export default Vue.extend({
       this.domains = await this.$api.domain.fetchAll();
 
       this.items = [
-        ...(domainId ? [forms, reports, divider] : []),
-        ...(routeUnitParam ? [dashboard, scopes, objects] : []),
+        ...(domainId ? [domainDashboard, forms, reports] : []),
+        ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
         ...(!routeUnitParam ? [unitSelection] : []),
         spacer,
         ...(routeUnitParam ? [settings, help] : []),
@@ -280,6 +290,17 @@ export default Vue.extend({
     addChildren(itemTitle: string, items: INavItem[], overwrite: boolean = true) {
       const menuItem = this.items.find((item: INavItem) => item.name === itemTitle);
       if (menuItem) {
+        if (items.length === 0) {
+          menuItem.childItems = [
+            {
+              topLevelItem: false,
+              name: this.$t('noChildItems').toString(),
+              disabled: false
+            }
+          ];
+          return;
+        }
+
         if (overwrite) {
           menuItem.childItems = items;
         } else {
@@ -308,17 +329,14 @@ export default Vue.extend({
     },
     async fetchFormTypes(domainId: string): Promise<INavItem[]> {
       const routeUnitParam = separateUUIDParam(this.$route.params.unit).id;
-      return await this.$api.form.fetchAll(domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
-        formTypes.map((entry: IVeoFormSchemaMeta) => {
-          return {
-            name: entry.name,
-            exact: false,
-            to: `/${createUUIDUrlParam('unit', routeUnitParam)}/domains/${createUUIDUrlParam('domain', domainId)}/forms/${createUUIDUrlParam('form', entry?.id || '')}/`,
-            disabled: false,
-            topLevelItem: false
-          };
-        })
-      );
+      const forms = await this.$api.form.fetchAll(domainId);
+      return forms.map((entry: IVeoFormSchemaMeta) => ({
+        name: entry.name,
+        exact: false,
+        to: `/${createUUIDUrlParam('unit', routeUnitParam)}/domains/${createUUIDUrlParam('domain', domainId)}/forms/${createUUIDUrlParam('form', entry?.id || '')}/`,
+        disabled: false,
+        topLevelItem: false
+      }));
     },
     async fetchReportTypes(domainId: string): Promise<INavItem[]> {
       return await this.$api.report.fetchAll().then((reportTypes: IVeoReportsMeta) =>
@@ -361,13 +379,15 @@ export default Vue.extend({
 {
   "en": {
     "collapse": "Collapse menu",
-    "domain_selection": "Domain selection",
-    "fix": "Fix menu"
+    "fix": "Fix menu",
+    "noChildItems": "No sub items",
+    "noDomainSelected": "No module selected"
   },
   "de": {
     "collapse": "Menü verstecken",
-    "domain_selection": "Domainauswahl",
-    "fix": "Menü fixieren"
+    "fix": "Menü fixieren",
+    "noChildItems": "Keine Einträge vorhanden",
+    "noDomainSelected": "Kein Modul ausgewählt"
   }
 }
 </i18n>

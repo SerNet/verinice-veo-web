@@ -37,7 +37,8 @@
 import Vue from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
-import { BaseObject, IApi, ILinksFieldDialogNewObject, ILinksFieldDialogUpdatedObject, ISearchParams } from '~/components/forms/utils';
+import { BaseObject, IApi, ILinksFieldDialogNewObject, ILinksFieldDialogUpdatedObject } from '~/components/forms/utils';
+import { IBaseObject } from '~/lib/utils';
 
 export default Vue.extend({
   data() {
@@ -503,7 +504,7 @@ export default Vue.extend({
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
     // _ is objectType but here is not used
-    async fetchAll(_: string, searchParams?: ISearchParams): Promise<BaseObject[]> {
+    async fetchAll(_: string, searchParams?: IBaseObject): Promise<BaseObject[]> {
       await this.delay(2000);
       return new Promise((resolve, reject) => {
         const res = searchParams

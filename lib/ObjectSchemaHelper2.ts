@@ -31,6 +31,7 @@ export interface IVeoOSHCustomAspect {
 export interface IVeoOSHCustomLink extends IVeoOSHCustomAspect {
   description?: string;
   targetType: string;
+  subType?: string;
 }
 
 export interface IVeoOSHOptions {
@@ -301,12 +302,13 @@ export default class ObjectSchemaHelper {
     return this._customAspects.find((item) => item.title === name);
   }
 
-  public addCustomLink(name: string, type: string) {
+  public addCustomLink(name: string, type: string, subType?: string) {
     const link: IVeoOSHCustomLink = {
       title: name,
       prefix: `${this._id}_`,
       attributes: [],
-      targetType: type
+      targetType: type,
+      subType
     };
     this._customLinks.push(link);
   }
@@ -556,6 +558,13 @@ export default class ObjectSchemaHelper {
       }
     };
 
+    // Add optional properties
+    if (link.subType) {
+      schemaLink.items.properties.target.properties.subType = {
+        enum: [link.subType]
+      };
+    }
+
     for (const attribute of link.attributes) {
       // @ts-ignore
       const dummy: IVeoObjectSchemaProperty = { ...attribute };
@@ -750,6 +759,7 @@ export default class ObjectSchemaHelper {
       dummy.prefix = `${this._id}_`;
       dummy.description = link.items.properties.target.title;
       dummy.targetType = link.items.properties.target.properties.type.enum[0];
+      dummy.subType = link.items.properties.target.properties.subType?.enum[0];
 
       for (const attributeName in link.items.properties.attributes.properties) {
         const attribute = link.items.properties.attributes.properties[attributeName];
