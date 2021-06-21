@@ -105,7 +105,7 @@ export default Vue.extend({
         }
       }
 
-      return this.entities.filter((entity: IVeoEntity) => filterFunction(entity) && entity.id !== this.editedEntity?.id);
+      return this.entities.items.filter((entity: IVeoEntity) => filterFunction(entity) && entity.id !== this.editedEntity?.id);
     }
   },
   watch: {
@@ -133,13 +133,13 @@ export default Vue.extend({
           return { id, type };
         });
 
-        if (this.entities.length === 0) {
+        if (this.entities.items.length === 0) {
           this.loading = true;
           this.$api.schema
             .fetchAll()
             .then((data) => {
               return data.forEach(async (schema) => {
-                this.entities = [...this.entities, ...(await this.$api.entity.fetchAll(schema.endpoint)).items];
+                this.entities.items = [...this.entities.items, ...(await this.$api.entity.fetchAll(schema.endpoint)).items];
               });
             })
             .finally(() => {

@@ -12,7 +12,7 @@ export class User {
 
   private _currentUnit?: string = undefined;
 
-  private _tablePageSize: number = 25;
+  private _tablePageSize: number = 10;
 
   constructor(config: Keycloak.KeycloakConfig) {
     this._auth = new Auth(config);

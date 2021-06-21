@@ -3,11 +3,18 @@
     :items="displayedItems.items"
     item-key="id"
     :headers="headers"
-    :items-per-page.sync="itemsPerPage"
+    :items-per-page="itemsPerPage"
     :loading="loading"
+    :options="{ mustSort: true }"
     :page.sync="page"
     :server-items-length="items.totalItemCount"
+    :footer-props="{ itemsPerPageOptions: [ 5, 10, 25, 50 ] }"
+    :sort-by.sync="sortBy"
+    :sort-desc.sync="sortDesc"
     class="veo-object-list"
+    @update:items-per-page="onPageSizeChange"
+    @update:sort-by="refetch"
+    @update:sort-desc="refetch"
   >
     <template #no-data>
       <span class="text-center">{{ $t('no_objects') }}</span>
@@ -135,7 +142,7 @@ export default Vue.extend({
   props: {
     items: {
       type: Object as Prop<IVeoPaginatedResponse<IVeoEntity[]>>,
-      default: () => ({ items: [], page: 0, pageCount: 0, totalItemCount: 0 })
+      default: () => ({ items: [], page: 1, pageCount: 0, totalItemCount: 0 })
     },
     loading: {
       type: Boolean,
@@ -149,6 +156,12 @@ export default Vue.extend({
       type: String,
       required: true
     }
+  },
+  data() {
+    return {
+      sortBy: 'name' as string,
+      sortDesc: false as boolean
+    };
   },
   computed: {
     displayedItems(): IVeoPaginatedResponse<IVeoEntity[]> {
@@ -165,18 +178,12 @@ export default Vue.extend({
 
       return this.items;
     },
-    itemsPerPage: {
-      set(size: number) {
-        this.$user.tablePageSize = size;
-        this.$emit('page-size-change', {});
-      },
-      get(): number {
-        return this.$user.tablePageSize;
-      }
+    itemsPerPage(): number {
+      return this.$user.tablePageSize;
     },
     page: {
       set(page: number) {
-        this.$emit('page-change', { newPage: page });
+        this.$emit('page-change', { newPage: page, sortBy: this.sortBy, sortDesc: this.sortDesc });
       },
       get(): number {
         return this.items.page;
@@ -231,6 +238,19 @@ export default Vue.extend({
     },
     sendEvent(event: string, item: IVeoEntity, addPath: boolean = false) {
       this.$emit(event, { item, path: addPath ? this.generatePath(item) : undefined });
+    },
+    onPageSizeChange(newSize: number | undefined) {
+      if (newSize) {
+        this.$user.tablePageSize = newSize;
+        this.refetch();
+      }
+    },
+    refetch() {
+      this.$emit('refetch-data', {
+        sortBy: this.sortBy,
+        sortDesc: this.sortDesc,
+        page: 1
+      });
     }
   }
 });

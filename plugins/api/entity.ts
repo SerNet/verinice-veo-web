@@ -1,3 +1,4 @@
+import { max } from 'lodash';
 import { getSchemaEndpoint } from './schema';
 import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
@@ -33,6 +34,9 @@ export default function (api: Client) {
         params.unit = separateUUIDParam(api._context.params.unit).id;
       }
 
+      // -1, because the first page for the api is 0, however vuetify expects it to be 1
+      page = max([page - 1, 0]) || 0;
+
       params = { ...params, page, size: api._context.$user.tablePageSize };
 
       // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
@@ -55,6 +59,9 @@ export default function (api: Client) {
             }
             entry.displayName = `${entry.abbreviation || ''} ${entry.name}`;
           });
+
+          // +1, because the first page for the api is 0, however vuetify expects it to be 1
+          result.page = page + 1;
           return result;
         });
     },

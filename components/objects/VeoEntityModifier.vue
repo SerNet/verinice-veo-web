@@ -54,12 +54,8 @@ export enum VeoEntityModifierEventType {
   ADD,
   CLONE,
   DELETE,
-  UNLINK
-}
-
-export enum VeoPaginationEventType {
-  PAGE_CHANGE,
-  SIZE_CHANGE
+  UNLINK,
+  DISPLAY_CHANGE
 }
 
 export interface IVeoAffectedEntity {
@@ -72,11 +68,9 @@ export interface IVeoEntityModifierEvent {
   affectedEntities: IVeoAffectedEntity[];
   reloadAll?: boolean;
   addToRoot?: boolean;
-}
-
-export interface IVeoPaginationEvent {
-  event: VeoPaginationEventType;
-  replace?: boolean;
+  page?: number;
+  sortBy?: string;
+  sortDesc?: boolean;
 }
 
 interface IData {
@@ -188,8 +182,10 @@ export default Vue.extend({
         unlink: (data: { item: IVeoEntity; parent: IVeoEntity }) => this.showUnlinkEntityDialog(data.item, data.parent),
         click: (data: { item: IVeoEntity }) => this.onNavigateEntity(data.item),
         'navigate-parent': () => this.onNavigateParent(),
-        'page-change': (data: { newPage: number; replaceOldData?: boolean }) => this.onPageChange(data.newPage, data.replaceOldData),
-        'page-size-change': (data: { replaceOldData?: boolean }) => this.onPageChangeSizeChange(data.replaceOldData)
+        'page-change': (data: { newPage: number; sortBy: string; sortDesc: boolean; replaceOldData?: boolean }) =>
+          this.onRefetchData(data.newPage, data.sortBy, data.sortDesc, data.replaceOldData),
+        'refetch-data': (data: { page: number; sortBy: string; sortDesc: boolean; replaceOldData?: boolean }) =>
+          this.onRefetchData(data.page, data.sortBy, data.sortDesc, data.replaceOldData)
       };
     },
     /**
@@ -242,18 +238,16 @@ export default Vue.extend({
     onNavigateParent() {
       this.$router.back();
     },
-    onPageChange(newPage: number, replaceOldData: boolean = true) {
-      this.$emit('fetch', {
-        event: VeoPaginationEventType.PAGE_CHANGE,
-        page: newPage,
-        replaceOldData
-      });
-    },
-    onPageChangeSizeChange(replaceOldData: boolean = true) {
-      this.$emit('fetch', {
-        event: VeoPaginationEventType.SIZE_CHANGE,
-        replaceOldData
-      });
+    onRefetchData(page: number, sortBy: string, sortDesc: boolean, replaceOldData: boolean = true) {
+      this.entityModifiedEvent = {
+        event: VeoEntityModifierEventType.DISPLAY_CHANGE,
+        reloadAll: replaceOldData,
+        affectedEntities: [],
+        page,
+        sortBy,
+        sortDesc
+      };
+      this.$emit('fetch', this.entityModifiedEvent);
     },
     onAddEntitySuccess() {
       this.addEntityDialog.value = false;

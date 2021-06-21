@@ -53,7 +53,7 @@
         <template #default="{ on }">
           <VeoFormList
             :items="objects"
-            :loading="$fetchState.pending"
+            :loading="$fetchState.pending || loading"
             :show-parent-link="false"
             :load-children="loadSubEntities"
             :sorting-function="sortingFunction"
@@ -67,9 +67,10 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
 
 interface IData {
   formSchema: IVeoFormSchema | undefined;
@@ -78,6 +79,7 @@ interface IData {
   formType: string;
   formTypes: { value: string; text: string }[];
   rootEntityType: string;
+  loading: boolean;
 }
 
 export default Vue.extend({
@@ -85,10 +87,11 @@ export default Vue.extend({
     return {
       formSchema: undefined,
       objectType: '',
-      objects: { items: [], page: 0, pageCount: 0, totalItemCount: 0 },
+      objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 },
       formType: separateUUIDParam(this.$route.params.form).id,
       formTypes: [],
-      rootEntityType: ''
+      rootEntityType: '',
+      loading: false
     };
   },
   async fetch() {
@@ -96,12 +99,9 @@ export default Vue.extend({
     this.objectType = this.formSchema && this.formSchema.modelType;
     if (this.formSchema) {
       this.rootEntityType = this.objectType || '';
-      this.objects = await this.$api.entity.fetchAll(this.objectType, 0, {
-        unit: this.unitId,
-        subType: this.formSchema.subType
-      });
+      this.fetchEntities();
     } else {
-      this.objects = { items: [], page: 0, pageCount: 0, totalItemCount: 0 };
+      this.objects = { items: [], page: 1, pageCount: 0, totalItemCount: 0 };
     }
 
     this.formTypes = await this.$api.form.fetchAll(this.domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
@@ -147,7 +147,28 @@ export default Vue.extend({
       return a.name.localeCompare(b.name);
     },
     onFetch(options: any) {
-      console.log('1', options);
+      this.fetchEntities(options);
+    },
+    async fetchEntities(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: boolean; sortDesc?: boolean }) {
+      this.loading = true;
+
+      const _options = { page: 1, reloadAll: true, sortBy: 'name', sortDesc: false, ...options };
+
+      const data = (await this.$api.entity.fetchAll(this.objectType, _options.page, {
+        unit: this.unitId,
+        subType: this.formSchema?.subType,
+        size: this.$user.tablePageSize,
+        sortBy: _options.sortBy,
+        sortOrder: _options.sortDesc ? 'desc' : 'asc'
+      } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
+
+      if (_options.reloadAll) {
+        this.objects = data;
+      } else {
+        this.objects.page = data.page;
+        this.objects.items.push(...data.items);
+      }
+      this.loading = false;
     }
   }
 });
