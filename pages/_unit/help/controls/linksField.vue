@@ -39,6 +39,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { BaseObject, IApi, ILinksFieldDialogNewObject, ILinksFieldDialogUpdatedObject } from '~/components/forms/utils';
 import { IBaseObject } from '~/lib/utils';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
   data() {
@@ -504,7 +505,7 @@ export default Vue.extend({
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
     // _ is objectType but here is not used
-    async fetchAll(_: string, searchParams?: IBaseObject): Promise<BaseObject[]> {
+    async fetchAll(_: string, searchParams?: IBaseObject): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       await this.delay(2000);
       return new Promise((resolve, reject) => {
         const res = searchParams
@@ -515,7 +516,7 @@ export default Vue.extend({
             )
           : this.items;
         if (res) {
-          resolve(res);
+          resolve({ items: res as any, totalItemCount: res.length, page: 0, pageCount: 1 });
         } else {
           reject(new Error('Search parameters are not defined!'));
         }
