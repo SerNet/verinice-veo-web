@@ -320,7 +320,7 @@ export default Vue.extend({
             return {
               name: upperFirst(entry.schemaName),
               exact: false,
-              to: `/${routeUnitParam}/objects/${entry.endpoint}/-/`,
+              to: `/${routeUnitParam}/objects/${entry.endpoint}/`,
               disabled: false,
               topLevelItem: false
             };
