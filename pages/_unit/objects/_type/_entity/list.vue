@@ -4,41 +4,30 @@ import Vue from 'vue';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
 import VeoScopesListPage from '~/pages/_unit/scopes/_entity/list.vue';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
 import { getSchemaName } from '~/plugins/api/schema';
-
-interface IData {
-  objects: IVeoEntity[];
-  currentEntity: undefined | IVeoEntity;
-  showParentLink: boolean;
-  rootEntityType: string;
-}
+import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
   extends: VeoScopesListPage,
-  data(): IData {
+  data() {
     return {
-      objects: [],
-      currentEntity: undefined,
-      showParentLink: false,
-      rootEntityType: ''
+      objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
+      currentEntity: undefined as undefined | IVeoEntity,
+      subEntities: [] as IVeoEntity[],
+      showParentLink: false as boolean,
+      rootEntityType: '' as string,
+      loading: false as boolean
     };
   },
   async fetch() {
     if (this.entityType === '-') {
       this.rootEntityType = getSchemaName(this.objectType) || '';
-      this.objects = (
-        await this.$api.entity.fetchAll(this.objectType, 0, {
-          unit: this.unitId
-        })
-      ).items;
-      this.currentEntity = undefined;
     } else {
       this.rootEntityType = this.entityType;
-      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId);
-      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
     }
+    await this.refetch(undefined, true);
   },
   head(): any {
     return {
@@ -106,6 +95,61 @@ export default Vue.extend({
       } else {
         return a.name.localeCompare(b.name);
       }
+    },
+    async refetch(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }, seed: boolean = false) {
+      this.loading = true;
+      if (this.entityType === '-') {
+        await this.fetchEntities(options);
+        this.currentEntity = undefined;
+      } else {
+        await this.fetchSubEntities(options, seed);
+        this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
+      }
+      this.loading = false;
+    },
+    async fetchEntities(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }) {
+      const _options = { page: 1, reloadAll: true, sortBy: 'name', sortDesc: false, ...options };
+
+      const data = (await this.$api.entity.fetchAll(this.rootEntityType, _options.page, {
+        unit: this.unitId,
+        size: this.$user.tablePageSize,
+        sortBy: _options.sortBy,
+        sortOrder: _options.sortDesc ? 'desc' : 'asc'
+      } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
+
+      if (_options.reloadAll) {
+        this.objects = data;
+      } else {
+        this.objects.page = data.page;
+        this.objects.items.push(...data.items);
+      }
+    },
+    // As the sub entities are not paginated, we fake a pagination to avoid too much additional code for non-paginated data
+    async fetchSubEntities(options?: { event: VeoEntityModifierEventType; page?: number; sortBy?: string; sortDesc?: boolean }, seed: boolean = false) {
+      const _options = { page: options?.page || 1, sortBy: options?.sortBy || 'name', sortDesc: options?.sortDesc || false, event: options?.event };
+
+      // Populate the array with all subentities if not already done
+      if (seed || options?.event !== VeoEntityModifierEventType.DISPLAY_CHANGE) {
+        this.subEntities = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId);
+      }
+
+      // Do everything the backend would do if paginated
+      this.objects = {
+        items: this.subEntities
+          .slice((_options.page - 1) * this.$user.tablePageSize, _options.page * this.$user.tablePageSize - 1)
+          .sort((a: IVeoEntity & { [key: string]: any }, b: IVeoEntity & { [key: string]: any }) => {
+            if (a[_options.sortBy] > b[_options.sortBy]) {
+              return _options.sortDesc ? 1 : -1;
+            } else if (a[_options.sortBy] < b[_options.sortBy]) {
+              return _options.sortDesc ? -1 : 1;
+            } else {
+              return 0;
+            }
+          }),
+        totalItemCount: this.subEntities.length,
+        page: _options.page,
+        pageCount: Math.ceil(this.subEntities.length / this.$user.tablePageSize)
+      };
     }
   }
 });

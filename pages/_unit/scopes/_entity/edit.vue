@@ -12,7 +12,7 @@
       >
         <template #default>
           <VeoEntityDisplayOptions
-            :root-route="`/${$route.params.unit}/scopes`"
+            :root-route="rootRoute"
             :current-entity="form.objectData"
           >
             <v-btn
@@ -234,6 +234,9 @@ export default Vue.extend({
     },
     entityType(): string {
       return separateUUIDParam(this.$route.params.entity).type;
+    },
+    rootRoute(): string {
+      return `/${this.$route.params.unit}/scopes`;
     }
   },
   methods: {

@@ -8,7 +8,7 @@
         v-bind="$data"
         :root-route="rootRoute"
         hide-display-options
-        @fetch="onFetch"
+        @fetch="fetchEntities"
       >
         <template #menu-bar>
           <v-row
@@ -67,9 +67,9 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
 
 interface IData {
@@ -145,9 +145,6 @@ export default Vue.extend({
     },
     sortingFunction(a: IVeoEntity, b: IVeoEntity) {
       return a.name.localeCompare(b.name);
-    },
-    onFetch(options: any) {
-      this.fetchEntities(options);
     },
     async fetchEntities(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: boolean; sortDesc?: boolean }) {
       this.loading = true;
