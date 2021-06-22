@@ -245,7 +245,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -258,10 +258,15 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -359,7 +364,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -372,10 +377,15 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -1415,7 +1425,7 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                       <div data-v-123abc4d="" class="col">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -1428,10 +1438,15 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -3018,7 +3033,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -3031,10 +3046,15 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -4530,7 +4550,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -4543,10 +4563,15 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -6040,7 +6065,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -6053,10 +6078,15 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
