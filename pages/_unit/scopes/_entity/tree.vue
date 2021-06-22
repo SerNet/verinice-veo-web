@@ -21,6 +21,7 @@
           :items="objects"
           :current-item="currentEntity"
           :loading="$fetchState.pending"
+          :object-type="loadMoreText"
           :load-children="loadSubEntities"
           :sorting-function="sortingFunction"
           :entity-modified-event="entityModifiedEvent"
@@ -32,42 +33,31 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import { upperFirst } from 'lodash';
 
 import { ITreeEntry } from '~/components/objects/VeoObjectTree.vue';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
-import { IVeoEntityModifierEvent } from '~/components/objects/VeoEntityModifier.vue';
-
-interface IData {
-  objects: IVeoEntity[];
-  currentEntity: undefined | IVeoEntity;
-  rootEntityType: string;
-}
+import { IVeoEntityModifierEvent, VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
+import { getSchemaEndpoint } from '~/plugins/api/schema';
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
-  data(): IData {
+  data() {
     return {
-      objects: [],
-      currentEntity: undefined,
-      rootEntityType: ''
+      objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
+      currentEntity: undefined as undefined | IVeoEntity,
+      rootEntityType: '' as string
     };
   },
   async fetch() {
     if (this.entityType === '-') {
       this.rootEntityType = 'scope';
-      this.objects = (
-        await this.$api.entity.fetchAll('scope', {
-          unit: this.unitId
-        })
-      ).items;
-      this.currentEntity = undefined;
     } else {
       this.rootEntityType = this.entityType;
-      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId);
-      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
     }
+    await this.refetch(undefined);
   },
   head(): any {
     return {
@@ -159,6 +149,9 @@ export default Vue.extend({
     },
     rootRoute(): string {
       return `/${this.$route.params.unit}/scopes`;
+    },
+    loadMoreText(): string {
+      return upperFirst(getSchemaEndpoint(this.rootEntityType));
     }
   },
   methods: {
@@ -185,9 +178,40 @@ export default Vue.extend({
         })
         .sort(this.sortingFunction);
     },
+    async fetchEntities(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }) {
+      const _options = { page: 1, reloadAll: true, sortBy: 'name', sortDesc: false, ...options };
+
+      const data = (await this.$api.entity.fetchAll(this.rootEntityType, _options.page, {
+        unit: this.unitId,
+        sortBy: _options.sortBy,
+        sortOrder: _options.sortDesc ? 'desc' : 'asc'
+      } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
+
+      if (_options.reloadAll) {
+        this.objects = data;
+      } else {
+        this.objects.page = data.page;
+        this.objects.items.push(...data.items);
+      }
+    },
+    async fetchSubEntities() {
+      const entities = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId);
+      this.objects = { items: entities, page: 1, pageCount: 1, totalItemCount: entities.length };
+    },
     handleUpdates(event: IVeoEntityModifierEvent) {
-      if (event.reloadAll) {
-        this.$fetch();
+      if (event.event === VeoEntityModifierEventType.DISPLAY_CHANGE) {
+        this.fetchEntities(event);
+      } else if (event.reloadAll) {
+        this.refetch(event);
+      }
+    },
+    async refetch(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }) {
+      if (this.entityType === '-') {
+        await this.fetchEntities(options);
+        this.currentEntity = undefined;
+      } else {
+        await this.fetchSubEntities();
+        this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
       }
     }
   }
