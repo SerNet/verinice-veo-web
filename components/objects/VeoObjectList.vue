@@ -244,10 +244,6 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
-    sortingFunction: {
-      type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
-      default: () => (a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name)
-    },
     currentItem: {
       type: Object as Prop<IVeoEntity | undefined>,
       default: undefined
@@ -261,16 +257,14 @@ export default Vue.extend({
   },
   computed: {
     displayedItems(): IVeoPaginatedResponse<IVeoEntity[]> {
-      this.items.items
-        .map((item) => {
-          // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
-          if (item.description && item.description.length > 40) {
-            item.descriptionShort = item.description.substring(0, 40) + '...';
-          }
+      this.items.items.map((item) => {
+        // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+        if (item.description && item.description.length > 40) {
+          item.descriptionShort = item.description.substring(0, 40) + '...';
+        }
 
-          return item;
-        })
-        .sort(this.sortingFunction);
+        return item;
+      });
 
       return this.items;
     },

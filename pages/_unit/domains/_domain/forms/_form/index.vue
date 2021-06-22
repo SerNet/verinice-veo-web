@@ -56,7 +56,6 @@
             :loading="$fetchState.pending || loading"
             :show-parent-link="false"
             :load-children="loadSubEntities"
-            :sorting-function="sortingFunction"
             :root-route="rootRoute"
             v-on="on"
           />
@@ -142,9 +141,6 @@ export default Vue.extend({
     },
     loadSubEntities(_parent: IVeoEntity) {
       return [];
-    },
-    sortingFunction(a: IVeoEntity, b: IVeoEntity) {
-      return a.name.localeCompare(b.name);
     },
     async fetchEntities(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: boolean; sortDesc?: boolean }) {
       this.loading = true;

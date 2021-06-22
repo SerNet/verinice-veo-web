@@ -23,7 +23,6 @@
           :loading="$fetchState.pending || loading"
           :show-parent-link="showParentLink"
           :load-children="loadSubEntities"
-          :sorting-function="sortingFunction"
           v-on="on"
         />
       </template>
@@ -160,21 +159,6 @@ export default Vue.extend({
   methods: {
     loadSubEntities(_parent: IVeoEntity) {
       return [];
-    },
-    sortingFunction(a: IVeoEntity, b: IVeoEntity) {
-      if (a.type === 'scope' && b.type !== 'scope') {
-        return -1;
-      } else if (a.type !== 'scope' && b.type === 'scope') {
-        return 1;
-      } else if (a.type !== 'scope' && b.type !== 'scope') {
-        if (a.parts.length > 0 && b.parts.length === 0) {
-          return -1;
-        } else if (a.parts.length === 0 && b.parts.length > 0) {
-          return 1;
-        }
-      } else {
-        return a.name.localeCompare(b.name);
-      }
     },
     async refetch(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }, seed: boolean = false) {
       this.loading = true;

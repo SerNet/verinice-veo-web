@@ -87,15 +87,6 @@ export default Vue.extend({
     }
   },
   methods: {
-    sortingFunction(a: IVeoEntity, b: IVeoEntity) {
-      if (a.parts.length > 0 && b.parts.length === 0) {
-        return -1;
-      } else if (a.parts.length === 0 && b.parts.length > 0) {
-        return 1;
-      } else {
-        return a.name.localeCompare(b.name);
-      }
-    },
     async refetch(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }, seed: boolean = false) {
       this.loading = true;
       if (this.entityType === '-') {
