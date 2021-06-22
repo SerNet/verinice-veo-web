@@ -1361,7 +1361,6 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
           }
         ],
         "options": {
-          "direction": "vertical",
           "label": "#lang/process_InternalRecipientLink"
         },
         "scope": "#/properties/links/properties/process_InternalRecipientLink",
