@@ -615,6 +615,15 @@ describe('Formschema Editor', () => {
       .should('have.class', 'flex-column direction-vertical')
       .find('.fse-input')
       .should('have.length', 2);
+
+    // Regression test for veo#226 bug
+    cy.contains('.v-sheet', 'group').drag();
+    cy.contains('.fse-group', 'Gruppe Test 1').drop();
+    cy.get('.dropzone').find('.fse-group').eq(1).toMatchHtmlSnapshot({ name: 'Group newly added 1 - FSE' });
+
+    cy.contains('.v-sheet', 'group').drag();
+    cy.contains('.fse-group', 'Gruppe Test 2').drop();
+    cy.get('.dropzone').find('.fse-group').eq(3).toMatchHtmlSnapshot({ name: 'Group newly added 2 - FSE' });
   });
 
   it('deletes elements', function () {
