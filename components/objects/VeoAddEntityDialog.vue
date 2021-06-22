@@ -16,7 +16,7 @@
           cols="12"
         >
           <span>
-            Zu verknüpfender Objekttyp:
+            {{ $t('shown_objecttype') }}:
           </span>
           <v-select
             v-model="objectType"
@@ -31,7 +31,7 @@
       <VeoEntitySelectionList
         :selected-items="selectedItems"
         :items="entities"
-        :loading="$fetchState.pending"
+        :loading="$fetchState.pending || loading"
         @new-subentities="onNewSubEntities"
         @page-change="fetchEntities"
         @refetch="fetchEntities"
@@ -192,6 +192,7 @@ export default Vue.extend({
       this.selectedItems = items;
     },
     async fetchEntities(options: { page: number; sortBy: string; sortDesc: boolean }) {
+      this.loading = true;
       let _objectType = '';
 
       // If add type is scope, only load scopes
@@ -212,6 +213,7 @@ export default Vue.extend({
         sortBy: options.sortBy,
         sortOrder: options.sortDesc ? 'desc' : 'asc'
       });
+      this.loading = false;
     }
   }
 });
@@ -223,13 +225,15 @@ export default Vue.extend({
     "add": "Add",
     "add_subentities": "Add sub objects to \"{displayName}\"",
     "headline": "Edit sub objects",
-    "object_type": "Object type"
+    "object_type": "Object type",
+    "shown_objecttype": "Object type to link"
   },
   "de": {
     "add": "Hinzufügen",
     "add_subentities": "Unterobjekte zu \"{displayName}\" hinzufügen",
     "headline": "Unterobjekte bearbeiten",
-    "object_type": "Objekttyp"
+    "object_type": "Objekttyp",
+    "shown_objecttype": "Zu verknüpfender Objekttyp"
   }
 }
 </i18n>
