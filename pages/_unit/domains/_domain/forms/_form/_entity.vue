@@ -350,7 +350,7 @@ export default Vue.extend({
             ...searchParams,
             unit: this.unitId
           });
-          return entities.items;
+          return entities;
         },
         create: async (objectType: string, createdObjectData: any) => {
           const res = await this.$api.entity.create(objectType, {

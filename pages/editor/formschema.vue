@@ -360,7 +360,7 @@ export default defineComponent<IProps>({
       return {
         fetchAll: (_objectType: string, _searchParams?: any) => {
           return new Promise((resolve: any) => {
-            return resolve([]);
+            return resolve({ items: [], page: 1, pageCount: 0, totalItemCount: 0 });
           });
         }
       };

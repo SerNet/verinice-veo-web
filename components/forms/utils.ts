@@ -3,6 +3,7 @@ import Ajv from 'ajv';
 import { JsonPointer } from 'json-ptr';
 import { UIRule, UISchema, UISchemaElement } from '~/types/UISchema';
 import { IBaseObject } from '~/lib/utils';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 type defaultType = string | boolean | number | undefined | null;
 
@@ -28,7 +29,7 @@ export interface ILinksFieldDialogUpdatedObject extends ILinksFieldDialogNewObje
 }
 
 export interface IApi {
-  fetchAll(objectType: string, searchParams?: IBaseObject): Promise<BaseObject[]>;
+  fetchAll(objectType: string, searchParams?: IBaseObject): Promise<IVeoPaginatedResponse<IVeoEntity[]>>;
   create(objectType: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject>;
   update(objectType: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void>;
   delete(objectType: string, id: string): Promise<void>;

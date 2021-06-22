@@ -413,8 +413,9 @@ export default Vue.extend({
 
       try {
         // TODO: Limit result count with pagination API
-        const items = (await this.api.fetchAll(this.targetType, filters)) as IItem[];
-        this.items = items.slice(0, 100);
+        const entities = await this.api.fetchAll(this.targetType, filters);
+        this.items = entities.items;
+        this.totalItems = entities.totalItemCount;
 
         if (this.subType) {
           const forms = await this.$api.form.fetchAll();
