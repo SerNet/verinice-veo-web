@@ -16,7 +16,6 @@
             :current-entity="form.objectData"
           >
             <v-btn
-              text
               outlined
               @click="doDiscard"
             >
@@ -28,9 +27,9 @@
               outlined
               :disabled="$fetchState.pending"
               :loading="saveBtnLoading"
-              @click="doSaveEntity"
+              @click="doSaveEntity(false)"
             >
-              {{ $t('global.button.apply') }}
+              {{ $t('global.button.save') }}
             </v-btn>
             <v-btn
               v-else
@@ -39,9 +38,30 @@
               text
               :loading="saveBtnLoading"
               :disabled="!allowRestoration"
-              @click="doSaveEntity"
+              @click="doSaveEntity(false)"
             >
               {{ $t('restore') }}
+            </v-btn>
+            <v-btn
+              v-if="!isRevision"
+              color="primary"
+              outlined
+              :disabled="$fetchState.pending"
+              :loading="saveBtnLoading"
+              @click="doSaveEntity(true)"
+            >
+              {{ $t('global.button.save_quit') }}
+            </v-btn>
+            <v-btn
+              v-else
+              color="primary"
+              outlined
+              text
+              :loading="saveBtnLoading"
+              :disabled="!allowRestoration"
+              @click="doSaveEntity(true)"
+            >
+              {{ $t('restore_quit') }}
             </v-btn>
           </VeoEntityDisplayOptions>
           <div
@@ -241,10 +261,9 @@ export default Vue.extend({
   },
   methods: {
     doDiscard() {
-      this.entityModified.isModified = false;
       this.$router.go(-1);
     },
-    doSaveEntity() {
+    doSaveEntity(redirect: boolean = false) {
       this.saveBtnLoading = true;
       this.formatObjectData();
 
@@ -254,7 +273,11 @@ export default Vue.extend({
           this.entityModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
-          this.$router.back();
+          if (redirect) {
+            this.$router.back();
+          } else {
+            this.$fetch();
+          }
         })
         .catch((error: { status: number; name: string }) => {
           this.showError(error.status, error.name);
@@ -345,6 +368,7 @@ export default Vue.extend({
     "object_saved": "Object saved successfully",
     "scope_delete_error": "Failed to delete scope",
     "restore": "Restore",
+    "restore_quit": "Restore and exit",
     "revision": "version",
     "revision_incompatible": "The revision is incompatible to the schema and cannot be shown."
   },
@@ -356,6 +380,7 @@ export default Vue.extend({
     "object_saved": "Objekt wurde gespeichert!",
     "scope_delete_error": "Scope konnte nicht gelöscht werden",
     "restore": "Wiederherstellen",
+    "restore_quit": "Wiederherstellen und Schließen",
     "revision": "Version",
     "revision_incompatible": "Die Version ist inkompatibel zum Schema und kann daher nicht angezeigt werden."
   }
