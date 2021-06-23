@@ -1,19 +1,16 @@
-/**
- * Table of contents
- *
- * 1. Basic / global types
- * 2. Types of user generated data (custom aspects/custom links)
- * 3. Objectschema / formschema types
- */
-
 import { JSONSchema7TypeName } from 'json-schema';
 import { IBaseObject } from '~/lib/utils';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
-/**
- * 1. Types of user generated data
- */
+export interface IVeoBaseObject {
+  id: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
 export interface IVeoLink {
   displayName: string;
   resourcesUri: string;
@@ -21,16 +18,11 @@ export interface IVeoLink {
   searchesUri: string;
 }
 
-export interface IVeoDomain {
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
+export interface IVeoDomain extends IVeoBaseObject {
   name: string;
   abbreviation: string;
   description: string;
   catalogs: any[];
-  id: string;
 }
 
 // At the moment, we only use strings in the frontend for custom attributes.
@@ -71,12 +63,6 @@ export interface IVeoPaginatedResponse<T> {
   pageCount: number;
   page: number;
 }
-
-/**
- * 2. Objectschema and formschema types
- *
- * NOTE: THESE TYPES ONLY GET USED FOR SCHEMAS, ALL USER DATA WILL USE THE ABOVE types.
- */
 
 export interface IVeoObjectSchemaProperty {
   type?: JSONSchema7TypeName;
@@ -173,40 +159,62 @@ export interface IVeoObjectSchema {
   description: string;
 }
 
-/**
- * 1. Basic / global types
- */
 export interface IVeoAPIMessage {
   success: boolean;
   resourceId: string;
   message: string;
 }
 
-export interface IVeoUnit {
-  id: string;
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
+export interface IVeoUnit extends IVeoBaseObject {
   name: string;
   description: string;
   domains: IVeoLink[];
   units: IVeoUnit[];
 }
 
+export interface IVeoCatalog extends IVeoBaseObject {
+  name: string;
+  domainTemplate: IVeoLink;
+  catalogItems: IVeoLink[];
+}
+
+export interface IVeoCatalogItemListItem extends IVeoBaseObject {
+  catalog: IVeoLink;
+  tailoringReferences: {
+    createdAt: string;
+    createdBy: string;
+    updatedAt: string;
+    updatedBy: string;
+    referenceType: string;
+    catalogItem: IVeoLink;
+  };
+  namespace: string;
+  element: IVeoLink;
+}
+
+export interface IVeoCatalogItem extends IVeoBaseObject {
+  catalog: IVeoLink;
+  tailoringReferences: {
+    createdAt: string;
+    createdBy: string;
+    updatedAt: string;
+    updatedBy: string;
+    referenceType: string;
+    catalogItem: IVeoLink;
+  };
+  namespace: string;
+  element: IVeoLink;
+}
+
 export interface IVeoEntitySubtypes {
   [key: string]: string;
 }
 
-export interface IVeoEntity {
-  id: string;
+export interface IVeoEntity extends IVeoBaseObject {
   name: string;
   abbreviation: string;
   displayName: string;
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
+  description: string;
   domains: IVeoLink[];
   owner: IVeoLink;
   links: IVeoCustomLinks;
@@ -214,7 +222,6 @@ export interface IVeoEntity {
   subType: IVeoEntitySubtypes;
   members: IVeoLink[]; // Only contains items if entity is of type scope
   parts: IVeoLink[]; // Only contains items if entity is NOT of type scope
-  description: string;
   descriptionShort?: string; // Frontend only attribute used in VeoObjectList.vue
   type: string;
 }

@@ -103,7 +103,7 @@ import { upperFirst } from 'lodash';
 import LocalStorage from '~/util/LocalStorage';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 import { nonLinkableSchemas } from '~/plugins/api/schema';
 
 export interface INavItem {
@@ -266,10 +266,22 @@ export default Vue.extend({
         topLevelItem: true
       };
 
+      const catalogs = {
+        name: this.$t('breadcrumbs.catalogs').toString(),
+        icon: 'mdi-clipboard-list',
+        to: undefined,
+        exact: false,
+        disabled: false,
+        childItems: undefined,
+        persistCollapsedState: (collapsed: boolean) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 4),
+        collapsed: LocalStorage.expandedNavEntry !== 4,
+        topLevelItem: true
+      };
+
       this.domains = await this.$api.domain.fetchAll();
 
       this.items = [
-        ...(domainId ? [domainDashboard, forms, reports] : []),
+        ...(domainId ? [domainDashboard, forms, catalogs, reports] : []),
         ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
         ...(!routeUnitParam ? [unitSelection] : []),
         spacer,
@@ -280,6 +292,7 @@ export default Vue.extend({
       this.addChildren(this.$t('breadcrumbs.objects').toString(), await this.fetchObjectTypes());
       this.addChildren(this.$t('breadcrumbs.forms').toString(), await this.fetchFormTypes(domainId));
       this.addChildren(this.$t('breadcrumbs.reports').toString(), await this.fetchReportTypes(domainId));
+      this.addChildren(this.$t('breadcrumbs.catalogs').toString(), await this.fetchCatalogs(domainId));
     },
     /**
      * Add children to a menu item
@@ -351,6 +364,20 @@ export default Vue.extend({
           };
         })
       );
+    },
+    async fetchCatalogs(domainId: string): Promise<INavItem[]> {
+      if (domainId) {
+        const catalogs = await this.$api.catalog.fetchAll(domainId);
+        return catalogs.map((catalog: IVeoCatalog) => ({
+          name: catalog.name,
+          exact: false,
+          to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}/catalogs/${createUUIDUrlParam('catalog', catalog.id)}/`,
+          disabled: false,
+          topLevelItem: false
+        }));
+      } else {
+        return await Promise.resolve([]);
+      }
     },
     setMiniVariant(miniVariant: boolean) {
       this.miniVariant = miniVariant;
