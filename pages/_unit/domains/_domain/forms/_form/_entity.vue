@@ -346,11 +346,11 @@ export default Vue.extend({
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
         fetchAll: async (objectType: string, searchParams: IBaseObject) => {
-          const entities = await this.$api.entity.fetchAll(objectType, {
+          const entities = await this.$api.entity.fetchAll(objectType, 1, {
             ...searchParams,
             unit: this.unitId
           });
-          return entities.items;
+          return entities;
         },
         create: async (objectType: string, createdObjectData: any) => {
           const res = await this.$api.entity.create(objectType, {

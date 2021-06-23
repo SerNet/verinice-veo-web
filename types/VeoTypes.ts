@@ -65,11 +65,22 @@ export interface IVeoReactiveFormAction {
   handler: (newValue: string, newObject: IBaseObject, oldObject: IBaseObject) => void;
 }
 
-export interface IVeoPaginatedResponse<T> {
-  items: T;
+export interface IVeoPaginatedResponseMeta {
   totalItemCount: number;
   pageCount: number;
   page: number;
+}
+export interface IVeoPaginatedResponse<T> extends IVeoPaginatedResponseMeta {
+  items: T;
+}
+
+export interface IVeoPaginationOptions {
+  displayName?: string;
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortOder?: 'asc' | 'desc';
+  [key: string]: any;
 }
 
 /**

@@ -1,12 +1,21 @@
 <template>
   <v-data-table
-    :items="displayedItems"
+    :items="displayedItems.items"
     item-key="id"
     :headers="headers"
     :items-per-page="itemsPerPage"
     :loading="loading"
+    :options="{ mustSort: true }"
+    :page.sync="page"
+    :server-items-length="items.totalItemCount"
+    :footer-props="{ itemsPerPageOptions: [ 5, 10, 25, 50 ] }"
+    :sort-by.sync="sortBy"
+    :sort-desc.sync="sortDesc"
     class="veo-object-list"
     @click:row="sendEvent('click', $event)"
+    @update:items-per-page="onPageSizeChange"
+    @update:sort-by="refetch"
+    @update:sort-desc="refetch"
   >
     <template #no-data>
       <span
@@ -219,13 +228,13 @@ import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { formatDate, formatTime } from '~/lib/utils';
 
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
     items: {
-      type: Array as Prop<IVeoEntity[]>,
-      default: () => []
+      type: Object as Prop<IVeoPaginatedResponse<IVeoEntity[]>>,
+      default: () => ({ items: [], page: 1, pageCount: 0, totalItemCount: 0 })
     },
     loading: {
       type: Boolean,
@@ -235,10 +244,6 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
-    sortingFunction: {
-      type: Function as Prop<(a: IVeoEntity, b: IVeoEntity) => number>,
-      default: () => (a: IVeoEntity, b: IVeoEntity) => a.name.localeCompare(b.name)
-    },
     currentItem: {
       type: Object as Prop<IVeoEntity | undefined>,
       default: undefined
@@ -246,21 +251,33 @@ export default Vue.extend({
   },
   data() {
     return {
-      itemsPerPage: 10
+      sortBy: 'name' as string,
+      sortDesc: false as boolean
     };
   },
   computed: {
-    displayedItems(): IVeoEntity[] {
-      return this.items
-        .map((item) => {
-          // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
-          if (item.description && item.description.length > 40) {
-            item.descriptionShort = item.description.substring(0, 40) + '...';
-          }
+    displayedItems(): IVeoPaginatedResponse<IVeoEntity[]> {
+      this.items.items.map((item) => {
+        // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+        if (item.description && item.description.length > 40) {
+          item.descriptionShort = item.description.substring(0, 40) + '...';
+        }
 
-          return item;
-        })
-        .sort(this.sortingFunction);
+        return item;
+      });
+
+      return this.items;
+    },
+    itemsPerPage(): number {
+      return this.$user.tablePageSize;
+    },
+    page: {
+      set(page: number) {
+        this.$emit('page-change', { newPage: page, sortBy: this.sortBy, sortDesc: this.sortDesc });
+      },
+      get(): number {
+        return this.items.page;
+      }
     },
     editItemLink(): string {
       return `/${this.$route.params.unit}/objects/${this.$route.params.type}/${this.$route.params.entity}/edit`;
@@ -308,6 +325,19 @@ export default Vue.extend({
     },
     sendEvent(event: string, item: IVeoEntity, parent?: IVeoEntity) {
       this.$emit(event, { item, parent });
+    },
+    onPageSizeChange(newSize: number | undefined) {
+      if (newSize) {
+        this.$user.tablePageSize = newSize;
+        this.refetch();
+      }
+    },
+    refetch() {
+      this.$emit('refetch-data', {
+        sortBy: this.sortBy,
+        sortDesc: this.sortDesc,
+        page: 1
+      });
     }
   }
 });

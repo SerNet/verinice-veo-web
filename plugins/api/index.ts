@@ -12,6 +12,7 @@ import unit from '~/plugins/api/unit';
 import report from '~/plugins/api/report';
 import domain from '~/plugins/api/domain';
 import { User } from '~/plugins/user';
+import { IVeoPaginationOptions } from '~/types/VeoTypes';
 
 export function createAPI(context: Context) {
   return Client.create(context, { form, entity, history, schema, translation, unit, report, domain });
@@ -29,7 +30,7 @@ export enum VeoApiReponseType {
 
 // eslint-disable-next-line no-undef
 export interface RequestOptions extends RequestInit {
-  params?: Record<string, string | number | undefined>;
+  params?: Record<string, string | number | undefined> & IVeoPaginationOptions;
   json?: any;
   retry?: boolean;
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
