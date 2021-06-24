@@ -31,43 +31,13 @@
             <v-list-item-title>
               {{ $t('version') }}
               <b>{{ version.changeNumber }}</b>
-              : {{ (new Date(version.time)).toLocaleString() }}
+              : {{ (new Date(version.time)).toLocaleString($i18n.locale) }}
             </v-list-item-title>
             <v-list-item-subtitle>
               {{ $t('by') }}
               <b>{{ version.author }}</b>
             </v-list-item-subtitle>
-            <v-row no-gutters>
-              <v-col
-                cols="12"
-                sm="10"
-              >
-                <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
-              </v-col>
-              <v-col
-                class="text-right"
-                cols="12"
-                sm="2"
-              >
-                <v-tooltip
-                  v-if="canShowData(version.content)"
-                  bottom
-                >
-                  <template #activator="{ on }">
-                    <v-btn
-                      icon
-                      @click.stop="$emit('show-revision', {}, version, index === 0 ? false : true, true)"
-                      v-on="on"
-                    >
-                      <v-icon>mdi-undo</v-icon>
-                    </v-btn>
-                  </template>
-                  <template #default>
-                    {{ $t('restoreRevision') }}
-                  </template>
-                </v-tooltip>
-              </v-col>
-            </v-row>
+            <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </div>

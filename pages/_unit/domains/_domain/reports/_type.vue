@@ -18,7 +18,7 @@
             outlined
             color="primary"
             class="mt-4"
-            :disabled="loading || !selectedEntities.length"
+            :disabled="global_loading || !selectedEntities.length"
             @click="generateReport"
           >
             {{ $t('generateReport') }}
@@ -34,43 +34,62 @@
       <p v-else-if="report">
         {{ $t('hintSingle') }}
       </p>
+      <v-row v-if="objectTypes.length > 1">
+        <v-col
+          lg="3"
+          md="6"
+          cols="12"
+        >
+          <span>
+            {{ $t('shown_objecttype') }}:
+          </span>
+          <v-select
+            v-model="objectType"
+            :label="$t('object_type')"
+            :items="objectTypes"
+            class="mt-2"
+            outlined
+            dense
+          />
+        </v-col>
+      </v-row>   
       <VeoEntitySelectionList
         :selected-items="selectedEntities"
-        :items="items"
-        :loading="$fetchState.pending"
+        :items="entities"
+        :loading="$fetchState.pending || global_loading"
         single-select
         @new-subentities="onNewSubEntities"
+        @page-change="fetchEntities"
+        @refetch="fetchEntities"
       />
     </template>
   </VeoPage>
 </template>
 
 <script lang="ts">
-import { upperCase } from 'lodash';
+import { upperCase, upperFirst } from 'lodash';
 import Vue from 'vue';
 
-import { IVeoCreateReportData, IVeoEntity, IVeoReportsMeta } from '~/types/VeoTypes';
-
-interface IData {
-  items: IVeoEntity[];
-  selectedEntities: { id: string; type: string }[];
-  report?: {
-    name: string;
-    description: string;
-    outputFormat: string;
-    outputType: string;
-    multiselect: boolean;
-  };
-  generatingReport: boolean;
-}
+import { IVeoCreateReportData, IVeoEntity, IVeoPaginatedResponse, IVeoReportsMeta } from '~/types/VeoTypes';
 
 export default Vue.extend({
-  data(): IData {
+  data() {
     return {
-      items: [],
-      selectedEntities: [],
-      report: undefined,
-      generatingReport: false
+      entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
+      selectedEntities: [] as { id: string; type: string }[],
+      report: undefined as
+        | undefined
+        | {
+            name: string;
+            description: string;
+            outputFormat: string;
+            outputType: string;
+            multiselect: boolean;
+            targetTypes: string[];
+          },
+      generatingReport: false as boolean,
+      loading: false as boolean,
+      objectType: undefined as undefined | string
     };
   },
   async fetch() {
@@ -89,12 +108,12 @@ export default Vue.extend({
         description: _report.description[this.$i18n.locale],
         outputFormat: format,
         outputType: _report.outputTypes[0],
-        multiselect: _report.multipleTargetsSupported
+        multiselect: _report.multipleTargetsSupported,
+        targetTypes: _report.targetTypes
       };
 
-      for await (const type of _report.targetTypes) {
-        this.items = [...this.items, ...(await this.$api.entity.fetchAll(type)).items];
-      }
+      this.objectType = _report.targetTypes[0];
+      this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
     }
   },
   head(): any {
@@ -109,8 +128,23 @@ export default Vue.extend({
     reportId(): string {
       return this.$route.params.type;
     },
-    loading(): boolean {
+    global_loading(): boolean {
       return this.$fetchState.pending || this.generatingReport;
+    },
+    objectTypes(): { value: string; text: string }[] {
+      return (
+        this.report?.targetTypes.map((targetType: string) => ({
+          text: upperFirst(targetType),
+          value: targetType
+        })) || []
+      );
+    }
+  },
+  watch: {
+    objectType(_newValue: string, oldValue: string) {
+      if (oldValue) {
+        this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
+      }
     }
   },
   methods: {
@@ -128,6 +162,17 @@ export default Vue.extend({
     },
     onNewSubEntities(items: { type: string; id: string }[]) {
       this.selectedEntities = items;
+    },
+    async fetchEntities(options: { page: number; sortBy: string; sortDesc: boolean }) {
+      this.loading = true;
+
+      this.entities = await this.$api.entity.fetchAll(this.objectType, options.page, {
+        size: this.$user.tablePageSize,
+        sortBy: options.sortBy,
+        sortOrder: options.sortDesc ? 'desc' : 'asc'
+      });
+
+      this.loading = false;
     }
   }
 });
@@ -139,13 +184,17 @@ export default Vue.extend({
     "create": "Create {type} ({format})",
     "generateReport": "Generate report",
     "hintMultiple": "Please select the object you want to create the report for.",
-    "hintSingle": "Please select the object you want to create the report for."
+    "hintSingle": "Please select the object you want to create the report for.",
+    "object_type": "Object type",
+    "shown_objecttype": "Object type to link"
   },
   "de": {
     "create": "{type} ({format}) erstellen",
     "generateReport": "Report generieren",
     "hintMultiple": "Bitte wählen Sie die Objekte aus, für die Sie den Report erstellen möchten.",
-    "hintSingle": "Bitte wählen Sie das Objekt aus, für das Sie den Report erstellen möchten."
+    "hintSingle": "Bitte wählen Sie das Objekt aus, für das Sie den Report erstellen möchten.",
+    "object_type": "Objekttyp",
+    "shown_objecttype": "Zu verknüpfender Objekttyp"
   }
 }
 </i18n>

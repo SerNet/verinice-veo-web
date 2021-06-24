@@ -31,7 +31,12 @@
             :cols="12"
             sm="6"
           >
-            <VeoUnitFormsWidget :unit="unit" />
+            <VeoUnitFormsWidget
+              v-for="domain of domains"
+              :key="domain.id"
+              :domain="domain"
+              :unit="unit"
+            />
           </v-col>
           <v-col
             :cols="12"
@@ -49,15 +54,18 @@
 import Vue from 'vue';
 
 import { separateUUIDParam } from '~/lib/utils';
+import { IVeoDomain } from '~/types/VeoTypes';
 
 export default Vue.extend({
   data() {
     return {
-      unit: {} as any
+      unit: {} as any,
+      domains: [] as IVeoDomain[]
     };
   },
   async fetch() {
     this.unit = await this.$api.unit.fetch(this.unitId);
+    this.domains = await this.$api.domain.fetchUnitDomains(this.unitId);
   },
   head(): any {
     return {

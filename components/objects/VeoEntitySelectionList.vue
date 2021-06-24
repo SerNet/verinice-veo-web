@@ -5,8 +5,17 @@
     :headers="headers"
     :items-per-page="itemsPerPage"
     :loading="loading"
+    :options="{ mustSort: true }"
+    :page.sync="page"
+    :server-items-length="items.totalItemCount"
+    :footer-props="{ itemsPerPageOptions: [ 5, 10, 25, 50 ] }"
+    :sort-by.sync="sortBy"
+    :sort-desc.sync="sortDesc"
     class="veo-object-list"
     @click:row="selectItem($event, singleSelect)"
+    @update:items-per-page="onPageSizeChange"
+    @update:sort-by="refetch"
+    @update:sort-desc="refetch"
   >
     <template #no-data>
       <span class="text-center">{{ $t('no_objects') }}</span>
@@ -40,7 +49,7 @@
         </v-btn>
       </v-fade-transition>
     </template>
-    <template #item.abbreviation="{ item }">
+    <template #item.designator="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
         <v-tooltip
           v-if="item.entity.type !== 'scope' && item.entity.parts.length > 0"
@@ -100,22 +109,12 @@
             <span>{{ $t('object_has_no_subobjects') }}</span>
           </template>
         </v-tooltip>
-        <v-tooltip bottom>
-          <template #activator="{ on }">
-            <span
-              class="veo-object-list__abbreviation--abbreviation"
-              v-on="on"
-            >{{ item.abbreviation }}</span>
-          </template>
-          <template #default>
-            <span>{{ item.abbreviation }}</span>
-          </template>
-        </v-tooltip>
+        {{ item.entity.designator }}
       </div>
     </template>
     <template #item.name="{ item }">
       <div class="veo-object-list__title">
-        {{ item.entity.name }}
+        {{ item.entity.abbreviation }} {{ item.entity.name }}
       </div>
     </template>
     <template #item.description="{ item }">
@@ -140,7 +139,7 @@
     <template #item.updatedBy="{ item }">
       {{ item.entity.updatedBy }}
     </template>
-    <template #item.entitypdatedAt="{ item }">
+    <template #item.updatedAt="{ item }">
       <div class="veo-object-list__updated-at nowrap">
         <v-tooltip bottom>
           <template #activator="{ on }">
@@ -163,7 +162,7 @@ import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { formatDate, formatTime } from '~/lib/utils';
 
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -172,16 +171,12 @@ export default Vue.extend({
       default: () => []
     },
     items: {
-      type: Array as Prop<IVeoEntity[]>,
-      default: () => []
+      type: Object as Prop<IVeoPaginatedResponse<IVeoEntity[]>>,
+      default: () => ({ items: [], page: 1, pageCount: 0, totalItemCount: 0 })
     },
     loading: {
       type: Boolean,
       default: false
-    },
-    sortingFunction: {
-      type: Function as Prop<(a: { entity: IVeoEntity; selected: boolean }, b: { entity: IVeoEntity; selected: boolean }) => number>,
-      default: () => (a: { entity: IVeoEntity; selected: boolean }, b: { entity: IVeoEntity; selected: boolean }) => a.entity.name.localeCompare(b.entity.name)
     },
     singleSelect: {
       type: Boolean,
@@ -190,26 +185,25 @@ export default Vue.extend({
   },
   data() {
     return {
-      itemsPerPage: 10
+      sortBy: 'name' as string,
+      sortDesc: false as boolean
     };
   },
   computed: {
     displayedItems(): { entity: IVeoEntity; selected: boolean }[] {
-      return this.items
-        .map((item) => {
-          // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
-          if (item.description && item.description.length > 40) {
-            item.descriptionShort = item.description.substring(0, 40) + '...';
-          }
+      return this.items.items.map((item) => {
+        // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
+        if (item.description && item.description.length > 40) {
+          item.descriptionShort = item.description.substring(0, 40) + '...';
+        }
 
-          return {
-            entity: item,
-            selected: this.selectedItems.some((selectedItem) => {
-              return selectedItem.id === item.id;
-            })
-          };
-        })
-        .sort(this.sortingFunction);
+        return {
+          entity: item,
+          selected: this.selectedItems.some((selectedItem) => {
+            return selectedItem.id === item.id;
+          })
+        };
+      });
     },
     headers(): any[] {
       return [
@@ -221,8 +215,8 @@ export default Vue.extend({
           width: 32
         },
         {
-          text: this.$t('objectlist.abbreviation'),
-          value: 'abbreviation'
+          text: this.$t('objectlist.designator'),
+          value: 'designator'
         },
         {
           text: this.$t('objectlist.title'),
@@ -242,13 +236,24 @@ export default Vue.extend({
         {
           align: 'end',
           text: this.$t('objectlist.updatedat'),
-          value: 'entity.updatedAt'
+          value: 'updatedAt'
         }
       ];
     },
     // As the radio button needs a wrapper and this wapper has no comparator function (even though the docs says it does), we have to dumb it down)
     radioSelectedItem() {
       return this.selectedItems[0]?.id;
+    },
+    itemsPerPage(): number {
+      return this.$user.tablePageSize;
+    },
+    page: {
+      set(page: number) {
+        this.$emit('page-change', { page, sortBy: this.sortBy, sortDesc: this.sortDesc });
+      },
+      get(): number {
+        return this.items.page;
+      }
     }
   },
   methods: {
@@ -267,6 +272,19 @@ export default Vue.extend({
         dummy.push({ id: item.entity.id, type: item.entity.type });
         this.$emit('new-subentities', dummy);
       }
+    },
+    onPageSizeChange(newSize: number | undefined) {
+      if (newSize) {
+        this.$user.tablePageSize = newSize;
+        this.refetch();
+      }
+    },
+    refetch() {
+      this.$emit('refetch', {
+        sortBy: this.sortBy,
+        sortDesc: this.sortDesc,
+        page: 1
+      });
     }
   }
 });
@@ -309,7 +327,6 @@ export default Vue.extend({
 .veo-object-list__abbreviation {
   display: flex;
   flex-wrap: nowrap;
-  width: 65px;
 
   .veo-object-list__abbreviation--abbreviation {
     overflow: hidden;

@@ -4,14 +4,7 @@
       <v-col cols="12">
         <PageHeader>Links Field</PageHeader>
       </v-col>
-      <v-col cols="12">
-        <v-switch
-          v-model="isVertical"
-          label="Vertical"
-          hide-details
-          color="primary"
-        />
-      </v-col>
+      <v-col cols="12" />
       <v-col
         cols="auto"
         class="docs-form-sector"
@@ -37,7 +30,9 @@
 import Vue from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
-import { BaseObject, IApi, ILinksFieldDialogNewObject, ILinksFieldDialogUpdatedObject, ISearchParams } from '~/components/forms/utils';
+import { BaseObject, IApi, ILinksFieldDialogNewObject, ILinksFieldDialogUpdatedObject } from '~/components/forms/utils';
+import { IBaseObject } from '~/lib/utils';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
   data() {
@@ -272,158 +267,9 @@ export default Vue.extend({
                           },
                           type: {
                             enum: ['Person']
-                          }
-                        }
-                      },
-                      attributes: {
-                        type: 'object',
-                        properties: {
-                          testAttribute: {
-                            type: 'string'
-                          }
-                        }
-                      }
-                    },
-                    additionalProperties: false,
-                    required: ['type', 'target']
-                  }
-                }
-              }
-            }
-          }
-        },
-        formSchema: {
-          type: 'Layout',
-          options: {
-            direction: 'vertical',
-            format: 'group'
-          },
-          elements: [
-            {
-              type: 'Control',
-              scope: '#/properties/links/properties/process_ResponsibleDepartment',
-              options: {
-                label: 'Verantwortlicher Fachbereich'
-              },
-              elements: [
-                {
-                  type: 'Control',
-                  scope: '#/properties/attributes/properties/testAttribute',
-                  options: {
-                    label: 'Test Attribute'
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        lang: {
-          de: {
-            name: 'Name',
-            abbreviation: 'Abkürzung',
-            description: 'Beschreibung'
-          },
-          en: {
-            name: 'Name',
-            abbreviation: 'Abbreviation',
-            description: 'Description'
-          }
-        },
-        data: {
-          links: {
-            process_ResponsibleDepartment: [{}]
-          }
-        }
-      },
-      formVertical: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            links: {
-              type: 'object',
-              properties: {
-                process_ResponsibleDepartment: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'string',
-                        title: 'The UUID to identify the element',
-                        format: 'regex',
-                        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-                      },
-                      applicableTo: {
-                        type: 'array',
-                        items: {
-                          type: 'string'
-                        }
-                      },
-                      type: {
-                        description: 'The name of the type described by this schema.',
-                        enum: ['process_ResponsibleDepartment']
-                      },
-                      domains: {
-                        type: 'array',
-                        title: 'The list of domains in which this element is present.',
-                        description: 'The ids of elements of the type domain.',
-                        items: {
-                          type: 'object',
-                          properties: {
-                            displayName: {
-                              type: 'string',
-                              description: 'A friendly human readable title of the referenced domain.'
-                            },
-                            targetUri: {
-                              type: 'string',
-                              description: 'The resource URL of the referenced domain.'
-                            }
                           },
-                          required: ['targetUri']
-                        },
-                        uniqueItems: true
-                      },
-                      references: {
-                        type: 'array',
-                        items: {
-                          properties: {
-                            displayName: {
-                              type: 'string',
-                              description: 'A friendly human readable title of the referenced object.'
-                            },
-                            targetUri: {
-                              type: 'string',
-                              description: 'The resource URL of the referenced object.'
-                            }
-                          },
-                          required: ['targetUri']
-                        }
-                      },
-                      abbreviation: {
-                        type: 'string',
-                        title: 'Abbreviation',
-                        description: 'The abbreviation for this custom link.'
-                      },
-                      description: {
-                        type: 'string',
-                        title: 'Description',
-                        description: 'The name for this custom link.'
-                      },
-                      name: {
-                        type: 'string',
-                        title: 'Name',
-                        description: 'The name for this custom link.'
-                      },
-                      target: {
-                        type: 'object',
-                        title: 'id of the Person',
-                        properties: {
-                          targetUri: {
-                            type: 'string',
-                            title: 'The id of the target object.'
-                          },
-                          type: {
-                            enum: ['Person']
+                          subType: {
+                            enum: ['VT']
                           }
                         }
                       },
@@ -448,7 +294,6 @@ export default Vue.extend({
           type: 'Control',
           scope: '#/properties/links/properties/process_ResponsibleDepartment',
           options: {
-            direction: 'vertical',
             label: 'Verantwortlicher Fachbereich'
           },
           elements: [
@@ -478,15 +323,11 @@ export default Vue.extend({
             process_ResponsibleDepartment: [{}]
           }
         }
-      },
-      isVertical: false
+      }
     };
   },
   computed: {
     dynamicForm(): any {
-      if (this.isVertical) {
-        return this.formVertical;
-      }
       return this.form;
     },
     api(): IApi {
@@ -503,10 +344,10 @@ export default Vue.extend({
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
     // _ is objectType but here is not used
-    async fetchAll(_: string, searchParams?: ISearchParams): Promise<BaseObject[]> {
+    async fetchAll(_: string, searchParams?: IBaseObject): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       await this.delay(2000);
       return new Promise((resolve, reject) => {
-        const res = searchParams
+        const res = searchParams?.displayName
           ? this.items.filter((el: any) =>
               // TODO:change name with displayName after it is implemented
               // el.displayName.toLowerCase().includes(searchParams.displayName.toLowerCase()),
@@ -514,7 +355,7 @@ export default Vue.extend({
             )
           : this.items;
         if (res) {
-          resolve(res);
+          resolve({ items: res as any, totalItemCount: res.length, page: 0, pageCount: 1 });
         } else {
           reject(new Error('Search parameters are not defined!'));
         }

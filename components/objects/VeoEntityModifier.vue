@@ -54,7 +54,8 @@ export enum VeoEntityModifierEventType {
   ADD,
   CLONE,
   DELETE,
-  UNLINK
+  UNLINK,
+  DISPLAY_CHANGE
 }
 
 export interface IVeoAffectedEntity {
@@ -67,6 +68,9 @@ export interface IVeoEntityModifierEvent {
   affectedEntities: IVeoAffectedEntity[];
   reloadAll?: boolean;
   addToRoot?: boolean;
+  page?: number;
+  sortBy?: string;
+  sortDesc?: boolean;
 }
 
 interface IData {
@@ -177,7 +181,11 @@ export default Vue.extend({
         delete: (data: { item: IVeoEntity }) => this.showDeleteEntityDialog(data.item),
         unlink: (data: { item: IVeoEntity; parent: IVeoEntity }) => this.showUnlinkEntityDialog(data.item, data.parent),
         click: (data: { item: IVeoEntity }) => this.onNavigateEntity(data.item),
-        'navigate-parent': () => this.onNavigateParent()
+        'navigate-parent': () => this.onNavigateParent(),
+        'page-change': (data: { newPage: number; sortBy: string; sortDesc: boolean; replaceOldData?: boolean }) =>
+          this.onRefetchData(data.newPage, data.sortBy, data.sortDesc, data.replaceOldData),
+        'refetch-data': (data: { page: number; sortBy: string; sortDesc: boolean; replaceOldData?: boolean }) =>
+          this.onRefetchData(data.page, data.sortBy, data.sortDesc, data.replaceOldData)
       };
     },
     /**
@@ -229,6 +237,17 @@ export default Vue.extend({
     },
     onNavigateParent() {
       this.$router.back();
+    },
+    onRefetchData(page: number, sortBy: string, sortDesc: boolean, replaceOldData: boolean = true) {
+      this.entityModifiedEvent = {
+        event: VeoEntityModifierEventType.DISPLAY_CHANGE,
+        reloadAll: replaceOldData,
+        affectedEntities: [],
+        page,
+        sortBy,
+        sortDesc
+      };
+      this.$emit('fetch', this.entityModifiedEvent);
     },
     onAddEntitySuccess() {
       this.addEntityDialog.value = false;

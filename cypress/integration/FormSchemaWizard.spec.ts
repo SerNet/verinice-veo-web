@@ -27,6 +27,39 @@ describe('Formschema Wizard', () => {
     cy.intercept(
       {
         method: 'GET',
+        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'forms/fetchAllForms.json'
+        });
+      }
+    );
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'reports/fetchAllReports.json'
+        });
+      }
+    );
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'default/fetchAllDomains.json'
+        });
+      }
+    );
+    cy.intercept(
+      {
+        method: 'GET',
         url: /.*\/schemas$/
       },
       (req) => {

@@ -82,6 +82,7 @@
             <span>{{ $t('object_has_no_subobjects') }}</span>
           </template>
         </v-tooltip>
+        {{ item.entry.designator }}
         <v-tooltip bottom>
           <template #activator="{ on }">
             <span
@@ -223,6 +224,15 @@
         </div>
       </template>
     </v-treeview>
+    <div v-if="items.page < items.pageCount">
+      <v-btn
+        depressed
+        class="ml-8 mt-6"
+        @click="$emit('page-change', { newPage: items.page + 1, replaceOldData: false })"
+      >
+        {{ $t('load_more', { type: objectType }) }}
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -234,7 +244,7 @@ import { IVeoAffectedEntity, IVeoEntityModifierEvent, VeoEntityModifierEventType
 import { formatDate, formatTime } from '~/lib/utils';
 import { getSchemaEndpoint } from '~/plugins/api/schema';
 
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export interface ITreeEntry {
   entry: IVeoEntity;
@@ -243,17 +253,11 @@ export interface ITreeEntry {
   children?: ITreeEntry[];
 }
 
-interface IData {
-  open: string[];
-  active: string[];
-  displayedItems: ITreeEntry[];
-}
-
 export default Vue.extend({
   props: {
     items: {
-      type: Array as Prop<IVeoEntity[]>,
-      default: () => []
+      type: Object as Prop<IVeoPaginatedResponse<IVeoEntity[]>>,
+      default: () => ({ items: [], page: 1, pageCount: 0, totalItemCount: 0 })
     },
     loading: {
       type: Boolean,
@@ -280,13 +284,17 @@ export default Vue.extend({
     entityModifiedEvent: {
       type: Object as Prop<IVeoEntityModifierEvent | undefined>,
       default: undefined
+    },
+    objectType: {
+      type: String,
+      default: ''
     }
   },
-  data(): IData {
+  data() {
     return {
-      open: [],
-      active: [],
-      displayedItems: []
+      open: [] as string[],
+      active: [] as string[],
+      displayedItems: [] as ITreeEntry[]
     };
   },
   watch: {
@@ -339,7 +347,7 @@ export default Vue.extend({
       // We have to deep clone, else changes made in updateEntityMembers will get picked up by the items watcher
       // and the tree will get reset.
       this.displayedItems = cloneDeep(this.items)
-        .map((item: IVeoEntity) => {
+        .items.map((item: IVeoEntity) => {
           id++;
           return this.mapEntityToTreeEntry(item, id);
         })
@@ -461,6 +469,7 @@ export default Vue.extend({
     "created_at": "Created",
     "delete": "Delete object",
     "edit": "Edit object",
+    "load_more": "Load more {type}",
     "no_objects": "There are no objects",
     "no_child_objects": "This object has no sub objects",
     "object_add": "Link object",
@@ -484,6 +493,7 @@ export default Vue.extend({
     "created_at": "Erstellt",
     "delete": "Objekt löschen",
     "edit": "Objekt bearbeiten",
+    "load_more": "Mehr {type} laden",
     "no_objects": "Es existieren keine Objekte!",
     "no_child_objects": "Dieses Objekt hat keine Unterobjekte.",
     "object_add": "Objekt verknüpfen",

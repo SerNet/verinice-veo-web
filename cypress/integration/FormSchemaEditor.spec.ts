@@ -46,6 +46,42 @@ describe('Formschema Editor', () => {
     cy.visit('/editor');
   });
 
+  beforeEach(() => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'forms/fetchAllForms.json'
+        });
+      }
+    );
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'reports/fetchAllReports.json'
+        });
+      }
+    );
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains\//
+      },
+      (req) => {
+        req.reply({
+          fixture: 'default/fetchAllDomains.json'
+        });
+      }
+    );
+  });
+
   it('drags and drops elements into dropzone and nests in each other', function () {
     cy.loadFse('formschema/empty-process.json');
     cy.contains('.v-sheet', 'text').drag();
@@ -418,9 +454,6 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Linkattribute:');
       cy.contains('.v-autocomplete', 'Linkattribute').type('{downarrow}{enter}{downarrow}{enter}{downarrow}{enter}{esc}').should('contain.text', 'purpose, explanation, document');
 
-      cy.get('.v-form').should('contain.text', 'Ausrichtung:');
-      cy.contains('.v-autocomplete', 'Ausrichtung').find('input').should('have.value', 'Horizontal').closest('.v-autocomplete').type('Vertikal{enter}');
-
       cy.get('.dragArea').find('.fse-input').should('have.length', 3);
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
@@ -579,6 +612,15 @@ describe('Formschema Editor', () => {
       .should('have.class', 'flex-column direction-vertical')
       .find('.fse-input')
       .should('have.length', 2);
+
+    // Regression test for veo#226 bug
+    cy.contains('.v-sheet', 'group').drag();
+    cy.contains('.fse-group', 'Gruppe Test 1').drop();
+    cy.get('.dropzone').find('.fse-group').eq(1).toMatchHtmlSnapshot({ name: 'Group newly added 1 - FSE' });
+
+    cy.contains('.v-sheet', 'group').drag();
+    cy.contains('.fse-group', 'Gruppe Test 2').drop();
+    cy.get('.dropzone').find('.fse-group').eq(3).toMatchHtmlSnapshot({ name: 'Group newly added 2 - FSE' });
   });
 
   it('deletes elements', function () {

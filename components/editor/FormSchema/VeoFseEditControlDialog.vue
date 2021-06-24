@@ -82,10 +82,7 @@
           </v-col>
         </v-row>
         <v-row
-          v-if="
-            activeControlType.name === 'Radio' ||
-              (activeControlType.name === 'LinksField' && linksAttributes.length > 0)
-          "
+          v-if="activeControlType.name === 'Radio'"
           no-gutters
           class="align-center"
         >
@@ -305,7 +302,7 @@ export default defineComponent<IProps>({
     const activeControlType: Ref<IControlType> = ref({
       name: props.type,
       format: props.options.format,
-      ...((props.type === 'Radio' || props.type === 'LinksField') && {
+      ...(props.type === 'Radio' && {
         direction: getValue('#/options/direction', defaults.direction)
       }),
       rule: getValue('#/rule', undefined)
@@ -371,17 +368,6 @@ export default defineComponent<IProps>({
         linksField.formSchemaElements.value.map((obj: any) => {
           return linksField.linksAttributesItems.value.find((attr: any) => attr.scope === obj.scope);
         })
-      );
-
-      watch(
-        () => linksField.linksAttributes.value,
-        (newVal) => {
-          if (newVal.length === 0) {
-            activeControlType.value.direction = undefined;
-          } else {
-            activeControlType.value.direction = activeControlType.value.direction ? activeControlType.value.direction : defaults.direction;
-          }
-        }
       );
 
       // Provide linkScope and linksAttributes for VeoFseConditions to generate conditions for linksAttributes in a Dialog

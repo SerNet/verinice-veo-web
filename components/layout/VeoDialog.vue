@@ -89,37 +89,18 @@ export default Vue.extend({
       default: false
     }
   },
-  data() {
-    return {
-      dialog: false as boolean,
-      noWatch: false as boolean
-    };
-  },
   computed: {
+    dialog: {
+      get(): boolean {
+        return this.value;
+      },
+      set(newValue: boolean) {
+        this.$emit('input', newValue);
+      }
+    },
     hasActions(): boolean {
       return (this.$slots['dialog-options']?.length || 0) > 0;
     }
-  },
-  watch: {
-    value(newValue) {
-      this.noWatch = true;
-      this.dialog = newValue;
-      this.noWatch = false;
-    },
-    dialog(newValue) {
-      if (!this.noWatch) {
-        if (newValue) {
-          this.dialog = newValue;
-        } else {
-          this.$emit('input', false);
-        }
-      }
-    }
-  },
-  mounted() {
-    this.noWatch = true;
-    this.dialog = this.value;
-    this.noWatch = false;
   },
   methods: {
     closeDialog() {

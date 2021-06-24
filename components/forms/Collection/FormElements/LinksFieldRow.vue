@@ -16,9 +16,11 @@
         :label="$t('targetObject')"
         class="links-field-row-autocomplete"
         :disabled="disabled"
+        :placeholder="$t('search_placeholder')"
         dense
         hide-details="auto"
         clearable
+        no-filter
       >
         <template #prepend-item>
           <v-btn
@@ -28,7 +30,12 @@
             tile
             @click.stop="onDialogOpen('DIALOG_CREATE')"
           >
-            {{ $t('createTargetObject') }}
+            <span v-if="currentForm">
+              {{ $t('createTargetForm', { type: currentForm.name }) }}
+            </span>
+            <span v-else>
+              {{ $t('createTargetObject') }}
+            </span>
           </v-btn>
           <v-divider />
         </template>
@@ -48,7 +55,7 @@
           >
             <v-list-item-content>
               <!-- TODO: change name with displayName after it is implemented -->
-              <v-list-item-title v-text="item.name" />
+              <v-list-item-title>{{ item.displayName }} </v-list-item-title>
             </v-list-item-content>
             <v-list-item-action>
               <div class="autocomplete-list-item-action-buttons">
@@ -76,6 +83,14 @@
                 </v-btn>
               </div>
             </v-list-item-action>
+          </v-list-item>
+        </template>
+        <template
+          v-if="totalItems > itemsPerPage"
+          #append-item
+        >
+          <v-list-item two-line>
+            {{ $t('be_more_specific') }}
           </v-list-item>
         </template>
       </v-autocomplete>
@@ -205,7 +220,6 @@
       </v-card>
     </v-dialog>
   </v-row>
-  <!--<div class="d-flex" :class="directionClass">-->
 </template>
 
 <script lang="ts">
@@ -214,7 +228,9 @@ import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
 import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { getSchemaEndpoint } from '~/plugins/api/schema';
+import { separateUUIDParam } from '~/lib/utils';
 
 interface ITarget {
   targetUri: string | undefined;
@@ -243,9 +259,10 @@ interface IData {
   itemInDialog: IItem | undefined;
   newObject: ILinksFieldDialogNewObject;
   targetId: string | undefined;
-  objectTypePluralMap: BaseObject;
   linksFieldDialogObjectSchema: JSONSchema7;
   linksFieldDialogFormSchema: UISchema;
+  currentForm: IVeoFormSchemaMeta | undefined;
+  totalItems: number;
 }
 
 export default Vue.extend({
@@ -305,38 +322,33 @@ export default Vue.extend({
       itemInDialog: undefined,
       newObject: {},
       targetId: undefined,
-      objectTypePluralMap: {
-        process: 'processes',
-        person: 'persons',
-        asset: 'assets',
-        control: 'controls'
-      },
       linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
-      linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema }
+      linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema },
+      currentForm: undefined,
+      totalItems: 0 as number
     };
   },
   computed: {
-    directionClass(): string {
-      return this.options && this.options.direction === 'vertical' ? 'flex-column direction-vertical' : 'flex-row direction-horizontal';
-    },
     ui() {
       return {
         type: 'Layout',
         options: {
-          direction: this.options && this.options.direction === 'vertical' ? 'vertical' : 'horizontal',
           format: 'group'
         },
         elements: this.elements
       };
     },
     targetUri(): string | undefined {
-      return this.targetId ? `/${this.objectTypePluralMap[this.targetType]}/${this.targetId}` : undefined;
+      return this.targetId ? `/${getSchemaEndpoint(this.targetType)}/${this.targetId}` : undefined;
     },
     targetType(): string {
-      // TODO: replace this function by the line below, after target.type in ObjectSchema is replaced by "person", "process", etc
-      // return (this.schema.items as any).properties.target.properties
-      //   .type.enum[0]
       return (this.schema.items as any).properties.target.properties.type.enum[0];
+    },
+    subType(): string | undefined {
+      return (this.schema.items as any).properties.target.properties.subType?.enum[0];
+    },
+    domainId(): string {
+      return separateUUIDParam(this.$route.params.domain).id;
     },
     target(): ITarget | undefined {
       return {
@@ -356,6 +368,9 @@ export default Vue.extend({
     },
     noAttributesClass(): string {
       return this.ui.elements.length === 0 ? 'mb-4' : '';
+    },
+    itemsPerPage(): number {
+      return this.$user.tablePageSize;
     }
   },
   watch: {
@@ -384,11 +399,23 @@ export default Vue.extend({
   methods: {
     async fetchItems(filter?: string) {
       this.loading = true;
+
+      // Filter out the display name of the currently edited object
+      const filters = {
+        ...(filter ? { displayName: filter } : {}),
+        ...(this.subType ? { subType: this.subType } : {})
+      };
+
       try {
-        const displayFilter = filter ? { displayName: filter } : undefined;
         // TODO: Limit result count with pagination API
-        const items = (await this.api.fetchAll(this.targetType, displayFilter)) as IItem[];
-        this.items = items.slice(0, 100);
+        const entities = await this.api.fetchAll(this.targetType, filters);
+        this.items = entities.items;
+        this.totalItems = entities.totalItemCount;
+
+        if (this.subType) {
+          const forms = await this.$api.form.fetchAll();
+          this.currentForm = forms.find((form) => form.subType === this.subType);
+        }
       } finally {
         this.loading = false;
       }
@@ -411,6 +438,13 @@ export default Vue.extend({
     async onDialogAcceptCreate() {
       this.dialogLoading = true;
       if (this.newObject) {
+        const domainObject = { targetUri: `/domains/${this.domainId}` };
+        this.newObject.domains = [domainObject];
+
+        if (this.subType) {
+          this.newObject.subType = { [this.domainId]: this.subType };
+        }
+
         const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem;
         this.items.push(createItem);
         this.selected = createItem.id;
@@ -456,20 +490,26 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "be_more_specific": "Please be more specific to show additional objects",
     "targetObject": "Target object",
     "createTargetObject": "Create new object",
+    "createTargetForm": "Create {type}",
     "updateTargetObject": "Change object",
     "deleteTargetObject": "Delete object",
     "deleteTargetObjectConfirmation": "Are you sure you want to delete \"{object}\"?",
-    "noTargets": "Not targets found"
+    "noTargets": "Not targets found",
+    "search_placeholder": "Start typing to search for objects to link"
   },
   "de": {
+    "be_more_specific": "Bitte gebe weitere Zeichen ein um die Auswahl einzuschränken",
     "targetObject": "Zielobjekt",
     "updateTargetObject": "Objekt ändern",
     "createTargetObject": "Ein neues Objekt anlegen",
+    "createTargetForm": "{type} erstellen",
     "deleteTargetObject": "Objekt löschen",
     "deleteTargetObjectConfirmation": "Sind sie sicher, dass das Objekt \"{object}\" gelöscht werden soll?",
-    "noTargets": "Keine Ziele verfügbar"
+    "noTargets": "Keine Ziele verfügbar",
+    "search_placeholder": "Nach Namen des zu verknüpfenden Objektes suchen"
   }
 }
 </i18n>
@@ -495,14 +535,6 @@ export default Vue.extend({
 .vf-links-field .direction-vertical > .links-field-row-autocomplete {
   margin-top: 12px !important;
   margin-bottom: 12px !important;
-}
-.vf-links-field .direction-horizontal > .links-field-row-autocomplete {
-  margin-top: 12px !important;
-  margin-bottom: 12px !important;
-}
-
-.vf-links-field .direction-horizontal ::v-deep .vf-control {
-  margin: 0 0 0 5px;
 }
 
 .links-field-row-autocomplete {
