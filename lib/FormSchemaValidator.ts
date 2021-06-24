@@ -40,23 +40,35 @@ export default class FormSchemaValidator {
 
   private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoObjectSchema, context: string) {
     if (formSchema.content) {
-      this.elementExists(formSchema.content, objectSchema, `${context}.content`);
+      this.elementExists(formSchema.content, objectSchema, `${context}.content`, undefined);
     } else {
       this.warnings.push({ code: 'W_CONTENT_MISSING', message: 'This formschema has no controls and thus no use.' });
     }
   }
 
-  private elementExists(element: any, objectSchema: IVeoObjectSchema, context: string) {
+  private elementExists(element: any, objectSchema: IVeoObjectSchema, context: string, parent: any) {
     if (!element.scope && element.type === 'Control') {
       this.errors.push({ code: 'E_SCOPE_MISSING', message: `The element ${context} is missing its scope.` });
     } else if (element.scope) {
-      const schema = JsonPointer.get(objectSchema, element.scope) as any;
+      let scope = element.scope;
+      let schema = JsonPointer.get(objectSchema, scope) as any;
+
+      /* Link attributes don't have an absolute pointer, but one relative to their parent (to avoid 
+       them getting used outside the link), so we have to add the pointer of the parent in front.
+      */
+      if (!schema && parent?.scope) {
+        scope = `${parent.scope}/items${element.scope.slice(1)}`;
+        schema = JsonPointer.get(objectSchema, scope) as any;
+      }
+
       if (!schema) {
-        this.errors.push({ code: 'E_PROPERTY_MISSING', message: `The element ${element.scope} doesn't exist in the object schema.` });
-      } else if (element.elements) {
-        for (const child in element.elements) {
-          this.elementExists(element.elements[child], schema, `${context}.elements.[${child}]`);
-        }
+        this.errors.push({ code: 'E_PROPERTY_MISSING', message: `The element ${scope} doesn't exist in the object schema.` });
+      }
+    }
+
+    if (element.elements) {
+      for (const child in element.elements) {
+        this.elementExists(element.elements[child], objectSchema, `${context}.elements.[${child}]`, element);
       }
     }
   }
