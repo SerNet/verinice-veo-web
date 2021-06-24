@@ -81,8 +81,7 @@
               outlined
               text
               :loading="saveBtnLoading"
-              :disabled="!allowRestoration"
-              @click="onClick"
+              @click="restoreDialog = true"
             >
               {{ $t('restore') }}
             </v-btn>
@@ -90,6 +89,14 @@
         </v-row>
       </template>
       <template #default>
+        <VeoAlert
+          v-model="isRevision"
+          :type="alertType"
+          no-close-button
+          flat
+        >
+          {{ $t('old_version_alert') }}
+        </VeoAlert>
         <VeoForm
           v-if="canShowData"
           v-model="form.objectData"
@@ -130,6 +137,12 @@
           v-model="formModified.revisionDialog"
           :item="form.objectData"
           @exit="showRevisionAfterDialog()"
+        />
+        <VeoObjectRestoreDialog
+          v-model="restoreDialog"
+          :version="revisionVersion"
+          :object="form.objectData"
+          @restored="onRestored"
         />
         <VeoAlert
           v-model="alert.value"
@@ -188,7 +201,7 @@ import { Route } from 'vue-router/types/index';
 import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
-import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
 import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes';
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
 import { validate } from '~/lib/FormSchemaHelper';
@@ -216,6 +229,8 @@ interface IData {
     revisionDialog: boolean;
     target?: any;
   };
+  alertType: ALERT_TYPE;
+  restoreDialog: boolean;
 }
 
 export default Vue.extend({
@@ -265,11 +280,15 @@ export default Vue.extend({
         dialog: false,
         revisionDialog: false,
         target: undefined
-      }
+      },
+      alertType: ALERT_TYPE.INFO,
+      restoreDialog: false
     };
   },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.formId);
+    this.isRevision = false;
+    this.formModified.isModified = false;
 
     this.objectType = formSchema.modelType;
     if (this.objectType) {
@@ -411,6 +430,10 @@ export default Vue.extend({
           this.showError(error.status, error.name);
         });
     },
+    onRestored() {
+      this.restoreDialog = false;
+      this.$fetch();
+    },
     showError(status: number, message: string) {
       if (status === 412) {
         this.alert.text = this.$t('global.appstate.alert.object_modified').toString();
@@ -451,7 +474,7 @@ export default Vue.extend({
         });
       }
     },
-    showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean, allowRestoration: boolean = false) {
+    showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean) {
       const content = revision.content;
 
       // show modified dialog before switching versions if needed
@@ -465,7 +488,6 @@ export default Vue.extend({
         // fill form with revision or newest data
         this.isRevision = isRevision;
         this.revisionVersion = revision.changeNumber;
-        this.allowRestoration = allowRestoration;
 
         // @ts-ignore
         content.$etag = this.form.objectData.$etag; // We have to give the etag to the new object in order to make it saveable
@@ -507,6 +529,7 @@ export default Vue.extend({
     "navigation.title": "Contents",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
+    "old_version_alert": "You are currently viewing an old and protected version. You can only edit this version after restoring it.",
     "scope_delete_error": "Failed to delete scope",
     "restore": "Restore",
     "revision": "version",
@@ -518,6 +541,7 @@ export default Vue.extend({
     "navigation.title": "Inhalt",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
+    "old_version_alert": "Ihnen wird momentan eine alte, schreibgeschützte Version angezeigt. Sie kann erst bearbeitet werden, nachdem Sie sie wiederhergestellt haben.",
     "scope_delete_error": "Scope konnte nicht gelöscht werden",
     "restore": "Wiederherstellen",
     "revision": "Version",
