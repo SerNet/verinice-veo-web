@@ -238,10 +238,10 @@ export interface IVeoTranslations {
 }
 
 export interface IVeoFormSchemaMeta {
-  id?: string;
   modelType: string;
-  name: string;
   subType: string | null;
+  name: { [key: string]: string };
+  id?: string;
   domainId?: string;
 }
 

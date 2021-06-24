@@ -171,6 +171,15 @@ export default defineComponent<IProps>({
      * Definitions of functions
      */
 
+    // Get the title of a dynamic parameter
+    function getCachedTitle(type: ParamsWithUUID, key: string) {
+      if (type === ':form') {
+        return { [type]: { text: JSON.parse(sessionStorage.getItem(key) as string)[context.root.$i18n.locale] || 'Missing translation' } };
+      } else {
+        return { [type]: { text: sessionStorage.getItem(key) as string } };
+      }
+    }
+
     // Receive a titel of a dynamic parameter value (type-UUID) from server and cache it
     async function getUUIDParamTitel(type: ParamsWithUUID, param: string) {
       // "param" has always pattern: type-UUID, where type can be form, process, control, asset, ...
@@ -182,7 +191,7 @@ export default defineComponent<IProps>({
 
       // If a parameter title is already cached, return its value
       if (sessionStorage.getItem(paramSeparated.id)) {
-        return { [type]: { text: sessionStorage.getItem(paramSeparated.id) as string } };
+        return getCachedTitle(type, paramSeparated.id);
       }
 
       // Otherwise, If a parameter title is not cached, send request to server and cache it in Session Storage
@@ -190,20 +199,19 @@ export default defineComponent<IProps>({
       const displayNameKey = displayNameKeyMap[type];
 
       let text: string;
-      if (apiKey === 'entity') {
-        const api = context.root.$api[apiKey];
-        // @ts-ignore
+      // @ts-ignore
+      const api = context.root.$api[apiKey];
+      if (type === ':entity') {
         text = (await api.fetch(paramSeparated.type, paramSeparated.id))[displayNameKey];
+      } else if (type === ':form') {
+        text = JSON.stringify((await api.fetch(paramSeparated.id))[displayNameKey]);
       } else {
-        // @ts-ignore
-        const api = context.root.$api[apiKey];
         text = (await api.fetch(paramSeparated.id))[displayNameKey];
       }
       sessionStorage.setItem(paramSeparated.id, text);
 
       return new Promise<ICustomBreadcrumbTextEntry>((resolve) => {
-        sessionStorage.setItem(paramSeparated.id, text);
-        resolve({ [type]: { text } });
+        resolve(getCachedTitle(type, paramSeparated.id));
       });
     }
 
