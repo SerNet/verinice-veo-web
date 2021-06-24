@@ -1,12 +1,13 @@
 <template>
   <VeoDialog
-    v-model="dialog"
-    :headline="$t('restore_heading')"
+    v-bind="$attrs"
+    :headline="$t('restore.heading')"
     :persistent="saving"
     :close-disabled="saving"
+    v-on="$listeners"
   >
     <template #default>
-      {{ $t('restore_text_part_1') }} <b>{{ version }}</b> {{ $t('restore_text_part_2', { name: object.displayName }) }}
+      {{ $t('restore.textPart1') }} <b>{{ version }}</b> {{ $t('restore.textPart2', { name: object.displayName }) }}
     </template>
     <template #dialog-options>
       <v-btn
@@ -22,7 +23,7 @@
         color="primary"
         @click="doRestore()"
       >
-        {{ $t('restore') }}
+        {{ $t('restore.action') }}
       </v-btn>
     </template>
   </VeoDialog>
@@ -32,15 +33,10 @@
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-
 import { IVeoEntity } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
-    value: {
-      type: Boolean,
-      default: false
-    },
     version: {
       type: Number,
       required: true
@@ -55,16 +51,6 @@ export default Vue.extend({
       saving: false as boolean
     };
   },
-  computed: {
-    dialog: {
-      get(): boolean {
-        return this.value;
-      },
-      set(newValue: boolean) {
-        this.$emit('input', newValue);
-      }
-    }
-  },
   methods: {
     close() {
       this.$emit('input', false);
@@ -76,8 +62,8 @@ export default Vue.extend({
         this.$emit('restored');
       } catch (e) {
         this.$emit(VeoEvents.ALERT_ERROR, {
-          title: this.$t('restore_error'),
-          text: this.$t('restore_error_text')
+          title: this.$t('restore.error'),
+          text: this.$t('restore.errorText')
         });
       } finally {
         this.saving = false;
@@ -90,20 +76,24 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "restore": "Restore",
-    "restore_error": "Error",
-    "restore_error_text": "The object couldn't be restored!",
-    "restore_heading": "Restore old version",
-    "restore_text_part_1": "Do you really want to restore version",
-    "restore_text_part_2": "of \"{name}\"?"
+    "restore": {
+      "action": "Restore",
+      "error": "Error",
+      "errorText": "The object couldn't be restored.",
+      "heading": "Restore old version",
+      "textPart1": "Do you really want to restore version",
+      "textPart2": "of \"{name}\"?"
+    }
   },
   "de": {
-    "restore": "Wiederherstellen",
-    "restore_error": "Fehler",
-    "restore_error_text": "Das Objekt konnte nicht wiederhergestellt werden!",
-    "restore_heading": "Alte Version wiederherstellen",
-    "restore_text_part_1": "Möchten Sie wirklich Version",
-    "restore_text_part_2": "von \"{name}\" wiederherstellen?"
+    "restore": {
+      "action": "Wiederherstellen",
+      "error": "Fehler",
+      "errorText": "Das Objekt konnte nicht wiederhergestellt werden.",
+      "heading": "Alte Version wiederherstellen",
+      "textPart1": "Möchten Sie wirklich Version",
+      "textPart2": "von \"{name}\" wiederherstellen?"
+    }
   }
 }
 </i18n>

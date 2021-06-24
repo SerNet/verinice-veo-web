@@ -31,7 +31,7 @@
             <v-list-item-title>
               {{ $t('version') }}
               <b>{{ version.changeNumber }}</b>
-              : {{ (new Date(version.time)).toLocaleString() }}
+              : {{ (new Date(version.time)).toLocaleString($i18n.locale) }}
             </v-list-item-title>
             <v-list-item-subtitle>
               {{ $t('by') }}

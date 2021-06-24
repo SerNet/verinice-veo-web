@@ -95,7 +95,7 @@
           no-close-button
           flat
         >
-          {{ $t('old_version_alert') }}
+          {{ $t('oldVersionAlert') }}
         </VeoAlert>
         <VeoForm
           v-if="canShowData"
@@ -529,7 +529,7 @@ export default Vue.extend({
     "navigation.title": "Contents",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
-    "old_version_alert": "You are currently viewing an old and protected version. You can only edit this version after restoring it.",
+    "oldVersionAlert": "You are currently viewing an old and protected version. You can only edit this version after restoring it.",
     "scope_delete_error": "Failed to delete scope",
     "restore": "Restore",
     "revision": "version",
@@ -541,7 +541,7 @@ export default Vue.extend({
     "navigation.title": "Inhalt",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
-    "old_version_alert": "Ihnen wird momentan eine alte, schreibgeschützte Version angezeigt. Sie kann erst bearbeitet werden, nachdem Sie sie wiederhergestellt haben.",
+    "oldVersionAlert": "Ihnen wird momentan eine alte, schreibgeschützte Version angezeigt. Sie kann erst bearbeitet werden, nachdem Sie sie wiederhergestellt haben.",
     "scope_delete_error": "Scope konnte nicht gelöscht werden",
     "restore": "Wiederherstellen",
     "revision": "Version",
