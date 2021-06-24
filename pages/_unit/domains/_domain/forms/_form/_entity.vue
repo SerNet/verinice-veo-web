@@ -79,7 +79,7 @@
               color="primary"
               outlined
               :loading="saveBtnLoading"
-              @click="onClick(false)"
+              @click="onClick"
             >
               {{ saveBtnText }}
             </v-btn>
@@ -89,7 +89,7 @@
               outlined
               :loading="saveBtnLoading"
               :disabled="!allowRestoration"
-              @click="onClick(false)"
+              @click="onClick"
             >
               {{ $t('restore') }}
             </v-btn>
@@ -98,7 +98,7 @@
               color="primary"
               outlined
               :loading="saveBtnLoading"
-              @click="onClick(true)"
+              @click="onClick($event, true)"
             >
               {{ $t('global.button.save_quit') }}
             </v-btn>
@@ -108,7 +108,7 @@
               outlined
               :loading="saveBtnLoading"
               :disabled="!allowRestoration"
-              @click="onClick(true)"
+              @click="onClick($event, true)"
             >
               {{ $t('restore_quit') }}
             </v-btn>
@@ -409,18 +409,18 @@ export default Vue.extend({
     doDiscard() {
       this.$router.go(-1);
     },
-    async onClick(redirect: boolean = false) {
+    async onClick(event: any, redirect: boolean = false) {
       this.saveBtnLoading = true;
       this.formatObjectData();
       if (this.objectType) {
-        await this.onSave(redirect).finally(() => {
+        await this.onSave(event, redirect).finally(() => {
           this.saveBtnLoading = false;
         });
       } else {
         throw new Error('Object Type is not defined in FormSchema');
       }
     },
-    onSave(redirect: boolean = false): Promise<void> {
+    onSave(_event: any, redirect: boolean = false): Promise<void> {
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
         .then(() => {

@@ -27,7 +27,7 @@
               outlined
               :disabled="$fetchState.pending"
               :loading="saveBtnLoading"
-              @click="doSaveEntity(false)"
+              @click="doSaveEntity"
             >
               {{ $t('global.button.save') }}
             </v-btn>
@@ -38,7 +38,7 @@
               text
               :loading="saveBtnLoading"
               :disabled="!allowRestoration"
-              @click="doSaveEntity(false)"
+              @click="doSaveEntity"
             >
               {{ $t('restore') }}
             </v-btn>
@@ -48,7 +48,7 @@
               outlined
               :disabled="$fetchState.pending"
               :loading="saveBtnLoading"
-              @click="doSaveEntity(true)"
+              @click="doSaveEntity($event, true)"
             >
               {{ $t('global.button.save_quit') }}
             </v-btn>
@@ -59,7 +59,7 @@
               text
               :loading="saveBtnLoading"
               :disabled="!allowRestoration"
-              @click="doSaveEntity(true)"
+              @click="doSaveEntity($event, true)"
             >
               {{ $t('restore_quit') }}
             </v-btn>
@@ -263,7 +263,7 @@ export default Vue.extend({
     doDiscard() {
       this.$router.go(-1);
     },
-    doSaveEntity(redirect: boolean = false) {
+    doSaveEntity(_event: any, redirect: boolean = false) {
       this.saveBtnLoading = true;
       this.formatObjectData();
 
