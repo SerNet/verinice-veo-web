@@ -51,17 +51,6 @@
             >
               {{ $t('global.button.save_quit') }}
             </v-btn>
-            <v-btn
-              v-else
-              color="primary"
-              outlined
-              text
-              :loading="saveBtnLoading"
-              :disabled="!allowRestoration"
-              @click="doSaveEntity($event, true)"
-            >
-              {{ $t('restore_quit') }}
-            </v-btn>
           </VeoEntityDisplayOptions>
           <div
             v-if="$fetchState.pending"

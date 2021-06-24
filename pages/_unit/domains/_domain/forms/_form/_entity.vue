@@ -92,15 +92,6 @@
             >
               {{ $t('restore') }}
             </v-btn>
-            <v-btn
-              v-if="$route.params.entity && !isRevision"
-              color="primary"
-              outlined
-              :loading="saveBtnLoading"
-              @click="onClick($event, true)"
-            >
-              {{ $t('global.button.save_quit') }}
-            </v-btn>
           </v-col>
         </v-row>
         <VeoAlert
