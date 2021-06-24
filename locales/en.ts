@@ -69,7 +69,7 @@ export default {
   'global.menu.collapse': 'Collapse menu',
   'global.menu.expand': 'Fix menu',
 
-  'objectlist.abbreviation': 'Abb.',
+  'objectlist.designator': 'Designator',
   'objectlist.description': 'Description',
   'objectlist.title': 'Object name',
   'objectlist.updatedat': 'Last change',

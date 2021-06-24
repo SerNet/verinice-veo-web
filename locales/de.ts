@@ -69,7 +69,7 @@ export default {
   'global.menu.collapse': 'Menü verstecken',
   'global.menu.expand': 'Menü fixieren',
 
-  'objectlist.abbreviation': 'Abk.',
+  'objectlist.designator': 'Designator',
   'objectlist.description': 'Beschreibung',
   'objectlist.title': 'Objektname',
   'objectlist.updatedat': 'Letzte Änderung',
