@@ -501,7 +501,7 @@ export default Vue.extend({
         // @ts-ignore
         content.$etag = this.form.objectData.$etag; // We have to give the etag to the new object in order to make it saveable
         this.form.objectData = content; // show revision content in form
-        this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`;
+        this.form.objectData.displayName = `${content.designator} ${content.abbreviation || ''} ${content.name}`;
       }
     },
     showRevisionAfterDialog() {
