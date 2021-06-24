@@ -38,7 +38,7 @@
               outlined
               text
               :loading="saveBtnLoading"
-              @click="restoreDialog = true"
+              @click="restoreDialogVisible = true"
             >
               {{ $t('restore') }}
             </v-btn>
@@ -73,7 +73,7 @@
               @input="entityModified.isModified = true"
             />
             <VeoObjectRestoreDialog
-              v-model="restoreDialog"
+              v-model="restoreDialogVisible"
               :version="revisionVersion"
               :object="form.objectData"
               @restored="onRestored"
@@ -167,7 +167,7 @@ interface IData {
     target?: any;
   };
   alertType: ALERT_TYPE;
-  restoreDialog: boolean;
+  restoreDialogVisible: boolean;
 }
 
 export default Vue.extend({
@@ -216,7 +216,7 @@ export default Vue.extend({
         target: undefined
       },
       alertType: ALERT_TYPE.INFO,
-      restoreDialog: false
+      restoreDialogVisible: false
     };
   },
   async fetch() {
@@ -283,7 +283,7 @@ export default Vue.extend({
         });
     },
     onRestored() {
-      this.restoreDialog = false;
+      this.restoreDialogVisible = false;
       this.$fetch();
     },
     showError(status: number, message: string) {
