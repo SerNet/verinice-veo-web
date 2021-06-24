@@ -213,6 +213,7 @@ export interface IVeoEntity {
   id: string;
   name: string;
   abbreviation: string;
+  designator: string;
   displayName: string;
   createdAt: string;
   createdBy: string;
