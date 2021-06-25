@@ -1,5 +1,6 @@
 <template>
   <VeoDialog
+    v-if="isDialogOpen"
     v-model="dialog"
     :large="state !== 'start'"
     :headline="$t('editor.objectschema.headline')"
@@ -137,7 +138,7 @@
               <VeoEditorFileUpload
                 :code="code"
                 :input-label="$t('uploadLabel')"
-                @schema-uploaded="createSchema"
+                @schema-uploaded="importSchema"
               />
             </v-col>
           </v-row>
@@ -192,7 +193,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, trim } from 'lodash';
+import { capitalize, isString, trim } from 'lodash';
 
 import { ISchemaEndpoint } from '~/plugins/api/schema';
 
@@ -225,6 +226,9 @@ export default Vue.extend({
   computed: {
     importNextDisabled(): boolean {
       return (this.modelType === 'custom' && this.code === '\n\n\n\n\n') || this.modelType === '';
+    },
+    isDialogOpen() {
+      return this.$route.query?.os === 'custom';
     }
   },
   watch: {
@@ -245,6 +249,16 @@ export default Vue.extend({
       if (newValue === 'start') {
         this.code = '';
         this.clearCreateForm();
+      }
+    },
+    $route: {
+      immediate: true,
+      handler() {
+        if (isString(this.$route.query?.type) && isString(this.$route.query?.description)) {
+          this.createForm.type = this.$route.query.type;
+          this.createForm.description = this.$route.query.description;
+          this.createSchema();
+        }
       }
     }
   },
@@ -271,19 +285,19 @@ export default Vue.extend({
   },
   methods: {
     createSchema(_schema?: any) {
-      if (this.state === 'create') {
-        this.$emit('completed', {
-          schema: undefined,
-          meta: { type: this.createForm.type, description: this.createForm.description }
-        });
-      } else {
-        this.$emit('completed', { schema: _schema, meta: undefined });
-      }
-    },
-    importSchema() {
-      this.$api.schema.fetch(this.modelType).then((data: any) => {
-        this.$emit('completed', { schema: data, meta: undefined });
+      this.$emit('completed', {
+        schema: undefined,
+        meta: { type: this.createForm.type, description: this.createForm.description }
       });
+    },
+    importSchema(schema?: any) {
+      if (schema) {
+        this.$emit('completed', { schema, meta: undefined });
+      } else {
+        this.$api.schema.fetch(this.modelType).then((data: any) => {
+          this.$emit('completed', { schema: data, meta: undefined });
+        });
+      }
     },
     clearCreateForm() {
       this.createForm = {
