@@ -705,7 +705,7 @@ describe('Formschema Editor', () => {
     });
   });
 
-  it.only('adds, updates formSchema meta details', function () {
+  it('adds, updates formSchema meta details', function () {
     cy.loadFse('formschema/empty-process.json');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
 
