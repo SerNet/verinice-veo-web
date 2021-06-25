@@ -193,7 +193,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, isString, trim } from 'lodash';
+import { capitalize, isEmpty, isString, trim } from 'lodash';
 
 import { ISchemaEndpoint } from '~/plugins/api/schema';
 
@@ -228,7 +228,7 @@ export default Vue.extend({
       return (this.modelType === 'custom' && this.code === '\n\n\n\n\n') || this.modelType === '';
     },
     isDialogOpen() {
-      return this.$route.query?.os === 'custom';
+      return this.$route.query?.os === 'custom' || isEmpty(this.$route.query);
     }
   },
   watch: {
@@ -258,6 +258,9 @@ export default Vue.extend({
           this.createForm.type = this.$route.query.type;
           this.createForm.description = this.$route.query.description;
           this.createSchema();
+        } else if (this.$route.query?.os === 'custom') {
+          this.state = 'import';
+          this.modelType = 'custom';
         }
       }
     }
