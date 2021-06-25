@@ -282,7 +282,7 @@
         v-if="formSchema"
         v-model="showDetailDialog"
         :object-schema="formSchema.modelType"
-        :form-schema="formSchema.name"
+        :form-schema="formSchema.name[language]"
         :subtype="formSchema.subType"
         @update-schema-name="updateSchemaName"
         @update-subtype="updateSubType"
@@ -296,6 +296,7 @@ import vjp from 'vue-json-pointer';
 
 import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api';
 import { JsonPointer } from 'json-ptr';
+import { snakeCase } from 'lodash';
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
   IVeoTranslations,
@@ -332,7 +333,16 @@ export default defineComponent<IProps>({
       showCreationDialog.value = objectSchema.value === undefined && formSchema.value === undefined;
     });
 
-    const title = computed(() => context.root.$t('editor.formschema.headline') + (formSchema.value ? `- ${formSchema.value?.name}` : ''));
+    const title = computed(() => {
+      const title = context.root.$t('editor.formschema.headline');
+      // Name property must generally exist, but before it is created in Wizard, only headline should be visible
+      // If Name property exists and e.g. 'de' sub-property is empty then missing translation should be visible
+      if (formSchema.value?.name) {
+        return title + ` - ${formSchema.value?.name[language.value] ?? 'Missing translation'}`;
+      } else {
+        return title;
+      }
+    });
 
     const oneColumnCollapsed = computed(() => backlogCollapsed.value || previewCollapsed.value);
 
@@ -395,7 +405,7 @@ export default defineComponent<IProps>({
 
     function updateSchemaName(value: string) {
       if (formSchema.value) {
-        formSchema.value.name = value;
+        vjp.set(formSchema.value, `/name/${language.value}`, value);
       }
     }
 
@@ -409,7 +419,7 @@ export default defineComponent<IProps>({
       if (downloadButton.value && downloadButton.value !== null) {
         const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
         downloadButton.value.href = data;
-        downloadButton.value.download = `fs_${formSchema.value?.name || 'download'}.json`;
+        downloadButton.value.download = snakeCase(`fs_${formSchema.value?.name[language.value] || 'download'}`) + '.json';
       }
     }
 
