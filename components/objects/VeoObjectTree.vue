@@ -82,6 +82,7 @@
             <span>{{ $t('object_has_no_subobjects') }}</span>
           </template>
         </v-tooltip>
+        {{ item.entry.designator }}
         <v-tooltip bottom>
           <template #activator="{ on }">
             <span

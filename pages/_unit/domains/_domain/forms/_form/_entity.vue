@@ -44,8 +44,14 @@
           v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups"
           v-model="contentsCollapsed"
         />
-        <v-row class="justify-space-between">
-          <v-col cols="auto">
+        <v-row
+          no-gutters
+          class="justify-space-between"
+        >
+          <v-col
+            cols="auto"
+            class="mt-4"
+          >
             <h1 v-if="!isRevision">
               {{ form.objectData.displayName }}
             </h1>
@@ -53,13 +59,16 @@
               {{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})
             </h1>
           </v-col>
+        </v-row>
+      </template>
+      <template #default>
+        <v-row>
           <v-spacer />
           <v-col
             cols="auto"
             class="text-right"
           >
             <v-btn
-              text
               outlined
               @click="doDiscard"
             >
@@ -69,7 +78,6 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              text
               :loading="saveBtnLoading"
               @click="onClick"
             >
@@ -79,17 +87,21 @@
               v-else
               color="primary"
               outlined
-              text
               :loading="saveBtnLoading"
-              :disabled="!allowRestoration"
-              @click="onClick"
+              @click="restoreDialogVisible = true"
             >
               {{ $t('restore') }}
             </v-btn>
           </v-col>
         </v-row>
-      </template>
-      <template #default>
+        <VeoAlert
+          v-model="isRevision"
+          :type="alertType"
+          no-close-button
+          flat
+        >
+          {{ $t('oldVersionAlert') }}
+        </VeoAlert>
         <VeoForm
           v-if="canShowData"
           v-model="form.objectData"
@@ -130,6 +142,12 @@
           v-model="formModified.revisionDialog"
           :item="form.objectData"
           @exit="showRevisionAfterDialog()"
+        />
+        <VeoObjectRestoreDialog
+          v-model="restoreDialogVisible"
+          :version="revisionVersion"
+          :object="form.objectData"
+          @restored="onRestored"
         />
         <VeoAlert
           v-model="alert.value"
@@ -188,7 +206,7 @@ import { Route } from 'vue-router/types/index';
 import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
-import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
 import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes';
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
 import { validate } from '~/lib/FormSchemaHelper';
@@ -216,6 +234,8 @@ interface IData {
     revisionDialog: boolean;
     target?: any;
   };
+  alertType: ALERT_TYPE;
+  restoreDialogVisible: boolean;
 }
 
 export default Vue.extend({
@@ -265,11 +285,15 @@ export default Vue.extend({
         dialog: false,
         revisionDialog: false,
         target: undefined
-      }
+      },
+      alertType: ALERT_TYPE.INFO,
+      restoreDialogVisible: false
     };
   },
   async fetch() {
     const formSchema = await this.$api.form.fetch(this.formId);
+    this.isRevision = false;
+    this.formModified.isModified = false;
 
     this.objectType = formSchema.modelType;
     if (this.objectType) {
@@ -378,38 +402,46 @@ export default Vue.extend({
       }
     },
     saveBtnText(): string {
-      return this.$t('global.button.apply').toString();
+      return this.$t('global.button.save').toString();
     }
   },
   methods: {
     doDiscard() {
-      this.formModified.isModified = false;
       this.$router.go(-1);
     },
-    async onClick() {
+    async onClick(event: any, redirect: boolean = false) {
       this.saveBtnLoading = true;
       this.formatObjectData();
       if (this.objectType) {
-        await this.onSave().finally(() => {
+        await this.onSave(event, redirect).finally(() => {
           this.saveBtnLoading = false;
         });
       } else {
         throw new Error('Object Type is not defined in FormSchema');
       }
     },
-    onSave(): Promise<void> {
+    onSave(_event: any, redirect: boolean = false): Promise<void> {
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
         .then(() => {
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
-          this.$router.push({
-            path: `/${this.unitRoute}/domains/${this.$route.params.domain}/forms/${this.formRoute}/`
-          });
+
+          if (redirect) {
+            this.$router.push({
+              path: `/${this.unitRoute}/domains/${this.$route.params.domain}/forms/${this.formRoute}/`
+            });
+          } else {
+            this.$fetch();
+          }
         })
         .catch((error: { status: number; name: string }) => {
           this.showError(error.status, error.name);
         });
+    },
+    onRestored() {
+      this.restoreDialogVisible = false;
+      this.$fetch();
     },
     showError(status: number, message: string) {
       if (status === 412) {
@@ -451,7 +483,7 @@ export default Vue.extend({
         });
       }
     },
-    showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean, allowRestoration: boolean = false) {
+    showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean) {
       const content = revision.content;
 
       // show modified dialog before switching versions if needed
@@ -465,12 +497,11 @@ export default Vue.extend({
         // fill form with revision or newest data
         this.isRevision = isRevision;
         this.revisionVersion = revision.changeNumber;
-        this.allowRestoration = allowRestoration;
 
         // @ts-ignore
         content.$etag = this.form.objectData.$etag; // We have to give the etag to the new object in order to make it saveable
         this.form.objectData = content; // show revision content in form
-        this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`;
+        this.form.objectData.displayName = `${content.designator} ${content.abbreviation || ''} ${content.name}`;
       }
     },
     showRevisionAfterDialog() {
@@ -507,8 +538,10 @@ export default Vue.extend({
     "navigation.title": "Contents",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
+    "oldVersionAlert": "You are currently viewing an old and protected version. You can only edit this version after restoring it.",
     "scope_delete_error": "Failed to delete scope",
     "restore": "Restore",
+    "restore_quit": "Restore and exit",
     "revision": "version",
     "revision_incompatible": "The revision is incompatible to the schema and cannot be shown."
   },
@@ -518,8 +551,10 @@ export default Vue.extend({
     "navigation.title": "Inhalt",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
+    "oldVersionAlert": "Ihnen wird momentan eine alte, schreibgeschützte Version angezeigt. Sie kann erst bearbeitet werden, nachdem Sie sie wiederhergestellt haben.",
     "scope_delete_error": "Scope konnte nicht gelöscht werden",
     "restore": "Wiederherstellen",
+    "restore_quit": "Wiederherstellen und Schließen",
     "revision": "Version",
     "revision_incompatible": "Die Version ist inkompatibel zum Schema und kann daher nicht angezeigt werden."
   }

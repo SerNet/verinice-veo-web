@@ -87,7 +87,7 @@ export default Vue.extend({
         case 0:
           return 'primary';
         case 1:
-          return 'primary';
+          return 'info';
         case 2:
           return 'success';
         case 3:

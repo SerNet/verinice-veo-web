@@ -55,7 +55,7 @@
           >
             <v-list-item-content>
               <!-- TODO: change name with displayName after it is implemented -->
-              <v-list-item-title v-text="item.name" />
+              <v-list-item-title>{{ item.displayName }} </v-list-item-title>
             </v-list-item-content>
             <v-list-item-action>
               <div class="autocomplete-list-item-action-buttons">

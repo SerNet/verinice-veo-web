@@ -16,7 +16,6 @@
             :current-entity="form.objectData"
           >
             <v-btn
-              text
               outlined
               @click="doDiscard"
             >
@@ -30,7 +29,7 @@
               :loading="saveBtnLoading"
               @click="doSaveEntity"
             >
-              {{ $t('global.button.apply') }}
+              {{ $t('global.button.save') }}
             </v-btn>
             <v-btn
               v-else
@@ -38,10 +37,19 @@
               outlined
               text
               :loading="saveBtnLoading"
-              :disabled="!allowRestoration"
-              @click="doSaveEntity"
+              @click="restoreDialogVisible = true"
             >
               {{ $t('restore') }}
+            </v-btn>
+            <v-btn
+              v-if="!isRevision"
+              color="primary"
+              outlined
+              :disabled="$fetchState.pending"
+              :loading="saveBtnLoading"
+              @click="doSaveEntity($event, true)"
+            >
+              {{ $t('global.button.save_quit') }}
             </v-btn>
           </VeoEntityDisplayOptions>
           <div
@@ -55,6 +63,14 @@
             />
           </div>
           <div v-else>
+            <VeoAlert
+              v-model="isRevision"
+              :type="alertType"
+              no-close-button
+              flat
+            >
+              {{ $t('oldVersionAlert') }}
+            </VeoAlert>
             <VeoForm
               v-model="form.objectData"
               :schema="form.objectSchema"
@@ -64,6 +80,12 @@
               class="mb-8"
               :disabled="isRevision && !allowRestoration"
               @input="entityModified.isModified = true"
+            />
+            <VeoObjectRestoreDialog
+              v-model="restoreDialogVisible"
+              :version="revisionVersion"
+              :object="form.objectData"
+              @restored="onRestored"
             />
             <VeoAlert
               v-model="alert.value"
@@ -132,7 +154,7 @@ import { Route } from 'vue-router/types/index';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
-import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
 import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
@@ -153,6 +175,8 @@ interface IData {
     revisionDialog: boolean;
     target?: any;
   };
+  alertType: ALERT_TYPE;
+  restoreDialogVisible: boolean;
 }
 
 export default Vue.extend({
@@ -199,12 +223,16 @@ export default Vue.extend({
         dialog: false,
         revisionDialog: false,
         target: undefined
-      }
+      },
+      alertType: ALERT_TYPE.INFO,
+      restoreDialogVisible: false
     };
   },
   async fetch() {
     const objectSchema = await this.$api.schema.fetch(this.entityType);
     const { lang } = await this.$api.translation.fetch(['de', 'en']);
+    this.isRevision = false;
+    this.entityModified.isModified = false;
 
     const objectData = await this.$api.entity.fetch(this.entityType, this.entityId);
 
@@ -241,10 +269,9 @@ export default Vue.extend({
   },
   methods: {
     doDiscard() {
-      this.entityModified.isModified = false;
       this.$router.go(-1);
     },
-    doSaveEntity() {
+    doSaveEntity(_event: any, redirect: boolean = false) {
       this.saveBtnLoading = true;
       this.formatObjectData();
 
@@ -254,7 +281,11 @@ export default Vue.extend({
           this.entityModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
-          this.$router.back();
+          if (redirect) {
+            this.$router.back();
+          } else {
+            this.$fetch();
+          }
         })
         .catch((error: { status: number; name: string }) => {
           this.showError(error.status, error.name);
@@ -262,6 +293,10 @@ export default Vue.extend({
         .finally(() => {
           this.saveBtnLoading = false;
         });
+    },
+    onRestored() {
+      this.restoreDialogVisible = false;
+      this.$fetch();
     },
     showError(status: number, message: string) {
       if (status === 412) {
@@ -287,7 +322,7 @@ export default Vue.extend({
         });
       }
     },
-    showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean, allowRestoration: boolean = false) {
+    showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean) {
       const content = revision.content;
 
       // show modified dialog before switching versions if needed
@@ -301,12 +336,11 @@ export default Vue.extend({
         // fill form with revision or newest data
         this.isRevision = isRevision;
         this.revisionVersion = revision.changeNumber;
-        this.allowRestoration = allowRestoration;
 
         // @ts-ignore
         content.$etag = this.form.objectData.$etag; // We have to give the etag to the new object in order to make it saveable
         this.form.objectData = content; // show revision content in form
-        this.form.objectData.displayName = `${content.abbreviation || ''} ${content.name}`;
+        this.form.objectData.displayName = `${content.designator} ${content.abbreviation || ''} ${content.name}`;
       }
     },
     showRevisionAfterDialog() {
@@ -343,8 +377,10 @@ export default Vue.extend({
     "history": "History",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
+    "oldVersionAlert": "You are currently viewing an old and protected version. You can only edit this version after restoring it.",
     "scope_delete_error": "Failed to delete scope",
     "restore": "Restore",
+    "restore_quit": "Restore and exit",
     "revision": "version",
     "revision_incompatible": "The revision is incompatible to the schema and cannot be shown."
   },
@@ -354,8 +390,10 @@ export default Vue.extend({
     "history": "Verlauf",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
+    "oldVersionAlert": "Ihnen wird momentan eine alte, schreibgeschützte Version angezeigt. Sie kann erst bearbeitet werden, nachdem Sie sie wiederhergestellt haben.",
     "scope_delete_error": "Scope konnte nicht gelöscht werden",
     "restore": "Wiederherstellen",
+    "restore_quit": "Wiederherstellen und Schließen",
     "revision": "Version",
     "revision_incompatible": "Die Version ist inkompatibel zum Schema und kann daher nicht angezeigt werden."
   }

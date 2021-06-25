@@ -57,7 +57,7 @@ export default function (api: Client) {
             if (!entry.members) {
               entry.members = [];
             }
-            entry.displayName = `${entry.abbreviation || ''} ${entry.name}`;
+            entry.displayName = `${entry.designator} ${entry.abbreviation || ''} ${entry.name}`;
           });
 
           // +1, because the first page for the api is 0, however vuetify expects it to be 1
@@ -108,7 +108,7 @@ export default function (api: Client) {
         if (!result.members) {
           result.members = [];
         }
-        result.displayName = `${result.abbreviation || ''} ${result.name}`;
+        result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
         return result;
       });
     },
@@ -147,7 +147,7 @@ export default function (api: Client) {
           if (!result.members) {
             result.members = [];
           }
-          result.displayName = `${result.abbreviation || ''} ${result.name}`;
+          result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
           return result;
         });
     },
@@ -188,7 +188,7 @@ export default function (api: Client) {
             if (!entry.members) {
               entry.members = [];
             }
-            entry.displayName = `${entry.abbreviation || ''} ${entry.name}`;
+            entry.displayName = `${entry.designator} ${entry.abbreviation || ''} ${entry.name}`;
           });
           return result;
         });
@@ -205,7 +205,7 @@ export default function (api: Client) {
             if (!entry.members) {
               entry.members = [];
             }
-            entry.displayName = `${entry.abbreviation || ''} ${entry.name}`;
+            entry.displayName = `${entry.designator} ${entry.abbreviation || ''} ${entry.name}`;
           });
           return result;
         });

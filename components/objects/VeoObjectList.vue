@@ -43,7 +43,7 @@
         </td>
       </tr>
     </template>
-    <template #item.abbreviation="{ item }">
+    <template #item.designator="{ item }">
       <div class="veo-object-list__abbreviation nowrap">
         <v-tooltip
           v-if="item.type !== 'scope' && item.parts.length > 0"
@@ -103,22 +103,12 @@
             <span>{{ $t('object_has_no_subobjects') }}</span>
           </template>
         </v-tooltip>
-        <v-tooltip bottom>
-          <template #activator="{ on }">
-            <span
-              class="veo-object-list__abbreviation--abbreviation"
-              v-on="on"
-            >{{ item.abbreviation }}</span>
-          </template>
-          <template #default>
-            <span>{{ item.abbreviation }}</span>
-          </template>
-        </v-tooltip>
+        {{ item.designator }}
       </div>
     </template>
-    <template #item.name="{ value }">
+    <template #item.name="{ item }">
       <div class="veo-object-list__title">
-        {{ value }}
+        {{ item.abbreviation }} {{ item.name }}
       </div>
     </template>
     <template #item.description="{ item, value }">
@@ -285,8 +275,8 @@ export default Vue.extend({
     headers(): any[] {
       return [
         {
-          text: this.$t('objectlist.abbreviation'),
-          value: 'abbreviation'
+          text: this.$t('objectlist.designator'),
+          value: 'designator'
         },
         {
           text: this.$t('objectlist.title'),
@@ -394,7 +384,6 @@ export default Vue.extend({
 .veo-object-list__abbreviation {
   display: flex;
   flex-wrap: nowrap;
-  width: 65px;
 
   .veo-object-list__abbreviation--abbreviation {
     overflow: hidden;
