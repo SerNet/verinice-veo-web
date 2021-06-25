@@ -594,6 +594,11 @@ exports[`Objectschema Editor > adds completely new aspect and removes it from di
 exports[`Objectschema Editor > changes link name, attribute names, description and types #0`] =
 {
   "properties": {
+    "subType": {
+      "enum": [
+        "DSGVO_TOM"
+      ]
+    },
     "targetUri": {
       "title": "The id of the target object.",
       "type": "string"
