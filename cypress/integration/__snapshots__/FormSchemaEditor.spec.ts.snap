@@ -7107,3 +7107,45 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
   </div>
 </div>
 `;
+
+exports[`Formschema Editor > adds, updates formSchema meta details #0`] =
+{
+  "content": {
+    "elements": [],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema 1 DE"
+  },
+  "subType": "TF 1",
+  "translation": {
+    "de": {}
+  }
+};
+
+exports[`Formschema Editor > adds, updates formSchema meta details #1`] =
+{
+  "content": {
+    "elements": [],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema 1 DE",
+    "en": "Test Formschema 2 EN"
+  },
+  "subType": "TF 1",
+  "translation": {
+    "de": {},
+    "en": {}
+  }
+};

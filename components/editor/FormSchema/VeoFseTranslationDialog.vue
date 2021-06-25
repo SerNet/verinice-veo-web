@@ -24,7 +24,7 @@
               :cols="12"
               :md="5"
             >
-              <v-autocomplete
+              <v-select
                 v-model="dialog.language"
                 :items="supportedLanguages"
                 :rules="requiredRule"
@@ -49,7 +49,7 @@
               :cols="12"
               :md="5"
             >
-              <v-autocomplete
+              <v-select
                 :value="dialog.languages"
                 :items="languageItems"
                 :rules="requiredRule"

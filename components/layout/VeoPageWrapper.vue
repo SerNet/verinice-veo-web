@@ -5,9 +5,8 @@
       <h1
         v-if="title"
         class="d-inline px-4 py-1 flex-grow-0"
-      >
-        {{ title }}
-      </h1>
+        v-text="title"
+      />
       <slot
         v-else
         name="title"
