@@ -149,7 +149,7 @@ Cypress.Commands.add('loadFse', (formSchemaPath) => {
     cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
     cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile(formSchemaPath);
   });
-  cy.get('h1').should('contain.text', 'Formschema Editor- Test Formschema');
+  cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
 });
 
 const textGroupRegExp = /(text|group)_[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi;

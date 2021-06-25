@@ -547,7 +547,7 @@ exports[`Objectschema Editor > changes customAspect name, attribute names, descr
     "type": "string",
     "format": "date-time"
   }
-}
+};
 
 exports[`Objectschema Editor > removes and adds aspect attributes #0`] =
 {
@@ -601,11 +601,6 @@ exports[`Objectschema Editor > changes link name, attribute names, description a
     "type": {
       "enum": [
         "control"
-      ]
-    },
-    "subType": {
-      "enum": [
-        "DSGVO_TOM"
       ]
     }
   },
