@@ -84,7 +84,7 @@ export default Vue.extend({
           subType: object.subType
         })
       ).totalItemCount;
-      object.name = object.name?.[this.$i18n.locale] || 'Missing translation';
+      object.name = object.name[this.$i18n.locale] || 'Missing translation';
     }
   },
   methods: {

@@ -6421,7 +6421,9 @@ exports[`Formschema Editor > compares downloaded schema with the actual one #0`]
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
