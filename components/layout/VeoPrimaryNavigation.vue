@@ -331,7 +331,7 @@ export default Vue.extend({
       const routeUnitParam = separateUUIDParam(this.$route.params.unit).id;
       const forms = await this.$api.form.fetchAll(domainId);
       return forms.map((entry: IVeoFormSchemaMeta) => ({
-        name: entry.name,
+        name: entry.name[this.$i18n.locale] || 'Missing translation',
         exact: false,
         to: `/${createUUIDUrlParam('unit', routeUnitParam)}/domains/${createUUIDUrlParam('domain', domainId)}/forms/${createUUIDUrlParam('form', entry?.id || '')}/`,
         disabled: false,

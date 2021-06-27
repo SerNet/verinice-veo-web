@@ -700,8 +700,63 @@ describe('Formschema Editor', () => {
     cy.loadFse('formschema/minimal.json');
     cy.get('.mdi-download').closest('.v-btn').click();
 
-    cy.readFile('cypress/downloads/fs_Test Formschema.json').then((downloadedFS) => {
+    cy.readFile('cypress/downloads/fs_test_formschema.json').then((downloadedFS) => {
       cy.wrap(downloadedFS).toMatchSnapshot();
+    });
+  });
+
+  it('adds, updates formSchema meta details', function () {
+    cy.loadFse('formschema/empty-process.json');
+    cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
+
+    cy.get('.mdi-wrench').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
+      cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
+      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
+
+      cy.contains('.v-text-field', 'Name des Formschemas').type('{selectall}{backspace}Test Formschema 1 DE');
+      cy.contains('.v-text-field', 'Sub Typ').find('input').type('{selectall}{backspace}TF 1');
+
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
+    });
+    cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema 1 DE');
+
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
+      cy.get('.editor .cm-content').then(function (editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot();
+      });
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
+    });
+
+    cy.get('.mdi-translate').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
+      cy.contains('.v-select', 'Sprachen').type('{downarrow}{downarrow}{enter}');
+      cy.contains('.v-select', 'Sprache').type('Englisch{enter}');
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
+    });
+
+    cy.get('h1').should('contain.text', 'Formschema Editor - Missing translation for EN');
+
+    cy.get('.mdi-wrench').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
+      cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('not.have.value');
+      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF 1');
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
+
+      cy.contains('.v-text-field', 'Name des Formschemas').type('Test Formschema 2 EN');
+
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
+    });
+    cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema 2 EN');
+
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
+      cy.get('.editor .cm-content').then(function (editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot();
+      });
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
   });
 });

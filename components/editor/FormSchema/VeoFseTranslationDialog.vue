@@ -24,7 +24,7 @@
               :cols="12"
               :md="5"
             >
-              <v-autocomplete
+              <v-select
                 v-model="dialog.language"
                 :items="supportedLanguages"
                 :rules="requiredRule"
@@ -49,7 +49,7 @@
               :cols="12"
               :md="5"
             >
-              <v-autocomplete
+              <v-select
                 :value="dialog.languages"
                 :items="languageItems"
                 :rules="requiredRule"
@@ -73,6 +73,19 @@
               >
                 <v-card-title>{{ item.fullName }}</v-card-title>
                 <v-card-text>
+                  <v-row no-gutters>
+                    <v-col
+                      :cols="12"
+                      :md="5"
+                    >
+                      <v-text-field
+                        v-model="dialog.name[item.name]"
+                        flat
+                        :label="$t('schemaName')"
+                      />
+                    </v-col>
+                  </v-row>
+
                   <VeoCodeEditor
                     :key="item.name"
                     ref="codeEditor"
@@ -108,10 +121,11 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { isEmpty } from 'lodash';
+import { cloneDeep, difference, isEmpty } from 'lodash';
 import Vue from 'vue';
+import vjp from 'vue-json-pointer';
 
-import { IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 interface ITranslationItem {
   name: string;
@@ -141,6 +155,10 @@ export default Vue.extend({
     languages: {
       type: Array,
       required: true
+    },
+    name: {
+      type: Object,
+      required: true
     }
   },
   data() {
@@ -149,7 +167,8 @@ export default Vue.extend({
         valid: true,
         translation: {} as IVeoTranslationCollection,
         language: '' as string,
-        languages: [] as string[]
+        languages: [] as string[],
+        name: {} as IVeoFormSchemaMeta['name']
       },
       emptyObjectString: '{\n  \n}'
     };
@@ -191,6 +210,13 @@ export default Vue.extend({
       handler() {
         this.dialog.language = this.language;
       }
+    },
+    name: {
+      immediate: true,
+      deep: true,
+      handler() {
+        this.dialog.name = cloneDeep(this.name);
+      }
     }
   },
   methods: {
@@ -205,12 +231,14 @@ export default Vue.extend({
       );
       this.$emit('update-language', this.dialog.language);
       this.$emit('update-translation', translationJSON);
+      this.$emit('update-name', this.dialog.name);
       this.onDialogStatus(false);
     },
     onInputCode(event: any, item: ITranslationItem) {
       this.dialog.translation[item.name] = event;
     },
     onInputLanguages(event: string[]) {
+      const removedLanguageCodes = difference(this.dialog.languages, event);
       this.dialog.languages = event;
       event.forEach((languageCode) => {
         if (isEmpty(this.dialog.translation[languageCode])) {
@@ -221,6 +249,10 @@ export default Vue.extend({
       if (!this.dialog.languages.includes(this.dialog.language)) {
         this.dialog.language = '';
       }
+      // If a language code has been removed, removed it from formschema name
+      removedLanguageCodes.forEach((removedLanguageCode) => {
+        vjp.remove(this.dialog.name, `/${removedLanguageCode}`);
+      });
     }
   }
 });
@@ -238,7 +270,8 @@ export default Vue.extend({
     "languageSelectLabel": "Language",
     "displayLanguage": "Languages",
     "displayLanguageDescription": "Display language in form schema editor",
-    "supportedLanguages": "Supported Languages"
+    "supportedLanguages": "Supported Languages",
+    "schemaName": "Name of the form schema"
   },
   "de": {
     "languageName": {
@@ -249,7 +282,8 @@ export default Vue.extend({
     },
     "displayLanguage": "Sprache",
     "displayLanguageDescription": "Anzeigesprache im Formschema Editor",
-    "supportedLanguages": "Sprachen"
+    "supportedLanguages": "Sprachen",
+    "schemaName": "Name des Formschemas"
   }
 }
 </i18n>

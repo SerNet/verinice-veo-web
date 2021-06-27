@@ -1,5 +1,7 @@
 {
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "modelType": "test",
   "subType": "TF",
   "translation": {

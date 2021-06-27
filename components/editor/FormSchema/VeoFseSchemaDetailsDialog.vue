@@ -124,7 +124,7 @@ export default defineComponent<IProps>({
     },
     formSchema: {
       type: String,
-      required: true
+      default: ''
     },
     subtype: {
       type: String,

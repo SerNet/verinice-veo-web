@@ -85,7 +85,9 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {}
@@ -611,7 +613,9 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {}
@@ -683,7 +687,9 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -765,7 +771,9 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -793,7 +801,9 @@ exports[`Formschema Editor > opens InputUri dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -881,7 +891,9 @@ exports[`Formschema Editor > opens InputDate dialogs, changes data in dialogs an
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -963,7 +975,9 @@ exports[`Formschema Editor > opens Checkbox dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1047,7 +1061,9 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {}
@@ -1145,7 +1161,9 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1271,7 +1289,9 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1384,7 +1404,9 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1714,7 +1736,9 @@ exports[`Formschema Editor > opens FseLabel dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1775,7 +1799,9 @@ exports[`Formschema Editor > opens FseLabel dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -6395,7 +6421,9 @@ exports[`Formschema Editor > compares downloaded schema with the actual one #0`]
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -6465,7 +6493,9 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -6733,7 +6763,9 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -7077,3 +7109,45 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
   </div>
 </div>
 `;
+
+exports[`Formschema Editor > adds, updates formSchema meta details #0`] =
+{
+  "content": {
+    "elements": [],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema 1 DE"
+  },
+  "subType": "TF 1",
+  "translation": {
+    "de": {}
+  }
+};
+
+exports[`Formschema Editor > adds, updates formSchema meta details #1`] =
+{
+  "content": {
+    "elements": [],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema 1 DE",
+    "en": "Test Formschema 2 EN"
+  },
+  "subType": "TF 1",
+  "translation": {
+    "de": {},
+    "en": {}
+  }
+};
