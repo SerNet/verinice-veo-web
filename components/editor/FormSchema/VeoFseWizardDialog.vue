@@ -1,5 +1,6 @@
 <template>
   <VeoDialog
+    v-if="isDialogOpen"
     v-model="dialog"
     :large="state !== 'start'"
     :headline="$t('editor.formschema.headline')"
@@ -54,7 +55,7 @@
           <h2>{{ $t('createFormSchema') }}</h2>
           <v-form
             v-model="createForm.valid"
-            @submit.prevent="doCreate1()"
+            @submit.prevent="doCreate()"
           >
             <v-row
               no-gutters
@@ -189,7 +190,7 @@
         type="submit"
         text
         :disabled="!createForm.valid || (createForm.modelType === 'custom' && !objectSchema)"
-        @click="doCreate1()"
+        @click="doCreate()"
       >
         {{ $t('global.button.next') }}
       </v-btn>
@@ -199,7 +200,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, cloneDeep, merge, snakeCase, trim } from 'lodash';
+import { capitalize, cloneDeep, isEmpty, isString, merge, snakeCase, trim } from 'lodash';
 
 import { JsonPointer } from 'json-ptr';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
@@ -254,6 +255,15 @@ export default Vue.extend({
           };
         })
       ];
+    },
+    isNavigatedByDialog() {
+      return isEmpty(this.$route.query);
+    },
+    isDialogCustom() {
+      return this.$route.query?.os === 'custom';
+    },
+    isDialogOpen(): boolean {
+      return this.isNavigatedByDialog || this.isDialogCustom;
     }
   },
   watch: {
@@ -278,6 +288,17 @@ export default Vue.extend({
         this.formSchema = undefined;
         this.clearCreateForm();
       }
+    },
+    $route: {
+      immediate: true,
+      handler() {
+        if (isString(this.$route.query.name) && isString(this.$route.query.subtype) && isString(this.$route.query.os)) {
+          this.createForm.title = this.$route.query.name;
+          this.createForm.subType = this.$route.query.subtype;
+          this.createForm.modelType = this.$route.query.os;
+          this.doCreate();
+        }
+      }
     }
   },
   mounted() {
@@ -300,20 +321,20 @@ export default Vue.extend({
       }
     },
     // Create/load object schema and proceed to step 1
-    async doCreate1() {
+    async doCreate() {
       // Only proceed if an object schema was uploaded/pasted (we sadly can't validate it in the form, so we have to to it here)
       if (this.objectSchema || this.createForm.modelType !== 'custom') {
         if (this.createForm.modelType !== 'custom') {
           this.objectSchema = await this.$api.schema.fetch(this.createForm.modelType);
         }
-        this.doCreate2(); // We removed the option to choose between an empty form or a generate one, thus we can directly call this method.
+        this.generateInitialFs();
       } else {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('objectSchemaRequired')
         });
       }
     },
-    doCreate2() {
+    generateInitialFs() {
       const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? null : this.createForm.subType;
       this.formSchema = generateSchema(this.createForm.title, this.objectSchema?.title || this.createForm.modelType, _subtype);
       this.emitSchemas();
