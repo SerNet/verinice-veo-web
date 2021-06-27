@@ -737,7 +737,7 @@ describe('Formschema Editor', () => {
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('h1').should('contain.text', 'Formschema Editor - Missing translation');
+    cy.get('h1').should('contain.text', 'Formschema Editor - Missing translation for EN');
 
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {

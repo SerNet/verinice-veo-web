@@ -337,13 +337,14 @@ export default defineComponent<IProps>({
     });
 
     const title = computed(() => {
-      const title = context.root.$t('editor.formschema.headline');
+      const headline = context.root.$t('editor.formschema.headline');
       // Name property must generally exist, but before it is created in Wizard, only headline should be visible
       // If Name property exists and e.g. 'de' sub-property is empty then missing translation should be visible
       if (formSchema.value?.name) {
-        return title + ` - ${formSchema.value?.name[language.value] ?? 'Missing translation'}`;
+        const formSchemaName = formSchema.value?.name[language.value] ?? `Missing translation for ${language.value.toUpperCase()}`;
+        return headline + ` - ${formSchemaName}`;
       } else {
-        return title;
+        return headline;
       }
     });
 
