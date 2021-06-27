@@ -227,8 +227,14 @@ export default Vue.extend({
     importNextDisabled(): boolean {
       return (this.modelType === 'custom' && this.code === '\n\n\n\n\n') || this.modelType === '';
     },
-    isDialogOpen() {
-      return this.$route.query?.os === 'custom' || isEmpty(this.$route.query);
+    isNavigatedByDialog() {
+      return isEmpty(this.$route.query);
+    },
+    isDialogCustom() {
+      return this.$route.query?.os === 'custom';
+    },
+    isDialogOpen(): boolean {
+      return this.isNavigatedByDialog || this.isDialogCustom;
     }
   },
   watch: {
@@ -254,13 +260,25 @@ export default Vue.extend({
     $route: {
       immediate: true,
       handler() {
-        if (isString(this.$route.query?.type) && isString(this.$route.query?.description)) {
-          this.createForm.type = this.$route.query.type;
-          this.createForm.description = this.$route.query.description;
-          this.createSchema();
-        } else if (this.$route.query?.os === 'custom') {
-          this.state = 'import';
-          this.modelType = 'custom';
+        // If the user navigates by URL, depending on the parameters, schemas should be generated
+        if (!this.isNavigatedByDialog || this.isDialogCustom) {
+          if (isString(this.$route.query.type) && isString(this.$route.query.description)) {
+            // If a user navigates through a URL which has parameters type and description, new OS should be created
+            this.createForm.type = this.$route.query.type;
+            this.createForm.description = this.$route.query.description;
+            this.createSchema();
+          } else if (this.$route.query.os === 'custom') {
+            // If a user navigates through a URL which has custom os parameter,
+            // the dialog with selected custom OS should be opened
+            this.state = 'import';
+            this.modelType = 'custom';
+          } else if (isString(this.$route.query.os) && this.$route.query.os !== 'custom') {
+            // If a user navigates through a URL which has os parameter different from 'custom'
+            // (e.g. 'process', 'asset', etc.), the OS should be automatically loaded from the server
+            this.state = 'import';
+            this.modelType = this.$route.query.os;
+            this.importSchema();
+          }
         }
       }
     }
@@ -268,37 +286,43 @@ export default Vue.extend({
   mounted() {
     this.dialog = this.value;
 
-    this.$api.schema
-      .fetchAll(true)
-      .then((data) =>
-        data.map((value: ISchemaEndpoint) => {
-          return {
-            text: capitalize(value.schemaName),
-            value: value.schemaName
-          };
-        })
-      )
-      .then((types: any) => {
-        types.unshift({
-          text: this.$t('customObjectSchema') as string,
-          value: 'custom'
+    // Only load types of schema types if a user does not navigate by the dialog
+    if (this.isNavigatedByDialog || this.isDialogCustom) {
+      this.$api.schema
+        .fetchAll(true)
+        .then((data) =>
+          data.map((value: ISchemaEndpoint) => {
+            return {
+              text: capitalize(value.schemaName),
+              value: value.schemaName
+            };
+          })
+        )
+        .then((types: any) => {
+          types.unshift({
+            text: this.$t('customObjectSchema') as string,
+            value: 'custom'
+          });
+          this.objectTypes = types;
         });
-        this.objectTypes = types;
-      });
+    }
   },
   methods: {
-    createSchema(_schema?: any) {
+    createSchema() {
       this.$emit('completed', {
         schema: undefined,
         meta: { type: this.createForm.type, description: this.createForm.description }
       });
+      this.navigateTo(`type=${encodeURIComponent(this.createForm.type)}&description=${encodeURIComponent(this.createForm.description)}`);
     },
     importSchema(schema?: any) {
       if (schema) {
         this.$emit('completed', { schema, meta: undefined });
+        this.navigateTo(`os=custom`);
       } else {
         this.$api.schema.fetch(this.modelType).then((data: any) => {
           this.$emit('completed', { schema: data, meta: undefined });
+          this.navigateTo(`os=${this.modelType}`);
         });
       }
     },
@@ -316,6 +340,13 @@ export default Vue.extend({
     onClose() {
       this.$router.push('/editor');
       return true;
+    },
+    navigateTo(paramUrl: string) {
+      const newUrl = `/editor/objectschema?${paramUrl}`;
+      // If the current path does not match with new url, only then change the URL
+      if (this.$route.path !== newUrl) {
+        history.pushState({}, '', newUrl);
+      }
     }
   }
 });
