@@ -20,7 +20,7 @@
             two-line
             class="px-0 overflow-hidden"
           >
-            <v-list-item @click="state = 'create-1'">
+            <v-list-item @click="state = 'create'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
                   {{ $t('createFormSchema') }}
@@ -33,7 +33,7 @@
                 </v-icon>
               </v-list-item-action>
             </v-list-item>
-            <v-list-item @click="state = 'import-1'">
+            <v-list-item @click="state = 'import-fs'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
                   {{ $t('importFormSchema') }}
@@ -49,7 +49,7 @@
           </v-list>
         </v-window-item>
         <v-window-item
-          value="create-1"
+          value="create"
           class="px-4"
         >
           <h2>{{ $t('createFormSchema') }}</h2>
@@ -136,7 +136,7 @@
           <small>{{ $t('global.input.requiredfields') }}</small>
         </v-window-item>
         <v-window-item
-          value="import-1"
+          value="import-fs"
           class="px-4"
         >
           <h2>{{ $t('importFormSchema') }}</h2>
@@ -145,14 +145,14 @@
             :code="fscode"
             :input-label="$t('formSchemaUploadLabel')"
             :clear-input.sync="clearInput"
-            @schema-uploaded="doImport1"
+            @schema-uploaded="doImportFs"
           />
           <v-checkbox
             v-model="forceOwnSchema"
             :label="$t('forceOwnSchema')"
           />
         </v-window-item>
-        <v-window-item value="import-2">
+        <v-window-item value="import-os">
           <h2>{{ $t('importObjectschema') }}</h2>
           <p>{{ $t('importObjectSchemaHelp') }}</p>
           <VeoAlert
@@ -167,7 +167,7 @@
           <VeoEditorFileUpload
             :code="oscode"
             :input-label="$t('objectSchemaUploadLabel')"
-            @schema-uploaded="doImport2"
+            @schema-uploaded="doImportOs"
           />
         </v-window-item>
       </v-window>
@@ -184,7 +184,7 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        v-if="state === 'create-1'"
+        v-if="state === 'create'"
         color="primary"
         role="submit"
         type="submit"
@@ -234,7 +234,7 @@ export default Vue.extend({
       formSchema: undefined as IVeoFormSchema | undefined,
       objectSchema: undefined as IVeoObjectSchema | undefined,
       translation: undefined as IVeoTranslations | undefined,
-      state: 'start' as 'start' | 'create-1' | 'import-1' | 'import-2',
+      state: 'start' as 'start' | 'create' | 'import-fs' | 'import-os',
       schemas: [] as ISchemaEndpoint[],
       invalidOS: false as boolean,
       forceOwnSchema: false as boolean,
@@ -311,13 +311,13 @@ export default Vue.extend({
   },
   methods: {
     goBack() {
-      if (this.state === 'create-1' || this.state === 'import-1') {
+      if (this.state === 'create' || this.state === 'import-fs') {
         this.state = 'start';
-      } else if (this.state === 'import-2') {
+      } else if (this.state === 'import-os') {
         this.fscode = '';
         this.oscode = '';
         this.clearInput = true;
-        this.state = 'import-1';
+        this.state = 'import-fs';
       }
     },
     // Create/load object schema and proceed to step 1
@@ -340,7 +340,7 @@ export default Vue.extend({
       this.emitSchemas();
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
-    async doImport1(schema: IVeoFormSchema) {
+    async doImportFs(schema: IVeoFormSchema) {
       this.setFormSchema(schema);
       if (!this.forceOwnSchema && this.objectTypes.findIndex((item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType?.toLowerCase()) !== -1) {
         this.objectSchema = await this.$api.schema.fetch(schema.modelType?.toLowerCase());
@@ -350,16 +350,16 @@ export default Vue.extend({
          */
         if (!validate(schema, this.objectSchema).valid) {
           this.invalidOS = true;
-          this.state = 'import-2';
+          this.state = 'import-os';
         } else {
           this.emitSchemas();
         }
       } else {
-        this.state = 'import-2';
+        this.state = 'import-os';
       }
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
-    doImport2(schema: IVeoObjectSchema) {
+    doImportOs(schema: IVeoObjectSchema) {
       if (snakeCase(schema.title) !== snakeCase(this.formSchema?.modelType)) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('wrongobjectschema', {
