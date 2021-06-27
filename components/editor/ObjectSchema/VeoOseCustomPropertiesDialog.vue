@@ -267,7 +267,7 @@ export default Vue.extend({
 
       const schemasWithSubTypFormatted = schemas
         .map((schema: IVeoFormSchemaMeta) => ({
-          text: schema.name[this.displayLanguage.value] || 'Missing translation',
+          text: schema.name[this.displayLanguage.value] || `Missing translation for ${this.displayLanguage.value.toUpperCase()}`,
           value: schema.subType
         }))
         .filter((schema) => schema.value !== null) as { text: string; value: string }[];
