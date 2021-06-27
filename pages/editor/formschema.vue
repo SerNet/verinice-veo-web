@@ -275,8 +275,10 @@
         :translation="formSchema.translation"
         :language="language"
         :languages="avaliableLanguages"
+        :name="formSchema.name"
         @update-language="setFormLanguage"
         @update-translation="setFormTranslation"
+        @update-name="setFormName"
       />
       <VeoFseSchemaDetailsDialog
         v-if="formSchema"
@@ -306,7 +308,8 @@ import {
   IVeoFormSchemaItem,
   IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaCustomTranslationEvent
+  IVeoFormSchemaCustomTranslationEvent,
+  IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
 
 interface IProps {}
@@ -471,6 +474,12 @@ export default defineComponent<IProps>({
       }
     }
 
+    function setFormName(event: IVeoFormSchemaMeta['name']) {
+      if (formSchema.value) {
+        vjp.set(formSchema.value, '/name', event);
+      }
+    }
+
     function setFormLanguage(newLanguageVal: string) {
       language.value = newLanguageVal;
     }
@@ -514,6 +523,7 @@ export default defineComponent<IProps>({
       onClickTranslationBtn,
       avaliableLanguages,
       setFormTranslation,
+      setFormName,
       setFormLanguage,
       onUpdateCustomTranslation
     };
