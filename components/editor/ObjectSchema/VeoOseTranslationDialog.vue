@@ -23,7 +23,7 @@
               :cols="12"
               :md="5"
             >
-              <v-autocomplete
+              <v-select
                 v-model="data.displayLanguage"
                 :items="supportedLanguageItems"
                 :rules="requiredRule"
@@ -48,7 +48,7 @@
               :cols="12"
               :md="5"
             >
-              <v-autocomplete
+              <v-select
                 v-model="data.supportedLanguages"
                 :items="availableLanguageItems"
                 :rules="requiredRule"

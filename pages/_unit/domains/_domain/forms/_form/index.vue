@@ -106,7 +106,7 @@ export default Vue.extend({
     this.formTypes = await this.$api.form.fetchAll(this.domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
       formTypes.map((entry: IVeoFormSchemaMeta) => {
         return {
-          text: entry.name,
+          text: entry.name[this.$i18n.locale] || 'Missing translation',
           value: entry.id
         };
       })
@@ -128,7 +128,7 @@ export default Vue.extend({
       return separateUUIDParam(this.$route.params.form).id;
     },
     formName(): string {
-      return this.formSchema?.name || '';
+      return this.formSchema?.name[this.$i18n.locale] || 'Missing translation';
     },
     rootRoute(): string {
       return `/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`;

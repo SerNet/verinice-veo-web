@@ -594,7 +594,7 @@ describe('Objectschema Editor', () => {
     cy.get('.translate-button').click();
 
     cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Deutsch{enter}');
+      cy.get('.v-select').contains('Sprache').closest('.v-select').type('Deutsch{enter}');
 
       cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
@@ -655,9 +655,9 @@ describe('Objectschema Editor', () => {
     cy.get('.translate-button').click();
 
     cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-autocomplete').contains('Sprachen').closest('.v-autocomplete').type('Englisch{enter}');
+      cy.get('.v-select').contains('Sprachen').closest('.v-select').type('{downarrow}{downarrow}{enter}');
 
-      cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Englisch{enter}');
+      cy.get('.v-select').contains('Sprache').closest('.v-select').type('Englisch{enter}');
 
       cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
@@ -749,7 +749,7 @@ describe('Objectschema Editor', () => {
     cy.get('.translate-button').click();
 
     cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Deutsch{enter}');
+      cy.get('.v-select').contains('Sprache').closest('.v-select').type('Deutsch{enter}');
 
       cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });
@@ -829,9 +829,9 @@ describe('Objectschema Editor', () => {
     cy.get('.translate-button').click();
 
     cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-autocomplete').contains('Sprachen').closest('.v-autocomplete').type('Englisch{enter}');
+      cy.get('.v-select').contains('Sprachen').closest('.v-select').type('{downarrow}{downarrow}{enter}');
 
-      cy.get('.v-autocomplete').contains('Sprache').closest('.v-autocomplete').type('Englisch{enter}');
+      cy.get('.v-select').contains('Sprache').closest('.v-select').type('Englisch{enter}');
 
       cy.get('.v-card__actions').contains('Speichern').closest('.v-btn').click();
     });

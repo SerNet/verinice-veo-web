@@ -336,7 +336,7 @@ export default Vue.extend({
     },
     generateInitialFs() {
       const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? null : this.createForm.subType;
-      this.formSchema = generateSchema(this.createForm.title, this.objectSchema?.title || this.createForm.modelType, _subtype);
+      this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.title }, this.objectSchema?.title || this.createForm.modelType, _subtype);
       this.emitSchemas();
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
