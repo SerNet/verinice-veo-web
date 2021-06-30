@@ -128,7 +128,7 @@
                   :code="oscode"
                   :input-label="$t('objectSchemaUploadLabel')"
                   :submit-button-text="$t('importObjectschema')"
-                  @schema-uploaded="setObjectSchema"
+                  @schema-uploaded="setObjectSchema({ schema: $event })"
                 />
               </v-col>
             </v-row>
