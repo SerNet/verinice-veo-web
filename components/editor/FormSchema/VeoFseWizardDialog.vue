@@ -238,7 +238,8 @@ export default Vue.extend({
       schemas: [] as ISchemaEndpoint[],
       invalidOS: false as boolean,
       forceOwnSchema: false as boolean,
-      clearInput: false as boolean
+      clearInput: false as boolean,
+      formSchemaId: undefined as string | undefined
     };
   },
   computed: {
@@ -260,7 +261,7 @@ export default Vue.extend({
       return isEmpty(this.$route.query);
     },
     isDialogCustom() {
-      return this.$route.query?.os === 'custom';
+      return this.$route.query.os === 'custom' || this.$route.query.fs === 'custom';
     },
     isDialogOpen(): boolean {
       return this.isNavigatedByDialog || this.isDialogCustom;
@@ -280,34 +281,51 @@ export default Vue.extend({
       this.dialog = newValue;
       this.noWatch = false;
     },
-    state(newValue) {
+    async state(newValue) {
       if (newValue === 'start') {
         this.oscode = '\n\n\n\n\n';
         this.objectSchema = undefined;
         this.fscode = '\n\n\n\n\n';
         this.formSchema = undefined;
         this.clearCreateForm();
+      } else if (newValue === 'create') {
+        this.schemas = await this.$api.schema.fetchAll(true);
       }
     },
     $route: {
       immediate: true,
-      handler() {
-        if (isString(this.$route.query.name) && isString(this.$route.query.subtype) && isString(this.$route.query.os)) {
-          this.createForm.title = this.$route.query.name;
-          this.createForm.subType = this.$route.query.subtype;
-          this.createForm.modelType = this.$route.query.os;
-          this.doCreate();
+      async handler() {
+        if (isString(this.$route.query.name) && isString(this.$route.query.subtype)) {
+          if (this.$route.query.os === 'custom') {
+            this.state = 'create';
+            this.createForm.title = this.$route.query.name;
+            this.createForm.subType = this.$route.query.subtype;
+            this.createForm.modelType = this.$route.query.os;
+          } else if (isString(this.$route.query.os)) {
+            this.createForm.title = this.$route.query.name;
+            this.createForm.subType = this.$route.query.subtype;
+            this.createForm.modelType = this.$route.query.os;
+            await this.doCreate();
+          }
+        } else if (isString(this.$route.query.fs)) {
+          if (this.$route.query.os === 'custom') {
+            this.forceOwnSchema = true;
+          }
+          if (this.$route.query.fs === 'custom') {
+            this.state = 'import-fs';
+          } else {
+            this.formSchemaId = this.$route.query.fs;
+            if (this.$route.query.os === 'custom') {
+              this.state = 'import-os';
+            }
+            await this.doImportFs();
+          }
         }
       }
     }
   },
   mounted() {
     this.dialog = this.value;
-
-    this.$api.schema.fetchAll(true).then((data: ISchemaEndpoint[]) => (this.schemas = data));
-    this.$api.translation.fetch([]).then((translation: IVeoTranslations) => {
-      this.translation = translation;
-    });
   },
   methods: {
     goBack() {
@@ -325,7 +343,7 @@ export default Vue.extend({
       // Only proceed if an object schema was uploaded/pasted (we sadly can't validate it in the form, so we have to to it here)
       if (this.objectSchema || this.createForm.modelType !== 'custom') {
         if (this.createForm.modelType !== 'custom') {
-          this.objectSchema = await this.$api.schema.fetch(this.createForm.modelType);
+          await this.setObjectSchema({ modelType: this.createForm.modelType });
         }
         this.generateInitialFs();
       } else {
@@ -340,26 +358,32 @@ export default Vue.extend({
       this.emitSchemas();
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
-    async doImportFs(schema: IVeoFormSchema) {
-      this.setFormSchema(schema);
-      if (!this.forceOwnSchema && this.objectTypes.findIndex((item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType?.toLowerCase()) !== -1) {
-        this.objectSchema = await this.$api.schema.fetch(schema.modelType?.toLowerCase());
+    async doImportFs(schema?: IVeoFormSchema) {
+      // If schema is not given as parameter, it is probably
+      if (!schema && this.formSchemaId) {
+        schema = await this.$api.form.fetch(this.formSchemaId);
+      }
+      if (schema) {
+        this.setFormSchema(schema);
+        if (!this.forceOwnSchema) {
+          await this.setObjectSchema({ modelType: schema.modelType?.toLowerCase() });
 
-        /* Checks whether the form schema fits the object schema. If not, we assume that the object schema the
-         * user used for this form schema is a modified version of an existing object schema and ask him to provide it.
-         */
-        if (!validate(schema, this.objectSchema).valid) {
-          this.invalidOS = true;
-          this.state = 'import-os';
+          /* Checks whether the form schema fits the object schema. If not, we assume that the object schema the
+           * user used for this form schema is a modified version of an existing object schema and ask him to provide it.
+           */
+          if (!validate(schema, this.objectSchema).valid) {
+            this.invalidOS = true;
+            this.state = 'import-os';
+          } else {
+            this.emitSchemas();
+          }
         } else {
-          this.emitSchemas();
+          this.state = 'import-os';
         }
-      } else {
-        this.state = 'import-os';
       }
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
-    doImportOs(schema: IVeoObjectSchema) {
+    async doImportOs(schema: IVeoObjectSchema) {
       if (snakeCase(schema.title) !== snakeCase(this.formSchema?.modelType)) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('wrongobjectschema', {
@@ -368,7 +392,7 @@ export default Vue.extend({
           })
         });
       } else {
-        this.setObjectSchema(schema);
+        await this.setObjectSchema({ schema });
         this.emitSchemas();
       }
     },
@@ -384,12 +408,12 @@ export default Vue.extend({
         }
       };
     },
-    setObjectSchema(schema: IVeoObjectSchema) {
-      const objectSchema = cloneDeep(schema);
+    async setObjectSchema(params: { schema?: IVeoObjectSchema; modelType?: string }) {
+      const objectSchema = cloneDeep(params.schema) ?? (await this.$api.schema.fetch(params.modelType as string));
       // os specific translation within by user uploaded OS
       const osTranslation = cloneDeep(JsonPointer.get(objectSchema, '#/properties/translations') as IVeoObjectSchemaTranslations | undefined);
       // The variable mergedOsTranslation serves to merge general and OS specific translations uploaded by a user. Initial value is general translation object
-      let mergedOsTranslation = cloneDeep(this.translation);
+      let mergedOsTranslation = cloneDeep(this.translation) ?? (await this.$api.translation.fetch([]));
       // If osTranslation exists merge general and OS specific translations
       if (osTranslation) {
         // Remove "translations" property from by user uploaded OS to avoid validation errors (it is not conform with JsonSchema standard)

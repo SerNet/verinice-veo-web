@@ -254,8 +254,9 @@ export default Vue.extend({
       displayLanguage: this.$i18n.locale as string
     };
   },
-  async fetch() {
-    this.availableLanguages = Object.keys((await this.$api.translation.fetch([]))?.lang);
+  fetch() {
+    // TODO: Backend should create an API endpoint to get available languages dynamically
+    this.availableLanguages = ['de', 'en']; // Object.keys((await context.root.$api.translation.fetch([]))?.lang);
   },
   head(): any {
     return {

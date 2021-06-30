@@ -465,8 +465,9 @@ export default defineComponent<IProps>({
       showTranslationDialog.value = true;
     }
 
-    useFetch(async () => {
-      avaliableLanguages.value = Object.keys((await context.root.$api.translation.fetch([]))?.lang);
+    useFetch(() => {
+      // TODO: Backend should create an API endpoint to get available languages dynamically
+      avaliableLanguages.value = ['de', 'en']; // Object.keys((await context.root.$api.translation.fetch([]))?.lang);
     });
 
     function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {
