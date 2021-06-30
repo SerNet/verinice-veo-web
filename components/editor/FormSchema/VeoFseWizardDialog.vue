@@ -239,7 +239,8 @@ export default Vue.extend({
       invalidOS: false as boolean,
       forceOwnSchema: false as boolean,
       clearInput: false as boolean,
-      formSchemaId: undefined as string | undefined
+      formSchemaId: undefined as string | undefined,
+      urlToNavigate: undefined as string | undefined
     };
   },
   computed: {
@@ -287,6 +288,7 @@ export default Vue.extend({
         this.objectSchema = undefined;
         this.fscode = '\n\n\n\n\n';
         this.formSchema = undefined;
+        this.formSchemaId = undefined;
         this.clearCreateForm();
       } else if (newValue === 'create') {
         this.schemas = await this.$api.schema.fetchAll(true);
@@ -294,6 +296,7 @@ export default Vue.extend({
     },
     $route: {
       immediate: true,
+      deep: true,
       async handler() {
         if (isString(this.$route.query.name) && isString(this.$route.query.subtype)) {
           if (this.$route.query.os === 'custom') {
@@ -409,6 +412,16 @@ export default Vue.extend({
       };
     },
     async setObjectSchema(params: { schema?: IVeoObjectSchema; modelType?: string }) {
+      let urlToNavigate = '/editor/formschema';
+      if (this.createForm.title && this.createForm.subType) {
+        urlToNavigate = `${urlToNavigate}?name=${this.createForm.title}&subtype=${this.createForm.subType}&os=`;
+        urlToNavigate += this.createForm.modelType && this.createForm.modelType !== 'custom' ? this.createForm.modelType.toLowerCase() : 'custom';
+      } else if (['import-fs', 'import-os'].includes(this.state)) {
+        urlToNavigate = `${urlToNavigate}?fs=${this.formSchemaId ?? 'custom'}`;
+        urlToNavigate += this.forceOwnSchema ? '&os=custom' : '';
+      }
+      this.urlToNavigate = urlToNavigate;
+
       const objectSchema = cloneDeep(params.schema) ?? (await this.$api.schema.fetch(params.modelType as string));
       // os specific translation within by user uploaded OS
       const osTranslation = cloneDeep(JsonPointer.get(objectSchema, '#/properties/translations') as IVeoObjectSchemaTranslations | undefined);
@@ -435,13 +448,22 @@ export default Vue.extend({
       this.formSchema = schema;
     },
     emitSchemas() {
+      // TODO: maybe emit dialog close value.
       this.$emit('update-form-schema', this.formSchema);
       this.$emit('update-object-schema', this.objectSchema);
       this.$emit('update-translation', this.translation);
+      this.navigateTo();
     },
     onClose() {
       this.$router.push('/editor');
       return true;
+    },
+    navigateTo() {
+      // If the current path does not match with new url, only then change the URL
+      if (this.urlToNavigate && this.$route.path !== this.urlToNavigate) {
+        // history.pushState({}, '', this.urlToNavigate);
+        this.$router.push(this.urlToNavigate);
+      }
     }
   }
 });
