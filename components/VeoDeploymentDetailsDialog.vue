@@ -85,8 +85,13 @@ export default Vue.extend({
       }
     };
   },
-  mounted() {
-    this.fetchDeploymentDetails();
+  watch: {
+    '$attrs.value'(newValue: boolean) {
+      // We only load the deployment information if the user clicks on the dialog to avoid too many requests
+      if (newValue && this.deployments.app === undefined) {
+        this.fetchDeploymentDetails();
+      }
+    }
   },
   methods: {
     async fetchDeploymentDetails() {
