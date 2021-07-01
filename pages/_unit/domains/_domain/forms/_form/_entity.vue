@@ -130,6 +130,11 @@
           <h3 class="text-left">
             {{ $t('incompatibleFormSchema', { objectType }) }}
           </h3>
+          <VeoValidationResultList
+            :result="formschemaValidation"
+            show-warnings
+            class="mt-4"
+          />
         </div>
         <VeoEntityModifiedDialog
           v-model="formModified.dialog"
@@ -203,7 +208,7 @@
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import { Route } from 'vue-router/types/index';
-import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
@@ -360,11 +365,14 @@ export default Vue.extend({
     objectRoute(): string {
       return this.$route.params.entity;
     },
+    formschemaValidation(): VeoSchemaValidatorValidationResult {
+      return validate(this.form.formSchema as IVeoFormSchema, this.form.objectSchema as IVeoObjectSchema);
+    },
     canShowData(): boolean {
       const dummy = cloneDeep(this.form.objectData);
       delete dummy.displayName;
       // Object data has to fit object schema AND form schema has to fit object schema
-      return this.validateRevisionSchema(dummy, false) && validate(this.form.formSchema as IVeoFormSchema, this.form.objectSchema as IVeoObjectSchema).valid;
+      return this.validateRevisionSchema(dummy, false) && this.formschemaValidation.valid;
     },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
