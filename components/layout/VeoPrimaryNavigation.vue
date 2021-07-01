@@ -19,9 +19,11 @@
             :items="domains"
             item-text="name"
             item-value="id"
-            flat
             hide-details
-            class="mx-3 mb-1"
+            outlined
+            filled
+            primary
+            class="ma-3"
             style="font-size: 1.2rem;"
             :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
             :menu-props="{ closeOnContentClick: true, 'max-width': '256px' }"
