@@ -4,7 +4,7 @@
     title-class="d-flex align-center"
   >
     <template
-      v-if="formSchema && objectSchema && schemaIsValid.valid"
+      v-if="formSchema && objectSchema"
       #header
     >
       <v-tooltip bottom>
@@ -49,7 +49,7 @@
       <v-tooltip bottom>
         <template #activator="{ on }">
           <v-btn
-            v-if="schemaIsValid.warnings.length > 0"
+            v-if="!schemaIsValid.valid"
             icon
             large
             color="warning"
@@ -98,7 +98,7 @@
       </v-tooltip>
     </template>
     <template
-      v-if="formSchema && objectSchema && schemaIsValid.valid"
+      v-if="formSchema && objectSchema"
       #default
     >
       <VeoPage
@@ -159,7 +159,10 @@
             right
           />
         </template>
-        <template #default>
+        <template
+          v-if="schemaIsValid.valid"
+          #default
+        >
           <div class="fill-height fill-width d-flex px-2">
             <VeoFseGenerator
               :schema="objectSchema"
@@ -171,6 +174,27 @@
               @update-custom-translation="onUpdateCustomTranslation"
             />
           </div>
+        </template>
+        <template v-else>
+          <v-row class="fill-height flex-column text-center align-center px-8">
+            <v-col
+              cols="auto"
+              style="flex-grow: 0"
+            >
+              <v-icon
+                style="font-size: 8rem; opacity: 0.5"
+                color="primary"
+              >
+                mdi-information-outline
+              </v-icon>
+            </v-col>
+            <v-col
+              cols="auto"
+              class="text-left"
+            >
+              <h3>{{ $t("invalidFormSchema") }}</h3>
+            </v-col>
+          </v-row>
         </template>
       </VeoPage>
       <v-divider vertical />
@@ -189,7 +213,10 @@
             {{ $t("preview") }}
           </h3>
         </template>
-        <template #default>
+        <template
+          v-if="schemaIsValid.valid"
+          #default
+        >
           <v-card
             style="height: 100%"
             flat
@@ -204,22 +231,7 @@
             />
           </v-card>
         </template>
-      </VeoPage>
-    </template>
-    <template
-      v-else-if="!schemaIsValid.valid"
-      #default
-    >
-      <VeoPage
-        v-if="formSchema"
-        sticky-header
-        absolute-size
-        fullsize
-        no-padding
-        :cols="12"
-        content-class="px-4"
-      >
-        <template #default>
+        <template v-else>
           <v-row class="fill-height flex-column text-center align-center px-8">
             <v-col
               cols="auto"
@@ -237,18 +249,7 @@
               class="text-left"
             >
               <h3>{{ $t("invalidFormSchema") }}</h3>
-              <v-list-item
-                v-for="(error, index) of schemaIsValid.errors"
-                :key="`e_${index}`"
-                link
-              >
-                <v-list-item-content>
-                  <v-list-item-title>{{ error.code }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ error.message }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
             </v-col>
-            <v-spacer />
           </v-row>
         </template>
       </VeoPage>
@@ -263,6 +264,7 @@
       <VeoEditorErrorDialog
         v-model="showErrorDialog"
         :validation="schemaIsValid"
+        @fix="onFixRequest"
       />
       <VeoFseCodeEditorDialog
         v-model="showCodeEditor"
@@ -311,6 +313,7 @@ import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
+import { IBaseObject } from '~/lib/utils';
 
 interface IProps {}
 
@@ -491,6 +494,12 @@ export default defineComponent<IProps>({
       }
     }
 
+    function onFixRequest(code: string, params?: IBaseObject) {
+      if (code === 'E_PROPERTY_MISSING' && params) {
+        onDelete(params as any);
+      }
+    }
+
     return {
       previewCollapsed,
       backlogCollapsed,
@@ -526,7 +535,8 @@ export default defineComponent<IProps>({
       setFormTranslation,
       setFormName,
       setFormLanguage,
-      onUpdateCustomTranslation
+      onUpdateCustomTranslation,
+      onFixRequest
     };
   },
   head(): any {

@@ -70,8 +70,9 @@ export default function (api: Client) {
      * @param type
      */
     fetch(type: string): Promise<IVeoObjectSchema> {
-      if(type !== type.toLowerCase()) {
-        console.warn('Incorrect casing: Make sure you are querying for the technical ID of the schema: Caused by: ', type)
+      if (type !== type.toLowerCase()) {
+        // eslint-disable-next-line no-console
+        console.warn('Incorrect casing: Make sure you are querying for the technical ID of the schema: Caused by: ', type);
       }
       return api.req(`/api/schemas/${type.toLowerCase()}`, {
         params: {
