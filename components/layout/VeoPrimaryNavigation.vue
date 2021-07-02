@@ -69,6 +69,18 @@
         dense
         class="pa-0"
       >
+        <v-list-item
+          class="pl-4"
+          @click="displayDeploymentDetails = true"
+        >
+          <v-list-item-icon>
+            <v-icon>
+              mdi-information-outline
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>{{ $t('about') }}</v-list-item-title>
+          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
+        </v-list-item>
         <v-divider />
         <v-list-item
           v-if="!$vuetify.breakpoint.xs"
@@ -133,7 +145,8 @@ export default Vue.extend({
     return {
       miniVariant: LocalStorage.primaryNavMiniVariant,
       domains: [] as IVeoDomain[],
-      items: [] as INavItem[]
+      items: [] as INavItem[],
+      displayDeploymentDetails: false as boolean
     };
   },
   computed: {
@@ -272,8 +285,9 @@ export default Vue.extend({
         ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
         ...(!routeUnitParam ? [unitSelection] : []),
         spacer,
-        ...(routeUnitParam ? [settings, help] : []),
-        editors
+        ...(routeUnitParam ? [settings] : []),
+        editors,
+        ...(routeUnitParam ? [help] : [])
       ];
 
       this.addChildren(this.$t('breadcrumbs.objects').toString(), await this.fetchObjectTypes());
@@ -377,12 +391,14 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "about": "About",
     "collapse": "Collapse menu",
     "fix": "Fix menu",
     "noChildItems": "No sub items",
     "noDomainSelected": "No module selected"
   },
   "de": {
+    "about": "Über",
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
     "noChildItems": "Keine Einträge vorhanden",

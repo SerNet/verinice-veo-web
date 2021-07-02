@@ -14,6 +14,27 @@ export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 /**
  * 1. Types of user generated data
  */
+export interface IVeoDeploymentInformation {
+  build: {
+    artifact: string;
+    ci: {
+      jobname: string;
+      buildnumber: string;
+    };
+    group: string;
+    name: string;
+    time: string;
+    version: string;
+  };
+  git: {
+    branch: string;
+    commit: {
+      id: string;
+      time: string;
+    };
+  };
+}
+
 export interface IVeoLink {
   displayName: string;
   resourcesUri: string;
