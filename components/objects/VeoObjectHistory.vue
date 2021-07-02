@@ -87,8 +87,9 @@ export default Vue.extend({
         });
       }
     },
-    object(newValue: IVeoEntity) {
-      if (!this.loading && newValue) {
+    object(newValue: IVeoEntity, oldValue: IVeoEntity | undefined) {
+      // Only load if old object data was not existing and the page isn't loading
+      if (!this.loading && newValue && JSON.stringify(oldValue) === '{}') {
         this.$nextTick().then(() => {
           this.$fetch();
         });
