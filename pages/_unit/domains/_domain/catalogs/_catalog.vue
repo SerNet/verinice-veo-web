@@ -23,7 +23,7 @@
             v-for="item of items"
             :key="item.id"
           >
-            {{ item.element.displayName }}
+            {{ item.element }}
           </v-tab>
           <v-tabs-items v-model="activeTab">
             <v-tab-item
@@ -34,7 +34,7 @@
                 flat
                 :loading="loading || $fetchState.pending"
               >
-                <v-card-subtitle>{{ item.element.displayName }}</v-card-subtitle>
+                <v-card-subtitle>{{ item.element }}</v-card-subtitle>
                 <v-card-text>{{ currentItem }}</v-card-text>
               </v-card>
             </v-tab-item>
