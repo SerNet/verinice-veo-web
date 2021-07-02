@@ -193,8 +193,7 @@
           <v-tab-item>
             <VeoObjectHistory
               :object="form.objectData"
-              :schema="form.objectSchema"
-              :loading="$fetchState.pending"
+              :loading="$fetchState.pending || saveBtnLoading"
               @show-revision="showRevision"
             />
           </v-tab-item>
