@@ -70,7 +70,10 @@ export default function (api: Client) {
      * @param type
      */
     fetch(type: string): Promise<IVeoObjectSchema> {
-      return api.req(`/api/schemas/${type}`, {
+      if(type !== type.toLowerCase()) {
+        console.warn('Incorrect casing: Make sure you are querying for the technical ID of the schema: Caused by: ', type)
+      }
+      return api.req(`/api/schemas/${type.toLowerCase()}`, {
         params: {
           domains: 'GDPR,ISO_27001'
         }

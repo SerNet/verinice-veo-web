@@ -14,20 +14,19 @@
       <div class="d-flex flex-column fill-height">
         <!-- Current domain -->
         <div v-if="$route.params.unit">
-          <span
-            class="mx-3"
-          >{{ $t('breadcrumbs.domain') }}</span>
           <v-select
             :value="domainId"
             :items="domains"
             item-text="name"
             item-value="id"
-            solo
-            flat
             hide-details
+            outlined
+            filled
+            primary
+            class="ma-3"
             style="font-size: 1.2rem;"
             :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
-            :menu-props="{closeOnContentClick: true, 'max-width': '256px', 'content-class': 'veo-primary-navigation__domain-selection-menu'}"
+            :menu-props="{ closeOnContentClick: true, 'max-width': '256px' }"
             @change="onDomainChange"
           >
             <template #append-item>
@@ -414,11 +413,5 @@ export default Vue.extend({
   .v-list-item__title {
     color: rgba(0, 0, 0, 0.87) !important;
   }
-}
-</style>
-
-<style lang="scss">
-.veo-primary-navigation__domain-selection-menu {
-  left: 0 !important;
 }
 </style>
