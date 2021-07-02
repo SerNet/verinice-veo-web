@@ -270,6 +270,10 @@
         v-model="showCodeEditor"
         :code="code"
       />
+      <VeoFseInvalidSchemaDownloadDialog
+        v-model="invalidSchemaDownloadDialogVisible"
+        @download="downloadSchema(true)"
+      />
       <!-- Important: showTranslationDialog should be in v-if to only run code in the dialog when it is open  -->
       <VeoFseTranslationDialog
         v-if="!$fetchState.pending && showTranslationDialog && formSchema && formSchema.translation"
@@ -422,8 +426,12 @@ export default defineComponent<IProps>({
       }
     }
 
-    function downloadSchema() {
-      if (downloadButton.value && downloadButton.value !== null) {
+    const invalidSchemaDownloadDialogVisible = ref(false);
+    function downloadSchema(forceDownload: boolean = false) {
+      if (schemaIsValid.value.valid === false && !forceDownload) {
+        invalidSchemaDownloadDialogVisible.value = true;
+      } else if (downloadButton.value && downloadButton.value !== null) {
+        invalidSchemaDownloadDialogVisible.value = false;
         const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
         downloadButton.value.href = data;
         downloadButton.value.download = snakeCase(`fs_${formSchema.value?.name[language.value] || 'download'}`) + '.json';
@@ -527,6 +535,7 @@ export default defineComponent<IProps>({
       onDelete,
       onUpdate,
       updateControlItems,
+      invalidSchemaDownloadDialogVisible,
       downloadButton,
       code,
       showTranslationDialog,
