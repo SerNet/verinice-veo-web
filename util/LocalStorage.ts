@@ -1,5 +1,7 @@
 const PRIMARY_NAV_MINI_VARIANT = 'primary-navigation-drawer--mini-variant';
 const NAV_ENTRY_EXPANDED = 'primary-navigation-drawer--nav-entry-expanded';
+const LAST_DOMAIN = 'last-domain';
+const LAST_UNIT = 'last-unit';
 
 export default class LocalStorage {
   static clear() {
@@ -54,5 +56,21 @@ export default class LocalStorage {
 
   static set expandedNavEntry(value: number) {
     LocalStorage.setNumber(NAV_ENTRY_EXPANDED, value);
+  }
+
+  static get lastDomain() {
+    return LocalStorage.get(LAST_DOMAIN);
+  }
+
+  static set lastDomain(value: string | null) {
+    LocalStorage.set(LAST_DOMAIN, value);
+  }
+
+  static get lastUnit() {
+    return LocalStorage.get(LAST_UNIT);
+  }
+
+  static set lastUnit(value: string | null) {
+    LocalStorage.set(LAST_UNIT, value);
   }
 }

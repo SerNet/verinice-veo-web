@@ -54,6 +54,7 @@
 import Vue from 'vue';
 
 import { separateUUIDParam } from '~/lib/utils';
+import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { IVeoDomain } from '~/types/VeoTypes';
 
 export default Vue.extend({
@@ -64,8 +65,19 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    this.unit = await this.$api.unit.fetch(this.unitId);
-    this.domains = await this.$api.domain.fetchUnitDomains(this.unitId);
+    try {
+      this.unit = await this.$api.unit.fetch(this.unitId);
+      this.domains = await this.$api.domain.fetchUnitDomains(this.unitId);
+    } catch (e) {
+      if (e.code === 404) {
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          type: ALERT_TYPE.ERROR,
+          title: this.$t('error404'),
+          text: this.$t('unitNotFoundText')
+        } as IVeoEventPayload);
+        this.$router.push('/');
+      }
+    }
   },
   head(): any {
     return {
@@ -93,3 +105,14 @@ export default Vue.extend({
   color: $accent;
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "unitNotFoundText": "The requested unit couldn't be found. You have been returned to the unit selection."
+  },
+  "de": {
+    "unitNotFoundText": "Die gewünschte Unit konnte nicht gefunden werden. Sie wurden zur Unitauswahl zurückgebracht."
+  }
+}
+</i18n>

@@ -32,6 +32,7 @@
 <script lang="ts">
 import Vue from 'vue';
 
+import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
 
@@ -43,8 +44,19 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    this.unit = await this.$api.unit.fetch(this.unitId);
-    this.domain = await this.$api.domain.fetch(this.domainId);
+    try {
+      this.unit = await this.$api.unit.fetch(this.unitId);
+      this.domain = await this.$api.domain.fetch(this.domainId);
+    } catch (e) {
+      if (e.code === 404) {
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          type: ALERT_TYPE.ERROR,
+          title: this.$t('error404'),
+          text: this.$t('domainNotFoundText')
+        } as IVeoEventPayload);
+        this.$router.push(`/${this.$route.params.unit}`);
+      }
+    }
   },
   head(): any {
     return {
@@ -86,3 +98,14 @@ export default Vue.extend({
   color: $accent;
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "domainNotFoundText": "The requested domain couldn't be found. You have been returned to the unit dashboard."
+  },
+  "de": {
+    "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden. Sie wurden zum Unit Dashboard zurückgebracht."
+  }
+}
+</i18n>

@@ -36,6 +36,7 @@ export default {
   'editor.schema.warnings': 'Hinweise',
 
   'error.title': 'Es ist ein Fehler aufgetreten',
+  error404: '404 - Nicht gefunden',
 
   'forms.input.array.add': 'Element hinzufügen',
   'forms.input.linkadd': 'Link hinzufügen',
