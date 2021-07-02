@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$fetchState.pending">
+  <div v-if="$fetchState.pending || loading">
     <div
       v-for="index in [1, 2]"
       :key="index"
@@ -48,14 +48,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
-import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
-import { IBaseObject } from '~/lib/utils';
 
-import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 interface IData {
   history: IVeoObjectHistoryEntry[];
-  validator: ObjectSchemaValidator;
 }
 
 export default Vue.extend({
@@ -67,16 +64,11 @@ export default Vue.extend({
     loading: {
       type: Boolean,
       default: false
-    },
-    schema: {
-      type: Object as Prop<IVeoObjectSchema>,
-      default: () => {}
     }
   },
   data(): IData {
     return {
-      history: [],
-      validator: new ObjectSchemaValidator()
+      history: []
     };
   },
   async fetch() {
@@ -86,6 +78,7 @@ export default Vue.extend({
       });
     }
   },
+  // For some reason we have to check on both, as $fetchState.pending will be false in some cases while the object is not set yet.
   watch: {
     loading(newValue: boolean) {
       if (!newValue && this.object) {
@@ -93,11 +86,13 @@ export default Vue.extend({
           this.$fetch();
         });
       }
-    }
-  },
-  methods: {
-    canShowData(data: IBaseObject): boolean {
-      return this.validator.fitsObjectSchema(this.schema, data);
+    },
+    object(newValue: IVeoEntity) {
+      if (!this.loading && newValue) {
+        this.$nextTick().then(() => {
+          this.$fetch();
+        });
+      }
     }
   }
 });

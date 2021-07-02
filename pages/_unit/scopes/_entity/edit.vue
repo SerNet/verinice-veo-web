@@ -136,7 +136,6 @@
           <template #items>
             <VeoObjectHistory
               :object="form.objectData"
-              :schema="form.objectSchema"
               :loading="$fetchState.pending"
               @show-revision="showRevision"
             />
