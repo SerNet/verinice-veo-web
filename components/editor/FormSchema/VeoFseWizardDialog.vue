@@ -283,14 +283,7 @@ export default Vue.extend({
       this.noWatch = false;
     },
     async state(newValue) {
-      if (newValue === 'start') {
-        this.oscode = '\n\n\n\n\n';
-        this.objectSchema = undefined;
-        this.fscode = '\n\n\n\n\n';
-        this.formSchema = undefined;
-        this.formSchemaId = undefined;
-        this.clearCreateForm();
-      } else if (newValue === 'create') {
+      if (newValue === 'create') {
         this.schemas = await this.$api.schema.fetchAll(true);
       }
     },
@@ -323,6 +316,8 @@ export default Vue.extend({
             }
             await this.doImportFs();
           }
+        } else if (isEmpty(this.$route.query)) {
+          this.setStartState();
         }
       }
     }
@@ -333,7 +328,7 @@ export default Vue.extend({
   methods: {
     goBack() {
       if (this.state === 'create' || this.state === 'import-fs') {
-        this.state = 'start';
+        this.setStartState();
       } else if (this.state === 'import-os') {
         this.fscode = '';
         this.oscode = '';
@@ -411,6 +406,17 @@ export default Vue.extend({
         }
       };
     },
+    setStartState() {
+      this.state = 'start';
+      this.oscode = '\n\n\n\n\n';
+      this.objectSchema = undefined;
+      this.fscode = '\n\n\n\n\n';
+      this.formSchema = undefined;
+      this.formSchemaId = undefined;
+      this.translation = undefined;
+      this.clearCreateForm();
+      this.emitSchemas();
+    },
     async setObjectSchema(params: { schema?: IVeoObjectSchema; modelType?: string }) {
       let urlToNavigate = '/editor/formschema';
       if (this.createForm.title && this.createForm.subType) {
@@ -452,7 +458,9 @@ export default Vue.extend({
       this.$emit('update-form-schema', this.formSchema);
       this.$emit('update-object-schema', this.objectSchema);
       this.$emit('update-translation', this.translation);
-      this.navigateTo();
+      if (this.state !== 'start') {
+        this.navigateTo();
+      }
     },
     onClose() {
       this.$router.push('/editor');
