@@ -1,0 +1,22 @@
+[
+  {
+     "createdAt":"2021-06-17T11:15:47.102634Z",
+     "createdBy":"veo-testuser1",
+     "updatedAt":"2021-06-17T11:15:47.102634Z",
+     "updatedBy":"veo-testuser1",
+     "name":"NBRX Test Unit",
+     "description":"NBRX Test Unit für Integration Tests",
+     "units":[
+        
+     ],
+     "domains":[
+        {
+           "displayName":"D1 Testdomain 1",
+           "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+           "targetUri":"https://veo.develop.cpmsys.io/domains/442938ae-e497-48d3-81f1-d6b2ba9260fa",
+           "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+     ],
+     "id":"4fe0f8dc-ee20-41d0-b115-2d6586d3d5d7"
+  }
+]

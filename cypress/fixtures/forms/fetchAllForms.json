@@ -7,5 +7,14 @@
       "de": "TOM"
     },
     "subType": "DSGVO_TOM"
+  },
+  {
+    "domainId": "442938ae-e497-48d3-81f1-d6b2ba9260fa",
+    "name": {
+        "de": "Gefährdung"
+    },
+    "modelType": "Scenario",
+    "subType": "SCN_Scenario",
+    "id": "fa6d2d38-d88d-466e-b325-064610984561"
   }
 ]
