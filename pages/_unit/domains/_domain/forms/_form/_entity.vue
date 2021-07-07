@@ -92,6 +92,16 @@
             >
               {{ $t('restore') }}
             </v-btn>
+            <v-btn
+              v-if="!isRevision"
+              color="primary"
+              outlined
+              :disabled="$fetchState.pending"
+              :loading="saveBtnLoading"
+              @click="onClick($event, true)"
+            >
+              {{ $t('global.button.save_quit') }}
+            </v-btn>
           </v-col>
         </v-row>
         <VeoAlert
