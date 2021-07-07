@@ -9,6 +9,7 @@
       <VeoValidationResultList
         :result="$attrs.validation"
         show-warnings
+        allow-fixing
         v-on="$listeners"
       />
     </template>
