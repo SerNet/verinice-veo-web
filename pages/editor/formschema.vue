@@ -434,7 +434,7 @@ export default defineComponent<IProps>({
         invalidSchemaDownloadDialogVisible.value = false;
         const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
         downloadButton.value.href = data;
-        downloadButton.value.download = snakeCase(`fs_${formSchema.value?.name[language.value] || 'download'}`) + '.json';
+        downloadButton.value.download = snakeCase(`fs_${formSchema.value?.name[language.value] || 'missing_translation'}`) + '.json';
       }
     }
 
