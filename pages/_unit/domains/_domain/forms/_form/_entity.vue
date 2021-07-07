@@ -491,7 +491,8 @@ export default Vue.extend({
       }
     },
     showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean) {
-      const content = revision.content;
+      // Clone deep to avoid modiying the history and altering persisted state (won't change anything in the backend, but we want clean state)
+      const content = cloneDeep(revision.content);
 
       // show modified dialog before switching versions if needed
       if (this.formModified.isModified) {
