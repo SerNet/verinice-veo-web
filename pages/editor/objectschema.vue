@@ -281,20 +281,22 @@ export default Vue.extend({
   },
   methods: {
     setSchema(data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) {
-      this.showCreationDialog = false;
-      this.objectSchemaHelper = new ObjectSchemaHelper(data.schema);
+      this.objectSchemaHelper = data.schema || data.meta ? new ObjectSchemaHelper(data.schema) : undefined;
 
-      if (data.meta) {
-        this.objectSchemaHelper.setTitle(data.meta.type);
-        this.objectSchemaHelper.setDescription(data.meta.description);
+      if (this.objectSchemaHelper) {
+        if (data.meta) {
+          this.objectSchemaHelper.setTitle(data.meta.type);
+          this.objectSchemaHelper.setDescription(data.meta.description);
+        }
+
+        if (this.objectSchemaHelper.getLanguages().length === 0) {
+          this.objectSchemaHelper.updateTranslations(this.$i18n.locale, {});
+        }
+        this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2);
+        this.validate();
       }
 
-      if (this.objectSchemaHelper.getLanguages().length === 0) {
-        this.objectSchemaHelper.updateTranslations(this.$i18n.locale, {});
-      }
-
-      this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2);
-      this.validate();
+      this.showCreationDialog = !this.objectSchemaHelper || false;
     },
     updateSchema(schema: IVeoObjectSchema) {
       this.objectSchemaHelper = new ObjectSchemaHelper(schema);

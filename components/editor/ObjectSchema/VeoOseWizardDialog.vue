@@ -251,14 +251,9 @@ export default Vue.extend({
       this.dialog = newValue;
       this.noWatch = false;
     },
-    state(newValue) {
-      if (newValue === 'start') {
-        this.code = '';
-        this.clearCreateForm();
-      }
-    },
     $route: {
       immediate: true,
+      deep: true,
       handler() {
         // If the user navigates by URL, depending on the parameters, schemas should be generated
         if (!this.isNavigatedByDialog || this.isDialogCustom) {
@@ -279,6 +274,12 @@ export default Vue.extend({
             this.modelType = this.$route.query.os;
             this.importSchema();
           }
+        } else if (isEmpty(this.$route.query)) {
+          this.state = 'start';
+          this.code = '';
+          this.modelType = '';
+          this.clearCreateForm();
+          this.$emit('completed', {});
         }
       }
     }
@@ -345,7 +346,7 @@ export default Vue.extend({
       const newUrl = `/editor/objectschema?${paramUrl}`;
       // If the current path does not match with new url, only then change the URL
       if (this.$route.path !== newUrl) {
-        history.pushState({}, '', newUrl);
+        this.$router.push(newUrl);
       }
     }
   }
