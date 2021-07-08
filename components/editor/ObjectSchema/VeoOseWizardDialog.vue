@@ -251,6 +251,33 @@ export default Vue.extend({
       this.dialog = newValue;
       this.noWatch = false;
     },
+    state: {
+      immediate: true,
+      handler() {
+        if (this.state === 'import' || this.state === 'start') {
+          // Only load types of schema types if a user navigates by the dialog
+          if ((this.isNavigatedByDialog || this.isDialogCustom) && this.objectTypes.length === 0) {
+            this.$api.schema
+              .fetchAll(true)
+              .then((data) =>
+                data.map((value: ISchemaEndpoint) => {
+                  return {
+                    text: capitalize(value.schemaName),
+                    value: value.schemaName
+                  };
+                })
+              )
+              .then((types: any) => {
+                types.unshift({
+                  text: this.$t('customObjectSchema') as string,
+                  value: 'custom'
+                });
+                this.objectTypes = types;
+              });
+          }
+        }
+      }
+    },
     $route: {
       immediate: true,
       deep: true,
@@ -286,27 +313,6 @@ export default Vue.extend({
   },
   mounted() {
     this.dialog = this.value;
-
-    // Only load types of schema types if a user does not navigate by the dialog
-    if (this.isNavigatedByDialog || this.isDialogCustom) {
-      this.$api.schema
-        .fetchAll(true)
-        .then((data) =>
-          data.map((value: ISchemaEndpoint) => {
-            return {
-              text: capitalize(value.schemaName),
-              value: value.schemaName
-            };
-          })
-        )
-        .then((types: any) => {
-          types.unshift({
-            text: this.$t('customObjectSchema') as string,
-            value: 'custom'
-          });
-          this.objectTypes = types;
-        });
-    }
   },
   methods: {
     createSchema() {
