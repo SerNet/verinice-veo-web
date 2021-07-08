@@ -195,6 +195,10 @@ export default Vue.extend({
         // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
         if (item.description && item.description.length > 40) {
           item.descriptionShort = item.description.substring(0, 40) + '...';
+
+          if (item.description.length > 1000) {
+            item.description = item.description.substring(0, 1000) + '...';
+          }
         }
 
         return {

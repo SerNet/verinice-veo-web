@@ -11,7 +11,7 @@
           <v-list-item-title>{{ error.code }} </v-list-item-title>
           {{ error.message }}
         </v-list-item-content>
-        <v-list-item-action v-if="error.fixable">
+        <v-list-item-action v-if="error.fixable && allowFixing">
           <v-btn
             outlined
             @click="$emit('fix', error.code, error.params)"
@@ -38,7 +38,7 @@
             <v-list-item-title>{{ warning.code }} </v-list-item-title>
             {{ warning.message }}
           </v-list-item-content>
-          <v-list-item-action v-if="warning.fixable">
+          <v-list-item-action v-if="warning.fixable && allowFixing">
             <v-btn
               outlined
               @click="$emit('fix', warning.code, warning.params)"
@@ -67,6 +67,10 @@ export default Vue.extend({
     result: {
       type: Object as Prop<VeoSchemaValidatorValidationResult>,
       required: true
+    },
+    allowFixing: {
+      type: Boolean,
+      default: false
     }
   }
 });

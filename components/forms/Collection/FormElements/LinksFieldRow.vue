@@ -263,6 +263,7 @@ interface IData {
   linksFieldDialogFormSchema: UISchema;
   currentForm: IVeoFormSchemaMeta | undefined;
   totalItems: number;
+  initialized: boolean;
 }
 
 export default Vue.extend({
@@ -325,7 +326,8 @@ export default Vue.extend({
       linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
       linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema },
       currentForm: undefined,
-      totalItems: 0 as number
+      totalItems: 0 as number,
+      initialized: false
     };
   },
   computed: {
@@ -358,7 +360,7 @@ export default Vue.extend({
       };
     },
     selected: {
-      get() {
+      get(): string | undefined {
         const selected = this.value?.target?.targetUri?.split('/')?.pop();
         return selected || undefined;
       },
@@ -377,23 +379,28 @@ export default Vue.extend({
     value: {
       async handler(v: BaseObject) {
         const displayName = v?.target?.displayName;
+        this.initialized = false;
         await this.fetchItems(displayName);
+        this.initialized = true;
       },
-      immediate: true
+      immediate: true,
+      deep: true
     },
     search: {
       async handler(val: string | undefined | null) {
-        if (val) {
-          const item = this.items.find((el) => el.name === val);
-          //  TODO: change name with displayName after it is implemented
-          if (!item || (item && item.id !== this.selected)) {
-            await this.fetchItems(val);
+        // Only call if initialized (as we don't want to overwrite the fetch called by the value watcher)
+        if (this.initialized) {
+          if (val) {
+            const item = this.items.find((el) => el.name === val);
+            //  TODO: change name with displayName after it is implemented
+            if (!item || (item && item.id !== this.selected)) {
+              await this.fetchItems(val);
+            }
+          } else {
+            await this.fetchItems();
           }
-        } else {
-          await this.fetchItems();
         }
-      },
-      immediate: true
+      }
     }
   },
   methods: {

@@ -60,6 +60,18 @@
               @update-mini-variant="setMiniVariant($event)"
             />
           </template>
+          <v-list-item
+            class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
+            @click="displayDeploymentDetails = true"
+          >
+            <v-list-item-icon>
+              <v-icon>
+                mdi-information-outline
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('about') }}</v-list-item-title>
+            <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
+          </v-list-item>
         </v-list>
       </div>
     </template>
@@ -69,18 +81,6 @@
         dense
         class="pa-0"
       >
-        <v-list-item
-          class="pl-4"
-          @click="displayDeploymentDetails = true"
-        >
-          <v-list-item-icon>
-            <v-icon>
-              mdi-information-outline
-            </v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>{{ $t('about') }}</v-list-item-title>
-          <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
-        </v-list-item>
         <v-divider />
         <v-list-item
           v-if="!$vuetify.breakpoint.xs"
@@ -417,6 +417,10 @@ export default Vue.extend({
       transform: scaleX(-1);
     }
   }
+}
+
+.veo-primary-navigation__menu-item {
+  flex-basis: auto;
 }
 
 .veo-active-link-item {
