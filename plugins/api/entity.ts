@@ -39,8 +39,7 @@ export default function (api: Client) {
 
       params = { ...params, page, size: api._context.$user.tablePageSize };
 
-      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
-      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase();
+      const endpoint = getSchemaEndpoint(objectType) || objectType;
       return api
         .req(`/api/${endpoint}`, {
           params
@@ -71,8 +70,7 @@ export default function (api: Client) {
      * @param entity
      */
     create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
-      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
-      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase();
+      const endpoint = getSchemaEndpoint(objectType) || objectType;
 
       // Remove properties of the object only used in the frontend
       if (entity.type === 'scope') {
@@ -94,8 +92,7 @@ export default function (api: Client) {
      * @param id
      */
     fetch(objectType: string, id: string): Promise<IVeoEntity> {
-      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
-      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase();
+      const endpoint = getSchemaEndpoint(objectType) || objectType;
 
       return api.req(`/api/${endpoint}/${id}`).then((result: IVeoEntity) => {
         /*
@@ -119,8 +116,7 @@ export default function (api: Client) {
      * @param entity
      */
     update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
-      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
-      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase();
+      const endpoint = getSchemaEndpoint(objectType) || objectType;
 
       // Remove properties of the object only used in the frontend
       if (entity.type === 'scope') {
@@ -157,8 +153,7 @@ export default function (api: Client) {
      * @param id
      */
     delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
-      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
-      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase();
+      const endpoint = getSchemaEndpoint(objectType) || objectType;
 
       return api.req(`/api/${endpoint}/${id}`, {
         method: 'DELETE'
@@ -172,8 +167,7 @@ export default function (api: Client) {
      * @param id The uuid of the entity to fetch the sub entities for.
      */
     fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
-      // we transform the object type to lowercase, as we refer to the TECHNICAL id, which is ALWAYS lowercase
-      const endpoint = (getSchemaEndpoint(objectType.toLowerCase()) || objectType).toLowerCase();
+      const endpoint = getSchemaEndpoint(objectType) || objectType;
 
       if (objectType === 'scope') {
         return api.req(`/api/scopes/${id}/members`).then((result: IVeoEntity[]) => {

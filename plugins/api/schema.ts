@@ -9,14 +9,14 @@ export interface ISchemaEndpoint {
 // The key might be different to the title of the object schema defined in its title property. However this key
 // should be seen as a technical id and is ALWAYS lowercase
 export const endpoints = {
-  asset: 'assets',
-  control: 'controls',
-  document: 'documents',
-  incident: 'incidents',
-  person: 'persons',
-  process: 'processes',
-  scenario: 'scenarios',
-  scope: 'scopes'
+  Asset: 'assets',
+  Control: 'controls',
+  Document: 'documents',
+  Incident: 'incidents',
+  Person: 'persons',
+  Process: 'processes',
+  Scenario: 'scenarios',
+  Scope: 'scopes'
 };
 
 /**
@@ -53,6 +53,7 @@ export default function (api: Client) {
       const schemas: { knownSchemas: string[] } = await api.req('/api/schemas', {
         params
       });
+      console.log(schemas);
       return schemas.knownSchemas
         .map((schema) => ({
           schemaName: schema,
@@ -70,11 +71,7 @@ export default function (api: Client) {
      * @param type
      */
     fetch(type: string): Promise<IVeoObjectSchema> {
-      if (type !== type.toLowerCase()) {
-        // eslint-disable-next-line no-console
-        console.warn('Incorrect casing: Make sure you are querying for the technical ID of the schema: Caused by: ', type);
-      }
-      return api.req(`/api/schemas/${type.toLowerCase()}`, {
+      return api.req(`/api/schemas/${type}`, {
         params: {
           domains: 'GDPR,ISO_27001'
         }

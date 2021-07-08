@@ -210,7 +210,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, cloneDeep, merge, snakeCase, trim } from 'lodash';
+import { capitalize, cloneDeep, merge, trim } from 'lodash';
 
 import { JsonPointer } from 'json-ptr';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
@@ -332,8 +332,8 @@ export default Vue.extend({
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     async doImport1(schema: IVeoFormSchema) {
       this.setFormSchema(schema);
-      if (!this.forceOwnSchema && this.objectTypes.findIndex((item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType?.toLowerCase()) !== -1) {
-        this.objectSchema = await this.$api.schema.fetch(schema.modelType?.toLowerCase());
+      if (!this.forceOwnSchema && this.objectTypes.findIndex((item: { value: string; text: string }) => item.value === schema.modelType) !== -1) {
+        this.objectSchema = await this.$api.schema.fetch(schema.modelType);
 
         /* Checks whether the form schema fits the object schema. If not, we assume that the object schema the
          * user used for this form schema is a modified version of an existing object schema and ask him to provide it.
@@ -350,7 +350,7 @@ export default Vue.extend({
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     doImport2(schema: IVeoObjectSchema) {
-      if (snakeCase(schema.title) !== snakeCase(this.formSchema?.modelType)) {
+      if (schema.title !== this.formSchema?.modelType) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('wrongobjectschema', {
             objectType: schema.title,

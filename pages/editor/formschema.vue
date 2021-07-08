@@ -304,7 +304,6 @@ import vjp from 'vue-json-pointer';
 
 import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api';
 import { JsonPointer } from 'json-ptr';
-import { snakeCase } from 'lodash';
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
   IVeoTranslations,
@@ -434,7 +433,7 @@ export default defineComponent<IProps>({
         invalidSchemaDownloadDialogVisible.value = false;
         const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
         downloadButton.value.href = data;
-        downloadButton.value.download = snakeCase(`fs_${formSchema.value?.name[language.value] || 'missing_translation'}`) + '.json';
+        downloadButton.value.download = `fs_${formSchema.value?.name[language.value] || 'missing_translation'}.json`;
       }
     }
 

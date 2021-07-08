@@ -77,7 +77,7 @@ export default Vue.extend({
     this.objects = await this.$api.form.fetchAll(this.domain.id);
     for (const object of this.objects) {
       // @ts-ignore
-      const objectType = endpoints[object.modelType.toLowerCase()];
+      const objectType = endpoints[object.modelType];
       object.items = (
         await this.$api.entity.fetchAll(objectType, 0, {
           unit: this.unit.id,

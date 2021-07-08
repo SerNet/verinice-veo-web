@@ -248,7 +248,7 @@ export default Vue.extend({
       }
     },
     prefix(): string {
-      return this.editedProperty?.prefix || `${this.objectSchemaHelper.value.getId()}_` || '';
+      return this.editedProperty?.prefix || `${this.objectSchemaHelper.value.getTitle()}_` || '';
     },
     aspectPrefix(): string {
       return `${this.prefix}${this.form.data.title}`;
@@ -262,7 +262,7 @@ export default Vue.extend({
     filteredFormSchemas(): { text: string; value: string }[] {
       let schemas = this.formSchemas;
       if (this.form.data.targetType && this.form.data.targetType !== '') {
-        schemas = schemas.filter((schema: IVeoFormSchemaMeta) => schema.modelType.toLowerCase() === this.form.data.targetType);
+        schemas = schemas.filter((schema: IVeoFormSchemaMeta) => schema.modelType === this.form.data.targetType);
       }
 
       const schemasWithSubTypFormatted = schemas
