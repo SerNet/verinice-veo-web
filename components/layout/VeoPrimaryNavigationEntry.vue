@@ -1,6 +1,15 @@
 <template>
+  <v-spacer
+    v-if="name === 'spacer'"
+    class="mt-8"
+  />
+  <v-divider
+    v-else-if="name === 'divider'"
+    class="mt-8"
+  />
   <v-list-item
-    v-if="childItems === undefined"
+    v-else-if="childItems === undefined"
+    class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
     :to="to"
     :exact="exact"
     :disabled="disabled"
@@ -14,15 +23,18 @@
   <v-list-group
     v-else
     :key="name"
+    class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
     :value="expanded"
     no-action
-    :prepend-icon="icon"
+    :prepend-icon="topLevelItem ? icon : undefiend"
     active-class="veo-active-link-group"
     :sub-group="!topLevelItem"
     @input="onInputExpanded"
   >
     <template #activator>
-      <v-list-item-title>{{ name }}</v-list-item-title>
+      <v-list-item-title>
+        {{ name }}
+      </v-list-item-title>
     </template>
     <VeoPrimaryNavigationEntry
       v-for="child of childItems"
@@ -34,18 +46,12 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  PropType,
-  Ref,
-  ref,
-  watch
-} from '@nuxtjs/composition-api'
-import { INavItem } from './VeoPrimaryNavigation.vue'
+import { defineComponent, PropType, Ref, ref, watch } from '@nuxtjs/composition-api';
+import { INavItem } from './VeoPrimaryNavigation.vue';
 
 interface IProps extends INavItem {
-  persistUIState: Function
-  miniVariant: boolean
+  persistUIState: Function;
+  miniVariant: boolean;
 }
 
 export default defineComponent<IProps>({
@@ -87,29 +93,30 @@ export default defineComponent<IProps>({
       required: true
     },
     persistUIState: {
-      type: Function
+      type: Function,
+      default: undefined
     }
   },
   setup(props, context) {
-    const expanded: Ref<boolean | undefined> = ref(!props.collapsed)
+    const expanded: Ref<boolean | undefined> = ref(!props.collapsed);
 
     watch(
       () => props.collapsed,
       (newValue: boolean | undefined) => {
         if (expanded.value !== !newValue) {
-          expanded.value = !newValue
+          expanded.value = !newValue;
         }
       }
-    )
+    );
 
     function emitCollapsed(newExpandedVal: boolean | undefined) {
-      context.emit('update:collapsed', !newExpandedVal)
-      props.persistUIState?.(!newExpandedVal)
+      context.emit('update:collapsed', !newExpandedVal);
+      props.persistUIState?.(!newExpandedVal);
     }
 
     function onInputExpanded(newExpandedVal: boolean | undefined) {
       // Set local expanded variable to new value
-      expanded.value = newExpandedVal
+      expanded.value = newExpandedVal;
       // Create a special behavior, when minivariant is active
       if (props.miniVariant) {
         // If new state of a list group is not expanded (false),
@@ -117,21 +124,27 @@ export default defineComponent<IProps>({
         // therefore hack it with $nextTick to force expansion
         if (!expanded.value) {
           context.root.$nextTick(() => {
-            expanded.value = true
-            emitCollapsed(expanded.value)
-            context.emit('update-mini-variant', false)
-          })
+            expanded.value = true;
+            emitCollapsed(expanded.value);
+            context.emit('update-mini-variant', false);
+          });
         } else {
           // If a new state of the group is expanded (true), then no need for hack
-          emitCollapsed(expanded.value)
-          context.emit('update-mini-variant', false)
+          emitCollapsed(expanded.value);
+          context.emit('update-mini-variant', false);
         }
       } else {
-        emitCollapsed(expanded.value)
+        emitCollapsed(expanded.value);
       }
     }
 
-    return { expanded, onInputExpanded }
+    return { expanded, onInputExpanded };
   }
-})
+});
 </script>
+
+<style lang="scss" scoped>
+.veo-primary-navigation__menu-item {
+  flex-basis: auto;
+}
+</style>

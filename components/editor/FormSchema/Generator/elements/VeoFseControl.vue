@@ -1,18 +1,18 @@
 <template>
   <div class="vf-control">
-    <VeoFseFormElement v-bind="$props" v-on="$listeners" />
+    <VeoFseFormElement
+      v-bind="$props"
+      v-on="$listeners"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue'
-import { JSONSchema7 } from 'json-schema'
-import { UISchemaElement } from '@/types/UISchema'
+import Vue, { PropOptions } from 'vue';
+import { JSONSchema7 } from 'json-schema';
+import { UISchemaElement } from '@/types/UISchema';
 
-import {
-  IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslationCollection
-} from '~/types/VeoTypes'
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -58,7 +58,7 @@ export default Vue.extend({
       default: ''
     }
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

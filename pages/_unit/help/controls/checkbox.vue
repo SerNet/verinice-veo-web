@@ -4,16 +4,27 @@
       <v-col cols="12">
         <PageHeader>Checkbox</PageHeader>
       </v-col>
-      <v-col cols="auto" class="docs-form-sector">
-        <VeoForm v-model="form.data" :schema="form.objectSchema" :ui="form.formSchema" />
+      <v-col
+        cols="auto"
+        class="docs-form-sector"
+      >
+        <VeoForm
+          v-model="form.data"
+          :schema="form.objectSchema"
+          :ui="form.formSchema"
+        />
       </v-col>
     </v-row>
-    <FormDescription :object-schema="form.objectSchema" :form-schema="form.formSchema" :data="form.data" />
+    <FormDescription
+      :object-schema="form.objectSchema"
+      :form-schema="form.formSchema"
+      :data="form.data"
+    />
   </VeoPage>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   data() {
@@ -38,9 +49,9 @@ export default Vue.extend({
           checkbox: true
         }
       }
-    }
+    };
   }
-})
+});
 </script>
 
 <style lang="scss"></style>

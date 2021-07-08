@@ -5,10 +5,22 @@
         <PageHeader>Array Field</PageHeader>
       </v-col>
       <v-col cols="12">
-        <v-switch v-model="isVertical" label="Vertical" hide-details color="primary" />
+        <v-switch
+          v-model="isVertical"
+          label="Vertical"
+          hide-details
+          color="primary"
+        />
       </v-col>
-      <v-col cols="auto" class="docs-form-sector">
-        <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" />
+      <v-col
+        cols="auto"
+        class="docs-form-sector"
+      >
+        <VeoForm
+          v-model="dynamicForm.data"
+          :schema="dynamicForm.objectSchema"
+          :ui="dynamicForm.formSchema"
+        />
       </v-col>
     </v-row>
     <FormDescription
@@ -20,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   data() {
@@ -127,17 +139,17 @@ export default Vue.extend({
         }
       },
       isVertical: false
-    }
+    };
   },
   computed: {
     dynamicForm(): any {
       if (this.isVertical) {
-        return this.formVertical
+        return this.formVertical;
       }
-      return this.form
+      return this.form;
     }
   }
-})
+});
 </script>
 
 <style lang="scss"></style>

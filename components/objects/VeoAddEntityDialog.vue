@@ -9,11 +9,32 @@
   >
     <template #default>
       {{ $t('add_subentities', { displayName: entityDisplayName }) }}
+      <v-row v-if="editedEntity && editedEntity.type === 'scope' && addType === 'entity'">
+        <v-col
+          lg="3"
+          md="6"
+          cols="12"
+        >
+          <span>
+            {{ $t('shown_objecttype') }}:
+          </span>
+          <v-select
+            v-model="objectType"
+            :label="$t('object_type')"
+            :items="objectTypes"
+            class="mt-2"
+            outlined
+            dense
+          />
+        </v-col>
+      </v-row>   
       <VeoEntitySelectionList
         :selected-items="selectedItems"
-        :items="items"
-        :loading="$fetchState.pending"
+        :items="entities"
+        :loading="$fetchState.pending || loading"
         @new-subentities="onNewSubEntities"
+        @page-change="fetchEntities"
+        @refetch="fetchEntities"
       />
     </template>
     <template #dialog-options>
@@ -22,28 +43,29 @@
         color="primary"
         :disabled="saving"
         @click="$emit('input', false)"
-      >{{ $t('global.button.cancel') }}</v-btn>
+      >
+        {{ $t('global.button.cancel') }}
+      </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="saving" @click="addEntities">{{ $t('add') }}</v-btn>
+      <v-btn
+        text
+        color="primary"
+        :disabled="saving"
+        @click="addEntities"
+      >
+        {{ $t('add') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import Vue from 'vue';
+import { upperFirst } from 'lodash';
+import { Prop } from 'vue/types/options';
 
-import { endpoints, getSchemaEndpoint, getSchemaName } from '~/plugins/api/schema'
-import { IVeoEntity, IVeoLink } from '~/types/VeoTypes'
-
-interface IData {
-  dialog: boolean
-  noWatch: boolean
-  selectedItems: { id: string; type: string }[]
-  saving: boolean
-  entities: IVeoEntity[]
-  loading: boolean
-}
+import { getSchemaEndpoint, getSchemaName, ISchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -60,133 +82,141 @@ export default Vue.extend({
       default: undefined
     }
   },
-  data(): IData {
+  data() {
     return {
-      dialog: false,
-      noWatch: false,
-      selectedItems: [],
-      saving: false,
-      entities: [],
-      loading: false
-    }
+      selectedItems: [] as { id: string; type: string }[],
+      saving: false as boolean,
+      entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
+      loading: false as boolean,
+      objectType: '' as string,
+      schemas: [] as ISchemaEndpoint[]
+    };
   },
   async fetch() {
-    this.entities = []
-    for (let index in endpoints) {
-      // @ts-ignore
-      this.entities.push(...(await this.$api.entity.fetchAll(endpoints[index])))
-    }
+    this.schemas = await this.$api.schema.fetchAll();
+    this.objectType = this.objectTypes[0].value;
+
+    this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
   },
   computed: {
     entityDisplayName(): string {
-      return this.editedEntity?.displayName || ''
+      return this.editedEntity?.displayName || '';
     },
-    items(): IVeoEntity[] {
-      let filterFunction: (entity: IVeoEntity) => boolean = () => true
-      if (this.addType === 'scope') {
-        // If the add type is parent, we want to show only scopes
-        filterFunction = (entity: IVeoEntity) => entity.type === 'scope'
-      } else if (this.addType === 'entity') {
-        if (this.editedEntity?.type === 'scope') {
-          // If the parent is a scope, show all entities
-          filterFunction = (entity: IVeoEntity) => entity.type !== 'scope'
-        } else {
-          // If the parent is of type other than scope, show only entities of the same type
-          filterFunction = (entity: IVeoEntity) => entity.type === this.editedEntity?.type
-        }
+    objectTypes(): { value: string; text: string }[] {
+      let schemas = this.schemas.map((schema: ISchemaEndpoint) => ({
+        text: upperFirst(schema.schemaName),
+        value: schema.endpoint
+      }));
+
+      // Filter out scopes if the user wants to add objects and the parent is a scope
+      if (this.editedEntity?.type === 'scope') {
+        schemas = schemas.filter((item) => item.value !== 'scopes');
       }
 
-      return this.entities.filter((entity: IVeoEntity) => filterFunction(entity) && entity.id !== this.editedEntity?.id)
+      return schemas;
+    },
+    dialog: {
+      get(): boolean {
+        return this.value;
+      },
+      set(newValue: boolean) {
+        this.$emit('input', newValue);
+      }
     }
   },
   watch: {
     value(newValue: boolean) {
-      this.noWatch = true
-      this.dialog = newValue
-      this.noWatch = false
-
       if (newValue) {
-        let presetEntities: IVeoLink[]
+        this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
+
+        let presetEntities: IVeoLink[];
         if (!this.editedEntity) {
-          presetEntities = []
+          presetEntities = [];
         } else if (this.editedEntity.type === 'scope') {
-          presetEntities = this.editedEntity.members
+          presetEntities = this.editedEntity.members;
         } else {
-          presetEntities = this.editedEntity.parts
+          presetEntities = this.editedEntity.parts;
         }
 
         this.selectedItems = presetEntities.map((member) => {
-          const destructedLink = member.targetUri.split('/')
-          const id = destructedLink.pop() || ''
-          let type = destructedLink.pop() || ''
-          type = getSchemaName(type) || type
+          const destructedLink = member.targetUri.split('/');
+          const id = destructedLink.pop() || '';
+          let type = destructedLink.pop() || '';
+          type = getSchemaName(type) || type;
 
-          return { id, type }
-        })
-
-        if (this.entities.length === 0) {
-          this.loading = true
-          this.$api.schema
-            .fetchAll()
-            .then(async (data) => {
-              return await data.forEach(async (schema) => {
-                this.entities = [...this.entities, ...(await this.$api.entity.fetchAll(schema.endpoint))]
-              })
-            })
-            .finally(() => {
-              this.loading = false
-            })
-        }
+          return { id, type };
+        });
       }
     },
-    dialog(newValue: boolean) {
-      if (!this.noWatch) {
-        this.$emit('input', newValue)
+    objectType(_newValue: string, oldValue: string) {
+      if (oldValue) {
+        this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
       }
     }
   },
   methods: {
     async addEntities() {
       if (!this.editedEntity) {
-        return
+        return;
       }
 
-      this.saving = true
-      const _editedEntity = await this.$api.entity.fetch(this.editedEntity.type, this.editedEntity.id)
+      this.saving = true;
+      const _editedEntity = await this.$api.entity.fetch(this.editedEntity.type, this.editedEntity.id);
 
       const children = this.selectedItems.map((item) => {
         return {
           targetUri: `/${getSchemaEndpoint(item.type) || item.type}/${item.id}`
-        }
-      })
+        };
+      });
       if (this.editedEntity.type === 'scope') {
         // @ts-ignore
-        _editedEntity.members = children
+        _editedEntity.members = children;
       } else {
         // @ts-ignore
-        _editedEntity.parts = children
+        _editedEntity.parts = children;
       }
 
       this.$api.entity
         .update(this.editedEntity.type, this.editedEntity.id, _editedEntity)
         .then(() => {
-          this.$emit('success')
+          this.$emit('success');
         })
         .catch((error: any) => {
-          this.$emit('error', error)
+          this.$emit('error', error);
         })
         .finally(() => {
-          this.saving = false
-        })
+          this.saving = false;
+        });
     },
     onNewSubEntities(items: { type: string; id: string }[]) {
-      this.selectedItems = items
+      this.selectedItems = items;
+    },
+    async fetchEntities(options: { page: number; sortBy: string; sortDesc: boolean }) {
+      this.loading = true;
+      let _objectType = '';
+
+      // If add type is scope, only load scopes
+      if (this.addType === 'scope') {
+        _objectType = 'scope';
+      } else if (this.addType === 'entity') {
+        // If add type is entity and parent type is scope, allow the user to choose all object types but scope
+        if (this.editedEntity?.type === 'scope') {
+          _objectType = this.objectType;
+        } else {
+          // If add type is entity and parent type is anything but scope, only show entities of the same type
+          _objectType = (this.editedEntity as IVeoEntity).type;
+        }
+      }
+
+      this.entities = await this.$api.entity.fetchAll(_objectType, options.page, {
+        size: this.$user.tablePageSize,
+        sortBy: options.sortBy,
+        sortOrder: options.sortDesc ? 'desc' : 'asc'
+      });
+      this.loading = false;
     }
-  },
-  mounted() {
-    this.dialog = this.value
   }
-})
+});
 </script>
 
 <i18n>
@@ -194,12 +224,16 @@ export default Vue.extend({
   "en": {
     "add": "Add",
     "add_subentities": "Add sub objects to \"{displayName}\"",
-    "headline": "Edit sub objects"
+    "headline": "Edit sub objects",
+    "object_type": "Object type",
+    "shown_objecttype": "Object type to link"
   },
   "de": {
     "add": "Hinzufügen",
     "add_subentities": "Unterobjekte zu \"{displayName}\" hinzufügen",
-    "headline": "Unterobjekte bearbeiten"
+    "headline": "Unterobjekte bearbeiten",
+    "object_type": "Objekttyp",
+    "shown_objecttype": "Zu verknüpfender Objekttyp"
   }
 }
 </i18n>

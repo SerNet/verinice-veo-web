@@ -6,19 +6,27 @@
     :xl="absoluteSize ? xlarge : 12"
     :class="pageClass"
   >
-    <v-row v-if="title" no-gutters class="flex-column veo-page__title">
+    <v-row
+      v-if="title"
+      no-gutters
+      class="flex-column veo-page__title"
+    >
       <v-col
         :cols="!absoluteSize ? cols : 12"
         :md="!absoluteSize ? medium : 12"
         :xl="!absoluteSize ? xlarge : 12"
         class="d-flex flex-wrap"
       >
-        <v-skeleton-loader v-if="loading" class="px-4 py-1 skeleton-title" type="text" />
+        <v-skeleton-loader
+          v-if="loading"
+          class="px-4 py-1 skeleton-title"
+          type="text"
+        />
         <template v-else>
           <h1 class="d-inline px-4 py-1 flex-grow-0">
-          {{ title }}
-          <slot name="title" />
-        </h1>
+            {{ title }}
+            <slot name="title" />
+          </h1>
         </template>        
       </v-col>
     </v-row>
@@ -37,41 +45,59 @@
         <slot name="header" />
       </v-col>
     </v-row>
-    <v-row no-gutters :style="{ 'max-height': '100%', 'min-height': 0, height }" :class="noPadding ? '' : 'pa-4'">
+    <v-row
+      no-gutters
+      :style="{ 'max-height': '100%', 'min-height': 0, height }"
+      :class="noPadding ? '' : 'pa-4'"
+    >
       <v-col
         :cols="!absoluteSize ? cols : 12"
         :md="!absoluteSize ? medium : 12"
         :xl="!absoluteSize ? xlarge : 12"
         :class="contentClass"
       >
-        <slot v-if="loading && loadContent" name="loading">
-          <v-skeleton-loader width="100%" type="image" />
-          <v-skeleton-loader type="heading" class="pt-3" height="56" width="100%" />
-          <v-skeleton-loader width="100%" type="image" />
+        <slot
+          v-if="loading && loadContent"
+          name="loading"
+        >
+          <v-skeleton-loader
+            width="100%"
+            type="image"
+          />
+          <v-skeleton-loader
+            type="heading"
+            class="pt-3"
+            height="56"
+            width="100%"
+          />
+          <v-skeleton-loader
+            width="100%"
+            type="image"
+          />
         </slot>
-        <slot v-else name="default" />
+        <slot
+          v-else
+          name="default"
+        />
       </v-col>
     </v-row>
   </v-col>
 </template>
 <script lang="ts">
-import {
-  computed,
-  defineComponent
-} from '@nuxtjs/composition-api'
+import { computed, defineComponent } from '@nuxtjs/composition-api';
 
 interface IProps {
-  absoluteSize: boolean
-  title?: string
-  fullsize: boolean
-  cols: number
-  md: number
-  xl: number
-  noPadding: boolean
-  stickyHeader: boolean
-  pageClass: string
-  contentClass: string
-  height: string
+  absoluteSize: boolean;
+  title?: string;
+  fullsize: boolean;
+  cols: number;
+  md: number;
+  xl: number;
+  noPadding: boolean;
+  stickyHeader: boolean;
+  pageClass: string;
+  contentClass: string;
+  height: string;
 }
 
 export default defineComponent<IProps>({
@@ -159,31 +185,31 @@ export default defineComponent<IProps>({
   setup(props, context) {
     const medium = computed(() => {
       if (props.fullsize) {
-        return 12
+        return 12;
       } else if (props.md === 8 && props.cols <= 8) {
-        return props.cols
+        return props.cols;
       } else {
-        return props.md
+        return props.md;
       }
-    })
+    });
 
     const xlarge = computed(() => {
       if (props.fullsize) {
-        return 12
+        return 12;
       } else if (props.xl === 6 && props.cols <= 6) {
-        return props.cols
+        return props.cols;
       } else {
-        return props.xl
+        return props.xl;
       }
-    })
+    });
 
     const showExtensionSlot = computed(() => {
-      return !!context.slots.header
-    })
+      return !!context.slots.header;
+    });
 
-    return { medium, xlarge, showExtensionSlot }
+    return { medium, xlarge, showExtensionSlot };
   }
-})
+});
 </script>
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

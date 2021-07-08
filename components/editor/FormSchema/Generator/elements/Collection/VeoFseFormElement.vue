@@ -1,25 +1,69 @@
 <template>
-  <v-card rounded elevation="0" class="fse-input mx-3 my-2">
+  <v-card
+    rounded
+    elevation="0"
+    class="fse-input mx-3 my-2"
+  >
     <v-card-text class="pa-0">
       <v-row no-gutters>
-        <v-col cols="auto" class="text-right px-1 fse-input-dragbar" :class="color">
-          <v-icon class="handle" color="white">mdi-menu</v-icon>
+        <v-col
+          cols="auto"
+          class="text-right px-1 fse-input-dragbar"
+          :class="color"
+        >
+          <v-icon
+            class="handle"
+            color="white"
+          >
+            mdi-menu
+          </v-icon>
         </v-col>
-        <v-col class="mx-2" style="overflow: auto">
+        <v-col
+          class="mx-2"
+          style="overflow: auto"
+        >
           <div>
-            <div class="fse-input-title mt-1 mb-1">{{ label }}</div>
-            <div class="fse-input-property-name mb-1">{{ name }}</div>
+            <div class="fse-input-title mt-1 mb-1">
+              {{ label }}
+            </div>
+            <div class="fse-input-property-name mb-1">
+              {{ name }}
+            </div>
             <div class="fse-input-type mb-1">
-              {{ currentType }} <VeoFseRuleDisplay v-if="ruleDisplayIcon" :value="ruleDisplayIcon" />
+              {{ currentType }} <VeoFseRuleDisplay
+                v-if="ruleDisplayIcon"
+                :value="ruleDisplayIcon"
+              />
             </div>
           </div>
         </v-col>
-        <v-col cols="auto" class="text-right pr-2">
-          <v-btn icon x-small @click="showEdit">
-            <v-icon dense small>mdi-pencil</v-icon>
+        <v-col
+          cols="auto"
+          class="text-right pr-2"
+        >
+          <v-btn
+            icon
+            x-small
+            @click="showEdit"
+          >
+            <v-icon
+              dense
+              small
+            >
+              mdi-pencil
+            </v-icon>
           </v-btn>
-          <v-btn icon x-small @click="showDelete">
-            <v-icon dense small>mdi-delete</v-icon>
+          <v-btn
+            icon
+            x-small
+            @click="showDelete"
+          >
+            <v-icon
+              dense
+              small
+            >
+              mdi-delete
+            </v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -28,30 +72,34 @@
       v-if="editDialog"
       v-model="editDialog"
       v-bind="$props"
-      :formSchema="value"
+      :form-schema="value"
+      :form-schema-pointer="formSchemaPointer"
       :type="currentType"
       @edit="doEdit"
       @update-custom-translation="onUpdateCustomTranslation"
     />
-    <VeoFseDeleteDialog v-model="deleteDialog" @delete="doDelete" />
+    <VeoFseDeleteDialog
+      v-model="deleteDialog"
+      @delete="doDelete"
+    />
   </v-card>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue'
-import { Prop } from 'vue/types/options'
-import { JSONSchema7 } from 'json-schema'
-import { UISchemaElement } from '@/types/UISchema'
+import Vue, { PropOptions } from 'vue';
+import { Prop } from 'vue/types/options';
+import { JSONSchema7 } from 'json-schema';
+import { UISchemaElement } from '@/types/UISchema';
 
-import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VeoEditor'
+import { eligibleInputElements, IInputElement, INPUT_TYPES } from '~/types/VeoEditor';
 import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItemDeleteEvent,
   IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollectionItem,
   IVeoTranslationCollection
-} from '~/types/VeoTypes'
-import { getRuleEffectIcons } from '~/lib/FormSchemaHelper'
+} from '~/types/VeoTypes';
+import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
 export default Vue.extend({
   props: {
@@ -106,68 +154,64 @@ export default Vue.extend({
       editDialog: false as boolean,
       deleteDialog: false as boolean,
       label: '' as string
-    }
+    };
   },
   computed: {
     color(): string {
-      return INPUT_TYPES[this.type].color
+      return INPUT_TYPES[this.type].color;
     },
     currentType(): string {
-      return this.availableElements[0]?.name || 'Unknown'
+      return this.availableElements[0]?.name || 'Unknown';
     },
     type(): string {
-      return Array.isArray(this.schema.enum)
-        ? 'enum'
-        : this.schema.type && !Array.isArray(this.schema.type)
-        ? this.schema.type
-        : 'default'
+      return Array.isArray(this.schema.enum) ? 'enum' : this.schema.type && !Array.isArray(this.schema.type) ? this.schema.type : 'default';
     },
     ruleDisplayIcon(): string | undefined {
-      return getRuleEffectIcons(this.value?.rule?.effect)
+      return getRuleEffectIcons(this.value?.rule?.effect);
     }
   },
   watch: {
     name() {
-      this.availableElements = eligibleInputElements(this.type, this.$props)
-      this.setLabel()
+      this.availableElements = eligibleInputElements(this.type, this.$props);
+      this.setLabel();
     },
     options() {
-      this.availableElements = eligibleInputElements(this.type, this.$props)
+      this.availableElements = eligibleInputElements(this.type, this.$props);
     },
     generalTranslation() {
-      this.setLabel()
+      this.setLabel();
     },
     customTranslation() {
-      this.setLabel()
-    }
-  },
-  methods: {
-    showEdit() {
-      this.editDialog = true
-    },
-    doEdit(data: IVeoFormSchemaItemUpdateEvent['data']) {
-      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data } as IVeoFormSchemaItemUpdateEvent)
-      this.editDialog = false
-    },
-    showDelete() {
-      this.deleteDialog = true
-    },
-    doDelete() {
-      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVeoFormSchemaItemDeleteEvent)
-      this.deleteDialog = false
-    },
-    setLabel(): void {
-      this.label = this.customTranslation?.[this.name] || this.generalTranslation?.[this.name] || this.name
-    },
-    onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
-      this.$emit('update-custom-translation', event)
+      this.setLabel();
     }
   },
   mounted() {
-    this.availableElements = eligibleInputElements(this.type, this.$props)
-    this.setLabel()
+    this.availableElements = eligibleInputElements(this.type, this.$props);
+    this.setLabel();
+  },
+  methods: {
+    showEdit() {
+      this.editDialog = true;
+    },
+    doEdit(data: IVeoFormSchemaItemUpdateEvent['data']) {
+      this.$emit('update', { formSchemaPointer: this.formSchemaPointer, data } as IVeoFormSchemaItemUpdateEvent);
+      this.editDialog = false;
+    },
+    showDelete() {
+      this.deleteDialog = true;
+    },
+    doDelete() {
+      this.$emit('delete', { formSchemaPointer: this.formSchemaPointer } as IVeoFormSchemaItemDeleteEvent);
+      this.deleteDialog = false;
+    },
+    setLabel(): void {
+      this.label = this.customTranslation?.[this.name] || this.generalTranslation?.[this.name] || this.name;
+    },
+    onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
+      this.$emit('update-custom-translation', event);
+    }
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

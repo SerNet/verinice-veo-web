@@ -22,13 +22,10 @@ module.exports = {
   },
   transformIgnorePatterns: ['<rootDir>/node_modules/(?!(@babel)/)', '<rootDir>/test/e2e'],
   collectCoverage: false,
-  collectCoverageFrom: [
-    '<rootDir>/components/**/*.vue',
-    '<rootDir>/pages/**/*.vue'
-  ],
+  collectCoverageFrom: ['<rootDir>/components/**/*.vue', '<rootDir>/pages/**/*.vue'],
   snapshotSerializers: ['jest-serializer-vue'],
   preset: 'ts-jest/presets/js-with-ts',
   testMatch: null,
   verbose: true,
   reporters: ['default', 'jest-junit']
-}
+};

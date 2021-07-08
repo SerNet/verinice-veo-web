@@ -48,18 +48,21 @@ export default {
   'forms.input.link.targetObject.delete.text': 'Sind sie sicher, dass das Objekt "{object}" gelöscht werden soll?',
   'forms.input.link.targetObject.notFound': 'Nicht gefunden',
 
-  'global.appstate.alert.object_modified':
-    'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
+  'global.appstate.alert.object_modified': 'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
   'global.appstate.alert.success': 'Erfolgreich durchgeführt!',
   'global.appstate.alert.error': 'Ein Fehler ist aufgetreten!',
   'global.button.cancel': 'Abbrechen',
   'global.button.close': 'Schließen',
+  'global.button.create': 'Erstellen',
   'global.button.delete': 'Löschen',
   'global.button.next': 'Weiter',
   'global.button.no': 'Nein',
   'global.button.ok': 'Okay',
   'global.button.previous': 'Zurück',
+  'global.button.discard': 'Abbrechen',
   'global.button.save': 'Speichern',
+  'global.button.save_quit': 'Speichern und Schließen',
+  'global.button.apply': 'Übernehmen',
   'global.button.yes': 'Ja',
   'global.input.required': 'Das Feld muss ausgefüllt werden',
   'global.input.requiredfields': '* Pflichtfelder',
@@ -67,7 +70,7 @@ export default {
   'global.menu.collapse': 'Menü verstecken',
   'global.menu.expand': 'Menü fixieren',
 
-  'objectlist.abbreviation': 'Abk.',
+  'objectlist.designator': 'Designator',
   'objectlist.description': 'Beschreibung',
   'objectlist.title': 'Objektname',
   'objectlist.updatedat': 'Letzte Änderung',
@@ -92,13 +95,14 @@ export default {
 
   'search.label': 'verinice. durchsuchen',
 
+  'domain.index.title': 'Modul Dashboard',
+
   'unit.create': 'Neue Unit erstellen',
   'unit.create.short': 'Unit erstellen',
   'unit.created': 'Unit wurde erstellt',
   'unit.details.children': 'Untergeordnete Units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'Bitte tragen Sie eine Beschreibung ein.',
-  'unit.details.forms': 'Formulare',
   'unit.details.name': 'Name der Unit',
   'unit.details.name.required': 'Bitte tragen Sie einen Unit Namen ein.',
   'unit.details.nochild': 'Keine untegeordneten Units vorhanden',
@@ -109,10 +113,12 @@ export default {
   'unit.objects.tooltip.clone': 'Objekt klonen',
   'unit.objects.tooltip.delete': 'Objekt löschen',
   'unit.objects.tooltip.edit': 'Objekt bearbeiten',
-  'unit.index.title': 'Dashboard',
+  'unit.index.title': 'Unit Dashboard',
   'unit.select.label': 'Unit',
 
   'breadcrumbs.all': 'Alle',
+  'breadcrumbs.catalogs': 'Kataloge',
+  'breadcrumbs.domain': 'Modul',
   'breadcrumbs.reports': 'Reports',
   'breadcrumbs.settings': 'Einstellungen',
   'breadcrumbs.help': 'Handbuch',
@@ -121,6 +127,7 @@ export default {
   'breadcrumbs.forms': 'Formulare',
   'breadcrumbs.index': 'Unitauswahl',
   'breadcrumbs.list_view': 'Listenansicht',
+  'breadcrumbs.more_modules': 'Weitere Module',
   'breadcrumbs.objects': 'Objekte',
   'breadcrumbs.objectschema': 'Objektschema',
   'breadcrumbs.scopes': 'Scopes',
@@ -129,15 +136,15 @@ export default {
   'breadcrumbs.create': 'Erstellen',
 
   // temporary until the composition api supports <i18n></i18n>
-  "headline_aspect": "Aspekt löschen",
-  "headline_link": "Link löschen",
+  headline_aspect: 'Aspekt löschen',
+  headline_link: 'Link löschen',
 
-  "saveSchemaError": "Das Schema konnte nicht aktualisiert werden",
-  "saveSchemaSuccess": "Schema wurde aktualisiert!",
-  "attributeTypes": {
-    "date": "Datum",
-    "dateTime": "Datum und Uhrzeit",
-    "text": "Text",
-    "uri": "URI"
+  saveSchemaError: 'Das Schema konnte nicht aktualisiert werden',
+  saveSchemaSuccess: 'Schema wurde aktualisiert!',
+  attributeTypes: {
+    date: 'Datum',
+    dateTime: 'Datum und Uhrzeit',
+    text: 'Text',
+    uri: 'URI'
   }
-}
+};

@@ -1,11 +1,16 @@
 <template>
-  <div v-if="visible" class="vf-label" :class="options && options.class" :style="options && options.style">
+  <div
+    v-if="visible"
+    class="vf-label"
+    :class="options && options.class"
+    :style="options && options.style"
+  >
     {{ text }}
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 export default Vue.extend({
   name: 'Label',
   props: {
@@ -14,7 +19,7 @@ export default Vue.extend({
     disabled: Boolean,
     visible: Boolean
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

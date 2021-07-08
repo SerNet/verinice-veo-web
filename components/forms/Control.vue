@@ -1,20 +1,25 @@
 <template>
-  <v-col v-if="visible" cols="12" md="auto" class="vf-control">
-    <FormElement v-bind="$props" v-on="$listeners" />
+  <v-col
+    v-if="visible"
+    cols="12"
+    md="auto"
+    class="vf-control"
+  >
+    <FormElement
+      v-bind="$props"
+      v-on="$listeners"
+    />
   </v-col>
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue'
-import { JSONSchema7 } from 'json-schema'
-import { UISchemaElement } from '@/types/UISchema'
-import { IApi } from '~/components/forms/utils'
+import Vue, { PropOptions } from 'vue';
+import { JSONSchema7 } from 'json-schema';
+import { UISchemaElement } from '@/types/UISchema';
+import { IApi } from '~/components/forms/utils';
 
-import FormElement from '~/components/forms/Collection/FormElements/FormElement.vue'
-import {
-  IVeoFormSchemaTranslationCollectionItem,
-  IVeoTranslationCollection
-} from '~/types/VeoTypes'
+import FormElement from '~/components/forms/Collection/FormElements/FormElement.vue';
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default Vue.extend({
   components: {
@@ -60,7 +65,7 @@ export default Vue.extend({
       default: () => undefined
     } as PropOptions<IApi>
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

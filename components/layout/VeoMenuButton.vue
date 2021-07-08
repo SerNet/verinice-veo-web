@@ -8,15 +8,19 @@
       class="veo-hierarchical-table__expandable-menu-default-button"
       @click="$emit(primaryItem.event.name, primaryItem.event.params)"
     >
-      {{ primaryItem.name }}</v-btn
-    ><v-menu bottom left offset-y>
-      <template v-slot:activator="{ on }">
+      {{ primaryItem.name }}
+    </v-btn><v-menu
+      bottom
+      left
+      offset-y
+    >
+      <template #activator="{ on }">
         <v-btn
           :color="color"
           :disabled="menuItems.length === 0"
           outlined
-          v-on="on"
           class="veo-hierarchical-table__expandable-menu-expand-button"
+          v-on="on"
         >
           <v-icon>mdi-chevron-down</v-icon>
         </v-btn>
@@ -35,28 +39,25 @@
   </div>
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  PropType
-} from '@nuxtjs/composition-api'
+import { defineComponent, PropType } from '@nuxtjs/composition-api';
 
 export interface IVeoMenuButtonItem {
-  disabled: boolean
+  disabled: boolean;
   event: {
-    name: string
+    name: string;
     params: {
-      [key: string]: any
-    }
-  }
-  name: string
+      [key: string]: any;
+    };
+  };
+  name: string;
 }
 
 interface IProps {
-  menuItems: IVeoMenuButtonItem[]
-  disabled: boolean
-  color: string
-  buttonText: string
-  buttonEvent: string
+  menuItems: IVeoMenuButtonItem[];
+  disabled: boolean;
+  color: string;
+  buttonText: string;
+  buttonEvent: string;
 }
 
 export default defineComponent<IProps>({
@@ -75,7 +76,7 @@ export default defineComponent<IProps>({
     }
   },
   setup(_props, _context) {}
-})
+});
 </script>
 <style lang="scss" scoped>
 .v-btn.veo-hierarchical-table__expandable-menu-expand-button {

@@ -1,8 +1,20 @@
 <template>
-  <div v-if="$fetchState.pending" class="fill-width fill-height d-flex justify-center align-center">
-    <v-progress-circular indeterminate color="primary" size="50" />
+  <div
+    v-if="$fetchState.pending"
+    class="fill-width fill-height d-flex justify-center align-center"
+  >
+    <v-progress-circular
+      indeterminate
+      color="primary"
+      size="50"
+    />
   </div>
-  <VeoPage v-else-if="!!entityType" absolute-size fullsize sticky-header>
+  <VeoPage
+    v-else-if="!!entityType"
+    absolute-size
+    fullsize
+    sticky-header
+  >
     <template #header>
       <v-row>
         <v-col>
@@ -11,12 +23,21 @@
         <v-spacer />
         <v-col class="text-right">
           <v-btn
+            text
+            outlined
+            @click="doDiscard"
+          >
+            {{ $t('global.button.discard') }}
+          </v-btn>
+          <v-btn
             color="primary"
             outlined
             text
             :loading="saveBtnLoading"
             @click="save()"
-          >{{ $t('global.button.save') }}</v-btn>
+          >
+            {{ $t('global.button.create') }}
+          </v-btn>
         </v-col>
       </v-row>
     </template>
@@ -38,17 +59,30 @@
       <VeoWindowUnloadPrevention :value="entityModified.isModified" />
     </template>
   </VeoPage>
-  <VeoPage v-else fullsize>
+  <VeoPage
+    v-else
+    fullsize
+  >
     <template #default>
       <v-row class="fill-height flex-column text-center align-center">
         <v-spacer />
         <v-col>
-          <v-icon style="font-size: 8rem; opacity: 0.5;" color="primary">mdi-information-outline</v-icon>
+          <v-icon
+            style="font-size: 8rem; opacity: 0.5;"
+            color="primary"
+          >
+            mdi-information-outline
+          </v-icon>
         </v-col>
-        <v-col cols="auto" class="text-left">
+        <v-col
+          cols="auto"
+          class="text-left"
+        >
           <h3>{{ $t('error.title') }}:</h3>
           <p>{{ $t('no_type') }}</p>
-          <nuxt-link :to="backLink">{{ $t('global.button.previous') }}</nuxt-link>
+          <nuxt-link :to="backLink">
+            {{ $t('global.button.previous') }}
+          </nuxt-link>
         </v-col>
         <v-spacer />
       </v-row>
@@ -57,30 +91,46 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Route } from 'vue-router/types/index'
+import Vue from 'vue';
+import { Route } from 'vue-router/types/index';
 
-import { IForm, separateUUIDParam } from '~/lib/utils'
-import { IValidationErrorMessage } from '~/pages/_unit/forms/_form/_entity.vue'
-import { VeoEvents } from '~/types/VeoGlobalEvents'
-import { getSchemaEndpoint } from '~/plugins/api/schema'
-import { capitalize } from 'lodash'
-import { IVeoAPIMessage } from '~/types/VeoTypes'
+import { capitalize } from 'lodash';
+import { IForm, separateUUIDParam } from '~/lib/utils';
+import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
+import { VeoEvents } from '~/types/VeoGlobalEvents';
+import { getSchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoAPIMessage } from '~/types/VeoTypes';
+import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
 
 interface IData {
-  form: IForm
-  isValid: boolean
-  errorMessages: IValidationErrorMessage[]
-  saveBtnLoading: boolean
+  form: IForm;
+  isValid: boolean;
+  errorMessages: IValidationErrorMessage[];
+  saveBtnLoading: boolean;
   entityModified: {
-    isModified: boolean
-    dialog: boolean
-    target?: Route
-  }
+    isModified: boolean;
+    dialog: boolean;
+    target?: any;
+  };
 }
 
 export default Vue.extend({
   name: 'VeoScopesCreatePage',
+  mixins: [VeoReactiveFormActionMixin],
+  beforeRouteLeave(to: Route, _from: Route, next: Function) {
+    // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
+    if (this.entityModified.isModified && this.entityModified.dialog) {
+      next();
+    } else if (this.entityModified.isModified) {
+      // If the form was modified and the dialog is closed, show it and abort navigation
+      this.entityModified.target = to;
+      this.entityModified.dialog = true;
+      next(false);
+    } else {
+      // The form wasn't modified, proceed as if this hook doesn't exist
+      next();
+    }
+  },
   data(): IData {
     return {
       form: {
@@ -96,90 +146,97 @@ export default Vue.extend({
         dialog: false,
         target: undefined
       }
-    }
+    };
   },
   async fetch() {
     if (this.entityType) {
-      const objectSchema = await this.$api.schema.fetch(this.entityType)
-      const { lang } = await this.$api.translation.fetch(['de', 'en'])
-      const objectData = {}
+      const objectSchema = await this.$api.schema.fetch(this.entityType);
+      const { lang } = await this.$api.translation.fetch(['de', 'en']);
+      const objectData = {};
       this.form = {
         objectSchema,
         objectData,
         lang
-      }
+      };
     }
   },
   head(): any {
     return {
       title: this.title
-    }
+    };
   },
   computed: {
     title(): string {
       return this.$fetchState.pending
-        ? this.$t('breadcrumbs.scopes')
-        : `${this.$t('object_create', { type: this.formattedEntityType })} - ${this.$t('breadcrumbs.scopes')}`
+        ? this.$t('breadcrumbs.scopes').toString()
+        : `${this.$t('object_create', { type: this.formattedEntityType })} - ${this.$t('breadcrumbs.scopes')}`;
     },
     parentId(): string {
-      return separateUUIDParam(this.$route.params.entity).id
+      return separateUUIDParam(this.$route.params.entity).id;
     },
     parentType(): string {
-      return separateUUIDParam(this.$route.params.entity).type
+      return separateUUIDParam(this.$route.params.entity).type;
     },
     unitID(): string {
-      return separateUUIDParam(this.$route.params.unit).id
+      return separateUUIDParam(this.$route.params.unit).id;
     },
     entityType(): string {
-      return this.$route.query.based_on
+      return this.$route.query.based_on as string;
     },
     formattedEntityType(): string {
-      return capitalize(this.entityType)
+      return capitalize(this.entityType);
     },
     backLink(): string {
-      const url = this.$route.fullPath.split('/')
-      url.pop()
-      return url.join('/')
+      const url = this.$route.fullPath.split('/');
+      url.pop();
+      return url.join('/');
     }
   },
   methods: {
+    doDiscard() {
+      this.entityModified.isModified = false;
+      this.$router.go(-1);
+    },
     async save() {
-      this.saveBtnLoading = true
-      this.formatObjectData()
+      this.saveBtnLoading = true;
+      this.formatObjectData();
 
       await this.$api.entity
         .create(this.entityType, {
           ...this.form.objectData,
+          // @ts-ignore
           owner: {
             targetUri: `/units/${this.unitID}`
           }
         })
         .then(async (data: IVeoAPIMessage) => {
-          this.entityModified.isModified = false
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') })
+          this.entityModified.isModified = false;
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
           if (this.parentId !== '-') {
-            const parent = await this.$api.entity.fetch(this.parentType, this.parentId)
+            const parent = await this.$api.entity.fetch(this.parentType, this.parentId);
 
             if (this.parentType === 'scope') {
+              // @ts-ignore
               parent.members.push({
                 targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
-              })
+              });
             } else {
+              // @ts-ignore
               parent.parts.push({
                 targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
-              })
+              });
             }
 
             this.$api.entity.update(this.parentType, parent.id, parent).finally(() => {
-              this.$router.push(this.backLink)
-            })
+              this.$router.push(this.backLink);
+            });
           } else {
-            this.$router.push(this.backLink)
+            this.$router.push(this.backLink);
           }
         })
         .finally(() => {
-          this.saveBtnLoading = false
-        })
+          this.saveBtnLoading = false;
+        });
     },
     formatObjectData() {
       // TODO: find better solution
@@ -190,26 +247,12 @@ export default Vue.extend({
             ...this.form.objectData.customAspects[key],
             id: '00000000-0000-0000-0000-000000000000',
             type: key
-          }
-        })
+          };
+        });
       }
     }
-  },
-  beforeRouteLeave(to: Route, _from: Route, next: Function) {
-    // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if (this.entityModified.isModified && this.entityModified.dialog) {
-      next()
-    } else if (this.entityModified.isModified) {
-      // If the form was modified and the dialog is closed, show it and abort navigation
-      this.entityModified.target = to
-      this.entityModified.dialog = true
-      next(false)
-    } else {
-      // The form wasn't modified, proceed as if this hook doesn't exist
-      next()
-    }
   }
-})
+});
 </script>
 
 <i18n>

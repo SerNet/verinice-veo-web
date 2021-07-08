@@ -5,10 +5,24 @@
         <PageHeader>Style</PageHeader>
       </v-col>
       <v-col cols="12">
-        <v-select v-model="definition.value" label="Definiert als" :items="definition.items" style="max-width:400px" />
+        <v-select
+          v-model="definition.value"
+          label="Definiert als"
+          :items="definition.items"
+          style="max-width:400px"
+        />
       </v-col>
-      <v-col cols="12" sm="6" lg="4" class="docs-form-sector d-flex justify-center">
-        <VeoForm v-model="dynamicForm.data" :schema="dynamicForm.objectSchema" :ui="dynamicForm.formSchema" />
+      <v-col
+        cols="12"
+        sm="6"
+        lg="4"
+        class="docs-form-sector d-flex justify-center"
+      >
+        <VeoForm
+          v-model="dynamicForm.data"
+          :schema="dynamicForm.objectSchema"
+          :ui="dynamicForm.formSchema"
+        />
       </v-col>
     </v-row>
     <FormDescription
@@ -20,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   data() {
@@ -63,20 +77,20 @@ export default Vue.extend({
         data: {}
       },
       definition: { value: 'String', items: ['String', 'Object', 'Array'] }
-    }
+    };
   },
   computed: {
     dynamicForm(): any {
       if (this.definition.value === 'Object') {
-        return this.formObject
+        return this.formObject;
       }
       if (this.definition.value === 'Array') {
-        return this.formArray
+        return this.formArray;
       }
-      return this.form
+      return this.form;
     }
   }
-})
+});
 </script>
 
 <style lang="scss"></style>

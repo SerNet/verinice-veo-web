@@ -10,11 +10,17 @@
   >
     <template #default>
       <v-window v-model="state">
-        <v-window-item value="start" class="py-4">
+        <v-window-item
+          value="start"
+          class="py-4"
+        >
           <h2>
             {{ $t('start') }}
           </h2>
-          <v-list two-line class="px-0 overflow-hidden">
+          <v-list
+            two-line
+            class="px-0 overflow-hidden"
+          >
             <v-list-item @click="state = 'create'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
@@ -23,7 +29,9 @@
                 <v-list-item-subtitle>{{ $t('createObjectSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
-                <v-icon x-large>mdi-chevron-right</v-icon>
+                <v-icon x-large>
+                  mdi-chevron-right
+                </v-icon>
               </v-list-item-action>
             </v-list-item>
             <v-list-item @click="state = 'import'">
@@ -34,19 +42,36 @@
                 <v-list-item-subtitle>{{ $t('importObjectSchemaDescription') }}</v-list-item-subtitle>
               </v-list-item-content>
               <v-list-item-action>
-                <v-icon x-large>mdi-chevron-right</v-icon>
+                <v-icon x-large>
+                  mdi-chevron-right
+                </v-icon>
               </v-list-item-action>
             </v-list-item>
           </v-list>
         </v-window-item>
-        <v-window-item value="create" class="px-4">
-          <v-form v-model="createForm.valid" @submit.prevent="createSchema()">
+        <v-window-item
+          value="create"
+          class="px-4"
+        >
+          <v-form
+            v-model="createForm.valid"
+            @submit.prevent="createSchema()"
+          >
             <h2>{{ $t('createObjectSchema') }}</h2>
-            <v-row no-gutters class="align-center mt-4">
-              <v-col :cols="12" :md="5">
+            <v-row
+              no-gutters
+              class="align-center mt-4"
+            >
+              <v-col
+                :cols="12"
+                :md="5"
+              >
                 <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
               </v-col>
-              <v-col :cols="12" :md="5">
+              <v-col
+                :cols="12"
+                :md="5"
+              >
                 <v-text-field
                   v-model="createForm.type"
                   :label="$t('type')"
@@ -55,11 +80,20 @@
                 />
               </v-col>
             </v-row>
-            <v-row no-gutters class="align-center mt-4">
-              <v-col :cols="12" :md="5">
+            <v-row
+              no-gutters
+              class="align-center mt-4"
+            >
+              <v-col
+                :cols="12"
+                :md="5"
+              >
                 <span style="font-size: 1.2rem;"> {{ $t('description') }}*: </span>
               </v-col>
-              <v-col :cols="12" :md="5">
+              <v-col
+                :cols="12"
+                :md="5"
+              >
                 <v-text-field
                   v-model="createForm.description"
                   :label="$t('description')"
@@ -71,13 +105,25 @@
           </v-form>
           <small>{{ $t('global.input.requiredfields') }}</small>
         </v-window-item>
-        <v-window-item value="import" class="px-4">
+        <v-window-item
+          value="import"
+          class="px-4"
+        >
           <h2>{{ $t('importObjectSchema') }}</h2>
-          <v-row no-gutters class="align-center mt-4">
-            <v-col :cols="12" :md="5">
+          <v-row
+            no-gutters
+            class="align-center mt-4"
+          >
+            <v-col
+              :cols="12"
+              :md="5"
+            >
               <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
             </v-col>
-            <v-col :cols="12" :md="5">
+            <v-col
+              :cols="12"
+              :md="5"
+            >
               <v-select
                 v-model="modelType"
                 :label="$t('type')"
@@ -97,7 +143,10 @@
           </v-row>
           <v-row>
             <v-col>
-              <span style="text-decoration: undeline; font-weight: bold; cursor: pointer;" @click="state = 'create'">
+              <span
+                style="text-decoration: undeline; font-weight: bold; cursor: pointer;"
+                @click="state = 'create'"
+              >
                 {{ $t('importObjectSchemaSwitch') }}
               </span>
             </v-col>
@@ -107,7 +156,11 @@
     </template>
     <template #dialog-options>
       <span />
-      <v-btn v-if="state !== 'start'" text @click="state = 'start'">
+      <v-btn
+        v-if="state !== 'start'"
+        text
+        @click="state = 'start'"
+      >
         {{ $t('global.button.previous') }}
       </v-btn>
       <v-spacer />
@@ -138,13 +191,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import {
-  capitalize,
-  trim
-} from 'lodash'
+import Vue from 'vue';
+import { capitalize, trim } from 'lodash';
 
-import { ISchemaEndpoint } from '~/plugins/api/schema'
+import { ISchemaEndpoint } from '~/plugins/api/schema';
 
 export default Vue.extend({
   props: {
@@ -170,54 +220,54 @@ export default Vue.extend({
       modelType: '',
       code: '\n\n\n\n\n' as string,
       objectTypes: [] as { value: string; text: string }[]
-    }
+    };
   },
   computed: {
     importNextDisabled(): boolean {
-      return (this.modelType === 'custom' && this.code === '\n\n\n\n\n') || this.modelType === ''
+      return (this.modelType === 'custom' && this.code === '\n\n\n\n\n') || this.modelType === '';
     }
   },
   watch: {
     dialog(newValue: boolean) {
       if (newValue) {
-        this.state = 'import'
+        this.state = 'import';
       }
       if (!this.noWatch) {
-        this.$emit('input', newValue)
+        this.$emit('input', newValue);
       }
     },
     value(newValue: boolean) {
-      this.noWatch = true
-      this.dialog = newValue
-      this.noWatch = false
+      this.noWatch = true;
+      this.dialog = newValue;
+      this.noWatch = false;
     },
     state(newValue) {
       if (newValue === 'start') {
-        this.code = ''
-        this.clearCreateForm()
+        this.code = '';
+        this.clearCreateForm();
       }
     }
   },
   mounted() {
-    this.dialog = this.value
+    this.dialog = this.value;
 
     this.$api.schema
       .fetchAll(true)
-      .then(data =>
+      .then((data) =>
         data.map((value: ISchemaEndpoint) => {
           return {
             text: capitalize(value.schemaName),
             value: value.schemaName
-          }
+          };
         })
       )
       .then((types: any) => {
         types.unshift({
           text: this.$t('customObjectSchema') as string,
           value: 'custom'
-        })
-        this.objectTypes = types
-      })
+        });
+        this.objectTypes = types;
+      });
   },
   methods: {
     createSchema(_schema?: any) {
@@ -225,15 +275,15 @@ export default Vue.extend({
         this.$emit('completed', {
           schema: undefined,
           meta: { type: this.createForm.type, description: this.createForm.description }
-        })
+        });
       } else {
-        this.$emit('completed', { schema: _schema, meta: undefined })
+        this.$emit('completed', { schema: _schema, meta: undefined });
       }
     },
     importSchema() {
       this.$api.schema.fetch(this.modelType).then((data: any) => {
-        this.$emit('completed', { schema: data, meta: undefined })
-      })
+        this.$emit('completed', { schema: data, meta: undefined });
+      });
     },
     clearCreateForm() {
       this.createForm = {
@@ -244,14 +294,14 @@ export default Vue.extend({
           type: [(input: string) => trim(input).length > 0],
           description: [(input: string) => trim(input).length > 0]
         }
-      }
+      };
     },
     onClose() {
-      this.$router.push('/editor')
-      return true
+      this.$router.push('/editor');
+      return true;
     }
   }
-})
+});
 </script>
 
 <i18n>

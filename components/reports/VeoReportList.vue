@@ -18,9 +18,15 @@
     </template>
     <template #item.description="{ item, value }">
       <div class="veo-report-list__description">
-        <v-tooltip v-if="item.descriptionShort" bottom>
+        <v-tooltip
+          v-if="item.descriptionShort"
+          bottom
+        >
           <template #activator="{ on }">
-            <span v-on="on" class="veo-report-list__description--description">{{ item.descriptionShort }}</span>
+            <span
+              class="veo-report-list__description--description"
+              v-on="on"
+            >{{ item.descriptionShort }}</span>
           </template>
           <template #default>
             <span>{{ value }}</span>
@@ -35,31 +41,33 @@
   </v-data-table>
 </template>
 <script lang="ts">
-import { upperFirst, toUpper } from 'lodash'
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import { upperFirst, toUpper } from 'lodash';
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
 
-import { IVeoReportMeta, IVeoReportsMeta } from '~/types/VeoTypes'
+import { IVeoReportMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 
 interface IReport {
-  id: string
-  name: string
-  description: string
-  multipleTargetsSupported: boolean
-  outputTypes: string
-  targetTypes: string
+  id: string;
+  name: string;
+  description: string;
+  multipleTargetsSupported: boolean;
+  outputTypes: string;
+  targetTypes: string;
 }
 
 interface IData {
-  itemsPerPage: number
-  toUpper: CallableFunction
+  itemsPerPage: number;
+  toUpper: CallableFunction;
 }
 
 export default Vue.extend({
   props: {
     items: {
       type: Object as Prop<IVeoReportsMeta[]>,
-      default: () => { return {} }
+      default: () => {
+        return {};
+      }
     },
     loading: {
       type: Boolean,
@@ -70,24 +78,30 @@ export default Vue.extend({
     return {
       itemsPerPage: 10,
       toUpper
-    }
+    };
   },
   computed: {
     displayedItems(): IReport[] {
       return Object.entries(this.items).map(([id, item]) => {
-        const _item = item as IVeoReportMeta
-        const name = _item.name[this.$i18n.locale] || _item.name[0]
-        const description = _item.description[this.$i18n.locale] || _item.description[0]
-        const targetTypes = _item.targetTypes.map(type => upperFirst(type)).join(', ')
-        const outputTypes = _item.outputTypes.map(type => {
-          const formatParts = type.split('/')
-          return formatParts[formatParts.length - 1]
-        }).join(', ')
-        let descriptionShort = undefined
+        const _item = item as IVeoReportMeta;
+        const name = _item.name[this.$i18n.locale] || _item.name[0];
+        let description = _item.description[this.$i18n.locale] || _item.description[0];
+        const targetTypes = _item.targetTypes.map((type) => upperFirst(type)).join(', ');
+        const outputTypes = _item.outputTypes
+          .map((type) => {
+            const formatParts = type.split('/');
+            return formatParts[formatParts.length - 1];
+          })
+          .join(', ');
+        let descriptionShort;
 
         // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
-        if(description.length >  80) {
-          descriptionShort = description.substring(0, 80) + '...'
+        if (description.length > 80) {
+          descriptionShort = description.substring(0, 80) + '...';
+
+          if (description.length > 1000) {
+            description = description.substring(0, 1000) + '...';
+          }
         }
         return {
           id,
@@ -97,8 +111,8 @@ export default Vue.extend({
           outputTypes,
           targetTypes,
           descriptionShort
-        }
-      })
+        };
+      });
     },
     headers(): any[] {
       return [
@@ -114,16 +128,16 @@ export default Vue.extend({
         },
         {
           text: this.$t('reportDescription'),
-          value: 'description',
+          value: 'description'
         },
         {
           text: this.$t('outputTypes'),
-          value: 'outputTypes',
+          value: 'outputTypes'
         }
-      ]
+      ];
     }
   }
-})
+});
 </script>
 
 <i18n>

@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   props: {
@@ -28,15 +28,15 @@ export default Vue.extend({
       required: true
     }
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>
 p {
-    margin-bottom: 4px !important;
+  margin-bottom: 4px !important;
 }
 
 .v-card__text {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 </style>

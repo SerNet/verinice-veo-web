@@ -1,15 +1,20 @@
 <template>
   <div class="json-highlighter">
     <pre class="language-json">
-      <code class="language-json" v-html="textAsHighlighterHTML" />
+      <!-- eslint-disable vue/no-v-html -->
+      <code
+        class="language-json"
+        v-html="textAsHighlighterHTML"
+      />
+    <!-- eslint-enable -->
     </pre>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import Prism from 'prismjs'
-import 'prismjs/components/prism-json'
+import Vue from 'vue';
+import Prism from 'prismjs';
+import 'prismjs/components/prism-json';
 
 export default Vue.extend({
   name: 'PrimsHighlighter',
@@ -18,10 +23,10 @@ export default Vue.extend({
   },
   computed: {
     textAsHighlighterHTML(): string {
-      return this.text ? Prism.highlight(String(this.text || ''), Prism.languages.json, 'json') : ''
+      return this.text ? Prism.highlight(String(this.text || ''), Prism.languages.json, 'json') : '';
     }
   }
-})
+});
 </script>
 
 <style lang="scss">

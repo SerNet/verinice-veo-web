@@ -1,28 +1,41 @@
 <template>
-  <VeoDialog v-model="dialog" :headline="$t('headline')">
-    <template #default>{{ $t('text', { displayName }) }}</template>
+  <VeoDialog
+    v-model="dialog"
+    :headline="$t('headline')"
+  >
+    <template #default>
+      {{ $t('text', { displayName }) }}
+    </template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('input', false)">{{ $t('global.button.no') }}</v-btn>
+      <v-btn
+        text
+        color="primary"
+        @click="$emit('input', false)"
+      >
+        {{ $t('global.button.no') }}
+      </v-btn>
       <v-spacer />
       <v-btn
         text
         color="primary"
         :disabled="!item"
         @click="deleteEntity"
-      >{{ $t('global.button.delete') }}</v-btn>
+      >
+        {{ $t('global.button.delete') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Prop } from 'vue/types/options'
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
 
-import { IVeoEntity } from '~/types/VeoTypes'
+import { IVeoEntity } from '~/types/VeoTypes';
 
 interface IData {
-  dialog: boolean
-  noWatch: boolean
+  dialog: boolean;
+  noWatch: boolean;
 }
 
 export default Vue.extend({
@@ -40,41 +53,41 @@ export default Vue.extend({
     return {
       dialog: false,
       noWatch: false
-    } as IData
+    } as IData;
   },
   computed: {
     displayName(): string {
-      return this.item?.displayName ?? ''
+      return this.item?.displayName ?? '';
     }
   },
   watch: {
     value(newValue: boolean) {
-      this.noWatch = true
-      this.dialog = newValue
-      this.noWatch = false
+      this.noWatch = true;
+      this.dialog = newValue;
+      this.noWatch = false;
     },
     dialog(newValue: boolean) {
       if (!this.noWatch) {
-        this.$emit('input', newValue)
+        this.$emit('input', newValue);
       }
     }
+  },
+  mounted() {
+    this.dialog = this.value;
   },
   methods: {
     deleteEntity() {
       this.$api.entity
         .delete(this.item.type, this.item.id)
         .then(() => {
-          this.$emit('success')
+          this.$emit('success');
         })
         .catch((error) => {
-          this.$emit('error', error)
-        })
+          this.$emit('error', error);
+        });
     }
-  },
-  mounted() {
-    this.dialog = this.value
   }
-})
+});
 </script>
 
 <i18n>

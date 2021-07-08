@@ -1,43 +1,72 @@
-import { Client } from '~/plugins/api'
-import {
-  IVeoFormSchema,
-  IVeoFormSchemaMeta
-} from '~/types/VeoTypes'
+import { Client } from '~/plugins/api';
+import { IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export default function (api: Client) {
   return {
     /**
      * Loads all Forms
+     *
+     * NOT PAGINATED
+     *
      * @param parent
      */
-    fetchAll(params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+    fetchAll(domain?: string, params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+      if (!params) {
+        params = {};
+      }
+
+      if (domain) {
+        params.domainId = domain;
+      }
+
+      // TODO: Remove: Currently the domainId in the forms api isn't linked with the id of the existing domain, so we ignore the filter.
+      delete params.domainId;
+
       return api.req('/api/forms', {
         params
-      })
+      });
+    },
+
+    /**
+     * Loads all Forms REGARDLESS of domain
+     * @param parent
+     */
+    fetchGlobal(params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+      return api.req('/api/forms', {
+        params
+      });
     },
 
     /**
      * Creates a form
+     *
+     * NOT PAGINATED
+     *
      * @param form
-     * 
      * @returns UUID of the new form
      */
     create(form: IVeoFormSchema): Promise<string> {
       return api.req('/api/forms', {
         json: form
-      })
+      });
     },
 
     /**
-     * Loads a forml by id
+     * Loads a form by id
+     *
+     * NOT PAGINATED
+     *
      * @param id
      */
     fetch(id: string): Promise<IVeoFormSchema> {
-      return api.req(`/api/forms/${id}`)
+      return api.req(`/api/forms/${id}`);
     },
 
     /**
      * Updates a form
+     *
+     * NOT PAGINATED
+     *
      * @param id
      * @param form
      */
@@ -45,17 +74,20 @@ export default function (api: Client) {
       return api.req(`/api/forms/${id}`, {
         method: 'PUT',
         json: form
-      })
+      });
     },
 
     /**
      * Deletes a form
+     *
+     * NOT PAGINATED
+     *
      * @param id
      */
     delete(id: string): Promise<void> {
       return api.req(`/api/forms/${id}`, {
         method: 'DELETE'
-      })
+      });
     }
-  }
+  };
 }

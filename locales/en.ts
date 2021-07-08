@@ -53,12 +53,16 @@ export default {
   'global.appstate.alert.error': 'An error occured!',
   'global.button.cancel': 'Cancel',
   'global.button.close': 'Close',
+  'global.button.create': 'Create',
   'global.button.delete': 'Delete',
   'global.button.next': 'Next',
   'global.button.no': 'No',
   'global.button.ok': 'Okay',
+  'global.button.discard': 'Cancel',
   'global.button.previous': 'Previous',
   'global.button.save': 'Save',
+  'global.button.save_quit': 'Save and exit',
+  'global.button.apply': 'Apply',
   'global.button.yes': 'Yes',
   'global.input.required': 'The field is required',
   'global.input.requiredfields': '* Required fields',
@@ -66,7 +70,7 @@ export default {
   'global.menu.collapse': 'Collapse menu',
   'global.menu.expand': 'Fix menu',
 
-  'objectlist.abbreviation': 'Abb.',
+  'objectlist.designator': 'Designator',
   'objectlist.description': 'Description',
   'objectlist.title': 'Object name',
   'objectlist.updatedat': 'Last change',
@@ -91,13 +95,14 @@ export default {
 
   'search.label': 'Search verinice.',
 
+  'domain.index.title': 'Modul Dashboard',
+
   'unit.create': 'Create new unit',
   'unit.create.short': 'Create unit',
   'unit.created': 'Unit was created',
   'unit.details.children': 'Child units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'A unit description is required!',
-  'unit.details.forms': 'Forms',
   'unit.details.name': 'Unit name',
   'unit.details.name.required': 'A unit name is required!',
   'unit.details.nochild': 'No child units',
@@ -108,10 +113,12 @@ export default {
   'unit.objects.tooltip.clone': 'Clone object',
   'unit.objects.tooltip.delete': 'Delete object',
   'unit.objects.tooltip.edit': 'Edit object',
-  'unit.index.title': 'Dashboard',
+  'unit.index.title': 'Unit Dashboard',
   'unit.select.label': 'Unit',
 
   'breadcrumbs.all': 'All',
+  'breadcrumbs.catalogs': 'Catalogs',
+  'breadcrumbs.domain': 'Module',
   'breadcrumbs.reports': 'Reports',
   'breadcrumbs.settings': 'Settings',
   'breadcrumbs.help': 'Manual',
@@ -120,6 +127,7 @@ export default {
   'breadcrumbs.forms': 'Forms',
   'breadcrumbs.index': 'Unit selection',
   'breadcrumbs.list_view': 'List view',
+  'breadcrumbs.more_modules': 'More modules',
   'breadcrumbs.objects': 'Objects',
   'breadcrumbs.objectschema': 'Object schema',
   'breadcrumbs.scopes': 'Scopes',
@@ -128,14 +136,14 @@ export default {
   'breadcrumbs.create': 'Create',
 
   // temporary until the composition api supports <i18n></i18n>
-  "headline_aspect": "Delete aspect",
-  "headline_link": "Delete link",
-  "saveSchemaError": "Couldn't update schema",
-  "saveSchemaSuccess": "Schema updated!",
-  "attributeTypes": {
-    "date": "Date",
-    "dateTime": "Date and Time",
-    "text": "Text",
-    "uri": "URI"
+  headline_aspect: 'Delete aspect',
+  headline_link: 'Delete link',
+  saveSchemaError: "Couldn't update schema",
+  saveSchemaSuccess: 'Schema updated!',
+  attributeTypes: {
+    date: 'Date',
+    dateTime: 'Date and Time',
+    text: 'Text',
+    uri: 'URI'
   }
-}
+};

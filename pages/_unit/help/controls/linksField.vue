@@ -4,10 +4,11 @@
       <v-col cols="12">
         <PageHeader>Links Field</PageHeader>
       </v-col>
-      <v-col cols="12">
-        <v-switch v-model="isVertical" label="Vertical" hide-details color="primary" />
-      </v-col>
-      <v-col cols="auto" class="docs-form-sector">
+      <v-col cols="12" />
+      <v-col
+        cols="auto"
+        class="docs-form-sector"
+      >
         <VeoForm
           v-model="dynamicForm.data"
           :schema="dynamicForm.objectSchema"
@@ -26,16 +27,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { v4 as uuidv4 } from 'uuid'
+import Vue from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 
-import {
-  BaseObject,
-  IApi,
-  ILinksFieldDialogNewObject,
-  ILinksFieldDialogUpdatedObject,
-  ISearchParams
-} from '~/components/forms/utils'
+import { BaseObject, IApi, ILinksFieldDialogNewObject, ILinksFieldDialogUpdatedObject } from '~/components/forms/utils';
+import { IBaseObject } from '~/lib/utils';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
   data() {
@@ -270,158 +267,9 @@ export default Vue.extend({
                           },
                           type: {
                             enum: ['Person']
-                          }
-                        }
-                      },
-                      attributes: {
-                        type: 'object',
-                        properties: {
-                          testAttribute: {
-                            type: 'string'
-                          }
-                        }
-                      }
-                    },
-                    additionalProperties: false,
-                    required: ['type', 'target']
-                  }
-                }
-              }
-            }
-          }
-        },
-        formSchema: {
-          type: 'Layout',
-          options: {
-            direction: 'vertical',
-            format: 'group'
-          },
-          elements: [
-            {
-              type: 'Control',
-              scope: '#/properties/links/properties/process_ResponsibleDepartment',
-              options: {
-                label: 'Verantwortlicher Fachbereich'
-              },
-              elements: [
-                {
-                  type: 'Control',
-                  scope: '#/properties/attributes/properties/testAttribute',
-                  options: {
-                    label: 'Test Attribute'
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        lang: {
-          de: {
-            name: 'Name',
-            abbreviation: 'Abkürzung',
-            description: 'Beschreibung'
-          },
-          en: {
-            name: 'Name',
-            abbreviation: 'Abbreviation',
-            description: 'Description'
-          }
-        },
-        data: {
-          links: {
-            process_ResponsibleDepartment: [{}]
-          }
-        }
-      },
-      formVertical: {
-        objectSchema: {
-          type: 'object',
-          properties: {
-            links: {
-              type: 'object',
-              properties: {
-                process_ResponsibleDepartment: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'string',
-                        title: 'The UUID to identify the element',
-                        format: 'regex',
-                        pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-                      },
-                      applicableTo: {
-                        type: 'array',
-                        items: {
-                          type: 'string'
-                        }
-                      },
-                      type: {
-                        description: 'The name of the type described by this schema.',
-                        enum: ['process_ResponsibleDepartment']
-                      },
-                      domains: {
-                        type: 'array',
-                        title: 'The list of domains in which this element is present.',
-                        description: 'The ids of elements of the type domain.',
-                        items: {
-                          type: 'object',
-                          properties: {
-                            displayName: {
-                              type: 'string',
-                              description: 'A friendly human readable title of the referenced domain.'
-                            },
-                            targetUri: {
-                              type: 'string',
-                              description: 'The resource URL of the referenced domain.'
-                            }
                           },
-                          required: ['targetUri']
-                        },
-                        uniqueItems: true
-                      },
-                      references: {
-                        type: 'array',
-                        items: {
-                          properties: {
-                            displayName: {
-                              type: 'string',
-                              description: 'A friendly human readable title of the referenced object.'
-                            },
-                            targetUri: {
-                              type: 'string',
-                              description: 'The resource URL of the referenced object.'
-                            }
-                          },
-                          required: ['targetUri']
-                        }
-                      },
-                      abbreviation: {
-                        type: 'string',
-                        title: 'Abbreviation',
-                        description: 'The abbreviation for this custom link.'
-                      },
-                      description: {
-                        type: 'string',
-                        title: 'Description',
-                        description: 'The name for this custom link.'
-                      },
-                      name: {
-                        type: 'string',
-                        title: 'Name',
-                        description: 'The name for this custom link.'
-                      },
-                      target: {
-                        type: 'object',
-                        title: 'id of the Person',
-                        properties: {
-                          targetUri: {
-                            type: 'string',
-                            title: 'The id of the target object.'
-                          },
-                          type: {
-                            enum: ['Person']
+                          subType: {
+                            enum: ['VT']
                           }
                         }
                       },
@@ -446,7 +294,6 @@ export default Vue.extend({
           type: 'Control',
           scope: '#/properties/links/properties/process_ResponsibleDepartment',
           options: {
-            direction: 'vertical',
             label: 'Verantwortlicher Fachbereich'
           },
           elements: [
@@ -476,16 +323,12 @@ export default Vue.extend({
             process_ResponsibleDepartment: [{}]
           }
         }
-      },
-      isVertical: false
-    }
+      }
+    };
   },
   computed: {
     dynamicForm(): any {
-      if (this.isVertical) {
-        return this.formVertical
-      }
-      return this.form
+      return this.form;
     },
     api(): IApi {
       return {
@@ -493,32 +336,33 @@ export default Vue.extend({
         create: this.create,
         update: this.update,
         delete: this.delete
-      }
+      };
     }
   },
   methods: {
     delay(ms: number): Promise<void> {
-      return new Promise(resolve => setTimeout(resolve, ms))
+      return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    async fetchAll(objectType: string, searchParams?: ISearchParams): Promise<BaseObject[]> {
-      await this.delay(2000)
+    // _ is objectType but here is not used
+    async fetchAll(_: string, searchParams?: IBaseObject): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
+      await this.delay(2000);
       return new Promise((resolve, reject) => {
-        const res = searchParams
+        const res = searchParams?.displayName
           ? this.items.filter((el: any) =>
               // TODO:change name with displayName after it is implemented
               // el.displayName.toLowerCase().includes(searchParams.displayName.toLowerCase()),
               el.name.toLowerCase().includes(searchParams.displayName.toLowerCase())
             )
-          : this.items
+          : this.items;
         if (res) {
-          resolve(res)
+          resolve({ items: res as any, totalItemCount: res.length, page: 0, pageCount: 1 });
         } else {
-          reject('Search parameters are not defined!')
+          reject(new Error('Search parameters are not defined!'));
         }
-      })
+      });
     },
-    async create(objectType: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject> {
-      await this.delay(2000)
+    async create(_: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject> {
+      await this.delay(2000);
       return new Promise((resolve, reject) => {
         if (createdObjectData.name) {
           const newItem = {
@@ -538,38 +382,38 @@ export default Vue.extend({
                 targetUri: '/units/88bb6ff8-e1be-46ac-87fb-998cff1eac23'
               }
             ]
-          }
-          this.items.push(newItem)
-          resolve(newItem)
+          };
+          this.items.push(newItem);
+          resolve(newItem);
         } else {
-          reject('Name is not defined!')
+          reject(new Error('Name is not defined!'));
         }
-      })
+      });
     },
-    async update(objectType: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void> {
-      await this.delay(2000)
+    async update(_: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void> {
+      await this.delay(2000);
       return new Promise((resolve, reject) => {
         if (updatedObjectData.name) {
-          const itemIndex = this.items.findIndex(item => item.id === updatedObjectData.id)
+          const itemIndex = this.items.findIndex((item) => item.id === updatedObjectData.id);
           // TODO:uncomment the line below after displayName is implemented
           // updatedObjectData.displayName = updatedObjectData.name
-          this.items[itemIndex] = updatedObjectData as any
-          resolve()
+          this.items[itemIndex] = updatedObjectData as any;
+          resolve();
         } else {
-          reject('Name is not defined!')
+          reject(new Error('Name is not defined!'));
         }
-      })
+      });
     },
-    async delete(objectType: string, id: string): Promise<void> {
-      await this.delay(2000)
-      return new Promise(resolve => {
-        const itemIndex = this.items.findIndex(item => item.id === id)
-        this.items.splice(itemIndex, 1)
-        resolve()
-      })
+    async delete(_: string, id: string): Promise<void> {
+      await this.delay(2000);
+      return new Promise((resolve) => {
+        const itemIndex = this.items.findIndex((item) => item.id === id);
+        this.items.splice(itemIndex, 1);
+        resolve();
+      });
     }
   }
-})
+});
 </script>
 
 <style lang="scss"></style>

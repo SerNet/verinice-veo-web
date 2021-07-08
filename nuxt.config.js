@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   /**
    *
    */
@@ -43,20 +43,12 @@ module.exports = {
   publicRuntimeConfig: {
     version: process.env.CI_COMMIT_REF_NAME || 'latest',
     build: process.env.CI_COMMIT_SHA || '0000000',
-    apiUrl:
-      process.env.VEO_API_USE_PROXY !== 'false' ? '/api' : process.env.VEO_API_URL || 'https://veo.develop.cpmsys.io/',
-    formsApiUrl:
-      process.env.VEO_API_USE_PROXY !== 'false'
-        ? '/formsapi'
-        : process.env.VEO_FORMS_API_URL || 'https://veo-forms.develop.cpmsys.io/',
-    historyApiUrl:
-      process.env.VEO_API_USE_PROXY !== 'false'
-        ? '/historyapi'
-        : process.env.VEO_HISTORY_API_URL || 'https://veo-history.develop.cpmsys.io/',
-    reportsApiUrl:
-      process.env.VEO_API_USE_PROXY !== 'false'
-        ? '/reportsapi'
-        : process.env.VEO_REPORTING_API_URL || 'https://veo-reporting.develop.cpmsys.io/',
+    commitTimestamp: process.env.CI_COMMIT_TIMESTAMP || Date.now(),
+    buildNumber: process.env.CI_JOB_ID || '-1',
+    apiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/api' : process.env.VEO_API_URL || 'https://veo.develop.cpmsys.io/',
+    formsApiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/formsapi' : process.env.VEO_FORMS_API_URL || 'https://veo-forms.develop.cpmsys.io/',
+    historyApiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/historyapi' : process.env.VEO_HISTORY_API_URL || 'https://veo-history.develop.cpmsys.io/',
+    reportsApiUrl: process.env.VEO_API_USE_PROXY !== 'false' ? '/reportsapi' : process.env.VEO_REPORTING_API_URL || 'https://veo-reporting.develop.cpmsys.io/',
     oidcUrl: process.env.VEO_OIDC_URL || 'https://veo-keycloak.staging.cpmsys.io/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
     oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client'
@@ -226,7 +218,7 @@ module.exports = {
              */
             onProxyReq(proxyReq, _req, _res) {
               // TODO: Remove when #VEO-80 is fixed
-              proxyReq.removeHeader('Origin')
+              proxyReq.removeHeader('Origin');
             }
           },
           '/formsapi': {
@@ -239,7 +231,7 @@ module.exports = {
              */
             onProxyReq(proxyReq, _req, _res) {
               // TODO: Remove when #VEO-80 is fixed
-              proxyReq.removeHeader('Origin')
+              proxyReq.removeHeader('Origin');
             }
           },
           '/historyapi': {
@@ -252,7 +244,7 @@ module.exports = {
              */
             onProxyReq(proxyReq, _req, _res) {
               // TODO: Remove when #VEO-80 is fixed
-              proxyReq.removeHeader('Origin')
+              proxyReq.removeHeader('Origin');
             }
           },
           '/reportsapi': {
@@ -265,9 +257,9 @@ module.exports = {
              */
             onProxyReq(proxyReq, _req, _res) {
               // TODO: Remove when #VEO-80 is fixed
-              proxyReq.removeHeader('Origin')
+              proxyReq.removeHeader('Origin');
             }
           }
         }
       : {}
-}
+};

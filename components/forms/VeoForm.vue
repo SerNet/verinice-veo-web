@@ -1,37 +1,28 @@
 <script lang="ts">
-import Vue, { VNode, PropOptions, CreateElement } from 'vue'
-import { JSONSchema7 } from 'json-schema'
-import { JsonPointer } from 'json-ptr'
+import Vue, { VNode, PropOptions, CreateElement } from 'vue';
+import { JSONSchema7 } from 'json-schema';
+import { JsonPointer } from 'json-ptr';
 
-import vjp from 'vue-json-pointer'
-import Ajv, { RequiredParams } from 'ajv'
-import { merge } from 'lodash'
-import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema'
-import {
-  BaseObject,
-  IApi,
-  ajv,
-  propertyPath,
-  generateFormSchema,
-  Mode,
-  evaluateRule,
-  IRule
-} from '~/components/forms/utils'
-import Label from '~/components/forms/Label.vue'
-import Control from '~/components/forms/Control.vue'
-import Layout from '~/components/forms/Layout.vue'
-import Wrapper from '~/components/forms/Wrapper.vue'
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes'
+import vjp from 'vue-json-pointer';
+import Ajv, { RequiredParams } from 'ajv';
+import { merge } from 'lodash';
+import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
+import { BaseObject, IApi, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
+import Label from '~/components/forms/Label.vue';
+import Control from '~/components/forms/Control.vue';
+import Layout from '~/components/forms/Layout.vue';
+import Wrapper from '~/components/forms/Wrapper.vue';
+import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 interface IErrorMessageElement {
-  pointer: string
-  message: string
+  pointer: string;
+  message: string;
 }
 
 interface IOptions {
   generator: {
-    excludedProperties?: string[]
-  }
+    excludedProperties?: string[];
+  };
 }
 
 export default Vue.extend({
@@ -104,25 +95,26 @@ export default Vue.extend({
             '/createdBy$',
             '/parts$',
             '/members$',
+            '/designator$',
             '/customAspects$',
             '/links$'
           ]
         }
       }
-    }
+    };
   },
   computed: {
     validate(): Ajv.ValidateFunction {
-      return ajv.compile(this.localSchema)
+      return ajv.compile(this.localSchema);
     },
     valid(): boolean | PromiseLike<any> {
-      return this.validate(this.value)
+      return this.validate(this.value);
     },
     errorsMsgMap(): BaseObject {
-      return !this.valid && this.validate.errors ? this.validate.errors.reduce(this.validationErrorTransform, {}) : {}
+      return !this.valid && this.validate.errors ? this.validate.errors.reduce(this.validationErrorTransform, {}) : {};
     },
     mergedOptions(): IOptions {
-      return merge(this.defaultOptions, this.options)
+      return merge(this.defaultOptions, this.options);
     }
   },
   watch: {
@@ -131,7 +123,7 @@ export default Vue.extend({
       handler() {
         // IMPORTANT! This is needed to update localSchema when schema is updated
         // Else it cannot detect updated object of schema and does not update veo-form
-        this.localSchema = JSON.parse(JSON.stringify(this.schema))
+        this.localSchema = JSON.parse(JSON.stringify(this.schema));
       }
     },
     ui: {
@@ -141,11 +133,9 @@ export default Vue.extend({
       deep: true,
       handler() {
         if (this.ui) {
-          this.localUI = this.translate<UISchema>(this.ui)
+          this.localUI = this.translate<UISchema>(this.ui);
         } else {
-          this.localUI = this.translate<UISchema>(
-            generateFormSchema(this.schema, this.mergedOptions.generator.excludedProperties, Mode.VEO)
-          )
+          this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.mergedOptions.generator.excludedProperties, Mode.VEO));
         }
       }
     },
@@ -153,9 +143,9 @@ export default Vue.extend({
       immediate: true,
       handler() {
         if (this.ui) {
-          this.localUI = this.translate<UISchema>(this.ui)
+          this.localUI = this.translate<UISchema>(this.ui);
         } else if (this.localUI) {
-          this.localUI = this.translate<UISchema>(this.localUI)
+          this.localUI = this.translate<UISchema>(this.localUI);
         }
       }
     },
@@ -163,16 +153,16 @@ export default Vue.extend({
       immediate: true,
       handler() {
         if (this.ui) {
-          this.localUI = this.translate<UISchema>(this.ui)
+          this.localUI = this.translate<UISchema>(this.ui);
         } else if (this.localUI) {
-          this.localUI = this.translate<UISchema>(this.localUI)
+          this.localUI = this.translate<UISchema>(this.localUI);
         }
       }
     },
     valid: {
       immediate: true,
       handler() {
-        this.$emit('update:isValid', this.valid)
+        this.$emit('update:isValid', this.valid);
       }
     },
     errorsMsgMap: {
@@ -184,52 +174,40 @@ export default Vue.extend({
             pointer,
             message
           }))
-        )
+        );
       }
     }
   },
   methods: {
     getLangText(langPointer: string): string {
-      const translationKey = langPointer.replace('#lang/', '')
-      return this.customTranslation?.[translationKey] || this.generalTranslation?.[translationKey] || translationKey
+      const translationKey = langPointer.replace('#lang/', '');
+      return this.customTranslation?.[translationKey] || this.generalTranslation?.[translationKey] || translationKey;
     },
     translate<T>(objectWithLangPointers: JSONSchema7 | UISchemaElement): T {
       return JSON.parse(
-        JSON.stringify(objectWithLangPointers).replace(
-          /"(#lang\/.*?)"/gi,
-          (langMatchWithQuotes: string, langMatchWithoutQuotes: string) => {
-            return JSON.stringify(this.getLangText(langMatchWithoutQuotes))
-          }
-        )
-      )
+        JSON.stringify(objectWithLangPointers).replace(/"(#lang\/.*?)"/gi, (_: string, langMatchWithoutQuotes: string) => {
+          return JSON.stringify(this.getLangText(langMatchWithoutQuotes));
+        })
+      );
     },
     setValue(scope: string, v: any) {
       // TODO: check the performance of these lines, which can cause slow input process
       if (scope) {
-        vjp.set(this.value, propertyPath(scope).replace('#/', '/'), v)
-        this.$emit('input', this.value)
+        vjp.set(this.value, propertyPath(scope).replace('#/', '/'), v);
+        this.$emit('input', this.value);
       }
     },
     validationErrorTransform(accummulator: {}, error: Ajv.ErrorObject) {
-      const keyMatch = error.schemaPath.match(/((.+\/properties\/\w+\b)|(.+(?=\/required)))/g)
+      const keyMatch = error.schemaPath.match(/((.+\/properties\/\w+\b)|(.+(?=\/required)))/g);
       if (!keyMatch) {
-        throw new Error('Key does not match in Errors array')
+        throw new Error('Key does not match in Errors array');
       }
 
-      const key =
-        error.keyword !== 'required'
-          ? keyMatch[0]
-          : `${keyMatch[0]}/properties/${(error.params as RequiredParams).missingProperty}`
+      const key = error.keyword !== 'required' ? keyMatch[0] : `${keyMatch[0]}/properties/${(error.params as RequiredParams).missingProperty}`;
 
-      return { ...accummulator, [key]: error.message }
+      return { ...accummulator, [key]: error.message };
     },
-    createLayout(
-      element: ILayout,
-      formSchemaPointer: string,
-      elementLevel: number,
-      h: CreateElement,
-      rule: IRule
-    ): VNode {
+    createLayout(element: ILayout, formSchemaPointer: string, elementLevel: number, h: CreateElement, rule: IRule): VNode {
       return h(
         Layout,
         {
@@ -240,7 +218,7 @@ export default Vue.extend({
           }
         },
         this.createChildren(element, formSchemaPointer, elementLevel, h, this.createComponent)
-      )
+      );
     },
     createControl(element: IControl, h: CreateElement, rule: IRule): VNode {
       let partOfProps: { [key: string]: any } = {
@@ -251,19 +229,16 @@ export default Vue.extend({
         generalTranslation: undefined,
         customTranslation: undefined,
         api: {}
-      }
+      };
 
       if (element.scope) {
-        const elementName = element.scope.split('/').pop() as string
-        const elementSchema: any = JsonPointer.get(this.localSchema, element.scope)
-        const elementValue: any = JsonPointer.get(this.value, propertyPath(element.scope))
-        const elementParentSchema: any = JsonPointer.get(this.localSchema, '#')
-        const isRequired =
-          Array.isArray(elementParentSchema.required) && elementParentSchema.required.includes(elementName)
+        const elementName = element.scope.split('/').pop() as string;
+        const elementSchema: any = JsonPointer.get(this.localSchema, element.scope);
+        const elementValue: any = JsonPointer.get(this.value, propertyPath(element.scope));
 
         partOfProps = {
           name: elementName,
-          schema: elementSchema,
+          schema: elementSchema ?? {},
           generalTranslation: this.generalTranslation,
           customTranslation: this.customTranslation,
           // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug
@@ -274,7 +249,7 @@ export default Vue.extend({
             }
           },
           api: this.api
-        }
+        };
       }
       return h(Control, {
         props: {
@@ -288,7 +263,7 @@ export default Vue.extend({
           input: (v: any) => element.scope && this.setValue(element.scope, v),
           change: (v: any) => element.scope && this.setValue(element.scope, v)
         }
-      })
+      });
     },
     createLabel(element: ILabel, h: CreateElement, rule: IRule): VNode {
       return h(Label, {
@@ -297,46 +272,31 @@ export default Vue.extend({
           options: element.options,
           text: element.text
         }
-      })
+      });
     },
     createChildren(
       element: UISchemaElement,
       formSchemaPointer: string,
       elementLevel: number,
       h: CreateElement,
-      createComponent: (
-        element: UISchemaElement,
-        formSchemaPointer: string,
-        elementLevel: number,
-        h: CreateElement
-      ) => VNode
+      createComponent: (element: UISchemaElement, formSchemaPointer: string, elementLevel: number, h: CreateElement) => VNode
     ) {
-      return (
-        element.elements &&
-        element.elements.map((elem, index) =>
-          createComponent(elem, `${formSchemaPointer}/elements/${index}`, elementLevel + 1, h)
-        )
-      )
+      return element.elements && element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`, elementLevel + 1, h));
     },
-    createComponent(
-      element: UISchemaElement,
-      formSchemaPointer: string,
-      elementLevel: number,
-      h: CreateElement
-    ): VNode {
-      const rule = evaluateRule(this.value, element.rule)
+    createComponent(element: UISchemaElement, formSchemaPointer: string, elementLevel: number, h: CreateElement): VNode {
+      const rule = evaluateRule(this.value, element.rule);
       switch (element.type) {
         case 'Layout':
-          return this.createLayout(element, formSchemaPointer, elementLevel, h, rule)
+          return this.createLayout(element, formSchemaPointer, elementLevel, h, rule);
         case 'Control':
-          return this.createControl(element, h, rule)
+          return this.createControl(element, h, rule);
         case 'Label':
-          return this.createLabel(element, h, rule)
+          return this.createLabel(element, h, rule);
       }
     }
   },
   render(h): VNode {
-    return h(Wrapper, [this.createComponent(this.localUI, '#', 0, h)])
+    return h(Wrapper, [this.createComponent(this.localUI, '#', 0, h)]);
   }
-})
+});
 </script>

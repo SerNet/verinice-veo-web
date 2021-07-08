@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from 'vue';
 
 export default Vue.extend({
   name: 'CollapseButton',
@@ -25,7 +25,7 @@ export default Vue.extend({
       default: false
     }
   }
-})
+});
 </script>
 
 <style lang="scss" scoped>

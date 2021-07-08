@@ -75,6 +75,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "process_SensitiveData_SensitiveData": {
@@ -155,6 +156,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "process_GeneralInformation_tags": {
@@ -228,6 +230,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "process_AccessAuthorization_authorizationConcept": {
@@ -305,6 +308,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "process_InternalRecipient_InternalRecipient": {
@@ -373,6 +377,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "process_ProcessingDetails_intendedPurpose": {
@@ -466,6 +471,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "process_InformationObligations_informationObligations": {
@@ -547,6 +553,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "process_ExternalRecipient_ExternalRecipient": {
@@ -615,6 +622,7 @@
               }
             },
             "attributes": {
+              "additionalProperties": false,
               "type": "object",
               "properties": {
                 "process_JointControllership_jointResponsiblePersons": {
@@ -756,6 +764,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -854,6 +863,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -937,6 +947,7 @@
                 "description": "The name for this custom link."
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {
                   "process_AffectedParties_supplementaryInformation": {
@@ -985,6 +996,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {
                   "process_LegalBasis_explanation": {
@@ -1163,6 +1175,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -1191,6 +1204,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {
                   "process_InternalRecipient_purpose": {
@@ -1358,6 +1372,7 @@
                 "description": "The name for this custom link."
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {
                   "process_DataCategories_dataOrigin": {
@@ -1488,6 +1503,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -1516,6 +1532,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {
                   "process_ExternalRecipient_purpose": {
@@ -1715,6 +1732,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -1813,6 +1831,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
@@ -1911,6 +1930,7 @@
                 }
               },
               "attributes": {
+                "additionalProperties": false,
                 "type": "object",
                 "properties": {}
               }
