@@ -26,12 +26,12 @@
         />
       </v-col>
       <v-col
-        v-if="!noCloseButton"
         cols="auto"
-        class="ml-6 align-self-center"
+        class="align-self-center"
       >
         <slot name="additional-button" />
         <v-btn
+          v-if="!noCloseButton"
           outlined
           text
           :color="alertColor"

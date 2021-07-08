@@ -5,7 +5,7 @@
     120
   ],
   "vetur.experimental.templateInterpolationService": true,
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "eslint.validate": [
     "vue",
     "javascript",

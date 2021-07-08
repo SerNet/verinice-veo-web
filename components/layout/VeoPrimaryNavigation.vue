@@ -14,20 +14,19 @@
       <div class="d-flex flex-column fill-height">
         <!-- Current domain -->
         <div v-if="$route.params.unit">
-          <span
-            class="mx-3"
-          >{{ $t('breadcrumbs.domain') }}</span>
           <v-select
             :value="domainId"
             :items="domains"
             item-text="name"
             item-value="id"
-            solo
-            flat
             hide-details
+            outlined
+            filled
+            primary
+            class="ma-3"
             style="font-size: 1.2rem;"
             :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
-            :menu-props="{closeOnContentClick: true, 'max-width': '256px', 'content-class': 'veo-primary-navigation__domain-selection-menu'}"
+            :menu-props="{ closeOnContentClick: true, 'max-width': '256px' }"
             @change="onDomainChange"
           >
             <template #append-item>
@@ -61,6 +60,18 @@
               @update-mini-variant="setMiniVariant($event)"
             />
           </template>
+          <v-list-item
+            class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
+            @click="displayDeploymentDetails = true"
+          >
+            <v-list-item-icon>
+              <v-icon>
+                mdi-information-outline
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('about') }}</v-list-item-title>
+            <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
+          </v-list-item>
         </v-list>
       </div>
     </template>
@@ -134,7 +145,8 @@ export default Vue.extend({
     return {
       miniVariant: LocalStorage.primaryNavMiniVariant,
       domains: [] as IVeoDomain[],
-      items: [] as INavItem[]
+      items: [] as INavItem[],
+      displayDeploymentDetails: false as boolean
     };
   },
   computed: {
@@ -273,8 +285,9 @@ export default Vue.extend({
         ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
         ...(!routeUnitParam ? [unitSelection] : []),
         spacer,
-        ...(routeUnitParam ? [settings, help] : []),
-        editors
+        ...(routeUnitParam ? [settings] : []),
+        editors,
+        ...(routeUnitParam ? [help] : [])
       ];
 
       this.addChildren(this.$t('breadcrumbs.objects').toString(), await this.fetchObjectTypes());
@@ -378,12 +391,14 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "about": "About",
     "collapse": "Collapse menu",
     "fix": "Fix menu",
     "noChildItems": "No sub items",
     "noDomainSelected": "No module selected"
   },
   "de": {
+    "about": "Über",
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
     "noChildItems": "Keine Einträge vorhanden",
@@ -404,6 +419,10 @@ export default Vue.extend({
   }
 }
 
+.veo-primary-navigation__menu-item {
+  flex-basis: auto;
+}
+
 .veo-active-link-item {
   color: $primary !important;
 }
@@ -414,11 +433,5 @@ export default Vue.extend({
   .v-list-item__title {
     color: rgba(0, 0, 0, 0.87) !important;
   }
-}
-</style>
-
-<style lang="scss">
-.veo-primary-navigation__domain-selection-menu {
-  left: 0 !important;
 }
 </style>

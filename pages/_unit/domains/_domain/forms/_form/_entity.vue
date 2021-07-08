@@ -92,6 +92,16 @@
             >
               {{ $t('restore') }}
             </v-btn>
+            <v-btn
+              v-if="!isRevision"
+              color="primary"
+              outlined
+              :disabled="$fetchState.pending"
+              :loading="saveBtnLoading"
+              @click="onClick($event, true)"
+            >
+              {{ $t('global.button.save_quit') }}
+            </v-btn>
           </v-col>
         </v-row>
         <VeoAlert
@@ -130,6 +140,11 @@
           <h3 class="text-left">
             {{ $t('incompatibleFormSchema', { objectType }) }}
           </h3>
+          <VeoValidationResultList
+            :result="formschemaValidation"
+            show-warnings
+            class="mt-4"
+          />
         </div>
         <VeoEntityModifiedDialog
           v-model="formModified.dialog"
@@ -188,8 +203,7 @@
           <v-tab-item>
             <VeoObjectHistory
               :object="form.objectData"
-              :schema="form.objectSchema"
-              :loading="$fetchState.pending"
+              :loading="$fetchState.pending || saveBtnLoading"
               @show-revision="showRevision"
             />
           </v-tab-item>
@@ -203,7 +217,7 @@
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import { Route } from 'vue-router/types/index';
-import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
@@ -360,11 +374,14 @@ export default Vue.extend({
     objectRoute(): string {
       return this.$route.params.entity;
     },
+    formschemaValidation(): VeoSchemaValidatorValidationResult {
+      return validate(this.form.formSchema as IVeoFormSchema, this.form.objectSchema as IVeoObjectSchema);
+    },
     canShowData(): boolean {
       const dummy = cloneDeep(this.form.objectData);
       delete dummy.displayName;
       // Object data has to fit object schema AND form schema has to fit object schema
-      return this.validateRevisionSchema(dummy, false) && validate(this.form.formSchema as IVeoFormSchema, this.form.objectSchema as IVeoObjectSchema).valid;
+      return this.validateRevisionSchema(dummy, false) && this.formschemaValidation.valid;
     },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
@@ -484,7 +501,8 @@ export default Vue.extend({
       }
     },
     showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean) {
-      const content = revision.content;
+      // Clone deep to avoid modiying the history and altering persisted state (won't change anything in the backend, but we want clean state)
+      const content = cloneDeep(revision.content);
 
       // show modified dialog before switching versions if needed
       if (this.formModified.isModified) {

@@ -28,9 +28,9 @@ export default class FormSchemaValidator {
    *
    * @returns VeoSchemaValidatorValidationResult Contains all errors and warnings generated while checking the schema.
    */
-  public validate(schema: any, objectSchema: IVeoObjectSchema | undefined = undefined, context: string = 'schema'): VeoSchemaValidatorValidationResult {
+  public validate(schema: any, objectSchema: IVeoObjectSchema | undefined = undefined): VeoSchemaValidatorValidationResult {
     if (objectSchema) {
-      this.propertiesExistInObjectSchema(schema, objectSchema, context);
+      this.propertiesExistInObjectSchema(schema, objectSchema);
     } else {
       this.warnings.push({ code: 'W_OBJECTSCHEMA_MISSING', message: 'No object schema provided. Provide one for more in depth validation.' });
     }
@@ -38,25 +38,42 @@ export default class FormSchemaValidator {
     return { valid: this.errors.length === 0, errors: this.errors, warnings: this.warnings };
   }
 
-  private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoObjectSchema, context: string) {
+  private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoObjectSchema) {
     if (formSchema.content) {
-      this.elementExists(formSchema.content, objectSchema, `${context}.content`);
+      this.elementExists(formSchema.content, objectSchema, `#/`, undefined);
     } else {
       this.warnings.push({ code: 'W_CONTENT_MISSING', message: 'This formschema has no controls and thus no use.' });
     }
   }
 
-  private elementExists(element: any, objectSchema: IVeoObjectSchema, context: string) {
+  private elementExists(element: any, objectSchema: IVeoObjectSchema, context: string, parent: any) {
     if (!element.scope && element.type === 'Control') {
       this.errors.push({ code: 'E_SCOPE_MISSING', message: `The element ${context} is missing its scope.` });
     } else if (element.scope) {
-      const schema = JsonPointer.get(objectSchema, element.scope) as any;
+      let scope = element.scope;
+      let schema = JsonPointer.get(objectSchema, scope) as any;
+
+      /* Link attributes don't have an absolute pointer, but one relative to their parent (to avoid 
+       them getting used outside the link), so we have to add the pointer of the parent in front.
+      */
+      if (!schema && parent?.scope) {
+        scope = `${parent.scope}/items${element.scope.slice(1)}`;
+        schema = JsonPointer.get(objectSchema, scope) as any;
+      }
+
       if (!schema) {
-        this.errors.push({ code: 'E_PROPERTY_MISSING', message: `The element ${element.scope} doesn't exist in the object schema.` });
-      } else if (element.elements) {
-        for (const child in element.elements) {
-          this.elementExists(element.elements[child], schema, `${context}.elements.[${child}]`);
-        }
+        this.errors.push({
+          code: 'E_PROPERTY_MISSING',
+          message: `The element ${scope} doesn't exist in the object schema.`,
+          fixable: true,
+          params: { formSchemaPointer: context.substr(0, context.length - 1) } // We have to remove the trailing slash in order for JsonPointer to pick the currect path
+        });
+      }
+    }
+
+    if (element.elements) {
+      for (const child in element.elements) {
+        this.elementExists(element.elements[child], objectSchema, `${context}elements/${child}/`, element);
       }
     }
   }

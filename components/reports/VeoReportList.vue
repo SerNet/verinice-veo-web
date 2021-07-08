@@ -85,7 +85,7 @@ export default Vue.extend({
       return Object.entries(this.items).map(([id, item]) => {
         const _item = item as IVeoReportMeta;
         const name = _item.name[this.$i18n.locale] || _item.name[0];
-        const description = _item.description[this.$i18n.locale] || _item.description[0];
+        let description = _item.description[this.$i18n.locale] || _item.description[0];
         const targetTypes = _item.targetTypes.map((type) => upperFirst(type)).join(', ');
         const outputTypes = _item.outputTypes
           .map((type) => {
@@ -98,6 +98,10 @@ export default Vue.extend({
         // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
         if (description.length > 80) {
           descriptionShort = description.substring(0, 80) + '...';
+
+          if (description.length > 1000) {
+            description = description.substring(0, 1000) + '...';
+          }
         }
         return {
           id,

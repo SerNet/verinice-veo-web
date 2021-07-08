@@ -29,7 +29,7 @@ export function generateSchema(name: IVeoFormSchemaMeta['name'], modelType: stri
 
 export function validate(schema: IVeoFormSchema, objectSchema: undefined | IVeoObjectSchema): VeoSchemaValidatorValidationResult {
   const validator = new FormSchemaValidator();
-  return validator.validate(schema, objectSchema, schema.modelType);
+  return validator.validate(schema, objectSchema);
 }
 
 /**
