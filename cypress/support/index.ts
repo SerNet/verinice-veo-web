@@ -169,9 +169,9 @@ Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, opt
 
 Cypress.Commands.add('goTo', (path) => {
   cy.window().then(function (win: any) {
-    win.$nuxt?.$router?.push(path)?.then(() => {});
+    win.$nuxt?.$router?.push(path);
+    cy.location('href').should('include', path);
   });
-  cy.location('href').should('include', path);
 });
 
 Cypress.Commands.add('defineOSEIntercepts', () => {

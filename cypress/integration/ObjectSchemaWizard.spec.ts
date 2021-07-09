@@ -5,11 +5,13 @@ import { getEditorData } from '../support/utils';
 describe('Objectschema Wizard', () => {
   before(() => {
     cy.auth();
+    cy.defineOSEIntercepts();
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('/editor');
+    cy.wait(['@schemas', '@forms', '@reports', '@domains']);
   });
 
   beforeEach(() => {

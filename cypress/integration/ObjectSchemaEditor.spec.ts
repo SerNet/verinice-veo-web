@@ -106,6 +106,8 @@ function goTo(to: ITo) {
   cy.goTo('/editor');
   cy.goTo(to.browserUrl);
 
+  cy.wait(['@loadedSchema']);
+
   /**
    * Define aliases
    */
@@ -139,6 +141,7 @@ describe('Objectschema Editor', () => {
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('/editor');
+    cy.wait(['@schemas', '@forms', '@reports', '@domains']);
   });
   beforeEach(() => {
     cy.defineOSEIntercepts();
