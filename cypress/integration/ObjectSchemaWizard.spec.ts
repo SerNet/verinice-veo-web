@@ -13,66 +13,9 @@ describe('Objectschema Wizard', () => {
   });
 
   beforeEach(() => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas$/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/schemas.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/translations.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/translations.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'forms/fetchAllForms.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'reports/fetchAllReports.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'default/fetchAllDomains.json'
-        });
-      }
-    );
-
-    cy.window().then(function (win: any) {
-      win.$nuxt?.$router?.push('/editor');
-    });
-    cy.contains('.v-list-item--link', 'Objektschema Editor').should('have.attr', 'href', '/editor/objectschema').click();
+    cy.defineOSEIntercepts();
+    cy.goTo('/editor');
+    cy.goTo('/editor/objectschema');
   });
 
   it('ckecks navigation between wizard start, back button, and objectschema create and import', function () {

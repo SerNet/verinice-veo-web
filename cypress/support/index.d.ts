@@ -38,5 +38,17 @@ declare namespace Cypress {
         name: string;
       }>
     ): Cypress.Chainable<null>;
+
+    /**
+     * Custom command to navigate through app by URL
+     * @example cy.goTo('/editor/objectschema')
+     */
+    goTo(path: string): Promise<void>;
+
+    /**
+     * Custom command to define OSE used intercepts
+     * @example cy.defineOSEIntercepts()
+     */
+    defineOSEIntercepts(): void;
   }
 }

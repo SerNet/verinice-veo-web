@@ -166,3 +166,72 @@ Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, opt
     )
   ).toMatchSnapshot(options);
 });
+
+Cypress.Commands.add('goTo', (path) => {
+  cy.window().then(function (win: any) {
+    win.$nuxt?.$router?.push(path)?.then(() => {});
+  });
+  cy.location('href').should('include', path);
+});
+
+Cypress.Commands.add('defineOSEIntercepts', () => {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/schemas$/
+    },
+    (req) => {
+      req.reply({
+        fixture: 'objectschema/schemas.json'
+      });
+    }
+  ).as('schemas');
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/translations(.*)$/
+    },
+    (req) => {
+      req.reply({
+        fixture: 'translations/translation.json'
+      });
+    }
+  ).as('translations');
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /https:\/\/veo-forms\.develop\.\w+\.\w+\//
+    },
+    (req) => {
+      req.reply({
+        fixture: 'forms/fetchAllForms.json'
+      });
+    }
+  ).as('forms');
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
+    },
+    (req) => {
+      req.reply({
+        fixture: 'reports/fetchAllReports.json'
+      });
+    }
+  ).as('reports');
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
+    },
+    (req) => {
+      req.reply({
+        fixture: 'default/fetchAllDomains.json'
+      });
+    }
+  ).as('domains');
+});
