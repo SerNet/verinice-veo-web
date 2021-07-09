@@ -169,9 +169,13 @@ Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, opt
 
 Cypress.Commands.add('goTo', (path) => {
   cy.window().then(function (win: any) {
-    return win.$nuxt?.$router?.push(path);
+    cy.location().then((location) => {
+      if (`${location.origin}${path}` !== location.href) {
+        win.$nuxt.$router.push(path);
+        cy.location('href', { timeout: 10000 }).should('eq', `${location.origin}${path}`);
+      }
+    });
   });
-  cy.location('href').should('include', path);
 });
 
 Cypress.Commands.add('defineOSEIntercepts', () => {
