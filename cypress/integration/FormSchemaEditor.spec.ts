@@ -34,8 +34,6 @@ const translationsChanged = {
   'group_860ed628-c439-440c-a429-fb4a132f85af': 'Gruppe 2 Test geändert'
 };
 
-const translationsDeleted = {};
-
 interface ITo {
   requestUrlPattern: RegExp | string;
   fixturePath: string;
@@ -749,7 +747,7 @@ describe('Formschema Editor', () => {
 
         // TODO: this is a hack to load OS in Code Editor. It needs a better solution
         const el = editor.closest('.d-flex.flex-column') as any;
-        el[0].__vue__.$emit('input', JSON.stringify(translationsDeleted, null, 2));
+        el[0].__vue__.$emit('input', JSON.stringify({}, null, 2));
       });
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
