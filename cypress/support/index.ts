@@ -104,54 +104,6 @@ Cypress.Commands.add('drop', { prevSubject: true }, (subject) => {
   });
 });
 
-Cypress.Commands.add('loadFse', (formSchemaPath) => {
-  cy.intercept(
-    {
-      method: 'GET',
-      url: /.*\/translations.*/
-    },
-    (req) => {
-      req.reply({
-        fixture: 'objectschema/translations.json'
-      });
-    }
-  );
-  cy.intercept(
-    {
-      method: 'GET',
-      url: /.*\/schemas$/
-    },
-    (req) => {
-      req.reply({
-        fixture: 'objectschema/schemas.json'
-      });
-    }
-  );
-
-  cy.window().then(function (win: any) {
-    win.$nuxt?.$router?.push('/editor');
-  });
-
-  cy.contains('.v-list-item--link', 'Formschema Editor').should('have.attr', 'href', '/editor/formschema').click();
-
-  cy.intercept(
-    {
-      method: 'GET',
-      url: /.*\/schemas\/process.*/
-    },
-    (req) => {
-      req.reply({
-        fixture: 'objectschema/process.json'
-      });
-    }
-  );
-  cy.get('.v-dialog--active').within(() => {
-    cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
-    cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile(formSchemaPath);
-  });
-  cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
-});
-
 const textGroupRegExp = /(text|group)_[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi;
 
 Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, options) => {
@@ -178,7 +130,7 @@ Cypress.Commands.add('goTo', (path) => {
   });
 });
 
-Cypress.Commands.add('defineOSEIntercepts', () => {
+Cypress.Commands.add('defineEditorIntercepts', () => {
   cy.intercept(
     {
       method: 'GET',
@@ -198,7 +150,7 @@ Cypress.Commands.add('defineOSEIntercepts', () => {
     },
     (req) => {
       req.reply({
-        fixture: 'translations/translation.json'
+        fixture: 'translations/translations.json'
       });
     }
   ).as('translations');
@@ -206,7 +158,7 @@ Cypress.Commands.add('defineOSEIntercepts', () => {
   cy.intercept(
     {
       method: 'GET',
-      url: /https:\/\/veo-forms\.develop\.\w+\.\w+\//
+      url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
     },
     (req) => {
       req.reply({
@@ -218,7 +170,7 @@ Cypress.Commands.add('defineOSEIntercepts', () => {
   cy.intercept(
     {
       method: 'GET',
-      url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
+      url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports\/*/
     },
     (req) => {
       req.reply({

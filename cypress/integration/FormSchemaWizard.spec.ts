@@ -5,73 +5,19 @@ import { getEditorData } from '../support/utils';
 describe('Formschema Wizard', () => {
   before(() => {
     cy.auth();
+    cy.defineEditorIntercepts();
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('/editor');
+    cy.wait(['@schemas', '@forms', '@reports', '@domains']);
   });
 
   beforeEach(() => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/translations.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/translations.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'forms/fetchAllForms.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'reports/fetchAllReports.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'default/fetchAllDomains.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas$/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/schemas.json'
-        });
-      }
-    );
-    cy.window().then(function (win: any) {
-      win.$nuxt?.$router?.push('/editor');
-    });
-    cy.contains('.v-list-item--link', 'Formschema Editor').should('have.attr', 'href', '/editor/formschema').click();
+    cy.defineEditorIntercepts();
+    cy.goTo('/editor');
+    cy.goTo('/editor/formschema');
   });
 
   it('ckecks navigation between wizard start, back button, and formschema create and import', function () {

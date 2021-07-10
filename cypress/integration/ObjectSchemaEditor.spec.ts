@@ -120,7 +120,7 @@ describe('Objectschema Editor', () => {
   before(() => {
     cy.auth();
 
-    cy.defineOSEIntercepts();
+    cy.defineEditorIntercepts();
 
     cy.fixture('objectschema/os_testschema.json').then((_testSchema) => {
       schemaRealValues = [
@@ -144,7 +144,7 @@ describe('Objectschema Editor', () => {
     cy.wait(['@schemas', '@forms', '@reports', '@domains']);
   });
   beforeEach(() => {
-    cy.defineOSEIntercepts();
+    cy.defineEditorIntercepts();
   });
 
   it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function () {

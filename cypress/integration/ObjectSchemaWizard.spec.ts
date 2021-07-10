@@ -5,7 +5,7 @@ import { getEditorData } from '../support/utils';
 describe('Objectschema Wizard', () => {
   before(() => {
     cy.auth();
-    cy.defineOSEIntercepts();
+    cy.defineEditorIntercepts();
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
@@ -15,7 +15,7 @@ describe('Objectschema Wizard', () => {
   });
 
   beforeEach(() => {
-    cy.defineOSEIntercepts();
+    cy.defineEditorIntercepts();
     cy.goTo('/editor');
     cy.goTo('/editor/objectschema');
   });
