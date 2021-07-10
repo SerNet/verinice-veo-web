@@ -1,6 +1,6 @@
 /// <reference path="../support/index.d.ts" />
 
-import { getEditorData } from '../support/utils';
+import { generateTos, getEditorData, ITo } from '../support/utils';
 
 const textOrGroupLangRegex = /(group|text)_[a-zA-Z0-9._-]+/g;
 
@@ -34,13 +34,7 @@ const translationsChanged = {
   'group_860ed628-c439-440c-a429-fb4a132f85af': 'Gruppe 2 Test geändert'
 };
 
-interface ITo {
-  requestUrlPattern: RegExp | string;
-  fixturePath: string;
-  browserUrl: string;
-}
-
-const tos: { [key: string]: ITo } = {
+const tos = generateTos({
   emptyProcess: {
     requestUrlPattern: /https:\/\/veo-forms\.develop\.\w+\.\w+\/3ebd14a2-eb7d-4d18-a9ad-2056da85569e/,
     fixturePath: 'formschema/empty-process.json',
@@ -96,7 +90,7 @@ const tos: { [key: string]: ITo } = {
     fixturePath: 'formschema/dialogs.json',
     browserUrl: '/editor/formschema?fs=653d6d06-f3d1-4f09-b678-2d3f5ed27b35'
   }
-};
+});
 
 function goTo(to: ITo) {
   cy.intercept(
@@ -123,8 +117,7 @@ function goTo(to: ITo) {
     }
   );
 
-  cy.goTo('/editor');
-  cy.goTo(to.browserUrl);
+  cy.goTo('/editor').goTo(to.browserUrl);
 }
 
 describe('Formschema Editor', () => {

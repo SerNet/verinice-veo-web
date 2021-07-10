@@ -16,8 +16,7 @@ describe('Formschema Wizard', () => {
 
   beforeEach(() => {
     cy.defineEditorIntercepts();
-    cy.goTo('/editor');
-    cy.goTo('/editor/formschema');
+    cy.goTo('/editor').goTo('/editor/formschema');
   });
 
   it('ckecks navigation between wizard start, back button, and formschema create and import', function () {

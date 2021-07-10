@@ -16,8 +16,7 @@ describe('Objectschema Wizard', () => {
 
   beforeEach(() => {
     cy.defineEditorIntercepts();
-    cy.goTo('/editor');
-    cy.goTo('/editor/objectschema');
+    cy.goTo('/editor').goTo('/editor/objectschema');
   });
 
   it('ckecks navigation between wizard start, back button, and objectschema create and import', function () {

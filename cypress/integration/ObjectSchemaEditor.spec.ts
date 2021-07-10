@@ -3,7 +3,7 @@
 import { times } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 
-import { getEditorData } from '../support/utils';
+import { generateTos, getEditorData, ITo } from '../support/utils';
 
 let schemaRealValues: { text: string; numberOfProperties: number }[] = [];
 
@@ -71,13 +71,7 @@ const addTestTwoAttribute = {
   writeDescription: 'a'
 };
 
-interface ITo {
-  requestUrlPattern: RegExp | string;
-  fixturePath: string;
-  browserUrl: string;
-}
-
-const tos: { [key: string]: ITo } = {
+const tos = generateTos({
   testschema: {
     requestUrlPattern: /.*\/schemas\/testschema.*/,
     fixturePath: 'objectschema/os_testschema.json',
@@ -88,7 +82,7 @@ const tos: { [key: string]: ITo } = {
     fixturePath: 'objectschema/os_empty.json',
     browserUrl: '/editor/objectschema?os=empty'
   }
-};
+});
 
 function goTo(to: ITo) {
   cy.intercept(
@@ -103,8 +97,7 @@ function goTo(to: ITo) {
     }
   ).as('loadedSchema');
 
-  cy.goTo('/editor');
-  cy.goTo(to.browserUrl);
+  cy.goTo('/editor').goTo(to.browserUrl);
 
   // cy.wait(['@loadedSchema']);
 

@@ -37,7 +37,7 @@ declare namespace Cypress {
      * Custom command to navigate through app by URL
      * @example cy.goTo('/editor/objectschema')
      */
-    goTo(path: string): Promise<void>;
+    goTo(path: string): Cypress.Chainable<void>;
 
     /**
      * Custom command to define OSE used intercepts
