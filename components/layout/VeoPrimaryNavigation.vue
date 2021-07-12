@@ -149,9 +149,11 @@ export default Vue.extend({
 
       const domain: string | undefined = separateUUIDParam(this.$route.params.domain).id;
 
-      // If the domain îs not part of the url, check if it is stored in the user plugin and fits to the unit. Else return undefined
-      if (!domain)
+      // If the domain is not part of the url, check if it is stored in the user plugin and fits to the unit. Else return undefined
+      if (!domain) {
         return this.unitId && this.unitId === this.$user.lastUnit ? this.$user.lastDomain : undefined;
+      }
+      return domain;
     }
   },
   watch: {
