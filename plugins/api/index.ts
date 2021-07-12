@@ -12,11 +12,12 @@ import unit from '~/plugins/api/unit';
 import report from '~/plugins/api/report';
 import domain from '~/plugins/api/domain';
 import monitoring from '~/plugins/api/monitoring';
+import catalog from '~/plugins/api/catalog';
 import { User } from '~/plugins/user';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
 
 export function createAPI(context: Context) {
-  return Client.create(context, { form, entity, history, schema, translation, unit, report, domain, monitoring });
+  return Client.create(context, { form, entity, history, schema, translation, unit, report, domain, catalog, monitoring });
 }
 
 export interface IAPIClient {
