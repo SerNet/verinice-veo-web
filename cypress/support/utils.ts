@@ -10,3 +10,5 @@ export interface ITo {
 
 // helper function which infers keys and restricts values to ITo
 export const generateTos = <T>(obj: { [K in keyof T]: ITo }) => obj;
+
+export const BASE_URL = Cypress.config().baseUrl;

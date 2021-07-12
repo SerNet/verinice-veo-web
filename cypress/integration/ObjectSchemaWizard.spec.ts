@@ -319,9 +319,11 @@ describe('Objectschema Wizard', () => {
 
   it('navigates automatically to the state in wizard by URL, where own objectschema can be uploaded', function () {
     cy.goTo('/editor').goTo('/editor/objectschema?os=custom');
-    cy.contains('.v-select', 'Typ des Objektschemas').should('contain.text', 'Eigenes');
-    cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
-    cy.contains('.v-file-input', 'Objektschema hochladen (.json)').should('contain.text', 'Objektschema hochladen (.json)');
+    cy.get('.v-dialog--active').within(() => {
+      cy.contains('.v-select', 'Typ des Objektschemas').should('contain.text', 'Eigenes');
+      cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
+      cy.contains('.v-file-input', 'Objektschema hochladen (.json)').should('contain.text', 'Objektschema hochladen (.json)');
+    });
   });
 
   it('imports existing objectschema by URL', function () {
