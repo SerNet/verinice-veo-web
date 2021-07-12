@@ -11,6 +11,14 @@
           <v-list-item-title>{{ error.code }} </v-list-item-title>
           {{ error.message }}
         </v-list-item-content>
+        <v-list-item-action v-if="error.fixable && allowFixing">
+          <v-btn
+            outlined
+            @click="$emit('fix', error.code, error.params)"
+          >
+            {{ $t('fix') }}
+          </v-btn>
+        </v-list-item-action>
       </v-list-item>
       <v-list-item v-if="result.errors.length === 0">
         <v-list-item-content>
@@ -30,6 +38,14 @@
             <v-list-item-title>{{ warning.code }} </v-list-item-title>
             {{ warning.message }}
           </v-list-item-content>
+          <v-list-item-action v-if="warning.fixable && allowFixing">
+            <v-btn
+              outlined
+              @click="$emit('fix', warning.code, warning.params)"
+            >
+              {{ $t('fix') }}
+            </v-btn>
+          </v-list-item-action>
         </v-list-item>
       </v-list>
     </template>
@@ -51,6 +67,10 @@ export default Vue.extend({
     result: {
       type: Object as Prop<VeoSchemaValidatorValidationResult>,
       required: true
+    },
+    allowFixing: {
+      type: Boolean,
+      default: false
     }
   }
 });
@@ -59,11 +79,13 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "fix": "Fix",
     "schemaValid": "No errors found!",
     "schemaValidationErrors": "Errors",
     "schemaValidationWarnings": "Warnings"
   },
   "de": {
+    "fix": "Beheben",
     "schemaValid": "Keine Fehler gefunden!",
     "schemaValidationErrors": "Fehler",
     "schemaValidationWarnings": "Warnungen"

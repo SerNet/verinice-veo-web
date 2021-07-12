@@ -63,6 +63,7 @@
 import Vue from 'vue';
 import { upperFirst } from 'lodash';
 import { Prop } from 'vue/types/options';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 
 import { getSchemaEndpoint, getSchemaName, ISchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
@@ -139,9 +140,9 @@ export default Vue.extend({
         }
 
         this.selectedItems = presetEntities.map((member) => {
-          const destructedLink = member.targetUri.split('/');
-          const id = destructedLink.pop() || '';
-          let type = destructedLink.pop() || '';
+          const details = getEntityDetailsFromLink(member);
+          const id = details.id;
+          let type = details.type;
           type = getSchemaName(type) || type;
 
           return { id, type };

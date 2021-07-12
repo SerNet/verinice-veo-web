@@ -28,9 +28,9 @@ export default class FormSchemaValidator {
    *
    * @returns VeoSchemaValidatorValidationResult Contains all errors and warnings generated while checking the schema.
    */
-  public validate(schema: any, objectSchema: IVeoObjectSchema | undefined = undefined, context: string = 'schema'): VeoSchemaValidatorValidationResult {
+  public validate(schema: any, objectSchema: IVeoObjectSchema | undefined = undefined): VeoSchemaValidatorValidationResult {
     if (objectSchema) {
-      this.propertiesExistInObjectSchema(schema, objectSchema, context);
+      this.propertiesExistInObjectSchema(schema, objectSchema);
     } else {
       this.warnings.push({ code: 'W_OBJECTSCHEMA_MISSING', message: 'No object schema provided. Provide one for more in depth validation.' });
     }
@@ -38,9 +38,9 @@ export default class FormSchemaValidator {
     return { valid: this.errors.length === 0, errors: this.errors, warnings: this.warnings };
   }
 
-  private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoObjectSchema, context: string) {
+  private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoObjectSchema) {
     if (formSchema.content) {
-      this.elementExists(formSchema.content, objectSchema, `${context}.content`, undefined);
+      this.elementExists(formSchema.content, objectSchema, `#/`, undefined);
     } else {
       this.warnings.push({ code: 'W_CONTENT_MISSING', message: 'This formschema has no controls and thus no use.' });
     }
@@ -62,13 +62,18 @@ export default class FormSchemaValidator {
       }
 
       if (!schema) {
-        this.errors.push({ code: 'E_PROPERTY_MISSING', message: `The element ${scope} doesn't exist in the object schema.` });
+        this.errors.push({
+          code: 'E_PROPERTY_MISSING',
+          message: `The element ${scope} doesn't exist in the object schema.`,
+          fixable: true,
+          params: { formSchemaPointer: context.substr(0, context.length - 1) } // We have to remove the trailing slash in order for JsonPointer to pick the currect path
+        });
       }
     }
 
     if (element.elements) {
       for (const child in element.elements) {
-        this.elementExists(element.elements[child], objectSchema, `${context}.elements.[${child}]`, element);
+        this.elementExists(element.elements[child], objectSchema, `${context}elements/${child}/`, element);
       }
     }
   }

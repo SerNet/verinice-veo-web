@@ -136,8 +136,7 @@
           <template #items>
             <VeoObjectHistory
               :object="form.objectData"
-              :schema="form.objectSchema"
-              :loading="$fetchState.pending"
+              :loading="$fetchState.pending || saveBtnLoading"
               @show-revision="showRevision"
             />
           </template>
@@ -149,7 +148,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { upperFirst } from 'lodash';
+import { cloneDeep, upperFirst } from 'lodash';
 import { Route } from 'vue-router/types/index';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
@@ -323,7 +322,8 @@ export default Vue.extend({
       }
     },
     showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean) {
-      const content = revision.content;
+      // Clone deep to avoid modiying the history and altering persisted state (won't change anything in the backend, but we want clean state)
+      const content = cloneDeep(revision.content);
 
       // show modified dialog before switching versions if needed
       if (this.entityModified.isModified) {

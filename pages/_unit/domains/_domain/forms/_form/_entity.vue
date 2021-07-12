@@ -92,6 +92,16 @@
             >
               {{ $t('restore') }}
             </v-btn>
+            <v-btn
+              v-if="!isRevision"
+              color="primary"
+              outlined
+              :disabled="$fetchState.pending"
+              :loading="saveBtnLoading"
+              @click="onClick($event, true)"
+            >
+              {{ $t('global.button.save_quit') }}
+            </v-btn>
           </v-col>
         </v-row>
         <VeoAlert
@@ -193,8 +203,7 @@
           <v-tab-item>
             <VeoObjectHistory
               :object="form.objectData"
-              :schema="form.objectSchema"
-              :loading="$fetchState.pending"
+              :loading="$fetchState.pending || saveBtnLoading"
               @show-revision="showRevision"
             />
           </v-tab-item>
@@ -492,7 +501,8 @@ export default Vue.extend({
       }
     },
     showRevision(_event: any, revision: IVeoObjectHistoryEntry, isRevision: boolean) {
-      const content = revision.content;
+      // Clone deep to avoid modiying the history and altering persisted state (won't change anything in the backend, but we want clean state)
+      const content = cloneDeep(revision.content);
 
       // show modified dialog before switching versions if needed
       if (this.formModified.isModified) {

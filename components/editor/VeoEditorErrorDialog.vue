@@ -1,13 +1,16 @@
 <template>
   <VeoDialog
-    v-model="dialog.value"
+    v-bind="$attrs"
     :headline="$t('schemaValidationWarnings')"
     large
+    v-on="$listeners"
   >
     <template #default>
       <VeoValidationResultList
-        :result="$props.validation"
+        :result="$attrs.validation"
         show-warnings
+        allow-fixing
+        v-on="$listeners"
       />
     </template>
     <template #dialog-options>
@@ -15,7 +18,7 @@
       <v-btn
         text
         color="primary"
-        @click="close()"
+        @click="$emit('input', false)"
       >
         {{ $t('global.button.close') }}
       </v-btn>
@@ -23,7 +26,7 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { defineComponent } from '@nuxtjs/composition-api';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
@@ -33,43 +36,8 @@ interface IProps {
 }
 
 export default defineComponent<IProps>({
-  props: {
-    value: {
-      type: Boolean,
-      required: true
-    },
-    validation: {
-      type: Object,
-      required: true
-    }
-  },
-  setup(props, context) {
-    /**
-     * Common dialog stuff (opening and closing)
-     */
-    const dialog = ref({ value: props.value });
-
-    watch(
-      () => props.value,
-      (val: boolean) => {
-        dialog.value.value = val;
-      }
-    );
-
-    watch(
-      () => dialog.value.value,
-      (val: boolean) => {
-        if (!val) {
-          context.emit('input', val);
-        }
-      }
-    );
-
-    function close() {
-      context.emit('input', false);
-    }
-
-    return { dialog, close };
+  setup() {
+    return {};
   }
 });
 </script>
