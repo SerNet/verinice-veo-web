@@ -5,8 +5,7 @@ export enum VeoErrorTypes {
 }
 
 export class VeoError extends Error {
-  public stack: string | undefined = new Error().stack;
-  constructor(public message: string, public type: VeoErrorTypes = VeoErrorTypes.VEO_ERROR_COMMON) {
+  constructor(public message: string, public code: number = 500, public type: VeoErrorTypes = VeoErrorTypes.VEO_ERROR_COMMON) {
     super(message);
 
     Object.setPrototypeOf(this, VeoError.prototype);

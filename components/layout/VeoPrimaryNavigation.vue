@@ -150,8 +150,22 @@ export default Vue.extend({
     };
   },
   computed: {
-    domainId(): string {
-      return separateUUIDParam(this.$route.params.domain).id;
+    unitId(): string | undefined {
+      const route = separateUUIDParam(this.$route.params.unit).id;
+      return route.length > 0 ? route : undefined;
+    },
+    domainId(): string | undefined {
+      if (this.$route.name === 'unit-domains-more') {
+        return undefined;
+      }
+
+      const domain: string | undefined = separateUUIDParam(this.$route.params.domain).id;
+
+      // If the domain is not part of the url, check if it is stored in the user plugin and fits to the unit. Else return undefined
+      if (!domain) {
+        return this.unitId && this.unitId === this.$user.lastUnit ? this.$user.lastDomain : undefined;
+      }
+      return domain;
     }
   },
   watch: {
@@ -172,7 +186,6 @@ export default Vue.extend({
     createUUIDUrlParam,
     async getNavEntries(route: Route) {
       const routeUnitParam = route.params.unit;
-      const domainId = separateUUIDParam(route.params.domain).id;
 
       const unitDashboard: INavItem = {
         name: this.$t('unit.index.title').toString(),
@@ -292,8 +305,13 @@ export default Vue.extend({
 
       this.domains = await this.$api.domain.fetchAll();
 
+      // Auto set current domain to first domain if only one exists.
+      if (this.domains.length === 1) {
+        this.$user.updateLastDomain(this.domains[0].id);
+      }
+
       this.items = [
-        ...(domainId ? [domainDashboard, forms, catalogs, reports] : []),
+        ...(this.domainId ? [domainDashboard, forms, catalogs, reports] : []),
         ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
         ...(!routeUnitParam ? [unitSelection] : []),
         spacer,
@@ -303,9 +321,11 @@ export default Vue.extend({
       ];
 
       this.addChildren(this.$t('breadcrumbs.objects').toString(), await this.fetchObjectTypes());
-      this.addChildren(this.$t('breadcrumbs.forms').toString(), await this.fetchFormTypes(domainId));
-      this.addChildren(this.$t('breadcrumbs.reports').toString(), await this.fetchReportTypes(domainId));
-      this.addChildren(this.$t('breadcrumbs.catalogs').toString(), await this.fetchCatalogs(domainId));
+      if (this.domainId) {
+        this.addChildren(this.$t('breadcrumbs.forms').toString(), await this.fetchFormTypes(this.domainId));
+        this.addChildren(this.$t('breadcrumbs.reports').toString(), await this.fetchReportTypes(this.domainId));
+        this.addChildren(this.$t('breadcrumbs.catalogs').toString(), await this.fetchCatalogs(this.domainId));
+      }
     },
     /**
      * Add children to a menu item

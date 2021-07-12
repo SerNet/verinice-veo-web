@@ -36,6 +36,7 @@ export default {
   'editor.schema.properties': 'Schema properties',
 
   'error.title': 'An error occured',
+  error404: '404 - Not found',
 
   'forms.input.array.add': 'Add element',
   'forms.input.linkadd': 'Add link ',

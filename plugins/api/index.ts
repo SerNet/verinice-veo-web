@@ -180,7 +180,7 @@ export class Client {
       } else if (parsed.code) {
         throw new VeoError(parsed.code, VeoErrorTypes.VEO_ERROR_COMMON);
       } else {
-        const e = new Error(`Error ${res.status || '?'} while accessing ${url}: ${parsed.name}`);
+        const e = new VeoError(`Error ${res.status || '?'} while accessing ${url}: ${parsed.name}`, res.status);
         e.name = 'API_EXCEPTION';
         throw e;
       }
@@ -201,7 +201,7 @@ export class Client {
       }
       return parsed;
     } catch (e) {
-      throw new VeoError('Non JSON response');
+      throw new VeoError(`Non JSON response: ${res}`);
     }
   }
 }
