@@ -23,7 +23,7 @@
             v-for="item of items"
             :key="item.id"
           >
-            {{ item.element }}
+            {{ item.element.displayName }}
           </v-tab>
           <v-tabs-items v-model="activeTab">
             <v-tab-item
@@ -34,8 +34,25 @@
                 flat
                 :loading="loading || $fetchState.pending"
               >
-                <v-card-subtitle>{{ item.element }}</v-card-subtitle>
-                <v-card-text>{{ currentItem }}</v-card-text>
+                <v-card-subtitle
+                  v-if="currentItem"
+                  class="py-0"
+                >
+                  {{ currentItem.designator }}
+                </v-card-subtitle>
+                <v-card-title
+                  v-if="currentItem"
+                  class="py-0"
+                >
+                  {{ currentItem.abbreviation }} {{ currentItem.name }}
+                </v-card-title>
+                <v-card-text>
+                  <v-skeleton-loader
+                    v-if="loading || $fetchState.pending"
+                    type="paragraph@2"
+                  />
+                  <span v-else-if="currentItem">{{ currentItem.description }}</span>
+                </v-card-text>
               </v-card>
             </v-tab-item>
           </v-tabs-items>
@@ -48,7 +65,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoCatalog, IVeoCatalogItem, IVeoCatalogItemListItem, IVeoLink } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoCatalogItemListItem, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 
 export default Vue.extend({
   data() {
@@ -57,7 +74,7 @@ export default Vue.extend({
       loading: false as boolean,
       catalog: undefined as undefined | IVeoCatalog,
       items: [] as IVeoCatalogItemListItem[],
-      currentItem: undefined as undefined | IVeoCatalogItem
+      currentItem: undefined as undefined | IVeoEntity
     };
   },
   async fetch() {
@@ -65,7 +82,6 @@ export default Vue.extend({
     this.items = await this.$api.catalog.fetchItems(this.catalogId, this.domainId);
 
     await this.fetchItem(this.items[0].element);
-    console.log(this.currentItem);
   },
   computed: {
     domainId(): string {
