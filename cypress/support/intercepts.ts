@@ -5,11 +5,11 @@ export function interceptLayoutCalls(options?: IBaseObject) {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/schemas$/
+        url: /.*\/api\/schemas$/
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/schemas.json'
+          fixture: 'api/default/schemas/fetchAll.json'
         });
       }
     );
@@ -19,11 +19,25 @@ export function interceptLayoutCalls(options?: IBaseObject) {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\//
+        url: /.*\/formsapi$/
       },
       (req) => {
         req.reply({
-          fixture: 'forms/fetchAllForms.json'
+          fixture: 'api/forms/fetchAll.json'
+        });
+      }
+    );
+  }
+
+  if (!options?.ignoreSpecificForms) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/formsapi\/(.*)/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'api/forms/$1.json'
         });
       }
     );
@@ -33,11 +47,25 @@ export function interceptLayoutCalls(options?: IBaseObject) {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
+        url: /.*\/reportsapi\/reports$/
       },
       (req) => {
         req.reply({
-          fixture: 'reports/fetchAllReports.json'
+          fixture: 'api/reports/fetchAll.json'
+        });
+      }
+    );
+  }
+
+  if (!options?.ignoreFetchAllUnits) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/api\/units$/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'api/default/units/fetchAll.json'
         });
       }
     );
@@ -47,11 +75,11 @@ export function interceptLayoutCalls(options?: IBaseObject) {
     cy.intercept(
       {
         method: 'GET',
-        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
+        url: /.*\/api\/domains\/$/
       },
       (req) => {
         req.reply({
-          fixture: 'default/fetchAllDomains.json'
+          fixture: 'api/default/domains/fetchAll.json'
         });
       }
     );
