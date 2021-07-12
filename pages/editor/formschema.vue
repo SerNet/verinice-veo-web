@@ -4,7 +4,7 @@
     title-class="d-flex align-center"
   >
     <template
-      v-if="formSchema && objectSchema && schemaIsValid.valid"
+      v-if="formSchema && objectSchema"
       #header
     >
       <v-tooltip bottom>
@@ -49,7 +49,7 @@
       <v-tooltip bottom>
         <template #activator="{ on }">
           <v-btn
-            v-if="schemaIsValid.warnings.length > 0"
+            v-if="!schemaIsValid.valid"
             icon
             large
             color="warning"
@@ -98,7 +98,7 @@
       </v-tooltip>
     </template>
     <template
-      v-if="formSchema && objectSchema && schemaIsValid.valid"
+      v-if="formSchema && objectSchema"
       #default
     >
       <VeoPage
@@ -159,7 +159,10 @@
             right
           />
         </template>
-        <template #default>
+        <template
+          v-if="schemaIsValid.valid"
+          #default
+        >
           <div class="fill-height fill-width d-flex px-2">
             <VeoFseGenerator
               :schema="objectSchema"
@@ -171,6 +174,27 @@
               @update-custom-translation="onUpdateCustomTranslation"
             />
           </div>
+        </template>
+        <template v-else>
+          <v-row class="fill-height flex-column text-center align-center px-8">
+            <v-col
+              cols="auto"
+              style="flex-grow: 0"
+            >
+              <v-icon
+                style="font-size: 8rem; opacity: 0.5"
+                color="primary"
+              >
+                mdi-information-outline
+              </v-icon>
+            </v-col>
+            <v-col
+              cols="auto"
+              class="text-left"
+            >
+              <h3>{{ $t("invalidFormSchema") }}</h3>
+            </v-col>
+          </v-row>
         </template>
       </VeoPage>
       <v-divider vertical />
@@ -189,7 +213,10 @@
             {{ $t("preview") }}
           </h3>
         </template>
-        <template #default>
+        <template
+          v-if="schemaIsValid.valid"
+          #default
+        >
           <v-card
             style="height: 100%"
             flat
@@ -204,22 +231,7 @@
             />
           </v-card>
         </template>
-      </VeoPage>
-    </template>
-    <template
-      v-else-if="!schemaIsValid.valid"
-      #default
-    >
-      <VeoPage
-        v-if="formSchema"
-        sticky-header
-        absolute-size
-        fullsize
-        no-padding
-        :cols="12"
-        content-class="px-4"
-      >
-        <template #default>
+        <template v-else>
           <v-row class="fill-height flex-column text-center align-center px-8">
             <v-col
               cols="auto"
@@ -237,18 +249,7 @@
               class="text-left"
             >
               <h3>{{ $t("invalidFormSchema") }}</h3>
-              <v-list-item
-                v-for="(error, index) of schemaIsValid.errors"
-                :key="`e_${index}`"
-                link
-              >
-                <v-list-item-content>
-                  <v-list-item-title>{{ error.code }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ error.message }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
             </v-col>
-            <v-spacer />
           </v-row>
         </template>
       </VeoPage>
@@ -263,10 +264,15 @@
       <VeoEditorErrorDialog
         v-model="showErrorDialog"
         :validation="schemaIsValid"
+        @fix="onFixRequest"
       />
       <VeoFseCodeEditorDialog
         v-model="showCodeEditor"
         :code="code"
+      />
+      <VeoFseInvalidSchemaDownloadDialog
+        v-model="invalidSchemaDownloadDialogVisible"
+        @download="downloadSchema(true)"
       />
       <!-- Important: showTranslationDialog should be in v-if to only run code in the dialog when it is open  -->
       <VeoFseTranslationDialog
@@ -275,14 +281,16 @@
         :translation="formSchema.translation"
         :language="language"
         :languages="avaliableLanguages"
+        :name="formSchema.name"
         @update-language="setFormLanguage"
         @update-translation="setFormTranslation"
+        @update-name="setFormName"
       />
       <VeoFseSchemaDetailsDialog
         v-if="formSchema"
         v-model="showDetailDialog"
         :object-schema="formSchema.modelType"
-        :form-schema="formSchema.name"
+        :form-schema="formSchema.name[language]"
         :subtype="formSchema.subType"
         @update-schema-name="updateSchemaName"
         @update-subtype="updateSubType"
@@ -296,6 +304,7 @@ import vjp from 'vue-json-pointer';
 
 import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api';
 import { JsonPointer } from 'json-ptr';
+import { snakeCase } from 'lodash';
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
   IVeoTranslations,
@@ -305,8 +314,10 @@ import {
   IVeoFormSchemaItem,
   IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaCustomTranslationEvent
+  IVeoFormSchemaCustomTranslationEvent,
+  IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
+import { IBaseObject } from '~/lib/utils';
 
 interface IProps {}
 
@@ -332,7 +343,17 @@ export default defineComponent<IProps>({
       showCreationDialog.value = objectSchema.value === undefined && formSchema.value === undefined;
     });
 
-    const title = computed(() => context.root.$t('editor.formschema.headline') + (formSchema.value ? `- ${formSchema.value?.name}` : ''));
+    const title = computed(() => {
+      const headline = context.root.$t('editor.formschema.headline');
+      // Name property must generally exist, but before it is created in Wizard, only headline should be visible
+      // If Name property exists and e.g. 'de' sub-property is empty then missing translation should be visible
+      if (formSchema.value?.name) {
+        const formSchemaName = formSchema.value?.name[language.value] ?? `Missing translation for ${language.value.toUpperCase()}`;
+        return headline + ` - ${formSchemaName}`;
+      } else {
+        return headline;
+      }
+    });
 
     const oneColumnCollapsed = computed(() => backlogCollapsed.value || previewCollapsed.value);
 
@@ -360,7 +381,7 @@ export default defineComponent<IProps>({
       return {
         fetchAll: (_objectType: string, _searchParams?: any) => {
           return new Promise((resolve: any) => {
-            return resolve([]);
+            return resolve({ items: [], page: 1, pageCount: 0, totalItemCount: 0 });
           });
         }
       };
@@ -395,7 +416,7 @@ export default defineComponent<IProps>({
 
     function updateSchemaName(value: string) {
       if (formSchema.value) {
-        formSchema.value.name = value;
+        vjp.set(formSchema.value, `/name/${language.value}`, value);
       }
     }
 
@@ -405,11 +426,15 @@ export default defineComponent<IProps>({
       }
     }
 
-    function downloadSchema() {
-      if (downloadButton.value && downloadButton.value !== null) {
+    const invalidSchemaDownloadDialogVisible = ref(false);
+    function downloadSchema(forceDownload: boolean = false) {
+      if (schemaIsValid.value.valid === false && !forceDownload) {
+        invalidSchemaDownloadDialogVisible.value = true;
+      } else if (downloadButton.value && downloadButton.value !== null) {
+        invalidSchemaDownloadDialogVisible.value = false;
         const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
         downloadButton.value.href = data;
-        downloadButton.value.download = `fs_${formSchema.value?.name || 'download'}.json`;
+        downloadButton.value.download = snakeCase(`fs_${formSchema.value?.name[language.value] || 'missing_translation'}`) + '.json';
       }
     }
 
@@ -461,6 +486,12 @@ export default defineComponent<IProps>({
       }
     }
 
+    function setFormName(event: IVeoFormSchemaMeta['name']) {
+      if (formSchema.value) {
+        vjp.set(formSchema.value, '/name', event);
+      }
+    }
+
     function setFormLanguage(newLanguageVal: string) {
       language.value = newLanguageVal;
     }
@@ -468,6 +499,12 @@ export default defineComponent<IProps>({
     function onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
       if (formSchema.value) {
         vjp.set(formSchema.value, `/translation/${language.value}`, event);
+      }
+    }
+
+    function onFixRequest(code: string, params?: IBaseObject) {
+      if (code === 'E_PROPERTY_MISSING' && params) {
+        onDelete(params as any);
       }
     }
 
@@ -498,14 +535,17 @@ export default defineComponent<IProps>({
       onDelete,
       onUpdate,
       updateControlItems,
+      invalidSchemaDownloadDialogVisible,
       downloadButton,
       code,
       showTranslationDialog,
       onClickTranslationBtn,
       avaliableLanguages,
       setFormTranslation,
+      setFormName,
       setFormLanguage,
-      onUpdateCustomTranslation
+      onUpdateCustomTranslation,
+      onFixRequest
     };
   },
   head(): any {

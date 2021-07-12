@@ -8,7 +8,7 @@
         v-bind="$data"
         :root-route="rootRoute"
         hide-display-options
-        @fetch="$fetch"
+        @fetch="fetchEntities"
       >
         <template #menu-bar>
           <v-row
@@ -53,10 +53,9 @@
         <template #default="{ on }">
           <VeoFormList
             :items="objects"
-            :loading="$fetchState.pending"
+            :loading="$fetchState.pending || loading"
             :show-parent-link="false"
             :load-children="loadSubEntities"
-            :sorting-function="sortingFunction"
             :root-route="rootRoute"
             v-on="on"
           />
@@ -69,15 +68,17 @@
 import Vue from 'vue';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
+import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
 
 interface IData {
   formSchema: IVeoFormSchema | undefined;
   objectType: string | undefined;
-  objects: IVeoEntity[];
+  objects: IVeoPaginatedResponse<IVeoEntity[]>;
   formType: string;
   formTypes: { value: string; text: string }[];
   rootEntityType: string;
+  loading: boolean;
 }
 
 export default Vue.extend({
@@ -85,10 +86,11 @@ export default Vue.extend({
     return {
       formSchema: undefined,
       objectType: '',
-      objects: [],
+      objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 },
       formType: separateUUIDParam(this.$route.params.form).id,
       formTypes: [],
-      rootEntityType: ''
+      rootEntityType: '',
+      loading: false
     };
   },
   async fetch() {
@@ -96,20 +98,15 @@ export default Vue.extend({
     this.objectType = this.formSchema && this.formSchema.modelType;
     if (this.formSchema) {
       this.rootEntityType = this.objectType || '';
-      this.objects = (
-        await this.$api.entity.fetchAll(this.objectType, {
-          unit: this.unitId,
-          subType: this.formSchema.subType
-        })
-      ).items;
+      this.fetchEntities();
     } else {
-      this.objects = [];
+      this.objects = { items: [], page: 1, pageCount: 0, totalItemCount: 0 };
     }
 
     this.formTypes = await this.$api.form.fetchAll(this.domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
       formTypes.map((entry: IVeoFormSchemaMeta) => {
         return {
-          text: entry.name,
+          text: entry.name[this.$i18n.locale] || 'Missing translation',
           value: entry.id
         };
       })
@@ -131,7 +128,7 @@ export default Vue.extend({
       return separateUUIDParam(this.$route.params.form).id;
     },
     formName(): string {
-      return this.formSchema?.name || '';
+      return this.formSchema?.name[this.$i18n.locale] || 'Missing translation';
     },
     rootRoute(): string {
       return `/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`;
@@ -145,8 +142,26 @@ export default Vue.extend({
     loadSubEntities(_parent: IVeoEntity) {
       return [];
     },
-    sortingFunction(a: IVeoEntity, b: IVeoEntity) {
-      return a.name.localeCompare(b.name);
+    async fetchEntities(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: boolean; sortDesc?: boolean }) {
+      this.loading = true;
+
+      const _options = { page: 1, reloadAll: true, sortBy: 'name', sortDesc: false, ...options };
+
+      const data = (await this.$api.entity.fetchAll(this.objectType, _options.page, {
+        unit: this.unitId,
+        subType: this.formSchema?.subType,
+        size: this.$user.tablePageSize,
+        sortBy: _options.sortBy,
+        sortOrder: _options.sortDesc ? 'desc' : 'asc'
+      } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
+
+      if (_options.reloadAll) {
+        this.objects = data;
+      } else {
+        this.objects.page = data.page;
+        this.objects.items.push(...data.items);
+      }
+      this.loading = false;
     }
   }
 });

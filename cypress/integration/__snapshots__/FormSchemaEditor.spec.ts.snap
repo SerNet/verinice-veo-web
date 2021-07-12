@@ -85,7 +85,9 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {}
@@ -245,7 +247,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -258,10 +260,15 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -359,7 +366,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -372,10 +379,15 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -601,7 +613,9 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {}
@@ -673,7 +687,9 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -755,7 +771,9 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -783,7 +801,9 @@ exports[`Formschema Editor > opens InputUri dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -871,7 +891,9 @@ exports[`Formschema Editor > opens InputDate dialogs, changes data in dialogs an
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -953,7 +975,9 @@ exports[`Formschema Editor > opens Checkbox dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1037,7 +1061,9 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {}
@@ -1135,7 +1161,9 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1261,7 +1289,9 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1374,7 +1404,9 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1414,7 +1446,7 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                       <div data-v-123abc4d="" class="col">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -1427,10 +1459,15 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -1699,7 +1736,9 @@ exports[`Formschema Editor > opens FseLabel dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -1760,7 +1799,9 @@ exports[`Formschema Editor > opens FseLabel dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -3017,7 +3058,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -3030,10 +3071,15 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -4529,7 +4575,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -4542,10 +4588,15 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -6039,7 +6090,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                       <div data-v-123abc4d="" class="col mb-4">
                         <div
                           data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select v-autocomplete"
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
                         >
                           <div class="v-input__control">
                             <div
@@ -6052,10 +6103,15 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                               <div class="v-select__slot">
                                 <label
                                   for=""
-                                  class="v-label theme--light"
+                                  class="v-label v-label--active theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
                                   >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
+                                ><input
+                                  id=""
+                                  placeholder="Nach Namen des zu verknüpfenden Objektes suchen"
+                                  type="text"
+                                  autocomplete="off"
+                                />
                                 <div class="v-input__append-inner">
                                   <div
                                     class="v-input__icon v-input__icon--clear"
@@ -6365,7 +6421,9 @@ exports[`Formschema Editor > compares downloaded schema with the actual one #0`]
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -6435,7 +6493,9 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -6703,7 +6763,9 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
     "type": "Layout"
   },
   "modelType": "process",
-  "name": "Test Formschema",
+  "name": {
+    "de": "Test Formschema"
+  },
   "subType": "TF",
   "translation": {
     "de": {
@@ -7047,3 +7109,45 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
   </div>
 </div>
 `;
+
+exports[`Formschema Editor > adds, updates formSchema meta details #0`] =
+{
+  "content": {
+    "elements": [],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema 1 DE"
+  },
+  "subType": "TF 1",
+  "translation": {
+    "de": {}
+  }
+};
+
+exports[`Formschema Editor > adds, updates formSchema meta details #1`] =
+{
+  "content": {
+    "elements": [],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema 1 DE",
+    "en": "Test Formschema 2 EN"
+  },
+  "subType": "TF 1",
+  "translation": {
+    "de": {},
+    "en": {}
+  }
+};

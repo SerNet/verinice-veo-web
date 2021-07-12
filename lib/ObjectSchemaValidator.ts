@@ -1,5 +1,6 @@
 import { isArray, isObject, snakeCase } from 'lodash';
 import ObjectSchemaHelper from './ObjectSchemaHelper2';
+import { IBaseObject } from './utils';
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
 
@@ -16,6 +17,8 @@ export interface VeoSchemaValidatorProperty {
 export interface VeoSchemaValidatorMessage {
   code: string;
   message: string;
+  fixable?: boolean;
+  params?: IBaseObject;
 }
 
 export interface VeoSchemaValidatorValidationResult {

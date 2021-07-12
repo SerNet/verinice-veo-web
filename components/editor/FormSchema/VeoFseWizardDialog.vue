@@ -162,7 +162,18 @@
             class="my-4"
             flat
             no-close-button
-          />
+          >
+            <template #additional-button>
+              <v-btn
+                class="mt-2"
+                outlined
+                color="info"
+                @click="emitSchemas"
+              >
+                {{ $t('proceedWithIncomaptibleSchema') }}
+              </v-btn>
+            </template>
+          </VeoAlert>
           <VeoEditorFileUpload
             :code="oscode"
             :input-label="$t('objectSchemaUploadLabel')"
@@ -315,7 +326,7 @@ export default Vue.extend({
     },
     doCreate2() {
       const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? null : this.createForm.subType;
-      this.formSchema = generateSchema(this.createForm.title, this.objectSchema?.title || this.createForm.modelType, _subtype);
+      this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.title }, this.objectSchema?.title || this.createForm.modelType, _subtype);
       this.emitSchemas();
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
@@ -421,8 +432,9 @@ export default Vue.extend({
     "customObjectSchema": "Custom",
     "invalidObjectSchema": "Form schema doesn't match object schema",
     "invalidObjectSchemaHint":
-      "It seems like the form schema is using properties not present on the remote object schema. Please upload the modified object schema.",
+      "It seems like the form schema is using properties not present on the remote object schema. If this form schemaa is based on a modified object schema, please upload it below.",
     "objectSchemaRequired": "You have to specify an object schema!",
+    "proceedWithIncomaptibleSchema": "Proceed",
     "start": "How do you want to start?"
   },
   "de": {
@@ -442,8 +454,9 @@ export default Vue.extend({
     "customObjectSchema": "Eigenes",
     "invalidObjectSchema": "Formschema stimmt nicht mit existierendem Objektschema überein",
     "invalidObjectSchemaHint":
-      "Das Formschema verwendet Eigenschaften, die nicht im in der Anwendung hinterlegten Objektschema existieren. Bitte laden Sie das modifizierte Objektschema hoch.",
+      "Das Formschema verwendet Eigenschaften, die nicht im in der Anwendung hinterlegten Objektschema existieren. Falls es auf einem modifizierten Objektschema basiert, laden Sie dieses bitte hoch.",
     "objectSchemaRequired": "Sie müssen ein Objektschema angeben",
+    "proceedWithIncomaptibleSchema": "Trotzdem weiter",
     "start": "Wie möchten Sie starten?"
   }
 }

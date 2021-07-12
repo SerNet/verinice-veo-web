@@ -1,5 +1,5 @@
 <template>
-  <div v-if="$fetchState.pending">
+  <div v-if="$fetchState.pending || loading">
     <div
       v-for="index in [1, 2]"
       :key="index"
@@ -31,43 +31,13 @@
             <v-list-item-title>
               {{ $t('version') }}
               <b>{{ version.changeNumber }}</b>
-              : {{ (new Date(version.time)).toLocaleString() }}
+              : {{ (new Date(version.time)).toLocaleString($i18n.locale) }}
             </v-list-item-title>
             <v-list-item-subtitle>
               {{ $t('by') }}
               <b>{{ version.author }}</b>
             </v-list-item-subtitle>
-            <v-row no-gutters>
-              <v-col
-                cols="12"
-                sm="10"
-              >
-                <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
-              </v-col>
-              <v-col
-                class="text-right"
-                cols="12"
-                sm="2"
-              >
-                <v-tooltip
-                  v-if="canShowData(version.content)"
-                  bottom
-                >
-                  <template #activator="{ on }">
-                    <v-btn
-                      icon
-                      @click.stop="$emit('show-revision', {}, version, index === 0 ? false : true, true)"
-                      v-on="on"
-                    >
-                      <v-icon>mdi-undo</v-icon>
-                    </v-btn>
-                  </template>
-                  <template #default>
-                    {{ $t('restoreRevision') }}
-                  </template>
-                </v-tooltip>
-              </v-col>
-            </v-row>
+            <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </div>
@@ -78,14 +48,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
-import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
-import { IBaseObject } from '~/lib/utils';
 
-import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 interface IData {
   history: IVeoObjectHistoryEntry[];
-  validator: ObjectSchemaValidator;
 }
 
 export default Vue.extend({
@@ -97,16 +64,11 @@ export default Vue.extend({
     loading: {
       type: Boolean,
       default: false
-    },
-    schema: {
-      type: Object as Prop<IVeoObjectSchema>,
-      default: () => {}
     }
   },
   data(): IData {
     return {
-      history: [],
-      validator: new ObjectSchemaValidator()
+      history: []
     };
   },
   async fetch() {
@@ -116,6 +78,7 @@ export default Vue.extend({
       });
     }
   },
+  // For some reason we have to check on both, as $fetchState.pending will be false in some cases while the object is not set yet.
   watch: {
     loading(newValue: boolean) {
       if (!newValue && this.object) {
@@ -123,11 +86,14 @@ export default Vue.extend({
           this.$fetch();
         });
       }
-    }
-  },
-  methods: {
-    canShowData(data: IBaseObject): boolean {
-      return this.validator.fitsObjectSchema(this.schema, data);
+    },
+    object(newValue: IVeoEntity, oldValue: IVeoEntity | undefined) {
+      // Only load if old object data was not existing and the page isn't loading
+      if (!this.loading && newValue && JSON.stringify(oldValue) === '{}') {
+        this.$nextTick().then(() => {
+          this.$fetch();
+        });
+      }
     }
   }
 });

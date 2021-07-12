@@ -11,13 +11,16 @@ export default function (api: Client) {
      * @param parent
      */
     fetchAll(domain?: string, params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
-      if (domain) {
-        if (!params) {
-          params = {};
-        }
+      if (!params) {
+        params = {};
+      }
 
+      if (domain) {
         params.domainId = domain;
       }
+
+      // TODO: Remove: Currently the domainId in the forms api isn't linked with the id of the existing domain, so we ignore the filter.
+      delete params.domainId;
 
       return api.req('/api/forms', {
         params

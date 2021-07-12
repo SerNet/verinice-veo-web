@@ -16,9 +16,11 @@
         :label="$t('targetObject')"
         class="links-field-row-autocomplete"
         :disabled="disabled"
+        :placeholder="$t('search_placeholder')"
         dense
         hide-details="auto"
         clearable
+        no-filter
       >
         <template #prepend-item>
           <v-btn
@@ -53,7 +55,7 @@
           >
             <v-list-item-content>
               <!-- TODO: change name with displayName after it is implemented -->
-              <v-list-item-title v-text="item.name" />
+              <v-list-item-title>{{ item.displayName }} </v-list-item-title>
             </v-list-item-content>
             <v-list-item-action>
               <div class="autocomplete-list-item-action-buttons">
@@ -81,6 +83,14 @@
                 </v-btn>
               </div>
             </v-list-item-action>
+          </v-list-item>
+        </template>
+        <template
+          v-if="totalItems > itemsPerPage"
+          #append-item
+        >
+          <v-list-item two-line>
+            {{ $t('be_more_specific') }}
           </v-list-item>
         </template>
       </v-autocomplete>
@@ -252,6 +262,8 @@ interface IData {
   linksFieldDialogObjectSchema: JSONSchema7;
   linksFieldDialogFormSchema: UISchema;
   currentForm: IVeoFormSchemaMeta | undefined;
+  totalItems: number;
+  initialized: boolean;
 }
 
 export default Vue.extend({
@@ -313,7 +325,9 @@ export default Vue.extend({
       targetId: undefined,
       linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
       linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema },
-      currentForm: undefined
+      currentForm: undefined,
+      totalItems: 0 as number,
+      initialized: false
     };
   },
   computed: {
@@ -346,7 +360,7 @@ export default Vue.extend({
       };
     },
     selected: {
-      get() {
+      get(): string | undefined {
         const selected = this.value?.target?.targetUri?.split('/')?.pop();
         return selected || undefined;
       },
@@ -356,29 +370,37 @@ export default Vue.extend({
     },
     noAttributesClass(): string {
       return this.ui.elements.length === 0 ? 'mb-4' : '';
+    },
+    itemsPerPage(): number {
+      return this.$user.tablePageSize;
     }
   },
   watch: {
     value: {
       async handler(v: BaseObject) {
         const displayName = v?.target?.displayName;
+        this.initialized = false;
         await this.fetchItems(displayName);
+        this.initialized = true;
       },
-      immediate: true
+      immediate: true,
+      deep: true
     },
     search: {
       async handler(val: string | undefined | null) {
-        if (val) {
-          const item = this.items.find((el) => el.name === val);
-          //  TODO: change name with displayName after it is implemented
-          if (!item || (item && item.id !== this.selected)) {
-            await this.fetchItems(val);
+        // Only call if initialized (as we don't want to overwrite the fetch called by the value watcher)
+        if (this.initialized) {
+          if (val) {
+            const item = this.items.find((el) => el.name === val);
+            //  TODO: change name with displayName after it is implemented
+            if (!item || (item && item.id !== this.selected)) {
+              await this.fetchItems(val);
+            }
+          } else {
+            await this.fetchItems();
           }
-        } else {
-          await this.fetchItems();
         }
-      },
-      immediate: true
+      }
     }
   },
   methods: {
@@ -393,8 +415,9 @@ export default Vue.extend({
 
       try {
         // TODO: Limit result count with pagination API
-        const items = (await this.api.fetchAll(this.targetType, filters)) as IItem[];
-        this.items = items.slice(0, 100);
+        const entities = await this.api.fetchAll(this.targetType, filters);
+        this.items = entities.items;
+        this.totalItems = entities.totalItemCount;
 
         if (this.subType) {
           const forms = await this.$api.form.fetchAll();
@@ -474,22 +497,26 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "be_more_specific": "Please be more specific to show additional objects",
     "targetObject": "Target object",
     "createTargetObject": "Create new object",
     "createTargetForm": "Create {type}",
     "updateTargetObject": "Change object",
     "deleteTargetObject": "Delete object",
     "deleteTargetObjectConfirmation": "Are you sure you want to delete \"{object}\"?",
-    "noTargets": "Not targets found"
+    "noTargets": "Not targets found",
+    "search_placeholder": "Start typing to search for objects to link"
   },
   "de": {
+    "be_more_specific": "Bitte gebe weitere Zeichen ein um die Auswahl einzuschränken",
     "targetObject": "Zielobjekt",
     "updateTargetObject": "Objekt ändern",
     "createTargetObject": "Ein neues Objekt anlegen",
     "createTargetForm": "{type} erstellen",
     "deleteTargetObject": "Objekt löschen",
     "deleteTargetObjectConfirmation": "Sind sie sicher, dass das Objekt \"{object}\" gelöscht werden soll?",
-    "noTargets": "Keine Ziele verfügbar"
+    "noTargets": "Keine Ziele verfügbar",
+    "search_placeholder": "Nach Namen des zu verknüpfenden Objektes suchen"
   }
 }
 </i18n>

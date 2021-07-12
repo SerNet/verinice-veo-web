@@ -7,5 +7,8 @@
   "defaultCommandTimeout": 6000,
   "requestTimeout": 6000,
   "chromeWebSecurity": false,
-  "ignoreTestFiles": ["**/__snapshots__/*", "**/__image_snapshots__/*"]
+  "ignoreTestFiles": [
+    "**/__snapshots__/*",
+    "**/__image_snapshots__/*"
+  ]
 }

@@ -3,6 +3,30 @@ import { IBaseObject } from '~/lib/utils';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
+/**
+ * 1. Types of user generated data
+ */
+export interface IVeoDeploymentInformation {
+  build: {
+    artifact: string;
+    ci: {
+      jobname: string;
+      buildnumber: string;
+    };
+    group: string;
+    name: string;
+    time: string;
+    version: string;
+  };
+  git: {
+    branch: string;
+    commit: {
+      id: string;
+      time: string;
+    };
+  };
+}
+
 export interface IVeoBaseObject {
   id: string;
   createdAt: string;
@@ -57,11 +81,22 @@ export interface IVeoReactiveFormAction {
   handler: (newValue: string, newObject: IBaseObject, oldObject: IBaseObject) => void;
 }
 
-export interface IVeoPaginatedResponse<T> {
-  items: T;
+export interface IVeoPaginatedResponseMeta {
   totalItemCount: number;
   pageCount: number;
   page: number;
+}
+export interface IVeoPaginatedResponse<T> extends IVeoPaginatedResponseMeta {
+  items: T;
+}
+
+export interface IVeoPaginationOptions {
+  displayName?: string;
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortOder?: 'asc' | 'desc';
+  [key: string]: any;
 }
 
 export interface IVeoObjectSchemaProperty {
@@ -213,6 +248,7 @@ export interface IVeoEntitySubtypes {
 export interface IVeoEntity extends IVeoBaseObject {
   name: string;
   abbreviation: string;
+  designator: string;
   displayName: string;
   description: string;
   domains: IVeoLink[];
@@ -233,10 +269,10 @@ export interface IVeoTranslations {
 }
 
 export interface IVeoFormSchemaMeta {
-  id?: string;
   modelType: string;
-  name: string;
   subType: string | null;
+  name: { [key: string]: string };
+  id?: string;
   domainId?: string;
 }
 

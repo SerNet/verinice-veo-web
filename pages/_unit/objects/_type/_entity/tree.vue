@@ -5,39 +5,27 @@ import { separateUUIDParam } from '~/lib/utils';
 import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
 import VeoScopesTreePage from '~/pages/_unit/scopes/_entity/tree.vue';
 import { ITreeEntry } from '~/components/objects/VeoObjectTree.vue';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
 import { getSchemaName } from '~/plugins/api/schema';
-
-interface IData {
-  objects: IVeoEntity[];
-  currentEntity: undefined | IVeoEntity;
-  rootEntityType: string;
-}
+import { IVeoEntityModifierEvent, VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 
 export default Vue.extend({
   name: 'VeoObjectsTreePage',
   extends: VeoScopesTreePage,
-  data(): IData {
+  data() {
     return {
-      objects: [],
-      currentEntity: undefined,
-      rootEntityType: ''
+      objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
+      currentEntity: undefined as undefined | IVeoEntity,
+      rootEntityType: '' as string
     };
   },
   async fetch() {
     if (this.entityType === '-') {
       this.rootEntityType = getSchemaName(this.objectType) || '';
-      this.objects = (
-        await this.$api.entity.fetchAll(this.objectType, {
-          unit: this.unitId
-        })
-      ).items;
-      this.currentEntity = undefined;
     } else {
       this.rootEntityType = this.entityType;
-      this.objects = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId);
-      this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
     }
+    await this.refetch(undefined);
   },
   head(): any {
     return {
@@ -101,6 +89,42 @@ export default Vue.extend({
         return a.entry.name.localeCompare(b.entry.name);
       } else {
         return 0;
+      }
+    },
+    async fetchEntities(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }) {
+      const _options = { page: 1, reloadAll: true, sortBy: 'name', sortDesc: false, ...options };
+
+      const data = (await this.$api.entity.fetchAll(this.rootEntityType, _options.page, {
+        unit: this.unitId,
+        sortBy: _options.sortBy,
+        sortOrder: _options.sortDesc ? 'desc' : 'asc'
+      } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
+
+      if (_options.reloadAll) {
+        this.objects = data;
+      } else {
+        this.objects.page = data.page;
+        this.objects.items.push(...data.items);
+      }
+    },
+    async fetchSubEntities() {
+      const entities = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId);
+      this.objects = { items: entities, page: 1, pageCount: 1, totalItemCount: entities.length };
+    },
+    handleUpdates(event: IVeoEntityModifierEvent) {
+      if (event.event === VeoEntityModifierEventType.DISPLAY_CHANGE) {
+        this.fetchEntities(event);
+      } else if (event.reloadAll) {
+        this.refetch(event);
+      }
+    },
+    async refetch(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }) {
+      if (this.entityType === '-') {
+        await this.fetchEntities(options);
+        this.currentEntity = undefined;
+      } else {
+        await this.fetchSubEntities();
+        this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
       }
     }
   }

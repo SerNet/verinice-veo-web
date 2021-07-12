@@ -139,14 +139,25 @@ export default Vue.extend({
       return {};
     }
   },
-  created() {
-    if (!this.value || this.value.length === 0) {
-      this.localValue = [{ ...this.rowToAdd }];
-    } else {
-      this.localValue = JSON.parse(JSON.stringify(this.value));
+  watch: {
+    value: {
+      deep: true,
+      handler() {
+        this.loadRows();
+      }
     }
   },
+  created() {
+    this.loadRows();
+  },
   methods: {
+    loadRows() {
+      if (!this.value || this.value.length === 0) {
+        this.localValue = [{ ...this.rowToAdd }];
+      } else {
+        this.localValue = JSON.parse(JSON.stringify(this.value));
+      }
+    },
     addRow() {
       this.localValue.push({ ...this.rowToAdd });
       this.$emit('input', this.localValue);
