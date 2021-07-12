@@ -1,5 +1,6 @@
 import 'cypress-file-upload';
 import 'cypress-plugin-snapshots/commands';
+import { BASE_URL } from './utils';
 
 function createJWT(payload) {
   const header = {
@@ -122,9 +123,9 @@ Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, opt
 Cypress.Commands.add('goTo', (path) => {
   cy.window().then(function (win: any) {
     cy.location().then((location) => {
-      if (`${location.origin}${path}` !== location.href) {
+      if (`${BASE_URL}${path}` !== location.href) {
         win.$nuxt.$router.push(path);
-        cy.location('href', { timeout: 10000 }).should('eq', `${location.origin}${path}`);
+        cy.location('href', { timeout: 10000 }).should('eq', `${BASE_URL}${path}`);
       }
     });
   });

@@ -1,6 +1,6 @@
 /// <reference path="../support/index.d.ts" />
 
-import { getEditorData } from '../support/utils';
+import { BASE_URL, getEditorData } from '../support/utils';
 
 describe('Objectschema Wizard', () => {
   before(() => {
@@ -46,9 +46,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?type=Test&description=Test%20Beschreibung`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?type=Test&description=Test%20Beschreibung`);
   });
 
   it('imports own objectschema by uploading', function () {
@@ -63,9 +61,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=custom`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=custom`);
   });
 
   it('imports own objectschema by inserting code', function () {
@@ -89,9 +85,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=custom`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=custom`);
   });
 
   it('imports existing control objectschema', function () {
@@ -116,9 +110,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=control`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=control`);
   });
 
   it('imports existing scope objectschema', function () {
@@ -143,9 +135,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=scope`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=scope`);
   });
 
   it('imports existing asset objectschema', function () {
@@ -170,9 +160,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=asset`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=asset`);
   });
 
   it('imports existing process objectschema', function () {
@@ -198,9 +186,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=process`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=process`);
   });
 
   it('imports existing incident objectschema', function () {
@@ -225,9 +211,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=incident`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=incident`);
   });
 
   it('imports existing document objectschema', function () {
@@ -252,9 +236,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=document`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=document`);
   });
 
   it('imports existing person objectschema', function () {
@@ -279,9 +261,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=person`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=person`);
   });
 
   it('imports existing scenario objectschema', function () {
@@ -306,9 +286,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location().then((location) => {
-      cy.wrap(`${location.origin}/editor/objectschema?os=scenario`).should('eq', location.href);
-    });
+    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=scenario`);
   });
 
   it('creates own objectschema by URL', function () {
