@@ -1,6 +1,6 @@
 /// <reference path="../support/index.d.ts" />
 
-import { BASE_URL, getEditorData } from '../support/utils';
+import { getEditorData } from '../support/utils';
 
 describe('Objectschema Wizard', () => {
   before(() => {
@@ -46,7 +46,8 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?type=Test&description=Test%20Beschreibung`);
+
+    cy.validateUrl('/editor/objectschema?type=Test&description=Test%20Beschreibung');
   });
 
   it('imports own objectschema by uploading', function () {
@@ -61,7 +62,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=custom`);
+    cy.validateUrl('/editor/objectschema?os=custom');
   });
 
   it('imports own objectschema by inserting code', function () {
@@ -85,7 +86,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=custom`);
+    cy.validateUrl('/editor/objectschema?os=custom');
   });
 
   it('imports existing control objectschema', function () {
@@ -110,7 +111,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=control`);
+    cy.validateUrl('/editor/objectschema?os=control');
   });
 
   it('imports existing scope objectschema', function () {
@@ -135,7 +136,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=scope`);
+    cy.validateUrl('/editor/objectschema?os=scope');
   });
 
   it('imports existing asset objectschema', function () {
@@ -160,7 +161,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=asset`);
+    cy.validateUrl('/editor/objectschema?os=asset');
   });
 
   it('imports existing process objectschema', function () {
@@ -186,7 +187,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=process`);
+    cy.validateUrl('/editor/objectschema?os=process');
   });
 
   it('imports existing incident objectschema', function () {
@@ -211,7 +212,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=incident`);
+    cy.validateUrl('/editor/objectschema?os=incident');
   });
 
   it('imports existing document objectschema', function () {
@@ -236,7 +237,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=document`);
+    cy.validateUrl('/editor/objectschema?os=document');
   });
 
   it('imports existing person objectschema', function () {
@@ -261,7 +262,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=person`);
+    cy.validateUrl('/editor/objectschema?os=person');
   });
 
   it('imports existing scenario objectschema', function () {
@@ -286,7 +287,7 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/objectschema?os=scenario`);
+    cy.validateUrl('/editor/objectschema?os=scenario');
   });
 
   it('creates own objectschema by URL', function () {

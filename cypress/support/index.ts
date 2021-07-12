@@ -1,6 +1,5 @@
 import 'cypress-file-upload';
 import 'cypress-plugin-snapshots/commands';
-import { BASE_URL } from './utils';
 
 function createJWT(payload) {
   const header = {
@@ -123,9 +122,10 @@ Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, opt
 Cypress.Commands.add('goTo', (path) => {
   cy.window().then(function (win: any) {
     cy.location().then((location) => {
-      if (`${BASE_URL}${path}` !== location.href) {
+      // if the current URL is not the same as the URL to navigate, go to the new URL ("path")
+      if (`${location.origin}${path}` !== location.href) {
         win.$nuxt.$router.push(path);
-        cy.location('href', { timeout: 10000 }).should('eq', `${BASE_URL}${path}`);
+        cy.validateUrl(path);
       }
     });
   });
@@ -191,4 +191,12 @@ Cypress.Commands.add('defineEditorIntercepts', () => {
       });
     }
   ).as('domains');
+});
+
+Cypress.Commands.add('validateUrl', (relativeUrl) => {
+  // compare current with the own relativeUrl
+  // IMPORTANT! Location and expect() should be used in this way in order to enable Cypress to wait until it is correct
+  cy.location().should((location) => {
+    expect(`${location.pathname}${location.search}`).to.equal(relativeUrl);
+  });
 });

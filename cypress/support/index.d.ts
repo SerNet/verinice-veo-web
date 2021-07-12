@@ -44,5 +44,11 @@ declare namespace Cypress {
      * @example cy.defineOSEIntercepts()
      */
     defineEditorIntercepts(): void;
+
+    /**
+     * Custom command to validate relative URLs (equal)
+     * @example cy.validateUrl('/editor/objectschema?type=Test&description=Test%20Beschreibung')
+     */
+    validateUrl(relativeUrl: string): Promise<void>;
   }
 }

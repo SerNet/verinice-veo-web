@@ -1,6 +1,6 @@
 /// <reference path="../support/index.d.ts" />
 
-import { BASE_URL, getEditorData } from '../support/utils';
+import { getEditorData } from '../support/utils';
 
 describe('Formschema Wizard', () => {
   before(() => {
@@ -16,10 +16,10 @@ describe('Formschema Wizard', () => {
 
   beforeEach(() => {
     cy.defineEditorIntercepts();
-    cy.goTo('/editor').goTo('/editor/formschema');
   });
 
   it('ckecks navigation between wizard start, back button, and formschema create and import', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').find('.v-list-item.v-list-item--link').should('contain.text', 'Formschema erstellen').should('contain.text', 'Formschema importieren');
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
@@ -31,6 +31,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on own uploaded objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -39,7 +40,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/empty.json');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=custom`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -59,6 +60,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on own objectschema by code insterting', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -77,7 +79,7 @@ describe('Formschema Wizard', () => {
       cy.contains('.v-btn', 'Codeänderungen übernehmen').click();
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=custom`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -97,6 +99,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on control objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -115,7 +118,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Control{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=control`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=control');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -135,6 +138,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on scope objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -153,7 +157,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Scope{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=scope`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=scope');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -173,6 +177,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on asset objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -191,7 +196,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Asset{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=asset`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=asset');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -211,6 +216,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on process objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -229,7 +235,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Process{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=process`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=process');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -249,6 +255,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on incident objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -267,7 +274,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Incident{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=incident`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=incident');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -287,6 +294,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on document objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -305,7 +313,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Document{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=document`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=document');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -325,6 +333,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on person objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -343,7 +352,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Person{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=person`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=person');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -363,6 +372,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('creates a new formschema based on scenario objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -381,7 +391,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Scenario{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?name=Test%20Formschema&subtype=TF&os=scenario`);
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=scenario');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -401,6 +411,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('imports a formschema by upload based on process objectschema', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -416,7 +427,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile('formschema/empty-process.json');
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?fs=custom`);
+    cy.validateUrl('/editor/formschema?fs=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -436,6 +447,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('imports a formschema by code inserting based on process objectschema ', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -461,7 +473,7 @@ describe('Formschema Wizard', () => {
         });
       cy.contains('.v-btn', 'Codeänderungen übernehmen').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?fs=custom`);
+    cy.validateUrl('/editor/formschema?fs=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -481,6 +493,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('imports a formschema by uploading based on process objectschema also manually uploaded', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -498,7 +511,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile('formschema/empty-process.json');
       cy.contains('.v-window-item--active .v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/process.json');
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?fs=custom&os=custom`);
+    cy.validateUrl('/editor/formschema?fs=custom&os=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -518,6 +531,7 @@ describe('Formschema Wizard', () => {
   });
 
   it('imports a formschema by uploading based on process objectschema by code insterting ', function () {
+    cy.goTo('/editor').goTo('/editor/formschema');
     cy.intercept(
       {
         method: 'GET',
@@ -546,7 +560,7 @@ describe('Formschema Wizard', () => {
         });
       cy.contains('.v-btn', 'Codeänderungen übernehmen').click();
     });
-    cy.location('href').should('eq', `${BASE_URL}/editor/formschema?fs=custom&os=custom`);
+    cy.validateUrl('/editor/formschema?fs=custom&os=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -594,6 +608,7 @@ describe('Formschema Wizard', () => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
       cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
+      cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
   });
 
@@ -617,7 +632,7 @@ describe('Formschema Wizard', () => {
     });
   });
 
-  it.only('imports existing formschema by URL ', function () {
+  it('imports existing formschema by URL ', function () {
     cy.intercept(
       {
         method: 'GET',
@@ -647,6 +662,7 @@ describe('Formschema Wizard', () => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
       cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
+      cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
   });
 });
