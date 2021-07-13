@@ -404,7 +404,7 @@ export default Vue.extend({
           return this.$api.entity.fetch(objectType, res.resourceId);
         },
         update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.entity.update(objectType, this.objectId, updatedObjectData);
+          return this.$api.entity.update(objectType, updatedObjectData.id, updatedObjectData);
         },
         delete: (objectType: string, id: string) => {
           this.$api.entity.delete(objectType, id);

@@ -378,9 +378,9 @@ export default Vue.extend({
   watch: {
     value: {
       async handler(v: BaseObject) {
-        const displayName = v?.target?.displayName;
         this.initialized = false;
-        await this.fetchItems(displayName);
+        const selectedItem = this.items.find((item) => item.id === v?.target?.targetUri?.split('/')?.pop());
+        await this.fetchItems(selectedItem?.name);
         this.initialized = true;
       },
       immediate: true,
