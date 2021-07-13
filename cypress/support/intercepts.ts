@@ -41,7 +41,7 @@ export function interceptLayoutCalls(options?: IBaseObject) {
           fixture: `api/forms/${id}.json`
         });
       }
-    );
+    ).as('G_fetchFormSchema');
   }
 
   if (!options?.ignoreFetchAlLReports) {
@@ -114,6 +114,6 @@ export function interceptLayoutCalls(options?: IBaseObject) {
           fixture: `api/default/entities/${type}/fetchAll.json`
         });
       }
-    );
+    ).as('G_fetchObjects');
   }
 }
