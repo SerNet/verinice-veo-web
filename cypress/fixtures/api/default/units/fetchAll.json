@@ -1,22 +1,22 @@
 [
-  {
-     "createdAt":"2021-06-17T11:15:47.102634Z",
-     "createdBy":"veo-testuser1",
-     "updatedAt":"2021-06-17T11:15:47.102634Z",
-     "updatedBy":"veo-testuser1",
-     "name":"NBRX Test Unit",
-     "description":"NBRX Test Unit für Integration Tests",
-     "units":[
-        
-     ],
-     "domains":[
-        {
-           "displayName":"D1 Testdomain 1",
-           "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
-           "targetUri":"https://veo.develop.cpmsys.io/domains/442938ae-e497-48d3-81f1-d6b2ba9260fa",
-           "resourcesUri":"https://veo.develop.cpmsys.io/domains"
-        }
-     ],
-     "id":"4fe0f8dc-ee20-41d0-b115-2d6586d3d5d7"
-  }
+   {
+      "createdAt":"2021-07-12T18:14:22.421684Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T18:14:22.421684Z",
+      "updatedBy":"pb",
+      "name":"NBRX Testunit",
+      "description":"Testunit von NBRX zum Testen",
+      "units":[
+         
+      ],
+      "domains":[
+         {
+            "displayName":"DSGVO DSGVO",
+            "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+            "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+         }
+      ],
+      "id":"d496f98f-c051-443c-9b1f-65d65b64996d"
+   }
 ]

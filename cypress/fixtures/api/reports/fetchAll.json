@@ -1,1 +1,34 @@
-[]
+{
+  "process-list":{
+    "name":{
+      "en":"Process list",
+      "de":"Liste der Prozesse"
+    },
+    "description":{
+      "en":"A simple list of all processes",
+      "de":"Eine einfache Liste mit allen Prozessen"
+    },
+    "outputTypes":[
+      "text/csv"
+    ],
+    "multipleTargetsSupported":false,
+    "targetTypes":[
+      "unit"
+    ]
+  },
+  "processing-activities":{
+    "name":{
+      "de":"Verzeichnis der Verarbeitungstätigkeiten"
+    },
+    "description":{
+      "de":"Eine detaillierte Übersicht über die in einem Scope durchgeführten Verarbeitungstätigkeiten"
+    },
+    "outputTypes":[
+      "application/pdf"
+    ],
+    "multipleTargetsSupported":false,
+    "targetTypes":[
+      "scope"
+    ]
+  }
+}

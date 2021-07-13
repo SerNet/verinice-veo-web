@@ -9,7 +9,7 @@ describe('Objectschema Editor', () => {
 
   beforeEach(() => {
     interceptLayoutCalls();
-    cy.visit(`/unit-4fe0f8dc-ee20-41d0-b115-2d6586d3d5d7/domains/domain-442938ae-e497-48d3-81f1-d6b2ba9260fa/forms/form-bb71cd48-75cf-494e-a052-0d3236af9911`);
+    cy.visit(`/unit-d496f98f-c051-443c-9b1f-65d65b64996d/domains/domain-ed67e4d7-c657-4479-ba8a-c53999d2930a/forms/form-93d11b86-1e39-4786-a73f-0f17ed8794ee/`);
   });
 
   it('Tests whether the correct api request is send if the user wants to go a page forward/back', function () {

@@ -33,11 +33,12 @@ export function interceptLayoutCalls(options?: IBaseObject) {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/formsapi\/(.*)/
+        url: /.*\/formsapi\/(.+)/
       },
       (req) => {
+        const id = req.url.split('/').pop();
         req.reply({
-          fixture: 'api/forms/$1.json'
+          fixture: `api/forms/${id}.json`
         });
       }
     );
@@ -80,6 +81,37 @@ export function interceptLayoutCalls(options?: IBaseObject) {
       (req) => {
         req.reply({
           fixture: 'api/default/domains/fetchAll.json'
+        });
+      }
+    );
+  }
+
+  if (!options?.ignoreFetchSpecificDomains) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/api\/domains\/(.+)$/
+      },
+      (req) => {
+        const id = req.url.split('/').pop();
+        req.reply({
+          fixture: `api/default/domains/${id}.json`
+        });
+      }
+    );
+  }
+
+  if (!options?.ignoreSpecificEntities) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+      },
+      (req) => {
+        const path = req.url.split('?')[0];
+        const type = path.split('/').pop();
+        req.reply({
+          fixture: `api/default/entities/${type}/fetchAll.json`
         });
       }
     );

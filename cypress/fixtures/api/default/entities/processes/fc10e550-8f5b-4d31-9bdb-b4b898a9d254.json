@@ -1,0 +1,33 @@
+{
+  "createdAt":"2021-07-12T21:52:07.130548Z",
+  "createdBy":"pb",
+  "updatedAt":"2021-07-12T21:52:07.130548Z",
+  "updatedBy":"pb",
+  "name":"Blau",
+  "designator":"PRO-9",
+  "abbreviation":"P3",
+  "description":"Prozess ohne Subtype",
+  "domains":[
+    
+  ],
+  "owner":{
+    "displayName":"NBRX Testunit",
+    "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+    "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+    "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+  },
+  "links":{
+    
+  },
+  "customAspects":{
+    
+  },
+  "subType":{
+    
+  },
+  "type":"process",
+  "parts":[
+    
+  ],
+  "id":"fc10e550-8f5b-4d31-9bdb-b4b898a9d254"
+}
