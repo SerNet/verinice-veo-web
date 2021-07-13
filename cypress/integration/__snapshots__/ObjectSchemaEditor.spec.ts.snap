@@ -596,7 +596,7 @@ exports[`Objectschema Editor > changes link name, attribute names, description a
   "properties": {
     "subType": {
       "enum": [
-        "DSGVO_TOM"
+        "AST_Datatype"
       ]
     },
     "targetUri": {
@@ -605,7 +605,7 @@ exports[`Objectschema Editor > changes link name, attribute names, description a
     },
     "type": {
       "enum": [
-        "control"
+        "asset"
       ]
     }
   },

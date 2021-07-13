@@ -58,6 +58,20 @@ export function interceptLayoutCalls(options?: IBaseObject) {
     );
   }
 
+  if (!options?.ignoreTranslations) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/api\/translations\?languages=(.*)$/
+      },
+      (req) => {
+        req.reply({
+          fixture: 'translations/translation.json'
+        });
+      }
+    );
+  }
+
   if (!options?.ignoreFetchAllUnits) {
     cy.intercept(
       {

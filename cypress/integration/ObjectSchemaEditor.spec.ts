@@ -4,6 +4,7 @@ import { times } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 
 import { getEditorData } from '../support/utils';
+import { interceptLayoutCalls } from '../support/intercepts';
 
 let testSchema = '{}';
 let emptySchema = '{}';
@@ -77,65 +78,7 @@ const addTestTwoAttribute = {
 describe('Objectschema Editor', () => {
   before(() => {
     cy.auth();
-
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas$/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/schemas.json'
-        });
-      }
-    );
-
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/translations(.*)$/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'translations/translation.json'
-        });
-      }
-    );
-
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\//
-      },
-      (req) => {
-        req.reply({
-          fixture: 'forms/fetchAllForms.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'reports/fetchAllReports.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'default/fetchAllDomains.json'
-        });
-      }
-    );
-
+    interceptLayoutCalls();
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
@@ -174,6 +117,7 @@ describe('Objectschema Editor', () => {
       });
   });
   beforeEach(() => {
+    interceptLayoutCalls();
     // Reset the schema before each test to restore the original state
     cy.get('.editor')
       .find('.cm-content')
@@ -410,8 +354,8 @@ describe('Objectschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');
       cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
-      cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Control{enter}');
-      cy.contains('Link Subtyp').closest('.v-select').type('TOM{enter}');
+      cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Asset{enter}');
+      cy.contains('Link Subtyp').closest('.v-select').type('Datenart{enter}');
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {

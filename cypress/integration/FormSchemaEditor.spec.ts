@@ -1,5 +1,6 @@
 /// <reference path="../support/index.d.ts" />
 
+import { interceptLayoutCalls } from '../support/intercepts';
 import { getEditorData } from '../support/utils';
 
 const textOrGroupLangRegex = /(group|text)_[a-zA-Z0-9._-]+/g;
@@ -39,6 +40,7 @@ const translationsDeleted = {};
 describe('Formschema Editor', () => {
   before(() => {
     cy.auth();
+    interceptLayoutCalls();
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
@@ -47,39 +49,7 @@ describe('Formschema Editor', () => {
   });
 
   beforeEach(() => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'forms/fetchAllForms.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'reports/fetchAllReports.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains\//
-      },
-      (req) => {
-        req.reply({
-          fixture: 'default/fetchAllDomains.json'
-        });
-      }
-    );
+    interceptLayoutCalls();
   });
 
   it('drags and drops elements into dropzone and nests in each other', function () {
