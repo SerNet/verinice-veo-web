@@ -33,8 +33,7 @@ test:e2e:
   tags:
     - 'cpmsys01'
   variables:
-    VEO_API_USE_PROXY: 'false'
-    VEO_API_URL: https://veo.develop.cpmsys.io/
+    VEO_API_USE_PROXY: 'true'
   script:
     - npm ci
     - CYPRESS_BASE_URL=$(cat environment_url.txt)
