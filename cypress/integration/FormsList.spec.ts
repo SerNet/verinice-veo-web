@@ -158,7 +158,7 @@ describe('Objectschema Editor', () => {
     cy.get('[data-cy=confirm-button]').click();
   });
 
-  it.only('Clones the object in the forms table', function () {
+  it('Clones the object in the forms table', function () {
     cy.wait('@G_fetchObjects');
     const index = 4;
 

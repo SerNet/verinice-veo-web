@@ -1,4 +1,4 @@
-import { IBaseObject } from '~/types/VeoTypes';
+import { IBaseObject } from '../../lib/utils';
 
 export function interceptLayoutCalls(options?: IBaseObject) {
   if (!options?.ignoreAllSchemas) {
@@ -101,7 +101,7 @@ export function interceptLayoutCalls(options?: IBaseObject) {
     );
   }
 
-  if (!options?.ignoreSpecificEntities) {
+  if (!options?.ignoreFetchAllEntities) {
     cy.intercept(
       {
         method: 'GET',
@@ -112,6 +112,24 @@ export function interceptLayoutCalls(options?: IBaseObject) {
         const type = path.split('/').pop();
         req.reply({
           fixture: `api/default/entities/${type}/fetchAll.json`
+        });
+      }
+    ).as('G_fetchObjects');
+  }
+
+  if (!options?.ignoreFetchSpecificEntities) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.+)$/
+      },
+      (req) => {
+        const url = req.url.split('/');
+        const id = url.pop();
+        const type = url.pop();
+
+        req.reply({
+          fixture: `api/default/entities/${type}/${id}.json`
         });
       }
     ).as('G_fetchObjects');
