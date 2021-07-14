@@ -1,28 +1,35 @@
 <template>
   <v-list
+    flat
     dense
     class="pa-0"
   >
-    <template v-for="item in items">
-      <v-list-item
-        :key="item.initialId + '0'"
-        @click="onClick(item.initialId)"
-      >
-        <v-list-item-content>
-          <v-list-item-title :class="currentLevelLeftMargin">
-            {{ item.text }}
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <VeoFormNavigation
-        v-if="nestingLevel < 0"
-        :key="item.initialId + '1'"
-        :form-schema="item.layout"
-        :custom-translation="customTranslation"
-        :initial-id="item.initialId"
-        :nesting-level="nextNestingLevel"
-      />
-    </template>
+    <v-list-item-group
+      v-model="selectedItem"
+      mandatory
+      color="primary"
+    >
+      <template v-for="item in items">
+        <v-list-item
+          :key="item.initialId + '0'"
+          @click="onClick(item.initialId)"
+        >
+          <v-list-item-content>
+            <v-list-item-title :class="currentLevelLeftMargin">
+              {{ item.text }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <VeoFormNavigation
+          v-if="nestingLevel < 0"
+          :key="item.initialId + '1'"
+          :form-schema="item.layout"
+          :custom-translation="customTranslation"
+          :initial-id="item.initialId"
+          :nesting-level="nextNestingLevel"
+        />
+      </template>
+    </v-list-item-group>
   </v-list>
 </template>
 
@@ -39,6 +46,7 @@ interface IItem {
 interface IData {
   items: IItem[];
   scrollWrapper: HTMLElement | null;
+  selectedItem: number | undefined;
 }
 
 export default Vue.extend({
@@ -65,7 +73,8 @@ export default Vue.extend({
   data(): IData {
     return {
       items: [],
-      scrollWrapper: null
+      scrollWrapper: null,
+      selectedItem: undefined
     };
   },
   computed: {
