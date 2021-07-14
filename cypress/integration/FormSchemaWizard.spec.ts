@@ -581,6 +581,7 @@ describe('Formschema Wizard', () => {
 
   it('navigates to wizard state by URL where formschema will be created based on own objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema?name=Test%20Formschema&subtype=TF&os=custom');
+    cy.wait(['@translations']);
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
       cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
@@ -603,6 +604,7 @@ describe('Formschema Wizard', () => {
       }
     );
     cy.goTo('/editor').goTo('/editor/formschema?name=Test%20Formschema&subtype=TF&os=process');
+    cy.wait(['@translations']);
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
@@ -614,6 +616,7 @@ describe('Formschema Wizard', () => {
 
   it('navigates to wizard state by URL where own formschema can be imported', function () {
     cy.goTo('/editor').goTo('/editor/formschema?fs=custom');
+    cy.wait(['@translations']);
     cy.get('.v-dialog--active').within(() => {
       cy.get('h2').should('contain.text', 'Formschema importieren');
       cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
@@ -624,6 +627,7 @@ describe('Formschema Wizard', () => {
 
   it('navigates to wizard state by URL where own formschema can be imported with own objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema?fs=custom&os=custom');
+    cy.wait(['@translations']);
     cy.get('.v-dialog--active').within(() => {
       cy.get('h2').should('contain.text', 'Formschema importieren');
       cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
@@ -657,6 +661,7 @@ describe('Formschema Wizard', () => {
       }
     );
     cy.goTo('/editor').goTo('/editor/formschema?fs=ef0971af-ad3c-4eb7-bcda-18088d6899c6');
+    cy.wait(['@translations']);
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
