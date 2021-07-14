@@ -8,12 +8,6 @@ declare namespace Cypress {
     auth(): void;
 
     /**
-     * Custom command to load FormSchemaEditor with a specific FormSchema
-     * @example cy.loadFse('formschema/empty.json')
-     */
-    loadFse(formSchemaPath: string): void;
-
-    /**
      * Custom command to start dragging the element (often used before cy.get('.dropzone').drop() to drop the element)
      * @example cy.get('.someelement').drag()
      */
@@ -38,5 +32,23 @@ declare namespace Cypress {
         name: string;
       }>
     ): Cypress.Chainable<null>;
+
+    /**
+     * Custom command to navigate through app by URL
+     * @example cy.goTo('/editor/objectschema')
+     */
+    goTo(path: string): Cypress.Chainable<void>;
+
+    /**
+     * Custom command to define OSE used intercepts
+     * @example cy.defineOSEIntercepts()
+     */
+    defineEditorIntercepts(): void;
+
+    /**
+     * Custom command to validate relative URLs (equal)
+     * @example cy.validateUrl('/editor/objectschema?type=Test&description=Test%20Beschreibung')
+     */
+    validateUrl(relativeUrl: string): Promise<void>;
   }
 }

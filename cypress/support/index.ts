@@ -104,54 +104,6 @@ Cypress.Commands.add('drop', { prevSubject: true }, (subject) => {
   });
 });
 
-Cypress.Commands.add('loadFse', (formSchemaPath) => {
-  cy.intercept(
-    {
-      method: 'GET',
-      url: /.*\/translations.*/
-    },
-    (req) => {
-      req.reply({
-        fixture: 'objectschema/translations.json'
-      });
-    }
-  );
-  cy.intercept(
-    {
-      method: 'GET',
-      url: /.*\/schemas$/
-    },
-    (req) => {
-      req.reply({
-        fixture: 'objectschema/schemas.json'
-      });
-    }
-  );
-
-  cy.window().then(function (win: any) {
-    win.$nuxt?.$router?.push('/editor');
-  });
-
-  cy.contains('.v-list-item--link', 'Formschema Editor').should('have.attr', 'href', '/editor/formschema').click();
-
-  cy.intercept(
-    {
-      method: 'GET',
-      url: /.*\/schemas\/process.*/
-    },
-    (req) => {
-      req.reply({
-        fixture: 'objectschema/process.json'
-      });
-    }
-  );
-  cy.get('.v-dialog--active').within(() => {
-    cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
-    cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile(formSchemaPath);
-  });
-  cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
-});
-
 const textGroupRegExp = /(text|group)_[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi;
 
 Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, options) => {
@@ -165,4 +117,86 @@ Cypress.Commands.add('toMatchHtmlSnapshot', { prevSubject: true }, (subject, opt
       )
     )
   ).toMatchSnapshot(options);
+});
+
+Cypress.Commands.add('goTo', (path) => {
+  cy.window().then(function (win: any) {
+    cy.location().then((location) => {
+      // if the current URL is not the same as the URL to navigate, go to the new URL ("path")
+      if (`${location.origin}${path}` !== location.href) {
+        win.$nuxt.$router.push(path);
+        cy.validateUrl(path);
+      }
+    });
+  });
+});
+
+Cypress.Commands.add('defineEditorIntercepts', () => {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/schemas$/
+    },
+    (req) => {
+      req.reply({
+        fixture: 'objectschema/schemas.json'
+      });
+    }
+  ).as('schemas');
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /.*\/translations(.*)$/
+    },
+    (req) => {
+      req.reply({
+        fixture: 'translations/translations.json'
+      });
+    }
+  ).as('translations');
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
+    },
+    (req) => {
+      req.reply({
+        fixture: 'forms/fetchAllForms.json'
+      });
+    }
+  ).as('forms');
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports\/*/
+    },
+    (req) => {
+      req.reply({
+        fixture: 'reports/fetchAllReports.json'
+      });
+    }
+  ).as('reports');
+
+  cy.intercept(
+    {
+      method: 'GET',
+      url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
+    },
+    (req) => {
+      req.reply({
+        fixture: 'default/fetchAllDomains.json'
+      });
+    }
+  ).as('domains');
+});
+
+Cypress.Commands.add('validateUrl', (relativeUrl) => {
+  // compare current with the own relativeUrl
+  // IMPORTANT! Location and expect() should be used in this way in order to enable Cypress to wait until it is correct
+  cy.location().should((location) => {
+    expect(`${location.pathname}${location.search}`).to.equal(relativeUrl);
+  });
 });
