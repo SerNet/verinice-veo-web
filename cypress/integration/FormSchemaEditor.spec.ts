@@ -130,7 +130,7 @@ describe('Formschema Editor', () => {
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('/editor');
-    cy.wait(['@schemas', '@forms', '@reports', '@domains']);
+    cy.wait(['@schemas', '@domains']);
   });
 
   beforeEach(() => {
