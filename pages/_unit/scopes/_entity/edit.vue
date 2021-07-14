@@ -276,14 +276,19 @@ export default Vue.extend({
 
       this.$api.entity
         .update(this.entityType, this.entityId, this.form.objectData as IVeoEntity)
-        .then(() => {
+        .then(async () => {
           this.entityModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
           if (redirect) {
             this.$router.back();
           } else {
-            this.$fetch();
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                this.$fetch();
+                resolve();
+              }, 1000);
+            });
           }
         })
         .catch((error: { status: number; name: string }) => {
