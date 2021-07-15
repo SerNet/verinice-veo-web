@@ -63,7 +63,7 @@ test:e2e:
     - 'cpmsys01'
   variables:
     VEO_API_USE_PROXY: 'true'
-    NODE_ENV: 'development'
+    GIT_STRATEGY: none
   script:
     - npm ci
     - (npm run start&)
