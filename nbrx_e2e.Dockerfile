@@ -8,7 +8,9 @@ COPY .npmrc .
 COPY package.json .
 # For npm@5 or later, copy package-lock.json as well
 COPY package-lock.json .
-RUN npm install
+
+ENV NODE_ENV development
+RUN npm ci
 # Bundle app source
 COPY . .
 

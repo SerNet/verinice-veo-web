@@ -19,7 +19,6 @@ build:e2e:
   variables:
     DOCKERFILE_PATH: "nbrx_e2e.Dockerfile"
     CI_REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_PATH/cypress"
-    NODE_ENV: development
   services:
     - name: 'docker:20.10.6-dind'
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
@@ -65,7 +64,6 @@ test:e2e:
   variables:
     VEO_API_USE_PROXY: 'true'
   script:
-    - npm ci
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
   rules:
