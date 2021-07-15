@@ -54,7 +54,7 @@ cache:
     - cache/Cypress
 
 test:e2e:
-  image: cypress/base:14.15.4
+  image: registry.nbrx.de/nbrx/t1/veo/cypress/${CI_COMMIT_REF_NAME}/cypress:latest
   stage: performance
   tags:
     - 'cpmsys01'
