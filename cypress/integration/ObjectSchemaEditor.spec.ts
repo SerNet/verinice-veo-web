@@ -113,7 +113,7 @@ describe('Objectschema Editor', () => {
   before(() => {
     cy.auth();
 
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
 
     cy.fixture('objectschema/os_testschema.json').then((_testSchema) => {
       schemaRealValues = [
@@ -137,7 +137,7 @@ describe('Objectschema Editor', () => {
     cy.wait(['@schemas', '@domains']);
   });
   beforeEach(() => {
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
   });
 
   it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function () {
@@ -356,8 +356,8 @@ describe('Objectschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');
       cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
-      cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Control{enter}');
-      cy.contains('Link Subtyp').closest('.v-select').type('TOM{enter}');
+      cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Asset{enter}');
+      cy.contains('Link Subtyp').closest('.v-select').type('Datenart{enter}');
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {

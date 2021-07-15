@@ -1,11 +1,10 @@
 /// <reference path="../support/index.d.ts" />
-
 import { getEditorData } from '../support/utils';
 
 describe('Formschema Wizard', () => {
   before(() => {
     cy.auth();
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
@@ -15,7 +14,7 @@ describe('Formschema Wizard', () => {
   });
 
   beforeEach(() => {
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
   });
 
   it('ckecks navigation between wizard start, back button, and formschema create and import', function () {

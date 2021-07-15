@@ -1,11 +1,10 @@
 /// <reference path="../support/index.d.ts" />
-
 import { getEditorData } from '../support/utils';
 
 describe('Objectschema Wizard', () => {
   before(() => {
     cy.auth();
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
@@ -15,7 +14,7 @@ describe('Objectschema Wizard', () => {
   });
 
   beforeEach(() => {
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
   });
 
   it('ckecks navigation between wizard start, back button, and objectschema create and import', function () {

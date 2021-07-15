@@ -124,7 +124,7 @@ describe('Formschema Editor', () => {
   before(() => {
     cy.auth();
 
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
@@ -134,7 +134,7 @@ describe('Formschema Editor', () => {
   });
 
   beforeEach(() => {
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
   });
 
   it('drags and drops elements into dropzone and nests in each other', function () {

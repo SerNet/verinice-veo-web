@@ -1,0 +1,18 @@
+[
+   {
+      "createdAt":"2021-07-09T11:38:32.006512Z",
+      "createdBy":"veo-testuser1",
+      "updatedAt":"2021-07-09T11:38:32.006512Z",
+      "updatedBy":"veo-testuser1",
+      "name":"DSGVO",
+      "abbreviation":"DSGVO",
+      "description":"The DSGVO DomainTemplate.",
+      "catalogs":[
+         {
+            "displayName":"DVGO-Controls",
+            "targetUri":"https://veo.develop.cpmsys.io/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51"
+         }
+      ],
+      "id":"ed67e4d7-c657-4479-ba8a-c53999d2930a"
+   }
+]

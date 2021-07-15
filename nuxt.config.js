@@ -57,7 +57,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vee-validate', '~/plugins/logger', '~/plugins/user', '~/plugins/api'],
+  plugins: ['~/plugins/vee-validate', '~/plugins/logger', '~/plugins/user', '~/plugins/api', '~/plugins/utils'],
 
   /**
    *

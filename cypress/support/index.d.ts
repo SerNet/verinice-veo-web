@@ -1,3 +1,5 @@
+import { IBaseObject } from '../../lib/utils';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare namespace Cypress {
   interface Chainable {
@@ -40,15 +42,15 @@ declare namespace Cypress {
     goTo(path: string): Cypress.Chainable<void>;
 
     /**
-     * Custom command to define OSE used intercepts
-     * @example cy.defineOSEIntercepts()
-     */
-    defineEditorIntercepts(): void;
-
-    /**
      * Custom command to validate relative URLs (equal)
      * @example cy.validateUrl('/editor/objectschema?type=Test&description=Test%20Beschreibung')
      */
     validateUrl(relativeUrl: string): Promise<void>;
+
+    /**
+     * Custom command to define OSE used intercepts
+     * @example cy.defineOSEIntercepts()
+     */
+    interceptLayoutCalls(options?: IBaseObject): void;
   }
 }
