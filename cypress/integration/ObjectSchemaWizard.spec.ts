@@ -10,7 +10,7 @@ describe('Objectschema Wizard', () => {
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('/editor');
-    cy.wait(['@schemas', '@domains']);
+    cy.wait('@G_fetchSchemas');
   });
 
   beforeEach(() => {
@@ -54,7 +54,7 @@ describe('Objectschema Wizard', () => {
     // TODO
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Eigenes{enter}');
-      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/empty.json');
+      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('api/default/schemas/empty.json');
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Test');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Test Beschreibung');
@@ -73,7 +73,7 @@ describe('Objectschema Wizard', () => {
         .find('.editor .cm-content')
         .closest('.d-flex.flex-column')
         .then((el: any) => {
-          cy.fixture('objectschema/empty.json').then((emptyOS) => {
+          cy.fixture('api/default/schemas/empty.json').then((emptyOS) => {
             // TODO: this is a hack to load OS in Code Editor. It needs a better solution
             el[0].__vue__.$emit('input', JSON.stringify(emptyOS));
           });
@@ -97,7 +97,7 @@ describe('Objectschema Wizard', () => {
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/control.json'
+          fixture: 'api/default/schemas/control.json'
         });
       }
     );
@@ -122,7 +122,7 @@ describe('Objectschema Wizard', () => {
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/scope.json'
+          fixture: 'api/default/schemas/scope.json'
         });
       }
     );
@@ -147,7 +147,7 @@ describe('Objectschema Wizard', () => {
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/asset.json'
+          fixture: 'api/default/schemas/asset.json'
         });
       }
     );
@@ -172,7 +172,7 @@ describe('Objectschema Wizard', () => {
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/process.json'
+          fixture: 'api/default/schemas/process.json'
         });
       }
     );
@@ -198,7 +198,7 @@ describe('Objectschema Wizard', () => {
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/incident.json'
+          fixture: 'api/default/schemas/incident.json'
         });
       }
     );
@@ -223,7 +223,7 @@ describe('Objectschema Wizard', () => {
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/document.json'
+          fixture: 'api/default/schemas/document.json'
         });
       }
     );
@@ -248,7 +248,7 @@ describe('Objectschema Wizard', () => {
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/person.json'
+          fixture: 'api/default/schemas/person.json'
         });
       }
     );
@@ -273,7 +273,7 @@ describe('Objectschema Wizard', () => {
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/scenario.json'
+          fixture: 'api/default/schemas/scenario.json'
         });
       }
     );
@@ -312,7 +312,7 @@ describe('Objectschema Wizard', () => {
       },
       (req) => {
         req.reply({
-          fixture: 'objectschema/process.json'
+          fixture: 'api/default/schemas/process.json'
         });
       }
     );

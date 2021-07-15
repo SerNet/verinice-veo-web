@@ -74,12 +74,12 @@ const addTestTwoAttribute = {
 const tos = generateTos({
   testschema: {
     requestUrlPattern: /.*\/schemas\/testschema.*/,
-    fixturePath: 'objectschema/os_testschema.json',
+    fixturePath: 'api/default/schemas/os_testschema.json',
     browserUrl: '/editor/objectschema?os=testschema'
   },
   empty: {
     requestUrlPattern: /.*\/schemas\/empty.*/,
-    fixturePath: 'objectschema/os_empty.json',
+    fixturePath: 'api/default/schemas/os_empty.json',
     browserUrl: '/editor/objectschema?os=empty'
   }
 });
@@ -115,7 +115,7 @@ describe('Objectschema Editor', () => {
 
     cy.interceptLayoutCalls();
 
-    cy.fixture('objectschema/os_testschema.json').then((_testSchema) => {
+    cy.fixture('api/default/schemas/os_testschema.json').then((_testSchema) => {
       schemaRealValues = [
         // -3 = customAspects, customLinks, translations
         { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 3 },
@@ -134,7 +134,7 @@ describe('Objectschema Editor', () => {
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('/editor');
-    cy.wait(['@schemas', '@domains']);
+    cy.wait('@G_fetchSchemas');
   });
   beforeEach(() => {
     cy.interceptLayoutCalls();

@@ -155,6 +155,22 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     ).as('G_fetchSchemas');
   }
 
+  if (!options?.ignoreSpecificSchemas) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/api\/schemas\/(.+)$/
+      },
+      (req) => {
+        const type = req.url.split('/').pop();
+        const cleanType = type.split('?')[0];
+        req.reply({
+          fixture: `api/default/schemas/${cleanType}.json`
+        });
+      }
+    ).as('G_fetchSchemas');
+  }
+
   if (!options?.ignoreFetchAllForms) {
     cy.intercept(
       {
@@ -230,11 +246,11 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/translations\?languages=(.*)$/
+        url: /.*\/api\/translations(.*)$/
       },
       (req) => {
         req.reply({
-          fixture: 'translations/translation.json'
+          fixture: 'translations/translations.json'
         });
       }
     ).as('G_fetchTranslations');

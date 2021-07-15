@@ -14,14 +14,19 @@ describe('Objectschema Editor', () => {
   });
 
   // Only checking for correct request, we expect the vuetify component to work correctly
-  it.only('Navigates the forms table using the forward/back buttons', function () {
+  it('Navigates the forms table using the forward/back buttons', function () {
+    cy.intercept({
+      method: 'GET',
+      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+    }).as('fetchObjects');
+
     // Go to next page (from page 0 to page 1)
     cy.get('.v-data-footer__icons-after .mdi-chevron-right').click();
-    cy.get('@G_fetchObjects').its('request.url').should('contain', 'page=1');
+    cy.get('@fetchObjects').its('request.url').should('contain', 'page=1');
 
     // Go to previous page (from page 1 to page 0)
     cy.get('.v-data-footer__icons-before .mdi-chevron-left').click();
-    cy.get('@G_fetchObjects').its('request.url').should('contain', 'page=0');
+    cy.get('@fetchObjects').its('request.url').should('contain', 'page=0');
   });
 
   // Only checking for correct request, we expect the vuetify component to work correctly
