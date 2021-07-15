@@ -26,4 +26,4 @@ ENV PORT 5000
 RUN npm run build
 
 EXPOSE 5000
-ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
+RUN npm run start
