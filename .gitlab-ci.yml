@@ -19,6 +19,7 @@ build:e2e:
   variables:
     DOCKERFILE_PATH: "nbrx_e2e.Dockerfile"
     CI_REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_PATH/cypress"
+    NODE_ENV: development
   services:
     - name: 'docker:20.10.6-dind'
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']

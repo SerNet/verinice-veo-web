@@ -21,7 +21,7 @@ ENV CI_COMMIT_SHA ${CI_COMMIT_SHA}
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > static/VERSION && echo ${CI_COMMIT_SHA} > BUILD && echo ${CI_COMMIT_SHA} > static/BUILD
 
 ENV VEO_API_USE_PROXY: 'true'
-ENV NODE_ENV production
+ENV NODE_ENV development
 ENV PORT 5000
 RUN npm run build
 
