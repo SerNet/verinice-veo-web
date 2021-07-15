@@ -1,7 +1,7 @@
 /// <reference path="../support/index.d.ts" />
 import { IVeoEntity } from '../../types/VeoTypes';
 
-describe('Objectschema Editor', () => {
+describe('Forms List', () => {
   before(() => {
     cy.interceptLayoutCalls();
   });
