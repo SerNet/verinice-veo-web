@@ -63,16 +63,14 @@ test:e2e:
     - 'cpmsys01'
   variables:
     VEO_API_USE_PROXY: 'true'
+    NODE_ENV: 'development'
   script:
+    - npm ci
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
-  rules:
-    - if: '$TEST_DISABLED'
-      when: never
-    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
-      when: always
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: manual
+  needs:
+    - job: build:e2e
+      artifacts: true
   artifacts:
     when: always
     paths:
