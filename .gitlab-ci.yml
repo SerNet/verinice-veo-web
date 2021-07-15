@@ -18,7 +18,7 @@ build:e2e:
   image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.0.0'
   variables:
     DOCKERFILE_PATH: "nbrx_e2e.Dockerfile"
-    CI_REGISTRY_IMAGE: "${CI_REGISTRY_IMAGE}/cypress"
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_PATH/cypress"
   services:
     - name: 'docker:20.10.6-dind'
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
