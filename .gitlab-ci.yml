@@ -76,7 +76,7 @@ test:e2e:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
   needs:
-    - job: build_job
+    - job: build:e2e
       artifacts: true
   artifacts:
     when: always
