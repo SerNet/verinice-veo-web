@@ -65,6 +65,7 @@ test:e2e:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
   script:
+    - cd /usr/src/app
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
   rules:
@@ -76,7 +77,6 @@ test:e2e:
       when: always
   needs:
     - job: build:e2e
-      artifacts: true
   artifacts:
     when: always
     paths:
