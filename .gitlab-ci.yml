@@ -64,7 +64,6 @@ test:e2e:
   variables:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
-    CI_PROJECT_DIR: /usr/src/app
   script:
     - echo $CI_PROJECT_DIR
     - pwd
