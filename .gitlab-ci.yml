@@ -69,6 +69,9 @@ test:e2e:
     - pwd
     - ls -al
     - cd / && ls -al
+    - cd /builds && ls -al
+    - cd /builds/nbrx && ls -al
+    - cd /builds/nbrx/t1 && ls -al
     - cd /usr/src/app
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
