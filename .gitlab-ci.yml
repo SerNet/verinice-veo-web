@@ -13,6 +13,35 @@ variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
   CYPRESS_BASE_URL: ''
 
+build:e2e:
+  stage: build
+  image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.0.0'
+  variables:
+    DOCKERFILE_PATH: "nbrx_e2e.Dockerfile"
+    CI_REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_PATH/cypress"
+  services:
+    - name: 'docker:20.10.6-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+  script:
+    - |
+      if [[ -z "$CI_COMMIT_TAG" ]]; then
+        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
+        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
+      else
+        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
+        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
+      fi
+    - /build/build.sh
+  rules:
+    - if: '$BUILD_DISABLED'
+      when: never
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+
 review:
   environment:
     auto_stop_in: 4 week
@@ -28,25 +57,30 @@ cache:
     - cache/Cypress
 
 test:e2e:
-  image: cypress/base:14.15.4
+  image: registry.nbrx.de/nbrx/t1/veo/cypress/${CI_COMMIT_REF_NAME}:latest
   stage: performance
   tags:
     - 'cpmsys01'
   variables:
-    VEO_API_USE_PROXY: 'false'
-    VEO_API_URL: https://veo.develop.cpmsys.io/
+    VEO_API_USE_PROXY: 'true'
+    GIT_STRATEGY: none
   script:
-    - npm ci
-    - CYPRESS_BASE_URL=$(cat environment_url.txt)
-    - npm run test:e2e -- --config baseUrl="$CYPRESS_BASE_URL"
+    - cd /usr/src/app
+    - (npm run start&)
+    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
   rules:
     - if: '$TEST_DISABLED'
       when: never
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+  needs:
+    - job: build:e2e
   artifacts:
     when: always
     paths:
-      - cypress/videos/**/*.mp4
-      - cypress/screenshots/**/*.png
-      - cypress/coverage/**/*
+      - /usr/src/app/cypress/videos/**/*.mp4
+      - /usr/src/app/cypress/screenshots/**/*.png
+      - /usr/src/app/cypress/coverage/**/*
     expire_in: 1 day

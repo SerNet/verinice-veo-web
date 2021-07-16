@@ -1,21 +1,20 @@
 /// <reference path="../support/index.d.ts" />
-
 import { getEditorData } from '../support/utils';
 
 describe('Formschema Wizard', () => {
   before(() => {
     cy.auth();
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('/editor');
-    cy.wait(['@schemas', '@domains']);
+    cy.wait('@G_fetchSchemas');
   });
 
   beforeEach(() => {
-    cy.defineEditorIntercepts();
+    cy.interceptLayoutCalls();
   });
 
   it('ckecks navigation between wizard start, back button, and formschema create and import', function () {
@@ -37,7 +36,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Eigenes{enter}');
-      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/empty.json');
+      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('api/default/schemas/empty.json');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=custom');
@@ -71,7 +70,7 @@ describe('Formschema Wizard', () => {
         .find('.editor .cm-content')
         .closest('.d-flex.flex-column')
         .then((el: any) => {
-          cy.fixture('objectschema/empty.json').then((emptyOS) => {
+          cy.fixture('api/default/schemas/empty.json').then((emptyOS) => {
             // TODO: this is a hack to load OS in Code Editor. It needs a better solution
             el[0].__vue__.$emit('input', JSON.stringify(emptyOS));
           });
@@ -100,17 +99,6 @@ describe('Formschema Wizard', () => {
 
   it('creates a new formschema based on control objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/control.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/control.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -139,17 +127,6 @@ describe('Formschema Wizard', () => {
 
   it('creates a new formschema based on scope objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/scope.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/scope.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -178,17 +155,6 @@ describe('Formschema Wizard', () => {
 
   it('creates a new formschema based on asset objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/asset.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/asset.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -217,17 +183,6 @@ describe('Formschema Wizard', () => {
 
   it('creates a new formschema based on process objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/process.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/process.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -256,17 +211,6 @@ describe('Formschema Wizard', () => {
 
   it('creates a new formschema based on incident objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/incident.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/incident.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -295,17 +239,6 @@ describe('Formschema Wizard', () => {
 
   it('creates a new formschema based on document objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/document.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/document.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -334,17 +267,6 @@ describe('Formschema Wizard', () => {
 
   it('creates a new formschema based on person objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/person.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/person.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -373,17 +295,6 @@ describe('Formschema Wizard', () => {
 
   it('creates a new formschema based on scenario objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/scenario.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/scenario.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
@@ -412,17 +323,6 @@ describe('Formschema Wizard', () => {
 
   it('imports a formschema by upload based on process objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/process.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/process.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile('formschema/empty-process.json');
@@ -448,17 +348,6 @@ describe('Formschema Wizard', () => {
 
   it('imports a formschema by code inserting based on process objectschema ', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/process.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/process.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-tab', 'Code einfügen').click();
@@ -494,22 +383,11 @@ describe('Formschema Wizard', () => {
 
   it('imports a formschema by uploading based on process objectschema also manually uploaded', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/process.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/process.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-input--checkbox', 'Existierendes Objektschema selbst hochladen.').click();
       cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile('formschema/empty-process.json');
-      cy.contains('.v-window-item--active .v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/process.json');
+      cy.contains('.v-window-item--active .v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('api/default/schemas/process.json');
     });
     cy.validateUrl('/editor/formschema?fs=custom&os=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
@@ -532,17 +410,6 @@ describe('Formschema Wizard', () => {
 
   it('imports a formschema by uploading based on process objectschema by code insterting ', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/process.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/process.json'
-        });
-      }
-    );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-input--checkbox', 'Existierendes Objektschema selbst hochladen.').click();
@@ -553,7 +420,7 @@ describe('Formschema Wizard', () => {
         .find('.editor .cm-content')
         .closest('.d-flex.flex-column')
         .then((el: any) => {
-          cy.fixture('objectschema/process.json').then((processOS) => {
+          cy.fixture('api/default/schemas/process.json').then((processOS) => {
             // TODO: this is a hack to load OS in Code Editor. It needs a better solution
             el[0].__vue__.$emit('input', JSON.stringify(processOS));
           });
@@ -581,7 +448,7 @@ describe('Formschema Wizard', () => {
 
   it('navigates to wizard state by URL where formschema will be created based on own objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema?name=Test%20Formschema&subtype=TF&os=custom');
-    cy.wait(['@translations']);
+    cy.wait('@G_fetchTranslations');
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
       cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
@@ -592,19 +459,8 @@ describe('Formschema Wizard', () => {
   });
 
   it('navigates to wizard state by URL where formschema will be created based on existing objectschema', function () {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/process.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/process.json'
-        });
-      }
-    );
     cy.goTo('/editor').goTo('/editor/formschema?name=Test%20Formschema&subtype=TF&os=process');
-    cy.wait(['@translations']);
+    cy.wait(['@G_fetchTranslations']);
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
@@ -616,7 +472,7 @@ describe('Formschema Wizard', () => {
 
   it('navigates to wizard state by URL where own formschema can be imported', function () {
     cy.goTo('/editor').goTo('/editor/formschema?fs=custom');
-    cy.wait(['@translations']);
+    cy.wait(['@G_fetchTranslations']);
     cy.get('.v-dialog--active').within(() => {
       cy.get('h2').should('contain.text', 'Formschema importieren');
       cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
@@ -627,7 +483,7 @@ describe('Formschema Wizard', () => {
 
   it('navigates to wizard state by URL where own formschema can be imported with own objectschema', function () {
     cy.goTo('/editor').goTo('/editor/formschema?fs=custom&os=custom');
-    cy.wait(['@translations']);
+    cy.wait(['@G_fetchTranslations']);
     cy.get('.v-dialog--active').within(() => {
       cy.get('h2').should('contain.text', 'Formschema importieren');
       cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
@@ -637,31 +493,8 @@ describe('Formschema Wizard', () => {
   });
 
   it('imports existing formschema by URL ', function () {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/ef0971af-ad3c-4eb7-bcda-18088d6899c6/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'formschema/minimal.json'
-        });
-      }
-    );
-
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/process.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/process.json'
-        });
-      }
-    );
-    cy.goTo('/editor').goTo('/editor/formschema?fs=ef0971af-ad3c-4eb7-bcda-18088d6899c6');
-    cy.wait(['@translations']);
+    cy.goTo('/editor').goTo('/editor/formschema?fs=minimal');
+    cy.wait(['@G_fetchTranslations']);
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');

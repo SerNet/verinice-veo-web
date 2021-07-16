@@ -1,0 +1,38 @@
+{
+  "createdAt":"2021-07-12T21:59:01.239490Z",
+  "createdBy":"pb",
+  "updatedAt":"2021-07-12T21:59:01.239490Z",
+  "updatedBy":"pb",
+  "name":"Damwild",
+  "designator":"AST-7",
+  "abbreviation":"DA2",
+  "description":"Asset mit Subtype Datenart",
+  "domains":[
+    {
+      "displayName":"DSGVO DSGVO",
+      "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+      "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+    }
+  ],
+  "owner":{
+    "displayName":"NBRX Testunit",
+    "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+    "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+    "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+  },
+  "links":{
+    
+  },
+  "customAspects":{
+    
+  },
+  "subType":{
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+  },
+  "type":"asset",
+  "parts":[
+    
+  ],
+  "id":"e767425e-e26f-4e74-9803-eb7254f38534"
+}

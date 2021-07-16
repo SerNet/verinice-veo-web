@@ -12,6 +12,7 @@
     :sort-by.sync="sortBy"
     :sort-desc.sync="sortDesc"
     class="veo-object-list"
+    :data-cy="$utils.prefixCyData($options, 'forms-table')"
     @update:items-per-page="onPageSizeChange"
     @update:sort-by="refetch"
     @update:sort-desc="refetch"
@@ -78,6 +79,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'edit-item')"
               @click.stop="sendEvent('edit', item, true)"
               v-on="on"
             >
@@ -92,6 +94,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'clone-item')"
               @click.stop="sendEvent('duplicate', item)"
               v-on="on"
             >
@@ -106,6 +109,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'delete-item')"
               @click.stop="sendEvent('delete', item)"
               v-on="on"
             >

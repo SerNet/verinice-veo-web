@@ -1,0 +1,38 @@
+{
+  "createdAt":"2021-07-12T21:56:08.858909Z",
+  "createdBy":"pb",
+  "updatedAt":"2021-07-12T21:56:08.858909Z",
+  "updatedBy":"pb",
+  "name":"Olivgrün",
+  "designator":"PRO-16",
+  "abbreviation":"VT3",
+  "description":"Prozess mit Subtype Verarbeitungstätigkeit",
+  "domains":[
+    {
+      "displayName":"DSGVO DSGVO",
+      "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+      "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+    }
+  ],
+  "owner":{
+    "displayName":"NBRX Testunit",
+    "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+    "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+    "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+  },
+  "links":{
+    
+  },
+  "customAspects":{
+    
+  },
+  "subType":{
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataProcessing"
+  },
+  "type":"process",
+  "parts":[
+    
+  ],
+  "id":"b908116f-54d7-41e4-8349-ae3b7521421f"
+}

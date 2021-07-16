@@ -1,0 +1,747 @@
+{
+  "items":[
+    {
+      "createdAt":"2021-07-12T21:57:23.775739Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T21:57:23.775739Z",
+      "updatedBy":"pb",
+      "name":"Ameise",
+      "designator":"AST-2",
+      "abbreviation":"A1",
+      "description":"Asset ohne Subtype",
+      "domains":[
+        
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"d9c2f556-3f4e-4b35-8bbd-50ed845736a4"
+    },
+    {
+      "createdAt":"2021-07-12T21:57:33.498385Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T21:57:33.498385Z",
+      "updatedBy":"pb",
+      "name":"Auerhahn",
+      "designator":"AST-3",
+      "abbreviation":"A2",
+      "description":"Asset ohne Subtype",
+      "domains":[
+        
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"42ee3d88-5186-4675-8eed-835f76553cad"
+    },
+    {
+      "createdAt":"2021-07-12T21:57:55.795175Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T21:57:55.795175Z",
+      "updatedBy":"pb",
+      "name":"Baumhöhlenlaubfrosch",
+      "designator":"AST-4",
+      "abbreviation":"A3",
+      "description":"Asset ohne Subtype",
+      "domains":[
+        
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"5b997e5d-8a4c-4a9d-a179-6d5644e3176d"
+    },
+    {
+      "createdAt":"2021-07-12T21:58:07.955694Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T21:58:07.955694Z",
+      "updatedBy":"pb",
+      "name":"Braunbär",
+      "designator":"AST-5",
+      "abbreviation":"A4",
+      "description":"Asset ohne Subtype",
+      "domains":[
+        
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"58564b97-e560-47d8-9063-3907f19933ad"
+    },
+    {
+      "createdAt":"2021-07-12T21:58:51.062478Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T21:58:51.062478Z",
+      "updatedBy":"pb",
+      "name":"Dachs",
+      "designator":"AST-6",
+      "abbreviation":"DA1",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"a2304df4-8126-4709-ba70-53b4d34c3320"
+    },
+    {
+      "createdAt":"2021-07-12T21:59:01.239490Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T21:59:01.239490Z",
+      "updatedBy":"pb",
+      "name":"Damwild",
+      "designator":"AST-7",
+      "abbreviation":"DA2",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"e767425e-e26f-4e74-9803-eb7254f38534"
+    },
+    {
+      "createdAt":"2021-07-12T21:59:11.706757Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T21:59:11.706757Z",
+      "updatedBy":"pb",
+      "name":"Eichhörnchen",
+      "designator":"AST-8",
+      "abbreviation":"DA3",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"622f80bf-2373-4f19-ae8b-bff8d8431df5"
+    },
+    {
+      "createdAt":"2021-07-12T21:59:23.759817Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T21:59:23.759817Z",
+      "updatedBy":"pb",
+      "name":"Europäischer Nerz",
+      "designator":"AST-9",
+      "abbreviation":"DA4",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"247243ec-0ab2-4c2d-830c-cf9b099b5394"
+    },
+    {
+      "createdAt":"2021-07-12T22:00:13.867891Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T22:00:13.867891Z",
+      "updatedBy":"pb",
+      "name":"Falke",
+      "designator":"AST-10",
+      "abbreviation":"AW1",
+      "description":"Asset mit Subtype Anwendung",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Application"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"87190dda-2fe9-494f-beec-d0b005a08291"
+    },
+    {
+      "createdAt":"2021-07-12T22:00:26.061285Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T22:00:26.061285Z",
+      "updatedBy":"pb",
+      "name":"Feuersalamander",
+      "designator":"AST-11",
+      "abbreviation":"AW2",
+      "description":"Asset mit Subtype Anwendung",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Application"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"3eae11af-d0cc-4684-ba17-1332c99c4493"
+    },
+    {
+      "createdAt":"2021-07-12T22:00:37.911056Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T22:00:37.911056Z",
+      "updatedBy":"pb",
+      "name":"Frettchen",
+      "designator":"AST-12",
+      "abbreviation":"AW3",
+      "description":"Asset mit Subtype Anwendung",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Application"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"7910e7e5-e4ca-4a79-89bb-6dc4d84a2d92"
+    },
+    {
+      "createdAt":"2021-07-12T22:01:13.747541Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T22:01:13.747541Z",
+      "updatedBy":"pb",
+      "name":"Frosch",
+      "designator":"AST-13",
+      "abbreviation":"IT1",
+      "description":"Asset mit Subtype IT-System",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_IT-System"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"09bcf6a1-78bc-4f27-aa57-d69cc753fa64"
+    },
+    {
+      "createdAt":"2021-07-12T22:01:24.102568Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-12T22:01:24.102568Z",
+      "updatedBy":"pb",
+      "name":"Fuchs",
+      "designator":"AST-14",
+      "abbreviation":"IT2",
+      "description":"Asset mit Subtype IT-System",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_IT-System"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"8ca78d00-eec8-4625-bc3b-e3bed4ddbeac"
+    },
+    {
+      "createdAt":"2021-07-13T12:30:22.160221Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-13T12:30:22.160221Z",
+      "updatedBy":"pb",
+      "name":"Gottesanbeterin",
+      "designator":"AST-21",
+      "abbreviation":"DA5",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"539a8a1a-be5a-4c6a-933e-1a6450874f43"
+    },
+    {
+      "createdAt":"2021-07-13T12:30:35.151568Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-13T12:30:35.151568Z",
+      "updatedBy":"pb",
+      "name":"Großer Abendsegler",
+      "designator":"AST-22",
+      "abbreviation":"DA6",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"2baabf17-2816-41ba-9e63-0f33611a3044"
+    },
+    {
+      "createdAt":"2021-07-13T12:30:45.835425Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-13T12:30:45.835425Z",
+      "updatedBy":"pb",
+      "name":"Hermelin",
+      "designator":"AST-23",
+      "abbreviation":"DA7",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"48f84048-dda8-40a8-922a-e349fb2efd0d"
+    },
+    {
+      "createdAt":"2021-07-13T12:30:56.214763Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-13T12:30:56.214763Z",
+      "updatedBy":"pb",
+      "name":"Hornisse",
+      "designator":"AST-24",
+      "abbreviation":"DA8",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"96cfa053-4f25-41f5-b941-288b587225c9"
+    },
+    {
+      "createdAt":"2021-07-13T12:31:14.463309Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-13T12:31:14.463309Z",
+      "updatedBy":"pb",
+      "name":"Igel",
+      "designator":"AST-25",
+      "abbreviation":"DA9",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"1b09a3f5-53b9-4da8-ae7c-d052c04551cb"
+    },
+    {
+      "createdAt":"2021-07-13T12:31:29.313750Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-13T12:31:29.313750Z",
+      "updatedBy":"pb",
+      "name":"Kaninchen",
+      "designator":"AST-26",
+      "abbreviation":"DA10",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"aa73c630-323d-41ff-99be-b675fd3cfe86"
+    },
+    {
+      "createdAt":"2021-07-13T12:32:13.255204Z",
+      "createdBy":"pb",
+      "updatedAt":"2021-07-13T12:32:13.255204Z",
+      "updatedBy":"pb",
+      "name":"Luchs",
+      "designator":"AST-27",
+      "abbreviation":"DA11",
+      "description":"Asset mit Subtype Datenart",
+      "domains":[
+        {
+          "displayName":"DSGVO DSGVO",
+          "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+          "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+          "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+        }
+      ],
+      "owner":{
+        "displayName":"NBRX Testunit",
+        "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+        "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+      },
+      "links":{
+        
+      },
+      "customAspects":{
+        
+      },
+      "subType":{
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+      },
+      "type":"asset",
+      "parts":[
+        
+      ],
+      "id":"61008ee4-237f-4a6c-9cc3-a69dcdf83df0"
+    }
+  ],
+  "totalItemCount":23,
+  "pageCount":2,
+  "page":0
+}
