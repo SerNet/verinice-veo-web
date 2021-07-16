@@ -68,7 +68,6 @@ test:e2e:
     - echo $CI_PROJECT_DIR
     - pwd
     - ls -al
-    - ls $CI_PROJECT_DIR/usr/src/app
     - cd / && ls -al
     - cd /usr/src/app
     - (npm run start&)
