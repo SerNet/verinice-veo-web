@@ -88,8 +88,7 @@ describe('Forms List', () => {
     });
 
     // Click on the edit button
-    cy.get('[data-cy=veo-form-list-forms-table] tbody')
-      .children()
+    cy.get('[data-cy=veo-form-list-forms-table] tbody tr:not(.v-data-table__empty-wrapper)')
       .eq(index)
       .within(() => {
         cy.get('[data-cy=veo-form-list-edit-item]').click();
@@ -126,8 +125,7 @@ describe('Forms List', () => {
     );
 
     // Click on the edit button
-    cy.get('[data-cy=veo-form-list-forms-table] tbody')
-      .children()
+    cy.get('[data-cy=veo-form-list-forms-table] tbody tr:not(.v-data-table__empty-wrapper)')
       .eq(index)
       .within(() => {
         cy.get('[data-cy=veo-form-list-delete-item]').click();
@@ -164,8 +162,7 @@ describe('Forms List', () => {
     );
 
     // Click on the edit button
-    cy.get('[data-cy=veo-form-list-forms-table] tbody')
-      .children()
+    cy.get('[data-cy=veo-form-list-forms-table] tbody  tr:not(.v-data-table__empty-wrapper)')
       .eq(index)
       .within(() => {
         cy.get('[data-cy=veo-form-list-clone-item]').click();
