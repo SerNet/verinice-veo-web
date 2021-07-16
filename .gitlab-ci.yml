@@ -68,6 +68,8 @@ test:e2e:
     - echo $CI_PROJECT_DIR
     - pwd
     - ls -al
+    - ls $CI_PROJECT_DIR/usr/src/app
+    - cd /usr/src/app
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
   rules:
@@ -82,8 +84,7 @@ test:e2e:
   artifacts:
     when: always
     paths:
-      - cypress/videos/**/*.mp4
-      - cypress/screenshots/**/*.png
-      - cypress/coverage/**/*
-      - cypress/videos/
+      - /usr/src/app/cypress/videos/**/*.mp4
+      - /usr/src/app/cypress/screenshots/**/*.png
+      - /usr/src/app/cypress/coverage/**/*
     expire_in: 1 day
