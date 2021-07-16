@@ -65,7 +65,7 @@ test:e2e:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
   script:
-    - apt-get install tree
+    - echo $CI_PROJECT_DIR
     - cd /usr/src/app
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
