@@ -91,7 +91,7 @@ test:e2e:
 
 
 pages:
-  stage: performance
+  stage: deploy
   dependencies:
     - test:e2e
   script:
