@@ -71,7 +71,6 @@ test:e2e:
     - pwd
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
-    - find . | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/" 
   rules:
     - if: '$TEST_DISABLED'
       when: never
