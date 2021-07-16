@@ -1,5 +1,5 @@
+// load the global Cypress types
 /// <reference types="cypress" />
-import { IBaseObject } from '../../lib/utils';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare namespace Cypress {
@@ -52,6 +52,6 @@ declare namespace Cypress {
      * Custom command to define OSE used intercepts
      * @example cy.defineOSEIntercepts()
      */
-    interceptLayoutCalls(options?: IBaseObject): void;
+    interceptLayoutCalls(options?: { [key: string]: any }): void;
   }
 }
