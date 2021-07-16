@@ -17,7 +17,7 @@ describe('Formschema Wizard', () => {
     cy.interceptLayoutCalls();
   });
 
-  it.only('ckecks navigation between wizard start, back button, and formschema create and import', function () {
+  it('ckecks navigation between wizard start, back button, and formschema create and import', function () {
     cy.goTo('/editor').goTo('/editor/formschema');
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').find('.v-list-item.v-list-item--link').should('contain.text', 'Formschema erstellen').should('contain.text', 'Formschema importieren');

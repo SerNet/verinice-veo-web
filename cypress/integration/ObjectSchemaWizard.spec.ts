@@ -17,7 +17,7 @@ describe('Objectschema Wizard', () => {
     cy.interceptLayoutCalls();
   });
 
-  it.only('ckecks navigation between wizard start, back button, and objectschema create and import', function () {
+  it('ckecks navigation between wizard start, back button, and objectschema create and import', function () {
     cy.goTo('/editor').goTo('/editor/objectschema');
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__actions').contains('Zurück').click();
