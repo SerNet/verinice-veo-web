@@ -48,4 +48,5 @@ test:e2e:
     paths:
       - cypress/videos/**/*.mp4
       - cypress/screenshots/**/*.png
+      - cypress/coverage/**/*
     expire_in: 1 day

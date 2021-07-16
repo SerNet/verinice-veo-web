@@ -32,3 +32,6 @@ cypress/screenshots
 cypress/videos
 cypress/logs
 cypress/downloads
+cypress/.nyc_output
+cypress/coverage
+cypress/downloads

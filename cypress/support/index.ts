@@ -1,5 +1,6 @@
 import 'cypress-file-upload';
 import 'cypress-plugin-snapshots/commands';
+import '@cypress/code-coverage/support';
 
 function createJWT(payload) {
   const header = {
