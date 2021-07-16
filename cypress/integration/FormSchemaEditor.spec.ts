@@ -125,7 +125,7 @@ describe('Formschema Editor', () => {
     cy.interceptLayoutCalls({ ignoreSpecificForms: true });
   });
 
-  it('drags and drops elements into dropzone and nests in each other', function () {
+  it.only('drags and drops elements into dropzone and nests in each other', function () {
     goTo(tos.emptyProcess);
     cy.contains('.v-sheet', 'text').drag();
     cy.get('.dropzone').drop();

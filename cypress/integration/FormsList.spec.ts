@@ -14,7 +14,7 @@ describe('Forms List', () => {
   });
 
   // Only checking for correct request, we expect the vuetify component to work correctly
-  it('Navigates the forms table using the forward/back buttons', function () {
+  it.only('Navigates the forms table using the forward/back buttons', function () {
     cy.intercept({
       method: 'GET',
       url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/

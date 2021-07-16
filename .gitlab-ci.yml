@@ -69,7 +69,7 @@ test:e2e:
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
     - ls -al
-    - cd cypress/videos && ls -al
+    - tree
   rules:
     - if: '$TEST_DISABLED'
       when: never
@@ -85,4 +85,5 @@ test:e2e:
       - cypress/videos/**/*.mp4
       - cypress/screenshots/**/*.png
       - cypress/coverage/**/*
+      - cypress/videos/
     expire_in: 1 day
