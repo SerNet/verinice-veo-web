@@ -75,6 +75,10 @@ test:e2e:
     - cd /usr/src/app
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
+  after-script:
+    # Copy cypress files to Gitlab project dir to make artifacts work (Artifacts are only include if they are relative to $CI_PROJECT_DIR) 
+    # https://gitlab.com/gitlab-org/gitlab-foss/-/issues/15530 or https://forum.gitlab.com/t/gitlab-ci-artifacts-not-found/7588
+    - cp -r /usr/src/app/cypress $CI_PROJECT_DIR
   rules:
     - if: '$TEST_DISABLED'
       when: never
