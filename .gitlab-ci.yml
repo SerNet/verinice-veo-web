@@ -40,7 +40,7 @@ build:e2e:
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
       when: always
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: manual
+      when: always #manual
 
 review:
   environment:
@@ -67,8 +67,10 @@ test:e2e:
   script:
     - echo $CI_PROJECT_DIR
     - pwd
+    - ls -al
     - cd /usr/src/app
     - pwd
+    - ls -al
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
   rules:
