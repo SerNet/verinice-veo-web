@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:14-alpine
 # Install Git
 RUN apk --no-cache add git
 # Create app directory

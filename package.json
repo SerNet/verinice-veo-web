@@ -2,6 +2,7 @@
   "name": "veo-web",
   "version": "1.0.0",
   "engines": {
+    "npm": "7.x",
     "node": "14.x"
   },
   "description": "veo-web",
@@ -26,7 +27,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "commit-msg": "nbrx-commit-lint"
+      "commit-msg": "node_modules/@nbrx/eslint-config-nuxt/commit-lint.js"
     }
   },
   "lint-staged": {
