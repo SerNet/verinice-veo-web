@@ -242,7 +242,7 @@ import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { IVeoAffectedEntity, IVeoEntityModifierEvent, VeoEntityModifierEventType } from './VeoEntityModifier.vue';
 import { formatDate, formatTime } from '~/lib/utils';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
@@ -294,8 +294,12 @@ export default Vue.extend({
     return {
       open: [] as string[],
       active: [] as string[],
-      displayedItems: [] as ITreeEntry[]
+      displayedItems: [] as ITreeEntry[],
+      schemas: [] as IVeoSchemaEndpoint[]
     };
+  },
+  async fetch() {
+    this.schemas = await this.$api.schema.fetchAll();
   },
   watch: {
     items: {
@@ -439,7 +443,7 @@ export default Vue.extend({
         updatedItem.entry.members =
           updatedItem.children?.map((child) => {
             return {
-              targetUri: `/${getSchemaEndpoint(child.entry.type)}/${child.entry.id}`
+              targetUri: `/${getSchemaEndpoint(this.schemas, child.entry.type)}/${child.entry.id}`
             };
           }) || [];
       } else {
@@ -447,7 +451,7 @@ export default Vue.extend({
         updatedItem.entry.parts =
           updatedItem.children?.map((child) => {
             return {
-              targetUri: `/${getSchemaEndpoint(child.entry.type)}/${child.entry.id}`
+              targetUri: `/${getSchemaEndpoint(this.schemas, child.entry.type)}/${child.entry.id}`
             };
           }) || [];
       }

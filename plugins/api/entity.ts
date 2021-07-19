@@ -27,7 +27,7 @@ export default function (api: Client) {
      *
      * @param parent
      */
-    fetchAll(objectType: string, page: number = 0, params: IVeoEntityRequestParams = {}, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
+    async fetchAll(objectType: string, page: number = 0, params: IVeoEntityRequestParams = {}, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       // Entities don't get accessed without their unit as a context, for this reason we manually add the unit if omitted by the developer.
       // To override this behaviour, set noUnit to true.
       if (!params.unit && !noUnit) {
@@ -39,7 +39,7 @@ export default function (api: Client) {
 
       params = { ...params, page, size: api._context.$user.tablePageSize };
 
-      const endpoint = getSchemaEndpoint(objectType) || objectType;
+      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
       return api
         .req(`/api/${endpoint}`, {
           params
@@ -69,8 +69,8 @@ export default function (api: Client) {
      * Creates an entity
      * @param entity
      */
-    create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType;
+    async create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
+      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       // Remove properties of the object only used in the frontend
       if (entity.type === 'scope') {
@@ -91,8 +91,8 @@ export default function (api: Client) {
      * Loads one entity by id
      * @param id
      */
-    fetch(objectType: string, id: string): Promise<IVeoEntity> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType;
+    async fetch(objectType: string, id: string): Promise<IVeoEntity> {
+      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       return api.req(`/api/${endpoint}/${id}`).then((result: IVeoEntity) => {
         /*
@@ -115,8 +115,8 @@ export default function (api: Client) {
      * @param id
      * @param entity
      */
-    update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType;
+    async update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
+      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       // Remove properties of the object only used in the frontend
       if (entity.type === 'scope') {
@@ -152,8 +152,8 @@ export default function (api: Client) {
      * Deletes an entity
      * @param id
      */
-    delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType;
+    async delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
+      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       return api.req(`/api/${endpoint}/${id}`, {
         method: 'DELETE'
@@ -166,8 +166,8 @@ export default function (api: Client) {
      * @param objectType The type to fetch the entities for.
      * @param id The uuid of the entity to fetch the sub entities for.
      */
-    fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
-      const endpoint = getSchemaEndpoint(objectType) || objectType;
+    async fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
+      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       if (objectType === 'scope') {
         return api.req(`/api/scopes/${id}/members`).then((result: IVeoEntity[]) => {

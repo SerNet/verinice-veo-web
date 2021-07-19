@@ -166,7 +166,7 @@ import { Prop } from 'vue/types/options';
 import { capitalize, cloneDeep, trim } from 'lodash';
 
 import { Ref } from '@nuxtjs/composition-api';
-import { ISchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
@@ -217,7 +217,7 @@ export default Vue.extend({
           targetType: [(input: string) => this.type === 'aspect' || trim(input).length > 0]
         } as { [key: string]: ((input: string) => boolean)[] }
       },
-      objectTypes: [] as ISchemaEndpoint[],
+      objectTypes: [] as IVeoSchemaEndpoint[],
       formSchemas: [] as IVeoFormSchemaMeta[],
       duplicates: [] as string[],
       dialogMode: 'create' as 'create' | 'edit',
@@ -254,7 +254,7 @@ export default Vue.extend({
       return `${this.prefix}${this.form.data.title}`;
     },
     formattedObjectTypes(): { text: string; value: string }[] {
-      return this.objectTypes.map((value: ISchemaEndpoint) => ({
+      return this.objectTypes.map((value: IVeoSchemaEndpoint) => ({
         text: capitalize(value.schemaName),
         value: value.schemaName
       }));

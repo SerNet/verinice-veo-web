@@ -98,21 +98,9 @@ import { capitalize } from 'lodash';
 import { IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoAPIMessage } from '~/types/VeoTypes';
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
-
-interface IData {
-  form: IForm;
-  isValid: boolean;
-  errorMessages: IValidationErrorMessage[];
-  saveBtnLoading: boolean;
-  entityModified: {
-    isModified: boolean;
-    dialog: boolean;
-    target?: any;
-  };
-}
 
 export default Vue.extend({
   name: 'VeoScopesCreatePage',
@@ -131,21 +119,22 @@ export default Vue.extend({
       next();
     }
   },
-  data(): IData {
+  data() {
     return {
       form: {
         objectSchema: {},
         objectData: {},
         lang: {}
-      },
-      isValid: true,
-      errorMessages: [],
-      saveBtnLoading: false,
+      } as IForm,
+      isValid: true as boolean,
+      errorMessages: [] as IValidationErrorMessage[],
+      saveBtnLoading: false as boolean,
       entityModified: {
-        isModified: false,
-        dialog: false,
-        target: undefined
-      }
+        isModified: false as boolean,
+        dialog: false as boolean,
+        target: undefined as any
+      },
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {
@@ -159,6 +148,7 @@ export default Vue.extend({
         lang
       };
     }
+    this.schemas = await this.$api.schema.fetchAll();
   },
   head(): any {
     return {
@@ -218,12 +208,12 @@ export default Vue.extend({
             if (this.parentType === 'scope') {
               // @ts-ignore
               parent.members.push({
-                targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
+                targetUri: `/${getSchemaEndpoint(this.schemas, this.entityType)}/${data.resourceId}`
               });
             } else {
               // @ts-ignore
               parent.parts.push({
-                targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
+                targetUri: `/${getSchemaEndpoint(this.schemas, this.entityType)}/${data.resourceId}`
               });
             }
 

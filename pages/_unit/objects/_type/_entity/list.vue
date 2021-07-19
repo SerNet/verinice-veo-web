@@ -5,7 +5,7 @@ import { separateUUIDParam } from '~/lib/utils';
 import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
 import VeoScopesListPage from '~/pages/_unit/scopes/_entity/list.vue';
 import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
-import { getSchemaName } from '~/plugins/api/schema';
+import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 
 export default Vue.extend({
@@ -18,12 +18,14 @@ export default Vue.extend({
       subEntities: [] as IVeoEntity[],
       showParentLink: false as boolean,
       rootEntityType: '' as string,
-      loading: false as boolean
+      loading: false as boolean,
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {
+    this.schemas = await this.$api.schema.fetchAll();
     if (this.entityType === '-') {
-      this.rootEntityType = getSchemaName(this.objectType) || '';
+      this.rootEntityType = getSchemaName(this.schemas, this.objectType) || '';
     } else {
       this.rootEntityType = this.entityType;
     }
@@ -56,7 +58,7 @@ export default Vue.extend({
         event: {
           name: 'create-entity',
           params: {
-            type: getSchemaName(this.objectType),
+            type: getSchemaName(this.schemas, this.objectType),
             parent: this.currentEntity
           }
         },

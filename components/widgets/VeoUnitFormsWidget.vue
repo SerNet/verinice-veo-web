@@ -53,7 +53,6 @@
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 
-import { endpoints } from '~/plugins/api/schema';
 import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
 
@@ -77,7 +76,7 @@ export default Vue.extend({
     this.objects = await this.$api.form.fetchAll(this.domain.id);
     for (const object of this.objects) {
       // @ts-ignore
-      const objectType = endpoints[object.modelType];
+      const objectType = this.$api.schema.fetchAll()[object.modelType];
       object.items = (
         await this.$api.entity.fetchAll(objectType, 0, {
           unit: this.unit.id,

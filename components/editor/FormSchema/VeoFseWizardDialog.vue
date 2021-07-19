@@ -215,7 +215,7 @@ import { capitalize, cloneDeep, merge, trim } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { ISchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
 
 export default Vue.extend({
@@ -245,7 +245,7 @@ export default Vue.extend({
       objectSchema: undefined as IVeoObjectSchema | undefined,
       translation: undefined as IVeoTranslations | undefined,
       state: 'start' as 'start' | 'create-1' | 'import-1' | 'import-2',
-      schemas: [] as ISchemaEndpoint[],
+      schemas: [] as IVeoSchemaEndpoint[],
       invalidOS: false as boolean,
       forceOwnSchema: false as boolean,
       clearInput: false as boolean
@@ -258,7 +258,7 @@ export default Vue.extend({
           text: this.$t('customObjectSchema') as string,
           value: 'custom'
         },
-        ...this.schemas.map((entry: ISchemaEndpoint) => {
+        ...this.schemas.map((entry: IVeoSchemaEndpoint) => {
           return {
             text: capitalize(entry.schemaName),
             value: entry.schemaName
@@ -294,7 +294,7 @@ export default Vue.extend({
   mounted() {
     this.dialog = this.value;
 
-    this.$api.schema.fetchAll(true).then((data: ISchemaEndpoint[]) => (this.schemas = data));
+    this.$api.schema.fetchAll(true).then((data: IVeoSchemaEndpoint[]) => (this.schemas = data));
     this.$api.translation.fetch([]).then((translation: IVeoTranslations) => {
       this.translation = translation;
     });

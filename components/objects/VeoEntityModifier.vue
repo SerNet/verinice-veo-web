@@ -46,7 +46,7 @@ import { Prop } from 'vue/types/options';
 import { cloneDeep, upperFirst } from 'lodash';
 
 import { IVeoEntity } from '~/types/VeoTypes';
-import { getSchemaEndpoint, ISchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 
@@ -73,32 +73,6 @@ export interface IVeoEntityModifierEvent {
   sortDesc?: boolean;
 }
 
-interface IData {
-  addEntityDialog: {
-    value: boolean;
-    addType: 'scope' | 'entity'; // While we normally don't differentiate between scopes and entities, we use this attribute as a filter
-    editedEntity?: IVeoEntity;
-  };
-  deleteEntityDialog: {
-    value: boolean;
-    item?: IVeoEntity;
-  };
-  unlinkEntityDialog: {
-    value: boolean;
-    item?: IVeoEntity;
-    parent?: IVeoEntity;
-  };
-  createEntityDialog: {
-    value: boolean;
-    parent?: IVeoEntity;
-  };
-  on: {
-    [key: string]: CallableFunction;
-  };
-  schemas: ISchemaEndpoint[];
-  entityModifiedEvent?: IVeoEntityModifierEvent;
-}
-
 export default Vue.extend({
   props: {
     rootEntityType: {
@@ -118,29 +92,29 @@ export default Vue.extend({
       default: false
     }
   },
-  data(): IData {
+  data() {
     return {
       addEntityDialog: {
-        editedEntity: undefined,
-        addType: 'scope',
-        value: false
+        editedEntity: undefined as IVeoEntity | undefined,
+        addType: 'scope' as 'scope' | 'entity',
+        value: false as boolean
       },
       deleteEntityDialog: {
-        value: false,
-        item: undefined
+        value: false as boolean,
+        item: undefined as IVeoEntity | undefined
       },
       unlinkEntityDialog: {
-        value: false,
-        item: undefined,
-        parent: undefined
+        value: false as boolean,
+        item: undefined as IVeoEntity | undefined,
+        parent: undefined as IVeoEntity | undefined
       },
       createEntityDialog: {
-        value: false,
-        parent: undefined
+        value: false as boolean,
+        parent: undefined as IVeoEntity | undefined
       },
-      on: {},
-      schemas: [],
-      entityModifiedEvent: undefined
+      on: {} as { [key: string]: CallableFunction },
+      schemas: [] as IVeoSchemaEndpoint[],
+      entityModifiedEvent: undefined as IVeoEntityModifierEvent | undefined
     };
   },
   computed: {
@@ -152,7 +126,7 @@ export default Vue.extend({
       return separateUUIDParam(this.$route.params.unit).id;
     },
     createEntitySchemas(): { text: string; value: string }[] {
-      return this.schemas.map((schema: ISchemaEndpoint) => {
+      return this.schemas.map((schema: IVeoSchemaEndpoint) => {
         return { text: upperFirst(schema.schemaName), value: schema.schemaName };
       });
     }
@@ -162,7 +136,7 @@ export default Vue.extend({
   },
   methods: {
     fetchSchemas(): Promise<void> {
-      return this.$api.schema.fetchAll(false, { unit: this.unitId }).then((schemas: ISchemaEndpoint[]) => {
+      return this.$api.schema.fetchAll(false, { unit: this.unitId }).then((schemas: IVeoSchemaEndpoint[]) => {
         this.schemas = schemas;
       });
     },
@@ -303,12 +277,12 @@ export default Vue.extend({
             if (fetchedParent.type === 'scope') {
               // @ts-ignore
               fetchedParent.members.push({
-                targetUri: `/${getSchemaEndpoint(item.type)}/${result.resourceId}`
+                targetUri: `/${getSchemaEndpoint(this.schemas, item.type)}/${result.resourceId}`
               });
             } else {
               // @ts-ignore
               fetchedParent.parts.push({
-                targetUri: `/${getSchemaEndpoint(item.type)}/${result.resourceId}`
+                targetUri: `/${getSchemaEndpoint(this.schemas, item.type)}/${result.resourceId}`
               });
             }
             this.$api.entity.update(parent.type, parent.id, fetchedParent).then(() => {

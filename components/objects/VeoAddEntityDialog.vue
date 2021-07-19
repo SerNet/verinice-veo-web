@@ -64,7 +64,7 @@ import Vue from 'vue';
 import { upperFirst } from 'lodash';
 import { Prop } from 'vue/types/options';
 
-import { getSchemaEndpoint, getSchemaName, ISchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaEndpoint, getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
@@ -89,7 +89,7 @@ export default Vue.extend({
       entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
       loading: false as boolean,
       objectType: '' as string,
-      schemas: [] as ISchemaEndpoint[]
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {
@@ -103,7 +103,7 @@ export default Vue.extend({
       return this.editedEntity?.displayName || '';
     },
     objectTypes(): { value: string; text: string }[] {
-      let schemas = this.schemas.map((schema: ISchemaEndpoint) => ({
+      let schemas = this.schemas.map((schema: IVeoSchemaEndpoint) => ({
         text: upperFirst(schema.schemaName),
         value: schema.endpoint
       }));
@@ -142,7 +142,7 @@ export default Vue.extend({
           const destructedLink = member.targetUri.split('/');
           const id = destructedLink.pop() || '';
           let type = destructedLink.pop() || '';
-          type = getSchemaName(type) || type;
+          type = getSchemaName(this.schemas, type) || type;
 
           return { id, type };
         });
@@ -165,7 +165,7 @@ export default Vue.extend({
 
       const children = this.selectedItems.map((item) => {
         return {
-          targetUri: `/${getSchemaEndpoint(item.type) || item.type}/${item.id}`
+          targetUri: `/${getSchemaEndpoint(this.schemas, item.type) || item.type}/${item.id}`
         };
       });
       if (this.editedEntity.type === 'scope') {

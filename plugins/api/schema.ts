@@ -24,6 +24,14 @@ let endpoints: IVeoSchemaEndpoint[];
  */
 export const nonLinkableSchemas = ['scope'];
 
+export function getSchemaEndpoint(endpoints: IVeoSchemaEndpoint[], schemaName: string): string | undefined {
+  return endpoints.find((endpoint) => endpoint.schemaName === schemaName)?.endpoint;
+}
+
+export function getSchemaName(endpoints: IVeoSchemaEndpoint[], _endpoint: string): string | undefined {
+  return endpoints.find((endpoint) => endpoint.endpoint === _endpoint)?.schemaName;
+}
+
 export default function (api: Client) {
   return {
     /**
@@ -41,7 +49,7 @@ export default function (api: Client) {
         const types = Object.keys(schemas);
 
         endpoints = types.map((type: string) => ({
-          endpoint: schemas[type].schemaUri,
+          endpoint: schemas[type].collectionUri.split('/')[1].split('{')[0],
           schemaName: type
         }));
       }
