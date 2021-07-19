@@ -1,6 +1,9 @@
 {
   "name": "veo-web",
   "version": "1.0.0",
+  "engines": {
+    "node": "14.x"
+  },
   "description": "veo-web",
   "author": "cpm systems <info@cpmsys.de>",
   "private": true,
