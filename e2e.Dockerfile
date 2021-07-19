@@ -20,9 +20,6 @@ RUN groupadd -g ${GROUP_ID} appuser
 RUN useradd -r --no-log-init -u ${USER_ID} -g appuser appuser
 RUN install -d -m 0755 -o appuser -g appuser /home/appuser
 
-# make sure cypress looks in the right place
-ENV CYPRESS_CACHE_FOLDER=/home/appuser/.cache/Cypress
-
 USER appuser
 # show user effective id and group - it should be non-zero
 # meaning the current user is not root
