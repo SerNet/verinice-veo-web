@@ -86,6 +86,8 @@ test:e2e:
     reports:
       cobertura: cypress/coverage/cobertura-coverage.xml
     when: always
+    reports:
+      cobertura: 'cypress/coverage/cobertura-coverage.xml'
     paths:
       - cypress/videos/**/*.mp4
       - cypress/screenshots/**/*.png
