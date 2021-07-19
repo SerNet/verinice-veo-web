@@ -58,7 +58,7 @@ cache:
 
 test:e2e:
   image: registry.nbrx.de/nbrx/t1/veo/cypress/${CI_COMMIT_REF_NAME}:latest
-  stage: performance
+  stage: test
   tags:
     - 'cpmsys01'
   variables:
@@ -68,6 +68,11 @@ test:e2e:
     - cd /usr/src/app
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
+    - npx nyc report --reporter=cobertura --reporter=text-summary
+  after_script:
+  # Copy cypress files to Gitlab project dir to make artifacts work (Artifacts are only include if they are relative to $CI_PROJECT_DIR) 
+  # https://gitlab.com/gitlab-org/gitlab-foss/-/issues/15530 or https://forum.gitlab.com/t/gitlab-ci-artifacts-not-found/7588
+    - cp -r /usr/src/app/cypress $CI_PROJECT_DIR
   rules:
     - if: '$TEST_DISABLED'
       when: never
@@ -78,8 +83,11 @@ test:e2e:
   needs:
     - job: build:e2e
   artifacts:
+    reports:
+      cobertura: cypress/coverage/cobertura-coverage.xml
     when: always
     paths:
-      - /usr/src/app/cypress/videos/**/*.mp4
-      - /usr/src/app/cypress/screenshots/**/*.png
+      - cypress/videos/**/*.mp4
+      - cypress/screenshots/**/*.png
+      - cypress/coverage/**/*
     expire_in: 1 day

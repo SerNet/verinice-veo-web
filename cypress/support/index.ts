@@ -1,5 +1,8 @@
+/// <reference types="cypress" />
+
 import 'cypress-file-upload';
 import 'cypress-plugin-snapshots/commands';
+import '@cypress/code-coverage/support';
 import { IBaseObject } from '../../lib/utils';
 
 function createJWT(payload) {

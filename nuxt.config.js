@@ -198,7 +198,20 @@ export default {
    */
   build: {
     publicPath: process.env.NUXT_PUBLIC_PATH || '/_nuxt/',
-    transpile: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-flag-icon/]
+    transpile: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-flag-icon/],
+    babel: {
+      presets: ['@nuxt/babel-preset-app'],
+      plugins: [
+        [
+          'babel-plugin-istanbul',
+          {
+            extension: ['.js', '.ts', '.vue'],
+            exclude: ['**/*.{spec,test}.{js,ts}', '.nuxt/'],
+            include: ['pages/**/*.{vue,ts}', 'layouts/**/*.{vue,ts}', 'components/**/*.{vue,ts}', 'module/**/*.js', 'mixin/**/*.js', 'store/**/*.js']
+          }
+        ]
+      ]
+    }
   },
 
   /**
