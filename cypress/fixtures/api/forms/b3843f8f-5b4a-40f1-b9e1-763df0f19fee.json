@@ -4,7 +4,7 @@
       "de":"Verantwortliche Stelle",
       "en":"Responsible body"
    },
-   "modelType":"Scope",
+   "modelType":"scope",
    "subType":"SCP_ResponsibleBody",
    "id":"b3843f8f-5b4a-40f1-b9e1-763df0f19fee",
    "content":{

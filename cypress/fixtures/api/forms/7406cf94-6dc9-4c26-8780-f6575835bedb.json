@@ -4,7 +4,7 @@
       "de":"Auftragsverarbeiter",
       "en":"Processor"
    },
-   "modelType":"Scope",
+   "modelType":"scope",
    "subType":"SCP_Processor",
    "id":"7406cf94-6dc9-4c26-8780-f6575835bedb",
    "content":{

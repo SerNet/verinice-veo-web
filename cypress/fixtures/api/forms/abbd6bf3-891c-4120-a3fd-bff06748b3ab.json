@@ -4,7 +4,7 @@
       "de":"Datenart",
       "en":"Datatype"
    },
-   "modelType":"Asset",
+   "modelType":"asset",
    "subType":"AST_Datatype",
    "id":"abbd6bf3-891c-4120-a3fd-bff06748b3ab",
    "content":{

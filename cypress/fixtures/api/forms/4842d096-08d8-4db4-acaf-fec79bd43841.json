@@ -4,7 +4,7 @@
       "de":"Anwendung",
       "en":"Application"
    },
-   "modelType":"Asset",
+   "modelType":"asset",
    "subType":"AST_Application",
    "id":"4842d096-08d8-4db4-acaf-fec79bd43841",
    "content":{

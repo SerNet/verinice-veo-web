@@ -145,7 +145,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/schemas$/
+        url: /.*\/api\/types$/
       },
       (req) => {
         req.reply({

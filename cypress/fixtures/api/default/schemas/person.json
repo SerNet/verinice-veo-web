@@ -406,6 +406,6 @@
     }
   },
   "required": ["name", "owner"],
-  "title": "Person",
+  "title": "person",
   "description": "Schema for Person"
 }

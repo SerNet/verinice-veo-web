@@ -1351,7 +1351,7 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
     "name",
     "owner"
   ],
-  "title": "Control",
+  "title": "control",
   "type": "object"
 };
 
@@ -2115,7 +2115,7 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
     "name",
     "owner"
   ],
-  "title": "Scope",
+  "title": "scope",
   "type": "object"
 };
 
@@ -3248,7 +3248,7 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
     "name",
     "owner"
   ],
-  "title": "Asset",
+  "title": "asset",
   "type": "object"
 };
 
@@ -5228,7 +5228,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
     "name",
     "owner"
   ],
-  "title": "Process",
+  "title": "process",
   "type": "object"
 };
 
@@ -5373,7 +5373,7 @@ exports[`Objectschema Wizard > imports existing incident objectschema #0`] =
     "name",
     "owner"
   ],
-  "title": "Incident",
+  "title": "incident",
   "type": "object"
 };
 
@@ -5518,7 +5518,7 @@ exports[`Objectschema Wizard > imports existing document objectschema #0`] =
     "name",
     "owner"
   ],
-  "title": "Document",
+  "title": "document",
   "type": "object"
 };
 
@@ -5938,7 +5938,7 @@ exports[`Objectschema Wizard > imports existing person objectschema #0`] =
     "name",
     "owner"
   ],
-  "title": "Person",
+  "title": "person",
   "type": "object"
 };
 
@@ -6083,6 +6083,6 @@ exports[`Objectschema Wizard > imports existing scenario objectschema #0`] =
     "name",
     "owner"
   ],
-  "title": "Scenario",
+  "title": "scenario",
   "type": "object"
 };

@@ -126,6 +126,6 @@
     }
   },
   "required": ["name", "owner"],
-  "title": "Scenario",
+  "title": "scenario",
   "description": "Schema for Scenario"
 }

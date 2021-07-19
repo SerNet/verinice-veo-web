@@ -742,7 +742,7 @@ describe('Formschema Editor', () => {
     goTo(tos.minimal);
     cy.get('.mdi-download').closest('.v-btn').click();
 
-    cy.readFile('cypress/downloads/fs_test_formschema.json').then((downloadedFS) => {
+    cy.readFile('cypress/downloads/fs_Test Formschema.json').then((downloadedFS) => {
       cy.wrap(downloadedFS).toMatchSnapshot();
     });
   });

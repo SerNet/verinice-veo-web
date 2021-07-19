@@ -1042,6 +1042,6 @@
     }
   },
   "required": ["name", "owner"],
-  "title": "Asset",
+  "title": "asset",
   "description": "Schema for Asset"
 }

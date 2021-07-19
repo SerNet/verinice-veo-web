@@ -714,6 +714,6 @@
     }
   },
   "required": ["name", "owner"],
-  "title": "Scope",
+  "title": "scope",
   "description": "Schema for scope"
 }

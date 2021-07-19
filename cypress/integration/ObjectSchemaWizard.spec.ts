@@ -105,7 +105,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Control{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Control');
+    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'control');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Control');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
@@ -130,7 +130,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scope{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Scope');
+    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'scope');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for scope');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
@@ -155,7 +155,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Asset{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Asset');
+    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'asset');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Asset');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
@@ -181,7 +181,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
 
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Process');
+    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'process');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Process');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
@@ -206,7 +206,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Incident{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Incident');
+    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'incident');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Incident');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
@@ -231,7 +231,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Document{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Document');
+    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'document');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Document');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
@@ -256,7 +256,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Person{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Person');
+    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'person');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Person');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
@@ -281,7 +281,7 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scenario{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Scenario');
+    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'scenario');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Scenario');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
@@ -317,7 +317,7 @@ describe('Objectschema Wizard', () => {
       }
     );
     cy.goTo('/editor').goTo('/editor/objectschema?os=process');
-    cy.contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Process');
+    cy.contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'process');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Process');
   });
 });

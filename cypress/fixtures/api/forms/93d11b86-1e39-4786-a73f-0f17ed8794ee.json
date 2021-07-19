@@ -4,7 +4,7 @@
       "de":"Datenübertragung",
       "en":"Data transfer"
    },
-   "modelType":"Process",
+   "modelType":"process",
    "subType":"PRO_DataTransfer",
    "id":"93d11b86-1e39-4786-a73f-0f17ed8794ee",
    "content":{

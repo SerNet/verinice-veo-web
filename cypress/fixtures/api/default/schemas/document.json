@@ -126,6 +126,6 @@
     }
   },
   "required": ["name", "owner"],
-  "title": "Document",
+  "title": "document",
   "description": "Schema for Document"
 }
