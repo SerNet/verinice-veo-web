@@ -1,7 +1,8 @@
 FROM cypress/base:14.15.4
 
+ARG CI_PROJECT_DIR=/builds/nbrx/t1/veo
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR ${CI_PROJECT_DIR}
 # Copy .npmrc for installing @nbrx/eslint-config-nuxt
 COPY .npmrc .
 # Install app dependencies
