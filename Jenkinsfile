@@ -90,7 +90,7 @@ pipeline {
                                         def cypressOptionsStr = groovy.json.JsonOutput.toJson(cypressOptions)
                                         sh "npm run test:e2e -- --config '${cypressOptionsStr}'"
                                     }
-                                    sh script: "cp -rt . /home/appuser/.npm/_logs/", returnStatus: true
+                                    sh script: "cp -rt out /home/appuser/.npm/_logs/", returnStatus: true
                                 }
                             }
                         }
