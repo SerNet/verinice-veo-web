@@ -88,6 +88,7 @@ pipeline {
                                         def cypressOptionsStr = groovy.json.JsonOutput.toJson(cypressOptions)
                                         sh "npm run test:e2e -- --config '${cypressOptionsStr}'"
                                     }
+                                    sh script: "cp -rt . /home/appuser/.npm/_logs/", returnStatus: true
                                 }
                             }
                         }
@@ -97,7 +98,6 @@ pipeline {
             post {
                 always {
                     dir ('out'){
-                        sh script: "cp -rt . /home/appuser/.npm/_logs/", returnStatus: true
                         archiveArtifacts artifacts: '_logs/*,screenshots/**/*.png', allowEmptyArchive: true
                         junit testResults: 'junit.xml'
                         deleteDir()
