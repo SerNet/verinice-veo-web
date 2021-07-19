@@ -1,6 +1,8 @@
 FROM node:14-alpine
 # Install Git
 RUN apk --no-cache add git
+# Install Python for node-14
+RUN apk add python make g++
 # Create app directory
 WORKDIR /usr/src/app
 # Copy .npmrc for installing @nbrx/eslint-config-nuxt
