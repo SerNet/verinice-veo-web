@@ -1,9 +1,8 @@
 FROM node:12-alpine
 # Install Git
 RUN apk --no-cache add git
-ARG CI_PROJECT_DIR=/builds/nbrx/t1/veo
 # Create app directory
-WORKDIR ${CI_PROJECT_DIR}
+WORKDIR /usr/src/app
 # Copy .npmrc for installing @nbrx/eslint-config-nuxt
 COPY .npmrc .
 # Install app dependencies
