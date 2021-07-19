@@ -75,6 +75,8 @@ pipeline {
                             docker.image("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}").withRun("--network ${n} --name veo-web-${n}") {
                                 docker.build('veo-web-e2e-tests', '-f e2e.Dockerfile .').inside("--network ${n} -w $WORKSPACE -e no_proxy=localhost,127.0.0.1,veo-web-${n} -e LANG=de_DE.UTF-8") {
                                     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                                        sh "node --version"
+                                        sh "npm --version"
                                         sh "npm ci"
                                         def cypressOptions = [ reporter:'junit',
                                                                reporterOptions: [
