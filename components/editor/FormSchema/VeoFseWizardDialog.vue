@@ -211,12 +211,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, cloneDeep, isEmpty, isString, merge, snakeCase, trim } from 'lodash';
+import { capitalize, cloneDeep, isEmpty, isString, merge, trim } from 'lodash';
 
 import { JsonPointer } from 'json-ptr';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { ISchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
 
 export default Vue.extend({
@@ -246,7 +246,7 @@ export default Vue.extend({
       objectSchema: undefined as IVeoObjectSchema | undefined,
       translation: undefined as IVeoTranslations | undefined,
       state: 'start' as 'start' | 'create' | 'import-fs' | 'import-os',
-      schemas: [] as ISchemaEndpoint[],
+      schemas: [] as IVeoSchemaEndpoint[],
       invalidOS: false as boolean,
       forceOwnSchema: false as boolean,
       clearInput: false as boolean,
@@ -261,7 +261,7 @@ export default Vue.extend({
           text: this.$t('customObjectSchema') as string,
           value: 'custom'
         },
-        ...this.schemas.map((entry: ISchemaEndpoint) => {
+        ...this.schemas.map((entry: IVeoSchemaEndpoint) => {
           return {
             text: capitalize(entry.schemaName),
             value: entry.schemaName
@@ -393,7 +393,7 @@ export default Vue.extend({
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     async doImportOs(schema: IVeoObjectSchema) {
-      if (snakeCase(schema.title) !== snakeCase(this.formSchema?.modelType)) {
+      if (schema.title !== this.formSchema?.modelType) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('wrongobjectschema', {
             objectType: schema.title,

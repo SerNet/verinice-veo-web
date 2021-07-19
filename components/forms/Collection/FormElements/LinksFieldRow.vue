@@ -229,7 +229,7 @@ import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
 import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
 import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { separateUUIDParam } from '~/lib/utils';
 
 interface ITarget {
@@ -264,6 +264,7 @@ interface IData {
   currentForm: IVeoFormSchemaMeta | undefined;
   totalItems: number;
   initialized: boolean;
+  schemas: IVeoSchemaEndpoint[];
 }
 
 export default Vue.extend({
@@ -327,8 +328,12 @@ export default Vue.extend({
       linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema },
       currentForm: undefined,
       totalItems: 0 as number,
-      initialized: false
+      initialized: false,
+      schemas: [] as IVeoSchemaEndpoint[]
     };
+  },
+  async fetch() {
+    this.schemas = await this.$api.schema.fetchAll();
   },
   computed: {
     ui() {
@@ -341,7 +346,7 @@ export default Vue.extend({
       };
     },
     targetUri(): string | undefined {
-      return this.targetId ? `/${getSchemaEndpoint(this.targetType)}/${this.targetId}` : undefined;
+      return this.targetId ? `/${getSchemaEndpoint(this.schemas, this.targetType)}/${this.targetId}` : undefined;
     },
     targetType(): string {
       return (this.schema.items as any).properties.target.properties.type.enum[0];

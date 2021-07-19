@@ -195,7 +195,7 @@
 import Vue from 'vue';
 import { capitalize, isEmpty, isString, trim } from 'lodash';
 
-import { ISchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export default Vue.extend({
   props: {
@@ -260,7 +260,7 @@ export default Vue.extend({
             this.$api.schema
               .fetchAll(true)
               .then((data) =>
-                data.map((value: ISchemaEndpoint) => {
+                data.map((value: IVeoSchemaEndpoint) => {
                   return {
                     text: capitalize(value.schemaName),
                     value: value.schemaName

@@ -6,7 +6,7 @@ import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
 import VeoScopesTreePage from '~/pages/_unit/scopes/_entity/tree.vue';
 import { ITreeEntry } from '~/components/objects/VeoObjectTree.vue';
 import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
-import { getSchemaName } from '~/plugins/api/schema';
+import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoEntityModifierEvent, VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 
 export default Vue.extend({
@@ -16,12 +16,14 @@ export default Vue.extend({
     return {
       objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
       currentEntity: undefined as undefined | IVeoEntity,
-      rootEntityType: '' as string
+      rootEntityType: '' as string,
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {
+    this.schemas = await this.$api.schema.fetchAll();
     if (this.entityType === '-') {
-      this.rootEntityType = getSchemaName(this.objectType) || '';
+      this.rootEntityType = getSchemaName(this.schemas, this.objectType) || '';
     } else {
       this.rootEntityType = this.entityType;
     }
