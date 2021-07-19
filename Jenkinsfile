@@ -77,7 +77,7 @@ pipeline {
                                     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
                                         sh "node --version"
                                         sh "npm --version"
-                                        sh "npm ci"
+                                        sh "npm install"
                                         def cypressOptions = [ reporter:'junit',
                                                                reporterOptions: [
                                                                  mochaFile: 'out/junit.xml'
