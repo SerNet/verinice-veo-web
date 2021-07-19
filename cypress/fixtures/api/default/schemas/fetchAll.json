@@ -1,1 +1,42 @@
-{ "knownSchemas": ["control", "scope", "asset", "process", "incident", "document", "person", "scenario"] }
+{
+    "process": {
+        "collectionUri": "/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+        "searchUri": "/processes/searches",
+        "schemaUri": "/schemas/process?domains={domains}"
+    },
+    "scenario": {
+        "collectionUri": "/scenarios{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+        "searchUri": "/scenarios/searches",
+        "schemaUri": "/schemas/scenario?domains={domains}"
+    },
+    "person": {
+        "collectionUri": "/persons{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+        "searchUri": "/persons/searches",
+        "schemaUri": "/schemas/person?domains={domains}"
+    },
+    "scope": {
+        "collectionUri": "/scopes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+        "searchUri": "/scopes/searches",
+        "schemaUri": "/schemas/scope?domains={domains}"
+    },
+    "document": {
+        "collectionUri": "/documents{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+        "searchUri": "/documents/searches",
+        "schemaUri": "/schemas/document?domains={domains}"
+    },
+    "control": {
+        "collectionUri": "/controls{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+        "searchUri": "/controls/searches",
+        "schemaUri": "/schemas/control?domains={domains}"
+    },
+    "asset": {
+        "collectionUri": "/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+        "searchUri": "/assets/searches",
+        "schemaUri": "/schemas/asset?domains={domains}"
+    },
+    "incident": {
+        "collectionUri": "/incidents{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+        "searchUri": "/incidents/searches",
+        "schemaUri": "/schemas/incident?domains={domains}"
+    }
+}

@@ -162,7 +162,7 @@ describe('Objectschema Editor', () => {
     cy.get('.editor .cm-content').then((editor) => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS').then((currentOS) => {
-        cy.wrap(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1')).should('be.undefined');
+        cy.wrap(JsonPointer.get(currentOS, '#/properties/customAspects/properties/testSchema_Aspekt1')).should('be.undefined');
       });
     });
   });
@@ -189,11 +189,11 @@ describe('Objectschema Editor', () => {
     cy.get('.editor .cm-content').then((editor) => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS').then((currentOS) => {
-        cy.wrap(JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1Test')).should('not.be.undefined');
+        cy.wrap(JsonPointer.get(currentOS, '#/properties/customAspects/properties/testSchema_Aspekt1Test')).should('not.be.undefined');
       });
 
       cy.get('@currentOS')
-        .then((currentOS) => JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1Test'))
+        .then((currentOS) => JsonPointer.get(currentOS, '#/properties/customAspects/properties/testSchema_Aspekt1Test'))
         .as('aspect')
         .then((aspect: any) => {
           cy.wrap(aspect.properties.attributes.properties).toMatchSnapshot();
@@ -245,7 +245,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_Aspekt1') || null;
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/testSchema_Aspekt1') || null;
         })
         .as('aspect')
         .should('not.be.null');
@@ -270,7 +270,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectOne') || null;
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/testSchema_TestAspectOne') || null;
         })
         .as('aspect')
         .should('be.null');
@@ -304,7 +304,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectTwo') || null;
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/testSchema_TestAspectTwo') || null;
         })
         .as('aspect')
         .should('not.be.null');
@@ -321,7 +321,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/test_schema_TestAspectTwo') || null;
+          return JsonPointer.get(currentOS, '#/properties/customAspects/properties/testSchema_TestAspectTwo') || null;
         })
         .as('aspect')
         .should('be.null');
@@ -343,7 +343,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1') || null;
+          return JsonPointer.get(currentOS, '#/properties/links/properties/testSchema_Link1') || null;
         })
         .as('link')
         .should('be.null');
@@ -376,7 +376,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1Test') || null;
+          return JsonPointer.get(currentOS, '#/properties/links/properties/testSchema_Link1Test') || null;
         })
         .as('link')
         .should('not.be.null');
@@ -428,7 +428,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_Link1') || null;
+          return JsonPointer.get(currentOS, '#/properties/links/properties/testSchema_Link1') || null;
         })
         .as('link')
         .should('not.be.null');
@@ -458,7 +458,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkOne') || null;
+          return JsonPointer.get(currentOS, '#/properties/links/properties/testSchema_TestLinkOne') || null;
         })
         .as('link')
         .should('be.null');
@@ -497,7 +497,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkTwo') || null;
+          return JsonPointer.get(currentOS, '#/properties/links/properties/testSchema_TestLinkTwo') || null;
         })
         .as('link')
         .should('not.be.null');
@@ -514,7 +514,7 @@ describe('Objectschema Editor', () => {
       cy.wrap(getEditorData(editor)).as('currentOS');
       cy.get('@currentOS')
         .then((currentOS) => {
-          return JsonPointer.get(currentOS, '#/properties/links/properties/test_schema_TestLinkTwo') || null;
+          return JsonPointer.get(currentOS, '#/properties/links/properties/testSchema_TestLinkTwo') || null;
         })
         .as('link')
         .should('be.null');

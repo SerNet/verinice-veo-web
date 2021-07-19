@@ -45,7 +45,7 @@ describe('Formschema Wizard', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
       cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
-      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'test');
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'Test');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
     cy.get('.mdi-code-tags').closest('.v-btn').click();
@@ -84,7 +84,7 @@ describe('Formschema Wizard', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
       cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
-      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'test');
+      cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'Test');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
     cy.get('.mdi-code-tags').closest('.v-btn').click();

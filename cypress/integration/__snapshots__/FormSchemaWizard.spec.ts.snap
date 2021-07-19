@@ -8,7 +8,7 @@ exports[`Formschema Wizard > creates a new formschema based on own uploaded obje
     },
     "type": "Layout"
   },
-  "modelType": "test",
+  "modelType": "Test",
   "name": {
     "de": "Test Formschema"
   },
@@ -28,7 +28,7 @@ exports[`Formschema Wizard > creates a new formschema based on own objectschema 
     },
     "type": "Layout"
   },
-  "modelType": "test",
+  "modelType": "Test",
   "name": {
     "de": "Test Formschema"
   },

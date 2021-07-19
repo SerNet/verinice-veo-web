@@ -4,7 +4,7 @@
       "de":"Verarbeitungstätigkeit",
       "en":"Data processing"
    },
-   "modelType":"Process",
+   "modelType":"process",
    "subType":"PRO_DataProcessing",
    "id":"3ebd14a2-eb7d-4d18-a9ad-2056da85569e",
    "content":{

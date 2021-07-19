@@ -4,7 +4,7 @@
       "de":"IT-System",
       "en":"IT-System"
    },
-   "modelType":"Asset",
+   "modelType":"asset",
    "subType":"AST_IT-System",
    "id":"cbfd91b1-02f8-44c2-88cb-fbf105956ffc",
    "content":{

@@ -126,6 +126,6 @@
     }
   },
   "required": ["name", "owner"],
-  "title": "Incident",
+  "title": "incident",
   "description": "Schema for Incident"
 }

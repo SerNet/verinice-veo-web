@@ -19,7 +19,7 @@
       "title": "CustomAspect",
       "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
       "properties": {
-        "test_schema_Aspekt1": {
+        "testSchema_Aspekt1": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -79,15 +79,15 @@
               "additionalProperties": false,
               "type": "object",
               "properties": {
-                "test_schema_Aspekt1_Attribut1": {
+                "testSchema_Aspekt1_Attribut1": {
                   "type": "string"
                 },
-                "test_schema_Aspekt1_Attribut2": {
+                "testSchema_Aspekt1_Attribut2": {
                   "type": "string",
                   "format": "uri",
                   "pattern": "^(https?|ftp)://"
                 },
-                "test_schema_Aspekt1_Attribut3": {
+                "testSchema_Aspekt1_Attribut3": {
                   "type": "string",
                   "format": "date-time"
                 }
@@ -95,7 +95,7 @@
             }
           }
         },
-        "test_schema_Aspekt2": {
+        "testSchema_Aspekt2": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -155,20 +155,20 @@
               "additionalProperties": false,
               "type": "object",
               "properties": {
-                "test_schema_Aspekt2_Attribut1": {
+                "testSchema_Aspekt2_Attribut1": {
                   "type": "boolean"
                 },
-                "test_schema_Aspekt2_Attribut2": {
+                "testSchema_Aspekt2_Attribut2": {
                   "type": "number"
                 },
-                "test_schema_Aspekt2_Attribut3": {
+                "testSchema_Aspekt2_Attribut3": {
                   "type": "integer"
                 }
               }
             }
           }
         },
-        "test_schema_Aspekt3": {
+        "testSchema_Aspekt3": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -228,7 +228,7 @@
               "additionalProperties": false,
               "type": "object",
               "properties": {
-                "test_schema_Aspekt3_Attribut1": {
+                "testSchema_Aspekt3_Attribut1": {
                   "enum": [
                     "a",
                     "b",
@@ -237,7 +237,7 @@
                     "e"
                   ]
                 },
-                "test_schema_Aspekt3_Attribut2": {
+                "testSchema_Aspekt3_Attribut2": {
                   "type": "array",
                   "items": {
                     "enum": [
@@ -294,7 +294,7 @@
       "title": "CustomLink",
       "description": "Custom relations which do not affect the behavior.",
       "properties": {
-        "test_schema_Link1": {
+        "testSchema_Link1": {
           "type": "array",
           "items": {
             "type": "object",
@@ -384,12 +384,12 @@
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
-                  "test_schema_Link1_Attribut1": {
+                  "testSchema_Link1_Attribut1": {
                     "type": "string",
                     "format": "uri",
                     "pattern": "^(https?|ftp)://"
                   },
-                  "test_schema_Link1_Attribut2": {
+                  "testSchema_Link1_Attribut2": {
                     "enum": [
                       "1",
                       "2",
@@ -484,22 +484,22 @@
         "3": "3",
         "4": "4",
         "5": "5",
-        "test_schema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text DE",
-        "test_schema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI DE",
-        "test_schema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime DE",
-        "test_schema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool DE",
-        "test_schema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number DE",
-        "test_schema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer DE",
-        "test_schema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select DE",
+        "testSchema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text DE",
+        "testSchema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI DE",
+        "testSchema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime DE",
+        "testSchema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool DE",
+        "testSchema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number DE",
+        "testSchema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer DE",
+        "testSchema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select DE",
         "a": "a",
         "b": "b",
         "c": "c",
         "d": "d",
         "e": "e",
-        "test_schema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select DE",
-        "test_schema_Link1": "Link Beschreibung 1",
-        "test_schema_Link1_Attribut1": "Attribut 1 Beschreibung URI DE",
-        "test_schema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select DE"
+        "testSchema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select DE",
+        "testSchema_Link1": "Link Beschreibung 1",
+        "testSchema_Link1_Attribut1": "Attribut 1 Beschreibung URI DE",
+        "testSchema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select DE"
       },
       "en": {
         "1": "1",
@@ -507,22 +507,22 @@
         "3": "3",
         "4": "4",
         "5": "5",
-        "test_schema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text EN",
-        "test_schema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI EN",
-        "test_schema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime EN",
-        "test_schema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool EN",
-        "test_schema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number EN",
-        "test_schema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer EN",
-        "test_schema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select EN",
+        "testSchema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text EN",
+        "testSchema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI EN",
+        "testSchema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime EN",
+        "testSchema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool EN",
+        "testSchema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number EN",
+        "testSchema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer EN",
+        "testSchema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select EN",
         "a": "v",
         "b": "w",
         "c": "x",
         "d": "y",
         "e": "z",
-        "test_schema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select EN",
-        "test_schema_Link1": "Link Beschreibung 1",
-        "test_schema_Link1_Attribut1": "Attribut 1 Beschreibung URI EN",
-        "test_schema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select EN"
+        "testSchema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select EN",
+        "testSchema_Link1": "Link Beschreibung 1",
+        "testSchema_Link1_Attribut1": "Attribut 1 Beschreibung URI EN",
+        "testSchema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select EN"
       }
     }
   },

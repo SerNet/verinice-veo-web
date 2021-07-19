@@ -20,7 +20,7 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
       "title": "CustomAspect",
       "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
       "properties": {
-        "test_schema_Aspekt1": {
+        "testSchema_Aspekt1": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -80,15 +80,15 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
               "additionalProperties": false,
               "type": "object",
               "properties": {
-                "test_schema_Aspekt1_Attribut1": {
+                "testSchema_Aspekt1_Attribut1": {
                   "type": "string"
                 },
-                "test_schema_Aspekt1_Attribut2": {
+                "testSchema_Aspekt1_Attribut2": {
                   "type": "string",
                   "format": "uri",
                   "pattern": "^(https?|ftp)://"
                 },
-                "test_schema_Aspekt1_Attribut3": {
+                "testSchema_Aspekt1_Attribut3": {
                   "type": "string",
                   "format": "date-time"
                 }
@@ -96,7 +96,7 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
             }
           }
         },
-        "test_schema_Aspekt2": {
+        "testSchema_Aspekt2": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -156,20 +156,20 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
               "additionalProperties": false,
               "type": "object",
               "properties": {
-                "test_schema_Aspekt2_Attribut1": {
+                "testSchema_Aspekt2_Attribut1": {
                   "type": "boolean"
                 },
-                "test_schema_Aspekt2_Attribut2": {
+                "testSchema_Aspekt2_Attribut2": {
                   "type": "number"
                 },
-                "test_schema_Aspekt2_Attribut3": {
+                "testSchema_Aspekt2_Attribut3": {
                   "type": "integer"
                 }
               }
             }
           }
         },
-        "test_schema_Aspekt3": {
+        "testSchema_Aspekt3": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -229,7 +229,7 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
               "additionalProperties": false,
               "type": "object",
               "properties": {
-                "test_schema_Aspekt3_Attribut1": {
+                "testSchema_Aspekt3_Attribut1": {
                   "enum": [
                     "a",
                     "b",
@@ -238,7 +238,7 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                     "e"
                   ]
                 },
-                "test_schema_Aspekt3_Attribut2": {
+                "testSchema_Aspekt3_Attribut2": {
                   "items": {
                     "enum": [
                       "a",
@@ -295,7 +295,7 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
       "title": "CustomLink",
       "description": "Custom relations which do not affect the behavior.",
       "properties": {
-        "test_schema_Link1": {
+        "testSchema_Link1": {
           "type": "array",
           "items": {
             "type": "object",
@@ -385,12 +385,12 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                 "additionalProperties": false,
                 "type": "object",
                 "properties": {
-                  "test_schema_Link1_Attribut1": {
+                  "testSchema_Link1_Attribut1": {
                     "type": "string",
                     "format": "uri",
                     "pattern": "^(https?|ftp)://"
                   },
-                  "test_schema_Link1_Attribut2": {
+                  "testSchema_Link1_Attribut2": {
                     "enum": [
                       "1",
                       "2",
@@ -485,22 +485,22 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
         "3": "3",
         "4": "4",
         "5": "5",
-        "test_schema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text DE",
-        "test_schema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI DE",
-        "test_schema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime DE",
-        "test_schema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool DE",
-        "test_schema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number DE",
-        "test_schema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer DE",
-        "test_schema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select DE",
+        "testSchema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text DE",
+        "testSchema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI DE",
+        "testSchema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime DE",
+        "testSchema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool DE",
+        "testSchema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number DE",
+        "testSchema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer DE",
+        "testSchema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select DE",
         "a": "a",
         "b": "b",
         "c": "c",
         "d": "d",
         "e": "e",
-        "test_schema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select DE",
-        "test_schema_Link1": "Link Beschreibung 1",
-        "test_schema_Link1_Attribut1": "Attribut 1 Beschreibung URI DE",
-        "test_schema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select DE"
+        "testSchema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select DE",
+        "testSchema_Link1": "Link Beschreibung 1",
+        "testSchema_Link1_Attribut1": "Attribut 1 Beschreibung URI DE",
+        "testSchema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select DE"
       },
       "en": {
         "1": "1",
@@ -508,22 +508,22 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
         "3": "3",
         "4": "4",
         "5": "5",
-        "test_schema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text EN",
-        "test_schema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI EN",
-        "test_schema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime EN",
-        "test_schema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool EN",
-        "test_schema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number EN",
-        "test_schema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer EN",
-        "test_schema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select EN",
+        "testSchema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text EN",
+        "testSchema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI EN",
+        "testSchema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime EN",
+        "testSchema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool EN",
+        "testSchema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number EN",
+        "testSchema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer EN",
+        "testSchema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select EN",
         "a": "v",
         "b": "w",
         "c": "x",
         "d": "y",
         "e": "z",
-        "test_schema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select EN",
-        "test_schema_Link1": "Link Beschreibung 1",
-        "test_schema_Link1_Attribut1": "Attribut 1 Beschreibung URI EN",
-        "test_schema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select EN"
+        "testSchema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select EN",
+        "testSchema_Link1": "Link Beschreibung 1",
+        "testSchema_Link1_Attribut1": "Attribut 1 Beschreibung URI EN",
+        "testSchema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select EN"
       }
     }
   },
@@ -537,13 +537,13 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
 
 exports[`Objectschema Editor > changes customAspect name, attribute names, description and types #0`] =
 {
-  "test_schema_Aspekt1Test_Attribut1Test": {
+  "testSchema_Aspekt1Test_Attribut1Test": {
     "type": "string"
   },
-  "test_schema_Aspekt1Test_Attribut2Test": {
+  "testSchema_Aspekt1Test_Attribut2Test": {
     "type": "boolean"
   },
-  "test_schema_Aspekt1Test_Attribut3": {
+  "testSchema_Aspekt1Test_Attribut3": {
     "type": "string",
     "format": "date-time"
   }
@@ -551,19 +551,19 @@ exports[`Objectschema Editor > changes customAspect name, attribute names, descr
 
 exports[`Objectschema Editor > removes and adds aspect attributes #0`] =
 {
-  "test_schema_Aspekt1_a": {
+  "testSchema_Aspekt1_a": {
     "type": "string"
   },
-  "test_schema_Aspekt1_b": {
+  "testSchema_Aspekt1_b": {
     "type": "boolean"
   },
-  "test_schema_Aspekt1_c": {
+  "testSchema_Aspekt1_c": {
     "type": "number"
   },
-  "test_schema_Aspekt1_d": {
+  "testSchema_Aspekt1_d": {
     "type": "integer"
   },
-  "test_schema_Aspekt1_e": {
+  "testSchema_Aspekt1_e": {
     "enum": [
       "a",
       "b",
@@ -571,7 +571,7 @@ exports[`Objectschema Editor > removes and adds aspect attributes #0`] =
       "d"
     ]
   },
-  "test_schema_Aspekt1_f": {
+  "testSchema_Aspekt1_f": {
     "type": "array",
     "items": {
       "enum": [
@@ -586,7 +586,7 @@ exports[`Objectschema Editor > removes and adds aspect attributes #0`] =
 
 exports[`Objectschema Editor > adds completely new aspect and removes it from dialog with delete button #0`] =
 {
-  "test_schema_TestAspectTwo_a": {
+  "testSchema_TestAspectTwo_a": {
     "type": "string"
   }
 };
@@ -614,31 +614,31 @@ exports[`Objectschema Editor > changes link name, attribute names, description a
 
 exports[`Objectschema Editor > changes link name, attribute names, description and types #1`] =
 {
-  "test_schema_Link1Test_Attribut1Test": {
+  "testSchema_Link1Test_Attribut1Test": {
     "type": "string",
     "format": "uri",
     "pattern": "^(https?|ftp)://"
   },
-  "test_schema_Link1Test_Attribut2Test": {
+  "testSchema_Link1Test_Attribut2Test": {
     "type": "boolean"
   }
 };
 
 exports[`Objectschema Editor > removes and adds link attributes #0`] =
 {
-  "test_schema_Link1_a": {
+  "testSchema_Link1_a": {
     "type": "string"
   },
-  "test_schema_Link1_b": {
+  "testSchema_Link1_b": {
     "type": "boolean"
   },
-  "test_schema_Link1_c": {
+  "testSchema_Link1_c": {
     "type": "number"
   },
-  "test_schema_Link1_d": {
+  "testSchema_Link1_d": {
     "type": "integer"
   },
-  "test_schema_Link1_e": {
+  "testSchema_Link1_e": {
     "enum": [
       "a",
       "b",
@@ -646,7 +646,7 @@ exports[`Objectschema Editor > removes and adds link attributes #0`] =
       "d"
     ]
   },
-  "test_schema_Link1_f": {
+  "testSchema_Link1_f": {
     "type": "array",
     "items": {
       "enum": [
@@ -661,7 +661,7 @@ exports[`Objectschema Editor > removes and adds link attributes #0`] =
 
 exports[`Objectschema Editor > adds completely new link and removes it from dialog with delete button #0`] =
 {
-  "test_schema_TestLinkTwo_a": {
+  "testSchema_TestLinkTwo_a": {
     "type": "string"
   }
 };
