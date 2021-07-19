@@ -50,7 +50,8 @@ pipeline {
             }
             steps {
                 script {
-                    def dockerImage = docker.build("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}", "--build-arg CI_COMMIT_SHA='${env.GIT_COMMIT}' --build-arg CI_JOB_ID='${env.BUILD_NUMBER}' --build-arg CI_COMMIT_TIMESTAMP='${new Date().time}' --label org.opencontainers.image.version='$projectVersion' --label org.opencontainers.image.revision='$env.GIT_COMMIT' .")
+                    def nodeEnv = env.GIT_BRANCH == 'develop' ? 'development' : 'production'
+                    def dockerImage = docker.build("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}", "--build-arg CI_COMMIT_SHA='${env.GIT_COMMIT}' --build-arg CI_JOB_ID='${env.BUILD_NUMBER}' --build-arg CI_COMMIT_TIMESTAMP='${new Date().time}' --build-arg NODE_ENV=${nodeEnv} --label org.opencontainers.image.version='$projectVersion' --label org.opencontainers.image.revision='$env.GIT_COMMIT' .")
                     // Finally, we'll push the image with several tags:
                     // Pushing multiple tags is cheap, as all the layers are reused.
                     withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
