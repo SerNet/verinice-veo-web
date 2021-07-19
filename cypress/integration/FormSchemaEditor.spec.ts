@@ -136,19 +136,19 @@ describe('Formschema Editor', () => {
     cy.contains('.v-sheet', 'name').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / SensitiveData_SensitiveData').drag();
+    cy.contains('.v-sheet', 'SensitiveData / SensitiveData').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / SensitiveData_comment').drag();
+    cy.contains('.v-sheet', 'SensitiveData / comment').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / ProcessingDetails_typeOfSurvey').drag();
+    cy.contains('.v-sheet', 'ProcessingDetails / typeOfSurvey').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / InternalRecipientLink').drag();
+    cy.contains('.v-sheet', 'InternalRecipientLink').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / TypeOfDataProcessed').drag();
+    cy.contains('.v-sheet', 'TypeOfDataProcessed').drag();
     cy.get('.dropzone').drop();
 
     cy.contains('.v-sheet', 'description').drag();
