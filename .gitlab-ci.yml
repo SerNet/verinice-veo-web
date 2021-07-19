@@ -64,6 +64,8 @@ test:e2e:
   variables:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
+    GIT_CHECKOUT: "false"
+    GIT_CLEAN_FLAGS: "none"
   script:
     - pwd
     - ls -al
@@ -83,8 +85,6 @@ test:e2e:
     reports:
       cobertura: cypress/coverage/cobertura-coverage.xml
     when: always
-    reports:
-      cobertura: 'cypress/coverage/cobertura-coverage.xml'
     paths:
       - cypress/videos/**/*.mp4
       - cypress/screenshots/**/*.png
