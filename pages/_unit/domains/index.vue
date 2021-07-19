@@ -2,8 +2,8 @@
 import Vue from 'vue';
 
 export default Vue.extend({
-  middleware({ route, redirect }) {
-    redirect(`/${route.params.unit}`);
+  middleware({ params, redirect }) {
+    redirect(`/${params.unit}`);
   }
 });
 </script>

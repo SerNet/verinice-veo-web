@@ -1,0 +1,38 @@
+{
+  "createdAt":"2021-07-12T21:47:40.287441Z",
+  "createdBy":"pb",
+  "updatedAt":"2021-07-12T21:47:40.287441Z",
+  "updatedBy":"pb",
+  "name":"Iran",
+  "designator":"SCP-20",
+  "abbreviation":"AV3",
+  "description":"Scope mit Subtype Auftragsverarbeiter",
+  "domains":[
+    {
+      "displayName":"DSGVO DSGVO",
+      "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+      "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+    }
+  ],
+  "owner":{
+    "displayName":"NBRX Testunit",
+    "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+    "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+    "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+  },
+  "links":{
+    
+  },
+  "customAspects":{
+    
+  },
+  "subType":{
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_Processor"
+  },
+  "type":"scope",
+  "members":[
+    
+  ],
+  "id":"457c9223-e8c0-41b4-993e-597564cfcb93"
+}

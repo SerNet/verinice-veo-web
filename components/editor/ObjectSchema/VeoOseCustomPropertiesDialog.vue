@@ -226,6 +226,7 @@ export default Vue.extend({
     };
   },
   async fetch() {
+    // TODO: needs to considered if these can be loaded more efficiently, especially formSchemas
     this.objectTypes = await this.$api.schema.fetchAll();
     this.formSchemas = await this.$api.form.fetchGlobal();
   },

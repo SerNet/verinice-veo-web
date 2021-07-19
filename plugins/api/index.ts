@@ -12,11 +12,12 @@ import unit from '~/plugins/api/unit';
 import report from '~/plugins/api/report';
 import domain from '~/plugins/api/domain';
 import monitoring from '~/plugins/api/monitoring';
+import catalog from '~/plugins/api/catalog';
 import { User } from '~/plugins/user';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
 
 export function createAPI(context: Context) {
-  return Client.create(context, { form, entity, history, schema, translation, unit, report, domain, monitoring });
+  return Client.create(context, { form, entity, history, schema, translation, unit, report, domain, catalog, monitoring });
 }
 
 export interface IAPIClient {
@@ -179,7 +180,7 @@ export class Client {
       } else if (parsed.code) {
         throw new VeoError(parsed.code, VeoErrorTypes.VEO_ERROR_COMMON);
       } else {
-        const e = new Error(`Error ${res.status || '?'} while accessing ${url}: ${parsed.name}`);
+        const e = new VeoError(`Error ${res.status || '?'} while accessing ${url}: ${parsed.name}`, res.status);
         e.name = 'API_EXCEPTION';
         throw e;
       }
@@ -200,7 +201,7 @@ export class Client {
       }
       return parsed;
     } catch (e) {
-      throw new VeoError('Non JSON response');
+      throw new VeoError(`Non JSON response: ${res}`);
     }
   }
 }

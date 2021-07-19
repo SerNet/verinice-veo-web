@@ -269,6 +269,14 @@ export default Vue.extend({
       const newEntity = cloneDeep(item);
       newEntity.name = `${item.name} (${this.$t('clone')})`;
 
+      // Remove properties that should not be posted
+      // @ts-ignore
+      delete newEntity.id;
+      // @ts-ignore
+      delete newEntity.displayName;
+      // @ts-ignore
+      delete newEntity.designator;
+
       this.$api.entity
         .create(item.type, newEntity)
         .then(async (result) => {

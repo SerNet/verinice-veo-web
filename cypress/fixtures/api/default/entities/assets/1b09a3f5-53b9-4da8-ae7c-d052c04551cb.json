@@ -1,0 +1,38 @@
+{
+  "createdAt":"2021-07-13T12:31:14.463309Z",
+  "createdBy":"pb",
+  "updatedAt":"2021-07-13T12:31:14.463309Z",
+  "updatedBy":"pb",
+  "name":"Igel",
+  "designator":"AST-25",
+  "abbreviation":"DA9",
+  "description":"Asset mit Subtype Datenart",
+  "domains":[
+    {
+      "displayName":"DSGVO DSGVO",
+      "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+      "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+    }
+  ],
+  "owner":{
+    "displayName":"NBRX Testunit",
+    "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+    "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+    "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+  },
+  "links":{
+    
+  },
+  "customAspects":{
+    
+  },
+  "subType":{
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
+  },
+  "type":"asset",
+  "parts":[
+    
+  ],
+  "id":"1b09a3f5-53b9-4da8-ae7c-d052c04551cb"
+}

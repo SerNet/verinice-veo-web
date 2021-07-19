@@ -1,7 +1,7 @@
 import castArray from 'lodash/castArray';
 import { JSONSchema7 } from 'json-schema';
 
-import { IVeoEntity, IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchema, IVeoLink, IVeoObjectSchema } from '~/types/VeoTypes';
 
 interface ICmpFunction {
   (a: any, b: any): number;
@@ -137,4 +137,13 @@ export function formatDate(date: Date) {
 
 export function formatTime(date: Date) {
   return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+}
+
+export function getEntityDetailsFromLink(link: IVeoLink): { type: string; id: string } {
+  const destructedLink = link.targetUri.split('/');
+
+  return {
+    id: destructedLink.pop() || '',
+    type: destructedLink.pop() || ''
+  };
 }

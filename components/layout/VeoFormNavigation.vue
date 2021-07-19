@@ -1,28 +1,36 @@
 <template>
   <v-list
+    flat
     dense
     class="pa-0"
   >
-    <template v-for="item in items">
-      <v-list-item
-        :key="item.initialId + '0'"
-        @click="onClick(item.initialId)"
-      >
-        <v-list-item-content>
-          <v-list-item-title :class="currentLevelLeftMargin">
-            {{ item.text }}
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <VeoFormNavigation
-        v-if="nestingLevel < 0"
-        :key="item.initialId + '1'"
-        :form-schema="item.layout"
-        :custom-translation="customTranslation"
-        :initial-id="item.initialId"
-        :nesting-level="nextNestingLevel"
-      />
-    </template>
+    <v-list-item-group
+      v-model="selectedItem"
+      mandatory
+      color="primary"
+    >
+      <template v-for="item in items">
+        <v-list-item
+          :key="item.initialId + '0'"
+          :value="item.initialId"
+          @click="onClick(item.initialId)"
+        >
+          <v-list-item-content>
+            <v-list-item-title :class="currentLevelLeftMargin">
+              {{ item.text }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <VeoFormNavigation
+          v-if="nestingLevel < 0"
+          :key="item.initialId + '1'"
+          :form-schema="item.layout"
+          :custom-translation="customTranslation"
+          :initial-id="item.initialId"
+          :nesting-level="nextNestingLevel"
+        />
+      </template>
+    </v-list-item-group>
   </v-list>
 </template>
 
@@ -39,6 +47,8 @@ interface IItem {
 interface IData {
   items: IItem[];
   scrollWrapper: HTMLElement | null;
+  selectedItem: string | undefined;
+  observer: IntersectionObserver | undefined;
 }
 
 export default Vue.extend({
@@ -65,7 +75,9 @@ export default Vue.extend({
   data(): IData {
     return {
       items: [],
-      scrollWrapper: null
+      scrollWrapper: null,
+      selectedItem: undefined,
+      observer: undefined
     };
   },
   computed: {
@@ -74,6 +86,10 @@ export default Vue.extend({
     },
     currentLevelLeftMargin(): string {
       return `ml-${this.nestingLevel * 4}`;
+    },
+    // eslint-disable-next-line no-undef
+    itemsToObserve(): NodeListOf<Element> {
+      return document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', '));
     }
   },
   watch: {
@@ -101,6 +117,26 @@ export default Vue.extend({
   mounted() {
     // Cache scrollWrapper element
     this.scrollWrapper = document.getElementById('scroll-wrapper');
+
+    // Activate Observer when the component is mounted
+    const options = {
+      root: document.getElementById('scroll-wrapper'),
+      rootMargin: '-84px 0px 0px 0px', // -72px because of sticky header
+      threshold: 0
+    };
+
+    const items = this.items.map((item) => ({ key: item.initialId, value: false }));
+
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const elId = entry.target.getAttribute('id') as string;
+        const index = items.findIndex((item) => item.key === elId);
+        items[index].value = entry.isIntersecting;
+      });
+      this.selectedItem = items.filter((item) => item.value)[0].key;
+    }, options);
+
+    this.activateObserver();
   },
   methods: {
     onClick(groupId: string) {
@@ -118,6 +154,16 @@ export default Vue.extend({
         const count = item.offsetTop - wrapper.scrollTop - header.offsetHeight;
         wrapper.scrollBy({ top: count, left: 0, behavior: 'smooth' });
       }
+    },
+    activateObserver() {
+      this.itemsToObserve.forEach((section) => {
+        this.observer?.observe(section);
+      });
+    },
+    deactivateObserver() {
+      this.itemsToObserve.forEach((section) => {
+        this.observer?.unobserve(section);
+      });
     }
   }
 });

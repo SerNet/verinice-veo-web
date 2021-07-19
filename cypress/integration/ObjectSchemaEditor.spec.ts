@@ -3,10 +3,7 @@
 import { times } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 
-import { getEditorData } from '../support/utils';
-
-let testSchema = '{}';
-let emptySchema = '{}';
+import { generateTos, getEditorData, ITo } from '../support/utils';
 
 let schemaRealValues: { text: string; numberOfProperties: number }[] = [];
 
@@ -74,135 +71,77 @@ const addTestTwoAttribute = {
   writeDescription: 'a'
 };
 
+const tos = generateTos({
+  testschema: {
+    requestUrlPattern: /.*\/schemas\/testschema.*/,
+    fixturePath: 'api/default/schemas/os_testschema.json',
+    browserUrl: '/editor/objectschema?os=testschema'
+  },
+  empty: {
+    requestUrlPattern: /.*\/schemas\/empty.*/,
+    fixturePath: 'api/default/schemas/os_empty.json',
+    browserUrl: '/editor/objectschema?os=empty'
+  }
+});
+
+function goTo(to: ITo) {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: to.requestUrlPattern
+    },
+    (req) => {
+      req.reply({
+        fixture: to.fixturePath
+      });
+    }
+  ).as('loadedSchema');
+
+  cy.goTo('/editor').goTo(to.browserUrl);
+
+  // cy.wait(['@loadedSchema']);
+
+  /**
+   * Define aliases
+   */
+  cy.get('.v-expansion-panel').as('expansionPanels');
+  cy.get('@expansionPanels').find('button.v-expansion-panel-header').as('expansionPanelHeaders');
+  cy.get('@expansionPanels').find('.v-expansion-panel-content').as('expansionPanelContent');
+}
+
 describe('Objectschema Editor', () => {
   before(() => {
     cy.auth();
 
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas$/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'objectschema/schemas.json'
-        });
-      }
-    );
+    cy.interceptLayoutCalls();
 
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/translations(.*)$/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'translations/translation.json'
-        });
-      }
-    );
-
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\//
-      },
-      (req) => {
-        req.reply({
-          fixture: 'forms/fetchAllForms.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'reports/fetchAllReports.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'default/fetchAllDomains.json'
-        });
-      }
-    );
+    cy.fixture('api/default/schemas/os_testschema.json').then((_testSchema) => {
+      schemaRealValues = [
+        // -3 = customAspects, customLinks, translations
+        { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 3 },
+        {
+          text: 'Individuelle Aspekte',
+          numberOfProperties: Object.keys(_testSchema.properties.customAspects.properties).length
+        },
+        {
+          text: 'Individuelle Links',
+          numberOfProperties: Object.keys(_testSchema.properties.links.properties).length
+        }
+      ];
+    });
 
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('/editor');
-
-    cy.contains('.v-list-item--link', 'Objektschema Editor').should('have.attr', 'href', '/editor/objectschema').click();
-
-    // Upload os_testSchema as schema
-    cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Eigenes{enter}');
-      cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('objectschema/os_testSchema.json');
-    });
-
-    cy.fixture('objectschema/os_testSchema.json')
-      .as('testSchema')
-      .then((_testSchema) => {
-        schemaRealValues = [
-          // -3 = customAspects, customLinks, translations
-          { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 3 },
-          {
-            text: 'Individuelle Aspekte',
-            numberOfProperties: Object.keys(_testSchema.properties.customAspects.properties).length
-          },
-          {
-            text: 'Individuelle Links',
-            numberOfProperties: Object.keys(_testSchema.properties.links.properties).length
-          }
-        ];
-        testSchema = _testSchema;
-      });
-
-    cy.fixture('objectschema/os_empty.json')
-      .as('testSchema')
-      .then((_emptySchema) => {
-        emptySchema = _emptySchema;
-      });
+    cy.wait('@G_fetchSchemas');
   });
   beforeEach(() => {
-    // Reset the schema before each test to restore the original state
-    cy.get('.editor')
-      .find('.cm-content')
-      .closest('.d-flex.flex-column')
-      .then((el: any) => {
-        el[0].__vue__.$emit('input', JSON.stringify(testSchema, undefined, 2));
-      });
-
-    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click();
-
-    /**
-     * Define aliases
-     */
-    cy.get<HTMLElement>('.v-expansion-panel').as('expansionPanels');
-    cy.get('@expansionPanels').find<HTMLElement>('button.v-expansion-panel-header').as('expansionPanelHeaders');
-    cy.get('@expansionPanels')
-      .find<HTMLDivElement>('.v-expansion-panel-content')
-      .as('expansionPanelContent')
-      .then(() => {
-        // TODO: quick fix to close dialogs if error occured in the last test and remained opened.
-        // This enables the next text to continue and work.
-        // A Better solution would be to make all tests completely independent from each other
-        if (cy.$$('.v-dialog--active')?.[0]) {
-          cy.$$('.v-dialog--active .v-card__title i.mdi-close').closest('.v-btn')?.[0]?.click();
-        }
-      });
+    cy.interceptLayoutCalls();
   });
 
   it('compares number of basic properties, aspects and links comply with sum in expansion panel title', function () {
+    goTo(tos.testschema);
     cy.get('@expansionPanelHeaders').each((el, i) => {
       const expansionPanelText = el[0].childNodes[0].nodeValue.trim();
       cy.wrap(expansionPanelText).should('equal', `${schemaRealValues[i].text} (${schemaRealValues[i].numberOfProperties})`);
@@ -210,6 +149,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('deletes aspect with outer delete button', function () {
+    goTo(tos.testschema);
     cy.get('@expansionPanelContent').eq(1).find('.v-expansion-panel-content__wrap').children().should('have.length', schemaRealValues[1].numberOfProperties);
     cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').eq(1).click();
     cy.get('.v-dialog--active .v-card__actions .v-btn').contains('Löschen').click();
@@ -228,6 +168,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('changes customAspect name, attribute names, description and types', function () {
+    goTo(tos.testschema);
     cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').first().click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');
@@ -261,6 +202,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('removes and adds aspect attributes', function () {
+    goTo(tos.testschema);
     // Open aspect
     cy.contains('Aspekt1').closest('.v-list-item').find('.v-btn').first().click();
 
@@ -314,6 +256,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('opens dialog to create a new aspect and clicks close button to discard changes', function () {
+    goTo(tos.testschema);
     cy.contains('Aspekte hinzufügen').closest('.v-btn').click();
 
     cy.get('.v-dialog--active').within(() => {
@@ -335,6 +278,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('adds completely new aspect and removes it from dialog with delete button', function () {
+    goTo(tos.testschema);
     cy.contains('Aspekte hinzufügen').closest('.v-btn').click();
 
     cy.get('.v-dialog--active').within(() => {
@@ -385,6 +329,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('deletes a link with outer delete button', function () {
+    goTo(tos.testschema);
     cy.get('@expansionPanelContent').eq(2).find('.v-expansion-panel-content__wrap').children().should('have.length', schemaRealValues[2].numberOfProperties);
     cy.contains('Link1').closest('.v-list-item').find('.v-btn').eq(1).click();
     cy.get('.v-dialog--active .v-card__actions .v-btn').contains('Löschen').click();
@@ -406,12 +351,13 @@ describe('Objectschema Editor', () => {
   });
 
   it('changes link name, attribute names, description and types', function () {
+    goTo(tos.testschema);
     cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');
       cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
-      cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Control{enter}');
-      cy.contains('Link Subtyp').closest('.v-select').type('TOM{enter}');
+      cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Asset{enter}');
+      cy.contains('Link Subtyp').closest('.v-select').type('Datenart{enter}');
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
@@ -442,6 +388,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('removes and adds link attributes', function () {
+    goTo(tos.testschema);
     cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click();
 
     cy.get('.v-dialog--active').within(() => {
@@ -492,6 +439,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('opens dialog to create a new link and clicks close button to discard changes', function () {
+    goTo(tos.testschema);
     cy.contains('Link hinzufügen').closest('.v-btn').click();
 
     cy.get('.v-dialog--active').within(() => {
@@ -518,6 +466,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('adds completely new link and removes it from dialog with delete button', function () {
+    goTo(tos.testschema);
     cy.contains('Link hinzufügen').closest('.v-btn').click();
 
     cy.get('.v-dialog--active').within(() => {
@@ -573,21 +522,13 @@ describe('Objectschema Editor', () => {
   });
 
   it('compares downloaded schema with the actual one', function () {
+    goTo(tos.testschema);
     cy.get('.mdi-download').closest('.v-btn').click();
     cy.readFile('cypress/downloads/os_testSchema.json').toMatchSnapshot();
   });
 
   it('adds a translated description to a new aspect attribute for EN and DE via the dialog', function () {
-    // Reset the schema before each test to restore the original state
-    cy.get('.editor')
-      .find('.cm-content')
-      .closest('.d-flex.flex-column')
-      .then((el: any) => {
-        el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2));
-      });
-
-    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click();
-
+    goTo(tos.empty);
     const currentAttrData = addAttributes[4];
 
     // Switch default language to de
@@ -733,16 +674,7 @@ describe('Objectschema Editor', () => {
   });
 
   it('adds a translated description to a new link attribute for EN and DE via the dialog', function () {
-    // Reset the schema before each test to restore the original state
-    cy.get('.editor')
-      .find('.cm-content')
-      .closest('.d-flex.flex-column')
-      .then((el: any) => {
-        el[0].__vue__.$emit('input', JSON.stringify(emptySchema, undefined, 2));
-      });
-
-    cy.get('.veo-editor-save-button').contains('.v-btn__content', 'Codeänderungen übernehmen').closest('.v-btn').click();
-
+    goTo(tos.empty);
     const currentAttrData = addAttributes[4];
 
     // Switch default language to de

@@ -76,7 +76,8 @@ export default Vue.extend({
   .vf-form-element .mdi-close {
     opacity: 0;
   }
-  .vf-form-element:not(.vf-array-field):not(.vf-links-field):hover .mdi-close {
+  .vf-form-element:not(.vf-array-field):not(.vf-links-field):hover .mdi-close,
+  .links-field-row-autocomplete:hover .mdi-close {
     opacity: 1;
   }
 

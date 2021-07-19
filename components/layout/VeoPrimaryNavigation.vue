@@ -114,7 +114,7 @@ import { upperFirst } from 'lodash';
 import LocalStorage from '~/util/LocalStorage';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 import { nonLinkableSchemas } from '~/plugins/api/schema';
 
 export interface INavItem {
@@ -150,8 +150,22 @@ export default Vue.extend({
     };
   },
   computed: {
-    domainId(): string {
-      return separateUUIDParam(this.$route.params.domain).id;
+    unitId(): string | undefined {
+      const route = separateUUIDParam(this.$route.params.unit).id;
+      return route.length > 0 ? route : undefined;
+    },
+    domainId(): string | undefined {
+      if (this.$route.name === 'unit-domains-more') {
+        return undefined;
+      }
+
+      const domain: string | undefined = separateUUIDParam(this.$route.params.domain).id;
+
+      // If the domain is not part of the url, check if it is stored in the user plugin and fits to the unit. Else return undefined
+      if (!domain) {
+        return this.unitId && this.unitId === this.$user.lastUnit ? this.$user.lastDomain : undefined;
+      }
+      return domain;
     }
   },
   watch: {
@@ -172,7 +186,6 @@ export default Vue.extend({
     createUUIDUrlParam,
     async getNavEntries(route: Route) {
       const routeUnitParam = route.params.unit;
-      const domainId = separateUUIDParam(route.params.domain).id;
 
       const unitDashboard: INavItem = {
         name: this.$t('unit.index.title').toString(),
@@ -278,10 +291,27 @@ export default Vue.extend({
         topLevelItem: true
       };
 
+      const catalogs = {
+        name: this.$t('breadcrumbs.catalogs').toString(),
+        icon: 'mdi-clipboard-list',
+        to: undefined,
+        exact: false,
+        disabled: false,
+        childItems: undefined,
+        persistCollapsedState: (collapsed: boolean) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 4),
+        collapsed: LocalStorage.expandedNavEntry !== 4,
+        topLevelItem: true
+      };
+
       this.domains = await this.$api.domain.fetchAll();
 
+      // Auto set current domain to first domain if only one exists.
+      if (this.domains.length === 1) {
+        this.$user.updateLastDomain(this.domains[0].id);
+      }
+
       this.items = [
-        ...(domainId ? [domainDashboard, forms, reports] : []),
+        ...(this.domainId ? [domainDashboard, forms, catalogs, reports] : []),
         ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
         ...(!routeUnitParam ? [unitSelection] : []),
         spacer,
@@ -291,8 +321,11 @@ export default Vue.extend({
       ];
 
       this.addChildren(this.$t('breadcrumbs.objects').toString(), await this.fetchObjectTypes());
-      this.addChildren(this.$t('breadcrumbs.forms').toString(), await this.fetchFormTypes(domainId));
-      this.addChildren(this.$t('breadcrumbs.reports').toString(), await this.fetchReportTypes(domainId));
+      if (this.domainId) {
+        this.addChildren(this.$t('breadcrumbs.forms').toString(), await this.fetchFormTypes(this.domainId));
+        this.addChildren(this.$t('breadcrumbs.reports').toString(), await this.fetchReportTypes(this.domainId));
+        this.addChildren(this.$t('breadcrumbs.catalogs').toString(), await this.fetchCatalogs(this.domainId));
+      }
     },
     /**
      * Add children to a menu item
@@ -364,6 +397,20 @@ export default Vue.extend({
           };
         })
       );
+    },
+    async fetchCatalogs(domainId: string): Promise<INavItem[]> {
+      if (domainId) {
+        const catalogs = await this.$api.catalog.fetchAll(domainId);
+        return catalogs.map((catalog: IVeoCatalog) => ({
+          name: catalog.name,
+          exact: false,
+          to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}/catalogs/${createUUIDUrlParam('catalog', catalog.id)}/`,
+          disabled: false,
+          topLevelItem: false
+        }));
+      } else {
+        return await Promise.resolve([]);
+      }
     },
     setMiniVariant(miniVariant: boolean) {
       this.miniVariant = miniVariant;

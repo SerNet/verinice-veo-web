@@ -404,7 +404,7 @@ export default Vue.extend({
           return this.$api.entity.fetch(objectType, res.resourceId);
         },
         update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.entity.update(objectType, this.objectId, updatedObjectData);
+          return this.$api.entity.update(objectType, updatedObjectData.id, updatedObjectData);
         },
         delete: (objectType: string, id: string) => {
           this.$api.entity.delete(objectType, id);
@@ -440,7 +440,7 @@ export default Vue.extend({
     onSave(_event: any, redirect: boolean = false): Promise<void> {
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
-        .then(() => {
+        .then(async () => {
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
@@ -449,7 +449,12 @@ export default Vue.extend({
               path: `/${this.unitRoute}/domains/${this.$route.params.domain}/forms/${this.formRoute}/`
             });
           } else {
-            this.$fetch();
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                this.$fetch();
+                resolve();
+              }, 1000);
+            });
           }
         })
         .catch((error: { status: number; name: string }) => {

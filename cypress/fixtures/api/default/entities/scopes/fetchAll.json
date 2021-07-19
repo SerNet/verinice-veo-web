@@ -1,0 +1,704 @@
+{
+   "items":[
+      {
+         "createdAt":"2021-07-12T21:46:05.687647Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:46:05.687647Z",
+         "updatedBy":"pb",
+         "name":"Ägypten",
+         "designator":"SCP-15",
+         "abbreviation":"VS9",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"78ec1ea5-2e4c-4c71-88de-ff5975fb844c"
+      },
+      {
+         "createdAt":"2021-07-12T21:45:21.689586Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:45:21.689586Z",
+         "updatedBy":"pb",
+         "name":"Äthopien",
+         "designator":"SCP-13",
+         "abbreviation":"VS7",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"2e47692d-21e4-449b-9933-34d2dd167bc2"
+      },
+      {
+         "createdAt":"2021-07-12T21:43:54.200192Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:43:54.200192Z",
+         "updatedBy":"pb",
+         "name":"Bangladesch",
+         "designator":"SCP-9",
+         "abbreviation":"VS3",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"cec9c211-2d40-4f38-a514-e64651501969"
+      },
+      {
+         "createdAt":"2021-07-12T21:43:20.188792Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:43:20.188792Z",
+         "updatedBy":"pb",
+         "name":"Brasilien",
+         "designator":"SCP-7",
+         "abbreviation":"VS1",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"5986694a-c58a-4411-8991-9fc34845bc6a"
+      },
+      {
+         "createdAt":"2021-07-12T21:46:40.058663Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:46:40.058663Z",
+         "updatedBy":"pb",
+         "name":"Demokratische Republik Kongo",
+         "designator":"SCP-17",
+         "abbreviation":"VS11",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"e390c0de-b488-4f4b-9146-02080199b025"
+      },
+      {
+         "createdAt":"2021-07-12T21:47:17.213886Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:47:17.213886Z",
+         "updatedBy":"pb",
+         "name":"Deutschland",
+         "designator":"SCP-18",
+         "abbreviation":"AV1",
+         "description":"Scope mit Subtype Auftragsverarbeiter",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_Processor"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"9b213d5b-7a05-4dfc-81e0-57f7875b764e"
+      },
+      {
+         "createdAt":"2021-07-12T21:40:04.425630Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:40:04.425630Z",
+         "updatedBy":"pb",
+         "name":"Indien",
+         "designator":"SCP-3",
+         "abbreviation":"S2",
+         "description":"Scope ohne Subtype",
+         "domains":[
+            
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"33e3b9e3-3cc7-4311-907c-e47846a9b870"
+      },
+      {
+         "createdAt":"2021-07-12T21:41:01.309062Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:41:01.309062Z",
+         "updatedBy":"pb",
+         "name":"Indonesien",
+         "designator":"SCP-5",
+         "abbreviation":"S4",
+         "description":"Scope ohne Subtype",
+         "domains":[
+            
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"e22c9a8b-201d-4d02-8e8c-b2af062be91a"
+      },
+      {
+         "createdAt":"2021-07-12T21:47:40.287441Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:47:40.287441Z",
+         "updatedBy":"pb",
+         "name":"Iran",
+         "designator":"SCP-20",
+         "abbreviation":"AV3",
+         "description":"Scope mit Subtype Auftragsverarbeiter",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_Processor"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"457c9223-e8c0-41b4-993e-597564cfcb93"
+      },
+      {
+         "createdAt":"2021-07-12T21:45:06.527490Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:45:06.527490Z",
+         "updatedBy":"pb",
+         "name":"Japan",
+         "designator":"SCP-12",
+         "abbreviation":"VS6",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"d3ee38c1-4569-4ae2-840d-7e076149d3b1"
+      },
+      {
+         "createdAt":"2021-07-12T21:44:55.999982Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:44:55.999982Z",
+         "updatedBy":"pb",
+         "name":"Mexiko",
+         "designator":"SCP-11",
+         "abbreviation":"VS5",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"bdccb054-711a-47c4-830a-8b4536404f6d"
+      },
+      {
+         "createdAt":"2021-07-12T21:43:34.569041Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:43:34.569041Z",
+         "updatedBy":"pb",
+         "name":"Nigeria",
+         "designator":"SCP-8",
+         "abbreviation":"VS2",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"f1c9d5eb-ac2a-49d1-8ff2-a94e893ad99c"
+      },
+      {
+         "createdAt":"2021-07-12T21:41:21.883498Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:41:21.883498Z",
+         "updatedBy":"pb",
+         "name":"Pakistan",
+         "designator":"SCP-6",
+         "abbreviation":"S5",
+         "description":"Scope ohne Subtype",
+         "domains":[
+            
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"77beee76-15a5-4290-adb6-f67ad2758f81"
+      },
+      {
+         "createdAt":"2021-07-12T21:45:43.729547Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:45:43.729547Z",
+         "updatedBy":"pb",
+         "name":"Philippinen",
+         "designator":"SCP-14",
+         "abbreviation":"VS8",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"64af94dd-d232-4539-a654-7bd1081261be"
+      },
+      {
+         "createdAt":"2021-07-12T21:44:29.581417Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:44:29.581417Z",
+         "updatedBy":"pb",
+         "name":"Russland",
+         "designator":"SCP-10",
+         "abbreviation":"VS4",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"3713fca1-a410-4d18-baac-2542f5d10dbe"
+      },
+      {
+         "createdAt":"2021-07-12T21:47:29.649266Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:47:29.649266Z",
+         "updatedBy":"pb",
+         "name":"Türkei",
+         "designator":"SCP-19",
+         "abbreviation":"AV2",
+         "description":"Scope mit Subtype Auftragsverarbeiter",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_Processor"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"3e415062-51a9-4b76-ac1c-7af63c784c74"
+      },
+      {
+         "createdAt":"2021-07-12T21:40:37.154015Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:40:37.154015Z",
+         "updatedBy":"pb",
+         "name":"Vereinigte Staaten",
+         "designator":"SCP-4",
+         "abbreviation":"S3",
+         "description":"Scope ohne Subtype",
+         "domains":[
+            
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"5918c01b-9243-4fa9-9502-70863ae79cea"
+      },
+      {
+         "createdAt":"2021-07-12T21:46:19.794443Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:46:19.794443Z",
+         "updatedBy":"pb",
+         "name":"Vietnam",
+         "designator":"SCP-16",
+         "abbreviation":"VS10",
+         "description":"Scope mit Subtype Verantwortliche Stelle",
+         "domains":[
+            {
+               "displayName":"DSGVO DSGVO",
+               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+            }
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"SCP_ResponsibleBody"
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"34ad88b4-35d4-49e7-9a29-e3e578f05244"
+      },
+      {
+         "createdAt":"2021-07-12T21:39:49.072444Z",
+         "createdBy":"pb",
+         "updatedAt":"2021-07-12T21:39:49.072444Z",
+         "updatedBy":"pb",
+         "name":"Volksrepublik China",
+         "designator":"SCP-2",
+         "abbreviation":"S1",
+         "description":"Scope ohne Subtype",
+         "domains":[
+            
+         ],
+         "owner":{
+            "displayName":"NBRX Testunit",
+            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+         },
+         "links":{
+            
+         },
+         "customAspects":{
+            
+         },
+         "subType":{
+            
+         },
+         "type":"scope",
+         "members":[
+            
+         ],
+         "id":"6d506a70-3d41-4927-b607-92718752713b"
+      }
+   ],
+   "totalItemCount":19,
+   "pageCount":1,
+   "page":0
+}
