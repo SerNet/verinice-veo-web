@@ -189,4 +189,93 @@ describe('Scopes List', () => {
         cy.get('[data-cy=veo-object-list-clone-item]').click();
       });
   });
+
+  it('Views the child items of an entity not containing child entities', function () {
+    const index = 4;
+    let id: string;
+
+    cy.intercept({
+      method: 'GET',
+      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+    }).as('fetchObjects');
+
+    cy.wait('@G_fetchObjects');
+
+    // Load fixture to get the id
+    cy.fixture('api/default/entities/scopes/fetchAll.json').then((allScopes) => {
+      id = allScopes.items[index].id;
+    });
+
+    // Click on the column to go into
+    cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
+      .eq(index)
+      .click()
+      .then(() => {
+        cy.location('pathname').should('contain', `unit-d496f98f-c051-443c-9b1f-65d65b64996d/scopes/scope-${id}/list`);
+
+        cy.wait('@fetchObjects');
+        cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)').should('have.length', 1);
+        cy.get('[data-cy=veo-object-list-navigate-parent]').should('exist');
+      });
+  });
+
+  it('Views the child items of an entity containing child entities', function () {
+    const index = 3;
+    let id: string;
+
+    cy.intercept({
+      method: 'GET',
+      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+    }).as('fetchObjects');
+
+    cy.wait('@G_fetchObjects');
+
+    // Load fixture to get the id
+    cy.fixture('api/default/entities/scopes/fetchAll.json').then((allScopes) => {
+      id = allScopes.items[index].id;
+    });
+
+    // Click on the column to go into
+    cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
+      .eq(index)
+      .click()
+      .then(() => {
+        cy.location('pathname').should('contain', `unit-d496f98f-c051-443c-9b1f-65d65b64996d/scopes/scope-${id}/list`);
+
+        cy.wait('@fetchObjects');
+        cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)').should('have.length', 5);
+      });
+  });
+
+  it('Unlinks a child item from its parent', function () {
+    const index = 3;
+    const childIndex = 1;
+
+    cy.intercept(
+      {
+        method: 'PUT',
+        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.*)$/
+      },
+      (req) => {
+        req.reply(req.body);
+      }
+    ).as('saveEntity');
+
+    cy.wait('@G_fetchObjects');
+
+    // Click on the column to go into
+    cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
+      .eq(index)
+      .click()
+      .then(() => {
+        cy.wait(['@G_fetchObjects', '@G_fetchObject']);
+        cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
+          .eq(childIndex)
+          .within(() => {
+            cy.get('[data-cy=veo-object-list-unlink-item]').click();
+          });
+      });
+    cy.get('[data-cy=veo-unlink-entity-dialog-confirm-button]').click();
+    cy.wait('@saveEntity').its('request.body').toMatchSnapshot();
+  });
 });

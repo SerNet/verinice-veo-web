@@ -32,7 +32,30 @@
   },
   "type":"scope",
   "members":[
-    
+    {
+      "displayName":"PRO-10 P4 Cyan",
+      "resourcesUri":"https://veo.develop.cpmsys.io/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "targetUri":"https://veo.develop.cpmsys.io/processes/f1c36cf9-70ab-4726-a993-2c23fddcad68",
+      "searchesUri":"https://veo.develop.cpmsys.io/processes/searches"
+    },
+    {
+      "displayName":"AST-6 DA1 Dachs",
+      "resourcesUri":"https://veo.develop.cpmsys.io/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "targetUri":"https://veo.develop.cpmsys.io/assets/a2304df4-8126-4709-ba70-53b4d34c3320",
+      "searchesUri":"https://veo.develop.cpmsys.io/assets/searches"
+    },
+    {
+      "displayName":"SCP-18 AV1 Deutschland",
+      "resourcesUri":"https://veo.develop.cpmsys.io/scopes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "targetUri":"https://veo.develop.cpmsys.io/scopes/9b213d5b-7a05-4dfc-81e0-57f7875b764e",
+      "searchesUri":"https://veo.develop.cpmsys.io/scopes/searches"
+    },
+    {
+      "displayName":"PRO-9 P3 Blau",
+      "resourcesUri":"https://veo.develop.cpmsys.io/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "targetUri":"https://veo.develop.cpmsys.io/processes/fc10e550-8f5b-4d31-9bdb-b4b898a9d254",
+      "searchesUri":"https://veo.develop.cpmsys.io/processes/searches"
+    }
   ],
   "id":"5986694a-c58a-4411-8991-9fc34845bc6a"
 }

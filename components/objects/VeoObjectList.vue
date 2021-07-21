@@ -35,7 +35,10 @@
       v-if="showParentLink"
       #body.prepend
     >
-      <tr @click="$emit('navigate-parent')">
+      <tr
+        :data-cy="$utils.prefixCyData($options, 'navigate-parent')"
+        @click="$emit('navigate-parent')"
+      >
         <td>
           <v-icon>mdi-arrow-left</v-icon>
         </td>
@@ -202,6 +205,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'unlink-item')"
               @click.stop="sendEvent('unlink', item, currentItem)"
               v-on="on"
             >

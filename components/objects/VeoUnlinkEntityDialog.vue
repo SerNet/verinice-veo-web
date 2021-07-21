@@ -12,6 +12,7 @@
       <v-btn
         text
         color="primary"
+        :data-cy="$utils.prefixCyData($options, 'cancel-button')"
         @click="$emit('input', false)"
       >
         {{ $t('global.button.no') }}
@@ -21,6 +22,7 @@
         text
         color="primary"
         :disabled="!item"
+        :data-cy="$utils.prefixCyData($options, 'confirm-button')"
         @click="unlinkEntity"
       >
         {{ $t('headline') }}
