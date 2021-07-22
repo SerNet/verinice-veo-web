@@ -199,7 +199,7 @@ export default Vue.extend({
         name: this.$t('domain.index.title').toString(),
         icon: 'mdi-view-dashboard',
         exact: true,
-        to: `/${routeUnitParam}/domains/${route.params.domain}`,
+        to: `/${routeUnitParam}/domains/${createUUIDUrlParam('domain', this.domainId || '')}`,
         disabled: false,
         topLevelItem: true
       };
