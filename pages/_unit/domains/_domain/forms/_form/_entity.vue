@@ -81,7 +81,7 @@
               :loading="saveBtnLoading"
               @click="onClick"
             >
-              {{ saveBtnText }}
+              {{ $t('global.button.save') }}
             </v-btn>
             <v-btn
               v-else
@@ -417,9 +417,6 @@ export default Vue.extend({
       } else {
         return false;
       }
-    },
-    saveBtnText(): string {
-      return this.$t('global.button.save').toString();
     }
   },
   methods: {

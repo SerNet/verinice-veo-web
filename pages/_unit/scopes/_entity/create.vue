@@ -23,7 +23,6 @@
         <v-spacer />
         <v-col class="text-right">
           <v-btn
-            text
             outlined
             @click="doDiscard"
           >
@@ -32,11 +31,19 @@
           <v-btn
             color="primary"
             outlined
-            text
             :loading="saveBtnLoading"
-            @click="save()"
+            @click="save"
           >
-            {{ $t('global.button.create') }}
+            {{ $t('global.button.save') }}
+          </v-btn>
+          <v-btn
+            color="primary"
+            outlined
+            :disabled="$fetchState.pending"
+            :loading="saveBtnLoading"
+            @click="save($event, true)"
+          >
+            {{ $t('global.button.save_quit') }}
           </v-btn>
         </v-col>
       </v-row>
@@ -95,7 +102,7 @@ import Vue from 'vue';
 import { Route } from 'vue-router/types/index';
 
 import { capitalize } from 'lodash';
-import { IForm, separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
@@ -187,7 +194,7 @@ export default Vue.extend({
       this.entityModified.isModified = false;
       this.$router.go(-1);
     },
-    async save() {
+    async save(_event: any, redirect: boolean = false) {
       this.saveBtnLoading = true;
       this.formatObjectData();
 
@@ -218,10 +225,10 @@ export default Vue.extend({
             }
 
             this.$api.entity.update(this.parentType, parent.id, parent).finally(() => {
-              this.$router.push(this.backLink);
+              this.redirect(redirect, data.resourceId);
             });
           } else {
-            this.$router.push(this.backLink);
+            this.redirect(redirect, data.resourceId);
           }
         })
         .finally(() => {
@@ -238,6 +245,22 @@ export default Vue.extend({
             id: '00000000-0000-0000-0000-000000000000',
             type: key
           };
+        });
+      }
+    },
+    // Either redirect the user back (save and close) or redirect him to the new entity (save)
+    async redirect(close: boolean, target?: string) {
+      if (close) {
+        this.$router.push(this.backLink);
+      } else if (target) {
+        const endpoint = getSchemaEndpoint(await this.$api.schema.fetchAll(), this.entityType);
+        this.$router.push({
+          name: `unit-${this.entityType === 'scope' ? 'scopes' : 'objects'}-type-entity-edit`,
+          params: {
+            type: endpoint || '',
+            unit: this.$route.params.unit,
+            entity: createUUIDUrlParam(this.entityType, target)
+          }
         });
       }
     }
