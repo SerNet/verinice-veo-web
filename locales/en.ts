@@ -54,7 +54,6 @@ export default {
   'global.appstate.alert.error': 'An error occured!',
   'global.button.cancel': 'Cancel',
   'global.button.close': 'Close',
-  'global.button.create': 'Create',
   'global.button.delete': 'Delete',
   'global.button.next': 'Next',
   'global.button.no': 'No',
