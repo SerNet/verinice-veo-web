@@ -78,6 +78,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
+              :disabled="$fetchState.pending || !formModified.isModified"
               :loading="saveBtnLoading"
               @click="onClick"
             >
@@ -96,7 +97,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending"
+              :disabled="$fetchState.pending || !formModified.isModified"
               :loading="saveBtnLoading"
               @click="onClick($event, true)"
             >

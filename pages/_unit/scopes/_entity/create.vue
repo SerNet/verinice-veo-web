@@ -31,6 +31,7 @@
           <v-btn
             color="primary"
             outlined
+            :disabled="$fetchState.pending || !entityModified.isModified"
             :loading="saveBtnLoading"
             @click="save"
           >
@@ -39,7 +40,7 @@
           <v-btn
             color="primary"
             outlined
-            :disabled="$fetchState.pending"
+            :disabled="$fetchState.pending || !entityModified.isModified"
             :loading="saveBtnLoading"
             @click="save($event, true)"
           >
