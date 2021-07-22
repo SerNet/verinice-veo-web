@@ -4,20 +4,23 @@
     :loading="$fetchState.pending"
     padding
   >
+    <p
+      v-if="domain"
+      class="veo-unit-description"
+      style="margin-top: -20px;"
+    >
+      <span v-if="domain.description">{{ domain.description }}</span>
+      <i v-else>{{ $t('unit.details.nodescription') }}</i>
+    </p>
     <v-row
       v-if="domain"
       no-gutters
       class="flex-column fill-height"
-      style="margin-top: -20px;"
     >
-      <p class="veo-unit-description">
-        <span v-if="domain.description">{{ domain.description }}</span>
-        <i v-else>{{ $t('unit.details.nodescription') }}</i>
-      </p>
       <v-row>
         <v-col
           :cols="12"
-          sm="6"
+          md="6"
         >
           <VeoUnitFormsWidget
             :domain="domain"
