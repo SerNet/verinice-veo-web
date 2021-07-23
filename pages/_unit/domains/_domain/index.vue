@@ -26,7 +26,10 @@
         </v-col>
       </v-row>
     </v-row>
-    <VeoWelcomeDialog v-model="showWelcomeDialog" />
+    <VeoWelcomeDialog
+      v-if="showWelcomeDialog"
+      v-model="showWelcomeDialog"
+    />
   </VeoPage>
 </template>
 
