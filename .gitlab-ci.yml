@@ -51,13 +51,13 @@ review:
 # cache using branch name
 # https://gitlab.com/help/ci/caching/index.md
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: $CI_COMMIT_REF_SLUG
   paths:
     - .npm
     - cache/Cypress
 
 test:e2e:
-  image: registry.nbrx.de/nbrx/t1/veo/cypress/${CI_COMMIT_REF_NAME}:latest
+  image: registry.nbrx.de/nbrx/t1/veo/cypress/$CI_COMMIT_REF_NAME:latest
   stage: test
   tags:
     - 'cpmsys01'
