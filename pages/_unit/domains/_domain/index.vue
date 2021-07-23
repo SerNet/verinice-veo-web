@@ -4,20 +4,22 @@
     :loading="$fetchState.pending"
     padding
   >
+    <p
+      v-if="domain"
+      class="veo-unit-description"
+    >
+      <span v-if="domain.description">{{ domain.description }}</span>
+      <i v-else>{{ $t('unit.details.nodescription') }}</i>
+    </p>
     <v-row
       v-if="domain"
       no-gutters
       class="flex-column fill-height"
-      style="margin-top: -20px;"
     >
-      <p class="veo-unit-description">
-        <span v-if="domain.description">{{ domain.description }}</span>
-        <i v-else>{{ $t('unit.details.nodescription') }}</i>
-      </p>
       <v-row>
         <v-col
           :cols="12"
-          sm="6"
+          md="6"
         >
           <VeoUnitFormsWidget
             :domain="domain"
@@ -26,6 +28,10 @@
         </v-col>
       </v-row>
     </v-row>
+    <VeoWelcomeDialog
+      v-if="showWelcomeDialog"
+      v-model="showWelcomeDialog"
+    />
   </VeoPage>
 </template>
 
@@ -35,12 +41,14 @@ import Vue from 'vue';
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
+import LocalStorage from '~/util/LocalStorage';
 
 export default Vue.extend({
   data() {
     return {
       domain: undefined as IVeoDomain | undefined,
-      unit: {} as any
+      unit: {} as any,
+      showWelcomeDialog: false as boolean
     };
   },
   async fetch() {
@@ -76,6 +84,9 @@ export default Vue.extend({
   },
   watch: {
     '$route.params': '$fetch'
+  },
+  mounted() {
+    this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
   }
 });
 </script>
@@ -96,6 +107,7 @@ export default Vue.extend({
 
 .veo-unit-description {
   color: $accent;
+  margin-top: -20px;
 }
 </style>
 

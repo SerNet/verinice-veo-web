@@ -2,6 +2,7 @@ const PRIMARY_NAV_MINI_VARIANT = 'primary-navigation-drawer--mini-variant';
 const NAV_ENTRY_EXPANDED = 'primary-navigation-drawer--nav-entry-expanded';
 const LAST_DOMAIN = 'last-domain';
 const LAST_UNIT = 'last-unit';
+const FIRST_STEPS_COMPLETED = 'first-steps-completed';
 
 export default class LocalStorage {
   static clear() {
@@ -72,5 +73,13 @@ export default class LocalStorage {
 
   static set lastUnit(value: string | null) {
     LocalStorage.set(LAST_UNIT, value);
+  }
+
+  static get firstStepsCompleted() {
+    return LocalStorage.getBoolean(FIRST_STEPS_COMPLETED, false);
+  }
+
+  static set firstStepsCompleted(value: boolean) {
+    LocalStorage.setBoolean(FIRST_STEPS_COMPLETED, value);
   }
 }

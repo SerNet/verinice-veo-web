@@ -3,15 +3,16 @@
     :title="title"
     padding
   >
+    <p
+      class="veo-unit-description"
+    >
+      <span v-if="unit.description">{{ unit.description }}</span>
+      <i v-else>{{ $t('unit.details.nodescription') }}</i>
+    </p>
     <v-row
       no-gutters
       class="flex-column fill-height"
-      style="margin-top: -20px;"
     >
-      <p class="veo-unit-description">
-        <span v-if="unit.description">{{ unit.description }}</span>
-        <i v-else>{{ $t('unit.details.nodescription') }}</i>
-      </p>
       <div
         v-if="$fetchState.pending"
         class="flex-grow-1 d-flex align-center justify-center"
@@ -33,7 +34,7 @@
           </v-col>-->
           <v-col
             :cols="12"
-            sm="6"
+            md="6"
           >
             <VeoUnitFormsWidget
               v-for="domain of domains"
@@ -44,7 +45,7 @@
           </v-col>
           <v-col
             :cols="12"
-            sm="6"
+            md="6"
           >
             <VeoUnitObjectWidget :unit="unit" />
           </v-col>
@@ -107,6 +108,7 @@ export default Vue.extend({
 
 .veo-unit-description {
   color: $accent;
+  margin-top: -20px;
 }
 </style>
 
