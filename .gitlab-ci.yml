@@ -28,25 +28,40 @@ cache:
     - .npm
     - cache/Cypress  
 
+# build:e2e:
+#   stage: build
+#   image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.0.0'
+#   variables:
+#     DOCKERFILE_PATH: "nbrx_e2e.Dockerfile"
+#     CI_REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_PATH/cypress"
+#   services:
+#     - name: 'docker:20.10.6-dind'
+#       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+#   script:
+#     - |
+#       if [[ -z "$CI_COMMIT_TAG" ]]; then
+#         export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
+#         export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
+#       else
+#         export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
+#         export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
+#       fi
+#     - /build/build.sh
+#   rules:
+#     - if: '$BUILD_DISABLED'
+#       when: never
+#     - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
+#       when: never
+#     - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
+#       when: always
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#       when: manual
+
 build:e2e:
   stage: build
-  image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.0.0'
-  variables:
-    DOCKERFILE_PATH: "nbrx_e2e.Dockerfile"
-    CI_REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_PATH/cypress"
-  services:
-    - name: 'docker:20.10.6-dind'
-      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+  image: cypress/base:14.15.4
   script:
-    - |
-      if [[ -z "$CI_COMMIT_TAG" ]]; then
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
-      else
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
-      fi
-    - /build/build.sh
+    - pwd && ls -al
   rules:
     - if: '$BUILD_DISABLED'
       when: never
@@ -58,7 +73,7 @@ build:e2e:
       when: manual
 
 test:e2e:
-  image: registry.nbrx.de/nbrx/t1/veo/cypress/$CI_COMMIT_REF_NAME:latest
+  image: cypress/base:14.15.4
   stage: test
   tags:
     - 'cpmsys01'
