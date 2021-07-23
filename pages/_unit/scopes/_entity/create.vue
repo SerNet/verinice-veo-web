@@ -255,7 +255,7 @@ export default Vue.extend({
         this.$router.push(this.backLink);
       } else if (target) {
         const endpoint = getSchemaEndpoint(await this.$api.schema.fetchAll(), this.entityType);
-        this.$router.push({
+        this.$router.replace({
           name: `unit-${this.entityType === 'scope' ? 'scopes' : 'objects'}-type-entity-edit`,
           params: {
             type: endpoint || '',
