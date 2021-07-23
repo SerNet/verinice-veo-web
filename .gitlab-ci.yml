@@ -9,8 +9,8 @@ variables:
   PRODUCTION_ADDITIONAL_HOSTS: 'veo-web.cpmsys.io'
   AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHORT_SHA --build-arg CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP --build-arg CI_JOB_ID=$CI_JOB_ID'
   K8S_SECRET_VEO_API_USE_PROXY: 'false'
-  npm_config_cache: '/usr/src/app/.npm' # for cypress tests
-  CYPRESS_CACHE_FOLDER: '/usr/src/app/cache/Cypress' # for cypress tests
+  npm_config_cache: '$CI_PROJECT_DIR/.npm' # for cypress tests
+  CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
   CYPRESS_BASE_URL: ''
 
 build:e2e:
@@ -53,8 +53,8 @@ review:
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - /usr/src/app/.npm
-    - /usr/src/app/cache/Cypress
+    - .npm
+    - cache/Cypress
 
 test:e2e:
   image: registry.nbrx.de/nbrx/t1/veo/cypress/${CI_COMMIT_REF_NAME}:latest
@@ -65,9 +65,11 @@ test:e2e:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
   script:
+    - ls -al
     - cd /usr/src/app
     - (npm run start&)
     - ls -al
+    - ls -al ./cypress
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
     - npx nyc report --reporter=cobertura --reporter=text-summary
   after_script:
