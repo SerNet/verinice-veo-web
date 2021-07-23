@@ -29,6 +29,7 @@ pipeline {
                 script {
                     projectVersion = sh(returnStdout: true, script: '''jq .version package.json''').trim()
                 }
+                sh 'mkdir -p $WORKSPACE/out'
             }
         }
         stage('Test') {
@@ -39,9 +40,21 @@ pipeline {
                 }
             }
             steps {
-                sh 'cd /usr/src/app && npm run test'
-                sh "cp /usr/src/app/junit.xml $WORKSPACE"
-                junit 'junit.xml'
+                script {
+                    def outputDir = "$WORKSPACE/out/test"
+                    sh "mkdir -p $outputDir"
+                    try {
+                        sh 'cd /usr/src/app && npm run test'
+                    } finally {
+                        dir (outputDir){
+                            sh "cp /usr/src/app/junit.xml ."
+                            junit 'junit.xml'
+                            sh script: "cp /root/.npm/_logs/* .", returnStatus: true
+                            archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
+                        }
+                        sh "rm -fr $outputDir"
+                    }
+                }
             }
         }
         stage('Dockerimage') {
@@ -69,8 +82,9 @@ pipeline {
         stage('End-to-end tests') {
             agent any
             steps {
-                sh 'mkdir -p $WORKSPACE/out'
                 script {
+                    def outputDir = "$WORKSPACE/out/e2e-test"
+                    sh "mkdir -p $outputDir"
                     withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
                         withDockerNetwork{ n ->
                             docker.image("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}").withRun("--network ${n} --name veo-web-${n}") {
@@ -81,29 +95,25 @@ pipeline {
                                         sh "npm install"
                                         def cypressOptions = [ reporter:'junit',
                                                                reporterOptions: [
-                                                                 mochaFile: 'out/junit.xml'
+                                                                 mochaFile: 'out/e2e-test/junit.xml'
                                                                ],
                                                                baseUrl: "http://veo-web-${n}:5000",
                                                                video: false,
-                                                               screenshotsFolder: 'out/screenshots',
+                                                               screenshotsFolder: 'out/e2e-test/screenshots',
                                                                defaultCommandTimeout: 10000
                                                              ]
                                         def cypressOptionsStr = groovy.json.JsonOutput.toJson(cypressOptions)
                                         sh "npm run test:e2e -- --config '${cypressOptionsStr}'"
                                     }
-                                    sh script: "cp -rt out /home/appuser/.npm/_logs/", returnStatus: true
+                                    dir (outputDir){
+                                        sh script: "cp /home/appuser/.npm/_logs/* .", returnStatus: true
+                                        junit 'junit.xml'
+                                        archiveArtifacts artifacts: '*.log,screenshots/**/*.png', allowEmptyArchive: true
+                                    }
+                                    sh "rm -fr $outputDir"
                                 }
                             }
                         }
-                    }
-                }
-            }
-            post {
-                always {
-                    dir ('out'){
-                        archiveArtifacts artifacts: '_logs/*,screenshots/**/*.png', allowEmptyArchive: true
-                        junit testResults: 'junit.xml'
-                        deleteDir()
                     }
                 }
             }
@@ -119,6 +129,13 @@ pipeline {
         }
     }
     post {
+        always {
+            node('') {
+                dir ('out'){
+                    deleteDir()
+                }
+            }
+        }
         unsuccessful {
             node('') {
                 script {
