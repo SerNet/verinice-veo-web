@@ -77,7 +77,7 @@ build:e2e:
       when: manual
 
 test:e2e:
-  stage: test
+  stage: performance
   variables:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
