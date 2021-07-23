@@ -103,7 +103,7 @@ pipeline {
                                                                defaultCommandTimeout: 10000
                                                              ]
                                         def cypressOptionsStr = groovy.json.JsonOutput.toJson(cypressOptions)
-                                        sh "npm run test:e2e -- --config '${cypressOptionsStr}'"
+                                        sh "NO_COLOR=1 npm run test:e2e -- --config '${cypressOptionsStr}'"
                                     }
                                     dir (outputDir){
                                         sh script: "cp /home/appuser/.npm/_logs/* .", returnStatus: true
