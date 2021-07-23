@@ -1,7 +1,13 @@
+ARG CI_PROJECT_DIR=/builds/nbrx/t1/veo
+ARG npm_config_cache=${CI_PROJECT_DIR}/.npm
+ARG CYPRESS_CACHE_FOLDER=$CI_PROJECT_DIR/cache/Cypress
 FROM cypress/base:14.15.4
 
 # Install npm v7 to work with lockfile:2
 RUN npm install -g npm@7.18.1
+
+ENV CYPRESS_CACHE_FOLDER ${CYPRESS_CACHE_FOLDER}
+RUN npm config set cache ${npm_config_cache} --global 
 
 # Create app directory
 WORKDIR /usr/src/app
