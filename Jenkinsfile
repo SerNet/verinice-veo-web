@@ -95,7 +95,7 @@ pipeline {
                                         sh "npm install"
                                         def cypressOptions = [ reporter:'junit',
                                                                reporterOptions: [
-                                                                 mochaFile: 'out/e2e-test/junit.xml'
+                                                                 mochaFile: 'out/e2e-test/junit-e2e-[hash].xml'
                                                                ],
                                                                baseUrl: "http://veo-web-${n}:5000",
                                                                video: false,
@@ -107,7 +107,7 @@ pipeline {
                                     }
                                     dir (outputDir){
                                         sh script: "cp /home/appuser/.npm/_logs/* .", returnStatus: true
-                                        junit 'junit.xml'
+                                        junit 'junit-e2e-*.xml'
                                         archiveArtifacts artifacts: '*.log,screenshots/**/*.png', allowEmptyArchive: true
                                     }
                                     sh "rm -fr $outputDir"
