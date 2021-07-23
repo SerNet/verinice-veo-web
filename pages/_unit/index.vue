@@ -5,7 +5,6 @@
   >
     <p
       class="veo-unit-description"
-      style="margin-top: -20px;"
     >
       <span v-if="unit.description">{{ unit.description }}</span>
       <i v-else>{{ $t('unit.details.nodescription') }}</i>
@@ -109,6 +108,7 @@ export default Vue.extend({
 
 .veo-unit-description {
   color: $accent;
+  margin-top: -20px;
 }
 </style>
 
