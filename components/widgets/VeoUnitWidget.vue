@@ -51,7 +51,7 @@ p {
     "unitOverview": "Unit overview"
   },
   "de": {
-    "unitOverview": "Unitübersicht"
+    "unitOverview": "Unit-Übersicht"
   }
 }
 </i18n>
