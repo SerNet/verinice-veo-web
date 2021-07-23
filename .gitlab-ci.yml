@@ -78,18 +78,16 @@ build:e2e:
 
 test:e2e:
   stage: test
-  tags:
-    - 'cpmsys01'
   variables:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
   script:
     - pwd
     - ls -al
-    - cd /usr/src/app
-    - (npm run start&)
-    - ls -al
-    - ls -al ./cypress
+    # - cd /usr/src/app
+    # - (npm run start&)
+    # - ls -al
+    # - ls -al ./cypress
     # - cp -r $CI_PROJECT_DIR/.npm $CI_PROJECT_DIR/cache /usr/src/app #test
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
     - npx nyc report --reporter=cobertura --reporter=text-summary
