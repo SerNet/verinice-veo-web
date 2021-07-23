@@ -62,6 +62,8 @@ build:e2e:
   image: cypress/base:14.15.4
   script:
     - pwd && ls -al
+    - npm install
+    - npm run build
   rules:
     - if: '$BUILD_DISABLED'
       when: never
