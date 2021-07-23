@@ -13,6 +13,21 @@ variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
   CYPRESS_BASE_URL: ''
 
+review:
+  environment:
+    auto_stop_in: 4 week
+
+# for cypress tests
+
+# cache using branch name
+# https://gitlab.com/help/ci/caching/index.md
+cache:
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - .cache/* 
+    - .npm
+    - cache/Cypress  
+
 build:e2e:
   stage: build
   image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.0.0'
@@ -41,20 +56,6 @@ build:e2e:
       when: always
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: manual
-
-review:
-  environment:
-    auto_stop_in: 4 week
-
-# for cypress tests
-
-# cache using branch name
-# https://gitlab.com/help/ci/caching/index.md
-cache:
-  key: $CI_COMMIT_REF_SLUG
-  paths:
-    - .npm
-    - cache/Cypress
 
 test:e2e:
   image: registry.nbrx.de/nbrx/t1/veo/cypress/$CI_COMMIT_REF_NAME:latest
