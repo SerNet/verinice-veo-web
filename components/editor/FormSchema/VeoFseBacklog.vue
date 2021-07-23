@@ -295,7 +295,7 @@ export default defineComponent<IProps>({
         let backlogTitle = propertyName;
 
         if (category !== 'basics') {
-          backlogTitle = backlogTitle.replace(`${props.objectSchema.title}_`, '');
+          backlogTitle = backlogTitle.replace(`${props.formSchema.modelType}_`, '');
           backlogTitle = backlogTitle.replace('_', ' / ');
         }
         return {

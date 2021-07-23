@@ -113,7 +113,7 @@
           {{ $t('oldVersionAlert') }}
         </VeoAlert>
         <VeoForm
-          v-if="canShowData"
+          v-if="validation.valid"
           v-model="form.objectData"
           :schema="form.objectSchema"
           :ui="form.formSchema && form.formSchema.content"
@@ -141,7 +141,7 @@
             {{ $t('incompatibleFormSchema', { objectType }) }}
           </h3>
           <VeoValidationResultList
-            :result="formschemaValidation"
+            :result="validation"
             show-warnings
             class="mt-4"
           />
@@ -377,11 +377,16 @@ export default Vue.extend({
     formschemaValidation(): VeoSchemaValidatorValidationResult {
       return validate(this.form.formSchema as IVeoFormSchema, this.form.objectSchema as IVeoObjectSchema);
     },
-    canShowData(): boolean {
+    validation(): VeoSchemaValidatorValidationResult {
       const dummy = cloneDeep(this.form.objectData);
       delete dummy.displayName;
-      // Object data has to fit object schema AND form schema has to fit object schema
-      return this.validateRevisionSchema(dummy, false) && this.formschemaValidation.valid;
+      const revisionValidation = this.validateRevisionSchema(dummy, false);
+
+      return {
+        valid: this.formschemaValidation.valid && revisionValidation.valid,
+        warnings: [...this.formschemaValidation.warnings, ...revisionValidation.warnings],
+        errors: [...this.formschemaValidation.errors, ...revisionValidation.errors]
+      };
     },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
@@ -514,7 +519,7 @@ export default Vue.extend({
         this.revisionCache = content; // cache revision for use after modified-dialog is closed with "yes"
         this.formModified.revisionDialog = true;
       } else {
-        if (isRevision && !this.validateRevisionSchema(content)) {
+        if (isRevision && !this.validateRevisionSchema(content).valid) {
           return;
         }
         // fill form with revision or newest data
@@ -529,7 +534,7 @@ export default Vue.extend({
     },
     showRevisionAfterDialog() {
       // close dialog without action if revision schema is invalid
-      if (!this.validateRevisionSchema(this.revisionCache)) {
+      if (!this.validateRevisionSchema(this.revisionCache).valid) {
         this.formModified.revisionDialog = false;
         return;
       }
@@ -539,11 +544,9 @@ export default Vue.extend({
       this.formModified.revisionDialog = false;
       this.formModified.isModified = false;
     },
-    validateRevisionSchema(revision: IBaseObject, showError: boolean = true) {
-      const validator = new ObjectSchemaValidator();
-
+    validateRevisionSchema(revision: IBaseObject, showError: boolean = true): VeoSchemaValidatorValidationResult {
       delete revision.displayName;
-      const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision);
+      const isValid = ObjectSchemaValidator.fitsObjectSchema(this.form.objectSchema, revision);
       if (!isValid && showError) {
         this.showError(500, this.$t('revision_incompatible').toString());
       }
