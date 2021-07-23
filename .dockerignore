@@ -19,3 +19,4 @@ _docker_build
 Dockerfile
 .history
 Jenkinsfile
+cypress_cache
