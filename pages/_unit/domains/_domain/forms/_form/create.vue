@@ -65,9 +65,6 @@ export default Vue.extend({
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id;
-    },
-    saveBtnText(): string {
-      return this.$t('global.button.create').toString();
     }
   },
   methods: {

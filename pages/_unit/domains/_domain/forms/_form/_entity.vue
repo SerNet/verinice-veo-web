@@ -78,10 +78,11 @@
               v-if="!isRevision"
               color="primary"
               outlined
+              :disabled="$fetchState.pending || !formModified.isModified"
               :loading="saveBtnLoading"
               @click="onClick"
             >
-              {{ saveBtnText }}
+              {{ $t('global.button.save') }}
             </v-btn>
             <v-btn
               v-else
@@ -96,7 +97,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending"
+              :disabled="$fetchState.pending || !formModified.isModified"
               :loading="saveBtnLoading"
               @click="onClick($event, true)"
             >
@@ -417,9 +418,6 @@ export default Vue.extend({
       } else {
         return false;
       }
-    },
-    saveBtnText(): string {
-      return this.$t('global.button.save').toString();
     }
   },
   methods: {

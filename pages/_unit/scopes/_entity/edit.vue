@@ -25,7 +25,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending"
+              :disabled="$fetchState.pending || !entityModified.isModified"
               :loading="saveBtnLoading"
               @click="doSaveEntity"
             >
@@ -45,7 +45,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending"
+              :disabled="$fetchState.pending || !entityModified.isModified"
               :loading="saveBtnLoading"
               @click="doSaveEntity($event, true)"
             >
