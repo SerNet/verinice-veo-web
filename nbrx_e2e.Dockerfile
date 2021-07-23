@@ -1,5 +1,8 @@
 FROM cypress/base:14.15.4
 
+RUN node --version
+RUN npm --version
+
 # Create app directory
 WORKDIR /usr/src/app
 # Copy .npmrc for installing @nbrx/eslint-config-nuxt
