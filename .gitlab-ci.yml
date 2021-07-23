@@ -65,6 +65,7 @@ test:e2e:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
   script:
+    - pwd
     - ls -al
     - cd /usr/src/app
     - (npm run start&)
