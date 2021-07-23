@@ -106,15 +106,6 @@ pipeline {
                         deleteDir()
                     }
                 }
-                failure {
-                    script {
-                      def buildLog = sh(script: "wget -q -O- ${BUILD_URL}/consoleText", returnStdout: true)
-                      def lastLines = buildLog.readLines().takeRight(50).join('\n')
-                      rocketSend channel: '#frontend', message: "A veo front-end build failed", attachments: [
-                        [ title: 'Build log excerpt', collapsed: true, text: "...\n${lastLines}" ]
-                      ]
-                    }
-                }
             }
         }
         stage('Trigger Deployment') {
@@ -124,6 +115,19 @@ pipeline {
             }
             steps {
                 build job: 'verinice-veo-deployment/master'
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            node('') {
+                script {
+                  def buildLog = sh(script: "wget -q -O- ${BUILD_URL}/consoleText", returnStdout: true)
+                  def lastLines = buildLog.readLines().takeRight(50).join('\n')
+                  rocketSend channel: '#frontend', message: "A veo front-end build failed", attachments: [
+                    [ title: 'Build log excerpt', collapsed: true, text: "...\n${lastLines}" ]
+                  ]
+                }
             }
         }
     }
