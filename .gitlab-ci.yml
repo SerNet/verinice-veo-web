@@ -62,6 +62,8 @@ build:e2e:
   image: cypress/base:14.15.4
   script:
     - pwd && ls -al
+    # Install npm v7 to work with lockfile:2
+    - npm install -g npm@7.20.1
     - npm install
     - npm run build
   rules:
