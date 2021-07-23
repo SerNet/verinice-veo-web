@@ -2,9 +2,8 @@ FROM cypress/base:14.15.4
 
 RUN node --version
 RUN npm --version
-RUN npm install -g npm@next
+RUN npm install -g npm@^7.18.1
 RUN npm --version
-RUN nvm --help
 
 # Create app directory
 WORKDIR /usr/src/app
