@@ -77,7 +77,6 @@ build:e2e:
       when: manual
 
 test:e2e:
-  image: cypress/base:14.15.4
   stage: test
   tags:
     - 'cpmsys01'
