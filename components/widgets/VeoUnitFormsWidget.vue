@@ -1,9 +1,9 @@
 <template>
   <VeoWidget :title="$t('forms', { domain: domain.name })">
-    <template v-if="$fetchState.pending">
-      <table>
+    <v-simple-table dense>
+      <tbody v-if="$fetchState.pending">
         <tr
-          v-for="index in [1, 2, 3, 4, 5]"
+          v-for="index in 10"
           :key="index"
         >
           <td>
@@ -19,15 +19,13 @@
             />
           </td>
         </tr>
-      </table>
-    </template>
-    <template v-else>
-      <table>
+      </tbody>
+      <tbody v-else>
         <tr
           v-for="form of formattedForms"
           :key="form.form.id"
         >
-          <td>{{ form.name }}:</td>
+          <td>{{ form.name }}</td>
           <td class="text-right">
             <nuxt-link
               :to="`/${$route.params.unit}/domains/${createUUIDUrlParam('domain', domain.id)}/forms/${createUUIDUrlParam('form', form.form.id || '')}`"
@@ -44,8 +42,8 @@
             {{ $t('noForms') }}
           </td>
         </tr>
-      </table>
-    </template>
+      </tbody>
+    </v-simple-table>
   </VeoWidget>
 </template>
 
