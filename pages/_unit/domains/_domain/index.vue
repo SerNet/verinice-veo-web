@@ -26,6 +26,10 @@
         </v-col>
       </v-row>
     </v-row>
+    <VeoWelcomeDialog
+      v-if="showWelcomeDialog"
+      v-model="showWelcomeDialog"
+    />
   </VeoPage>
 </template>
 
@@ -35,12 +39,14 @@ import Vue from 'vue';
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
+import LocalStorage from '~/util/LocalStorage';
 
 export default Vue.extend({
   data() {
     return {
       domain: undefined as IVeoDomain | undefined,
-      unit: {} as any
+      unit: {} as any,
+      showWelcomeDialog: false as boolean
     };
   },
   async fetch() {
@@ -76,6 +82,9 @@ export default Vue.extend({
   },
   watch: {
     '$route.params': '$fetch'
+  },
+  mounted() {
+    this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
   }
 });
 </script>

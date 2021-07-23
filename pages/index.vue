@@ -36,6 +36,10 @@
         </v-list>
       </template>
     </v-data-iterator>
+    <VeoWelcomeDialog
+      v-if="showWelcomeDialog"
+      v-model="showWelcomeDialog"
+    />
   </VeoPage>
 </template>
 
@@ -44,6 +48,7 @@ import Vue from 'vue';
 
 import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
+import LocalStorage from '~/util/LocalStorage';
 
 export default Vue.extend({
   props: {},
@@ -51,7 +56,8 @@ export default Vue.extend({
     return {
       search: '',
       unit: '',
-      units: [] as IVeoUnit[]
+      units: [] as IVeoUnit[],
+      showWelcomeDialog: false as boolean
     };
   },
   async fetch() {
@@ -62,6 +68,9 @@ export default Vue.extend({
     return {
       title: this.$t('breadcrumbs.index')
     };
+  },
+  mounted() {
+    this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
   },
   methods: {
     createUUIDUrlParam
