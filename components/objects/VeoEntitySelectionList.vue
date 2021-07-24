@@ -117,6 +117,9 @@
         {{ item.entity.abbreviation }} {{ item.entity.name }}
       </div>
     </template>
+    <template #item.status="{ item }">
+      {{ item.entity.status }}
+    </template>
     <template #item.description="{ item }">
       <div class="veo-object-list__description">
         <v-tooltip
@@ -181,6 +184,10 @@ export default Vue.extend({
     singleSelect: {
       type: Boolean,
       default: false
+    },
+    objectType: {
+      type: String,
+      default: undefined
     }
   },
   data() {
@@ -220,12 +227,22 @@ export default Vue.extend({
         },
         {
           text: this.$t('objectlist.designator'),
-          value: 'designator'
+          value: 'designator',
+          width: 120
         },
         {
           text: this.$t('objectlist.title'),
           value: 'name'
         },
+        ...(this.objectType === 'process'
+          ? [
+              {
+                text: this.$t('objectlist.status'),
+                value: 'status',
+                width: 100
+              }
+            ]
+          : []),
         {
           text: this.$t('objectlist.description'),
           filterable: false,

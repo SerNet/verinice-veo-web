@@ -72,6 +72,7 @@ export default {
 
   'objectlist.designator': 'Designator',
   'objectlist.description': 'Beschreibung',
+  'objectlist.status': 'Status',
   'objectlist.title': 'Objektname',
   'objectlist.updatedat': 'Letzte Änderung',
   'objectlist.updatedby': 'Bearbeiter',

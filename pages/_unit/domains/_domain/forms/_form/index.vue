@@ -54,6 +54,7 @@
             :show-parent-link="false"
             :load-children="loadSubEntities"
             :root-route="rootRoute"
+            :object-type="formSchema && formSchema.modelType"
             v-on="on"
           />
         </template>
