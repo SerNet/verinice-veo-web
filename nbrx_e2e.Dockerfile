@@ -1,19 +1,9 @@
-# ARG CI_PROJECT_DIR=/builds/nbrx/t1/veo
-# ARG npm_config_cache=${CI_PROJECT_DIR}/.npm
-# ARG CYPRESS_CACHE_FOLDER=${CI_PROJECT_DIR}/cache/Cypress
 FROM cypress/base:14.15.4
-RUN pwd && ls -al
 
 # Install npm v7 to work with lockfile:2
 RUN npm install -g npm@7.20.1
-
-# ENV CYPRESS_CACHE_FOLDER ${CYPRESS_CACHE_FOLDER}
-# RUN npm config set cache ${npm_config_cache} --global 
-# ENV npm_config_cache ${npm_config_cache}
-
-
 # Create app directory
-# WORKDIR /usr/src/app
+WORKDIR /usr/src/app
 # Copy .npmrc for installing @nbrx/eslint-config-nuxt
 COPY .npmrc .
 # Install app dependencies
@@ -34,8 +24,6 @@ ENV CI_COMMIT_SHA ${CI_COMMIT_SHA}
 ENV CI_JOB_ID ${CI_JOB_ID}
 
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > static/VERSION && echo ${CI_COMMIT_SHA} > BUILD && echo ${CI_COMMIT_SHA} > static/BUILD
-
-RUN npm get cache
 
 ENV VEO_API_USE_PROXY: 'true'
 ENV NODE_ENV production
