@@ -22,7 +22,6 @@ build:e2e:
   stage: build
   image: cypress/base:14.15.4
   script:
-    - pwd && ls -al
     # Install npm v7 to work with lockfile:2
     - npm install -g npm@7.20.1
     - npm install
@@ -63,7 +62,7 @@ test:e2e:
     PORT: 5000
   script:
     - (npm run start&)
-    - npm run test:e2e -- --config baseUrl=http://localhost:5000
+    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
   after_script:
     # Create cobertura report
     - npx nyc report --reporter=cobertura --reporter=text-summary
