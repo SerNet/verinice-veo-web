@@ -59,11 +59,6 @@ review:
 build:e2e:
   stage: build
   image: cypress/base:14.15.4
-  cache:
-    key: e2e
-    paths:
-      - $CI_PROJECT_DIR
-    policy: push
   script:
     - pwd && ls -al
     # Install npm v7 to work with lockfile:2
@@ -72,6 +67,17 @@ build:e2e:
     - npm run build
     - ls -al
     - ls -al /root/
+  artifacts:
+    when: always
+    paths:
+      - .npm
+      - cache/Cypress
+      - .nuxt
+      - package.json
+      - node_modules
+      - cypress
+      - cypress.json
+    expire_in: 1 day
   rules:
     - if: '$BUILD_DISABLED'
       when: never
@@ -84,11 +90,6 @@ build:e2e:
 
 test:e2e:
   stage: test
-  cache:
-    key: e2e
-    paths:
-      - $CI_PROJECT_DIR
-    policy: pull  
   variables:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
