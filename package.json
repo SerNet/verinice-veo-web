@@ -10,6 +10,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
+    "dev:e2e": "VEO_API_USE_PROXY='true' nuxt",
     "dev-debug": "node --inspect=9229 node_modules/.bin/nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
