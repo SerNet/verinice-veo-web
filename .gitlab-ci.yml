@@ -62,8 +62,7 @@ build:e2e:
   cache:
     key: e2e
     paths:
-      - .npm
-      - cache/Cypress
+      - $CI_PROJECT_DIR
     policy: push
   script:
     - pwd && ls -al
@@ -81,23 +80,23 @@ build:e2e:
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
       when: always
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: manual
+      when: always
 
 test:e2e:
   stage: test
-  variables:
-    VEO_API_USE_PROXY: 'true'
-    GIT_STRATEGY: none
   cache:
     key: e2e
     paths:
-      - .npm
-      - cache/Cypress
-    policy: pull
+      - $CI_PROJECT_DIR
+    policy: pull  
+  variables:
+    VEO_API_USE_PROXY: 'true'
+    GIT_STRATEGY: none
   script:
     - pwd
     - ls -al
     - ls -al /root/
+    - ls -al /
     # - cd /usr/src/app
     # - (npm run start&)
     # - ls -al
