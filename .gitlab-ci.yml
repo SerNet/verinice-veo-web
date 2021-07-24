@@ -66,6 +66,8 @@ build:e2e:
     - npm install -g npm@7.20.1
     - npm install
     - npm run build
+    - ls -al
+    - ls -al /root/
   rules:
     - if: '$BUILD_DISABLED'
       when: never
@@ -84,6 +86,7 @@ test:e2e:
   script:
     - pwd
     - ls -al
+    - ls -al /root/
     # - cd /usr/src/app
     # - (npm run start&)
     # - ls -al
