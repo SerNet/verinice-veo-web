@@ -62,7 +62,6 @@ build:e2e:
   cache:
     key: e2e
     paths:
-      - /
       - .npm
       - cache/Cypress
     policy: push
@@ -92,7 +91,6 @@ test:e2e:
   cache:
     key: e2e
     paths:
-      - /
       - .npm
       - cache/Cypress
     policy: pull
