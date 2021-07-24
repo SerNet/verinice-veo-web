@@ -97,15 +97,12 @@ test:e2e:
     NODE_ENV: production
     PORT: 5000
   script:
+    - npm --version
     - pwd
     - ls -al
     - ls -al /root/
     - ls -al /
-    # - cd /usr/src/app
-    # - (npm run start&)
-    # - ls -al
-    # - ls -al ./cypress
-    # - cp -r $CI_PROJECT_DIR/.npm $CI_PROJECT_DIR/cache /usr/src/app #test
+    - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
     - npx nyc report --reporter=cobertura --reporter=text-summary
   after_script:
