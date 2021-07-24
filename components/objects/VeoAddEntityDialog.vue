@@ -174,23 +174,8 @@ export default Vue.extend({
         this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
       }
     },
-    filter(newValue: IVeoFilter) {
-      this.$router.push({
-        ...this.$route,
-        query: {
-          filter: newValue?.property,
-          value: newValue?.value
-        }
-      } as any);
+    filter() {
       this.$fetch();
-    }
-  },
-  mounted() {
-    if (this.$route.query.filter && this.$route.query.value) {
-      this.filter = {
-        property: this.$route.query.filter as string,
-        value: this.$route.query.value as string
-      };
     }
   },
   methods: {
