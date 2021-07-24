@@ -101,7 +101,9 @@ test:e2e:
     - pwd
     - ls -al
     - ls -al /root/
-    - ls -al /
+    - ls -al ./.nuxt
+    - ls -al ./.nuxt/dist
+    - ls -al ./.nuxt/dist/server
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
     - npx nyc report --reporter=cobertura --reporter=text-summary
