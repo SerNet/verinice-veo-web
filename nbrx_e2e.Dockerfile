@@ -10,7 +10,6 @@ COPY .npmrc .
 COPY package.json .
 # For npm@5 or later, copy package-lock.json as well
 COPY package-lock.json .
-RUN pwd && ls -al
 RUN npm install
 # Bundle app source
 COPY . .
