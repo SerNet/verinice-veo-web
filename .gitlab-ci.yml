@@ -18,15 +18,6 @@ review:
     auto_stop_in: 4 week
 
 # for cypress tests
-
-# # cache using branch name
-# # https://gitlab.com/help/ci/caching/index.md
-# cache:
-#   key: $CI_COMMIT_REF_SLUG
-#   paths:
-#     - .npm
-#     - cache/Cypress  
-
 build:e2e:
   stage: build
   image: cypress/base:14.15.4
@@ -58,7 +49,7 @@ build:e2e:
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
       when: always
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: always
+      when: manual
 
 test:e2e:
   stage: test
@@ -72,7 +63,7 @@ test:e2e:
     PORT: 5000
   script:
     - (npm run start&)
-    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
+    - npm run test:e2e -- --config baseUrl=http://localhost:5000
   after_script:
     # Create cobertura report
     - npx nyc report --reporter=cobertura --reporter=text-summary
