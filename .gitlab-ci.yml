@@ -27,35 +27,6 @@ review:
 #     - .npm
 #     - cache/Cypress  
 
-# build:e2e:
-#   stage: build
-#   image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.0.0'
-#   variables:
-#     DOCKERFILE_PATH: "nbrx_e2e.Dockerfile"
-#     CI_REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_PATH/cypress"
-#   services:
-#     - name: 'docker:20.10.6-dind'
-#       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
-#   script:
-#     - |
-#       if [[ -z "$CI_COMMIT_TAG" ]]; then
-#         export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
-#         export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
-#       else
-#         export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
-#         export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
-#       fi
-#     - /build/build.sh
-#   rules:
-#     - if: '$BUILD_DISABLED'
-#       when: never
-#     - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
-#       when: never
-#     - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
-#       when: always
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#       when: manual
-
 build:e2e:
   stage: build
   image: cypress/base:14.15.4
@@ -65,8 +36,6 @@ build:e2e:
     - npm install -g npm@7.20.1
     - npm install
     - npm run build
-    - ls -al
-    - ls -al /root/
   artifacts:
     when: always
     paths:
@@ -93,6 +62,8 @@ build:e2e:
 
 test:e2e:
   stage: test
+  tags:
+    - 'cpmsys01'
   image: cypress/base:14.15.4
   variables:
     VEO_API_USE_PROXY: 'true'
@@ -100,17 +71,11 @@ test:e2e:
     NODE_ENV: production
     PORT: 5000
   script:
-    - npm --version
-    - pwd
-    - ls -al
-    - ls -al /root/
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
-    - npx nyc report --reporter=cobertura --reporter=text-summary
   after_script:
-  # Copy cypress files to Gitlab project dir to make artifacts work (Artifacts are only include if they are relative to $CI_PROJECT_DIR) 
-  # https://gitlab.com/gitlab-org/gitlab-foss/-/issues/15530 or https://forum.gitlab.com/t/gitlab-ci-artifacts-not-found/7588
-    # - cp -r /usr/src/app/cypress $CI_PROJECT_DIR
+    # Create cobertura report
+    - npx nyc report --reporter=cobertura --reporter=text-summary
   rules:
     - if: '$TEST_DISABLED'
       when: never
