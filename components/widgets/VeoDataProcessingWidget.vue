@@ -3,8 +3,8 @@
     <v-simple-table dense>
       <tbody>
         <tr
-          v-for="(status, index) of processStatus"
-          :key="index"
+          v-for="(status, key) in processStatus"
+          :key="key"
           :style="{ color: status.color }"
         >
           <td>{{ status.text }}</td>
@@ -22,7 +22,7 @@
             class="text-right"
           >
             <nuxt-link
-              :to="`/${$route.params.unit}/domains/${$route.params.domain}/forms/${createUUIDUrlParam('form', dataProcessingFormId)}`"
+              :to="`/${$route.params.unit}/domains/${$route.params.domain}/forms/${createUUIDUrlParam('form', dataProcessingFormId)}?filter=status&value=${key}`"
             >
               <b>{{ status.items }}</b>
             </nuxt-link>

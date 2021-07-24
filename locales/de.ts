@@ -96,7 +96,7 @@ export default {
 
   'search.label': 'verinice. durchsuchen',
 
-  'domain.index.title': 'Modul Dashboard',
+  'domain.index.title': 'Dashboard',
 
   'unit.create': 'Neue Unit erstellen',
   'unit.create.short': 'Unit erstellen',

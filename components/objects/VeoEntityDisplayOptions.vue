@@ -4,57 +4,61 @@
     class="justify-space-between"
   >
     <v-col cols="auto">
-      <v-btn-toggle
-        mandatory
-        :value="activeView"
-        color="primary"
-        dense
-      >
-        <v-tooltip bottom>
-          <template #activator="{on}">
-            <v-btn
-              v-on="on"
-              @click="onNavigate('list')"
-            >
-              <v-icon>mdi-menu</v-icon>
-            </v-btn>
-          </template>
-          <template #default>
-            {{ $t('breadcrumbs.list_view') }}
-          </template>
-        </v-tooltip>
-        <v-tooltip bottom>
-          <template #activator="{on}">
-            <v-btn
-              v-on="on"
-              @click="onNavigate('tree')"
-            >
-              <v-icon>mdi-file-tree</v-icon>
-            </v-btn>
-          </template>
-          <template #default>
-            {{ $t('breadcrumbs.tree_view') }}
-          </template>
-        </v-tooltip>
-        <v-tooltip bottom>
-          <template #activator="{on}">
-            <v-btn
-              :disabled="!currentEntity"
-              v-on="on"
-              @click="onNavigate('edit')"
-            >
-              <v-icon>mdi-file</v-icon>
-            </v-btn>
-          </template>
-          <template #default>
-            {{ $t('breadcrumbs.detail_view') }}
-          </template>
-        </v-tooltip>
-      </v-btn-toggle>
+      <v-row>
+        <v-col>
+          <v-btn-toggle
+            mandatory
+            :value="activeView"
+            color="primary"
+            dense
+          >
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn
+                  v-on="on"
+                  @click="onNavigate('list')"
+                >
+                  <v-icon>mdi-menu</v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('breadcrumbs.list_view') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn
+                  v-on="on"
+                  @click="onNavigate('tree')"
+                >
+                  <v-icon>mdi-file-tree</v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('breadcrumbs.tree_view') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn
+                  :disabled="!currentEntity"
+                  v-on="on"
+                  @click="onNavigate('edit')"
+                >
+                  <v-icon>mdi-file</v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('breadcrumbs.detail_view') }}
+              </template>
+            </v-tooltip>
+          </v-btn-toggle>
+        </v-col>
+      </v-row>
     </v-col>
     <v-col
       cols="auto"
-      class="mr-4"
+      class="mr-4 d-flex flex-grow-1 justify-end"
     >
       <slot />
     </v-col>
