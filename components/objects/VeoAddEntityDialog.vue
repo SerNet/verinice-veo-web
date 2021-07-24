@@ -32,6 +32,7 @@
         :selected-items="selectedItems"
         :items="entities"
         :loading="$fetchState.pending || loading"
+        :object-type="objectName"
         @new-subentities="onNewSubEntities"
         @page-change="fetchEntities"
         @refetch="fetchEntities"
@@ -115,6 +116,9 @@ export default Vue.extend({
       }
 
       return schemas;
+    },
+    objectName(): string | undefined {
+      return this.schemas.find((schema) => schema.endpoint === this.objectType)?.schemaName;
     },
     dialog: {
       get(): boolean {

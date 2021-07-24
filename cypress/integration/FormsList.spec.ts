@@ -48,7 +48,7 @@ describe('Forms List', () => {
 
   // Only checking for correct request, we expect the vuetify component to work correctly
   it('Tests the sorting for every sortable column', function () {
-    const sortableColumns = ['designator', 'name', 'updatedAt', 'updatedBy']; // Array containing the property that should be sorted for (NOTE: Column in the VeoFormList.vue file might be named differently), so we make sure only valid properties are sorted
+    const sortableColumns = ['designator', 'name', 'updatedAt', 'updatedBy', 'status']; // Array containing the property that should be sorted for (NOTE: Column in the VeoFormList.vue file might be named differently), so we make sure only valid properties are sorted
 
     // Test whether the page jumps back to one if the user changes the sort direction
     cy.get('.v-data-footer__icons-after .mdi-chevron-right').click();

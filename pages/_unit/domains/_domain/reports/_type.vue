@@ -58,6 +58,7 @@
         :items="entities"
         :loading="$fetchState.pending || global_loading"
         single-select
+        :object-type="objectType"
         @new-subentities="onNewSubEntities"
         @page-change="fetchEntities"
         @refetch="fetchEntities"
