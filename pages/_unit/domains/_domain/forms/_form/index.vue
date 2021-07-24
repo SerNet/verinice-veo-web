@@ -30,13 +30,10 @@
             </v-col>
             <v-col
               cols="auto"
-              class="d-none"
+              class="flex-grow-1 search-bar"
+              :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
             >
-              <v-text-field
-                :label="$t('search')"
-                outlined
-                dense
-              />
+              <VeoListSearchBar object-type="process" />
             </v-col>
             <v-col cols="auto">
               <v-btn
@@ -171,13 +168,17 @@ export default Vue.extend({
 {
   "en": {
     "create": "Create {type}",
-    "form": "Form",
-    "search": "Search"
+    "form": "Form"
   },
   "de": {
     "create": "{type} erstellen",
-    "form": "Formular",
-    "search": "Suche"
+    "form": "Formular"
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.search-bar-desktop {
+  margin: 0 100px;
+}
+</style>
