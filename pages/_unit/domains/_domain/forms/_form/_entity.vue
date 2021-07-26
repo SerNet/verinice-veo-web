@@ -78,7 +78,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending || !formModified.isModified"
+              :disabled="isSaveBtnDisabled"
               :loading="saveBtnLoading"
               @click="onClick"
             >
@@ -97,7 +97,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending || !formModified.isModified"
+              :disabled="isSaveBtnDisabled"
               :loading="saveBtnLoading"
               @click="onClick($event, true)"
             >
@@ -389,6 +389,9 @@ export default Vue.extend({
         errors: [...this.formschemaValidation.errors, ...revisionValidation.errors]
       };
     },
+    isSaveBtnDisabled(): boolean {
+      return this.$fetchState.pending || !this.formModified.isModified || !this.isValid;
+    },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
@@ -455,7 +458,7 @@ export default Vue.extend({
             await new Promise((resolve) => {
               setTimeout(() => {
                 this.$fetch();
-                resolve();
+                resolve(true);
               }, 1000);
             });
           }
