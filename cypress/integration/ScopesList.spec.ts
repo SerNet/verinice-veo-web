@@ -27,7 +27,7 @@ describe('Scopes List', () => {
   });
 
   // Only checking for correct request, we expect the vuetify component to work correctly
-  it.only('Changes page size of the table', function () {
+  it('Changes page size of the table', function () {
     const newTablePageSize = 25; // Valid option defined in itemsPerPageOptions in VeoFormList.vue
 
     // Skip to next page
