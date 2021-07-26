@@ -99,6 +99,7 @@
         <div class="tree-item d-flex justify-space-between align-center">
           <div class="d-flex text-truncate">
             <b>{{ item.entry.name }}</b>
+            <span v-if="objectType === 'process' && item.entry.status">&nbsp;({{ item.entry.status }})</span>
             <v-tooltip bottom>
               <template #activator="{ on }">
                 <span
@@ -230,7 +231,7 @@
         class="ml-8 mt-6"
         @click="$emit('page-change', { newPage: items.page + 1, replaceOldData: false })"
       >
-        {{ $t('load_more', { type: objectType }) }}
+        {{ $t('load_more', { type: loadMoreText }) }}
       </v-btn>
     </div>
   </div>
@@ -285,9 +286,13 @@ export default Vue.extend({
       type: Object as Prop<IVeoEntityModifierEvent | undefined>,
       default: undefined
     },
-    objectType: {
+    loadMoreText: {
       type: String,
       default: ''
+    },
+    objectType: {
+      type: String,
+      default: undefined
     }
   },
   data() {
