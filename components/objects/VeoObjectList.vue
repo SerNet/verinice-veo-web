@@ -12,6 +12,7 @@
     :sort-by.sync="sortBy"
     :sort-desc.sync="sortDesc"
     class="veo-object-list"
+    :data-cy="$utils.prefixCyData($options, 'objects-table')"
     @click:row="sendEvent('click', $event)"
     @update:items-per-page="onPageSizeChange"
     @update:sort-by="refetch"
@@ -34,7 +35,10 @@
       v-if="showParentLink"
       #body.prepend
     >
-      <tr @click="$emit('navigate-parent')">
+      <tr
+        :data-cy="$utils.prefixCyData($options, 'navigate-parent')"
+        @click="$emit('navigate-parent')"
+      >
         <td>
           <v-icon>mdi-arrow-left</v-icon>
         </td>
@@ -150,6 +154,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'edit-item')"
               @click.stop="sendEvent('edit', item, currentItem)"
               v-on="on"
             >
@@ -164,6 +169,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'clone-item')"
               @click.stop="sendEvent('duplicate', item, currentItem)"
               v-on="on"
             >
@@ -181,6 +187,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'delete-item')"
               @click.stop="sendEvent('delete', item, currentItem)"
               v-on="on"
             >
@@ -198,6 +205,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'unlink-item')"
               @click.stop="sendEvent('unlink', item, currentItem)"
               v-on="on"
             >

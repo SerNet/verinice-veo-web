@@ -1,12 +1,12 @@
 /// <reference path="../support/index.d.ts" />
 import { IVeoEntity } from '../../types/VeoTypes';
 
-describe('Forms List', () => {
+describe('Scopes List', () => {
   beforeEach(() => {
     cy.auth();
 
     cy.interceptLayoutCalls();
-    cy.visit(`/unit-d496f98f-c051-443c-9b1f-65d65b64996d/domains/domain-ed67e4d7-c657-4479-ba8a-c53999d2930a/forms/form-abbd6bf3-891c-4120-a3fd-bff06748b3ab/`);
+    cy.visit(`/unit-d496f98f-c051-443c-9b1f-65d65b64996d/scopes/-/list/`);
     cy.wait('@G_fetchObjects');
   });
 
@@ -48,7 +48,7 @@ describe('Forms List', () => {
     }).as('fetchObjects');
 
     // Change page size
-    cy.get('[data-cy=veo-form-list-forms-table] .v-data-footer .v-input').closest('.v-select').type(`${newTablePageSize}{enter}`);
+    cy.get('[data-cy=veo-object-list-objects-table] .v-data-footer .v-input').closest('.v-select').type(`${newTablePageSize}{enter}`);
     cy.wait('@fetchObjects').should((req: any) => {
       expect(req.request.url).to.contain(`size=${newTablePageSize}`); // Expect page size to increase to previously defined value
       expect(req.request.url).to.contain('page=0'); // Expect page to jump back to first page
@@ -61,7 +61,7 @@ describe('Forms List', () => {
     let descendingSortings = 0;
     let ascendingSortings = 0;
     let totalQueries = 0;
-    const sortableColumns = ['designator', 'name', 'updatedAt', 'updatedBy', 'status']; // Array containing the property that should be sorted for (NOTE: Column in the VeoFormList.vue file might be named differently), so we make sure only valid properties are sorted
+    const sortableColumns = ['designator', 'name', 'updatedAt', 'updatedBy']; // Array containing the property that should be sorted for (NOTE: Column in the VeoFormList.vue file might be named differently), so we make sure only valid properties are sorted
 
     cy.intercept({
       method: 'GET',
@@ -72,11 +72,11 @@ describe('Forms List', () => {
     // Test whether the page jumps back to one if the user changes the sort direction
     cy.get('.v-data-footer__icons-after .mdi-chevron-right').click();
     cy.wait('@G_fetchObjects');
-    cy.get('[data-cy=veo-form-list-forms-table]').contains('Objektname').click();
+    cy.get('[data-cy=veo-object-list-objects-table]').contains('Objektname').click();
     cy.wait('@fetchObjects').its('request.url').should('contain', 'page=0');
 
     // Iterate over every sortable table header and check if the correct params are sent
-    cy.get('[data-cy=veo-form-list-forms-table] th.sortable').each(($element, _index, _$list) => {
+    cy.get('[data-cy=veo-object-list-objects-table] th.sortable').each(($element, _index, _$list) => {
       return new Cypress.Promise((resolve) => {
         // Sort asc and desc
         // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -113,16 +113,16 @@ describe('Forms List', () => {
     cy.wait('@G_fetchObjects');
 
     // Load fixture to get the id
-    cy.fixture('api/default/entities/assets/fetchAll.json').then((allAssets) => {
-      id = allAssets.items[index].id;
+    cy.fixture('api/default/entities/scopes/fetchAll.json').then((allScopes) => {
+      id = allScopes.items[index].id;
     });
 
     // Click on the edit button
-    cy.get('[data-cy=veo-form-list-forms-table] tbody tr:not(.v-data-table__empty-wrapper)')
+    cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
       .eq(index)
       .within(() => {
-        cy.get('[data-cy=veo-form-list-edit-item]').click();
-        cy.location('pathname').should('contain', `asset-${id}`);
+        cy.get('[data-cy=veo-object-list-edit-item]').click();
+        cy.location('pathname').should('contain', `scope-${id}`);
       });
   });
 
@@ -134,8 +134,8 @@ describe('Forms List', () => {
     cy.wait('@G_fetchObjects');
 
     // Load fixture to get the id
-    cy.fixture('api/default/entities/assets/fetchAll.json').then((allAssets) => {
-      id = allAssets.items[index].id;
+    cy.fixture('api/default/entities/scopes/fetchAll.json').then((allScopes) => {
+      id = allScopes.items[index].id;
     });
 
     cy.intercept(
@@ -155,10 +155,10 @@ describe('Forms List', () => {
     );
 
     // Click on the edit button
-    cy.get('[data-cy=veo-form-list-forms-table] tbody tr:not(.v-data-table__empty-wrapper)')
+    cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
       .eq(index)
       .within(() => {
-        cy.get('[data-cy=veo-form-list-delete-item]').click();
+        cy.get('[data-cy=veo-object-list-delete-item]').click();
       });
     cy.get('[data-cy=veo-delete-entity-dialog-confirm-button]').click();
   });
@@ -171,10 +171,10 @@ describe('Forms List', () => {
     cy.wait('@G_fetchObjects');
 
     // Load fixture to get the id
-    cy.fixture('api/default/entities/assets/fetchAll.json').then((allAssets) => {
-      entity = allAssets.items[index];
+    cy.fixture('api/default/entities/scopes/fetchAll.json').then((allScopes) => {
+      entity = allScopes.items[index];
       entity.name = `${entity.name} (Klon)`;
-      returnedEntity = allAssets;
+      returnedEntity = allScopes;
       delete entity.id;
       delete entity.designator;
     });
@@ -192,10 +192,99 @@ describe('Forms List', () => {
     );
 
     // Click on the edit button
-    cy.get('[data-cy=veo-form-list-forms-table] tbody  tr:not(.v-data-table__empty-wrapper)')
+    cy.get('[data-cy=veo-object-list-objects-table] tbody  tr:not(.v-data-table__empty-wrapper)')
       .eq(index)
       .within(() => {
-        cy.get('[data-cy=veo-form-list-clone-item]').click();
+        cy.get('[data-cy=veo-object-list-clone-item]').click();
       });
+  });
+
+  it('Views the child items of an entity not containing child entities', function () {
+    const index = 4;
+    let id: string;
+
+    cy.intercept({
+      method: 'GET',
+      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+    }).as('fetchObjects');
+
+    cy.wait('@G_fetchObjects');
+
+    // Load fixture to get the id
+    cy.fixture('api/default/entities/scopes/fetchAll.json').then((allScopes) => {
+      id = allScopes.items[index].id;
+    });
+
+    // Click on the column to go into
+    cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
+      .eq(index)
+      .click()
+      .then(() => {
+        cy.location('pathname').should('contain', `unit-d496f98f-c051-443c-9b1f-65d65b64996d/scopes/scope-${id}/list`);
+
+        cy.wait('@fetchObjects');
+        cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)').should('have.length', 1);
+        cy.get('[data-cy=veo-object-list-navigate-parent]').should('exist');
+      });
+  });
+
+  it('Views the child items of an entity containing child entities', function () {
+    const index = 3;
+    let id: string;
+
+    cy.intercept({
+      method: 'GET',
+      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+    }).as('fetchObjects');
+
+    cy.wait('@G_fetchObjects');
+
+    // Load fixture to get the id
+    cy.fixture('api/default/entities/scopes/fetchAll.json').then((allScopes) => {
+      id = allScopes.items[index].id;
+    });
+
+    // Click on the column to go into
+    cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
+      .eq(index)
+      .click()
+      .then(() => {
+        cy.location('pathname').should('contain', `unit-d496f98f-c051-443c-9b1f-65d65b64996d/scopes/scope-${id}/list`);
+
+        cy.wait('@fetchObjects');
+        cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)').should('have.length', 5);
+      });
+  });
+
+  it('Unlinks a child item from its parent', function () {
+    const index = 3;
+    const childIndex = 1;
+
+    cy.intercept(
+      {
+        method: 'PUT',
+        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.*)$/
+      },
+      (req) => {
+        req.reply(req.body);
+      }
+    ).as('saveEntity');
+
+    cy.wait('@G_fetchObjects');
+
+    // Click on the column to go into
+    cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
+      .eq(index)
+      .click()
+      .then(() => {
+        cy.wait(['@G_fetchObjects', '@G_fetchObject']);
+        cy.get('[data-cy=veo-object-list-objects-table] tbody tr:not(.v-data-table__empty-wrapper)')
+          .eq(childIndex)
+          .within(() => {
+            cy.get('[data-cy=veo-object-list-unlink-item]').click();
+          });
+      });
+    cy.get('[data-cy=veo-unlink-entity-dialog-confirm-button]').click();
+    cy.wait('@saveEntity').its('request.body').toMatchSnapshot();
   });
 });

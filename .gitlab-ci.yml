@@ -13,25 +13,33 @@ variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
   CYPRESS_BASE_URL: ''
 
+review:
+  environment:
+    auto_stop_in: 4 week
+
+# for cypress tests
 build:e2e:
   stage: build
-  image: 'registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image:v1.0.0'
-  variables:
-    DOCKERFILE_PATH: "nbrx_e2e.Dockerfile"
-    CI_REGISTRY_IMAGE: "$CI_REGISTRY/$CI_PROJECT_PATH/cypress"
-  services:
-    - name: 'docker:20.10.6-dind'
-      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+  image: cypress/base:14.15.4
   script:
-    - |
-      if [[ -z "$CI_COMMIT_TAG" ]]; then
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
-      else
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
-      fi
-    - /build/build.sh
+    # Install npm v7 to work with lockfile:2
+    - npm install -g npm@7.20.1
+    - npm install
+    - npm run build
+  artifacts:
+    when: always
+    paths:
+      - .npm
+      - .nuxt
+      - nuxt.config.js
+      - package.json
+      - tsconfig.json
+      - node_modules
+      - cache/Cypress
+      - cypress
+      - cypress.json
+      - nyc.config.js
+    expire_in: 1 day
   rules:
     - if: '$BUILD_DISABLED'
       when: never
@@ -42,37 +50,22 @@ build:e2e:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: manual
 
-review:
-  environment:
-    auto_stop_in: 4 week
-
-# for cypress tests
-
-# cache using branch name
-# https://gitlab.com/help/ci/caching/index.md
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - .npm
-    - cache/Cypress
-
 test:e2e:
-  image: registry.nbrx.de/nbrx/t1/veo/cypress/${CI_COMMIT_REF_NAME}:latest
   stage: test
   tags:
     - 'cpmsys01'
+  image: cypress/base:14.15.4
   variables:
     VEO_API_USE_PROXY: 'true'
     GIT_STRATEGY: none
+    NODE_ENV: production
+    PORT: 5000
   script:
-    - cd /usr/src/app
     - (npm run start&)
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
-    - npx nyc report --reporter=cobertura --reporter=text-summary
   after_script:
-  # Copy cypress files to Gitlab project dir to make artifacts work (Artifacts are only include if they are relative to $CI_PROJECT_DIR) 
-  # https://gitlab.com/gitlab-org/gitlab-foss/-/issues/15530 or https://forum.gitlab.com/t/gitlab-ci-artifacts-not-found/7588
-    - cp -r /usr/src/app/cypress $CI_PROJECT_DIR
+    # Create cobertura report
+    - npx nyc report --reporter=cobertura --reporter=text-summary
   rules:
     - if: '$TEST_DISABLED'
       when: never
