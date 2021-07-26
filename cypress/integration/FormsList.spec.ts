@@ -65,12 +65,13 @@ describe('Forms List', () => {
 
     cy.intercept({
       method: 'GET',
-      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/,
+      query: { page: '0' }
     }).as('fetchObjects');
 
     // Test whether the page jumps back to one if the user changes the sort direction
     cy.get('.v-data-footer__icons-after .mdi-chevron-right').click();
-    cy.wait('@fetchObjects');
+    cy.wait('@G_fetchObjects');
     cy.get('[data-cy=veo-form-list-forms-table]').contains('Objektname').click();
     cy.wait('@fetchObjects').its('request.url').should('contain', 'page=0');
 
