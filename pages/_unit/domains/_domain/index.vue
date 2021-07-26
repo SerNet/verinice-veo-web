@@ -26,6 +26,12 @@
             :unit="unit"
           />
         </v-col>
+        <v-col
+          :cols="12"
+          md="6"
+        >
+          <VeoDataProcessingWidget />
+        </v-col>
       </v-row>
     </v-row>
     <VeoWelcomeDialog

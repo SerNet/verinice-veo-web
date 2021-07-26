@@ -79,13 +79,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-table {
-  font-size: 1.2rem;
-  min-width: 250px;
-  border-spacing: 0 12px;
-
-  a {
-    text-decoration: none;
-  }
+a {
+  text-decoration: none;
 }
 </style>

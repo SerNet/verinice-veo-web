@@ -9,8 +9,12 @@
   >
     <template #default>
       {{ $t('add_subentities', { displayName: entityDisplayName }) }}
-      <v-row v-if="editedEntity && editedEntity.type === 'scope' && addType === 'entity'">
+      <v-row
+        dense
+        class="justify-space-between"
+      >
         <v-col
+          v-if="editedEntity && editedEntity.type === 'scope' && addType === 'entity'"
           lg="3"
           md="6"
           cols="12"
@@ -25,6 +29,16 @@
             class="mt-2"
             outlined
             dense
+          />
+        </v-col>
+        <v-col
+          cols="auto"
+          class="flex-grow-1 search-bar"
+          :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
+        >
+          <VeoListSearchBar
+            v-model="filter"
+            :object-type="objectType"
           />
         </v-col>
       </v-row>   
@@ -68,6 +82,7 @@ import { getEntityDetailsFromLink } from '~/lib/utils';
 
 import { getSchemaEndpoint, getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
 
 export default Vue.extend({
   props: {
@@ -86,6 +101,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      filter: undefined as IVeoFilter | undefined,
       selectedItems: [] as { id: string; type: string }[],
       saving: false as boolean,
       entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
@@ -157,6 +173,9 @@ export default Vue.extend({
       if (oldValue) {
         this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
       }
+    },
+    filter() {
+      this.$fetch();
     }
   },
   methods: {
@@ -216,7 +235,8 @@ export default Vue.extend({
       this.entities = await this.$api.entity.fetchAll(_objectType, options.page, {
         size: this.$user.tablePageSize,
         sortBy: options.sortBy,
-        sortOrder: options.sortDesc ? 'desc' : 'asc'
+        sortOrder: options.sortDesc ? 'desc' : 'asc',
+        ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
       });
       this.loading = false;
     }
@@ -242,3 +262,9 @@ export default Vue.extend({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.search-bar-desktop {
+  margin: 0 100px;
+}
+</style>
