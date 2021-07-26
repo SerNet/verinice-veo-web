@@ -14,16 +14,23 @@ describe('Scopes List', () => {
   it('Navigates the forms table using the forward/back buttons', function () {
     cy.intercept({
       method: 'GET',
-      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
-    }).as('fetchObjects');
+      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/,
+      query: { page: '1' }
+    }).as('fetchObjects1');
+
+    cy.intercept({
+      method: 'GET',
+      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/,
+      query: { page: '0' }
+    }).as('fetchObjects2');
 
     // Go to next page (from page 0 to page 1)
     cy.get('.v-data-footer__icons-after .mdi-chevron-right').click();
-    cy.wait('@fetchObjects').its('request.url').should('contain', 'page=1');
+    cy.wait('@fetchObjects1').its('request.url').should('contain', 'page=1');
 
     // Go to previous page (from page 1 to page 0)
     cy.get('.v-data-footer__icons-before .mdi-chevron-left').click();
-    cy.wait('@fetchObjects').its('request.url').should('contain', 'page=0');
+    cy.wait('@fetchObjects2').its('request.url').should('contain', 'page=0');
   });
 
   // Only checking for correct request, we expect the vuetify component to work correctly
