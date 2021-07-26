@@ -30,17 +30,18 @@ describe('Forms List', () => {
   it('Changes page size of the table', function () {
     const newTablePageSize = 25; // Valid option defined in itemsPerPageOptions in VeoFormList.vue
 
-    cy.intercept({
-      method: 'GET',
-      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
-    }).as('fetchObjects');
-
     // Skip to next page
     cy.get('.v-data-footer__icons-after .mdi-chevron-right').click();
-    cy.wait('@fetchObjects');
+    cy.wait('@G_fetchObjects');
+
+    cy.intercept({
+      method: 'GET',
+      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/,
+      query: { page: '0' }
+    }).as('fetchObjects');
 
     // Change page size
-    cy.get('[data-cy=veo-form-list-forms-table]').get('.v-data-footer .v-input').closest('.v-select').type(`${newTablePageSize}{enter}`);
+    cy.get('[data-cy=veo-form-list-forms-table] .v-data-footer .v-input').closest('.v-select').type(`${newTablePageSize}{enter}`);
     cy.wait('@fetchObjects').should((req: any) => {
       expect(req.request.url).to.contain(`size=${newTablePageSize}`); // Expect page size to increase to previously defined value
       expect(req.request.url).to.contain('page=0'); // Expect page to jump back to first page
