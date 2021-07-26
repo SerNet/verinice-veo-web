@@ -37,7 +37,7 @@ describe('Forms List', () => {
     cy.intercept({
       method: 'GET',
       url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/,
-      query: { page: '0' }
+      query: { page: '0', size: '25' }
     }).as('fetchObjects');
 
     // Change page size
