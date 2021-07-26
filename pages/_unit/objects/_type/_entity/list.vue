@@ -7,12 +7,14 @@ import VeoScopesListPage from '~/pages/_unit/scopes/_entity/list.vue';
 import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
 import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
+import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
   extends: VeoScopesListPage,
   data() {
     return {
+      filter: undefined as IVeoFilter | undefined,
       objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
       currentEntity: undefined as undefined | IVeoEntity,
       subEntities: [] as IVeoEntity[],
@@ -91,14 +93,17 @@ export default Vue.extend({
   methods: {
     async refetch(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }, seed: boolean = false) {
       this.loading = true;
-      if (this.entityType === '-') {
-        await this.fetchEntities(options);
-        this.currentEntity = undefined;
-      } else {
-        await this.fetchSubEntities(options, seed);
-        this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
+      try {
+        if (this.entityType === '-') {
+          await this.fetchEntities(options);
+          this.currentEntity = undefined;
+        } else {
+          await this.fetchSubEntities(options, seed);
+          this.currentEntity = await this.$api.entity.fetch(this.entityType, this.entityId);
+        }
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     },
     async fetchEntities(options?: { event: VeoEntityModifierEventType; page?: number; reloadAll?: boolean; sortBy?: string; sortDesc?: boolean }) {
       const _options = { page: 1, reloadAll: true, sortBy: 'name', sortDesc: false, ...options };
@@ -107,7 +112,8 @@ export default Vue.extend({
         unit: this.unitId,
         size: this.$user.tablePageSize,
         sortBy: _options.sortBy,
-        sortOrder: _options.sortDesc ? 'desc' : 'asc'
+        sortOrder: _options.sortDesc ? 'desc' : 'asc',
+        ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
       } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
 
       if (_options.reloadAll) {
@@ -126,9 +132,12 @@ export default Vue.extend({
         this.subEntities = await this.$api.entity.fetchSubEntities(this.entityType, this.entityId);
       }
 
+      // @ts-ignore
+      const filteredObjects = this.subEntities.filter((subEntities) => !this.filter || !this.filter.value || subEntities[this.filter.property].includes(this.filter.value));
+
       // Do everything the backend would do if paginated
       this.objects = {
-        items: this.subEntities
+        items: filteredObjects
           .slice((_options.page - 1) * this.$user.tablePageSize, _options.page * this.$user.tablePageSize - 1)
           .sort((a: IVeoEntity & { [key: string]: any }, b: IVeoEntity & { [key: string]: any }) => {
             if (a[_options.sortBy] > b[_options.sortBy]) {
@@ -139,9 +148,9 @@ export default Vue.extend({
               return 0;
             }
           }),
-        totalItemCount: this.subEntities.length,
+        totalItemCount: filteredObjects.length,
         page: _options.page,
-        pageCount: Math.ceil(this.subEntities.length / this.$user.tablePageSize)
+        pageCount: Math.ceil(filteredObjects.length / this.$user.tablePageSize)
       };
     }
   }

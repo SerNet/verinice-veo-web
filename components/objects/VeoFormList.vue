@@ -145,6 +145,10 @@ export default Vue.extend({
     rootRoute: {
       type: String,
       required: true
+    },
+    objectType: {
+      type: String,
+      default: undefined
     }
   },
   data() {
@@ -188,12 +192,22 @@ export default Vue.extend({
       return [
         {
           text: this.$t('objectlist.designator'),
-          value: 'designator'
+          value: 'designator',
+          width: 120
         },
         {
           text: this.$t('objectlist.title'),
           value: 'name'
         },
+        ...(this.objectType === 'process'
+          ? [
+              {
+                text: this.$t('objectlist.status'),
+                value: 'status',
+                width: 100
+              }
+            ]
+          : []),
         {
           text: this.$t('objectlist.description'),
           filterable: false,

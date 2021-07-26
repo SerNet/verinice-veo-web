@@ -1,10 +1,10 @@
 <template>
   <VeoWidget :title="$t('unit.details.objects')">
-    <template v-if="$fetchState.pending">
-      <table>
+    <v-simple-table dense>
+      <tbody v-if="$fetchState.pending">
         <tr
-          v-for="type of objects"
-          :key="type.title"
+          v-for="index in 7"
+          :key="index"
         >
           <td>
             <v-skeleton-loader
@@ -19,23 +19,21 @@
             />
           </td>
         </tr>
-      </table>
-    </template>
-    <template v-else>
-      <table>
+      </tbody>
+      <tbody v-else>
         <tr
           v-for="type of objects"
           :key="type.title"
         >
-          <td>{{ type.title }}:</td>
+          <td>{{ type.title }}</td>
           <td class="text-right">
             <nuxt-link :to="`/${$route.params.unit}/${type.link}`">
               <b>{{ type.items }}</b>
             </nuxt-link>
           </td>
         </tr>
-      </table>
-    </template>
+      </tbody>
+    </v-simple-table>
   </VeoWidget>
 </template>
 
@@ -81,13 +79,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-table {
-  font-size: 1.2rem;
-  min-width: 250px;
-  border-spacing: 0 12px;
-
-  a {
-    text-decoration: none;
-  }
+a {
+  text-decoration: none;
 }
 </style>

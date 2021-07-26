@@ -25,7 +25,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending"
+              :disabled="$fetchState.pending || !entityModified.isModified"
               :loading="saveBtnLoading"
               @click="doSaveEntity"
             >
@@ -45,7 +45,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending"
+              :disabled="$fetchState.pending || !entityModified.isModified"
               :loading="saveBtnLoading"
               @click="doSaveEntity($event, true)"
             >
@@ -155,7 +155,7 @@ import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
 import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
-import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
 
 interface IData {
@@ -335,7 +335,7 @@ export default Vue.extend({
         this.revisionCache = content; // cache revision for use after modified-dialog is closed with "yes"
         this.entityModified.revisionDialog = true;
       } else {
-        if (isRevision && !this.validateRevisionSchema(content)) {
+        if (isRevision && !this.validateRevisionSchema(content).valid) {
           return;
         }
         // fill form with revision or newest data
@@ -350,7 +350,7 @@ export default Vue.extend({
     },
     showRevisionAfterDialog() {
       // close dialog without action if revision schema is invalid
-      if (!this.validateRevisionSchema(this.revisionCache)) {
+      if (!this.validateRevisionSchema(this.revisionCache).valid) {
         this.entityModified.revisionDialog = false;
         return;
       }
@@ -360,11 +360,9 @@ export default Vue.extend({
       this.entityModified.revisionDialog = false;
       this.entityModified.isModified = false;
     },
-    validateRevisionSchema(revision: IBaseObject) {
-      const validator = new ObjectSchemaValidator();
-
+    validateRevisionSchema(revision: IBaseObject): VeoSchemaValidatorValidationResult {
       delete revision.displayName;
-      const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision);
+      const isValid = ObjectSchemaValidator.fitsObjectSchema(this.form.objectSchema, revision);
       if (!isValid) {
         this.showError(500, this.$t('revision_incompatible').toString());
       }

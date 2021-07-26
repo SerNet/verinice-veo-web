@@ -13,17 +13,6 @@
             {{ report.description }}
           </p>
         </v-col>
-        <v-col cols="auto">
-          <v-btn
-            outlined
-            color="primary"
-            class="mt-4"
-            :disabled="global_loading || !selectedEntities.length"
-            @click="generateReport"
-          >
-            {{ $t('generateReport') }}
-          </v-btn>
-        </v-col>
       </v-row>
     </template>
     <template #default>
@@ -34,8 +23,12 @@
       <p v-else-if="report">
         {{ $t('hintSingle') }}
       </p>
-      <v-row v-if="objectTypes.length > 1">
+      <v-row
+        dense
+        class="justify-space-between"
+      >
         <v-col
+          v-if="objectTypes.length > 1"
           lg="3"
           md="6"
           cols="12"
@@ -52,12 +45,33 @@
             dense
           />
         </v-col>
+        <v-col
+          cols="auto"
+          class="flex-grow-1 search-bar"
+          :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
+        >
+          <VeoListSearchBar
+            v-model="filter"
+            :object-type="objectType"
+          />
+        </v-col>
+        <v-col cols="auto">
+          <v-btn
+            outlined
+            color="primary"
+            :disabled="global_loading || !selectedEntities.length"
+            @click="generateReport"
+          >
+            {{ $t('generateReport') }}
+          </v-btn>
+        </v-col>
       </v-row>   
       <VeoEntitySelectionList
         :selected-items="selectedEntities"
         :items="entities"
         :loading="$fetchState.pending || global_loading"
         single-select
+        :object-type="objectType"
         @new-subentities="onNewSubEntities"
         @page-change="fetchEntities"
         @refetch="fetchEntities"
@@ -71,10 +85,12 @@ import { upperCase, upperFirst } from 'lodash';
 import Vue from 'vue';
 
 import { IVeoCreateReportData, IVeoEntity, IVeoPaginatedResponse, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
 
 export default Vue.extend({
   data() {
     return {
+      filter: undefined as IVeoFilter | undefined,
       entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
       selectedEntities: [] as { id: string; type: string }[],
       report: undefined as
@@ -141,10 +157,28 @@ export default Vue.extend({
     }
   },
   watch: {
+    filter(newValue: IVeoFilter) {
+      this.$router.push({
+        ...this.$route,
+        query: {
+          filter: newValue?.property,
+          value: newValue?.value
+        }
+      });
+      this.$fetch();
+    },
     objectType(_newValue: string, oldValue: string) {
       if (oldValue) {
         this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
       }
+    }
+  },
+  mounted() {
+    if (this.$route.query.filter && this.$route.query.value) {
+      this.filter = {
+        property: this.$route.query.filter,
+        value: this.$route.query.value
+      };
     }
   },
   methods: {
@@ -169,7 +203,8 @@ export default Vue.extend({
       this.entities = await this.$api.entity.fetchAll(this.objectType, options.page, {
         size: this.$user.tablePageSize,
         sortBy: options.sortBy,
-        sortOrder: options.sortDesc ? 'desc' : 'asc'
+        sortOrder: options.sortDesc ? 'desc' : 'asc',
+        ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
       });
 
       this.loading = false;
@@ -198,3 +233,9 @@ export default Vue.extend({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.search-bar-desktop {
+  margin: 0 100px;
+}
+</style>

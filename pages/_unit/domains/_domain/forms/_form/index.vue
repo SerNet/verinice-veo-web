@@ -30,12 +30,12 @@
             </v-col>
             <v-col
               cols="auto"
-              class="d-none"
+              class="flex-grow-1 search-bar"
+              :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
             >
-              <v-text-field
-                :label="$t('search')"
-                outlined
-                dense
+              <VeoListSearchBar
+                v-model="filter"
+                :object-type="formSchema && formSchema.modelType"
               />
             </v-col>
             <v-col cols="auto">
@@ -57,6 +57,7 @@
             :show-parent-link="false"
             :load-children="loadSubEntities"
             :root-route="rootRoute"
+            :object-type="formSchema && formSchema.modelType"
             v-on="on"
           />
         </template>
@@ -70,27 +71,19 @@ import Vue from 'vue';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 import { IVeoEntity, IVeoFormSchema, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
-
-interface IData {
-  formSchema: IVeoFormSchema | undefined;
-  objectType: string | undefined;
-  objects: IVeoPaginatedResponse<IVeoEntity[]>;
-  formType: string;
-  formTypes: { value: string; text: string }[];
-  rootEntityType: string;
-  loading: boolean;
-}
+import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
 
 export default Vue.extend({
-  data(): IData {
+  data() {
     return {
-      formSchema: undefined,
-      objectType: '',
-      objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 },
-      formType: separateUUIDParam(this.$route.params.form).id,
-      formTypes: [],
-      rootEntityType: '',
-      loading: false
+      filter: undefined as IVeoFilter | undefined,
+      formSchema: undefined as IVeoFormSchema | undefined,
+      objectType: '' as string | undefined,
+      objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
+      formType: separateUUIDParam(this.$route.params.form).id as string,
+      formTypes: [] as { value: string; text: string }[],
+      rootEntityType: '' as string,
+      loading: false as boolean
     };
   },
   async fetch() {
@@ -134,6 +127,26 @@ export default Vue.extend({
       return `/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`;
     }
   },
+  watch: {
+    filter(newValue: IVeoFilter) {
+      this.$router.push({
+        ...this.$route,
+        query: {
+          filter: newValue?.property,
+          value: newValue?.value
+        }
+      });
+      this.$fetch();
+    }
+  },
+  mounted() {
+    if (this.$route.query.filter && this.$route.query.value) {
+      this.filter = {
+        property: this.$route.query.filter,
+        value: this.$route.query.value
+      };
+    }
+  },
   methods: {
     changeType(newType: string) {
       const newFormParam = createUUIDUrlParam('form', newType);
@@ -147,21 +160,25 @@ export default Vue.extend({
 
       const _options = { page: 1, reloadAll: true, sortBy: 'name', sortDesc: false, ...options };
 
-      const data = (await this.$api.entity.fetchAll(this.objectType, _options.page, {
-        unit: this.unitId,
-        subType: this.formSchema?.subType,
-        size: this.$user.tablePageSize,
-        sortBy: _options.sortBy,
-        sortOrder: _options.sortDesc ? 'desc' : 'asc'
-      } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
+      try {
+        const data = (await this.$api.entity.fetchAll(this.objectType, _options.page, {
+          unit: this.unitId,
+          subType: this.formSchema?.subType,
+          size: this.$user.tablePageSize,
+          sortBy: _options.sortBy,
+          sortOrder: _options.sortDesc ? 'desc' : 'asc',
+          ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
+        } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
 
-      if (_options.reloadAll) {
-        this.objects = data;
-      } else {
-        this.objects.page = data.page;
-        this.objects.items.push(...data.items);
+        if (_options.reloadAll) {
+          this.objects = data;
+        } else {
+          this.objects.page = data.page;
+          this.objects.items.push(...data.items);
+        }
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     }
   }
 });
@@ -171,13 +188,17 @@ export default Vue.extend({
 {
   "en": {
     "create": "Create {type}",
-    "form": "Form",
-    "search": "Search"
+    "form": "Form"
   },
   "de": {
     "create": "{type} erstellen",
-    "form": "Formular",
-    "search": "Suche"
+    "form": "Formular"
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.search-bar-desktop {
+  margin: 0 100px;
+}
+</style>

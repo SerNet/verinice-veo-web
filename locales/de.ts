@@ -54,7 +54,6 @@ export default {
   'global.appstate.alert.error': 'Ein Fehler ist aufgetreten!',
   'global.button.cancel': 'Abbrechen',
   'global.button.close': 'Schließen',
-  'global.button.create': 'Erstellen',
   'global.button.delete': 'Löschen',
   'global.button.next': 'Weiter',
   'global.button.no': 'Nein',
@@ -73,6 +72,7 @@ export default {
 
   'objectlist.designator': 'Designator',
   'objectlist.description': 'Beschreibung',
+  'objectlist.status': 'Status',
   'objectlist.title': 'Objektname',
   'objectlist.updatedat': 'Letzte Änderung',
   'objectlist.updatedby': 'Bearbeiter',
@@ -96,7 +96,7 @@ export default {
 
   'search.label': 'verinice. durchsuchen',
 
-  'domain.index.title': 'Modul Dashboard',
+  'domain.index.title': 'Dashboard',
 
   'unit.create': 'Neue Unit erstellen',
   'unit.create.short': 'Unit erstellen',

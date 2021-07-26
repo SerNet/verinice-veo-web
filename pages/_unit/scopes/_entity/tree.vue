@@ -21,10 +21,11 @@
           :items="objects"
           :current-item="currentEntity"
           :loading="$fetchState.pending"
-          :object-type="loadMoreText"
+          :load-more-text="loadMoreText"
           :load-children="loadSubEntities"
           :sorting-function="sortingFunction"
           :entity-modified-event="entityModifiedEvent"
+          :object-type="rootEntityType"
           v-on="on"
         />
       </template>
