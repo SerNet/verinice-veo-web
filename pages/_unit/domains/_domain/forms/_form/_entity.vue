@@ -412,8 +412,13 @@ export default Vue.extend({
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
           return this.$api.entity.fetch(objectType, res.resourceId);
         },
-        update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.entity.update(objectType, updatedObjectData.id, updatedObjectData);
+        update: async (objectType: string, updatedObjectData: any) => {
+          // This fixes 400 Bad Request errors when a user updates existing Object item from the list in LinksField
+          // TODO: This is a workaround because $etag is needed to fix this bug. Check if it can be solved better in the future
+          const entityWithETag: any = await this.$api.entity.fetch(objectType, updatedObjectData.id);
+          Object.entries(updatedObjectData).forEach(([key, value]) => (entityWithETag[key] = value));
+
+          return this.$api.entity.update(objectType, updatedObjectData.id, entityWithETag);
         },
         delete: (objectType: string, id: string) => {
           this.$api.entity.delete(objectType, id);

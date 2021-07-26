@@ -470,8 +470,7 @@ export default Vue.extend({
       this.dialogLoading = true;
       if (this.itemInDialog) {
         await this.api.update(this.targetType, this.itemInDialog);
-        const itemIndex = this.items.findIndex((item) => this.itemInDialog && item.id === this.itemInDialog.id);
-        this.items.splice(itemIndex, 1, this.itemInDialog);
+        await this.fetchItems();
       }
       this.dialogLoading = false;
       this.dialog = false;
