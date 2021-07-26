@@ -31,7 +31,7 @@
             @click.stop="onDialogOpen('DIALOG_CREATE')"
           >
             <span v-if="currentForm">
-              {{ $t('createTargetForm', { type: currentForm.name }) }}
+              {{ $t('createTargetForm', { type: currentForm.name[$i18n.locale] }) }}
             </span>
             <span v-else>
               {{ $t('createTargetObject') }}
