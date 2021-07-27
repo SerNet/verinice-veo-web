@@ -451,9 +451,16 @@ export default Vue.extend({
     onSave(_event: any, redirect: boolean = false): Promise<void> {
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
-        .then(async () => {
+        .then(async (updatedObjectData) => {
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
+
+          // When entity.displayName changes, breadCrumbsCache of the entity should be updated
+          const breadCrumbsCache = sessionStorage.getItem(this.objectId);
+          if (breadCrumbsCache && breadCrumbsCache !== updatedObjectData.displayName) {
+            sessionStorage.setItem(this.objectId, updatedObjectData.displayName);
+            this.$root.$emit(VeoEvents.ENTITY_UPDATED, updatedObjectData);
+          }
 
           if (redirect) {
             this.$router.push({

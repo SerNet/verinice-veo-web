@@ -203,10 +203,6 @@ export default defineComponent<IProps>({
       const api = context.root.$api[apiKey];
       if (type === ':entity') {
         text = (await api.fetch(paramSeparated.type, paramSeparated.id))[displayNameKey];
-        // ':entity' types should not be cached, because they should be always up-to-date version -> VEO-685
-        return new Promise<ICustomBreadcrumbTextEntry>((resolve) => {
-          resolve({ [type]: { text } });
-        });
       } else if (type === ':form') {
         text = JSON.stringify((await api.fetch(paramSeparated.id))[displayNameKey]);
       } else {
