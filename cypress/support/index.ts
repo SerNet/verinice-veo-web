@@ -318,11 +318,30 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     ).as('G_fetchObjects');
   }
 
+  if (!options?.ignoreFetchSpecificMembers) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.+)\/members$/
+      },
+      (req) => {
+        const url = req.url.split('/');
+        url.pop();
+        const id = url.pop();
+        const type = url.pop();
+
+        req.reply({
+          fixture: `api/default/entities/${type}/${id}-members.json`
+        });
+      }
+    ).as('G_fetchMembers');
+  }
+
   if (!options?.ignoreFetchSpecificEntities) {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.+)$/
+        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/
       },
       (req) => {
         const url = req.url.split('/');
