@@ -47,7 +47,7 @@
       style="max-height: 100vh;"
       class="overflow-hidden"
     >
-      <VeoBreadcrumbs />
+      <VeoBreadcrumbs :key="breadcrumbsKey" />
       <VeoPageWrapper>
         <nuxt />
       </VeoPageWrapper>
@@ -98,6 +98,7 @@ export default defineComponent<IProps>({
     //
     const alert = ref({ value: false, text: '', title: '', type: ALERT_TYPE.INFO });
     const snackbar = ref({ value: false, text: '' });
+    const breadcrumbsKey = ref(0);
 
     // Alert and snackbar events
     context.root.$on(VeoEvents.ALERT_ERROR, (payload: IVeoEventPayload) => {
@@ -145,7 +146,15 @@ export default defineComponent<IProps>({
       context.root.$router.push('/' + createUUIDUrlParam('unit', newUnit));
     });
 
-    return { alert, drawer, newUnitDialog, snackbar };
+    // Breadcrumbs related events
+    context.root.$on(VeoEvents.ENTITY_UPDATED, () => {
+      // Update breadcrumbsKey to rerender VeoBreadcrumbs component, when entity displayName is updated
+      setTimeout(() => {
+        breadcrumbsKey.value += 1;
+      }, 1000);
+    });
+
+    return { alert, drawer, newUnitDialog, snackbar, breadcrumbsKey };
   },
   head() {
     return {

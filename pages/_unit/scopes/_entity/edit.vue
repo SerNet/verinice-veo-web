@@ -276,9 +276,16 @@ export default Vue.extend({
 
       this.$api.entity
         .update(this.entityType, this.entityId, this.form.objectData as IVeoEntity)
-        .then(async () => {
+        .then(async (updatedObjectData) => {
           this.entityModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
+
+          // When entity.displayName changes, breadCrumbsCache of the entity should be updated
+          const breadCrumbsCache = sessionStorage.getItem(this.entityId);
+          if (breadCrumbsCache && breadCrumbsCache !== updatedObjectData.displayName) {
+            sessionStorage.setItem(this.entityId, updatedObjectData.displayName);
+            this.$root.$emit(VeoEvents.ENTITY_UPDATED, updatedObjectData);
+          }
 
           if (redirect) {
             this.$router.back();
@@ -286,7 +293,7 @@ export default Vue.extend({
             await new Promise((resolve) => {
               setTimeout(() => {
                 this.$fetch();
-                resolve();
+                resolve(true);
               }, 1000);
             });
           }

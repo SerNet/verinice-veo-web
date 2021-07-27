@@ -78,7 +78,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending || !formModified.isModified"
+              :disabled="isSaveBtnDisabled"
               :loading="saveBtnLoading"
               @click="onClick"
             >
@@ -97,7 +97,7 @@
               v-if="!isRevision"
               color="primary"
               outlined
-              :disabled="$fetchState.pending || !formModified.isModified"
+              :disabled="isSaveBtnDisabled"
               :loading="saveBtnLoading"
               @click="onClick($event, true)"
             >
@@ -389,6 +389,9 @@ export default Vue.extend({
         errors: [...this.formschemaValidation.errors, ...revisionValidation.errors]
       };
     },
+    isSaveBtnDisabled(): boolean {
+      return this.$fetchState.pending || !this.formModified.isModified || !this.isValid;
+    },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
@@ -409,8 +412,13 @@ export default Vue.extend({
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
           return this.$api.entity.fetch(objectType, res.resourceId);
         },
-        update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.entity.update(objectType, updatedObjectData.id, updatedObjectData);
+        update: async (objectType: string, updatedObjectData: any) => {
+          // This fixes 400 Bad Request errors when a user updates existing Object item from the list in LinksField
+          // TODO: This is a workaround because $etag is needed to fix this bug. Check if it can be solved better in the future
+          const entityWithETag: any = await this.$api.entity.fetch(objectType, updatedObjectData.id);
+          Object.entries(updatedObjectData).forEach(([key, value]) => (entityWithETag[key] = value));
+
+          return this.$api.entity.update(objectType, updatedObjectData.id, entityWithETag);
         },
         delete: (objectType: string, id: string) => {
           this.$api.entity.delete(objectType, id);
@@ -443,9 +451,16 @@ export default Vue.extend({
     onSave(_event: any, redirect: boolean = false): Promise<void> {
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
-        .then(async () => {
+        .then(async (updatedObjectData) => {
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
+
+          // When entity.displayName changes, breadCrumbsCache of the entity should be updated
+          const breadCrumbsCache = sessionStorage.getItem(this.objectId);
+          if (breadCrumbsCache && breadCrumbsCache !== updatedObjectData.displayName) {
+            sessionStorage.setItem(this.objectId, updatedObjectData.displayName);
+            this.$root.$emit(VeoEvents.ENTITY_UPDATED, updatedObjectData);
+          }
 
           if (redirect) {
             this.$router.push({
@@ -455,7 +470,7 @@ export default Vue.extend({
             await new Promise((resolve) => {
               setTimeout(() => {
                 this.$fetch();
-                resolve();
+                resolve(true);
               }, 1000);
             });
           }

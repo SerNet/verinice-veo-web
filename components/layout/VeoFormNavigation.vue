@@ -133,7 +133,7 @@ export default Vue.extend({
         const index = items.findIndex((item) => item.key === elId);
         items[index].value = entry.isIntersecting;
       });
-      this.selectedItem = items.filter((item) => item.value)[0].key;
+      this.selectedItem = items.filter((item) => item.value)[0]?.key;
     }, options);
 
     this.activateObserver();
