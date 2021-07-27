@@ -99,7 +99,7 @@ function goTo(to: ITo) {
 
   cy.goTo('/editor').goTo(to.browserUrl);
 
-  // cy.wait(['@loadedSchema']);
+  cy.wait(['@loadedSchema']);
 
   /**
    * Define aliases
