@@ -313,7 +313,14 @@ export default Vue.extend({
     this.objectType = formSchema.modelType;
     if (this.objectType) {
       const objectSchema = await this.$api.schema.fetch(this.objectType);
-      const objectData = this.$route.params.entity ? await this.$api.entity.fetch(this.objectType, this.objectId) : {};
+      const objectData = this.$route.params.entity
+        ? await this.$api.entity.fetch(this.objectType, this.objectId)
+        : {
+            owner: {
+              targetUri: `/units/${this.unitId}`
+            },
+            designator: '' // Needed for form validation
+          };
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       this.form = {
         objectSchema,

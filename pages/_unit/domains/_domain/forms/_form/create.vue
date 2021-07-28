@@ -11,7 +11,6 @@ import { IVeoEventPayload } from '~/types/VeoGlobalEvents';
 interface IData {
   objectType: string | undefined;
   form: IForm;
-  isValid: boolean;
   errorMessages: IValidationErrorMessage[];
   saveBtnLoading: boolean;
   alert: IVeoEventPayload & { value: boolean; error: number };
@@ -35,7 +34,6 @@ export default Vue.extend({
         formSchema: undefined,
         lang: {}
       },
-      isValid: true,
       errorMessages: [],
       saveBtnLoading: false,
       alert: {
@@ -70,13 +68,7 @@ export default Vue.extend({
   methods: {
     onSave(): Promise<void> {
       return this.$api.entity
-        .create(this.objectType || '', {
-          ...this.form.objectData,
-          // @ts-ignore
-          owner: {
-            targetUri: `/units/${this.unitId}`
-          }
-        })
+        .create(this.objectType || '', this.form.objectData)
         .then(() => {
           this.formModified.isModified = false;
           this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`);
