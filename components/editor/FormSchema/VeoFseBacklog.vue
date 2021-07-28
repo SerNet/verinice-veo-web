@@ -281,7 +281,7 @@ export default defineComponent<IProps>({
      * React to formschema or objectschema changes
      */
     const objectSchemaPropertiesPatterns = {
-      standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description'],
+      standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description', '#/properties/status'],
       regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/,
       regexLinks: /^#\/properties\/links\/properties\/\w+$/,
       regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/
