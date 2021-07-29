@@ -96,6 +96,24 @@
           {{ $t("editor.schema.properties") }}
         </template>
       </v-tooltip>
+      <v-tooltip bottom>
+        <template #activator="{on}">
+          <v-btn
+            icon
+            large
+            target="_blank"
+            to="/help"
+            class="help-button"
+            color="primary"
+            v-on="on"
+          >
+            <v-icon>mdi-help-circle-outline</v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ $t('help') }}
+        </template>
+      </v-tooltip>
     </template>
     <template
       v-if="formSchema && objectSchema"
@@ -565,7 +583,8 @@ export default defineComponent<IProps>({
     "formSchemaCode": "Schema code",
     "invalidFormSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
-    "search": "Search for a control..."
+    "search": "Search for a control...",
+    "help": "Help"
   },
   "de": {
     "availableControls": "Verfügbare Steuerelemente",
@@ -574,7 +593,8 @@ export default defineComponent<IProps>({
     "formSchemaCode": "Schema code",
     "invalidFormSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
-    "search": "Nach einem Steuerelement suchen"
+    "search": "Nach einem Steuerelement suchen",
+    "help": "Hilfe"
   }
 }
 </i18n>

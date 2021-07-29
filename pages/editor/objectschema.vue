@@ -71,6 +71,24 @@
               {{ $t('translations') }}
             </template>
           </v-tooltip>
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn
+                icon
+                large
+                target="_blank"
+                to="/help"
+                class="help-button"
+                color="primary"
+                v-on="on"
+              >
+                <v-icon>mdi-help-circle-outline</v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t('help') }}
+            </template>
+          </v-tooltip>
           <VeoCollapseButton
             v-if="!$vuetify.breakpoint.xs"
             v-model="collapsed"
@@ -345,7 +363,8 @@ export default Vue.extend({
     "invalidObjectSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
     "search": "Search for a property",
-    "translations": "Translations"
+    "translations": "Translations",
+    "help": "Help"
   },
   "de": {
     "description": "Beschreibung",
@@ -354,7 +373,8 @@ export default Vue.extend({
     "invalidObjectSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
     "search": "Nach einer Eigenschaft suchen...",
-    "translations": "Übersetzungen"
+    "translations": "Übersetzungen",
+    "help": "Hilfe"
   }
 }
 </i18n>

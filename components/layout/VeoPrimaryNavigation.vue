@@ -223,14 +223,6 @@ export default Vue.extend({
         topLevelItem: true
       };
 
-      const help: INavItem = {
-        name: this.$t('breadcrumbs.help').toString(),
-        icon: 'mdi-help',
-        to: `/${routeUnitParam}/help`,
-        disabled: false,
-        topLevelItem: true
-      };
-
       const divider: INavItem = {
         name: 'divider',
         disabled: false,
@@ -309,8 +301,7 @@ export default Vue.extend({
         ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
         ...(!routeUnitParam ? [unitSelection] : []),
         spacer,
-        editors,
-        ...(routeUnitParam ? [help] : [])
+        editors
       ];
 
       this.addChildren(this.$t('breadcrumbs.objects').toString(), await this.fetchObjectTypes());
