@@ -4,9 +4,23 @@ const LAST_DOMAIN = 'last-domain';
 const LAST_UNIT = 'last-unit';
 const FIRST_STEPS_COMPLETED = 'first-steps-completed';
 
+const PERSIST_ON_LOGOUT = [FIRST_STEPS_COMPLETED];
+
 export default class LocalStorage {
   static clear() {
+    const itemsToPersist: { key: string; value: string | null }[] = [];
+
+    for (const item of PERSIST_ON_LOGOUT) {
+      itemsToPersist.push({ key: item, value: localStorage.getItem(item) });
+    }
+
     localStorage.clear();
+
+    for (const { key, value } of itemsToPersist) {
+      if (value !== null) {
+        localStorage.setItem(key, value);
+      }
+    }
   }
 
   static set(key: string, value: string | null) {
