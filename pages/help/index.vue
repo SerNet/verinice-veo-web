@@ -38,7 +38,7 @@ import Vue from 'vue';
 export default Vue.extend({
   name: 'Docs',
   data() {
-    const HELP_ROOT = `/${this.$route.params.unit}/help`;
+    const HELP_ROOT = `/help`;
     return {
       docs: [
         {

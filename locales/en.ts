@@ -121,7 +121,6 @@ export default {
   'breadcrumbs.catalogs': 'Catalogs',
   'breadcrumbs.domain': 'Module',
   'breadcrumbs.reports': 'Reports',
-  'breadcrumbs.settings': 'Settings',
   'breadcrumbs.help': 'Manual',
   'breadcrumbs.detail_view': 'Detail view',
   'breadcrumbs.editor': 'Editors',

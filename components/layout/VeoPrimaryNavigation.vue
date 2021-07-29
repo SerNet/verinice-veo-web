@@ -222,20 +222,6 @@ export default Vue.extend({
         persistCollapsedState: (collapsed) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 1),
         topLevelItem: true
       };
-      const settings: INavItem = {
-        name: this.$t('breadcrumbs.settings').toString(),
-        icon: 'mdi-cog',
-        to: `/${routeUnitParam}/settings`,
-        disabled: false,
-        topLevelItem: true
-      };
-      const help: INavItem = {
-        name: this.$t('breadcrumbs.help').toString(),
-        icon: 'mdi-help',
-        to: `/${routeUnitParam}/help`,
-        disabled: false,
-        topLevelItem: true
-      };
 
       const divider: INavItem = {
         name: 'divider',
@@ -315,9 +301,7 @@ export default Vue.extend({
         ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
         ...(!routeUnitParam ? [unitSelection] : []),
         spacer,
-        ...(routeUnitParam ? [settings] : []),
-        editors,
-        ...(routeUnitParam ? [help] : [])
+        editors
       ];
 
       this.addChildren(this.$t('breadcrumbs.objects').toString(), await this.fetchObjectTypes());

@@ -1,7 +1,7 @@
 <template>
   <div
     style="flex-basis: 0;"
-    class="mr-0 text-right flex-grow-1"
+    class="mr-0 text-right flex-grow-0"
   >
     <v-menu
       v-model="value"
