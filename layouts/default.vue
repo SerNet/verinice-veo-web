@@ -48,7 +48,7 @@
                 left
                 dark
               >
-                mdi-flag
+                mdi-earth
               </v-icon>
               {{ $i18n.locale.toUpperCase() }}
               <v-icon
