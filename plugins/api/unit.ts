@@ -1,3 +1,4 @@
+import { isArray } from 'lodash';
 import { Client } from '~/plugins/api';
 
 import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
@@ -68,6 +69,21 @@ export default function (api: Client) {
       return api.req(`/api/units/${id}`, {
         method: 'DELETE'
       });
+    },
+
+    /**
+     * Fetches the incarnations for a group of catalog items
+     */
+    fetchIncarnations(itemIds: string | string[], unitId?: string) {
+      if (!unitId) {
+        unitId = api._context.route.params.unit;
+      }
+
+      if (isArray(itemIds)) {
+        itemIds = itemIds.join(',');
+      }
+
+      return api.req(`/api/units/${unitId}/incarnations?itemIds=${itemIds}`);
     }
   };
 }

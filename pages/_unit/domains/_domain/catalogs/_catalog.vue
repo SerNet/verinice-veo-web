@@ -107,6 +107,8 @@ export default Vue.extend({
     async fetchItem(link: IVeoLink) {
       const { id, type } = getEntityDetailsFromLink(link);
       this.currentItem = await this.$api.entity.fetch(type, id);
+      console.log(this.items);
+      console.log(await this.$api.unit.fetchIncarnations('c16e27db-ee5a-48f3-99f1-fb4dfc21ea08'));
     }
   }
 });
