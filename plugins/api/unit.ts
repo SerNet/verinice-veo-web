@@ -1,4 +1,5 @@
 import { isArray } from 'lodash';
+import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
 
 import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
@@ -76,7 +77,7 @@ export default function (api: Client) {
      */
     fetchIncarnations(itemIds: string | string[], unitId?: string) {
       if (!unitId) {
-        unitId = api._context.route.params.unit;
+        unitId = separateUUIDParam(api._context.route.params.unit).id;
       }
 
       if (isArray(itemIds)) {

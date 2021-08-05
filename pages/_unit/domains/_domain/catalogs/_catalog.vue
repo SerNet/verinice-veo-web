@@ -5,58 +5,23 @@
     :title="title"
   >
     <template
-      v-if="catalog"
       #default
     >
       <v-card
         flat
         class="border"
       >
-        <v-card-title>
-          {{ $t('catalog_items') }}
+        <v-card-title v-if="items[0]">
+          {{ $t('catalog_items', { catalog: items[0].catalog.displayName.toString() }) }}
         </v-card-title>
-        <v-tabs
-          v-model="activeTab"
-          vertical
-        >
-          <v-tab
-            v-for="item of items"
-            :key="item.id"
-          >
-            {{ item.element.displayName }}
-          </v-tab>
-          <v-tabs-items v-model="activeTab">
-            <v-tab-item
-              v-for="item of items"
-              :key="item.id"
-            >
-              <v-card
-                flat
-                :loading="loading || $fetchState.pending"
-              >
-                <v-card-subtitle
-                  v-if="currentItem"
-                  class="py-0"
-                >
-                  {{ currentItem.designator }}
-                </v-card-subtitle>
-                <v-card-title
-                  v-if="currentItem"
-                  class="py-0"
-                >
-                  {{ currentItem.abbreviation }} {{ currentItem.name }}
-                </v-card-title>
-                <v-card-text>
-                  <v-skeleton-loader
-                    v-if="loading || $fetchState.pending"
-                    type="paragraph@2"
-                  />
-                  <span v-else-if="currentItem">{{ currentItem.description }}</span>
-                </v-card-text>
-              </v-card>
-            </v-tab-item>
-          </v-tabs-items>
-        </v-tabs>
+        <v-card-text>
+          <VeoCatalogSelectionList
+            :selected-items="selectedItems"
+            :items="items"
+            selectable
+            @selectedItemsUpdated="onNewItemsSelected"
+          />
+        </v-card-text>
       </v-card>
     </template>
   </VeoPage>
@@ -64,24 +29,18 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { getEntityDetailsFromLink, separateUUIDParam } from '~/lib/utils';
-import { IVeoCatalog, IVeoCatalogItemListItem, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
+import { separateUUIDParam } from '~/lib/utils';
 
 export default Vue.extend({
   data() {
     return {
-      activeTab: 0 as number,
-      loading: false as boolean,
-      catalog: undefined as undefined | IVeoCatalog,
-      items: [] as IVeoCatalogItemListItem[],
-      currentItem: undefined as undefined | IVeoEntity
+      items: [] as any[],
+      selectedItems: [] as { type: string; id: string }[]
     };
   },
   async fetch() {
-    this.catalog = await this.$api.catalog.fetch(this.catalogId);
     this.items = await this.$api.catalog.fetchItems(this.catalogId, this.domainId);
-
-    await this.fetchItem(this.items[0].element);
+    console.log(this.items);
   },
   computed: {
     domainId(): string {
@@ -91,24 +50,12 @@ export default Vue.extend({
       return separateUUIDParam(this.$route.params.catalog).id;
     },
     title(): string {
-      return this.catalog ? this.$t('catalog', { name: this.catalog?.name }).toString() : '';
-    }
-  },
-  watch: {
-    activeTab: {
-      async handler(newValue: number) {
-        this.loading = true;
-        await this.fetchItem(this.items[newValue].element);
-        this.loading = false;
-      }
+      return this.items.length > 0 && this.items[0].catalog ? this.$t('catalog', { name: this.items[0].catalog.displayName }).toString() : '';
     }
   },
   methods: {
-    async fetchItem(link: IVeoLink) {
-      const { id, type } = getEntityDetailsFromLink(link);
-      this.currentItem = await this.$api.entity.fetch(type, id);
-      console.log(this.items);
-      console.log(await this.$api.unit.fetchIncarnations('c16e27db-ee5a-48f3-99f1-fb4dfc21ea08'));
+    onNewItemsSelected(items: { type: string; id: string }[]) {
+      this.selectedItems = items;
     }
   }
 });
@@ -118,11 +65,11 @@ export default Vue.extend({
 {
   "en": {
     "catalog": "Catalog {name}",
-    "catalog_items": "Catalog items"
+    "catalog_items": "Catalog items for {catalog}"
   },
   "de": {
     "catalog": "Katalog {name}",
-    "catalog_items": "Katalog Einträge"
+    "catalog_items": "Katalog Einträge für {catalog}"
   }
 }
 </i18n>
