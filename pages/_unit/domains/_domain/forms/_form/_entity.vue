@@ -319,7 +319,8 @@ export default Vue.extend({
             owner: {
               targetUri: `/units/${this.unitId}`
             },
-            designator: '' // Needed for form validation
+            designator: '', // Needed for form validation
+            status: 'NEW'
           };
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       this.form = {
