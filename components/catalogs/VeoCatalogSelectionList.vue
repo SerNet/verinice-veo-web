@@ -4,12 +4,21 @@
     item-key="id"
     :headers="localHeaders"
     :options="{ mustSort: true }"
+    class="catalog-selection-list"
+    @click:row="onItemSelected($event.id)"
   >
     <template #item.select="{ item }">
       <v-checkbox
-        :value="selectedItems.includes(item.id)"
+        hide-details
+        class="mt-0 pt-0"
+        :value="value.includes(item.id)"
         @click.stop="onItemSelected(item.id)"
       />
+    </template>
+    <template #item.title="{ item }">
+      <div class="catalog-selection-list__title">
+        {{ item.title }}
+      </div>
     </template>
   </v-data-table>
 </template>
@@ -28,6 +37,10 @@ export interface IVeoCatalogSelectionListHeader {
 
 export default Vue.extend({
   props: {
+    value: {
+      type: Array as Prop<string[]>,
+      default: () => []
+    },
     items: {
       type: Array as Prop<any[]>,
       default: () => []
@@ -41,14 +54,9 @@ export default Vue.extend({
       default: false
     }
   },
-  data() {
-    return {
-      selectedItems: [] as string[]
-    };
-  },
   computed: {
     localHeaders(): IVeoCatalogSelectionListHeader[] {
-      const localHeaders = this.headers;
+      const localHeaders = [...this.headers];
 
       if (this.selectable) {
         localHeaders.unshift({
@@ -59,18 +67,37 @@ export default Vue.extend({
           width: 32
         });
       }
+
       return localHeaders;
+    }
+  },
+  watch: {
+    items(newValue: { id: string; [key: string]: string }[]) {
+      const newValues = this.value.filter((selectedItemId: string) => newValue.some((item) => item.id === selectedItemId));
+      this.$emit('input', newValues);
     }
   },
   methods: {
     onItemSelected(id: string) {
-      if (this.selectedItems.includes(id)) {
-        this.selectedItems = this.selectedItems.filter((_id) => id !== _id);
+      let newValues = [...this.value];
+      if (newValues.includes(id)) {
+        newValues = newValues.filter((_id) => id !== _id);
       } else {
-        this.selectedItems.push(id);
+        newValues.push(id);
       }
-      this.$emit('selectedItemsUpdated', this.selectedItems);
+      this.$emit('input', newValues);
     }
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.catalog-selection-list {
+  cursor: pointer;
+}
+
+.catalog-selection-list__title {
+  font-weight: bold;
+  white-space: nowrap;
+}
+</style>
