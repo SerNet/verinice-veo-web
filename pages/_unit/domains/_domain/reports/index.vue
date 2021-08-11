@@ -42,7 +42,7 @@ export default Vue.extend({
   },
   methods: {
     createReport(reportId: string) {
-      this.$router.push(`/${this.$route.params.unit}/reports/${reportId}`);
+      this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/reports/${reportId}`);
     }
   }
 });
