@@ -34,10 +34,23 @@ import Vue, { VueConstructor } from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 
-import hljs from 'highlight.js';
+import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
 import { Editor } from '@toast-ui/vue-editor';
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
+
+function clearButton(instance: any) {
+  const el = document.createElement('button');
+  el.textContent = 'X';
+  el.type = 'button';
+  el.classList.add('codeblock');
+  // @ts-ignore
+  el.ariaLabel = 'Clear editor';
+  el.addEventListener('click', () => {
+    instance.$emit('clear-editor');
+  });
+  return el;
+}
 
 export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).extend({
   name: 'MarkdownEditor',
@@ -72,39 +85,21 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
     return {
       editorOptions: {
         usageStatistics: false,
-        plugins: [[codeSyntaxHighlightPlugin, { hljs }]],
+        plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
         toolbarItems: [
-          'heading',
-          'bold',
-          'italic',
-          'strike',
-          'divider',
-          'hr',
-          'quote',
-          'divider',
-          'ul',
-          'ol',
-          'task',
-          'indent',
-          'outdent',
-          'divider',
-          'table',
-          'image',
-          'link',
-          'divider',
-          'code',
-          'codeblock',
-          'divider',
-          {
-            type: 'button',
-            options: {
-              className: 'tui-custom-clear',
-              event: 'clearValue',
-              tooltip: 'Clear Button',
-              text: 'X',
-              style: 'background:none;font-weight:900;color: black;font-size: 14px;line-height: 1;'
-            }
-          }
+          ['heading', 'bold', 'italic', 'strike'],
+          ['hr', 'quote'],
+          ['ul', 'ol', 'task', 'indent', 'outdent'],
+          ['table', 'image', 'link'],
+          [
+            'code',
+            {
+              el: clearButton(this),
+              name: 'clear-button',
+              tooltip: 'Clear editor'
+            },
+            'codeblock'
+          ]
         ]
       }
     };
@@ -120,9 +115,9 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
     }
   },
   mounted() {
-    const eventManager = this.$refs.toastuiEditor.editor.eventManager;
-    eventManager.addEventType('clearValue');
-    eventManager.listen('clearValue', this.clear);
+    this.$on('clear-editor', () => {
+      this.clear();
+    });
   },
   methods: {
     clear() {
@@ -151,19 +146,19 @@ export const helpers: Helpful<FormElementProps> = {
 // add node_modules/ to work with rollup and vue together
 // https://github.com/vuejs/rollup-plugin-vue/issues/146#issuecomment-363749613
 .vf-markdown-editor {
-  @import 'node_modules/codemirror/lib/codemirror';
   @import 'node_modules/@toast-ui/editor/dist/toastui-editor';
-  @import 'node_modules/highlight.js/styles/github';
-  .tui-editor-contents h1,
-  .tui-editor-contents h2,
-  .tui-editor-contents h3,
-  .tui-editor-contents h4,
-  .tui-editor-contents h5,
-  .tui-editor-contents h6 {
+  @import 'prismjs/themes/prism';
+  @import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight';
+  .toastui-editor-contents h1,
+  .toastui-editor-contents h2,
+  .toastui-editor-contents h3,
+  .toastui-editor-contents h4,
+  .toastui-editor-contents h5,
+  .toastui-editor-contents h6 {
     border: none;
   }
-  .tui-editor-defaultUI {
-    background-color: #fff;
+  .toastui-editor-toolbar-item-wrapper {
+    margin: 0;
   }
   code::before,
   code::after {
@@ -176,13 +171,13 @@ export const helpers: Helpful<FormElementProps> = {
     font-size: 100%;
   }
   &.is-disabled {
-    .tui-editor-defaultUI::before {
+    .toastui-editor-defaultUI::before {
       content: '';
       width: 100%;
       background: rgba(255, 255, 255, 0.7);
       height: 100%;
       position: absolute;
-      z-index: 3;
+      z-index: 101;
     }
   }
 }
