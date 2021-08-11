@@ -86,7 +86,7 @@ export default Vue.extend({
         const _item = item as IVeoReportMeta;
         const name = _item.name[this.$i18n.locale] || _item.name[0];
         let description = _item.description[this.$i18n.locale] || _item.description[0];
-        const targetTypes = _item.targetTypes.map((type) => upperFirst(type)).join(', ');
+        const targetTypes = _item.targetTypes.map((type) => upperFirst(type.modelType)).join(', ');
         const outputTypes = _item.outputTypes
           .map((type) => {
             const formatParts = type.split('/');
