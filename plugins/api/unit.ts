@@ -2,7 +2,7 @@ import { isArray } from 'lodash';
 import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
 
-import { IVeoAPIMessage, IVeoUnit } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoUnit, IVeoUnitIncarnations } from '~/types/VeoTypes';
 
 export default function (api: Client) {
   return {
@@ -75,7 +75,7 @@ export default function (api: Client) {
     /**
      * Fetches the incarnations for a group of catalog items
      */
-    fetchIncarnations(itemIds: string | string[], unitId?: string) {
+    fetchIncarnations(itemIds: string | string[], unitId?: string): Promise<IVeoUnitIncarnations> {
       if (!unitId) {
         unitId = separateUUIDParam(api._context.route.params.unit).id;
       }
@@ -85,6 +85,17 @@ export default function (api: Client) {
       }
 
       return api.req(`/api/units/${unitId}/incarnations?itemIds=${itemIds}`);
+    },
+
+    updateIncarnations(incarnations: IVeoUnitIncarnations, unitId?: string): Promise<IVeoUnitIncarnations> {
+      if (!unitId) {
+        unitId = separateUUIDParam(api._context.route.params.unit).id;
+      }
+
+      return api.req(`/api/units/${unitId}/incarnations`, {
+        method: 'POST',
+        json: incarnations
+      });
     }
   };
 }

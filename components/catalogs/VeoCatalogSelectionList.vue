@@ -1,23 +1,24 @@
 <template>
   <v-data-table
-    :items="items"
+    :items="localItems"
     item-key="id"
     :headers="localHeaders"
     :options="{ mustSort: true }"
     class="catalog-selection-list"
+    :class="{ 'selectable': selectable }"
     @click:row="onItemSelected($event.id)"
   >
     <template #item.select="{ item }">
       <v-checkbox
+        v-model="item.selected"
         hide-details
         class="mt-0 pt-0"
-        :value="value.includes(item.id)"
-        @click.stop="onItemSelected(item.id)"
+        @click.stop="onItemSelected(item.item.id)"
       />
     </template>
-    <template #item.title="{ item }">
+    <template #item.item.title="{ item }">
       <div class="catalog-selection-list__title">
-        {{ item.title }}
+        {{ item.item.title }}
       </div>
     </template>
   </v-data-table>
@@ -69,6 +70,15 @@ export default Vue.extend({
       }
 
       return localHeaders;
+    },
+    localItems(): { selected: boolean; id: string; item: any }[] {
+      return this.items.map((item) => {
+        return {
+          selected: this.value.includes(item.id),
+          id: item.id,
+          item
+        };
+      });
     }
   },
   watch: {
@@ -92,7 +102,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.catalog-selection-list {
+.catalog-selection-list.selectable {
   cursor: pointer;
 }
 

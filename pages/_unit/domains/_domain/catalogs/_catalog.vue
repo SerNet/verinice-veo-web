@@ -85,11 +85,9 @@
         {{ $t('selectDPEntitiesCTA') }}
       </p>
       <VeoEntitySelectionList
-        :selected-items="selectedEntities"
+        v-model="selectedEntities"
         :items="entities"
         :loading="loadingEntities"
-        single-select
-        @new-subentities="onNewSubEntities"
         @page-change="fetchEntities"
         @refetch="fetchEntities"
       />
@@ -104,6 +102,7 @@ import { upperFirst } from 'lodash';
 import { IVeoCatalogSelectionListHeader } from '~/components/catalogs/VeoCatalogSelectionList.vue';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 enum CATALOG_STATE {
   CHOOSE_TOMS,
@@ -118,6 +117,8 @@ export default Vue.extend({
       selectedToms: [] as string[],
       selectedEntities: [] as { id: string; type: string }[],
       loadingEntities: false as boolean,
+      applying: false as boolean,
+      schemas: [] as IVeoSchemaEndpoint[],
       state: CATALOG_STATE.CHOOSE_TOMS as CATALOG_STATE,
       CATALOG_STATE
     };
@@ -155,21 +156,21 @@ export default Vue.extend({
           filterable: true,
           sortable: true,
           text: this.$t('objectlist.designator').toString(),
-          value: 'designator',
+          value: 'item.designator',
           width: 150
         },
         {
           filterable: true,
           sortable: true,
           text: this.$t('abbreviation').toString(),
-          value: 'abbreviation',
+          value: 'item.abbreviation',
           width: 150
         },
         {
           filterable: true,
           sortable: true,
           text: this.$t('objectlist.title').toString(),
-          value: 'title'
+          value: 'item.title'
         }
       ];
     }
@@ -202,11 +203,34 @@ export default Vue.extend({
         this.loadingEntities = false;
       }
     },
-    apply() {
-      console.log(this.selectedToms, this.selectedEntities);
-    },
-    onNewSubEntities(items: { type: string; id: string }[]) {
-      this.selectedEntities = items;
+    async apply() {
+      this.applying = true;
+
+      try {
+        if (this.schemas.length === 0) {
+          this.schemas = await this.$api.schema.fetchAll();
+        }
+
+        // Fetch incarnations for all selected toms
+        const incarnations = await this.$api.unit.fetchIncarnations(this.selectedToms);
+
+        // Add a reference for every selected entity to every incarnation
+        for (const incarnation of incarnations.parameters) {
+          for (const entity of this.selectedEntities) {
+            incarnation.references.push({
+              referencedCatalogable: {
+                targetUri: `/${getSchemaEndpoint(this.schemas, entity.type)}/${entity.id}`
+              } as any,
+              referenceType: 'LINK'
+            });
+          }
+        }
+        // console.log('1', incarnations);
+
+        // console.log('2', await this.$api.unit.updateIncarnations(incarnations));
+      } finally {
+        this.applying = false;
+      }
     },
     upperFirst
   }

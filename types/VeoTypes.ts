@@ -207,24 +207,21 @@ export interface IVeoUnit extends IVeoBaseObject {
   units: IVeoUnit[];
 }
 
+export interface IVeoUnitIncarnations {
+  parameters: {
+    item: IVeoLink;
+    references: {
+      referencedCatalogable: IVeoLink;
+      [key: string]: any;
+      referenceType: string;
+    }[];
+  }[];
+}
+
 export interface IVeoCatalog extends IVeoBaseObject {
   name: string;
   domainTemplate: IVeoLink;
   catalogItems: IVeoLink[];
-}
-
-export interface IVeoCatalogItemListItem extends IVeoBaseObject {
-  catalog: IVeoLink;
-  tailoringReferences: {
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
-    referenceType: string;
-    catalogItem: IVeoLink;
-  };
-  namespace: string;
-  element: IVeoLink;
 }
 
 export interface IVeoCatalogItem extends IVeoBaseObject {
