@@ -39,6 +39,7 @@ import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highl
 import { Editor } from '@toast-ui/vue-editor';
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
 
+// Outside of vue as the editor can't handle the function being part of the vue methods or computed properties.
 function clearButton(instance: any) {
   const el = document.createElement('button');
   el.textContent = 'X';
