@@ -81,9 +81,9 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
     disabled: Boolean,
     visible: Boolean
   },
-  data() {
-    return {
-      editorOptions: {
+  computed: {
+    editorOptions(): any {
+      return {
         usageStatistics: false,
         plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
         toolbarItems: [
@@ -96,13 +96,13 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
             {
               el: clearButton(this),
               name: 'clear-button',
-              tooltip: 'Clear editor'
+              tooltip: this.$t('clear')
             },
             'codeblock'
           ]
         ]
-      }
-    };
+      };
+    }
   },
   watch: {
     value: {
@@ -139,6 +139,17 @@ export const helpers: Helpful<FormElementProps> = {
   }
 };
 </script>
+
+<i18n>
+{
+  "en": {
+    "clear": "Clear content"
+  },
+  "de": {
+    "clear": "Inhalt löschen"
+  }
+}  
+</i18n>
 
 <style lang="scss">
 // Good resource how to include external .css as inline in scss
