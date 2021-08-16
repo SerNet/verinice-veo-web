@@ -124,17 +124,6 @@ export default Vue.extend({
     const reports: IVeoReportsMeta = await this.$api.report.fetchAll();
     this.report = reports[this.reportId];
 
-    // Für Review, danach entfernen
-    this.report.targetTypes = [
-      {
-        modelType: 'scope'
-        // subTypes: null
-        // subTypes: ['SCP_Processor']
-        // subTypes: ['SCP_Processor', 'SCP_ResponsibleBody']
-        // subTypes: []
-      }
-    ];
-
     // Preselect the object type (and trigger the api request)
     this.objectType = this.report.targetTypes[0].modelType;
   },
