@@ -194,7 +194,7 @@ export default Vue.extend({
       });
       this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
     },
-    objectType(_newValue: string) {
+    objectType() {
       // Preselect the first subtype fitting the previous selected object type
       this.userSelectedSubType = this.currentTargetType?.subTypes?.[0];
 
