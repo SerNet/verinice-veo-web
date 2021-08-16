@@ -334,7 +334,10 @@ export interface IVeoReportMeta {
   };
   outputTypes: string[];
   multipleTargetsSupported: boolean;
-  targetTypes: string[];
+  targetTypes: {
+    modelType: string;
+    subTypes?: string[] | null;
+  }[];
 }
 
 export interface IVeoReportsMeta {
