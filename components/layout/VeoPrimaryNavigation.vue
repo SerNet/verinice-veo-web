@@ -109,7 +109,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Route } from 'vue-router';
 import { upperFirst } from 'lodash';
 import LocalStorage from '~/util/LocalStorage';
 
@@ -144,10 +143,28 @@ export default Vue.extend({
   data() {
     return {
       miniVariant: LocalStorage.primaryNavMiniVariant,
+      displayDeploymentDetails: false as boolean,
       domains: [] as IVeoDomain[],
-      items: [] as INavItem[],
-      displayDeploymentDetails: false as boolean
+      objectTypes: [] as INavItem[],
+      formTypes: [] as INavItem[],
+      reportTypes: [] as INavItem[],
+      catalogs: [] as INavItem[]
     };
+  },
+  async fetch() {
+    this.domains = await this.$api.domain.fetchAll();
+
+    if (this.domains.length === 1) {
+      this.$user.updateLastDomain(this.domains[0].id);
+    }
+
+    this.objectTypes = await this.fetchObjectTypes();
+
+    if (this.domainId) {
+      this.formTypes = await this.fetchFormTypes(this.domainId);
+      this.reportTypes = await this.fetchReportTypes(this.domainId);
+      this.catalogs = await this.fetchCatalogs(this.domainId);
+    }
   },
   computed: {
     unitId(): string | undefined {
@@ -166,27 +183,9 @@ export default Vue.extend({
         return this.unitId && this.unitId === this.$user.lastUnit ? this.$user.lastDomain : undefined;
       }
       return domain;
-    }
-  },
-  watch: {
-    '$route.params.unit'() {
-      this.getNavEntries(this.$route);
     },
-    '$route.params.domain'() {
-      this.getNavEntries(this.$route);
-    }
-  },
-  mounted() {
-    this.getNavEntries(this.$route);
-    this.$i18n.onLanguageSwitched = () => {
-      this.getNavEntries(this.$route);
-    };
-  },
-  methods: {
-    createUUIDUrlParam,
-    async getNavEntries(route: Route) {
-      const routeUnitParam = route.params.unit;
-
+    items(): INavItem[] {
+      /* VEO-692
       const unitDashboard: INavItem = {
         name: this.$t('unit.index.title').toString(),
         icon: 'mdi-home',
@@ -195,11 +194,12 @@ export default Vue.extend({
         disabled: false,
         topLevelItem: true
       };
+      */
       const domainDashboard: INavItem = {
         name: this.$t('domain.index.title').toString(),
         icon: 'mdi-view-dashboard',
         exact: true,
-        to: `/${routeUnitParam}/domains/${createUUIDUrlParam('domain', this.domainId || '')}`,
+        to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', this.domainId || '')}`,
         disabled: false,
         topLevelItem: true
       };
@@ -207,7 +207,7 @@ export default Vue.extend({
         name: this.$t('breadcrumbs.scopes').toString(),
         icon: 'mdi-archive',
         exact: false,
-        to: `/${route.params.unit}/scopes`,
+        to: `/${this.$route.params.unit}/scopes`,
         disabled: false,
         topLevelItem: true
       };
@@ -217,7 +217,7 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        childItems: undefined,
+        childItems: this.objectTypes,
         collapsed: LocalStorage.expandedNavEntry !== 1,
         persistCollapsedState: (collapsed) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 1),
         topLevelItem: true
@@ -259,7 +259,7 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        childItems: undefined,
+        childItems: this.formTypes,
         persistCollapsedState: (collapsed: boolean) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 2),
         collapsed: LocalStorage.expandedNavEntry !== 2,
         topLevelItem: true
@@ -271,7 +271,7 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        childItems: undefined,
+        childItems: this.reportTypes,
         persistCollapsedState: (collapsed: boolean) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 3),
         collapsed: LocalStorage.expandedNavEntry !== 3,
         topLevelItem: true
@@ -283,64 +283,28 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        childItems: undefined,
+        childItems: this.catalogs,
         persistCollapsedState: (collapsed: boolean) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 4),
         collapsed: LocalStorage.expandedNavEntry !== 4,
         topLevelItem: true
       };
 
-      this.domains = await this.$api.domain.fetchAll();
-
-      // Auto set current domain to first domain if only one exists.
-      if (this.domains.length === 1) {
-        this.$user.updateLastDomain(this.domains[0].id);
-      }
-
-      this.items = [
+      return [
         ...(this.domainId ? [domainDashboard, forms, catalogs, reports] : []),
-        ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
-        ...(!routeUnitParam ? [unitSelection] : []),
+        ...(this.$route.params.unit ? [divider, /* VEO-692 unitDashboard, */ scopes, objects] : []),
+        ...(!this.$route.params.unit || this.$user.auth.profile?.attributes.maxUnits[0] > 2 ? [unitSelection] : []),
         spacer,
         editors
       ];
-
-      this.addChildren(this.$t('breadcrumbs.objects').toString(), await this.fetchObjectTypes());
-      if (this.domainId) {
-        this.addChildren(this.$t('breadcrumbs.forms').toString(), await this.fetchFormTypes(this.domainId));
-        this.addChildren(this.$t('breadcrumbs.reports').toString(), await this.fetchReportTypes(this.domainId));
-        this.addChildren(this.$t('breadcrumbs.catalogs').toString(), await this.fetchCatalogs(this.domainId));
-      }
-    },
-    /**
-     * Add children to a menu item
-     *
-     * @param itemTitle The name of the item to add the children to.
-     * @oaram items The items to add to the parent item.
-     */
-    addChildren(itemTitle: string, items: INavItem[], overwrite: boolean = true) {
-      const menuItem = this.items.find((item: INavItem) => item.name === itemTitle);
-      if (menuItem) {
-        if (items.length === 0) {
-          menuItem.childItems = [
-            {
-              topLevelItem: false,
-              name: this.$t('noChildItems').toString(),
-              disabled: false
-            }
-          ];
-          return;
-        }
-
-        if (overwrite) {
-          menuItem.childItems = items;
-        } else {
-          if (!menuItem.childItems) {
-            menuItem.childItems = [];
-          }
-          menuItem.childItems.push(...items);
-        }
-      }
-    },
+    }
+  },
+  watch: {
+    domainId() {
+      this.$fetch();
+    }
+  },
+  methods: {
+    createUUIDUrlParam,
     fetchObjectTypes(): Promise<INavItem[]> {
       const routeUnitParam = this.$route.params.unit;
       return this.$api.schema.fetchAll().then((data) => {
