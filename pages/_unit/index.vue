@@ -58,11 +58,21 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import { separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { IVeoDomain } from '~/types/VeoTypes';
 
 export default Vue.extend({
+  // VEO-692
+  middleware({ $user, redirect, params, $api }) {
+    if ($user.lastDomain) {
+      redirect(`/${params.unit}/domains/${createUUIDUrlParam('domain', $user.lastDomain)}`);
+    } else {
+      $api.domain.fetchAll().then((domains) => {
+        redirect(`/${params.unit}/domains/${createUUIDUrlParam('domain', domains[0].id)}`);
+      });
+    }
+  },
   data() {
     return {
       unit: {} as any,
