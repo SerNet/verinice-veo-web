@@ -62,6 +62,23 @@ export default Vue.extend({
   },
   async fetch() {
     const units = await this.$api.unit.fetchAll();
+
+    // Only applicable if the user has only two units (one demo and one main)
+    if (this.$user.auth.profile?.attributes.maxUnits[0] === '2') {
+      const nonDemoUnit = units.find((unit) => unit.name !== 'Demo');
+
+      // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist create it and then redirect
+      if (nonDemoUnit) {
+        this.$router.push(createUUIDUrlParam('unit', nonDemoUnit.id));
+      } else {
+        const result = await this.$api.unit.create({
+          name: 'Unit 1',
+          description: this.$t('firstUnitDescription')
+        });
+        this.$router.push(createUUIDUrlParam('unit', result.resourceId));
+      }
+    }
+
     this.units = units;
   },
   head(): any {
@@ -81,10 +98,12 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "firstUnitDescription": "This is your first unit",
     "unitPicker": "Please choose a unit",
     "unitpickerPlaceholder": "Search for a unit..."
   },
   "de": {
+    "firstUnitDescription": "Dies ist ihre erste Unit",
     "unitpicker": "Bitte wählen Sie eine Unit",
     "unitpickerPlaceholder": "Nach einer Unit suchen..."
   }

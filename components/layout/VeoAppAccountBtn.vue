@@ -41,8 +41,10 @@
               <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-          <v-divider />
-          <VeoUnitSelection :units="units" />
+          <template v-if="$user.auth.profile && $user.auth.profile.attributes.maxUnits[0] > '2'">
+            <v-divider />
+            <VeoUnitSelection :units="units" />
+          </template>
         </v-list>
         <v-divider />
         <v-card-actions>

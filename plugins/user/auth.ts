@@ -1,4 +1,5 @@
 import Keycloak from 'keycloak-js';
+import { IBaseObject } from '~/lib/utils';
 import LocalStorage from '~/util/LocalStorage';
 
 /**
@@ -118,8 +119,8 @@ export class Auth {
     return this._keycloak.token;
   }
 
-  public get profile(): Keycloak.KeycloakProfile | undefined {
-    return this._profile;
+  public get profile(): (Keycloak.KeycloakProfile & { attributes: IBaseObject }) | undefined {
+    return this._profile as any;
   }
 
   /**
