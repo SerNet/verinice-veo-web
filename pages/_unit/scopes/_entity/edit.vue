@@ -7,10 +7,22 @@
         :md="8"
         :xl="8"
         sticky-header
-        :title="objectTitle"
         :loading="$fetchState.pending"
       >
-        <template #default>
+        <template #header>
+          <v-row
+            no-gutters
+            class="justify-space-between mb-3"
+          >
+            <v-col
+              cols="auto"
+              class="mt-4"
+            >
+              <h1>
+                {{ objectTitle }}
+              </h1>
+            </v-col>
+          </v-row>
           <VeoEntityDisplayOptions
             :root-route="rootRoute"
             :current-entity="form.objectData"
@@ -52,6 +64,8 @@
               {{ $t('global.button.save_quit') }}
             </v-btn>
           </VeoEntityDisplayOptions>
+        </template>
+        <template #default>
           <div
             v-if="$fetchState.pending"
             class="fill-width fill-height d-flex justify-center align-center"
@@ -250,9 +264,7 @@ export default Vue.extend({
   computed: {
     objectTitle(): string {
       return [
-        this.$t('edit_object', {
-          title: this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.displayName
-        }),
+        this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.displayName,
         ...(this.isRevision ? [`(${this.$t('revision')} ${this.revisionVersion})`] : [])
       ].join(' ');
     },
@@ -383,7 +395,6 @@ export default Vue.extend({
 {
   "en": {
     "deleted": "Object was deleted successfully.",
-    "edit_object": "Edit \"{title}\"",
     "history": "History",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
@@ -396,7 +407,6 @@ export default Vue.extend({
   },
   "de": {
     "deleted": "Objekt wurde erfolgreich gelöscht.",
-    "edit_object": "\"{title}\" bearbeiten",
     "history": "Verlauf",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",

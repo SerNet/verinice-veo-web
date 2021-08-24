@@ -60,9 +60,7 @@
             </h1>
           </v-col>
         </v-row>
-      </template>
-      <template #default>
-        <v-row>
+        <v-row class="mt-3">
           <v-spacer />
           <v-col
             cols="auto"
@@ -105,6 +103,8 @@
             </v-btn>
           </v-col>
         </v-row>
+      </template>
+      <template #default>
         <VeoAlert
           v-model="isRevision"
           :type="alertType"
