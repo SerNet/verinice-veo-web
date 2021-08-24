@@ -202,11 +202,12 @@ export default Vue.extend({
     async generateReport() {
       this.generatingReport = true;
       if (this.report) {
+        const outputType = this.report.outputTypes[0];
         const body: IVeoCreateReportData = {
-          outputType: this.report.outputTypes[0],
+          outputType: outputType,
           targets: this.selectedEntities
         };
-        const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: 'application/pdf' });
+        const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: outputType });
         window.open(URL.createObjectURL(result));
       }
       this.generatingReport = false;
