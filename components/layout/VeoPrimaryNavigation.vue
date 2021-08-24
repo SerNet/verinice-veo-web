@@ -110,6 +110,8 @@
 <script lang="ts">
 import Vue from 'vue';
 import { upperFirst } from 'lodash';
+import { ComputedRef } from '@vue/composition-api';
+import { computed } from '@nuxtjs/composition-api';
 import LocalStorage from '~/util/LocalStorage';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
@@ -289,10 +291,16 @@ export default Vue.extend({
         topLevelItem: true
       };
 
+      const maxUnits: ComputedRef<number | undefined> = computed(() => {
+        const _maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
+
+        return _maxUnits ? parseInt(_maxUnits, 10) : _maxUnits;
+      });
+
       return [
+        ...(!this.$route.params.unit || !maxUnits.value || maxUnits.value > 2 ? [unitSelection] : []),
         ...(this.domainId ? [domainDashboard, forms, catalogs, reports] : []),
         ...(this.$route.params.unit ? [divider, /* VEO-692 unitDashboard, */ scopes, objects] : []),
-        ...(!this.$route.params.unit || this.$user.auth.profile?.attributes.maxUnits[0] > 2 ? [unitSelection] : []),
         spacer,
         editors
       ];

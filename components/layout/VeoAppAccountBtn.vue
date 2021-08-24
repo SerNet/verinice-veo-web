@@ -41,7 +41,7 @@
               <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-          <template v-if="$user.auth.profile && $user.auth.profile.attributes.maxUnits[0] > '2'">
+          <template v-if="!maxUnits || maxUnits > 2">
             <v-divider />
             <VeoUnitSelection :units="units" />
           </template>
@@ -87,6 +87,11 @@ export default Vue.extend({
   computed: {
     initials(): string {
       return this.prename.substring(0, 1) + this.lastname.substring(0, 1);
+    },
+    maxUnits(): number | undefined {
+      const maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
+
+      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
     }
   },
   mounted() {

@@ -64,12 +64,15 @@ export default Vue.extend({
     const units = await this.$api.unit.fetchAll();
 
     // Only applicable if the user has only two units (one demo and one main)
-    if (this.$user.auth.profile?.attributes.maxUnits[0] === '2') {
-      const nonDemoUnit = units.find((unit) => unit.name !== 'Demo');
+    if (this.maxUnits === 2) {
+      const nonDemoUnits = units.filter((unit) => unit.name !== 'Demo');
+      const myNonDemoUnit = nonDemoUnits.find((unit) => unit.createdBy === this.$user.auth.profile?.username);
 
-      // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist create it and then redirect
-      if (nonDemoUnit) {
-        this.$router.push(createUUIDUrlParam('unit', nonDemoUnit.id));
+      // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect
+      if (nonDemoUnits.length > 0) {
+        // Try redirecting the user to the first unit found that was created by him, else redirect him to a unit created by someone else.
+        const id = myNonDemoUnit ? myNonDemoUnit.id : nonDemoUnits[0].id;
+        this.$router.push(createUUIDUrlParam('unit', id));
       } else {
         const result = await this.$api.unit.create({
           name: 'Unit 1',
@@ -85,6 +88,13 @@ export default Vue.extend({
     return {
       title: this.$t('breadcrumbs.index')
     };
+  },
+  computed: {
+    maxUnits(): number | undefined {
+      const maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
+
+      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
+    }
   },
   mounted() {
     this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
