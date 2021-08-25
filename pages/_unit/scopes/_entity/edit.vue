@@ -33,16 +33,39 @@
             >
               {{ $t('global.button.discard') }}
             </v-btn>
-            <v-btn
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="$fetchState.pending || !entityModified.isModified"
-              :loading="saveBtnLoading"
-              @click="doSaveEntity"
+              top
+              :disabled="$fetchState.pending || (!entityModified.isModified) || isValid"
             >
-              {{ $t('global.button.save') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="$fetchState.pending || (entityModified && !entityModified.isModified) || !isValid"
+                    :loading="saveBtnLoading"
+                    @click="doSaveEntity"
+                  >
+                    {{ $t('global.button.save') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
             <v-btn
               v-else
               color="primary"
