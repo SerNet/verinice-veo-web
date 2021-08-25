@@ -65,12 +65,12 @@ export default function (api: Client) {
      *
      * @param entity The entity to load the versions of.
      */
-    fetchLatest(params?: Record<string, string>): Promise<any> {
+    fetchLatest(unitId: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
       if (!params) {
         params = {};
       }
 
-      params.owner = 'pb';
+      params.owner = `/units/${unitId}`;
       return api.req('/api/history/revisions/my-latest/', {
         params
       });
