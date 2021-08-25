@@ -1,6 +1,6 @@
 <template>
   <div class="toolbar-logo">
-    <div class="inner hidden-xs-only">
+    <div class="inner">
       <div class="hidden-xs-only">
         <h1 class="app-title">
           verinice.
@@ -8,7 +8,7 @@
       </div>
       <svg
         class="hidden-sm-and-up"
-        viewBox="0 0 28 22"
+        viewBox="0 0 28 26"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
       >
