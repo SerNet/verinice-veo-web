@@ -236,7 +236,7 @@ export default Vue.extend({
         size: this.$user.tablePageSize,
         sortBy: options.sortBy,
         sortOrder: options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
+        ...(this.filter ? this.filter : {})
       });
       this.loading = false;
     }

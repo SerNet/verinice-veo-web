@@ -10,23 +10,26 @@
       @fetch="refetch"
     >
       <template #menu-bar="{ on }">
-        <v-col
-          cols="auto"
-          class="flex-grow-1 search-bar"
-          :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
-        >
-          <VeoListSearchBar
-            v-model="filter"
-            :object-type="rootEntityType"
-          />
-        </v-col>
-        <v-col cols="auto">
-          <VeoMenuButton
-            :menu-items="menuItems"
-            :primary-item="menuButton"
-            v-on="on"
-          />
-        </v-col>
+        <v-row>
+          <v-col cols="auto">
+            <VeoMenuButton
+              :menu-items="menuItems"
+              :primary-item="menuButton"
+              v-on="on"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            class="flex-grow-1 search-bar"
+            :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
+          >
+            <VeoListSearchBar
+              v-model="filter"
+              :object-type="rootEntityType"
+            />
+          </v-col>
+        </v-row>
       </template>
       <template #default="{ on }">
         <VeoObjectList
@@ -176,20 +179,24 @@ export default Vue.extend({
       this.$router.push({
         ...this.$route,
         query: {
-          filter: newValue?.property,
-          value: newValue?.value
+          designator: newValue?.designator,
+          name: newValue?.name,
+          description: newValue?.description,
+          editor: newValue?.editor,
+          status: newValue?.status
         }
       });
       this.$fetch();
     }
   },
   mounted() {
-    if (this.$route.query.filter && this.$route.query.value) {
-      this.filter = {
-        property: this.$route.query.filter,
-        value: this.$route.query.value
-      };
-    }
+    this.filter = {
+      designator: this.$route.query.designator,
+      name: this.$route.query.name,
+      description: this.$route.query.description,
+      editor: this.$route.query.editor,
+      status: this.$route.query.status
+    };
   },
   methods: {
     loadSubEntities(_parent: IVeoEntity) {
@@ -217,7 +224,7 @@ export default Vue.extend({
         size: this.$user.tablePageSize,
         sortBy: _options.sortBy,
         sortOrder: _options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
+        ...(this.filter ? this.filter : {})
       } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
 
       if (_options.reloadAll) {

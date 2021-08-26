@@ -28,16 +28,6 @@
                 @input="changeType"
               />
             </v-col>
-            <v-col
-              cols="auto"
-              class="flex-grow-1 search-bar"
-              :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
-            >
-              <VeoListSearchBar
-                v-model="filter"
-                :object-type="formSchema && formSchema.modelType"
-              />
-            </v-col>
             <v-col cols="auto">
               <v-btn
                 outlined
@@ -47,6 +37,17 @@
               >
                 {{ $t('create', { type: formName }) }}
               </v-btn>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col
+              class="flex-grow-1 search-bar"
+              :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
+            >
+              <VeoListSearchBar
+                v-model="filter"
+                :object-type="formSchema && formSchema.modelType"
+              />
             </v-col>
           </v-row>
         </template>
@@ -132,20 +133,24 @@ export default Vue.extend({
       this.$router.push({
         ...this.$route,
         query: {
-          filter: newValue?.property,
-          value: newValue?.value
+          designator: newValue?.designator,
+          name: newValue?.name,
+          description: newValue?.description,
+          editor: newValue?.editor,
+          status: newValue?.status
         }
       });
       this.$fetch();
     }
   },
   mounted() {
-    if (this.$route.query.filter && this.$route.query.value) {
-      this.filter = {
-        property: this.$route.query.filter,
-        value: this.$route.query.value
-      };
-    }
+    this.filter = {
+      designator: this.$route.query.designator,
+      name: this.$route.query.name,
+      description: this.$route.query.description,
+      editor: this.$route.query.editor,
+      status: this.$route.query.status
+    };
   },
   methods: {
     changeType(newType: string) {
@@ -160,6 +165,15 @@ export default Vue.extend({
 
       const _options = { page: 1, reloadAll: true, sortBy: 'name', sortDesc: false, ...options };
 
+      console.log({
+        unit: this.unitId,
+        subType: this.formSchema?.subType,
+        size: this.$user.tablePageSize,
+        sortBy: _options.sortBy,
+        sortOrder: _options.sortDesc ? 'desc' : 'asc',
+        ...(this.filter ? this.filter : {})
+      });
+
       try {
         const data = (await this.$api.entity.fetchAll(this.objectType, _options.page, {
           unit: this.unitId,
@@ -167,8 +181,10 @@ export default Vue.extend({
           size: this.$user.tablePageSize,
           sortBy: _options.sortBy,
           sortOrder: _options.sortDesc ? 'desc' : 'asc',
-          ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
+          ...(this.filter ? this.filter : {})
         } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
+
+        console.log(data);
 
         if (_options.reloadAll) {
           this.objects = data;

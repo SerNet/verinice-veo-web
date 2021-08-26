@@ -63,6 +63,7 @@ export default {
   'global.button.save': 'Speichern',
   'global.button.save_quit': 'Speichern und Schließen',
   'global.button.apply': 'Übernehmen',
+  'global.button.reset': 'Zurücksetzen',
   'global.button.yes': 'Ja',
   'global.input.required': 'Das Feld muss ausgefüllt werden',
   'global.input.requiredfields': '* Pflichtfelder',

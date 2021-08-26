@@ -63,6 +63,7 @@ export default {
   'global.button.save': 'Save',
   'global.button.save_quit': 'Save and exit',
   'global.button.apply': 'Apply',
+  'global.button.reset': 'Reset',
   'global.button.yes': 'Yes',
   'global.input.required': 'The field is required',
   'global.input.requiredfields': '* Required fields',
