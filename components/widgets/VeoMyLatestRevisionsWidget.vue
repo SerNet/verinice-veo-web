@@ -8,7 +8,7 @@
         >
           <td>
             <nuxt-link
-              :to="`/${$route.params.unit}/domains/${$route.params.domain}/forms/${createUUIDUrlParam('asset', revision.content.id)}`"
+              :to="createUrlByType(revision)"
             >
               <b>{{ revision.content.designator }} {{ revision.content.name }}</b>
             </nuxt-link>
@@ -27,17 +27,19 @@
 <script lang="ts">
 import Vue from 'vue';
 import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
-import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {},
   data() {
     return {
-      revisions: [] as IVeoObjectHistoryEntry[]
+      revisions: [] as IVeoObjectHistoryEntry[],
+      forms: [] as IVeoFormSchemaMeta[]
     };
   },
   async fetch() {
     this.revisions = await this.$api.history.fetchLatest(this.unitId);
+    this.forms = await this.$api.form.fetchAll();
   },
   computed: {
     unitId() {
@@ -45,7 +47,22 @@ export default Vue.extend({
     }
   },
   methods: {
-    createUUIDUrlParam
+    createUUIDUrlParam,
+    createUrlByType(revision: IVeoObjectHistoryEntry) {
+      let url = '';
+      if (revision.content.type === 'asset') {
+        const form = this.forms.find((form) => form.subType === 'AST_Datatype');
+        url = `/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${createUUIDUrlParam('form', form?.id || '')}/${createUUIDUrlParam(
+          'asset',
+          revision.content.id
+        )}`;
+      } else if (revision.content.type === 'scope') {
+        url = `/${this.$route.params.unit}/scopes/${createUUIDUrlParam('scope', revision.content.id)}/edit`;
+      } else {
+        url = `/${this.$route.params.unit}/objects/${revision.uri.split('/')[1]}/${createUUIDUrlParam(revision.content.type, revision.content.id)}/edit`;
+      }
+      return url;
+    }
   }
 });
 </script>

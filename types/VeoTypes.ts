@@ -358,4 +358,5 @@ export interface IVeoObjectHistoryEntry {
   time: string;
   type: string;
   changeNumber: number;
+  uri: string;
 }
