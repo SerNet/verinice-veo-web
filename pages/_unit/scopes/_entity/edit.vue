@@ -76,16 +76,39 @@
             >
               {{ $t('restore') }}
             </v-btn>
-            <v-btn
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="$fetchState.pending || !entityModified.isModified"
-              :loading="saveBtnLoading"
-              @click="doSaveEntity($event, true)"
+              top
+              :disabled="$fetchState.pending || (!entityModified.isModified) || isValid"
             >
-              {{ $t('global.button.save_quit') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="$fetchState.pending || !entityModified.isModified || !isValid"
+                    :loading="saveBtnLoading"
+                    @click="doSaveEntity($event, true)"
+                  >
+                    {{ $t('global.button.save_quit') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
           </VeoEntityDisplayOptions>
         </template>
         <template #default>
