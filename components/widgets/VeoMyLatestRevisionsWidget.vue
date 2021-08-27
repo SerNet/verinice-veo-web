@@ -39,26 +39,35 @@ export default Vue.extend({
   },
   async fetch() {
     this.revisions = await this.$api.history.fetchLatest(this.unitId);
+    console.log(this.revisions);
+    console.log(this.forms);
     this.forms = await this.$api.form.fetchAll();
+    console.log(this.forms);
   },
   computed: {
     unitId() {
       return separateUUIDParam(this.$route.params.unit).id;
+    },
+    domainId() {
+      return separateUUIDParam(this.$route.params.domain).id;
     }
   },
   methods: {
     createUUIDUrlParam,
     createUrlByType(revision: IVeoObjectHistoryEntry) {
       let url = '';
-      if (revision.content.type === 'asset') {
-        const form = this.forms.find((form) => form.subType === 'AST_Datatype');
+      if (revision.content.subType[this.domainId]) {
+        // FORMS
+        const form = this.forms.find((form) => form.subType === revision.content.subType[this.domainId]);
         url = `/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${createUUIDUrlParam('form', form?.id || '')}/${createUUIDUrlParam(
-          'asset',
+          revision.content.type,
           revision.content.id
         )}`;
       } else if (revision.content.type === 'scope') {
+        // SCOPES
         url = `/${this.$route.params.unit}/scopes/${createUUIDUrlParam('scope', revision.content.id)}/edit`;
       } else {
+        // OBJECTS
         url = `/${this.$route.params.unit}/objects/${revision.uri.split('/')[1]}/${createUUIDUrlParam(revision.content.type, revision.content.id)}/edit`;
       }
       return url;
