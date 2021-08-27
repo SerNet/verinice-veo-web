@@ -28,16 +28,6 @@
                 @input="changeType"
               />
             </v-col>
-            <v-col
-              cols="auto"
-              class="flex-grow-1 search-bar"
-              :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
-            >
-              <VeoListSearchBar
-                v-model="filter"
-                :object-type="formSchema && formSchema.modelType"
-              />
-            </v-col>
             <v-col cols="auto">
               <v-btn
                 outlined
@@ -47,6 +37,18 @@
               >
                 {{ $t('create', { type: formName }) }}
               </v-btn>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col
+              class="flex-grow-1 search-bar"
+              :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
+            >
+              <VeoListSearchBar
+                v-model="filter"
+                :object-type="formSchema && formSchema.modelType"
+                @reset="filter = $event"
+              />
             </v-col>
           </v-row>
         </template>
@@ -132,20 +134,24 @@ export default Vue.extend({
       this.$router.push({
         ...this.$route,
         query: {
-          filter: newValue?.property,
-          value: newValue?.value
+          designator: newValue?.designator,
+          name: newValue?.name,
+          description: newValue?.description,
+          updatedBy: newValue?.updatedBy,
+          status: newValue?.status
         }
       });
       this.$fetch();
     }
   },
   mounted() {
-    if (this.$route.query.filter && this.$route.query.value) {
-      this.filter = {
-        property: this.$route.query.filter,
-        value: this.$route.query.value
-      };
-    }
+    this.filter = {
+      designator: this.$route.query.designator,
+      name: this.$route.query.name,
+      description: this.$route.query.description,
+      updatedBy: this.$route.query.updatedBy,
+      status: this.$route.query.status
+    };
   },
   methods: {
     changeType(newType: string) {
@@ -167,7 +173,7 @@ export default Vue.extend({
           size: this.$user.tablePageSize,
           sortBy: _options.sortBy,
           sortOrder: _options.sortDesc ? 'desc' : 'asc',
-          ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
+          ...(this.filter || {})
         } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
 
         if (_options.reloadAll) {

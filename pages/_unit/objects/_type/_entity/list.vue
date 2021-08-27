@@ -60,7 +60,7 @@ export default Vue.extend({
         event: {
           name: 'create-entity',
           params: {
-            type: getSchemaName(this.schemas, this.objectType),
+            type: this.schemas ? getSchemaName(this.schemas, this.objectType) : '',
             parent: this.currentEntity
           }
         },
@@ -113,7 +113,7 @@ export default Vue.extend({
         size: this.$user.tablePageSize,
         sortBy: _options.sortBy,
         sortOrder: _options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
+        ...(this.filter || {})
       } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
 
       if (_options.reloadAll) {

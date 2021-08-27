@@ -75,16 +75,40 @@
             >
               {{ $t('global.button.discard') }}
             </v-btn>
-            <v-btn
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="isSaveBtnDisabled"
-              :loading="saveBtnLoading"
-              @click="onClick"
+              top
+              :disabled="!isSaveBtnDisabled || !formModified.isModified"
             >
-              {{ $t('global.button.save') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="isSaveBtnDisabled"
+                    :loading="saveBtnLoading"
+                    @click="onClick"
+                  >
+                    {{ $t('global.button.save') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
+
             <v-btn
               v-else
               color="primary"
@@ -94,16 +118,40 @@
             >
               {{ $t('restore') }}
             </v-btn>
-            <v-btn
+
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="isSaveBtnDisabled"
-              :loading="saveBtnLoading"
-              @click="onClick($event, true)"
+              top
+              :disabled="!isSaveBtnDisabled || !formModified.isModified"
             >
-              {{ $t('global.button.save_quit') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="isSaveBtnDisabled"
+                    :loading="saveBtnLoading"
+                    @click="onClick($event, true)"
+                  >
+                    {{ $t('global.button.save_quit') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
           </v-col>
         </v-row>
       </template>

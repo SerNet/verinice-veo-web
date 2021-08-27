@@ -83,6 +83,7 @@
       <VeoListSearchBar
         v-model="filter"
         :object-type="objectType"
+        @reset="filter = $event"
       />
       <VeoEntitySelectionList
         :selected-items="selectedEntities"
@@ -177,8 +178,11 @@ export default Vue.extend({
       this.$router.push({
         ...this.$route,
         query: {
-          filter: newValue?.property,
-          value: newValue?.value
+          designator: newValue?.designator,
+          name: newValue?.name,
+          description: newValue?.description,
+          updatedBy: newValue?.updatedBy,
+          status: newValue?.status
         }
       });
       this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
@@ -191,12 +195,13 @@ export default Vue.extend({
     }
   },
   mounted() {
-    if (this.$route.query.filter && this.$route.query.value) {
-      this.filter = {
-        property: this.$route.query.filter,
-        value: this.$route.query.value
-      };
-    }
+    this.filter = {
+      designator: this.$route.query.designator,
+      name: this.$route.query.name,
+      description: this.$route.query.description,
+      updatedBy: this.$route.query.updatedBy,
+      status: this.$route.query.status
+    };
   },
   methods: {
     async generateReport() {
@@ -204,7 +209,7 @@ export default Vue.extend({
       if (this.report) {
         const outputType = this.report.outputTypes[0];
         const body: IVeoCreateReportData = {
-          outputType: outputType,
+          outputType,
           targets: this.selectedEntities
         };
         const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: outputType });
@@ -226,7 +231,7 @@ export default Vue.extend({
         size: this.$user.tablePageSize,
         sortBy: options.sortBy,
         sortOrder: options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
+        ...(this.filter || {})
       });
 
       this.loading = false;

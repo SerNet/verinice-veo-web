@@ -1,33 +1,34 @@
 <template>
   <v-form
-    v-model="formIsValid"
+    ref="form"
     @submit.prevent="onSubmit"
   >
     <v-row no-gutters>
-      <v-col cols="4">
-        <v-select
-          v-model="property"
-          required
-          hide-details
-          dense
-          outlined
-          :rules="rules"
-          class="veo-list-searchbar__select"
-          :label="$t('property')"
-          :items="searchableFields"
-        />
-      </v-col>
       <v-col
-        cols="8"
         class="d-flex"
       >
-        <v-text-field
-          v-model="searchValue"
+        <template v-for="(key, index) of textFilters">
+          <v-text-field
+            :key="index"
+            v-model="filter[key]"
+            hide-details
+            dense
+            outlined
+            :class="{ 'veo-list-searchbar__first-input': index === 0, 'veo-list-searchbar__input': index > 0 }"
+            :placeholder="$t(`objectlist.${key}`).toString()"
+          />
+        </template>
+        <v-select
+          v-if="objectType === 'process'"
+          v-model="filter.status"
           hide-details
           dense
           outlined
           class="veo-list-searchbar__input"
-          :placeholder="$t('search')"
+          :label="$t('objectlist.status')"
+          :items="status"
+          item-text="text"
+          item-value="value"
         />
         <v-btn
           outlined
@@ -40,6 +41,15 @@
             mdi-magnify
           </v-icon>
         </v-btn>
+        <v-btn
+          outlined
+          color="primary"
+          class="veo-list-searchbar__last-button"
+          :disabled="resetDisabled"
+          @click="reset"
+        >
+          {{ $t('global.button.reset') }}
+        </v-btn>
       </v-col>
     </v-row>
   </v-form>
@@ -48,10 +58,23 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
+import { omit } from 'lodash';
 
 export interface IVeoFilter {
-  property: string;
-  value: string;
+  designator: string | undefined;
+  name: string | undefined;
+  description: string | undefined;
+  updatedBy: string | undefined;
+  status: string | undefined;
+  [key: string]: string | undefined;
+}
+
+enum Status {
+  NEW = 'NEW',
+  IN_PROGRESS = 'IN_PROGRESS',
+  FOR_REVIEW = 'FOR_REVIEW',
+  RELEASED = 'RELEASED',
+  ARCHIVED = 'ARCHIVED'
 }
 
 export default Vue.extend({
@@ -67,78 +90,93 @@ export default Vue.extend({
   },
   data() {
     return {
-      property: undefined as string | undefined,
-      searchValue: undefined as string | undefined,
-      formIsValid: undefined as any
+      filter: {
+        designator: undefined,
+        name: undefined,
+        status: undefined,
+        description: undefined,
+        updatedBy: undefined
+      } as IVeoFilter,
+      status: [
+        {
+          value: Status.NEW,
+          text: this.$t('status.new').toString()
+        },
+        {
+          value: Status.IN_PROGRESS,
+          text: this.$t('status.inProgress').toString()
+        },
+        {
+          value: Status.FOR_REVIEW,
+          text: this.$t('status.forReview').toString()
+        },
+        {
+          value: Status.RELEASED,
+          text: this.$t('status.released').toString()
+        },
+        {
+          value: Status.ARCHIVED,
+          text: this.$t('status.archived').toString()
+        }
+      ]
     };
   },
   computed: {
-    searchableFields(): { text: string; value: string }[] {
-      return [
-        {
-          text: this.$t('objectlist.designator').toString(),
-          value: 'designator'
-        },
-        {
-          text: this.$t('objectlist.title').toString(),
-          value: 'name'
-        },
-        {
-          text: this.$t('objectlist.description').toString(),
-          value: 'description'
-        },
-        {
-          text: this.$t('objectlist.updatedby').toString(),
-          value: 'editor'
-        },
-        ...(this.objectType === 'process'
-          ? [
-              {
-                text: this.$t('objectlist.status').toString(),
-                value: 'status'
-              }
-            ]
-          : [])
-      ];
+    textFilters(): string[] {
+      return Object.keys(omit(this.filter, 'status'));
     },
-    rules(): ((value: string) => boolean)[] {
-      return [(value: string) => !!value && value.length > 0];
+    resetDisabled(): boolean {
+      for (const key in this.filter) {
+        if ((this.filter as { [key: string]: any })[key]) {
+          return false;
+        }
+      }
+
+      return true;
     }
   },
   watch: {
     value: {
       handler(newValue: IVeoFilter) {
-        if (newValue) {
-          this.property = newValue.property;
-          this.searchValue = newValue.value;
-        }
+        this.filter = { ...newValue };
       },
       immediate: true
     }
   },
   methods: {
     onSubmit() {
-      if (this.formIsValid) {
-        this.$emit('input', {
-          property: this.property,
-          value: this.searchValue
-        } as IVeoFilter);
+      for (const prop in this.filter) {
+        if (this.filter[prop] === '') {
+          this.filter[prop] = undefined;
+        }
       }
-    }
+      this.$emit('input', this.filter);
+    },
+    reset() {
+      (this.$refs.form as any).reset();
+      this.$emit('reset', this.filter);
+    },
+    omit
   }
 });
 </script>
 
 <style lang="scss" scoped>
-.veo-list-searchbar__select {
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
+.veo-list-searchbar__button {
+  border-radius: 0;
+  height: auto !important;
+  border-right: 0;
 }
 
-.veo-list-searchbar__button {
+.veo-list-searchbar__last-button {
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
   height: auto !important;
+}
+
+.veo-list-searchbar__first-input {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .veo-list-searchbar__input {
@@ -149,12 +187,24 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "property": "Property",
-    "search": "Search..."
+    "search": "Search...",
+    "status": {
+      "new": "New",
+      "inProgress": "In progress",
+      "forReview": "For review",
+      "released": "Released",
+      "archived": "Archived"
+    }
   },
   "de": {
-    "property": "Eigenschaft",
-    "search": "Suchen..."
+    "search": "Suche...",
+    "status": {
+      "new": "Neu",
+      "inProgress": "In Bearbeitung",
+      "forReview": "Zur Prüfung",
+      "released": "Freigegeben",
+      "archived": "Archiviert"
+    }
   }
 }
 </i18n>

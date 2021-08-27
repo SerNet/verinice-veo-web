@@ -28,24 +28,70 @@
           >
             {{ $t('global.button.discard') }}
           </v-btn>
-          <v-btn
-            color="primary"
-            outlined
-            :disabled="$fetchState.pending || !entityModified.isModified"
-            :loading="saveBtnLoading"
-            @click="save"
+          <v-tooltip
+            top
+            :disabled="$fetchState.pending || isValid"
           >
-            {{ $t('global.button.save') }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            outlined
-            :disabled="$fetchState.pending || !entityModified.isModified"
-            :loading="saveBtnLoading"
-            @click="save($event, true)"
+            <template #activator="{ on }">
+              <div
+                class="d-inline-block"
+                v-on="on"
+                @click.prevent
+              >
+                <v-btn
+                  color="primary"
+                  outlined
+                  :disabled="$fetchState.pending || !entityModified.isModified || !isValid"
+                  :loading="saveBtnLoading"
+                  @click="save"
+                >
+                  {{ $t('global.button.save') }}
+                </v-btn>
+              </div>
+            </template>
+            <template #default>
+              <ul>
+                <li
+                  v-for="(errorMessage, key) in errorMessages"
+                  :key="key"
+                >
+                  {{ errorMessage.message }}
+                </li>
+              </ul>
+            </template>
+          </v-tooltip>
+          <v-tooltip
+            top
+            :disabled="$fetchState.pending || isValid"
           >
-            {{ $t('global.button.save_quit') }}
-          </v-btn>
+            <template #activator="{ on }">
+              <div
+                class="d-inline-block"
+                v-on="on"
+                @click.prevent
+              >
+                <v-btn
+                  color="primary"
+                  outlined
+                  :disabled="$fetchState.pending || !entityModified.isModified || !isValid"
+                  :loading="saveBtnLoading"
+                  @click="save($event, true)"
+                >
+                  {{ $t('global.button.save_quit') }}
+                </v-btn>
+              </div>
+            </template>
+            <template #default>
+              <ul>
+                <li
+                  v-for="(errorMessage, key) in errorMessages"
+                  :key="key"
+                >
+                  {{ errorMessage.message }}
+                </li>
+              </ul>
+            </template>
+          </v-tooltip>
         </v-col>
       </v-row>
     </template>
@@ -149,7 +195,13 @@ export default Vue.extend({
     if (this.entityType) {
       const objectSchema = await this.$api.schema.fetch(this.entityType);
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
-      const objectData = {};
+      const objectData = {
+        owner: {
+          targetUri: `/units/${this.unitID}`
+        },
+        designator: '' // Needed for form validation
+      };
+
       this.form = {
         objectSchema,
         objectData,

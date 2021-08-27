@@ -231,7 +231,7 @@ export default Vue.extend({
           width: 120
         },
         {
-          text: this.$t('objectlist.title'),
+          text: this.$t('objectlist.name'),
           value: 'name'
         },
         ...(this.objectType === 'process'
@@ -250,7 +250,7 @@ export default Vue.extend({
           value: 'description'
         },
         {
-          text: this.$t('objectlist.updatedby'),
+          text: this.$t('objectlist.updatedBy'),
           value: 'updatedBy',
           class: 'nowrap'
         },
