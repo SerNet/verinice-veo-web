@@ -40,6 +40,8 @@ export default function (api: Client) {
       params = { ...params, page, size: api._context.$user.tablePageSize };
 
       const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+      console.log(endpoint);
+      console.log(params);
       return api
         .req(`/api/${endpoint}`, {
           params

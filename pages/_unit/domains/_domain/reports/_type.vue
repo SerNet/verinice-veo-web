@@ -83,6 +83,7 @@
       <VeoListSearchBar
         v-model="filter"
         :object-type="objectType"
+        @reset="filter = $event"
       />
       <VeoEntitySelectionList
         :selected-items="selectedEntities"
@@ -180,7 +181,7 @@ export default Vue.extend({
           designator: newValue?.designator,
           name: newValue?.name,
           description: newValue?.description,
-          editor: newValue?.editor,
+          updatedBy: newValue?.updatedBy,
           status: newValue?.status
         }
       });
@@ -198,7 +199,7 @@ export default Vue.extend({
       designator: this.$route.query.designator,
       name: this.$route.query.name,
       description: this.$route.query.description,
-      editor: this.$route.query.editor,
+      updatedBy: this.$route.query.updatedBy,
       status: this.$route.query.status
     };
   },
@@ -230,7 +231,7 @@ export default Vue.extend({
         size: this.$user.tablePageSize,
         sortBy: options.sortBy,
         sortOrder: options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? this.filter : {})
+        ...(this.filter || {})
       });
 
       this.loading = false;

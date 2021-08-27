@@ -31,14 +31,15 @@
             dense
           />
         </v-col>
+      </v-row>
+      <v-row>
         <v-col
-          cols="auto"
           class="flex-grow-1 search-bar"
-          :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
         >
           <VeoListSearchBar
             v-model="filter"
             :object-type="objectType"
+            @reset="filter = $event"
           />
         </v-col>
       </v-row>   
@@ -236,7 +237,7 @@ export default Vue.extend({
         size: this.$user.tablePageSize,
         sortBy: options.sortBy,
         sortOrder: options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? this.filter : {})
+        ...(this.filter || {})
       });
       this.loading = false;
     }

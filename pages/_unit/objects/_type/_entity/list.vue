@@ -113,7 +113,7 @@ export default Vue.extend({
         size: this.$user.tablePageSize,
         sortBy: _options.sortBy,
         sortOrder: _options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? this.filter : {})
+        ...(this.filter || {})
       } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
 
       if (_options.reloadAll) {

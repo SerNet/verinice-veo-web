@@ -19,6 +19,8 @@
             />
           </v-col>
         </v-row>
+      </template>
+      <template #default="{ on }">
         <v-row>
           <v-col
             class="flex-grow-1 search-bar"
@@ -27,11 +29,10 @@
             <VeoListSearchBar
               v-model="filter"
               :object-type="rootEntityType"
+              @reset="filter = $event"
             />
           </v-col>
         </v-row>
-      </template>
-      <template #default="{ on }">
         <VeoObjectList
           :items="objects"
           :current-item="currentEntity"
@@ -182,7 +183,7 @@ export default Vue.extend({
           designator: newValue?.designator,
           name: newValue?.name,
           description: newValue?.description,
-          editor: newValue?.editor,
+          updatedBy: newValue?.updatedBy,
           status: newValue?.status
         }
       });
@@ -194,7 +195,7 @@ export default Vue.extend({
       designator: this.$route.query.designator,
       name: this.$route.query.name,
       description: this.$route.query.description,
-      editor: this.$route.query.editor,
+      updatedBy: this.$route.query.updatedBy,
       status: this.$route.query.status
     };
   },
@@ -224,7 +225,7 @@ export default Vue.extend({
         size: this.$user.tablePageSize,
         sortBy: _options.sortBy,
         sortOrder: _options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? this.filter : {})
+        ...(this.filter || {})
       } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
 
       if (_options.reloadAll) {

@@ -47,6 +47,7 @@
               <VeoListSearchBar
                 v-model="filter"
                 :object-type="formSchema && formSchema.modelType"
+                @reset="filter = $event"
               />
             </v-col>
           </v-row>
@@ -136,7 +137,7 @@ export default Vue.extend({
           designator: newValue?.designator,
           name: newValue?.name,
           description: newValue?.description,
-          editor: newValue?.editor,
+          updatedBy: newValue?.updatedBy,
           status: newValue?.status
         }
       });
@@ -148,7 +149,7 @@ export default Vue.extend({
       designator: this.$route.query.designator,
       name: this.$route.query.name,
       description: this.$route.query.description,
-      editor: this.$route.query.editor,
+      updatedBy: this.$route.query.updatedBy,
       status: this.$route.query.status
     };
   },
@@ -165,15 +166,6 @@ export default Vue.extend({
 
       const _options = { page: 1, reloadAll: true, sortBy: 'name', sortDesc: false, ...options };
 
-      console.log({
-        unit: this.unitId,
-        subType: this.formSchema?.subType,
-        size: this.$user.tablePageSize,
-        sortBy: _options.sortBy,
-        sortOrder: _options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? this.filter : {})
-      });
-
       try {
         const data = (await this.$api.entity.fetchAll(this.objectType, _options.page, {
           unit: this.unitId,
@@ -181,10 +173,8 @@ export default Vue.extend({
           size: this.$user.tablePageSize,
           sortBy: _options.sortBy,
           sortOrder: _options.sortDesc ? 'desc' : 'asc',
-          ...(this.filter ? this.filter : {})
+          ...(this.filter || {})
         } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
-
-        console.log(data);
 
         if (_options.reloadAll) {
           this.objects = data;

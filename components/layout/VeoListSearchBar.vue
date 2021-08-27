@@ -32,7 +32,7 @@
           :placeholder="$t('objectlist.description').toString()"
         />
         <v-text-field
-          v-model="filter.editor"
+          v-model="filter.updatedBy"
           hide-details
           dense
           outlined
@@ -66,7 +66,7 @@
           outlined
           color="primary"
           class="veo-list-searchbar__last-button"
-          @click="$refs.form.reset()"
+          @click="reset"
         >
           {{ $t('global.button.reset') }}
         </v-btn>
@@ -83,7 +83,7 @@ export interface IVeoFilter {
   designator: string | undefined;
   name: string | undefined;
   description: string | undefined;
-  editor: string | undefined;
+  updatedBy: string | undefined;
   status: string | undefined;
 }
 
@@ -109,7 +109,11 @@ export default Vue.extend({
   data() {
     return {
       filter: {
-        designator: undefined
+        designator: undefined,
+        name: undefined,
+        status: undefined,
+        description: undefined,
+        updatedBy: undefined
       } as IVeoFilter,
       status: [
         {
@@ -145,7 +149,16 @@ export default Vue.extend({
   },
   methods: {
     onSubmit() {
+      for (const prop in this.filter) {
+        if ((this.filter as any)[prop] === '') {
+          (this.filter as any)[prop] = undefined;
+        }
+      }
       this.$emit('input', this.filter);
+    },
+    reset() {
+      (this.$refs.form as any).reset();
+      this.$emit('reset', this.filter);
     }
   }
 });
@@ -155,6 +168,7 @@ export default Vue.extend({
 .veo-list-searchbar__button {
   border-radius: 0;
   height: auto !important;
+  border-right: 0;
 }
 
 .veo-list-searchbar__last-button {
