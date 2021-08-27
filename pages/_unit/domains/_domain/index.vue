@@ -31,6 +31,7 @@
           md="6"
         >
           <VeoDataProcessingWidget />
+          <VeoMyLatestRevisionsWidget class="mt-8" />
         </v-col>
       </v-row>
     </v-row>

@@ -58,6 +58,22 @@ export default function (api: Client) {
       return api.req(`/api/history/revisions/contemporary/${date}`, {
         params
       });
+    },
+
+    /**
+     * Loads the 10 latest edited objects/forms
+     *
+     * @param entity The entity to load the versions of.
+     */
+    fetchLatest(unitId: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
+      if (!params) {
+        params = {};
+      }
+
+      params.owner = `/units/${unitId}`;
+      return api.req('/api/history/revisions/my-latest/', {
+        params
+      });
     }
   };
 }
