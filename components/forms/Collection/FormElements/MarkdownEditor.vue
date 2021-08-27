@@ -158,6 +158,9 @@ export const helpers: Helpful<FormElementProps> = {
 // add node_modules/ to work with rollup and vue together
 // https://github.com/vuejs/rollup-plugin-vue/issues/146#issuecomment-363749613
 .vf-markdown-editor {
+  position: relative;
+  z-index: 0;
+
   @import 'node_modules/@toast-ui/editor/dist/toastui-editor';
   @import 'prismjs/themes/prism';
   @import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight';
