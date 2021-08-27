@@ -52,8 +52,11 @@
             cols="auto"
             class="mt-4"
           >
-            <h1 v-if="!isRevision">
+            <h1 v-if="!isRevision && form.objectData.displayName">
               {{ form.objectData.displayName }}
+            </h1>
+            <h1 v-else-if="!isRevision && form.formSchema">
+              {{ $t('object_create', { type: form.formSchema.name[$i18n.locale] }) }}
             </h1>
             <h1 v-else>
               {{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})
@@ -583,6 +586,7 @@ export default Vue.extend({
     "history": "History",
     "incompatibleFormSchema": "The form is incompatible to the object schema \"{objectType}\" and cannot be displayed!",
     "navigation.title": "Contents",
+    "object_create": "Create {type}",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
     "oldVersionAlert": "You are currently viewing an old and protected version. You can only edit this version after restoring it.",
@@ -596,6 +600,7 @@ export default Vue.extend({
     "history": "Verlauf",
     "incompatibleFormSchema": "Das Formular ist inkompatibel zum Objektschema \"{objectType}\" und kann deshalb nicht angezeigt werden!",
     "navigation.title": "Inhalt",
+    "object_create": "{type} erstellen",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
     "oldVersionAlert": "Ihnen wird momentan eine alte, schreibgeschützte Version angezeigt. Sie kann erst bearbeitet werden, nachdem Sie sie wiederhergestellt haben.",

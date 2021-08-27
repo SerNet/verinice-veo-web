@@ -59,7 +59,9 @@ export default Vue.extend({
   },
   computed: {
     title(): string {
-      return this.$fetchState.pending ? this.$t('create_form').toString() : this.$t('create_form_type', { type: upperFirst(this.objectType) }).toString();
+      return this.$fetchState.pending
+        ? this.$t('create_form').toString()
+        : this.$t('create_form_type', { type: upperFirst(this.form.formSchema?.name[this.$i18n.locale]) }).toString();
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id;
