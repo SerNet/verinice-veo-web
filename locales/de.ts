@@ -74,9 +74,9 @@ export default {
   'objectlist.designator': 'Designator',
   'objectlist.description': 'Beschreibung',
   'objectlist.status': 'Status',
-  'objectlist.title': 'Objektname',
+  'objectlist.name': 'Objektname',
   'objectlist.updatedat': 'Letzte Änderung',
-  'objectlist.updatedby': 'Bearbeiter',
+  'objectlist.updatedBy': 'Bearbeiter',
 
   'page.editors.title': 'Editoren',
   'page.editors.calltoaction': 'Was möchten Sie tun?',

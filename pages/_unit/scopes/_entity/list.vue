@@ -11,6 +11,7 @@
     >
       <template #menu-bar="{ on }">
         <v-row>
+          <v-spacer />
           <v-col cols="auto">
             <VeoMenuButton
               :menu-items="menuItems"

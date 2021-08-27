@@ -7,38 +7,17 @@
       <v-col
         class="d-flex"
       >
-        <v-text-field
-          v-model="filter.designator"
-          hide-details
-          dense
-          outlined
-          class="veo-list-searchbar__first-input"
-          :placeholder="$t('objectlist.designator').toString()"
-        />
-        <v-text-field
-          v-model="filter.name"
-          hide-details
-          dense
-          outlined
-          class="veo-list-searchbar__input"
-          :placeholder="$t('objectlist.title').toString()"
-        />
-        <v-text-field
-          v-model="filter.description"
-          hide-details
-          dense
-          outlined
-          class="veo-list-searchbar__input"
-          :placeholder="$t('objectlist.description').toString()"
-        />
-        <v-text-field
-          v-model="filter.updatedBy"
-          hide-details
-          dense
-          outlined
-          class="veo-list-searchbar__input"
-          :placeholder="$t('objectlist.updatedby').toString()"
-        />
+        <template v-for="(key, index) of textFilters">
+          <v-text-field
+            :key="index"
+            v-model="filter[key]"
+            hide-details
+            dense
+            outlined
+            :class="{ 'veo-list-searchbar__first-input': index === 0, 'veo-list-searchbar__input': index > 0 }"
+            :placeholder="$t(`objectlist.${key}`).toString()"
+          />
+        </template>
         <v-select
           v-if="objectType === 'process'"
           v-model="filter.status"
@@ -66,6 +45,7 @@
           outlined
           color="primary"
           class="veo-list-searchbar__last-button"
+          :disabled="resetDisabled"
           @click="reset"
         >
           {{ $t('global.button.reset') }}
@@ -78,6 +58,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
+import { omit } from 'lodash';
 
 export interface IVeoFilter {
   designator: string | undefined;
@@ -85,6 +66,7 @@ export interface IVeoFilter {
   description: string | undefined;
   updatedBy: string | undefined;
   status: string | undefined;
+  [key: string]: string | undefined;
 }
 
 enum Status {
@@ -139,6 +121,20 @@ export default Vue.extend({
       ]
     };
   },
+  computed: {
+    textFilters(): string[] {
+      return Object.keys(omit(this.filter, 'status'));
+    },
+    resetDisabled(): boolean {
+      for (const key in this.filter) {
+        if ((this.filter as { [key: string]: any })[key]) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+  },
   watch: {
     value: {
       handler(newValue: IVeoFilter) {
@@ -150,8 +146,8 @@ export default Vue.extend({
   methods: {
     onSubmit() {
       for (const prop in this.filter) {
-        if ((this.filter as any)[prop] === '') {
-          (this.filter as any)[prop] = undefined;
+        if (this.filter[prop] === '') {
+          this.filter[prop] = undefined;
         }
       }
       this.$emit('input', this.filter);
@@ -159,7 +155,8 @@ export default Vue.extend({
     reset() {
       (this.$refs.form as any).reset();
       this.$emit('reset', this.filter);
-    }
+    },
+    omit
   }
 });
 </script>
