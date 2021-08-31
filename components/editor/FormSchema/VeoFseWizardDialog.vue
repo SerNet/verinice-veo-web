@@ -1,5 +1,6 @@
 <template>
   <VeoDialog
+    v-if="isDialogOpen"
     v-model="dialog"
     :large="state !== 'start'"
     :headline="$t('editor.formschema.headline')"
@@ -19,7 +20,7 @@
             two-line
             class="px-0 overflow-hidden"
           >
-            <v-list-item @click="state = 'create-1'">
+            <v-list-item @click="state = 'create'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
                   {{ $t('createFormSchema') }}
@@ -32,7 +33,7 @@
                 </v-icon>
               </v-list-item-action>
             </v-list-item>
-            <v-list-item @click="state = 'import-1'">
+            <v-list-item @click="state = 'import-fs'">
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
                   {{ $t('importFormSchema') }}
@@ -48,13 +49,13 @@
           </v-list>
         </v-window-item>
         <v-window-item
-          value="create-1"
+          value="create"
           class="px-4"
         >
           <h2>{{ $t('createFormSchema') }}</h2>
           <v-form
             v-model="createForm.valid"
-            @submit.prevent="doCreate1()"
+            @submit.prevent="doCreate()"
           >
             <v-row
               no-gutters
@@ -127,7 +128,7 @@
                   :code="oscode"
                   :input-label="$t('objectSchemaUploadLabel')"
                   :submit-button-text="$t('importObjectschema')"
-                  @schema-uploaded="setObjectSchema"
+                  @schema-uploaded="setObjectSchema({ schema: $event })"
                 />
               </v-col>
             </v-row>
@@ -135,7 +136,7 @@
           <small>{{ $t('global.input.requiredfields') }}</small>
         </v-window-item>
         <v-window-item
-          value="import-1"
+          value="import-fs"
           class="px-4"
         >
           <h2>{{ $t('importFormSchema') }}</h2>
@@ -144,14 +145,14 @@
             :code="fscode"
             :input-label="$t('formSchemaUploadLabel')"
             :clear-input.sync="clearInput"
-            @schema-uploaded="doImport1"
+            @schema-uploaded="doImportFs"
           />
           <v-checkbox
             v-model="forceOwnSchema"
             :label="$t('forceOwnSchema')"
           />
         </v-window-item>
-        <v-window-item value="import-2">
+        <v-window-item value="import-os">
           <h2>{{ $t('importObjectschema') }}</h2>
           <p>{{ $t('importObjectSchemaHelp') }}</p>
           <VeoAlert
@@ -177,7 +178,7 @@
           <VeoEditorFileUpload
             :code="oscode"
             :input-label="$t('objectSchemaUploadLabel')"
-            @schema-uploaded="doImport2"
+            @schema-uploaded="doImportOs"
           />
         </v-window-item>
       </v-window>
@@ -194,13 +195,13 @@
       </v-btn>
       <v-spacer />
       <v-btn
-        v-if="state === 'create-1'"
+        v-if="state === 'create'"
         color="primary"
         role="submit"
         type="submit"
         text
         :disabled="!createForm.valid || (createForm.modelType === 'custom' && !objectSchema)"
-        @click="doCreate1()"
+        @click="doCreate()"
       >
         {{ $t('global.button.next') }}
       </v-btn>
@@ -210,12 +211,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, cloneDeep, merge, snakeCase, trim } from 'lodash';
+import { capitalize, cloneDeep, isEmpty, isString, merge, trim } from 'lodash';
 
 import { JsonPointer } from 'json-ptr';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { ISchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
 
 export default Vue.extend({
@@ -244,11 +245,13 @@ export default Vue.extend({
       formSchema: undefined as IVeoFormSchema | undefined,
       objectSchema: undefined as IVeoObjectSchema | undefined,
       translation: undefined as IVeoTranslations | undefined,
-      state: 'start' as 'start' | 'create-1' | 'import-1' | 'import-2',
-      schemas: [] as ISchemaEndpoint[],
+      state: 'start' as 'start' | 'create' | 'import-fs' | 'import-os',
+      schemas: [] as IVeoSchemaEndpoint[],
       invalidOS: false as boolean,
       forceOwnSchema: false as boolean,
-      clearInput: false as boolean
+      clearInput: false as boolean,
+      formSchemaId: undefined as string | undefined,
+      urlToNavigate: undefined as string | undefined
     };
   },
   computed: {
@@ -258,13 +261,22 @@ export default Vue.extend({
           text: this.$t('customObjectSchema') as string,
           value: 'custom'
         },
-        ...this.schemas.map((entry: ISchemaEndpoint) => {
+        ...this.schemas.map((entry: IVeoSchemaEndpoint) => {
           return {
             text: capitalize(entry.schemaName),
             value: entry.schemaName
           };
         })
       ];
+    },
+    isNavigatedByDialog() {
+      return isEmpty(this.$route.query);
+    },
+    isDialogCustom() {
+      return this.$route.query.os === 'custom' || this.$route.query.fs === 'custom';
+    },
+    isDialogOpen(): boolean {
+      return this.isNavigatedByDialog || this.isDialogCustom;
     }
   },
   watch: {
@@ -281,76 +293,107 @@ export default Vue.extend({
       this.dialog = newValue;
       this.noWatch = false;
     },
-    state(newValue) {
-      if (newValue === 'start') {
-        this.oscode = '\n\n\n\n\n';
-        this.objectSchema = undefined;
-        this.fscode = '\n\n\n\n\n';
-        this.formSchema = undefined;
-        this.clearCreateForm();
+    async state(newValue) {
+      if (newValue === 'create') {
+        this.schemas = await this.$api.schema.fetchAll(true);
+      }
+    },
+    $route: {
+      immediate: true,
+      deep: true,
+      async handler() {
+        if (isString(this.$route.query.name) && isString(this.$route.query.subtype)) {
+          if (this.$route.query.os === 'custom') {
+            this.state = 'create';
+            this.createForm.title = this.$route.query.name;
+            this.createForm.subType = this.$route.query.subtype;
+            this.createForm.modelType = this.$route.query.os;
+          } else if (isString(this.$route.query.os)) {
+            this.createForm.title = this.$route.query.name;
+            this.createForm.subType = this.$route.query.subtype;
+            this.createForm.modelType = this.$route.query.os;
+            await this.doCreate();
+          }
+        } else if (isString(this.$route.query.fs)) {
+          if (this.$route.query.os === 'custom') {
+            this.forceOwnSchema = true;
+          }
+          if (this.$route.query.fs === 'custom') {
+            this.state = 'import-fs';
+          } else {
+            this.formSchemaId = this.$route.query.fs;
+            if (this.$route.query.os === 'custom') {
+              this.state = 'import-os';
+            }
+            await this.doImportFs();
+          }
+        } else if (isEmpty(this.$route.query)) {
+          this.setStartState();
+        }
       }
     }
   },
   mounted() {
     this.dialog = this.value;
-
-    this.$api.schema.fetchAll(true).then((data: ISchemaEndpoint[]) => (this.schemas = data));
-    this.$api.translation.fetch([]).then((translation: IVeoTranslations) => {
-      this.translation = translation;
-    });
   },
   methods: {
     goBack() {
-      if (this.state === 'create-1' || this.state === 'import-1') {
-        this.state = 'start';
-      } else if (this.state === 'import-2') {
+      if (this.state === 'create' || this.state === 'import-fs') {
+        this.setStartState();
+      } else if (this.state === 'import-os') {
         this.fscode = '';
         this.oscode = '';
         this.clearInput = true;
-        this.state = 'import-1';
+        this.state = 'import-fs';
       }
     },
     // Create/load object schema and proceed to step 1
-    async doCreate1() {
+    async doCreate() {
       // Only proceed if an object schema was uploaded/pasted (we sadly can't validate it in the form, so we have to to it here)
       if (this.objectSchema || this.createForm.modelType !== 'custom') {
         if (this.createForm.modelType !== 'custom') {
-          this.objectSchema = await this.$api.schema.fetch(this.createForm.modelType);
+          await this.setObjectSchema({ modelType: this.createForm.modelType });
         }
-        this.doCreate2(); // We removed the option to choose between an empty form or a generate one, thus we can directly call this method.
+        this.generateInitialFs();
       } else {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('objectSchemaRequired')
         });
       }
     },
-    doCreate2() {
+    generateInitialFs() {
       const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? null : this.createForm.subType;
       this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.title }, this.objectSchema?.title || this.createForm.modelType, _subtype);
       this.emitSchemas();
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
-    async doImport1(schema: IVeoFormSchema) {
-      this.setFormSchema(schema);
-      if (!this.forceOwnSchema && this.objectTypes.findIndex((item: { value: string; text: string }) => item.value.toLowerCase() === schema.modelType?.toLowerCase()) !== -1) {
-        this.objectSchema = await this.$api.schema.fetch(schema.modelType?.toLowerCase());
+    async doImportFs(schema?: IVeoFormSchema) {
+      // If schema is not given as parameter, it is probably
+      if (!schema && this.formSchemaId) {
+        schema = await this.$api.form.fetch(this.formSchemaId);
+      }
+      if (schema) {
+        this.setFormSchema(schema);
+        if (!this.forceOwnSchema) {
+          await this.setObjectSchema({ modelType: schema.modelType?.toLowerCase() });
 
-        /* Checks whether the form schema fits the object schema. If not, we assume that the object schema the
-         * user used for this form schema is a modified version of an existing object schema and ask him to provide it.
-         */
-        if (!validate(schema, this.objectSchema).valid) {
-          this.invalidOS = true;
-          this.state = 'import-2';
+          /* Checks whether the form schema fits the object schema. If not, we assume that the object schema the
+           * user used for this form schema is a modified version of an existing object schema and ask him to provide it.
+           */
+          if (!validate(schema, this.objectSchema).valid) {
+            this.invalidOS = true;
+            this.state = 'import-os';
+          } else {
+            this.emitSchemas();
+          }
         } else {
-          this.emitSchemas();
+          this.state = 'import-os';
         }
-      } else {
-        this.state = 'import-2';
       }
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
-    doImport2(schema: IVeoObjectSchema) {
-      if (snakeCase(schema.title) !== snakeCase(this.formSchema?.modelType)) {
+    async doImportOs(schema: IVeoObjectSchema) {
+      if (schema.title !== this.formSchema?.modelType) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           text: this.$t('wrongobjectschema', {
             objectType: schema.title,
@@ -358,7 +401,7 @@ export default Vue.extend({
           })
         });
       } else {
-        this.setObjectSchema(schema);
+        await this.setObjectSchema({ schema });
         this.emitSchemas();
       }
     },
@@ -374,12 +417,33 @@ export default Vue.extend({
         }
       };
     },
-    setObjectSchema(schema: IVeoObjectSchema) {
-      const objectSchema = cloneDeep(schema);
+    setStartState() {
+      this.state = 'start';
+      this.oscode = '\n\n\n\n\n';
+      this.objectSchema = undefined;
+      this.fscode = '\n\n\n\n\n';
+      this.formSchema = undefined;
+      this.formSchemaId = undefined;
+      this.translation = undefined;
+      this.clearCreateForm();
+      this.emitSchemas();
+    },
+    async setObjectSchema(params: { schema?: IVeoObjectSchema; modelType?: string }) {
+      let urlToNavigate = '/editor/formschema';
+      if (this.createForm.title && this.createForm.subType) {
+        urlToNavigate = `${urlToNavigate}?name=${this.createForm.title}&subtype=${this.createForm.subType}&os=`;
+        urlToNavigate += this.createForm.modelType && this.createForm.modelType !== 'custom' ? this.createForm.modelType.toLowerCase() : 'custom';
+      } else if (['import-fs', 'import-os'].includes(this.state)) {
+        urlToNavigate = `${urlToNavigate}?fs=${this.formSchemaId ?? 'custom'}`;
+        urlToNavigate += this.forceOwnSchema ? '&os=custom' : '';
+      }
+      this.urlToNavigate = urlToNavigate;
+
+      const objectSchema = cloneDeep(params.schema) ?? (await this.$api.schema.fetch(params.modelType as string));
       // os specific translation within by user uploaded OS
       const osTranslation = cloneDeep(JsonPointer.get(objectSchema, '#/properties/translations') as IVeoObjectSchemaTranslations | undefined);
       // The variable mergedOsTranslation serves to merge general and OS specific translations uploaded by a user. Initial value is general translation object
-      let mergedOsTranslation = cloneDeep(this.translation);
+      let mergedOsTranslation = cloneDeep(this.translation) ?? (await this.$api.translation.fetch([]));
       // If osTranslation exists merge general and OS specific translations
       if (osTranslation) {
         // Remove "translations" property from by user uploaded OS to avoid validation errors (it is not conform with JsonSchema standard)
@@ -401,13 +465,24 @@ export default Vue.extend({
       this.formSchema = schema;
     },
     emitSchemas() {
+      // TODO: maybe emit dialog close value.
       this.$emit('update-form-schema', this.formSchema);
       this.$emit('update-object-schema', this.objectSchema);
       this.$emit('update-translation', this.translation);
+      if (this.state !== 'start') {
+        this.navigateTo();
+      }
     },
     onClose() {
       this.$router.push('/editor');
       return true;
+    },
+    navigateTo() {
+      // If the current path does not match with new url, only then change the URL
+      if (this.urlToNavigate && this.$route.path !== this.urlToNavigate) {
+        // history.pushState({}, '', this.urlToNavigate);
+        this.$router.push(this.urlToNavigate);
+      }
     }
   }
 });

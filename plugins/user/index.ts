@@ -1,6 +1,9 @@
 import { Plugin } from '@nuxt/types';
 import Keycloak from 'keycloak-js';
+import Vue from 'vue';
+
 import { Auth } from './auth';
+import LocalStorage from '~/util/LocalStorage';
 
 /**
  * This class handles all authentication related stuff.
@@ -10,24 +13,39 @@ import { Auth } from './auth';
 export class User {
   private _auth: Auth;
 
-  private _currentUnit?: string = undefined;
+  private _lastUnit: string | null = null;
+
+  private _lastDomain: string | null = null;
 
   private _tablePageSize: number = 10;
 
   constructor(config: Keycloak.KeycloakConfig) {
     this._auth = new Auth(config);
+    this._lastDomain = LocalStorage.lastDomain;
+    this._lastUnit = LocalStorage.lastUnit;
   }
 
   public get auth(): Auth {
     return this._auth;
   }
 
-  public get unit(): string | undefined {
-    return this._currentUnit;
+  public updateLastDomain(newDomain: string | undefined) {
+    this._lastDomain = newDomain ?? null;
+    LocalStorage.lastDomain = this._lastDomain;
   }
 
-  public set unit(value: string | undefined) {
-    this._currentUnit = value;
+  public updateLastUnit(newUnit: string | undefined) {
+    this._lastUnit = newUnit ?? null;
+    this.updateLastDomain(undefined);
+    LocalStorage.lastUnit = this._lastUnit;
+  }
+
+  get lastDomain(): string | undefined {
+    return this._lastDomain ?? undefined;
+  }
+
+  get lastUnit(): string | undefined {
+    return this._lastUnit ?? undefined;
   }
 
   public get tablePageSize(): number {
@@ -54,5 +72,5 @@ export default (async function ({ route, $config }, inject) {
     await $user.auth.init();
   }
 
-  inject('user', $user);
+  inject('user', Vue.observable($user));
 } as Plugin);

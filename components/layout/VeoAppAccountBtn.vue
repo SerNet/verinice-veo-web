@@ -1,7 +1,7 @@
 <template>
   <div
     style="flex-basis: 0;"
-    class="mr-0 text-right flex-grow-1"
+    class="mr-0 text-right flex-grow-0"
   >
     <v-menu
       v-model="value"
@@ -41,8 +41,10 @@
               <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-          <v-divider />
-          <VeoUnitSelection :units="units" />
+          <template v-if="!maxUnits || maxUnits > 2">
+            <v-divider />
+            <VeoUnitSelection :units="units" />
+          </template>
         </v-list>
         <v-divider />
         <v-card-actions>
@@ -85,6 +87,11 @@ export default Vue.extend({
   computed: {
     initials(): string {
       return this.prename.substring(0, 1) + this.lastname.substring(0, 1);
+    },
+    maxUnits(): number | undefined {
+      const maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
+
+      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
     }
   },
   mounted() {

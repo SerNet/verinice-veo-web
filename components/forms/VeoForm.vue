@@ -251,11 +251,12 @@ export default Vue.extend({
           api: this.api
         };
       }
+
       return h(Control, {
         props: {
           ...rule,
           elements: element.elements,
-          options: element.options,
+          options: { ...element.options, label: this.schema.required?.includes(partOfProps.name) ? element.options?.label + '*' : element.options?.label },
           disabled: this.disabled,
           ...partOfProps
         },

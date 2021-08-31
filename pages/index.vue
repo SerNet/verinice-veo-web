@@ -36,6 +36,10 @@
         </v-list>
       </template>
     </v-data-iterator>
+    <VeoWelcomeDialog
+      v-if="showWelcomeDialog"
+      v-model="showWelcomeDialog"
+    />
   </VeoPage>
 </template>
 
@@ -44,6 +48,7 @@ import Vue from 'vue';
 
 import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
+import LocalStorage from '~/util/LocalStorage';
 
 export default Vue.extend({
   props: {},
@@ -51,17 +56,48 @@ export default Vue.extend({
     return {
       search: '',
       unit: '',
-      units: [] as IVeoUnit[]
+      units: [] as IVeoUnit[],
+      showWelcomeDialog: false as boolean
     };
   },
   async fetch() {
     const units = await this.$api.unit.fetchAll();
+
+    // Only applicable if the user has only two units (one demo and one main)
+    if (this.maxUnits === 2) {
+      const nonDemoUnits = units.filter((unit) => unit.name !== 'Demo');
+      const myNonDemoUnit = nonDemoUnits.find((unit) => unit.createdBy === this.$user.auth.profile?.username);
+
+      // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect
+      if (nonDemoUnits.length > 0) {
+        // Try redirecting the user to the first unit found that was created by him, else redirect him to a unit created by someone else.
+        const id = myNonDemoUnit ? myNonDemoUnit.id : nonDemoUnits[0].id;
+        this.$router.push(createUUIDUrlParam('unit', id));
+      } else {
+        const result = await this.$api.unit.create({
+          name: 'Unit 1',
+          description: this.$t('firstUnitDescription')
+        });
+        this.$router.push(createUUIDUrlParam('unit', result.resourceId));
+      }
+    }
+
     this.units = units;
   },
   head(): any {
     return {
       title: this.$t('breadcrumbs.index')
     };
+  },
+  computed: {
+    maxUnits(): number | undefined {
+      const maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
+
+      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
+    }
+  },
+  mounted() {
+    this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
   },
   methods: {
     createUUIDUrlParam
@@ -72,10 +108,12 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "firstUnitDescription": "This is your first unit",
     "unitPicker": "Please choose a unit",
     "unitpickerPlaceholder": "Search for a unit..."
   },
   "de": {
+    "firstUnitDescription": "Dies ist ihre erste Unit",
     "unitpicker": "Bitte wählen Sie eine Unit",
     "unitpickerPlaceholder": "Nach einer Unit suchen..."
   }

@@ -1,0 +1,33 @@
+{
+  "createdAt":"2021-07-12T21:40:04.425630Z",
+  "createdBy":"pb",
+  "updatedAt":"2021-07-12T21:40:04.425630Z",
+  "updatedBy":"pb",
+  "name":"Indien",
+  "designator":"SCP-3",
+  "abbreviation":"S2",
+  "description":"Scope ohne Subtype",
+  "domains":[
+    
+  ],
+  "owner":{
+    "displayName":"NBRX Testunit",
+    "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+    "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+    "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+  },
+  "links":{
+    
+  },
+  "customAspects":{
+    
+  },
+  "subType":{
+    
+  },
+  "type":"scope",
+  "members":[
+    
+  ],
+  "id":"33e3b9e3-3cc7-4311-907c-e47846a9b870"
+}

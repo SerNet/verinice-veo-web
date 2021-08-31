@@ -1,4 +1,3 @@
-import Ajv from 'ajv';
 import { JsonPointer } from 'json-ptr';
 
 import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
@@ -9,16 +8,6 @@ export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: 
 export default class FormSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = [];
   private warnings: VeoSchemaValidatorMessage[] = [];
-
-  private ajv: Ajv.Ajv;
-
-  constructor() {
-    this.ajv = new Ajv({
-      allErrors: true,
-      jsonPointers: true,
-      strictKeywords: true
-    });
-  }
 
   /**
    *

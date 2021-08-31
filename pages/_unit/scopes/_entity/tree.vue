@@ -21,10 +21,11 @@
           :items="objects"
           :current-item="currentEntity"
           :loading="$fetchState.pending"
-          :object-type="loadMoreText"
+          :load-more-text="loadMoreText"
           :load-children="loadSubEntities"
           :sorting-function="sortingFunction"
           :entity-modified-event="entityModifiedEvent"
+          :object-type="rootEntityType"
           v-on="on"
         />
       </template>
@@ -40,7 +41,7 @@ import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/type
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
 import { IVeoEntityModifierEvent, VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
@@ -48,7 +49,8 @@ export default Vue.extend({
     return {
       objects: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
       currentEntity: undefined as undefined | IVeoEntity,
-      rootEntityType: '' as string
+      rootEntityType: '' as string,
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {
@@ -151,8 +153,13 @@ export default Vue.extend({
       return `/${this.$route.params.unit}/scopes`;
     },
     loadMoreText(): string {
-      return upperFirst(getSchemaEndpoint(this.rootEntityType));
+      return upperFirst(getSchemaEndpoint(this.schemas, this.rootEntityType));
     }
+  },
+  mounted() {
+    this.$api.schema.fetchAll((schemas: IVeoSchemaEndpoint[]) => {
+      this.schemas = schemas;
+    });
   },
   methods: {
     sortingFunction(a: ITreeEntry, b: ITreeEntry) {

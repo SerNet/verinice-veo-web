@@ -18,34 +18,69 @@ review:
     auto_stop_in: 4 week
 
 # for cypress tests
-
-# cache using branch name
-# https://gitlab.com/help/ci/caching/index.md
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - .npm
-    - cache/Cypress
+build:e2e:
+  stage: build
+  image: cypress/base:14.15.4
+  script:
+    # Install npm v7 to work with lockfile:2
+    - npm install -g npm@7.20.1
+    - npm install
+    - npm run build
+  artifacts:
+    when: always
+    paths:
+      - .npm
+      - .nuxt
+      - nuxt.config.js
+      - package.json
+      - tsconfig.json
+      - node_modules
+      - cache/Cypress
+      - cypress
+      - cypress.json
+      - nyc.config.js
+    expire_in: 1 day
+  rules:
+    - if: '$BUILD_DISABLED'
+      when: never
+    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
 
 test:e2e:
-  image: cypress/base:14.15.4
-  stage: performance
+  stage: test
   tags:
     - 'cpmsys01'
+  image: cypress/base:14.15.4
   variables:
-    VEO_API_USE_PROXY: 'false'
-    VEO_API_URL: https://veo.develop.cpmsys.io/
+    VEO_API_USE_PROXY: 'true'
+    GIT_STRATEGY: none
+    NODE_ENV: production
+    PORT: 5000
   script:
-    - npm ci
-    - CYPRESS_BASE_URL=$(cat environment_url.txt)
-    - npm run test:e2e -- --config baseUrl="$CYPRESS_BASE_URL"
+    - (npm run start&)
+    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
+  after_script:
+    # Create cobertura report
+    - npx nyc report --reporter=cobertura --reporter=text-summary
   rules:
     - if: '$TEST_DISABLED'
       when: never
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+  needs:
+    - job: build:e2e
   artifacts:
+    reports:
+      cobertura: cypress/coverage/cobertura-coverage.xml
     when: always
     paths:
       - cypress/videos/**/*.mp4
       - cypress/screenshots/**/*.png
+      - cypress/coverage/**/*
     expire_in: 1 day

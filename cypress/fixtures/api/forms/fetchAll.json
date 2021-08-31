@@ -1,0 +1,72 @@
+[
+   {
+      "domainId":"ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "name":{
+         "de":"Datenart",
+         "en":"Datatype"
+      },
+      "modelType":"asset",
+      "subType":"AST_Datatype",
+      "id":"abbd6bf3-891c-4120-a3fd-bff06748b3ab"
+   },
+   {
+      "domainId":"ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "name":{
+         "de":"Datenübertragung",
+         "en":"Data transfer"
+      },
+      "modelType":"process",
+      "subType":"PRO_DataTransfer",
+      "id":"93d11b86-1e39-4786-a73f-0f17ed8794ee"
+   },
+   {
+      "domainId":"ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "name":{
+         "de":"Verarbeitungstätigkeit",
+         "en":"Data processing"
+      },
+      "modelType":"process",
+      "subType":"PRO_DataProcessing",
+      "id":"3ebd14a2-eb7d-4d18-a9ad-2056da85569e"
+   },
+   {
+      "domainId":"ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "name":{
+         "de":"Verantwortliche Stelle",
+         "en":"Responsible body"
+      },
+      "modelType":"scope",
+      "subType":"SCP_ResponsibleBody",
+      "id":"b3843f8f-5b4a-40f1-b9e1-763df0f19fee"
+   },
+   {
+      "domainId":"ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "name":{
+         "de":"Auftragsverarbeiter",
+         "en":"Processor"
+      },
+      "modelType":"scope",
+      "subType":"SCP_Processor",
+      "id":"7406cf94-6dc9-4c26-8780-f6575835bedb"
+   },
+   {
+      "domainId":"ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "name":{
+         "de":"Anwendung",
+         "en":"Application"
+      },
+      "modelType":"asset",
+      "subType":"AST_Application",
+      "id":"4842d096-08d8-4db4-acaf-fec79bd43841"
+   },
+   {
+      "domainId":"ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "name":{
+         "de":"IT-System",
+         "en":"IT-System"
+      },
+      "modelType":"asset",
+      "subType":"AST_IT-System",
+      "id":"cbfd91b1-02f8-44c2-88cb-fbf105956ffc"
+   }
+]

@@ -96,6 +96,24 @@
           {{ $t("editor.schema.properties") }}
         </template>
       </v-tooltip>
+      <v-tooltip bottom>
+        <template #activator="{on}">
+          <v-btn
+            icon
+            large
+            target="_blank"
+            to="/help"
+            class="help-button"
+            color="primary"
+            v-on="on"
+          >
+            <v-icon>mdi-help-circle-outline</v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ $t('help') }}
+        </template>
+      </v-tooltip>
     </template>
     <template
       v-if="formSchema && objectSchema"
@@ -304,7 +322,6 @@ import vjp from 'vue-json-pointer';
 
 import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api';
 import { JsonPointer } from 'json-ptr';
-import { snakeCase } from 'lodash';
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
   IVeoTranslations,
@@ -396,7 +413,7 @@ export default defineComponent<IProps>({
     function setFormSchema(schema: IVeoFormSchema) {
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
-      if (!formSchema.value.translation?.[context.root.$i18n.locale]) {
+      if (formSchema.value && !formSchema.value.translation?.[context.root.$i18n.locale]) {
         setFormTranslation({
           ...formSchema.value.translation,
           ...{ [context.root.$i18n.locale]: {} }
@@ -434,7 +451,7 @@ export default defineComponent<IProps>({
         invalidSchemaDownloadDialogVisible.value = false;
         const data: string = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
         downloadButton.value.href = data;
-        downloadButton.value.download = snakeCase(`fs_${formSchema.value?.name[language.value] || 'missing_translation'}`) + '.json';
+        downloadButton.value.download = `fs_${formSchema.value?.name[language.value] || 'missing_translation'}.json`;
       }
     }
 
@@ -477,6 +494,7 @@ export default defineComponent<IProps>({
     }
 
     useFetch(async () => {
+      // TODO: Backend should create an API endpoint to get available languages dynamically
       avaliableLanguages.value = Object.keys((await context.root.$api.translation.fetch([]))?.lang);
     });
 
@@ -565,7 +583,8 @@ export default defineComponent<IProps>({
     "formSchemaCode": "Schema code",
     "invalidFormSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
-    "search": "Search for a control..."
+    "search": "Search for a control...",
+    "help": "Help"
   },
   "de": {
     "availableControls": "Verfügbare Steuerelemente",
@@ -574,7 +593,8 @@ export default defineComponent<IProps>({
     "formSchemaCode": "Schema code",
     "invalidFormSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
-    "search": "Nach einem Steuerelement suchen"
+    "search": "Nach einem Steuerelement suchen",
+    "help": "Hilfe"
   }
 }
 </i18n>

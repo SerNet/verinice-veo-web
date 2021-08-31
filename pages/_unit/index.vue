@@ -3,15 +3,16 @@
     :title="title"
     padding
   >
+    <p
+      class="veo-unit-description"
+    >
+      <span v-if="unit.description">{{ unit.description }}</span>
+      <i v-else>{{ $t('unit.details.nodescription') }}</i>
+    </p>
     <v-row
       no-gutters
       class="flex-column fill-height"
-      style="margin-top: -20px;"
     >
-      <p class="veo-unit-description">
-        <span v-if="unit.description">{{ unit.description }}</span>
-        <i v-else>{{ $t('unit.details.nodescription') }}</i>
-      </p>
       <div
         v-if="$fetchState.pending"
         class="flex-grow-1 d-flex align-center justify-center"
@@ -24,12 +25,16 @@
       </div>
       <template v-else>
         <v-row>
-          <!--<v-col :cols="12" sm="6" lg="4">
+          <!--<v-col
+            :cols="12"
+            sm="6"
+            lg="4"
+          >
             <VeoUnitWidget :unit="unit" />
           </v-col>-->
           <v-col
             :cols="12"
-            sm="6"
+            md="6"
           >
             <VeoUnitFormsWidget
               v-for="domain of domains"
@@ -40,7 +45,7 @@
           </v-col>
           <v-col
             :cols="12"
-            sm="6"
+            md="6"
           >
             <VeoUnitObjectWidget :unit="unit" />
           </v-col>
@@ -53,10 +58,21 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import { separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { IVeoDomain } from '~/types/VeoTypes';
 
 export default Vue.extend({
+  // VEO-692
+  middleware({ $user, redirect, params, $api }) {
+    if ($user.lastDomain) {
+      redirect(`/${params.unit}/domains/${createUUIDUrlParam('domain', $user.lastDomain)}`);
+    } else {
+      $api.domain.fetchAll().then((domains) => {
+        redirect(`/${params.unit}/domains/${createUUIDUrlParam('domain', domains[0].id)}`);
+      });
+    }
+  },
   data() {
     return {
       unit: {} as any,
@@ -64,8 +80,19 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    this.unit = await this.$api.unit.fetch(this.unitId);
-    this.domains = await this.$api.domain.fetchUnitDomains(this.unitId);
+    try {
+      this.unit = await this.$api.unit.fetch(this.unitId);
+      this.domains = await this.$api.domain.fetchUnitDomains(this.unitId);
+    } catch (e) {
+      if (e.code === 404) {
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          type: ALERT_TYPE.ERROR,
+          title: this.$t('error404'),
+          text: this.$t('unitNotFoundText')
+        } as IVeoEventPayload);
+        this.$router.push('/');
+      }
+    }
   },
   head(): any {
     return {
@@ -91,5 +118,17 @@ export default Vue.extend({
 
 .veo-unit-description {
   color: $accent;
+  margin-top: -20px;
 }
 </style>
+
+<i18n>
+{
+  "en": {
+    "unitNotFoundText": "The requested unit couldn't be found. You have been returned to the unit selection."
+  },
+  "de": {
+    "unitNotFoundText": "Die gewünschte Unit konnte nicht gefunden werden. Sie wurden zur Unitauswahl zurückgebracht."
+  }
+}
+</i18n>

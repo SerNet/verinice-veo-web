@@ -11,7 +11,6 @@ import { IVeoEventPayload } from '~/types/VeoGlobalEvents';
 interface IData {
   objectType: string | undefined;
   form: IForm;
-  isValid: boolean;
   errorMessages: IValidationErrorMessage[];
   saveBtnLoading: boolean;
   alert: IVeoEventPayload & { value: boolean; error: number };
@@ -35,7 +34,6 @@ export default Vue.extend({
         formSchema: undefined,
         lang: {}
       },
-      isValid: true,
       errorMessages: [],
       saveBtnLoading: false,
       alert: {
@@ -61,25 +59,18 @@ export default Vue.extend({
   },
   computed: {
     title(): string {
-      return this.$fetchState.pending ? this.$t('create_form').toString() : this.$t('create_form_type', { type: upperFirst(this.objectType) }).toString();
+      return this.$fetchState.pending
+        ? this.$t('create_form').toString()
+        : this.$t('create_form_type', { type: upperFirst(this.form.formSchema?.name[this.$i18n.locale]) }).toString();
     },
     unitId(): string {
       return separateUUIDParam(this.$route.params.unit).id;
-    },
-    saveBtnText(): string {
-      return this.$t('global.button.create').toString();
     }
   },
   methods: {
     onSave(): Promise<void> {
       return this.$api.entity
-        .create(this.objectType || '', {
-          ...this.form.objectData,
-          // @ts-ignore
-          owner: {
-            targetUri: `/units/${this.unitId}`
-          }
-        })
+        .create(this.objectType || '', this.form.objectData)
         .then(() => {
           this.formModified.isModified = false;
           this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`);

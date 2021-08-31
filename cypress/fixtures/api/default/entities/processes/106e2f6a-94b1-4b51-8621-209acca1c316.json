@@ -1,0 +1,38 @@
+{
+  "createdAt":"2021-07-12T21:53:40.888892Z",
+  "createdBy":"pb",
+  "updatedAt":"2021-07-12T21:53:40.888892Z",
+  "updatedBy":"pb",
+  "name":"Schwarz",
+  "designator":"PRO-13",
+  "abbreviation":"DÜ3",
+  "description":"Prozess mit Subtype Datenübertragung",
+  "domains":[
+    {
+      "displayName":"DSGVO DSGVO",
+      "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
+      "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+    }
+  ],
+  "owner":{
+    "displayName":"NBRX Testunit",
+    "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
+    "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+    "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+  },
+  "links":{
+    
+  },
+  "customAspects":{
+    
+  },
+  "subType":{
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataTransfer"
+  },
+  "type":"process",
+  "parts":[
+    
+  ],
+  "id":"106e2f6a-94b1-4b51-8621-209acca1c316"
+}

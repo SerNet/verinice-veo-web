@@ -12,7 +12,7 @@
           @click="drawer = true"
         />
         <nuxt-link
-          to="/"
+          :to="homeLink"
           class="text-decoration-none"
         >
           <VeoAppBarLogo class="ml-2" />
@@ -32,6 +32,92 @@
           style="visibility: hidden"
         />
       </div>
+      <div
+        class="d-flex flex-grow-0 mr-6"
+      >
+        <v-tooltip
+          v-if="!userIsInDemoUnit"
+          top
+          :disabled="!!demoUnit"
+        >
+          <template #activator="{ on }">
+            <div
+              class="d-inline-block"
+              v-on="on"
+              @click.prevent
+            >
+              <v-btn
+          
+                color="primary"
+                :disabled="!demoUnit"
+                class="mx-4"
+                depressed
+                @click="goToUnit(demoUnit.id)"
+              >
+                <v-icon class="mr-2">
+                  mdi-login-variant
+                </v-icon>
+                {{ $t('goToDemoUnit') }}
+              </v-btn>
+            </div>
+          </template>
+          <template #default>
+            {{ $t('noDemoUnit') }}
+          </template>
+        </v-tooltip>
+        
+        <v-btn
+          v-else
+          color="primary"
+          class="mx-4"
+          depressed
+          :disabled="units.length === 0"
+          @click="goToUnit(units[0].id)"
+        >
+          <v-icon class="mr-2">
+            mdi-logout-variant
+          </v-icon>
+          {{ $t('leaveDemoUnit') }}
+        </v-btn>
+        <v-menu offset-y>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              outlined
+              color="primary"
+              v-on="on"
+            >
+              <v-icon
+                left
+                dark
+              >
+                mdi-earth
+              </v-icon>
+              {{ $i18n.locale.toUpperCase() }}
+              <v-icon
+                right
+                dark
+              >
+                mdi-chevron-down
+              </v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item-group
+              v-model="lang"
+              color="primary"
+            >
+              <v-list-item
+                v-for="(item) in langs"
+                :key="item.text"
+                :value="item.value"
+              >
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-menu>
+      </div>
       <VeoAppAccountBtn
         v-if="$user.auth.profile"
         :username="$user.auth.profile.username"
@@ -47,7 +133,7 @@
       style="max-height: 100vh;"
       class="overflow-hidden"
     >
-      <VeoBreadcrumbs />
+      <VeoBreadcrumbs :key="breadcrumbsKey" />
       <VeoPageWrapper>
         <nuxt />
       </VeoPageWrapper>
@@ -61,27 +147,45 @@
       v-bind="alert"
       style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
     />
-    <VeoNewUnitDialog
+    <!--<VeoNewUnitDialog
       v-model="newUnitDialog.value"
       v-bind="newUnitDialog"
-    />
+    />-->
   </v-app>
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
-import { createUUIDUrlParam } from '~/lib/utils';
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { IVeoUnit } from '~/types/VeoTypes';
 
 interface IProps {}
 
 export default defineComponent<IProps>({
   setup(_props, context) {
+    const { $api, params, app } = useContext();
+
     //
     // Global navigation
     //
     const drawer: Ref<boolean> = ref(false);
+    const lang = computed({
+      get() {
+        return context.root.$i18n.locale;
+      },
+      set(newValue: string) {
+        context.root.$i18n.setLocale(newValue);
+        // After the language change, reload the page to avoid synchronisation problems
+        // Reload here should not be a big problem, because a user will not often change the language
+        window.location.reload();
+      }
+    });
+    const langs = ref([
+      { value: 'en', text: 'EN' },
+      { value: 'de', text: 'DE' }
+    ]);
 
     //
     // Unit creation and navigation
@@ -98,6 +202,7 @@ export default defineComponent<IProps>({
     //
     const alert = ref({ value: false, text: '', title: '', type: ALERT_TYPE.INFO });
     const snackbar = ref({ value: false, text: '' });
+    const breadcrumbsKey = ref(0);
 
     // Alert and snackbar events
     context.root.$on(VeoEvents.ALERT_ERROR, (payload: IVeoEventPayload) => {
@@ -145,7 +250,37 @@ export default defineComponent<IProps>({
       context.root.$router.push('/' + createUUIDUrlParam('unit', newUnit));
     });
 
-    return { alert, drawer, newUnitDialog, snackbar };
+    // Breadcrumbs related events
+    context.root.$on(VeoEvents.ENTITY_UPDATED, () => {
+      // Update breadcrumbsKey to rerender VeoBreadcrumbs component, when entity displayName is updated
+      setTimeout(() => {
+        breadcrumbsKey.value += 1;
+      }, 1000);
+    });
+
+    // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
+    const homeLink = computed(() => `/${params.value.unit}/domains/${params.value.domain}`);
+
+    // Demo unit/unit selection
+    const units: Ref<IVeoUnit[]> = ref([]);
+
+    async function loadUnits() {
+      units.value = await $api.unit.fetchAll();
+    }
+
+    // While loading the unit id passed to the createUUIDUrlParam function would be undefined in the template, creating an error. Thus we have to navigate using this function.
+    function goToUnit(unitId: string) {
+      if (unitId) {
+        app.router?.push(`/${createUUIDUrlParam('unit', unitId)}`);
+      }
+    }
+
+    const userIsInDemoUnit = computed(() => params.value.unit && separateUUIDParam(params.value.unit).id === units.value.find((unit) => unit.name === 'Demo')?.id);
+    const demoUnit: ComputedRef<IVeoUnit | undefined> = computed(() => units.value.find((unit) => unit.name === 'Demo'));
+
+    loadUnits();
+
+    return { alert, drawer, lang, langs, newUnitDialog, snackbar, breadcrumbsKey, userIsInDemoUnit, demoUnit, units, goToUnit, homeLink };
   },
   head() {
     return {
@@ -154,6 +289,21 @@ export default defineComponent<IProps>({
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "goToDemoUnit": "go to demo-unit",
+    "leaveDemoUnit": "leave demo-unit",
+    "noDemoUnit": "No demo unit exists for this account"
+  },
+  "de": {
+    "goToDemoUnit": "Zur Demo-Unit",
+    "leaveDemoUnit": "Demo-Unit verlassen",
+    "noDemoUnit": "Für diesen Account existiert keine Demo Unit"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

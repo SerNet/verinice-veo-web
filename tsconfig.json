@@ -37,9 +37,14 @@
       "nuxt-i18n/types",
       "./types/context",
       "vuetify/types",
-      "./types/vue-json-pointer",
-      "./types/VeoTypes"
+      "./types/vue-json-pointer"
     ]
   },
-  "exclude": ["coverage", ".nuxt", ".gitlab", "dist", "cypress"]
+  "exclude": [
+    "coverage",
+    ".nuxt",
+    ".gitlab",
+    "dist",
+    "cypress"
+  ]
 }

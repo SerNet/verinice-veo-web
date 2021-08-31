@@ -23,21 +23,75 @@
         <v-spacer />
         <v-col class="text-right">
           <v-btn
-            text
             outlined
             @click="doDiscard"
           >
             {{ $t('global.button.discard') }}
           </v-btn>
-          <v-btn
-            color="primary"
-            outlined
-            text
-            :loading="saveBtnLoading"
-            @click="save()"
+          <v-tooltip
+            top
+            :disabled="$fetchState.pending || isValid"
           >
-            {{ $t('global.button.create') }}
-          </v-btn>
+            <template #activator="{ on }">
+              <div
+                class="d-inline-block"
+                v-on="on"
+                @click.prevent
+              >
+                <v-btn
+                  color="primary"
+                  outlined
+                  :disabled="$fetchState.pending || !entityModified.isModified || !isValid"
+                  :loading="saveBtnLoading"
+                  @click="save"
+                >
+                  {{ $t('global.button.save') }}
+                </v-btn>
+              </div>
+            </template>
+            <template #default>
+              <ul>
+                <li
+                  v-for="(errorMessage, key) in errorMessages"
+                  :key="key"
+                >
+                  {{ errorMessage.message }}
+                </li>
+              </ul>
+            </template>
+          </v-tooltip>
+          <v-tooltip
+            top
+            :disabled="$fetchState.pending || isValid"
+          >
+            <template #activator="{ on }">
+              <div
+                class="d-inline-block"
+                v-on="on"
+                @click.prevent
+              >
+                <v-btn
+                  color="primary"
+                  outlined
+                  :disabled="$fetchState.pending || !entityModified.isModified || !isValid"
+                  :loading="saveBtnLoading"
+                  @click="save($event, true)"
+                >
+                  {{ $t('global.button.save_quit') }}
+                </v-btn>
+              </div>
+            </template>
+            <template #default>
+              <ul>
+                <li
+                  v-for="(errorMessage, key) in errorMessages"
+                  :key="key"
+                >
+                  {{ errorMessage.message }}
+                </li>
+              </ul>
+            </template>
+          </v-tooltip>
         </v-col>
       </v-row>
     </template>
@@ -95,24 +149,12 @@ import Vue from 'vue';
 import { Route } from 'vue-router/types/index';
 
 import { capitalize } from 'lodash';
-import { IForm, separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoAPIMessage } from '~/types/VeoTypes';
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
-
-interface IData {
-  form: IForm;
-  isValid: boolean;
-  errorMessages: IValidationErrorMessage[];
-  saveBtnLoading: boolean;
-  entityModified: {
-    isModified: boolean;
-    dialog: boolean;
-    target?: any;
-  };
-}
 
 export default Vue.extend({
   name: 'VeoScopesCreatePage',
@@ -131,34 +173,42 @@ export default Vue.extend({
       next();
     }
   },
-  data(): IData {
+  data() {
     return {
       form: {
         objectSchema: {},
         objectData: {},
         lang: {}
-      },
-      isValid: true,
-      errorMessages: [],
-      saveBtnLoading: false,
+      } as IForm,
+      isValid: true as boolean,
+      errorMessages: [] as IValidationErrorMessage[],
+      saveBtnLoading: false as boolean,
       entityModified: {
-        isModified: false,
-        dialog: false,
-        target: undefined
-      }
+        isModified: false as boolean,
+        dialog: false as boolean,
+        target: undefined as any
+      },
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {
     if (this.entityType) {
       const objectSchema = await this.$api.schema.fetch(this.entityType);
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
-      const objectData = {};
+      const objectData = {
+        owner: {
+          targetUri: `/units/${this.unitID}`
+        },
+        designator: '' // Needed for form validation
+      };
+
       this.form = {
         objectSchema,
         objectData,
         lang
       };
     }
+    this.schemas = await this.$api.schema.fetchAll();
   },
   head(): any {
     return {
@@ -197,7 +247,7 @@ export default Vue.extend({
       this.entityModified.isModified = false;
       this.$router.go(-1);
     },
-    async save() {
+    async save(_event: any, redirect: boolean = false) {
       this.saveBtnLoading = true;
       this.formatObjectData();
 
@@ -218,20 +268,20 @@ export default Vue.extend({
             if (this.parentType === 'scope') {
               // @ts-ignore
               parent.members.push({
-                targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
+                targetUri: `/${getSchemaEndpoint(this.schemas, this.entityType)}/${data.resourceId}`
               });
             } else {
               // @ts-ignore
               parent.parts.push({
-                targetUri: `/${getSchemaEndpoint(this.entityType)}/${data.resourceId}`
+                targetUri: `/${getSchemaEndpoint(this.schemas, this.entityType)}/${data.resourceId}`
               });
             }
 
             this.$api.entity.update(this.parentType, parent.id, parent).finally(() => {
-              this.$router.push(this.backLink);
+              this.redirect(redirect, data.resourceId);
             });
           } else {
-            this.$router.push(this.backLink);
+            this.redirect(redirect, data.resourceId);
           }
         })
         .finally(() => {
@@ -248,6 +298,22 @@ export default Vue.extend({
             id: '00000000-0000-0000-0000-000000000000',
             type: key
           };
+        });
+      }
+    },
+    // Either redirect the user back (save and close) or redirect him to the new entity (save)
+    async redirect(close: boolean, target?: string) {
+      if (close) {
+        this.$router.push(this.backLink);
+      } else if (target) {
+        const endpoint = getSchemaEndpoint(await this.$api.schema.fetchAll(), this.entityType);
+        this.$router.replace({
+          name: `unit-${this.entityType === 'scope' ? 'scopes' : 'objects'}-type-entity-edit`,
+          params: {
+            type: endpoint || '',
+            unit: this.$route.params.unit,
+            entity: createUUIDUrlParam(this.entityType, target)
+          }
         });
       }
     }

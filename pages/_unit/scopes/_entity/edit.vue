@@ -7,10 +7,22 @@
         :md="8"
         :xl="8"
         sticky-header
-        :title="objectTitle"
         :loading="$fetchState.pending"
       >
-        <template #default>
+        <template #header>
+          <v-row
+            no-gutters
+            class="justify-space-between mb-3"
+          >
+            <v-col
+              cols="auto"
+              class="mt-4"
+            >
+              <h1>
+                {{ objectTitle }}
+              </h1>
+            </v-col>
+          </v-row>
           <VeoEntityDisplayOptions
             :root-route="rootRoute"
             :current-entity="form.objectData"
@@ -21,16 +33,39 @@
             >
               {{ $t('global.button.discard') }}
             </v-btn>
-            <v-btn
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="$fetchState.pending"
-              :loading="saveBtnLoading"
-              @click="doSaveEntity"
+              top
+              :disabled="$fetchState.pending || (!entityModified.isModified) || isValid"
             >
-              {{ $t('global.button.save') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="$fetchState.pending || (entityModified && !entityModified.isModified) || !isValid"
+                    :loading="saveBtnLoading"
+                    @click="doSaveEntity"
+                  >
+                    {{ $t('global.button.save') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
             <v-btn
               v-else
               color="primary"
@@ -41,17 +76,42 @@
             >
               {{ $t('restore') }}
             </v-btn>
-            <v-btn
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="$fetchState.pending"
-              :loading="saveBtnLoading"
-              @click="doSaveEntity($event, true)"
+              top
+              :disabled="$fetchState.pending || (!entityModified.isModified) || isValid"
             >
-              {{ $t('global.button.save_quit') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="$fetchState.pending || !entityModified.isModified || !isValid"
+                    :loading="saveBtnLoading"
+                    @click="doSaveEntity($event, true)"
+                  >
+                    {{ $t('global.button.save_quit') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
           </VeoEntityDisplayOptions>
+        </template>
+        <template #default>
           <div
             v-if="$fetchState.pending"
             class="fill-width fill-height d-flex justify-center align-center"
@@ -155,7 +215,7 @@ import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
 import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
-import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
 
 interface IData {
@@ -250,9 +310,7 @@ export default Vue.extend({
   computed: {
     objectTitle(): string {
       return [
-        this.$t('edit_object', {
-          title: this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.displayName
-        }),
+        this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.displayName,
         ...(this.isRevision ? [`(${this.$t('revision')} ${this.revisionVersion})`] : [])
       ].join(' ');
     },
@@ -276,14 +334,26 @@ export default Vue.extend({
 
       this.$api.entity
         .update(this.entityType, this.entityId, this.form.objectData as IVeoEntity)
-        .then(() => {
+        .then(async (updatedObjectData) => {
           this.entityModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
+
+          // When entity.displayName changes, breadCrumbsCache of the entity should be updated
+          const breadCrumbsCache = sessionStorage.getItem(this.entityId);
+          if (breadCrumbsCache && breadCrumbsCache !== updatedObjectData.displayName) {
+            sessionStorage.setItem(this.entityId, updatedObjectData.displayName);
+            this.$root.$emit(VeoEvents.ENTITY_UPDATED, updatedObjectData);
+          }
 
           if (redirect) {
             this.$router.back();
           } else {
-            this.$fetch();
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                this.$fetch();
+                resolve(true);
+              }, 1000);
+            });
           }
         })
         .catch((error: { status: number; name: string }) => {
@@ -330,7 +400,7 @@ export default Vue.extend({
         this.revisionCache = content; // cache revision for use after modified-dialog is closed with "yes"
         this.entityModified.revisionDialog = true;
       } else {
-        if (isRevision && !this.validateRevisionSchema(content)) {
+        if (isRevision && !this.validateRevisionSchema(content).valid) {
           return;
         }
         // fill form with revision or newest data
@@ -345,7 +415,7 @@ export default Vue.extend({
     },
     showRevisionAfterDialog() {
       // close dialog without action if revision schema is invalid
-      if (!this.validateRevisionSchema(this.revisionCache)) {
+      if (!this.validateRevisionSchema(this.revisionCache).valid) {
         this.entityModified.revisionDialog = false;
         return;
       }
@@ -355,11 +425,9 @@ export default Vue.extend({
       this.entityModified.revisionDialog = false;
       this.entityModified.isModified = false;
     },
-    validateRevisionSchema(revision: IBaseObject) {
-      const validator = new ObjectSchemaValidator();
-
+    validateRevisionSchema(revision: IBaseObject): VeoSchemaValidatorValidationResult {
       delete revision.displayName;
-      const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision);
+      const isValid = ObjectSchemaValidator.fitsObjectSchema(this.form.objectSchema, revision);
       if (!isValid) {
         this.showError(500, this.$t('revision_incompatible').toString());
       }
@@ -373,7 +441,6 @@ export default Vue.extend({
 {
   "en": {
     "deleted": "Object was deleted successfully.",
-    "edit_object": "Edit \"{title}\"",
     "history": "History",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
@@ -386,7 +453,6 @@ export default Vue.extend({
   },
   "de": {
     "deleted": "Objekt wurde erfolgreich gelöscht.",
-    "edit_object": "\"{title}\" bearbeiten",
     "history": "Verlauf",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",

@@ -1,0 +1,210 @@
+<template>
+  <v-form
+    ref="form"
+    @submit.prevent="onSubmit"
+  >
+    <v-row no-gutters>
+      <v-col
+        class="d-flex"
+      >
+        <template v-for="(key, index) of textFilters">
+          <v-text-field
+            :key="index"
+            v-model="filter[key]"
+            hide-details
+            dense
+            outlined
+            :class="{ 'veo-list-searchbar__first-input': index === 0, 'veo-list-searchbar__input': index > 0 }"
+            :placeholder="$t(`objectlist.${key}`).toString()"
+          />
+        </template>
+        <v-select
+          v-if="objectType === 'process'"
+          v-model="filter.status"
+          hide-details
+          dense
+          outlined
+          class="veo-list-searchbar__input"
+          :label="$t('objectlist.status')"
+          :items="status"
+          item-text="text"
+          item-value="value"
+        />
+        <v-btn
+          outlined
+          color="primary"
+          class="veo-list-searchbar__button"
+          role="submit"
+          type="submit"
+        >
+          <v-icon>
+            mdi-magnify
+          </v-icon>
+        </v-btn>
+        <v-btn
+          outlined
+          color="primary"
+          class="veo-list-searchbar__last-button"
+          :disabled="resetDisabled"
+          @click="reset"
+        >
+          {{ $t('global.button.reset') }}
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-form>
+</template>
+
+<script lang="ts">
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
+import { omit } from 'lodash';
+
+export interface IVeoFilter {
+  designator: string | undefined;
+  name: string | undefined;
+  description: string | undefined;
+  updatedBy: string | undefined;
+  status: string | undefined;
+  [key: string]: string | undefined;
+}
+
+enum Status {
+  NEW = 'NEW',
+  IN_PROGRESS = 'IN_PROGRESS',
+  FOR_REVIEW = 'FOR_REVIEW',
+  RELEASED = 'RELEASED',
+  ARCHIVED = 'ARCHIVED'
+}
+
+export default Vue.extend({
+  props: {
+    value: {
+      type: Object as Prop<IVeoFilter>,
+      default: undefined
+    },
+    objectType: {
+      type: String,
+      default: undefined
+    }
+  },
+  data() {
+    return {
+      filter: {
+        designator: undefined,
+        name: undefined,
+        status: undefined,
+        description: undefined,
+        updatedBy: undefined
+      } as IVeoFilter,
+      status: [
+        {
+          value: Status.NEW,
+          text: this.$t('status.new').toString()
+        },
+        {
+          value: Status.IN_PROGRESS,
+          text: this.$t('status.inProgress').toString()
+        },
+        {
+          value: Status.FOR_REVIEW,
+          text: this.$t('status.forReview').toString()
+        },
+        {
+          value: Status.RELEASED,
+          text: this.$t('status.released').toString()
+        },
+        {
+          value: Status.ARCHIVED,
+          text: this.$t('status.archived').toString()
+        }
+      ]
+    };
+  },
+  computed: {
+    textFilters(): string[] {
+      return Object.keys(omit(this.filter, 'status'));
+    },
+    resetDisabled(): boolean {
+      for (const key in this.filter) {
+        if ((this.filter as { [key: string]: any })[key]) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+  },
+  watch: {
+    value: {
+      handler(newValue: IVeoFilter) {
+        this.filter = { ...newValue };
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    onSubmit() {
+      for (const prop in this.filter) {
+        if (this.filter[prop] === '') {
+          this.filter[prop] = undefined;
+        }
+      }
+      this.$emit('input', this.filter);
+    },
+    reset() {
+      (this.$refs.form as any).reset();
+      this.$emit('reset', this.filter);
+    },
+    omit
+  }
+});
+</script>
+
+<style lang="scss" scoped>
+.veo-list-searchbar__button {
+  border-radius: 0;
+  height: auto !important;
+  border-right: 0;
+}
+
+.veo-list-searchbar__last-button {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  height: auto !important;
+}
+
+.veo-list-searchbar__first-input {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.veo-list-searchbar__input {
+  border-radius: 0;
+}
+</style>
+
+<i18n>
+{
+  "en": {
+    "search": "Search...",
+    "status": {
+      "new": "New",
+      "inProgress": "In progress",
+      "forReview": "For review",
+      "released": "Released",
+      "archived": "Archived"
+    }
+  },
+  "de": {
+    "search": "Suche...",
+    "status": {
+      "new": "Neu",
+      "inProgress": "In Bearbeitung",
+      "forReview": "Zur Prüfung",
+      "released": "Freigegeben",
+      "archived": "Archiviert"
+    }
+  }
+}
+</i18n>

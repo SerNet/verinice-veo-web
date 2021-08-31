@@ -8,6 +8,7 @@ declare module 'vue/types/vue' {
   interface Vue {
     $api: API;
     $user: User;
+    $utils: any;
   }
 }
 
@@ -15,6 +16,7 @@ declare module '@nuxt/types/app' {
   interface NuxtAppOptions {
     $api: API;
     $user: User;
+    $utils: any;
   }
 }
 
@@ -22,6 +24,7 @@ declare module '@nuxt/types' {
   interface Context {
     $api: API;
     $user: User;
+    $utils: any;
     $t: VueI18n.prototype.t; // Composition api workaround
   }
 }

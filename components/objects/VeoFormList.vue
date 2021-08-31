@@ -12,6 +12,7 @@
     :sort-by.sync="sortBy"
     :sort-desc.sync="sortDesc"
     class="veo-object-list"
+    :data-cy="$utils.prefixCyData($options, 'forms-table')"
     @update:items-per-page="onPageSizeChange"
     @update:sort-by="refetch"
     @update:sort-desc="refetch"
@@ -78,6 +79,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'edit-item')"
               @click.stop="sendEvent('edit', item, true)"
               v-on="on"
             >
@@ -92,6 +94,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'clone-item')"
               @click.stop="sendEvent('duplicate', item)"
               v-on="on"
             >
@@ -106,6 +109,7 @@
           <template #activator="{on}">
             <v-btn
               icon
+              :data-cy="$utils.prefixCyData($options, 'delete-item')"
               @click.stop="sendEvent('delete', item)"
               v-on="on"
             >
@@ -141,6 +145,10 @@ export default Vue.extend({
     rootRoute: {
       type: String,
       required: true
+    },
+    objectType: {
+      type: String,
+      default: undefined
     }
   },
   data() {
@@ -184,12 +192,22 @@ export default Vue.extend({
       return [
         {
           text: this.$t('objectlist.designator'),
-          value: 'designator'
+          value: 'designator',
+          width: 120
         },
         {
-          text: this.$t('objectlist.title'),
+          text: this.$t('objectlist.name'),
           value: 'name'
         },
+        ...(this.objectType === 'process'
+          ? [
+              {
+                text: this.$t('objectlist.status'),
+                value: 'status',
+                width: 100
+              }
+            ]
+          : []),
         {
           text: this.$t('objectlist.description'),
           filterable: false,
@@ -197,7 +215,7 @@ export default Vue.extend({
           value: 'description'
         },
         {
-          text: this.$t('objectlist.updatedby'),
+          text: this.$t('objectlist.updatedBy'),
           value: 'updatedBy',
           class: 'nowrap'
         },

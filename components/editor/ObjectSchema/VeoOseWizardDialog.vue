@@ -1,5 +1,6 @@
 <template>
   <VeoDialog
+    v-if="isDialogOpen"
     v-model="dialog"
     :large="state !== 'start'"
     :headline="$t('editor.objectschema.headline')"
@@ -137,7 +138,7 @@
               <VeoEditorFileUpload
                 :code="code"
                 :input-label="$t('uploadLabel')"
-                @schema-uploaded="createSchema"
+                @schema-uploaded="importSchema"
               />
             </v-col>
           </v-row>
@@ -192,9 +193,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, trim } from 'lodash';
+import { capitalize, isEmpty, isString, trim } from 'lodash';
 
-import { ISchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export default Vue.extend({
   props: {
@@ -225,6 +226,15 @@ export default Vue.extend({
   computed: {
     importNextDisabled(): boolean {
       return (this.modelType === 'custom' && this.code === '\n\n\n\n\n') || this.modelType === '';
+    },
+    isNavigatedByDialog() {
+      return isEmpty(this.$route.query);
+    },
+    isDialogCustom() {
+      return this.$route.query?.os === 'custom';
+    },
+    isDialogOpen(): boolean {
+      return this.isNavigatedByDialog || this.isDialogCustom;
     }
   },
   watch: {
@@ -241,49 +251,87 @@ export default Vue.extend({
       this.dialog = newValue;
       this.noWatch = false;
     },
-    state(newValue) {
-      if (newValue === 'start') {
-        this.code = '';
-        this.clearCreateForm();
+    state: {
+      immediate: true,
+      handler() {
+        if (this.state === 'import' || this.state === 'start') {
+          // Only load types of schema types if a user navigates by the dialog
+          if ((this.isNavigatedByDialog || this.isDialogCustom) && this.objectTypes.length === 0) {
+            this.$api.schema
+              .fetchAll(true)
+              .then((data) =>
+                data.map((value: IVeoSchemaEndpoint) => {
+                  return {
+                    text: capitalize(value.schemaName),
+                    value: value.schemaName
+                  };
+                })
+              )
+              .then((types: any) => {
+                types.unshift({
+                  text: this.$t('customObjectSchema') as string,
+                  value: 'custom'
+                });
+                this.objectTypes = types;
+              });
+          }
+        }
+      }
+    },
+    $route: {
+      immediate: true,
+      deep: true,
+      handler() {
+        // If the user navigates by URL, depending on the parameters, schemas should be generated
+        if (!this.isNavigatedByDialog || this.isDialogCustom) {
+          if (isString(this.$route.query.type) && isString(this.$route.query.description)) {
+            // If a user navigates through a URL which has parameters type and description, new OS should be created
+            this.createForm.type = this.$route.query.type;
+            this.createForm.description = this.$route.query.description;
+            this.createSchema();
+          } else if (this.$route.query.os === 'custom') {
+            // If a user navigates through a URL which has custom os parameter,
+            // the dialog with selected custom OS should be opened
+            this.state = 'import';
+            this.modelType = 'custom';
+          } else if (isString(this.$route.query.os) && this.$route.query.os !== 'custom') {
+            // If a user navigates through a URL which has os parameter different from 'custom'
+            // (e.g. 'process', 'asset', etc.), the OS should be automatically loaded from the server
+            this.state = 'import';
+            this.modelType = this.$route.query.os;
+            this.importSchema();
+          }
+        } else if (isEmpty(this.$route.query)) {
+          this.state = 'start';
+          this.code = '';
+          this.modelType = '';
+          this.clearCreateForm();
+          this.$emit('completed', {});
+        }
       }
     }
   },
   mounted() {
     this.dialog = this.value;
-
-    this.$api.schema
-      .fetchAll(true)
-      .then((data) =>
-        data.map((value: ISchemaEndpoint) => {
-          return {
-            text: capitalize(value.schemaName),
-            value: value.schemaName
-          };
-        })
-      )
-      .then((types: any) => {
-        types.unshift({
-          text: this.$t('customObjectSchema') as string,
-          value: 'custom'
-        });
-        this.objectTypes = types;
-      });
   },
   methods: {
-    createSchema(_schema?: any) {
-      if (this.state === 'create') {
-        this.$emit('completed', {
-          schema: undefined,
-          meta: { type: this.createForm.type, description: this.createForm.description }
-        });
-      } else {
-        this.$emit('completed', { schema: _schema, meta: undefined });
-      }
-    },
-    importSchema() {
-      this.$api.schema.fetch(this.modelType).then((data: any) => {
-        this.$emit('completed', { schema: data, meta: undefined });
+    createSchema() {
+      this.$emit('completed', {
+        schema: undefined,
+        meta: { type: this.createForm.type, description: this.createForm.description }
       });
+      this.navigateTo(`type=${encodeURIComponent(this.createForm.type)}&description=${encodeURIComponent(this.createForm.description)}`);
+    },
+    importSchema(schema?: any) {
+      if (schema) {
+        this.$emit('completed', { schema, meta: undefined });
+        this.navigateTo(`os=custom`);
+      } else {
+        this.$api.schema.fetch(this.modelType).then((data: any) => {
+          this.$emit('completed', { schema: data, meta: undefined });
+          this.navigateTo(`os=${this.modelType}`);
+        });
+      }
     },
     clearCreateForm() {
       this.createForm = {
@@ -299,6 +347,13 @@ export default Vue.extend({
     onClose() {
       this.$router.push('/editor');
       return true;
+    },
+    navigateTo(paramUrl: string) {
+      const newUrl = `/editor/objectschema?${paramUrl}`;
+      // If the current path does not match with new url, only then change the URL
+      if (this.$route.path !== newUrl) {
+        this.$router.push(newUrl);
+      }
     }
   }
 });

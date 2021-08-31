@@ -1,10 +1,10 @@
 <template>
   <VeoWidget :title="$t('forms', { domain: domain.name })">
-    <template v-if="$fetchState.pending">
-      <table>
+    <v-simple-table dense>
+      <tbody v-if="$fetchState.pending">
         <tr
-          v-for="type of objects"
-          :key="type.id"
+          v-for="index in 10"
+          :key="index"
         >
           <td>
             <v-skeleton-loader
@@ -19,24 +19,22 @@
             />
           </td>
         </tr>
-      </table>
-    </template>
-    <template v-else>
-      <table>
+      </tbody>
+      <tbody v-else>
         <tr
-          v-for="type of objects"
-          :key="type.id"
+          v-for="form of formattedForms"
+          :key="form.form.id"
         >
-          <td>{{ type.name }}:</td>
+          <td>{{ form.name }}</td>
           <td class="text-right">
             <nuxt-link
-              :to="`/${$route.params.unit}/domains/${createUUIDUrlParam('domain', domain.id)}/forms/${createUUIDUrlParam('form', type.id)}`"
+              :to="`/${$route.params.unit}/domains/${createUUIDUrlParam('domain', domain.id)}/forms/${createUUIDUrlParam('form', form.form.id || '')}`"
             >
-              <b>{{ type.items }}</b>
+              <b>{{ form.totalItems }}</b>
             </nuxt-link>
           </td>
         </tr>
-        <tr v-if="objects.length === 0">
+        <tr v-if="forms.length === 0">
           <td
             colspan="2"
             class="font-italic"
@@ -44,8 +42,8 @@
             {{ $t('noForms') }}
           </td>
         </tr>
-      </table>
-    </template>
+      </tbody>
+    </v-simple-table>
   </VeoWidget>
 </template>
 
@@ -53,9 +51,9 @@
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 
-import { endpoints } from '~/plugins/api/schema';
 import { createUUIDUrlParam } from '~/lib/utils';
-import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoDomain, IVeoFormSchemaMeta, IVeoUnit } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -70,22 +68,34 @@ export default Vue.extend({
   },
   data() {
     return {
-      objects: [] as any
+      forms: [] as IVeoFormSchemaMeta[],
+      formattedForms: [] as { name: string; totalItems: number; form: IVeoFormSchemaMeta }[],
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {
-    this.objects = await this.$api.form.fetchAll(this.domain.id);
-    for (const object of this.objects) {
-      // @ts-ignore
-      const objectType = endpoints[object.modelType.toLowerCase()];
-      object.items = (
-        await this.$api.entity.fetchAll(objectType, 0, {
-          unit: this.unit.id,
-          subType: object.subType
-        })
-      ).totalItemCount;
-      object.name = object.name[this.$i18n.locale] || 'Missing translation';
+    this.schemas = await this.$api.schema.fetchAll();
+    this.forms = await this.$api.form.fetchAll(this.domain.id);
+
+    for (const form of this.forms) {
+      this.formattedForms.push({
+        name: form.name[this.$i18n.locale] || 'Missing translation',
+        form,
+        totalItems: (
+          await this.$api.entity.fetchAll(getSchemaEndpoint(this.schemas, form.modelType) as string, 0, {
+            unit: this.unit.id,
+            subType: form.subType ?? undefined
+          })
+        ).totalItemCount
+      });
     }
+  },
+  mounted() {
+    this.$i18n.onLanguageSwitched = () => {
+      for (const form of this.formattedForms) {
+        form.name = form.form.name[this.$i18n.locale];
+      }
+    };
   },
   methods: {
     createUUIDUrlParam
@@ -107,13 +117,7 @@ export default Vue.extend({
 </i18n>
 
 <style lang="scss" scoped>
-table {
-  font-size: 1.2rem;
-  min-width: 250px;
-  border-spacing: 0 12px;
-
-  a {
-    text-decoration: none;
-  }
+a {
+  text-decoration: none;
 }
 </style>

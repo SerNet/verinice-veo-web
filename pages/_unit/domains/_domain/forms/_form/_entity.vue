@@ -52,17 +52,18 @@
             cols="auto"
             class="mt-4"
           >
-            <h1 v-if="!isRevision">
+            <h1 v-if="!isRevision && form.objectData.displayName">
               {{ form.objectData.displayName }}
+            </h1>
+            <h1 v-else-if="!isRevision && form.formSchema">
+              {{ $t('object_create', { type: form.formSchema.name[$i18n.locale] }) }}
             </h1>
             <h1 v-else>
               {{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})
             </h1>
           </v-col>
         </v-row>
-      </template>
-      <template #default>
-        <v-row>
+        <v-row class="mt-3">
           <v-spacer />
           <v-col
             cols="auto"
@@ -74,15 +75,40 @@
             >
               {{ $t('global.button.discard') }}
             </v-btn>
-            <v-btn
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :loading="saveBtnLoading"
-              @click="onClick"
+              top
+              :disabled="!isSaveBtnDisabled || !formModified.isModified"
             >
-              {{ saveBtnText }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="isSaveBtnDisabled"
+                    :loading="saveBtnLoading"
+                    @click="onClick"
+                  >
+                    {{ $t('global.button.save') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
+
             <v-btn
               v-else
               color="primary"
@@ -92,18 +118,44 @@
             >
               {{ $t('restore') }}
             </v-btn>
-            <v-btn
+
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="$fetchState.pending"
-              :loading="saveBtnLoading"
-              @click="onClick($event, true)"
+              top
+              :disabled="!isSaveBtnDisabled || !formModified.isModified"
             >
-              {{ $t('global.button.save_quit') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="isSaveBtnDisabled"
+                    :loading="saveBtnLoading"
+                    @click="onClick($event, true)"
+                  >
+                    {{ $t('global.button.save_quit') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
           </v-col>
         </v-row>
+      </template>
+      <template #default>
         <VeoAlert
           v-model="isRevision"
           :type="alertType"
@@ -113,7 +165,7 @@
           {{ $t('oldVersionAlert') }}
         </VeoAlert>
         <VeoForm
-          v-if="canShowData"
+          v-if="validation.valid"
           v-model="form.objectData"
           :schema="form.objectSchema"
           :ui="form.formSchema && form.formSchema.content"
@@ -141,7 +193,7 @@
             {{ $t('incompatibleFormSchema', { objectType }) }}
           </h3>
           <VeoValidationResultList
-            :result="formschemaValidation"
+            :result="validation"
             show-warnings
             class="mt-4"
           />
@@ -312,7 +364,15 @@ export default Vue.extend({
     this.objectType = formSchema.modelType;
     if (this.objectType) {
       const objectSchema = await this.$api.schema.fetch(this.objectType);
-      const objectData = this.$route.params.entity ? await this.$api.entity.fetch(this.objectType, this.objectId) : {};
+      const objectData = this.$route.params.entity
+        ? await this.$api.entity.fetch(this.objectType, this.objectId)
+        : {
+            owner: {
+              targetUri: `/units/${this.unitId}`
+            },
+            designator: '', // Needed for form validation
+            ...(this.objectType === 'process' ? { status: 'NEW' } : {})
+          };
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       this.form = {
         objectSchema,
@@ -377,11 +437,19 @@ export default Vue.extend({
     formschemaValidation(): VeoSchemaValidatorValidationResult {
       return validate(this.form.formSchema as IVeoFormSchema, this.form.objectSchema as IVeoObjectSchema);
     },
-    canShowData(): boolean {
+    validation(): VeoSchemaValidatorValidationResult {
       const dummy = cloneDeep(this.form.objectData);
       delete dummy.displayName;
-      // Object data has to fit object schema AND form schema has to fit object schema
-      return this.validateRevisionSchema(dummy, false) && this.formschemaValidation.valid;
+      const revisionValidation = this.validateRevisionSchema(dummy, false);
+
+      return {
+        valid: this.formschemaValidation.valid && revisionValidation.valid,
+        warnings: [...this.formschemaValidation.warnings, ...revisionValidation.warnings],
+        errors: [...this.formschemaValidation.errors, ...revisionValidation.errors]
+      };
+    },
+    isSaveBtnDisabled(): boolean {
+      return this.$fetchState.pending || !this.formModified.isModified || !this.isValid;
     },
     dynamicAPI(): any {
       // TODO: adjust this dynamicAPI so that it provided directly by $api
@@ -403,8 +471,13 @@ export default Vue.extend({
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
           return this.$api.entity.fetch(objectType, res.resourceId);
         },
-        update: (objectType: string, updatedObjectData: any) => {
-          return this.$api.entity.update(objectType, this.objectId, updatedObjectData);
+        update: async (objectType: string, updatedObjectData: any) => {
+          // This fixes 400 Bad Request errors when a user updates existing Object item from the list in LinksField
+          // TODO: This is a workaround because $etag is needed to fix this bug. Check if it can be solved better in the future
+          const entityWithETag: any = await this.$api.entity.fetch(objectType, updatedObjectData.id);
+          Object.entries(updatedObjectData).forEach(([key, value]) => (entityWithETag[key] = value));
+
+          return this.$api.entity.update(objectType, updatedObjectData.id, entityWithETag);
         },
         delete: (objectType: string, id: string) => {
           this.$api.entity.delete(objectType, id);
@@ -417,9 +490,6 @@ export default Vue.extend({
       } else {
         return false;
       }
-    },
-    saveBtnText(): string {
-      return this.$t('global.button.save').toString();
     }
   },
   methods: {
@@ -440,16 +510,28 @@ export default Vue.extend({
     onSave(_event: any, redirect: boolean = false): Promise<void> {
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
-        .then(() => {
+        .then(async (updatedObjectData) => {
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
+
+          // When entity.displayName changes, breadCrumbsCache of the entity should be updated
+          const breadCrumbsCache = sessionStorage.getItem(this.objectId);
+          if (breadCrumbsCache && breadCrumbsCache !== updatedObjectData.displayName) {
+            sessionStorage.setItem(this.objectId, updatedObjectData.displayName);
+            this.$root.$emit(VeoEvents.ENTITY_UPDATED, updatedObjectData);
+          }
 
           if (redirect) {
             this.$router.push({
               path: `/${this.unitRoute}/domains/${this.$route.params.domain}/forms/${this.formRoute}/`
             });
           } else {
-            this.$fetch();
+            await new Promise((resolve) => {
+              setTimeout(() => {
+                this.$fetch();
+                resolve(true);
+              }, 1000);
+            });
           }
         })
         .catch((error: { status: number; name: string }) => {
@@ -509,7 +591,7 @@ export default Vue.extend({
         this.revisionCache = content; // cache revision for use after modified-dialog is closed with "yes"
         this.formModified.revisionDialog = true;
       } else {
-        if (isRevision && !this.validateRevisionSchema(content)) {
+        if (isRevision && !this.validateRevisionSchema(content).valid) {
           return;
         }
         // fill form with revision or newest data
@@ -524,7 +606,7 @@ export default Vue.extend({
     },
     showRevisionAfterDialog() {
       // close dialog without action if revision schema is invalid
-      if (!this.validateRevisionSchema(this.revisionCache)) {
+      if (!this.validateRevisionSchema(this.revisionCache).valid) {
         this.formModified.revisionDialog = false;
         return;
       }
@@ -534,11 +616,9 @@ export default Vue.extend({
       this.formModified.revisionDialog = false;
       this.formModified.isModified = false;
     },
-    validateRevisionSchema(revision: IBaseObject, showError: boolean = true) {
-      const validator = new ObjectSchemaValidator();
-
+    validateRevisionSchema(revision: IBaseObject, showError: boolean = true): VeoSchemaValidatorValidationResult {
       delete revision.displayName;
-      const isValid = validator.fitsObjectSchema(this.form.objectSchema, revision);
+      const isValid = ObjectSchemaValidator.fitsObjectSchema(this.form.objectSchema, revision);
       if (!isValid && showError) {
         this.showError(500, this.$t('revision_incompatible').toString());
       }
@@ -554,6 +634,7 @@ export default Vue.extend({
     "history": "History",
     "incompatibleFormSchema": "The form is incompatible to the object schema \"{objectType}\" and cannot be displayed!",
     "navigation.title": "Contents",
+    "object_create": "Create {type}",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
     "oldVersionAlert": "You are currently viewing an old and protected version. You can only edit this version after restoring it.",
@@ -567,6 +648,7 @@ export default Vue.extend({
     "history": "Verlauf",
     "incompatibleFormSchema": "Das Formular ist inkompatibel zum Objektschema \"{objectType}\" und kann deshalb nicht angezeigt werden!",
     "navigation.title": "Inhalt",
+    "object_create": "{type} erstellen",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
     "oldVersionAlert": "Ihnen wird momentan eine alte, schreibgeschützte Version angezeigt. Sie kann erst bearbeitet werden, nachdem Sie sie wiederhergestellt haben.",

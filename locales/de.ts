@@ -36,6 +36,7 @@ export default {
   'editor.schema.warnings': 'Hinweise',
 
   'error.title': 'Es ist ein Fehler aufgetreten',
+  error404: '404 - Nicht gefunden',
 
   'forms.input.array.add': 'Element hinzufügen',
   'forms.input.linkadd': 'Link hinzufügen',
@@ -53,7 +54,6 @@ export default {
   'global.appstate.alert.error': 'Ein Fehler ist aufgetreten!',
   'global.button.cancel': 'Abbrechen',
   'global.button.close': 'Schließen',
-  'global.button.create': 'Erstellen',
   'global.button.delete': 'Löschen',
   'global.button.next': 'Weiter',
   'global.button.no': 'Nein',
@@ -63,6 +63,7 @@ export default {
   'global.button.save': 'Speichern',
   'global.button.save_quit': 'Speichern und Schließen',
   'global.button.apply': 'Übernehmen',
+  'global.button.reset': 'Zurücksetzen',
   'global.button.yes': 'Ja',
   'global.input.required': 'Das Feld muss ausgefüllt werden',
   'global.input.requiredfields': '* Pflichtfelder',
@@ -72,9 +73,10 @@ export default {
 
   'objectlist.designator': 'Designator',
   'objectlist.description': 'Beschreibung',
-  'objectlist.title': 'Objektname',
+  'objectlist.status': 'Status',
+  'objectlist.name': 'Objektname',
   'objectlist.updatedat': 'Letzte Änderung',
-  'objectlist.updatedby': 'Bearbeiter',
+  'objectlist.updatedBy': 'Bearbeiter',
 
   'page.editors.title': 'Editoren',
   'page.editors.calltoaction': 'Was möchten Sie tun?',
@@ -95,7 +97,7 @@ export default {
 
   'search.label': 'verinice. durchsuchen',
 
-  'domain.index.title': 'Modul Dashboard',
+  'domain.index.title': 'Dashboard',
 
   'unit.create': 'Neue Unit erstellen',
   'unit.create.short': 'Unit erstellen',
@@ -120,7 +122,6 @@ export default {
   'breadcrumbs.catalogs': 'Kataloge',
   'breadcrumbs.domain': 'Modul',
   'breadcrumbs.reports': 'Reports',
-  'breadcrumbs.settings': 'Einstellungen',
   'breadcrumbs.help': 'Handbuch',
   'breadcrumbs.detail_view': 'Detailansicht',
   'breadcrumbs.editor': 'Editoren',

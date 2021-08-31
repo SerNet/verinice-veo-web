@@ -31,7 +31,7 @@
             @click.stop="onDialogOpen('DIALOG_CREATE')"
           >
             <span v-if="currentForm">
-              {{ $t('createTargetForm', { type: currentForm.name }) }}
+              {{ $t('createTargetForm', { type: currentForm.name[$i18n.locale] }) }}
             </span>
             <span v-else>
               {{ $t('createTargetObject') }}
@@ -229,7 +229,7 @@ import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
 import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
 import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { separateUUIDParam } from '~/lib/utils';
 
 interface ITarget {
@@ -264,6 +264,7 @@ interface IData {
   currentForm: IVeoFormSchemaMeta | undefined;
   totalItems: number;
   initialized: boolean;
+  schemas: IVeoSchemaEndpoint[];
 }
 
 export default Vue.extend({
@@ -327,8 +328,12 @@ export default Vue.extend({
       linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema },
       currentForm: undefined,
       totalItems: 0 as number,
-      initialized: false
+      initialized: false,
+      schemas: [] as IVeoSchemaEndpoint[]
     };
+  },
+  async fetch() {
+    this.schemas = await this.$api.schema.fetchAll();
   },
   computed: {
     ui() {
@@ -341,7 +346,7 @@ export default Vue.extend({
       };
     },
     targetUri(): string | undefined {
-      return this.targetId ? `/${getSchemaEndpoint(this.targetType)}/${this.targetId}` : undefined;
+      return this.targetId ? `/${getSchemaEndpoint(this.schemas, this.targetType)}/${this.targetId}` : undefined;
     },
     targetType(): string {
       return (this.schema.items as any).properties.target.properties.type.enum[0];
@@ -378,9 +383,10 @@ export default Vue.extend({
   watch: {
     value: {
       async handler(v: BaseObject) {
-        const displayName = v?.target?.displayName;
         this.initialized = false;
-        await this.fetchItems(displayName);
+        const selectedItem = this.items.find((item) => item.id === v?.target?.targetUri?.split('/')?.pop());
+        const displayName = v?.target?.displayName;
+        await this.fetchItems(displayName || selectedItem?.name);
         this.initialized = true;
       },
       immediate: true,
@@ -464,8 +470,7 @@ export default Vue.extend({
       this.dialogLoading = true;
       if (this.itemInDialog) {
         await this.api.update(this.targetType, this.itemInDialog);
-        const itemIndex = this.items.findIndex((item) => this.itemInDialog && item.id === this.itemInDialog.id);
-        this.items.splice(itemIndex, 1, this.itemInDialog);
+        await this.fetchItems();
       }
       this.dialogLoading = false;
       this.dialog = false;

@@ -29,6 +29,7 @@ pipeline {
                 script {
                     projectVersion = sh(returnStdout: true, script: '''jq .version package.json''').trim()
                 }
+                sh 'mkdir -p $WORKSPACE/out'
             }
         }
         stage('Test') {
@@ -39,9 +40,21 @@ pipeline {
                 }
             }
             steps {
-                sh 'cd /usr/src/app && npm run test'
-                sh "cp /usr/src/app/junit.xml $WORKSPACE"
-                junit 'junit.xml'
+                script {
+                    def outputDir = "$WORKSPACE/out/test"
+                    sh "mkdir -p $outputDir"
+                    try {
+                        sh 'cd /usr/src/app && npm run test'
+                    } finally {
+                        dir (outputDir){
+                            sh "cp /usr/src/app/junit.xml ."
+                            junit 'junit.xml'
+                            sh script: "cp /root/.npm/_logs/* .", returnStatus: true
+                            archiveArtifacts artifacts: '*.log', allowEmptyArchive: true
+                        }
+                        sh "rm -fr $outputDir"
+                    }
+                }
             }
         }
         stage('Dockerimage') {
@@ -50,7 +63,8 @@ pipeline {
             }
             steps {
                 script {
-                    def dockerImage = docker.build("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}", "--label org.opencontainers.image.version='$projectVersion' --label org.opencontainers.image.revision='$env.GIT_COMMIT' .")
+                    def nodeEnv = env.GIT_BRANCH == 'develop' ? 'development' : 'production'
+                    def dockerImage = docker.build("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}", "--build-arg CI_COMMIT_SHA='${env.GIT_COMMIT}' --build-arg CI_JOB_ID='${env.BUILD_NUMBER}' --build-arg CI_COMMIT_TIMESTAMP='${new Date().time}' --build-arg NODE_ENV=${nodeEnv} --label org.opencontainers.image.version='$projectVersion' --label org.opencontainers.image.revision='$env.GIT_COMMIT' .")
                     // Finally, we'll push the image with several tags:
                     // Pushing multiple tags is cheap, as all the layers are reused.
                     withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
@@ -68,48 +82,38 @@ pipeline {
         stage('End-to-end tests') {
             agent any
             steps {
-                sh 'mkdir -p $WORKSPACE/out'
                 script {
+                    def outputDir = "$WORKSPACE/out/e2e-test"
+                    sh "mkdir -p $outputDir"
                     withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
                         withDockerNetwork{ n ->
                             docker.image("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}").withRun("--network ${n} --name veo-web-${n}") {
-                                docker.build('veo-web-e2e-tests', '-f e2e.Dockerfile .').inside("--network ${n} -w $WORKSPACE -e no_proxy=localhost,127.0.0.1,veo-web-${n} -e LANG=de_DE.UTF-8") {
+                                docker.build('veo-web-e2e-tests', '-f e2e.Dockerfile .').inside("--network ${n} -w $WORKSPACE -e no_proxy=localhost,127.0.0.1,veo-web-${n} -e LANG=de_DE.UTF-8 -e CYPRESS_CACHE_FOLDER=$WORKSPACE/cypress-cache") {
                                     catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                                        sh "npm ci"
+                                        sh "node --version"
+                                        sh "npm --version"
+                                        sh "npm install"
                                         def cypressOptions = [ reporter:'junit',
                                                                reporterOptions: [
-                                                                 mochaFile: 'out/junit.xml'
+                                                                 mochaFile: 'out/e2e-test/junit-e2e-[hash].xml'
                                                                ],
                                                                baseUrl: "http://veo-web-${n}:5000",
                                                                video: false,
-                                                               screenshotsFolder: 'out/screenshots',
+                                                               screenshotsFolder: 'out/e2e-test/screenshots',
                                                                defaultCommandTimeout: 10000
                                                              ]
                                         def cypressOptionsStr = groovy.json.JsonOutput.toJson(cypressOptions)
-                                        sh "npm run test:e2e -- --config '${cypressOptionsStr}'"
+                                        sh "NO_COLOR=1 npm run test:e2e -- --config '${cypressOptionsStr}'"
                                     }
+                                    dir (outputDir){
+                                        sh script: "cp /home/appuser/.npm/_logs/* .", returnStatus: true
+                                        junit 'junit-e2e-*.xml'
+                                        archiveArtifacts artifacts: '*.log,screenshots/**/*.png', allowEmptyArchive: true
+                                    }
+                                    sh "rm -fr $outputDir"
                                 }
                             }
                         }
-                    }
-                }
-            }
-            post {
-                always {
-                    dir ('out'){
-                        sh script: "cp -rt . /home/appuser/.npm/_logs/", returnStatus: true
-                        archiveArtifacts artifacts: '_logs/*,screenshots/**/*.png', allowEmptyArchive: true
-                        junit testResults: 'junit.xml'
-                        deleteDir()
-                    }
-                }
-                failure {
-                    script {
-                      def buildLog = sh(script: "wget -q -O- ${BUILD_URL}/consoleText", returnStdout: true)
-                      def lastLines = buildLog.readLines().takeRight(50).join('\n')
-                      rocketSend channel: '#frontend', message: "A veo front-end build failed", attachments: [
-                        [ title: 'Build log excerpt', collapsed: true, text: "...\n${lastLines}" ]
-                      ]
                     }
                 }
             }
@@ -121,6 +125,26 @@ pipeline {
             }
             steps {
                 build job: 'verinice-veo-deployment/master'
+            }
+        }
+    }
+    post {
+        always {
+            node('') {
+                dir ('out'){
+                    deleteDir()
+                }
+            }
+        }
+        unsuccessful {
+            node('') {
+                script {
+                  def buildLog = sh(script: "wget -q -O- ${BUILD_URL}/consoleText", returnStdout: true)
+                  def lastLines = buildLog.readLines().takeRight(50).join('\n')
+                  rocketSend channel: '#frontend', message: "A veo front-end build failed", attachments: [
+                    [ title: 'Build log excerpt', collapsed: true, text: "...\n${lastLines}" ]
+                  ]
+                }
             }
         }
     }

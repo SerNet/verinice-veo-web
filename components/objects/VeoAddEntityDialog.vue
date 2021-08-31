@@ -9,8 +9,12 @@
   >
     <template #default>
       {{ $t('add_subentities', { displayName: entityDisplayName }) }}
-      <v-row v-if="editedEntity && editedEntity.type === 'scope' && addType === 'entity'">
+      <v-row
+        dense
+        class="justify-space-between"
+      >
         <v-col
+          v-if="editedEntity && editedEntity.type === 'scope' && addType === 'entity'"
           lg="3"
           md="6"
           cols="12"
@@ -27,11 +31,23 @@
             dense
           />
         </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          class="flex-grow-1 search-bar"
+        >
+          <VeoListSearchBar
+            v-model="filter"
+            :object-type="objectType"
+            @reset="filter = $event"
+          />
+        </v-col>
       </v-row>   
       <VeoEntitySelectionList
         :selected-items="selectedItems"
         :items="entities"
         :loading="$fetchState.pending || loading"
+        :object-type="objectName"
         @new-subentities="onNewSubEntities"
         @page-change="fetchEntities"
         @refetch="fetchEntities"
@@ -63,9 +79,11 @@
 import Vue from 'vue';
 import { upperFirst } from 'lodash';
 import { Prop } from 'vue/types/options';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 
-import { getSchemaEndpoint, getSchemaName, ISchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaEndpoint, getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
 
 export default Vue.extend({
   props: {
@@ -84,12 +102,13 @@ export default Vue.extend({
   },
   data() {
     return {
+      filter: undefined as IVeoFilter | undefined,
       selectedItems: [] as { id: string; type: string }[],
       saving: false as boolean,
       entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
       loading: false as boolean,
       objectType: '' as string,
-      schemas: [] as ISchemaEndpoint[]
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {
@@ -103,7 +122,7 @@ export default Vue.extend({
       return this.editedEntity?.displayName || '';
     },
     objectTypes(): { value: string; text: string }[] {
-      let schemas = this.schemas.map((schema: ISchemaEndpoint) => ({
+      let schemas = this.schemas.map((schema: IVeoSchemaEndpoint) => ({
         text: upperFirst(schema.schemaName),
         value: schema.endpoint
       }));
@@ -114,6 +133,9 @@ export default Vue.extend({
       }
 
       return schemas;
+    },
+    objectName(): string | undefined {
+      return this.schemas.find((schema) => schema.endpoint === this.objectType)?.schemaName;
     },
     dialog: {
       get(): boolean {
@@ -139,10 +161,10 @@ export default Vue.extend({
         }
 
         this.selectedItems = presetEntities.map((member) => {
-          const destructedLink = member.targetUri.split('/');
-          const id = destructedLink.pop() || '';
-          let type = destructedLink.pop() || '';
-          type = getSchemaName(type) || type;
+          const details = getEntityDetailsFromLink(member);
+          const id = details.id;
+          let type = details.type;
+          type = getSchemaName(this.schemas, type) || type;
 
           return { id, type };
         });
@@ -152,6 +174,9 @@ export default Vue.extend({
       if (oldValue) {
         this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
       }
+    },
+    filter() {
+      this.$fetch();
     }
   },
   methods: {
@@ -165,7 +190,7 @@ export default Vue.extend({
 
       const children = this.selectedItems.map((item) => {
         return {
-          targetUri: `/${getSchemaEndpoint(item.type) || item.type}/${item.id}`
+          targetUri: `/${getSchemaEndpoint(this.schemas, item.type) || item.type}/${item.id}`
         };
       });
       if (this.editedEntity.type === 'scope') {
@@ -211,7 +236,8 @@ export default Vue.extend({
       this.entities = await this.$api.entity.fetchAll(_objectType, options.page, {
         size: this.$user.tablePageSize,
         sortBy: options.sortBy,
-        sortOrder: options.sortDesc ? 'desc' : 'asc'
+        sortOrder: options.sortDesc ? 'desc' : 'asc',
+        ...(this.filter || {})
       });
       this.loading = false;
     }
@@ -237,3 +263,9 @@ export default Vue.extend({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.search-bar-desktop {
+  margin: 0 100px;
+}
+</style>

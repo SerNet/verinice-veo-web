@@ -4,20 +4,75 @@
     fullsize
   >
     <template #header>
-      <v-row class="justify-space-between">
+      <v-row
+        dense
+        class="justify-space-between"
+      >
         <v-col cols="auto">
           <p
             v-if="report"
-            class="mt-4"
+            class="mt-2 mb-0"
           >
-            {{ report.description }}
+            {{ report.description[$i18n.locale] }}
           </p>
         </v-col>
+      </v-row>
+    </template>
+    <template #default>
+      <VeoLoadingWrapper v-if="generatingReport" />
+      <p v-if="report && report.multipleTargetsSupported">
+        {{ $t('hintMultiple') }}
+      </p>
+      <p v-else-if="report">
+        {{ $t('hintSingle') }}
+      </p>
+      <v-row
+        dense
+        class="justify-space-between"
+      >
+        <v-col
+          v-if="objectTypes.length > 1 || subTypes.length > 1"
+          cols="12"
+        >
+          <b>{{ $t('filterObjects') }}</b>
+        </v-col>
+        <v-col
+          v-if="objectTypes.length > 1"
+          lg="3"
+          md="6"
+          cols="12"
+        >
+          <v-select
+            v-model="objectType"
+            :label="$t('objectType')"
+            :items="objectTypes"
+            class="mt-2"
+            outlined
+            dense
+          />
+        </v-col>
+        <v-col
+          v-if="subTypes.length > 1"
+          lg="3"
+          md="6"
+          cols="12"
+        >
+          <v-select
+            v-model="userSelectedSubType"
+            :label="$t('form')"
+            :items="subTypes"
+            class="mt-2"
+            outlined
+            dense
+            @change="onSubTypeChange"
+          />
+        </v-col>
+        <v-spacer v-if="objectTypes.length <= 1 && subTypes.length <= 1" />
         <v-col cols="auto">
           <v-btn
             outlined
+            class="my-4"
             color="primary"
-            class="mt-4"
             :disabled="global_loading || !selectedEntities.length"
             @click="generateReport"
           >
@@ -25,39 +80,17 @@
           </v-btn>
         </v-col>
       </v-row>
-    </template>
-    <template #default>
-      <VeoLoadingWrapper v-if="generatingReport" />
-      <p v-if="report && report.multiselect">
-        {{ $t('hintMultiple') }}
-      </p>
-      <p v-else-if="report">
-        {{ $t('hintSingle') }}
-      </p>
-      <v-row v-if="objectTypes.length > 1">
-        <v-col
-          lg="3"
-          md="6"
-          cols="12"
-        >
-          <span>
-            {{ $t('shown_objecttype') }}:
-          </span>
-          <v-select
-            v-model="objectType"
-            :label="$t('object_type')"
-            :items="objectTypes"
-            class="mt-2"
-            outlined
-            dense
-          />
-        </v-col>
-      </v-row>   
+      <VeoListSearchBar
+        v-model="filter"
+        :object-type="objectType"
+        @reset="filter = $event"
+      />
       <VeoEntitySelectionList
         :selected-items="selectedEntities"
         :items="entities"
         :loading="$fetchState.pending || global_loading"
         single-select
+        :object-type="objectType"
         @new-subentities="onNewSubEntities"
         @page-change="fetchEntities"
         @refetch="fetchEntities"
@@ -70,51 +103,30 @@
 import { upperCase, upperFirst } from 'lodash';
 import Vue from 'vue';
 
-import { IVeoCreateReportData, IVeoEntity, IVeoPaginatedResponse, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCreateReportData, IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoReportMeta, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
 
 export default Vue.extend({
   data() {
     return {
+      filter: undefined as IVeoFilter | undefined,
       entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
       selectedEntities: [] as { id: string; type: string }[],
-      report: undefined as
-        | undefined
-        | {
-            name: string;
-            description: string;
-            outputFormat: string;
-            outputType: string;
-            multiselect: boolean;
-            targetTypes: string[];
-          },
+      report: undefined as IVeoReportMeta | undefined,
       generatingReport: false as boolean,
       loading: false as boolean,
-      objectType: undefined as undefined | string
+      objectType: undefined as undefined | string,
+      userSelectedSubType: undefined as undefined | string,
+      forms: [] as IVeoFormSchemaMeta[]
     };
   },
   async fetch() {
+    this.forms = await this.$api.form.fetchAll();
     const reports: IVeoReportsMeta = await this.$api.report.fetchAll();
-    const _report = reports[this.reportId];
-    const format = _report.outputTypes
-      .map((type) => {
-        const formatParts = type.split('/');
-        return formatParts[formatParts.length - 1];
-      })
-      .join(', ');
+    this.report = reports[this.reportId];
 
-    if (_report) {
-      this.report = {
-        name: _report.name[this.$i18n.locale],
-        description: _report.description[this.$i18n.locale],
-        outputFormat: format,
-        outputType: _report.outputTypes[0],
-        multiselect: _report.multipleTargetsSupported,
-        targetTypes: _report.targetTypes
-      };
-
-      this.objectType = _report.targetTypes[0];
-      this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
-    }
+    // Preselect the object type (and trigger the api request)
+    this.objectType = this.report.targetTypes[0].modelType;
   },
   head(): any {
     return {
@@ -122,8 +134,11 @@ export default Vue.extend({
     };
   },
   computed: {
+    outputFormat(): string {
+      return this.report?.outputTypes[0].split('/').pop() || '';
+    },
     title(): string {
-      return this.$t('create', { type: this.report?.name || '', format: upperCase(this.report?.outputFormat || '') });
+      return this.$t('create', { type: this.report?.name[this.$i18n.locale] || '', format: upperCase(this.outputFormat || '') });
     },
     reportId(): string {
       return this.$route.params.type;
@@ -133,32 +148,77 @@ export default Vue.extend({
     },
     objectTypes(): { value: string; text: string }[] {
       return (
-        this.report?.targetTypes.map((targetType: string) => ({
-          text: upperFirst(targetType),
-          value: targetType
+        this.report?.targetTypes.map((targetType) => ({
+          text: upperFirst(targetType.modelType),
+          value: targetType.modelType
         })) || []
       );
+    },
+    currentTargetType(): { modelType: string; subTypes?: null | string[] } | undefined {
+      return this.report?.targetTypes.find((targetType) => targetType.modelType === this.objectType);
+    },
+    subType(): string | undefined {
+      if (!this.currentTargetType?.subTypes) {
+        return undefined;
+      } else if (this.currentTargetType.subTypes.length === 0) {
+        return '';
+      } else {
+        return this.userSelectedSubType;
+      }
+    },
+    subTypes(): { value: string; text: string }[] {
+      return (this.currentTargetType?.subTypes || []).map((entry) => ({
+        text: this.forms.find((form) => form.subType === entry)?.name[this.$i18n.locale] || '',
+        value: entry
+      }));
     }
   },
   watch: {
-    objectType(_newValue: string, oldValue: string) {
-      if (oldValue) {
-        this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
-      }
+    filter(newValue: IVeoFilter) {
+      this.$router.push({
+        ...this.$route,
+        query: {
+          designator: newValue?.designator,
+          name: newValue?.name,
+          description: newValue?.description,
+          updatedBy: newValue?.updatedBy,
+          status: newValue?.status
+        }
+      });
+      this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
+    },
+    objectType() {
+      // Preselect the first subtype fitting the previous selected object type
+      this.userSelectedSubType = this.currentTargetType?.subTypes?.[0];
+
+      this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
     }
+  },
+  mounted() {
+    this.filter = {
+      designator: this.$route.query.designator,
+      name: this.$route.query.name,
+      description: this.$route.query.description,
+      updatedBy: this.$route.query.updatedBy,
+      status: this.$route.query.status
+    };
   },
   methods: {
     async generateReport() {
       this.generatingReport = true;
       if (this.report) {
+        const outputType = this.report.outputTypes[0];
         const body: IVeoCreateReportData = {
-          outputType: this.report.outputType,
+          outputType,
           targets: this.selectedEntities
         };
-        const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: 'application/pdf' });
+        const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: outputType });
         window.open(URL.createObjectURL(result));
       }
       this.generatingReport = false;
+    },
+    onSubTypeChange() {
+      this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
     },
     onNewSubEntities(items: { type: string; id: string }[]) {
       this.selectedEntities = items;
@@ -167,9 +227,11 @@ export default Vue.extend({
       this.loading = true;
 
       this.entities = await this.$api.entity.fetchAll(this.objectType, options.page, {
+        ...(this.subType || this.subType === '' ? { subType: this.subType } : {}),
         size: this.$user.tablePageSize,
         sortBy: options.sortBy,
-        sortOrder: options.sortDesc ? 'desc' : 'asc'
+        sortOrder: options.sortDesc ? 'desc' : 'asc',
+        ...(this.filter || {})
       });
 
       this.loading = false;
@@ -182,19 +244,21 @@ export default Vue.extend({
 {
   "en": {
     "create": "Create {type} ({format})",
+    "filterObjects": "Filter objects",
+    "form": "Sub type",
     "generateReport": "Generate report",
     "hintMultiple": "Please select the object you want to create the report for.",
     "hintSingle": "Please select the object you want to create the report for.",
-    "object_type": "Object type",
-    "shown_objecttype": "Object type to link"
+    "objectType": "Object type"
   },
   "de": {
     "create": "{type} ({format}) erstellen",
+    "filterObjects": "Objektauswahl weiter einschränken",
+    "form": "Subtyp",
     "generateReport": "Report generieren",
     "hintMultiple": "Bitte wählen Sie die Objekte aus, für die Sie den Report erstellen möchten.",
     "hintSingle": "Bitte wählen Sie das Objekt aus, für das Sie den Report erstellen möchten.",
-    "object_type": "Objekttyp",
-    "shown_objecttype": "Zu verknüpfender Objekttyp"
+    "objectType": "Objekttyp"
   }
 }
 </i18n>

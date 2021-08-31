@@ -1,6 +1,6 @@
 /// <reference path="../support/index.d.ts" />
 
-import { getEditorData } from '../support/utils';
+import { generateTos, getEditorData, ITo } from '../support/utils';
 
 const textOrGroupLangRegex = /(group|text)_[a-zA-Z0-9._-]+/g;
 
@@ -34,56 +34,99 @@ const translationsChanged = {
   'group_860ed628-c439-440c-a429-fb4a132f85af': 'Gruppe 2 Test geändert'
 };
 
-const translationsDeleted = {};
+const tos = generateTos({
+  emptyProcess: {
+    requestUrlPattern: /.*\/formsapi\/3ebd14a2-eb7d-4d18-a9ad-2056da85569e/,
+    fixturePath: 'formschema/empty-process.json',
+    browserUrl: '/editor/formschema?fs=3ebd14a2-eb7d-4d18-a9ad-2056da85569e'
+  },
+  inputTextMultilineMarkdown: {
+    requestUrlPattern: /.*\/formsapi\/1a3b9e9d-b451-4b44-b0c0-b0d18ac806d4/,
+    fixturePath: 'formschema/elements/input-text-multiline-markdown.json',
+    browserUrl: '/editor/formschema?fs=1a3b9e9d-b451-4b44-b0c0-b0d18ac806d4'
+  },
+  inputUri: {
+    requestUrlPattern: /.*\/formsapi\/d8e2e6bc-ea88-49e6-9622-0f64435d9e85/,
+    fixturePath: 'formschema/elements/input-uri.json',
+    browserUrl: '/editor/formschema?fs=d8e2e6bc-ea88-49e6-9622-0f64435d9e85'
+  },
+  inputDate: {
+    requestUrlPattern: /.*\/formsapi\/a809dbab-7b29-409e-9e5f-9ffb66e33868/,
+    fixturePath: 'formschema/elements/input-date.json',
+    browserUrl: '/editor/formschema?fs=a809dbab-7b29-409e-9e5f-9ffb66e33868'
+  },
+  checkbox: {
+    requestUrlPattern: /.*\/formsapi\/6972a6be-6fe6-4905-96d6-12d265c79667/,
+    fixturePath: 'formschema/elements/checkbox.json',
+    browserUrl: '/editor/formschema?fs=6972a6be-6fe6-4905-96d6-12d265c79667'
+  },
+  selectRadioAutocomplete: {
+    requestUrlPattern: /.*\/formsapi\/4a654fcd-387b-4dfa-b96b-b0c8899c284f/,
+    fixturePath: 'formschema/elements/select-radio-autocomplete.json',
+    browserUrl: '/editor/formschema?fs=4a654fcd-387b-4dfa-b96b-b0c8899c284f'
+  },
+  linksField: {
+    requestUrlPattern: /.*\/formsapi\/d25795f6-5399-4535-bcbd-de5010cdb977/,
+    fixturePath: 'formschema/elements/links-field.json',
+    browserUrl: '/editor/formschema?fs=d25795f6-5399-4535-bcbd-de5010cdb977'
+  },
+  label: {
+    requestUrlPattern: /.*\/formsapi\/944ed8b6-3231-467c-a1ef-b54292220020/,
+    fixturePath: 'formschema/elements/label.json',
+    browserUrl: '/editor/formschema?fs=944ed8b6-3231-467c-a1ef-b54292220020'
+  },
+  group: {
+    requestUrlPattern: /.*\/formsapi\/6e3de110-6468-418f-a677-4da9c1f51b72/,
+    fixturePath: 'formschema/elements/group.json',
+    browserUrl: '/editor/formschema?fs=6e3de110-6468-418f-a677-4da9c1f51b72'
+  },
+  minimal: {
+    requestUrlPattern: /.*\/formsapi\/ef0971af-ad3c-4eb7-bcda-18088d6899c6/,
+    fixturePath: 'api/forms/minimal.json',
+    browserUrl: '/editor/formschema?fs=ef0971af-ad3c-4eb7-bcda-18088d6899c6'
+  },
+  dialogs: {
+    requestUrlPattern: /.*\/formsapi\/653d6d06-f3d1-4f09-b678-2d3f5ed27b35/,
+    fixturePath: 'formschema/dialogs.json',
+    browserUrl: '/editor/formschema?fs=653d6d06-f3d1-4f09-b678-2d3f5ed27b35'
+  }
+});
+
+function goTo(to: ITo) {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: to.requestUrlPattern
+    },
+    (req) => {
+      req.reply({
+        fixture: to.fixturePath
+      });
+    }
+  ).as('loadedSchema');
+
+  cy.goTo('/editor').goTo(to.browserUrl);
+}
 
 describe('Formschema Editor', () => {
   before(() => {
     cy.auth();
 
+    cy.interceptLayoutCalls({ ignoreSpecificForms: true });
+
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
     cy.visit('/editor');
+    cy.wait('@G_fetchSchemas');
   });
 
   beforeEach(() => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-forms\.develop\.\w+\.\w+\/*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'forms/fetchAllForms.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo-reporting\.develop\.\w+\.\w+\/reports/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'reports/fetchAllReports.json'
-        });
-      }
-    );
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /https:\/\/veo\.develop\.\w+\.\w+\/domains\//
-      },
-      (req) => {
-        req.reply({
-          fixture: 'default/fetchAllDomains.json'
-        });
-      }
-    );
+    cy.interceptLayoutCalls({ ignoreSpecificForms: true });
   });
 
   it('drags and drops elements into dropzone and nests in each other', function () {
-    cy.loadFse('formschema/empty-process.json');
+    goTo(tos.emptyProcess);
     cy.contains('.v-sheet', 'text').drag();
     cy.get('.dropzone').drop();
 
@@ -93,19 +136,19 @@ describe('Formschema Editor', () => {
     cy.contains('.v-sheet', 'name').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / SensitiveData_SensitiveData').drag();
+    cy.contains('.v-sheet', 'SensitiveData / SensitiveData').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / SensitiveData_comment').drag();
+    cy.contains('.v-sheet', 'SensitiveData / comment').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / ProcessingDetails_typeOfSurvey').drag();
+    cy.contains('.v-sheet', 'ProcessingDetails / typeOfSurvey').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / InternalRecipientLink').drag();
+    cy.contains('.v-sheet', 'InternalRecipientLink').drag();
     cy.get('.dropzone').drop();
 
-    cy.contains('.v-sheet', 'process / TypeOfDataProcessed').drag();
+    cy.contains('.v-sheet', 'TypeOfDataProcessed').drag();
     cy.get('.dropzone').drop();
 
     cy.contains('.v-sheet', 'description').drag();
@@ -155,7 +198,7 @@ describe('Formschema Editor', () => {
   });
 
   it('opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them', function () {
-    cy.loadFse('formschema/elements/input-text-multiline-markdown.json');
+    goTo(tos.inputTextMultilineMarkdown);
     cy.get('.mdi-code-tags').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
@@ -234,7 +277,7 @@ describe('Formschema Editor', () => {
   });
 
   it('opens InputUri dialogs, changes data in dialogs and save them', function () {
-    cy.loadFse('formschema/elements/input-uri.json');
+    goTo(tos.inputUri);
     cy.contains('.fse-input', 'Dokument')
       .should('contain.text', 'Dokument')
       .should('contain.text', 'process_GeneralInformation_document')
@@ -268,7 +311,7 @@ describe('Formschema Editor', () => {
   });
 
   it('opens InputDate dialogs, changes data in dialogs and save them', function () {
-    cy.loadFse('formschema/elements/input-date.json');
+    goTo(tos.inputDate);
     cy.contains('.fse-input', 'Erhebung durchgeführt am')
       .should('contain.text', 'Erhebung durchgeführt am')
       .should('contain.text', 'process_ProcessingDetails_surveyConductedOn')
@@ -309,7 +352,7 @@ describe('Formschema Editor', () => {
   });
 
   it('opens Checkbox dialogs, changes data in dialogs and save them', function () {
-    cy.loadFse('formschema/elements/checkbox.json');
+    goTo(tos.checkbox);
     cy.contains('.fse-input', 'Datenverarbeitung besonders sensitiver Daten?')
       .should('contain.text', 'Datenverarbeitung besonders sensitiver Daten?')
       .should('contain.text', 'process_SensitiveData_SensitiveData')
@@ -347,8 +390,7 @@ describe('Formschema Editor', () => {
   });
 
   it('opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them', function () {
-    cy.loadFse('formschema/elements/select-radio-autocomplete.json');
-
+    goTo(tos.selectRadioAutocomplete);
     cy.get('.mdi-code-tags').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.get('.editor .cm-content').then(function (editor) {
@@ -430,7 +472,7 @@ describe('Formschema Editor', () => {
   });
 
   it('opens LinksField dialogs, changes data in dialogs and save them', function () {
-    cy.loadFse('formschema/elements/links-field.json');
+    goTo(tos.linksField);
     cy.contains('.fse-input', 'Empfänger Intern')
       .should('contain.text', 'Empfänger Intern')
       .should('contain.text', 'process_InternalRecipientLink')
@@ -476,7 +518,7 @@ describe('Formschema Editor', () => {
   });
 
   it('opens FseLabel dialogs, changes data in dialogs and save them', function () {
-    cy.loadFse('formschema/elements/label.json');
+    goTo(tos.label);
     cy.get('.fse-label').eq(0).should('not.contain.text').find('.mdi-pencil').closest('.v-btn').click();
 
     cy.get('.v-dialog--active').within(() => {
@@ -535,7 +577,7 @@ describe('Formschema Editor', () => {
   });
 
   it('opens FseGroup dialogs, changes data in dialogs and save them', function () {
-    cy.loadFse('formschema/elements/group.json');
+    goTo(tos.group);
     cy.get('.dropzone').find('.fse-group').eq(0).find('.dragArea').should('have.class', 'flex-column direction-vertical').find('.fse-input').should('have.length', 2);
 
     cy.get('.dropzone').find('.fse-group').eq(0).find('.mdi-pencil').eq(0).closest('.v-btn').click();
@@ -624,7 +666,7 @@ describe('Formschema Editor', () => {
   });
 
   it('deletes elements', function () {
-    cy.loadFse('formschema/minimal.json');
+    goTo(tos.minimal);
     cy.get('.fse-label').find('.mdi-delete').closest('.v-btn').click();
     cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen');
     cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click();
@@ -643,7 +685,7 @@ describe('Formschema Editor', () => {
   });
 
   it('adds, updates, deletes translations', function () {
-    cy.loadFse('formschema/dialogs.json');
+    goTo(tos.dialogs);
     // Add translations
     cy.get('.mdi-translate').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -686,7 +728,7 @@ describe('Formschema Editor', () => {
 
         // TODO: this is a hack to load OS in Code Editor. It needs a better solution
         const el = editor.closest('.d-flex.flex-column') as any;
-        el[0].__vue__.$emit('input', JSON.stringify(translationsDeleted, null, 2));
+        el[0].__vue__.$emit('input', JSON.stringify({}, null, 2));
       });
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
@@ -697,16 +739,16 @@ describe('Formschema Editor', () => {
   });
 
   it('compares downloaded schema with the actual one', function () {
-    cy.loadFse('formschema/minimal.json');
+    goTo(tos.minimal);
     cy.get('.mdi-download').closest('.v-btn').click();
 
-    cy.readFile('cypress/downloads/fs_test_formschema.json').then((downloadedFS) => {
+    cy.readFile('cypress/downloads/fs_Test Formschema.json').then((downloadedFS) => {
       cy.wrap(downloadedFS).toMatchSnapshot();
     });
   });
 
   it('adds, updates formSchema meta details', function () {
-    cy.loadFse('formschema/empty-process.json');
+    goTo(tos.emptyProcess);
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
 
     cy.get('.mdi-wrench').closest('.v-btn').click();

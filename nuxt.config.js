@@ -41,7 +41,7 @@ export default {
    *
    */
   publicRuntimeConfig: {
-    version: process.env.CI_COMMIT_REF_NAME || 'latest',
+    version: process.env.npm_package_version || 'latest',
     build: process.env.CI_COMMIT_SHA || '0000000',
     commitTimestamp: process.env.CI_COMMIT_TIMESTAMP || Date.now(),
     buildNumber: process.env.CI_JOB_ID || '-1',
@@ -57,7 +57,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vee-validate', '~/plugins/logger', '~/plugins/user', '~/plugins/api'],
+  plugins: ['~/plugins/vee-validate', '~/plugins/logger', '~/plugins/user', '~/plugins/api', '~/plugins/utils'],
 
   /**
    *
@@ -67,7 +67,7 @@ export default {
   },
 
   router: {
-    middleware: ['authentication', 'unitValidation']
+    middleware: ['authentication', 'unitValidation', 'navigationHelper']
   },
   /*
    ** Nuxt.js modules
@@ -198,7 +198,20 @@ export default {
    */
   build: {
     publicPath: process.env.NUXT_PUBLIC_PATH || '/_nuxt/',
-    transpile: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-flag-icon/]
+    transpile: [/\.(?!(?:js|json)$).{1,5}$/i, /^vue-flag-icon/],
+    babel: {
+      presets: ['@nuxt/babel-preset-app'],
+      plugins: [
+        [
+          'babel-plugin-istanbul',
+          {
+            extension: ['.js', '.ts', '.vue'],
+            exclude: ['**/*.{spec,test}.{js,ts}', '.nuxt/'],
+            include: ['pages/**/*.{vue,ts}', 'layouts/**/*.{vue,ts}', 'components/**/*.{vue,ts}', 'module/**/*.js', 'mixin/**/*.js', 'store/**/*.js']
+          }
+        ]
+      ]
+    }
   },
 
   /**

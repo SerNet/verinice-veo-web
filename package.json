@@ -1,11 +1,16 @@
 {
   "name": "veo-web",
   "version": "1.0.0",
+  "engines": {
+    "npm": "7.x",
+    "node": "14.x"
+  },
   "description": "veo-web",
   "author": "cpm systems <info@cpmsys.de>",
   "private": true,
   "scripts": {
     "dev": "nuxt",
+    "dev:e2e": "VEO_API_USE_PROXY='true' nuxt",
     "dev-debug": "node --inspect=9229 node_modules/.bin/nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
@@ -13,8 +18,8 @@
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore .",
     "precommit": "npm run lint",
     "test": "jest",
-    "test:e2e": "export LANG='de_DE.UTF-8' && cypress run",
-    "test:e2e-open": "export LANG='de_DE.UTF-8' && cypress open",
+    "test:e2e": "cross-env LANG='de_DE.UTF-8' && cypress run",
+    "test:e2e-open": "cross-env LANG='de_DE.UTF-8' && cypress open",
     "cy:verify": "cypress verify",
     "cy:info": "cypress info",
     "test:docker": "docker run -it $(docker build -f test.Dockerfile -q .)",
@@ -23,7 +28,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "commit-msg": "nbrx-commit-lint"
+      "commit-msg": "node_modules/@nbrx/eslint-config-nuxt/commit-lint.js"
     }
   },
   "lint-staged": {
@@ -38,12 +43,11 @@
     "@nuxtjs/composition-api": "^0.13.5",
     "@nuxtjs/proxy": "^2.0.1",
     "@nuxtjs/vuetify": "^1.11.2",
-    "@toast-ui/editor-plugin-code-syntax-highlight": "^1.0.0",
-    "@toast-ui/vue-editor": "^2.5.0",
+    "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
+    "@toast-ui/vue-editor": "^3.0.2",
     "consola": "^2.15.0",
     "cookie-universal-nuxt": "^2.1.4",
     "dotenv": "^8.2.0",
-    "highlight.js": "^10.3.1",
     "intersection-observer": "^0.11.0",
     "json-ptr": "^2.0.0",
     "keycloak-js": "10.x",
@@ -66,6 +70,8 @@
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
+    "@cypress/code-coverage": "^3.9.9",
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@nbrx/eslint-config-nuxt": "^1.1.0",
     "@nuxt/types": "^2.14.7",
     "@nuxt/typescript-build": "^2.0.3",
@@ -85,6 +91,8 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.0",
+    "babel-plugin-istanbul": "^6.0.0",
+    "cross-env": "^7.0.3",
     "cypress": "^7.1.0",
     "cypress-file-upload": "^5.0.6",
     "cypress-plugin-snapshots": "^1.4.4",
@@ -100,15 +108,18 @@
     "eslint-plugin-vuetify": "^1.0.0-beta.7",
     "flush-promises": "^1.0.2",
     "husky": "^4.3.8",
+    "istanbul-lib-coverage": "^3.0.0",
     "jest": "^26.6.0",
     "jest-junit": "^12.0.0",
     "jest-serializer-vue": "^2.0.2",
     "lint-staged": "^11.0.0",
+    "nyc": "^15.1.0",
     "prettier": "^2.3.0",
     "sass": "^1.27.0",
+    "source-map-support": "^0.5.19",
     "start-server-and-test": "^1.12.1",
     "ts-jest": "^26.4.1",
-    "ts-node": "^9.0.0",
+    "ts-node": "^9.1.1",
     "typescript": "^4.0.3",
     "vue-jest": "^3.0.7"
   }

@@ -1,4 +1,4 @@
-import { isArray, isObject, snakeCase } from 'lodash';
+import { isArray, isObject } from 'lodash';
 import ObjectSchemaHelper from './ObjectSchemaHelper2';
 import { IBaseObject } from './utils';
 
@@ -38,8 +38,8 @@ export default class ObjectSchemaValidator {
   private errors: VeoSchemaValidatorMessage[] = [];
   private warnings: VeoSchemaValidatorMessage[] = [];
 
-  public fitsObjectSchema(schema: any, data: any): boolean {
-    let isFitting = true;
+  public static fitsObjectSchema(schema: any, data: any): VeoSchemaValidatorValidationResult {
+    const errors: VeoSchemaValidatorMessage[] = [];
     const helper = new ObjectSchemaHelper(schema);
 
     for (const attribute in data) {
@@ -51,13 +51,13 @@ export default class ObjectSchemaValidator {
           const customAspectTitle = customAspect.split('_').pop() || '';
           // check if custom aspect exists
           if (!helper.getCustomAspect(customAspectTitle)) {
-            isFitting = false;
+            errors.push({ code: 'E_ASPECT_MISSING', message: `The aspect "${customAspectTitle}" is missing in the schema "${schema.title}"` });
             continue;
           }
           // check if all attributes of custom aspect exist
           for (const customAspectAttribute in data.customAspects[customAspect].attributes) {
             if (!helper.getCustomAspect(customAspectTitle)?.attributes.find((a) => (a.prefix + a.title).endsWith(customAspectAttribute))) {
-              isFitting = false;
+              errors.push({ code: 'E_ATTRIBUTE_MISSING', message: `The attribute "${customAspectTitle}_${customAspectAttribute}" is missing in the schema "${schema.title}"` });
             }
           }
         }
@@ -66,13 +66,13 @@ export default class ObjectSchemaValidator {
           const linkTitle = link.split('_').pop() || '';
           // check if custom link exists
           if (!helper.getCustomLink(linkTitle)) {
-            isFitting = false;
+            errors.push({ code: 'E_LINK_MISSING', message: `The link "${linkTitle}" is missing in the schema "${schema.title}"` });
             continue;
           }
           // check if all attributes of custom link exists
           for (const linkAttribute in data.links[link].attributes) {
             if (!helper.getCustomLink(linkTitle)?.attributes.find((a) => (a.prefix + a.title).endsWith(linkAttribute))) {
-              isFitting = false;
+              errors.push({ code: 'E_ATTRIBUTE_MISSING', message: `The attribute "${linkTitle}_${linkAttribute}" is missing in the schema "${schema.title}"` });
             }
           }
         }
@@ -82,10 +82,10 @@ export default class ObjectSchemaValidator {
           .map((b) => b.title)
           .includes(attribute)
       ) {
-        isFitting = false;
+        errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `The schema "${schema.title}" is missing the property "${attribute}"` });
       }
     }
-    return isFitting;
+    return { valid: errors.length === 0, errors, warnings: [] };
   }
 
   public validate(schema: any, context: string = 'schema'): VeoSchemaValidatorValidationResult {
@@ -127,7 +127,7 @@ export default class ObjectSchemaValidator {
   }
 
   private validateName(schemaName: string, linkTitle: string, context: string): void {
-    if (!linkTitle.includes(snakeCase(schemaName) + '_')) {
+    if (!linkTitle.includes(schemaName + '_')) {
       this.warnings.push({ code: 'W_INCORRECT_NAMING', message: `${linkTitle} is not following the naming conventions (<schema name>_<link/aspect name>) ${context}` });
     }
   }
