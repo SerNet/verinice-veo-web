@@ -117,7 +117,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name</label
+                          >Name*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
@@ -642,7 +642,7 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name</label
+                          >Name*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
@@ -722,7 +722,7 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name Test 1</label
+                          >Name Test 1*</label
                         ><textarea
                           id=""
                           rows="3"
@@ -2831,7 +2831,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name Test</label
+                          >Name Test*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
@@ -4348,7 +4348,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name Test</label
+                          >Name Test*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
@@ -5864,7 +5864,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name</label
+                          >Name*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
