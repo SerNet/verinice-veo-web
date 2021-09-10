@@ -40,7 +40,7 @@
         :cols="!absoluteSize ? cols : 12"
         :md="!absoluteSize ? medium : 12"
         :xl="!absoluteSize ? xlarge : 12"
-        class="px-3 py-1"
+        class="px-4 py-1"
       >
         <slot name="header" />
       </v-col>
