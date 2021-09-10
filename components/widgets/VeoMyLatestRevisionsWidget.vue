@@ -77,6 +77,11 @@ export default Vue.extend({
 a {
   text-decoration: none;
 }
+tbody {
+  tr:hover {
+    background-color: transparent !important;
+  }
+}
 </style>
 
 <i18n>
