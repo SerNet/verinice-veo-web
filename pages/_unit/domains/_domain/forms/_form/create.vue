@@ -68,12 +68,16 @@ export default Vue.extend({
     }
   },
   methods: {
-    onSave(): Promise<void> {
+    onSave(_event: any, redirect: boolean = false): Promise<void> {
       return this.$api.entity
         .create(this.objectType || '', this.form.objectData)
-        .then(() => {
+        .then((res: any) => {
           this.formModified.isModified = false;
-          this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`);
+          if (redirect) {
+            this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}`);
+          } else {
+            this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${this.$route.params.form}/${this.objectType}-${res.resourceId}`);
+          }
         })
         .catch((error: { status: number; name: string }) => {
           this.alert.text = error.name;
