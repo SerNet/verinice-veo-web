@@ -1,6 +1,7 @@
 <template>
   <VeoPage
     :title="title"
+    :loading="$fetchState.pending"
     fullsize
   >
     <template #header>

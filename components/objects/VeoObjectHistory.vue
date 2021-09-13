@@ -3,7 +3,7 @@
     <div
       v-for="index in [1, 2]"
       :key="index"
-      class="my-6"
+      class="my-6 px-4"
     >
       <v-skeleton-loader type="heading" />
       <v-skeleton-loader

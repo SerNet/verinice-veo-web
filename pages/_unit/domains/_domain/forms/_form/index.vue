@@ -18,6 +18,7 @@
             <v-col
               :cols="12"
               :md="3"
+              class="px-4"
             >
               <v-select
                 v-model="formType"
