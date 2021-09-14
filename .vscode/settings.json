@@ -28,7 +28,7 @@
       "markdown",
       "json",
       "svg",
-      "snap"
+      "plaintext"
     ],
     "include": [],
     "includeGlob": [
