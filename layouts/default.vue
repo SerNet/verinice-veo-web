@@ -34,35 +34,34 @@
         >
           <VeoAppBarLogo class="ml-2" />
         </nuxt-link>
-        <div>
-          <!-- Current domain -->
-          <div v-if="$route.params.unit">
-            <v-select
-              :value="domainId"
-              :items="domains"
-              item-text="name"
-              item-value="id"
-              hide-details
-              outlined
-              filled
-              primary
-              class="ma-3"
-              style="font-size: 1.2rem;"
-              :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
-              :menu-props="{ closeOnContentClick: true, 'max-width': '256px' }"
-              @change="onDomainChange"
-            >
-              <template #append-item>
-                <v-divider class="mt-6" />
-                <v-list-item
-                  :to="`/${$route.params.unit}/domains/more`"
-                  exact-active-class="veo-active-link-item"
-                >
-                  {{ $t('breadcrumbs.more_modules') }}
-                </v-list-item>
-              </template>
-            </v-select>
-          </div>
+
+        <!-- Current domain -->
+        <div v-if="$route.params.unit">
+          <v-select
+            :value="domainId"
+            :items="domains"
+            item-text="name"
+            item-value="id"
+            hide-details
+            outlined
+            filled
+            primary
+            class="ma-3"
+            style="font-size: 1.2rem;"
+            :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
+            :menu-props="{ closeOnContentClick: true, 'max-width': '256px' }"
+            @change="onDomainChange"
+          >
+            <template #append-item>
+              <v-divider class="mt-6" />
+              <v-list-item
+                :to="`/${$route.params.unit}/domains/more`"
+                exact-active-class="veo-active-link-item"
+              >
+                {{ $t('breadcrumbs.more_modules') }}
+              </v-list-item>
+            </template>
+          </v-select>
         </div>
       </div>
       <div
