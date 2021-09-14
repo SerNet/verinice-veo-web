@@ -29,34 +29,6 @@
   >
     <template #default>
       <div class="d-flex flex-column fill-height">
-        <!-- Current domain -->
-        <div v-if="$route.params.unit">
-          <v-select
-            :value="domainId"
-            :items="domains"
-            item-text="name"
-            item-value="id"
-            hide-details
-            outlined
-            filled
-            primary
-            class="ma-3"
-            style="font-size: 1.2rem;"
-            :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
-            :menu-props="{ closeOnContentClick: true, 'max-width': '256px' }"
-            @change="onDomainChange"
-          >
-            <template #append-item>
-              <v-divider class="mt-6" />
-              <v-list-item
-                :to="`/${$route.params.unit}/domains/more`"
-                exact-active-class="veo-active-link-item"
-              >
-                {{ $t('breadcrumbs.more_modules') }}
-              </v-list-item>
-            </template>
-          </v-select>
-        </div>
         <!-- Default menu -->
         <v-list
           nav
@@ -157,6 +129,10 @@ export default Vue.extend({
     value: {
       type: Boolean,
       default: true
+    },
+    domainId: {
+      type: String,
+      default: undefined
     }
   },
   data() {
@@ -186,23 +162,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    unitId(): string | undefined {
-      const route = separateUUIDParam(this.$route.params.unit).id;
-      return route.length > 0 ? route : undefined;
-    },
-    domainId(): string | undefined {
-      if (this.$route.name === 'unit-domains-more') {
-        return undefined;
-      }
-
-      const domain: string | undefined = separateUUIDParam(this.$route.params.domain).id;
-
-      // If the domain is not part of the url, check if it is stored in the user plugin and fits to the unit. Else return undefined
-      if (!domain) {
-        return this.unitId && this.unitId === this.$user.lastUnit ? this.$user.lastDomain : undefined;
-      }
-      return domain;
-    },
     items(): INavItem[] {
       /* VEO-692
       const unitDashboard: INavItem = {
@@ -400,9 +359,6 @@ export default Vue.extend({
           this.items[index].persistCollapsedState?.(true);
         }
       });
-    },
-    onDomainChange(domainId: string) {
-      this.$router.push(`/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}`);
     }
   }
 });
@@ -414,15 +370,13 @@ export default Vue.extend({
     "about": "About",
     "collapse": "Collapse menu",
     "fix": "Fix menu",
-    "noChildItems": "No sub items",
-    "noDomainSelected": "No module selected"
+    "noChildItems": "No sub items"
   },
   "de": {
     "about": "Über",
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
-    "noChildItems": "Keine Einträge vorhanden",
-    "noDomainSelected": "Kein Modul ausgewählt"
+    "noChildItems": "Keine Einträge vorhanden"
   }
 }
 </i18n>
