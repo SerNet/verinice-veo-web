@@ -19,5 +19,65 @@
     "source.fixAll.eslint": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "i18n-ally.localesPaths": "locales"
+  "i18n-ally.localesPaths": "locales",
+  "psi-header.changes-tracking": {
+    "autoHeader": "autoSave",
+    "enforceHeader": true,
+    "isActive": true,
+    "exclude": [
+      "markdown",
+      "json",
+      "svg",
+      "snap"
+    ],
+    "include": [],
+    "includeGlob": [
+      "**/assets/**",
+      "**/components/**",
+      "**/cypress/integration/**",
+      "**/layouts/**",
+      "**/lib/**",
+      "**/middleware/**",
+      "**/mixins/**",
+      "**/pages/**",
+      "**/plugins/**",
+      "**/test/**",
+      "**/types/**",
+      "**/util/**"
+    ]
+  },
+  "psi-header.config": {
+    "forceToTop": true,
+    "license": "Custom"
+  },
+  "psi-header.templates": [
+    {
+      "language": "*",
+      "template": [
+        "verinice.veo web",
+        "Copyright (C) <<year>>  <<author>>",
+        "",
+        "This program is free software: you can redistribute it and/or modify",
+        "it under the terms of the GNU Affero General Public License as published by",
+        "the Free Software Foundation, either version 3 of the License, or",
+        "(at your option) any later version.",
+        "",
+        "This program is distributed in the hope that it will be useful,",
+        "but WITHOUT ANY WARRANTY; without even the implied warranty of",
+        "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the",
+        "GNU Affero General Public License for more details.",
+        "",
+        "You should have received a copy of the GNU Affero General Public License",
+        "along with this program.  If not, see <http://www.gnu.org/licenses/>."
+      ]
+    }
+  ],
+  "psi-header.lang-config": [
+    {
+      "language": "vue",
+      "begin": "<!--",
+      "end": "-->",
+      "prefix": "   - "
+    }
+  ]
 }
