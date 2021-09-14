@@ -164,10 +164,10 @@
       v-bind="alert"
       style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
     />
-    <!--<VeoNewUnitDialog
+    <VeoNewUnitDialog
       v-model="newUnitDialog.value"
       v-bind="newUnitDialog"
-    />-->
+    />
   </v-app>
 </template>
 
