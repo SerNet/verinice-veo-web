@@ -111,18 +111,12 @@ export default Vue.extend({
       {
         props: { ...props },
         on: {
-          input: (event: any): void => {
-            // TODO: What is here really going on? Why do I need this and how can use it better? What does it really?
-            // context.parent.$emit("input", $event); -> Alternative
-            // TODO: Why does it have Call Stack problems if I don't use Following Commented Code
-            // const emitInput = context.listeners.input
-            // emitInput($event);
-
-            // TODO: It Calls every event 2 times, but it must call it only once
-            (context.listeners.input as ContextListener)(event);
-          },
-          change: (event: any): void => {
-            (context.listeners.change as ContextListener)(event);
+          ...context.listeners,
+          input: (newValue: any): void => {
+            if (newValue === '') {
+              newValue = undefined;
+            }
+            (context.listeners.input as ContextListener)(newValue);
           }
         }
       },
