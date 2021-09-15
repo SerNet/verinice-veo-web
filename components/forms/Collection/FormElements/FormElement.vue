@@ -37,7 +37,7 @@ import * as InputDateTime from './InputDateTime.vue';
 import * as LinksField from './LinksField.vue';
 import { ContextListener } from '~/components/forms/Collection/utils/helpers';
 import { IApi } from '~/components/forms/utils';
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoTranslationCollection } from '~/types/VeoTypes';
 
 const components = [
   InputText,
@@ -89,7 +89,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoTranslationCollection>,
     elements: {
       type: Array,
       default: () => []
