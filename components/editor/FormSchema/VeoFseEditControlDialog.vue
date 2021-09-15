@@ -167,6 +167,7 @@
       <v-btn
         text
         color="primary"
+        :data-cy="$utils.prefixCyData($options, 'close-button')"
         @click="close()"
       >
         {{ $t('global.button.close') }}
@@ -175,6 +176,7 @@
       <v-btn
         text
         color="primary"
+        :data-cy="$utils.prefixCyData($options, 'save-button')"
         @click="updateElement()"
       >
         {{ $t('global.button.save') }}
@@ -462,7 +464,6 @@ export default defineComponent<IProps>({
       }
       const updateTranslation: IVeoFormSchemaCustomTranslationEvent = JSON.parse(JSON.stringify(localCustomTranslation.value));
       context.emit('edit', JSON.parse(JSON.stringify(updateData)));
-      console.log(updateTranslation);
       context.emit('update-custom-translation', updateTranslation);
     }
 

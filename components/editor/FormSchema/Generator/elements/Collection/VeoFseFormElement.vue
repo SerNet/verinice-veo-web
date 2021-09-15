@@ -66,6 +66,7 @@
             <v-icon
               dense
               small
+              :data-cy="$utils.prefixCyData($options, 'edit-button')"
             >
               mdi-pencil
             </v-icon>
@@ -78,6 +79,7 @@
             <v-icon
               dense
               small
+              :data-cy="$utils.prefixCyData($options, 'delete-button')"
             >
               mdi-delete
             </v-icon>
@@ -227,7 +229,6 @@ export default Vue.extend({
       this.deleteDialog = false;
     },
     setLabel(): void {
-      console.log(this.generalTranslation, this.customTranslations);
       this.label = this.customTranslations?.[this.language][this.name] || this.generalTranslation?.[this.name] || this.name;
     },
     onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {

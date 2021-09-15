@@ -818,4 +818,50 @@ describe('Formschema Editor', () => {
       cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
     });
   });
+
+  it.only('checks whether translations get deleted if the control gets deleted while another language is used', function () {
+    goTo(tos.minimal);
+
+    cy.contains('.fse-input', 'Abkürzung').within(() => {
+      cy.get('[data-cy=veo-fse-form-element-edit-button]').click();
+    });
+
+    cy.contains('label', 'Beschriftung').parent().find('input').type(' de');
+    cy.get('[data-cy=veo-fse-edit-control-dialog-save-button]').click();
+
+    cy.get('.mdi-translate').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
+      cy.contains('.v-select', 'Sprachen').type('{downarrow}{downarrow}{enter}');
+      cy.contains('.v-select', 'Sprache').type('Englisch{enter}');
+      cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
+    });
+
+    cy.contains('.fse-input', 'Abbreviation').within(() => {
+      cy.get('[data-cy=veo-fse-form-element-edit-button]').click();
+    });
+
+    cy.contains('label', 'Beschriftung').parent().find('input').type(' en');
+    cy.get('[data-cy=veo-fse-edit-control-dialog-save-button]').click();
+
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
+      cy.get('.editor .cm-content').then(function (editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot();
+      });
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
+    });
+
+    cy.contains('.fse-input', 'Abbreviation en').within(() => {
+      cy.get('[data-cy=veo-fse-form-element-delete-button]').click();
+    });
+    cy.get('[data-cy=veo-fse-delete-dialog-delete]').click();
+
+    cy.get('.mdi-code-tags').closest('.v-btn').click();
+    cy.get('.v-dialog--active').within(() => {
+      cy.get('.editor .cm-content').then(function (editor) {
+        cy.wrap(getEditorData(editor)).toMatchSnapshot();
+      });
+      cy.get('.v-card__actions').contains('.v-btn', 'Schließen').click();
+    });
+  });
 });
