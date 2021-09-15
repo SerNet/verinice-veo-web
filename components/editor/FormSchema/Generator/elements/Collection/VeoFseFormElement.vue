@@ -227,6 +227,7 @@ export default Vue.extend({
       this.deleteDialog = false;
     },
     setLabel(): void {
+      console.log(this.generalTranslation, this.customTranslations);
       this.label = this.customTranslations?.[this.language][this.name] || this.generalTranslation?.[this.name] || this.name;
     },
     onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {

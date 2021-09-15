@@ -202,7 +202,7 @@
             <VeoFseGenerator
               :schema="objectSchema"
               :value="formSchema.content"
-              :general-translations="translation && translation.lang"
+              :general-translation="translation && translation.lang[language]"
               :custom-translations="formSchema.translation"
               :language="language"
               @delete="onDelete"
