@@ -145,7 +145,7 @@ export default defineComponent<IProps>({
     },
     subtype: {
       type: String,
-      required: true
+      default: null
     }
   },
   setup(props, context) {
@@ -156,8 +156,8 @@ export default defineComponent<IProps>({
 
     const form = ref({
       data: {
-        formSchema: props.formSchema as string,
-        subType: props.subtype as string
+        formSchema: props.formSchema,
+        subType: props.subtype
       },
       rules: {
         formSchema: [(input: string) => trim(input).length > 0 || context.root.$t('global.input.required')]
