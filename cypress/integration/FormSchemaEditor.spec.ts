@@ -819,7 +819,7 @@ describe('Formschema Editor', () => {
     });
   });
 
-  it.only('checks whether translations get deleted if the control gets deleted while another language is used', function () {
+  it('checks whether translations get deleted if the control gets deleted while another language is used', function () {
     goTo(tos.minimal);
 
     cy.contains('.fse-input', 'Abkürzung').within(() => {
