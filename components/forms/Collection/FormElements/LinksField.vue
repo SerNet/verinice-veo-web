@@ -56,6 +56,7 @@
             :general-translation="generalTranslation"
             :custom-translation="customTranslation"
             :api="api"
+            :link-data="localValue"
             @input="onInput"
           />
         </v-list-item-content>
