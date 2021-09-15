@@ -202,8 +202,9 @@
             <VeoFseGenerator
               :schema="objectSchema"
               :value="formSchema.content"
-              :general-translation="translation && translation.lang[language]"
-              :custom-translation="formSchema.translation[language]"
+              :general-translations="translation && translation.lang"
+              :custom-translations="formSchema.translation"
+              :language="language"
               @delete="onDelete"
               @update="onUpdate"
               @update-custom-translation="onUpdateCustomTranslation"
@@ -348,7 +349,6 @@ import {
   IVeoFormSchemaItem,
   IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
@@ -476,9 +476,7 @@ export default defineComponent<IProps>({
       if (formSchema.value) {
         // Delete custom translation keys for deleted elemented and nested elements
         const elementFormSchema = JsonPointer.get(formSchema.value.content, event.formSchemaPointer) as IVeoFormSchemaItem;
-        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation[language.value], (updatedCustomTranslationValue) => {
-          onUpdateCustomTranslation(updatedCustomTranslationValue);
-        });
+        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, onUpdateCustomTranslation);
         const vjpPointer = event.formSchemaPointer.replace('#', '');
         // Not allowed to make changes on the root object
         if (event.formSchemaPointer !== '#') {
@@ -531,9 +529,9 @@ export default defineComponent<IProps>({
       language.value = newLanguageVal;
     }
 
-    function onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
+    function onUpdateCustomTranslation(event: IVeoFormSchemaTranslationCollection) {
       if (formSchema.value) {
-        vjp.set(formSchema.value, `/translation/${language.value}`, event);
+        vjp.set(formSchema.value, `/translation`, event);
       }
     }
 

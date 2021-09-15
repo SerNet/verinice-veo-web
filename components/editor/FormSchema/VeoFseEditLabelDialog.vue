@@ -40,7 +40,7 @@
             :md="5"
           >
             <v-text-field
-              :value="localCustomTranslation[name]"
+              :value="localCustomTranslations[language][name]"
               :label="$t('input')"
               required
               @input="onInputText"
@@ -121,7 +121,7 @@ import { defineComponent, PropType, Ref, ref, reactive } from '@nuxtjs/compositi
 import { JsonPointer } from 'json-ptr';
 
 import { BaseObject } from '~/components/forms/utils';
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem } from '~/types/VeoTypes';
+import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
 interface IProps {
   value: boolean;
@@ -129,7 +129,8 @@ interface IProps {
   options: any;
   formSchema: any;
   formSchemaPointer: string;
-  customTranslation: IVeoFormSchemaTranslationCollectionItem;
+  customTranslations: IVeoFormSchemaTranslationCollection;
+  language: string;
 }
 
 export default defineComponent<IProps>({
@@ -154,9 +155,13 @@ export default defineComponent<IProps>({
       type: String,
       default: undefined
     },
-    customTranslation: {
+    customTranslations: {
       type: Object,
       default: () => {}
+    },
+    language: {
+      type: String,
+      required: true
     }
   },
   setup(props, context) {
@@ -166,7 +171,7 @@ export default defineComponent<IProps>({
       style: undefined
     };
 
-    const localCustomTranslation: Ref<IVeoFormSchemaTranslationCollectionItem> = ref({ ...props.customTranslation });
+    const localCustomTranslations: Ref<IVeoFormSchemaTranslationCollection> = ref({ ...props.customTranslations });
 
     // Get values of element by Pointer and if is not defined, get its default values (e.g. direction = undefined => 'vertical')
     function getValue(pointer: string, defaultValue: any): any {
@@ -223,7 +228,7 @@ export default defineComponent<IProps>({
     }
 
     function onInputText(event: string) {
-      localCustomTranslation.value[props.name] = event;
+      localCustomTranslations.value[props.language][props.name] = event;
     }
 
     // Emit Open/Close (true/false) events when dialog state changes
@@ -249,14 +254,14 @@ export default defineComponent<IProps>({
       } else {
         delete updateData.rule;
       }
-      const updateTranslation: IVeoFormSchemaCustomTranslationEvent = JSON.parse(JSON.stringify(localCustomTranslation.value));
+      const updateTranslation: IVeoFormSchemaCustomTranslationEvent = JSON.parse(JSON.stringify(localCustomTranslations.value));
       context.emit('edit', updateData as IVeoFormSchemaItemUpdateEvent['data']);
       context.emit('update-custom-translation', updateTranslation);
     }
 
     return {
       formData,
-      localCustomTranslation,
+      localCustomTranslations,
       onInputText,
       onDialogChanged,
       updateElement

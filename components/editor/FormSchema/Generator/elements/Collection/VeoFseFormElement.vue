@@ -92,6 +92,7 @@
       :form-schema="value"
       :form-schema-pointer="formSchemaPointer"
       :type="currentType"
+      :language="language"
       @edit="doEdit"
       @update-custom-translation="onUpdateCustomTranslation"
     />
@@ -113,7 +114,7 @@ import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItemDeleteEvent,
   IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollectionItem,
+  IVeoFormSchemaTranslationCollection,
   IVeoTranslationCollection
 } from '~/types/VeoTypes';
 import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
@@ -132,10 +133,10 @@ export default Vue.extend({
       type: Object,
       default: () => {}
     } as PropOptions<IVeoTranslationCollection>,
-    customTranslation: {
+    customTranslations: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollection>,
     options: {
       type: Object,
       default: () => {}
@@ -161,6 +162,10 @@ export default Vue.extend({
       default: true
     },
     scope: {
+      type: String,
+      required: true
+    },
+    language: {
       type: String,
       required: true
     }
@@ -198,7 +203,7 @@ export default Vue.extend({
     generalTranslation() {
       this.setLabel();
     },
-    customTranslation() {
+    customTranslations() {
       this.setLabel();
     }
   },
@@ -222,7 +227,7 @@ export default Vue.extend({
       this.deleteDialog = false;
     },
     setLabel(): void {
-      this.label = this.customTranslation?.[this.name] || this.generalTranslation?.[this.name] || this.name;
+      this.label = this.customTranslations?.[this.language][this.name] || this.generalTranslation?.[this.name] || this.name;
     },
     onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
       this.$emit('update-custom-translation', event);

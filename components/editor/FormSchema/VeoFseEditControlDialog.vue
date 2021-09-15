@@ -39,7 +39,7 @@
             :md="5"
           >
             <v-text-field
-              :value="localCustomTranslation[name] || defaultLabel"
+              :value="localCustomTranslation[language][name] || defaultLabel"
               :label="$t('editor.formschema.edit.input.label')"
               required
               @input="onInputLabel"
@@ -194,7 +194,7 @@ import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItem,
   IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollectionItem,
+  IVeoFormSchemaTranslationCollection,
   IVeoTranslationCollection
 } from '~/types/VeoTypes';
 import { deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
@@ -206,8 +206,9 @@ interface IProps {
   schema: any;
   formSchema: any;
   generalTranslation: IVeoTranslationCollection;
-  customTranslation: IVeoFormSchemaTranslationCollectionItem;
+  customTranslations: IVeoFormSchemaTranslationCollection;
   type: string;
+  language: string;
 }
 
 export default defineComponent<IProps>({
@@ -244,11 +245,15 @@ export default defineComponent<IProps>({
       type: Object,
       default: () => {}
     },
-    customTranslation: {
+    customTranslations: {
       type: Object,
       default: () => {}
     },
     type: {
+      type: String,
+      required: true
+    },
+    language: {
       type: String,
       required: true
     }
@@ -263,7 +268,7 @@ export default defineComponent<IProps>({
       direction: 'horizontal'
     };
 
-    const localCustomTranslation: Ref<IVeoFormSchemaTranslationCollectionItem> = ref({ ...props.customTranslation });
+    const localCustomTranslation: Ref<IVeoFormSchemaTranslationCollection> = ref({ ...props.customTranslations });
 
     /**
      * General functions
@@ -367,7 +372,7 @@ export default defineComponent<IProps>({
     const defaultLabel: Ref<string> = ref(getDefaultLabel());
 
     function onInputLabel(event: string) {
-      localCustomTranslation.value[props.name] = event;
+      localCustomTranslation.value[props.language][props.name] = event;
     }
 
     const alternatives = computed(() => controlTypeAlternatives(activeControlType.value.name, props));
@@ -434,7 +439,7 @@ export default defineComponent<IProps>({
         linksField.formSchemaElements.value[index] = payload.data;
       };
 
-      linksField.onUpdateLinksCustomTranslation = function (event: IVeoFormSchemaTranslationCollectionItem) {
+      linksField.onUpdateLinksCustomTranslation = function (event: IVeoFormSchemaTranslationCollection) {
         localCustomTranslation.value = event;
       };
 
@@ -457,6 +462,7 @@ export default defineComponent<IProps>({
       }
       const updateTranslation: IVeoFormSchemaCustomTranslationEvent = JSON.parse(JSON.stringify(localCustomTranslation.value));
       context.emit('edit', JSON.parse(JSON.stringify(updateData)));
+      console.log(updateTranslation);
       context.emit('update-custom-translation', updateTranslation);
     }
 
