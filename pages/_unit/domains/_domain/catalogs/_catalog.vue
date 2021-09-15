@@ -225,9 +225,9 @@ export default Vue.extend({
             });
           }
         }
-        // console.log('1', incarnations);
+        console.log('1', incarnations);
 
-        // console.log('2', await this.$api.unit.updateIncarnations(incarnations));
+        console.log('2', await this.$api.unit.updateIncarnations(incarnations));
       } finally {
         this.applying = false;
       }
