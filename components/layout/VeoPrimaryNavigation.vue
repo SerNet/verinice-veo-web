@@ -66,7 +66,9 @@
           expand
           class="fill-height d-flex flex-column"
         >
-          <template v-for="(item, index) in items">
+          <template
+            v-for="(item, index) in items"
+          >
             <VeoPrimaryNavigationEntry
               :key="index"
               v-bind="item"
@@ -81,11 +83,27 @@
             class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
             @click="displayDeploymentDetails = true"
           >
-            <v-list-item-icon>
-              <v-icon>
-                mdi-information-outline
-              </v-icon>
-            </v-list-item-icon>
+            <v-tooltip
+              right
+              :disabled="!miniVariant || false"
+            >
+              <template #activator="{ on, attrs }">
+                <div
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-list-item-icon>
+                    <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      mdi-information-outline
+                    </v-icon>
+                  </v-list-item-icon>
+                </div>
+              </template>
+              <span>{{ $t('about') }}</span>
+            </v-tooltip>
             <v-list-item-title>{{ $t('about') }}</v-list-item-title>
             <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
           </v-list-item>
@@ -387,6 +405,7 @@ export default Vue.extend({
     },
     setMiniVariant(miniVariant: boolean) {
       this.miniVariant = miniVariant;
+      console.log('bumble this.miniVariant', this.miniVariant);
       LocalStorage.primaryNavMiniVariant = miniVariant;
     },
     onUpdateCollapsed(itemIndex: number, collapsed: boolean) {
