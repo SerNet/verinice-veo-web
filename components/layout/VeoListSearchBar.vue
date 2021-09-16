@@ -140,7 +140,7 @@ export default Vue.extend({
   },
   computed: {
     textFilters(): string[] {
-      return Object.keys(omit(this.filter, 'status'));
+      return Object.keys(this.objectType !== 'process' ? omit(this.filter, 'status') : this.filter);
     },
     resetDisabled(): boolean {
       for (const key in this.filter) {
