@@ -29,7 +29,7 @@ import Vue, { PropOptions } from 'vue';
 import { JSONSchema7 } from 'json-schema';
 import { UISchemaElement } from '@/types/UISchema';
 
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchemaTranslationCollection, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -42,10 +42,10 @@ export default Vue.extend({
       type: Object,
       default: () => {}
     } as PropOptions<IVeoTranslationCollection>,
-    customTranslation: {
+    customTranslations: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollection>,
     elements: {
       type: Array,
       default: () => []
@@ -73,6 +73,10 @@ export default Vue.extend({
     scope: {
       type: String,
       default: ''
+    },
+    language: {
+      type: String,
+      required: true
     }
   }
 });

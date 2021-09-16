@@ -17,15 +17,7 @@
  */
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import {
-  IVeoFormSchema,
-  IVeoFormSchemaItem,
-  IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaTranslationCollectionItem,
-  IVeoFormSchemaItemRule,
-  IVeoObjectSchema,
-  IVeoFormSchemaMeta
-} from '~/types/VeoTypes';
+import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export function generateSchema(name: IVeoFormSchemaMeta['name'], modelType: string, subType: string | null, translation: IVeoFormSchemaTranslationCollection = {}): IVeoFormSchema {
   return {
@@ -55,16 +47,19 @@ export function validate(schema: IVeoFormSchema, objectSchema: undefined | IVeoO
 
 export function deleteElementCustomTranslation(
   elementFormSchema: IVeoFormSchemaItem,
-  customTranslation: IVeoFormSchemaTranslationCollectionItem,
-  callbackUpdateCustomTranslation: (updatedCustomTranslationValue: IVeoFormSchemaTranslationCollectionItem) => void
+  customTranslations: IVeoFormSchemaTranslationCollection,
+  callbackUpdateCustomTranslation: (updatedCustomTranslationValue: IVeoFormSchemaTranslationCollection) => void
 ): void {
   // Remove the element and also all translation key from customTranslations
   let translationKeysToRemove = JSON.stringify(elementFormSchema).match(/#lang\/[\w-]+/g);
   if (translationKeysToRemove) {
-    const localCustomTranslation: IVeoFormSchemaTranslationCollectionItem = JSON.parse(JSON.stringify(customTranslation));
+    const localCustomTranslation: IVeoFormSchemaTranslationCollection = JSON.parse(JSON.stringify(customTranslations));
+
     translationKeysToRemove = translationKeysToRemove.map((key) => key.replace('#lang/', ''));
     translationKeysToRemove.forEach((key) => {
-      delete localCustomTranslation[key];
+      for (const lang in customTranslations) {
+        delete localCustomTranslation[lang][key];
+      }
     });
     callbackUpdateCustomTranslation(localCustomTranslation);
   }

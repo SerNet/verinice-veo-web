@@ -36,7 +36,7 @@ import { UISchemaElement } from '@/types/UISchema';
 import { IApi } from '~/components/forms/utils';
 
 import FormElement from '~/components/forms/Collection/FormElements/FormElement.vue';
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default Vue.extend({
   components: {
@@ -72,7 +72,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoTranslationCollection>,
     elements: {
       type: Array,
       default: () => []
