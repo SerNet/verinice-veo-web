@@ -15,7 +15,10 @@
           :to="homeLink"
           class="text-decoration-none"
         >
-          <VeoAppBarLogo class="ml-2" />
+          <VeoAppBarLogo
+            class="ml-2"
+            style="max-width: 200px"
+          />
         </nuxt-link>
 
         <!-- Current domain -->
@@ -32,7 +35,7 @@
             class="ma-3"
             style="font-size: 1.2rem;"
             :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
-            :menu-props="{ closeOnContentClick: true, 'max-width': '256px' }"
+            :menu-props="{ closeOnContentClick: true, 'max-width': '256px', bottom:true, offsetY:true }"
             @change="onDomainChange"
           >
             <template #append-item>
