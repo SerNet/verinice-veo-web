@@ -108,6 +108,7 @@ export class Client {
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + $user.auth.token,
+        'Accept-Language': this.context.app.i18n.locale,
         'x-client-build': this.build,
         'x-client-version': this.version
       } as Record<string, string>,
