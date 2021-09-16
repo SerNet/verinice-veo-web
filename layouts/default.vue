@@ -310,7 +310,7 @@ export default defineComponent<IProps>({
     });
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
-    const homeLink = computed(() => `/${params.value.unit}/domains/${params.value.domain}`);
+    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : `/${params.value.unit}`));
 
     // Demo unit/unit selection
     const units: Ref<IVeoUnit[]> = ref([]);
