@@ -34,7 +34,6 @@
         >
           <VeoAppBarLogo
             class="ml-2"
-            style="max-width: 200px"
           />
         </nuxt-link>
 
@@ -50,7 +49,7 @@
             filled
             primary
             class="ma-3"
-            style="font-size: 1.2rem;"
+            style="font-size: 1.2rem; max-width: 200px"
             :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
             :menu-props="{ closeOnContentClick: true, 'max-width': '256px', bottom:true, offsetY:true }"
             @change="onDomainChange"
