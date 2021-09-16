@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Annemarie Bufe
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
