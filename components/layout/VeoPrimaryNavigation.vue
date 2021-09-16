@@ -405,7 +405,6 @@ export default Vue.extend({
     },
     setMiniVariant(miniVariant: boolean) {
       this.miniVariant = miniVariant;
-      console.log('bumble this.miniVariant', this.miniVariant);
       LocalStorage.primaryNavMiniVariant = miniVariant;
     },
     onUpdateCollapsed(itemIndex: number, collapsed: boolean) {
