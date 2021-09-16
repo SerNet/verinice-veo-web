@@ -17,6 +17,7 @@
 -->
 <template>
   <v-navigation-drawer
+    :width="290"
     :value="value"
     app
     :class="{ 'v-application--is-rtl': right }"
