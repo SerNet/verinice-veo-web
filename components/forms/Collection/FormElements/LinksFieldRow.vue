@@ -452,7 +452,7 @@ export default Vue.extend({
         let page = 0;
 
         while (uniqueTargetEntities.length === 0 && (!entities || (entities.totalItemCount > 0 && entities.pageCount > entities.page))) {
-          entities = await this.fetchEntities({ filters, page: ++page });
+          entities = await this.fetchEntities({ ...filters, page: ++page });
 
           // Filter out elements that are already selected in other links
           uniqueTargetEntities = entities.items.filter((item) => !this.linkData.some((link, localIndex) => link.target?.targetUri?.includes(item.id) && localIndex !== this.index));
