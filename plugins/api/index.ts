@@ -118,7 +118,7 @@ export class Client {
 
     if (options.json) {
       if ('$etag' in options.json) {
-        defaults.headers['If-Match'] = options.json.$etag?.replace(/["]+/g, '').replace(/^W\//gi, '');
+        defaults.headers['If-Match'] = options.json.$etag?.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
       }
       options.body = JSON.stringify(options.json);
       defaults.method = 'POST';
