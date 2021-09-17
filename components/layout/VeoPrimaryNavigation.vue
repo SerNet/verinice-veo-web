@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
 -->
 <template>
   <v-navigation-drawer
+    :width="290"
     :value="value"
     app
     :class="{ 'v-application--is-rtl': right }"
@@ -29,34 +30,6 @@
   >
     <template #default>
       <div class="d-flex flex-column fill-height">
-        <!-- Current domain -->
-        <div v-if="$route.params.unit">
-          <v-select
-            :value="domainId"
-            :items="domains"
-            item-text="name"
-            item-value="id"
-            hide-details
-            outlined
-            filled
-            primary
-            class="ma-3"
-            style="font-size: 1.2rem;"
-            :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
-            :menu-props="{ closeOnContentClick: true, 'max-width': '256px' }"
-            @change="onDomainChange"
-          >
-            <template #append-item>
-              <v-divider class="mt-6" />
-              <v-list-item
-                :to="`/${$route.params.unit}/domains/more`"
-                exact-active-class="veo-active-link-item"
-              >
-                {{ $t('breadcrumbs.more_modules') }}
-              </v-list-item>
-            </template>
-          </v-select>
-        </div>
         <!-- Default menu -->
         <v-list
           nav
@@ -66,7 +39,9 @@
           expand
           class="fill-height d-flex flex-column"
         >
-          <template v-for="(item, index) in items">
+          <template
+            v-for="(item, index) in items"
+          >
             <VeoPrimaryNavigationEntry
               :key="index"
               v-bind="item"
@@ -81,11 +56,27 @@
             class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
             @click="displayDeploymentDetails = true"
           >
-            <v-list-item-icon>
-              <v-icon>
-                mdi-information-outline
-              </v-icon>
-            </v-list-item-icon>
+            <v-tooltip
+              right
+              :disabled="!miniVariant || false"
+            >
+              <template #activator="{ on, attrs }">
+                <div
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-list-item-icon>
+                    <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      mdi-information-outline
+                    </v-icon>
+                  </v-list-item-icon>
+                </div>
+              </template>
+              <span>{{ $t('about') }}</span>
+            </v-tooltip>
             <v-list-item-title>{{ $t('about') }}</v-list-item-title>
             <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
           </v-list-item>
@@ -157,6 +148,10 @@ export default Vue.extend({
     value: {
       type: Boolean,
       default: true
+    },
+    domainId: {
+      type: String,
+      default: undefined
     }
   },
   data() {
@@ -186,23 +181,6 @@ export default Vue.extend({
     }
   },
   computed: {
-    unitId(): string | undefined {
-      const route = separateUUIDParam(this.$route.params.unit).id;
-      return route.length > 0 ? route : undefined;
-    },
-    domainId(): string | undefined {
-      if (this.$route.name === 'unit-domains-more') {
-        return undefined;
-      }
-
-      const domain: string | undefined = separateUUIDParam(this.$route.params.domain).id;
-
-      // If the domain is not part of the url, check if it is stored in the user plugin and fits to the unit. Else return undefined
-      if (!domain) {
-        return this.unitId && this.unitId === this.$user.lastUnit ? this.$user.lastDomain : undefined;
-      }
-      return domain;
-    },
     items(): INavItem[] {
       /* VEO-692
       const unitDashboard: INavItem = {
@@ -400,9 +378,6 @@ export default Vue.extend({
           this.items[index].persistCollapsedState?.(true);
         }
       });
-    },
-    onDomainChange(domainId: string) {
-      this.$router.push(`/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}`);
     }
   }
 });
@@ -414,15 +389,13 @@ export default Vue.extend({
     "about": "About",
     "collapse": "Collapse menu",
     "fix": "Fix menu",
-    "noChildItems": "No sub items",
-    "noDomainSelected": "No module selected"
+    "noChildItems": "No sub items"
   },
   "de": {
     "about": "Über",
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
-    "noChildItems": "Keine Einträge vorhanden",
-    "noDomainSelected": "Kein Modul ausgewählt"
+    "noChildItems": "Keine Einträge vorhanden"
   }
 }
 </i18n>

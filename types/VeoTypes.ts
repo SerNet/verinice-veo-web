@@ -316,12 +316,8 @@ export interface IVeoFormSchemaItem {
   rule?: IVeoFormSchemaItemRule;
 }
 
-export interface IVeoFormSchemaTranslationCollectionItem {
-  [key: string]: string;
-}
-
 export interface IVeoFormSchemaTranslationCollection {
-  [key: string]: IVeoFormSchemaTranslationCollectionItem;
+  [key: string]: IVeoTranslationCollection;
 }
 
 export interface IVeoFormSchemaCustomTranslationEvent {

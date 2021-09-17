@@ -28,7 +28,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
-import { IVeoFormSchemaTranslationCollectionItem } from '~/types/VeoTypes';
+import { IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -44,10 +44,10 @@ export default Vue.extend({
       type: Object,
       default: undefined
     },
-    customTranslation: {
+    customTranslations: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollection>,
     formSchemaPointer: {
       type: String,
       default: undefined
@@ -55,6 +55,10 @@ export default Vue.extend({
     level: {
       type: Number,
       default: undefined
+    },
+    language: {
+      type: String,
+      required: true
     }
   }
 });

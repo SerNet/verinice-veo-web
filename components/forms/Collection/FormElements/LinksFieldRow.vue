@@ -246,7 +246,7 @@ import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
 import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollectionItem, IVeoPaginatedResponse, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { separateUUIDParam } from '~/lib/utils';
 
@@ -321,7 +321,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoTranslationCollection>,
     elements: {
       type: Array,
       default: () => []
@@ -452,7 +452,7 @@ export default Vue.extend({
         let page = 0;
 
         while (uniqueTargetEntities.length === 0 && (!entities || (entities.totalItemCount > 0 && entities.pageCount > entities.page))) {
-          entities = await this.fetchEntities({ filters, page: ++page });
+          entities = await this.fetchEntities({ ...filters, page: ++page });
 
           // Filter out elements that are already selected in other links
           uniqueTargetEntities = entities.items.filter((item) => !this.linkData.some((link, localIndex) => link.target?.targetUri?.includes(item.id) && localIndex !== this.index));

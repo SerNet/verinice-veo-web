@@ -108,6 +108,7 @@ export class Client {
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + $user.auth.token,
+        'Accept-Language': this.context.app.i18n.locale,
         'x-client-build': this.build,
         'x-client-version': this.version
       } as Record<string, string>,
@@ -117,7 +118,7 @@ export class Client {
 
     if (options.json) {
       if ('$etag' in options.json) {
-        defaults.headers['If-Match'] = options.json.$etag?.replace(/["]+/g, '').replace(/^W\//gi, '');
+        defaults.headers['If-Match'] = options.json.$etag?.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
       }
       options.body = JSON.stringify(options.json);
       defaults.method = 'POST';

@@ -96,6 +96,10 @@
           >
             {{ $t('generateReport') }}
           </v-btn>
+          <a
+            ref="downloadButton"
+            href="#"
+          />
         </v-col>
       </v-row>
       <VeoListSearchBar
@@ -231,7 +235,11 @@ export default Vue.extend({
           targets: this.selectedEntities
         };
         const result = new Blob([await this.$api.report.create(this.reportId, body)], { type: outputType });
-        window.open(URL.createObjectURL(result));
+
+        const downloadButton = this.$refs.downloadButton;
+        downloadButton.href = URL.createObjectURL(result);
+        downloadButton.download = `${this.report.name[this.$i18n.locale]}.${outputType.split('/').pop() || outputType}`;
+        downloadButton.click();
       }
       this.generatingReport = false;
     },
@@ -244,13 +252,15 @@ export default Vue.extend({
     async fetchEntities(options: { page: number; sortBy: string; sortDesc: boolean }) {
       this.loading = true;
 
-      this.entities = await this.$api.entity.fetchAll(this.objectType, options.page, {
-        ...(this.subType || this.subType === '' ? { subType: this.subType } : {}),
-        size: this.$user.tablePageSize,
-        sortBy: options.sortBy,
-        sortOrder: options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter || {})
-      });
+      if (this.objectType) {
+        this.entities = await this.$api.entity.fetchAll(this.objectType, options.page, {
+          ...(this.subType || this.subType === '' ? { subType: this.subType } : {}),
+          size: this.$user.tablePageSize,
+          sortBy: options.sortBy,
+          sortOrder: options.sortDesc ? 'desc' : 'asc',
+          ...(this.filter || {})
+        });
+      }
 
       this.loading = false;
     }

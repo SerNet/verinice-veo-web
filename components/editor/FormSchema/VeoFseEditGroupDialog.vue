@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -143,7 +143,7 @@ import { v4 as uuid } from 'uuid';
 import { JsonPointer } from 'json-ptr';
 import { merge } from 'lodash';
 import { BaseObject } from '~/components/forms/utils';
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem } from '~/types/VeoTypes';
+import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
 interface IProps {
   value: boolean;
@@ -151,7 +151,8 @@ interface IProps {
   options: any;
   formSchema: any;
   formSchemaPointer: string;
-  customTranslation: IVeoFormSchemaTranslationCollectionItem;
+  customTranslations: IVeoFormSchemaTranslationCollection;
+  language: string;
 }
 
 export default defineComponent<IProps>({
@@ -176,9 +177,13 @@ export default defineComponent<IProps>({
       type: String,
       default: undefined
     },
-    customTranslation: {
+    customTranslations: {
       type: Object,
       default: () => {}
+    },
+    language: {
+      type: String,
+      required: true
     }
   },
   setup(props, context) {
@@ -189,7 +194,7 @@ export default defineComponent<IProps>({
       style: undefined
     };
 
-    const localCustomTranslation: Ref<IVeoFormSchemaTranslationCollectionItem> = ref({ ...props.customTranslation });
+    const localCustomTranslation: Ref<IVeoFormSchemaTranslationCollection> = ref({ ...props.customTranslations });
 
     // Get values of element by Pointer and if is not defined, get its default values (e.g. direction = undefined => 'vertical')
     function getValue(pointer: string, defaultValue: any): any {
@@ -225,7 +230,7 @@ export default defineComponent<IProps>({
     const localName = ref(props.name);
 
     const formData = reactive({
-      label: (localName.value && props.customTranslation?.[localName.value]) as string | undefined,
+      label: (localName.value && props.customTranslations?.[props.language][localName.value]) as string | undefined,
       direction: getValue('#/options/direction', defaults.direction),
       class: getAsArray('class') as string[],
       style: getAsArray('style') as string[],
@@ -246,7 +251,7 @@ export default defineComponent<IProps>({
       if (!localName.value) {
         localName.value = `group_${uuid()}`;
       }
-      localCustomTranslation.value[localName.value] = event;
+      localCustomTranslation.value[props.language][localName.value] = event;
     }
 
     // Transform local values of options' properties to FormSchema suitable form

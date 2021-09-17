@@ -55,7 +55,7 @@
         >
           <VeoListSearchBar
             v-model="filter"
-            :object-type="objectType"
+            :object-type="objectName"
             @reset="filter = $event"
           />
         </v-col>
@@ -119,7 +119,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      filter: undefined as IVeoFilter | undefined,
+      filter: { designator: undefined, name: undefined, description: undefined, updatedBy: undefined, status: undefined } as IVeoFilter | undefined,
       selectedItems: [] as { id: string; type: string }[],
       saving: false as boolean,
       entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,

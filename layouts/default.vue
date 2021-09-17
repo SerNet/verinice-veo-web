@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Markus Werner, Philipp Ballhausen, Davit Svandize, Jonas Heitmann
+   - Copyright (C) 2021  Markus Werner, Philipp Ballhausen, Davit Svandize, Jonas Heitmann, Annemarie Bufe
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -32,8 +32,39 @@
           :to="homeLink"
           class="text-decoration-none"
         >
-          <VeoAppBarLogo class="ml-2" />
+          <VeoAppBarLogo
+            class="ml-2"
+          />
         </nuxt-link>
+
+        <!-- Current domain -->
+        <div v-if="$route.params.unit">
+          <v-select
+            :value="domainId"
+            :items="domains"
+            item-text="name"
+            item-value="id"
+            hide-details
+            outlined
+            filled
+            primary
+            class="ma-3"
+            style="font-size: 1.2rem; max-width: 200px"
+            :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
+            :menu-props="{ closeOnContentClick: true, 'max-width': '256px', bottom:true, offsetY:true }"
+            @change="onDomainChange"
+          >
+            <template #append-item>
+              <v-divider class="mt-6" />
+              <v-list-item
+                :to="`/${$route.params.unit}/domains/more`"
+                exact-active-class="veo-active-link-item"
+              >
+                {{ $t('breadcrumbs.more_modules') }}
+              </v-list-item>
+            </template>
+          </v-select>
+        </div>
       </div>
       <div
         class="d-flex align-center"
@@ -145,7 +176,10 @@
       />
       <span v-else />
     </v-app-bar>
-    <VeoPrimaryNavigation v-model="drawer" />
+    <VeoPrimaryNavigation
+      v-model="drawer"
+      :domain-id="domainId"
+    />
     <v-main
       style="max-height: 100vh;"
       class="overflow-hidden"
@@ -176,7 +210,7 @@ import { computed, ComputedRef, defineComponent, Ref, ref, useContext } from '@n
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoUnit } from '~/types/VeoTypes';
+import { IVeoUnit, IVeoDomain } from '~/types/VeoTypes';
 
 interface IProps {}
 
@@ -276,7 +310,7 @@ export default defineComponent<IProps>({
     });
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
-    const homeLink = computed(() => `/${params.value.unit}/domains/${params.value.domain}`);
+    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : `/${params.value.unit}`));
 
     // Demo unit/unit selection
     const units: Ref<IVeoUnit[]> = ref([]);
@@ -284,6 +318,31 @@ export default defineComponent<IProps>({
     async function loadUnits() {
       units.value = await $api.unit.fetchAll();
     }
+
+    // Load all domains
+    const domains: Ref<IVeoDomain[]> = ref([]);
+
+    async function loadDomains() {
+      domains.value = await $api.domain.fetchAll();
+    }
+
+    const domain = computed((): string | undefined => separateUUIDParam(context.root.$route.params.domain).id);
+
+    const domainId = computed((): string | undefined => {
+      if (context.root.$route.name === 'unit-domains-more') {
+        return undefined;
+      }
+      if (!domain) {
+        return unitId && unitId.value === context.root.$user.lastUnit ? context.root.$user.lastDomain : undefined;
+      }
+      return domain.value;
+    });
+
+    function onDomainChange(domainId: string) {
+      context.root.$router.push(`/${context.root.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}`);
+    }
+
+    const unitId = computed(() => (separateUUIDParam(context.root.$route.params.unit).id.length > 0 ? separateUUIDParam(context.root.$route.params.unit).id : undefined));
 
     // While loading the unit id passed to the createUUIDUrlParam function would be undefined in the template, creating an error. Thus we have to navigate using this function.
     function goToUnit(unitId: string) {
@@ -296,8 +355,26 @@ export default defineComponent<IProps>({
     const demoUnit: ComputedRef<IVeoUnit | undefined> = computed(() => units.value.find((unit) => unit.name === 'Demo'));
 
     loadUnits();
+    loadDomains();
 
-    return { alert, drawer, lang, langs, newUnitDialog, snackbar, breadcrumbsKey, userIsInDemoUnit, demoUnit, units, goToUnit, homeLink };
+    return {
+      domainId,
+      unitId,
+      alert,
+      domains,
+      drawer,
+      lang,
+      langs,
+      newUnitDialog,
+      snackbar,
+      breadcrumbsKey,
+      userIsInDemoUnit,
+      demoUnit,
+      units,
+      goToUnit,
+      onDomainChange,
+      homeLink
+    };
   },
   head() {
     return {
@@ -312,12 +389,14 @@ export default defineComponent<IProps>({
   "en": {
     "goToDemoUnit": "go to demo-unit",
     "leaveDemoUnit": "leave demo-unit",
-    "noDemoUnit": "No demo unit exists for this account"
+    "noDemoUnit": "No demo unit exists for this account",
+    "noDomainSelected": "No module selected"
   },
   "de": {
     "goToDemoUnit": "Zur Demo-Unit",
     "leaveDemoUnit": "Demo-Unit verlassen",
-    "noDemoUnit": "Für diesen Account existiert keine Demo Unit"
+    "noDemoUnit": "Für diesen Account existiert keine Demo Unit",
+    "noDomainSelected": "Kein Modul ausgewählt"
   }
 }
 </i18n>

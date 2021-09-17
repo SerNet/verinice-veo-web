@@ -50,7 +50,7 @@ import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoTranslationCollection } from '~/types/VeoTypes';
 
 interface IItem {
   value: string | number | boolean;
@@ -84,7 +84,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoTranslationCollection>,
     options: {
       type: Object,
       default: () => undefined

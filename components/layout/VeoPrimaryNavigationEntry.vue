@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Annemarie Bufe
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -33,7 +33,22 @@
     active-class="veo-active-link-item"
   >
     <v-list-item-icon v-if="icon">
-      <v-icon v-text="icon" />
+      <v-tooltip
+        right
+        :disabled="!miniVariant || false"
+      >
+        <template #activator="{ on, attrs }">
+          <div
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon
+              v-text="icon"
+            />
+          </div>
+        </template>
+        <span>{{ name }}</span>
+      </v-tooltip> 
     </v-list-item-icon>
     <v-list-item-title>{{ name }}</v-list-item-title>
   </v-list-item>
@@ -43,7 +58,6 @@
     class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
     :value="expanded"
     no-action
-    :prepend-icon="topLevelItem ? icon : undefiend"
     active-class="veo-active-link-group"
     :sub-group="!topLevelItem"
     @input="onInputExpanded"
@@ -52,6 +66,24 @@
       <v-list-item-title>
         {{ name }}
       </v-list-item-title>
+    </template>
+    <template #prependIcon>
+      <v-tooltip
+        right
+        :disabled="!miniVariant || false"
+      >
+        <template #activator="{ on, attrs }">
+          <div
+            v-bind="attrs"
+            v-on="on"
+          >
+            <v-icon
+              v-text="icon"
+            />
+          </div>
+        </template>
+        <span>{{ name }}</span>
+      </v-tooltip> 
     </template>
     <VeoPrimaryNavigationEntry
       v-for="child of childItems"

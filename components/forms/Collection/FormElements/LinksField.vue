@@ -96,7 +96,7 @@ import { JSONSchema7 } from 'json-schema';
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
 import { BaseObject, IApi } from '~/components/forms/utils';
 
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoTranslationCollection } from '~/types/VeoTypes';
 import { UISchemaElement } from '~/types/UISchema';
 
 interface IData {
@@ -136,7 +136,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoTranslationCollection>,
     elements: {
       type: Array,
       default: () => []

@@ -89,7 +89,7 @@ import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
 
-import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollectionItem } from '~/types/VeoTypes';
+import { IVeoFormSchemaCustomTranslationEvent, IVeoFormSchemaItemDeleteEvent, IVeoFormSchemaItemUpdateEvent, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 
 export default Vue.extend({
   name: 'FseLabel',
@@ -106,13 +106,17 @@ export default Vue.extend({
       type: Object,
       default: undefined
     },
-    customTranslation: {
+    customTranslations: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollection>,
     formSchemaPointer: {
       type: String,
       default: undefined
+    },
+    language: {
+      type: String,
+      required: true
     }
   },
   data() {
@@ -128,7 +132,7 @@ export default Vue.extend({
     }
   },
   watch: {
-    customTranslation: {
+    customTranslations: {
       immediate: true,
       handler() {
         this.setLabel();
@@ -154,7 +158,7 @@ export default Vue.extend({
       this.$emit('update-custom-translation', event);
     },
     setLabel() {
-      this.label = (this.name && this.customTranslation?.[this.name]) || '';
+      this.label = (this.name && this.customTranslations?.[this.language][this.name]) || '';
     }
   }
 });
