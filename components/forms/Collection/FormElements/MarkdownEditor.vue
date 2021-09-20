@@ -86,15 +86,15 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
     },
     schema: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<JSONSchema7>,
     options: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     validation: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     disabled: Boolean,
     visible: Boolean

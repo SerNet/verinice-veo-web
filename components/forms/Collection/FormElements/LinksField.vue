@@ -117,15 +117,15 @@ export default Vue.extend({
     },
     schema: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<JSONSchema7>,
     options: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     validation: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     disabled: Boolean,
     visible: Boolean,
@@ -143,7 +143,7 @@ export default Vue.extend({
     } as PropOptions<UISchemaElement[]>,
     api: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<IApi>
   },
   data(): IData {

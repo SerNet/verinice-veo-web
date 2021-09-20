@@ -96,7 +96,7 @@ export default Vue.extend({
   props: {
     value: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     name: {
       type: String,
