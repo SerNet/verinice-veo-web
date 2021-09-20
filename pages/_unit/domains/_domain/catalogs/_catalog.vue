@@ -217,17 +217,20 @@ export default Vue.extend({
         // Add a reference for every selected entity to every incarnation
         for (const incarnation of incarnations.parameters) {
           for (const entity of this.selectedEntities) {
-            incarnation.references.push({
-              referencedCatalogable: {
-                targetUri: `/${getSchemaEndpoint(this.schemas, entity.type)}/${entity.id}`
-              } as any,
-              referenceType: 'LINK'
-            });
+            incarnation.references = [
+              {
+                referencedCatalogable: {
+                  targetUri: `/${getSchemaEndpoint(this.schemas, entity.type)}/${entity.id}`
+                } as any,
+                referenceType: 'LINK'
+              }
+            ];
           }
         }
-        console.log('1', incarnations);
 
-        console.log('2', await this.$api.unit.updateIncarnations(incarnations));
+        await this.$api.unit.updateIncarnations(incarnations);
+      } catch (e) {
+        console.log('asf123');
       } finally {
         this.applying = false;
       }
