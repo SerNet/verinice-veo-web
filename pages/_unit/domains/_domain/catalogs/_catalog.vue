@@ -97,12 +97,13 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { upperFirst } from 'lodash';
+import { cloneDeep, upperFirst } from 'lodash';
 
 import { IVeoCatalogSelectionListHeader } from '~/components/catalogs/VeoCatalogSelectionList.vue';
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
+import { IVeoCatalogItem, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 enum CATALOG_STATE {
   CHOOSE_TOMS,
@@ -112,7 +113,7 @@ enum CATALOG_STATE {
 export default Vue.extend({
   data() {
     return {
-      items: [] as any[],
+      items: [] as IVeoCatalogItem[],
       entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
       selectedToms: [] as string[],
       selectedEntities: [] as { id: string; type: string }[],
@@ -137,15 +138,17 @@ export default Vue.extend({
       return this.items.length > 0 && this.items[0].catalog ? this.$t('catalog', { name: this.items[0].catalog.displayName }).toString() : '';
     },
     formattedTomItems(): { designator: string; abbreviation: string; title: string; id: string }[] {
-      return this.items.map((item) => {
-        const displayNameParts: string[] = item.element.displayName.split(' ');
+      return this.items
+        .filter((item) => item.tailoringReferences.length > 0)
+        .map((item) => {
+          const displayNameParts: string[] = item.element.displayName.split(' ');
 
-        const title = displayNameParts.pop() || '';
-        const abbreviation = displayNameParts.pop() || '';
-        const designator = displayNameParts.pop() || '';
+          const title = displayNameParts.pop() || '';
+          const abbreviation = displayNameParts.pop() || '';
+          const designator = displayNameParts.pop() || '';
 
-        return { designator, abbreviation, title, id: item.id };
-      });
+          return { designator, abbreviation, title, id: item.id };
+        });
     },
     formattedSelectedToms(): { designator: string; abbreviation: string; title: string; id: string }[] {
       return this.formattedTomItems.filter((item) => this.selectedToms.includes(item.id));
@@ -215,8 +218,9 @@ export default Vue.extend({
         const incarnations = await this.$api.unit.fetchIncarnations(this.selectedToms);
 
         // Add a reference for every selected entity to every incarnation
-        for (const incarnation of incarnations.parameters) {
-          for (const entity of this.selectedEntities) {
+        for (const entity of this.selectedEntities) {
+          const incarnationsToModify = cloneDeep(incarnations);
+          for (const incarnation of incarnationsToModify.parameters) {
             incarnation.references = [
               {
                 referencedCatalogable: {
@@ -226,11 +230,14 @@ export default Vue.extend({
               }
             ];
           }
+          await this.$api.unit.updateIncarnations(incarnationsToModify);
+          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('incarnationsApplied') });
+          this.selectedToms = [];
+          this.selectedEntities = [];
+          this.chooseToms();
         }
-
-        await this.$api.unit.updateIncarnations(incarnations);
       } catch (e) {
-        console.log('asf123');
+        this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('applyIncarnaionError'), text: JSON.stringify(e.message || e) });
       } finally {
         this.applying = false;
       }
@@ -245,8 +252,10 @@ export default Vue.extend({
   "en": {
     "abbreviation": "Abbreviation",
     "apply": "apply",
+    "applyIncarnaionError": "Couldn't apply TOMs.",
     "applyTOMs": "Apply TOMs",
     "catalog": "Catalog {name}",
+    "incarnationsApplied": "TOMs were applied",
     "selectTOMs": "Select TOMs",
     "selectedTOMs": "Selected TOMs",
     "selectTOMCTA": "Please choose one or more technical organizational measures to apply",
@@ -255,8 +264,10 @@ export default Vue.extend({
   "de": {
     "abbreviation": "Abkürzung",
     "apply": "anwenden",
+    "applyIncarnaionError": "Die TOMs konnten nicht angewendet werden.",
     "applyTOMs": "TOMs anwenden",
     "catalog": "Katalog {name}",
+    "incarnationsApplied": "TOMs wurden angewendet.",
     "selectTOMs": "TOMs auswählen",
     "selectedTOMs": "Ausgewählte TOMs",
     "selectTOMCTA": "Wählen Sie eine oder mehrere technische und organisatorische Maßnahmen aus, die angewendet werden sollen.",

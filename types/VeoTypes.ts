@@ -233,7 +233,8 @@ export interface IVeoCatalogItem extends IVeoBaseObject {
     updatedBy: string;
     referenceType: string;
     catalogItem: IVeoLink;
-  };
+    id: string;
+  }[];
   namespace: string;
   element: IVeoLink;
 }
