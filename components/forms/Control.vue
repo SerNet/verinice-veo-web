@@ -75,7 +75,7 @@ export default Vue.extend({
     } as PropOptions<IVeoTranslationCollection>,
     elements: {
       type: Array,
-      default: () => []
+      default: () => undefined
     } as PropOptions<UISchemaElement[]>,
     api: {
       type: Object,
