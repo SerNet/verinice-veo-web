@@ -91,7 +91,7 @@ export default Vue.extend({
     currentUnitId(): string | undefined {
       return separateUUIDParam(this.$route.params.unit).id;
     },
-    domainId() {
+    domainId(): string | undefined {
       if (this.$route.name === 'unit-domains-more') {
         return undefined;
       }
