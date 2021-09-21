@@ -54,7 +54,7 @@
         v-model="selectedToms"
         :items="formattedTomItems"
         :headers="tomSelectionHeaders"
-        :selectable="true"
+        selectable
       />
     </template>
     <template
@@ -158,11 +158,7 @@ export default Vue.extend({
       return this.items
         .filter((item) => item.tailoringReferences.length > 0)
         .map((item) => {
-          const displayNameParts: string[] = item.element.displayName.split(' ');
-
-          const title = displayNameParts.pop() || '';
-          const abbreviation = displayNameParts.pop() || '';
-          const designator = displayNameParts.pop() || '';
+          const [title = '', abbreviation = '', designator = ''] = item.element.displayName.split(' ');
 
           return { designator, abbreviation, title, id: item.id };
         });

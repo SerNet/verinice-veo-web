@@ -21,7 +21,6 @@
     item-key="id"
     :headers="localHeaders"
     :options="{ mustSort: true }"
-    class="catalog-selection-list"
     :class="{ 'selectable': selectable }"
     @click:row="onItemSelected($event.id)"
   >
@@ -34,7 +33,7 @@
       />
     </template>
     <template #item.item.title="{ item }">
-      <div class="catalog-selection-list__title">
+      <div class="font-weight-bold text-no-wrap">
         {{ item.item.title }}
       </div>
     </template>
@@ -119,12 +118,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-.catalog-selection-list.selectable {
+.selectable {
   cursor: pointer;
-}
-
-.catalog-selection-list__title {
-  font-weight: bold;
-  white-space: nowrap;
 }
 </style>
