@@ -62,7 +62,7 @@ export default Vue.extend({
   props: {
     value: {
       type: undefined,
-      default: () => undefined
+      default: undefined
     },
     name: {
       type: String,
@@ -70,15 +70,15 @@ export default Vue.extend({
     },
     schema: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<JSONSchema7>,
     options: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     validation: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     disabled: Boolean,
     visible: Boolean,
@@ -92,11 +92,11 @@ export default Vue.extend({
     } as PropOptions<IVeoTranslationCollection>,
     elements: {
       type: Array,
-      default: () => []
+      default: undefined
     } as PropOptions<UISchemaElement[]>,
     api: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<IApi>
   },
   render(h, context) {

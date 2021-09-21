@@ -67,7 +67,7 @@ export default Vue.extend({
   props: {
     value: {
       type: [String, Array],
-      default: () => undefined
+      default: undefined
     } as PropOptions<string | string[]>,
     name: {
       type: String,
@@ -75,7 +75,7 @@ export default Vue.extend({
     },
     schema: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<JSONSchema7>,
     generalTranslation: {
       type: Object,
@@ -87,11 +87,11 @@ export default Vue.extend({
     } as PropOptions<IVeoTranslationCollection>,
     options: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     validation: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     disabled: Boolean,
     visible: Boolean

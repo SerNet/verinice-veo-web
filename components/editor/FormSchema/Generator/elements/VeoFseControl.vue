@@ -36,7 +36,7 @@ export default Vue.extend({
     name: { type: String, default: '' },
     schema: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<JSONSchema7>,
     generalTranslation: {
       type: Object,
@@ -52,11 +52,11 @@ export default Vue.extend({
     } as PropOptions<UISchemaElement[]>,
     options: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     value: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     formSchemaPointer: {
       type: String,
