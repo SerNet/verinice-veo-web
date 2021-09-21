@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann
+   - Copyright (C) 2021  Jonas Heitmann, Annemarie Bufe
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,55 +16,52 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <!-- Current domain -->
-  <div>
-    <v-menu offset-y>
-      <template #activator="{ on }">
-        <v-btn
-          outlined
-          color="primary"
-          v-on="on"
+  <v-menu offset-y>
+    <template #activator="{ on }">
+      <v-btn
+        outlined
+        color="primary"
+        v-on="on"
+      >
+        <span v-if="$route.name === 'unit-domains-more'">
+          {{ $t('breadcrumbs.more_modules') }}
+        </span>
+        <span v-else>
+          {{ currentDomainName }}
+        </span>
+        <v-icon
+          right
+          dark
         >
-          <span v-if="$route.name === 'unit-domains-more'">
+          mdi-chevron-down
+        </v-icon>
+      </v-btn>
+    </template>
+    <template #default>
+      <v-list>
+        <v-list-item-group
+          :value="currentDomainId"
+          color="primary"
+        >
+          <v-list-item
+            v-for="(domain) in domains"
+            :key="domain.id"
+            :value="domain.id"
+            @click="onDomainChange(domain.id)"
+          >
+            <v-list-item-title>{{ domain.name }}</v-list-item-title>
+          </v-list-item>
+          <v-divider class="mt-6" />
+          <v-list-item
+            value="more"
+            :to="`/${$route.params.unit}/domains/more`"
+          >
             {{ $t('breadcrumbs.more_modules') }}
-          </span>
-          <span v-else>
-            {{ currentDomainName }}
-          </span>
-          <v-icon
-            right
-            dark
-          >
-            mdi-chevron-down
-          </v-icon>
-        </v-btn>
-      </template>
-      <template #default>
-        <v-list>
-          <v-list-item-group
-            :value="currentDomainId"
-            color="primary"
-          >
-            <v-list-item
-              v-for="(domain) in domains"
-              :key="domain.id"
-              :value="domain.id"
-              @click="onDomainChange(domain.id)"
-            >
-              <v-list-item-title>{{ domain.name }}</v-list-item-title>
-            </v-list-item>
-            <v-divider class="mt-6" />
-            <v-list-item
-              value="more"
-              :to="`/${$route.params.unit}/domains/more`"
-            >
-              {{ $t('breadcrumbs.more_modules') }}
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </template>
-    </v-menu>
-  </div>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </template>
+  </v-menu>
 </template>
 
 <script lang="ts">

@@ -23,7 +23,7 @@
       clipped-left
       flat
     >
-      <div class="d-flex">
+      <div class="d-flex align-center">
         <v-app-bar-nav-icon
           v-if="$vuetify.breakpoint.xs"
           @click="drawer = true"
@@ -36,11 +36,13 @@
             class="ml-2"
           />
         </nuxt-link>
+        <div class="ml-4">
+          <VeoDomainSelect v-if="$route.params.unit" />
+        </div>
       </div>
       <div
         class="d-flex flex-grow-0 mr-6"
       >
-        <VeoDomainSelect v-if="$route.params.unit" />
         <v-tooltip
           v-if="!userIsInDemoUnit"
           top
