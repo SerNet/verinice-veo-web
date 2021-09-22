@@ -149,7 +149,7 @@ export default Vue.extend({
     },
     value: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     formSchemaPointer: {
       type: String,
