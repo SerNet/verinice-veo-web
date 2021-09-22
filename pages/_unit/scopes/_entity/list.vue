@@ -92,6 +92,7 @@ export default Vue.extend({
       showParentLink: false as boolean,
       rootEntityType: '' as string,
       loading: false as boolean,
+      // @see https://git.nbrx.de/nbrx/t1/veo/-/issues/297
       schemas: [] as IVeoSchemaEndpoint[]
     };
   },
