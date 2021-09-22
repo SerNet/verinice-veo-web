@@ -77,7 +77,7 @@ export default Vue.extend({
         event: {
           name: 'create-entity',
           params: {
-            type: this.schemas ? getSchemaName(this.schemas, this.objectType) : '',
+            type: this.schemas?.length ? getSchemaName(this.schemas, this.objectType) : '',
             parent: this.currentEntity
           }
         },
