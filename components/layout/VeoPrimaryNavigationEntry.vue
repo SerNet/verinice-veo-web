@@ -87,8 +87,9 @@
     </template>
     <VeoPrimaryNavigationEntry
       v-for="child of childItems"
-      :key="child.name"
       v-bind="child"
+      :key="child.name"
+      style="min-height: 28px;"
       :persist-u-i-state="child.persistCollapsedState"
     />
   </v-list-group>
