@@ -23,37 +23,32 @@
         color="primary"
         v-on="on"
       >
-        <span v-if="$route.name === 'unit-domains-more'">
-          {{ $t('breadcrumbs.more_modules') }}
-        </span>
-        <span v-else>
-          {{ currentDomainName }}
-        </span>
+        {{ $route.name === 'unit-domains-more' ? $t('breadcrumbs.more_modules') : currentDomainName }}
         <v-icon
           right
           dark
         >
-          mdi-chevron-down
+          {{ mdiChevronDown }}
         </v-icon>
       </v-btn>
     </template>
     <template #default>
       <v-list>
         <v-list-item-group
-          :value="currentDomainId"
           color="primary"
         >
           <v-list-item
             v-for="(domain) in domains"
             :key="domain.id"
-            :value="domain.id"
-            @click="onDomainChange(domain.id)"
+            :to="`${ baseUrl }${ createUUIDUrlParam('domain', domain.id) }`"
+            nuxt
           >
             <v-list-item-title>{{ domain.name }}</v-list-item-title>
           </v-list-item>
           <v-divider class="mt-6" />
           <v-list-item
             value="more"
+            nuxt
             :to="`/${$route.params.unit}/domains/more`"
           >
             {{ $t('breadcrumbs.more_modules') }}
@@ -66,19 +61,25 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mdiChevronDown } from '@mdi/js';
+
 import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
 
 export default Vue.extend({
   data() {
     return {
-      domains: [] as IVeoDomain[]
+      domains: [] as IVeoDomain[],
+      mdiChevronDown
     };
   },
   async fetch() {
     this.domains = await this.$api.domain.fetchAll();
   },
   computed: {
+    baseUrl(): string {
+      return `/${this.$route.params.unit}/domains/`;
+    },
     currentDomainId(): string | undefined {
       return separateUUIDParam(this.$route.params.domain).id;
     },
@@ -99,9 +100,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    onDomainChange(domainId: string) {
-      this.$router.push(`/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}`);
-    }
+    createUUIDUrlParam
   }
 });
 </script>
