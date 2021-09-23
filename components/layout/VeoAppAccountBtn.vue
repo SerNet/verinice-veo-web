@@ -43,7 +43,7 @@
         </v-btn>
       </template>
       <v-card>
-        <v-list>
+        <v-list dense>
           <v-list-item>
             <v-list-item-avatar color="secondary">
               <v-icon class="white--text headline">
@@ -62,6 +62,15 @@
             <v-divider />
             <VeoUnitSelection :units="units" />
           </template>
+          <v-list-item @click="displayDeploymentDetails = true">
+            <v-list-item-icon>
+              <v-icon>
+                mdi-information-outline
+              </v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>{{ $t('about') }}</v-list-item-title>
+            <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
+          </v-list-item>
         </v-list>
         <v-divider />
         <v-card-actions>
@@ -95,7 +104,8 @@ export default Vue.extend({
   data() {
     return {
       value: false,
-      units: [] as IVeoUnit[]
+      units: [] as IVeoUnit[],
+      displayDeploymentDetails: false as boolean
     };
   },
   async fetch() {
@@ -124,9 +134,11 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "about": "About verinice.",
     "logout": "Logout"
   },
   "de": {
+    "about": "Über verinice.",
     "logout": "Abmelden"
   }
 }
