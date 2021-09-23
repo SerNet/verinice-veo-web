@@ -381,10 +381,6 @@ export default Vue.extend({
   }
 }
 
-.veo-primary-navigation__menu-item {
-  flex-basis: auto;
-}
-
 .veo-active-link-item {
   color: $primary !important;
 }

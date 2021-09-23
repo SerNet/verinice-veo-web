@@ -63,7 +63,7 @@
             <VeoUnitSelection :units="units" />
           </template>
           <v-list-item @click="displayDeploymentDetails = true">
-            <v-list-item-icon>
+            <v-list-item-icon class="ml-2">
               <v-icon>
                 mdi-information-outline
               </v-icon>
