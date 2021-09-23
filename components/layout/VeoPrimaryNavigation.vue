@@ -197,11 +197,11 @@ export default Vue.extend({
         topLevelItem: true
       };
 
-      const spacer: INavItem = {
+      /* const spacer: INavItem = {
         name: 'spacer',
         disabled: false,
         topLevelItem: true
-      };
+      }; */
 
       const unitSelection: INavItem = {
         name: this.$t('breadcrumbs.index').toString(),
@@ -212,14 +212,14 @@ export default Vue.extend({
         topLevelItem: true
       };
 
-      const editors: INavItem = {
+      /* const editors: INavItem = {
         name: this.$t('breadcrumbs.editor').toString(),
         icon: 'mdi-application-cog',
         to: '/editor',
         exact: false,
         disabled: false,
         topLevelItem: true
-      };
+      }; */
 
       const forms = {
         name: this.$t('breadcrumbs.forms').toString(),
@@ -266,9 +266,9 @@ export default Vue.extend({
       return [
         ...(!this.$route.params.unit || !maxUnits.value || maxUnits.value > 2 ? [unitSelection] : []),
         ...(this.domainId ? [domainDashboard, forms, catalogs, reports] : []),
-        ...(this.$route.params.unit ? [divider, /* VEO-692 unitDashboard, */ scopes, objects] : []),
-        spacer,
-        editors
+        ...(this.$route.params.unit ? [divider, /* VEO-692 unitDashboard, */ scopes, objects] : [])
+        /* spacer,
+        editors */
       ];
     }
   },
