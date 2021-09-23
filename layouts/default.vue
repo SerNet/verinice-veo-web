@@ -23,7 +23,7 @@
       clipped-left
       flat
     >
-      <div class="d-flex">
+      <div class="d-flex align-center">
         <v-app-bar-nav-icon
           v-if="$vuetify.breakpoint.xs"
           @click="drawer = true"
@@ -36,49 +36,9 @@
             class="ml-2"
           />
         </nuxt-link>
-
-        <!-- Current domain -->
-        <div v-if="$route.params.unit">
-          <v-select
-            :value="domainId"
-            :items="domains"
-            item-text="name"
-            item-value="id"
-            hide-details
-            outlined
-            filled
-            primary
-            class="ma-3"
-            style="font-size: 1.2rem; max-width: 200px"
-            :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
-            :menu-props="{ closeOnContentClick: true, 'max-width': '256px', bottom:true, offsetY:true }"
-            @change="onDomainChange"
-          >
-            <template #append-item>
-              <v-divider class="mt-6" />
-              <v-list-item
-                :to="`/${$route.params.unit}/domains/more`"
-                exact-active-class="veo-active-link-item"
-              >
-                {{ $t('breadcrumbs.more_modules') }}
-              </v-list-item>
-            </template>
-          </v-select>
+        <div class="ml-4">
+          <VeoDomainSelect v-if="$route.params.unit" />
         </div>
-      </div>
-      <div
-        class="d-flex align-center"
-        style="width: 60%; max-width: 500px; cursor: no-drop"
-      >
-        <v-text-field
-          :label="$t('search.label')"
-          hide-details
-          background-color="grey"
-          height="40"
-          disabled
-          class="veo-app-bar-search"
-          style="visibility: hidden"
-        />
       </div>
       <div
         class="d-flex flex-grow-0 mr-6"
@@ -210,7 +170,7 @@ import { computed, ComputedRef, defineComponent, Ref, ref, useContext } from '@n
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoUnit, IVeoDomain } from '~/types/VeoTypes';
+import { IVeoUnit } from '~/types/VeoTypes';
 
 interface IProps {}
 
@@ -319,13 +279,6 @@ export default defineComponent<IProps>({
       units.value = await $api.unit.fetchAll();
     }
 
-    // Load all domains
-    const domains: Ref<IVeoDomain[]> = ref([]);
-
-    async function loadDomains() {
-      domains.value = await $api.domain.fetchAll();
-    }
-
     const domain = computed((): string | undefined => separateUUIDParam(context.root.$route.params.domain).id);
 
     const domainId = computed((): string | undefined => {
@@ -337,10 +290,6 @@ export default defineComponent<IProps>({
       }
       return domain.value;
     });
-
-    function onDomainChange(domainId: string) {
-      context.root.$router.push(`/${context.root.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}`);
-    }
 
     const unitId = computed(() => (separateUUIDParam(context.root.$route.params.unit).id.length > 0 ? separateUUIDParam(context.root.$route.params.unit).id : undefined));
 
@@ -355,13 +304,11 @@ export default defineComponent<IProps>({
     const demoUnit: ComputedRef<IVeoUnit | undefined> = computed(() => units.value.find((unit) => unit.name === 'Demo'));
 
     loadUnits();
-    loadDomains();
 
     return {
       domainId,
       unitId,
       alert,
-      domains,
       drawer,
       lang,
       langs,
@@ -372,7 +319,6 @@ export default defineComponent<IProps>({
       demoUnit,
       units,
       goToUnit,
-      onDomainChange,
       homeLink
     };
   },
@@ -389,14 +335,12 @@ export default defineComponent<IProps>({
   "en": {
     "goToDemoUnit": "go to demo-unit",
     "leaveDemoUnit": "leave demo-unit",
-    "noDemoUnit": "No demo unit exists for this account",
-    "noDomainSelected": "No module selected"
+    "noDemoUnit": "No demo unit exists for this account"
   },
   "de": {
     "goToDemoUnit": "Zur Demo-Unit",
     "leaveDemoUnit": "Demo-Unit verlassen",
-    "noDemoUnit": "Für diesen Account existiert keine Demo Unit",
-    "noDomainSelected": "Kein Modul ausgewählt"
+    "noDemoUnit": "Für diesen Account existiert keine Demo Unit"
   }
 }
 </i18n>
@@ -413,18 +357,6 @@ export default defineComponent<IProps>({
       flex-grow: 1;
       flex-basis: 0;
     }
-  }
-}
-
-.veo-app-bar-search {
-  border-radius: 4px;
-
-  ::v-deep .v-input__slot {
-    padding: 0 16px;
-  }
-
-  ::v-deep .v-input__slot:before {
-    border-top: 0 !important;
   }
 }
 </style>

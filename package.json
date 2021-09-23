@@ -39,6 +39,7 @@
   "dependencies": {
     "@codemirror/next": "^0.14.0",
     "@mdi/font": "^5.8.55",
+    "@mdi/js": "^6.1.95",
     "@nuxtjs/axios": "^5.13.0",
     "@nuxtjs/composition-api": "^0.13.5",
     "@nuxtjs/proxy": "^2.0.1",
