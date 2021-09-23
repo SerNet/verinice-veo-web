@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Client } from '~/plugins/api';
-import { IVeoCatalog, IVeoCatalogItem, IVeoCatalogItemListItem } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoCatalogItem } from '~/types/VeoTypes';
 
 export default function (api: Client) {
   return {
@@ -51,7 +51,7 @@ export default function (api: Client) {
      * @param catalogId Id of the catalog to fetch the items for.
      * @param params Additional request params.
      */
-    fetchItems(catalogId: string, domainId: string, params: Record<string, string> = {}): Promise<IVeoCatalogItemListItem[]> {
+    fetchItems(catalogId: string, domainId: string, params: Record<string, string> = {}): Promise<IVeoCatalogItem[]> {
       params.domain = domainId;
 
       return api.req(`/api/catalogs/${catalogId}/items`, {
