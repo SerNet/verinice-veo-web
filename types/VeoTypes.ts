@@ -1,3 +1,20 @@
+/*
+ * verinice.veo web
+ * Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Jessica Lühnen
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 import { JSONSchema7TypeName } from 'json-schema';
 import { IBaseObject } from '~/lib/utils';
 
@@ -297,12 +314,8 @@ export interface IVeoFormSchemaItem {
   rule?: IVeoFormSchemaItemRule;
 }
 
-export interface IVeoFormSchemaTranslationCollectionItem {
-  [key: string]: string;
-}
-
 export interface IVeoFormSchemaTranslationCollection {
-  [key: string]: IVeoFormSchemaTranslationCollectionItem;
+  [key: string]: IVeoTranslationCollection;
 }
 
 export interface IVeoFormSchemaCustomTranslationEvent {
@@ -332,7 +345,10 @@ export interface IVeoReportMeta {
   };
   outputTypes: string[];
   multipleTargetsSupported: boolean;
-  targetTypes: string[];
+  targetTypes: {
+    modelType: string;
+    subTypes?: string[] | null;
+  }[];
 }
 
 export interface IVeoReportsMeta {
@@ -353,4 +369,5 @@ export interface IVeoObjectHistoryEntry {
   time: string;
   type: string;
   changeNumber: number;
+  uri: string;
 }

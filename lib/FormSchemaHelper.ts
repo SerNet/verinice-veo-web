@@ -1,14 +1,23 @@
+/*
+ * verinice.veo web
+ * Copyright (C) 2021  Jonas Heitmann, Davit Svandize
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import {
-  IVeoFormSchema,
-  IVeoFormSchemaItem,
-  IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaTranslationCollectionItem,
-  IVeoFormSchemaItemRule,
-  IVeoObjectSchema,
-  IVeoFormSchemaMeta
-} from '~/types/VeoTypes';
+import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export function generateSchema(name: IVeoFormSchemaMeta['name'], modelType: string, subType: string | null, translation: IVeoFormSchemaTranslationCollection = {}): IVeoFormSchema {
   return {
@@ -38,16 +47,19 @@ export function validate(schema: IVeoFormSchema, objectSchema: undefined | IVeoO
 
 export function deleteElementCustomTranslation(
   elementFormSchema: IVeoFormSchemaItem,
-  customTranslation: IVeoFormSchemaTranslationCollectionItem,
-  callbackUpdateCustomTranslation: (updatedCustomTranslationValue: IVeoFormSchemaTranslationCollectionItem) => void
+  customTranslations: IVeoFormSchemaTranslationCollection,
+  callbackUpdateCustomTranslation: (updatedCustomTranslationValue: IVeoFormSchemaTranslationCollection) => void
 ): void {
   // Remove the element and also all translation key from customTranslations
   let translationKeysToRemove = JSON.stringify(elementFormSchema).match(/#lang\/[\w-]+/g);
   if (translationKeysToRemove) {
-    const localCustomTranslation: IVeoFormSchemaTranslationCollectionItem = JSON.parse(JSON.stringify(customTranslation));
+    const localCustomTranslation: IVeoFormSchemaTranslationCollection = JSON.parse(JSON.stringify(customTranslations));
+
     translationKeysToRemove = translationKeysToRemove.map((key) => key.replace('#lang/', ''));
     translationKeysToRemove.forEach((key) => {
-      delete localCustomTranslation[key];
+      for (const lang in customTranslations) {
+        delete localCustomTranslation[lang][key];
+      }
     });
     callbackUpdateCustomTranslation(localCustomTranslation);
   }

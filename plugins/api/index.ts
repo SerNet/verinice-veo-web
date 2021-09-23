@@ -1,3 +1,20 @@
+/*
+ * verinice.veo web
+ * Copyright (C) 2021  Philipp Ballhausen, Markus Werner, Davit Svandize, Jonas Heitmann
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 import defaultsDeep from 'lodash/defaultsDeep';
 import { Plugin, Context } from '@nuxt/types';
 
@@ -91,6 +108,7 @@ export class Client {
       headers: {
         Accept: 'application/json',
         Authorization: 'Bearer ' + $user.auth.token,
+        'Accept-Language': this.context.app.i18n.locale,
         'x-client-build': this.build,
         'x-client-version': this.version
       } as Record<string, string>,
@@ -100,7 +118,7 @@ export class Client {
 
     if (options.json) {
       if ('$etag' in options.json) {
-        defaults.headers['If-Match'] = options.json.$etag?.replace(/^W\/"|"$/gi, '');
+        defaults.headers['If-Match'] = options.json.$etag?.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
       }
       options.body = JSON.stringify(options.json);
       defaults.method = 'POST';

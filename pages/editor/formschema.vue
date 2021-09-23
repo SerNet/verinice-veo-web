@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <VeoPageWrapper
     :title="title"
@@ -96,6 +113,24 @@
           {{ $t("editor.schema.properties") }}
         </template>
       </v-tooltip>
+      <v-tooltip bottom>
+        <template #activator="{on}">
+          <v-btn
+            icon
+            large
+            target="_blank"
+            to="/help"
+            class="help-button"
+            color="primary"
+            v-on="on"
+          >
+            <v-icon>mdi-help-circle-outline</v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ $t('help') }}
+        </template>
+      </v-tooltip>
     </template>
     <template
       v-if="formSchema && objectSchema"
@@ -168,7 +203,8 @@
               :schema="objectSchema"
               :value="formSchema.content"
               :general-translation="translation && translation.lang[language]"
-              :custom-translation="formSchema.translation[language]"
+              :custom-translations="formSchema.translation"
+              :language="language"
               @delete="onDelete"
               @update="onUpdate"
               @update-custom-translation="onUpdateCustomTranslation"
@@ -313,7 +349,6 @@ import {
   IVeoFormSchemaItem,
   IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
@@ -441,9 +476,7 @@ export default defineComponent<IProps>({
       if (formSchema.value) {
         // Delete custom translation keys for deleted elemented and nested elements
         const elementFormSchema = JsonPointer.get(formSchema.value.content, event.formSchemaPointer) as IVeoFormSchemaItem;
-        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation[language.value], (updatedCustomTranslationValue) => {
-          onUpdateCustomTranslation(updatedCustomTranslationValue);
-        });
+        deleteElementCustomTranslation(elementFormSchema, formSchema.value.translation, onUpdateCustomTranslation);
         const vjpPointer = event.formSchemaPointer.replace('#', '');
         // Not allowed to make changes on the root object
         if (event.formSchemaPointer !== '#') {
@@ -496,9 +529,9 @@ export default defineComponent<IProps>({
       language.value = newLanguageVal;
     }
 
-    function onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
+    function onUpdateCustomTranslation(event: IVeoFormSchemaTranslationCollection) {
       if (formSchema.value) {
-        vjp.set(formSchema.value, `/translation/${language.value}`, event);
+        vjp.set(formSchema.value, `/translation`, event);
       }
     }
 
@@ -565,7 +598,8 @@ export default defineComponent<IProps>({
     "formSchemaCode": "Schema code",
     "invalidFormSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
-    "search": "Search for a control..."
+    "search": "Search for a control...",
+    "help": "Help"
   },
   "de": {
     "availableControls": "Verfügbare Steuerelemente",
@@ -574,7 +608,8 @@ export default defineComponent<IProps>({
     "formSchemaCode": "Schema code",
     "invalidFormSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
-    "search": "Nach einem Steuerelement suchen"
+    "search": "Nach einem Steuerelement suchen",
+    "help": "Hilfe"
   }
 }
 </i18n>

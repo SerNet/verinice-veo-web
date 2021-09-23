@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <VeoDialog
     v-model="dialog.value"
@@ -128,7 +145,7 @@ export default defineComponent<IProps>({
     },
     subtype: {
       type: String,
-      required: true
+      default: null
     }
   },
   setup(props, context) {
@@ -139,8 +156,8 @@ export default defineComponent<IProps>({
 
     const form = ref({
       data: {
-        formSchema: props.formSchema as string,
-        subType: props.subtype as string
+        formSchema: props.formSchema,
+        subType: props.subtype
       },
       rules: {
         formSchema: [(input: string) => trim(input).length > 0 || context.root.$t('global.input.required')]

@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <VeoPageWrapper>
     <template #default>
@@ -69,6 +86,24 @@
             </template>
             <template #default>
               {{ $t('translations') }}
+            </template>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn
+                icon
+                large
+                target="_blank"
+                to="/help"
+                class="help-button"
+                color="primary"
+                v-on="on"
+              >
+                <v-icon>mdi-help-circle-outline</v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t('help') }}
             </template>
           </v-tooltip>
           <VeoCollapseButton
@@ -345,7 +380,8 @@ export default Vue.extend({
     "invalidObjectSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
     "search": "Search for a property",
-    "translations": "Translations"
+    "translations": "Translations",
+    "help": "Help"
   },
   "de": {
     "description": "Beschreibung",
@@ -354,7 +390,8 @@ export default Vue.extend({
     "invalidObjectSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
     "search": "Nach einer Eigenschaft suchen...",
-    "translations": "Übersetzungen"
+    "translations": "Übersetzungen",
+    "help": "Hilfe"
   }
 }
 </i18n>

@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <div
     v-if="visible"
@@ -34,10 +51,24 @@ import Vue, { VueConstructor } from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 
-import hljs from 'highlight.js';
+import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
 import { Editor } from '@toast-ui/vue-editor';
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
+
+// Outside of vue as the editor can't handle the function being part of the vue methods or computed properties.
+function clearButton(instance: any) {
+  const el = document.createElement('button');
+  el.textContent = 'X';
+  el.type = 'button';
+  el.classList.add('codeblock');
+  // @ts-ignore
+  el.ariaLabel = 'Clear editor';
+  el.addEventListener('click', () => {
+    instance.$emit('clear-editor');
+  });
+  return el;
+}
 
 export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).extend({
   name: 'MarkdownEditor',
@@ -55,59 +86,41 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
     },
     schema: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<JSONSchema7>,
     options: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     validation: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     disabled: Boolean,
     visible: Boolean
   },
-  data() {
-    return {
-      editorOptions: {
+  computed: {
+    editorOptions(): any {
+      return {
         usageStatistics: false,
-        plugins: [[codeSyntaxHighlightPlugin, { hljs }]],
+        plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
         toolbarItems: [
-          'heading',
-          'bold',
-          'italic',
-          'strike',
-          'divider',
-          'hr',
-          'quote',
-          'divider',
-          'ul',
-          'ol',
-          'task',
-          'indent',
-          'outdent',
-          'divider',
-          'table',
-          'image',
-          'link',
-          'divider',
-          'code',
-          'codeblock',
-          'divider',
-          {
-            type: 'button',
-            options: {
-              className: 'tui-custom-clear',
-              event: 'clearValue',
-              tooltip: 'Clear Button',
-              text: 'X',
-              style: 'background:none;font-weight:900;color: black;font-size: 14px;line-height: 1;'
-            }
-          }
+          ['heading', 'bold', 'italic', 'strike'],
+          ['hr', 'quote'],
+          ['ul', 'ol', 'task', 'indent', 'outdent'],
+          ['table', 'image', 'link'],
+          [
+            'code',
+            {
+              el: clearButton(this),
+              name: 'clear-button',
+              tooltip: this.$t('clear')
+            },
+            'codeblock'
+          ]
         ]
-      }
-    };
+      };
+    }
   },
   watch: {
     value: {
@@ -120,9 +133,9 @@ export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).
     }
   },
   mounted() {
-    const eventManager = this.$refs.toastuiEditor.editor.eventManager;
-    eventManager.addEventType('clearValue');
-    eventManager.listen('clearValue', this.clear);
+    this.$on('clear-editor', () => {
+      this.clear();
+    });
   },
   methods: {
     clear() {
@@ -145,25 +158,39 @@ export const helpers: Helpful<FormElementProps> = {
 };
 </script>
 
+<i18n>
+{
+  "en": {
+    "clear": "Clear content"
+  },
+  "de": {
+    "clear": "Inhalt löschen"
+  }
+}  
+</i18n>
+
 <style lang="scss">
 // Good resource how to include external .css as inline in scss
 // https://github.com/sass/node-sass/issues/2362#issuecomment-388634848
 // add node_modules/ to work with rollup and vue together
 // https://github.com/vuejs/rollup-plugin-vue/issues/146#issuecomment-363749613
 .vf-markdown-editor {
-  @import 'node_modules/codemirror/lib/codemirror';
+  position: relative;
+  z-index: 0;
+
   @import 'node_modules/@toast-ui/editor/dist/toastui-editor';
-  @import 'node_modules/highlight.js/styles/github';
-  .tui-editor-contents h1,
-  .tui-editor-contents h2,
-  .tui-editor-contents h3,
-  .tui-editor-contents h4,
-  .tui-editor-contents h5,
-  .tui-editor-contents h6 {
+  @import 'prismjs/themes/prism';
+  @import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight';
+  .toastui-editor-contents h1,
+  .toastui-editor-contents h2,
+  .toastui-editor-contents h3,
+  .toastui-editor-contents h4,
+  .toastui-editor-contents h5,
+  .toastui-editor-contents h6 {
     border: none;
   }
-  .tui-editor-defaultUI {
-    background-color: #fff;
+  .toastui-editor-toolbar-item-wrapper {
+    margin: 0;
   }
   code::before,
   code::after {
@@ -176,13 +203,13 @@ export const helpers: Helpful<FormElementProps> = {
     font-size: 100%;
   }
   &.is-disabled {
-    .tui-editor-defaultUI::before {
+    .toastui-editor-defaultUI::before {
       content: '';
       width: 100%;
       background: rgba(255, 255, 255, 0.7);
       height: 100%;
       position: absolute;
-      z-index: 3;
+      z-index: 101;
     }
   }
 }

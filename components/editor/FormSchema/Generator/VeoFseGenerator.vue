@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021 Davit Svandize, Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <script lang="ts">
 import Vue, { VNode, PropOptions } from 'vue';
 import { JSONSchema7 } from 'json-schema';
@@ -11,7 +28,7 @@ import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItemDeleteEvent,
   IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollectionItem,
+  IVeoFormSchemaTranslationCollection,
   IVeoTranslationCollection
 } from '~/types/VeoTypes';
 
@@ -30,10 +47,14 @@ export default Vue.extend({
       type: Object,
       default: () => {}
     } as PropOptions<IVeoTranslationCollection>,
-    customTranslation: {
+    customTranslations: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>
+    } as PropOptions<IVeoFormSchemaTranslationCollection>,
+    language: {
+      type: String,
+      required: true
+    }
   },
   methods: {
     onDelete(event: IVeoFormSchemaItemDeleteEvent): void {
@@ -64,7 +85,8 @@ export default Vue.extend({
                 formSchemaPointer,
                 level: elementLevel,
                 name: element.options?.label?.replace('#lang/', ''),
-                customTranslation: this.customTranslation
+                customTranslations: this.customTranslations,
+                language: this.language
               },
               on: {
                 delete: (event: IVeoFormSchemaItemDeleteEvent) => this.onDelete(event),
@@ -80,7 +102,7 @@ export default Vue.extend({
             schema: {},
             formSchemaPointer,
             generalTranslation: {},
-            customTranslation: {}
+            customTranslations: {}
           };
 
           if (element.scope) {
@@ -93,7 +115,8 @@ export default Vue.extend({
               name: elementName,
               schema: elementSchema,
               generalTranslation: this.generalTranslation,
-              customTranslation: this.customTranslation
+              customTranslations: this.customTranslations,
+              language: this.language
             };
           }
           return h(FseControl, {
@@ -118,7 +141,8 @@ export default Vue.extend({
               name: element.text.replace('#lang/', ''),
               text: element.text,
               formSchemaPointer,
-              customTranslation: this.customTranslation
+              customTranslations: this.customTranslations,
+              language: this.language
             },
             on: {
               delete: (event: IVeoFormSchemaItemDeleteEvent) => this.onDelete(event),

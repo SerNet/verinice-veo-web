@@ -43,7 +43,7 @@ export default function (api: Client) {
      *
      * @param unit
      */
-    create(unit: Object): Promise<void> {
+    create(unit: Object): Promise<IVeoAPIMessage> {
       return api.req('/api/units', {
         method: 'POST',
         json: unit

@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann, Jessica Lühnen
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <div
     v-if="$fetchState.pending"
@@ -28,24 +45,70 @@
           >
             {{ $t('global.button.discard') }}
           </v-btn>
-          <v-btn
-            color="primary"
-            outlined
-            :disabled="$fetchState.pending || !entityModified.isModified"
-            :loading="saveBtnLoading"
-            @click="save"
+          <v-tooltip
+            top
+            :disabled="$fetchState.pending || isValid"
           >
-            {{ $t('global.button.save') }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            outlined
-            :disabled="$fetchState.pending || !entityModified.isModified"
-            :loading="saveBtnLoading"
-            @click="save($event, true)"
+            <template #activator="{ on }">
+              <div
+                class="d-inline-block"
+                v-on="on"
+                @click.prevent
+              >
+                <v-btn
+                  color="primary"
+                  outlined
+                  :disabled="$fetchState.pending || !entityModified.isModified || !isValid"
+                  :loading="saveBtnLoading"
+                  @click="save"
+                >
+                  {{ $t('global.button.save') }}
+                </v-btn>
+              </div>
+            </template>
+            <template #default>
+              <ul>
+                <li
+                  v-for="(errorMessage, key) in errorMessages"
+                  :key="key"
+                >
+                  {{ errorMessage.message }}
+                </li>
+              </ul>
+            </template>
+          </v-tooltip>
+          <v-tooltip
+            top
+            :disabled="$fetchState.pending || isValid"
           >
-            {{ $t('global.button.save_quit') }}
-          </v-btn>
+            <template #activator="{ on }">
+              <div
+                class="d-inline-block"
+                v-on="on"
+                @click.prevent
+              >
+                <v-btn
+                  color="primary"
+                  outlined
+                  :disabled="$fetchState.pending || !entityModified.isModified || !isValid"
+                  :loading="saveBtnLoading"
+                  @click="save($event, true)"
+                >
+                  {{ $t('global.button.save_quit') }}
+                </v-btn>
+              </div>
+            </template>
+            <template #default>
+              <ul>
+                <li
+                  v-for="(errorMessage, key) in errorMessages"
+                  :key="key"
+                >
+                  {{ errorMessage.message }}
+                </li>
+              </ul>
+            </template>
+          </v-tooltip>
         </v-col>
       </v-row>
     </template>
@@ -149,7 +212,13 @@ export default Vue.extend({
     if (this.entityType) {
       const objectSchema = await this.$api.schema.fetch(this.entityType);
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
-      const objectData = {};
+      const objectData = {
+        owner: {
+          targetUri: `/units/${this.unitID}`
+        },
+        designator: '' // Needed for form validation
+      };
+
       this.form = {
         objectSchema,
         objectData,

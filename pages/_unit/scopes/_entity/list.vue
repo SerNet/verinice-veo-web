@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Jessica Lühnen
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <VeoPage
     :title="title"
@@ -10,25 +27,30 @@
       @fetch="refetch"
     >
       <template #menu-bar="{ on }">
-        <v-col
-          cols="auto"
-          class="flex-grow-1 search-bar"
-          :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
-        >
-          <VeoListSearchBar
-            v-model="filter"
-            :object-type="rootEntityType"
-          />
-        </v-col>
-        <v-col cols="auto">
-          <VeoMenuButton
-            :menu-items="menuItems"
-            :primary-item="menuButton"
-            v-on="on"
-          />
-        </v-col>
+        <v-row>
+          <v-spacer />
+          <v-col cols="auto">
+            <VeoMenuButton
+              :menu-items="menuItems"
+              :primary-item="menuButton"
+              v-on="on"
+            />
+          </v-col>
+        </v-row>
       </template>
       <template #default="{ on }">
+        <v-row>
+          <v-col
+            class="flex-grow-1 search-bar"
+            :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
+          >
+            <VeoListSearchBar
+              v-model="filter"
+              :object-type="rootEntityType"
+              @reset="filter = $event"
+            />
+          </v-col>
+        </v-row>
         <VeoObjectList
           :items="objects"
           :current-item="currentEntity"
@@ -50,6 +72,7 @@ import { separateUUIDParam } from '~/lib/utils';
 import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
 import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
@@ -68,7 +91,9 @@ export default Vue.extend({
       subEntities: [] as IVeoEntity[],
       showParentLink: false as boolean,
       rootEntityType: '' as string,
-      loading: false as boolean
+      loading: false as boolean,
+      // @see https://git.nbrx.de/nbrx/t1/veo/-/issues/297
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {
@@ -176,20 +201,24 @@ export default Vue.extend({
       this.$router.push({
         ...this.$route,
         query: {
-          filter: newValue?.property,
-          value: newValue?.value
+          designator: newValue?.designator,
+          name: newValue?.name,
+          description: newValue?.description,
+          updatedBy: newValue?.updatedBy,
+          status: newValue?.status
         }
       });
       this.$fetch();
     }
   },
   mounted() {
-    if (this.$route.query.filter && this.$route.query.value) {
-      this.filter = {
-        property: this.$route.query.filter,
-        value: this.$route.query.value
-      };
-    }
+    this.filter = {
+      designator: this.$route.query.designator,
+      name: this.$route.query.name,
+      description: this.$route.query.description,
+      updatedBy: this.$route.query.updatedBy,
+      status: this.$route.query.status
+    };
   },
   methods: {
     loadSubEntities(_parent: IVeoEntity) {
@@ -217,7 +246,7 @@ export default Vue.extend({
         size: this.$user.tablePageSize,
         sortBy: _options.sortBy,
         sortOrder: _options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
+        ...(this.filter || {})
       } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
 
       if (_options.reloadAll) {

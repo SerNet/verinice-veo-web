@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <v-row
     dense
@@ -224,11 +241,12 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
+import { Prop } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
 import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
-import { IVeoFormSchemaMeta, IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { separateUUIDParam } from '~/lib/utils';
 
@@ -284,15 +302,15 @@ export default Vue.extend({
     },
     schema: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<JSONSchema7>,
     options: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     validation: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     disabled: Boolean,
     visible: Boolean,
@@ -303,16 +321,23 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoTranslationCollection>,
     elements: {
       type: Array,
       default: () => []
     } as PropOptions<UISchemaElement[]>,
     api: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<IApi>,
-    index: { type: Number, default: undefined }
+    index: {
+      type: Number,
+      default: undefined
+    },
+    linkData: {
+      type: Array as Prop<BaseObject[]>,
+      default: () => []
+    }
   },
   data(): IData {
     return {
@@ -420,10 +445,23 @@ export default Vue.extend({
       };
 
       try {
-        // TODO: Limit result count with pagination API
-        const entities = await this.api.fetchAll(this.targetType, filters);
-        this.items = entities.items;
-        this.totalItems = entities.totalItemCount;
+        let entities: IVeoPaginatedResponse<IVeoEntity[]> | undefined;
+        let uniqueTargetEntities: IVeoEntity[] = [];
+
+        // Automatically increase page if filtered items have a length of zero (all entities in the current set have been selected as a targt)
+        let page = 0;
+
+        while (uniqueTargetEntities.length === 0 && (!entities || (entities.totalItemCount > 0 && entities.pageCount > entities.page))) {
+          entities = await this.fetchEntities({ ...filters, page: ++page });
+
+          // Filter out elements that are already selected in other links
+          uniqueTargetEntities = entities.items.filter((item) => !this.linkData.some((link, localIndex) => link.target?.targetUri?.includes(item.id) && localIndex !== this.index));
+        }
+
+        if (entities) {
+          this.items = uniqueTargetEntities;
+          this.totalItems = entities.totalItemCount;
+        }
 
         if (this.subType) {
           const forms = await this.$api.form.fetchAll();
@@ -432,6 +470,9 @@ export default Vue.extend({
       } finally {
         this.loading = false;
       }
+    },
+    async fetchEntities(filters: BaseObject) {
+      return await this.api.fetchAll(this.targetType, filters);
     },
     onInput(event: any) {
       this.$emit('input', event);

@@ -1,5 +1,23 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <v-navigation-drawer
+    :width="290"
     :value="value"
     app
     :class="{ 'v-application--is-rtl': right }"
@@ -12,34 +30,6 @@
   >
     <template #default>
       <div class="d-flex flex-column fill-height">
-        <!-- Current domain -->
-        <div v-if="$route.params.unit">
-          <v-select
-            :value="domainId"
-            :items="domains"
-            item-text="name"
-            item-value="id"
-            hide-details
-            outlined
-            filled
-            primary
-            class="ma-3"
-            style="font-size: 1.2rem;"
-            :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
-            :menu-props="{ closeOnContentClick: true, 'max-width': '256px' }"
-            @change="onDomainChange"
-          >
-            <template #append-item>
-              <v-divider class="mt-6" />
-              <v-list-item
-                :to="`/${$route.params.unit}/domains/more`"
-                exact-active-class="veo-active-link-item"
-              >
-                {{ $t('breadcrumbs.more_modules') }}
-              </v-list-item>
-            </template>
-          </v-select>
-        </div>
         <!-- Default menu -->
         <v-list
           nav
@@ -49,7 +39,9 @@
           expand
           class="fill-height d-flex flex-column"
         >
-          <template v-for="(item, index) in items">
+          <template
+            v-for="(item, index) in items"
+          >
             <VeoPrimaryNavigationEntry
               :key="index"
               v-bind="item"
@@ -64,11 +56,27 @@
             class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
             @click="displayDeploymentDetails = true"
           >
-            <v-list-item-icon>
-              <v-icon>
-                mdi-information-outline
-              </v-icon>
-            </v-list-item-icon>
+            <v-tooltip
+              right
+              :disabled="!miniVariant || false"
+            >
+              <template #activator="{ on, attrs }">
+                <div
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-list-item-icon>
+                    <v-icon
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      mdi-information-outline
+                    </v-icon>
+                  </v-list-item-icon>
+                </div>
+              </template>
+              <span>{{ $t('about') }}</span>
+            </v-tooltip>
             <v-list-item-title>{{ $t('about') }}</v-list-item-title>
             <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
           </v-list-item>
@@ -109,8 +117,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Route } from 'vue-router';
 import { upperFirst } from 'lodash';
+import { ComputedRef } from '@vue/composition-api';
+import { computed } from '@nuxtjs/composition-api';
 import LocalStorage from '~/util/LocalStorage';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
@@ -139,54 +148,41 @@ export default Vue.extend({
     value: {
       type: Boolean,
       default: true
+    },
+    domainId: {
+      type: String,
+      default: undefined
     }
   },
   data() {
     return {
       miniVariant: LocalStorage.primaryNavMiniVariant,
+      displayDeploymentDetails: false as boolean,
       domains: [] as IVeoDomain[],
-      items: [] as INavItem[],
-      displayDeploymentDetails: false as boolean
+      objectTypes: [] as INavItem[],
+      formTypes: [] as INavItem[],
+      reportTypes: [] as INavItem[],
+      catalogs: [] as INavItem[]
     };
+  },
+  async fetch() {
+    this.domains = await this.$api.domain.fetchAll();
+
+    if (this.domains.length === 1) {
+      this.$user.updateLastDomain(this.domains[0].id);
+    }
+
+    this.objectTypes = await this.fetchObjectTypes();
+
+    if (this.domainId) {
+      this.formTypes = await this.fetchFormTypes(this.domainId);
+      this.reportTypes = await this.fetchReportTypes(this.domainId);
+      this.catalogs = await this.fetchCatalogs(this.domainId);
+    }
   },
   computed: {
-    unitId(): string | undefined {
-      const route = separateUUIDParam(this.$route.params.unit).id;
-      return route.length > 0 ? route : undefined;
-    },
-    domainId(): string | undefined {
-      if (this.$route.name === 'unit-domains-more') {
-        return undefined;
-      }
-
-      const domain: string | undefined = separateUUIDParam(this.$route.params.domain).id;
-
-      // If the domain is not part of the url, check if it is stored in the user plugin and fits to the unit. Else return undefined
-      if (!domain) {
-        return this.unitId && this.unitId === this.$user.lastUnit ? this.$user.lastDomain : undefined;
-      }
-      return domain;
-    }
-  },
-  watch: {
-    '$route.params.unit'() {
-      this.getNavEntries(this.$route);
-    },
-    '$route.params.domain'() {
-      this.getNavEntries(this.$route);
-    }
-  },
-  mounted() {
-    this.getNavEntries(this.$route);
-    this.$i18n.onLanguageSwitched = () => {
-      this.getNavEntries(this.$route);
-    };
-  },
-  methods: {
-    createUUIDUrlParam,
-    async getNavEntries(route: Route) {
-      const routeUnitParam = route.params.unit;
-
+    items(): INavItem[] {
+      /* VEO-692
       const unitDashboard: INavItem = {
         name: this.$t('unit.index.title').toString(),
         icon: 'mdi-home',
@@ -195,11 +191,12 @@ export default Vue.extend({
         disabled: false,
         topLevelItem: true
       };
+      */
       const domainDashboard: INavItem = {
         name: this.$t('domain.index.title').toString(),
         icon: 'mdi-view-dashboard',
         exact: true,
-        to: `/${routeUnitParam}/domains/${createUUIDUrlParam('domain', this.domainId || '')}`,
+        to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', this.domainId || '')}`,
         disabled: false,
         topLevelItem: true
       };
@@ -207,7 +204,7 @@ export default Vue.extend({
         name: this.$t('breadcrumbs.scopes').toString(),
         icon: 'mdi-archive',
         exact: false,
-        to: `/${route.params.unit}/scopes`,
+        to: `/${this.$route.params.unit}/scopes`,
         disabled: false,
         topLevelItem: true
       };
@@ -217,23 +214,9 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        childItems: undefined,
+        childItems: this.objectTypes,
         collapsed: LocalStorage.expandedNavEntry !== 1,
         persistCollapsedState: (collapsed) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 1),
-        topLevelItem: true
-      };
-      const settings: INavItem = {
-        name: this.$t('breadcrumbs.settings').toString(),
-        icon: 'mdi-cog',
-        to: `/${routeUnitParam}/settings`,
-        disabled: false,
-        topLevelItem: true
-      };
-      const help: INavItem = {
-        name: this.$t('breadcrumbs.help').toString(),
-        icon: 'mdi-help',
-        to: `/${routeUnitParam}/help`,
-        disabled: false,
         topLevelItem: true
       };
 
@@ -273,7 +256,7 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        childItems: undefined,
+        childItems: this.formTypes,
         persistCollapsedState: (collapsed: boolean) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 2),
         collapsed: LocalStorage.expandedNavEntry !== 2,
         topLevelItem: true
@@ -285,7 +268,7 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        childItems: undefined,
+        childItems: this.reportTypes,
         persistCollapsedState: (collapsed: boolean) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 3),
         collapsed: LocalStorage.expandedNavEntry !== 3,
         topLevelItem: true
@@ -297,66 +280,34 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        childItems: undefined,
+        childItems: this.catalogs,
         persistCollapsedState: (collapsed: boolean) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 4),
         collapsed: LocalStorage.expandedNavEntry !== 4,
         topLevelItem: true
       };
 
-      this.domains = await this.$api.domain.fetchAll();
+      const maxUnits: ComputedRef<number | undefined> = computed(() => {
+        const _maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
 
-      // Auto set current domain to first domain if only one exists.
-      if (this.domains.length === 1) {
-        this.$user.updateLastDomain(this.domains[0].id);
-      }
+        return _maxUnits ? parseInt(_maxUnits, 10) : _maxUnits;
+      });
 
-      this.items = [
+      return [
+        ...(!this.$route.params.unit || !maxUnits.value || maxUnits.value > 2 ? [unitSelection] : []),
         ...(this.domainId ? [domainDashboard, forms, catalogs, reports] : []),
-        ...(routeUnitParam ? [divider, unitDashboard, scopes, objects] : []),
-        ...(!routeUnitParam ? [unitSelection] : []),
+        ...(this.$route.params.unit ? [divider, /* VEO-692 unitDashboard, */ scopes, objects] : []),
         spacer,
-        ...(routeUnitParam ? [settings] : []),
-        editors,
-        ...(routeUnitParam ? [help] : [])
+        editors
       ];
-
-      this.addChildren(this.$t('breadcrumbs.objects').toString(), await this.fetchObjectTypes());
-      if (this.domainId) {
-        this.addChildren(this.$t('breadcrumbs.forms').toString(), await this.fetchFormTypes(this.domainId));
-        this.addChildren(this.$t('breadcrumbs.reports').toString(), await this.fetchReportTypes(this.domainId));
-        this.addChildren(this.$t('breadcrumbs.catalogs').toString(), await this.fetchCatalogs(this.domainId));
-      }
-    },
-    /**
-     * Add children to a menu item
-     *
-     * @param itemTitle The name of the item to add the children to.
-     * @oaram items The items to add to the parent item.
-     */
-    addChildren(itemTitle: string, items: INavItem[], overwrite: boolean = true) {
-      const menuItem = this.items.find((item: INavItem) => item.name === itemTitle);
-      if (menuItem) {
-        if (items.length === 0) {
-          menuItem.childItems = [
-            {
-              topLevelItem: false,
-              name: this.$t('noChildItems').toString(),
-              disabled: false
-            }
-          ];
-          return;
-        }
-
-        if (overwrite) {
-          menuItem.childItems = items;
-        } else {
-          if (!menuItem.childItems) {
-            menuItem.childItems = [];
-          }
-          menuItem.childItems.push(...items);
-        }
-      }
-    },
+    }
+  },
+  watch: {
+    domainId() {
+      this.$fetch();
+    }
+  },
+  methods: {
+    createUUIDUrlParam,
     fetchObjectTypes(): Promise<INavItem[]> {
       const routeUnitParam = this.$route.params.unit;
       return this.$api.schema.fetchAll().then((data) => {
@@ -427,9 +378,6 @@ export default Vue.extend({
           this.items[index].persistCollapsedState?.(true);
         }
       });
-    },
-    onDomainChange(domainId: string) {
-      this.$router.push(`/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}`);
     }
   }
 });
@@ -441,15 +389,13 @@ export default Vue.extend({
     "about": "About",
     "collapse": "Collapse menu",
     "fix": "Fix menu",
-    "noChildItems": "No sub items",
-    "noDomainSelected": "No module selected"
+    "noChildItems": "No sub items"
   },
   "de": {
     "about": "Über",
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
-    "noChildItems": "Keine Einträge vorhanden",
-    "noDomainSelected": "Kein Modul ausgewählt"
+    "noChildItems": "Keine Einträge vorhanden"
   }
 }
 </i18n>

@@ -1,4 +1,21 @@
-<template>
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Philipp Ballhausen, Jonas Heitmann, Jessica Lühnen, Annemarie Bufe
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+1<template>
   <VeoPage
     :title="$t('breadcrumbs.forms')"
     fullsize
@@ -18,6 +35,7 @@
             <v-col
               :cols="12"
               :md="3"
+              class="px-4"
             >
               <v-select
                 v-model="formType"
@@ -26,16 +44,6 @@
                 outlined
                 dense
                 @input="changeType"
-              />
-            </v-col>
-            <v-col
-              cols="auto"
-              class="flex-grow-1 search-bar"
-              :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
-            >
-              <VeoListSearchBar
-                v-model="filter"
-                :object-type="formSchema && formSchema.modelType"
               />
             </v-col>
             <v-col cols="auto">
@@ -47,6 +55,18 @@
               >
                 {{ $t('create', { type: formName }) }}
               </v-btn>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col
+              class="flex-grow-1 search-bar"
+              :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
+            >
+              <VeoListSearchBar
+                v-model="filter"
+                :object-type="formSchema && formSchema.modelType"
+                @reset="filter = $event"
+              />
             </v-col>
           </v-row>
         </template>
@@ -132,20 +152,24 @@ export default Vue.extend({
       this.$router.push({
         ...this.$route,
         query: {
-          filter: newValue?.property,
-          value: newValue?.value
+          designator: newValue?.designator,
+          name: newValue?.name,
+          description: newValue?.description,
+          updatedBy: newValue?.updatedBy,
+          status: newValue?.status
         }
       });
       this.$fetch();
     }
   },
   mounted() {
-    if (this.$route.query.filter && this.$route.query.value) {
-      this.filter = {
-        property: this.$route.query.filter,
-        value: this.$route.query.value
-      };
-    }
+    this.filter = {
+      designator: this.$route.query.designator,
+      name: this.$route.query.name,
+      description: this.$route.query.description,
+      updatedBy: this.$route.query.updatedBy,
+      status: this.$route.query.status
+    };
   },
   methods: {
     changeType(newType: string) {
@@ -167,7 +191,7 @@ export default Vue.extend({
           size: this.$user.tablePageSize,
           sortBy: _options.sortBy,
           sortOrder: _options.sortDesc ? 'desc' : 'asc',
-          ...(this.filter ? { [this.filter.property]: this.filter.value } : {})
+          ...(this.filter || {})
         } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
 
         if (_options.reloadAll) {

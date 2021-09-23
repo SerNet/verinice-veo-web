@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <script lang="ts">
 import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
@@ -20,7 +37,7 @@ import * as InputDateTime from './InputDateTime.vue';
 import * as LinksField from './LinksField.vue';
 import { ContextListener } from '~/components/forms/Collection/utils/helpers';
 import { IApi } from '~/components/forms/utils';
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoTranslationCollection } from '~/types/VeoTypes';
 
 const components = [
   InputText,
@@ -45,7 +62,7 @@ export default Vue.extend({
   props: {
     value: {
       type: undefined,
-      default: () => undefined
+      default: undefined
     },
     name: {
       type: String,
@@ -53,15 +70,15 @@ export default Vue.extend({
     },
     schema: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<JSONSchema7>,
     options: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     validation: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     disabled: Boolean,
     visible: Boolean,
@@ -72,14 +89,14 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoTranslationCollection>,
     elements: {
       type: Array,
-      default: () => []
+      default: undefined
     } as PropOptions<UISchemaElement[]>,
     api: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<IApi>
   },
   render(h, context) {
@@ -94,18 +111,12 @@ export default Vue.extend({
       {
         props: { ...props },
         on: {
-          input: (event: any): void => {
-            // TODO: What is here really going on? Why do I need this and how can use it better? What does it really?
-            // context.parent.$emit("input", $event); -> Alternative
-            // TODO: Why does it have Call Stack problems if I don't use Following Commented Code
-            // const emitInput = context.listeners.input
-            // emitInput($event);
-
-            // TODO: It Calls every event 2 times, but it must call it only once
-            (context.listeners.input as ContextListener)(event);
-          },
-          change: (event: any): void => {
-            (context.listeners.change as ContextListener)(event);
+          ...context.listeners,
+          input: (newValue: any): void => {
+            if (newValue === '') {
+              newValue = undefined;
+            }
+            (context.listeners.input as ContextListener)(newValue);
           }
         }
       },

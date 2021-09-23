@@ -117,7 +117,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name</label
+                          >Name*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
@@ -642,7 +642,7 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name</label
+                          >Name*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
@@ -722,7 +722,7 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name Test 1</label
+                          >Name Test 1*</label
                         ><textarea
                           id=""
                           rows="3"
@@ -1889,6 +1889,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -1903,6 +1904,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -1958,6 +1960,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -1972,6 +1975,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -2027,6 +2031,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -2041,6 +2046,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -2096,6 +2102,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -2110,6 +2117,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -2165,6 +2173,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -2179,6 +2188,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -2234,6 +2244,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -2248,6 +2259,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -2478,6 +2490,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -2492,6 +2505,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -2554,6 +2568,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -2568,6 +2583,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -2696,6 +2712,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -2710,6 +2727,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -2772,6 +2790,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -2786,6 +2805,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -2831,7 +2851,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name Test</label
+                          >Name Test*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
@@ -3406,6 +3426,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3420,6 +3441,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3475,6 +3497,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3489,6 +3512,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3544,6 +3568,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3558,6 +3583,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3613,6 +3639,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3627,6 +3654,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3682,6 +3710,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3696,6 +3725,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3751,6 +3781,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3765,6 +3796,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -3995,6 +4027,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -4009,6 +4042,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -4071,6 +4105,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -4085,6 +4120,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -4213,6 +4249,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -4227,6 +4264,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -4289,6 +4327,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -4303,6 +4342,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -4348,7 +4388,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name Test</label
+                          >Name Test*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
@@ -4924,6 +4964,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -4938,6 +4979,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -4993,6 +5035,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5007,6 +5050,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5062,6 +5106,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5076,6 +5121,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5131,6 +5177,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5145,6 +5192,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5200,6 +5248,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5214,6 +5263,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5269,6 +5319,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-edit-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5283,6 +5334,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                 ><i
                   data-v-123abc4d=""
                   aria-hidden="true"
+                  data-cy="veo-fse-form-element-delete-button"
                   class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                   style="font-size: 16px;"
                 ></i
@@ -5511,6 +5563,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -5525,6 +5578,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -5587,6 +5641,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -5601,6 +5656,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -5729,6 +5785,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -5743,6 +5800,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -5805,6 +5863,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-edit-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-pencil theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -5819,6 +5878,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                         ><i
                           data-v-123abc4d=""
                           aria-hidden="true"
+                          data-cy="veo-fse-form-element-delete-button"
                           class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
                           style="font-size: 16px;"
                         ></i
@@ -5864,7 +5924,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                           for=""
                           class="v-label theme--light"
                           style="left: 0px; right: auto; position: absolute;"
-                          >Name</label
+                          >Name*</label
                         ><input id="" type="text" />
                       </div>
                       <div class="v-input__append-inner">
@@ -7148,6 +7208,120 @@ exports[`Formschema Editor > adds, updates formSchema meta details #1`] =
   "subType": "TF 1",
   "translation": {
     "de": {},
+    "en": {}
+  }
+};
+
+exports[`Formschema Editor > checks whether translations get deleted if the control gets deleted while another language is used #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
+        "type": "Label"
+      },
+      {
+        "elements": [
+          {
+            "options": {
+              "label": "#lang/description"
+            },
+            "scope": "#/properties/description",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/name"
+            },
+            "scope": "#/properties/name",
+            "type": "Control"
+          }
+        ],
+        "options": {
+          "format": "group",
+          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
+        },
+        "type": "Layout"
+      },
+      {
+        "options": {
+          "label": "#lang/abbreviation"
+        },
+        "scope": "#/properties/abbreviation",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema"
+  },
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "abbreviation": "Abkürzung de",
+      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
+      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
+    },
+    "en": {
+      "abbreviation": "Abbreviation en"
+    }
+  }
+};
+
+exports[`Formschema Editor > checks whether translations get deleted if the control gets deleted while another language is used #1`] =
+{
+  "content": {
+    "elements": [
+      {
+        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
+        "type": "Label"
+      },
+      {
+        "elements": [
+          {
+            "options": {
+              "label": "#lang/description"
+            },
+            "scope": "#/properties/description",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/name"
+            },
+            "scope": "#/properties/name",
+            "type": "Control"
+          }
+        ],
+        "options": {
+          "format": "group",
+          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
+        },
+        "type": "Layout"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema"
+  },
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
+      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
+    },
     "en": {}
   }
 };

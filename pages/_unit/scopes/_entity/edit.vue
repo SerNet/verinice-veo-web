@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann, Jessica Lühnen
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <VeoPageWrapper>
     <template #default>
@@ -7,10 +24,22 @@
         :md="8"
         :xl="8"
         sticky-header
-        :title="objectTitle"
         :loading="$fetchState.pending"
       >
-        <template #default>
+        <template #header>
+          <v-row
+            no-gutters
+            class="justify-space-between mb-3"
+          >
+            <v-col
+              cols="auto"
+              class="mt-4"
+            >
+              <h1>
+                {{ objectTitle }}
+              </h1>
+            </v-col>
+          </v-row>
           <VeoEntityDisplayOptions
             :root-route="rootRoute"
             :current-entity="form.objectData"
@@ -21,16 +50,39 @@
             >
               {{ $t('global.button.discard') }}
             </v-btn>
-            <v-btn
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="$fetchState.pending || !entityModified.isModified"
-              :loading="saveBtnLoading"
-              @click="doSaveEntity"
+              top
+              :disabled="$fetchState.pending || (!entityModified.isModified) || isValid"
             >
-              {{ $t('global.button.save') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="$fetchState.pending || (entityModified && !entityModified.isModified) || !isValid"
+                    :loading="saveBtnLoading"
+                    @click="doSaveEntity"
+                  >
+                    {{ $t('global.button.save') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
             <v-btn
               v-else
               color="primary"
@@ -41,17 +93,42 @@
             >
               {{ $t('restore') }}
             </v-btn>
-            <v-btn
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="$fetchState.pending || !entityModified.isModified"
-              :loading="saveBtnLoading"
-              @click="doSaveEntity($event, true)"
+              top
+              :disabled="$fetchState.pending || (!entityModified.isModified) || isValid"
             >
-              {{ $t('global.button.save_quit') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="$fetchState.pending || !entityModified.isModified || !isValid"
+                    :loading="saveBtnLoading"
+                    @click="doSaveEntity($event, true)"
+                  >
+                    {{ $t('global.button.save_quit') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
           </VeoEntityDisplayOptions>
+        </template>
+        <template #default>
           <div
             v-if="$fetchState.pending"
             class="fill-width fill-height d-flex justify-center align-center"
@@ -250,9 +327,7 @@ export default Vue.extend({
   computed: {
     objectTitle(): string {
       return [
-        this.$t('edit_object', {
-          title: this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.displayName
-        }),
+        this.$fetchState.pending ? upperFirst(this.entityType) : this.form.objectData.displayName,
         ...(this.isRevision ? [`(${this.$t('revision')} ${this.revisionVersion})`] : [])
       ].join(' ');
     },
@@ -383,7 +458,6 @@ export default Vue.extend({
 {
   "en": {
     "deleted": "Object was deleted successfully.",
-    "edit_object": "Edit \"{title}\"",
     "history": "History",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
@@ -396,7 +470,6 @@ export default Vue.extend({
   },
   "de": {
     "deleted": "Objekt wurde erfolgreich gelöscht.",
-    "edit_object": "\"{title}\" bearbeiten",
     "history": "Verlauf",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",

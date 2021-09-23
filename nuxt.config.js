@@ -261,7 +261,7 @@ export default {
             }
           },
           '/reportsapi': {
-            target: process.env.VEO_REPORTS_API_URL || 'https://veo-reporting.develop.verinice.com/',
+            target: process.env.VEO_REPORTING_API_URL || 'https://veo-reporting.develop.verinice.com/',
             pathRewrite: { '^/reportsapi': '' },
             /**
              * @param {import('http').ClientRequest} proxyReq

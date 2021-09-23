@@ -1,7 +1,24 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Markus Werner, Davit Svandize, Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <div
     style="flex-basis: 0;"
-    class="mr-0 text-right flex-grow-1"
+    class="mr-0 text-right flex-grow-0"
   >
     <v-menu
       v-model="value"
@@ -41,8 +58,10 @@
               <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-          <v-divider />
-          <VeoUnitSelection :units="units" />
+          <template v-if="!maxUnits || maxUnits > 2">
+            <v-divider />
+            <VeoUnitSelection :units="units" />
+          </template>
         </v-list>
         <v-divider />
         <v-card-actions>
@@ -85,6 +104,11 @@ export default Vue.extend({
   computed: {
     initials(): string {
       return this.prename.substring(0, 1) + this.lastname.substring(0, 1);
+    },
+    maxUnits(): number | undefined {
+      const maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
+
+      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
     }
   },
   mounted() {

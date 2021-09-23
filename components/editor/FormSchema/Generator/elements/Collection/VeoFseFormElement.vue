@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <v-card
     rounded
@@ -49,6 +66,7 @@
             <v-icon
               dense
               small
+              :data-cy="$utils.prefixCyData($options, 'edit-button')"
             >
               mdi-pencil
             </v-icon>
@@ -61,6 +79,7 @@
             <v-icon
               dense
               small
+              :data-cy="$utils.prefixCyData($options, 'delete-button')"
             >
               mdi-delete
             </v-icon>
@@ -75,6 +94,7 @@
       :form-schema="value"
       :form-schema-pointer="formSchemaPointer"
       :type="currentType"
+      :language="language"
       @edit="doEdit"
       @update-custom-translation="onUpdateCustomTranslation"
     />
@@ -96,7 +116,7 @@ import {
   IVeoFormSchemaCustomTranslationEvent,
   IVeoFormSchemaItemDeleteEvent,
   IVeoFormSchemaItemUpdateEvent,
-  IVeoFormSchemaTranslationCollectionItem,
+  IVeoFormSchemaTranslationCollection,
   IVeoTranslationCollection
 } from '~/types/VeoTypes';
 import { getRuleEffectIcons } from '~/lib/FormSchemaHelper';
@@ -115,10 +135,10 @@ export default Vue.extend({
       type: Object,
       default: () => {}
     } as PropOptions<IVeoTranslationCollection>,
-    customTranslation: {
+    customTranslations: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoFormSchemaTranslationCollection>,
     options: {
       type: Object,
       default: () => {}
@@ -129,7 +149,7 @@ export default Vue.extend({
     },
     value: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     formSchemaPointer: {
       type: String,
@@ -144,6 +164,10 @@ export default Vue.extend({
       default: true
     },
     scope: {
+      type: String,
+      required: true
+    },
+    language: {
       type: String,
       required: true
     }
@@ -181,7 +205,7 @@ export default Vue.extend({
     generalTranslation() {
       this.setLabel();
     },
-    customTranslation() {
+    customTranslations() {
       this.setLabel();
     }
   },
@@ -205,7 +229,7 @@ export default Vue.extend({
       this.deleteDialog = false;
     },
     setLabel(): void {
-      this.label = this.customTranslation?.[this.name] || this.generalTranslation?.[this.name] || this.name;
+      this.label = this.customTranslations?.[this.language][this.name] || this.generalTranslation?.[this.name] || this.name;
     },
     onUpdateCustomTranslation(event: IVeoFormSchemaCustomTranslationEvent) {
       this.$emit('update-custom-translation', event);

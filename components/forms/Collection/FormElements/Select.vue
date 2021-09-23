@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <div
     v-if="visible"
@@ -33,7 +50,7 @@ import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoTranslationCollection } from '~/types/VeoTypes';
 
 interface IItem {
   value: string | number | boolean;
@@ -50,7 +67,7 @@ export default Vue.extend({
   props: {
     value: {
       type: [String, Array],
-      default: () => undefined
+      default: undefined
     } as PropOptions<string | string[]>,
     name: {
       type: String,
@@ -58,7 +75,7 @@ export default Vue.extend({
     },
     schema: {
       type: Object,
-      default: () => undefined
+      default: undefined
     } as PropOptions<JSONSchema7>,
     generalTranslation: {
       type: Object,
@@ -67,14 +84,14 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoTranslationCollection>,
     options: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     validation: {
       type: Object,
-      default: () => undefined
+      default: undefined
     },
     disabled: Boolean,
     visible: Boolean

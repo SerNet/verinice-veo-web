@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Davit Svandize, Markus Werner, Jonas Heitmann, Jessica Lühnen
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <div
     v-if="$fetchState.pending"
@@ -52,17 +69,18 @@
             cols="auto"
             class="mt-4"
           >
-            <h1 v-if="!isRevision">
+            <h1 v-if="!isRevision && form.objectData.displayName">
               {{ form.objectData.displayName }}
+            </h1>
+            <h1 v-else-if="!isRevision && form.formSchema">
+              {{ $t('object_create', { type: form.formSchema.name[$i18n.locale] }) }}
             </h1>
             <h1 v-else>
               {{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})
             </h1>
           </v-col>
         </v-row>
-      </template>
-      <template #default>
-        <v-row>
+        <v-row class="mt-3">
           <v-spacer />
           <v-col
             cols="auto"
@@ -74,16 +92,40 @@
             >
               {{ $t('global.button.discard') }}
             </v-btn>
-            <v-btn
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="isSaveBtnDisabled"
-              :loading="saveBtnLoading"
-              @click="onClick"
+              top
+              :disabled="!isSaveBtnDisabled || !formModified.isModified"
             >
-              {{ $t('global.button.save') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="isSaveBtnDisabled"
+                    :loading="saveBtnLoading"
+                    @click="onClick"
+                  >
+                    {{ $t('global.button.save') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
+
             <v-btn
               v-else
               color="primary"
@@ -93,18 +135,44 @@
             >
               {{ $t('restore') }}
             </v-btn>
-            <v-btn
+
+            <v-tooltip
               v-if="!isRevision"
-              color="primary"
-              outlined
-              :disabled="isSaveBtnDisabled"
-              :loading="saveBtnLoading"
-              @click="onClick($event, true)"
+              top
+              :disabled="!isSaveBtnDisabled || !formModified.isModified"
             >
-              {{ $t('global.button.save_quit') }}
-            </v-btn>
+              <template #activator="{ on }">
+                <div
+                  class="d-inline-block"
+                  v-on="on"
+                  @click.prevent
+                >
+                  <v-btn
+                    color="primary"
+                    outlined
+                    :disabled="isSaveBtnDisabled"
+                    :loading="saveBtnLoading"
+                    @click="onClick($event, true)"
+                  >
+                    {{ $t('global.button.save_quit') }}
+                  </v-btn>
+                </div>
+              </template>
+              <template #default>
+                <ul>
+                  <li
+                    v-for="(errorMessage, key) in errorMessages"
+                    :key="key"
+                  >
+                    {{ errorMessage.message }}
+                  </li>
+                </ul>
+              </template>
+            </v-tooltip>
           </v-col>
         </v-row>
+      </template>
+      <template #default>
         <VeoAlert
           v-model="isRevision"
           :type="alertType"
@@ -319,7 +387,8 @@ export default Vue.extend({
             owner: {
               targetUri: `/units/${this.unitId}`
             },
-            designator: '' // Needed for form validation
+            designator: '', // Needed for form validation
+            ...(this.objectType === 'process' ? { status: 'NEW' } : {})
           };
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       this.form = {
@@ -403,7 +472,7 @@ export default Vue.extend({
       // TODO: adjust this dynamicAPI so that it provided directly by $api
       return {
         fetchAll: async (objectType: string, searchParams: IBaseObject) => {
-          const entities = await this.$api.entity.fetchAll(objectType, 1, {
+          const entities = await this.$api.entity.fetchAll(objectType, searchParams.page || 1, {
             ...searchParams,
             unit: this.unitId
           });
@@ -582,6 +651,7 @@ export default Vue.extend({
     "history": "History",
     "incompatibleFormSchema": "The form is incompatible to the object schema \"{objectType}\" and cannot be displayed!",
     "navigation.title": "Contents",
+    "object_create": "Create {type}",
     "object_delete_error": "Failed to delete object",
     "object_saved": "Object saved successfully",
     "oldVersionAlert": "You are currently viewing an old and protected version. You can only edit this version after restoring it.",
@@ -595,6 +665,7 @@ export default Vue.extend({
     "history": "Verlauf",
     "incompatibleFormSchema": "Das Formular ist inkompatibel zum Objektschema \"{objectType}\" und kann deshalb nicht angezeigt werden!",
     "navigation.title": "Inhalt",
+    "object_create": "{type} erstellen",
     "object_delete_error": "Objekt konnte nicht gelöscht werden",
     "object_saved": "Objekt wurde gespeichert!",
     "oldVersionAlert": "Ihnen wird momentan eine alte, schreibgeschützte Version angezeigt. Sie kann erst bearbeitet werden, nachdem Sie sie wiederhergestellt haben.",

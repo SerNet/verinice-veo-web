@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021 Davit Svandize, Jonas Heitmann, Jessica Lühnen
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <script lang="ts">
 import Vue, { VNode, PropOptions, CreateElement } from 'vue';
 import { JSONSchema7 } from 'json-schema';
@@ -12,7 +29,7 @@ import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
-import { IVeoFormSchemaTranslationCollectionItem, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoTranslationCollection } from '~/types/VeoTypes';
 
 interface IErrorMessageElement {
   pointer: string;
@@ -48,7 +65,7 @@ export default Vue.extend({
     customTranslation: {
       type: Object,
       default: () => {}
-    } as PropOptions<IVeoFormSchemaTranslationCollectionItem>,
+    } as PropOptions<IVeoTranslationCollection>,
     options: {
       type: Object,
       default: undefined
@@ -251,11 +268,12 @@ export default Vue.extend({
           api: this.api
         };
       }
+
       return h(Control, {
         props: {
           ...rule,
           elements: element.elements,
-          options: element.options,
+          options: { ...element.options, label: this.schema.required?.includes(partOfProps.name) ? element.options?.label + '*' : element.options?.label },
           disabled: this.disabled,
           ...partOfProps
         },
