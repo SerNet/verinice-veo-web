@@ -285,7 +285,7 @@ export default defineComponent<IProps>({
       if (context.root.$route.name === 'unit-domains-more') {
         return undefined;
       }
-      if (!domain) {
+      if (!domain.value) {
         return unitId && unitId.value === context.root.$user.lastUnit ? context.root.$user.lastDomain : undefined;
       }
       return domain.value;
