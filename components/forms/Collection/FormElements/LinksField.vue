@@ -62,7 +62,7 @@
         </v-list-item-content>
         <v-list-item-action>
           <v-btn
-            :disabled="!localValue || disabled"
+            :disabled="disabled || localValue.length <= 1"
             depressed
             text
             fab

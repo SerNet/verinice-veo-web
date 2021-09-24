@@ -128,6 +128,7 @@ export default Vue.extend({
       return this.validate(this.value);
     },
     errorsMsgMap(): BaseObject {
+      console.log(this.validate.errors);
       return !this.valid && this.validate.errors ? this.validate.errors.reduce(this.validationErrorTransform, {}) : {};
     },
     mergedOptions(): IOptions {
