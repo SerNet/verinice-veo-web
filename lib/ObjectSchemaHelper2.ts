@@ -554,7 +554,8 @@ export default class ObjectSchemaHelper {
               type: {
                 enum: [link.targetType]
               }
-            }
+            },
+            required: ['targetUri']
           },
           attributes: {
             additionalProperties: false,

@@ -226,7 +226,7 @@ export default Vue.extend({
       switch (error.keyword) {
         case 'required':
           // Special handling of links, as their last data path entry isn't the string we search for
-          if ((error.params as any).missingProperty === 'target') {
+          if ((error.params as any).missingProperty === 'targetUri') {
             const dataPathParts = error.dataPath.split('/');
             dataPathParts.pop();
             translatedErrorString = this.$t(`error.${error.keyword}_link`, {

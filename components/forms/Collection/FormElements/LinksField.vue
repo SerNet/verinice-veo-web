@@ -62,7 +62,7 @@
         </v-list-item-content>
         <v-list-item-action>
           <v-btn
-            :disabled="disabled || localValue.length <= 1"
+            :disabled="!localValue || disabled"
             depressed
             text
             fab
@@ -98,7 +98,6 @@ import { BaseObject, IApi } from '~/components/forms/utils';
 
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
 import { UISchemaElement } from '~/types/UISchema';
-import { IBaseObject } from '~/lib/utils';
 
 interface IData {
   selected: string[];
@@ -186,7 +185,7 @@ export default Vue.extend({
       if (this.localValue.length === 1) {
         this.selected = [];
         this.localValue = [{ ...this.rowToAdd }];
-        this.$emit('input', undefined);
+        this.$emit('input', []);
       } else {
         this.selected.splice(rowIndex, 1);
         this.localValue.splice(rowIndex, 1);
@@ -194,8 +193,6 @@ export default Vue.extend({
       }
     },
     onInput() {
-      // Filter out links without a target (those links have been cleared, sending them to the api would yield an error)
-      this.localValue = this.localValue.filter((item: IBaseObject) => item.target.targetUri);
       this.$emit('input', this.localValue);
     }
   }
