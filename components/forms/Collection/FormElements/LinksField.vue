@@ -35,7 +35,6 @@
       dense
       class="py-0"
     >
-      -{{ value }} -
       <v-list-item
         v-for="(val, i) in localValue"
         :key="i"
