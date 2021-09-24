@@ -256,7 +256,7 @@ export default Vue.extend({
       return { ...accummulator, [key]: translatedErrorString };
     },
     getInvalidFieldLabel(field: string): string {
-      return (this.customTranslation && this.customTranslation[field]) || (this.generalTranslation && this.generalTranslation[field]) || field;
+      return this.customTranslation[field] || this.generalTranslation[field] || field;
     },
     createLayout(element: ILayout, formSchemaPointer: string, elementLevel: number, h: CreateElement, rule: IRule): VNode {
       return h(
