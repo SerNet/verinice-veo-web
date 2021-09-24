@@ -35,6 +35,7 @@
       dense
       class="py-0"
     >
+      -{{ value }} -
       <v-list-item
         v-for="(val, i) in localValue"
         :key="i"
@@ -98,6 +99,7 @@ import { BaseObject, IApi } from '~/components/forms/utils';
 
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
 import { UISchemaElement } from '~/types/UISchema';
+import { IBaseObject } from '~/lib/utils';
 
 interface IData {
   selected: string[];
@@ -193,6 +195,8 @@ export default Vue.extend({
       }
     },
     onInput() {
+      // Filter out links without a target (those links have been cleared, sending them to the api would yield an error)
+      this.localValue = this.localValue.filter((item: IBaseObject) => item.target.targetUri);
       this.$emit('input', this.localValue);
     }
   }
