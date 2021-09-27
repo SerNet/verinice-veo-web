@@ -7,7 +7,7 @@ variables:
   BROWSER_PERFORMANCE_DISABLED: 'true'
   # TEST_DISABLED: "true"
   PRODUCTION_ADDITIONAL_HOSTS: 'veo-web.cpmsys.io'
-  AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHORT_SHA --build-arg CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP --build-arg CI_JOB_ID=$CI_JOB_ID'
+  AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHORT_SHA --build-arg CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP --build-arg CI_JOB_ID=$CI_JOB_ID --build-arg BUILDKIT_INLINE_CACHE=1'
   K8S_SECRET_VEO_API_USE_PROXY: 'false'
   npm_config_cache: '$CI_PROJECT_DIR/.npm' # for cypress tests
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
