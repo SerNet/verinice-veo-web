@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:experimental
 FROM node:14-alpine AS builder
 
 # Install Git & Install Python for node-14
