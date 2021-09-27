@@ -158,7 +158,7 @@ export default Vue.extend({
       return this.items
         .filter((item) => item.tailoringReferences.length > 0)
         .map((item) => {
-          const [title = '', abbreviation = '', designator = ''] = item.element.displayName.split(' ');
+          const [designator = '', abbreviation = '', title = ''] = item.element.displayName.split(' ');
 
           return { designator, abbreviation, title, id: item.id };
         });
@@ -171,13 +171,6 @@ export default Vue.extend({
         {
           filterable: true,
           sortable: true,
-          text: this.$t('objectlist.designator').toString(),
-          value: 'item.designator',
-          width: 150
-        },
-        {
-          filterable: true,
-          sortable: true,
           text: this.$t('abbreviation').toString(),
           value: 'item.abbreviation',
           width: 150
@@ -185,7 +178,7 @@ export default Vue.extend({
         {
           filterable: true,
           sortable: true,
-          text: this.$t('objectlist.title').toString(),
+          text: this.$t('objectlist.name').toString(),
           value: 'item.title'
         }
       ];
