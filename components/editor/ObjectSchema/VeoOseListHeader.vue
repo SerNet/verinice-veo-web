@@ -24,7 +24,7 @@
       <v-list-item-title class="body-1 font-weight-bold d-flex align-center">
         {{ item.title }}
       </v-list-item-title>
-      <v-list-item-subtitle v-text="$tc('attributecount', item.attributes.length || 0)" />
+      <v-list-item-subtitle v-text="tc('attributecount', item.attributes.length || 0)" />
     </v-list-item-content>
     <v-list-item-action class="ml-3">
       <v-chip
@@ -36,7 +36,7 @@
         outlined
       >
         <span v-if="$props.translate">
-          {{ $t(`editor.inputtypes.${styling.name}`) }}
+          {{ t(`editor.inputtypes.${styling.name}`) }}
         </span>
         <span v-else-if="styling.name">
           {{ upperFirst(styling.name) }}
@@ -68,6 +68,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
 import { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
@@ -88,8 +89,12 @@ export default defineComponent<IProps>({
     }
   },
   setup() {
+    const { t, tc } = useI18n();
+
     return {
-      upperFirst
+      upperFirst,
+      t,
+      tc
     };
   }
 });

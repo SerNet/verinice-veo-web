@@ -19,7 +19,7 @@
   <VeoDialog
     :key="formSchemaPointer"
     :value="value"
-    :headline="$t('editLabelHeadline')"
+    :headline="t('editLabelHeadline')"
     large
     @input="onDialogChanged"
   >
@@ -33,7 +33,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;"> {{ $t('text') }}*: </span>
+            <span style="font-size: 1.2rem;"> {{ t('text') }}*: </span>
           </v-col>
           <v-col
             :cols="12"
@@ -41,7 +41,7 @@
           >
             <v-text-field
               :value="localCustomTranslations[language][name]"
-              :label="$t('input')"
+              :label="t('input')"
               required
               @input="onInputText"
             />
@@ -55,7 +55,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.css.class') }}: </span>
+            <span style="font-size: 1.2rem;"> {{ t('editor.formschema.edit.css.class') }}: </span>
           </v-col>
           <v-col
             :cols="12"
@@ -63,7 +63,7 @@
           >
             <v-combobox
               v-model="formData.class"
-              :label="$t('editor.formschema.edit.css.class.text')"
+              :label="t('editor.formschema.edit.css.class.text')"
               multiple
               chips
               append-icon=""
@@ -78,7 +78,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;"> {{ $t('editor.formschema.edit.css.style') }}: </span>
+            <span style="font-size: 1.2rem;"> {{ t('editor.formschema.edit.css.style') }}: </span>
           </v-col>
           <v-col
             :cols="12"
@@ -86,7 +86,7 @@
           >
             <v-combobox
               v-model="formData.style"
-              :label="$t('editor.formschema.edit.css.style.text')"
+              :label="t('editor.formschema.edit.css.style.text')"
               multiple
               chips
               append-icon=""
@@ -95,7 +95,7 @@
         </v-row>
         <VeoFseConditions v-model="formData.rule" />
       </v-form>
-      <small>{{ $t('global.input.requiredfields') }}</small>
+      <small>{{ t('global.input.requiredfields') }}</small>
     </template>
     <template #dialog-options>
       <v-btn
@@ -103,7 +103,7 @@
         color="primary"
         @click="onDialogChanged(false)"
       >
-        {{ $t('global.button.close') }}
+        {{ t('global.button.close') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -111,13 +111,14 @@
         color="primary"
         @click="updateElement"
       >
-        {{ $t('global.button.save') }}
+        {{ t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
 import { defineComponent, PropType, Ref, ref, reactive } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 
 import { BaseObject } from '~/components/forms/utils';
@@ -165,6 +166,8 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     // Default values which should not be shown in FormSchema
     const defaults: BaseObject = {
       class: undefined,
@@ -264,7 +267,9 @@ export default defineComponent<IProps>({
       localCustomTranslations,
       onInputText,
       onDialogChanged,
-      updateElement
+      updateElement,
+
+      t
     };
   }
 });

@@ -65,12 +65,12 @@
                 <v-icon class="mr-2">
                   mdi-login-variant
                 </v-icon>
-                {{ $t('goToDemoUnit') }}
+                {{ t('goToDemoUnit') }}
               </v-btn>
             </div>
           </template>
           <template #default>
-            {{ $t('noDemoUnit') }}
+            {{ t('noDemoUnit') }}
           </template>
         </v-tooltip>
         
@@ -85,7 +85,7 @@
           <v-icon class="mr-2">
             mdi-logout-variant
           </v-icon>
-          {{ $t('leaveDemoUnit') }}
+          {{ t('leaveDemoUnit') }}
         </v-btn>
         <v-menu offset-y>
           <template #activator="{ on, attrs }">
@@ -167,6 +167,7 @@
 
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
@@ -177,6 +178,7 @@ interface IProps {}
 export default defineComponent<IProps>({
   setup(_props, context) {
     const { $api, params, app } = useContext();
+    const { t } = useI18n();
 
     //
     // Global navigation
@@ -319,7 +321,9 @@ export default defineComponent<IProps>({
       demoUnit,
       units,
       goToUnit,
-      homeLink
+      homeLink,
+
+      t
     };
   },
   head() {

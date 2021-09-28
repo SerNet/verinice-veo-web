@@ -19,7 +19,7 @@
   <VeoDialog
     v-model="dialog.value"
     large
-    :headline="$t('schemaDetailsHeadline')"
+    :headline="t('schemaDetailsHeadline')"
   >
     <template #default>
       <v-form
@@ -35,7 +35,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ $t('schemaName') }}*:</span>
+            <span style="font-size: 1.2rem;">{{ t('schemaName') }}*:</span>
           </v-col>
           <v-col
             :cols="12"
@@ -46,7 +46,7 @@
               required
               flat
               :rules="form.rules.formSchema"
-              :label="$t('schemaName')"
+              :label="t('schemaName')"
             />
           </v-col>
         </v-row>
@@ -58,7 +58,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.subtype') }}:</span>
+            <span style="font-size: 1.2rem;">{{ t('editor.formschema.subtype') }}:</span>
           </v-col>
           <v-col
             :cols="12"
@@ -66,7 +66,7 @@
           >
             <v-text-field
               v-model="form.data.subType"
-              :label="$t('editor.formschema.subtype')"
+              :label="t('editor.formschema.subtype')"
               flat
             />
           </v-col>
@@ -79,7 +79,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.text') }}*:</span>
+            <span style="font-size: 1.2rem;">{{ t('editor.formschema.create.type.text') }}*:</span>
           </v-col>
           <v-col
             :cols="12"
@@ -88,14 +88,14 @@
             <v-text-field
               :value="objectSchema"
               flat
-              :label="$t('editor.formschema.create.type')"
+              :label="t('editor.formschema.create.type')"
               readonly
               disabled
               class="objectschema-type-field"
             />
           </v-col>
         </v-row>
-        <small>{{ $t('global.input.requiredfields') }}</small>
+        <small>{{ t('global.input.requiredfields') }}</small>
       </v-form>
     </template>
     <template #dialog-options>
@@ -104,7 +104,7 @@
         color="primary"
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.cancel') }}
+        {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -113,13 +113,14 @@
         :disabled="!form.valid"
         @click="doSave()"
       >
-        {{ $t('global.button.save') }}
+        {{ t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { trim } from 'lodash';
 
 interface IProps {
@@ -149,6 +150,8 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     /**
      * Common dialog stuff (opening and closing)
      */
@@ -160,7 +163,7 @@ export default defineComponent<IProps>({
         subType: props.subtype
       },
       rules: {
-        formSchema: [(input: string) => trim(input).length > 0 || context.root.$t('global.input.required')]
+        formSchema: [(input: string) => trim(input).length > 0 || t('global.input.required')]
       },
       valid: false
     });
@@ -210,7 +213,7 @@ export default defineComponent<IProps>({
       context.emit('input', false);
     }
 
-    return { dialog, doSave, form };
+    return { dialog, doSave, form, t };
   }
 });
 </script>

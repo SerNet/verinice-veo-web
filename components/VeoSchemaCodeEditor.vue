@@ -33,7 +33,7 @@
         @click="updateSchema()"
       >
         {{
-          $t('saveSchema')
+          t('saveSchema')
         }}
       </v-btn>
     </div>
@@ -42,6 +42,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 interface IProps {
@@ -55,6 +57,8 @@ export default defineComponent<IProps>({
     readonly: { type: Boolean, default: false }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     const code = ref('');
     const saveButtonDisabled = ref(true);
 
@@ -97,7 +101,9 @@ export default defineComponent<IProps>({
       code,
       saveButtonDisabled,
       onInput,
-      updateSchema
+      updateSchema,
+
+      t
     };
   }
 });

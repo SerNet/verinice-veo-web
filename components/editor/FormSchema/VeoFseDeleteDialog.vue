@@ -18,10 +18,10 @@
 <template>
   <VeoDialog
     v-model="dialog.value"
-    :headline="$t('deleteControlHeadline')"
+    :headline="t('deleteControlHeadline')"
   >
     <template #default>
-      {{ $t('deleteControlConfirmation') }}
+      {{ t('deleteControlConfirmation') }}
     </template>
     <template #dialog-options>
       <v-btn
@@ -30,7 +30,7 @@
         :data-cy="$utils.prefixCyData($options, 'cancel')"
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.no') }}
+        {{ t('global.button.no') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -39,13 +39,14 @@
         :data-cy="$utils.prefixCyData($options, 'delete')"
         @click="$emit('delete')"
       >
-        {{ $t('global.button.delete') }}
+        {{ t('global.button.delete') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 interface IProps {
   value: boolean;
@@ -59,6 +60,8 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     /**
      * Common dialog stuff (opening and closing)
      */
@@ -89,7 +92,7 @@ export default defineComponent<IProps>({
       }
     );
 
-    return { dialog };
+    return { dialog, t };
   }
 });
 </script>

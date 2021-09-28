@@ -28,7 +28,7 @@
         v-show="!controlElementsVisible && searchQuery"
         class="text-center mt-1"
       >
-        <span class="text--disabled">{{ $t('searchNoMatch') }}</span>
+        <span class="text--disabled">{{ t('searchNoMatch') }}</span>
       </div>
       <div
         v-show="controlElementsVisible"
@@ -39,14 +39,14 @@
           small
           @click="onExpandAll"
         >
-          {{ $t('expand') }}
+          {{ t('expand') }}
         </v-btn>
         <v-btn
           text
           small
           @click="onCollapseAll"
         >
-          {{ $t('collapse') }}
+          {{ t('collapse') }}
         </v-btn>
       </div>
       <v-expansion-panels
@@ -57,7 +57,7 @@
       >
         <v-expansion-panel v-show="filteredFormElements.length">
           <v-expansion-panel-header class="overline">
-            {{ $t('formElements') }} ({{ filteredFormElements.length }})
+            {{ t('formElements') }} ({{ filteredFormElements.length }})
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card outlined>
@@ -92,7 +92,7 @@
 
         <v-expansion-panel v-show="filteredBasics.length">
           <v-expansion-panel-header class="overline">
-            {{ $t('editor.basicproperties') }} ({{ filteredBasics.length }})
+            {{ t('editor.basicproperties') }} ({{ filteredBasics.length }})
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card
@@ -130,7 +130,7 @@
 
         <v-expansion-panel v-show="filteredAspects.length">
           <v-expansion-panel-header class="overline">
-            {{ $t('editor.customaspects') }} ({{ filteredAspects.length }})
+            {{ t('editor.customaspects') }} ({{ filteredAspects.length }})
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card
@@ -168,7 +168,7 @@
 
         <v-expansion-panel v-show="filteredLinks.length">
           <v-expansion-panel-header class="overline">
-            {{ $t('editor.customlinks') }} ({{ filteredLinks.length }})
+            {{ t('editor.customlinks') }} ({{ filteredLinks.length }})
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card
@@ -209,6 +209,7 @@
 </template>
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropType, ref, Ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import vjp from 'vue-json-pointer';
 import Draggable from 'vuedraggable';
@@ -263,6 +264,8 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     const typeMap = ref(INPUT_TYPES);
 
     const formElements = [
@@ -449,7 +452,9 @@ export default defineComponent<IProps>({
       onCloneFormElement,
       onCloneControl,
       controlsItems,
-      typeMap
+      typeMap,
+
+      t
     };
   }
 });

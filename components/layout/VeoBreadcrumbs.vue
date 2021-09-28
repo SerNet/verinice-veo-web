@@ -89,6 +89,7 @@
 
 <script lang="ts">
 import { ref, defineComponent, watch, Ref, PropOptions } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { capitalize, last, intersection } from 'lodash';
 import { separateUUIDParam } from '~/lib/utils';
 
@@ -135,6 +136,7 @@ export default defineComponent<IProps>({
     } as PropOptions<ICustomBreadcrumbEntry>
   },
   setup(_props, context) {
+    const { t } = useI18n();
     /**
      * Definitions of custom values
      */
@@ -145,11 +147,11 @@ export default defineComponent<IProps>({
     // Define which keys from path should be replaces with custom Text
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
       ':unit': { text: '', icon: 'mdi-home' },
-      forms: { text: context.root.$t('breadcrumbs.forms').toString() },
-      objects: { text: context.root.$t('breadcrumbs.objects').toString() },
-      list: { text: context.root.$t('breadcrumbs.list_view').toString() },
-      tree: { text: context.root.$t('breadcrumbs.tree_view').toString() },
-      domains: { text: context.root.$t('breadcrumbs.domain').toString() }
+      forms: { text: t('breadcrumbs.forms').toString() },
+      objects: { text: t('breadcrumbs.objects').toString() },
+      list: { text: t('breadcrumbs.list_view').toString() },
+      tree: { text: t('breadcrumbs.tree_view').toString() },
+      domains: { text: t('breadcrumbs.domain').toString() }
     };
 
     // TODO: check if :group should be added here, after groups are implemented
@@ -203,7 +205,7 @@ export default defineComponent<IProps>({
       const paramSeparated = separateUUIDParam(param);
 
       if (paramSeparated.id === '-') {
-        return { [type]: { text: context.root.$t('breadcrumbs.all') as string } };
+        return { [type]: { text: t('breadcrumbs.all') as string } };
       }
 
       // If a parameter title is already cached, return its value

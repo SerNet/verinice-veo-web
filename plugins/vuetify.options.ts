@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import 'material-design-icons-iconfont/dist/material-design-icons.css'; // Ensure you are using css-loader
 import 'roboto-fontface/css/roboto/roboto-fontface.css'; // Ensure you are using css-loader
 import '@mdi/font/css/materialdesignicons.css'; // Ensure you are using css-loader
 import colors from 'vuetify/lib/util/colors';

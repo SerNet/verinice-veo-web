@@ -19,7 +19,7 @@
   <VeoDialog
     :key="formSchema.scope"
     v-model="dialog.value"
-    :headline="$t('editControlHeadline')"
+    :headline="t('editControlHeadline')"
     large
   >
     <template #default>
@@ -32,7 +32,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.label.text') }}*:</span>
+            <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.label.text') }}*:</span>
           </v-col>
           <v-col
             :cols="12"
@@ -40,7 +40,7 @@
           >
             <v-text-field
               :value="localCustomTranslation[language][name] || defaultLabel"
-              :label="$t('editor.formschema.edit.input.label')"
+              :label="t('editor.formschema.edit.input.label')"
               required
               @input="onInputLabel"
             />
@@ -54,7 +54,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ $t('type') }}:</span>
+            <span style="font-size: 1.2rem;">{{ t('type') }}:</span>
           </v-col>
           <v-col
             :cols="12"
@@ -62,7 +62,7 @@
           >
             <v-select
               v-model="activeControlType.name"
-              :label="$t('typeInput')"
+              :label="t('typeInput')"
               :disabled="alternatives.length === 1"
               :append-icon="alternatives.length === 1 ? '' : undefined"
               :items="alternatives"
@@ -81,7 +81,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ $t('linkAttributes') }}:</span>
+            <span style="font-size: 1.2rem;">{{ t('linkAttributes') }}:</span>
           </v-col>
           <v-col
             :cols="12"
@@ -93,7 +93,7 @@
               :items="linksAttributesItems"
               multiple
               return-object
-              :label="$t('linkAttributes')"
+              :label="t('linkAttributes')"
               @input="onInputLinksAttributes"
             />
           </v-col>
@@ -107,7 +107,7 @@
             :cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ $t('editor.formschema.edit.input.direction') }}:</span>
+            <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.direction') }}:</span>
           </v-col>
           <v-col
             :cols="12"
@@ -116,7 +116,7 @@
             <v-autocomplete
               v-model="activeControlType.direction"
               :items="directionItems"
-              :label="$t('editor.formschema.edit.input.direction')"
+              :label="t('editor.formschema.edit.input.direction')"
             />
           </v-col>
         </v-row>
@@ -125,7 +125,7 @@
           :current-scope="formSchema.scope"
         />
       </v-form>
-      <small>{{ $t('global.input.requiredfields') }}</small>
+      <small>{{ t('global.input.requiredfields') }}</small>
 
       <v-card
         v-if="activeControlType.name === 'LinksField' && formSchemaElements.length > 0"
@@ -170,7 +170,7 @@
         :data-cy="$utils.prefixCyData($options, 'close-button')"
         @click="close()"
       >
-        {{ $t('global.button.close') }}
+        {{ t('global.button.close') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -179,7 +179,7 @@
         :data-cy="$utils.prefixCyData($options, 'save-button')"
         @click="updateElement()"
       >
-        {{ $t('global.button.save') }}
+        {{ t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
@@ -189,6 +189,7 @@ import { computed, defineComponent, PropType, Ref, ref, watch, getCurrentInstanc
 import Draggable from 'vuedraggable';
 import { JsonPointer } from 'json-ptr';
 import { differenceBy } from 'lodash';
+import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { controlTypeAlternatives, IControlType } from '~/types/VeoEditor';
 import { BaseObject } from '~/components/forms/utils';
@@ -261,6 +262,8 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     // TODO: Refactor the component
     /**
      * General variables
@@ -478,7 +481,9 @@ export default defineComponent<IProps>({
       alternatives,
       updateActiveControlType,
       updateElement,
-      ...linksField
+      ...linksField,
+
+      t
     };
   }
 });
