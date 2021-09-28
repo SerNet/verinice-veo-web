@@ -185,7 +185,7 @@ export default Vue.extend({
       if (this.localValue.length === 1) {
         this.selected = [];
         this.localValue = [{ ...this.rowToAdd }];
-        this.$emit('input', undefined);
+        this.$emit('input', []);
       } else {
         this.selected.splice(rowIndex, 1);
         this.localValue.splice(rowIndex, 1);

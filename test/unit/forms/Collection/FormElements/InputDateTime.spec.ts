@@ -61,7 +61,10 @@ describe('InputDateTime.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      propsData: { ...form }
+      propsData: { ...form },
+      mocks: {
+        $t: (msg: any) => msg
+      }
     });
 
     // Fixes immediate:true bugs with setProps() of vue test utils

@@ -1,540 +1,3 @@
-exports[`Objectschema Editor > compares downloaded schema with the actual one #0`] =
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "properties": {
-    "abbreviation": {
-      "type": "string",
-      "description": "The abbreviation for the EntityLayerSupertype."
-    },
-    "createdAt": {
-      "type": "string",
-      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created."
-    },
-    "createdBy": {
-      "type": "string",
-      "description": "The username of the user who created this object."
-    },
-    "customAspects": {
-      "type": "object",
-      "title": "CustomAspect",
-      "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
-      "properties": {
-        "testSchema_Aspekt1": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "id": {
-              "type": "string",
-              "title": "The UUID to identify the element",
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
-            },
-            "applicableTo": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "domains": {
-              "type": "array",
-              "title": "The list of domains in which this element is present.",
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "displayName": {
-                    "type": "string",
-                    "description": "A friendly human readable title of the referenced domain."
-                  },
-                  "targetUri": {
-                    "type": "string",
-                    "description": "The resource URL of the referenced domain."
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "uniqueItems": true
-            },
-            "references": {
-              "type": "array",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "type": "string",
-                    "description": "A friendly human readable title of the referenced object."
-                  },
-                  "targetUri": {
-                    "type": "string",
-                    "description": "The resource URL of the referenced object."
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              }
-            },
-            "attributes": {
-              "additionalProperties": false,
-              "type": "object",
-              "properties": {
-                "testSchema_Aspekt1_Attribut1": {
-                  "type": "string"
-                },
-                "testSchema_Aspekt1_Attribut2": {
-                  "type": "string",
-                  "format": "uri",
-                  "pattern": "^(https?|ftp)://"
-                },
-                "testSchema_Aspekt1_Attribut3": {
-                  "type": "string",
-                  "format": "date-time"
-                }
-              }
-            }
-          }
-        },
-        "testSchema_Aspekt2": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "id": {
-              "type": "string",
-              "title": "The UUID to identify the element",
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
-            },
-            "applicableTo": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "domains": {
-              "type": "array",
-              "title": "The list of domains in which this element is present.",
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "displayName": {
-                    "type": "string",
-                    "description": "A friendly human readable title of the referenced domain."
-                  },
-                  "targetUri": {
-                    "type": "string",
-                    "description": "The resource URL of the referenced domain."
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "uniqueItems": true
-            },
-            "references": {
-              "type": "array",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "type": "string",
-                    "description": "A friendly human readable title of the referenced object."
-                  },
-                  "targetUri": {
-                    "type": "string",
-                    "description": "The resource URL of the referenced object."
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              }
-            },
-            "attributes": {
-              "additionalProperties": false,
-              "type": "object",
-              "properties": {
-                "testSchema_Aspekt2_Attribut1": {
-                  "type": "boolean"
-                },
-                "testSchema_Aspekt2_Attribut2": {
-                  "type": "number"
-                },
-                "testSchema_Aspekt2_Attribut3": {
-                  "type": "integer"
-                }
-              }
-            }
-          }
-        },
-        "testSchema_Aspekt3": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "id": {
-              "type": "string",
-              "title": "The UUID to identify the element",
-              "format": "regex",
-              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
-            },
-            "applicableTo": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            },
-            "domains": {
-              "type": "array",
-              "title": "The list of domains in which this element is present.",
-              "description": "The ids of elements of the type domain.",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "displayName": {
-                    "type": "string",
-                    "description": "A friendly human readable title of the referenced domain."
-                  },
-                  "targetUri": {
-                    "type": "string",
-                    "description": "The resource URL of the referenced domain."
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              },
-              "uniqueItems": true
-            },
-            "references": {
-              "type": "array",
-              "items": {
-                "properties": {
-                  "displayName": {
-                    "type": "string",
-                    "description": "A friendly human readable title of the referenced object."
-                  },
-                  "targetUri": {
-                    "type": "string",
-                    "description": "The resource URL of the referenced object."
-                  }
-                },
-                "required": [
-                  "targetUri"
-                ]
-              }
-            },
-            "attributes": {
-              "additionalProperties": false,
-              "type": "object",
-              "properties": {
-                "testSchema_Aspekt3_Attribut1": {
-                  "enum": [
-                    "a",
-                    "b",
-                    "c",
-                    "d",
-                    "e"
-                  ]
-                },
-                "testSchema_Aspekt3_Attribut2": {
-                  "items": {
-                    "enum": [
-                      "a",
-                      "b",
-                      "c",
-                      "d",
-                      "e"
-                    ]
-                  },
-                  "type": "array"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "description": {
-      "type": "string",
-      "description": "The description for the EntityLayerSupertype."
-    },
-    "domains": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string",
-            "description": "A friendly human readable title of the referenced domain."
-          },
-          "resourcesUri": {
-            "type": "string"
-          },
-          "searchesUri": {
-            "type": "string"
-          },
-          "targetUri": {
-            "type": "string",
-            "description": "The resource URL of the referenced domain."
-          }
-        },
-        "required": [
-          "targetUri"
-        ],
-        "description": "The domains this entity is being used in."
-      }
-    },
-    "id": {
-      "type": "string",
-      "description": "ID must be a valid UUID string following RFC 4122."
-    },
-    "links": {
-      "type": "object",
-      "title": "CustomLink",
-      "description": "Custom relations which do not affect the behavior.",
-      "properties": {
-        "testSchema_Link1": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "title": "The UUID to identify the element",
-                "format": "regex",
-                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
-              },
-              "applicableTo": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "domains": {
-                "type": "array",
-                "title": "The list of domains in which this element is present.",
-                "description": "The ids of elements of the type domain.",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "displayName": {
-                      "type": "string",
-                      "description": "A friendly human readable title of the referenced domain."
-                    },
-                    "targetUri": {
-                      "type": "string",
-                      "description": "The resource URL of the referenced domain."
-                    }
-                  },
-                  "required": [
-                    "targetUri"
-                  ]
-                },
-                "uniqueItems": true
-              },
-              "references": {
-                "type": "array",
-                "items": {
-                  "properties": {
-                    "displayName": {
-                      "type": "string",
-                      "description": "A friendly human readable title of the referenced object."
-                    },
-                    "targetUri": {
-                      "type": "string",
-                      "description": "The resource URL of the referenced object."
-                    }
-                  },
-                  "required": [
-                    "targetUri"
-                  ]
-                }
-              },
-              "abbreviation": {
-                "type": "string",
-                "title": "Abbreviation",
-                "description": "The abbreviation for this custom link."
-              },
-              "description": {
-                "type": "string",
-                "title": "Description",
-                "description": "The name for this custom link."
-              },
-              "name": {
-                "type": "string",
-                "title": "Name",
-                "description": "The name for this custom link."
-              },
-              "target": {
-                "type": "object",
-                "properties": {
-                  "targetUri": {
-                    "type": "string",
-                    "title": "The id of the target object."
-                  },
-                  "type": {
-                    "enum": [
-                      "scope"
-                    ]
-                  }
-                }
-              },
-              "attributes": {
-                "additionalProperties": false,
-                "type": "object",
-                "properties": {
-                  "testSchema_Link1_Attribut1": {
-                    "type": "string",
-                    "format": "uri",
-                    "pattern": "^(https?|ftp)://"
-                  },
-                  "testSchema_Link1_Attribut2": {
-                    "enum": [
-                      "1",
-                      "2",
-                      "3",
-                      "4",
-                      "5"
-                    ]
-                  }
-                }
-              }
-            },
-            "additionalProperties": false,
-            "required": [
-              "target"
-            ]
-          }
-        }
-      }
-    },
-    "name": {
-      "type": "string",
-      "description": "The name for the EntityLayerSupertype."
-    },
-    "owner": {
-      "type": "object",
-      "properties": {
-        "displayName": {
-          "type": "string",
-          "description": "A friendly human readable title of the referenced unit."
-        },
-        "resourcesUri": {
-          "type": "string",
-          "description": "URI the owner can get accessed by."
-        },
-        "searchesUri": {
-          "type": "string",
-          "description": "URI the owner can get searched by"
-        },
-        "targetUri": {
-          "type": "string",
-          "description": "The resource URL of the referenced unit."
-        }
-      },
-      "required": [
-        "targetUri"
-      ],
-      "description": "A reference to the unit containing this entity."
-    },
-    "parts": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string",
-            "description": "A friendly human readable title of the referenced entity."
-          },
-          "resourcesUri": {
-            "type": "string"
-          },
-          "searchesUri": {
-            "type": "string"
-          },
-          "targetUri": {
-            "type": "string",
-            "description": "The resource URL of the referenced entity."
-          }
-        },
-        "required": [
-          "targetUri"
-        ],
-        "description": "A reference to an entity's part"
-      }
-    },
-    "subType": {
-      "type": "object",
-      "title": "SubType",
-      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value."
-    },
-    "updatedAt": {
-      "type": "string",
-      "description": "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved."
-    },
-    "updatedBy": {
-      "type": "string",
-      "description": "The username of the user who last updated this object."
-    },
-    "translations": {
-      "de": {
-        "1": "1",
-        "2": "2",
-        "3": "3",
-        "4": "4",
-        "5": "5",
-        "testSchema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text DE",
-        "testSchema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI DE",
-        "testSchema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime DE",
-        "testSchema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool DE",
-        "testSchema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number DE",
-        "testSchema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer DE",
-        "testSchema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select DE",
-        "a": "a",
-        "b": "b",
-        "c": "c",
-        "d": "d",
-        "e": "e",
-        "testSchema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select DE",
-        "testSchema_Link1": "Link Beschreibung 1",
-        "testSchema_Link1_Attribut1": "Attribut 1 Beschreibung URI DE",
-        "testSchema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select DE"
-      },
-      "en": {
-        "1": "1",
-        "2": "2",
-        "3": "3",
-        "4": "4",
-        "5": "5",
-        "testSchema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text EN",
-        "testSchema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI EN",
-        "testSchema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime EN",
-        "testSchema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool EN",
-        "testSchema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number EN",
-        "testSchema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer EN",
-        "testSchema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select EN",
-        "a": "v",
-        "b": "w",
-        "c": "x",
-        "d": "y",
-        "e": "z",
-        "testSchema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select EN",
-        "testSchema_Link1": "Link Beschreibung 1",
-        "testSchema_Link1_Attribut1": "Attribut 1 Beschreibung URI EN",
-        "testSchema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select EN"
-      }
-    }
-  },
-  "required": [
-    "name",
-    "owner"
-  ],
-  "title": "testSchema",
-  "description": "NBRX Integration Test Schema v1.0 2021-05-21"
-};
-
 exports[`Objectschema Editor > changes customAspect name, attribute names, description and types #0`] =
 {
   "testSchema_Aspekt1Test_Attribut1Test": {
@@ -544,8 +7,8 @@ exports[`Objectschema Editor > changes customAspect name, attribute names, descr
     "type": "boolean"
   },
   "testSchema_Aspekt1Test_Attribut3": {
-    "type": "string",
-    "format": "date-time"
+    "format": "date-time",
+    "type": "string"
   }
 };
 
@@ -572,7 +35,6 @@ exports[`Objectschema Editor > removes and adds aspect attributes #0`] =
     ]
   },
   "testSchema_Aspekt1_f": {
-    "type": "array",
     "items": {
       "enum": [
         "a",
@@ -580,7 +42,8 @@ exports[`Objectschema Editor > removes and adds aspect attributes #0`] =
         "c",
         "d"
       ]
-    }
+    },
+    "type": "array"
   }
 };
 
@@ -609,15 +72,18 @@ exports[`Objectschema Editor > changes link name, attribute names, description a
       ]
     }
   },
+  "required": [
+    "targetUri"
+  ],
   "type": "object"
 };
 
 exports[`Objectschema Editor > changes link name, attribute names, description and types #1`] =
 {
   "testSchema_Link1Test_Attribut1Test": {
-    "type": "string",
     "format": "uri",
-    "pattern": "^(https?|ftp)://"
+    "pattern": "^(https?|ftp)://",
+    "type": "string"
   },
   "testSchema_Link1Test_Attribut2Test": {
     "type": "boolean"
@@ -647,7 +113,6 @@ exports[`Objectschema Editor > removes and adds link attributes #0`] =
     ]
   },
   "testSchema_Link1_f": {
-    "type": "array",
     "items": {
       "enum": [
         "a",
@@ -655,7 +120,8 @@ exports[`Objectschema Editor > removes and adds link attributes #0`] =
         "c",
         "d"
       ]
-    }
+    },
+    "type": "array"
   }
 };
 
@@ -664,4 +130,544 @@ exports[`Objectschema Editor > adds completely new link and removes it from dial
   "testSchema_TestLinkTwo_a": {
     "type": "string"
   }
+};
+
+exports[`Objectschema Editor > compares downloaded schema with the actual one #0`] =
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "NBRX Integration Test Schema v1.0 2021-05-21",
+  "properties": {
+    "abbreviation": {
+      "description": "The abbreviation for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "createdAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "type": "string"
+    },
+    "createdBy": {
+      "description": "The username of the user who created this object.",
+      "type": "string"
+    },
+    "customAspects": {
+      "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
+      "properties": {
+        "testSchema_Aspekt1": {
+          "additionalProperties": false,
+          "properties": {
+            "applicableTo": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "testSchema_Aspekt1_Attribut1": {
+                  "type": "string"
+                },
+                "testSchema_Aspekt1_Attribut2": {
+                  "format": "uri",
+                  "pattern": "^(https?|ftp)://",
+                  "type": "string"
+                },
+                "testSchema_Aspekt1_Attribut3": {
+                  "format": "date-time",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "testSchema_Aspekt2": {
+          "additionalProperties": false,
+          "properties": {
+            "applicableTo": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "testSchema_Aspekt2_Attribut1": {
+                  "type": "boolean"
+                },
+                "testSchema_Aspekt2_Attribut2": {
+                  "type": "number"
+                },
+                "testSchema_Aspekt2_Attribut3": {
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "testSchema_Aspekt3": {
+          "additionalProperties": false,
+          "properties": {
+            "applicableTo": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "testSchema_Aspekt3_Attribut1": {
+                  "enum": [
+                    "a",
+                    "b",
+                    "c",
+                    "d",
+                    "e"
+                  ]
+                },
+                "testSchema_Aspekt3_Attribut2": {
+                  "items": {
+                    "enum": [
+                      "a",
+                      "b",
+                      "c",
+                      "d",
+                      "e"
+                    ]
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ]
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "title": "CustomAspect",
+      "type": "object"
+    },
+    "description": {
+      "description": "The description for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "domains": {
+      "items": {
+        "description": "The domains this entity is being used in.",
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced domain.",
+            "type": "string"
+          },
+          "resourcesUri": {
+            "type": "string"
+          },
+          "searchesUri": {
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced domain.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "id": {
+      "description": "ID must be a valid UUID string following RFC 4122.",
+      "type": "string"
+    },
+    "links": {
+      "description": "Custom relations which do not affect the behavior.",
+      "properties": {
+        "testSchema_Link1": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "abbreviation": {
+                "description": "The abbreviation for this custom link.",
+                "title": "Abbreviation",
+                "type": "string"
+              },
+              "applicableTo": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "testSchema_Link1_Attribut1": {
+                    "format": "uri",
+                    "pattern": "^(https?|ftp)://",
+                    "type": "string"
+                  },
+                  "testSchema_Link1_Attribut2": {
+                    "enum": [
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5"
+                    ]
+                  }
+                },
+                "type": "object"
+              },
+              "description": {
+                "description": "The name for this custom link.",
+                "title": "Description",
+                "type": "string"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "name": {
+                "description": "The name for this custom link.",
+                "title": "Name",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ]
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "scope"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "title": "CustomLink",
+      "type": "object"
+    },
+    "name": {
+      "description": "The name for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "owner": {
+      "description": "A reference to the unit containing this entity.",
+      "properties": {
+        "displayName": {
+          "description": "A friendly human readable title of the referenced unit.",
+          "type": "string"
+        },
+        "resourcesUri": {
+          "description": "URI the owner can get accessed by.",
+          "type": "string"
+        },
+        "searchesUri": {
+          "description": "URI the owner can get searched by",
+          "type": "string"
+        },
+        "targetUri": {
+          "description": "The resource URL of the referenced unit.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "targetUri"
+      ],
+      "type": "object"
+    },
+    "parts": {
+      "items": {
+        "description": "A reference to an entity's part",
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced entity.",
+            "type": "string"
+          },
+          "resourcesUri": {
+            "type": "string"
+          },
+          "searchesUri": {
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced entity.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "subType": {
+      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
+      "title": "SubType",
+      "type": "object"
+    },
+    "translations": {
+      "de": {
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "a": "a",
+        "b": "b",
+        "c": "c",
+        "d": "d",
+        "e": "e",
+        "testSchema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text DE",
+        "testSchema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI DE",
+        "testSchema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime DE",
+        "testSchema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool DE",
+        "testSchema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number DE",
+        "testSchema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer DE",
+        "testSchema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select DE",
+        "testSchema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select DE",
+        "testSchema_Link1": "Link Beschreibung 1",
+        "testSchema_Link1_Attribut1": "Attribut 1 Beschreibung URI DE",
+        "testSchema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select DE"
+      },
+      "en": {
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "a": "v",
+        "b": "w",
+        "c": "x",
+        "d": "y",
+        "e": "z",
+        "testSchema_Aspekt1_Attribut1": "Attribut 1 Beschreibung Text EN",
+        "testSchema_Aspekt1_Attribut2": "Attribut 2 Beschreibung URI EN",
+        "testSchema_Aspekt1_Attribut3": "Attribut 3 Beschreibung DateTime EN",
+        "testSchema_Aspekt2_Attribut1": "Attribut 1 Beschreibung Bool EN",
+        "testSchema_Aspekt2_Attribut2": "Attribut 2 Beschreibung Number EN",
+        "testSchema_Aspekt2_Attribut3": "Attribut 3 Beschreibung Integer EN",
+        "testSchema_Aspekt3_Attribut1": "Attribut 1 Beschreibung Enum Single Select EN",
+        "testSchema_Aspekt3_Attribut2": "Attribut 2 Beschreibung Enum Multi Select EN",
+        "testSchema_Link1": "Link Beschreibung 1",
+        "testSchema_Link1_Attribut1": "Attribut 1 Beschreibung URI EN",
+        "testSchema_Link1_Attribut2": "Attribut 2 Beschreibung Enum Single Select EN"
+      }
+    },
+    "updatedAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
+      "type": "string"
+    },
+    "updatedBy": {
+      "description": "The username of the user who last updated this object.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "owner"
+  ],
+  "title": "testSchema",
+  "type": "object"
 };

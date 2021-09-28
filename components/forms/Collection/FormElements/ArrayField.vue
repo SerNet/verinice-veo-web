@@ -59,7 +59,7 @@
             text
             fab
             small
-            :disabled="disabled"
+            :disabled="!value || disabled"
             class="vf-btn-remove"
             @click="removeRow(i)"
           >
