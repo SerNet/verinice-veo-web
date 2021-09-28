@@ -237,11 +237,6 @@ export default Vue.extend({
           translatedErrorString = this.$t(`error.${error.keyword}`, { field: this.getInvalidFieldLabel((error.params as any).missingProperty) }).toString();
           break;
         case 'format':
-          translatedErrorString = this.$t(`error.${error.keyword}`, {
-            field: this.getInvalidFieldLabel(error.dataPath.split('/').pop() || error.dataPath),
-            format: (error.params as any)[error.keyword]
-          }).toString();
-          break;
         case 'pattern':
           // While pattern is a separate error message, we want to display the same error message as for a format error
           translatedErrorString = this.$t('error.format', {
