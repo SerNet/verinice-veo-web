@@ -32,7 +32,6 @@
       "@types/node",
       "@types/lodash",
       "@types/jest",
-      "@nuxtjs/axios",
       "@nuxt/types",
       "nuxt-i18n/types",
       "./types/context",
