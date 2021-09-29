@@ -299,8 +299,8 @@ export default defineComponent<IProps>({
     }
 
     function onEditPropertyError(e: any) {
-      context.root.$emit(VeoEvents.ALERT_ERROR, {
-        title: context.root.$i18n.t('createCustomPropertyError'),
+      context.emit(VeoEvents.ALERT_ERROR, {
+        title: t('createCustomPropertyError'),
         text: e
       });
     }

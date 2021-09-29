@@ -166,7 +166,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
@@ -177,8 +177,10 @@ interface IProps {}
 
 export default defineComponent<IProps>({
   setup(_props, context) {
-    const { $api, params, app } = useContext();
+    const { $api, $user, params, app } = useContext();
     const { t } = useI18n();
+    const route = useRoute();
+    const router = useRouter();
 
     //
     // Global navigation
@@ -186,10 +188,10 @@ export default defineComponent<IProps>({
     const drawer: Ref<boolean> = ref(false);
     const lang = computed({
       get() {
-        return context.root.$i18n.locale;
+        return app.i18n.locale;
       },
       set(newValue: string) {
-        context.root.$i18n.setLocale(newValue);
+        app.i18n.setLocale(newValue);
         // After the language change, reload the page to avoid synchronisation problems
         // Reload here should not be a big problem, because a user will not often change the language
         window.location.reload();
@@ -260,7 +262,7 @@ export default defineComponent<IProps>({
     });
 
     context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
-      context.root.$router.push('/' + createUUIDUrlParam('unit', newUnit));
+      router.push('/' + createUUIDUrlParam('unit', newUnit));
     });
 
     // Breadcrumbs related events
@@ -281,19 +283,19 @@ export default defineComponent<IProps>({
       units.value = await $api.unit.fetchAll();
     }
 
-    const domain = computed((): string | undefined => separateUUIDParam(context.root.$route.params.domain).id);
+    const domain = computed((): string | undefined => separateUUIDParam(route.value.params.domain).id);
 
     const domainId = computed((): string | undefined => {
-      if (context.root.$route.name === 'unit-domains-more') {
+      if (route.value.name === 'unit-domains-more') {
         return undefined;
       }
       if (!domain.value) {
-        return unitId && unitId.value === context.root.$user.lastUnit ? context.root.$user.lastDomain : undefined;
+        return unitId && unitId.value === $user.lastUnit ? $user.lastDomain : undefined;
       }
       return domain.value;
     });
 
-    const unitId = computed(() => (separateUUIDParam(context.root.$route.params.unit).id.length > 0 ? separateUUIDParam(context.root.$route.params.unit).id : undefined));
+    const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
 
     // While loading the unit id passed to the createUUIDUrlParam function would be undefined in the template, creating an error. Thus we have to navigate using this function.
     function goToUnit(unitId: string) {

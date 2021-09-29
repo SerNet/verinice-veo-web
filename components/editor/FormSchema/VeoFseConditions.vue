@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, Ref, ref, computed, getCurrentInstance, WritableComputedRef } from '@nuxtjs/composition-api';
+import { defineComponent, inject, Ref, ref, computed, WritableComputedRef } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, orderBy } from 'lodash';
@@ -152,10 +152,9 @@ export default defineComponent<IProps>({
 
     const rule: Ref<IVeoFormSchemaItemRuleLocal> = ref(cloneDeep(props.value));
 
-    const vm = getCurrentInstance();
     const displayTypeItems = computed(() => [
-      { text: vm?.$i18n.t('displayTypes.show'), value: 'SHOW' },
-      { text: vm?.$i18n.t('displayTypes.hide'), value: 'HIDE' }
+      { text: t('displayTypes.show'), value: 'SHOW' },
+      { text: t('displayTypes.hide'), value: 'HIDE' }
     ]);
     const displayType: WritableComputedRef<string | undefined> = computed({
       get() {

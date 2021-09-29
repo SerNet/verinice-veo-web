@@ -242,7 +242,7 @@ export default Vue.extend({
           this.selectedEntities = [];
           this.chooseToms();
         }
-      } catch (e) {
+      } catch (e: any) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('applyIncarnaionError'), text: JSON.stringify(e.message || e) });
       } finally {
         this.applying = false;

@@ -138,7 +138,7 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, PropType, Ref, ref, reactive, getCurrentInstance } from '@nuxtjs/composition-api';
+import { defineComponent, PropType, Ref, ref, reactive } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { v4 as uuid } from 'uuid';
 import { JsonPointer } from 'json-ptr';
@@ -216,16 +216,13 @@ export default defineComponent<IProps>({
       }
     }
 
-    // Get current instance for using translations in Setup() https://github.com/kazupon/vue-i18n/issues/693#issuecomment-583796174
-    const vm = getCurrentInstance();
-
     const directionItems = ref([
       {
-        text: vm?.$i18n.t('editor.formschema.edit.input.direction.vertical'),
+        text: t('editor.formschema.edit.input.direction.vertical'),
         value: 'vertical'
       },
       {
-        text: vm?.$i18n.t('editor.formschema.edit.input.direction.horizontal'),
+        text: t('editor.formschema.edit.input.direction.horizontal'),
         value: 'horizontal'
       }
     ]);

@@ -83,13 +83,13 @@ export default defineComponent<IProps>({
         try {
           const updatedSchema = JSON.parse(code.value);
           context.emit('schema-updated', updatedSchema);
-          context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
+          context.emit(VeoEvents.SNACKBAR_SUCCESS, {
             title: '',
-            text: context.root.$i18n.t('saveSchemaSuccess')
+            text: t('saveSchemaSuccess')
           });
-        } catch (e) {
-          context.root.$emit(VeoEvents.ALERT_ERROR, {
-            title: context.root.$i18n.t('saveSchemaError'),
+        } catch (e: any) {
+          context.emit(VeoEvents.ALERT_ERROR, {
+            title: t('saveSchemaError'),
             text: e.message
           });
         }

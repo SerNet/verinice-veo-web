@@ -185,7 +185,7 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, PropType, Ref, ref, watch, getCurrentInstance, inject, provide } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, Ref, ref, watch, inject, provide } from '@nuxtjs/composition-api';
 import Draggable from 'vuedraggable';
 import { JsonPointer } from 'json-ptr';
 import { differenceBy } from 'lodash';
@@ -342,16 +342,13 @@ export default defineComponent<IProps>({
       }
     );
 
-    // Get current instance for using translations in Setup() https://github.com/kazupon/vue-i18n/issues/693#issuecomment-583796174
-    const vm = getCurrentInstance();
-
     const directionItems = ref([
       {
-        text: vm?.$i18n.t('editor.formschema.edit.input.direction.vertical'),
+        text: t('editor.formschema.edit.input.direction.vertical'),
         value: 'vertical'
       },
       {
-        text: vm?.$i18n.t('editor.formschema.edit.input.direction.horizontal'),
+        text: t('editor.formschema.edit.input.direction.horizontal'),
         value: 'horizontal'
       }
     ]);
@@ -361,7 +358,7 @@ export default defineComponent<IProps>({
       if (newType) {
         activeControlType.value = newType;
       } else {
-        context.root.$emit(VeoEvents.ALERT_ERROR, {
+        context.emit(VeoEvents.ALERT_ERROR, {
           text: 'updateActiveControlType: Control type not found'
         });
       }

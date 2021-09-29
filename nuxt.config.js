@@ -35,7 +35,12 @@ export default {
    * Enable nuxt/components
    * @see https://github.com/nuxt/components
    */
-  components: true,
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false
+    }
+  ],
 
   /**
    *

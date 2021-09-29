@@ -338,7 +338,7 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer';
 
-import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, onMounted, provide, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
@@ -357,8 +357,9 @@ import { IBaseObject } from '~/lib/utils';
 interface IProps {}
 
 export default defineComponent<IProps>({
-  setup(_props, context) {
+  setup(_props) {
     const { t } = useI18n();
+    const { $api, app } = useContext();
     /**
      * Layout specific stuff
      */
@@ -402,10 +403,10 @@ export default defineComponent<IProps>({
     provide('mainFormSchema', formSchema);
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined);
     const objectData = ref({});
-    const language = ref(context.root.$i18n.locale);
+    const language = ref(app.i18n.locale);
 
     watch(
-      () => context.root.$i18n.locale,
+      () => app.i18n.locale,
       (newLanguageVal) => {
         language.value = newLanguageVal;
       }
@@ -432,10 +433,10 @@ export default defineComponent<IProps>({
     function setFormSchema(schema: IVeoFormSchema) {
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
-      if (formSchema.value && !formSchema.value.translation?.[context.root.$i18n.locale]) {
+      if (formSchema.value && !formSchema.value.translation?.[app.i18n.locale]) {
         setFormTranslation({
           ...formSchema.value.translation,
-          ...{ [context.root.$i18n.locale]: {} }
+          ...{ [app.i18n.locale]: {} }
         });
       }
       showCreationDialog.value = !objectSchema.value || false;
@@ -512,7 +513,7 @@ export default defineComponent<IProps>({
 
     useFetch(async () => {
       // TODO: Backend should create an API endpoint to get available languages dynamically
-      avaliableLanguages.value = Object.keys((await context.root.$api.translation.fetch([]))?.lang);
+      avaliableLanguages.value = Object.keys((await $api.translation.fetch([]))?.lang);
     });
 
     function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {

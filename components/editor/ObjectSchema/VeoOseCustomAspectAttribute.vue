@@ -329,7 +329,7 @@ export default defineComponent<IProps>({
     // Special operations for all types
     const formatOptions: ComputedRef<IInputFormat[]> = computed(() => {
       return (INPUT_FORMATS[form.value.data.type] || []).map((entry: any) => {
-        entry.displayName = context.root.$i18n.t(`attributeTypes.${entry.name}`);
+        entry.displayName = t(`attributeTypes.${entry.name}`);
         return entry;
       });
     });
