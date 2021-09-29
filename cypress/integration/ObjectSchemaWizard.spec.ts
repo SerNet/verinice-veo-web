@@ -120,6 +120,10 @@ describe('Objectschema Wizard', () => {
     );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Control{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'control');
@@ -145,6 +149,10 @@ describe('Objectschema Wizard', () => {
     );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scope{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'scope');
@@ -170,6 +178,10 @@ describe('Objectschema Wizard', () => {
     );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Asset{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'asset');
@@ -195,6 +207,10 @@ describe('Objectschema Wizard', () => {
     );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Process{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
 
@@ -221,6 +237,10 @@ describe('Objectschema Wizard', () => {
     );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Incident{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'incident');
@@ -246,6 +266,10 @@ describe('Objectschema Wizard', () => {
     );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Document{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'document');
@@ -271,6 +295,10 @@ describe('Objectschema Wizard', () => {
     );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Person{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'person');
@@ -296,6 +324,10 @@ describe('Objectschema Wizard', () => {
     );
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scenario{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'scenario');
