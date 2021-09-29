@@ -36,6 +36,16 @@
       "eslint"
     ]
   },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!variables/.*)"
+    ]
+  },
   "dependencies": {
     "@codemirror/next": "^0.14.0",
     "@mdi/font": "^6.1.95",
