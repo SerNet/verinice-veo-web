@@ -32,6 +32,7 @@
       "@types/node",
       "@types/lodash",
       "@types/jest",
+      "jest",
       "@nuxt/types",
       "nuxt-i18n/types",
       "./types/context",

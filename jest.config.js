@@ -21,6 +21,7 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.jsx?$': 'babel-jest'
   },
+  roots: ['<rootDir>'],
   transformIgnorePatterns: ['<rootDir>/node_modules/(?!(@babel)/)', '<rootDir>/test/e2e'],
   collectCoverage: false,
   collectCoverageFrom: ['<rootDir>/components/**/*.vue', '<rootDir>/pages/**/*.vue'],
