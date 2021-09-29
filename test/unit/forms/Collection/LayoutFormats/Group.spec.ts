@@ -18,6 +18,8 @@
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import Vue from 'vue';
+import 'regenerator-runtime/runtime';
+
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
 
@@ -65,6 +67,7 @@ describe('Group.vue', () => {
     };
 
     const wrapper = mount(VeoForm, {
+      vuetify,
       propsData: { ...form }
     });
 

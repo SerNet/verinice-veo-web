@@ -1,12 +1,13 @@
 module.exports = {
   globals: {
     'ts-jest': {
-      tsConfig: 'tsconfig.json',
+      tsconfig: 'tsconfig.json',
       diagnostics: true
     },
     NODE_ENV: 'test'
   },
   testRegex: '(/__tests__/.*|/test/unit/.*\\.(test|spec))\\.(ts|tsx)$',
+  testEnvironment: 'jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^~/(.*)$': '<rootDir>/$1',
