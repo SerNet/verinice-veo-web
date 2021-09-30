@@ -20,11 +20,9 @@ review:
 # for cypress tests
 build:e2e:
   stage: build
-  image: node:14-alpine
+  image: cypress/base:14.15.4
   script:
-    - ls -la
-    - ls -la test
-    - rm -rf test
+    - rm -rf test # Fore some reason this step won't compile because of conflicting types while the auto-devops build job compiles without problems
     - npm ci
     - npm run build
   artifacts:
