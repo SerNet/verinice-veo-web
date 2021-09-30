@@ -28,7 +28,6 @@
     },
     "typeRoots": [],
     "types": [
-      "mocha",
       "@types/node",
       "@types/lodash",
       "@types/jest",
