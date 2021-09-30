@@ -22,6 +22,7 @@ build:e2e:
   stage: build
   image: cypress/base:14.15.4
   script:
+    - npm -v
     - npm install
     - npm run build
   artifacts:
