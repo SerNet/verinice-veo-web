@@ -22,9 +22,7 @@ build:e2e:
   stage: build
   image: node:14-alpine
   script:
-    - ls -la
-    - pwd
-    - rm -rf /builds/aDxTPxUo/3/nbrx/t1/veo/test
+    - rm -rf test
     - npm ci
     - npm run build
   artifacts:
