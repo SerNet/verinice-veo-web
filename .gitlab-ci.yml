@@ -22,7 +22,7 @@ build:e2e:
   stage: build
   image: node:14-alpine
   script:
-    - npm -v
+    - ls -la /usr/src/app/test
     - rm -rf /usr/src/app/test
     - npm ci
     - npm run build
