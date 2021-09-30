@@ -23,6 +23,7 @@ build:e2e:
   image: node:14-alpine
   script:
     - npm -v
+    - rm -rf /usr/src/app/test
     - npm ci
     - npm run build
   artifacts:
