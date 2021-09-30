@@ -20,7 +20,7 @@ review:
 # for cypress tests
 build:e2e:
   stage: build
-  image: cypress/base:14.15.4
+  image: node:14-alpine
   script:
     - npm -v
     - npm install
