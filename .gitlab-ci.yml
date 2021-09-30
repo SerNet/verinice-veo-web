@@ -23,7 +23,7 @@ build:e2e:
   image: node:14-alpine
   script:
     - npm -v
-    - npm install
+    - npm ci
     - npm run build
   artifacts:
     when: always
