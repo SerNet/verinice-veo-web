@@ -25,7 +25,7 @@
         >
           <v-text-field
             :value="form.data.title"
-            :label="`${$t('aspectName')} *`"
+            :label="`${t('aspectName')} *`"
             required
             :rules="form.rules.title"
             :prefix="prefix"
@@ -38,7 +38,7 @@
         >
           <v-select
             :value="form.data.type"
-            :label="$t('aspectType')"
+            :label="t('aspectType')"
             :items="types"
             @input="doUpdate($event, 'type')"
           />
@@ -48,7 +48,7 @@
         <v-col class="py-0">
           <v-text-field
             :value="form.data.description"
-            :label="$t('aspectDescription')"
+            :label="t('aspectDescription')"
             clearable
             @input="doUpdate($event, 'description')"
           />
@@ -59,12 +59,12 @@
         class="flex-column"
       >
         <v-col class="py-0 d-flex align-center">
-          <h3>{{ $t('values') }}</h3>
+          <h3>{{ t('values') }}</h3>
           <v-checkbox
             v-model="form.data.multiple"
             dense
             hide-details
-            :label="$t('multiple')"
+            :label="t('multiple')"
             class="mt-0 pt-0 ml-4"
             @change="doUpdate($event, 'multiple')"
           />
@@ -82,7 +82,7 @@
           >
             <template #label>
               <span>
-                {{ $t('valuesHint') }}
+                {{ t('valuesHint') }}
               </span>
             </template>
             <template #selection="data">
@@ -105,7 +105,7 @@
         <v-col class="py-0">
           <v-select
             :value="currentFormatOption"
-            :label="$t('inputFormat')"
+            :label="t('inputFormat')"
             :items="formatOptions"
             item-text="displayName"
             item-value="name"
@@ -130,6 +130,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, nextTick, ComputedRef } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { cloneDeep, trim } from 'lodash';
 import { IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import { INPUT_TYPES } from '~/types/VeoEditor';
@@ -223,6 +224,7 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    const { t } = useI18n();
     const prefix = computed(() => props.aspectName + '_');
 
     watch(
@@ -257,7 +259,7 @@ export default defineComponent<IProps>({
       for (const entry in availableTypes) {
         if (!['null', 'unknown', 'array', 'object'].includes(availableTypes[entry].name)) {
           dummy.push({
-            text: context.root.$t(`editor.inputtypes.${availableTypes[entry].name}`) as string,
+            text: t(`editor.inputtypes.${availableTypes[entry].name}`) as string,
             value: availableTypes[entry].name
           });
         }
@@ -327,7 +329,7 @@ export default defineComponent<IProps>({
     // Special operations for all types
     const formatOptions: ComputedRef<IInputFormat[]> = computed(() => {
       return (INPUT_FORMATS[form.value.data.type] || []).map((entry: any) => {
-        entry.displayName = context.root.$i18n.t(`attributeTypes.${entry.name}`);
+        entry.displayName = t(`attributeTypes.${entry.name}`);
         return entry;
       });
     });
@@ -347,7 +349,9 @@ export default defineComponent<IProps>({
       formatOptions,
       removeValueFromEnum,
       updateOptions,
-      currentFormatOption
+      currentFormatOption,
+
+      t
     };
   }
 });

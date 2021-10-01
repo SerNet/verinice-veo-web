@@ -28,11 +28,10 @@
     },
     "typeRoots": [],
     "types": [
-      "mocha",
       "@types/node",
       "@types/lodash",
       "@types/jest",
-      "@nuxtjs/axios",
+      "jest",
       "@nuxt/types",
       "nuxt-i18n/types",
       "./types/context",

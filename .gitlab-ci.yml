@@ -22,9 +22,8 @@ build:e2e:
   stage: build
   image: cypress/base:14.15.4
   script:
-    # Install npm v7 to work with lockfile:2
-    - npm install -g npm@7.20.1
-    - npm install
+    - rm -rf test # Fore some reason this step won't compile because of conflicting types while the auto-devops build job compiles without problems
+    - npm ci
     - npm run build
   artifacts:
     when: always

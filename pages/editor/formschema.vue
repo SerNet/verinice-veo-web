@@ -44,7 +44,7 @@
           </a>
         </template>
         <template #default>
-          {{ $t("editor.schema.download") }}
+          {{ t("editor.schema.download") }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
@@ -60,7 +60,7 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t("formSchemaCode") }}
+          {{ t("formSchemaCode") }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
@@ -78,7 +78,7 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t("editor.schema.warnings") }}
+          {{ t("editor.schema.warnings") }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
@@ -94,7 +94,7 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t("editor.formschema.translation") }}
+          {{ t("editor.formschema.translation") }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
@@ -110,7 +110,7 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t("editor.schema.properties") }}
+          {{ t("editor.schema.properties") }}
         </template>
       </v-tooltip>
       <v-tooltip bottom>
@@ -128,7 +128,7 @@
           </v-btn>
         </template>
         <template #default>
-          {{ $t('help') }}
+          {{ t('help') }}
         </template>
       </v-tooltip>
     </template>
@@ -147,7 +147,7 @@
       >
         <template #header>
           <h3 class="text-center pb-1">
-            {{ $t("availableControls") }}
+            {{ t("availableControls") }}
           </h3>
           <v-text-field
             v-model="searchQuery"
@@ -158,7 +158,7 @@
             hide-details
             solo-inverted
             prepend-inner-icon="mdi-magnify"
-            :label="$t('search')"
+            :label="t('search')"
           />
         </template>
         <template #default>
@@ -182,7 +182,7 @@
       >
         <template #header>
           <h3 class="text-center pb-1">
-            {{ $t("usedControls") }}
+            {{ t("usedControls") }}
           </h3>
           <VeoCollapseButton
             v-if="!$vuetify.breakpoint.xs"
@@ -228,7 +228,7 @@
               cols="auto"
               class="text-left"
             >
-              <h3>{{ $t("invalidFormSchema") }}</h3>
+              <h3>{{ t("invalidFormSchema") }}</h3>
             </v-col>
           </v-row>
         </template>
@@ -246,7 +246,7 @@
       >
         <template #header>
           <h3 class="text-center pb-1">
-            {{ $t("preview") }}
+            {{ t("preview") }}
           </h3>
         </template>
         <template
@@ -284,7 +284,7 @@
               cols="auto"
               class="text-left"
             >
-              <h3>{{ $t("invalidFormSchema") }}</h3>
+              <h3>{{ t("invalidFormSchema") }}</h3>
             </v-col>
           </v-row>
         </template>
@@ -338,7 +338,8 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer';
 
-import { computed, defineComponent, onMounted, provide, Ref, ref, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, onMounted, provide, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
 import {
@@ -356,7 +357,9 @@ import { IBaseObject } from '~/lib/utils';
 interface IProps {}
 
 export default defineComponent<IProps>({
-  setup(_props, context) {
+  setup(_props) {
+    const { t } = useI18n();
+    const { $api, app } = useContext();
     /**
      * Layout specific stuff
      */
@@ -378,7 +381,7 @@ export default defineComponent<IProps>({
     });
 
     const title = computed(() => {
-      const headline = context.root.$t('editor.formschema.headline');
+      const headline = t('editor.formschema.headline');
       // Name property must generally exist, but before it is created in Wizard, only headline should be visible
       // If Name property exists and e.g. 'de' sub-property is empty then missing translation should be visible
       if (formSchema.value?.name) {
@@ -400,10 +403,10 @@ export default defineComponent<IProps>({
     provide('mainFormSchema', formSchema);
     const translation: Ref<IVeoTranslations | undefined> = ref(undefined);
     const objectData = ref({});
-    const language = ref(context.root.$i18n.locale);
+    const language = ref(app.i18n.locale);
 
     watch(
-      () => context.root.$i18n.locale,
+      () => app.i18n.locale,
       (newLanguageVal) => {
         language.value = newLanguageVal;
       }
@@ -430,10 +433,10 @@ export default defineComponent<IProps>({
     function setFormSchema(schema: IVeoFormSchema) {
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
-      if (formSchema.value && !formSchema.value.translation?.[context.root.$i18n.locale]) {
+      if (formSchema.value && !formSchema.value.translation?.[app.i18n.locale]) {
         setFormTranslation({
           ...formSchema.value.translation,
-          ...{ [context.root.$i18n.locale]: {} }
+          ...{ [app.i18n.locale]: {} }
         });
       }
       showCreationDialog.value = !objectSchema.value || false;
@@ -510,7 +513,7 @@ export default defineComponent<IProps>({
 
     useFetch(async () => {
       // TODO: Backend should create an API endpoint to get available languages dynamically
-      avaliableLanguages.value = Object.keys((await context.root.$api.translation.fetch([]))?.lang);
+      avaliableLanguages.value = Object.keys((await $api.translation.fetch([]))?.lang);
     });
 
     function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {
@@ -578,7 +581,9 @@ export default defineComponent<IProps>({
       setFormName,
       setFormLanguage,
       onUpdateCustomTranslation,
-      onFixRequest
+      onFixRequest,
+
+      t
     };
   },
   head(): any {

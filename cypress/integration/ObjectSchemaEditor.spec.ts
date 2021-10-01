@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /// <reference path="../support/index.d.ts" />
+/// <reference types="cypress" />
 
 import { times } from 'lodash';
 import { JsonPointer } from 'json-ptr';
@@ -613,7 +614,7 @@ describe('Objectschema Editor', () => {
     cy.get('.translate-button').click();
 
     cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-select').contains('Sprachen').closest('.v-select').type('{downarrow}{downarrow}{enter}');
+      cy.get('.v-select').contains('Sprachen').closest('.v-select').type('{downarrow}{enter}');
 
       cy.get('.v-select').contains('Sprache').closest('.v-select').type('Englisch{enter}');
 
@@ -778,7 +779,7 @@ describe('Objectschema Editor', () => {
     cy.get('.translate-button').click();
 
     cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-select').contains('Sprachen').closest('.v-select').type('{downarrow}{downarrow}{enter}');
+      cy.get('.v-select').contains('Sprachen').closest('.v-select').type('{downarrow}{enter}');
 
       cy.get('.v-select').contains('Sprache').closest('.v-select').type('Englisch{enter}');
 

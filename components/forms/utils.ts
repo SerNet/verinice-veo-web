@@ -45,6 +45,9 @@ export interface ILinksFieldDialogUpdatedObject extends ILinksFieldDialogNewObje
   id: string;
 }
 
+// Nuxt compile throws warnings if this is no default export exists
+export default {};
+
 export interface IApi {
   fetchAll(objectType: string, searchParams?: IBaseObject): Promise<IVeoPaginatedResponse<IVeoEntity[]>>;
   create(objectType: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject>;

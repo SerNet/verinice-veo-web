@@ -18,7 +18,7 @@
 <template>
   <VeoDialog
     v-bind="$attrs"
-    :headline="$t('schemaValidationWarnings')"
+    :headline="t('schemaValidationWarnings')"
     large
     v-on="$listeners"
   >
@@ -37,13 +37,14 @@
         color="primary"
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.close') }}
+        {{ t('global.button.close') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
@@ -54,7 +55,11 @@ interface IProps {
 
 export default defineComponent<IProps>({
   setup() {
-    return {};
+    const { t } = useI18n();
+
+    return {
+      t
+    };
   }
 });
 </script>

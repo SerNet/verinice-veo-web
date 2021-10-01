@@ -18,6 +18,9 @@
 import { JSONSchema7 } from 'json-schema';
 import { UISchemaElement } from '@/types/UISchema';
 
+// Nuxt compile throws warnings if this is no default export exists
+export default {};
+
 function isEveryConditionTrue(conditions: boolean[]): boolean {
   return conditions.every((condition) => condition === true);
 }
