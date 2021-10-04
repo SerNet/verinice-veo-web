@@ -16,38 +16,6 @@ review:
   environment:
     auto_stop_in: 4 week
 
-# for cypress tests
-build:e2e:
-  stage: build
-  image: cypress/base:14.15.4
-  script:
-    - rm -rf test # Fore some reason this step won't compile because of conflicting types while the auto-devops build job compiles without problems
-    - npm ci
-    - npm run build
-  artifacts:
-    when: always
-    paths:
-      - .npm
-      - .nuxt
-      - nuxt.config.js
-      - package.json
-      - tsconfig.json
-      - node_modules
-      - cache/Cypress
-      - cypress
-      - cypress.json
-      - nyc.config.js
-    expire_in: 1 day
-  rules:
-    - if: '$BUILD_DISABLED'
-      when: never
-    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
-      when: always
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: manual
-
 test:e2e:
   stage: test
   tags:
@@ -70,8 +38,6 @@ test:e2e:
       when: always
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: always
-  needs:
-    - job: build:e2e
   artifacts:
     reports:
       cobertura: cypress/coverage/cobertura-coverage.xml
