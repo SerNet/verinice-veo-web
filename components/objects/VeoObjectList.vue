@@ -132,6 +132,9 @@
         {{ item.abbreviation }} {{ item.name }}
       </div>
     </template>
+    <template #item.status="{ value }">
+      {{ translations.lang && translations.lang[$i18n.locale] ? translations.lang[$i18n.locale][`process_status_${value}`] : value }}
+    </template>
     <template #item.description="{ item, value }">
       <div class="veo-object-list__description">
         <v-tooltip
@@ -243,7 +246,7 @@ import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { formatDate, formatTime } from '~/lib/utils';
 
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -271,8 +274,12 @@ export default Vue.extend({
   data() {
     return {
       sortBy: 'name' as string,
-      sortDesc: false as boolean
+      sortDesc: false as boolean,
+      translations: { lang: {} } as IVeoTranslations
     };
+  },
+  async fetch() {
+    this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
   },
   computed: {
     displayedItems(): IVeoPaginatedResponse<IVeoEntity[]> {

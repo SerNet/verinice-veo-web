@@ -54,19 +54,27 @@
 import Vue from 'vue';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
 
 export default Vue.extend({
   data() {
     return {
       forms: [] as IVeoFormSchemaMeta[],
-      processStatus: {} as { [key: string]: { text: string; color: string; items: number } }
+      translations: { lang: {} } as IVeoTranslations,
+      itemsPerStatus: {
+        NEW: 0,
+        IN_PROGRESS: 0,
+        FOR_REVIEW: 0,
+        RELEASED: 0,
+        ARCHIVED: 0
+      } as { [key: string]: number }
     };
   },
   async fetch() {
+    this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
     this.forms = await this.$api.form.fetchAll(separateUUIDParam(this.$route.params.domain).id);
-    for (const status in this.processStatus) {
-      this.processStatus[status].items = (
+    for (const status in this.itemsPerStatus) {
+      this.itemsPerStatus[status] = (
         await this.$api.entity.fetchAll('process', 0, {
           size: 1,
           subType: 'PRO_DataProcessing',
@@ -78,16 +86,16 @@ export default Vue.extend({
   computed: {
     dataProcessingFormId(): string {
       return this.forms.find((form) => form.subType === 'PRO_DataProcessing')?.id || '';
+    },
+    processStatus(): { [key: string]: { text: string; color: string; items: number } } {
+      return {
+        NEW: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_NEW || 'NEW', color: '#AD2828', items: 0 },
+        IN_PROGRESS: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_IN_PROGRESS || 'IN_PROGRESS', color: '#c90000', items: 0 },
+        FOR_REVIEW: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_FOR_REVIEW || 'FOR_REVIEW', color: '#E2BF00', items: 0 },
+        RELEASED: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_RELEASED || 'RELEASED', color: '#41A011', items: 0 },
+        ARCHIVED: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_ARCHIVED || 'ARCHIVED', color: '#656565', items: 0 }
+      };
     }
-  },
-  created() {
-    this.processStatus = {
-      NEW: { text: this.$t('status.new').toString(), color: '#AD2828', items: 0 },
-      IN_PROGRESS: { text: this.$t('status.inProgress').toString(), color: '#c90000', items: 0 },
-      FOR_REVIEW: { text: this.$t('status.forReview').toString(), color: '#E2BF00', items: 0 },
-      RELEASED: { text: this.$t('status.released').toString(), color: '#41A011', items: 0 },
-      ARCHIVED: { text: this.$t('status.archived').toString(), color: '#656565', items: 0 }
-    };
   },
   methods: {
     createUUIDUrlParam
@@ -98,24 +106,10 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "dataProcessing": "Data processing",
-    "status": {
-      "new": "New",
-      "inProgress": "In progress",
-      "forReview": "For review",
-      "released": "Released",
-      "archived": "Archived"
-    }
+    "dataProcessing": "Data processing"
   },
   "de": {
-    "dataProcessing": "Verarbeitungstätigkeiten",
-    "status": {
-      "new": "Neu",
-      "inProgress": "In Bearbeitung",
-      "forReview": "Zur Prüfung",
-      "released": "Freigegeben",
-      "archived": "Archiviert"
-    }
+    "dataProcessing": "Verarbeitungstätigkeiten"
   }
 }
 </i18n>
