@@ -5,6 +5,23 @@ import 'cypress-plugin-snapshots/commands';
 import '@cypress/code-coverage/support';
 import { IBaseObject } from '../../lib/utils';
 
+export const VEO_API_TYPES_REGEX = /https:\/\/api.(.+)\/veo\/types$/;
+export const VEO_API_SCHEMA_REGEX = /https:\/\/api.(.+)\/veo\/schemas\/(.+)/;
+export const VEO_API_ALL_CATALOGS_REGEX = /https:\/\/api.(.+)\/veo\/catalogs\/\?/;
+export const VEO_API_CATALOG_ITEMS_REGEX = /https:\/\/api.(.+)\/veo\/catalogs\/(.+)\/items/;
+export const VEO_API_TRANSLATIONS_REGEX = /https:\/\/api.(.+)\/veo\/translations(.*)$/;
+export const VEO_API_ALL_UNITS_REGEX = /https:\/\/api.(.+)\/veo\/units$/;
+export const VEO_API_ALL_DOMAINS_REGEX = /https:\/\/api.(.+)\/veo\/domains\/$/;
+export const VEO_API_DOMAIN_REGEX = /https:\/\/api.(.+)\/veo\/domains\/(.+)$/;
+export const VEO_API_ALL_ENTITIES_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/;
+export const VEO_API_ENTITY_MEMBERS_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.+)\/members$/;
+export const VEO_API_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/;
+export const VEO_API_NEW_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)$/;
+export const VEO_UNITS = /https:\/\/api.(.+)\/veo\/units$/;
+export const FORMS_API_ALL_FORMS_REGEX = /https:\/\/api.(.+)\/forms$/;
+export const FORMS_API_FORM_REGEX = /https:\/\/api.(.+)\/forms\/(.+)/;
+export const REPORTING_API_ALL_REPORTS_REGEX = /https:\/\/api.(.+)\/reporting\/reports$/;
+
 function createJWT(payload) {
   const header = {
     alg: 'RS256',
@@ -83,7 +100,7 @@ Cypress.Commands.add('auth', () => {
   cy.intercept(
     {
       method: 'GET', // GET VEO Units
-      url: 'https://veo.develop.cpmsys.io/units'
+      url: VEO_UNITS
     },
     (req) => {
       // Reply demo units
@@ -148,7 +165,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/types$/
+        url: VEO_API_TYPES_REGEX
       },
       (req) => {
         req.reply({
@@ -162,7 +179,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/schemas\/(.+)$/
+        url: VEO_API_SCHEMA_REGEX
       },
       (req) => {
         const type = req.url.split('/').pop();
@@ -178,7 +195,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/formsapi$/
+        url: FORMS_API_ALL_FORMS_REGEX
       },
       (req) => {
         req.reply({
@@ -192,7 +209,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/formsapi\/(.+)/
+        url: FORMS_API_FORM_REGEX
       },
       (req) => {
         const id = req.url.split('/').pop();
@@ -207,7 +224,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/catalogs\/\?/
+        url: VEO_API_ALL_CATALOGS_REGEX
       },
       (req) => {
         req.reply({
@@ -221,7 +238,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/catalogs\/(.+)\/items/
+        url: VEO_API_CATALOG_ITEMS_REGEX
       },
       (req) => {
         req.reply({
@@ -235,7 +252,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/reportsapi\/reports$/
+        url: REPORTING_API_ALL_REPORTS_REGEX
       },
       (req) => {
         req.reply({
@@ -249,7 +266,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/translations(.*)$/
+        url: VEO_API_TRANSLATIONS_REGEX
       },
       (req) => {
         req.reply({
@@ -263,7 +280,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/units$/
+        url: VEO_API_ALL_UNITS_REGEX
       },
       (req) => {
         req.reply({
@@ -277,7 +294,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/domains\/$/
+        url: VEO_API_ALL_DOMAINS_REGEX
       },
       (req) => {
         req.reply({
@@ -291,7 +308,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/domains\/(.+)$/
+        url: VEO_API_DOMAIN_REGEX
       },
       (req) => {
         const id = req.url.split('/').pop();
@@ -306,7 +323,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+        url: VEO_API_ALL_ENTITIES_REGEX
       },
       (req) => {
         const path = req.url.split('?')[0];
@@ -322,7 +339,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.+)\/members$/
+        url: VEO_API_ENTITY_MEMBERS_REGEX
       },
       (req) => {
         const url = req.url.split('/');
@@ -341,7 +358,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
     cy.intercept(
       {
         method: 'GET',
-        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/
+        url: VEO_API_ENTITY_REGEX
       },
       (req) => {
         const url = req.url.split('/');

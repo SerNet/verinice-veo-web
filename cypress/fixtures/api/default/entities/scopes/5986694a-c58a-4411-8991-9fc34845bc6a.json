@@ -10,16 +10,16 @@
   "domains":[
     {
       "displayName":"DSGVO DSGVO",
-      "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
-      "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-      "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+      "searchesUri":"https://api.develop.cpmsys.io/veo/domains/searches",
+      "targetUri":"https://api.develop.cpmsys.io/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "resourcesUri":"https://api.develop.cpmsys.io/veo/domains"
     }
   ],
   "owner":{
     "displayName":"NBRX Testunit",
-    "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-    "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-    "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+    "searchesUri":"https://api.develop.cpmsys.io/veo/units/searches",
+    "targetUri":"https://api.develop.cpmsys.io/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+    "resourcesUri":"https://api.develop.cpmsys.io/veo/units{?parent,displayName}"
   },
   "links":{
     
@@ -34,27 +34,27 @@
   "members":[
     {
       "displayName":"PRO-10 P4 Cyan",
-      "resourcesUri":"https://veo.develop.cpmsys.io/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
-      "targetUri":"https://veo.develop.cpmsys.io/processes/f1c36cf9-70ab-4726-a993-2c23fddcad68",
-      "searchesUri":"https://veo.develop.cpmsys.io/processes/searches"
+      "resourcesUri":"https://api.develop.cpmsys.io/veo/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "targetUri":"https://api.develop.cpmsys.io/veo/processes/f1c36cf9-70ab-4726-a993-2c23fddcad68",
+      "searchesUri":"https://api.develop.cpmsys.io/veo/processes/searches"
     },
     {
       "displayName":"AST-6 DA1 Dachs",
-      "resourcesUri":"https://veo.develop.cpmsys.io/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}",
-      "targetUri":"https://veo.develop.cpmsys.io/assets/a2304df4-8126-4709-ba70-53b4d34c3320",
-      "searchesUri":"https://veo.develop.cpmsys.io/assets/searches"
+      "resourcesUri":"https://api.develop.cpmsys.io/veo/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "targetUri":"https://api.develop.cpmsys.io/veo/assets/a2304df4-8126-4709-ba70-53b4d34c3320",
+      "searchesUri":"https://api.develop.cpmsys.io/veo/assets/searches"
     },
     {
       "displayName":"SCP-18 AV1 Deutschland",
-      "resourcesUri":"https://veo.develop.cpmsys.io/scopes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
-      "targetUri":"https://veo.develop.cpmsys.io/scopes/9b213d5b-7a05-4dfc-81e0-57f7875b764e",
-      "searchesUri":"https://veo.develop.cpmsys.io/scopes/searches"
+      "resourcesUri":"https://api.develop.cpmsys.io/veo/scopes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "targetUri":"https://api.develop.cpmsys.io/veo/scopes/9b213d5b-7a05-4dfc-81e0-57f7875b764e",
+      "searchesUri":"https://api.develop.cpmsys.io/veo/scopes/searches"
     },
     {
       "displayName":"PRO-9 P3 Blau",
-      "resourcesUri":"https://veo.develop.cpmsys.io/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
-      "targetUri":"https://veo.develop.cpmsys.io/processes/fc10e550-8f5b-4d31-9bdb-b4b898a9d254",
-      "searchesUri":"https://veo.develop.cpmsys.io/processes/searches"
+      "resourcesUri":"https://api.develop.cpmsys.io/veo/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "targetUri":"https://api.develop.cpmsys.io/veo/processes/fc10e550-8f5b-4d31-9bdb-b4b898a9d254",
+      "searchesUri":"https://api.develop.cpmsys.io/veo/processes/searches"
     }
   ],
   "id":"5986694a-c58a-4411-8991-9fc34845bc6a"

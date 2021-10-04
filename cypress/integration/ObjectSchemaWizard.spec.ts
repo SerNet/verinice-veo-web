@@ -18,6 +18,7 @@
 /// <reference path="../support/index.d.ts" />
 /// <reference types="cypress" />
 
+import { VEO_API_SCHEMA_REGEX } from '../support';
 import { getEditorData } from '../support/utils';
 
 describe('Objectschema Wizard', () => {
@@ -109,17 +110,7 @@ describe('Objectschema Wizard', () => {
 
   it('imports existing control objectschema', function () {
     cy.goTo('/editor').goTo('/editor/objectschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/control.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'api/default/schemas/control.json'
-        });
-      }
-    );
+
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Control{enter}');
 
@@ -138,17 +129,7 @@ describe('Objectschema Wizard', () => {
 
   it('imports existing scope objectschema', function () {
     cy.goTo('/editor').goTo('/editor/objectschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/scope.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'api/default/schemas/scope.json'
-        });
-      }
-    );
+
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scope{enter}');
 
@@ -167,17 +148,7 @@ describe('Objectschema Wizard', () => {
 
   it('imports existing asset objectschema', function () {
     cy.goTo('/editor').goTo('/editor/objectschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/asset.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'api/default/schemas/asset.json'
-        });
-      }
-    );
+
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Asset{enter}');
 
@@ -196,17 +167,7 @@ describe('Objectschema Wizard', () => {
 
   it('imports existing process objectschema', function () {
     cy.goTo('/editor').goTo('/editor/objectschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/process.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'api/default/schemas/process.json'
-        });
-      }
-    );
+
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Process{enter}');
 
@@ -226,17 +187,7 @@ describe('Objectschema Wizard', () => {
 
   it('imports existing incident objectschema', function () {
     cy.goTo('/editor').goTo('/editor/objectschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/incident.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'api/default/schemas/incident.json'
-        });
-      }
-    );
+
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Incident{enter}');
 
@@ -255,17 +206,7 @@ describe('Objectschema Wizard', () => {
 
   it('imports existing document objectschema', function () {
     cy.goTo('/editor').goTo('/editor/objectschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/document.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'api/default/schemas/document.json'
-        });
-      }
-    );
+
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Document{enter}');
 
@@ -284,17 +225,7 @@ describe('Objectschema Wizard', () => {
 
   it('imports existing person objectschema', function () {
     cy.goTo('/editor').goTo('/editor/objectschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/person.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'api/default/schemas/person.json'
-        });
-      }
-    );
+
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Person{enter}');
 
@@ -313,17 +244,7 @@ describe('Objectschema Wizard', () => {
 
   it('imports existing scenario objectschema', function () {
     cy.goTo('/editor').goTo('/editor/objectschema');
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/scenario.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'api/default/schemas/scenario.json'
-        });
-      }
-    );
+
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scenario{enter}');
 
@@ -356,17 +277,6 @@ describe('Objectschema Wizard', () => {
   });
 
   it('imports existing objectschema by URL', function () {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: /.*\/schemas\/process.*/
-      },
-      (req) => {
-        req.reply({
-          fixture: 'api/default/schemas/process.json'
-        });
-      }
-    );
     cy.goTo('/editor').goTo('/editor/objectschema?os=process');
     cy.contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'process');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Process');

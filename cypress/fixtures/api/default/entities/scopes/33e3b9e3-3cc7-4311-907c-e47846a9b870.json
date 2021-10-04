@@ -12,9 +12,9 @@
   ],
   "owner":{
     "displayName":"NBRX Testunit",
-    "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-    "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-    "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+    "searchesUri":"https://api.develop.cpmsys.io/veo/units/searches",
+    "targetUri":"https://api.develop.cpmsys.io/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+    "resourcesUri":"https://api.develop.cpmsys.io/veo/units{?parent,displayName}"
   },
   "links":{
     

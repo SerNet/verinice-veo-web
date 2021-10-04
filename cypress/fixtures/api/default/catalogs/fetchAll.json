@@ -7,22 +7,22 @@
     "name":"DVGO-Assets",
     "domainTemplate":{
       "displayName":"DSGVO DSGVO",
-      "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
-      "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-      "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+      "searchesUri":"https://api.develop.cpmsys.io/veo/domains/searches",
+      "targetUri":"https://api.develop.cpmsys.io/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+      "resourcesUri":"https://api.develop.cpmsys.io/veo/domains"
     },
     "catalogItems":[
       {
         "displayName":"AST-25 DA9 Igel",
-        "targetUri":"https://veo.develop.cpmsys.io/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51/items/c16e27db-ee5a-48f3-99f1-fb4dfc21ea08"
+        "targetUri":"https://api.develop.cpmsys.io/veo/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51/items/c16e27db-ee5a-48f3-99f1-fb4dfc21ea08"
       },
       {
         "displayName":"AST-22 DA6 Großer Abendsegler",
-        "targetUri":"https://veo.develop.cpmsys.io/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51/items/8a69ddac-1704-46ea-b0b2-160835c41465"
+        "targetUri":"https://api.develop.cpmsys.io/veo/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51/items/8a69ddac-1704-46ea-b0b2-160835c41465"
       },
       {
         "displayName":"AST-11 AW2 Feuersalamander",
-        "targetUri":"https://veo.develop.cpmsys.io/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51/items/ce98d5a6-77de-4c5d-a85e-ab96fbeebacb"
+        "targetUri":"https://api.develop.cpmsys.io/veo/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51/items/ce98d5a6-77de-4c5d-a85e-ab96fbeebacb"
       }
     ],
     "id":"a6e20e2f-493e-426c-b1e0-efc7c8e3ce51"
