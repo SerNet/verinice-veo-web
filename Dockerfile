@@ -24,7 +24,7 @@ ENV CI_JOB_ID ${CI_JOB_ID}
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > static/VERSION && echo ${CI_COMMIT_SHA} > BUILD && echo ${CI_COMMIT_SHA} > static/BUILD
 
 ENV PORT 5000
-RUN npm run build
+RUN npm run generate
 
 FROM node:14-alpine AS release
 
