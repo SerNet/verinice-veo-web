@@ -25,7 +25,8 @@ test:e2e:
     GIT_STRATEGY: none
     NODE_ENV: production
   script:
-    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
+    - CYPRESS_BASE_URL=$(cat environment_url.txt)
+    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl="$CYPRESS_BASE_URL"
   after_script:
     # Create cobertura report
     - npx nyc report --reporter=cobertura --reporter=text-summary
