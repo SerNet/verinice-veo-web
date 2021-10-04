@@ -17,7 +17,7 @@ review:
     auto_stop_in: 4 week
 
 test:e2e:
-  stage: test
+  stage: performance
   tags:
     - 'cpmsys01'
   image: cypress/base:14.15.4
