@@ -10,16 +10,16 @@
     "domains": [
         {
             "displayName": "DSGVO DSGVO",
-            "searchesUri": "https://api.develop.cpmsys.io/veo/domains/searches",
-            "targetUri": "https://api.develop.cpmsys.io/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-            "resourcesUri": "https://api.develop.cpmsys.io/veo/domains"
+            "searchesUri": "https://api.develop.verinice.com/veo/domains/searches",
+            "targetUri": "https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+            "resourcesUri": "https://api.develop.verinice.com/veo/domains"
         }
     ],
     "owner": {
         "displayName": "NBRX Testunit",
-        "searchesUri": "https://api.develop.cpmsys.io/veo/units/searches",
-        "targetUri": "https://api.develop.cpmsys.io/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-        "resourcesUri": "https://api.develop.cpmsys.io/veo/units{?parent,displayName}"
+        "searchesUri": "https://api.develop.verinice.com/veo/units/searches",
+        "targetUri": "https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+        "resourcesUri": "https://api.develop.verinice.com/veo/units{?parent,displayName}"
     },
     "links": {},
     "customAspects": {},

@@ -10,9 +10,9 @@ exports[`Scopes List > Unlinks a child item from its parent #0`] =
   "domains": [
     {
       "displayName": "DSGVO DSGVO",
-      "resourcesUri": "https://api.develop.cpmsys.io/veo/domains",
-      "searchesUri": "https://api.develop.cpmsys.io/veo/domains/searches",
-      "targetUri": "https://api.develop.cpmsys.io/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a"
+      "resourcesUri": "https://api.develop.verinice.com/veo/domains",
+      "searchesUri": "https://api.develop.verinice.com/veo/domains/searches",
+      "targetUri": "https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a"
     }
   ],
   "id": "5986694a-c58a-4411-8991-9fc34845bc6a",
@@ -20,29 +20,29 @@ exports[`Scopes List > Unlinks a child item from its parent #0`] =
   "members": [
     {
       "displayName": "PRO-10 P4 Cyan",
-      "resourcesUri": "https://api.develop.cpmsys.io/veo/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
-      "searchesUri": "https://api.develop.cpmsys.io/veo/processes/searches",
-      "targetUri": "https://api.develop.cpmsys.io/veo/processes/f1c36cf9-70ab-4726-a993-2c23fddcad68"
+      "resourcesUri": "https://api.develop.verinice.com/veo/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "searchesUri": "https://api.develop.verinice.com/veo/processes/searches",
+      "targetUri": "https://api.develop.verinice.com/veo/processes/f1c36cf9-70ab-4726-a993-2c23fddcad68"
     },
     {
       "displayName": "AST-6 DA1 Dachs",
-      "resourcesUri": "https://api.develop.cpmsys.io/veo/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}",
-      "searchesUri": "https://api.develop.cpmsys.io/veo/assets/searches",
-      "targetUri": "https://api.develop.cpmsys.io/veo/assets/a2304df4-8126-4709-ba70-53b4d34c3320"
+      "resourcesUri": "https://api.develop.verinice.com/veo/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "searchesUri": "https://api.develop.verinice.com/veo/assets/searches",
+      "targetUri": "https://api.develop.verinice.com/veo/assets/a2304df4-8126-4709-ba70-53b4d34c3320"
     },
     {
       "displayName": "PRO-9 P3 Blau",
-      "resourcesUri": "https://api.develop.cpmsys.io/veo/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
-      "searchesUri": "https://api.develop.cpmsys.io/veo/processes/searches",
-      "targetUri": "https://api.develop.cpmsys.io/veo/processes/fc10e550-8f5b-4d31-9bdb-b4b898a9d254"
+      "resourcesUri": "https://api.develop.verinice.com/veo/processes{?unit,displayName,subType,size,page,sortBy,sortOrder}",
+      "searchesUri": "https://api.develop.verinice.com/veo/processes/searches",
+      "targetUri": "https://api.develop.verinice.com/veo/processes/fc10e550-8f5b-4d31-9bdb-b4b898a9d254"
     }
   ],
   "name": "Brasilien",
   "owner": {
     "displayName": "NBRX Testunit",
-    "resourcesUri": "https://api.develop.cpmsys.io/veo/units{?parent,displayName}",
-    "searchesUri": "https://api.develop.cpmsys.io/veo/units/searches",
-    "targetUri": "https://api.develop.cpmsys.io/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d"
+    "resourcesUri": "https://api.develop.verinice.com/veo/units{?parent,displayName}",
+    "searchesUri": "https://api.develop.verinice.com/veo/units/searches",
+    "targetUri": "https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d"
   },
   "subType": {
     "ed67e4d7-c657-4479-ba8a-c53999d2930a": "SCP_ResponsibleBody"
