@@ -26,7 +26,9 @@ test:e2e:
     NODE_ENV: production
   script:
     - CYPRESS_BASE_URL=$(cat environment_url.txt)
-    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl="$CYPRESS_BASE_URL"
+    - pwd
+    - ls -la
+    - LANG='de_DE.UTF-8' cypress run --config baseUrl="$CYPRESS_BASE_URL"
   after_script:
     # Create cobertura report
     - npx nyc report --reporter=cobertura --reporter=text-summary
