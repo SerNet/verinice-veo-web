@@ -30,5 +30,3 @@ FROM nginx:1.21 AS release
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 
 EXPOSE 80
-
-CMD ["ls", "-la"]
