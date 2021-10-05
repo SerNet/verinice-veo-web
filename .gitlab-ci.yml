@@ -28,7 +28,7 @@ test:e2e:
     - CYPRESS_BASE_URL=$(cat environment_url.txt)
     - pwd
     - ls -la
-    - LANG='de_DE.UTF-8' cypress run --config baseUrl="$CYPRESS_BASE_URL"
+    - LANG='de_DE.UTF-8' npx cypress run -- --config baseUrl="$CYPRESS_BASE_URL"
   after_script:
     # Create cobertura report
     - npx nyc report --reporter=cobertura --reporter=text-summary
