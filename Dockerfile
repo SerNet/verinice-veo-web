@@ -29,8 +29,4 @@ FROM nginx:1.21 AS release
 
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 
-# Copy for use in e2e job
-RUN pwd
-COPY --from=builder /usr/src/app/cypress.json ./
-
 EXPOSE 80

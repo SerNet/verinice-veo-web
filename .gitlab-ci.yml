@@ -21,9 +21,6 @@ test:e2e:
   tags:
     - 'cpmsys01'
   image: cypress/base:14.15.4
-  variables:
-    GIT_STRATEGY: none
-    NODE_ENV: production
   script:
     - CYPRESS_BASE_URL=$(cat environment_url.txt)
     - pwd
