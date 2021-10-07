@@ -123,7 +123,7 @@ function goTo(to: ITo) {
     }
   ).as('loadedSchema');
 
-  cy.goTo('/editor').goTo(to.browserUrl);
+  cy.goTo('/editor/').goTo(to.browserUrl);
 }
 
 describe('Formschema Editor', () => {
@@ -135,7 +135,7 @@ describe('Formschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('/editor');
+    cy.visit('/editor/');
     cy.wait('@G_fetchSchemas');
   });
 
