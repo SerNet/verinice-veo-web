@@ -29,4 +29,9 @@ FROM nginx:1.21 AS release
 
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 
+# Add custom config to serve the index.html as entrypoint if the server would otherwise return a 404
+COPY  nginx.conf /etc/nginx/conf.d/custom.conf
+
 EXPOSE 80
+
+CMD ["nginx", "-c", "/etc/nginx/conf.d/custom.conf", "-g", "pid /tmp/nginx.pid; daemon off;"]
