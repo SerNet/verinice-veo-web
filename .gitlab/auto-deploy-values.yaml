@@ -1,3 +1,0 @@
-service:
-  externalPort: 80
-  internalPort: 80
