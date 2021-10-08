@@ -56,7 +56,8 @@ export class Auth {
    * IMPORTANT: Many modern browsers don't allow us to check for a sso via an iframe, so we disable it (else authenticating on page load is more difficult (don't ask why))
    */
   public async init(): Promise<void> {
-    await this._keycloak.init({ onLoad: 'check-sso', silentCheckSsoRedirectUri: window.location.origin + '/sso', checkLoginIframe: false }).catch((error) => {
+    // For some reason we have to explicitly state that we want to access the silent sso page over https and not http
+    await this._keycloak.init({ onLoad: 'check-sso', silentCheckSsoRedirectUri: 'https://' + window.location.hostname + '/sso2', checkLoginIframe: true }).catch((error) => {
       throw new Error(`Error while setting up authentication provider: ${error}`);
     });
 
