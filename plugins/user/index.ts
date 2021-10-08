@@ -85,7 +85,7 @@ export default (async function ({ route, $config }, inject) {
   });
 
   // If we init keycloak if we are on the sso page, the adapter will get confused as it tries to use the same page as the silent sso check, creating a loop.
-  if (route.name !== 'sso' && !$user.auth.initialized) {
+  if (route.name !== 'sso2' && !$user.auth.initialized) {
     await $user.auth.init();
   }
 

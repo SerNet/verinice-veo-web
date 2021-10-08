@@ -23,7 +23,7 @@ import { Middleware } from '@nuxt/types';
  * This functionality was formerly part of the auth plugin but as redirection via next() in the beforeEach hooks is quite buggy, it got outsourced.
  */
 export default (function ({ app, redirect, from, route }) {
-  const publicRoutes: RegExp[] = [/^\/help\/?/, /^\/login\/?/, /^\/sso\/?/];
+  const publicRoutes: RegExp[] = [/^\/help\/?/, /^\/login\/?/, /^\/sso2\/?/];
 
   // Proceed if the user is authenticated
   if (app.$user.auth.authenticated) {
