@@ -19,6 +19,7 @@
 /// <reference types="cypress" />
 
 import { IVeoEntity } from '../../types/VeoTypes';
+import { VEO_API_ALL_ENTITIES_REGEX, VEO_API_ENTITY_REGEX, VEO_API_NEW_ENTITY_REGEX } from '../support/index';
 
 describe('Scopes List', () => {
   beforeEach(() => {
@@ -33,13 +34,13 @@ describe('Scopes List', () => {
   it('Navigates the forms table using the forward/back buttons', function () {
     cy.intercept({
       method: 'GET',
-      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/,
+      url: VEO_API_ALL_ENTITIES_REGEX,
       query: { page: '1' }
     }).as('fetchObjects1');
 
     cy.intercept({
       method: 'GET',
-      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/,
+      url: VEO_API_ALL_ENTITIES_REGEX,
       query: { page: '0' }
     }).as('fetchObjects2');
 
@@ -62,7 +63,7 @@ describe('Scopes List', () => {
 
     cy.intercept({
       method: 'GET',
-      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/,
+      url: VEO_API_ALL_ENTITIES_REGEX,
       query: { page: '0', size: '25' }
     }).as('fetchObjects');
 
@@ -84,7 +85,7 @@ describe('Scopes List', () => {
 
     cy.intercept({
       method: 'GET',
-      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/,
+      url: VEO_API_ALL_ENTITIES_REGEX,
       query: { page: '0' }
     }).as('fetchObjects');
 
@@ -160,7 +161,7 @@ describe('Scopes List', () => {
     cy.intercept(
       {
         method: 'DELETE',
-        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.+)$/
+        url: VEO_API_ENTITY_REGEX
       },
       (req) => {
         expect(req.url).to.contain(id);
@@ -201,7 +202,7 @@ describe('Scopes List', () => {
     cy.intercept(
       {
         method: 'POST',
-        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)$/
+        url: VEO_API_NEW_ENTITY_REGEX
       },
       (req) => {
         expect(req.body).to.deep.equal(entity);
@@ -224,7 +225,7 @@ describe('Scopes List', () => {
 
     cy.intercept({
       method: 'GET',
-      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+      url: VEO_API_ALL_ENTITIES_REGEX
     }).as('fetchObjects');
 
     cy.wait('@G_fetchObjects');
@@ -253,7 +254,7 @@ describe('Scopes List', () => {
 
     cy.intercept({
       method: 'GET',
-      url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/
+      url: VEO_API_ALL_ENTITIES_REGEX
     }).as('fetchObjects');
 
     cy.wait('@G_fetchObjects');
@@ -282,7 +283,7 @@ describe('Scopes List', () => {
     cy.intercept(
       {
         method: 'PUT',
-        url: /.*\/api\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.*)$/
+        url: VEO_API_ENTITY_REGEX
       },
       (req) => {
         req.reply(req.body);

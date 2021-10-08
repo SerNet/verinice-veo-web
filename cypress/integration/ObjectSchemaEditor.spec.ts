@@ -115,7 +115,7 @@ function goTo(to: ITo) {
     }
   ).as('loadedSchema');
 
-  cy.goTo('/editor').goTo(to.browserUrl);
+  cy.goTo('/editor/').goTo(to.browserUrl);
 
   cy.wait(['@loadedSchema']);
 
@@ -151,7 +151,7 @@ describe('Objectschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('/editor');
+    cy.visit('/editor/');
     cy.wait('@G_fetchSchemas');
   });
   beforeEach(() => {
