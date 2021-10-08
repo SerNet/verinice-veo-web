@@ -24,7 +24,7 @@
       :cols="12"
       :md="5"
     >
-      <span style="font-size: 1.2rem;">{{ $t('displayType') }}:</span>
+      <span style="font-size: 1.2rem;">{{ t('displayType') }}:</span>
     </v-col>
     <v-col
       :cols="12"
@@ -33,7 +33,7 @@
       <v-select
         v-model="displayType"
         :items="displayTypeItems"
-        :label="$t('displayTypeInput')"
+        :label="t('displayTypeInput')"
         clearable
       />
     </v-col>
@@ -42,7 +42,7 @@
         :cols="12"
         :md="5"
       >
-        <span style="font-size: 1.2rem;">{{ $t('condition') }}*:</span>
+        <span style="font-size: 1.2rem;">{{ t('condition') }}*:</span>
       </v-col>
       <v-col
         :cols="12"
@@ -54,7 +54,7 @@
         >
           <v-select
             v-model="conditionScope"
-            :label="$t('propertyInput')"
+            :label="t('propertyInput')"
             item-text="name"
             item-value="scope"
             :items="conditionScopeItems"
@@ -67,7 +67,7 @@
           <v-select
             v-model="conditionValue"
             :items="conditionValueItems"
-            :label="$t('valueInput')"
+            :label="t('valueInput')"
             multiple
             style="max-width:171px;"
           >
@@ -82,7 +82,7 @@
               <span
                 v-if="index === 1"
                 class="grey--text caption ml-1"
-              >(+{{ conditionValue.length - 1 }} {{ $t('othersInput') }})</span>
+              >(+{{ conditionValue.length - 1 }} {{ t('othersInput') }})</span>
             </template>
           </v-select>
         </v-row>
@@ -92,7 +92,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, Ref, ref, computed, getCurrentInstance, WritableComputedRef } from '@nuxtjs/composition-api';
+import { defineComponent, inject, Ref, ref, computed, WritableComputedRef } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, orderBy } from 'lodash';
 import vjp from 'vue-json-pointer';
@@ -131,6 +132,8 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     const mainObjectSchema: Ref<IVeoObjectSchema> | undefined = inject('mainObjectSchema');
     const mainFormSchema: Ref<IVeoFormSchema> | undefined = inject('mainFormSchema');
     // These are LinksField Edit Dialog specific, when Links Attributes are edited
@@ -149,10 +152,9 @@ export default defineComponent<IProps>({
 
     const rule: Ref<IVeoFormSchemaItemRuleLocal> = ref(cloneDeep(props.value));
 
-    const vm = getCurrentInstance();
     const displayTypeItems = computed(() => [
-      { text: vm?.$i18n.t('displayTypes.show'), value: 'SHOW' },
-      { text: vm?.$i18n.t('displayTypes.hide'), value: 'HIDE' }
+      { text: t('displayTypes.show'), value: 'SHOW' },
+      { text: t('displayTypes.hide'), value: 'HIDE' }
     ]);
     const displayType: WritableComputedRef<string | undefined> = computed({
       get() {
@@ -249,7 +251,9 @@ export default defineComponent<IProps>({
       conditionScope,
       conditionScopeItems,
       conditionValueItems,
-      conditionValue
+      conditionValue,
+
+      t
     };
   }
 });

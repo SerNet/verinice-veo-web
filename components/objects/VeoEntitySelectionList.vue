@@ -57,10 +57,10 @@
     <template #header.select>
       <v-fade-transition>
         <v-btn
-          v-show="selectedItems.length"
+          v-show="(value && value.length) || selectedItems.length"
           icon
           style="margin-left: -6px;"
-          @click="$emit('new-subentities', [])"
+          @click="clearSelection"
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -177,7 +177,6 @@
 </template>
 
 <script lang="ts">
-import { clone } from 'lodash';
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { formatDate, formatTime } from '~/lib/utils';
@@ -186,6 +185,10 @@ import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
+    value: {
+      type: Array as Prop<{ id: string; type: string }[]>,
+      default: undefined
+    },
     selectedItems: {
       type: Array as Prop<{ id: string; type: string }[]>,
       default: () => []
@@ -227,9 +230,7 @@ export default Vue.extend({
 
         return {
           entity: item,
-          selected: this.selectedItems.some((selectedItem) => {
-            return selectedItem.id === item.id;
-          })
+          selected: this.value?.some((selectedItem) => selectedItem.id === item.id) || this.selectedItems.some((selectedItem) => selectedItem.id === item.id)
         };
       });
     },
@@ -280,7 +281,7 @@ export default Vue.extend({
     },
     // As the radio button needs a wrapper and this wapper has no comparator function (even though the docs says it does), we have to dumb it down)
     radioSelectedItem() {
-      return this.selectedItems[0]?.id;
+      return this.value?.[0]?.id || this.selectedItems[0]?.id;
     },
     itemsPerPage(): number {
       return this.$user.tablePageSize;
@@ -299,17 +300,24 @@ export default Vue.extend({
       return formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
     },
     selectItem(item: { entity: IVeoEntity; selected: boolean }, singleItem: boolean = false) {
-      let dummy = clone(this.selectedItems);
+      let newValues;
+
+      if (this.value) {
+        newValues = [...this.value];
+      } else {
+        newValues = [...this.selectedItems];
+      }
 
       if (singleItem) {
-        this.$emit('new-subentities', [{ id: item.entity.id, type: item.entity.type }]);
-      } else if (dummy.some((selectedItem) => selectedItem.id === item.entity.id)) {
-        dummy = dummy.filter((selectedItem) => selectedItem.id !== item.entity.id);
-        this.$emit('new-subentities', dummy);
+        newValues = [{ id: item.entity.id, type: item.entity.type }];
+      } else if (newValues.some((selectedItem) => selectedItem.id === item.entity.id)) {
+        newValues = newValues.filter((selectedItem) => selectedItem.id !== item.entity.id);
       } else {
-        dummy.push({ id: item.entity.id, type: item.entity.type });
-        this.$emit('new-subentities', dummy);
+        newValues.push({ id: item.entity.id, type: item.entity.type });
       }
+
+      this.$emit('new-subentities', newValues);
+      this.$emit('input', newValues);
     },
     onPageSizeChange(newSize: number | undefined) {
       if (newSize) {
@@ -323,6 +331,10 @@ export default Vue.extend({
         sortDesc: this.sortDesc,
         page: 1
       });
+    },
+    clearSelection() {
+      this.$emit('new-subentities', []);
+      this.$emit('input', []);
     }
   }
 });

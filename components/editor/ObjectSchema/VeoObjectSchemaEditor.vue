@@ -30,7 +30,7 @@
         <v-expansion-panel-header
           class="overline"
         >
-          {{ $t('editor.basicproperties') }} ({{ basicProps.length }})
+          {{ t('editor.basicproperties') }} ({{ basicProps.length }})
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-card outlined>
@@ -55,7 +55,7 @@
       </v-expansion-panel>
       <v-expansion-panel>
         <v-expansion-panel-header class="overline">
-          {{ $t('editor.customaspects') }} ({{ customAspects.length }})
+          {{ t('editor.customaspects') }} ({{ customAspects.length }})
           <div class="d-flex">
             <v-spacer />
             <v-btn
@@ -67,7 +67,7 @@
               <v-icon small>
                 mdi-plus
               </v-icon>
-              <span>{{ $t('editor.customaspects.add') }}</span>
+              <span>{{ t('editor.customaspects.add') }}</span>
             </v-btn>
           </div>
         </v-expansion-panel-header>
@@ -105,7 +105,7 @@
       </v-expansion-panel>
       <v-expansion-panel>
         <v-expansion-panel-header class="overline">
-          {{ $t('editor.customlinks') }} ({{ customLinks.length }})
+          {{ t('editor.customlinks') }} ({{ customLinks.length }})
           <div class="d-flex">
             <v-spacer />
             <v-btn
@@ -117,7 +117,7 @@
               <v-icon small>
                 mdi-plus
               </v-icon>
-              <span>{{ $t('addCustomLink') }}</span>
+              <span>{{ t('addCustomLink') }}</span>
             </v-btn>
           </div>
         </v-expansion-panel-header>
@@ -173,6 +173,7 @@
 
 <script lang="ts">
 import { defineComponent, inject, ref, Ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
@@ -200,6 +201,8 @@ export default defineComponent<IProps>({
     }
   },
   setup(_props, context) {
+    const { t } = useI18n();
+
     function itemContainsAttributeTitle(item: EditorPropertyItem, title: string): boolean {
       return (
         !title ||
@@ -296,8 +299,8 @@ export default defineComponent<IProps>({
     }
 
     function onEditPropertyError(e: any) {
-      context.root.$emit(VeoEvents.ALERT_ERROR, {
-        title: context.root.$i18n.t('createCustomPropertyError'),
+      context.emit(VeoEvents.ALERT_ERROR, {
+        title: t('createCustomPropertyError'),
         text: e
       });
     }
@@ -353,7 +356,9 @@ export default defineComponent<IProps>({
       deleteDialog,
       showDeleteDialog,
       doDeleteItem,
-      formattedLinkHeader
+      formattedLinkHeader,
+
+      t
     };
   }
 });

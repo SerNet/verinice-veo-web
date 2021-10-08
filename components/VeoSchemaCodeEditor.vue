@@ -33,7 +33,7 @@
         @click="updateSchema()"
       >
         {{
-          $t('saveSchema')
+          t('saveSchema')
         }}
       </v-btn>
     </div>
@@ -42,6 +42,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 interface IProps {
@@ -55,6 +57,8 @@ export default defineComponent<IProps>({
     readonly: { type: Boolean, default: false }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     const code = ref('');
     const saveButtonDisabled = ref(true);
 
@@ -79,13 +83,13 @@ export default defineComponent<IProps>({
         try {
           const updatedSchema = JSON.parse(code.value);
           context.emit('schema-updated', updatedSchema);
-          context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, {
+          context.emit(VeoEvents.SNACKBAR_SUCCESS, {
             title: '',
-            text: context.root.$i18n.t('saveSchemaSuccess')
+            text: t('saveSchemaSuccess')
           });
-        } catch (e) {
-          context.root.$emit(VeoEvents.ALERT_ERROR, {
-            title: context.root.$i18n.t('saveSchemaError'),
+        } catch (e: any) {
+          context.emit(VeoEvents.ALERT_ERROR, {
+            title: t('saveSchemaError'),
             text: e.message
           });
         }
@@ -97,7 +101,9 @@ export default defineComponent<IProps>({
       code,
       saveButtonDisabled,
       onInput,
-      updateSchema
+      updateSchema,
+
+      t
     };
   }
 });

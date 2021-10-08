@@ -21,7 +21,7 @@
     :headline="headline"
   >
     <template #default>
-      <span>{{ $t(`delete.${type}`, { title }) }}</span>
+      <span>{{ t(`delete.${type}`, { title }) }}</span>
     </template>
     <template #dialog-options>
       <v-btn
@@ -29,7 +29,7 @@
         color="primary"
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.cancel') }}
+        {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -37,13 +37,14 @@
         color="primary"
         @click="$emit('delete-item')"
       >
-        {{ $t('global.button.delete') }}
+        {{ t('global.button.delete') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 interface IProps {
   value: boolean;
@@ -58,6 +59,8 @@ export default defineComponent<IProps>({
     type: { type: String, required: true }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     const dialog = ref({ value: props.value });
 
     watch(
@@ -77,10 +80,10 @@ export default defineComponent<IProps>({
     );
 
     const headline = computed(() => {
-      return props.type ? context.root.$t(`headline_${props.type}`) : '';
+      return props.type ? t(`headline_${props.type}`) : '';
     });
 
-    return { dialog, headline };
+    return { dialog, headline, t };
   }
 });
 </script>

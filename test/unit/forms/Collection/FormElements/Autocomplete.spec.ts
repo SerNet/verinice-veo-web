@@ -19,6 +19,7 @@ import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
+import 'regenerator-runtime/runtime';
 
 import { install as VeeValidate } from '@/plugins/vee-validate';
 import VeoForm from '~/components/forms/VeoForm.vue';

@@ -54,7 +54,7 @@ exports[`InputUri.vue should be rendered InputUri field: Initial render 1`] = `
             class="v-input__append-outer"
           >
             <a
-              class="v-btn v-btn--flat v-btn--icon v-btn--round theme--light v-size--small"
+              class="v-btn v-btn--icon v-btn--round theme--light v-size--small"
               href="https://verinice.com/"
               target="_blank"
             >

@@ -45,7 +45,7 @@
         outlined
       >
         <span v-if="$props.translate">
-          {{ $t(`editor.inputtypes.${styling.name}`) }}
+          {{ t(`editor.inputtypes.${styling.name}`) }}
         </span>
         <span v-else>
           {{ styling.name }}
@@ -57,6 +57,7 @@
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { IInputType } from '~/types/VeoEditor';
 
@@ -83,6 +84,13 @@ export default defineComponent<IProps>({
       type: Boolean,
       default: false
     }
+  },
+  setup() {
+    const { t } = useI18n();
+
+    return {
+      t
+    };
   }
 });
 </script>

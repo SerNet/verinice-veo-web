@@ -7,7 +7,7 @@ variables:
   BROWSER_PERFORMANCE_DISABLED: 'true'
   # TEST_DISABLED: "true"
   PRODUCTION_ADDITIONAL_HOSTS: 'veo-web.cpmsys.io'
-  AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHORT_SHA --build-arg CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP --build-arg CI_JOB_ID=$CI_JOB_ID'
+  AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHORT_SHA --build-arg CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP --build-arg CI_JOB_ID=$CI_JOB_ID --build-arg BUILDKIT_INLINE_CACHE=1'
   K8S_SECRET_VEO_API_USE_PROXY: 'false'
   npm_config_cache: '$CI_PROJECT_DIR/.npm' # for cypress tests
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
@@ -22,9 +22,8 @@ build:e2e:
   stage: build
   image: cypress/base:14.15.4
   script:
-    # Install npm v7 to work with lockfile:2
-    - npm install -g npm@7.20.1
-    - npm install
+    - rm -rf test # Fore some reason this step won't compile because of conflicting types while the auto-devops build job compiles without problems
+    - npm ci
     - npm run build
   artifacts:
     when: always

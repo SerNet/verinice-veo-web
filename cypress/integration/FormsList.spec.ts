@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /// <reference path="../support/index.d.ts" />
+/// <reference types="cypress" />
+
 import { IVeoEntity } from '../../types/VeoTypes';
 
 describe('Forms List', () => {

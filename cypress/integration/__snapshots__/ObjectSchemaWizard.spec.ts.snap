@@ -664,6 +664,9 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -763,6 +766,9 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -862,6 +868,9 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Control",
                 "type": "object"
               }
@@ -961,6 +970,9 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -1060,6 +1072,9 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -1159,6 +1174,9 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -1258,6 +1276,9 @@ exports[`Objectschema Wizard > imports existing control objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -1730,6 +1751,9 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "Data Protection Officer",
                 "type": "object"
               }
@@ -1829,6 +1853,9 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "Head of data processing / IT",
                 "type": "object"
               }
@@ -1928,6 +1955,9 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "Management of the responsible body",
                 "type": "object"
               }
@@ -2027,6 +2057,9 @@ exports[`Objectschema Wizard > imports existing scope objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "Responsible regulatory authority",
                 "type": "object"
               }
@@ -2363,6 +2396,9 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -2462,6 +2498,9 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -2561,6 +2600,9 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -2660,6 +2702,9 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Asset",
                 "type": "object"
               }
@@ -2759,6 +2804,9 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Control",
                 "type": "object"
               }
@@ -2858,6 +2906,9 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -2957,6 +3008,9 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Asset",
                 "type": "object"
               }
@@ -3056,6 +3110,9 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -3155,6 +3212,9 @@ exports[`Objectschema Wizard > imports existing asset objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -3989,6 +4049,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -4102,6 +4165,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Asset",
                 "type": "object"
               }
@@ -4225,6 +4291,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -4335,6 +4404,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -4442,6 +4514,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Control",
                 "type": "object"
               }
@@ -4541,6 +4616,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Control",
                 "type": "object"
               }
@@ -4640,6 +4718,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Control",
                 "type": "object"
               }
@@ -4739,6 +4820,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }
@@ -4838,6 +4922,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Asset",
                 "type": "object"
               }
@@ -4937,6 +5024,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Asset",
                 "type": "object"
               }
@@ -5036,6 +5126,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Asset",
                 "type": "object"
               }
@@ -5135,6 +5228,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                     ]
                   }
                 },
+                "required": [
+                  "targetUri"
+                ],
                 "title": "id of the Person",
                 "type": "object"
               }

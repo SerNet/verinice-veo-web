@@ -126,7 +126,7 @@ export default Vue.extend({
 {
   "en": {
     "firstUnitDescription": "This is your first unit",
-    "unitPicker": "Please choose a unit",
+    "unitpicker": "Please choose a unit",
     "unitpickerPlaceholder": "Search for a unit..."
   },
   "de": {

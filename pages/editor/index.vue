@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoPage>
-    <h2>{{ $t('calltoaction') }}</h2>
+    <h2>{{ t('calltoaction') }}</h2>
     <v-list
       two-line
       class="overflow-hidden"
@@ -25,9 +25,9 @@
       <v-list-item to="/editor/objectschema">
         <v-list-item-content>
           <v-list-item-title class="font-weight-bold">
-            {{ $t('editor.objectschema.headline') }}
+            {{ t('editor.objectschema.headline') }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{ $t('objectSchemaDescription') }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ t('objectSchemaDescription') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
           <v-icon x-large>
@@ -38,9 +38,9 @@
       <v-list-item to="/editor/formschema">
         <v-list-item-content>
           <v-list-item-title class="font-weight-bold">
-            {{ $t('editor.formschema.headline') }}
+            {{ t('editor.formschema.headline') }}
           </v-list-item-title>
-          <v-list-item-subtitle>{{ $t('formSchemaDescription') }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ t('formSchemaDescription') }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
           <v-icon x-large>
@@ -54,10 +54,18 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 interface IProps {}
 
 export default defineComponent<IProps>({
+  setup() {
+    const { t } = useI18n();
+
+    return {
+      t
+    };
+  },
   head(): any {
     return {
       title: 'verinice.'

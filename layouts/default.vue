@@ -23,7 +23,7 @@
       clipped-left
       flat
     >
-      <div class="d-flex">
+      <div class="d-flex align-center">
         <v-app-bar-nav-icon
           v-if="$vuetify.breakpoint.xs"
           @click="drawer = true"
@@ -36,49 +36,9 @@
             class="ml-2"
           />
         </nuxt-link>
-
-        <!-- Current domain -->
-        <div v-if="$route.params.unit">
-          <v-select
-            :value="domainId"
-            :items="domains"
-            item-text="name"
-            item-value="id"
-            hide-details
-            outlined
-            filled
-            primary
-            class="ma-3"
-            style="font-size: 1.2rem; max-width: 200px"
-            :placeholder="$route.name !== 'unit-domains-more' ? $t('noDomainSelected') : $t('breadcrumbs.more_modules')"
-            :menu-props="{ closeOnContentClick: true, 'max-width': '256px', bottom:true, offsetY:true }"
-            @change="onDomainChange"
-          >
-            <template #append-item>
-              <v-divider class="mt-6" />
-              <v-list-item
-                :to="`/${$route.params.unit}/domains/more`"
-                exact-active-class="veo-active-link-item"
-              >
-                {{ $t('breadcrumbs.more_modules') }}
-              </v-list-item>
-            </template>
-          </v-select>
+        <div class="ml-4">
+          <VeoDomainSelect v-if="$route.params.unit" />
         </div>
-      </div>
-      <div
-        class="d-flex align-center"
-        style="width: 60%; max-width: 500px; cursor: no-drop"
-      >
-        <v-text-field
-          :label="$t('search.label')"
-          hide-details
-          background-color="grey"
-          height="40"
-          disabled
-          class="veo-app-bar-search"
-          style="visibility: hidden"
-        />
       </div>
       <div
         class="d-flex flex-grow-0 mr-6"
@@ -105,12 +65,12 @@
                 <v-icon class="mr-2">
                   mdi-login-variant
                 </v-icon>
-                {{ $t('goToDemoUnit') }}
+                {{ t('goToDemoUnit') }}
               </v-btn>
             </div>
           </template>
           <template #default>
-            {{ $t('noDemoUnit') }}
+            {{ t('noDemoUnit') }}
           </template>
         </v-tooltip>
         
@@ -125,7 +85,7 @@
           <v-icon class="mr-2">
             mdi-logout-variant
           </v-icon>
-          {{ $t('leaveDemoUnit') }}
+          {{ t('leaveDemoUnit') }}
         </v-btn>
         <v-menu offset-y>
           <template #activator="{ on, attrs }">
@@ -206,17 +166,21 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoUnit, IVeoDomain } from '~/types/VeoTypes';
+import { IVeoUnit } from '~/types/VeoTypes';
 
 interface IProps {}
 
 export default defineComponent<IProps>({
   setup(_props, context) {
-    const { $api, params, app } = useContext();
+    const { $api, $user, params, app } = useContext();
+    const { t } = useI18n();
+    const route = useRoute();
+    const router = useRouter();
 
     //
     // Global navigation
@@ -224,10 +188,10 @@ export default defineComponent<IProps>({
     const drawer: Ref<boolean> = ref(false);
     const lang = computed({
       get() {
-        return context.root.$i18n.locale;
+        return app.i18n.locale;
       },
       set(newValue: string) {
-        context.root.$i18n.setLocale(newValue);
+        app.i18n.setLocale(newValue);
         // After the language change, reload the page to avoid synchronisation problems
         // Reload here should not be a big problem, because a user will not often change the language
         window.location.reload();
@@ -298,7 +262,7 @@ export default defineComponent<IProps>({
     });
 
     context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
-      context.root.$router.push('/' + createUUIDUrlParam('unit', newUnit));
+      router.push('/' + createUUIDUrlParam('unit', newUnit));
     });
 
     // Breadcrumbs related events
@@ -319,30 +283,19 @@ export default defineComponent<IProps>({
       units.value = await $api.unit.fetchAll();
     }
 
-    // Load all domains
-    const domains: Ref<IVeoDomain[]> = ref([]);
-
-    async function loadDomains() {
-      domains.value = await $api.domain.fetchAll();
-    }
-
-    const domain = computed((): string | undefined => separateUUIDParam(context.root.$route.params.domain).id);
+    const domain = computed((): string | undefined => separateUUIDParam(route.value.params.domain).id);
 
     const domainId = computed((): string | undefined => {
-      if (context.root.$route.name === 'unit-domains-more') {
+      if (route.value.name === 'unit-domains-more') {
         return undefined;
       }
-      if (!domain) {
-        return unitId && unitId.value === context.root.$user.lastUnit ? context.root.$user.lastDomain : undefined;
+      if (!domain.value) {
+        return unitId && unitId.value === $user.lastUnit ? $user.lastDomain : undefined;
       }
       return domain.value;
     });
 
-    function onDomainChange(domainId: string) {
-      context.root.$router.push(`/${context.root.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}`);
-    }
-
-    const unitId = computed(() => (separateUUIDParam(context.root.$route.params.unit).id.length > 0 ? separateUUIDParam(context.root.$route.params.unit).id : undefined));
+    const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
 
     // While loading the unit id passed to the createUUIDUrlParam function would be undefined in the template, creating an error. Thus we have to navigate using this function.
     function goToUnit(unitId: string) {
@@ -355,13 +308,11 @@ export default defineComponent<IProps>({
     const demoUnit: ComputedRef<IVeoUnit | undefined> = computed(() => units.value.find((unit) => unit.name === 'Demo'));
 
     loadUnits();
-    loadDomains();
 
     return {
       domainId,
       unitId,
       alert,
-      domains,
       drawer,
       lang,
       langs,
@@ -372,8 +323,9 @@ export default defineComponent<IProps>({
       demoUnit,
       units,
       goToUnit,
-      onDomainChange,
-      homeLink
+      homeLink,
+
+      t
     };
   },
   head() {
@@ -389,14 +341,12 @@ export default defineComponent<IProps>({
   "en": {
     "goToDemoUnit": "go to demo-unit",
     "leaveDemoUnit": "leave demo-unit",
-    "noDemoUnit": "No demo unit exists for this account",
-    "noDomainSelected": "No module selected"
+    "noDemoUnit": "No demo unit exists for this account"
   },
   "de": {
     "goToDemoUnit": "Zur Demo-Unit",
     "leaveDemoUnit": "Demo-Unit verlassen",
-    "noDemoUnit": "Für diesen Account existiert keine Demo Unit",
-    "noDomainSelected": "Kein Modul ausgewählt"
+    "noDemoUnit": "Für diesen Account existiert keine Demo Unit"
   }
 }
 </i18n>
@@ -413,18 +363,6 @@ export default defineComponent<IProps>({
       flex-grow: 1;
       flex-basis: 0;
     }
-  }
-}
-
-.veo-app-bar-search {
-  border-radius: 4px;
-
-  ::v-deep .v-input__slot {
-    padding: 0 16px;
-  }
-
-  ::v-deep .v-input__slot:before {
-    border-top: 0 !important;
   }
 }
 </style>

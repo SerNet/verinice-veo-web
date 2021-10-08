@@ -56,7 +56,7 @@ import { rectangularSelection } from '@codemirror/next/rectangular-selection';
 import { gotoLineKeymap } from '@codemirror/next/goto-line';
 import { highlightSelectionMatches } from '@codemirror/next/highlight-selection';
 import { defaultHighlighter } from '@codemirror/next/highlight';
-import { defineComponent, onMounted, ref, watchEffect, watch } from '@nuxtjs/composition-api';
+import { defineComponent, onMounted, ref, watchEffect, watch, nextTick } from '@nuxtjs/composition-api';
 
 const languageTag = Symbol('language');
 
@@ -239,7 +239,7 @@ export default defineComponent<Props>({
         } catch (e) {}
       },
       focus() {
-        context.root.$nextTick(() => {
+        nextTick(() => {
           $editor.focus();
         });
       },

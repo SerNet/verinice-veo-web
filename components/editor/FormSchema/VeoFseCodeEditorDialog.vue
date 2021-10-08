@@ -21,7 +21,7 @@
     large
     fixed-header
     fixed-footer
-    :headline="$t('formSchema')"
+    :headline="t('formSchema')"
   >
     <template #default>
       <div style="min-height: 20vh">
@@ -38,13 +38,14 @@
         color="primary"
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.close') }}
+        {{ t('global.button.close') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 interface IProps {
   value: boolean;
@@ -63,6 +64,8 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    const { t } = useI18n();
+
     /**
      * Common dialog stuff (opening and closing)
      */
@@ -84,7 +87,7 @@ export default defineComponent<IProps>({
       }
     );
 
-    return { dialog, close };
+    return { dialog, close, t };
   }
 });
 </script>

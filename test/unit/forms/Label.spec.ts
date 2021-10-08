@@ -19,8 +19,9 @@ import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
-import VeoForm from '~/components/forms/VeoForm.vue';
+import 'regenerator-runtime/runtime';
 
+import VeoForm from '~/components/forms/VeoForm.vue';
 import { install as VeeValidate } from '~/plugins/vee-validate';
 import { Renderable } from '~/types/renderable';
 Vue.use(VeeValidate);

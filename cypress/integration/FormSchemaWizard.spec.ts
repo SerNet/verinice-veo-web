@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /// <reference path="../support/index.d.ts" />
+/// <reference types="cypress" />
+
 import { getEditorData } from '../support/utils';
 
 describe('Formschema Wizard', () => {
@@ -53,6 +55,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Eigenes{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('api/default/schemas/empty.json');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
@@ -82,6 +88,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Eigenes{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-window-item--active').contains('.v-tab', 'Code einfügen').click();
       cy.get('.v-window-item--active')
         .find('.editor .cm-content')
@@ -121,6 +131,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Control{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=control');
@@ -149,6 +163,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Scope{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=scope');
@@ -177,6 +195,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Asset{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=asset');
@@ -205,6 +227,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Process{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=process');
@@ -233,6 +259,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Incident{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=incident');
@@ -261,6 +291,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Document{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=document');
@@ -289,6 +323,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Person{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=person');
@@ -317,6 +355,10 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Scenario{enter}');
+
+      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
     cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=scenario');

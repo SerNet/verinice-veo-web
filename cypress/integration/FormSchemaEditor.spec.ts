@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /// <reference path="../support/index.d.ts" />
+/// <reference types="cypress" />
 
 import { generateTos, getEditorData, ITo } from '../support/utils';
 
@@ -791,7 +792,7 @@ describe('Formschema Editor', () => {
 
     cy.get('.mdi-translate').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
-      cy.contains('.v-select', 'Sprachen').type('{downarrow}{downarrow}{enter}');
+      cy.contains('.v-select', 'Sprachen').type('{downarrow}{enter}');
       cy.contains('.v-select', 'Sprache').type('Englisch{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
@@ -831,7 +832,7 @@ describe('Formschema Editor', () => {
 
     cy.get('.mdi-translate').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
-      cy.contains('.v-select', 'Sprachen').type('{downarrow}{downarrow}{enter}');
+      cy.contains('.v-select', 'Sprachen').type('{downarrow}{enter}');
       cy.contains('.v-select', 'Sprache').type('Englisch{enter}');
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });

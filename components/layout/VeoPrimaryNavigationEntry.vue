@@ -87,15 +87,16 @@
     </template>
     <VeoPrimaryNavigationEntry
       v-for="child of childItems"
-      :key="child.name"
       v-bind="child"
+      :key="child.name"
+      style="min-height: 28px;"
       :persist-u-i-state="child.persistCollapsedState"
     />
   </v-list-group>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, Ref, ref, watch } from '@nuxtjs/composition-api';
+import { defineComponent, nextTick, PropType, Ref, ref, watch } from '@nuxtjs/composition-api';
 import { INavItem } from './VeoPrimaryNavigation.vue';
 
 interface IProps extends INavItem {
@@ -172,7 +173,7 @@ export default defineComponent<IProps>({
         // but after clicking expansion panel it should be in minivariant it should be opened
         // therefore hack it with $nextTick to force expansion
         if (!expanded.value) {
-          context.root.$nextTick(() => {
+          nextTick(() => {
             expanded.value = true;
             emitCollapsed(expanded.value);
             context.emit('update-mini-variant', false);

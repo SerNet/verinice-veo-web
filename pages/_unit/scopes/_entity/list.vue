@@ -72,6 +72,7 @@ import { separateUUIDParam } from '~/lib/utils';
 import { IVeoMenuButtonItem } from '~/components/layout/VeoMenuButton.vue';
 import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
 import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export default Vue.extend({
   name: 'VeoObjectsListPage',
@@ -90,7 +91,9 @@ export default Vue.extend({
       subEntities: [] as IVeoEntity[],
       showParentLink: false as boolean,
       rootEntityType: '' as string,
-      loading: false as boolean
+      loading: false as boolean,
+      // @see https://git.nbrx.de/nbrx/t1/veo/-/issues/297
+      schemas: [] as IVeoSchemaEndpoint[]
     };
   },
   async fetch() {

@@ -52,34 +52,6 @@
               @update-mini-variant="setMiniVariant($event)"
             />
           </template>
-          <v-list-item
-            class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
-            @click="displayDeploymentDetails = true"
-          >
-            <v-tooltip
-              right
-              :disabled="!miniVariant || false"
-            >
-              <template #activator="{ on, attrs }">
-                <div
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  <v-list-item-icon>
-                    <v-icon
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      mdi-information-outline
-                    </v-icon>
-                  </v-list-item-icon>
-                </div>
-              </template>
-              <span>{{ $t('about') }}</span>
-            </v-tooltip>
-            <v-list-item-title>{{ $t('about') }}</v-list-item-title>
-            <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
-          </v-list-item>
         </v-list>
       </div>
     </template>
@@ -157,7 +129,6 @@ export default Vue.extend({
   data() {
     return {
       miniVariant: LocalStorage.primaryNavMiniVariant,
-      displayDeploymentDetails: false as boolean,
       domains: [] as IVeoDomain[],
       objectTypes: [] as INavItem[],
       formTypes: [] as INavItem[],
@@ -226,11 +197,11 @@ export default Vue.extend({
         topLevelItem: true
       };
 
-      const spacer: INavItem = {
+      /* const spacer: INavItem = {
         name: 'spacer',
         disabled: false,
         topLevelItem: true
-      };
+      }; */
 
       const unitSelection: INavItem = {
         name: this.$t('breadcrumbs.index').toString(),
@@ -241,14 +212,14 @@ export default Vue.extend({
         topLevelItem: true
       };
 
-      const editors: INavItem = {
+      /* const editors: INavItem = {
         name: this.$t('breadcrumbs.editor').toString(),
         icon: 'mdi-application-cog',
         to: '/editor',
         exact: false,
         disabled: false,
         topLevelItem: true
-      };
+      }; */
 
       const forms = {
         name: this.$t('breadcrumbs.forms').toString(),
@@ -295,9 +266,9 @@ export default Vue.extend({
       return [
         ...(!this.$route.params.unit || !maxUnits.value || maxUnits.value > 2 ? [unitSelection] : []),
         ...(this.domainId ? [domainDashboard, forms, catalogs, reports] : []),
-        ...(this.$route.params.unit ? [divider, /* VEO-692 unitDashboard, */ scopes, objects] : []),
-        spacer,
-        editors
+        ...(this.$route.params.unit ? [divider, /* VEO-692 unitDashboard, */ scopes, objects] : [])
+        /* spacer,
+        editors */
       ];
     }
   },
@@ -386,13 +357,11 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "about": "About",
     "collapse": "Collapse menu",
     "fix": "Fix menu",
     "noChildItems": "No sub items"
   },
   "de": {
-    "about": "Über",
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
     "noChildItems": "Keine Einträge vorhanden"
@@ -410,10 +379,6 @@ export default Vue.extend({
       transform: scaleX(-1);
     }
   }
-}
-
-.veo-primary-navigation__menu-item {
-  flex-basis: auto;
 }
 
 .veo-active-link-item {

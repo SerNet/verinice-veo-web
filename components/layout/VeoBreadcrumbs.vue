@@ -88,7 +88,8 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, watch, Ref, PropOptions } from '@nuxtjs/composition-api';
+import { ref, defineComponent, watch, Ref, PropOptions, useRoute, useContext } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { capitalize, last, intersection } from 'lodash';
 import { separateUUIDParam } from '~/lib/utils';
 
@@ -134,7 +135,11 @@ export default defineComponent<IProps>({
       default: undefined
     } as PropOptions<ICustomBreadcrumbEntry>
   },
-  setup(_props, context) {
+  setup(_props) {
+    const { t, te } = useI18n();
+    const { app, $api } = useContext();
+    const route = useRoute();
+
     /**
      * Definitions of custom values
      */
@@ -145,11 +150,11 @@ export default defineComponent<IProps>({
     // Define which keys from path should be replaces with custom Text
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
       ':unit': { text: '', icon: 'mdi-home' },
-      forms: { text: context.root.$t('breadcrumbs.forms').toString() },
-      objects: { text: context.root.$t('breadcrumbs.objects').toString() },
-      list: { text: context.root.$t('breadcrumbs.list_view').toString() },
-      tree: { text: context.root.$t('breadcrumbs.tree_view').toString() },
-      domains: { text: context.root.$t('breadcrumbs.domain').toString() }
+      forms: { text: t('breadcrumbs.forms').toString() },
+      objects: { text: t('breadcrumbs.objects').toString() },
+      list: { text: t('breadcrumbs.list_view').toString() },
+      tree: { text: t('breadcrumbs.tree_view').toString() },
+      domains: { text: t('breadcrumbs.domain').toString() }
     };
 
     // TODO: check if :group should be added here, after groups are implemented
@@ -191,7 +196,7 @@ export default defineComponent<IProps>({
     // Get the title of a dynamic parameter
     function getCachedTitle(type: ParamsWithUUID, key: string) {
       if (type === ':form') {
-        return { [type]: { text: JSON.parse(sessionStorage.getItem(key) as string)[context.root.$i18n.locale] || 'Missing translation' } };
+        return { [type]: { text: JSON.parse(sessionStorage.getItem(key) as string)[app.i18n.locale] || 'Missing translation' } };
       } else {
         return { [type]: { text: sessionStorage.getItem(key) as string } };
       }
@@ -203,7 +208,7 @@ export default defineComponent<IProps>({
       const paramSeparated = separateUUIDParam(param);
 
       if (paramSeparated.id === '-') {
-        return { [type]: { text: context.root.$t('breadcrumbs.all') as string } };
+        return { [type]: { text: t('breadcrumbs.all') as string } };
       }
 
       // If a parameter title is already cached, return its value
@@ -217,7 +222,7 @@ export default defineComponent<IProps>({
 
       let text: string;
       // @ts-ignore
-      const api = context.root.$api[apiKey];
+      const api = $api[apiKey];
       if (type === ':entity') {
         text = (await api.fetch(paramSeparated.type, paramSeparated.id))[displayNameKey];
       } else if (type === ':form') {
@@ -234,7 +239,7 @@ export default defineComponent<IProps>({
 
     // Get text for listItem: it can be custom text, translation or just parameters from route path (forms, :unit, ...)
     function getText(params: IBaseStringObject, param: string) {
-      const text: string = params[param] || (context.root.$i18n.te('breadcrumbs.' + param) && (context.root.$i18n.t('breadcrumbs.' + param) as string)) || param;
+      const text: string = params[param] || (te('breadcrumbs.' + param) && (t('breadcrumbs.' + param) as string)) || param;
       return capitalize(text);
     }
 
@@ -300,12 +305,12 @@ export default defineComponent<IProps>({
     async function createBreadcrumbs() {
       // Parameters map from route path
       const params: IBaseStringObject = {};
-      Object.entries(context.root.$route.params).forEach(([key, value]) => {
+      Object.entries(route.value.params).forEach(([key, value]) => {
         params[`:${key}`] = value;
       });
 
       // Pathtemplate is general definition of current path without real values (e.g. /:unit/domains/:domain/forms/:form)
-      const pathTemplate = last(context.root.$route.matched)?.path;
+      const pathTemplate = last(route.value.matched)?.path;
       if (pathTemplate) {
         const listItems: IBreadcrumbEntry[] =
           _props.customBreadcrumbs && _props.customBreadcrumbs[pathTemplate]
@@ -324,7 +329,7 @@ export default defineComponent<IProps>({
      */
 
     watch(
-      () => context.root.$route.fullPath,
+      () => route.value.fullPath,
       async () => {
         await createBreadcrumbs();
       },
@@ -332,7 +337,7 @@ export default defineComponent<IProps>({
     );
 
     watch(
-      () => context.root.$i18n.locale,
+      () => app.i18n.locale,
       () => {
         createBreadcrumbs();
       }

@@ -35,7 +35,12 @@ export default {
    * Enable nuxt/components
    * @see https://github.com/nuxt/components
    */
-  components: true,
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false
+    }
+  ],
 
   /**
    *
@@ -57,7 +62,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vee-validate', '~/plugins/logger', '~/plugins/user', '~/plugins/api', '~/plugins/utils'],
+  plugins: ['~/plugins/vee-validate', '~/plugins/user', '~/plugins/api', '~/plugins/utils'],
 
   /**
    *
@@ -73,11 +78,7 @@ export default {
    ** Nuxt.js modules
    */
   modules: [
-    // Doc: https://github.com/nuxt-community/axios-module#usage
-    '@nuxtjs/axios',
     '@nuxtjs/proxy',
-    '@nuxtjs/pwa',
-    ['cookie-universal-nuxt', { parseJSON: false }],
     'nuxt-polyfill',
     [
       'nuxt-i18n',
@@ -91,28 +92,6 @@ export default {
       }
     ]
   ],
-
-  /**
-   * module: nuxt-pwa configuration
-   */
-  pwa: {
-    workbox: {
-      autoRegister: true,
-      dev: false
-    },
-    meta: {
-      mobileAppIOS: true,
-      nativeUI: true,
-      favicon: true
-    },
-    icon: {
-      sizes: [16, 120, 144, 152, 192, 384, 512]
-    },
-    manifest: {
-      name: 'verinice veo',
-      lang: 'en'
-    }
-  },
 
   /**
    * nuxt-i18n config
@@ -151,7 +130,7 @@ export default {
   /*
    ** Nuxt.js build modules
    */
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/composition-api', '@nuxtjs/vuetify'],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/composition-api/module', '@nuxtjs/vuetify'],
 
   /**
    * Vuetify configuration
@@ -166,18 +145,6 @@ export default {
    *
    */
   css: ['~/assets/main.scss', '~/assets/util.scss', '~/assets/vuetify.scss'],
-
-  /*
-   ** Axios module configuration
-   */
-  axios: {
-    // See https://github.com/nuxt-community/axios-module#options
-    credentials: true,
-    proxyHeaders: true,
-    retry: false,
-    browserBaseURL: '/',
-    timeout: 10000
-  },
 
   /**
    *

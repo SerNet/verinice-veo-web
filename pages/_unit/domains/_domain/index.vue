@@ -79,7 +79,7 @@ export default Vue.extend({
     try {
       this.unit = await this.$api.unit.fetch(this.unitId);
       this.domain = await this.$api.domain.fetch(this.domainId);
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === 404) {
         this.$root.$emit(VeoEvents.ALERT_ERROR, {
           type: ALERT_TYPE.ERROR,

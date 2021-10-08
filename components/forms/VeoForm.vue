@@ -221,8 +221,37 @@ export default Vue.extend({
       }
 
       const key = error.keyword !== 'required' ? keyMatch[0] : `${keyMatch[0]}/properties/${(error.params as RequiredParams).missingProperty}`;
+      let translatedErrorString = '';
 
-      return { ...accummulator, [key]: error.message };
+      switch (error.keyword) {
+        case 'required':
+          // Special handling of links, as their last data path entry isn't the string we search for
+          if ((error.params as any).missingProperty === 'targetUri') {
+            const dataPathParts = error.dataPath.split('/');
+            dataPathParts.pop();
+            translatedErrorString = this.$t(`error.${error.keyword}_link`, {
+              field: this.getInvalidFieldLabel(dataPathParts.pop() || (error.params as any).missingProperty)
+            }).toString();
+            break;
+          }
+          translatedErrorString = this.$t(`error.${error.keyword}`, { field: this.getInvalidFieldLabel((error.params as any).missingProperty) }).toString();
+          break;
+        // While pattern and format are separate errors, we want to display the same error message for both, as both have to be fixed the same way by the user
+        case 'format':
+        case 'pattern':
+          translatedErrorString = this.$t('error.format', {
+            field: this.getInvalidFieldLabel(error.dataPath.split('/').pop() || error.dataPath),
+            format: (error.params as any)[error.keyword]
+          }).toString();
+          break;
+        default:
+          translatedErrorString = error.message || '';
+      }
+
+      return { ...accummulator, [key]: translatedErrorString };
+    },
+    getInvalidFieldLabel(field: string): string {
+      return (this.customTranslation && this.customTranslation[field]) || (this.generalTranslation && this.generalTranslation[field]) || field;
     },
     createLayout(element: ILayout, formSchemaPointer: string, elementLevel: number, h: CreateElement, rule: IRule): VNode {
       return h(
@@ -318,3 +347,22 @@ export default Vue.extend({
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "error": {
+      "format": "The field \"{field}\" has to match the format \"{format}\"",
+      "required": "The field \"{field}\" is required",
+      "required_link": "The link \"{field}\" has to point to an object or be removed"
+    }
+  },
+  "de": {
+    "error": {
+      "format": "Das Feld \"{field}\" muss dem Format \"{format}\" entsprechen",
+      "required": "Das Feld \"{field}\" muss ausgefüllt sein",
+      "required_link": "Der Link \"{field}\" muss auf ein Objekt zeigen oder entfernt werden"
+    }
+  }
+}
+</i18n>
