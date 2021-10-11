@@ -19,9 +19,7 @@
   <div class="wrapper">
     <v-row class="flex-column text-center">
       <v-col>
-        <h1 class="mb-6 primary--text">
-          verinice.
-        </h1>
+        <VeoAppLogoDesktop />
       </v-col>
       <v-col class="d-flex justify-end mb-6">
         <v-select
