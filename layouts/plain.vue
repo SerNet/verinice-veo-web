@@ -23,9 +23,7 @@
       clipped-left
       flat
     >
-      <div class="d-flex">
-        <VeoAppBarLogo class="ml-2" />
-      </div>
+      <VeoAppBarLogo />
     </v-app-bar>
     <v-main>
       <nuxt />
