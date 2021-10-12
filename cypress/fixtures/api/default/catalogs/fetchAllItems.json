@@ -6,7 +6,7 @@
     "updatedBy":"veo-testuser1",
     "catalog":{
       "displayName":"DVGO-Controls",
-      "targetUri":"https://veo.develop.cpmsys.io/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51"
+      "targetUri":"https://api.develop.verinice.com/veo/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51"
     },
     "tailoringReferences":[
       
@@ -14,9 +14,9 @@
     "namespace":"AST_Datatype.ast-25",
     "element":{
       "displayName":"AST-25 DA9 Igel",
-      "searchesUri":"https://veo.develop.cpmsys.io/assets/searches",
-      "targetUri":"https://veo.develop.cpmsys.io/assets/1b09a3f5-53b9-4da8-ae7c-d052c04551cb",
-      "resourcesUri":"https://veo.develop.cpmsys.io/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}"
+      "searchesUri":"https://api.develop.verinice.com/veo/assets/searches",
+      "targetUri":"https://api.develop.verinice.com/veo/assets/1b09a3f5-53b9-4da8-ae7c-d052c04551cb",
+      "resourcesUri":"https://api.develop.verinice.com/veo/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}"
     },
     "id":"c16e27db-ee5a-48f3-99f1-fb4dfc21ea08"
   },
@@ -27,7 +27,7 @@
     "updatedBy":"veo-testuser1",
     "catalog":{
       "displayName":"DVGO-Controls",
-      "targetUri":"https://veo.develop.cpmsys.io/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51"
+      "targetUri":"https://api.develop.verinice.com/veo/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51"
     },
     "tailoringReferences":[
       
@@ -35,9 +35,9 @@
     "namespace":"AST_Datatype.ast-22",
     "element":{
       "displayName":"AST-22 DA6 Großer Abendsegler",
-      "searchesUri":"https://veo.develop.cpmsys.io/assets/searches",
-      "targetUri":"https://veo.develop.cpmsys.io/assets/2baabf17-2816-41ba-9e63-0f33611a3044",
-      "resourcesUri":"https://veo.develop.cpmsys.io/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}"
+      "searchesUri":"https://api.develop.verinice.com/veo/assets/searches",
+      "targetUri":"https://api.develop.verinice.com/veo/assets/2baabf17-2816-41ba-9e63-0f33611a3044",
+      "resourcesUri":"https://api.develop.verinice.com/veo/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}"
     },
     "id":"ce98d5a6-77de-4c5d-a85e-ab96fbeebacb"
   },
@@ -48,7 +48,7 @@
     "updatedBy":"veo-testuser1",
     "catalog":{
       "displayName":"DVGO-Controls",
-      "targetUri":"https://veo.develop.cpmsys.io/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51"
+      "targetUri":"https://api.develop.verinice.com/veo/catalogs/a6e20e2f-493e-426c-b1e0-efc7c8e3ce51"
     },
     "tailoringReferences":[
       
@@ -56,9 +56,9 @@
     "namespace":"AST_Datatype.ast-11",
     "element":{
       "displayName":"AST-11 AW2 Feuersalamander",
-      "searchesUri":"https://veo.develop.cpmsys.io/assets/searches",
-      "targetUri":"https://veo.develop.cpmsys.io/assets/3eae11af-d0cc-4684-ba17-1332c99c4493",
-      "resourcesUri":"https://veo.develop.cpmsys.io/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}"
+      "searchesUri":"https://api.develop.verinice.com/veo/assets/searches",
+      "targetUri":"https://api.develop.verinice.com/veo/assets/3eae11af-d0cc-4684-ba17-1332c99c4493",
+      "resourcesUri":"https://api.develop.verinice.com/veo/assets{?unit,displayName,subType,size,page,sortBy,sortOrder}"
     },
     "id":"8a69ddac-1704-46ea-b0b2-160835c41465"
   }

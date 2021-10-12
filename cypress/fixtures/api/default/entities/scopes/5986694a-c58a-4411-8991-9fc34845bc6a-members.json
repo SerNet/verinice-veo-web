@@ -11,16 +11,16 @@
     "domains":[
       {
         "displayName":"DSGVO DSGVO",
-        "resourcesUri":"https://veo.develop.cpmsys.io/domains",
-        "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-        "searchesUri":"https://veo.develop.cpmsys.io/domains/searches"
+        "resourcesUri":"https://api.develop.verinice.com/veo/domains",
+        "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+        "searchesUri":"https://api.develop.verinice.com/veo/domains/searches"
       }
     ],
     "owner":{
       "displayName":"NBRX Testunit",
-      "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}",
-      "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-      "searchesUri":"https://veo.develop.cpmsys.io/units/searches"
+      "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}",
+      "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+      "searchesUri":"https://api.develop.verinice.com/veo/units/searches"
     },
     "links":{
       
@@ -51,9 +51,9 @@
     ],
     "owner":{
       "displayName":"NBRX Testunit",
-      "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}",
-      "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-      "searchesUri":"https://veo.develop.cpmsys.io/units/searches"
+      "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}",
+      "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+      "searchesUri":"https://api.develop.verinice.com/veo/units/searches"
     },
     "links":{
       
@@ -84,9 +84,9 @@
     ],
     "owner":{
       "displayName":"NBRX Testunit",
-      "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}",
-      "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-      "searchesUri":"https://veo.develop.cpmsys.io/units/searches"
+      "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}",
+      "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+      "searchesUri":"https://api.develop.verinice.com/veo/units/searches"
     },
     "links":{
       
@@ -115,16 +115,16 @@
     "domains":[
       {
         "displayName":"DSGVO DSGVO",
-        "resourcesUri":"https://veo.develop.cpmsys.io/domains",
-        "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-        "searchesUri":"https://veo.develop.cpmsys.io/domains/searches"
+        "resourcesUri":"https://api.develop.verinice.com/veo/domains",
+        "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
+        "searchesUri":"https://api.develop.verinice.com/veo/domains/searches"
       }
     ],
     "owner":{
       "displayName":"NBRX Testunit",
-      "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}",
-      "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-      "searchesUri":"https://veo.develop.cpmsys.io/units/searches"
+      "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}",
+      "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+      "searchesUri":"https://api.develop.verinice.com/veo/units/searches"
     },
     "links":{
       

@@ -1,6 +1,6 @@
 {
   "name": "veo-web",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "engines": {
     "npm": "7.x",
     "node": "14.x"
@@ -10,7 +10,6 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "dev:e2e": "VEO_API_USE_PROXY='true' nuxt",
     "dev-debug": "node --inspect=9229 node_modules/.bin/nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
@@ -51,7 +50,6 @@
     "@mdi/font": "^6.1.95",
     "@mdi/js": "^6.1.95",
     "@nuxtjs/composition-api": "^0.29.2",
-    "@nuxtjs/proxy": "^2.1.0",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
     "@toast-ui/vue-editor": "^3.1.0",
     "dotenv": "^10.0.0",

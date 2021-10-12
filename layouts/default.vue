@@ -23,14 +23,14 @@
       clipped-left
       flat
     >
-      <div class="d-flex align-center">
+      <div class="d-flex align-center fill-height">
         <v-app-bar-nav-icon
           v-if="$vuetify.breakpoint.xs"
           @click="drawer = true"
         />
         <nuxt-link
           :to="homeLink"
-          class="text-decoration-none"
+          class="text-decoration-none fill-height"
         >
           <VeoAppBarLogo
             class="ml-2"
