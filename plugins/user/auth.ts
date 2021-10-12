@@ -57,7 +57,7 @@ export class Auth {
    */
   public async init(): Promise<void> {
     // For some reason we have to explicitly state that we want to access the silent sso page over https and not http
-    await this._keycloak.init({ onLoad: 'check-sso', silentCheckSsoRedirectUri: window.location.origin + '/sso', checkLoginIframe: true }).catch((error) => {
+    await this._keycloak.init({ onLoad: 'check-sso', silentCheckSsoRedirectUri: window.location.origin + '/sso', checkLoginIframe: false }).catch((error) => {
       throw new Error(`Error while setting up authentication provider: ${error}`);
     });
 
