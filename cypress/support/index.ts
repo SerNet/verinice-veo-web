@@ -22,6 +22,8 @@ export const FORMS_API_ALL_FORMS_REGEX = /https:\/\/api.(.+)\/forms$/;
 export const FORMS_API_FORM_REGEX = /https:\/\/api.(.+)\/forms\/(.+)/;
 export const REPORTING_API_ALL_REPORTS_REGEX = /https:\/\/api.(.+)\/reporting\/reports$/;
 
+require('cypress-terminal-report/src/installLogsCollector')();
+
 function createJWT(payload) {
   const header = {
     alg: 'RS256',
