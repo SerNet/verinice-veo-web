@@ -19,8 +19,9 @@
   <v-form
     ref="form"
     @submit.prevent="onSubmit"
-  >
-    <v-row no-gutters>
+  ><p>{{textFilters}} bumble</p> <br>
+  <p>{{filter}} bumble filter</p>
+    <v-row no-gutters>  
       <v-col
         class="d-flex"
       >
@@ -65,7 +66,7 @@
           :disabled="resetDisabled"
           @click="reset"
         >
-          {{ $t('global.button.reset') }}
+          <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -80,9 +81,9 @@ import { omit } from 'lodash';
 export interface IVeoFilter {
   designator: string | undefined;
   name: string | undefined;
+  status: string | undefined;
   description: string | undefined;
   updatedBy: string | undefined;
-  status: string | undefined;
   [key: string]: string | undefined;
 }
 
@@ -140,7 +141,7 @@ export default Vue.extend({
   },
   computed: {
     textFilters(): string[] {
-      return Object.keys(this.objectType !== 'process' ? omit(this.filter, 'status') : this.filter);
+      return Object.keys(omit(this.filter, 'status'));
     },
     resetDisabled(): boolean {
       for (const key in this.filter) {
