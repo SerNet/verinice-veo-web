@@ -19,14 +19,27 @@
   <v-form
     ref="form"
     @submit.prevent="onSubmit"
-  ><p>{{textFilters}} bumble</p> <br>
-  <p>{{filter}} bumble filter</p>
+  >
     <v-row no-gutters>  
       <v-col
         class="d-flex"
       >
-        <template v-for="(key, index) of textFilters">
+        <template v-for="(key, index) of filterFields">
+          <v-select
+            v-if="objectType === 'process' && key==='status'"
+            :key="index + '_s'"
+            v-model="filter.status"
+            hide-details
+            dense
+            outlined
+            class="veo-list-searchbar__input"
+            :label="$t('objectlist.status')"
+            :items="status"
+            item-text="text"
+            item-value="value"
+          />
           <v-text-field
+            v-if="key!=='status'"
             :key="index"
             v-model="filter[key]"
             hide-details
@@ -36,18 +49,7 @@
             :placeholder="$t(`objectlist.${key}`).toString()"
           />
         </template>
-        <v-select
-          v-if="objectType === 'process'"
-          v-model="filter.status"
-          hide-details
-          dense
-          outlined
-          class="veo-list-searchbar__input"
-          :label="$t('objectlist.status')"
-          :items="status"
-          item-text="text"
-          item-value="value"
-        />
+
         <v-btn
           outlined
           color="primary"
@@ -140,8 +142,8 @@ export default Vue.extend({
     };
   },
   computed: {
-    textFilters(): string[] {
-      return Object.keys(omit(this.filter, 'status'));
+    filterFields(): string[] {
+      return Object.keys(this.filter);
     },
     resetDisabled(): boolean {
       for (const key in this.filter) {
@@ -149,7 +151,6 @@ export default Vue.extend({
           return false;
         }
       }
-
       return true;
     }
   },
