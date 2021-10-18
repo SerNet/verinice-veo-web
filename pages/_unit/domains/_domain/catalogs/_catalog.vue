@@ -229,7 +229,7 @@ export default Vue.extend({
           for (const incarnation of incarnationsToModify.parameters) {
             incarnation.references = [
               {
-                referencedCatalogable: {
+                referencedElement: {
                   targetUri: `/${getSchemaEndpoint(this.schemas, entity.type)}/${entity.id}`
                 } as any,
                 referenceType: 'LINK'

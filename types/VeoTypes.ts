@@ -228,7 +228,7 @@ export interface IVeoUnitIncarnations {
   parameters: {
     item: IVeoLink;
     references: {
-      referencedCatalogable: IVeoLink;
+      referencedElement: IVeoLink;
       [key: string]: any;
       referenceType: string;
     }[];
