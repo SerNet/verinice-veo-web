@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jessica Lühnen, Annemarie Bufe
+   - Copyright (C) 2021  Jessica Lühnen, Annemarie Bufe, Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -22,17 +22,16 @@
         <tr
           v-for="(revision, key) in revisions"
           :key="key"
+          class="text-no-wrap overflow-x-hidden fill-width"
         >
           <td>
             <nuxt-link
               :to="createUrlByType(revision)"
             >
-              <b>{{ revision.content.designator }} {{ revision.content.name }}</b>
+              {{ revision.content.designator }} <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
             </nuxt-link>
           </td>
-          <td
-            class="text-right"
-          >
+          <td class="text-right" >
             {{ new Date(revision.time).toLocaleString($i18n.locale) }}
           </td>
         </tr>
@@ -97,6 +96,13 @@ a {
 tbody {
   tr:hover {
     background-color: transparent !important;
+  }
+
+  td {
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 </style>
