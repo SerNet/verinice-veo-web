@@ -61,7 +61,7 @@ export default Vue.extend({
     return {
       forms: [] as IVeoFormSchemaMeta[],
       translations: { lang: {} } as IVeoTranslations,
-      itemsPerStatus: {
+      itemCountPerStatus: {
         NEW: 0,
         IN_PROGRESS: 0,
         FOR_REVIEW: 0,
@@ -73,8 +73,8 @@ export default Vue.extend({
   async fetch() {
     this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
     this.forms = await this.$api.form.fetchAll(separateUUIDParam(this.$route.params.domain).id);
-    for (const status in this.itemsPerStatus) {
-      this.itemsPerStatus[status] = (
+    for (const status in this.itemCountPerStatus) {
+      this.itemCountPerStatus[status] = (
         await this.$api.entity.fetchAll('process', 0, {
           size: 1,
           subType: 'PRO_DataProcessing',

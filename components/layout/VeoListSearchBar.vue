@@ -126,13 +126,7 @@ export default Vue.extend({
       return Object.keys(this.objectType !== 'process' ? omit(this.filter, 'status') : this.filter);
     },
     resetDisabled(): boolean {
-      for (const key in this.filter) {
-        if ((this.filter as { [key: string]: any })[key]) {
-          return false;
-        }
-      }
-
-      return true;
+      return Object.values(this.filter).every((f: any) => !f);
     },
     status(): { value: string; text: string }[] {
       return [
