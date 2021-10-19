@@ -97,7 +97,7 @@ pipeline {
                                                                reporterOptions: [
                                                                  mochaFile: 'out/e2e-test/junit-e2e-[hash].xml'
                                                                ],
-                                                               baseUrl: "http://veo-web-${n}:80",
+                                                               baseUrl: "http://veo-web-${n}:5000",
                                                                video: false,
                                                                screenshotsFolder: 'out/e2e-test/screenshots',
                                                                defaultCommandTimeout: 10000
