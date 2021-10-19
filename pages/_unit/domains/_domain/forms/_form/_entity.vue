@@ -385,7 +385,7 @@ export default Vue.extend({
         ? await this.$api.entity.fetch(this.objectType, this.objectId)
         : {
             owner: {
-              targetUri: `/units/${this.unitId}`
+              targetUri: `${this.$config.apiUrl}/units/${this.unitId}`
             },
             designator: '', // Needed for form validation
             ...(this.objectType === 'process' ? { status: 'NEW' } : {})
@@ -409,7 +409,7 @@ export default Vue.extend({
       }
 
       // Add domain to object data so it gets saved
-      const domainObject = { targetUri: `/domains/${this.domainId}` };
+      const domainObject = { targetUri: `${this.$config.apiUrl}/domains/${this.domainId}` };
       if (!this.form.objectData.domains) {
         this.form.objectData.domains = [domainObject];
       } else {

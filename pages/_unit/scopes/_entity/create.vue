@@ -214,7 +214,7 @@ export default Vue.extend({
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       const objectData = {
         owner: {
-          targetUri: `/units/${this.unitID}`
+          targetUri: `${this.$config.apiUrl}/units/${this.unitID}`
         },
         designator: '' // Needed for form validation
       };
@@ -273,7 +273,7 @@ export default Vue.extend({
           ...this.form.objectData,
           // @ts-ignore
           owner: {
-            targetUri: `/units/${this.unitID}`
+            targetUri: `${this.$config.apiUrl}/units/${this.unitID}`
           }
         })
         .then(async (data: IVeoAPIMessage) => {
