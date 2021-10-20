@@ -242,6 +242,12 @@ export interface IVeoCatalog extends IVeoBaseObject {
 }
 
 export interface IVeoCatalogItem extends IVeoBaseObject {
+  id: string;
+  description: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
   catalog: IVeoLink;
   tailoringReferences: {
     createdAt: string;

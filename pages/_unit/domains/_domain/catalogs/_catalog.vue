@@ -71,7 +71,7 @@
             outlined
             class="mr-2"
             :disabled="selectedToms.length === 0"
-            @click="selectedItems = []"
+            @click="selectedToms = []"
           >
             {{ $t('global.button.cancel') }}
           </v-btn>
@@ -160,7 +160,7 @@ export default Vue.extend({
         .map((item) => {
           const [designator = '', abbreviation = '', title = ''] = item.element.displayName.split(' ');
 
-          return { designator, abbreviation, title, id: item.id };
+          return { designator, abbreviation, title, id: item.id, description: item.description };
         });
     },
     formattedSelectedToms(): { designator: string; abbreviation: string; title: string; id: string }[] {
@@ -180,6 +180,12 @@ export default Vue.extend({
           sortable: true,
           text: this.$t('objectlist.name').toString(),
           value: 'item.title'
+        },
+        {
+          filterable: true,
+          sortable: false,
+          text: this.$t('objectlist.description').toString(),
+          value: 'item.description'
         }
       ];
     }
