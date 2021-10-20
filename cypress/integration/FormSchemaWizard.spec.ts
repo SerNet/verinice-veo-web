@@ -54,6 +54,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Name des Formschemas').type('Test Formschema');
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
+      cy.get('.v-window-item--active').contains('.v-text-field', 'Sortierwert').type('a1');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Eigenes{enter}');
 
       // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
@@ -62,7 +63,7 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('api/default/schemas/empty.json');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=custom');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=a1&os=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -105,7 +106,7 @@ describe('Formschema Wizard', () => {
       cy.contains('.v-btn', 'Codeänderungen übernehmen').click();
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=custom');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=&os=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -137,7 +138,7 @@ describe('Formschema Wizard', () => {
       cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=control');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=&os=control');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -169,7 +170,7 @@ describe('Formschema Wizard', () => {
       cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=scope');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=&os=scope');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -201,7 +202,7 @@ describe('Formschema Wizard', () => {
       cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=asset');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=&os=asset');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -233,7 +234,7 @@ describe('Formschema Wizard', () => {
       cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=process');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=&os=process');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -265,7 +266,7 @@ describe('Formschema Wizard', () => {
       cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=incident');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=&os=incident');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -297,7 +298,7 @@ describe('Formschema Wizard', () => {
       cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=document');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=&os=document');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -329,7 +330,7 @@ describe('Formschema Wizard', () => {
       cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=person');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=&os=person');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -361,7 +362,7 @@ describe('Formschema Wizard', () => {
       cy.wait(500);
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&os=scenario');
+    cy.validateUrl('/editor/formschema?name=Test%20Formschema&subtype=TF&sorting=&os=scenario');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {

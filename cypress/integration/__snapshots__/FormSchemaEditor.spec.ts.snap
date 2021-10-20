@@ -6770,6 +6770,7 @@ exports[`Formschema Editor > adds, updates formSchema meta details #0`] =
   "name": {
     "de": "Test Formschema 1 DE"
   },
+  "sorting": "a1",
   "subType": "TF 1",
   "translation": {
     "de": {}
@@ -6791,6 +6792,7 @@ exports[`Formschema Editor > adds, updates formSchema meta details #1`] =
     "de": "Test Formschema 1 DE",
     "en": "Test Formschema 2 EN"
   },
+  "sorting": "a1",
   "subType": "TF 1",
   "translation": {
     "de": {},

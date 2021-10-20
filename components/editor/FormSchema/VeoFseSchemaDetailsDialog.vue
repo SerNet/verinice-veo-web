@@ -79,6 +79,27 @@
             :cols="12"
             :md="5"
           >
+            <span style="font-size: 1.2rem;">{{ t('editor.formschema.sorting') }}:</span>
+          </v-col>
+          <v-col
+            :cols="12"
+            :md="5"
+          >
+            <v-text-field
+              v-model="form.data.sorting"
+              :label="t('editor.formschema.sorting')"
+              flat
+            />
+          </v-col>
+        </v-row>
+        <v-row
+          no-gutters
+          class="align-center mt-4"
+        >
+          <v-col
+            :cols="12"
+            :md="5"
+          >
             <span style="font-size: 1.2rem;">{{ t('editor.formschema.create.type.text') }}*:</span>
           </v-col>
           <v-col
@@ -127,7 +148,8 @@ interface IProps {
   value: boolean;
   objectSchema: string;
   formSchema: string;
-  subtype: string;
+  subtype: string | null;
+  sorting: string | null;
 }
 
 export default defineComponent<IProps>({
@@ -147,6 +169,10 @@ export default defineComponent<IProps>({
     subtype: {
       type: String,
       default: null
+    },
+    sorting: {
+      type: String,
+      default: null
     }
   },
   setup(props, context) {
@@ -160,7 +186,8 @@ export default defineComponent<IProps>({
     const form = ref({
       data: {
         formSchema: props.formSchema,
-        subType: props.subtype
+        subType: props.subtype,
+        sorting: props.sorting
       },
       rules: {
         formSchema: [(input: string) => trim(input).length > 0 || t('global.input.required')]
@@ -185,15 +212,6 @@ export default defineComponent<IProps>({
     );
 
     watch(
-      () => dialog.value.value,
-      (val: boolean) => {
-        if (!val) {
-          context.emit('input', val);
-        }
-      }
-    );
-
-    watch(
       () => props.formSchema,
       (val: string) => {
         form.value.data.formSchema = val;
@@ -202,13 +220,21 @@ export default defineComponent<IProps>({
 
     watch(
       () => props.subtype,
-      (val: string) => {
+      (val: string | null) => {
         form.value.data.subType = val;
+      }
+    );
+
+    watch(
+      () => props.sorting,
+      (val: string | null) => {
+        form.value.data.sorting = val;
       }
     );
 
     function doSave() {
       context.emit('update-subtype', form.value.data.subType);
+      context.emit('update-sorting', form.value.data.sorting ?? null);
       context.emit('update-schema-name', form.value.data.formSchema);
       context.emit('input', false);
     }

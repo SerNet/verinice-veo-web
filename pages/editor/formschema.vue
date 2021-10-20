@@ -328,8 +328,10 @@
         :object-schema="formSchema.modelType"
         :form-schema="formSchema.name[language]"
         :subtype="formSchema.subType"
+        :sorting="formSchema.sorting"
         @update-schema-name="updateSchemaName"
         @update-subtype="updateSubType"
+        @update-sorting="updateSorting"
       />
     </template>
   </VeoPageWrapper>
@@ -463,6 +465,12 @@ export default defineComponent<IProps>({
       }
     }
 
+    function updateSorting(value: string) {
+      if (formSchema.value) {
+        formSchema.value.sorting = value;
+      }
+    }
+
     const invalidSchemaDownloadDialogVisible = ref(false);
     function downloadSchema(forceDownload: boolean = false) {
       if (schemaIsValid.value.valid === false && !forceDownload) {
@@ -567,6 +575,7 @@ export default defineComponent<IProps>({
       setTranslation,
       updateSchemaName,
       updateSubType,
+      updateSorting,
       downloadSchema,
       onDelete,
       onUpdate,

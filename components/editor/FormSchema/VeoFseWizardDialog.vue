@@ -124,6 +124,26 @@
                 :cols="12"
                 :md="5"
               >
+                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.sorting') }}:</span>
+              </v-col>
+              <v-col
+                :cols="12"
+                :md="5"
+              >
+                <v-text-field
+                  v-model="createForm.sorting"
+                  :label="$t('editor.formschema.sorting')"
+                />
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="align-center mt-4"
+            >
+              <v-col
+                :cols="12"
+                :md="5"
+              >
                 <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.text') }}*:</span>
               </v-col>
               <v-col
@@ -251,6 +271,7 @@ export default Vue.extend({
         title: '' as string,
         modelType: '' as string,
         subType: null as string | null,
+        sorting: null as string | null,
         valid: false,
         rules: {
           title: [(input: string) => trim(input).length > 0],
@@ -319,6 +340,9 @@ export default Vue.extend({
       immediate: true,
       deep: true,
       async handler() {
+        if (isString(this.$route.query.sorting)) {
+          this.createForm.sorting = this.$route.query.sorting;
+        }
         if (isString(this.$route.query.name) && isString(this.$route.query.subtype)) {
           if (this.$route.query.os === 'custom') {
             this.state = 'create';
@@ -380,7 +404,8 @@ export default Vue.extend({
     },
     generateInitialFs() {
       const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? null : this.createForm.subType;
-      this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.title }, this.objectSchema?.title || this.createForm.modelType, _subtype);
+      const _sorting = !this.createForm.sorting || trim(this.createForm.sorting).length === 0 ? null : this.createForm.sorting;
+      this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.title }, this.objectSchema?.title || this.createForm.modelType, _subtype, _sorting);
       this.emitSchemas();
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
@@ -427,6 +452,7 @@ export default Vue.extend({
         title: '' as string,
         modelType: '' as string,
         subType: null as string | null,
+        sorting: null as string | null,
         valid: false,
         rules: {
           title: [(input: string) => trim(input).length > 0],
@@ -448,7 +474,7 @@ export default Vue.extend({
     async setObjectSchema(params: { schema?: IVeoObjectSchema; modelType?: string }) {
       let urlToNavigate = '/editor/formschema';
       if (this.createForm.title && this.createForm.subType) {
-        urlToNavigate = `${urlToNavigate}?name=${this.createForm.title}&subtype=${this.createForm.subType}&os=`;
+        urlToNavigate = `${urlToNavigate}?name=${this.createForm.title}&subtype=${this.createForm.subType}&sorting=${this.createForm.sorting || ''}&os=`;
         urlToNavigate += this.createForm.modelType && this.createForm.modelType !== 'custom' ? this.createForm.modelType.toLowerCase() : 'custom';
       } else if (['import-fs', 'import-os'].includes(this.state)) {
         urlToNavigate = `${urlToNavigate}?fs=${this.formSchemaId ?? 'custom'}`;
