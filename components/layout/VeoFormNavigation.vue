@@ -29,6 +29,7 @@
       <template v-for="item in items">
         <v-list-item
           :key="item.initialId + '0'"
+          style="min-height: 28px;"
           :value="item.initialId"
           @click="onClick(item.initialId)"
         >
