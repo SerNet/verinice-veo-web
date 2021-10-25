@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Jessica Lühnen
+   - Copyright (C) 2021  Jonas Heitmann, Jessica Lühnen, Annemarie Bufe
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +18,7 @@
 <template>
   <v-form
     ref="form"
+    width="100%"
     @submit.prevent="onSubmit"
   >
     <v-row no-gutters>  

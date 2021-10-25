@@ -15,7 +15,7 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-1<template>
+<template>
   <VeoPage
     :title="$t('breadcrumbs.forms')"
     fullsize
@@ -30,7 +30,8 @@
         <template #menu-bar>
           <v-row
             dense
-            class="justify-space-between"
+            class="justify-space-between col-12"
+            col-12
           >
             <v-col
               :cols="12"
@@ -51,7 +52,7 @@
                 outlined
                 :to="`/${$route.params.unit}/domains/${$route.params.domain}/forms/${$route.params.form}/create`"
                 color="primary"
-                class="align-self-center mr-4"
+                class="align-self-center mr-2"
               >
                 {{ $t('create', { type: formName }) }}
               </v-btn>
@@ -59,6 +60,7 @@
           </v-row>
           <v-row dense>
             <v-col
+
               class="flex-grow-1 search-bar"
               :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
             >
@@ -81,6 +83,7 @@
             v-on="on"
           />
         </template>
+
       </VeoEntityModifier>
     </template>
   </VeoPage>
@@ -166,9 +169,9 @@ export default Vue.extend({
     this.filter = {
       designator: this.$route.query.designator,
       name: this.$route.query.name,
+      status: this.$route.query.status,
       description: this.$route.query.description,
-      updatedBy: this.$route.query.updatedBy,
-      status: this.$route.query.status
+      updatedBy: this.$route.query.updatedBy
     };
   },
   methods: {
@@ -223,6 +226,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .search-bar-desktop {
-  margin: 0 12px;
+  margin: 0 28px;
 }
 </style>
