@@ -23,7 +23,7 @@
   >
     <v-row no-gutters>  
       <v-col
-        class="d-flex"
+        class="d-flex mb-4"
       >
         <template v-for="(key, index) of filterFields">
           <v-select

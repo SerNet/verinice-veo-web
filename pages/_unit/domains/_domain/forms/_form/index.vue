@@ -52,7 +52,7 @@
                 outlined
                 :to="`/${$route.params.unit}/domains/${$route.params.domain}/forms/${$route.params.form}/create`"
                 color="primary"
-                class="align-self-center mr-2"
+                class="align-self-center"
               >
                 {{ $t('create', { type: formName }) }}
               </v-btn>
@@ -226,6 +226,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .search-bar-desktop {
-  margin: 0 28px;
+  margin: 0 24px;
 }
 </style>
