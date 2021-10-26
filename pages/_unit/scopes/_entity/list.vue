@@ -215,9 +215,9 @@ export default Vue.extend({
     this.filter = {
       designator: this.$route.query.designator,
       name: this.$route.query.name,
+      status: this.$route.query.status,
       description: this.$route.query.description,
-      updatedBy: this.$route.query.updatedBy,
-      status: this.$route.query.status
+      updatedBy: this.$route.query.updatedBy
     };
   },
   methods: {
