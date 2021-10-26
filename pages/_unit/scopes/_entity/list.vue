@@ -309,6 +309,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .search-bar-desktop {
-  margin: 0 100px;
+  margin: 0 16px 0 0;
 }
 </style>
