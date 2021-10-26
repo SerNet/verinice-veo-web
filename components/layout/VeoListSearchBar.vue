@@ -126,8 +126,8 @@ export default Vue.extend({
     this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
   },
   computed: {
-    textFilters(): string[] {
-      return Object.keys(this.objectType !== 'process' ? omit(this.filter, 'status') : this.filter);
+    filterFields(): string[] {
+      return Object.keys(this.filter);
     },
     resetDisabled(): boolean {
       return Object.values(this.filter).every((f: any) => !f);
@@ -154,20 +154,7 @@ export default Vue.extend({
           value: Status.ARCHIVED,
           text: this.translations.lang?.[this.$i18n.locale]?.process_status_ARCHIVED || 'ARCHIVED'
         }
-      ]
-    };
-  },
-  computed: {
-    filterFields(): string[] {
-      return Object.keys(this.filter);
-    },
-    resetDisabled(): boolean {
-      for (const key in this.filter) {
-        if ((this.filter as { [key: string]: any })[key]) {
-          return false;
-        }
-      }
-      return true;
+      ];
     }
   },
   watch: {
