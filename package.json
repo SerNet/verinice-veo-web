@@ -10,9 +10,6 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "dev-debug": "node --inspect=9229 node_modules/.bin/nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore .",
     "precommit": "npm run lint",
@@ -20,9 +17,7 @@
     "test:e2e": "cross-env LANG='de_DE.UTF-8' && cypress run",
     "test:e2e-open": "cross-env LANG='de_DE.UTF-8' && cypress open",
     "cy:verify": "cypress verify",
-    "cy:info": "cypress info",
-    "test:docker": "docker run -it $(docker build -f test.Dockerfile -q .)",
-    "webpack": "nuxt webpack"
+    "cy:info": "cypress info"
   },
   "husky": {
     "hooks": {

@@ -80,6 +80,7 @@
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { omit } from 'lodash';
+import { IVeoTranslations } from '~/types/VeoTypes';
 
 export interface IVeoFilter {
   designator: string | undefined;
@@ -118,26 +119,40 @@ export default Vue.extend({
         description: undefined,
         updatedBy: undefined
       } as IVeoFilter,
-      status: [
+      translations: { lang: {} } as IVeoTranslations
+    };
+  },
+  async fetch() {
+    this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
+  },
+  computed: {
+    textFilters(): string[] {
+      return Object.keys(this.objectType !== 'process' ? omit(this.filter, 'status') : this.filter);
+    },
+    resetDisabled(): boolean {
+      return Object.values(this.filter).every((f: any) => !f);
+    },
+    status(): { value: string; text: string }[] {
+      return [
         {
           value: Status.NEW,
-          text: this.$t('status.new').toString()
+          text: this.translations.lang?.[this.$i18n.locale]?.process_status_NEW || 'NEW'
         },
         {
           value: Status.IN_PROGRESS,
-          text: this.$t('status.inProgress').toString()
+          text: this.translations.lang?.[this.$i18n.locale]?.process_status_IN_PROGRESS || 'IN_PROGRESS'
         },
         {
           value: Status.FOR_REVIEW,
-          text: this.$t('status.forReview').toString()
+          text: this.translations.lang?.[this.$i18n.locale]?.process_status_FOR_REVIEW || 'FOR_REVIEW'
         },
         {
           value: Status.RELEASED,
-          text: this.$t('status.released').toString()
+          text: this.translations.lang?.[this.$i18n.locale]?.process_status_RELEASED || 'RELEASED'
         },
         {
           value: Status.ARCHIVED,
-          text: this.$t('status.archived').toString()
+          text: this.translations.lang?.[this.$i18n.locale]?.process_status_ARCHIVED || 'ARCHIVED'
         }
       ]
     };
@@ -207,24 +222,10 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "search": "Search...",
-    "status": {
-      "new": "New",
-      "inProgress": "In progress",
-      "forReview": "For review",
-      "released": "Released",
-      "archived": "Archived"
-    }
+    "search": "Search..."
   },
   "de": {
-    "search": "Suche...",
-    "status": {
-      "new": "Neu",
-      "inProgress": "In Bearbeitung",
-      "forReview": "Zur Prüfung",
-      "released": "Freigegeben",
-      "archived": "Archiviert"
-    }
+    "search": "Suche..."
   }
 }
 </i18n>
