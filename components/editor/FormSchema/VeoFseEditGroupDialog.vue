@@ -30,13 +30,13 @@
           class="align-center mt-4"
         >
           <v-col
-            :cols="12"
+            cols="12"
             :md="5"
           >
             <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.label.text') }}:</span>
           </v-col>
           <v-col
-            :cols="12"
+            cols="12"
             :md="5"
           >
             <v-text-field
@@ -52,13 +52,13 @@
           class="align-center"
         >
           <v-col
-            :cols="12"
+            cols="12"
             :md="5"
           >
             <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.direction') }}*:</span>
           </v-col>
           <v-col
-            :cols="12"
+            cols="12"
             :md="5"
           >
             <v-autocomplete
@@ -73,13 +73,13 @@
           class="align-center"
         >
           <v-col
-            :cols="12"
+            cols="12"
             :md="5"
           >
             <span style="font-size: 1.2rem;"> {{ t('editor.formschema.edit.css.class') }}: </span>
           </v-col>
           <v-col
-            :cols="12"
+            cols="12"
             :md="5"
           >
             <v-combobox
@@ -96,13 +96,13 @@
           class="align-center"
         >
           <v-col
-            :cols="12"
+            cols="12"
             :md="5"
           >
             <span style="font-size: 1.2rem;"> {{ t('editor.formschema.edit.css.style') }}: </span>
           </v-col>
           <v-col
-            :cols="12"
+            cols="12"
             :md="5"
           >
             <v-combobox

@@ -30,7 +30,7 @@
             class="align-center mt-4"
           >
             <v-col
-              :cols="12"
+              cols="12"
               :md="5"
             >
               <span
@@ -38,7 +38,7 @@
               >{{ $t('displayLanguageDescription') }}*:</span>
             </v-col>
             <v-col
-              :cols="12"
+              cols="12"
               :md="5"
             >
               <v-select
@@ -55,7 +55,7 @@
             class="align-center mt-4"
           >
             <v-col
-              :cols="12"
+              cols="12"
               :md="5"
             >
               <span
@@ -63,7 +63,7 @@
               >{{ $t('supportedLanguages') }}*:</span>
             </v-col>
             <v-col
-              :cols="12"
+              cols="12"
               :md="5"
             >
               <v-select
@@ -82,7 +82,7 @@
             <v-col
               v-for="item in translationAsCode"
               :key="item.name"
-              :cols="12"
+              cols="12"
             >
               <v-card
                 :key="item.name"
@@ -92,7 +92,7 @@
                 <v-card-text>
                   <v-row no-gutters>
                     <v-col
-                      :cols="12"
+                      cols="12"
                       :md="5"
                     >
                       <v-text-field

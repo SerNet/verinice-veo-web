@@ -33,7 +33,7 @@
             class="justify-space-between"
           >
             <v-col
-              :cols="12"
+              cols="12"
               :md="3"
               class="px-4"
             >

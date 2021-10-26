@@ -81,13 +81,13 @@
               class="align-center mt-4"
             >
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
               </v-col>
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <v-text-field
@@ -103,13 +103,13 @@
               class="align-center mt-4"
             >
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <span style="font-size: 1.2rem;"> {{ $t('description') }}*: </span>
               </v-col>
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <v-text-field
@@ -133,13 +133,13 @@
             class="align-center mt-4"
           >
             <v-col
-              :cols="12"
+              cols="12"
               :md="5"
             >
               <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
             </v-col>
             <v-col
-              :cols="12"
+              cols="12"
               :md="5"
             >
               <v-select
@@ -151,7 +151,7 @@
             </v-col>
           </v-row>
           <v-row v-if="modelType === 'custom'">
-            <v-col :cols="12">
+            <v-col cols="12">
               <VeoEditorFileUpload
                 :code="code"
                 :input-label="$t('uploadLabel')"

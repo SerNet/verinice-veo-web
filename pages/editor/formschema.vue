@@ -140,7 +140,7 @@
         v-if="!backlogCollapsed"
         absolute-size
         no-padding
-        :cols="12"
+        cols="12"
         :md="oneColumnCollapsed ? 6 : 4"
         :xl="oneColumnCollapsed ? 6 : 4"
         sticky-header
@@ -174,7 +174,7 @@
       <VeoPage
         absolute-size
         no-padding
-        :cols="12"
+        cols="12"
         :md="oneColumnCollapsed ? 6 : 4"
         :xl="oneColumnCollapsed ? 6 : 4"
         sticky-header
@@ -238,7 +238,7 @@
         v-if="!previewCollapsed && !$vuetify.breakpoint.xs"
         no-padding
         absolute-size
-        :cols="12"
+        cols="12"
         :md="oneColumnCollapsed ? 6 : 4"
         :xl="oneColumnCollapsed ? 6 : 4"
         height="100%"
