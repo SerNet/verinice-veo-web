@@ -31,7 +31,6 @@
           <v-row
             dense
             class="justify-space-between col-12"
-            col-12
           >
             <v-col
               :cols="12"
