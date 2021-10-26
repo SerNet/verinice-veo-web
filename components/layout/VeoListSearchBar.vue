@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Jessica Lühnen
+   - Copyright (C) 2021  Jonas Heitmann, Jessica Lühnen, Annemarie Bufe
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -18,14 +18,29 @@
 <template>
   <v-form
     ref="form"
+    width="100%"
     @submit.prevent="onSubmit"
   >
-    <v-row no-gutters>
+    <v-row no-gutters>  
       <v-col
-        class="d-flex"
+        class="d-flex mb-4"
       >
-        <template v-for="(key, index) of textFilters">
+        <template v-for="(key, index) of filterFields">
+          <v-select
+            v-if="objectType === 'process' && key==='status'"
+            :key="index + '_s'"
+            v-model="filter.status"
+            hide-details
+            dense
+            outlined
+            class="veo-list-searchbar__input"
+            :label="$t('objectlist.status')"
+            :items="status"
+            item-text="text"
+            item-value="value"
+          />
           <v-text-field
+            v-if="key!=='status'"
             :key="index"
             v-model="filter[key]"
             hide-details
@@ -35,18 +50,7 @@
             :placeholder="$t(`objectlist.${key}`).toString()"
           />
         </template>
-        <v-select
-          v-if="objectType === 'process'"
-          v-model="filter.status"
-          hide-details
-          dense
-          outlined
-          class="veo-list-searchbar__input"
-          :label="$t('objectlist.status')"
-          :items="status"
-          item-text="text"
-          item-value="value"
-        />
+
         <v-btn
           outlined
           color="primary"
@@ -65,7 +69,7 @@
           :disabled="resetDisabled"
           @click="reset"
         >
-          {{ $t('global.button.reset') }}
+          <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -81,9 +85,9 @@ import { IVeoTranslations } from '~/types/VeoTypes';
 export interface IVeoFilter {
   designator: string | undefined;
   name: string | undefined;
+  status: string | undefined;
   description: string | undefined;
   updatedBy: string | undefined;
-  status: string | undefined;
   [key: string]: string | undefined;
 }
 
@@ -122,8 +126,8 @@ export default Vue.extend({
     this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
   },
   computed: {
-    textFilters(): string[] {
-      return Object.keys(this.objectType !== 'process' ? omit(this.filter, 'status') : this.filter);
+    filterFields(): string[] {
+      return Object.keys(this.filter);
     },
     resetDisabled(): boolean {
       return Object.values(this.filter).every((f: any) => !f);

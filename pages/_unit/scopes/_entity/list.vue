@@ -215,9 +215,9 @@ export default Vue.extend({
     this.filter = {
       designator: this.$route.query.designator,
       name: this.$route.query.name,
+      status: this.$route.query.status,
       description: this.$route.query.description,
-      updatedBy: this.$route.query.updatedBy,
-      status: this.$route.query.status
+      updatedBy: this.$route.query.updatedBy
     };
   },
   methods: {
@@ -309,6 +309,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .search-bar-desktop {
-  margin: 0 100px;
+  margin: 0 16px 0 0;
 }
 </style>
