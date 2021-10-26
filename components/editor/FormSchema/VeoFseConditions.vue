@@ -21,13 +21,13 @@
     class="align-center"
   >
     <v-col
-      :cols="12"
+      cols="12"
       :md="5"
     >
       <span style="font-size: 1.2rem;">{{ t('displayType') }}:</span>
     </v-col>
     <v-col
-      :cols="12"
+      cols="12"
       :md="5"
     >
       <v-select
@@ -39,13 +39,13 @@
     </v-col>
     <template v-if="displayType">
       <v-col
-        :cols="12"
+        cols="12"
         :md="5"
       >
         <span style="font-size: 1.2rem;">{{ t('condition') }}*:</span>
       </v-col>
       <v-col
-        :cols="12"
+        cols="12"
         :md="5"
       >
         <v-row

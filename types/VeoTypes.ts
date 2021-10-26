@@ -295,6 +295,7 @@ export interface IVeoFormSchemaMeta {
   name: { [key: string]: string };
   id?: string;
   domainId?: string;
+  sorting: string | null;
 }
 
 export interface IVeoFormSchemaItemOptions {

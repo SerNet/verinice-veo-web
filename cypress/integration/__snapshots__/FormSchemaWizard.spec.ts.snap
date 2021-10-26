@@ -12,6 +12,7 @@ exports[`Formschema Wizard > creates a new formschema based on own uploaded obje
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": "a1",
   "subType": "TF",
   "translation": {
     "de": {}
@@ -32,6 +33,7 @@ exports[`Formschema Wizard > creates a new formschema based on own objectschema 
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": null,
   "subType": "TF",
   "translation": {
     "de": {}
@@ -52,6 +54,7 @@ exports[`Formschema Wizard > creates a new formschema based on control objectsch
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": null,
   "subType": "TF",
   "translation": {
     "de": {}
@@ -72,6 +75,7 @@ exports[`Formschema Wizard > creates a new formschema based on scope objectschem
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": null,
   "subType": "TF",
   "translation": {
     "de": {}
@@ -92,6 +96,7 @@ exports[`Formschema Wizard > creates a new formschema based on asset objectschem
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": null,
   "subType": "TF",
   "translation": {
     "de": {}
@@ -112,6 +117,7 @@ exports[`Formschema Wizard > creates a new formschema based on process objectsch
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": null,
   "subType": "TF",
   "translation": {
     "de": {}
@@ -132,6 +138,7 @@ exports[`Formschema Wizard > creates a new formschema based on incident objectsc
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": null,
   "subType": "TF",
   "translation": {
     "de": {}
@@ -152,6 +159,7 @@ exports[`Formschema Wizard > creates a new formschema based on document objectsc
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": null,
   "subType": "TF",
   "translation": {
     "de": {}
@@ -172,6 +180,7 @@ exports[`Formschema Wizard > creates a new formschema based on person objectsche
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": null,
   "subType": "TF",
   "translation": {
     "de": {}
@@ -192,6 +201,7 @@ exports[`Formschema Wizard > creates a new formschema based on scenario objectsc
   "name": {
     "de": "Test Formschema"
   },
+  "sorting": null,
   "subType": "TF",
   "translation": {
     "de": {}

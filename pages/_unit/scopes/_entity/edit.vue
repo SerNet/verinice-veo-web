@@ -20,7 +20,7 @@
     <template #default>
       <VeoPage
         absolute-size
-        :cols="12"
+        cols="12"
         :md="8"
         :xl="8"
         sticky-header
@@ -200,7 +200,7 @@
       </VeoPage>
       <VeoPage
         absolute-size
-        :cols="12"
+        cols="12"
         :md="4"
         :xl="4"
       >

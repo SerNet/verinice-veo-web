@@ -35,7 +35,7 @@
     >
       <v-row>
         <v-col
-          :cols="12"
+          cols="12"
           md="6"
         >
           <VeoUnitFormsWidget
@@ -44,7 +44,7 @@
           />
         </v-col>
         <v-col
-          :cols="12"
+          cols="12"
           md="6"
         >
           <VeoDataProcessingWidget />

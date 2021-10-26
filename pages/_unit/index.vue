@@ -43,14 +43,14 @@
       <template v-else>
         <v-row>
           <!--<v-col
-            :cols="12"
+            cols="12"
             sm="6"
             lg="4"
           >
             <VeoUnitWidget :unit="unit" />
           </v-col>-->
           <v-col
-            :cols="12"
+            cols="12"
             md="6"
           >
             <VeoUnitFormsWidget
@@ -61,7 +61,7 @@
             />
           </v-col>
           <v-col
-            :cols="12"
+            cols="12"
             md="6"
           >
             <VeoUnitObjectWidget :unit="unit" />

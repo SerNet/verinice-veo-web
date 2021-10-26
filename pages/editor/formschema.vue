@@ -140,7 +140,7 @@
         v-if="!backlogCollapsed"
         absolute-size
         no-padding
-        :cols="12"
+        cols="12"
         :md="oneColumnCollapsed ? 6 : 4"
         :xl="oneColumnCollapsed ? 6 : 4"
         sticky-header
@@ -174,7 +174,7 @@
       <VeoPage
         absolute-size
         no-padding
-        :cols="12"
+        cols="12"
         :md="oneColumnCollapsed ? 6 : 4"
         :xl="oneColumnCollapsed ? 6 : 4"
         sticky-header
@@ -238,7 +238,7 @@
         v-if="!previewCollapsed && !$vuetify.breakpoint.xs"
         no-padding
         absolute-size
-        :cols="12"
+        cols="12"
         :md="oneColumnCollapsed ? 6 : 4"
         :xl="oneColumnCollapsed ? 6 : 4"
         height="100%"
@@ -328,8 +328,10 @@
         :object-schema="formSchema.modelType"
         :form-schema="formSchema.name[language]"
         :subtype="formSchema.subType"
+        :sorting="formSchema.sorting"
         @update-schema-name="updateSchemaName"
         @update-subtype="updateSubType"
+        @update-sorting="updateSorting"
       />
     </template>
   </VeoPageWrapper>
@@ -463,6 +465,12 @@ export default defineComponent<IProps>({
       }
     }
 
+    function updateSorting(value: string) {
+      if (formSchema.value) {
+        formSchema.value.sorting = value;
+      }
+    }
+
     const invalidSchemaDownloadDialogVisible = ref(false);
     function downloadSchema(forceDownload: boolean = false) {
       if (schemaIsValid.value.valid === false && !forceDownload) {
@@ -567,6 +575,7 @@ export default defineComponent<IProps>({
       setTranslation,
       updateSchemaName,
       updateSubType,
+      updateSorting,
       downloadSchema,
       onDelete,
       onUpdate,

@@ -107,9 +107,9 @@ interface IProps {
   absoluteSize: boolean;
   title?: string;
   fullsize: boolean;
-  cols: number;
-  md: number;
-  xl: number;
+  cols: number | string;
+  md: number | string;
+  xl: number | string;
   noPadding: boolean;
   stickyHeader: boolean;
   pageClass: string;
@@ -153,21 +153,21 @@ export default defineComponent<IProps>({
      * The size of the page on viewports smaller than md
      */
     cols: {
-      type: Number,
+      type: [String, Number],
       default: 12
     },
     /**
      * The size of the page on viewports smaller than xl
      */
     md: {
-      type: Number,
+      type: [String, Number],
       default: 8
     },
     /**
      * The size of the page on viewports bigger than xl
      */
     xl: {
-      type: Number,
+      type: [String, Number],
       default: 6
     },
     /**
