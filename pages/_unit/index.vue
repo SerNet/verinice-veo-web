@@ -41,6 +41,11 @@
         />
       </div>
       <template v-else>
+        <v-row class="flex-column">
+          <v-col>
+            <VeoStackedStatusBarChartWidget />
+          </v-col>
+        </v-row>
         <v-row>
           <!--<v-col
             :cols="12"
