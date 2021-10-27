@@ -20,6 +20,7 @@ const NAV_ENTRY_EXPANDED = 'primary-navigation-drawer--nav-entry-expanded';
 const LAST_DOMAIN = 'last-domain';
 const LAST_UNIT = 'last-unit';
 const FIRST_STEPS_COMPLETED = 'first-steps-completed';
+const UNIT_BEFORE_DEMOUNIT = ' unit-before-demounit';
 
 const PERSIST_ON_LOGOUT = [FIRST_STEPS_COMPLETED];
 
@@ -112,5 +113,13 @@ export default class LocalStorage {
 
   static set firstStepsCompleted(value: boolean) {
     LocalStorage.setBoolean(FIRST_STEPS_COMPLETED, value);
+  }
+
+  static get unitBeforeDemoUnit() {
+    return LocalStorage.get(UNIT_BEFORE_DEMOUNIT);
+  }
+
+  static set unitBeforeDemoUnit(value: string | null) {
+    LocalStorage.set(UNIT_BEFORE_DEMOUNIT, value);
   }
 }
