@@ -281,6 +281,7 @@ export interface IVeoEntity extends IVeoBaseObject {
   parts: IVeoLink[]; // Only contains items if entity is NOT of type scope
   descriptionShort?: string; // Frontend only attribute used in VeoObjectList.vue
   type: string;
+  _self: string;
 }
 
 export interface IVeoTranslations {
