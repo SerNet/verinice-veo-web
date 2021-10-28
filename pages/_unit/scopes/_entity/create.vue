@@ -216,7 +216,8 @@ export default Vue.extend({
         owner: {
           targetUri: `${this.$config.apiUrl}/units/${this.unitID}`
         },
-        designator: '' // Needed for form validation
+        designator: '', // Needed for form validation
+        _self: 'http://example.com'
       };
 
       this.form = {
@@ -317,6 +318,7 @@ export default Vue.extend({
           };
         });
       }
+      delete this.form.objectData._self;
     },
     // Either redirect the user back (save and close) or redirect him to the new entity (save)
     async redirect(close: boolean, target?: string) {

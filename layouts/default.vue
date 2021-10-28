@@ -43,50 +43,7 @@
       <div
         class="d-flex flex-grow-0 mr-6"
       >
-        <v-tooltip
-          v-if="!userIsInDemoUnit"
-          top
-          :disabled="!!demoUnit"
-        >
-          <template #activator="{ on }">
-            <div
-              class="d-inline-block"
-              v-on="on"
-              @click.prevent
-            >
-              <v-btn
-          
-                color="primary"
-                :disabled="!demoUnit"
-                class="mx-4"
-                depressed
-                @click="goToUnit(demoUnit.id)"
-              >
-                <v-icon class="mr-2">
-                  mdi-login-variant
-                </v-icon>
-                {{ t('goToDemoUnit') }}
-              </v-btn>
-            </div>
-          </template>
-          <template #default>
-            {{ t('noDemoUnit') }}
-          </template>
-        </v-tooltip>
-        
-        <v-btn
-          v-else
-          color="primary"
-          class="mx-4"
-          depressed
-          :disabled="units.length === 0"
-          @click="goToUnit(units[0].id)"
-        >
-          <v-icon class="mr-2">
-            mdi-logout-variant
-          </v-icon>
-          {{ t('leaveDemoUnit') }}
-        </v-btn>
+        <VeoDemoUnitButton />
         <v-menu offset-y>
           <template #activator="{ on, attrs }">
             <v-btn
@@ -166,19 +123,16 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import { computed, defineComponent, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoUnit } from '~/types/VeoTypes';
 
 interface IProps {}
 
 export default defineComponent<IProps>({
   setup(_props, context) {
-    const { $api, $user, params, app } = useContext();
-    const { t } = useI18n();
+    const { $user, params, app } = useContext();
     const route = useRoute();
     const router = useRouter();
 
@@ -276,13 +230,6 @@ export default defineComponent<IProps>({
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
     const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : `/${params.value.unit}`));
 
-    // Demo unit/unit selection
-    const units: Ref<IVeoUnit[]> = ref([]);
-
-    async function loadUnits() {
-      units.value = await $api.unit.fetchAll();
-    }
-
     const domain = computed((): string | undefined => separateUUIDParam(route.value.params.domain).id);
 
     const domainId = computed((): string | undefined => {
@@ -297,18 +244,6 @@ export default defineComponent<IProps>({
 
     const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
 
-    // While loading the unit id passed to the createUUIDUrlParam function would be undefined in the template, creating an error. Thus we have to navigate using this function.
-    function goToUnit(unitId: string) {
-      if (unitId) {
-        app.router?.push(`/${createUUIDUrlParam('unit', unitId)}`);
-      }
-    }
-
-    const userIsInDemoUnit = computed(() => params.value.unit && separateUUIDParam(params.value.unit).id === units.value.find((unit) => unit.name === 'Demo')?.id);
-    const demoUnit: ComputedRef<IVeoUnit | undefined> = computed(() => units.value.find((unit) => unit.name === 'Demo'));
-
-    loadUnits();
-
     return {
       domainId,
       unitId,
@@ -319,13 +254,7 @@ export default defineComponent<IProps>({
       newUnitDialog,
       snackbar,
       breadcrumbsKey,
-      userIsInDemoUnit,
-      demoUnit,
-      units,
-      goToUnit,
-      homeLink,
-
-      t
+      homeLink
     };
   },
   head() {
@@ -335,21 +264,6 @@ export default defineComponent<IProps>({
   }
 });
 </script>
-
-<i18n>
-{
-  "en": {
-    "goToDemoUnit": "go to demo-unit",
-    "leaveDemoUnit": "leave demo-unit",
-    "noDemoUnit": "No demo unit exists for this account"
-  },
-  "de": {
-    "goToDemoUnit": "Zur Demo-Unit",
-    "leaveDemoUnit": "Demo-Unit verlassen",
-    "noDemoUnit": "Für diesen Account existiert keine Demo Unit"
-  }
-}
-</i18n>
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';

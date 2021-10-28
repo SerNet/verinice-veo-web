@@ -114,7 +114,8 @@ export default Vue.extend({
             '/members$',
             '/designator$',
             '/customAspects$',
-            '/links$'
+            '/links$',
+            '_self'
           ]
         }
       }

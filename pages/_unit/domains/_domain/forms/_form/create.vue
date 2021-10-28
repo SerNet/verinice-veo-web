@@ -86,6 +86,7 @@ export default Vue.extend({
   },
   methods: {
     onSave(_event: any, redirect: boolean = false): Promise<void> {
+      delete this.form.objectData._self;
       return this.$api.entity
         .create(this.objectType || '', this.form.objectData)
         .then((res: any) => {
