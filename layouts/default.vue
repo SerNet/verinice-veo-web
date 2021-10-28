@@ -300,7 +300,7 @@ export default defineComponent<IProps>({
     // While loading the unit id passed to the createUUIDUrlParam function would be undefined in the template, creating an error. Thus we have to navigate using this function.
     function goToUnit(unitId: string) {
       if (unitId) {
-        app.router?.push(`/${createUUIDUrlParam('unit', unitId)}`);
+        router.push(`/${createUUIDUrlParam('unit', unitId)}`);
       }
     }
 
