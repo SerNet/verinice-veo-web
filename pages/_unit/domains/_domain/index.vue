@@ -18,100 +18,145 @@
 <template>
   <VeoPage
     :title="title"
-    :loading="$fetchState.pending"
+    :loading="!domain"
     padding
+    fullsize
   >
     <p
       v-if="domain"
-      class="veo-unit-description"
+      class="veo-domain-description"
     >
       <span v-if="domain.description">{{ domain.description }}</span>
-      <i v-else>{{ $t('unit.details.nodescription') }}</i>
+      <i v-else>{{ t('unit.details.nodescription') }}</i>
     </p>
     <v-row
-      v-if="domain"
       no-gutters
-      class="flex-column fill-height"
+      class="mb-4"
     >
-      <v-row>
-        <v-col
-          :cols="12"
-          md="6"
-        >
-          <VeoUnitFormsWidget
-            :domain="domain"
-            :unit="unit"
-          />
-        </v-col>
-        <v-col
-          :cols="12"
-          md="6"
-        >
-          <VeoDataProcessingWidget />
-          <VeoMyLatestRevisionsWidget class="mt-8" />
-        </v-col>
-      </v-row>
+      <v-col
+        v-for="objectStatusInformation of chartData"
+        :key="objectStatusInformation.objectType"
+        cols="12"
+      >
+        <VeoStackedStatusBarChartWidget
+          :data="objectStatusInformation.subtypes"
+          chart-height="50"
+          :title="objectStatusInformation.objectType"
+        />
+      </v-col>
+      <v-col
+        cols="12"
+        md="6"
+      >
+        <VeoMyLatestRevisionsWidget class="mt-8" />
+      </v-col>
     </v-row>
     <VeoWelcomeDialog
-      v-if="showWelcomeDialog"
-      v-model="showWelcomeDialog"
+      v-if="welcomeDialog"
+      v-model="welcomeDialog"
     />
   </VeoPage>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent, Ref, ref, useContext, useMeta, useRouter, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
-export default Vue.extend({
-  data() {
-    return {
-      domain: undefined as IVeoDomain | undefined,
-      unit: {} as any,
-      showWelcomeDialog: false as boolean
-    };
-  },
-  async fetch() {
-    try {
-      this.unit = await this.$api.unit.fetch(this.unitId);
-      this.domain = await this.$api.domain.fetch(this.domainId);
-    } catch (e: any) {
-      if (e.code === 404) {
-        this.$root.$emit(VeoEvents.ALERT_ERROR, {
-          type: ALERT_TYPE.ERROR,
-          title: this.$t('error404'),
-          text: this.$t('domainNotFoundText')
-        } as IVeoEventPayload);
-        this.$router.push(`/${this.$route.params.unit}`);
+export default defineComponent({
+  setup(_props, { root }) {
+    const { t } = useI18n();
+    const { $api, params } = useContext();
+    const router = useRouter();
+
+    const domainId = computed(() => separateUUIDParam(params.value.domain).id);
+    const welcomeDialog = ref(!LocalStorage.firstStepsCompleted);
+
+    // refetch everything if domain changes
+    watch(
+      () => params.value,
+      () => {
+        fetchDomain();
+      }
+    );
+
+    // domain stuff
+    const domain: Ref<IVeoDomain | undefined> = ref();
+
+    async function fetchDomain() {
+      try {
+        domain.value = await $api.domain.fetch(domainId.value);
+        fetchObjectStatusInformation();
+      } catch (e: any) {
+        if (e.code === 404) {
+          root.$emit(VeoEvents.ALERT_ERROR, {
+            type: ALERT_TYPE.ERROR,
+            title: t('error404'),
+            text: t('domainNotFoundText')
+          } as IVeoEventPayload);
+          router.push(`/${params.value.unit}`);
+        }
       }
     }
-  },
-  head(): any {
+
+    // status chart stuff
+    const data = ref([
+      {
+        label: 'Giraffe',
+        value: 20,
+        color: '#efefef'
+      },
+      {
+        label: 'Mensch',
+        value: 1,
+        color: '#00ffff'
+      },
+      {
+        label: 'Affe',
+        value: 5,
+        color: '#00ff00'
+      }
+    ]);
+
+    // As we don't have an introspection endpoint to easily fetch the amount of objects per status,
+    // we have to fetch all objects, group them by subtype and then create a map with the amount of objects per status
+    const types: Ref<IVeoSchemaEndpoint[]> = ref([]);
+    const chartData: Ref<{ objectType: string; subtypes: { label: string; data: { [key: string]: number } }[] }[]> = ref([]);
+
+    async function fetchObjectStatusInformation() {
+      if (!types.value.length) {
+        types.value = await $api.schema.fetchAll();
+      }
+      if (domain.value) {
+        for (const type of types.value) {
+          chartData.value.push({ objectType: type.schemaName, subtypes: [] });
+        }
+      }
+    }
+
+    // page title
+    const title = computed(() => domain.value?.name || t('domainOverview').toString());
+    useMeta(() => ({
+      title: title.value
+    }));
+
+    fetchDomain();
+
     return {
-      title: this.$t('unit.index.title')
+      domain,
+      title,
+      welcomeDialog,
+      chartData,
+
+      t
     };
   },
-  computed: {
-    title(): string {
-      return this.domain?.name || this.$t('domainOverview').toString();
-    },
-    domainId() {
-      return separateUUIDParam(this.$route.params.domain).id;
-    },
-    unitId() {
-      return separateUUIDParam(this.$route.params.unit).id;
-    }
-  },
-  watch: {
-    '$route.params': '$fetch'
-  },
-  mounted() {
-    this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
-  }
+  head: {}
 });
 </script>
 
@@ -129,7 +174,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
-.veo-unit-description {
+.veo-domain-description {
   color: $accent;
   margin-top: -20px;
 }
