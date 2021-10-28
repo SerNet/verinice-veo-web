@@ -85,6 +85,13 @@
         <span>{{ name }}</span>
       </v-tooltip> 
     </template>
+    <v-list-item
+      v-if="childItems.length === 0"
+      style="min-height: 28px;"
+      dense
+    >
+      <v-list-item-subtitle>{{ t('noEntries') }}</v-list-item-subtitle>
+    </v-list-item>
     <VeoPrimaryNavigationEntry
       v-for="child of childItems"
       v-bind="child"
@@ -97,6 +104,7 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, PropType, Ref, ref, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { INavItem } from './VeoPrimaryNavigation.vue';
 
 interface IProps extends INavItem {
@@ -148,6 +156,7 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
+    const { t } = useI18n();
     const expanded: Ref<boolean | undefined> = ref(!props.collapsed);
 
     watch(
@@ -188,10 +197,21 @@ export default defineComponent<IProps>({
       }
     }
 
-    return { expanded, onInputExpanded };
+    return { expanded, onInputExpanded, t };
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "noEntries": "No entries"
+  },
+  "de": {
+    "noEntries": "Keine Einträge"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 .veo-primary-navigation__menu-item {
