@@ -18,20 +18,22 @@
 <template>
   <VeoWidget :title="upperFirst(title)">
     <template #default>
-      <v-row class="align-center">
+      <v-row
+        v-for="(chart, index) of chartData"
+        :key="index"
+        class="align-center"
+      >
         <v-col
           cols="12"
           md="4"
           lg="2"
         >
-          <h4>{{ title }}</h4>
+          <h4>{{ chart.name }}</h4>
         </v-col>
         <v-col>
           <BarChart
-            v-for="(chart, index) of options"
-            :key="index"
             ref="barChartRef"
-            :chart-data="chartData[index]"
+            :chart-data="chart.data"
             :options="options[index]"
             :style="{ height: `${chartHeight}px` }"
           />
@@ -128,6 +130,7 @@ export default defineComponent({
         }))
       }))
     );
+    console.log(chartData);
 
     return {
       barChartRef,

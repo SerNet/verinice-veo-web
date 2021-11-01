@@ -39,9 +39,9 @@
         cols="12"
       >
         <VeoStackedStatusBarChartWidget
-          :data="objectStatusInformation.subtypes"
-          chart-height="50"
           :title="objectStatusInformation.objectType"
+          chart-height="50"
+          :data="objectStatusInformation.subtypes"         
         />
       </v-col>
       <v-col
@@ -64,9 +64,10 @@ import { useI18n } from 'nuxt-i18n-composable';
 
 import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoEntity } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { IChartValue } from '~/components/widgets/VeoStackedStatusBarChartWidget.vue';
 
 export default defineComponent({
   setup(_props, { root }) {
@@ -91,7 +92,7 @@ export default defineComponent({
     async function fetchDomain() {
       try {
         domain.value = await $api.domain.fetch(domainId.value);
-        fetchObjectStatusInformation();
+        fetchEntityStatusInformation();
       } catch (e: any) {
         if (e.code === 404) {
           root.$emit(VeoEvents.ALERT_ERROR, {
@@ -104,39 +105,68 @@ export default defineComponent({
       }
     }
 
-    // status chart stuff
-    const data = ref([
-      {
-        label: 'Giraffe',
-        value: 20,
-        color: '#efefef'
-      },
-      {
-        label: 'Mensch',
-        value: 1,
-        color: '#00ffff'
-      },
-      {
-        label: 'Affe',
-        value: 5,
-        color: '#00ff00'
-      }
-    ]);
-
-    // As we don't have an introspection endpoint to easily fetch the amount of objects per status,
-    // we have to fetch all objects, group them by subtype and then create a map with the amount of objects per status
+    // As we don't have an introspection endpoint to easily fetch the amount of entities per status,
+    // we have to fetch all entities, group them by subtype and then create a map with the amount of entities per status
     const types: Ref<IVeoSchemaEndpoint[]> = ref([]);
-    const chartData: Ref<{ objectType: string; subtypes: { label: string; data: { [key: string]: number } }[] }[]> = ref([]);
+    const chartData: Ref<{ objectType: string; subtypes: { name: string; data: IChartValue[] }[] }[]> = ref([]);
 
-    async function fetchObjectStatusInformation() {
+    async function fetchEntityStatusInformation() {
       if (!types.value.length) {
         types.value = await $api.schema.fetchAll();
       }
       if (domain.value) {
         for (const type of types.value) {
-          chartData.value.push({ objectType: type.schemaName, subtypes: [] });
+          chartData.value.push({
+            objectType: type.schemaName,
+            subtypes: []
+          });
+        }
+        for (const index in chartData.value) {
+          const groupedEntities = groupEntitiesBySubType((await $api.entity.fetchAll(chartData.value[index].objectType, 1, { size: Number.MAX_VALUE })).items, domain.value.id);
+          chartData.value[index].subtypes = Object.keys(groupedEntities).map((groupName) => {
+            const entitiesPerStatus = getEntitiesPerStatusMap(groupedEntities[groupName]);
+            // console.log(entitiesPerStatus);
+            return {
+              name: groupName,
+              data: Object.keys(entitiesPerStatus).reduce((previousValue, currentValue) => {
+                previousValue.push({
+                  label: currentValue,
+                  value: entitiesPerStatus[currentValue].length,
+                  color: '#ee0000'
+                });
+                return previousValue;
+              }, [] as IChartValue[])
+            };
+          });
         }
       }
+    }
+
+    function groupEntitiesBySubType(entities: IVeoEntity[], domain: string): { [key: string]: IVeoEntity[] } {
+      return entities.reduce((previousValue, currentValue) => {
+        // Push to map if key exists
+        if (previousValue[currentValue.subType[domain]]) {
+          previousValue[currentValue.subType[domain]].push(currentValue);
+          // If domain isn't undefined, crate new map entry
+        } else if (currentValue.subType[domain]) {
+          previousValue[currentValue.subType[domain]] = [currentValue];
+        }
+
+        return previousValue;
+      }, {} as { [key: string]: IVeoEntity[] });
+    }
+
+    function getEntitiesPerStatusMap(entities: IVeoEntity[]): { [key: string]: IVeoEntity[] } {
+      return entities.reduce((previousValue, currentValue) => {
+        // Push to map if key exists
+        if (previousValue[currentValue.status]) {
+          previousValue[currentValue.status].push(currentValue);
+          // Create new map entry
+        } else {
+          previousValue[currentValue.status] = [currentValue];
+        }
+        return previousValue;
+      }, {} as { [key: string]: IVeoEntity[] });
     }
 
     // page title
