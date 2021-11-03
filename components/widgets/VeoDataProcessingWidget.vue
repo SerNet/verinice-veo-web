@@ -89,11 +89,11 @@ export default Vue.extend({
     },
     processStatus(): { [key: string]: { text: string; color: string; items: number } } {
       return {
-        NEW: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_NEW || 'NEW', color: '#AD2828', items: 0 },
-        IN_PROGRESS: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_IN_PROGRESS || 'IN_PROGRESS', color: '#c90000', items: 0 },
-        FOR_REVIEW: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_FOR_REVIEW || 'FOR_REVIEW', color: '#E2BF00', items: 0 },
-        RELEASED: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_RELEASED || 'RELEASED', color: '#41A011', items: 0 },
-        ARCHIVED: { text: this.translations.lang?.[this.$i18n.locale]?.process_status_ARCHIVED || 'ARCHIVED', color: '#656565', items: 0 }
+        NEW: { text: this.translations.lang?.[this.$i18n.locale]?.process_PRO_DataProcessing_status_NEW || 'NEW', color: '#AD2828', items: 0 },
+        IN_PROGRESS: { text: this.translations.lang?.[this.$i18n.locale]?.process_PRO_DataProcessing_status_IN_PROGRESS || 'IN_PROGRESS', color: '#c90000', items: 0 },
+        FOR_REVIEW: { text: this.translations.lang?.[this.$i18n.locale]?.process_PRO_DataProcessing_status_FOR_REVIEW || 'FOR_REVIEW', color: '#E2BF00', items: 0 },
+        RELEASED: { text: this.translations.lang?.[this.$i18n.locale]?.process_PRO_DataProcessing_status_RELEASED || 'RELEASED', color: '#41A011', items: 0 },
+        ARCHIVED: { text: this.translations.lang?.[this.$i18n.locale]?.process_PRO_DataProcessing_status_ARCHIVED || 'ARCHIVED', color: '#656565', items: 0 }
       };
     }
   },
