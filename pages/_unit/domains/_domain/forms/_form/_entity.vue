@@ -388,7 +388,6 @@ export default Vue.extend({
               targetUri: `${this.$config.apiUrl}/units/${this.unitId}`
             },
             designator: '', // Needed for form validation
-            ...(this.objectType === 'process' ? { status: 'NEW' } : {}),
             _self: 'http://example.com'
           };
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
@@ -399,22 +398,17 @@ export default Vue.extend({
         lang
       };
 
-      // Add subtype to object data so it gets saved
-      if (this.form.formSchema?.subType) {
-        // Sub type is not set yet, if the object is created
-        if (!this.form.objectData.subType) {
-          this.form.objectData.subType = { [this.domainId]: this.form.formSchema?.subType };
-        } else {
-          this.form.objectData.subType[this.domainId] = this.form.formSchema?.subType;
-        }
-      }
-
-      // Add domain to object data so it gets saved
-      const domainObject = { targetUri: `${this.$config.apiUrl}/domains/${this.domainId}` };
+      // Add either the domain object to the entity (if new) or if the current domain is not part of the domain object add it to it
       if (!this.form.objectData.domains) {
-        this.form.objectData.domains = [domainObject];
-      } else {
-        this.form.objectData.domains.push(domainObject);
+        this.form.objectData.domains = {
+          [this.domainId]: {
+            subType: this.form.formSchema?.subType
+          }
+        };
+      } else if (!this.form.objectData.domains[this.domainId]) {
+        this.form.objectData.domains[this.domainId] = {
+          subType: this.form.formSchema?.subType
+        };
       }
     } else {
       throw new Error('Object Type is not defined in FormSchema');
