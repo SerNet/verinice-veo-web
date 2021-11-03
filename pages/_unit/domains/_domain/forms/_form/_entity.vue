@@ -398,7 +398,7 @@ export default Vue.extend({
         lang
       };
 
-      // Add either the domain object to the entity (if new) or if the current domain is not part of the domain object add it to it
+      // Add either the domain object to the entity (if new) or the current domain if it isn't part of the domain object yet
       if (!this.form.objectData.domains) {
         this.form.objectData.domains = {
           [this.domainId]: {
