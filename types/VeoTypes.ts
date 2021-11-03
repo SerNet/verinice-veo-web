@@ -262,21 +262,23 @@ export interface IVeoCatalogItem extends IVeoBaseObject {
   element: IVeoLink;
 }
 
-export interface IVeoEntitySubtypes {
-  [key: string]: string;
+export interface IVeoEntityDomain {
+  [key: string]: {
+    status: string;
+    subType: string;
+  };
 }
 
 export interface IVeoEntity extends IVeoBaseObject {
   name: string;
-  abbreviation: string;
+  abbreviation?: string;
   designator: string;
   displayName: string;
-  description: string;
-  domains: IVeoLink[];
+  description?: string;
+  domains: IVeoEntityDomain;
   owner: IVeoLink;
   links: IVeoCustomLinks;
   customAspects: IVeoCustomAspects;
-  subType: IVeoEntitySubtypes;
   members: IVeoLink[]; // Only contains items if entity is of type scope
   parts: IVeoLink[]; // Only contains items if entity is NOT of type scope
   descriptionShort?: string; // Frontend only attribute used in VeoObjectList.vue

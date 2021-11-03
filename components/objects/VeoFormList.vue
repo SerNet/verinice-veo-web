@@ -57,8 +57,8 @@
         {{ item.abbreviation }} {{ item.name }}
       </div>
     </template>
-    <template #item.status="{ value }">
-      {{ translations.lang && translations.lang[$i18n.locale] ? translations.lang[$i18n.locale][`process_status_${value}`] : value }}
+    <template #item.status="{ item }">
+      {{ translations.lang && translations.lang[$i18n.locale] ? translations.lang[$i18n.locale][convertStatusToI18nKey(item)] : item.domains[domainId] ? item.domains[domainId].status : '' }}
     </template>
     <template #item.description="{ item, value }">
       <div class="veo-object-list__description">
@@ -148,7 +148,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
-import { createUUIDUrlParam, formatDate, formatTime } from '~/lib/utils';
+import { createUUIDUrlParam, formatDate, formatTime, separateUUIDParam } from '~/lib/utils';
 
 import { IVeoEntity, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 
@@ -201,6 +201,9 @@ export default Vue.extend({
     itemsPerPage(): number {
       return this.$user.tablePageSize;
     },
+    domainId(): string {
+      return separateUUIDParam(this.$route.params.domain).id;
+    },
     page: {
       set(page: number) {
         this.$emit('page-change', { newPage: page, sortBy: this.sortBy, sortDesc: this.sortDesc });
@@ -223,15 +226,11 @@ export default Vue.extend({
           text: this.$t('objectlist.name'),
           value: 'name'
         },
-        ...(this.objectType === 'process'
-          ? [
-              {
-                text: this.$t('objectlist.status'),
-                value: 'status',
-                width: 100
-              }
-            ]
-          : []),
+        {
+          text: this.$t('objectlist.status'),
+          value: 'status',
+          width: 100
+        },
         {
           text: this.$t('objectlist.description'),
           filterable: false,
@@ -281,6 +280,10 @@ export default Vue.extend({
         sortDesc: this.sortDesc,
         page: 1
       });
+    },
+    convertStatusToI18nKey(entity: IVeoEntity): string {
+      const domainDetails = entity.domains[this.domainId];
+      return `${this.objectType}_${domainDetails.subType}_status_${domainDetails.status}`;
     }
   }
 });
