@@ -21,7 +21,7 @@ import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import vjp from 'vue-json-pointer';
-import Ajv, { RequiredParams } from 'ajv';
+import { ErrorObject, ValidateFunction } from 'ajv';
 import { merge } from 'lodash';
 import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
 import { BaseObject, IApi, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
@@ -90,7 +90,6 @@ export default Vue.extend({
         generator: {
           excludedProperties: [
             '/id$',
-            '/subType$',
             '/type$',
             '/domains$',
             '/owner$',
@@ -122,7 +121,7 @@ export default Vue.extend({
     };
   },
   computed: {
-    validate(): Ajv.ValidateFunction {
+    validate(): ValidateFunction {
       return ajv.compile(this.localSchema);
     },
     valid(): boolean | PromiseLike<any> {
@@ -215,20 +214,20 @@ export default Vue.extend({
         this.$emit('input', this.value);
       }
     },
-    validationErrorTransform(accummulator: {}, error: Ajv.ErrorObject) {
+    validationErrorTransform(accummulator: {}, error: ErrorObject) {
       const keyMatch = error.schemaPath.match(/((.+\/properties\/\w+\b)|(.+(?=\/required)))/g);
       if (!keyMatch) {
         throw new Error('Key does not match in Errors array');
       }
 
-      const key = error.keyword !== 'required' ? keyMatch[0] : `${keyMatch[0]}/properties/${(error.params as RequiredParams).missingProperty}`;
+      const key = error.keyword !== 'required' ? keyMatch[0] : `${keyMatch[0]}/properties/${error.params.missingProperty}`;
       let translatedErrorString = '';
 
       switch (error.keyword) {
         case 'required':
           // Special handling of links, as their last data path entry isn't the string we search for
           if ((error.params as any).missingProperty === 'targetUri') {
-            const dataPathParts = error.dataPath.split('/');
+            const dataPathParts = error.instancePath.split('/');
             dataPathParts.pop();
             translatedErrorString = this.$t(`error.${error.keyword}_link`, {
               field: this.getInvalidFieldLabel(dataPathParts.pop() || (error.params as any).missingProperty)
@@ -241,7 +240,7 @@ export default Vue.extend({
         case 'format':
         case 'pattern':
           translatedErrorString = this.$t('error.format', {
-            field: this.getInvalidFieldLabel(error.dataPath.split('/').pop() || error.dataPath),
+            field: this.getInvalidFieldLabel(error.instancePath.split('/').pop() || error.instancePath),
             format: (error.params as any)[error.keyword]
           }).toString();
           break;

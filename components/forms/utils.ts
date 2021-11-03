@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { JSONSchema7 } from 'json-schema';
-import Ajv from 'ajv';
+import Ajv2019 from 'ajv/dist/2019';
+import addFormats from 'ajv-formats';
 import { JsonPointer } from 'json-ptr';
 import { UIRule, UISchema, UISchemaElement } from '~/types/UISchema';
 import { IBaseObject } from '~/lib/utils';
@@ -111,11 +112,10 @@ export const linksFieldDialogFormSchema: UISchema = {
 };
 
 // Evaluate Rule
-export const ajv = new Ajv({
-  allErrors: true,
-  jsonPointers: true,
-  strictKeywords: true
+export const ajv = new Ajv2019({
+  allErrors: true
 });
+addFormats(ajv);
 
 export function propertyPath(path: string) {
   // TODO: Better translation from #/properties/name to #/name for values
