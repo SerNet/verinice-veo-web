@@ -46,7 +46,6 @@ export interface IVeoOSHCustomAspect {
 }
 
 export interface IVeoOSHCustomLink extends IVeoOSHCustomAspect {
-  description?: string;
   targetType: string;
   subType?: string;
 }
@@ -58,58 +57,75 @@ export interface IVeoOSHOptions {
 }
 
 const DEFAULT_SCHEMA = {
-  $schema: 'http://json-schema.org/draft-07/schema#',
+  $schema: 'https://json-schema.org/draft/2019-09/schema',
+  $id: 'new-schema',
   type: 'object',
   properties: {
+    _self: {
+      type: 'string',
+      description: 'A valid reference to this resource.',
+      readOnly: true,
+      format: 'uri'
+    },
     abbreviation: {
       type: 'string',
-      description: 'The abbreviation for the EntityLayerSupertype.'
+      description: 'The abbreviation for the Element.',
+      maxLength: 255
     },
     createdAt: {
       type: 'string',
-      description: 'A timestamp acc. to RFC 3339 specifying when this entity was created.'
+      description: 'A timestamp acc. to RFC 3339 specifying when this entity was created.',
+      readOnly: true
     },
     createdBy: {
       type: 'string',
-      description: 'The username of the user who created this object.'
+      description: 'The username of the user who created this object.',
+      readOnly: true
     },
     customAspects: {
       type: 'object',
       title: 'CustomAspect',
-      description: "A custom property which is determined by the requested entity schema - see '/schemas'",
+      description: "Groups of customizable attributes - see '/schemas'",
       properties: {}
     },
     description: {
       type: 'string',
-      description: 'The description for the EntityLayerSupertype.'
+      description: 'The description for the Element.',
+      maxLength: 65535
+    },
+    designator: {
+      type: 'string',
+      description: 'Compact human-readable identifier that is unique within the client.',
+      readOnly: true
     },
     domains: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          displayName: {
-            type: 'string',
-            description: 'A friendly human readable title of the referenced domain.'
+      type: 'object',
+      description: "Details about this element's association with domains. Domain ID is key, association object is value.",
+      patternProperties: {
+        '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$': {
+          properties: {
+            subType: {
+              type: 'string',
+              enum: []
+            },
+            status: {
+              type: 'string'
+            }
           },
-          resourcesUri: {
-            type: 'string'
+          dependentRequired: {
+            subType: ['status'],
+            status: ['subType']
           },
-          searchesUri: {
-            type: 'string'
-          },
-          targetUri: {
-            type: 'string',
-            description: 'The resource URL of the referenced domain.'
-          }
-        },
-        required: ['targetUri'],
-        description: 'The domains this entity is being used in.'
-      }
+          allOf: [],
+          type: 'object'
+        }
+      },
+      additionalProperties: false
     },
     id: {
       type: 'string',
-      description: 'ID must be a valid UUID string following RFC 4122.'
+      description: 'ID must be a valid UUID string following RFC 4122.',
+      format: 'uuid'
     },
     links: {
       type: 'object',
@@ -119,26 +135,29 @@ const DEFAULT_SCHEMA = {
     },
     name: {
       type: 'string',
-      description: 'The name for the EntityLayerSupertype.'
+      description: 'The name for the Element.',
+      maxLength: 255
     },
     owner: {
       type: 'object',
       properties: {
         displayName: {
           type: 'string',
-          description: 'A friendly human readable title of the referenced unit.'
+          description: 'A friendly human readable title of the referenced unit.',
+          readOnly: true
         },
         resourcesUri: {
           type: 'string',
-          description: 'URI the owner can get accessed by.'
+          readOnly: true
         },
         searchesUri: {
           type: 'string',
-          description: 'URI the owner can get searched by'
+          readOnly: true
         },
         targetUri: {
           type: 'string',
-          description: 'The resource URL of the referenced unit.'
+          description: 'The resource URL of the referenced unit.',
+          format: 'uri'
         }
       },
       required: ['targetUri'],
@@ -151,38 +170,44 @@ const DEFAULT_SCHEMA = {
         properties: {
           displayName: {
             type: 'string',
-            description: 'A friendly human readable title of the referenced entity.'
+            description: 'A friendly human readable title of the referenced entity.',
+            readOnly: true
           },
           resourcesUri: {
-            type: 'string'
+            type: 'string',
+            readOnly: true
           },
           searchesUri: {
-            type: 'string'
+            type: 'string',
+            readOnly: true
           },
           targetUri: {
             type: 'string',
-            description: 'The resource URL of the referenced entity.'
+            description: 'The resource URL of the referenced entity.',
+            format: 'uri'
           }
         },
         required: ['targetUri'],
         description: "A reference to an entity's part"
       }
     },
-    subType: {
-      type: 'object',
-      title: 'SubType',
-      description: 'The sub type this entity has in each domain. Domain ID is key, sub type is value.'
+    type: {
+      type: 'string',
+      description: 'Entity type identifier',
+      readOnly: true
     },
     updatedAt: {
       type: 'string',
-      description: 'A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.'
+      description: 'A timestamp acc. to RFC 3339 specifying when this entity was created.',
+      readOnly: true
     },
     updatedBy: {
       type: 'string',
-      description: 'The username of the user who last updated this object.'
+      description: 'The username of the user who last updated this object.',
+      readOnly: true
     }
   },
-  required: ['name', 'owner'],
+  required: ['_self', 'designator', 'name', 'owner'],
   title: '',
   description: ''
 };
@@ -476,96 +501,78 @@ export default class ObjectSchemaHelper {
 
   public static generateLinkSchema(link: IVeoOSHCustomLink): IVeoObjectSchemaCustomLink {
     const schemaLink: IVeoObjectSchemaCustomLink = {
-      type: 'array',
       items: {
-        type: 'object',
+        additionalProperties: false,
         properties: {
-          id: {
-            type: 'string',
-            title: 'The UUID to identify the element',
-            format: 'regex',
-            pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-          },
-          applicableTo: {
-            type: 'array',
-            items: {
-              type: 'string'
-            }
+          attributes: {
+            additionalProperties: false,
+            properties: {},
+            type: 'object'
           },
           domains: {
-            type: 'array',
-            title: 'The list of domains in which this element is present.',
             description: 'The ids of elements of the type domain.',
             items: {
-              type: 'object',
               properties: {
                 displayName: {
-                  type: 'string',
-                  description: 'A friendly human readable title of the referenced domain.'
+                  description: 'A friendly human readable title of the referenced domain.',
+                  type: 'string'
                 },
                 targetUri: {
-                  type: 'string',
-                  description: 'The resource URL of the referenced domain.'
+                  description: 'The resource URL of the referenced domain.',
+                  type: 'string'
                 }
               },
-              required: ['targetUri']
+              required: ['targetUri'],
+              type: 'object'
             },
+            title: 'The list of domains in which this element is present.',
+            type: 'array',
             uniqueItems: true
           },
+          id: {
+            format: 'regex',
+            pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}',
+            title: 'The UUID to identify the element',
+            type: 'string'
+          },
           references: {
-            type: 'array',
             items: {
               properties: {
                 displayName: {
-                  type: 'string',
-                  description: 'A friendly human readable title of the referenced object.'
+                  description: 'A friendly human readable title of the referenced object.',
+                  type: 'string'
                 },
                 targetUri: {
-                  type: 'string',
-                  description: 'The resource URL of the referenced object.'
+                  description: 'The resource URL of the referenced object.',
+                  type: 'string'
                 }
               },
+              type: 'object',
               required: ['targetUri']
-            }
-          },
-          abbreviation: {
-            type: 'string',
-            title: 'Abbreviation',
-            description: 'The abbreviation for this custom link.'
-          },
-          description: {
-            type: 'string',
-            title: 'Description',
-            description: 'The name for this custom link.'
-          },
-          name: {
-            type: 'string',
-            title: 'Name',
-            description: 'The name for this custom link.'
+            },
+            type: 'array'
           },
           target: {
-            type: 'object',
-            title: link.description,
             properties: {
+              subType: {
+                enum: [link.subType]
+              },
               targetUri: {
-                type: 'string',
-                title: 'The id of the target object.'
+                title: 'The id of the target object.',
+                type: 'string'
               },
               type: {
                 enum: [link.targetType]
               }
             },
-            required: ['targetUri']
-          },
-          attributes: {
-            additionalProperties: false,
-            type: 'object',
-            properties: {}
+            required: ['targetUri'],
+            type: 'object'
           }
         },
-        additionalProperties: false,
-        required: ['target']
-      }
+        required: ['target'],
+        type: 'object'
+      },
+      type: 'array'
     };
 
     // Add optional properties
@@ -599,9 +606,6 @@ export default class ObjectSchemaHelper {
 
       delete dummy.multiple;
 
-      // #168 Description is no longer used,as now all attributes are internationalized
-      delete dummy.title;
-
       schemaLink.items.properties.attributes.properties[`${attribute.prefix}${attribute.title}`] = dummy;
     }
 
@@ -610,63 +614,58 @@ export default class ObjectSchemaHelper {
 
   public static generateAspectSchema(aspect: IVeoOSHCustomAspect): IVeoObjectSchemaCustomAspect {
     const schemaAspect = {
-      type: 'object',
       additionalProperties: false,
       properties: {
-        id: {
-          type: 'string',
-          title: 'The UUID to identify the element',
-          format: 'regex',
-          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}'
-        },
-        applicableTo: {
-          type: 'array',
-          items: {
-            type: 'string'
-          }
-        },
-        domains: {
-          type: 'array',
-          title: 'The list of domains in which this element is present.',
-          description: 'The ids of elements of the type domain.',
-          items: {
-            type: 'object',
-            properties: {
-              displayName: {
-                type: 'string',
-                description: 'A friendly human readable title of the referenced domain.'
-              },
-              targetUri: {
-                type: 'string',
-                description: 'The resource URL of the referenced domain.'
-              }
-            },
-            required: ['targetUri']
-          },
-          uniqueItems: true
-        },
-        references: {
-          type: 'array',
-          items: {
-            properties: {
-              displayName: {
-                type: 'string',
-                description: 'A friendly human readable title of the referenced object.'
-              },
-              targetUri: {
-                type: 'string',
-                description: 'The resource URL of the referenced object.'
-              }
-            },
-            required: ['targetUri']
-          }
-        },
         attributes: {
           additionalProperties: false,
-          type: 'object',
-          properties: {}
+          properties: {},
+          type: 'object'
+        },
+        domains: {
+          description: 'The ids of elements of the type domain.',
+          items: {
+            properties: {
+              displayName: {
+                description: 'A friendly human readable title of the referenced domain.',
+                type: 'string'
+              },
+              targetUri: {
+                description: 'The resource URL of the referenced domain.',
+                type: 'string'
+              }
+            },
+            required: ['targetUri'],
+            type: 'object'
+          },
+          title: 'The list of domains in which this element is present.',
+          type: 'array',
+          uniqueItems: true
+        },
+        id: {
+          format: 'regex',
+          pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}',
+          title: 'The UUID to identify the element',
+          type: 'string'
+        },
+        references: {
+          items: {
+            properties: {
+              displayName: {
+                description: 'A friendly human readable title of the referenced object.',
+                type: 'string'
+              },
+              targetUri: {
+                description: 'The resource URL of the referenced object.',
+                type: 'string'
+              }
+            },
+            type: 'object',
+            required: ['targetUri']
+          },
+          type: 'array'
         }
-      }
+      },
+      type: 'object'
     };
 
     for (const attribute of aspect.attributes) {
@@ -767,7 +766,6 @@ export default class ObjectSchemaHelper {
       dummy.title = this.cleanCustomObjectName(linkName);
       dummy.attributes = [];
       dummy.prefix = `${this._title}_`;
-      dummy.description = link.items.properties.target.title;
       dummy.targetType = link.items.properties.target.properties.type.enum[0];
       dummy.subType = link.items.properties.target.properties.subType?.enum[0];
 

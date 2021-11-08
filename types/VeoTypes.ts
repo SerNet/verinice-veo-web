@@ -131,6 +131,13 @@ export interface IVeoObjectSchemaObject extends IVeoObjectSchemaProperty {
   };
 }
 
+export interface IVeoObjectSchemaPatternObject extends IVeoObjectSchemaProperty {
+  type: 'object';
+  patternProperties: {
+    [key: string]: IVeoObjectSchemaProperty;
+  };
+}
+
 export interface IVeoObjectSchemaArray extends IVeoObjectSchemaProperty {
   type: 'array';
   items: any;
@@ -162,15 +169,11 @@ export interface IVeoObjectSchemaCustomLink {
   items: {
     type: 'object';
     properties: {
-      id: IVeoObjectSchemaProperty;
-      applicableTo: IVeoObjectSchemaArray;
-      domains: IVeoObjectSchemaArray;
-      references: IVeoObjectSchemaArray;
-      abbreviation: IVeoObjectSchemaProperty;
-      description: IVeoObjectSchemaProperty;
-      name: IVeoObjectSchemaProperty;
-      target: IVeoObjectSchemaObject;
       attributes: IVeoObjectSchemaObject;
+      domains: IVeoObjectSchemaArray;
+      id: IVeoObjectSchemaProperty;
+      references: IVeoObjectSchemaArray;
+      target: IVeoObjectSchemaObject;
     };
     additionalProperties: boolean;
     required: string[];
@@ -195,13 +198,12 @@ export interface IVeoObjectSchema {
     createdBy: IVeoObjectSchemaProperty;
     customAspects: IVeoObjectSchemaCustomObjects;
     description: IVeoObjectSchemaProperty;
-    domains: IVeoObjectSchemaArray;
+    domains: IVeoObjectSchemaPatternObject;
     id: IVeoObjectSchemaProperty;
     links: IVeoObjectSchemaCustomObjects;
     name: IVeoObjectSchemaProperty;
     owner: IVeoObjectSchemaObject;
     parts: IVeoObjectSchemaArray;
-    subType: IVeoObjectSchemaProperty;
     updatedAt: IVeoObjectSchemaProperty;
     updatedBy: IVeoObjectSchemaProperty;
     translations?: IVeoObjectSchemaTranslations;
