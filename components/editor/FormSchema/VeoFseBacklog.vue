@@ -301,7 +301,8 @@ export default defineComponent<IProps>({
      * React to formschema or objectschema changes
      */
     const objectSchemaPropertiesPatterns = {
-      standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description', '#/properties/status'],
+      standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description', '#/properties/domains/status', '#/properties/domains/subType'],
+      standardRegex: [/^#\/properties\/domains\/patternProperties\/(.[^/]*)\/properties\/subType$/, /^#\/properties\/domains\/patternProperties\/(.[^/]*)\/properties\/status$/],
       regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/,
       regexLinks: /^#\/properties\/links\/properties\/\w+$/,
       regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/
@@ -329,7 +330,7 @@ export default defineComponent<IProps>({
         };
       };
       Object.entries(JsonPointer.flatten(props.objectSchema, true) as Record<string, any>).forEach(([key, value]) => {
-        if (objectSchemaPropertiesPatterns.standard.includes(key)) {
+        if (objectSchemaPropertiesPatterns.standard.includes(key) || objectSchemaPropertiesPatterns.standardRegex.some((regex) => regex.test(key))) {
           controls.value.push(createControl(key, value, 'basics'));
         } else if (objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)) {
           controls.value.push(createControl(key, value, 'aspects'));

@@ -18,7 +18,6 @@
 /// <reference path="../support/index.d.ts" />
 /// <reference types="cypress" />
 
-import { VEO_API_SCHEMA_REGEX } from '../support';
 import { getEditorData } from '../support/utils';
 
 describe('Objectschema Wizard', () => {
