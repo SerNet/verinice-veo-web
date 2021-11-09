@@ -122,7 +122,7 @@ export default Vue.extend({
           ]
         }
       },
-      formIsValid: true as boolean,
+      formIsValid: true,
       errorsMsgMap: {} as BaseObject
     };
   },

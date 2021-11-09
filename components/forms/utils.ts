@@ -236,10 +236,12 @@ export function generateFormSchema(objectSchema: JSONSchema7, excludedProperties
   let schemaMap = Object.keys(JsonPointer.flatten(objectSchema, '#'));
   const excludedPropertiesRegexp = excludedProperties.map((prop) => new RegExp(prop));
   schemaMap = excludedPropertiesRegexp.length > 0 ? schemaMap.filter((el) => !excludedPropertiesRegexp.some((reg) => reg.test(el))) : schemaMap;
+  // Regex explanation: Match all paths containing either /properties/<smth> (custom aspect/link attributes) or /patternProperties/<uuid>/properties/<smth> (currently only used for domain properties (subType & status))
   const scopes = schemaMap
     .filter((el) => /#\/(\w|\/)*properties\/\w+$/g.test(el) || /#\/(\w|\/)*patternProperties\/(.[^/]*)\/properties\/\w+$/g.test(el))
     .filter((el, _, arr) => !arr.some((someEl) => new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)))
     .filter((el) => {
+      // Regex explanation: Match all custom link attributes, but set them in context with their parent
       if (/\/properties\/\w+\/items\/properties\/\w+$/g.test(el)) {
         const [parent, child] = el.split(/\/items(?=\/properties\/\w+$)/g);
         items[parent] = items[parent] ? [...items[parent], `#${child}`] : [`#${child}`];
