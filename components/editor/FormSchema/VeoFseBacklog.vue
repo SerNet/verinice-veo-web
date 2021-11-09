@@ -302,7 +302,7 @@ export default defineComponent<IProps>({
      */
     const objectSchemaPropertiesPatterns = {
       standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description', '#/properties/domains/status', '#/properties/domains/subType'],
-      standardRegex: [/^#\/properties\/domains\/patternProperties\/(.[^/]*)\/properties\/subType$/, /^#\/properties\/domains\/patternProperties\/(.[^/]*)\/properties\/status$/],
+      standardRegex: [/^#\/properties\/domains\/patternProperties\/(.[^/]*)\/properties\/status$/],
       regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/,
       regexLinks: /^#\/properties\/links\/properties\/\w+$/,
       regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/
