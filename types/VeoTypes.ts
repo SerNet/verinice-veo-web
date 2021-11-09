@@ -258,6 +258,8 @@ export interface IVeoCatalogItem extends IVeoBaseObject {
     updatedBy: string;
     referenceType: string;
     catalogItem: IVeoLink;
+    attributes: IBaseObject;
+    type: string;
     id: string;
   }[];
   namespace: string;
