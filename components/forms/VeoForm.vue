@@ -101,7 +101,6 @@ export default Vue.extend({
             '/targetUri$',
             '/riskvalues$',
             '/assets$',
-            '/extinguishingTime$',
             '^#/properties/links',
             '/applicableTo$',
             '/references$',
@@ -112,7 +111,6 @@ export default Vue.extend({
             '/parts$',
             '/members$',
             '/designator$',
-            '/customAspects$',
             '/links$',
             '_self'
           ]

@@ -237,7 +237,7 @@ export function generateFormSchema(objectSchema: JSONSchema7, excludedProperties
   const excludedPropertiesRegexp = excludedProperties.map((prop) => new RegExp(prop));
   schemaMap = excludedPropertiesRegexp.length > 0 ? schemaMap.filter((el) => !excludedPropertiesRegexp.some((reg) => reg.test(el))) : schemaMap;
   const scopes = schemaMap
-    .filter((el) => /#\/(\w|\/)*properties\/\w+$/g.test(el))
+    .filter((el) => /#\/(\w|\/)*properties\/\w+$/g.test(el) || /#\/(\w|\/)*patternProperties\/(.[^/]*)\/properties\/\w+$/g.test(el))
     .filter((el, _, arr) => !arr.some((someEl) => new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)))
     .filter((el) => {
       if (/\/properties\/\w+\/items\/properties\/\w+$/g.test(el)) {
