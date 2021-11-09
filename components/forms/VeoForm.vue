@@ -22,14 +22,16 @@ import { JsonPointer } from 'json-ptr';
 
 import vjp from 'vue-json-pointer';
 import { ErrorObject, ValidateFunction } from 'ajv';
-import { merge } from 'lodash';
+import { cloneDeep, merge } from 'lodash';
 import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
 import { BaseObject, IApi, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
-import { IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IBaseObject } from '~/lib/utils';
+import { getDefaultReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 interface IErrorMessageElement {
   pointer: string;
@@ -80,7 +82,11 @@ export default Vue.extend({
     api: {
       type: Object,
       default: undefined
-    } as PropOptions<IApi>
+    } as PropOptions<IApi>,
+    reactiveFormActions: {
+      type: Array,
+      default: () => []
+    } as PropOptions<IVeoReactiveFormAction[]>
   },
   data() {
     return {
@@ -115,21 +121,20 @@ export default Vue.extend({
             '_self'
           ]
         }
-      }
+      },
+      formIsValid: true as boolean,
+      errorsMsgMap: {} as BaseObject
     };
   },
   computed: {
-    validate(): ValidateFunction {
+    validateFunction(): ValidateFunction {
       return ajv.compile(this.localSchema);
-    },
-    valid(): boolean | PromiseLike<any> {
-      return this.validate(this.value);
-    },
-    errorsMsgMap(): BaseObject {
-      return !this.valid && this.validate.errors ? this.validate.errors.reduce(this.validationErrorTransform, {}) : {};
     },
     mergedOptions(): IOptions {
       return merge(this.defaultOptions, this.options);
+    },
+    localReactiveFormActions(): IVeoReactiveFormAction[] {
+      return [...this.reactiveFormActions, ...getDefaultReactiveFormActions(this)];
     }
   },
   watch: {
@@ -174,14 +179,9 @@ export default Vue.extend({
         }
       }
     },
-    valid: {
-      immediate: true,
-      handler() {
-        this.$emit('update:isValid', this.valid);
-      }
-    },
     errorsMsgMap: {
       immediate: true,
+      deep: true,
       handler() {
         this.$emit(
           'update:errorMessages',
@@ -194,6 +194,32 @@ export default Vue.extend({
     }
   },
   methods: {
+    validate() {
+      this.formIsValid = this.validateFunction(this.value);
+      this.errorsMsgMap = !this.formIsValid && this.validateFunction.errors ? this.validateFunction.errors.reduce(this.validationErrorTransform, {}) : {};
+      this.$emit('update:isValid', this.formIsValid);
+    },
+    executeReactiveFormActions(oldObjectData: IBaseObject, newObjectData: IBaseObject) {
+      if (oldObjectData) {
+        // Only proceed if this isn't triggered after initally loading the data
+        for (const reactiveFormAction of this.localReactiveFormActions) {
+          let newValue;
+          let oldValue;
+
+          try {
+            newValue = vjp.get(newObjectData, reactiveFormAction.attributeName);
+            oldValue = vjp.get(oldObjectData, reactiveFormAction.attributeName);
+          } catch (e) {
+            // Default is already set to undefined, so we don't have to do anything here
+          }
+
+          if ((!!newValue || !!oldValue) && newValue !== oldValue) {
+            reactiveFormAction.handler(newValue, newObjectData, oldObjectData);
+          }
+        }
+      }
+      return cloneDeep(newObjectData);
+    },
     getLangText(langPointer: string): string {
       const translationKey = langPointer.replace('#lang/', '');
       return this.customTranslation?.[translationKey] || this.generalTranslation?.[translationKey] || translationKey;
@@ -208,8 +234,11 @@ export default Vue.extend({
     setValue(scope: string, v: any) {
       // TODO: check the performance of these lines, which can cause slow input process
       if (scope) {
+        const oldValue = cloneDeep(this.value);
         vjp.set(this.value, propertyPath(scope).replace('#/', '/'), v);
-        this.$emit('input', this.value);
+        const newValue = this.executeReactiveFormActions(oldValue, this.value);
+        this.$emit('input', newValue);
+        this.validate();
       }
     },
     validationErrorTransform(accummulator: {}, error: ErrorObject) {

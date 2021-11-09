@@ -120,6 +120,7 @@
         :is-valid.sync="isValid"
         :error-messages.sync="errorMessages"
         class="mb-8"
+        :reactive-form-actions="reactiveFormActions"
         @input="entityModified.isModified = true"
       />
       <VeoEntityModifiedDialog
@@ -170,12 +171,13 @@ import { createUUIDUrlParam, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoAPIMessage } from '~/types/VeoTypes';
-import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
+import { IVeoAPIMessage, IVeoReactiveFormAction } from '~/types/VeoTypes';
+import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
+
+import objectSchema from '~/components/util/process-test.json';
 
 export default Vue.extend({
   name: 'VeoScopesCreatePage',
-  mixins: [VeoReactiveFormActionMixin],
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
     if (this.entityModified.isModified && this.entityModified.dialog) {
@@ -210,7 +212,7 @@ export default Vue.extend({
   },
   async fetch() {
     if (this.entityType) {
-      const objectSchema = await this.$api.schema.fetch(this.entityType);
+      // const objectSchema = await this.$api.schema.fetch(this.entityType);
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       const objectData = {
         owner: {
@@ -221,7 +223,7 @@ export default Vue.extend({
       };
 
       this.form = {
-        objectSchema,
+        objectSchema: objectSchema as any,
         objectData,
         lang
       };
@@ -258,6 +260,9 @@ export default Vue.extend({
       const url = this.$route.fullPath.split('/');
       url.pop();
       return url.join('/');
+    },
+    reactiveFormActions(): IVeoReactiveFormAction[] {
+      return this.entityType === 'person' ? getPersonReactiveFormActions(this) : [];
     }
   },
   methods: {

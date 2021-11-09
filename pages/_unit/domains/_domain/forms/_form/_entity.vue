@@ -194,6 +194,7 @@
           :is-valid.sync="isValid"
           :error-messages.sync="errorMessages"
           :disabled="isRevision && !allowRestoration"
+          :reactive-form-actions="reactiveFormActions"
           @input="formModified.isModified = true"
         />
         <div
@@ -290,9 +291,12 @@ import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
-import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes';
-import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
+import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema, IVeoReactiveFormAction } from '~/types/VeoTypes';
 import { validate } from '~/lib/FormSchemaHelper';
+import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
+
+import objectSchema from '~/components/util/process-test.json';
+import formSchema from '~/components/util/fs_asd.json';
 
 export interface IValidationErrorMessage {
   pointer: string;
@@ -323,7 +327,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
-  mixins: [VeoReactiveFormActionMixin],
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
     if (this.formModified.isModified && this.formModified.dialog) {
@@ -374,13 +377,13 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    const formSchema = await this.$api.form.fetch(this.formId);
+    // const formSchema = await this.$api.form.fetch(this.formId);
     this.isRevision = false;
     this.formModified.isModified = false;
 
     this.objectType = formSchema.modelType;
     if (this.objectType) {
-      const objectSchema = await this.$api.schema.fetch(this.objectType);
+      // const objectSchema = await this.$api.schema.fetch(this.objectType);
       const objectData = this.$route.params.entity
         ? await this.$api.entity.fetch(this.objectType, this.objectId)
         : {
@@ -392,7 +395,7 @@ export default Vue.extend({
           };
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       this.form = {
-        objectSchema,
+        objectSchema: objectSchema as any,
         formSchema,
         objectData,
         lang
@@ -502,6 +505,9 @@ export default Vue.extend({
       } else {
         return false;
       }
+    },
+    reactiveFormActions(): IVeoReactiveFormAction[] {
+      return this.objectType === 'person' ? getPersonReactiveFormActions(this) : [];
     }
   },
   methods: {
@@ -522,7 +528,7 @@ export default Vue.extend({
     onSave(_event: any, redirect: boolean = false): Promise<void> {
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
-        .then(async (updatedObjectData) => {
+        .then(async (updatedObjectData: any) => {
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
@@ -582,14 +588,6 @@ export default Vue.extend({
         Object.keys(this.form.objectData.links).forEach((key: string) => {
           if (!this.form.objectData.links[key]) {
             delete this.form.objectData.links[key];
-          } else {
-            // this.form.objectData.links[key] = { ...this.form.objectData.links[key], type: key }
-            this.form.objectData.links[key] = this.form.objectData.links[key].map((el: any) => {
-              // el.target.type = el.target.type?.replace(/^\w/, (c: any) => c.toUpperCase())
-              el.name = key;
-              // el.type = key
-              return el;
-            });
           }
         });
       }

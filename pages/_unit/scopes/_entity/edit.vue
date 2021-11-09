@@ -231,9 +231,11 @@ import { Route } from 'vue-router/types/index';
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
-import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry, IVeoReactiveFormAction } from '~/types/VeoTypes';
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
-import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
+import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
+
+import objectSchema from '~/components/util/process-test.json';
 
 interface IData {
   form: IForm;
@@ -257,7 +259,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'VeoScopesEditPage',
-  mixins: [VeoReactiveFormActionMixin],
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
     if (this.entityModified.isModified && this.entityModified.dialog) {
@@ -305,7 +306,7 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.entityType);
+    // const objectSchema = await this.$api.schema.fetch(this.entityType);
     const { lang } = await this.$api.translation.fetch(['de', 'en']);
     this.isRevision = false;
     this.entityModified.isModified = false;
@@ -313,7 +314,7 @@ export default Vue.extend({
     const objectData = await this.$api.entity.fetch(this.entityType, this.entityId);
 
     this.form = {
-      objectSchema,
+      objectSchema: objectSchema as any,
       objectData,
       lang
     };
@@ -339,6 +340,9 @@ export default Vue.extend({
     },
     rootRoute(): string {
       return `/${this.$route.params.unit}/scopes`;
+    },
+    reactiveFormActions(): IVeoReactiveFormAction[] {
+      return this.entityType === 'person' ? getPersonReactiveFormActions(this) : [];
     }
   },
   methods: {
@@ -351,7 +355,7 @@ export default Vue.extend({
 
       this.$api.entity
         .update(this.entityType, this.entityId, this.form.objectData as IVeoEntity)
-        .then(async (updatedObjectData) => {
+        .then(async (updatedObjectData: any) => {
           this.entityModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
