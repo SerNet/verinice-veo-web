@@ -8,10 +8,13 @@
       "name":"Ameise",
       "designator":"AST-2",
       "abbreviation":"A1",
-      "description":"Asset ohne Subtype",
-      "domains":[
-        
-      ],
+      "description":"Asset mit Subtype Datenart",
+        "domains": {
+          "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+              "subType": "AST_Datatype",
+              "status": "NEW"
+          }
+        },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -22,9 +25,6 @@
         
       },
       "customAspects":{
-        
-      },
-      "subType":{
         
       },
       "type":"asset",
@@ -41,10 +41,13 @@
       "name":"Auerhahn",
       "designator":"AST-3",
       "abbreviation":"A2",
-      "description":"Asset ohne Subtype",
-      "domains":[
-        
-      ],
+      "description":"Asset mit Subtype Datenart",
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
+        }
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -55,9 +58,6 @@
         
       },
       "customAspects":{
-        
-      },
-      "subType":{
         
       },
       "type":"asset",
@@ -74,10 +74,13 @@
       "name":"Baumhöhlenlaubfrosch",
       "designator":"AST-4",
       "abbreviation":"A3",
-      "description":"Asset ohne Subtype",
-      "domains":[
-        
-      ],
+      "description":"Asset mit Subtype Datenart",
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
+        }
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -88,9 +91,6 @@
         
       },
       "customAspects":{
-        
-      },
-      "subType":{
         
       },
       "type":"asset",
@@ -107,10 +107,13 @@
       "name":"Braunbär",
       "designator":"AST-5",
       "abbreviation":"A4",
-      "description":"Asset ohne Subtype",
-      "domains":[
-        
-      ],
+      "description":"Asset mit Subtype Datenart",
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
+        }
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -121,9 +124,6 @@
         
       },
       "customAspects":{
-        
-      },
-      "subType":{
         
       },
       "type":"asset",
@@ -141,14 +141,12 @@
       "designator":"AST-6",
       "abbreviation":"DA1",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -160,9 +158,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -179,14 +174,12 @@
       "designator":"AST-7",
       "abbreviation":"DA2",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -198,9 +191,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -217,14 +207,12 @@
       "designator":"AST-8",
       "abbreviation":"DA3",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -236,9 +224,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -255,14 +240,12 @@
       "designator":"AST-9",
       "abbreviation":"DA4",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -274,9 +257,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -293,14 +273,12 @@
       "designator":"AST-10",
       "abbreviation":"AW1",
       "description":"Asset mit Subtype Anwendung",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Application",
+            "status": "IN_PROGRESS"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -312,9 +290,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Application"
       },
       "type":"asset",
       "parts":[
@@ -331,14 +306,12 @@
       "designator":"AST-11",
       "abbreviation":"AW2",
       "description":"Asset mit Subtype Anwendung",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Application",
+            "status": "IN_PROGRESS"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -350,9 +323,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Application"
       },
       "type":"asset",
       "parts":[
@@ -369,14 +339,12 @@
       "designator":"AST-12",
       "abbreviation":"AW3",
       "description":"Asset mit Subtype Anwendung",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Application",
+            "status": "IN_PROGRESS"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -388,9 +356,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Application"
       },
       "type":"asset",
       "parts":[
@@ -407,14 +372,12 @@
       "designator":"AST-13",
       "abbreviation":"IT1",
       "description":"Asset mit Subtype IT-System",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_IT-System",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -426,9 +389,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_IT-System"
       },
       "type":"asset",
       "parts":[
@@ -445,14 +405,12 @@
       "designator":"AST-14",
       "abbreviation":"IT2",
       "description":"Asset mit Subtype IT-System",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_IT-System",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -464,9 +422,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_IT-System"
       },
       "type":"asset",
       "parts":[
@@ -483,14 +438,12 @@
       "designator":"AST-21",
       "abbreviation":"DA5",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -502,9 +455,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -521,14 +471,12 @@
       "designator":"AST-22",
       "abbreviation":"DA6",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -540,9 +488,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -559,14 +504,12 @@
       "designator":"AST-23",
       "abbreviation":"DA7",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -578,9 +521,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -597,14 +537,12 @@
       "designator":"AST-24",
       "abbreviation":"DA8",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -616,9 +554,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -635,14 +570,12 @@
       "designator":"AST-25",
       "abbreviation":"DA9",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -654,9 +587,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -673,14 +603,12 @@
       "designator":"AST-26",
       "abbreviation":"DA10",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -692,9 +620,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[
@@ -711,14 +636,12 @@
       "designator":"AST-27",
       "abbreviation":"DA11",
       "description":"Asset mit Subtype Datenart",
-      "domains":[
-        {
-          "displayName":"DSGVO DSGVO",
-          "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-          "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-          "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+      "domains": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+            "subType": "AST_Datatype",
+            "status": "NEW"
         }
-      ],
+      },
       "owner":{
         "displayName":"NBRX Testunit",
         "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -730,9 +653,6 @@
       },
       "customAspects":{
         
-      },
-      "subType":{
-        "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_Datatype"
       },
       "type":"asset",
       "parts":[

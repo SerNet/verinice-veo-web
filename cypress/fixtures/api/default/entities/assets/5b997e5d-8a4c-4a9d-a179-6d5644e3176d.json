@@ -6,10 +6,13 @@
   "name":"Baumhöhlenlaubfrosch",
   "designator":"AST-4",
   "abbreviation":"A3",
-  "description":"Asset ohne Subtype",
-  "domains":[
-    
-  ],
+  "description":"Asset mit Subtype Anwendung",
+  "domains": {
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+      "subType": "AST_Application",
+      "status": "IN_PROGRESS"
+    }
+  },
   "owner":{
     "displayName":"NBRX Testunit",
     "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -20,9 +23,6 @@
     
   },
   "customAspects":{
-    
-  },
-  "subType":{
     
   },
   "type":"asset",

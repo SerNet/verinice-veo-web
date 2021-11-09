@@ -295,9 +295,6 @@ import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema, I
 import { validate } from '~/lib/FormSchemaHelper';
 import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
-import objectSchema from '~/components/util/process-test.json';
-import formSchema from '~/components/util/fs_asd.json';
-
 export interface IValidationErrorMessage {
   pointer: string;
   message: string;
@@ -377,13 +374,13 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    // const formSchema = await this.$api.form.fetch(this.formId);
+    const formSchema = await this.$api.form.fetch(this.formId);
     this.isRevision = false;
     this.formModified.isModified = false;
 
     this.objectType = formSchema.modelType;
     if (this.objectType) {
-      // const objectSchema = await this.$api.schema.fetch(this.objectType);
+      const objectSchema = await this.$api.schema.fetch(this.objectType);
       const objectData = this.$route.params.entity
         ? await this.$api.entity.fetch(this.objectType, this.objectId)
         : {

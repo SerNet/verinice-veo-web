@@ -174,8 +174,6 @@ import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoAPIMessage, IVeoReactiveFormAction } from '~/types/VeoTypes';
 import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
-import objectSchema from '~/components/util/process-test.json';
-
 export default Vue.extend({
   name: 'VeoScopesCreatePage',
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
@@ -212,7 +210,7 @@ export default Vue.extend({
   },
   async fetch() {
     if (this.entityType) {
-      // const objectSchema = await this.$api.schema.fetch(this.entityType);
+      const objectSchema = await this.$api.schema.fetch(this.entityType);
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       const objectData = {
         owner: {
@@ -223,7 +221,7 @@ export default Vue.extend({
       };
 
       this.form = {
-        objectSchema: objectSchema as any,
+        objectSchema,
         objectData,
         lang
       };

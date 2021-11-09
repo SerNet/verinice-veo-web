@@ -235,8 +235,6 @@ import { IVeoEntity, IVeoObjectHistoryEntry, IVeoReactiveFormAction } from '~/ty
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
-import objectSchema from '~/components/util/process-test.json';
-
 interface IData {
   form: IForm;
   isValid: boolean;
@@ -306,7 +304,7 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    // const objectSchema = await this.$api.schema.fetch(this.entityType);
+    const objectSchema = await this.$api.schema.fetch(this.entityType);
     const { lang } = await this.$api.translation.fetch(['de', 'en']);
     this.isRevision = false;
     this.entityModified.isModified = false;
@@ -314,7 +312,7 @@ export default Vue.extend({
     const objectData = await this.$api.entity.fetch(this.entityType, this.entityId);
 
     this.form = {
-      objectSchema: objectSchema as any,
+      objectSchema,
       objectData,
       lang
     };

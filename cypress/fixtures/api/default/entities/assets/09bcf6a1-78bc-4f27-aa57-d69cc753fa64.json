@@ -7,14 +7,12 @@
   "designator":"AST-13",
   "abbreviation":"IT1",
   "description":"Asset mit Subtype IT-System",
-  "domains":[
-    {
-      "displayName":"DSGVO DSGVO",
-      "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-      "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-      "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+  "domains": {
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+      "subType": "AST_IT-System",
+      "status": "NEW"
     }
-  ],
+  },
   "owner":{
     "displayName":"NBRX Testunit",
     "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -26,9 +24,6 @@
   },
   "customAspects":{
     
-  },
-  "subType":{
-    "ed67e4d7-c657-4479-ba8a-c53999d2930a":"AST_IT-System"
   },
   "type":"asset",
   "parts":[

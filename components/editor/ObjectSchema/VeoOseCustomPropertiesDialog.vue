@@ -466,7 +466,6 @@ export default Vue.extend({
       "link": "This link has no attributes"
     },
     "no_subtype": "No subtype",
-    "linkDescription": "Description",
     "linkSubType": "Link Subtype",
     "linkType": "Link type",
     "propertyName": "Name"
@@ -486,7 +485,6 @@ export default Vue.extend({
       "aspect": "Aspekt \"{title}\" bearbeiten",
       "link": "Link \"{title}\" bearbeiten"
     },
-    "linkDescription": "Linkbeschreibung",
     "linkSubType": "Link Subtyp",
     "linkType": "Typ des Linkziels",
     "noProperties": {
