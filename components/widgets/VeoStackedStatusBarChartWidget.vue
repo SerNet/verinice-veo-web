@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoWidget :title="upperFirst(title)">
+  <VeoWidget
+    :title="upperFirst(title)"
+    :loading="loading"
+  >
     <template #default>
       <v-row
         v-for="(chart, index) of chartData"
@@ -26,19 +29,50 @@
         <v-col
           cols="12"
           md="4"
-          lg="2"
         >
-          <h4>{{ chart.name }}</h4>
+          <h4 class="ml-6">{{ chart.labels[0] }}</h4>
         </v-col>
         <v-col>
           <BarChart
+            v-if="chart.totalEntities > 0"
             ref="barChartRef"
-            :chart-data="chart.data"
+            :chart-data="chart"
             :options="options[index]"
-            :style="{ height: `${chartHeight}px` }"
+            :style="{ height: `${chartHeight}px`, 'cursor': 'pointer' }"
           />
+          <div
+            v-else
+            class="ml-2 font-italic"
+          >
+            {{ t('noObjects') }}
+          </div>
         </v-col>
       </v-row>
+    </template>
+    <template #skeleton>
+      <v-row
+        v-for="index in [1,2]"
+        :key="index"
+        class="align-center"
+      >
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-skeleton-loader
+            class="ml-6 my-2"
+            type="text"
+            width="70%"
+          />
+        </v-col>
+        <v-col>
+          <v-skeleton-loader
+            class="ml-6 my-2"
+            type="heading"
+            width="210%"
+          />
+        </v-col>
+      </v-row>      
     </template>
   </VeoWidget>
 </template>
@@ -48,6 +82,7 @@ import { computed, ComputedRef, defineComponent, PropType, ref } from '@nuxtjs/c
 import { BarChart } from 'vue-chart-3';
 import { Chart, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
 import { upperFirst } from 'lodash';
+import { useI18n } from 'nuxt-i18n-composable';
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -66,8 +101,12 @@ export default defineComponent({
       type: String,
       required: true
     },
+    loading: {
+      type: Boolean,
+      default: false
+    },
     data: {
-      type: Array as PropType<{ name: string; data: IChartValue[] }[]>,
+      type: Array as PropType<{ subType: string; title: string; statusTypes: (IChartValue & { status: string })[]; totalEntities: number }[]>,
       default: () => []
     },
     chartHeight: {
@@ -75,12 +114,14 @@ export default defineComponent({
       default: 50
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
+    const { t } = useI18n();
     const barChartRef = ref([]);
 
     const options: ComputedRef<any[]> = computed(() =>
-      props.data.map((entry) => ({
+      props.data.map((entry, index) => ({
         responsive: true,
+        onClick: (_point: any, $event: any) => handle(index, $event),
         plugins: {
           legend: false,
           title: {
@@ -95,8 +136,8 @@ export default defineComponent({
         offset: false,
         scales: {
           x: {
-            min: 1,
-            max: entry.data.reduce((previousValue, currentValue) => previousValue + currentValue.value, 0),
+            min: 0,
+            max: entry.statusTypes.reduce((previousValue, currentValue) => previousValue + currentValue.value, 0),
             stacked: true,
             ticks: {
               display: false
@@ -120,25 +161,41 @@ export default defineComponent({
       }))
     );
 
+    function handle(index: number, event: any) {
+      emit('click', props.data[index].subType, props.data[index].statusTypes[event[0].datasetIndex].status);
+    }
+
     const chartData: ComputedRef<any[]> = computed(() =>
       props.data.map((entry) => ({
-        labels: [entry.name],
-        datasets: entry.data.map((value) => ({
+        totalEntities: entry.totalEntities,
+        labels: [entry.title],
+        datasets: entry.statusTypes.map((value) => ({
           data: [value.value],
           backgroundColor: value.color,
           label: value.label
         }))
       }))
     );
-    console.log(chartData);
 
     return {
       barChartRef,
       chartData,
       options,
 
-      upperFirst
+      upperFirst,
+      t
     };
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "noObjects": "There are no objects for this subtype"
+  },
+  "de": {
+    "noObjects": "Für diesen Subtyp existieren keine Objekte"
+  }
+}
+</i18n>
