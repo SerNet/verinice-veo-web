@@ -44,17 +44,6 @@
         </v-row>
         <v-row v-if="type === 'link'">
           <v-col
-            cols="8"
-            class="py-0"
-          >
-            <v-text-field
-              v-model="form.data.description"
-              :label="`${$t('linkDescription')} *`"
-              required
-              :rules="form.rules.description"
-            />
-          </v-col>
-          <v-col
             cols="4"
             class="py-0"
           >
@@ -304,7 +293,6 @@ export default Vue.extend({
       }
 
       if (!newValue) {
-        this.form.data.description = '';
         this.form.data.targetType = '';
         this.form.data.subType = '';
         this.form.data.title = '';
@@ -312,12 +300,7 @@ export default Vue.extend({
       } else if (this.editedProperty) {
         this.dialogMode = 'edit';
         // We have to explicitly set the properties missing in IVeoOSHCustomAspect
-        this.form.data = { description: '', targetType: '', subType: '', ...cloneDeep(this.editedProperty) };
-
-        // Load the translated link description if it is a link (Only if not set. Will only be set on old schemas as fallback)
-        if (this.type === 'link' && !this.form.data.description) {
-          this.form.data.description = this.objectSchemaHelper.value.getTranslation(this.displayLanguage.value, `${this.form.data.prefix}${this.form.data.title}`);
-        }
+        this.form.data = { targetType: '', subType: '', ...cloneDeep(this.editedProperty) };
 
         for (const attributeIndex in this.form.data.attributes) {
           // Load the localized description for each attribute
@@ -380,28 +363,11 @@ export default Vue.extend({
         if (this.type === 'aspect') {
           this.objectSchemaHelper.value.updateCustomAspect(this.form.data.title, toSave);
         } else {
-          delete toSave.description;
           this.objectSchemaHelper.value.updateCustomLink(this.form.data.title, toSave);
         }
 
         // Update translations
         const attributePrefix = `${this.form.data.prefix}${this.form.data.title}_`;
-
-        if (this.type === 'link') {
-          if (!this.editedProperty) {
-            this.objectSchemaHelper.value.addTranslation(`${this.form.data.prefix}${this.form.data.title}`, this.form.data.description || '', this.displayLanguage.value);
-          } else if (this.editedProperty && this.editedProperty.title !== this.form.data.title) {
-            this.objectSchemaHelper.value.changeTranslationKey(`${this.editedProperty.prefix}${this.editedProperty.title}`, `${this.form.data.prefix}${this.form.data.title}`);
-          }
-
-          if (this.editedProperty) {
-            if (this.form.data.description && this.form.data.description !== '') {
-              this.objectSchemaHelper.value.updateTranslation(this.displayLanguage.value, `${this.form.data.prefix}${this.form.data.title}`, this.form.data.description);
-            } else {
-              this.objectSchemaHelper.value.removeTranslation(`${this.form.data.prefix}${this.form.data.title}`, this.displayLanguage.value);
-            }
-          }
-        }
 
         for (const attribute of this.form.data.attributes) {
           // Update translation key if aspect/link title changed across all languages
@@ -500,7 +466,6 @@ export default Vue.extend({
       "link": "This link has no attributes"
     },
     "no_subtype": "No subtype",
-    "linkDescription": "Description",
     "linkSubType": "Link Subtype",
     "linkType": "Link type",
     "propertyName": "Name"
@@ -520,7 +485,6 @@ export default Vue.extend({
       "aspect": "Aspekt \"{title}\" bearbeiten",
       "link": "Link \"{title}\" bearbeiten"
     },
-    "linkDescription": "Linkbeschreibung",
     "linkSubType": "Link Subtyp",
     "linkType": "Typ des Linkziels",
     "noProperties": {

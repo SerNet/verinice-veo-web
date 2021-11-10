@@ -777,6 +777,7 @@ describe('Formschema Editor', () => {
 
       cy.contains('.v-text-field', 'Name des Formschemas').type('{selectall}{backspace}Test Formschema 1 DE');
       cy.contains('.v-text-field', 'Sub Typ').find('input').type('{selectall}{backspace}TF 1');
+      cy.contains('.v-text-field', 'Sortierwert').find('input').type('{selectall}{backspace}a1');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
@@ -803,6 +804,7 @@ describe('Formschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('not.have.value');
       cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF 1');
+      cy.contains('.v-text-field', 'Sortierwert').find('input').should('have.value', 'a1');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
 
       cy.contains('.v-text-field', 'Name des Formschemas').type('Test Formschema 2 EN');

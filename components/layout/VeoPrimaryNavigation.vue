@@ -90,8 +90,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { upperFirst } from 'lodash';
-import { ComputedRef } from '@vue/composition-api';
-import { computed } from '@nuxtjs/composition-api';
+import { computed, ComputedRef } from '@nuxtjs/composition-api';
 import LocalStorage from '~/util/LocalStorage';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
@@ -308,16 +307,18 @@ export default Vue.extend({
     },
     async fetchReportTypes(domainId: string): Promise<INavItem[]> {
       return await this.$api.report.fetchAll().then((reportTypes: IVeoReportsMeta) =>
-        Object.entries(reportTypes).map(([key, value]) => {
-          const name = value.name[this.$i18n.locale] || value.name[0];
-          return {
-            name,
-            exact: false,
-            to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}/reports/${key}/`,
-            disabled: false,
-            topLevelItem: false
-          };
-        })
+        Object.entries(reportTypes)
+          .map(([key, value]) => {
+            const name = value.name[this.$i18n.locale];
+            return {
+              name,
+              exact: false,
+              to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}/reports/${key}/`,
+              disabled: false,
+              topLevelItem: false
+            };
+          })
+          .filter((report) => report.name)
       );
     },
     async fetchCatalogs(domainId: string): Promise<INavItem[]> {

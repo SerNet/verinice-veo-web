@@ -38,7 +38,6 @@
       "**/layouts/**",
       "**/lib/**",
       "**/middleware/**",
-      "**/mixins/**",
       "**/pages/**",
       "**/plugins/**",
       "**/test/**",

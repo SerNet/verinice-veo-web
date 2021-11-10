@@ -18,7 +18,6 @@
 /// <reference path="../support/index.d.ts" />
 /// <reference types="cypress" />
 
-import { VEO_API_SCHEMA_REGEX } from '../support';
 import { getEditorData } from '../support/utils';
 
 describe('Objectschema Wizard', () => {
@@ -108,63 +107,6 @@ describe('Objectschema Wizard', () => {
     cy.validateUrl('/editor/objectschema?os=custom');
   });
 
-  it('imports existing control objectschema', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
-
-    cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Control{enter}');
-
-      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
-    });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'control');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Control');
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getEditorData(editor)).toMatchSnapshot();
-    });
-    cy.validateUrl('/editor/objectschema?os=control');
-  });
-
-  it('imports existing scope objectschema', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
-
-    cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scope{enter}');
-
-      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
-    });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'scope');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for scope');
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getEditorData(editor)).toMatchSnapshot();
-    });
-    cy.validateUrl('/editor/objectschema?os=scope');
-  });
-
-  it('imports existing asset objectschema', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
-
-    cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Asset{enter}');
-
-      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
-    });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'asset');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Asset');
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getEditorData(editor)).toMatchSnapshot();
-    });
-    cy.validateUrl('/editor/objectschema?os=asset');
-  });
-
   it('imports existing process objectschema', function () {
     cy.goTo('/editor/').goTo('/editor/objectschema/');
 
@@ -183,82 +125,6 @@ describe('Objectschema Wizard', () => {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
     cy.validateUrl('/editor/objectschema?os=process');
-  });
-
-  it('imports existing incident objectschema', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
-
-    cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Incident{enter}');
-
-      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
-    });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'incident');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Incident');
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getEditorData(editor)).toMatchSnapshot();
-    });
-    cy.validateUrl('/editor/objectschema?os=incident');
-  });
-
-  it('imports existing document objectschema', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
-
-    cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Document{enter}');
-
-      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
-    });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'document');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Document');
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getEditorData(editor)).toMatchSnapshot();
-    });
-    cy.validateUrl('/editor/objectschema?os=document');
-  });
-
-  it('imports existing person objectschema', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
-
-    cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Person{enter}');
-
-      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
-    });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'person');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Person');
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getEditorData(editor)).toMatchSnapshot();
-    });
-    cy.validateUrl('/editor/objectschema?os=person');
-  });
-
-  it('imports existing scenario objectschema', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
-
-    cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Scenario{enter}');
-
-      // The dialog might close before the scrollTop event of VSelect is processed, causing an error and failing e2e tests
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
-      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
-    });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'scenario');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Scenario');
-    cy.get('.editor .cm-content').then(function (editor) {
-      cy.wrap(getEditorData(editor)).toMatchSnapshot();
-    });
-    cy.validateUrl('/editor/objectschema?os=scenario');
   });
 
   it('creates own objectschema by URL', function () {

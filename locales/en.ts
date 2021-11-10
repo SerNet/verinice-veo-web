@@ -28,6 +28,7 @@ export default {
   'editor.formschema.edit.input.label': 'Label',
   'editor.formschema.edit.input.label.text': 'Element label',
   'editor.formschema.headline': 'Form schema editor',
+  'editor.formschema.sorting': 'Sort value',
   'editor.formschema.subtype': 'Subtype',
   'editor.formschema.translation': 'Custom translations',
   'editor.objectschema.headline': 'Object schema editor',

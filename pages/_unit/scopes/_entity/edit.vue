@@ -20,7 +20,7 @@
     <template #default>
       <VeoPage
         absolute-size
-        :cols="12"
+        cols="12"
         :md="8"
         :xl="8"
         sticky-header
@@ -200,7 +200,7 @@
       </VeoPage>
       <VeoPage
         absolute-size
-        :cols="12"
+        cols="12"
         :md="4"
         :xl="4"
       >
@@ -231,9 +231,9 @@ import { Route } from 'vue-router/types/index';
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
-import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry, IVeoReactiveFormAction } from '~/types/VeoTypes';
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
-import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
+import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 interface IData {
   form: IForm;
@@ -257,7 +257,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'VeoScopesEditPage',
-  mixins: [VeoReactiveFormActionMixin],
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
     if (this.entityModified.isModified && this.entityModified.dialog) {
@@ -339,6 +338,9 @@ export default Vue.extend({
     },
     rootRoute(): string {
       return `/${this.$route.params.unit}/scopes`;
+    },
+    reactiveFormActions(): IVeoReactiveFormAction[] {
+      return this.entityType === 'person' ? getPersonReactiveFormActions(this) : [];
     }
   },
   methods: {
@@ -351,7 +353,7 @@ export default Vue.extend({
 
       this.$api.entity
         .update(this.entityType, this.entityId, this.form.objectData as IVeoEntity)
-        .then(async (updatedObjectData) => {
+        .then(async (updatedObjectData: any) => {
           this.entityModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 

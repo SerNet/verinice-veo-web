@@ -69,9 +69,9 @@ export default Vue.extend({
     createUUIDUrlParam,
     createUrlByType(revision: IVeoObjectHistoryEntry) {
       let url = '';
-      if (revision.content.subType[this.domainId]) {
+      if (revision.content.domains[this.domainId]?.subType) {
         // FORMS
-        const form = this.forms.find((form) => form.subType === revision.content.subType[this.domainId]);
+        const form = this.forms.find((form) => form.subType === revision.content.domains[this.domainId].subType);
         url = `/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${createUUIDUrlParam('form', form?.id || '')}/${createUUIDUrlParam(
           revision.content.type,
           revision.content.id

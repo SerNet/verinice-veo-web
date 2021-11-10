@@ -6,10 +6,13 @@
   "name":"Rot",
   "designator":"PRO-7",
   "abbreviation":"P1",
-  "description":"Prozess ohne Subtype",
-  "domains":[
-    
-  ],
+  "description":"Prozess mit Subtype Datenübertragung",
+  "domains":{
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+      "subType": "PRO_DataTransfer",
+      "status": "IN_REVIEW"
+    }
+  },
   "owner":{
     "displayName":"NBRX Testunit",
     "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -20,9 +23,6 @@
     
   },
   "customAspects":{
-    
-  },
-  "subType":{
     
   },
   "type":"process",

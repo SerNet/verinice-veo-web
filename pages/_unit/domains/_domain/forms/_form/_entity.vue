@@ -194,6 +194,7 @@
           :is-valid.sync="isValid"
           :error-messages.sync="errorMessages"
           :disabled="isRevision && !allowRestoration"
+          :reactive-form-actions="reactiveFormActions"
           @input="formModified.isModified = true"
         />
         <div
@@ -290,9 +291,9 @@ import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
-import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes';
-import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
+import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema, IVeoReactiveFormAction } from '~/types/VeoTypes';
 import { validate } from '~/lib/FormSchemaHelper';
+import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 export interface IValidationErrorMessage {
   pointer: string;
@@ -323,7 +324,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
-  mixins: [VeoReactiveFormActionMixin],
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
     if (this.formModified.isModified && this.formModified.dialog) {
@@ -388,32 +388,27 @@ export default Vue.extend({
               targetUri: `${this.$config.apiUrl}/units/${this.unitId}`
             },
             designator: '', // Needed for form validation
-            ...(this.objectType === 'process' ? { status: 'NEW' } : {})
+            _self: 'http://example.com'
           };
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       this.form = {
-        objectSchema,
+        objectSchema: objectSchema as any,
         formSchema,
         objectData,
         lang
       };
 
-      // Add subtype to object data so it gets saved
-      if (this.form.formSchema?.subType) {
-        // Sub type is not set yet, if the object is created
-        if (!this.form.objectData.subType) {
-          this.form.objectData.subType = { [this.domainId]: this.form.formSchema?.subType };
-        } else {
-          this.form.objectData.subType[this.domainId] = this.form.formSchema?.subType;
-        }
-      }
-
-      // Add domain to object data so it gets saved
-      const domainObject = { targetUri: `${this.$config.apiUrl}/domains/${this.domainId}` };
+      // Add either the domain object to the entity (if new) or the current domain if it isn't part of the domain object yet
       if (!this.form.objectData.domains) {
-        this.form.objectData.domains = [domainObject];
-      } else {
-        this.form.objectData.domains.push(domainObject);
+        this.form.objectData.domains = {
+          [this.domainId]: {
+            subType: this.form.formSchema?.subType
+          }
+        };
+      } else if (!this.form.objectData.domains[this.domainId]) {
+        this.form.objectData.domains[this.domainId] = {
+          subType: this.form.formSchema?.subType
+        };
       }
     } else {
       throw new Error('Object Type is not defined in FormSchema');
@@ -507,6 +502,9 @@ export default Vue.extend({
       } else {
         return false;
       }
+    },
+    reactiveFormActions(): IVeoReactiveFormAction[] {
+      return this.objectType === 'person' ? getPersonReactiveFormActions(this) : [];
     }
   },
   methods: {
@@ -527,7 +525,7 @@ export default Vue.extend({
     onSave(_event: any, redirect: boolean = false): Promise<void> {
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
-        .then(async (updatedObjectData) => {
+        .then(async (updatedObjectData: any) => {
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
@@ -587,14 +585,6 @@ export default Vue.extend({
         Object.keys(this.form.objectData.links).forEach((key: string) => {
           if (!this.form.objectData.links[key]) {
             delete this.form.objectData.links[key];
-          } else {
-            // this.form.objectData.links[key] = { ...this.form.objectData.links[key], type: key }
-            this.form.objectData.links[key] = this.form.objectData.links[key].map((el: any) => {
-              // el.target.type = el.target.type?.replace(/^\w/, (c: any) => c.toUpperCase())
-              el.name = key;
-              // el.type = key
-              return el;
-            });
           }
         });
       }

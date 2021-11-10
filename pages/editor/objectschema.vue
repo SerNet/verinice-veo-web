@@ -24,7 +24,7 @@
         absolute-size
         :fullsize="collapsed"
         no-padding
-        :cols="12"
+        cols="12"
         :md="collapsed ? 12 : 6"
         :xl="collapsed ? 12 : 6"
         :title="$t('editor.objectschema.headline')"
@@ -226,7 +226,7 @@
         v-if="!collapsed && objectSchemaHelper && !$vuetify.breakpoint.xs"
         no-padding
         absolute-size
-        :cols="12"
+        cols="12"
         :md="6"
         :xl="6"
         height="100%"

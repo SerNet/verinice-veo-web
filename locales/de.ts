@@ -28,6 +28,7 @@ export default {
   'editor.formschema.edit.input.label': 'Beschriftung',
   'editor.formschema.edit.input.label.text': 'Beschriftung des Elements',
   'editor.formschema.headline': 'Formschema Editor',
+  'editor.formschema.sorting': 'Sortierwert',
   'editor.formschema.subtype': 'Sub Typ',
   'editor.formschema.translation': 'Benutzerdefinierte Übersetzungen',
   'editor.objectschema.headline': 'Objektschema Editor',
