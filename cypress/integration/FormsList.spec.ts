@@ -126,7 +126,7 @@ describe('Forms List', () => {
   });
 
   // Checks whether the list redirects to the correct object for editing
-  it('Redirects the user to the edit page of an object', function () {
+  it.skip('Redirects the user to the edit page of an object', function () {
     const index = 4;
     let id: string;
 

@@ -37,7 +37,7 @@ export type IInputTypes = Record<string, IInputType>;
 
 export const INPUT_TYPES = {
   string: { icon: 'mdi-alphabetical-variant', name: 'string', color: 'red' },
-  boolean: { icon: 'mdi-check-box-outline', name: 'boolean', color: 'teal' },
+  boolean: { icon: 'mdi-checkbox-outline', name: 'boolean', color: 'teal' },
   object: { icon: 'mdi-file-tree', name: 'object', color: 'indigo' },
   number: { icon: 'mdi-decimal', name: 'number', color: 'light-blue' },
   integer: { icon: 'mdi-numeric', name: 'integer', color: 'green' },

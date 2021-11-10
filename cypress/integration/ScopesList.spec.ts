@@ -81,7 +81,7 @@ describe('Scopes List', () => {
     let descendingSortings = 0;
     let ascendingSortings = 0;
     let totalQueries = 0;
-    const sortableColumns = ['designator', 'name', 'updatedAt', 'updatedBy']; // Array containing the property that should be sorted for (NOTE: Column in the VeoFormList.vue file might be named differently), so we make sure only valid properties are sorted
+    const sortableColumns = ['designator', 'name', 'updatedAt', 'updatedBy', 'status']; // Array containing the property that should be sorted for (NOTE: Column in the VeoFormList.vue file might be named differently), so we make sure only valid properties are sorted
 
     cy.intercept({
       method: 'GET',

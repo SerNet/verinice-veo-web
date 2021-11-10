@@ -6,10 +6,13 @@
   "name":"Grün",
   "designator":"PRO-8",
   "abbreviation":"P2",
-  "description":"Prozess ohne Subtype",
-  "domains":[
-    
-  ],
+  "description":"Prozess mit Subtype Verarbeitungstätigkeit",
+  "domains":{
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+      "subType": "PRO_DataProcessing",
+      "status": "NEW"
+    }
+  },
   "owner":{
     "displayName":"NBRX Testunit",
     "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -20,9 +23,6 @@
     
   },
   "customAspects":{
-    
-  },
-  "subType":{
     
   },
   "type":"process",

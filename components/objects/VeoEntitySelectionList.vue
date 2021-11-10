@@ -135,7 +135,7 @@
       </div>
     </template>
     <template #item.status="{ item }">
-      {{ item.entity.status }}
+      {{ translations.lang && translations.lang[$i18n.locale] ? translations.lang[$i18n.locale][convertStatusToI18nKey(item.entity)] : item.entity.domains[domainId] ? item.entity.domains[domainId].status : '' }}
     </template>
     <template #item.description="{ item }">
       <div class="veo-object-list__description">
@@ -181,7 +181,7 @@ import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 import { formatDate, formatTime } from '~/lib/utils';
 
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -213,8 +213,12 @@ export default Vue.extend({
   data() {
     return {
       sortBy: 'name' as string,
-      sortDesc: false as boolean
+      sortDesc: false as boolean,
+      translations: { lang: {} } as IVeoTranslations
     };
+  },
+  async fetch() {
+    this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
   },
   computed: {
     displayedItems(): { entity: IVeoEntity; selected: boolean }[] {
@@ -252,15 +256,11 @@ export default Vue.extend({
           text: this.$t('objectlist.name'),
           value: 'name'
         },
-        ...(this.objectType === 'process'
-          ? [
-              {
-                text: this.$t('objectlist.status'),
-                value: 'status',
-                width: 100
-              }
-            ]
-          : []),
+        {
+          text: this.$t('objectlist.status'),
+          value: 'status',
+          width: 100
+        },
         {
           text: this.$t('objectlist.description'),
           filterable: false,
@@ -285,6 +285,9 @@ export default Vue.extend({
     },
     itemsPerPage(): number {
       return this.$user.tablePageSize;
+    },
+    domainId(): string {
+      return this.$user.lastDomain || '';
     },
     page: {
       set(page: number) {
@@ -331,6 +334,11 @@ export default Vue.extend({
         sortDesc: this.sortDesc,
         page: 1
       });
+    },
+    convertStatusToI18nKey(entity: IVeoEntity): string {
+      const domainDetails = entity.domains[this.domainId];
+
+      return domainDetails ? `${this.objectType}_${domainDetails.subType}_status_${domainDetails.status}` : '';
     },
     clearSelection() {
       this.$emit('new-subentities', []);

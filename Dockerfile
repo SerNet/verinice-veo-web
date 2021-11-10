@@ -2,7 +2,7 @@
 FROM node:14-alpine AS builder
 
 # Install Git & Install Python for node-14
-RUN apk --no-cache add git python make g++
+RUN apk --no-cache add git python3 make g++
 
 # Create app directory
 WORKDIR /usr/src/app

@@ -7,14 +7,12 @@
   "designator":"PRO-11",
   "abbreviation":"DÜ1",
   "description":"Prozess mit Subtype Datenübertragung",
-  "domains":[
-    {
-      "displayName":"DSGVO DSGVO",
-      "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-      "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-      "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+  "domains":{
+    "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+      "subType": "PRO_DataTransfer",
+      "status": "NEW"
     }
-  ],
+  },
   "owner":{
     "displayName":"NBRX Testunit",
     "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -26,9 +24,6 @@
   },
   "customAspects":{
     
-  },
-  "subType":{
-    "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataTransfer"
   },
   "type":"process",
   "parts":[

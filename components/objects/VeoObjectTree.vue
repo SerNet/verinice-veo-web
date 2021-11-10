@@ -116,7 +116,9 @@
         <div class="tree-item d-flex justify-space-between align-center">
           <div class="d-flex text-truncate">
             <b>{{ item.entry.name }}</b>
-            <span v-if="objectType === 'process' && item.entry.status">&nbsp;({{ item.entry.status }})</span>
+            <span v-if="item.entry.domains[domainId] && item.entry.domains[domainId].status">
+              &nbsp;({{ translations.lang && translations.lang[$i18n.locale] ? translations.lang[$i18n.locale][convertStatusToI18nKey(item.entry)] : item.entry.domains[domainId].status }})
+            </span>
             <v-tooltip bottom>
               <template #activator="{ on }">
                 <span
@@ -262,7 +264,7 @@ import { IVeoAffectedEntity, IVeoEntityModifierEvent, VeoEntityModifierEventType
 import { formatDate, formatTime } from '~/lib/utils';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 
 export interface ITreeEntry {
   entry: IVeoEntity;
@@ -317,11 +319,18 @@ export default Vue.extend({
       open: [] as string[],
       active: [] as string[],
       displayedItems: [] as ITreeEntry[],
-      schemas: [] as IVeoSchemaEndpoint[]
+      schemas: [] as IVeoSchemaEndpoint[],
+      translations: { lang: {} } as IVeoTranslations
     };
   },
   async fetch() {
     this.schemas = await this.$api.schema.fetchAll();
+    this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
+  },
+  computed: {
+    domainId(): string {
+      return this.$user.lastDomain || '';
+    }
   },
   watch: {
     items: {
@@ -367,6 +376,11 @@ export default Vue.extend({
     this.updateItemsBasedOnProp();
   },
   methods: {
+    convertStatusToI18nKey(entity: IVeoEntity): string {
+      const domainDetails = entity.domains[this.domainId];
+
+      return domainDetails ? `${this.objectType}_${domainDetails.subType}_status_${domainDetails.status}` : '';
+    },
     updateItemsBasedOnProp() {
       let id = 0;
 
