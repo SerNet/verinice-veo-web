@@ -27,7 +27,7 @@
       >
         <template v-for="(key, index) of filterFields">
           <v-select
-            v-if="objectType === 'process' && key==='status'"
+            v-if="key==='status'"
             :key="index + '_s'"
             v-model="filter.status"
             hide-details
