@@ -320,6 +320,7 @@ interface IData {
   };
   alertType: ALERT_TYPE;
   restoreDialogVisible: boolean;
+  etag?: string;
 }
 
 export default Vue.extend({
@@ -370,7 +371,8 @@ export default Vue.extend({
         target: undefined
       },
       alertType: ALERT_TYPE.INFO,
-      restoreDialogVisible: false
+      restoreDialogVisible: false,
+      etag: undefined as string | undefined
     };
   },
   async fetch() {
@@ -390,6 +392,7 @@ export default Vue.extend({
             designator: '', // Needed for form validation
             _self: 'http://example.com'
           };
+      this.etag = objectData.$etag;
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       this.form = {
         objectSchema: objectSchema as any,
@@ -523,6 +526,7 @@ export default Vue.extend({
       }
     },
     onSave(_event: any, redirect: boolean = false): Promise<void> {
+      (this.form.objectData as any).$etag = this.etag;
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
         .then(async (updatedObjectData: any) => {

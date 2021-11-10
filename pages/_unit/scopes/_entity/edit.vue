@@ -253,6 +253,7 @@ interface IData {
   };
   alertType: ALERT_TYPE;
   restoreDialogVisible: boolean;
+  etag?: string;
 }
 
 export default Vue.extend({
@@ -300,7 +301,8 @@ export default Vue.extend({
         target: undefined
       },
       alertType: ALERT_TYPE.INFO,
-      restoreDialogVisible: false
+      restoreDialogVisible: false,
+      etag: undefined as string | undefined
     };
   },
   async fetch() {
@@ -310,6 +312,7 @@ export default Vue.extend({
     this.entityModified.isModified = false;
 
     const objectData = await this.$api.entity.fetch(this.entityType, this.entityId);
+    this.etag = objectData.$etag;
 
     this.form = {
       objectSchema,
@@ -351,6 +354,7 @@ export default Vue.extend({
       this.saveBtnLoading = true;
       this.formatObjectData();
 
+      (this.form.objectData as any).$etag = this.etag;
       this.$api.entity
         .update(this.entityType, this.entityId, this.form.objectData as IVeoEntity)
         .then(async (updatedObjectData: any) => {
@@ -404,8 +408,7 @@ export default Vue.extend({
         Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
           this.form.objectData.customAspects[key] = {
             ...this.form.objectData.customAspects[key],
-            id: '00000000-0000-0000-0000-000000000000',
-            type: key
+            id: '00000000-0000-0000-0000-000000000000'
           };
         });
       }
