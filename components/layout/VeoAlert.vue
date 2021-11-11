@@ -49,6 +49,7 @@
         <slot name="additional-button" />
         <v-btn
           v-if="!noCloseButton"
+          outlined
           text
           :color="alertColor"
           @click="$emit('input', false)"
@@ -64,12 +65,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
-
-export enum VeoAlertType {
-  ERROR,
-  INFO,
-  SUCCESS
-}
+import { ALERT_TYPE } from '~/types/VeoGlobalEvents';
 
 export default Vue.extend({
   props: {
@@ -86,7 +82,7 @@ export default Vue.extend({
       default: undefined
     },
     type: {
-      type: Number as Prop<VeoAlertType>,
+      type: Number as Prop<ALERT_TYPE>,
       default: 1
     },
     flat: {

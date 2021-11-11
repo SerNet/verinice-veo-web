@@ -16,33 +16,53 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-card flat>
-    <v-card-title>{{ $props.title }}</v-card-title>
-    <v-card-text>
-      <slot />
-    </v-card-text>
-  </v-card>
+  <v-snackbar
+    :value="value"
+    bottom
+    color="white"
+    :timeout="5000"
+    class="ma-0 pa-0"
+    :style="{'paddingBottom': ($vuetify.application.bottom||0)+'px'}"
+  >
+    <v-row
+      dense
+      class="align-center"
+    >
+      <v-col cols="auto">
+        <v-icon color="success">
+          mdi-check-circle-outline
+        </v-icon>
+      </v-col>
+      <v-col
+        cols="auto"
+        class="accent--text"
+        style="font-size: 1.35em;"
+      >
+        {{ text }}
+      </v-col>
+    </v-row>
+  </v-snackbar>
 </template>
+
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
+import Vue from 'vue';
 
-interface IProps {
-  title: String;
-}
-
-export default defineComponent<IProps>({
+export default Vue.extend({
   props: {
-    title: {
+    text: {
       type: String,
+      required: true
+    },
+    value: {
+      type: Boolean,
       required: true
     }
   }
 });
 </script>
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
 
-.v-card {
-  border: 1px solid $grey;
+<style lang="scss" scoped>
+::v-deep .v-snack__content {
+  padding: 7px 8px;
 }
 </style>

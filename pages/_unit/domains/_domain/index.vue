@@ -18,226 +18,100 @@
 <template>
   <VeoPage
     :title="title"
-    :loading="!domain"
+    :loading="$fetchState.pending"
     padding
-    fullsize
   >
     <p
       v-if="domain"
-      class="veo-domain-description"
+      class="veo-unit-description"
     >
       <span v-if="domain.description">{{ domain.description }}</span>
-      <i v-else>{{ t('unit.details.nodescription') }}</i>
+      <i v-else>{{ $t('unit.details.nodescription') }}</i>
     </p>
     <v-row
+      v-if="domain"
       no-gutters
-      class="mb-4"
+      class="flex-column fill-height"
     >
-      <v-col
-        v-for="objectStatusInformation of chartData"
-        :key="objectStatusInformation.objectType"
-        cols="12"
-        lg="6"
-        class="my-4 px-2"
-      >
-        <VeoStackedStatusBarChartWidget
-          :title="objectStatusInformation.objectType"
-          chart-height="45"
-          :data="objectStatusInformation.subTypes"
-          :loading="$fetchState.pending"
-          @click="onBarClick"
-        />
-      </v-col>
-      <v-col
-        cols="12"
-        md="6"
-        class="my-4 px-2"
-      >
-        <VeoMyLatestRevisionsWidget />
-      </v-col>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <VeoUnitFormsWidget
+            :domain="domain"
+            :unit="unit"
+          />
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <VeoDataProcessingWidget />
+          <VeoMyLatestRevisionsWidget class="mt-8" />
+        </v-col>
+      </v-row>
     </v-row>
     <VeoWelcomeDialog
-      v-if="welcomeDialog"
-      v-model="welcomeDialog"
+      v-if="showWelcomeDialog"
+      v-model="showWelcomeDialog"
     />
   </VeoPage>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref, useContext, useFetch, useMeta, useRouter, watch } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import Vue from 'vue';
 
-import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
-import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
+import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { separateUUIDParam } from '~/lib/utils';
+import { IVeoDomain } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
-import { IChartValue } from '~/components/widgets/VeoStackedStatusBarChartWidget.vue';
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
-export default defineComponent({
-  setup(_props, { root }) {
-    const { t, locale } = useI18n();
-    const { $api, params } = useContext();
-    const router = useRouter();
-
-    const domainId = computed(() => separateUUIDParam(params.value.domain).id);
-    const welcomeDialog = ref(!LocalStorage.firstStepsCompleted);
-
-    // refetch everything if domain changes
-    watch(
-      () => params.value.domain,
-      () => {
-        fetch();
-      }
-    );
-
-    const { fetch } = useFetch(async () => {
-      await fetchTranslations();
-      await fetchDomain();
-      await fetchFormschemaMetaInfo();
-      await fetchAllStatusTypes();
-      await loadEntitiesPerStatus();
-    });
-
-    // Fetch the current domain for use in later calls
-    const domain: Ref<IVeoDomain | undefined> = ref();
-    async function fetchDomain() {
-      try {
-        domain.value = await $api.domain.fetch(domainId.value);
-      } catch (e: any) {
-        if (e.code === 404) {
-          root.$emit(VeoEvents.ALERT_ERROR, {
-            type: VeoAlertType.ERROR,
-            title: t('error404'),
-            text: t('domainNotFoundText')
-          } as IVeoEventPayload);
-          router.push(`/${params.value.unit}`);
-        }
-      }
-    }
-
-    let translations: IVeoTranslations = { lang: {} };
-    async function fetchTranslations() {
-      // Only load the translations once, as they won't change if the domain changes
-      if (JSON.stringify(translations.lang) === '{}') {
-        translations = await $api.translation.fetch(['de', 'en']);
-      }
-    }
-
-    // Load all formschemas to use their translated names instead of the subtype keys when displaying the bars
-    let formschemas: IVeoFormSchemaMeta[] = [];
-    async function fetchFormschemaMetaInfo() {
-      if (domain.value) {
-        formschemas = await $api.form.fetchAll(domain.value.id);
-      }
-    }
-
-    // Extract subtypes and status from schemas
-    function extractAllSubtypeStatusFromSchema(schema: IVeoObjectSchema): { subType: string; status: string[] }[] {
-      return (
-        Object.values(schema.properties.domains.patternProperties)[0].allOf?.map((mapping) => ({
-          subType: mapping.if.properties.subType.const,
-          status: mapping.then.properties.status.enum
-        })) || []
-      );
-    }
-
-    // Create chart data
-    const CHART_COLORS = ['#c90000', '#d63b3b', '#dd5f5f', '#e37c7c', '#e99898', '#efb2b2', '#f4cccc', '#fae6e6', '#ffffff'];
-    const chartData: Ref<{ objectType: string; subTypes: { subType: string; title: string; totalEntities: number; statusTypes: (IChartValue & { status: string })[] }[] }[]> = ref(
-      []
-    );
-    let schemaTypes: IVeoSchemaEndpoint[] = [];
-
-    async function fetchAllStatusTypes() {
-      // As schema types don't change if the domain changes, we don't have to reload them after they get initially loaded
-      if (schemaTypes.length === 0) {
-        schemaTypes = await $api.schema.fetchAll();
-      }
-
-      // Load all schemas and extract their subtypes and for the subtypes their possible status
-      for (const type of schemaTypes) {
-        const schema = await $api.schema.fetch(type.schemaName);
-
-        chartData.value.push({
-          objectType: type.schemaName,
-          subTypes: extractAllSubtypeStatusFromSchema(schema).map((subtype) => {
-            let currentColorIndex = 0;
-
-            return {
-              subType: subtype.subType,
-              title: formschemas.find((formschema) => formschema.subType === subtype.subType)?.name[locale.value] || subtype.subType,
-              statusTypes: subtype.status.map((status: string) => ({
-                status,
-                label: translations.lang && translations.lang[locale.value] ? translations.lang[locale.value][`${type.schemaName}_${subtype.subType}_status_${status}`] : status,
-                value: 0,
-                color: CHART_COLORS[currentColorIndex++ % (CHART_COLORS.length - 1)]
-              })),
-              totalEntities: 0
-            };
-          })
-        });
-      }
-      chartData.value.sort((a, b) => (a.objectType < b.objectType ? -1 : a.objectType > b.objectType ? 1 : 0));
-    }
-
-    // As there is no introspection endpoint, we have to fetch all entities of a type with a very high items per page count and count them manually
-    async function loadEntitiesPerStatus() {
-      if (domain.value) {
-        for (const schemaType of schemaTypes) {
-          const allEntitiesPerType = await $api.entity.fetchAll(schemaType.schemaName, 1, { size: Number.MAX_VALUE });
-          const chartDataType = chartData.value.find((type) => type.objectType === schemaType.schemaName);
-          for (const subType of chartDataType?.subTypes || []) {
-            for (const status of subType.statusTypes) {
-              status.value = allEntitiesPerType.items.filter((entity) => {
-                return (
-                  entity.domains[(domain.value as any as IVeoDomain).id]?.subType === subType.subType &&
-                  entity.domains[(domain.value as any as IVeoDomain).id]?.status === status.status
-                );
-              }).length;
-            }
-            subType.totalEntities = subType.statusTypes.reduce((previousValue, currentValue) => previousValue + currentValue.value, 0);
-          }
-        }
-      }
-    }
-
-    // Navigate if the user clicks on a bar
-    function onBarClick(subType: string, status: string) {
-      const formId = formschemas.find((formschema) => formschema.subType === subType)?.id;
-
-      if (formId) {
-        router.push({
-          name: 'unit-domains-domain-forms-form',
-          params: {
-            domnain: params.value.domain,
-            form: createUUIDUrlParam('form', formId)
-          },
-          query: {
-            status
-          }
-        });
-      }
-    }
-
-    // page title
-    const title = computed(() => domain.value?.name || t('domainOverview').toString());
-    useMeta(() => ({
-      title: title.value
-    }));
-
+export default Vue.extend({
+  data() {
     return {
-      chartData,
-      domain,
-      onBarClick,
-      title,
-      welcomeDialog,
-
-      t
+      domain: undefined as IVeoDomain | undefined,
+      unit: {} as any,
+      showWelcomeDialog: false as boolean
     };
   },
-  head: {}
+  async fetch() {
+    try {
+      this.unit = await this.$api.unit.fetch(this.unitId);
+      this.domain = await this.$api.domain.fetch(this.domainId);
+    } catch (e: any) {
+      if (e.code === 404) {
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          type: ALERT_TYPE.ERROR,
+          title: this.$t('error404'),
+          text: this.$t('domainNotFoundText')
+        } as IVeoEventPayload);
+        this.$router.push(`/${this.$route.params.unit}`);
+      }
+    }
+  },
+  head(): any {
+    return {
+      title: this.$t('unit.index.title')
+    };
+  },
+  computed: {
+    title(): string {
+      return this.domain?.name || this.$t('domainOverview').toString();
+    },
+    domainId() {
+      return separateUUIDParam(this.$route.params.domain).id;
+    },
+    unitId() {
+      return separateUUIDParam(this.$route.params.unit).id;
+    }
+  },
+  watch: {
+    '$route.params': '$fetch'
+  },
+  mounted() {
+    this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
+  }
 });
 </script>
 
@@ -255,7 +129,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
 
-.veo-domain-description {
+.veo-unit-description {
   color: $accent;
   margin-top: -20px;
 }

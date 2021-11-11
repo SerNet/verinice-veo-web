@@ -91,9 +91,8 @@
 import Vue from 'vue';
 import { upperFirst } from 'lodash';
 import { computed, ComputedRef } from '@nuxtjs/composition-api';
-import { mdiArchive, mdiClipboardList, mdiFileChart, mdiFileDocument, mdiFormatListChecks, mdiHome } from '@mdi/js';
-
 import LocalStorage from '~/util/LocalStorage';
+
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 import { nonLinkableSchemas } from '~/plugins/api/schema';
@@ -165,7 +164,7 @@ export default Vue.extend({
       */
       const domainDashboard: INavItem = {
         name: this.$t('domain.index.title').toString(),
-        icon: mdiHome,
+        icon: 'mdi-view-dashboard',
         exact: true,
         to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', this.domainId || '')}`,
         disabled: false,
@@ -173,7 +172,7 @@ export default Vue.extend({
       };
       const scopes: INavItem = {
         name: this.$t('breadcrumbs.scopes').toString(),
-        icon: mdiArchive,
+        icon: 'mdi-archive',
         exact: false,
         to: `/${this.$route.params.unit}/scopes`,
         disabled: false,
@@ -181,7 +180,7 @@ export default Vue.extend({
       };
       const objects: INavItem = {
         name: this.$t('breadcrumbs.objects').toString(),
-        icon: mdiFileDocument,
+        icon: 'mdi-file-document',
         to: undefined,
         exact: false,
         disabled: false,
@@ -205,7 +204,7 @@ export default Vue.extend({
 
       const unitSelection: INavItem = {
         name: this.$t('breadcrumbs.index').toString(),
-        icon: mdiHome,
+        icon: 'mdi-home',
         to: '/',
         exact: true,
         disabled: false,
@@ -223,7 +222,7 @@ export default Vue.extend({
 
       const forms = {
         name: this.$t('breadcrumbs.forms').toString(),
-        icon: mdiFormatListChecks,
+        icon: 'mdi-format-list-checks',
         to: undefined,
         exact: false,
         disabled: false,
@@ -235,7 +234,7 @@ export default Vue.extend({
 
       const reports = {
         name: this.$t('breadcrumbs.reports').toString(),
-        icon: mdiFileChart,
+        icon: 'mdi-file-chart',
         to: undefined,
         exact: false,
         disabled: false,
@@ -247,7 +246,7 @@ export default Vue.extend({
 
       const catalogs = {
         name: this.$t('breadcrumbs.catalogs').toString(),
-        icon: mdiClipboardList,
+        icon: 'mdi-clipboard-list',
         to: undefined,
         exact: false,
         disabled: false,

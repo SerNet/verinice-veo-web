@@ -15,22 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
+export enum ALERT_TYPE {
+  ERROR,
+  INFO,
+  SUCCESS,
+  WARNING
+}
 
 export interface IVeoEventPayload {
-  type?: VeoAlertType;
+  type?: ALERT_TYPE;
   text: string;
   title?: string;
   saveButtonText?: string;
-  objectModified?: boolean; // ToDo: Temporary until objects rework
-  refetchCallback?: CallableFunction; // ToDo: Temporary until objects rework
 }
 
 export const VeoEvents = {
+  SNACKBAR_CLOSE: 'snackbar_close',
   SNACKBAR_SUCCESS: 'snackbar_success',
+  ALERT_CLOSE: 'alert_close',
   ALERT_ERROR: 'alert_error',
   ALERT_INFO: 'alert_info',
-  ALERT_EXPIRE: 'alert_expire',
+  ALERT_SUCCESS: 'alert_success',
+  ALERT_WARNING: 'alert_warning',
 
   DOMAIN_CHANGED: 'domain_changed',
   UNIT_CREATE: 'unit-create',

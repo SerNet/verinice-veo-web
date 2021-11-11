@@ -106,9 +106,14 @@
         <nuxt />
       </VeoPageWrapper>
     </v-main>
-    <VeoGlobalAlert
-      v-if="alerts[0]"
-      v-bind="alerts[0]"
+    <VeoSnackbar
+      v-model="snackbar.value"
+      v-bind="snackbar"
+    />
+    <VeoAlert
+      v-model="alert.value"
+      v-bind="alert"
+      style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
     />
     <VeoNewUnitDialog
       v-model="newUnitDialog.value"
@@ -120,9 +125,8 @@
 <script lang="ts">
 import { computed, defineComponent, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
 
-import { VeoEvents } from '~/types/VeoGlobalEvents';
+import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { useVeoAlerts } from '~/composables/VeoAlert';
 
 interface IProps {}
 
@@ -131,8 +135,6 @@ export default defineComponent<IProps>({
     const { $user, params, app } = useContext();
     const route = useRoute();
     const router = useRouter();
-    const { alerts, listenToRootEvents } = useVeoAlerts();
-    listenToRootEvents(context.root);
 
     //
     // Global navigation
@@ -164,6 +166,50 @@ export default defineComponent<IProps>({
       newUnitDialog.value.persistent = persistent;
     }
 
+    //
+    // Handling of global events
+    //
+    const alert = ref({ value: false, text: '', title: '', type: ALERT_TYPE.INFO });
+    const snackbar = ref({ value: false, text: '' });
+    const breadcrumbsKey = ref(0);
+
+    // Alert and snackbar events
+    context.root.$on(VeoEvents.ALERT_ERROR, (payload: IVeoEventPayload) => {
+      alert.value.text = payload.text;
+      alert.value.title = payload.title || '';
+      alert.value.type = ALERT_TYPE.ERROR;
+      alert.value.value = true;
+    });
+    context.root.$on(VeoEvents.ALERT_INFO, (payload: IVeoEventPayload) => {
+      alert.value.text = payload.text;
+      alert.value.title = payload.title || '';
+      alert.value.type = ALERT_TYPE.INFO;
+      alert.value.value = true;
+    });
+    context.root.$on(VeoEvents.ALERT_SUCCESS, (payload: IVeoEventPayload) => {
+      alert.value.text = payload.text;
+      alert.value.title = payload.title || '';
+      alert.value.type = ALERT_TYPE.SUCCESS;
+      alert.value.value = true;
+    });
+    context.root.$on(VeoEvents.ALERT_WARNING, (payload: IVeoEventPayload) => {
+      alert.value.text = payload.text;
+      alert.value.title = payload.title || '';
+      alert.value.type = ALERT_TYPE.WARNING;
+      alert.value.value = true;
+    });
+    context.root.$on(VeoEvents.ALERT_CLOSE, () => {
+      alert.value.value = false;
+    });
+
+    context.root.$on(VeoEvents.SNACKBAR_SUCCESS, (payload: IVeoEventPayload) => {
+      snackbar.value.text = payload.text;
+      snackbar.value.value = true;
+    });
+    context.root.$on(VeoEvents.SNACKBAR_CLOSE, () => {
+      snackbar.value.value = false;
+    });
+
     // UI related events (unit switch/creation)
     context.root.$on(VeoEvents.UNIT_CREATE, (persistent: boolean) => {
       createUnit(persistent);
@@ -174,7 +220,6 @@ export default defineComponent<IProps>({
     });
 
     // Breadcrumbs related events
-    const breadcrumbsKey = ref(0);
     context.root.$on(VeoEvents.ENTITY_UPDATED, () => {
       // Update breadcrumbsKey to rerender VeoBreadcrumbs component, when entity displayName is updated
       setTimeout(() => {
@@ -202,13 +247,14 @@ export default defineComponent<IProps>({
     return {
       domainId,
       unitId,
+      alert,
       drawer,
       lang,
       langs,
       newUnitDialog,
+      snackbar,
       breadcrumbsKey,
-      homeLink,
-      alerts
+      homeLink
     };
   },
   head() {

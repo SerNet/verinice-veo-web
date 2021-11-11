@@ -164,6 +164,25 @@
               :object="form.objectData"
               @restored="onRestored"
             />
+            <VeoAlert
+              v-model="alert.value"
+              v-bind="alert"
+              style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
+            >
+              <template
+                v-if="alert.error === 412"
+                #additional-button
+              >
+                <v-btn
+                  outlined
+                  text
+                  color="error"
+                  @click="$fetch()"
+                >
+                  {{ $t('global.button.yes') }}
+                </v-btn>
+              </template>
+            </VeoAlert>
             <VeoEntityModifiedDialog
               v-model="entityModified.dialog"
               :item="form.objectData"
@@ -211,8 +230,7 @@ import { Route } from 'vue-router/types/index';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
-import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
-import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
 import { IVeoEntity, IVeoObjectHistoryEntry, IVeoReactiveFormAction } from '~/types/VeoTypes';
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
@@ -226,13 +244,14 @@ interface IData {
   revisionCache: IBaseObject;
   errorMessages: IValidationErrorMessage[];
   saveBtnLoading: boolean;
+  alert: IVeoEventPayload & { value: boolean; error: number };
   entityModified: {
     isModified: boolean;
     dialog: boolean;
     revisionDialog: boolean;
     target?: any;
   };
-  alertType: VeoAlertType;
+  alertType: ALERT_TYPE;
   restoreDialogVisible: boolean;
   etag?: string;
 }
@@ -267,6 +286,14 @@ export default Vue.extend({
       revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
+      alert: {
+        value: false,
+        text: '',
+        type: 0,
+        title: this.$t('error.title') as string,
+        saveButtonText: this.$t('global.button.no') as string,
+        error: 0 as number
+      },
       entityModified: {
         isModified: false,
         dialog: false,
@@ -292,6 +319,7 @@ export default Vue.extend({
       objectData,
       lang
     };
+    this.alert.value = false;
   },
   head(): any {
     return {
@@ -364,18 +392,14 @@ export default Vue.extend({
     },
     showError(status: number, message: string) {
       if (status === 412) {
-        this.$root.$emit(VeoEvents.ALERT_ERROR, {
-          title: this.$t('error.title') as string,
-          text: this.$t('global.appstate.alert.object_modified').toString(),
-          saveButtonText: this.$t('global.button.no').toString(),
-          objectModified: true
-        } as IVeoEventPayload);
+        this.alert.text = this.$t('global.appstate.alert.object_modified').toString();
+        this.alert.saveButtonText = this.$t('global.button.no').toString();
       } else {
-        this.$root.$emit(VeoEvents.ALERT_ERROR, {
-          title: this.$t('error.title') as string,
-          text: message
-        } as IVeoEventPayload);
+        this.alert.text = message;
+        this.alert.saveButtonText = this.$t('global.button.ok').toString();
       }
+      this.alert.error = status;
+      this.alert.value = true;
     },
     formatObjectData() {
       // TODO: find better solution
