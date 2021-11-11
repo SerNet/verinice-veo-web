@@ -121,6 +121,14 @@ export interface IVeoObjectSchemaProperty {
   title?: string;
   description?: string;
   pattern?: string;
+  allOf?: {
+    if: {
+      properties: IBaseObject;
+    };
+    then: {
+      properties: IBaseObject;
+    };
+  }[];
   [key: string]: any;
 }
 
