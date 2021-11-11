@@ -67,7 +67,8 @@
 import { computed, defineComponent, Ref, ref, useContext, useFetch, useMeta, useRouter, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { ALERT_TYPE, IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
+import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
@@ -107,7 +108,7 @@ export default defineComponent({
       } catch (e: any) {
         if (e.code === 404) {
           root.$emit(VeoEvents.ALERT_ERROR, {
-            type: ALERT_TYPE.ERROR,
+            type: VeoAlertType.ERROR,
             title: t('error404'),
             text: t('domainNotFoundText')
           } as IVeoEventPayload);

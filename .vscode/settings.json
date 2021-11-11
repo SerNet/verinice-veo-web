@@ -34,6 +34,7 @@
     "includeGlob": [
       "**/assets/**",
       "**/components/**",
+      "**/composables/**",
       "**/cypress/integration/**",
       "**/layouts/**",
       "**/lib/**",
