@@ -579,8 +579,7 @@ export default Vue.extend({
         Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
           this.form.objectData.customAspects[key] = {
             ...this.form.objectData.customAspects[key],
-            id: '00000000-0000-0000-0000-000000000000',
-            type: key
+            id: '00000000-0000-0000-0000-000000000000'
           };
         });
       }
