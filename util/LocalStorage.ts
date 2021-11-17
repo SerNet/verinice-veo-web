@@ -19,7 +19,7 @@ const PRIMARY_NAV_MINI_VARIANT = 'primary-navigation-drawer--mini-variant';
 const NAV_ENTRY_EXPANDED = 'primary-navigation-drawer--nav-entry-expanded';
 const LAST_DOMAIN = 'last-domain';
 const LAST_UNIT = 'last-unit';
-const FIRST_STEPS_COMPLETED = 'first-steps-completed';
+export const FIRST_STEPS_COMPLETED = 'first-steps-completed';
 const UNIT_BEFORE_DEMOUNIT = ' unit-before-demounit';
 
 const PERSIST_ON_LOGOUT = [FIRST_STEPS_COMPLETED];

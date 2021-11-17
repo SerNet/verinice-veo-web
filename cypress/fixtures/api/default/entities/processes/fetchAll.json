@@ -12,7 +12,7 @@
          "domains":{
             "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
                "subType": "PRO_DataTransfer",
-               "status": "NEW"
+               "status": "FOR_REVIEW"
             }
          },
          "owner":{
@@ -45,7 +45,7 @@
          "domains":{
             "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
                "subType": "PRO_DataTransfer",
-               "status": "NEW"
+               "status": "FOR_REVIEW"
             }
          },
          "owner":{
@@ -177,7 +177,7 @@
          "domains":{
             "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
                "subType": "PRO_DataProcessing",
-               "status": "NEW"
+               "status": "RELEASED"
             }
          },
          "owner":{
@@ -207,14 +207,12 @@
          "designator":"PRO-16",
          "abbreviation":"VT3",
          "description":"Prozess mit Subtype Verarbeitungstätigkeit",
-         "domains":[
-            {
-               "displayName":"DSGVO DSGVO",
-               "searchesUri":"https://api.develop.verinice.com/veo/domains/searches",
-               "targetUri":"https://api.develop.verinice.com/veo/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-               "resourcesUri":"https://api.develop.verinice.com/veo/domains"
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataProcessing",
+               "status": "NEW"
             }
-         ],
+         },
          "owner":{
             "displayName":"NBRX Testunit",
             "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
@@ -226,9 +224,6 @@
          },
          "customAspects":{
             
-         },
-         "subType":{
-            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataProcessing"
          },
          "type":"process",
          "parts":[
@@ -247,8 +242,8 @@
          "description":"Prozess mit Subtype Verarbeitungstätigkeit",
          "domains":{
             "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
-               "subType": "PRO_DataProcessing",
-               "status": "NEW"
+               "subType": "PRO_DataTransfer",
+               "status": "FOR_REVIEW"
             }
          },
          "owner":{
@@ -314,7 +309,7 @@
          "domains":{
             "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
                "subType": "PRO_DataProcessing",
-               "status": "NEW"
+               "status": "FOR_REVIEW"
             }
          },
          "owner":{

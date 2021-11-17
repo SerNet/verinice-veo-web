@@ -20,6 +20,7 @@ export const VEO_API_NEW_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|contro
 export const VEO_UNITS = /https:\/\/api.(.+)\/veo\/units$/;
 export const FORMS_API_ALL_FORMS_REGEX = /https:\/\/api.(.+)\/forms\/$/;
 export const FORMS_API_FORM_REGEX = /https:\/\/api.(.+)\/forms\/(.+)/;
+export const HISTORY_API_MY_LATEST_REVISIONS = /https:\/\/api.(.+)\/history\/revisions\/my-latest\/\?(.+)$/;
 export const REPORTING_API_ALL_REPORTS_REGEX = /https:\/\/api.(.+)\/reporting\/reports$/;
 
 function createJWT(payload) {
@@ -370,5 +371,17 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
         });
       }
     ).as('G_fetchObject');
+  }
+
+  if (!options?.ignoreFetchMyLatestRevisions) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: HISTORY_API_MY_LATEST_REVISIONS
+      },
+      (req) => {
+        req.reply([]);
+      }
+    ).as('G_fetchMyLatestRevisions');
   }
 });

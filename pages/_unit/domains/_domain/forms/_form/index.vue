@@ -21,6 +21,15 @@
     fullsize
   >
     <template #default>
+      <v-btn
+        id="stepOne"
+        outlined
+        color="primary"
+        class="align-self-center px-4 ma-4"
+        @click="startIntro()"
+      >
+        Start Intro
+      </v-btn>
       <VeoEntityModifier
         v-bind="$data"
         :root-route="rootRoute"
@@ -38,6 +47,7 @@
               class="px-4"
             >
               <v-select
+                id="hintOne"
                 v-model="formType"
                 :label="$t('form')"
                 :items="formTypes"
@@ -64,6 +74,7 @@
               :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
             >
               <VeoListSearchBar
+                id="hintTwo"
                 v-model="filter"
                 :object-type="formSchema && formSchema.modelType"
                 @reset="filter = $event"
@@ -73,6 +84,7 @@
         </template>
         <template #default="{ on }">
           <VeoFormList
+            id="stepTwo"
             :items="objects"
             :loading="$fetchState.pending || loading"
             :show-parent-link="false"
@@ -89,6 +101,8 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import introJs from 'intro.js';
+import 'intro.js/minified/introjs.min.css';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
@@ -174,6 +188,37 @@ export default Vue.extend({
     };
   },
   methods: {
+    startIntro() {
+      const intro = introJs();
+      intro.setOptions({
+        showStepNumbers: false,
+        doneLabel: 'Intro beenden',
+        steps: [
+          {
+            intro: 'Das ist ein <b>Beispiel</b> für intro.js. Lass uns die Tour starten!'
+          },
+          {
+            element: '#stepOne',
+            intro: 'Man kann einzelne kleine Elemente markieren...',
+            position: 'top'
+          },
+          {
+            element: '#stepTwo',
+            intro: '...oder ganze Bereiche.'
+          },
+          {
+            element: '#stepThree',
+            intro: 'Es können übegreifende Elemente markiert werden'
+          },
+          {
+            element: '#stepFour',
+            intro: 'Hier können Hinweise für diese spezielle Seite angezeigt werden.',
+            position: 'bottom'
+          }
+        ]
+      });
+      intro.start();
+    },
     changeType(newType: string) {
       const newFormParam = createUUIDUrlParam('form', newType);
       this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${newFormParam}`);

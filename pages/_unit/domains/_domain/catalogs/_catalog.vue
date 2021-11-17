@@ -238,7 +238,7 @@ export default Vue.extend({
                 referencedElement: {
                   targetUri: `/${getSchemaEndpoint(this.schemas, entity.type)}/${entity.id}`
                 } as any,
-                referenceType: 'LINK'
+                referenceType: incarnation.references[0].referenceType
               }
             ];
           }

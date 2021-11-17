@@ -121,28 +121,53 @@
       "description": "The description for the EntityLayerSupertype."
     },
     "domains": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string",
-            "description": "A friendly human readable title of the referenced domain."
+      "type": "object",
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "patternProperties": {
+        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$": {
+          "properties": {
+            "subType": {
+              "type": "string",
+              "enum": [
+                "AST_Application"
+              ]
+            },
+            "status": {
+              "type": "string"
+            }
           },
-          "resourcesUri": {
-            "type": "string"
+          "dependentRequired": {
+            "subType": [
+              "status"
+            ],
+            "status": [
+              "subType"
+            ]
           },
-          "searchesUri": {
-            "type": "string"
-          },
-          "targetUri": {
-            "type": "string",
-            "description": "The resource URL of the referenced domains."
-          }
-        },
-        "required": ["targetUri"],
-        "description": "A reference to a domain"
-      }
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "AST_Application"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "id": {
       "type": "string",
