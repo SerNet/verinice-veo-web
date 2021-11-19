@@ -175,13 +175,7 @@ export default Vue.extend({
       this.$emit('input', this.filter);
     },
     reset() {
-      this.filter = {
-        designator: undefined,
-        name: undefined,
-        status: undefined,
-        description: undefined,
-        updatedBy: undefined
-      };
+      Object.keys(this.filter).forEach((k) => (this.filter[k] = undefined));
       this.$emit('reset', this.filter);
     },
     omit
