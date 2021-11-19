@@ -61,116 +61,119 @@
           v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups"
           v-model="contentsCollapsed"
         />
-        <v-row
-          no-gutters
-          class="justify-space-between"
-        >
-          <v-col
-            cols="auto"
-            class="mt-4"
+        <v-col>
+          <v-row
+            no-gutters
+            class="justify-space-between"
           >
-            <h1 v-if="!isRevision && form.objectData.displayName">
-              {{ form.objectData.displayName }}
-            </h1>
-            <h1 v-else-if="!isRevision && form.formSchema">
-              {{ $t('object_create', { type: form.formSchema.name[$i18n.locale] }) }}
-            </h1>
-            <h1 v-else>
-              {{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})
-            </h1>
-          </v-col>
-        </v-row>
-        <v-row class="mt-3">
-          <v-spacer />
-          <v-col
-            cols="auto"
-            class="text-right"
-          >
-            <v-btn
-              outlined
-              @click="doDiscard"
+            <v-col
+              cols="auto"
+              class="mt-4"
             >
-              {{ $t('global.button.discard') }}
-            </v-btn>
-            <v-tooltip
-              v-if="!isRevision"
-              top
-              :disabled="!isSaveBtnDisabled || !formModified.isModified"
+              <h1 v-if="!isRevision && form.objectData.displayName">
+                {{ form.objectData.displayName }}
+              </h1>
+              <h1 v-else-if="!isRevision && form.formSchema">
+                {{ $t('object_create', { type: form.formSchema.name[$i18n.locale] }) }}
+              </h1>
+              <h1 v-else>
+                {{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})
+              </h1>
+            </v-col>
+          </v-row>
+          <v-row
+            class="mt-3">
+            <v-spacer />
+            <v-col
+              cols="auto"
+              class="text-right"
             >
-              <template #activator="{ on }">
-                <div
-                  class="d-inline-block"
-                  v-on="on"
-                  @click.prevent
-                >
-                  <v-btn
-                    color="primary"
-                    outlined
-                    :disabled="isSaveBtnDisabled"
-                    :loading="saveBtnLoading"
-                    @click="onClick"
+              <v-btn
+                outlined
+                @click="doDiscard"
+              >
+                {{ $t('global.button.discard') }}
+              </v-btn>
+              <v-tooltip
+                v-if="!isRevision"
+                top
+                :disabled="!isSaveBtnDisabled || !formModified.isModified"
+              >
+                <template #activator="{ on }">
+                  <div
+                    class="d-inline-block"
+                    v-on="on"
+                    @click.prevent
                   >
-                    {{ $t('global.button.save') }}
-                  </v-btn>
-                </div>
-              </template>
-              <template #default>
-                <ul>
-                  <li
-                    v-for="(errorMessage, key) in errorMessages"
-                    :key="key"
-                  >
-                    {{ errorMessage.message }}
-                  </li>
-                </ul>
-              </template>
-            </v-tooltip>
+                    <v-btn
+                      color="primary"
+                      outlined
+                      :disabled="isSaveBtnDisabled"
+                      :loading="saveBtnLoading"
+                      @click="onClick"
+                    >
+                      {{ $t('global.button.save') }}
+                    </v-btn>
+                  </div>
+                </template>
+                <template #default>
+                  <ul>
+                    <li
+                      v-for="(errorMessage, key) in errorMessages"
+                      :key="key"
+                    >
+                      {{ errorMessage.message }}
+                    </li>
+                  </ul>
+                </template>
+              </v-tooltip>
 
-            <v-btn
-              v-else
-              color="primary"
-              outlined
-              :loading="saveBtnLoading"
-              @click="restoreDialogVisible = true"
-            >
-              {{ $t('restore') }}
-            </v-btn>
+              <v-btn
+                v-else
+                color="primary"
+                outlined
+                :loading="saveBtnLoading"
+                @click="restoreDialogVisible = true"
+              >
+                {{ $t('restore') }}
+              </v-btn>
 
-            <v-tooltip
-              v-if="!isRevision"
-              top
-              :disabled="!isSaveBtnDisabled || !formModified.isModified"
-            >
-              <template #activator="{ on }">
-                <div
-                  class="d-inline-block"
-                  v-on="on"
-                  @click.prevent
-                >
-                  <v-btn
-                    color="primary"
-                    outlined
-                    :disabled="isSaveBtnDisabled"
-                    :loading="saveBtnLoading"
-                    @click="onClick($event, true)"
+              <v-tooltip
+                v-if="!isRevision"
+                top
+                :disabled="!isSaveBtnDisabled || !formModified.isModified"
+              >
+                <template #activator="{ on }">
+                  <div
+                    class="d-inline-block"
+                    v-on="on"
+                    @click.prevent
                   >
-                    {{ $t('global.button.save_quit') }}
-                  </v-btn>
-                </div>
-              </template>
-              <template #default>
-                <ul>
-                  <li
-                    v-for="(errorMessage, key) in errorMessages"
-                    :key="key"
-                  >
-                    {{ errorMessage.message }}
-                  </li>
-                </ul>
-              </template>
-            </v-tooltip>
-          </v-col>
-        </v-row>
+                    <v-btn
+                      color="primary"
+                      outlined
+                      :disabled="isSaveBtnDisabled"
+                      :loading="saveBtnLoading"
+                      @click="onClick($event, true)"
+                    >
+                      {{ $t('global.button.save_quit') }}
+                    </v-btn>
+                  </div>
+                </template>
+                <template #default>
+                  <ul>
+                    <li
+                      v-for="(errorMessage, key) in errorMessages"
+                      :key="key"
+                    >
+                      {{ errorMessage.message }}
+                    </li>
+                  </ul>
+                </template>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-col>
       </template>
       <template #default>
         <VeoAlert

@@ -139,7 +139,7 @@ export default Vue.extend({
     // Activate Observer when the component is mounted
     const options = {
       root: document.getElementById('scroll-wrapper'),
-      rootMargin: '-84px 0px 0px 0px', // -72px because of sticky header
+      rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
       threshold: 0
     };
 
