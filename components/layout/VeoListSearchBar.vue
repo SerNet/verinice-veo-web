@@ -175,7 +175,7 @@ export default Vue.extend({
       this.$emit('input', this.filter);
     },
     reset() {
-      (this.$refs.form as any).reset();
+      Object.keys(this.filter).forEach((k) => (this.filter[k] = undefined));
       this.$emit('reset', this.filter);
     },
     omit
