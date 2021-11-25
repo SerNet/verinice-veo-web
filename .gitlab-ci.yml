@@ -24,9 +24,10 @@ test:e2e:
     - CYPRESS_BASE_URL=$(cat environment_url.txt)
     - CYPRESS_BASE_URL_HTTPS="${CYPRESS_BASE_URL//http/https}"
     - npm ci
-    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl="$CYPRESS_BASE_URL_HTTPS"
+    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl="$CYPRESS_BASE_URL_HTTPS" --spec="cypress/integration/ScopesList.spec.ts"
   after_script:
     # Create cobertura report
+    - cat cypress/.nyc_output/out.json
     - ls -la cypress/coverage
     - npx nyc report --reporter=cobertura --reporter=text-summary
     - ls -la cypress/coverage
