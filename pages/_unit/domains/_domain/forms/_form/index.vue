@@ -73,14 +73,11 @@
               class="flex-grow-1 search-bar"
               :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
             >
-
                <VeoFilterDialog 
                 v-model="filter"
                 :object-type="formSchema && formSchema.modelType"
                 @reset="filter = $event"
               /> 
-              
-
             </v-col>
           </v-row>
         </template>
@@ -175,7 +172,8 @@ export default Vue.extend({
           name: newValue?.name,
           description: newValue?.description,
           updatedBy: newValue?.updatedBy,
-          status: newValue?.status
+          status: newValue?.status,
+          hasLinks: newValue?.hasLinks
         }
       });
       this.$fetch();
@@ -187,7 +185,10 @@ export default Vue.extend({
       name: this.$route.query.name,
       status: this.$route.query.status,
       description: this.$route.query.description,
-      updatedBy: this.$route.query.updatedBy
+      updatedBy: this.$route.query.updatedBy,
+      hasLinks: this.$route.query.hasLinks,
+      notPartOfGroup: this.$route.query.notPartOfGroup,
+      hasChildObjects: this.$route.query.hasChildObjects
     };
   },
   methods: {
