@@ -27,9 +27,8 @@ test:e2e:
     - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl="$CYPRESS_BASE_URL_HTTPS" --spec="cypress/integration/ScopesList.spec.ts"
   after_script:
     # Create cobertura report
-    - ls -la cypress/coverage
     #- npx nyc report --reporter=cobertura --reporter=text-summary
-    #- python -o cypress/coverage/cobertura-coverage.xml lcov_cobertura.py cypress/coverage/lcov.info
+    - python -o cypress/coverage/cobertura-coverage.xml lcov_cobertura.py cypress/coverage/lcov.info
   rules:
     - if: '$TEST_DISABLED'
       when: never
