@@ -28,7 +28,7 @@ test:e2e:
   after_script:
     # Create cobertura report
     #- npx nyc report --reporter=cobertura --reporter=text-summary
-    - python -o cypress/coverage/cobertura-coverage.xml lcov_cobertura.py cypress/coverage/lcov.info
+    - python lcov_cobertura.py cypress/coverage/lcov.info -o cypress/coverage/cobertura-coverage.xml
   rules:
     - if: '$TEST_DISABLED'
       when: never
