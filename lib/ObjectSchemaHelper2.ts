@@ -101,8 +101,10 @@ const DEFAULT_SCHEMA = {
     domains: {
       type: 'object',
       description: "Details about this element's association with domains. Domain ID is key, association object is value.",
-      patternProperties: {
-        '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$': {
+      properties: {
+        'ed67e4d7-c657-4479-ba8a-c53999d2930a': {
+          $schema: 'https://json-schema.org/draft/2019-09/schema',
+          type: 'object',
           properties: {
             subType: {
               type: 'string',
@@ -116,8 +118,7 @@ const DEFAULT_SCHEMA = {
             subType: ['status'],
             status: ['subType']
           },
-          allOf: [],
-          type: 'object'
+          allOf: []
         }
       },
       additionalProperties: false

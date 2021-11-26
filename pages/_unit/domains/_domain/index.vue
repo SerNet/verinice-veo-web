@@ -133,7 +133,7 @@ export default defineComponent({
     // Extract subtypes and status from schemas
     function extractAllSubtypeStatusFromSchema(schema: IVeoObjectSchema): { subType: string; status: string[] }[] {
       return (
-        Object.values(schema.properties.domains.patternProperties)[0].allOf?.map((mapping) => ({
+        Object.values(schema.properties.domains.properties)[0].allOf?.map((mapping) => ({
           subType: mapping.if.properties.subType.const,
           status: mapping.then.properties.status.enum
         })) || []

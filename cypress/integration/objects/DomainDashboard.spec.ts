@@ -48,7 +48,7 @@ describe('Domain dashboard', () => {
     const widgetTitle = 'process';
 
     cy.fixture(`api/default/schemas/${widgetTitle}.json`).then((objectSchema) => {
-      const subTypes = (Object.values(objectSchema.properties.domains.patternProperties)[0] as any).properties.subType.enum;
+      const subTypes = (Object.values(objectSchema.properties.domains.properties)[0] as any).properties.subType.enum;
 
       cy.get('[data-cy=unit-domains-domain-status-bar-chart-widget]')
         .contains(upperFirst(widgetTitle))
