@@ -83,6 +83,7 @@ export default {
    ** Nuxt.js modules
    */
   modules: [
+    '@nuxt/content',
     'nuxt-polyfill',
     [
       'nuxt-i18n',
@@ -96,6 +97,14 @@ export default {
       }
     ]
   ],
+
+  content: {
+    dir: 'docs',
+    liveEdit: false,
+    markdown: {
+      remarkPlugins: []
+    }
+  },
 
   /**
    * nuxt-i18n config

@@ -33,6 +33,7 @@
       "@types/jest",
       "jest",
       "@nuxt/types",
+      "@nuxt/content",
       "nuxt-i18n/types",
       "./types/context",
       "vuetify/types",
