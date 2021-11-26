@@ -25,7 +25,7 @@
         id="stepOne"
         outlined
         color="primary"
-        class="align-self-center px-4 ma-4"
+        class="align-self-center px-4 ma-3"
         @click="startIntro()"
       >
         Start Intro
@@ -79,33 +79,7 @@
                 :object-type="formSchema && formSchema.modelType"
                 @reset="filter = $event"
               /> 
-               <div v-if="filter">
-              <template
-                  >
-              <v-chip-group
-                  v-for="(element, id) in filter"
-              :key="id"
               
-                >
-                <v-chip
-                  v-if="element"
-                  :key="id"
-                  v-bind="element"
-                  class="ma-2"
-                  close
-                >
-                     {{element}}
-                </v-chip>
-                  </v-chip-group>
-              </template>
-              </div> 
-              <p>index filter {{filter}}</p> 
- <!--              <VeoListSearchBar
-                id="hintTwo"
-                v-model="filter"
-                :object-type="formSchema && formSchema.modelType"
-                @reset="filter = $event"
-              />  -->
 
             </v-col>
           </v-row>

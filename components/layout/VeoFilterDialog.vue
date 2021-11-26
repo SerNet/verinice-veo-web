@@ -16,85 +16,90 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-    <div>
-        <p>bumble {{value}} bumble value in veofilterdialog</p>
-        <p>bumble {{filter}} bumble filter in veofilterdialog</p>
-
-
-          <v-btn
-            icon
-            large
+  <div>
+    <v-row justify="space between">
+      <v-col>
+        <template
+          v-for="(element, key) in filter"
+        >
+          <v-chip
+            v-if="element"
+            :key="key"
+            close
+            outlined
+            label
+            class="mr-2"
             color="primary"
-            @click="showFilterDialog = true"
-          >
-            <v-icon>mdi-home</v-icon>
-          </v-btn>
-
-<VeoDialog
-v-model="showFilterDialog"
-:headline="'Liste filtern'">
-
-        <template #default>
-          <v-list-item>
-            <v-list-item-content>
-              <template v-for="(key, index) of filterFields">
-                <v-select
-                  v-if="key==='status'"
-                  :key="index + '_s'"
-                  v-model="filter.status"
-                  hide-details
-                  dense
-                  outlined
-                  :label="$t('objectlist.status')"
-                  :items="status"
-                  item-text="text"
-                  item-value="value"
-                />
-                <v-text-field
-                  v-if="key!=='status'"
-                  :key="index"
-                  v-model="filter[key]"
-                  hide-details
-                  dense
-                  outlined
-                  :placeholder="$t(`objectlist.${key}`).toString()"
-                />
-              </template>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>{{filterFields}}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-card-text>
+            @click:close="onResetChip(key)"
+            >
+              {{$t(`objectlist.${key}`).toString()}}: {{element}}
+          </v-chip>
         </template>
-
-        <v-divider></v-divider>
-
-       <template #dialog-options>
-
-          <v-btn
-            color="primary"
-            text
-            @click="onReset"
-          >
+      </v-col>
+      <v-col class="text-right">
+        <v-btn
+          icon    
+          large
+          color="primary"
+          @click="showFilterDialog = true"
+        >
+          <v-icon>mdi-filter</v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
+    <VeoDialog
+      v-model="showFilterDialog"
+      :headline="'Liste filtern'">
+      <template #default>
+        <template v-for="(key, index) of filterFields">
+          <v-list-item :key="index">
+            <v-select
+              v-if="key==='status'"
+              v-model="filter.status"
+              hide-details
+              dense
+              outlined
+              :label="$t('objectlist.status')"
+              :items="status"
+              item-text="text"
+              item-value="value"
+            />
+            <v-text-field
+              v-if="key!=='status'"
+              v-model="filter[key]"
+              hide-details
+              dense
+              outlined
+              :placeholder="$t(`objectlist.${key}`).toString()"
+            />
+          </v-list-item>
+        </template>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>{{filterFields}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+      <v-divider></v-divider>
+      <template #dialog-options>
+        <v-btn
+          color="primary"
+          text
+          @click="onReset"
+        >
            Filter zurücksetzen
-          </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            text
-            @click="onSubmit"
-          >
-           Filter anwenden
-          </v-btn>
-       </template>
-
-
-</VeoDialog>
-    </div>
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="primary"
+          text
+          @click="onSubmit"
+        >
+          Filter anwenden
+        </v-btn>
+      </template>
+    </VeoDialog>
+  </div>
 </template>
 
 <script lang="ts">
@@ -172,11 +177,8 @@ export default defineComponent({
     ]);
 
     function onSubmit() {
-      console.log('function filter ----------------');
+      showFilterDialog.value = false;
       for (const prop in filter.value) {
-        console.log('bla', prop, filter.value[prop], 'bla');
-
-        showFilterDialog.value = false;
         if (filter.value[prop] === '') {
           filter.value[prop] = undefined;
         }
@@ -184,18 +186,20 @@ export default defineComponent({
       context.emit('input', filter.value);
     }
 
-    function onReset() {
-      showFilterDialog.value = false;
-      Object.keys(filter.value).forEach((prop) => (filter.value[prop] = undefined));
-      console.log('onReset filterdialog filter', filter.value);
+    function onResetChip(key: string) {
+      filter.value[key] = undefined;
       context.emit('reset', filter.value);
     }
 
-    return { t, filter, filterFields, showFilterDialog, status, onSubmit, onReset, translations };
+    function onReset() {
+      showFilterDialog.value = false;
+      Object.keys(filter.value).forEach((prop) => (filter.value[prop] = undefined));
+    }
+
+    return { t, filter, filterFields, showFilterDialog, status, onSubmit, onReset, onResetChip, translations };
   },
   async fetch() {
     this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
-    console.log('translations', this.translations);
   },
   watch: {
     value: {
