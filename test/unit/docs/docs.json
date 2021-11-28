@@ -1,0 +1,162 @@
+[
+    {
+        "slug": "doc1",
+        "title": "Dokument 1",
+        "toc": [
+            {
+                "id": "dokument-1",
+                "depth": 2,
+                "text": "Dokument 1"
+            }
+        ],
+        "dir": "/",
+        "path": "/doc1",
+        "extension": ".md",
+        "createdAt": "2021-11-19T07:26:23.000Z",
+        "updatedAt": "2021-11-26T12:59:25.438Z"
+    },
+    {
+        "slug": "doc2",
+        "title": "Dokument 2",
+        "toc": [
+            {
+                "id": "dokument-2",
+                "depth": 2,
+                "text": "Dokument 2"
+            }
+        ],
+        "dir": "/",
+        "path": "/doc2",
+        "extension": ".md",
+        "createdAt": "2021-11-19T07:26:35.000Z",
+        "updatedAt": "2021-11-26T12:59:32.191Z"
+    },
+    {
+        "slug": "index",
+        "title": "Home",
+        "position": 0,
+        "toc": [
+            {
+                "id": "home",
+                "depth": 2,
+                "text": "Home"
+            }
+        ],
+        "dir": "/",
+        "path": "/index",
+        "extension": ".md",
+        "createdAt": "2021-11-19T07:27:19.000Z",
+        "updatedAt": "2021-11-26T15:23:39.186Z"
+    },
+    {
+        "slug": "doc3",
+        "toc": [
+            {
+                "id": "dokument-3",
+                "depth": 2,
+                "text": "Dokument 3"
+            }
+        ],
+        "dir": "/",
+        "path": "/doc3",
+        "extension": ".md",
+        "createdAt": "2021-11-19T07:27:01.000Z",
+        "updatedAt": "2021-11-26T12:59:39.130Z"
+    },
+    {
+        "slug": "doc4",
+        "title": "Sub-Dokument 4",
+        "toc": [
+            {
+                "id": "dokument-4",
+                "depth": 2,
+                "text": "Dokument 4"
+            }
+        ],
+        "dir": "/doc4",
+        "path": "/doc4/adoc",
+        "extension": ".md",
+        "createdAt": "2021-11-26T13:35:10.208Z",
+        "updatedAt": "2021-11-26T13:35:16.484Z"
+    },
+    {
+        "slug": "doc1",
+        "title": "Sub-Dokument 1",
+        "toc": [
+            {
+                "id": "dokument-1",
+                "depth": 2,
+                "text": "Dokument 1"
+            }
+        ],
+        "dir": "/subfolder",
+        "path": "/subfolder/doc1",
+        "extension": ".md",
+        "createdAt": "2021-11-26T12:58:46.169Z",
+        "updatedAt": "2021-11-26T12:59:55.870Z"
+    },
+    {
+        "slug": "doc2",
+        "title": "Sub-Dokument 2",
+        "toc": [
+            {
+                "id": "dokument-2",
+                "depth": 2,
+                "text": "Dokument 2"
+            }
+        ],
+        "dir": "/subfolder",
+        "path": "/subfolder/doc2",
+        "extension": ".md",
+        "createdAt": "2021-11-26T12:58:46.178Z",
+        "updatedAt": "2021-11-26T12:59:59.677Z"
+    },
+    {
+        "slug": "index",
+        "title": "Unterordner",
+        "toc": [
+            {
+                "id": "unterordner-index",
+                "depth": 2,
+                "text": "Unterordner Index"
+            }
+        ],
+        "dir": "/subfolder",
+        "path": "/subfolder/index",
+        "extension": ".md",
+        "createdAt": "2021-11-26T13:00:06.850Z",
+        "updatedAt": "2021-11-26T13:00:41.576Z"
+    },
+    {
+        "slug": "doc3",
+        "title": "Sub-Dokument 3",
+        "toc": [
+            {
+                "id": "dokument-3",
+                "depth": 2,
+                "text": "Dokument 3"
+            }
+        ],
+        "dir": "/subfolder",
+        "path": "/subfolder/doc3",
+        "extension": ".md",
+        "createdAt": "2021-11-26T12:58:46.182Z",
+        "updatedAt": "2021-11-26T13:00:04.110Z"
+    },
+    {
+        "slug": "doc4",
+        "title": "Sub-Sub-Dokument 4",
+        "toc": [
+            {
+                "id": "dokument-4",
+                "depth": 2,
+                "text": "Dokument 4"
+            }
+        ],
+        "dir": "/subfolder/deepfolder",
+        "path": "/subfolder/deepfolder/doc4",
+        "extension": ".md",
+        "createdAt": "2021-11-26T13:35:10.208Z",
+        "updatedAt": "2021-11-26T13:35:16.484Z"
+    }
+]

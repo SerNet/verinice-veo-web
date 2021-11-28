@@ -85,7 +85,7 @@ class="overflow-hidden">
 
 <script lang="ts">
 import { computed, defineComponent, Ref, ref, useContext, useAsync } from '@nuxtjs/composition-api';
-import { FetchReturn } from '@nuxt/content/types/query-builder';
+import { listToTree } from '~/lib/docs';
 
 export default defineComponent({
   setup() {
@@ -112,96 +112,22 @@ export default defineComponent({
       { value: 'de', text: 'DE' }
     ]);
 
-    const items = useAsync(async () => {
+    const files = useAsync(async () => {
       const items = await $content({ deep: true })
         .where({ hidden: { $ne: true } })
         .sortBy('dir', 'asc')
         .fetch<{ title: string; position: number }>();
       if (!Array.isArray(items)) return;
-      console.log('L', items);
-
-      /*
-      const toArray = (tree: Map<string, any>, level = 0): Array<any> => {
-        return Array.from(tree.entries()).map(([key, value]) => {
-          const isFolder = value instanceof Map;
-          const index = isFolder ? value.get(key.replace(/\/?$/, '/index')) : {};
-          return {
-            ...index,
-            title: index.name,
-            topLevelItem: level === 0,
-            children: isFolder ? toArray(value, level + 1) : [],
-            to: `/docs${index?.path || ''}`
-          };
-        });
-      };
-      const tree = items.reduce((tree, item) => {
-        const dir = item.path.endsWith('/index') ? item.path.replace(/(\/[^/]+)?\/index$/, '') || '/' : item.dir;
-        console.log(item.path, dir);
-        let parent = tree.get(dir);
-        if (!parent) {
-          parent = new Map();
-          tree.set(dir, parent);
-        }
-        parent.set(item.path, item);
-        return tree;
-      }, new Map());
-
-      console.log(tree);
-      // return toArray(tree);
-      */
-
-      const fileMap = new Map(
-        items.map((item) => [
-          item.path,
-          {
-            ...item,
-            position: item.position ?? -Infinity,
-            name: item.title || item.slug,
-            childItems: [] as typeof items,
-            to: '/docs' + item.path,
-            disabled: false,
-            topLevelItem: false
-          }
-        ])
-      );
-      const topLevelItems: any[] = [];
-      const freezed = Array.from(fileMap.values());
-      freezed.forEach((file) => {
-        const paths = file.path
-          .replace(/\/index$/, '')
-          .split('/')
-          .slice(0, -1);
-        const parentPath = paths.join('/') || '/';
-
-        console.log(file.path, parentPath);
-        let parent = fileMap.get(parentPath);
-        if (!parent) {
-          // index file missing in folder
-          console.log('CREATE VIRTUAL FOLDER', file.path);
-          parent = {
-            ...file,
-            path: parentPath,
-            dir: parentPath,
-            name: 'Virtual Node',
-            to: parentPath,
-            childItems: [] as typeof items,
-            disabled: false,
-            topLevelItem: file.dir === '/'
-          };
-          fileMap.set(parentPath, parent);
-        }
-        parent.childItems.push(file);
-        if (paths.length < 2) {
-          topLevelItems.push(file);
-        }
-      });
-
-      topLevelItems?.sort?.((a, b) => b.position - a.position || String(a.path).localeCompare(b.path));
-      fileMap.forEach((items) => items.childItems?.sort?.((a, b) => b.position - a.position || String(b.path).localeCompare(a.path)));
-
-      console.log(topLevelItems);
-      return topLevelItems;
+      return items.map((item) => ({
+        ...item,
+        name: item.title || item.slug,
+        disabled: false,
+        topLevelItem: true,
+        to: `/docs${item.path}`
+      }));
     });
+
+    const items = computed(() => (files.value ? listToTree(files.value, (file) => ({ ...file, name: 'Fresh Item' })) : []));
 
     return {
       domainId,
