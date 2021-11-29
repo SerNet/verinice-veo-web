@@ -39,22 +39,19 @@
         cols="12"
         lg="6"
         class="my-4 px-2"
-        :data-cy="$utils.prefixCyData($options, 'status-bar-chart-widget', $route)"
+        :data-cy="objectStatusInformation.objectType !== 'my_latest_widget' ? $utils.prefixCyData($options, 'status-bar-chart-widget', $route) : ''"
       >
+        <VeoMyLatestRevisionsWidget
+          v-if="objectStatusInformation.objectType === 'my_latest_widget'"
+        />
         <VeoStackedStatusBarChartWidget
+          v-else
           :title="objectStatusInformation.objectType"
-          chart-height="45"
+          chart-height="30"
           :data="objectStatusInformation.subTypes"
           :loading="$fetchState.pending"
           @click="onBarClick"
         />
-      </v-col>
-      <v-col
-        cols="12"
-        md="6"
-        class="my-4 px-2"
-      >
-        <VeoMyLatestRevisionsWidget />
       </v-col>
     </v-row>
     <VeoWelcomeDialog
@@ -141,10 +138,11 @@ export default defineComponent({
     }
 
     // Create chart data
-    const CHART_COLORS = ['#c90000', '#d63b3b', '#dd5f5f', '#e37c7c', '#e99898', '#efb2b2', '#f4cccc', '#fae6e6', '#ffffff'];
+    const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
     const chartData: Ref<{ objectType: string; subTypes: { subType: string; title: string; totalEntities: number; statusTypes: (IChartValue & { status: string })[] }[] }[]> = ref(
       []
     );
+    const WIDGET_ORDER = ['scope', 'incident', 'process', 'document', 'asset', 'scenario', 'person', 'my_latest_widget', 'control'];
     let schemaTypes: IVeoSchemaEndpoint[] = [];
 
     async function fetchAllStatusTypes() {
@@ -169,14 +167,19 @@ export default defineComponent({
                 status,
                 label: translations.lang && translations.lang[locale.value] ? translations.lang[locale.value][`${type.schemaName}_${subtype.subType}_status_${status}`] : status,
                 value: 0,
-                color: CHART_COLORS[currentColorIndex++ % (CHART_COLORS.length - 1)]
+                color: CHART_COLORS[currentColorIndex++ % CHART_COLORS.length]
               })),
               totalEntities: 0
             };
           })
         });
       }
-      chartData.value.sort((a, b) => (a.objectType < b.objectType ? -1 : a.objectType > b.objectType ? 1 : 0));
+
+      // Add my latest widget, so it gets included in the sorting
+      chartData.value.push({ objectType: 'my_latest_widget', subTypes: [] });
+
+      // Sort by order defined in WIDGET_ORDER
+      chartData.value.sort((a, b) => WIDGET_ORDER.findIndex((widgetTitle) => widgetTitle === a.objectType) - WIDGET_ORDER.findIndex((widgetTitle) => widgetTitle === b.objectType));
     }
 
     // As there is no introspection endpoint, we have to fetch all entities of a type with a very high items per page count and count them manually
