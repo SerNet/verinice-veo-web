@@ -76,8 +76,8 @@ describe('Domain dashboard', () => {
   it('Checks whether a placeholder text gets shown if either no objects or no subtypes exist', function () {
     // Widget should contain at least one subtype with a translation and one without
     const noSubtypesWidgetTitle = 'document';
-    const noObjectsWidgetTitle = 'control';
-    const noObjectsSubtype = 'CTL_TOM';
+    const noObjectsWidgetTitle = 'incident';
+    const noObjectsSubtype = 'INC_Incident';
 
     // No subtypes
     cy.get('[data-cy=unit-domains-domain-status-bar-chart-widget]')
