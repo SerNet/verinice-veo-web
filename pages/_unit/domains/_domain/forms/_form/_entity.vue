@@ -271,8 +271,8 @@
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import { Route } from 'vue-router/types/index';
-import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
@@ -357,11 +357,6 @@ export default Vue.extend({
 
     this.isRevision = false;
     this.formModified.isModified = false;
-
-    /* const element = formSchema.findDeep((element: any) => element.scope === '#/properties/domains/{CURRENT_DOMAIN_ID}/')
-    if (element) {
-      element.scope = `#/properties/domains/${this.domainId}/`;
-    } */
 
     this.objectType = formSchema.modelType;
     if (this.objectType) {
