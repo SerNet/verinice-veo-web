@@ -141,7 +141,7 @@ export interface IVeoObjectSchemaObject extends IVeoObjectSchemaProperty {
 
 export interface IVeoObjectSchemaPatternObject extends IVeoObjectSchemaProperty {
   type: 'object';
-  patternProperties: {
+  properties: {
     [key: string]: IVeoObjectSchemaProperty;
   };
 }
