@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Philipp Ballhausen, Davit Svandize, Jonas Heitmann
+ * Copyright (C) 2021  Philipp Ballhausen, Davit Svandize, Jonas Heitmann, Samuel Vitzthum
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -80,11 +80,13 @@ export default function (api: Client) {
      * NOT PAGINATED
      *
      * @param type
+     * @param domainIds
      */
-    fetch(type: string): Promise<IVeoObjectSchema> {
+    // TODO: don't allow undefined to be passed since this is required by the API
+    fetch(type: string, domainIds: string[] | undefined): Promise<IVeoObjectSchema> {
       return api.req(`/api/schemas/${type}`, {
         params: {
-          domains: 'GDPR,ISO_27001'
+          domains: (domainIds || []).toString()
         }
       });
     }
