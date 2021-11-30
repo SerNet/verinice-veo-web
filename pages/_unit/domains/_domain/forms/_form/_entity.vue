@@ -352,9 +352,16 @@ export default Vue.extend({
     };
   },
   async fetch() {
-    const formSchema = await this.$api.form.fetch(this.formId);
+    const rawFormSchema = JSON.stringify(await this.$api.form.fetch(this.formId));
+    const formSchema = JSON.parse(rawFormSchema.replaceAll('{CURRENT_DOMAIN_ID}', this.domainId));
+
     this.isRevision = false;
     this.formModified.isModified = false;
+
+    /* const element = formSchema.findDeep((element: any) => element.scope === '#/properties/domains/{CURRENT_DOMAIN_ID}/')
+    if (element) {
+      element.scope = `#/properties/domains/${this.domainId}/`;
+    } */
 
     this.objectType = formSchema.modelType;
     if (this.objectType) {
