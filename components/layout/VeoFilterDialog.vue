@@ -22,6 +22,7 @@
         <template
           v-for="(element, key) in filter"
         >
+        <!-- bumble chips raus nehmen, dass sind keine Akzeptanzkriterien -->
           <v-chip
             v-if="element"
             :key="key"
@@ -45,23 +46,37 @@
         >
           <v-icon>mdi-filter</v-icon>
         </v-btn>
-        <p>{{objectType}} bumble</p>
       </v-col>
+
     </v-row>
     <VeoDialog
       v-model="showFilterDialog"
-      :headline="'Liste filtern'">
+      :headline="'Liste filtern'"
+      :close-hidden="true">
       <template #default>
-        <template v-for="(key, index) of filterFields">
+        <template v-for="(key, index) of (expanded ? filterFieldsExpanded : filterFields)">
           <v-list-item :key="index">
             <v-select
-              v-if="key==='type'"
-              v-model="filter.type"
+              v-if="key==='objectType'"
+              v-model="filter.objectType"
               hide-details
               dense
               outlined
-              :label="$t('objectlist.type')"
-              :items="status"
+              :label="objectTypeRequired ? $t('objectlist.objectType') + '*' : $t('objectlist.objectType')"
+              :items="formattedObjectTypes"
+              item-text="text"
+              item-value="value"
+              :rules="objectTypeRequired ? [(v) => !!v || 'Required'] : []"
+              :required="objectTypeRequired"
+            />
+            <v-select
+              v-else-if="key==='subType'"
+              v-model="filter.subType"
+              hide-details
+              dense
+              outlined
+              :label="$t('objectlist.subType')"
+              :items="formattedSubTypes"
               item-text="text"
               item-value="value"
             />
@@ -101,23 +116,37 @@
             />
           </v-list-item>
         </template>
+        <v-btn
+          text
+          class="text-center"
+          @click="toggle"
+        >
+          <template v-if="expanded">
+             {{$t(`global.button.showLess`)}}
+          </template>
+          <template v-else>
+             {{$t(`global.button.showMore`)}}
+          </template>
+        </v-btn>
       </template>
       <v-divider></v-divider>
+
       <template #dialog-options>
         <v-btn
           color="primary"
           text
           @click="onReset"
         >
-           Filter zurücksetzen
+          {{$t(`resetFilter`)}}
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
           color="primary"
           text
+          :disabled="objectTypeRequired && (filter.objectType === undefined)"
           @click="onSubmit"
         >
-          Filter anwenden
+          {{$t(`submitFilter`)}}
         </v-btn>
       </template>
     </VeoDialog>
@@ -125,12 +154,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, Ref, watch } from '@nuxtjs/composition-api';
+import { defineComponent, PropType, ref, computed, Ref, watch, useFetch, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { capitalize } from 'lodash';
 import { IVeoTranslations } from '~/types/VeoTypes';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export interface IVeoFilter {
-  type: string | undefined;
+  objectType: string | undefined;
+  subType: string | undefined;
   designator: string | undefined;
   name: string | undefined;
   status: string | undefined;
@@ -156,6 +188,10 @@ export default defineComponent({
       type: Object as PropType<IVeoFilter>,
       default: undefined
     },
+    objectTypeRequired: {
+      type: Boolean,
+      default: false
+    },
     objectType: {
       type: String,
       default: undefined
@@ -165,7 +201,8 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const showFilterDialog = ref(false);
     const filter = ref({
-      type: undefined,
+      objectType: undefined,
+      subType: undefined,
       designator: undefined,
       name: undefined,
       status: undefined,
@@ -175,8 +212,31 @@ export default defineComponent({
       hasChildObjects: undefined,
       hasLinks: undefined
     }) as Ref<IVeoFilter>;
-    const filterFields = Object.keys(filter.value);
+    const filterFields = ['objectType', 'subType', 'designator', 'name', 'status'];
+    const filterFieldsExpanded = Object.keys(filter.value);
     const translations = { lang: {} } as IVeoTranslations;
+    const expanded = ref(false);
+    const { $api } = useContext();
+
+    const objectTypes = ref([]) as Ref<IVeoSchemaEndpoint[]>;
+
+    const forms = ref([]) as Ref<any>;
+
+    const formattedObjectTypes = computed((): { text: string; value: string }[] => {
+      return objectTypes.value.map((value: IVeoSchemaEndpoint) => ({
+        text: capitalize(value.schemaName),
+        value: value.schemaName
+      }));
+    });
+
+    const formattedSubTypes = computed((): { text: string; value: string }[] => {
+      return forms.value
+        .filter((value: any) => value.modelType === filter.value.objectType)
+        .map((value: any) => ({
+          text: value.subType,
+          value: value.subType
+        }));
+    });
 
     watch(
       () => props.value,
@@ -209,13 +269,28 @@ export default defineComponent({
     ]);
 
     function onSubmit() {
-      showFilterDialog.value = false;
-      for (const prop in filter.value) {
-        if (filter.value[prop] === '') {
-          filter.value[prop] = undefined;
+      if (props.objectTypeRequired) {
+        if (filter.value.objectType) {
+          showFilterDialog.value = false;
+          for (const prop in filter.value) {
+            if (filter.value[prop] === '') {
+              filter.value[prop] = undefined;
+            }
+          }
+          context.emit('input', filter.value);
         }
+      } else {
+        showFilterDialog.value = false;
+        for (const prop in filter.value) {
+          if (filter.value[prop] === '') {
+            filter.value[prop] = undefined;
+          }
+        }
+        context.emit('input', filter.value);
       }
-      context.emit('input', filter.value);
+    }
+    function toggle() {
+      expanded.value = !expanded.value;
     }
 
     function onResetChip(key: string) {
@@ -229,10 +304,29 @@ export default defineComponent({
       context.emit('reset', filter.value);
     }
 
-    return { t, filter, filterFields, showFilterDialog, status, onSubmit, onReset, onResetChip, translations };
+    return {
+      t,
+      objectTypes,
+      forms,
+      formattedSubTypes,
+      formattedObjectTypes,
+      filter,
+      filterFields,
+      filterFieldsExpanded,
+      expanded,
+      toggle,
+      showFilterDialog,
+      status,
+      onSubmit,
+      onReset,
+      onResetChip,
+      translations
+    };
   },
   async fetch() {
     this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
+    this.objectTypes = await this.$api.schema.fetchAll();
+    this.forms = await this.$api.form.fetchAll();
   }
 });
 </script>
@@ -244,10 +338,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "search": "Search..."
+    "resetFilter": "Reset Filter",
+    "submitFilter": "Submit Filter"
   },
   "de": {
-    "search": "Suche..."
+    "resetFilter": "Filter zurücksetzen",
+    "submitFilter": "Filter anwenden"
   }
 }
 </i18n>

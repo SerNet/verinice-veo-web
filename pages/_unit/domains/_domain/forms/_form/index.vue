@@ -69,13 +69,13 @@
           </v-row>
           <v-row dense>
             <v-col
-
               class="flex-grow-1 search-bar"
               :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
             >
                <VeoFilterDialog 
                 v-model="filter"
-                :object-type="formSchema && formSchema.modelType"
+                :object-type-required="false"
+                :object-type="objectType"
                 @reset="filter = $event"
               /> 
             </v-col>
@@ -93,7 +93,6 @@
             v-on="on"
           />
         </template>
-
       </VeoEntityModifier>
     </template>
   </VeoPage>
@@ -130,7 +129,6 @@ export default Vue.extend({
     } else {
       this.objects = { items: [], page: 1, pageCount: 0, totalItemCount: 0 };
     }
-
     this.formTypes = await this.$api.form.fetchAll(this.domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
       formTypes.map((entry: IVeoFormSchemaMeta) => {
         return {
@@ -172,8 +170,7 @@ export default Vue.extend({
           name: newValue?.name,
           description: newValue?.description,
           updatedBy: newValue?.updatedBy,
-          status: newValue?.status,
-          hasLinks: newValue?.hasLinks
+          status: newValue?.status
         }
       });
       this.$fetch();
@@ -186,9 +183,7 @@ export default Vue.extend({
       status: this.$route.query.status,
       description: this.$route.query.description,
       updatedBy: this.$route.query.updatedBy,
-      hasLinks: this.$route.query.hasLinks,
-      notPartOfGroup: this.$route.query.notPartOfGroup,
-      hasChildObjects: this.$route.query.hasChildObjects
+      hasLinks: this.$route.query.hasLinks
     };
   },
   methods: {
