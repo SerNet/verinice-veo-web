@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { defineComponent, h, ref, useContext, watchEffect } from '@nuxtjs/composition-api';
+import { defineComponent, h, ref, watch } from '@nuxtjs/composition-api';
 
 import VeoCollapseButton from '~/components/layout/VeoCollapseButton.vue';
 
@@ -50,21 +50,19 @@ export default defineComponent<IProps>({
     }
   },
   setup(props, context) {
-    let wrapper;
+    const wrapper = ref<HTMLDivElement>();
     const observer = new MutationObserver((value) => {
       console.log('Bla', value);
     });
-    console.log(wrapper);
+    console.log('1', wrapper);
     // observer.observe(wrapper as any);
-    watchEffect(
-      () => {
-        console.log(wrapper); // => <div>This is a root element</div>
+    watch(
+      wrapper,
+      (newValue) => {
+        console.log('2', newValue);
       },
-      {
-        flush: 'post'
-      }
+      { deep: true }
     );
-
     return () =>
       h(
         'div',
@@ -75,7 +73,8 @@ export default defineComponent<IProps>({
           h(
             'div',
             {
-              class: props.titleClass
+              class: props.titleClass,
+              ref: (el) => (wrapper.value = el)
             },
             [
               ...(props.title
@@ -98,8 +97,7 @@ export default defineComponent<IProps>({
                 noGutters: true
               },
               class: 'row flex-nowrap overflow-hidden',
-              ref: wrapper,
-              refInFor: true
+              ref: 'wrapper'
             },
             (context.slots.default ? context.slots.default() : []).map((slotItem, index) =>
               h(
@@ -113,9 +111,62 @@ export default defineComponent<IProps>({
               )
             )
           ),
-          context.slots.helper ? context.slots.helper() : []
+          context.slots.helper ? context.slots.helper() : [],
+          h('div', wrapper.value + '_abc')
         ]
       );
   }
+  /* render(h) {
+    return h(
+      'div',
+      {
+        class: 'fill-width fill-height d-flex flex-column overflow-hidden'
+      },
+      [
+        h(
+          'div',
+          {
+            class: this.$props.titleClass,
+            ref: wrapper // oder (el) => (wrapper.value = el)
+          },
+          [
+            ...(this.$props.title
+              ? [
+                  h('h1', {
+                    domProps: {
+                      innerText: this.$props.title
+                    },
+                    class: 'd-inline px-4 py-1 flex-grow-0'
+                  })
+                ]
+              : [this.$slots.title ? this.$slots.title : []]),
+            this.$slots.header ? this.$slots.header : []
+          ]
+        ),
+        h(
+          'div',
+          {
+            props: {
+              noGutters: true
+            },
+            class: 'row flex-nowrap overflow-hidden',
+            ref: 'wrapper'
+          },
+          (this.$slots.default ? this.$slots.default : []).map((slotItem, index) =>
+            h(
+              'div',
+              {
+                style: {
+                  background: 'red'
+                }
+              },
+              [slotItem]
+            )
+          )
+        ),
+        this.$slots.helper ? this.$slots.helper : []
+      ]
+    );
+  } */
 });
 </script>
