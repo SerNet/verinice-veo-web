@@ -16,12 +16,15 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper2>
+  <VeoPageWrapper2
+    collapsable-right
+    collapsable-left
+  >
     <template #title>
       <h1>Mein Titel</h1>
     </template>
     <template #header>
-      <v-btn @click="pages++">Add page</v-btn>
+      <!--<v-btn @click="pages++">Add page</v-btn>-->
     </template>
     <template #default>
       <VeoPage

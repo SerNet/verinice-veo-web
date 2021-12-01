@@ -23,7 +23,7 @@
     elevation="0"
     @click="$emit('input', !value)"
   >
-    <v-icon>{{ value !== right ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
+    <v-icon>{{ value === right ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
   </v-btn>
 </template>
 
@@ -51,6 +51,7 @@ export default Vue.extend({
   min-width: 35px !important;
 
   top: 0;
+  z-index: 1;
 
   &:not(.collapse-button--right) {
     left: 0;
