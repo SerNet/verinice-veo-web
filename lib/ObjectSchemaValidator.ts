@@ -156,7 +156,6 @@ export default class ObjectSchemaValidator {
       this.errors.push({ code: 'E_LINK_TARGET_INVALID', message: `The custom links (${context}) target is missing or malformed.` });
     } else {
       const dummy = ObjectSchemaHelper.generateLinkSchema({
-        description: '',
         targetType: link.items.properties.target.properties.type.enum,
         title: link.items.properties.target.title,
         attributes: []
@@ -219,7 +218,7 @@ export default class ObjectSchemaValidator {
   }
 
   private validateBaseSchema(schema: any, context: string) {
-    const requiredKeys: string[] = ['abbreviation', 'description', 'domains', 'id', 'name', 'owner', 'subType'];
+    const requiredKeys: string[] = ['abbreviation', 'description', 'domains', 'id', 'name', 'owner'];
 
     for (const key of requiredKeys) {
       if (schema.properties[key] === undefined) {

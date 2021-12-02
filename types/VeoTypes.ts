@@ -121,10 +121,25 @@ export interface IVeoObjectSchemaProperty {
   title?: string;
   description?: string;
   pattern?: string;
+  allOf?: {
+    if: {
+      properties: IBaseObject;
+    };
+    then: {
+      properties: IBaseObject;
+    };
+  }[];
   [key: string]: any;
 }
 
 export interface IVeoObjectSchemaObject extends IVeoObjectSchemaProperty {
+  type: 'object';
+  properties: {
+    [key: string]: IVeoObjectSchemaProperty;
+  };
+}
+
+export interface IVeoObjectSchemaPatternObject extends IVeoObjectSchemaProperty {
   type: 'object';
   properties: {
     [key: string]: IVeoObjectSchemaProperty;
@@ -162,15 +177,11 @@ export interface IVeoObjectSchemaCustomLink {
   items: {
     type: 'object';
     properties: {
-      id: IVeoObjectSchemaProperty;
-      applicableTo: IVeoObjectSchemaArray;
-      domains: IVeoObjectSchemaArray;
-      references: IVeoObjectSchemaArray;
-      abbreviation: IVeoObjectSchemaProperty;
-      description: IVeoObjectSchemaProperty;
-      name: IVeoObjectSchemaProperty;
-      target: IVeoObjectSchemaObject;
       attributes: IVeoObjectSchemaObject;
+      domains: IVeoObjectSchemaArray;
+      id: IVeoObjectSchemaProperty;
+      references: IVeoObjectSchemaArray;
+      target: IVeoObjectSchemaObject;
     };
     additionalProperties: boolean;
     required: string[];
@@ -195,13 +206,12 @@ export interface IVeoObjectSchema {
     createdBy: IVeoObjectSchemaProperty;
     customAspects: IVeoObjectSchemaCustomObjects;
     description: IVeoObjectSchemaProperty;
-    domains: IVeoObjectSchemaArray;
+    domains: IVeoObjectSchemaPatternObject;
     id: IVeoObjectSchemaProperty;
     links: IVeoObjectSchemaCustomObjects;
     name: IVeoObjectSchemaProperty;
     owner: IVeoObjectSchemaObject;
     parts: IVeoObjectSchemaArray;
-    subType: IVeoObjectSchemaProperty;
     updatedAt: IVeoObjectSchemaProperty;
     updatedBy: IVeoObjectSchemaProperty;
     translations?: IVeoObjectSchemaTranslations;
@@ -228,7 +238,7 @@ export interface IVeoUnitIncarnations {
   parameters: {
     item: IVeoLink;
     references: {
-      referencedCatalogable: IVeoLink;
+      referencedElement: IVeoLink;
       [key: string]: any;
       referenceType: string;
     }[];
@@ -242,6 +252,12 @@ export interface IVeoCatalog extends IVeoBaseObject {
 }
 
 export interface IVeoCatalogItem extends IVeoBaseObject {
+  id: string;
+  description: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
   catalog: IVeoLink;
   tailoringReferences: {
     createdAt: string;
@@ -250,31 +266,36 @@ export interface IVeoCatalogItem extends IVeoBaseObject {
     updatedBy: string;
     referenceType: string;
     catalogItem: IVeoLink;
+    attributes: IBaseObject;
+    type: string;
     id: string;
   }[];
   namespace: string;
   element: IVeoLink;
 }
 
-export interface IVeoEntitySubtypes {
-  [key: string]: string;
+export interface IVeoEntityDomain {
+  [key: string]: {
+    status: string;
+    subType: string;
+  };
 }
 
 export interface IVeoEntity extends IVeoBaseObject {
   name: string;
-  abbreviation: string;
+  abbreviation?: string;
   designator: string;
   displayName: string;
-  description: string;
-  domains: IVeoLink[];
+  description?: string;
+  domains: IVeoEntityDomain;
   owner: IVeoLink;
   links: IVeoCustomLinks;
   customAspects: IVeoCustomAspects;
-  subType: IVeoEntitySubtypes;
   members: IVeoLink[]; // Only contains items if entity is of type scope
   parts: IVeoLink[]; // Only contains items if entity is NOT of type scope
   descriptionShort?: string; // Frontend only attribute used in VeoObjectList.vue
   type: string;
+  _self: string;
 }
 
 export interface IVeoTranslations {
@@ -289,6 +310,7 @@ export interface IVeoFormSchemaMeta {
   name: { [key: string]: string };
   id?: string;
   domainId?: string;
+  sorting: string | null;
 }
 
 export interface IVeoFormSchemaItemOptions {

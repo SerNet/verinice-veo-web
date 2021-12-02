@@ -1,0 +1,2295 @@
+exports[`Objectschema Wizard > creates a new objectschema #0`] =
+{
+  "$id": "new-schema",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "description": "Test Beschreibung",
+  "properties": {
+    "_self": {
+      "description": "A valid reference to this resource.",
+      "format": "uri",
+      "readOnly": true,
+      "type": "string"
+    },
+    "abbreviation": {
+      "description": "The abbreviation for the Element.",
+      "maxLength": 255,
+      "type": "string"
+    },
+    "createdAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "createdBy": {
+      "description": "The username of the user who created this object.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "customAspects": {
+      "description": "Groups of customizable attributes - see '/schemas'",
+      "properties": {},
+      "title": "CustomAspect",
+      "type": "object"
+    },
+    "description": {
+      "description": "The description for the Element.",
+      "maxLength": 65535,
+      "type": "string"
+    },
+    "designator": {
+      "description": "Compact human-readable identifier that is unique within the client.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "domains": {
+      "additionalProperties": false,
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "properties": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
+          "type": "object",
+          "allOf": [],
+          "dependentRequired": {
+            "status": [
+              "subType"
+            ],
+            "subType": [
+              "status"
+            ]
+          },
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "subType": {
+              "enum": [],
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "id": {
+      "description": "ID must be a valid UUID string following RFC 4122.",
+      "format": "uuid",
+      "type": "string"
+    },
+    "links": {
+      "description": "Custom relations which do not affect the behavior.",
+      "properties": {},
+      "title": "CustomLink",
+      "type": "object"
+    },
+    "name": {
+      "description": "The name for the Element.",
+      "maxLength": 255,
+      "type": "string"
+    },
+    "owner": {
+      "description": "A reference to the unit containing this entity.",
+      "properties": {
+        "displayName": {
+          "description": "A friendly human readable title of the referenced unit.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "resourcesUri": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "searchesUri": {
+          "readOnly": true,
+          "type": "string"
+        },
+        "targetUri": {
+          "description": "The resource URL of the referenced unit.",
+          "format": "uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "targetUri"
+      ],
+      "type": "object"
+    },
+    "parts": {
+      "items": {
+        "description": "A reference to an entity's part",
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced entity.",
+            "readOnly": true,
+            "type": "string"
+          },
+          "resourcesUri": {
+            "readOnly": true,
+            "type": "string"
+          },
+          "searchesUri": {
+            "readOnly": true,
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced entity.",
+            "format": "uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "translations": {
+      "de": {}
+    },
+    "type": {
+      "description": "Entity type identifier",
+      "readOnly": true,
+      "type": "string"
+    },
+    "updatedAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "readOnly": true,
+      "type": "string"
+    },
+    "updatedBy": {
+      "description": "The username of the user who last updated this object.",
+      "readOnly": true,
+      "type": "string"
+    }
+  },
+  "required": [
+    "_self",
+    "designator",
+    "name",
+    "owner"
+  ],
+  "title": "Test",
+  "type": "object"
+};
+
+exports[`Objectschema Wizard > imports own objectschema by uploading #0`] =
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Test Beschreibung",
+  "properties": {
+    "abbreviation": {
+      "description": "The abbreviation for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "createdAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "type": "string"
+    },
+    "createdBy": {
+      "description": "The username of the user who created this object.",
+      "type": "string"
+    },
+    "customAspects": {
+      "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
+      "properties": {},
+      "title": "CustomAspect",
+      "type": "object"
+    },
+    "description": {
+      "description": "The description for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "domains": {
+      "items": {
+        "description": "The domains this entity is being used in.",
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced domain.",
+            "type": "string"
+          },
+          "resourcesUri": {
+            "type": "string"
+          },
+          "searchesUri": {
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced domain.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "id": {
+      "description": "ID must be a valid UUID string following RFC 4122.",
+      "type": "string"
+    },
+    "links": {
+      "description": "Custom relations which do not affect the behavior.",
+      "properties": {},
+      "title": "CustomLink",
+      "type": "object"
+    },
+    "name": {
+      "description": "The name for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "owner": {
+      "description": "A reference to the unit containing this entity.",
+      "properties": {
+        "displayName": {
+          "description": "A friendly human readable title of the referenced unit.",
+          "type": "string"
+        },
+        "resourcesUri": {
+          "description": "URI the owner can get accessed by.",
+          "type": "string"
+        },
+        "searchesUri": {
+          "description": "URI the owner can get searched by",
+          "type": "string"
+        },
+        "targetUri": {
+          "description": "The resource URL of the referenced unit.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "targetUri"
+      ],
+      "type": "object"
+    },
+    "parts": {
+      "items": {
+        "description": "A reference to an entity's part",
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced entity.",
+            "type": "string"
+          },
+          "resourcesUri": {
+            "type": "string"
+          },
+          "searchesUri": {
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced entity.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "subType": {
+      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
+      "title": "SubType",
+      "type": "object"
+    },
+    "translations": {
+      "de": {}
+    },
+    "updatedAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
+      "type": "string"
+    },
+    "updatedBy": {
+      "description": "The username of the user who last updated this object.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "owner"
+  ],
+  "title": "Test",
+  "type": "object"
+};
+
+exports[`Objectschema Wizard > imports own objectschema by inserting code #0`] =
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Test Beschreibung",
+  "properties": {
+    "abbreviation": {
+      "description": "The abbreviation for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "createdAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "type": "string"
+    },
+    "createdBy": {
+      "description": "The username of the user who created this object.",
+      "type": "string"
+    },
+    "customAspects": {
+      "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
+      "properties": {},
+      "title": "CustomAspect",
+      "type": "object"
+    },
+    "description": {
+      "description": "The description for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "domains": {
+      "items": {
+        "description": "The domains this entity is being used in.",
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced domain.",
+            "type": "string"
+          },
+          "resourcesUri": {
+            "type": "string"
+          },
+          "searchesUri": {
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced domain.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "id": {
+      "description": "ID must be a valid UUID string following RFC 4122.",
+      "type": "string"
+    },
+    "links": {
+      "description": "Custom relations which do not affect the behavior.",
+      "properties": {},
+      "title": "CustomLink",
+      "type": "object"
+    },
+    "name": {
+      "description": "The name for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "owner": {
+      "description": "A reference to the unit containing this entity.",
+      "properties": {
+        "displayName": {
+          "description": "A friendly human readable title of the referenced unit.",
+          "type": "string"
+        },
+        "resourcesUri": {
+          "description": "URI the owner can get accessed by.",
+          "type": "string"
+        },
+        "searchesUri": {
+          "description": "URI the owner can get searched by",
+          "type": "string"
+        },
+        "targetUri": {
+          "description": "The resource URL of the referenced unit.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "targetUri"
+      ],
+      "type": "object"
+    },
+    "parts": {
+      "items": {
+        "description": "A reference to an entity's part",
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced entity.",
+            "type": "string"
+          },
+          "resourcesUri": {
+            "type": "string"
+          },
+          "searchesUri": {
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced entity.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "subType": {
+      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
+      "title": "SubType",
+      "type": "object"
+    },
+    "translations": {
+      "de": {}
+    },
+    "updatedAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
+      "type": "string"
+    },
+    "updatedBy": {
+      "description": "The username of the user who last updated this object.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "owner"
+  ],
+  "title": "Test",
+  "type": "object"
+};
+
+exports[`Objectschema Wizard > imports existing process objectschema #0`] =
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Schema for Process",
+  "properties": {
+    "abbreviation": {
+      "description": "The abbreviation for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "createdAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "type": "string"
+    },
+    "createdBy": {
+      "description": "The username of the user who created this object.",
+      "type": "string"
+    },
+    "customAspects": {
+      "description": "A custom property which is determined by the requested entity schema - see '/schemas'",
+      "properties": {
+        "process_AccessAuthorization": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_AccessAuthorization_Document": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "process_AccessAuthorization_authorizationConcept": {
+                  "type": "boolean"
+                },
+                "process_AccessAuthorization_description": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_ExternalRecipient": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_ExternalRecipient_ExternalRecipient": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_GeneralInformation": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_GeneralInformation_document": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "process_GeneralInformation_tags": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_InformationObligations": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_InformationObligations_document": {
+                  "format": "uri",
+                  "type": "string"
+                },
+                "process_InformationObligations_explanation": {
+                  "type": "string"
+                },
+                "process_InformationObligations_informationObligations": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_InternalRecipient": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_InternalRecipient_InternalRecipient": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_JointControllership": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_JointControllership_jointResponsiblePersons": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_ProcessingDetails": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_ProcessingDetails_comment": {
+                  "type": "string"
+                },
+                "process_ProcessingDetails_intendedPurpose": {
+                  "type": "string"
+                },
+                "process_ProcessingDetails_operationalStage": {
+                  "enum": [
+                    "process_ProcessingDetails_operationalStage_operation",
+                    "process_ProcessingDetails_operationalStage_planning",
+                    "process_ProcessingDetails_operationalStage_test",
+                    "process_ProcessingDetails_operationalStage_rollout"
+                  ]
+                },
+                "process_ProcessingDetails_surveyConductedOn": {
+                  "format": "date",
+                  "type": "string"
+                },
+                "process_ProcessingDetails_typeOfSurvey": {
+                  "enum": [
+                    "process_ProcessingDetails_typeOfSurvey_newsurvey",
+                    "process_ProcessingDetails_typeOfSurvey_change"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "process_SensitiveData": {
+          "additionalProperties": false,
+          "properties": {
+            "attributes": {
+              "additionalProperties": false,
+              "properties": {
+                "process_SensitiveData_SensitiveData": {
+                  "type": "boolean"
+                },
+                "process_SensitiveData_comment": {
+                  "type": "string"
+                },
+                "process_SensitiveData_notification3343GDPR": {
+                  "type": "boolean"
+                },
+                "process_SensitiveData_secrecy203STGB": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "domains": {
+              "description": "The ids of elements of the type domain.",
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced domain.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced domain.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "title": "The list of domains in which this element is present.",
+              "type": "array",
+              "uniqueItems": true
+            },
+            "id": {
+              "format": "regex",
+              "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+              "title": "The UUID to identify the element",
+              "type": "string"
+            },
+            "references": {
+              "items": {
+                "properties": {
+                  "displayName": {
+                    "description": "A friendly human readable title of the referenced object.",
+                    "type": "string"
+                  },
+                  "targetUri": {
+                    "description": "The resource URL of the referenced object.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "title": "CustomAspect",
+      "type": "object"
+    },
+    "description": {
+      "description": "The description for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "domains": {
+      "additionalProperties": false,
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "properties": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
+          "type": "object",
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "PRO_DataProcessing"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "PRO_DataTransfer"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "dependentRequired": {
+            "status": [
+              "subType"
+            ],
+            "subType": [
+              "status"
+            ]
+          },
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "subType": {
+              "enum": [
+                "PRO_DataProcessing",
+                "PRO_DataTransfer"
+              ],
+              "type": "string"
+            }
+          }
+        }
+      },
+      "type": "object"
+    },
+    "id": {
+      "description": "ID must be a valid UUID string following RFC 4122.",
+      "type": "string"
+    },
+    "links": {
+      "description": "Custom relations which do not affect the behavior.",
+      "properties": {
+        "process_AffectedParties": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_AffectedParties_supplementaryInformation": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_DataCategories": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_DataCategories_comment": {
+                    "type": "string"
+                  },
+                  "process_DataCategories_dataOrigin": {
+                    "enum": [
+                      "process_DataCategories_dataOrigin_direct",
+                      "process_DataCategories_dataOrigin_transmission",
+                      "process_DataCategories_dataOrigin_other"
+                    ]
+                  },
+                  "process_DataCategories_otherOrigin": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "asset"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_ExternalRecipientLink": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_ExternalRecipientLink_ExternalRecipient_dataprocessingagreement": {
+                    "type": "boolean"
+                  },
+                  "process_ExternalRecipientLink_ExternalRecipient_document": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "process_ExternalRecipientLink_ExternalRecipient_explanation": {
+                    "type": "string"
+                  },
+                  "process_ExternalRecipientLink_ExternalRecipient_indication": {
+                    "type": "string"
+                  },
+                  "process_ExternalRecipientLink_ExternalRecipient_purpose": {
+                    "type": "string"
+                  },
+                  "process_ExternalRecipientLink_ExternalRecipient_thirdcountry": {
+                    "type": "boolean"
+                  },
+                  "process_ExternalRecipientLink_ExternalRecipient_thirdcountryname": {
+                    "format": "uri",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_InternalRecipientLink": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_InternalRecipientLink_InternalRecipient_document": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "process_InternalRecipientLink_InternalRecipient_explanation": {
+                    "type": "string"
+                  },
+                  "process_InternalRecipientLink_InternalRecipient_purpose": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_LegalBasis": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {
+                  "process_LegalBasis_document": {
+                    "format": "uri",
+                    "type": "string"
+                  },
+                  "process_LegalBasis_explanation": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "control"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_LegalBasisForProcessingInThirdCountry": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {},
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "control"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_LegalBasisForProcessingSensitiveData": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {},
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "control"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_ResponsibleDepartment": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {},
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_TypeOfDataProcessed": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {},
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "asset"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_TypeOfDataTransmitted": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {},
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "asset"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_TypeOfSensitiveData": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {},
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "asset"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "process_jointResponsiblePersons": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "attributes": {
+                "additionalProperties": false,
+                "properties": {},
+                "type": "object"
+              },
+              "domains": {
+                "description": "The ids of elements of the type domain.",
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced domain.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced domain.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "title": "The list of domains in which this element is present.",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "id": {
+                "format": "regex",
+                "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                "title": "The UUID to identify the element",
+                "type": "string"
+              },
+              "references": {
+                "items": {
+                  "properties": {
+                    "displayName": {
+                      "description": "A friendly human readable title of the referenced object.",
+                      "type": "string"
+                    },
+                    "targetUri": {
+                      "description": "The resource URL of the referenced object.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "targetUri"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "target": {
+                "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
+                  "targetUri": {
+                    "title": "The id of the target object.",
+                    "type": "string"
+                  },
+                  "type": {
+                    "enum": [
+                      "person"
+                    ]
+                  }
+                },
+                "required": [
+                  "targetUri"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "target"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "title": "CustomLink",
+      "type": "object"
+    },
+    "name": {
+      "description": "The name for the EntityLayerSupertype.",
+      "type": "string"
+    },
+    "owner": {
+      "description": "A reference to the unit containing this entity.",
+      "properties": {
+        "displayName": {
+          "description": "A friendly human readable title of the referenced unit.",
+          "type": "string"
+        },
+        "resourcesUri": {
+          "type": "string"
+        },
+        "searchesUri": {
+          "type": "string"
+        },
+        "targetUri": {
+          "description": "The resource URL of the referenced unit.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "targetUri"
+      ],
+      "type": "object"
+    },
+    "parts": {
+      "items": {
+        "description": "A reference to an entity's part",
+        "properties": {
+          "displayName": {
+            "description": "A friendly human readable title of the referenced entity.",
+            "type": "string"
+          },
+          "resourcesUri": {
+            "type": "string"
+          },
+          "searchesUri": {
+            "type": "string"
+          },
+          "targetUri": {
+            "description": "The resource URL of the referenced entity.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "targetUri"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "subType": {
+      "description": "The sub type this entity has in each domain. Domain ID is key, sub type is value.",
+      "title": "SubType",
+      "type": "object"
+    },
+    "translations": {
+      "de": {}
+    },
+    "type": {
+      "description": "Entity type identifier",
+      "type": "string"
+    },
+    "updatedAt": {
+      "description": "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      "type": "string"
+    },
+    "updatedBy": {
+      "description": "The username of the user who last updated this object.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "owner"
+  ],
+  "title": "process",
+  "type": "object"
+};

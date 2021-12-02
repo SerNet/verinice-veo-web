@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
-   - 
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -79,13 +79,13 @@
               class="align-center mt-4"
             >
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.title.text') }}*:</span>
               </v-col>
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <v-text-field
@@ -101,13 +101,13 @@
               class="align-center mt-4"
             >
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <span style="font-size: 1.2rem;">{{ $t('editor.formschema.subtype') }}:</span>
               </v-col>
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <v-text-field
@@ -121,13 +121,33 @@
               class="align-center mt-4"
             >
               <v-col
-                :cols="12"
+                cols="12"
+                :md="5"
+              >
+                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.sorting') }}:</span>
+              </v-col>
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <v-text-field
+                  v-model="createForm.sorting"
+                  :label="$t('editor.formschema.sorting')"
+                />
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="align-center mt-4"
+            >
+              <v-col
+                cols="12"
                 :md="5"
               >
                 <span style="font-size: 1.2rem;">{{ $t('editor.formschema.create.type.text') }}*:</span>
               </v-col>
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <v-select
@@ -140,7 +160,7 @@
               </v-col>
             </v-row>
             <v-row v-if="createForm.modelType === 'custom'">
-              <v-col :cols="12">
+              <v-col cols="12">
                 <VeoEditorFileUpload
                   :code="oscode"
                   :input-label="$t('objectSchemaUploadLabel')"
@@ -251,6 +271,7 @@ export default Vue.extend({
         title: '' as string,
         modelType: '' as string,
         subType: null as string | null,
+        sorting: null as string | null,
         valid: false,
         rules: {
           title: [(input: string) => trim(input).length > 0],
@@ -319,6 +340,9 @@ export default Vue.extend({
       immediate: true,
       deep: true,
       async handler() {
+        if (isString(this.$route.query.sorting)) {
+          this.createForm.sorting = this.$route.query.sorting;
+        }
         if (isString(this.$route.query.name) && isString(this.$route.query.subtype)) {
           if (this.$route.query.os === 'custom') {
             this.state = 'create';
@@ -380,7 +404,8 @@ export default Vue.extend({
     },
     generateInitialFs() {
       const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? null : this.createForm.subType;
-      this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.title }, this.objectSchema?.title || this.createForm.modelType, _subtype);
+      const _sorting = !this.createForm.sorting || trim(this.createForm.sorting).length === 0 ? null : this.createForm.sorting;
+      this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.title }, this.objectSchema?.title || this.createForm.modelType, _subtype, _sorting);
       this.emitSchemas();
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
@@ -427,6 +452,7 @@ export default Vue.extend({
         title: '' as string,
         modelType: '' as string,
         subType: null as string | null,
+        sorting: null as string | null,
         valid: false,
         rules: {
           title: [(input: string) => trim(input).length > 0],
@@ -448,7 +474,7 @@ export default Vue.extend({
     async setObjectSchema(params: { schema?: IVeoObjectSchema; modelType?: string }) {
       let urlToNavigate = '/editor/formschema';
       if (this.createForm.title && this.createForm.subType) {
-        urlToNavigate = `${urlToNavigate}?name=${this.createForm.title}&subtype=${this.createForm.subType}&os=`;
+        urlToNavigate = `${urlToNavigate}?name=${this.createForm.title}&subtype=${this.createForm.subType}&sorting=${this.createForm.sorting || ''}&os=`;
         urlToNavigate += this.createForm.modelType && this.createForm.modelType !== 'custom' ? this.createForm.modelType.toLowerCase() : 'custom';
       } else if (['import-fs', 'import-os'].includes(this.state)) {
         urlToNavigate = `${urlToNavigate}?fs=${this.formSchemaId ?? 'custom'}`;
@@ -456,7 +482,8 @@ export default Vue.extend({
       }
       this.urlToNavigate = urlToNavigate;
 
-      const objectSchema = cloneDeep(params.schema) ?? (await this.$api.schema.fetch(params.modelType as string));
+      const currentDomain = this.$user.lastDomain ? [this.$user.lastDomain] : undefined;
+      const objectSchema = cloneDeep(params.schema) ?? (await this.$api.schema.fetch(params.modelType as string, currentDomain));
       // os specific translation within by user uploaded OS
       const osTranslation = cloneDeep(JsonPointer.get(objectSchema, '#/properties/translations') as IVeoObjectSchemaTranslations | undefined);
       // The variable mergedOsTranslation serves to merge general and OS specific translations uploaded by a user. Initial value is general translation object

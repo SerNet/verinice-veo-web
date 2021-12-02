@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Davit Svandize, Jonas Heitmann, Jessica Lühnen
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -20,7 +20,7 @@
     <template #default>
       <VeoPage
         absolute-size
-        :cols="12"
+        cols="12"
         :md="8"
         :xl="8"
         sticky-header
@@ -164,25 +164,6 @@
               :object="form.objectData"
               @restored="onRestored"
             />
-            <VeoAlert
-              v-model="alert.value"
-              v-bind="alert"
-              style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
-            >
-              <template
-                v-if="alert.error === 412"
-                #additional-button
-              >
-                <v-btn
-                  outlined
-                  text
-                  color="error"
-                  @click="$fetch()"
-                >
-                  {{ $t('global.button.yes') }}
-                </v-btn>
-              </template>
-            </VeoAlert>
             <VeoEntityModifiedDialog
               v-model="entityModified.dialog"
               :item="form.objectData"
@@ -200,7 +181,7 @@
       </VeoPage>
       <VeoPage
         absolute-size
-        :cols="12"
+        cols="12"
         :md="4"
         :xl="4"
       >
@@ -230,10 +211,11 @@ import { Route } from 'vue-router/types/index';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
-import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
-import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
+import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoEntity, IVeoObjectHistoryEntry, IVeoReactiveFormAction } from '~/types/VeoTypes';
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
-import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
+import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 interface IData {
   form: IForm;
@@ -244,20 +226,19 @@ interface IData {
   revisionCache: IBaseObject;
   errorMessages: IValidationErrorMessage[];
   saveBtnLoading: boolean;
-  alert: IVeoEventPayload & { value: boolean; error: number };
   entityModified: {
     isModified: boolean;
     dialog: boolean;
     revisionDialog: boolean;
     target?: any;
   };
-  alertType: ALERT_TYPE;
+  alertType: VeoAlertType;
   restoreDialogVisible: boolean;
+  etag?: string;
 }
 
 export default Vue.extend({
   name: 'VeoScopesEditPage',
-  mixins: [VeoReactiveFormActionMixin],
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
     if (this.entityModified.isModified && this.entityModified.dialog) {
@@ -286,38 +267,32 @@ export default Vue.extend({
       revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
-      alert: {
-        value: false,
-        text: '',
-        type: 0,
-        title: this.$t('error.title') as string,
-        saveButtonText: this.$t('global.button.no') as string,
-        error: 0 as number
-      },
       entityModified: {
         isModified: false,
         dialog: false,
         revisionDialog: false,
         target: undefined
       },
-      alertType: ALERT_TYPE.INFO,
-      restoreDialogVisible: false
+      alertType: VeoAlertType.INFO,
+      restoreDialogVisible: false,
+      etag: undefined as string | undefined
     };
   },
   async fetch() {
-    const objectSchema = await this.$api.schema.fetch(this.entityType);
+    const currentDomain = this.$user.lastDomain ? [this.$user.lastDomain] : undefined;
+    const objectSchema = await this.$api.schema.fetch(this.entityType, currentDomain);
     const { lang } = await this.$api.translation.fetch(['de', 'en']);
     this.isRevision = false;
     this.entityModified.isModified = false;
 
     const objectData = await this.$api.entity.fetch(this.entityType, this.entityId);
+    this.etag = objectData.$etag;
 
     this.form = {
       objectSchema,
       objectData,
       lang
     };
-    this.alert.value = false;
   },
   head(): any {
     return {
@@ -339,6 +314,9 @@ export default Vue.extend({
     },
     rootRoute(): string {
       return `/${this.$route.params.unit}/scopes`;
+    },
+    reactiveFormActions(): IVeoReactiveFormAction[] {
+      return this.entityType === 'person' ? getPersonReactiveFormActions(this) : [];
     }
   },
   methods: {
@@ -349,9 +327,10 @@ export default Vue.extend({
       this.saveBtnLoading = true;
       this.formatObjectData();
 
+      (this.form.objectData as any).$etag = this.etag;
       this.$api.entity
         .update(this.entityType, this.entityId, this.form.objectData as IVeoEntity)
-        .then(async (updatedObjectData) => {
+        .then(async (updatedObjectData: any) => {
           this.entityModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
@@ -386,14 +365,19 @@ export default Vue.extend({
     },
     showError(status: number, message: string) {
       if (status === 412) {
-        this.alert.text = this.$t('global.appstate.alert.object_modified').toString();
-        this.alert.saveButtonText = this.$t('global.button.no').toString();
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          title: this.$t('error.title') as string,
+          text: this.$t('global.appstate.alert.object_modified').toString(),
+          saveButtonText: this.$t('global.button.no').toString(),
+          objectModified: true,
+          refetchCallback: this.$fetch
+        } as IVeoEventPayload);
       } else {
-        this.alert.text = message;
-        this.alert.saveButtonText = this.$t('global.button.ok').toString();
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          title: this.$t('error.title') as string,
+          text: message
+        } as IVeoEventPayload);
       }
-      this.alert.error = status;
-      this.alert.value = true;
     },
     formatObjectData() {
       // TODO: find better solution
@@ -402,8 +386,7 @@ export default Vue.extend({
         Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
           this.form.objectData.customAspects[key] = {
             ...this.form.objectData.customAspects[key],
-            id: '00000000-0000-0000-0000-000000000000',
-            type: key
+            id: '00000000-0000-0000-0000-000000000000'
           };
         });
       }

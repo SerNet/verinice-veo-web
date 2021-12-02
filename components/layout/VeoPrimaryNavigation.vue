@@ -29,7 +29,8 @@
     v-on="$listeners"
   >
     <template #default>
-      <div class="d-flex flex-column fill-height">
+      <div
+        class="d-flex flex-column fill-height">
         <!-- Default menu -->
         <v-list
           nav
@@ -90,10 +91,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { upperFirst } from 'lodash';
-import { ComputedRef } from '@vue/composition-api';
-import { computed } from '@nuxtjs/composition-api';
-import LocalStorage from '~/util/LocalStorage';
+import { computed, ComputedRef } from '@nuxtjs/composition-api';
+import { mdiArchive, mdiClipboardList, mdiFileChart, mdiFileDocument, mdiFormatListChecks, mdiHome } from '@mdi/js';
 
+import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 import { nonLinkableSchemas } from '~/plugins/api/schema';
@@ -165,7 +166,7 @@ export default Vue.extend({
       */
       const domainDashboard: INavItem = {
         name: this.$t('domain.index.title').toString(),
-        icon: 'mdi-view-dashboard',
+        icon: mdiHome,
         exact: true,
         to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', this.domainId || '')}`,
         disabled: false,
@@ -173,7 +174,7 @@ export default Vue.extend({
       };
       const scopes: INavItem = {
         name: this.$t('breadcrumbs.scopes').toString(),
-        icon: 'mdi-archive',
+        icon: mdiArchive,
         exact: false,
         to: `/${this.$route.params.unit}/scopes`,
         disabled: false,
@@ -181,7 +182,7 @@ export default Vue.extend({
       };
       const objects: INavItem = {
         name: this.$t('breadcrumbs.objects').toString(),
-        icon: 'mdi-file-document',
+        icon: mdiFileDocument,
         to: undefined,
         exact: false,
         disabled: false,
@@ -205,7 +206,7 @@ export default Vue.extend({
 
       const unitSelection: INavItem = {
         name: this.$t('breadcrumbs.index').toString(),
-        icon: 'mdi-home',
+        icon: mdiHome,
         to: '/',
         exact: true,
         disabled: false,
@@ -223,7 +224,7 @@ export default Vue.extend({
 
       const forms = {
         name: this.$t('breadcrumbs.forms').toString(),
-        icon: 'mdi-format-list-checks',
+        icon: mdiFormatListChecks,
         to: undefined,
         exact: false,
         disabled: false,
@@ -235,7 +236,7 @@ export default Vue.extend({
 
       const reports = {
         name: this.$t('breadcrumbs.reports').toString(),
-        icon: 'mdi-file-chart',
+        icon: mdiFileChart,
         to: undefined,
         exact: false,
         disabled: false,
@@ -247,7 +248,7 @@ export default Vue.extend({
 
       const catalogs = {
         name: this.$t('breadcrumbs.catalogs').toString(),
-        icon: 'mdi-clipboard-list',
+        icon: mdiClipboardList,
         to: undefined,
         exact: false,
         disabled: false,
@@ -308,16 +309,18 @@ export default Vue.extend({
     },
     async fetchReportTypes(domainId: string): Promise<INavItem[]> {
       return await this.$api.report.fetchAll().then((reportTypes: IVeoReportsMeta) =>
-        Object.entries(reportTypes).map(([key, value]) => {
-          const name = value.name[this.$i18n.locale] || value.name[0];
-          return {
-            name,
-            exact: false,
-            to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}/reports/${key}/`,
-            disabled: false,
-            topLevelItem: false
-          };
-        })
+        Object.entries(reportTypes)
+          .map(([key, value]) => {
+            const name = value.name[this.$i18n.locale];
+            return {
+              name,
+              exact: false,
+              to: `/${this.$route.params.unit}/domains/${createUUIDUrlParam('domain', domainId)}/reports/${key}/`,
+              disabled: false,
+              topLevelItem: false
+            };
+          })
+          .filter((report) => report.name)
       );
     },
     async fetchCatalogs(domainId: string): Promise<INavItem[]> {

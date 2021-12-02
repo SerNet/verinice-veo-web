@@ -155,12 +155,6 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
         "testSchema_Aspekt1": {
           "additionalProperties": false,
           "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
             "attributes": {
               "additionalProperties": false,
               "properties": {
@@ -221,7 +215,8 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                 },
                 "required": [
                   "targetUri"
-                ]
+                ],
+                "type": "object"
               },
               "type": "array"
             }
@@ -231,12 +226,6 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
         "testSchema_Aspekt2": {
           "additionalProperties": false,
           "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
             "attributes": {
               "additionalProperties": false,
               "properties": {
@@ -294,7 +283,8 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                 },
                 "required": [
                   "targetUri"
-                ]
+                ],
+                "type": "object"
               },
               "type": "array"
             }
@@ -304,12 +294,6 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
         "testSchema_Aspekt3": {
           "additionalProperties": false,
           "properties": {
-            "applicableTo": {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
             "attributes": {
               "additionalProperties": false,
               "properties": {
@@ -379,7 +363,8 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                 },
                 "required": [
                   "targetUri"
-                ]
+                ],
+                "type": "object"
               },
               "type": "array"
             }
@@ -431,17 +416,6 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
           "items": {
             "additionalProperties": false,
             "properties": {
-              "abbreviation": {
-                "description": "The abbreviation for this custom link.",
-                "title": "Abbreviation",
-                "type": "string"
-              },
-              "applicableTo": {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
               "attributes": {
                 "additionalProperties": false,
                 "properties": {
@@ -461,11 +435,6 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                   }
                 },
                 "type": "object"
-              },
-              "description": {
-                "description": "The name for this custom link.",
-                "title": "Description",
-                "type": "string"
               },
               "domains": {
                 "description": "The ids of elements of the type domain.",
@@ -495,11 +464,6 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                 "title": "The UUID to identify the element",
                 "type": "string"
               },
-              "name": {
-                "description": "The name for this custom link.",
-                "title": "Name",
-                "type": "string"
-              },
               "references": {
                 "items": {
                   "properties": {
@@ -514,12 +478,18 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                   },
                   "required": [
                     "targetUri"
-                  ]
+                  ],
+                  "type": "object"
                 },
                 "type": "array"
               },
               "target": {
                 "properties": {
+                  "subType": {
+                    "enum": [
+                      null
+                    ]
+                  },
                   "targetUri": {
                     "title": "The id of the target object.",
                     "type": "string"

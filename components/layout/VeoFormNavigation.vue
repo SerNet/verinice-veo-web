@@ -29,6 +29,7 @@
       <template v-for="item in items">
         <v-list-item
           :key="item.initialId + '0'"
+          style="min-height: 28px;"
           :value="item.initialId"
           @click="onClick(item.initialId)"
         >
@@ -138,7 +139,7 @@ export default Vue.extend({
     // Activate Observer when the component is mounted
     const options = {
       root: document.getElementById('scroll-wrapper'),
-      rootMargin: '-84px 0px 0px 0px', // -72px because of sticky header
+      rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
       threshold: 0
     };
 

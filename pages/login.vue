@@ -18,7 +18,7 @@
 <template>
   <div class="wrapper">
     <v-row class="flex-column text-center">
-      <v-col>
+      <v-col class="d-flex">
         <VeoAppLogoDesktop />
       </v-col>
       <v-col class="d-flex justify-end mb-6">

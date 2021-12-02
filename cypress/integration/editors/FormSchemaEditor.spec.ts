@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/// <reference path="../support/index.d.ts" />
+/// <reference path="../../support/index.d.ts" />
 /// <reference types="cypress" />
 
-import { generateTos, getEditorData, ITo } from '../support/utils';
+import { generateTos, getEditorData, ITo } from '../../support/utils';
 
 const textOrGroupLangRegex = /(group|text)_[a-zA-Z0-9._-]+/g;
 
@@ -54,57 +54,57 @@ const translationsChanged = {
 
 const tos = generateTos({
   emptyProcess: {
-    requestUrlPattern: /.*\/formsapi\/3ebd14a2-eb7d-4d18-a9ad-2056da85569e/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/3ebd14a2-eb7d-4d18-a9ad-2056da85569e/,
     fixturePath: 'formschema/empty-process.json',
     browserUrl: '/editor/formschema?fs=3ebd14a2-eb7d-4d18-a9ad-2056da85569e'
   },
   inputTextMultilineMarkdown: {
-    requestUrlPattern: /.*\/formsapi\/1a3b9e9d-b451-4b44-b0c0-b0d18ac806d4/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/1a3b9e9d-b451-4b44-b0c0-b0d18ac806d4/,
     fixturePath: 'formschema/elements/input-text-multiline-markdown.json',
     browserUrl: '/editor/formschema?fs=1a3b9e9d-b451-4b44-b0c0-b0d18ac806d4'
   },
   inputUri: {
-    requestUrlPattern: /.*\/formsapi\/d8e2e6bc-ea88-49e6-9622-0f64435d9e85/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/d8e2e6bc-ea88-49e6-9622-0f64435d9e85/,
     fixturePath: 'formschema/elements/input-uri.json',
     browserUrl: '/editor/formschema?fs=d8e2e6bc-ea88-49e6-9622-0f64435d9e85'
   },
   inputDate: {
-    requestUrlPattern: /.*\/formsapi\/a809dbab-7b29-409e-9e5f-9ffb66e33868/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/a809dbab-7b29-409e-9e5f-9ffb66e33868/,
     fixturePath: 'formschema/elements/input-date.json',
     browserUrl: '/editor/formschema?fs=a809dbab-7b29-409e-9e5f-9ffb66e33868'
   },
   checkbox: {
-    requestUrlPattern: /.*\/formsapi\/6972a6be-6fe6-4905-96d6-12d265c79667/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/6972a6be-6fe6-4905-96d6-12d265c79667/,
     fixturePath: 'formschema/elements/checkbox.json',
     browserUrl: '/editor/formschema?fs=6972a6be-6fe6-4905-96d6-12d265c79667'
   },
   selectRadioAutocomplete: {
-    requestUrlPattern: /.*\/formsapi\/4a654fcd-387b-4dfa-b96b-b0c8899c284f/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/4a654fcd-387b-4dfa-b96b-b0c8899c284f/,
     fixturePath: 'formschema/elements/select-radio-autocomplete.json',
     browserUrl: '/editor/formschema?fs=4a654fcd-387b-4dfa-b96b-b0c8899c284f'
   },
   linksField: {
-    requestUrlPattern: /.*\/formsapi\/d25795f6-5399-4535-bcbd-de5010cdb977/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/d25795f6-5399-4535-bcbd-de5010cdb977/,
     fixturePath: 'formschema/elements/links-field.json',
     browserUrl: '/editor/formschema?fs=d25795f6-5399-4535-bcbd-de5010cdb977'
   },
   label: {
-    requestUrlPattern: /.*\/formsapi\/944ed8b6-3231-467c-a1ef-b54292220020/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/944ed8b6-3231-467c-a1ef-b54292220020/,
     fixturePath: 'formschema/elements/label.json',
     browserUrl: '/editor/formschema?fs=944ed8b6-3231-467c-a1ef-b54292220020'
   },
   group: {
-    requestUrlPattern: /.*\/formsapi\/6e3de110-6468-418f-a677-4da9c1f51b72/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/6e3de110-6468-418f-a677-4da9c1f51b72/,
     fixturePath: 'formschema/elements/group.json',
     browserUrl: '/editor/formschema?fs=6e3de110-6468-418f-a677-4da9c1f51b72'
   },
   minimal: {
-    requestUrlPattern: /.*\/formsapi\/ef0971af-ad3c-4eb7-bcda-18088d6899c6/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/ef0971af-ad3c-4eb7-bcda-18088d6899c6/,
     fixturePath: 'api/forms/minimal.json',
     browserUrl: '/editor/formschema?fs=ef0971af-ad3c-4eb7-bcda-18088d6899c6'
   },
   dialogs: {
-    requestUrlPattern: /.*\/formsapi\/653d6d06-f3d1-4f09-b678-2d3f5ed27b35/,
+    requestUrlPattern: /https:\/\/api.(.+)\/forms\/653d6d06-f3d1-4f09-b678-2d3f5ed27b35/,
     fixturePath: 'formschema/dialogs.json',
     browserUrl: '/editor/formschema?fs=653d6d06-f3d1-4f09-b678-2d3f5ed27b35'
   }
@@ -123,7 +123,7 @@ function goTo(to: ITo) {
     }
   ).as('loadedSchema');
 
-  cy.goTo('/editor').goTo(to.browserUrl);
+  cy.goTo('/editor/').goTo(to.browserUrl);
 }
 
 describe('Formschema Editor', () => {
@@ -135,7 +135,7 @@ describe('Formschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('/editor');
+    cy.visit('/editor/');
     cy.wait('@G_fetchSchemas');
   });
 
@@ -777,6 +777,7 @@ describe('Formschema Editor', () => {
 
       cy.contains('.v-text-field', 'Name des Formschemas').type('{selectall}{backspace}Test Formschema 1 DE');
       cy.contains('.v-text-field', 'Sub Typ').find('input').type('{selectall}{backspace}TF 1');
+      cy.contains('.v-text-field', 'Sortierwert').find('input').type('{selectall}{backspace}a1');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
@@ -803,6 +804,7 @@ describe('Formschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('not.have.value');
       cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF 1');
+      cy.contains('.v-text-field', 'Sortierwert').find('input').should('have.value', 'a1');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
 
       cy.contains('.v-text-field', 'Name des Formschemas').type('Test Formschema 2 EN');

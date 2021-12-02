@@ -16,30 +16,57 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="$t('moreModules')">
-    <span>Soon</span>
+  <VeoPage :title="t('moreModules')">
+    <div
+      class="mb-6"
+      style="height: 50px"
+    >
+      <VeoAppLogoDesktop />
+    </div>
+    <p>{{ t('moreModulesInfo') }}</p>
+    <p>{{ t('moreModulesEta') }}</p>
+    <p>{{ t('furtherInformation') }} <a
+      :href="locale === 'de' ? 'https://verinice.com/veo' : `https://verinice.com/${locale}/veo`"
+      target="_blank"
+    >{{ t('linkName') }}</a>.</p>
   </VeoPage>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, useMeta } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-export default Vue.extend({
-  head() {
+export default defineComponent({
+  setup() {
+    const { t, locale } = useI18n();
+    const { title } = useMeta();
+
+    title.value = t('moreModules').toString();
+
     return {
-      title: this.$t('moreModules').toString()
+      t,
+      locale
     };
-  }
+  },
+  head: {}
 });
 </script>
 
 <i18n>
 {
   "en": {
-    "moreModules": "More modules"
+    "furtherInformation": "An overview of further functions and modules can be found on the",
+    "linkName": "verinice.veo webseite",
+    "moreModules": "Further modules",
+    "moreModulesEta": "The current planning is to present verinice.veo as an ISMS tool with the modules BSI IT-Grundschutz according to the standards of the 200 series and ISO 27001 to the public at it-sa 2022 and to make it generally available at the beginning of 2023.",
+    "moreModulesInfo": "The verinice.TEAM will successively provide further modules for verinice.veo."
   },
   "de": {
-    "moreModules": "Weitere Module"
+    "furtherInformation": "Eine Übersicht über weitere Funktionen und Module finden Sie auf der",
+    "linkName": "verinice.veo Webseite",
+    "moreModules": "Weitere Module",
+    "moreModulesEta": "Die aktuelle Planung sieht vor, verinice.veo als ISMS-Tool mit den Modulen BSI IT-Grundschutz nach den Standards der 200er-Reihe und ISO 27001 zur it-sa 2022 der Öffentlichkeit vorzustellen und Anfang 2023 allgemein verfügbar zu machen.",
+    "moreModulesInfo": "Das verinice.TEAM wird sukzessive weitere Module für verinice.veo zur Verfügung stellen."
   }
 }
 </i18n>

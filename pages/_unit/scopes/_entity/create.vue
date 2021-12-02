@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Davit Svandize, Jonas Heitmann, Jessica Lühnen
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -120,6 +120,7 @@
         :is-valid.sync="isValid"
         :error-messages.sync="errorMessages"
         class="mb-8"
+        :reactive-form-actions="reactiveFormActions"
         @input="entityModified.isModified = true"
       />
       <VeoEntityModifiedDialog
@@ -170,12 +171,11 @@ import { createUUIDUrlParam, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoAPIMessage } from '~/types/VeoTypes';
-import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
+import { IVeoAPIMessage, IVeoReactiveFormAction } from '~/types/VeoTypes';
+import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 export default Vue.extend({
   name: 'VeoScopesCreatePage',
-  mixins: [VeoReactiveFormActionMixin],
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
     if (this.entityModified.isModified && this.entityModified.dialog) {
@@ -210,13 +210,15 @@ export default Vue.extend({
   },
   async fetch() {
     if (this.entityType) {
-      const objectSchema = await this.$api.schema.fetch(this.entityType);
+      const currentDomain = this.$user.lastDomain ? [this.$user.lastDomain] : undefined;
+      const objectSchema = await this.$api.schema.fetch(this.entityType, currentDomain);
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       const objectData = {
         owner: {
-          targetUri: `/units/${this.unitID}`
+          targetUri: `${this.$config.apiUrl}/units/${this.unitID}`
         },
-        designator: '' // Needed for form validation
+        designator: '', // Needed for form validation
+        _self: 'http://example.com'
       };
 
       this.form = {
@@ -257,6 +259,9 @@ export default Vue.extend({
       const url = this.$route.fullPath.split('/');
       url.pop();
       return url.join('/');
+    },
+    reactiveFormActions(): IVeoReactiveFormAction[] {
+      return this.entityType === 'person' ? getPersonReactiveFormActions(this) : [];
     }
   },
   methods: {
@@ -273,7 +278,7 @@ export default Vue.extend({
           ...this.form.objectData,
           // @ts-ignore
           owner: {
-            targetUri: `/units/${this.unitID}`
+            targetUri: `${this.$config.apiUrl}/units/${this.unitID}`
           }
         })
         .then(async (data: IVeoAPIMessage) => {
@@ -312,11 +317,11 @@ export default Vue.extend({
         Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
           this.form.objectData.customAspects[key] = {
             ...this.form.objectData.customAspects[key],
-            id: '00000000-0000-0000-0000-000000000000',
-            type: key
+            id: '00000000-0000-0000-0000-000000000000'
           };
         });
       }
+      delete this.form.objectData._self;
     },
     // Either redirect the user back (save and close) or redirect him to the new entity (save)
     async redirect(close: boolean, target?: string) {

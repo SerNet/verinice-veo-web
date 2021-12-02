@@ -39,7 +39,7 @@ export default function (api: Client) {
       // TODO: Remove: Currently the domainId in the forms api isn't linked with the id of the existing domain, so we ignore the filter.
       delete params.domainId;
 
-      return api.req('/api/forms', {
+      return api.req('/api/forms/', {
         params
       });
     },
@@ -49,7 +49,7 @@ export default function (api: Client) {
      * @param parent
      */
     fetchGlobal(params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
-      return api.req('/api/forms', {
+      return api.req('/api/forms/', {
         params
       });
     },
@@ -63,7 +63,7 @@ export default function (api: Client) {
      * @returns UUID of the new form
      */
     create(form: IVeoFormSchema): Promise<string> {
-      return api.req('/api/forms', {
+      return api.req('/api/forms/', {
         json: form
       });
     },

@@ -19,7 +19,13 @@ import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection, IVeoFormSchemaItemRule, IVeoObjectSchema, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
-export function generateSchema(name: IVeoFormSchemaMeta['name'], modelType: string, subType: string | null, translation: IVeoFormSchemaTranslationCollection = {}): IVeoFormSchema {
+export function generateSchema(
+  name: IVeoFormSchemaMeta['name'],
+  modelType: string,
+  subType: string | null,
+  sorting: string | null,
+  translation: IVeoFormSchemaTranslationCollection = {}
+): IVeoFormSchema {
   return {
     name,
     modelType,
@@ -32,7 +38,8 @@ export function generateSchema(name: IVeoFormSchemaMeta['name'], modelType: stri
         direction: 'vertical'
       },
       elements: []
-    }
+    },
+    sorting
   };
 }
 

@@ -15,12 +15,21 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-1<template>
+<template>
   <VeoPage
     :title="$t('breadcrumbs.forms')"
     fullsize
   >
     <template #default>
+      <v-btn
+        id="stepOne"
+        outlined
+        color="primary"
+        class="align-self-center px-4 ma-4"
+        @click="startIntro()"
+      >
+        Start Intro
+      </v-btn>
       <VeoEntityModifier
         v-bind="$data"
         :root-route="rootRoute"
@@ -30,14 +39,15 @@
         <template #menu-bar>
           <v-row
             dense
-            class="justify-space-between"
+            class="justify-space-between col-12"
           >
             <v-col
-              :cols="12"
+              cols="12"
               :md="3"
               class="px-4"
             >
               <v-select
+                id="hintOne"
                 v-model="formType"
                 :label="$t('form')"
                 :items="formTypes"
@@ -51,7 +61,7 @@
                 outlined
                 :to="`/${$route.params.unit}/domains/${$route.params.domain}/forms/${$route.params.form}/create`"
                 color="primary"
-                class="align-self-center mr-4"
+                class="align-self-center"
               >
                 {{ $t('create', { type: formName }) }}
               </v-btn>
@@ -59,10 +69,12 @@
           </v-row>
           <v-row dense>
             <v-col
+
               class="flex-grow-1 search-bar"
               :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
             >
               <VeoListSearchBar
+                id="hintTwo"
                 v-model="filter"
                 :object-type="formSchema && formSchema.modelType"
                 @reset="filter = $event"
@@ -72,6 +84,7 @@
         </template>
         <template #default="{ on }">
           <VeoFormList
+            id="stepTwo"
             :items="objects"
             :loading="$fetchState.pending || loading"
             :show-parent-link="false"
@@ -81,12 +94,15 @@
             v-on="on"
           />
         </template>
+
       </VeoEntityModifier>
     </template>
   </VeoPage>
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import introJs from 'intro.js';
+import 'intro.js/minified/introjs.min.css';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { VeoEntityModifierEventType } from '~/components/objects/VeoEntityModifier.vue';
@@ -166,12 +182,43 @@ export default Vue.extend({
     this.filter = {
       designator: this.$route.query.designator,
       name: this.$route.query.name,
+      status: this.$route.query.status,
       description: this.$route.query.description,
-      updatedBy: this.$route.query.updatedBy,
-      status: this.$route.query.status
+      updatedBy: this.$route.query.updatedBy
     };
   },
   methods: {
+    startIntro() {
+      const intro = introJs();
+      intro.setOptions({
+        showStepNumbers: false,
+        doneLabel: 'Intro beenden',
+        steps: [
+          {
+            intro: 'Das ist ein <b>Beispiel</b> für intro.js. Lass uns die Tour starten!'
+          },
+          {
+            element: '#stepOne',
+            intro: 'Man kann einzelne kleine Elemente markieren...',
+            position: 'top'
+          },
+          {
+            element: '#stepTwo',
+            intro: '...oder ganze Bereiche.'
+          },
+          {
+            element: '#stepThree',
+            intro: 'Es können übegreifende Elemente markiert werden'
+          },
+          {
+            element: '#stepFour',
+            intro: 'Hier können Hinweise für diese spezielle Seite angezeigt werden.',
+            position: 'bottom'
+          }
+        ]
+      });
+      intro.start();
+    },
     changeType(newType: string) {
       const newFormParam = createUUIDUrlParam('form', newType);
       this.$router.push(`/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${newFormParam}`);
@@ -223,6 +270,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .search-bar-desktop {
-  margin: 0 100px;
+  margin: 0 24px;
 }
 </style>

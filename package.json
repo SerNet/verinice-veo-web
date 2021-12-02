@@ -10,10 +10,6 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "dev:e2e": "VEO_API_USE_PROXY='true' nuxt",
-    "dev-debug": "node --inspect=9229 node_modules/.bin/nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore .",
     "precommit": "npm run lint",
@@ -21,9 +17,7 @@
     "test:e2e": "cross-env LANG='de_DE.UTF-8' && cypress run",
     "test:e2e-open": "cross-env LANG='de_DE.UTF-8' && cypress open",
     "cy:verify": "cypress verify",
-    "cy:info": "cypress info",
-    "test:docker": "docker run -it $(docker build -f test.Dockerfile -q .)",
-    "webpack": "nuxt webpack"
+    "cy:info": "cypress info"
   },
   "husky": {
     "hooks": {
@@ -51,11 +45,15 @@
     "@mdi/font": "^6.1.95",
     "@mdi/js": "^6.1.95",
     "@nuxtjs/composition-api": "^0.29.2",
-    "@nuxtjs/proxy": "^2.1.0",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
     "@toast-ui/vue-editor": "^3.1.0",
+    "ajv": "^8.6.3",
+    "ajv-formats": "^2.1.1",
+    "chart.js": "^3.6.0",
+    "chartjs-plugin-datalabels": "^2.0.0",
     "dotenv": "^10.0.0",
     "intersection-observer": "^0.12.0",
+    "intro.js": "^4.3.0",
     "json-ptr": "^2.2.0",
     "keycloak-js": "10.x",
     "lodash": "^4.17.21",
@@ -68,6 +66,7 @@
     "roboto-fontface": "^0.10.0",
     "uuid": "^8.3.2",
     "vee-validate": "^3.4.13",
+    "vue-chart-3": "^0.5.11",
     "vue-json-pointer": "^0.6.2",
     "vuedraggable": "^2.24.3"
   },
@@ -84,6 +83,7 @@
     "@nuxtjs/vuetify": "^1.12.1",
     "@types/chai": "^4.2.22",
     "@types/intl": "^1.2.0",
+    "@types/intro.js": "^3.0.2",
     "@types/jest": "^27.0.2",
     "@types/json-schema": "^7.0.9",
     "@types/leaflet": "^1.7.5",

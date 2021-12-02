@@ -19,32 +19,52 @@
   <VeoDialog
     v-model="dialog"
     :headline="$t('welcome')"
+    large
   >
     <template #default>
-      <div class="d-flex flex-column align-center">
-        <svg
-          viewBox="0 0 28 22"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          style="height: 100px"
-        >
-          <g
-            stroke="none"
-            stroke-width="1"
-            fill="none"
-            fill-rule="evenodd"
-          >
-            <path
-              id="v."
-              d="M10.1757812,21.390625 L9.19921875,21.390625 L0.234375,0.0234375 L4.296875,0.0234375 L9.82421875,14.671875 L15.46875,0.0234375 L19.3554688,0.0234375 L10.1757812,21.390625 Z M21.1328125,15.5117188 C21.9401082,15.5117188 22.6302055,15.7981742 23.203125,16.3710938 C23.7760445,16.9440133 24.0625,17.6341105 24.0625,18.4414062 C24.0625,19.248702 23.7760445,19.9420544 23.203125,20.5214844 C22.6302055,21.1009144 21.9401082,21.390625 21.1328125,21.390625 C20.3255168,21.390625 19.6354195,21.1009144 19.0625,20.5214844 C18.4895805,19.9420544 18.203125,19.248702 18.203125,18.4414062 C18.203125,17.6341105 18.4895805,16.9440133 19.0625,16.3710938 C19.6354195,15.7981742 20.3255168,15.5117188 21.1328125,15.5117188 Z"
-              fill="#E53935"
-            />
-          </g>
-        </svg>
-        <p class="mx-4 mt-8 text-justify">
-          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-        </p>
+      <div
+        class="mb-6 d-flex justify-center"
+        style="height: 50px"
+      >
+        <VeoAppLogoDesktop />
       </div>
+      <h2 class="mb-4">{{ t('veoClaim') }}</h2>
+      <i18n
+        path="createEntitiesCTA"
+        tag="p"
+      >
+        <nuxt-link
+          v-for="(link, index) in formLinks"
+          :key="index"
+          :to="link.to"
+          @click.native="dialog = false"
+        >{{ link.name }}</nuxt-link>
+      </i18n>
+      <i18n
+        path="dashboardCTA"
+        tag="p"
+      >
+        <nuxt-link
+          :to="dashboardLink.to"
+          @click.native="dialog = false"
+        >{{ dashboardLink.name }}</nuxt-link>
+      </i18n>
+      <i18n
+        v-if="demoUnitLink"
+        path="demoUnitCTA"
+        tag="p"
+      >
+        <nuxt-link
+          :to="demoUnitLink.to"
+          @click.native="dialog = false"
+        >{{ demoUnitLink.name }}</nuxt-link>
+      </i18n>
+      <i18n
+        path="lastLine"
+        tag="p"
+      >
+        <br>
+      </i18n>
     </template>
     <template #dialog-options>
       <v-spacer />
@@ -53,35 +73,102 @@
         color="primary"
         @click="dialog = false"
       >
-        {{ $t('go') }}
+        {{ t('go') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import LocalStorage from '~/util/LocalStorage';
+import { RawLocation } from 'vue-router/types/router';
+import { computed, defineComponent, Ref, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-export default Vue.extend({
+import LocalStorage from '~/util/LocalStorage';
+import { createUUIDUrlParam } from '~/lib/utils';
+import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
+
+export default defineComponent({
   props: {
     value: {
       type: Boolean,
       default: false
     }
   },
-  computed: {
-    dialog: {
-      get(): boolean {
-        return this.value;
+  setup(props, { emit }) {
+    const { t, locale } = useI18n();
+    const { $api } = useContext();
+    const route = useRoute();
+
+    useFetch(async () => {
+      const forms = await $api.form.fetchAll();
+
+      createEntityCreateLink('SCP_ResponsibleBody', forms);
+      createEntityCreateLink('PER_DataProtectionOfficer', forms);
+      createEntityCreateLink('PRO_DataProcessing', forms);
+
+      const units = await $api.unit.fetchAll();
+      const demoUnit = units.find((unit) => unit.name === 'Demo');
+      if (demoUnit) {
+        demoUnitLink.value = {
+          to: {
+            name: 'unit-domains-domain',
+            params: {
+              unit: createUUIDUrlParam('unit', demoUnit.id)
+            }
+          },
+          name: 'Demo-Unit'
+        };
+      }
+    });
+    const dialog = computed({
+      get() {
+        return props.value;
       },
       set(value: boolean) {
         if (!value) {
           LocalStorage.firstStepsCompleted = true;
         }
-        this.$emit('input', false);
+        emit('input', false);
+      }
+    });
+
+    const formLinks: Ref<{ name: string; to: RawLocation }[]> = ref([]);
+    const dashboardLink: Ref<{ name: string; to: RawLocation }> = ref({
+      to: {
+        name: 'unit-domains-domain',
+        params: {
+          domain: route.value.params.domain
+        }
+      },
+      name: 'Dashboard'
+    });
+    const demoUnitLink: Ref<{ name: string; to: RawLocation } | undefined> = ref(undefined);
+
+    function createEntityCreateLink(subType: string, forms: IVeoFormSchemaMeta[]) {
+      const form = forms.find((form) => form.subType === subType);
+      if (form) {
+        formLinks.value.push({
+          name: form.name[locale.value],
+          to: {
+            name: 'unit-domains-domain-forms-form-create',
+            params: {
+              domain: route.value.params.domain,
+              form: createUUIDUrlParam('form', form.id as string)
+            }
+          }
+        });
       }
     }
+
+    return {
+      dialog,
+      dashboardLink,
+      demoUnitLink,
+      formLinks,
+
+      t
+    };
   }
 });
 </script>
@@ -89,12 +176,24 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "createEntitiesCTA": "Many paths lead to the goal... record the {0}, name your {1} or create a {2}.",
+    "dashboardCTA": "One step at a time... the {0} provides you with an overall view and leads you along the lifecycle of your assets directly to the next tasks or the last activities.",
+    "demoUnitCTA": "You prefer to get your bearings first? Then take a look at the {0} (resets with every login).",
+    "helpCTA": "Our Hints and Tutorials will show you how to use the system, and you can gain a deeper insight in the Online Documentation.",
+    "lastLine": "Good luck!{0}Your verinice.TEAM",
     "go": "Lets go!",
-    "welcome": "Welcome to verinice."
+    "veoClaim": "New for sure",
+    "welcome": "Welcome to verinice.veo!"
   },
   "de": {
+    "createEntitiesCTA": "Viele Wege führen zum Ziel... erfassen Sie die {0}, benennen Sie Ihre {1} oder legen Sie eine {2} an.",
+    "dashboardCTA": "Ein Schritt nach dem anderen... das {0} bietet Ihnen einen Gesamtüberblick und führt Sie entlang des Lebebenszyklus Ihrer Assets direkt zu den nächsten Aufgaben oder den letzten Aktivitäten.",
+    "demoUnitCTA": "Sie möchten sich lieber erst orientieren? Dann werfen Sie einen Blick auf die {0} (wird bei jedem Login zurückgesetzt).",
+    "helpCTA": "Die Bedienung vermitteln Ihnen unsere Hints und Tutorials, tieferen Einblick gewinnen Sie in der Online-Dokumentation.",
+    "lastLine": "Viel Erfolg wünscht!{0}Ihr verinice.TEAM",
     "go": "Los gehts!",
-    "welcome": "Willkommen bei verinice."
+    "veoClaim": "Mit Sicherheit neu",
+    "welcome": "Willkommen bei verinice.veo!"
   }
 }
 </i18n>

@@ -34,11 +34,11 @@
     "includeGlob": [
       "**/assets/**",
       "**/components/**",
+      "**/composables/**",
       "**/cypress/integration/**",
       "**/layouts/**",
       "**/lib/**",
       "**/middleware/**",
-      "**/mixins/**",
       "**/pages/**",
       "**/plugins/**",
       "**/test/**",

@@ -8,23 +8,23 @@
          "name":"Blau",
          "designator":"PRO-9",
          "abbreviation":"P3",
-         "description":"Prozess ohne Subtype",
-         "domains":[
-            
-         ],
+         "description":"Prozess mit Subtype Datenübertragung",
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataTransfer",
+               "status": "FOR_REVIEW"
+            }
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
-            
-         },
-         "subType":{
             
          },
          "type":"process",
@@ -41,23 +41,23 @@
          "name":"Cyan",
          "designator":"PRO-10",
          "abbreviation":"P4",
-         "description":"Prozess ohne Subtype",
-         "domains":[
-            
-         ],
+         "description":"Prozess mit Subtype Datenübertragung",
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataTransfer",
+               "status": "FOR_REVIEW"
+            }
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
-            
-         },
-         "subType":{
             
          },
          "type":"process",
@@ -75,28 +75,23 @@
          "designator":"PRO-12",
          "abbreviation":"DÜ2",
          "description":"Prozess mit Subtype Datenübertragung",
-         "domains":[
-            {
-               "displayName":"DSGVO DSGVO",
-               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
-               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataTransfer",
+               "status": "NEW"
             }
-         ],
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
             
-         },
-         "subType":{
-            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataTransfer"
          },
          "type":"process",
          "parts":[
@@ -112,23 +107,23 @@
          "name":"Grün",
          "designator":"PRO-8",
          "abbreviation":"P2",
-         "description":"Prozess ohne Subtype",
-         "domains":[
-            
-         ],
+         "description":"Prozess mit Subtype Datenübertragung",
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataTransfer",
+               "status": "NEW"
+            }
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
-            
-         },
-         "subType":{
             
          },
          "type":"process",
@@ -146,28 +141,23 @@
          "designator":"PRO-11",
          "abbreviation":"DÜ1",
          "description":"Prozess mit Subtype Datenübertragung",
-         "domains":[
-            {
-               "displayName":"DSGVO DSGVO",
-               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
-               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataTransfer",
+               "status": "NEW"
             }
-         ],
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
             
-         },
-         "subType":{
-            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataTransfer"
          },
          "type":"process",
          "parts":[
@@ -184,28 +174,23 @@
          "designator":"PRO-14",
          "abbreviation":"VT1",
          "description":"Prozess mit Subtype Verarbeitungstätigkeit",
-         "domains":[
-            {
-               "displayName":"DSGVO DSGVO",
-               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
-               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataProcessing",
+               "status": "RELEASED"
             }
-         ],
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
             
-         },
-         "subType":{
-            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataProcessing"
          },
          "type":"process",
          "parts":[
@@ -222,28 +207,23 @@
          "designator":"PRO-16",
          "abbreviation":"VT3",
          "description":"Prozess mit Subtype Verarbeitungstätigkeit",
-         "domains":[
-            {
-               "displayName":"DSGVO DSGVO",
-               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
-               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataProcessing",
+               "status": "NEW"
             }
-         ],
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
             
-         },
-         "subType":{
-            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataProcessing"
          },
          "type":"process",
          "parts":[
@@ -259,23 +239,23 @@
          "name":"Rot",
          "designator":"PRO-7",
          "abbreviation":"P1",
-         "description":"Prozess ohne Subtype",
-         "domains":[
-            
-         ],
+         "description":"Prozess mit Subtype Verarbeitungstätigkeit",
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataTransfer",
+               "status": "FOR_REVIEW"
+            }
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
-            
-         },
-         "subType":{
             
          },
          "type":"process",
@@ -293,28 +273,23 @@
          "designator":"PRO-13",
          "abbreviation":"DÜ3",
          "description":"Prozess mit Subtype Datenübertragung",
-         "domains":[
-            {
-               "displayName":"DSGVO DSGVO",
-               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
-               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataTransfer",
+               "status": "NEW"
             }
-         ],
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
             
-         },
-         "subType":{
-            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataTransfer"
          },
          "type":"process",
          "parts":[
@@ -331,28 +306,23 @@
          "designator":"PRO-15",
          "abbreviation":"VT2",
          "description":"Prozess mit Subtype Verarbeitungstätigkeit",
-         "domains":[
-            {
-               "displayName":"DSGVO DSGVO",
-               "searchesUri":"https://veo.develop.cpmsys.io/domains/searches",
-               "targetUri":"https://veo.develop.cpmsys.io/domains/ed67e4d7-c657-4479-ba8a-c53999d2930a",
-               "resourcesUri":"https://veo.develop.cpmsys.io/domains"
+         "domains":{
+            "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+               "subType": "PRO_DataProcessing",
+               "status": "FOR_REVIEW"
             }
-         ],
+         },
          "owner":{
             "displayName":"NBRX Testunit",
-            "searchesUri":"https://veo.develop.cpmsys.io/units/searches",
-            "targetUri":"https://veo.develop.cpmsys.io/units/d496f98f-c051-443c-9b1f-65d65b64996d",
-            "resourcesUri":"https://veo.develop.cpmsys.io/units{?parent,displayName}"
+            "searchesUri":"https://api.develop.verinice.com/veo/units/searches",
+            "targetUri":"https://api.develop.verinice.com/veo/units/d496f98f-c051-443c-9b1f-65d65b64996d",
+            "resourcesUri":"https://api.develop.verinice.com/veo/units{?parent,displayName}"
          },
          "links":{
             
          },
          "customAspects":{
             
-         },
-         "subType":{
-            "ed67e4d7-c657-4479-ba8a-c53999d2930a":"PRO_DataProcessing"
          },
          "type":"process",
          "parts":[

@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
-   - 
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -81,13 +81,13 @@
               class="align-center mt-4"
             >
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
               </v-col>
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <v-text-field
@@ -103,13 +103,13 @@
               class="align-center mt-4"
             >
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <span style="font-size: 1.2rem;"> {{ $t('description') }}*: </span>
               </v-col>
               <v-col
-                :cols="12"
+                cols="12"
                 :md="5"
               >
                 <v-text-field
@@ -133,13 +133,13 @@
             class="align-center mt-4"
           >
             <v-col
-              :cols="12"
+              cols="12"
               :md="5"
             >
               <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
             </v-col>
             <v-col
-              :cols="12"
+              cols="12"
               :md="5"
             >
               <v-select
@@ -151,7 +151,7 @@
             </v-col>
           </v-row>
           <v-row v-if="modelType === 'custom'">
-            <v-col :cols="12">
+            <v-col cols="12">
               <VeoEditorFileUpload
                 :code="code"
                 :input-label="$t('uploadLabel')"
@@ -344,7 +344,8 @@ export default Vue.extend({
         this.$emit('completed', { schema, meta: undefined });
         this.navigateTo(`os=custom`);
       } else {
-        this.$api.schema.fetch(this.modelType).then((data: any) => {
+        const currentDomain = this.$user.lastDomain ? [this.$user.lastDomain] : undefined;
+        this.$api.schema.fetch(this.modelType, currentDomain).then((data: any) => {
           this.$emit('completed', { schema: data, meta: undefined });
           this.navigateTo(`os=${this.modelType}`);
         });

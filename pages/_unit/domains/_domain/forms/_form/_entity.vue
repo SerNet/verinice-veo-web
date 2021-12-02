@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize, Markus Werner, Jonas Heitmann, Jessica Lühnen
-   - 
+   - Copyright (C) 2021  Davit Svandize, Markus Werner, Jonas Heitmann, Jessica Lühnen, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -61,116 +61,119 @@
           v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups"
           v-model="contentsCollapsed"
         />
-        <v-row
-          no-gutters
-          class="justify-space-between"
-        >
-          <v-col
-            cols="auto"
-            class="mt-4"
+        <v-col>
+          <v-row
+            no-gutters
+            class="justify-space-between"
           >
-            <h1 v-if="!isRevision && form.objectData.displayName">
-              {{ form.objectData.displayName }}
-            </h1>
-            <h1 v-else-if="!isRevision && form.formSchema">
-              {{ $t('object_create', { type: form.formSchema.name[$i18n.locale] }) }}
-            </h1>
-            <h1 v-else>
-              {{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})
-            </h1>
-          </v-col>
-        </v-row>
-        <v-row class="mt-3">
-          <v-spacer />
-          <v-col
-            cols="auto"
-            class="text-right"
-          >
-            <v-btn
-              outlined
-              @click="doDiscard"
+            <v-col
+              cols="auto"
+              class="mt-4"
             >
-              {{ $t('global.button.discard') }}
-            </v-btn>
-            <v-tooltip
-              v-if="!isRevision"
-              top
-              :disabled="!isSaveBtnDisabled || !formModified.isModified"
+              <h1 v-if="!isRevision && form.objectData.displayName">
+                {{ form.objectData.displayName }}
+              </h1>
+              <h1 v-else-if="!isRevision && form.formSchema">
+                {{ $t('object_create', { type: form.formSchema.name[$i18n.locale] }) }}
+              </h1>
+              <h1 v-else>
+                {{ form.objectData.displayName }} ({{ $t('revision') }} {{ revisionVersion }})
+              </h1>
+            </v-col>
+          </v-row>
+          <v-row
+            class="mt-3">
+            <v-spacer />
+            <v-col
+              cols="auto"
+              class="text-right"
             >
-              <template #activator="{ on }">
-                <div
-                  class="d-inline-block"
-                  v-on="on"
-                  @click.prevent
-                >
-                  <v-btn
-                    color="primary"
-                    outlined
-                    :disabled="isSaveBtnDisabled"
-                    :loading="saveBtnLoading"
-                    @click="onClick"
+              <v-btn
+                outlined
+                @click="doDiscard"
+              >
+                {{ $t('global.button.discard') }}
+              </v-btn>
+              <v-tooltip
+                v-if="!isRevision"
+                top
+                :disabled="!isSaveBtnDisabled || !formModified.isModified"
+              >
+                <template #activator="{ on }">
+                  <div
+                    class="d-inline-block"
+                    v-on="on"
+                    @click.prevent
                   >
-                    {{ $t('global.button.save') }}
-                  </v-btn>
-                </div>
-              </template>
-              <template #default>
-                <ul>
-                  <li
-                    v-for="(errorMessage, key) in errorMessages"
-                    :key="key"
-                  >
-                    {{ errorMessage.message }}
-                  </li>
-                </ul>
-              </template>
-            </v-tooltip>
+                    <v-btn
+                      color="primary"
+                      outlined
+                      :disabled="isSaveBtnDisabled"
+                      :loading="saveBtnLoading"
+                      @click="onClick"
+                    >
+                      {{ $t('global.button.save') }}
+                    </v-btn>
+                  </div>
+                </template>
+                <template #default>
+                  <ul>
+                    <li
+                      v-for="(errorMessage, key) in errorMessages"
+                      :key="key"
+                    >
+                      {{ errorMessage.message }}
+                    </li>
+                  </ul>
+                </template>
+              </v-tooltip>
 
-            <v-btn
-              v-else
-              color="primary"
-              outlined
-              :loading="saveBtnLoading"
-              @click="restoreDialogVisible = true"
-            >
-              {{ $t('restore') }}
-            </v-btn>
+              <v-btn
+                v-else
+                color="primary"
+                outlined
+                :loading="saveBtnLoading"
+                @click="restoreDialogVisible = true"
+              >
+                {{ $t('restore') }}
+              </v-btn>
 
-            <v-tooltip
-              v-if="!isRevision"
-              top
-              :disabled="!isSaveBtnDisabled || !formModified.isModified"
-            >
-              <template #activator="{ on }">
-                <div
-                  class="d-inline-block"
-                  v-on="on"
-                  @click.prevent
-                >
-                  <v-btn
-                    color="primary"
-                    outlined
-                    :disabled="isSaveBtnDisabled"
-                    :loading="saveBtnLoading"
-                    @click="onClick($event, true)"
+              <v-tooltip
+                v-if="!isRevision"
+                top
+                :disabled="!isSaveBtnDisabled || !formModified.isModified"
+              >
+                <template #activator="{ on }">
+                  <div
+                    class="d-inline-block"
+                    v-on="on"
+                    @click.prevent
                   >
-                    {{ $t('global.button.save_quit') }}
-                  </v-btn>
-                </div>
-              </template>
-              <template #default>
-                <ul>
-                  <li
-                    v-for="(errorMessage, key) in errorMessages"
-                    :key="key"
-                  >
-                    {{ errorMessage.message }}
-                  </li>
-                </ul>
-              </template>
-            </v-tooltip>
-          </v-col>
-        </v-row>
+                    <v-btn
+                      color="primary"
+                      outlined
+                      :disabled="isSaveBtnDisabled"
+                      :loading="saveBtnLoading"
+                      @click="onClick($event, true)"
+                    >
+                      {{ $t('global.button.save_quit') }}
+                    </v-btn>
+                  </div>
+                </template>
+                <template #default>
+                  <ul>
+                    <li
+                      v-for="(errorMessage, key) in errorMessages"
+                      :key="key"
+                    >
+                      {{ errorMessage.message }}
+                    </li>
+                  </ul>
+                </template>
+              </v-tooltip>
+            </v-col>
+          </v-row>
+        </v-col>
       </template>
       <template #default>
         <VeoAlert
@@ -194,6 +197,7 @@
           :is-valid.sync="isValid"
           :error-messages.sync="errorMessages"
           :disabled="isRevision && !allowRestoration"
+          :reactive-form-actions="reactiveFormActions"
           @input="formModified.isModified = true"
         />
         <div
@@ -233,25 +237,6 @@
           :object="form.objectData"
           @restored="onRestored"
         />
-        <VeoAlert
-          v-model="alert.value"
-          v-bind="alert"
-          style="position: fixed; width: 60%; bottom: 0; left: 20%; z-index: 1"
-        >
-          <template
-            v-if="alert.error === 412"
-            #additional-button
-          >
-            <v-btn
-              outlined
-              text
-              color="error"
-              @click="$fetch()"
-            >
-              {{ $t('global.button.yes') }}
-            </v-btn>
-          </template>
-        </VeoAlert>
       </template>
     </VeoPage>
     <v-divider vertical />
@@ -286,13 +271,14 @@
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import { Route } from 'vue-router/types/index';
-import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
-import { IVeoEventPayload, VeoEvents, ALERT_TYPE } from '~/types/VeoGlobalEvents';
-import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema } from '~/types/VeoTypes';
-import VeoReactiveFormActionMixin from '~/mixins/objects/VeoReactiveFormActionMixin';
+import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
+import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoEntity, IVeoFormSchema, IVeoObjectHistoryEntry, IVeoObjectSchema, IVeoReactiveFormAction } from '~/types/VeoTypes';
 import { validate } from '~/lib/FormSchemaHelper';
+import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 export interface IValidationErrorMessage {
   pointer: string;
@@ -309,7 +295,6 @@ interface IData {
   revisionCache: IBaseObject;
   errorMessages: IValidationErrorMessage[];
   saveBtnLoading: boolean;
-  alert: IVeoEventPayload & { value: boolean; error: number };
   contentsCollapsed: boolean;
   formModified: {
     isModified: boolean;
@@ -317,13 +302,13 @@ interface IData {
     revisionDialog: boolean;
     target?: any;
   };
-  alertType: ALERT_TYPE;
+  alertType: VeoAlertType;
   restoreDialogVisible: boolean;
+  etag?: string;
 }
 
 export default Vue.extend({
   name: 'VeoFormsObjectDataUpdate',
-  mixins: [VeoReactiveFormActionMixin],
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
     if (this.formModified.isModified && this.formModified.dialog) {
@@ -354,14 +339,6 @@ export default Vue.extend({
       revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
-      alert: {
-        value: false,
-        text: '',
-        type: 0,
-        title: this.$t('error.title') as string,
-        saveButtonText: this.$t('global.button.no') as string,
-        error: 0 as number
-      },
       contentsCollapsed: false as boolean,
       formModified: {
         isModified: false,
@@ -369,56 +346,54 @@ export default Vue.extend({
         revisionDialog: false,
         target: undefined
       },
-      alertType: ALERT_TYPE.INFO,
-      restoreDialogVisible: false
+      alertType: VeoAlertType.INFO,
+      restoreDialogVisible: false,
+      etag: undefined as string | undefined
     };
   },
   async fetch() {
-    const formSchema = await this.$api.form.fetch(this.formId);
+    const rawFormSchema = JSON.stringify(await this.$api.form.fetch(this.formId));
+    const formSchema = JSON.parse(rawFormSchema.replaceAll('{CURRENT_DOMAIN_ID}', this.domainId));
+
     this.isRevision = false;
     this.formModified.isModified = false;
 
     this.objectType = formSchema.modelType;
     if (this.objectType) {
-      const objectSchema = await this.$api.schema.fetch(this.objectType);
+      const objectSchema = await this.$api.schema.fetch(this.objectType, this.domainId);
       const objectData = this.$route.params.entity
         ? await this.$api.entity.fetch(this.objectType, this.objectId)
         : {
             owner: {
-              targetUri: `/units/${this.unitId}`
+              targetUri: `${this.$config.apiUrl}/units/${this.unitId}`
             },
             designator: '', // Needed for form validation
-            ...(this.objectType === 'process' ? { status: 'NEW' } : {})
+            _self: 'http://example.com'
           };
+      this.etag = objectData.$etag;
       const { lang } = await this.$api.translation.fetch(['de', 'en']);
       this.form = {
-        objectSchema,
+        objectSchema: objectSchema as any,
         formSchema,
         objectData,
         lang
       };
 
-      // Add subtype to object data so it gets saved
-      if (this.form.formSchema?.subType) {
-        // Sub type is not set yet, if the object is created
-        if (!this.form.objectData.subType) {
-          this.form.objectData.subType = { [this.domainId]: this.form.formSchema?.subType };
-        } else {
-          this.form.objectData.subType[this.domainId] = this.form.formSchema?.subType;
-        }
-      }
-
-      // Add domain to object data so it gets saved
-      const domainObject = { targetUri: `/domains/${this.domainId}` };
+      // Add either the domain object to the entity (if new) or the current domain if it isn't part of the domain object yet
       if (!this.form.objectData.domains) {
-        this.form.objectData.domains = [domainObject];
-      } else {
-        this.form.objectData.domains.push(domainObject);
+        this.form.objectData.domains = {
+          [this.domainId]: {
+            subType: this.form.formSchema?.subType
+          }
+        };
+      } else if (!this.form.objectData.domains[this.domainId]) {
+        this.form.objectData.domains[this.domainId] = {
+          subType: this.form.formSchema?.subType
+        };
       }
     } else {
       throw new Error('Object Type is not defined in FormSchema');
     }
-    this.alert.value = false;
   },
   head(): any {
     return {
@@ -507,6 +482,9 @@ export default Vue.extend({
       } else {
         return false;
       }
+    },
+    reactiveFormActions(): IVeoReactiveFormAction[] {
+      return this.objectType === 'person' ? getPersonReactiveFormActions(this) : [];
     }
   },
   methods: {
@@ -525,9 +503,10 @@ export default Vue.extend({
       }
     },
     onSave(_event: any, redirect: boolean = false): Promise<void> {
+      (this.form.objectData as any).$etag = this.etag;
       return this.$api.entity
         .update(this.objectType, this.objectId, this.form.objectData as IVeoEntity)
-        .then(async (updatedObjectData) => {
+        .then(async (updatedObjectData: any) => {
           this.formModified.isModified = false;
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('object_saved') });
 
@@ -561,14 +540,19 @@ export default Vue.extend({
     },
     showError(status: number, message: string) {
       if (status === 412) {
-        this.alert.text = this.$t('global.appstate.alert.object_modified').toString();
-        this.alert.saveButtonText = this.$t('global.button.no').toString();
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          title: this.$t('error.title') as string,
+          text: this.$t('global.appstate.alert.object_modified').toString(),
+          saveButtonText: this.$t('global.button.no').toString(),
+          objectModified: true,
+          refetchCallback: this.$fetch
+        } as IVeoEventPayload);
       } else {
-        this.alert.text = message;
-        this.alert.saveButtonText = this.$t('global.button.ok').toString();
+        this.$root.$emit(VeoEvents.ALERT_ERROR, {
+          title: this.$t('error.title') as string,
+          text: message
+        } as IVeoEventPayload);
       }
-      this.alert.error = status;
-      this.alert.value = true;
     },
     formatObjectData() {
       // TODO: find better solution
@@ -577,8 +561,7 @@ export default Vue.extend({
         Object.keys(this.form.objectData.customAspects).forEach((key: string) => {
           this.form.objectData.customAspects[key] = {
             ...this.form.objectData.customAspects[key],
-            id: '00000000-0000-0000-0000-000000000000',
-            type: key
+            id: '00000000-0000-0000-0000-000000000000'
           };
         });
       }
@@ -587,14 +570,6 @@ export default Vue.extend({
         Object.keys(this.form.objectData.links).forEach((key: string) => {
           if (!this.form.objectData.links[key]) {
             delete this.form.objectData.links[key];
-          } else {
-            // this.form.objectData.links[key] = { ...this.form.objectData.links[key], type: key }
-            this.form.objectData.links[key] = this.form.objectData.links[key].map((el: any) => {
-              // el.target.type = el.target.type?.replace(/^\w/, (c: any) => c.toUpperCase())
-              el.name = key;
-              // el.type = key
-              return el;
-            });
           }
         });
       }

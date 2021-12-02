@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/// <reference path="../support/index.d.ts" />
+/// <reference path="../../support/index.d.ts" />
 /// <reference types="cypress" />
 
 import { times } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 
-import { generateTos, getEditorData, ITo } from '../support/utils';
+import { generateTos, getEditorData, ITo } from '../../support/utils';
 
 let schemaRealValues: { text: string; numberOfProperties: number }[] = [];
 
@@ -115,7 +115,7 @@ function goTo(to: ITo) {
     }
   ).as('loadedSchema');
 
-  cy.goTo('/editor').goTo(to.browserUrl);
+  cy.goTo('/editor/').goTo(to.browserUrl);
 
   cy.wait(['@loadedSchema']);
 
@@ -151,7 +151,7 @@ describe('Objectschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('/editor');
+    cy.visit('/editor/');
     cy.wait('@G_fetchSchemas');
   });
   beforeEach(() => {
@@ -373,7 +373,6 @@ describe('Objectschema Editor', () => {
     cy.contains('Link1').closest('.v-list-item').find('.v-btn').first().click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');
-      cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
       cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Asset{enter}');
       cy.contains('Link Subtyp').closest('.v-select').type('Datenart{enter}');
 
@@ -462,7 +461,6 @@ describe('Objectschema Editor', () => {
 
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestLinkOne');
-      cy.contains('Linkbeschreibung *').closest('.v-text-field').type('TestLinkOne Beschreibung');
       cy.contains('Typ des Linkziels *').closest('.v-select').type('Control{enter}');
 
       cy.get('.v-card__actions').contains('Weiter').closest('.v-btn').click();
@@ -489,7 +487,6 @@ describe('Objectschema Editor', () => {
 
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestLinkTwo');
-      cy.contains('Linkbeschreibung *').closest('.v-text-field').type('TestLinkTwo Beschreibung');
       cy.contains('Typ des Linkziels *').closest('.v-select').type('Person{enter}');
 
       cy.get('.v-card__actions').contains('Weiter').closest('.v-btn').click();
@@ -709,8 +706,6 @@ describe('Objectschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestLinkTwo');
 
-      cy.contains('Linkbeschreibung *').closest('.v-text-field').clear().type('TestId');
-
       cy.contains('Typ des Linkziels *').closest('.v-select').type('Control{enter}');
 
       cy.contains('Weiter').closest('.v-btn').click();
@@ -749,13 +744,6 @@ describe('Objectschema Editor', () => {
           return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null;
         })
         .should('be.null');
-
-      // Check for link description
-      cy.get('@currentOS')
-        .then((currentOS) => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo`) || null;
-        })
-        .should('not.be.null');
       cy.get('@currentOS')
         .then((currentOS) => {
           return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo`) || null;
@@ -794,7 +782,6 @@ describe('Objectschema Editor', () => {
 
     cy.get('.v-dialog--active').within(() => {
       // Add english link description
-      cy.contains('Linkbeschreibung *').closest('.v-text-field').should('have.value', '').type('TestId');
 
       cy.get('.v-form .v-list > .veo-attribute-list-attribute')
         .first()
@@ -826,19 +813,6 @@ describe('Objectschema Editor', () => {
           return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}`) || null;
         })
         .should('not.be.null');
-
-      // Link description
-      cy.get('@currentOS')
-        .then((currentOS) => {
-          return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo`) || null;
-        })
-        .should('not.be.null');
-      cy.get('@currentOS')
-        .then((currentOS) => {
-          return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo`) || null;
-        })
-        .should('not.be.null');
-
       for (const enumEntry of currentAttrData.enum) {
         cy.get('@currentOS')
           .then((currentOS) => {

@@ -20,8 +20,8 @@ import { kebabCase } from 'lodash';
 
 export default (function (_context, inject) {
   const utils = {
-    prefixCyData(options: any, name: string) {
-      return `${kebabCase(options._componentTag)}-${name}`;
+    prefixCyData(options: any, name: string, route?: any) {
+      return `${kebabCase(options._componentTag || route?.name)}-${name}`;
     }
   };
 

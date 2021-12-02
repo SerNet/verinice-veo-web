@@ -25,28 +25,58 @@
       "description": "The description for the EntityLayerSupertype."
     },
     "domains": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string",
-            "description": "A friendly human readable title of the referenced domain."
+      "type": "object",
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "properties": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
+          "type": "object",
+          "properties": {
+            "subType": {
+              "type": "string",
+              "enum": [
+                "SCN_Scenario"
+              ]
+            },
+            "status": {
+              "type": "string"
+            }
           },
-          "resourcesUri": {
-            "type": "string"
+          "dependentRequired": {
+            "subType": [
+              "status"
+            ],
+            "status": [
+              "subType"
+            ]
           },
-          "searchesUri": {
-            "type": "string"
-          },
-          "targetUri": {
-            "type": "string",
-            "description": "The resource URL of the referenced domains."
-          }
-        },
-        "required": ["targetUri"],
-        "description": "A reference to a domain"
-      }
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "SCN_Scenario"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "NEW",
+                      "IN_PROGRESS",
+                      "FOR_REVIEW",
+                      "RELEASED",
+                      "ARCHIVED"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "id": {
       "type": "string",

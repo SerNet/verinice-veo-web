@@ -6,9 +6,7 @@ variables:
   POSTGRES_ENABLED: 'false'
   BROWSER_PERFORMANCE_DISABLED: 'true'
   # TEST_DISABLED: "true"
-  PRODUCTION_ADDITIONAL_HOSTS: 'veo-web.cpmsys.io'
   AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS: '--network=host --build-arg CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME --build-arg CI_COMMIT_SHA=$CI_COMMIT_SHORT_SHA --build-arg CI_COMMIT_TIMESTAMP=$CI_COMMIT_TIMESTAMP --build-arg CI_JOB_ID=$CI_JOB_ID --build-arg BUILDKIT_INLINE_CACHE=1'
-  K8S_SECRET_VEO_API_USE_PROXY: 'false'
   npm_config_cache: '$CI_PROJECT_DIR/.npm' # for cypress tests
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
   CYPRESS_BASE_URL: ''
@@ -17,63 +15,29 @@ review:
   environment:
     auto_stop_in: 4 week
 
-# for cypress tests
-build:e2e:
-  stage: build
-  image: cypress/base:14.15.4
-  script:
-    - rm -rf test # Fore some reason this step won't compile because of conflicting types while the auto-devops build job compiles without problems
-    - npm ci
-    - npm run build
-  artifacts:
-    when: always
-    paths:
-      - .npm
-      - .nuxt
-      - nuxt.config.js
-      - package.json
-      - tsconfig.json
-      - node_modules
-      - cache/Cypress
-      - cypress
-      - cypress.json
-      - nyc.config.js
-    expire_in: 1 day
-  rules:
-    - if: '$BUILD_DISABLED'
-      when: never
-    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
-      when: always
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: manual
-
 test:e2e:
-  stage: test
+  stage: performance
   tags:
     - 'cpmsys01'
   image: cypress/base:14.15.4
-  variables:
-    VEO_API_USE_PROXY: 'true'
-    GIT_STRATEGY: none
-    NODE_ENV: production
-    PORT: 5000
   script:
-    - (npm run start&)
-    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl=http://localhost:5000
+    - CYPRESS_BASE_URL=$(cat environment_url.txt)
+    - CYPRESS_BASE_URL_HTTPS="${CYPRESS_BASE_URL//http/https}"
+    - npm ci
+    - LANG='de_DE.UTF-8' npm run test:e2e -- --config baseUrl="$CYPRESS_BASE_URL_HTTPS"
   after_script:
     # Create cobertura report
-    - npx nyc report --reporter=cobertura --reporter=text-summary
+    #- npx nyc report --reporter=cobertura --reporter=text-summary
+    - python lcov_cobertura.py cypress/coverage/lcov.info -o cypress/coverage/cobertura-coverage.xml
   rules:
     - if: '$TEST_DISABLED'
       when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
     - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH  == "develop"'
       when: always
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: always
-  needs:
-    - job: build:e2e
+    - if: '$CI_COMMIT_BRANCH != "master" && $CI_COMMIT_BRANCH  != "develop"'
+      when: manual
   artifacts:
     reports:
       cobertura: cypress/coverage/cobertura-coverage.xml
