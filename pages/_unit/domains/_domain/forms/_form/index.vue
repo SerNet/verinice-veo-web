@@ -145,7 +145,7 @@ export default Vue.extend({
     };
   },
   computed: {
-    presetFilter() {
+    presetFilter(): IVeoFilter {
       return { designator: undefined, name: 'preset Name', description: undefined, updatedBy: undefined, status: undefined };
     },
     unitId() {
