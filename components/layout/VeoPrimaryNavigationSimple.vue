@@ -43,7 +43,7 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
-    items: {
+    menuItems: {
       type: Array as PropType<INavItem[]>,
       default: () => []
     }

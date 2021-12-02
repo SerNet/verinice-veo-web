@@ -70,7 +70,7 @@ v-for="(item) in langs"
     </v-app-bar>
     <VeoPrimaryNavigationSimple
 v-model="drawer"
-:items="items">
+:menu-items="items">
       <div>Dies ist ein Test</div>
     </VeoPrimaryNavigationSimple>
     <v-main
@@ -85,11 +85,13 @@ class="overflow-hidden">
 
 <script lang="ts">
 import { computed, defineComponent, Ref, ref, useContext, useAsync } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { listToTree } from '~/lib/docs';
 
 export default defineComponent({
   setup() {
     const { app, $content } = useContext();
+    const { locale } = useI18n();
 
     //
     // Global navigation
@@ -114,20 +116,35 @@ export default defineComponent({
 
     const files = useAsync(async () => {
       const items = await $content({ deep: true })
-        .where({ hidden: { $ne: true } })
+        .where({ lang: { $undefinedin: [locale.value, undefined] } })
         .sortBy('dir', 'asc')
-        .fetch<{ title: string; position: number }>();
+        .fetch<{ title: string; position: number; lang: string }>();
       if (!Array.isArray(items)) return;
-      return items.map((item) => ({
-        ...item,
-        name: item.title || item.slug,
-        disabled: false,
-        topLevelItem: true,
-        to: `/docs${item.path}`
-      }));
+      return items
+        .sort((a, b) => ((a.lang || b.lang || locale.value) === locale.value ? 0 : -1)) // Sort documents with matching locale to the end
+        .map((item) => {
+          const path = item.path.split('.').shift() || item.path; // Remove language extension from path
+          return {
+            ...item,
+            name: item.title || item.slug,
+            disabled: false,
+            exact: true,
+            icon: 'mdi-file',
+            to: `/docs${path}`,
+            topLevelItem: false,
+            path // dont use path as it includes the locale
+          };
+        });
     });
 
-    const items = computed(() => (files.value ? listToTree(files.value, (file) => ({ ...file, name: 'Fresh Item' })) : []));
+    const items = computed(() => {
+      return files.value
+        ? listToTree(files.value, (file) => ({
+            ...file,
+            name: file.path.split('/').slice(0, -1).pop() || 'Neu'
+          }))
+        : [];
+    });
 
     return {
       domainId,

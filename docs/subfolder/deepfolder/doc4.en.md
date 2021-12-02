@@ -1,7 +1,7 @@
 ---
-title: Sub-Sub-Dokument 4 DE
+title: Sub-Sub-Dokument 4 EN
 ---
-## Dokument 4 (Deutsche Version)
+## Dokument 4 (English Version)
 
 Proident deserunt incididunt consectetur enim fugiat. Et elit ullamco amet laboris. Et et id non et laborum qui in est Lorem enim ex adipisicing minim. Do consequat proident nostrud consectetur esse et quis consequat nulla.
 

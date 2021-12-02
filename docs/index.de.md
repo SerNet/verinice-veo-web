@@ -1,5 +1,5 @@
 ---
-title: Home
+title: Willkommen
 position: 0
 ---
 ## Home

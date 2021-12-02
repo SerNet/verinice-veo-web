@@ -105,6 +105,17 @@ export default {
       remarkPlugins: []
     }
   },
+  hooks: {
+    'content:file:beforeInsert': (document) => {
+      if (document.extension === '.md') {
+        const [slug, lang] = document.slug.split('.');
+        if (lang) {
+          document.lang = lang;
+          document.slug = slug;
+        }
+      }
+    }
+  },
 
   /**
    * nuxt-i18n config

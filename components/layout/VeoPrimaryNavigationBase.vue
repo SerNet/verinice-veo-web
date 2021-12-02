@@ -90,6 +90,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { PropType } from 'vue/types/options';
 import { IVeoDomain } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 
@@ -116,8 +117,8 @@ export default Vue.extend({
       type: Boolean,
       default: true
     },
-    items: {
-      type: Array,
+    menuItems: {
+      type: Array as PropType<INavItem[]>,
       default: () => []
     }
   },
@@ -130,6 +131,11 @@ export default Vue.extend({
       reportTypes: [] as INavItem[],
       catalogs: [] as INavItem[]
     };
+  },
+  computed: {
+    items(): INavItem[] {
+      return JSON.parse(JSON.stringify(this.menuItems));
+    }
   },
   methods: {
     setMiniVariant(miniVariant: boolean) {
