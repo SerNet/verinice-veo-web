@@ -52,9 +52,10 @@
     <VeoDialog
       v-model="showFilterDialog"
       :headline="'Liste filtern'"
-      :close-hidden="true">
+      :close-hidden="true"
+      :persistent="true">
       <template #default>
-        <template v-for="(key, index) of (expanded ? filterFieldsExpanded : filterFields)">
+        <template v-for="(key, index) of (expanded ? filterFieldsExpanded : filterFieldsReduced)">
           <v-list-item :key="index">
             <v-select
               v-if="key==='objectType'"
@@ -69,9 +70,10 @@
               :rules="objectTypeRequired ? [(v) => !!v || 'Required'] : []"
               :required="objectTypeRequired"
             />
-            <v-select
+              <v-select
               v-else-if="key==='subType'"
               v-model="filter.subType"
+              :disabled="!filter.objectType"
               hide-details
               dense
               outlined
@@ -79,7 +81,7 @@
               :items="formattedSubTypes"
               item-text="text"
               item-value="value"
-            />
+            /> 
             <v-select
               v-else-if="key==='status'"
               v-model="filter.status"
@@ -195,13 +197,20 @@ export default defineComponent({
     objectType: {
       type: String,
       default: undefined
+    },
+    presetFilter: {
+      type: Object as PropType<IVeoFilter>,
+      default: undefined
     }
   },
   setup(props, context) {
     const { t, locale } = useI18n();
+    const { $api } = useContext();
+    let translations = { lang: {} } as IVeoTranslations;
+
     const showFilterDialog = ref(false);
     const filter = ref({
-      objectType: undefined,
+      objectType: props.objectType,
       subType: undefined,
       designator: undefined,
       name: undefined,
@@ -212,25 +221,31 @@ export default defineComponent({
       hasChildObjects: undefined,
       hasLinks: undefined
     }) as Ref<IVeoFilter>;
-    const filterFields = ['objectType', 'subType', 'designator', 'name', 'status'];
+
+    const filterFieldsReduced = ['objectType', 'subType', 'designator', 'name', 'status'];
     const filterFieldsExpanded = Object.keys(filter.value);
-    const translations = { lang: {} } as IVeoTranslations;
+
     const expanded = ref(false);
-    const { $api } = useContext();
+    const preset = ref(false);
 
-    const objectTypes = ref([]) as Ref<IVeoSchemaEndpoint[]>;
+    const formattedObjectTypes = ref([]) as Ref<any>;
+    const formattedSubTypes = ref([]) as Ref<any>;
 
-    const forms = ref([]) as Ref<any>;
+    useFetch(async () => {
+      translations = await $api.translation.fetch(locale as any);
+    });
 
-    const formattedObjectTypes = computed((): { text: string; value: string }[] => {
-      return objectTypes.value.map((value: IVeoSchemaEndpoint) => ({
+    useFetch(async () => {
+      const schema = await $api.schema.fetchAll();
+      formattedObjectTypes.value = schema.map((value: any) => ({
         text: capitalize(value.schemaName),
         value: value.schemaName
       }));
     });
 
-    const formattedSubTypes = computed((): { text: string; value: string }[] => {
-      return forms.value
+    useFetch(async () => {
+      const forms = await $api.form.fetchAll();
+      formattedSubTypes.value = forms
         .filter((value: any) => value.modelType === filter.value.objectType)
         .map((value: any) => ({
           text: value.subType,
@@ -241,7 +256,12 @@ export default defineComponent({
     watch(
       () => props.value,
       (newValue: IVeoFilter) => {
-        filter.value = { ...newValue };
+        if (preset.value === false) {
+          filter.value = props.presetFilter;
+          preset.value = true;
+        } else {
+          filter.value = { ...newValue };
+        }
       }
     );
 
@@ -300,18 +320,21 @@ export default defineComponent({
 
     function onReset() {
       showFilterDialog.value = false;
-      Object.keys(filter.value).forEach((prop) => (filter.value[prop] = undefined));
+      preset.value = false;
+      if (props.presetFilter) {
+        filter.value = props.presetFilter;
+      } else {
+        Object.keys(filter.value).forEach((prop) => (filter.value[prop] = undefined));
+      }
       context.emit('reset', filter.value);
     }
 
     return {
       t,
-      objectTypes,
-      forms,
       formattedSubTypes,
       formattedObjectTypes,
       filter,
-      filterFields,
+      filterFieldsReduced,
       filterFieldsExpanded,
       expanded,
       toggle,
@@ -319,14 +342,8 @@ export default defineComponent({
       status,
       onSubmit,
       onReset,
-      onResetChip,
-      translations
+      onResetChip
     };
-  },
-  async fetch() {
-    this.translations = await this.$api.translation.fetch(this.$i18n.locales as any);
-    this.objectTypes = await this.$api.schema.fetchAll();
-    this.forms = await this.$api.form.fetchAll();
   }
 });
 </script>

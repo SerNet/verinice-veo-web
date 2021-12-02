@@ -76,6 +76,7 @@
                 v-model="filter"
                 :object-type-required="false"
                 :object-type="objectType"
+                :preset-filter="{name: 'preset Filterfield'}"
                 @reset="filter = $event"
               /> 
             </v-col>
@@ -183,7 +184,10 @@ export default Vue.extend({
       status: this.$route.query.status,
       description: this.$route.query.description,
       updatedBy: this.$route.query.updatedBy,
-      hasLinks: this.$route.query.hasLinks
+      hasLinks: undefined,
+      objectType: undefined,
+      notPartOfGroup: undefined,
+      hasChildObjects: undefined
     };
   },
   methods: {
