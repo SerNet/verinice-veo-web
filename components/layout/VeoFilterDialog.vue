@@ -184,6 +184,7 @@ enum Status {
 }
 
 export default defineComponent({
+  name: 'VeoFilterDialog',
   props: {
     value: {
       type: Object as PropType<IVeoFilter>,

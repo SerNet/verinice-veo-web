@@ -62,6 +62,7 @@
 import Vue from 'vue';
 
 export default Vue.extend({
+  name: 'VeoDialog',
   props: {
     value: {
       type: Boolean,
