@@ -76,7 +76,7 @@
                 v-model="filter"
                 :object-type-required="false"
                 :object-type="objectType"
-                :preset-filter="{name: 'preset Filterfield'}"
+                :preset-filter="presetFilter"
                 @reset="filter = $event"
               /> 
             </v-col>
@@ -145,6 +145,9 @@ export default Vue.extend({
     };
   },
   computed: {
+    presetFilter() {
+      return { designator: undefined, name: 'preset Name', description: undefined, updatedBy: undefined, status: undefined };
+    },
     unitId() {
       return separateUUIDParam(this.$route.params.unit).id;
     },

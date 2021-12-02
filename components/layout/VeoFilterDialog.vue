@@ -160,7 +160,6 @@ import { defineComponent, PropType, ref, computed, Ref, watch, useFetch, useCont
 import { useI18n } from 'nuxt-i18n-composable';
 import { capitalize } from 'lodash';
 import { IVeoTranslations } from '~/types/VeoTypes';
-import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export interface IVeoFilter {
   objectType: string | undefined;
@@ -258,6 +257,7 @@ export default defineComponent({
       (newValue: IVeoFilter) => {
         if (preset.value === false) {
           filter.value = props.presetFilter;
+          context.emit('input', filter.value);
           preset.value = true;
         } else {
           filter.value = { ...newValue };
