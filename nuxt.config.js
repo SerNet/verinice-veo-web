@@ -83,23 +83,10 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: [
-    'nuxt-polyfill',
-    [
-      'nuxt-i18n',
-      {
-        languages: ['de', 'en'],
-        defaultLanguage: 'de',
-        vueI18nLoader: true,
-        vueI18n: {
-          silentFallbackWarn: true
-        }
-      }
-    ]
-  ],
+  modules: ['nuxt-polyfill', '@nuxtjs/i18n'],
 
   /**
-   * nuxt-i18n config
+   * @nuxtjs/i18n config
    */
   i18n: {
     strategy: 'no_prefix',
@@ -117,7 +104,11 @@ export default {
     },
     defaultLocale: 'de',
     lazy: true,
-    langDir: 'locales/'
+    langDir: 'locales/',
+    vueI18nLoader: true,
+    vueI18n: {
+      silentFallbackWarn: true
+    }
   },
 
   /**
