@@ -60,7 +60,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "nuxt": "^2.15.8",
-    "nuxt-i18n-composable": "^0.1.1",
+    "nuxt-i18n-composable": "^1.0.0",
     "nuxt-polyfill": "^1.0.3",
     "prismjs": "^1.25.0",
     "roboto-fontface": "^0.10.0",

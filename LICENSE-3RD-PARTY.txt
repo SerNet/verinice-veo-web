@@ -965,12 +965,11 @@ SOFTWARE.
 
 -----------
 
-The following NPM packages may be included in this product:
+The following NPM package may be included in this product:
 
  - @nuxtjs/i18n@7.2.0
- - nuxt-i18n@6.28.1
 
-These packages each contain the following license and notice below:
+This package contains the following license and notice below:
 
 MIT License
 
@@ -16597,7 +16596,7 @@ SOFTWARE.
 
 The following NPM package may be included in this product:
 
- - nuxt-i18n-composable@0.1.1
+ - nuxt-i18n-composable@1.0.0
 
 This package contains the following license and notice below:
 
