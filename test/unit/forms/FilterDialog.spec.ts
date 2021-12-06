@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import Vue from 'vue';
-import CompositionApi from '@vue/composition-api';
+import CompositionApi from '@nuxtjs/composition-api';
 
-import { mount } from '@vue/test-utils';
+import { mount, config, createLocalVue } from '@vue/test-utils';
+
 import Vuetify from 'vuetify';
 import 'regenerator-runtime/runtime';
 import VueI18n from 'vue-i18n';
@@ -30,15 +31,36 @@ import { Renderable } from '~/types/renderable';
 import { install as VeeValidate } from '~/plugins/vee-validate';
 Vue.use(VeeValidate);
 Vue.use(Vuetify);
+Vue.use(VueI18n);
+const i18n = new VueI18n();
 
 Vue.use(CompositionApi);
 const vuetify = new Vuetify();
 
-describe('Filter Dialog.vue', () => {
-  it('should render veo filter dialog', async () => {
-    const dialog: Renderable = {
+describe('FilterDialog.vue', () => {
+  it('should open veo filter dialog', /* async */ () => {
+    const dialog = mount(VeoDialog, {
+      vuetify,
+      propsData: { headline: 'headline' }
+      /*       mocks: {
+        $t: () => 'some specific text'
+      } */
+    });
+    const filterDialog = mount(VeoFilterDialog, { i18n });
+
+    /*     config.mocks = {
+      $t: (text: any) => text
+    }; */
+    /*     const i18n = new VueI18n({
+      locale: 'de',
+      fallbackLocale: 'de'
+    }); */
+    /*     const dialog: Renderable = {
       schema: {
         properties: {
+          headline: {
+            type: 'string'
+          },
           objectType: {
             type: 'string'
           },
@@ -73,26 +95,20 @@ describe('Filter Dialog.vue', () => {
           }
         ]
       },
-      value: { name: 'Markus', age: 29 }
+      value: { headline: 'test' }
     };
 
-    const i18n = new VueI18n({
-      locale: 'de',
-      fallbackLocale: 'de'
-    });
-
-    const veoDialog = mount(VeoDialog, { vuetify });
+    const veoDialog = mount(VeoDialog, { vuetify, propsData: { headline: 'tst' } });
 
     const wrapper = mount(VeoFilterDialog, {
       vuetify,
-      propsData: { ...dialog },
-      i18n
-    });
-
+      i18n,
+      propsData: { ...dialog }
+    }); */
     // Fixes immediate:true bugs with setProps() of vue test utils
     // https://github.com/vuejs/vue-test-utils/issues/1140#issuecomment-544156893
-    wrapper.vm.$parent.$forceUpdate();
-    await wrapper.vm.$nextTick();
+    /*     wrapper.vm.$parent.$forceUpdate();
+    await wrapper.vm.$nextTick(); */
     /* 
     const inputs = wrapper.findAll('input');
     expect(inputs.length).toBe(2);
