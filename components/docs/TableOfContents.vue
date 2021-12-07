@@ -4,7 +4,7 @@
 v-for="(item, index) in items"
 :key="index"
 class="toc-element"
-:class="'toc-element-level-'+item.level"><a href="#">{{item.text}}</a></div>
+:class="'toc-element-level-'+item.level"><a :href="'#'+item.to">{{item.text}}</a></div>
   </nav>
 </template>
 <script lang="ts">

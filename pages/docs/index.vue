@@ -9,6 +9,7 @@ children-property="childItems"
 :value="files" />
     <div
 v-for="document in documents"
+:id="document.path"
 :key="document.path"
 class="page">
       <NuxtContent :document="document" />
@@ -35,7 +36,8 @@ export default defineComponent({
       buildItem(item) {
         return {
           ...item,
-          name: item.isDir ? `${upperFirst(item.slug)} (${item.path})` : `${item.title || item.slug} (${item.path})`
+          name: item.isDir ? `${upperFirst(item.slug)} (${item.path})` : `${item.title || item.slug} (${item.path})`,
+          to: item.path
         };
       }
     });
