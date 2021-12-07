@@ -31,11 +31,13 @@ to="/docs"
 class="text-decoration-none fill-height">
           <VeoAppBarLogo class="ml-2" />
         </nuxt-link>
-        <div class="ml-4">
-          <VeoDomainSelect v-if="$route.params.unit" />
-        </div>
       </div>
       <div class="d-flex flex-grow-0 mr-6">
+        <v-btn
+to="/docs?print"
+outlined
+color="primary"
+class="mr-2">Print</v-btn>
         <v-menu offset-y>
           <template #activator="{ on, attrs }">
             <v-btn
@@ -68,11 +70,24 @@ v-for="(item) in langs"
       </div>
       <span />
     </v-app-bar>
-    <VeoPrimaryNavigationSimple
-v-model="drawer"
-:menu-items="items">
-      <div>Dies ist ein Test</div>
-    </VeoPrimaryNavigationSimple>
+
+  <v-navigation-drawer
+    :width="290"
+    app
+    clipped
+    v-on="$listeners"
+  >
+<v-treeview
+dense
+    :items="items"
+    activatable
+    item-key="to"
+    open-on-click
+    @update:active="openItem"
+  >
+  </v-treeview>
+
+  </v-navigation-drawer>
     <v-main
 style="max-height: 100vh;"
 class="overflow-hidden">
@@ -84,15 +99,13 @@ class="overflow-hidden">
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref, useContext, useAsync } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-import { listToTree } from '~/lib/docs';
+import { computed, defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
+import { useDocTree } from '~/composables/docs';
 
 export default defineComponent({
   setup() {
-    const { app, $content } = useContext();
-    const { locale } = useI18n();
-
+    const { app } = useContext();
     //
     // Global navigation
     //
@@ -114,39 +127,28 @@ export default defineComponent({
       { value: 'de', text: 'DE' }
     ]);
 
-    const files = useAsync(async () => {
-      const items = await $content({ deep: true })
-        .where({ lang: { $undefinedin: [locale.value, undefined] } })
-        .sortBy('dir', 'asc')
-        .fetch<{ title: string; position: number; lang: string }>();
-      if (!Array.isArray(items)) return;
-      return items
-        .sort((a, b) => ((a.lang || b.lang || locale.value) === locale.value ? 0 : -1)) // Sort documents with matching locale to the end
-        .map((item) => {
-          const path = item.path.split('.').shift() || item.path; // Remove language extension from path
-          return {
-            ...item,
-            name: item.title || item.slug,
-            disabled: false,
-            exact: true,
-            icon: 'mdi-file',
-            to: `/docs${path}`,
-            topLevelItem: false,
-            path // dont use path as it includes the locale
-          };
-        });
+    const items = useDocTree({
+      childrenKey: 'children',
+      buildItem(item) {
+        return {
+          ...item,
+          disabled: false,
+          name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)} (H${item.level})`,
+          exact: true,
+          to: `/docs${item.path}`
+        };
+      }
     });
 
-    const items = computed(() => {
-      return files.value
-        ? listToTree(files.value, (file) => ({
-            ...file,
-            name: file.path.split('/').slice(0, -1).pop() || 'Neu'
-          }))
-        : [];
-    });
+    const openItem = (items: string[]) => {
+      const item = items.shift();
+      if (item) {
+        app.router?.push(item);
+      }
+    };
 
     return {
+      openItem,
       domainId,
       drawer,
       lang,

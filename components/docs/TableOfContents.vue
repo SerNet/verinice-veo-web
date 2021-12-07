@@ -97,8 +97,17 @@ export default defineComponent({
   .toc-element-level-3 {
     margin-left: 25px;
     counter-increment: counterTocLevel3;
+    counter-reset: counterTocLevel4;
     &::before {
       content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. ' counter(counterTocLevel3);
+      padding-right: 5px;
+    }
+  }
+  .toc-element-level-4 {
+    margin-left: 25px;
+    counter-increment: counterTocLevel4;
+    &::before {
+      content: counter(counterTocLevel1) '. ' counter(counterTocLevel2) '. ' counter(counterTocLevel3) '. ' counter(counterTocLevel4);
       padding-right: 5px;
     }
   }
