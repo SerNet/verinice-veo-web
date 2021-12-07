@@ -240,8 +240,8 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { Prop } from 'vue/types/options';
+import Vue from 'vue';
+import { Prop, PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
@@ -371,7 +371,7 @@ export default Vue.extend({
       };
     },
     targetUri(): string | undefined {
-      return this.targetId ? `/${getSchemaEndpoint(this.schemas, this.targetType)}/${this.targetId}` : undefined;
+      return this.targetId ? `${this.$config.apiUrl}/${getSchemaEndpoint(this.schemas, this.targetType)}/${this.targetId}` : undefined;
     },
     targetType(): string {
       return (this.schema.items as any).properties.target.properties.type.enum[0];
