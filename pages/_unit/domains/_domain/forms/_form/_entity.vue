@@ -457,7 +457,7 @@ export default Vue.extend({
           const res = await this.$api.entity.create(objectType, {
             ...createdObjectData,
             owner: {
-              targetUri: `/units/${this.unitId}`
+              targetUri: `${this.$config.apiUrl}/units/${this.unitId}`
             }
           });
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
