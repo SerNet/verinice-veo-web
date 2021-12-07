@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import Vue from 'vue';
-import CompositionApi from '@nuxtjs/composition-api';
 
-import { mount, config, createLocalVue } from '@vue/test-utils';
+import { mount, config, createLocalVue, shallowMount } from '@vue/test-utils';
 
 import Vuetify from 'vuetify';
 import 'regenerator-runtime/runtime';
@@ -32,21 +31,39 @@ import { install as VeeValidate } from '~/plugins/vee-validate';
 Vue.use(VeeValidate);
 Vue.use(Vuetify);
 Vue.use(VueI18n);
-const i18n = new VueI18n();
 
-Vue.use(CompositionApi);
+const i18n = new VueI18n();
 const vuetify = new Vuetify();
+
+// Needed if useI18n() gets used in compoisition api
+jest.mock('nuxt-i18n-composable', () => ({
+  useI18n() {
+    return {
+      t: (t: string) => t,
+      locale: 'de'
+    };
+  }
+}));
 
 describe('FilterDialog.vue', () => {
   it('should open veo filter dialog', /* async */ () => {
-    const dialog = mount(VeoDialog, {
+    /* const dialog = mount(VeoDialog, {
       vuetify,
       propsData: { headline: 'headline' }
-      /*       mocks: {
+      mocks: {
         $t: () => 'some specific text'
-      } */
+      }
+    }); */
+    const filterDialog = shallowMount(VeoFilterDialog, {
+      vuetify,
+      i18n,
+      components: {
+        VeoDialog
+      },
+      mocks: {
+        $nuxt: {} // Needed if useFetch() gets used in composition api
+      }
     });
-    const filterDialog = mount(VeoFilterDialog, { i18n });
 
     /*     config.mocks = {
       $t: (text: any) => text
