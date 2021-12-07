@@ -16,10 +16,9 @@ class="page">
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
-import { useI18n } from 'nuxt-i18n-composable';
-import { useDoc, useDocs } from '~/composables/docs';
+import { useDocs } from '~/composables/docs';
 export default defineComponent({
   layout: 'print',
   validate({ route, redirect }) {
@@ -31,14 +30,7 @@ export default defineComponent({
     }
   },
   setup() {
-    const { locale } = useI18n();
-    const route = useRoute();
-    const document = useDoc({
-      path: `/${route.value.params.pathMatch || 'index'}`,
-      locale: locale.value
-    });
     const files = useDocs({
-      root: document.value?.dir,
       createDirs: true,
       buildItem(item) {
         return {

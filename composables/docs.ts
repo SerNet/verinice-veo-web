@@ -11,25 +11,24 @@ export interface DocPage {
 
 type DocPageFetchReturn = FetchReturn & DocPage;
 
-type ContentOptions = { root?: string; path?: string; locale?: string; localeSeparator?: string; fallbackLocale?: string; where?: object };
+type ContentOptions = { path?: string; locale?: string; localeSeparator?: string; fallbackLocale?: string; where?: object };
 const getOptions = (params: ContentOptions) => {
   const fallbackLocale = params.fallbackLocale ?? 'de';
   const localeSeparator = params.localeSeparator ?? '.';
   const locale = params.locale ?? useI18n().locale.value;
-  const root = params.root ?? '/';
-  return { ...params, root, fallbackLocale, localeSeparator, locale };
+  return { ...params, fallbackLocale, localeSeparator, locale };
 };
 
 const ensureArray = <T>(result: T[] | T): T[] => {
   return result && Array.isArray(result) ? result : [result];
 };
 
-export const useDoc = (params: { root?: string; path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
-  const { localeSeparator, path, fallbackLocale, locale, root } = getOptions(params);
+export const useDoc = (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
+  const { localeSeparator, path, fallbackLocale, locale } = getOptions(params);
   const { $content } = useContext();
 
   return useAsync(async () => {
-    const fetchResult = await $content(root, { deep: true })
+    const fetchResult = await $content({ deep: true })
       .where({
         $or: [{ path: path + localeSeparator + locale }, { path: path + fallbackLocale }, { path }]
       })
@@ -41,19 +40,18 @@ export const useDoc = (params: { root?: string; path: string; locale?: string; l
 };
 
 export const useDocs = <T extends DocPageFetchReturn>(params: {
-  root?: string;
   locale?: string;
   localeSeparator?: string;
   fallbackLocale?: string;
   createDirs?: boolean;
   buildItem?: (item: DocPageFetchReturn) => T;
 }) => {
-  const { localeSeparator, locale, root } = getOptions(params);
+  const { localeSeparator, locale } = getOptions(params);
   const normalizePath = (path: string) => (path.split(localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
   const { $content } = useContext();
   const buildItem = params.buildItem ?? ((v) => v);
   return useAsync(async () => {
-    const fetchResult = await $content(root, { deep: true })
+    const fetchResult = await $content({ deep: true })
       .where({ lang: { $undefinedin: [locale, undefined] } })
       .sortBy('path', 'asc')
       .fetch<DocPage>();
@@ -95,7 +93,6 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   });
 };
 export const useDocTree = <T extends DocPageFetchReturn, ChildrenKey extends string = 'children'>(params: {
-  root?: string;
   locale?: string;
   localeSeparator?: string;
   fallbackLocale?: string;

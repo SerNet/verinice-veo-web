@@ -73,7 +73,13 @@ export default {
    *
    */
   generate: {
-    fallback: '404.html' // if you want to use '404.html'
+    fallback: '404.html', // if you want to use '404.html'
+    async routes() {
+      const { $content } = require('@nuxt/content');
+      const files = await $content({ deep: true }).only(['path']).fetch();
+      const routes = ['/docs?print', ...new Set(files.map((file) => '/docs' + file.path.replace(/\.\w+$/, '').replace(/\/index$/, '/'))).values()];
+      return routes;
+    }
   },
 
   router: {
