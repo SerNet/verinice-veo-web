@@ -16,18 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { defineComponent, onUnmounted, Ref, ref, watch } from '@nuxtjs/composition-api';
-
+import Vue from 'vue';
 import VeoCollapseButton from '~/components/layout/VeoCollapseButton.vue';
 
-interface IProps {
-  title: String;
-  titleClass: String;
-  collapsableLeft: Boolean;
-  collapsableRight: Boolean;
-}
-
-export default defineComponent<IProps>({
+export default Vue.extend({
   components: {
     VeoCollapseButton
   },
@@ -49,95 +41,78 @@ export default defineComponent<IProps>({
       default: false
     }
   },
-  setup(props) {
-    // Reference to the wrapper containing all pages
-    const wrapper = ref<HTMLDivElement>();
-
-    // MutationObserver handling updating the state of this component if the amount of pages changes during runtime
-    const observer = new MutationObserver(() => {
-      onPageCountChange();
-    });
-
-    watch(wrapper, (newValue, oldValue) => {
-      if (!oldValue && newValue) {
-        if (wrapper.value) {
-          observer.observe(wrapper.value, { childList: true });
-          onPageCountChange();
-        }
-      }
-    });
-
-    onUnmounted(() => {
-      observer.disconnect();
-    });
-
+  data() {
+    return {
+      observer: undefined as MutationObserver | undefined,
+      collapsablePages: [] as Boolean[],
+      collapsedPages: [] as Boolean[],
+      oldPagesCount: 0 as number
+    };
+  },
+  watch: {
     // Reset pages if collapsable left or right change (to avoid having a collapsed page if it isn't allowed to collapse anymore)
-    watch(
-      () => props.collapsableLeft,
-      () => {
-        onPageCountChange();
-      }
-    );
-    watch(
-      () => props.collapsableRight,
-      () => {
-        onPageCountChange();
-      }
-    );
-
-    // Handling of collapsable pages and their state
-    const collapsedPages: Ref<Boolean[]> = ref([]);
-    const collapsablePages: Ref<Boolean[]> = ref([]);
-
+    collapsableLeft() {
+      this.onPageCountChange();
+    },
+    collapsableRight() {
+      this.onPageCountChange();
+    }
+  },
+  mounted() {
+    this.observer = new MutationObserver(() => {
+      this.onPageCountChange();
+    });
+    this.observer.observe(this.$refs.wrapper as Element, { childList: true });
+    this.onPageCountChange();
+  },
+  destroyed() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  },
+  methods: {
     /**
      * Index of the page which should be toggled
      */
-    function togglePage(index: number): void {
-      collapsedPages.value[index] = !collapsedPages.value[index];
-    }
-
+    togglePage(index: number): void {
+      // We use Vue.set as vue won't pick up changes if we alter data via this.collapsedPages[index]
+      Vue.set(this.collapsedPages, index, !this.collapsedPages[index]);
+    },
     /**
      * Called initally and if the amount of pages change during runtime to update the arrays controlling
      * which pages can be collapsed and their state.
      */
-    function onPageCountChange() {
-      if (wrapper.value) {
-        // Only make the page on the very left and very right collapsable if passed by prop, all other pages aren't collapsable
-        collapsablePages.value = Array(wrapper.value.children.length).fill(false);
-        collapsablePages.value[0] = props.collapsableLeft;
-        collapsablePages.value[collapsablePages.value.length - 1] = props.collapsableRight;
+    onPageCountChange() {
+      if (this.$refs.wrapper) {
+        const currentPagesCount = (this.$refs.wrapper as Element).children.length;
 
-        // Expand all pages (resets the state even if previous pages have been collapsed)
-        collapsedPages.value = Array(wrapper.value.children.length).fill(false);
+        // Only reinitialize arrays if the amount of children changed
+        if (currentPagesCount !== this.oldPagesCount) {
+          // Only make the page on the very left and very right collapsable if passed by prop, all other pages aren't collapsable
+          this.collapsablePages = Array(currentPagesCount).fill(false);
+          this.collapsablePages[0] = this.collapsableLeft;
+          this.collapsablePages[this.collapsablePages.length - 1] = this.collapsableRight;
+
+          // Expand all pages (resets the state even if previous pages have been collapsed)
+          this.collapsedPages = Array(currentPagesCount).fill(false);
+          this.oldPagesCount = currentPagesCount;
+        }
       }
-    }
-
+    },
     /**
      * Helper function to find out whether the previous page is collapsed
      */
-    function previousPageIsCollapsed(index: number) {
-      return index > 0 && collapsedPages.value[index - 1];
-    }
-
+    previousPageIsCollapsed(index: number) {
+      return index > 0 && this.collapsedPages[index - 1];
+    },
     /**
      * Helper function to find out whether the next page is collapsed
      */
-    function nextPageIsCollapsed(index: number) {
-      return index < collapsablePages.value.length - 1 && collapsedPages.value[index + 1];
+    nextPageIsCollapsed(index: number) {
+      return index < this.collapsablePages.length - 1 && this.collapsedPages[index + 1];
     }
-
-    return {
-      collapsablePages,
-      collapsedPages,
-      nextPageIsCollapsed,
-      previousPageIsCollapsed,
-      togglePage,
-      wrapper
-    };
   },
-  render(h) {
-    // As this is an options api method, it doesn't know what setup returns and thus everything is of type unknown, we remove those error messages by just casting it to any
-    const vm = this as any;
+  render(h): any {
     return h(
       'div',
       {
@@ -178,34 +153,33 @@ export default defineComponent<IProps>({
               {
                 style: {
                   position: 'relative',
-                  display: vm.collapsedPages[index] ? 'none' : 'block'
+                  display: this.collapsedPages[index] ? 'none' : 'block'
                 }
               },
               [
-                ...((index === vm.collapsablePages.length - 1 && vm.collapsablePages[index]) || vm.previousPageIsCollapsed(index)
+                ...((index === this.collapsablePages.length - 1 && this.collapsablePages[index]) || this.previousPageIsCollapsed(index)
                   ? [
                       h(VeoCollapseButton, {
                         props: {
-                          value: vm.previousPageIsCollapsed(index) ? vm.collapsedPages[index - 1] : vm.collapsedPages[index],
+                          value: false,
                           right: false
                         },
                         on: {
-                          input: () => vm.togglePage(vm.previousPageIsCollapsed(index) ? index - 1 : index)
+                          input: () => this.togglePage(this.previousPageIsCollapsed(index) ? index - 1 : index)
                         }
                       })
                     ]
                   : []),
-                h('div', { class: 'text-center' }, vm.collapsedPages[index]),
                 slotItem,
-                ...((index === 0 && vm.collapsablePages[index]) || vm.nextPageIsCollapsed(index)
+                ...((index === 0 && this.collapsablePages[index]) || this.nextPageIsCollapsed(index)
                   ? [
                       h(VeoCollapseButton, {
                         props: {
-                          value: vm.nextPageIsCollapsed(index) ? vm.collapsedPages[index + 1] : vm.collapsedPages[index],
+                          value: false,
                           right: true
                         },
                         on: {
-                          input: () => vm.togglePage(vm.nextPageIsCollapsed(index) ? index + 1 : index)
+                          input: () => this.togglePage(this.nextPageIsCollapsed(index) ? index + 1 : index)
                         }
                       })
                     ]
