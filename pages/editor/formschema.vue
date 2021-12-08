@@ -165,7 +165,6 @@
         </template>
       </VeoPage>
       <VeoPage
-        content-class="pb-4 px-4"
         heading-level="3"
         :title="t('usedControls')"
         titlebar-center
@@ -174,7 +173,7 @@
           v-if="schemaIsValid.valid"
           #default
         >
-          <div class="fill-height fill-width d-flex px-2">
+          <div class="fill-height fill-width d-flex">
             <VeoFseGenerator
               :schema="objectSchema"
               :value="formSchema.content"
@@ -212,7 +211,6 @@
       <VeoPage
         v-if="!$vuetify.breakpoint.xs"
         height="100%"
-        content-class="pb-4 px-4"
         heading-level="3"
         :title="t('preview')"
         titlebar-center
