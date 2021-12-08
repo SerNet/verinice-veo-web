@@ -42,6 +42,7 @@
           icon    
           large
           color="primary"
+          class="filter-button"
           @click="showFilterDialog = true"
         >
           <v-icon>mdi-filter</v-icon>
@@ -52,14 +53,15 @@
     <VeoDialog
       v-model="showFilterDialog"
       :headline="'Liste filtern'"
-      :close-hidden="true"
-      :persistent="true">
+      @input="closeDialog()">
       <template #default>
         <template v-for="(key, index) of (expanded ? filterFieldsExpanded : filterFieldsReduced)">
           <v-list-item :key="index">
             <v-select
               v-if="key==='objectType'"
               v-model="filter.objectType"
+              :name="key"
+              class="veofilter"
               hide-details
               dense
               outlined
@@ -70,9 +72,11 @@
               :rules="objectTypeRequired ? [(v) => !!v || 'Required'] : []"
               :required="objectTypeRequired"
             />
-              <v-select
+            <v-select
               v-else-if="key==='subType'"
               v-model="filter.subType"
+              :name="key"
+              class="veofilter"
               :disabled="!filter.objectType"
               hide-details
               dense
@@ -85,6 +89,8 @@
             <v-select
               v-else-if="key==='status'"
               v-model="filter.status"
+              :name="key"
+              class="veofilter"
               hide-details
               dense
               outlined
@@ -96,31 +102,40 @@
             <v-checkbox
               v-else-if="key === 'notPartOfGroup'"
               v-model="filter[key]"
+              :name="key"
+              class="veofilter"
               :label="$t('objectlist.notPartOfGroup')"
             />
             <v-checkbox
               v-else-if="key === 'hasChildObjects'"
               v-model="filter[key]"
+              :name="key"
+              class="veofilter"
               :label="$t('objectlist.hasChildObjects')"
             />
             <v-checkbox
               v-else-if="key === 'hasLinks'"
               v-model="filter[key]"
+              :name="key"
+              class="veofilter"
               :label="$t('objectlist.hasLinks')"
             />
             <v-text-field
               v-else
               v-model="filter[key]"
+              :name="key"
+              class="veofilter"
               hide-details
               dense
               outlined
               :placeholder="$t(`objectlist.${key}`).toString()"
             />
+            <p>{{key}}</p>
           </v-list-item>
         </template>
         <v-btn
           text
-          class="text-center"
+          class="text-center expand-button"
           @click="toggle"
         >
           <template v-if="expanded">
@@ -137,6 +152,7 @@
         <v-btn
           color="primary"
           text
+          class="reset-btn"
           @click="onReset"
         >
           {{$t(`resetFilter`)}}
@@ -144,6 +160,7 @@
         <v-spacer></v-spacer>
         <v-btn
           color="primary"
+          class="submit-btn"
           text
           :disabled="objectTypeRequired && (filter.objectType === undefined)"
           @click="onSubmit"
@@ -257,10 +274,12 @@ export default defineComponent({
       () => props.value,
       (newValue: IVeoFilter) => {
         if (preset.value === false) {
+          console.log('preset bumbe', preset.value);
           filter.value = props.presetFilter;
           context.emit('input', filter.value);
           preset.value = true;
         } else {
+          console.log('preset bumbe else', preset.value);
           filter.value = { ...newValue };
         }
       }
@@ -298,6 +317,7 @@ export default defineComponent({
               filter.value[prop] = undefined;
             }
           }
+          console.log('submit onSubmit', filter.value);
           context.emit('input', filter.value);
         }
       } else {
@@ -307,6 +327,7 @@ export default defineComponent({
             filter.value[prop] = undefined;
           }
         }
+        console.log('submit onSubmit else', filter.value);
         context.emit('input', filter.value);
       }
     }
@@ -330,7 +351,12 @@ export default defineComponent({
       context.emit('reset', filter.value);
     }
 
+    function closeDialog() {
+      filter.value = props.value;
+    }
+
     return {
+      closeDialog,
       t,
       formattedSubTypes,
       formattedObjectTypes,
