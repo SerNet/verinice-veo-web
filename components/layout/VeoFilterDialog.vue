@@ -53,6 +53,7 @@
     <VeoDialog
       v-model="showFilterDialog"
       :headline="'Liste filtern'"
+      :persistent="true"
       @input="closeDialog()">
       <template #default>
         <template v-for="(key, index) of (expanded ? filterFieldsExpanded : filterFieldsReduced)">
