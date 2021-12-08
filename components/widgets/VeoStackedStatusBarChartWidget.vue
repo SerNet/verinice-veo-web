@@ -17,7 +17,6 @@
 -->
 <template>
   <VeoWidget
-    :title="upperFirst(title)"
     :loading="loading"
   >
     <template #default>
@@ -107,10 +106,6 @@ export default defineComponent({
     BarChart
   },
   props: {
-    title: {
-      type: String,
-      required: true
-    },
     loading: {
       type: Boolean,
       default: false
@@ -144,9 +139,6 @@ export default defineComponent({
               const index = context.dataIndex;
               const value = context.dataset.data[index];
               return value > 0;
-            },
-            formatter(value: number, context: any) {
-              return `${value} ${context.dataset.label}`;
             },
             offset: '12'
           }
@@ -214,11 +206,11 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "noObjects": "There are no objects for this subtype",
+    "noObjects": "No objects available",
     "noSubtypes": "There are no subtypes for this object type"
   },
   "de": {
-    "noObjects": "Für diesen Subtyp existieren keine Objekte",
+    "noObjects": "Keine Objekte vorhanden",
     "noSubtypes": "Für diesen Objekttyp existieren keine Subtypen"
   }
 }
