@@ -25,7 +25,7 @@ export default Vue.extend({
   },
   props: {
     headingLevel: {
-      type: Number,
+      type: [Number, String],
       default: 1
     },
     loading: {
@@ -50,8 +50,8 @@ export default Vue.extend({
     }
   },
   computed: {
-    titlebarAlignment(): { 'align-items': string } {
-      return { 'align-items': this.titlebarCenter ? 'center' : this.titlebarRight ? 'end' : 'start' };
+    titlebarAlignment(): { 'justify-content': string } {
+      return { 'justify-content': this.titlebarCenter ? 'center' : this.titlebarRight ? 'end' : 'start' };
     }
   },
   render(h): any {

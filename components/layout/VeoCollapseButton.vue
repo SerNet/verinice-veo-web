@@ -53,7 +53,7 @@ export default defineComponent({
   name: 'CollapseButton',
   props: {
     value: {
-      default: false, // True if collapsed
+      default: false, // true if collapsed
       type: Boolean
     },
     right: {
@@ -101,7 +101,7 @@ export default defineComponent({
   position: absolute !important;
   min-width: 35px !important;
 
-  top: 10px;
+  top: 0px;
   z-index: 1;
 
   &:not(.collapse-button--right) {

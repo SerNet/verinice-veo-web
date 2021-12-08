@@ -88,7 +88,7 @@ export default defineComponent<IProps>({
       default: ''
     },
     headingLevel: {
-      type: Number,
+      type: [Number, String],
       default: 1
     },
     stickyHeader: {

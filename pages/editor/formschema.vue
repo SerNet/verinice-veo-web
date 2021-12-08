@@ -164,12 +164,12 @@
           />
         </template>
       </VeoPage>
-      <VeoPage content-class="pb-4 px-4">
-        <template #header>
-          <h3 class="text-center pb-1">
-            {{ t("usedControls") }}
-          </h3>
-        </template>
+      <VeoPage
+        content-class="pb-4 px-4"
+        heading-level="3"
+        :title="t('usedControls')"
+        titlebar-center
+      >
         <template
           v-if="schemaIsValid.valid"
           #default
@@ -213,12 +213,10 @@
         v-if="!$vuetify.breakpoint.xs"
         height="100%"
         content-class="pb-4 px-4"
+        heading-level="3"
+        :title="t('preview')"
+        titlebar-center
       >
-        <template #header>
-          <h3 class="text-center pb-1">
-            {{ t("preview") }}
-          </h3>
-        </template>
         <template
           v-if="schemaIsValid.valid"
           #default
