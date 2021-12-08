@@ -56,7 +56,6 @@ export default Vue.extend({
   },
   render(h): any {
     return h('div', { style: { display: 'contents' } }, [
-      h('div'), // Needed in case neither a title nor a header get passed
       ...(!!this.title || !!this.$slots.title
         ? [
             h('div', { class: 'd-flex flex-row flex-wrap veo-page__title', style: this.titlebarAlignment }, [

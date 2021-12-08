@@ -143,6 +143,9 @@ export default Vue.extend({
     destroyKeybinds() {
       document.removeEventListener('keydown', this.onKeyPress);
     },
+    /**
+     * Called when the user presses any key. The function only does stuff if Alt+(0-9) is pressed.
+     */
     onKeyPress(event: KeyboardEvent) {
       if (event.repeat) {
         return;
@@ -171,6 +174,11 @@ export default Vue.extend({
         }
       }
     },
+    /**
+     * Creates an array containing all classes that should be applied to a page. Contains a fallback if no props are passed.
+     *
+     * @param index The index of the page to look for values for
+     */
     localPageWidth(index: number): string[] {
       const classes = [];
 
@@ -256,7 +264,8 @@ export default Vue.extend({
                             props: {
                               value: this.previousPageIsCollapsed(index),
                               right: false,
-                              pageTitle: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index]
+                              pageTitle: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
+                              index: this.previousPageIsCollapsed(index) ? index - 1 : index
                             },
                             on: {
                               input: () => this.togglePage(this.previousPageIsCollapsed(index) ? index - 1 : index)
@@ -271,7 +280,8 @@ export default Vue.extend({
                             props: {
                               value: this.nextPageIsCollapsed(index),
                               right: true,
-                              pageTitle: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index]
+                              pageTitle: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
+                              index: this.nextPageIsCollapsed(index) ? index + 1 : index
                             },
                             on: {
                               input: () => this.togglePage(this.nextPageIsCollapsed(index) ? index + 1 : index)

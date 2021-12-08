@@ -68,14 +68,14 @@
 import { defineComponent } from '@nuxtjs/composition-api';
 
 interface IProps {
-  title?: string;
-  fullsize: boolean;
-  cols: number | string;
-  md: number | string;
-  xl: number | string;
-  stickyHeader: boolean;
   contentClass: string;
+  headingLevel: string | number;
+  stickyHeader: boolean;
+  fullsize: boolean;
   height: string;
+  loading: boolean;
+  loadContent: boolean;
+  title?: string;
   titlebarCenter: boolean;
   titlebarRight: boolean;
   isPageWrapperChild: boolean;
@@ -107,13 +107,6 @@ export default defineComponent<IProps>({
       default: 'auto'
     },
     /**
-     * The title of the page. Used to standardtize headings
-     */
-    title: {
-      type: String,
-      default: undefined
-    },
-    /**
      * Shows a skeleton for the title if set to true
      */
     loading: {
@@ -126,6 +119,13 @@ export default defineComponent<IProps>({
     loadContent: {
       type: Boolean,
       default: false
+    },
+    /**
+     * The title of the page. Used to standardtize headings
+     */
+    title: {
+      type: String,
+      default: undefined
     },
     titlebarCenter: {
       type: Boolean,

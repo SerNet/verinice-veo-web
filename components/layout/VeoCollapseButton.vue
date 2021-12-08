@@ -30,16 +30,10 @@
       </v-btn>
     </template>
     <template
-      v-if="value"
       #default
     >
-      {{ t('expand', { pageTitle: pageTitle || t('page').toString() }) }}
-    </template>
-    <template
-      v-else
-      #default
-    >
-      {{ t('collapse', { pageTitle: pageTitle || t('page').toString() }) }}
+      {{ t(value ? 'expand' : 'collapse', { pageTitle: pageTitle || t('page').toString() }) }}
+      <span v-if="index !== undefined"><br>(Alt + {{index + 1}})</span>
     </template>
   </v-tooltip>
 </template>
@@ -62,6 +56,10 @@ export default defineComponent({
     },
     pageTitle: {
       type: String,
+      default: undefined
+    },
+    index: {
+      type: Number,
       default: undefined
     }
   },
@@ -101,7 +99,7 @@ export default defineComponent({
   position: absolute !important;
   min-width: 35px !important;
 
-  top: 0px;
+  top: 0;
   z-index: 1;
 
   &:not(.collapse-button--right) {
