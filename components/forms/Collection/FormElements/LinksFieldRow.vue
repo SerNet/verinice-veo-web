@@ -240,12 +240,12 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
-import { Prop } from 'vue/types/options';
+import Vue from 'vue';
+import { Prop, PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
-import { BaseObject, IApi, ILinksFieldDialogNewObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
+import { BaseObject, IApi, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { separateUUIDParam } from '~/lib/utils';
@@ -275,7 +275,7 @@ interface IData {
   search: string | undefined;
   items: IItem[];
   itemInDialog: IItem | undefined;
-  newObject: ILinksFieldDialogNewObject;
+  newObject: IVeoEntity;
   targetId: string | undefined;
   linksFieldDialogObjectSchema: JSONSchema7;
   linksFieldDialogFormSchema: UISchema;
@@ -347,7 +347,7 @@ export default Vue.extend({
       search: undefined,
       items: [],
       itemInDialog: undefined,
-      newObject: {},
+      newObject: {} as any,
       targetId: undefined,
       linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
       linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema },
@@ -371,7 +371,7 @@ export default Vue.extend({
       };
     },
     targetUri(): string | undefined {
-      return this.targetId ? `/${getSchemaEndpoint(this.schemas, this.targetType)}/${this.targetId}` : undefined;
+      return this.targetId ? `${this.$config.apiUrl}/${getSchemaEndpoint(this.schemas, this.targetType)}/${this.targetId}` : undefined;
     },
     targetType(): string {
       return (this.schema.items as any).properties.target.properties.type.enum[0];
@@ -486,18 +486,18 @@ export default Vue.extend({
     },
     onDialogCancel() {
       this.dialog = false;
-      this.newObject = {};
+      this.newObject = {} as any;
       this.itemInDialog = undefined;
     },
     async onDialogAcceptCreate() {
       this.dialogLoading = true;
       if (this.newObject) {
-        const domainObject = { targetUri: `/domains/${this.domainId}` };
-        this.newObject.domains = [domainObject];
-
-        if (this.subType) {
-          this.newObject.subType = { [this.domainId]: this.subType };
-        }
+        this.newObject.domains = {
+          [this.domainId]: {
+            ...(this.subType ? { subType: this.subType } : { subType: '' }),
+            status: 'NEW'
+          }
+        };
 
         const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem;
         this.items.push(createItem);
@@ -505,7 +505,7 @@ export default Vue.extend({
       }
       this.dialogLoading = false;
       this.dialog = false;
-      this.newObject = {};
+      this.newObject = {} as any;
     },
     async onDialogAcceptUpdate() {
       this.dialogLoading = true;
@@ -515,7 +515,7 @@ export default Vue.extend({
       }
       this.dialogLoading = false;
       this.dialog = false;
-      this.newObject = {};
+      this.newObject = {} as any;
     },
     async onDialogAcceptDelete() {
       this.dialogLoading = true;
@@ -526,7 +526,7 @@ export default Vue.extend({
       }
       this.dialogLoading = false;
       this.dialog = false;
-      this.newObject = {};
+      this.newObject = {} as any;
     },
     onInputAutocomplete(event: string | undefined) {
       this.targetId = event;

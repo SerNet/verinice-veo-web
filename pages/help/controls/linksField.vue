@@ -47,7 +47,7 @@
 import Vue from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
-import { BaseObject, IApi, ILinksFieldDialogNewObject, ILinksFieldDialogUpdatedObject } from '~/components/forms/utils';
+import { BaseObject, IApi, ILinksFieldDialogUpdatedObject } from '~/components/forms/utils';
 import { IBaseObject } from '~/lib/utils';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
@@ -378,7 +378,7 @@ export default Vue.extend({
         }
       });
     },
-    async create(_: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject> {
+    async create(_: string, createdObjectData: IVeoEntity): Promise<BaseObject> {
       await this.delay(2000);
       return new Promise((resolve, reject) => {
         if (createdObjectData.name) {

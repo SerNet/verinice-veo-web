@@ -51,7 +51,7 @@ export default {};
 
 export interface IApi {
   fetchAll(objectType: string, searchParams?: IBaseObject): Promise<IVeoPaginatedResponse<IVeoEntity[]>>;
-  create(objectType: string, createdObjectData: ILinksFieldDialogNewObject): Promise<BaseObject>;
+  create(objectType: string, createdObjectData: IVeoEntity): Promise<BaseObject>;
   update(objectType: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void>;
   delete(objectType: string, id: string): Promise<void>;
 }
