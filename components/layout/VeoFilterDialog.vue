@@ -18,25 +18,6 @@
 <template>
   <div>
     <v-row>
-      <v-col>
-        <template
-          v-for="(element, key) in filter"
-        >
-        <!-- bumble chips raus nehmen, dass sind keine Akzeptanzkriterien -->
-          <v-chip
-            v-if="element"
-            :key="key"
-            close
-            outlined
-            label
-            class="mr-2"
-            color="primary"
-            @click:close="onResetChip(key)"
-            >
-              {{$t(`objectlist.${key}`).toString()}}: {{element}}
-          </v-chip>
-        </template>
-      </v-col>
       <v-col class="text-right">
         <v-btn
           icon    
@@ -275,12 +256,10 @@ export default defineComponent({
       () => props.value,
       (newValue: IVeoFilter) => {
         if (preset.value === false) {
-          console.log('preset bumbe', preset.value);
           filter.value = props.presetFilter;
           context.emit('input', filter.value);
           preset.value = true;
         } else {
-          console.log('preset bumbe else', preset.value);
           filter.value = { ...newValue };
         }
       }
@@ -318,7 +297,6 @@ export default defineComponent({
               filter.value[prop] = undefined;
             }
           }
-          console.log('submit onSubmit', filter.value);
           context.emit('input', filter.value);
         }
       } else {
@@ -328,7 +306,6 @@ export default defineComponent({
             filter.value[prop] = undefined;
           }
         }
-        console.log('submit onSubmit else', filter.value);
         context.emit('input', filter.value);
       }
     }
