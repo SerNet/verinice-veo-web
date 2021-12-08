@@ -26,14 +26,13 @@
       size="50"
     />
   </div>
-  <VeoPageWrapper v-else>
-    <VeoPage
-      v-if="!contentsCollapsed && formSchemaHasGroups"
-      :cols="2"
-      :md="2"
-      :xl="2"
-      absolute-size
-    >
+  <VeoPageWrapper
+    v-else
+    :collapsable-left="formSchemaHasGroups"
+    :page-width="pageWidth"
+    @page-collapsed="onPageCollapsed"
+  >
+    <VeoPage v-if="formSchemaHasGroups">
       <div
         class="button text-uppercase accent--text font-weight-medium my-2"
       >
@@ -47,20 +46,11 @@
         class="mx-n4"
       />
     </VeoPage>
-    <v-divider vertical />
     <VeoPage
       id="scroll-wrapper"
-      absolute-size
-      :cols="!contentsCollapsed && formSchemaHasGroups ? 6 : 8"
-      :md="!contentsCollapsed && formSchemaHasGroups ? 6 : 8"
-      :xl="!contentsCollapsed && formSchemaHasGroups ? 6 : 8"
       sticky-header
     >
       <template #header>
-        <VeoCollapseButton
-          v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups"
-          v-model="contentsCollapsed"
-        />
         <v-col>
           <v-row
             no-gutters
@@ -239,14 +229,7 @@
         />
       </template>
     </VeoPage>
-    <v-divider vertical />
-    <VeoPage
-      v-if="!$vuetify.breakpoint.xsOnly"
-      :cols="4"
-      :md="4"
-      :xl="4"
-      absolute-size
-    >
+    <VeoPage v-if="!$vuetify.breakpoint.xsOnly">
       <VeoTabs sticky-tabs>
         <template #tabs>
           <v-tab :disabled="!$route.params.entity">
@@ -295,7 +278,6 @@ interface IData {
   revisionCache: IBaseObject;
   errorMessages: IValidationErrorMessage[];
   saveBtnLoading: boolean;
-  contentsCollapsed: boolean;
   formModified: {
     isModified: boolean;
     dialog: boolean;
@@ -305,6 +287,7 @@ interface IData {
   alertType: VeoAlertType;
   restoreDialogVisible: boolean;
   etag?: string;
+  pageWidth: Number[];
 }
 
 export default Vue.extend({
@@ -339,7 +322,6 @@ export default Vue.extend({
       revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
-      contentsCollapsed: false as boolean,
       formModified: {
         isModified: false,
         dialog: false,
@@ -348,7 +330,8 @@ export default Vue.extend({
       },
       alertType: VeoAlertType.INFO,
       restoreDialogVisible: false,
-      etag: undefined as string | undefined
+      etag: undefined as string | undefined,
+      pageWidth: [2, 7, 3] as Number[]
     };
   },
   async fetch() {
@@ -613,6 +596,13 @@ export default Vue.extend({
         this.showError(500, this.$t('revision_incompatible').toString());
       }
       return isValid;
+    },
+    onPageCollapsed(collapsedPages: Boolean[]) {
+      if (collapsedPages.some((page) => page)) {
+        this.pageWidth = [0, 9, 3];
+      } else {
+        this.pageWidth = [2, 7, 3];
+      }
     }
   }
 });

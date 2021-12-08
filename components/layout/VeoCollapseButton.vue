@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Tino Groteloh, Davit Svandize
+   - Copyright (C) 2021  Tino Groteloh, Davit Svandize, Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,41 +16,92 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-btn
-    class="collapse-button px-0"
-    :class="{'collapse-button--right': right}"
-    small
-    elevation="0"
-    @click="$emit('input', !value)"
-  >
-    <v-icon>{{ value === right ? 'mdi-chevron-right' : 'mdi-chevron-left' }}</v-icon>
-  </v-btn>
+  <v-tooltip bottom>
+    <template #activator="{ on }">
+      <v-btn
+        class="collapse-button px-0"
+        :class="{'collapse-button--right': right}"
+        small
+        elevation="0"
+        @click="$emit('input', !value)"
+        v-on="on"
+      >
+        <v-icon>{{ chevron }}</v-icon>
+      </v-btn>
+    </template>
+    <template
+      v-if="value"
+      #default
+    >
+      {{ t('expand', { pageTitle: pageTitle || t('page').toString() }) }}
+    </template>
+    <template
+      v-else
+      #default
+    >
+      {{ t('collapse', { pageTitle: pageTitle || t('page').toString() }) }}
+    </template>
+  </v-tooltip>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
+import { computed, defineComponent } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-export default Vue.extend({
+export default defineComponent({
   name: 'CollapseButton',
   props: {
     value: {
-      // true if collapsed
+      default: false, // True if collapsed
       type: Boolean
     },
     right: {
       type: Boolean,
       default: false
+    },
+    pageTitle: {
+      type: String,
+      default: undefined
     }
+  },
+  setup(props) {
+    const { t } = useI18n();
+
+    const chevron = computed(() => {
+      if (props.right) {
+        return mdiChevronLeft;
+      } else {
+        return mdiChevronRight;
+      }
+    });
+
+    return { chevron, t };
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "collapse": "Collapse {pageTitle}",
+    "expand": "Expand {pageTitle}",
+    "page": "page"
+  },
+  "de": {
+    "collapse": "{pageTitle} verstecken",
+    "expand": "{pageTitle} anzeigen",
+    "page": "Seite"
+  }
+}
+</i18n>
 
 <style lang="scss" scoped>
 .collapse-button {
   position: absolute !important;
   min-width: 35px !important;
 
-  top: 0;
+  top: 10px;
   z-index: 1;
 
   &:not(.collapse-button--right) {

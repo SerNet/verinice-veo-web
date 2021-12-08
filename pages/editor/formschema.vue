@@ -19,6 +19,8 @@
   <VeoPageWrapper
     :title="title"
     title-class="d-flex align-center"
+    collapsable-left
+    collapsable-right
   >
     <template
       v-if="formSchema && objectSchema"
@@ -136,15 +138,7 @@
       v-if="formSchema && objectSchema"
       #default
     >
-      <VeoPage
-        v-if="!backlogCollapsed"
-        absolute-size
-        no-padding
-        cols="12"
-        :md="oneColumnCollapsed ? 6 : 4"
-        :xl="oneColumnCollapsed ? 6 : 4"
-        sticky-header
-      >
+      <VeoPage sticky-header>
         <template #header>
           <h3 class="text-center pb-1">
             {{ t("availableControls") }}
@@ -170,29 +164,11 @@
           />
         </template>
       </VeoPage>
-      <v-divider vertical />
-      <VeoPage
-        absolute-size
-        no-padding
-        cols="12"
-        :md="oneColumnCollapsed ? 6 : 4"
-        :xl="oneColumnCollapsed ? 6 : 4"
-        sticky-header
-        content-class="pb-4 px-4"
-      >
+      <VeoPage content-class="pb-4 px-4">
         <template #header>
           <h3 class="text-center pb-1">
             {{ t("usedControls") }}
           </h3>
-          <VeoCollapseButton
-            v-if="!$vuetify.breakpoint.xs"
-            v-model="backlogCollapsed"
-          />
-          <VeoCollapseButton
-            v-if="!$vuetify.breakpoint.xs"
-            v-model="previewCollapsed"
-            right
-          />
         </template>
         <template
           v-if="schemaIsValid.valid"
@@ -233,14 +209,8 @@
           </v-row>
         </template>
       </VeoPage>
-      <v-divider vertical />
       <VeoPage
-        v-if="!previewCollapsed && !$vuetify.breakpoint.xs"
-        no-padding
-        absolute-size
-        cols="12"
-        :md="oneColumnCollapsed ? 6 : 4"
-        :xl="oneColumnCollapsed ? 6 : 4"
+        v-if="!$vuetify.breakpoint.xs"
         height="100%"
         content-class="pb-4 px-4"
       >
@@ -365,8 +335,6 @@ export default defineComponent<IProps>({
     /**
      * Layout specific stuff
      */
-    const previewCollapsed = ref(false);
-    const backlogCollapsed = ref(false);
     const showCreationDialog = ref(false);
     const showErrorDialog = ref(false);
     const showDetailDialog = ref(false);
@@ -393,8 +361,6 @@ export default defineComponent<IProps>({
         return headline;
       }
     });
-
-    const oneColumnCollapsed = computed(() => backlogCollapsed.value || previewCollapsed.value);
 
     /**
      * Schema related stuff
@@ -553,15 +519,12 @@ export default defineComponent<IProps>({
     }
 
     return {
-      previewCollapsed,
-      backlogCollapsed,
       showCreationDialog,
       showErrorDialog,
       showCodeEditor,
       showDetailDialog,
       searchQuery,
       title,
-      oneColumnCollapsed,
       objectSchema,
       formSchema,
       objectData,
