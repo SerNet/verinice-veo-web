@@ -22,7 +22,6 @@
     :headline="t('filterList')"
   >
     <template #default>
-      {{ localFilter }}
       <v-form v-model="filterFormValid">
         <v-list dense>
           <v-list-item
@@ -34,7 +33,7 @@
             <v-text-field
               v-else-if="option.type === IVeoFilterOptionType.TEXT"
               v-model="localFilter[option.name]"
-              :label="upperFirst(option.name) + (option.required ? '*' : '')"
+              :label="upperFirst(t(`objectlist.${option.name}`).toString()) + (option.required ? '*' : '')"
               :required="option.required"
               :rules="option.required ? [requiredRule] : []"
               :disabled="option.disabled"
@@ -45,7 +44,7 @@
             <v-select
               v-else-if="option.type === IVeoFilterOptionType.SELECT"
               v-model="localFilter[option.name]"
-              :label="upperFirst(option.name) + (option.required ? '*' : '')"
+              :label="upperFirst(t(`objectlist.${option.name}`).toString()) + (option.required ? '*' : '')"
               :required="option.required"
               :rules="option.required ? [requiredRule] : []"
               :items="option.selectOptions"
@@ -57,7 +56,7 @@
             <v-checkbox
               v-else-if="option.type === IVeoFilterOptionType.CHECKBOX"
               v-model="localFilter[option.name]"
-              :label="upperFirst(option.name) + (option.required ? '*' : '')"
+              :label="upperFirst(t(`objectlist.${option.name}`).toString()) + (option.required ? '*' : '')"
               :required="option.required"
               :rules="option.required ? [requiredRule] : []"
               :disabled="option.disabled"

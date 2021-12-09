@@ -66,8 +66,6 @@ export default {
   'global.button.apply': 'Apply',
   'global.button.reset': 'Reset',
   'global.button.yes': 'Yes',
-  'global.button.showLess': 'Show Less',
-  'global.button.showMore': 'Show More',
   'global.input.required': 'The field is required',
   'global.input.requiredfields': '* Required fields',
   'global.logout': 'Logout',
