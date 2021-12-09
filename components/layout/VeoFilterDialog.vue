@@ -16,338 +16,335 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
-    <v-row>
-      <v-col class="text-right">
-        <v-btn
-          icon    
-          large
-          color="primary"
-          class="filter-button"
-          @click="showFilterDialog = true"
-        >
-          <v-icon>mdi-filter</v-icon>
-        </v-btn>
-      </v-col>
-
-    </v-row>
-    <VeoDialog
-      v-model="showFilterDialog"
-      :headline="'Liste filtern'"
-      :persistent="true"
-      @input="closeDialog()">
-      <template #default>
-        <template v-for="(key, index) of (expanded ? filterFieldsExpanded : filterFieldsReduced)">
-          <v-list-item :key="index">
-            <v-select
-              v-if="key==='objectType'"
-              v-model="filter.objectType"
-              :name="key"
-              class="veofilter"
-              hide-details
-              dense
-              outlined
-              :label="objectTypeRequired ? $t('objectlist.objectType') + '*' : $t('objectlist.objectType')"
-              :items="formattedObjectTypes"
-              item-text="text"
-              item-value="value"
-              :rules="objectTypeRequired ? [(v) => !!v || 'Required'] : []"
-              :required="objectTypeRequired"
-            />
-            <v-select
-              v-else-if="key==='subType'"
-              v-model="filter.subType"
-              :name="key"
-              class="veofilter"
-              :disabled="!filter.objectType"
-              hide-details
-              dense
-              outlined
-              :label="$t('objectlist.subType')"
-              :items="formattedSubTypes"
-              item-text="text"
-              item-value="value"
-            /> 
-            <v-select
-              v-else-if="key==='status'"
-              v-model="filter.status"
-              :name="key"
-              class="veofilter"
-              hide-details
-              dense
-              outlined
-              :label="$t('objectlist.status')"
-              :items="status"
-              item-text="text"
-              item-value="value"
-            />
-            <v-checkbox
-              v-else-if="key === 'notPartOfGroup'"
-              v-model="filter[key]"
-              :name="key"
-              class="veofilter"
-              :label="$t('objectlist.notPartOfGroup')"
-            />
-            <v-checkbox
-              v-else-if="key === 'hasChildObjects'"
-              v-model="filter[key]"
-              :name="key"
-              class="veofilter"
-              :label="$t('objectlist.hasChildObjects')"
-            />
-            <v-checkbox
-              v-else-if="key === 'hasLinks'"
-              v-model="filter[key]"
-              :name="key"
-              class="veofilter"
-              :label="$t('objectlist.hasLinks')"
-            />
+  <VeoDialog
+    v-model="dialog"
+    v-bind="$attrs"
+    :headline="t('filterList')"
+  >
+    <template #default>
+      {{ localFilter }}
+      <v-form v-model="filterFormValid">
+        <v-list dense>
+          <v-list-item
+            v-for="(option, index) of displayedFilterOptions"
+            :key="option.name || `${option.type}_${index}`"
+            dense
+          >
+            <v-divider v-if="option.type === IVeoFilterOptionType.DIVIDER" />
             <v-text-field
-              v-else
-              v-model="filter[key]"
-              :name="key"
-              class="veofilter"
-              hide-details
+              v-else-if="option.type === IVeoFilterOptionType.TEXT"
+              v-model="localFilter[option.name]"
+              :label="upperFirst(option.name) + (option.required ? '*' : '')"
+              :required="option.required"
+              :rules="option.required ? [requiredRule] : []"
+              :disabled="option.disabled"
+              clearable
               dense
-              outlined
-              :placeholder="$t(`objectlist.${key}`).toString()"
+              @input="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
             />
-            <p>{{key}}</p>
+            <v-select
+              v-else-if="option.type === IVeoFilterOptionType.SELECT"
+              v-model="localFilter[option.name]"
+              :label="upperFirst(option.name) + (option.required ? '*' : '')"
+              :required="option.required"
+              :rules="option.required ? [requiredRule] : []"
+              :items="option.selectOptions"
+              :disabled="option.disabled"
+              clearable
+              dense
+              @change="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
+            />
+            <v-checkbox
+              v-else-if="option.type === IVeoFilterOptionType.CHECKBOX"
+              v-model="localFilter[option.name]"
+              :label="upperFirst(option.name) + (option.required ? '*' : '')"
+              :required="option.required"
+              :rules="option.required ? [requiredRule] : []"
+              :disabled="option.disabled"
+              dense
+              @change="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
+            />
           </v-list-item>
-        </template>
-        <v-btn
-          text
-          class="text-center expand-button"
-          @click="toggle"
-        >
-          <template v-if="expanded">
-             {{$t(`global.button.showLess`)}}
-          </template>
-          <template v-else>
-             {{$t(`global.button.showMore`)}}
-          </template>
-        </v-btn>
-      </template>
-      <v-divider></v-divider>
-
-      <template #dialog-options>
-        <v-btn
-          color="primary"
-          text
-          class="reset-btn"
-          @click="onReset"
-        >
-          {{$t(`resetFilter`)}}
-        </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn
-          color="primary"
-          class="submit-btn"
-          text
-          :disabled="objectTypeRequired && (filter.objectType === undefined)"
-          @click="onSubmit"
-        >
-          {{$t(`submitFilter`)}}
-        </v-btn>
-      </template>
-    </VeoDialog>
-  </div>
+          <v-list-item
+            class="justify-center"
+            @click="showAllFilters = !showAllFilters"
+          >
+            <template v-if="showAllFilters">
+              <v-icon>{{ mdiChevronDoubleUp }}</v-icon>
+              <span>{{ t('collapseOptions') }}</span>
+              <v-icon>{{mdiChevronDoubleUp}}</v-icon>
+            </template>
+            <template v-else>
+              <v-icon>{{ mdiChevronDoubleDown }}</v-icon>
+              <span>{{ t('expandOptions') }}</span>
+              <v-icon>{{ mdiChevronDoubleDown }}</v-icon>
+            </template>
+          </v-list-item>
+        </v-list>
+      </v-form>
+    </template>
+    <template #dialog-options>
+      <v-btn
+        text
+        class="reset-btn"
+        @click="onReset"
+      >
+        {{$t(`resetFilter`)}}
+      </v-btn>
+      <v-spacer></v-spacer>
+      <v-btn
+        color="primary"
+        class="submit-btn"
+        text
+        :disabled="!filterFormValid"
+        @click="onSubmit"
+      >
+        {{$t(`submitFilter`)}}
+      </v-btn>
+    </template>
+  </VeoDialog>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, Ref, watch, useFetch, useContext } from '@nuxtjs/composition-api';
+import { mdiChevronDoubleDown, mdiChevronDoubleUp } from '@mdi/js';
+import { defineComponent, ref, computed, Ref, watch, PropOptions, ComputedRef, useFetch, useContext } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { capitalize } from 'lodash';
-import { IVeoTranslations } from '~/types/VeoTypes';
+import { BaseObject } from '../forms/utils';
+import { IBaseObject } from '~/lib/utils';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
 
-export interface IVeoFilter {
-  objectType: string | undefined;
-  subType: string | undefined;
-  designator: string | undefined;
-  name: string | undefined;
-  status: string | undefined;
-  description: string | undefined;
-  updatedBy: string | undefined;
-  notPartOfGroup?: boolean | undefined;
-  hasChildObjects?: boolean | undefined;
-  hasLinks?: boolean | undefined;
-  [key: string]: string | boolean | undefined;
+enum IVeoFilterOptionType {
+  TEXT,
+  SELECT,
+  CHECKBOX,
+  DIVIDER
 }
 
-enum Status {
-  NEW = 'NEW',
-  IN_PROGRESS = 'IN_PROGRESS',
-  FOR_REVIEW = 'FOR_REVIEW',
-  RELEASED = 'RELEASED',
-  ARCHIVED = 'ARCHIVED'
+interface IVeoFilterOption {
+  name: string;
+  type: IVeoFilterOptionType;
+  required?: boolean;
+  alwaysVisible?: boolean;
+  selectOptions?: { text: string; value: string }[];
+  disabled?: boolean;
+  onChange?: (value: string) => void;
+}
+
+interface IVeoFilterDivider {
+  type: IVeoFilterOptionType.DIVIDER;
 }
 
 export default defineComponent({
   name: 'VeoFilterDialog',
   props: {
     value: {
-      type: Object as PropType<IVeoFilter>,
-      default: undefined
+      type: Boolean,
+      default: false
     },
     objectTypeRequired: {
       type: Boolean,
       default: false
     },
-    objectType: {
+    filter: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IBaseObject>,
+    domain: {
       type: String,
-      default: undefined
-    },
-    presetFilter: {
-      type: Object as PropType<IVeoFilter>,
-      default: undefined
+      required: true
     }
   },
-  setup(props, context) {
-    const { t, locale } = useI18n();
+  setup(props, { emit }) {
     const { $api } = useContext();
-    let translations = { lang: {} } as IVeoTranslations;
+    const { t, locale } = useI18n();
 
-    const showFilterDialog = ref(false);
-    const filter = ref({
-      objectType: props.objectType,
-      subType: undefined,
-      designator: undefined,
-      name: undefined,
-      status: undefined,
-      description: undefined,
-      updatedBy: undefined,
-      notPartOfGroup: undefined,
-      hasChildObjects: undefined,
-      hasLinks: undefined
-    }) as Ref<IVeoFilter>;
-
-    const filterFieldsReduced = ['objectType', 'subType', 'designator', 'name', 'status'];
-    const filterFieldsExpanded = Object.keys(filter.value);
-
-    const expanded = ref(false);
-    const preset = ref(false);
-
-    const formattedObjectTypes = ref([]) as Ref<any>;
-    const formattedSubTypes = ref([]) as Ref<any>;
+    // Fetching of object types & translations for status
+    const objectTypes: Ref<IVeoSchemaEndpoint[]> = ref([]);
+    const formschemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
+    const subTypes: Ref<{ [schemaName: string]: { subType: string; name: BaseObject; status: string[] }[] }> = ref({});
+    const translations: Ref<IVeoTranslations | undefined> = ref(undefined);
 
     useFetch(async () => {
-      translations = await $api.translation.fetch(locale as any);
-    });
-
-    useFetch(async () => {
-      const schema = await $api.schema.fetchAll();
-      formattedObjectTypes.value = schema.map((value: any) => ({
-        text: capitalize(value.schemaName),
-        value: value.schemaName
-      }));
-    });
-
-    useFetch(async () => {
-      const forms = await $api.form.fetchAll();
-      formattedSubTypes.value = forms
-        .filter((value: any) => value.modelType === filter.value.objectType)
-        .map((value: any) => ({
-          text: value.subType,
-          value: value.subType
-        }));
-    });
-
-    watch(
-      () => props.value,
-      (newValue: IVeoFilter) => {
-        if (preset.value === false) {
-          filter.value = props.presetFilter;
-          context.emit('input', filter.value);
-          preset.value = true;
-        } else {
-          filter.value = { ...newValue };
+      // Only fetch object types once, as changes are highly unlikely (preemptively included, if fetch() gets called by a watcher in the future)
+      if (objectTypes.value.length === 0) {
+        objectTypes.value = await $api.schema.fetchAll();
+        formschemas.value = await $api.form.fetchAll(props.domain);
+        for await (const objectType of objectTypes.value) {
+          await fetchSubTypesForSchema(objectType.schemaName);
         }
+      }
+
+      // Only fetch translations once, as changes are highly unlikely (preemptively included, if fetch() gets called by a watcher in the future)
+      if (!translations.value) {
+        translations.value = await $api.translation.fetch(['de', 'en']);
+      }
+    });
+
+    // Create an object containing all subtypes for an object schema with all their status
+    async function fetchSubTypesForSchema(schema: string) {
+      const _schema = await $api.schema.fetch(schema);
+
+      subTypes.value[schema] =
+        // @ts-ignore TODO: Remove before merge
+        Object.values(_schema.properties.domains.properties)[0].allOf?.map((mapping) => ({
+          subType: mapping.if.properties.subType.const,
+          status: mapping.then.properties.status.enum,
+          name: formschemas.value.find((fs) => fs.subType === mapping.if.properties.subType.const)?.name || {}
+        })) || [];
+    }
+
+    // Form actions
+    /**
+     * Emits the currently applied filters and closes the dialog
+     */
+    function onSubmit() {
+      // Remove false, null and undefined from object, as we only want filters that are applied in the object
+      for (const key of Object.keys(localFilter.value)) {
+        if (!localFilter.value[key]) {
+          delete localFilter.value[key];
+        }
+      }
+      emit('update:filter', localFilter.value);
+      emit('input', false);
+    }
+
+    /**
+     * Emits the currently applied filters and closes the dialog
+     */
+    function onReset() {
+      emit('filter', {});
+      emit('input', false);
+    }
+
+    // Filter stuff
+    const filterFormValid = ref(false);
+    function requiredRule(value: string) {
+      return !!value && value.length > 0;
+    }
+
+    // We keep a copy of the prop filter object as we only want to change the filters if the user clicks submit
+    const localFilter: Ref<IBaseObject> = ref({});
+    watch(
+      () => props.filter,
+      (newValue) => {
+        localFilter.value = newValue as IBaseObject;
       }
     );
 
-    const status = computed(() => [
+    const filterOptions: ComputedRef<(IVeoFilterOption | IVeoFilterDivider)[]> = computed(() => [
       {
-        value: Status.NEW,
-        text: translations.lang?.[locale.value]?.process_status_NEW || 'NEW'
+        name: 'objectType',
+        type: IVeoFilterOptionType.SELECT,
+        required: props.objectTypeRequired,
+        alwaysVisible: true,
+        selectOptions: objectTypes.value.map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName })),
+        onChange: () => {
+          delete localFilter.value.subType;
+          delete localFilter.value.status;
+        }
       },
       {
-        value: Status.IN_PROGRESS,
-        text: translations.lang?.[locale.value]?.process_status_IN_PROGRESS || 'IN_PROGRESS'
+        name: 'subType',
+        type: IVeoFilterOptionType.SELECT,
+        alwaysVisible: true,
+        disabled: !localFilter.value.objectType,
+        selectOptions: (subTypes.value[localFilter.value.objectType] || [])
+          .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
+          .sort((a, b) => {
+            const sortValueA = formschemas.value.find((schema) => schema.subType === a.value)?.sorting;
+            const sortValueB = formschemas.value.find((schema) => schema.subType === b.value)?.sorting;
+
+            if (!sortValueA) {
+              return 1;
+            }
+            if (!sortValueB) {
+              return 0;
+            }
+
+            return sortValueA.localeCompare(sortValueB);
+          }),
+        onChange: () => {
+          delete localFilter.value.status;
+        }
       },
       {
-        value: Status.FOR_REVIEW,
-        text: translations.lang?.[locale.value]?.process_status_FOR_REVIEW || 'FOR_REVIEW'
+        type: IVeoFilterOptionType.DIVIDER
+      } as IVeoFilterDivider,
+      {
+        name: 'designator',
+        type: IVeoFilterOptionType.TEXT,
+        alwaysVisible: true
       },
       {
-        value: Status.RELEASED,
-        text: translations.lang?.[locale.value]?.process_status_RELEASED || 'RELEASED'
+        name: 'name',
+        type: IVeoFilterOptionType.TEXT,
+        alwaysVisible: true
       },
       {
-        value: Status.ARCHIVED,
-        text: translations.lang?.[locale.value]?.process_status_ARCHIVED || 'ARCHIVED'
+        name: 'status',
+        type: IVeoFilterOptionType.SELECT,
+        alwaysVisible: true,
+        disabled: !localFilter.value.objectType || !localFilter.value.subType,
+        selectOptions: (subTypes.value[localFilter.value.objectType] || [])
+          .find((subType) => subType.subType === localFilter.value.subType)
+          ?.status.map((status) => ({
+            text: translations.value ? translations.value.lang[locale.value][`${localFilter.value.objectType}_${localFilter.value.subType}_status_${status}`] : status,
+            value: status
+          }))
+      },
+      {
+        name: 'description',
+        type: IVeoFilterOptionType.TEXT
+      },
+      {
+        name: 'updatedBy',
+        type: IVeoFilterOptionType.TEXT
+      },
+      {
+        name: 'notPartOfGroup',
+        type: IVeoFilterOptionType.CHECKBOX
+      },
+      {
+        name: 'hasChildObjects',
+        type: IVeoFilterOptionType.CHECKBOX
+      },
+      {
+        name: 'hasLinks',
+        type: IVeoFilterOptionType.CHECKBOX
       }
     ]);
 
-    function onSubmit() {
-      if (props.objectTypeRequired) {
-        if (filter.value.objectType) {
-          showFilterDialog.value = false;
-          for (const prop in filter.value) {
-            if (filter.value[prop] === '') {
-              filter.value[prop] = undefined;
-            }
-          }
-          context.emit('input', filter.value);
-        }
-      } else {
-        showFilterDialog.value = false;
-        for (const prop in filter.value) {
-          if (filter.value[prop] === '') {
-            filter.value[prop] = undefined;
-          }
-        }
-        context.emit('input', filter.value);
+    // Display stuff
+    const dialog = computed({
+      get() {
+        return props.value;
+      },
+      set(value: boolean) {
+        emit('input', value);
       }
-    }
-    function toggle() {
-      expanded.value = !expanded.value;
-    }
-
-    function onResetChip(key: string) {
-      filter.value[key] = undefined;
-      context.emit('reset', filter.value);
-    }
-
-    function onReset() {
-      showFilterDialog.value = false;
-      preset.value = false;
-      if (props.presetFilter) {
-        filter.value = props.presetFilter;
-      } else {
-        Object.keys(filter.value).forEach((prop) => (filter.value[prop] = undefined));
-      }
-      context.emit('reset', filter.value);
-    }
-
-    function closeDialog() {
-      filter.value = props.value;
-    }
+    });
+    const showAllFilters = ref(false);
+    const displayedFilterOptions = computed(() =>
+      showAllFilters.value ? filterOptions.value : filterOptions.value.filter((filter) => filter.type === IVeoFilterOptionType.DIVIDER || filter.alwaysVisible)
+    );
 
     return {
-      closeDialog,
-      t,
-      formattedSubTypes,
-      formattedObjectTypes,
-      filter,
-      filterFieldsReduced,
-      filterFieldsExpanded,
-      expanded,
-      toggle,
-      showFilterDialog,
-      status,
-      onSubmit,
+      dialog,
+      displayedFilterOptions,
+      filterFormValid,
+      localFilter,
       onReset,
-      onResetChip
+      onSubmit,
+      requiredRule,
+      showAllFilters,
+
+      t,
+      upperFirst,
+      mdiChevronDoubleDown,
+      mdiChevronDoubleUp,
+      IVeoFilterOptionType
     };
   }
 });
@@ -360,12 +357,18 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "resetFilter": "Reset Filter",
-    "submitFilter": "Submit Filter"
+    "collapseOptions": "More options",
+    "expandOptions": "Less options",
+    "filterList": "Filter list",
+    "resetFilter": "reset filter",
+    "submitFilter": "apply filter"
   },
   "de": {
-    "resetFilter": "Filter zurücksetzen",
-    "submitFilter": "Filter anwenden"
+    "collapseOptions": "Weniger Optionen",
+    "expandOptions": "Weitere Optionen",
+    "filterList": "Liste filtern",
+    "resetFilter": "filter zurücksetzen",
+    "submitFilter": "filter anwenden"
   }
 }
 </i18n>
