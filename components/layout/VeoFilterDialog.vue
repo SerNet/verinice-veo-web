@@ -112,7 +112,6 @@
               outlined
               :placeholder="$t(`objectlist.${key}`).toString()"
             />
-            <p>{{key}}</p>
           </v-list-item>
         </template>
         <v-btn

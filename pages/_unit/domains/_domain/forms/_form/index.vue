@@ -146,7 +146,7 @@ export default Vue.extend({
   },
   computed: {
     presetFilter(): IVeoFilter {
-      return { designator: undefined, name: 'name', description: undefined, updatedBy: undefined, status: undefined };
+      return { designator: undefined, name: undefined, description: undefined, updatedBy: undefined, status: undefined };
     },
     unitId() {
       return separateUUIDParam(this.$route.params.unit).id;
