@@ -107,7 +107,7 @@
 <script lang="ts">
 import { mdiChevronDoubleDown, mdiChevronDoubleUp } from '@mdi/js';
 import { defineComponent, ref, computed, Ref, watch, PropOptions, ComputedRef, useFetch, useContext } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { clone, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { BaseObject } from '../forms/utils';
 import { IBaseObject } from '~/lib/utils';
@@ -205,15 +205,15 @@ export default defineComponent({
           delete localFilter.value[key];
         }
       }
-      emit('update:filter', localFilter.value);
+      emit('update:filter', clone(localFilter.value));
       emit('input', false);
     }
 
     /**
-     * Emits the currently applied filters and closes the dialog
+     * Removes all set filters, emits them and closes the dialog
      */
     function onReset() {
-      emit('filter', {});
+      emit('update:filter', {});
       emit('input', false);
     }
 
@@ -228,7 +228,7 @@ export default defineComponent({
     watch(
       () => props.filter,
       (newValue) => {
-        localFilter.value = newValue as IBaseObject;
+        localFilter.value = clone(newValue) as IBaseObject;
       }
     );
 
@@ -322,6 +322,11 @@ export default defineComponent({
       },
       set(value: boolean) {
         emit('input', value);
+
+        // If the dialog gets closed, restore pristine state
+        if (!value) {
+          localFilter.value = clone(props.filter) as IBaseObject;
+        }
       }
     });
     const showAllFilters = ref(false);
