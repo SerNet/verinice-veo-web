@@ -30,26 +30,36 @@
       </div>
       <h2 class="mb-4">{{ t('veoClaim') }}</h2>
       <i18n
-        v-if="nonDemoUnits.length"
         path="createEntitiesCTA"
         tag="p"
       >
-        <nuxt-link
-          v-for="(link, index) in formLinks"
-          :key="index"
-          :to="link.to"
-          @click.native="dialog = false"
-        >{{ link.name }}</nuxt-link>
+        <template v-if="firstUnitId">
+          <nuxt-link
+            v-for="(link, index) in formLinks"
+            :key="index"
+            :to="link.to"
+            @click.native="dialog = false"
+          >{{ link.name }}</nuxt-link>
+        </template>
+        <template v-else>
+          <span
+            v-for="(link, index) in formLinks"
+            :key="index"
+          >
+            {{ link.name }}
+          </span>
+        </template>
       </i18n>
       <i18n
-        v-if="nonDemoUnits.length"
         path="dashboardCTA"
         tag="p"
       >
         <nuxt-link
+          v-if="firstUnitId"
           :to="dashboardLink.to"
           @click.native="dialog = false"
         >{{ dashboardLink.name }}</nuxt-link>
+        <span v-else>{{ dashboardLink.name }}</span>
       </i18n>
       <i18n
         v-if="demoUnitLink"
@@ -104,13 +114,15 @@ export default defineComponent({
 
     const nonDemoUnits: Ref<IVeoUnit[]> = ref([]); // Used if the unit is not present in the url params
 
+    const firstUnitId: ComputedRef<string | undefined> = computed(() => nonDemoUnits.value[0]?.id);
+
     useFetch(async () => {
       const forms = await $api.form.fetchAll();
       const units = await $api.unit.fetchAll();
       const domains = await $api.form.fetchAll();
       const demoUnit = units.find((unit) => unit.name === 'Demo');
       nonDemoUnits.value = units.filter((unit) => unit.name !== 'Demo');
-      if (demoUnit) {
+      if (demoUnit && domains[0]) {
         demoUnitLink.value = {
           to: {
             name: 'unit-domains-domain',
@@ -144,7 +156,7 @@ export default defineComponent({
       to: {
         name: 'unit-domains-domain',
         params: {
-          unit: route.value.params.unit || nonDemoUnits.value.length ? createUUIDUrlParam('unit', nonDemoUnits.value[0].id) : '',
+          unit: route.value.params.unit || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
           domain: route.value.params.domain || $user.lastDomain || ''
         }
       },
@@ -160,7 +172,7 @@ export default defineComponent({
           to: {
             name: 'unit-domains-domain-forms-form-create',
             params: {
-              unit: route.value.params.unit || nonDemoUnits.value.length ? createUUIDUrlParam('unit', nonDemoUnits.value[0].id) : '',
+              unit: route.value.params.unit || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
               domain: route.value.params.domain || $user.lastDomain || '',
               form: createUUIDUrlParam('form', form.id as string)
             }
@@ -174,7 +186,7 @@ export default defineComponent({
       dashboardLink,
       demoUnitLink,
       formLinks,
-      nonDemoUnits,
+      firstUnitId,
 
       t
     };
