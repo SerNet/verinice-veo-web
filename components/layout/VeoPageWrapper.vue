@@ -42,15 +42,15 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
-    pageWidth: {
+    pageWidths: {
       type: Array as PropType<(String | Number)[]>,
       default: () => []
     },
-    pageWidthLg: {
+    pageWidthsLg: {
       type: Array as PropType<(String | Number)[]>,
       default: () => []
     },
-    pageWidthXl: {
+    pageWidthsXl: {
       type: Array as PropType<(String | Number)[]>,
       default: () => []
     },
@@ -63,8 +63,8 @@ export default Vue.extend({
     return {
       observer: undefined as MutationObserver | undefined,
       collapsablePages: [] as Boolean[],
-      collapsedPages: [] as Boolean[],
-      oldPagesCount: 0 as number
+      pagesCollapsedStates: [] as Boolean[],
+      currentPagesCount: 0 as number
     };
   },
   watch: {
@@ -97,9 +97,9 @@ export default Vue.extend({
      * Index of the page which should be toggled
      */
     togglePage(index: number): void {
-      // We use Vue.set as vue won't pick up changes if we alter data via this.collapsedPages[index]
-      Vue.set(this.collapsedPages, index, !this.collapsedPages[index]);
-      this.$emit('page-collapsed', this.collapsedPages);
+      // We use Vue.set as vue won't pick up changes if we alter data via this.pagesCollapsedStates[index]
+      Vue.set(this.pagesCollapsedStates, index, !this.pagesCollapsedStates[index]);
+      this.$emit('page-collapsed', this.pagesCollapsedStates);
     },
     /**
      * Called initally and if the amount of pages change during runtime to update the arrays controlling
@@ -110,15 +110,15 @@ export default Vue.extend({
         const currentPagesCount = (this.$refs.wrapper as Element).children.length;
 
         // Only reinitialize arrays if the amount of children changed
-        if (currentPagesCount !== this.oldPagesCount) {
+        if (currentPagesCount !== this.currentPagesCount) {
           // Only make the page on the very left and very right collapsable if passed by prop, all other pages aren't collapsable
           this.collapsablePages = Array(currentPagesCount).fill(false);
           this.collapsablePages[0] = this.collapsableLeft;
           this.collapsablePages[this.collapsablePages.length - 1] = this.collapsableRight;
 
           // Expand all pages (resets the state even if previous pages have been collapsed)
-          this.collapsedPages = Array(currentPagesCount).fill(false);
-          this.oldPagesCount = currentPagesCount;
+          this.pagesCollapsedStates = Array(currentPagesCount).fill(false);
+          this.currentPagesCount = currentPagesCount;
 
           this.destroyKeybinds();
           this.enableKeybinds();
@@ -129,13 +129,13 @@ export default Vue.extend({
      * Helper function to find out whether the previous page is collapsed
      */
     previousPageIsCollapsed(index: number) {
-      return index > 0 && this.collapsedPages[index - 1];
+      return index > 0 && this.pagesCollapsedStates[index - 1];
     },
     /**
      * Helper function to find out whether the next page is collapsed
      */
     nextPageIsCollapsed(index: number) {
-      return index < this.collapsablePages.length - 1 && this.collapsedPages[index + 1];
+      return index < this.collapsablePages.length - 1 && this.pagesCollapsedStates[index + 1];
     },
     enableKeybinds() {
       document.addEventListener('keydown', this.onKeyPress);
@@ -151,14 +151,14 @@ export default Vue.extend({
         return;
       }
       if (event.altKey && event.key >= '0' && event.key <= '9') {
-        let index = Number(event.key);
-        if (index === 0) {
-          index = 10;
+        let number = Number(event.key);
+        if (number === 0) {
+          number = 10;
         }
 
         // If the page count is two, we have to behave a bit different to avoid not showing any page
-        if (this.oldPagesCount === 2) {
-          if (index === 1) {
+        if (this.currentPagesCount === 2) {
+          if (number === 1) {
             this.togglePage(0);
             if (this.nextPageIsCollapsed(0)) {
               this.togglePage(1);
@@ -169,8 +169,8 @@ export default Vue.extend({
               this.togglePage(0);
             }
           }
-        } else if (index <= this.oldPagesCount && this.collapsablePages[index - 1]) {
-          this.togglePage(index - 1);
+        } else if (number <= this.currentPagesCount && this.collapsablePages[number - 1]) {
+          this.togglePage(number - 1);
         }
       }
     },
@@ -182,20 +182,20 @@ export default Vue.extend({
     localPageWidth(index: number): string[] {
       const classes = [];
 
-      if (this.pageWidth[index]) {
-        classes.push(`col-${this.pageWidth[index]}`);
+      if (this.pageWidths[index]) {
+        classes.push(`col-${this.pageWidths[index]}`);
       }
 
-      if (this.pageWidthLg[index]) {
-        classes.push(`col-lg-${this.pageWidthLg[index]}`);
+      if (this.pageWidthsLg[index]) {
+        classes.push(`col-lg-${this.pageWidthsLg[index]}`);
       }
 
-      if (this.pageWidthXl[index]) {
-        classes.push(`col-xl-${this.pageWidthXl[index]}`);
+      if (this.pageWidthsXl[index]) {
+        classes.push(`col-xl-${this.pageWidthsXl[index]}`);
       }
 
       if (classes.length === 0) {
-        classes.push(`col-${Math.floor(12 / (this.oldPagesCount - this.collapsedPages.filter((page) => page).length))}`);
+        classes.push(`col-${Math.floor(12 / (this.currentPagesCount - this.pagesCollapsedStates.filter((page) => page).length))}`);
       }
 
       return classes;
@@ -250,12 +250,12 @@ export default Vue.extend({
                   {
                     style: {
                       position: 'relative',
-                      display: this.collapsedPages[index] ? 'none' : 'flex'
+                      display: this.pagesCollapsedStates[index] ? 'none' : 'flex'
                     },
                     class: ['flex-row', ...this.localPageWidth(index), 'pa-0']
                   },
                   [
-                    ...(index > 0 && !this.previousPageIsCollapsed(index) && index < this.collapsedPages.length
+                    ...(index > 0 && !this.previousPageIsCollapsed(index) && index < this.pagesCollapsedStates.length
                       ? [h('div', { style: { 'border-right': '1px solid #0000001F' } })]
                       : []),
                     ...((index === this.collapsablePages.length - 1 && this.collapsablePages[index]) || this.previousPageIsCollapsed(index)
@@ -264,7 +264,7 @@ export default Vue.extend({
                             props: {
                               value: this.previousPageIsCollapsed(index),
                               right: false,
-                              pageTitle: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
+                              elementName: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
                               index: this.previousPageIsCollapsed(index) ? index - 1 : index
                             },
                             on: {
@@ -280,7 +280,7 @@ export default Vue.extend({
                             props: {
                               value: this.nextPageIsCollapsed(index),
                               right: true,
-                              pageTitle: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
+                              elementName: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
                               index: this.nextPageIsCollapsed(index) ? index + 1 : index
                             },
                             on: {

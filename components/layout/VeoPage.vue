@@ -65,7 +65,9 @@
   </v-col>
 </template>
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
+import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
+
+import { VeoPageHeaderAlignment } from './VeoPageHeader.vue';
 
 interface IProps {
   contentClass: string;
@@ -76,8 +78,7 @@ interface IProps {
   loading: boolean;
   loadContent: boolean;
   title?: string;
-  titlebarCenter: boolean;
-  titlebarRight: boolean;
+  titlebarAlignment: VeoPageHeaderAlignment;
   isPageWrapperChild: boolean;
 }
 
@@ -127,14 +128,10 @@ export default defineComponent<IProps>({
       type: String,
       default: undefined
     },
-    titlebarCenter: {
-      type: Boolean,
-      default: false
-    },
-    titlebarRight: {
-      type: Boolean,
-      default: false
-    },
+    titlebarAlignment: {
+      type: Number,
+      default: VeoPageHeaderAlignment.LEFT
+    } as PropOptions<VeoPageHeaderAlignment>,
     isPageWrapperChild: {
       type: Boolean,
       default: false

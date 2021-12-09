@@ -18,7 +18,7 @@
 <template>
   <VeoPageWrapper
     collapsable-right
-    :page-width="pageWidth"
+    :page-width="pageWidths"
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
@@ -263,7 +263,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      pageWidth: [6, 6] as number[],
+      pageWidths: [6, 6] as number[],
       showCreationDialog: false as boolean,
       showErrorDialog: false as boolean,
       showTranslationDialog: false as boolean,
@@ -356,9 +356,9 @@ export default Vue.extend({
     },
     onPageCollapsed(collapsedPages: boolean[]) {
       if (collapsedPages[1]) {
-        this.pageWidth = [12, 0];
+        this.pageWidths = [12, 0];
       } else {
-        this.pageWidth = [6, 6];
+        this.pageWidths = [6, 6];
       }
     }
   }

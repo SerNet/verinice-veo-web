@@ -29,7 +29,7 @@
   <VeoPageWrapper
     v-else
     :collapsable-left="formSchemaHasGroups"
-    :page-width="pageWidth"
+    :page-widths="pageWidths"
     @page-collapsed="onPageCollapsed"
   >
     <VeoPage v-if="formSchemaHasGroups">
@@ -287,7 +287,7 @@ interface IData {
   alertType: VeoAlertType;
   restoreDialogVisible: boolean;
   etag?: string;
-  pageWidth: Number[];
+  pageWidths: Number[];
 }
 
 export default Vue.extend({
@@ -331,7 +331,7 @@ export default Vue.extend({
       alertType: VeoAlertType.INFO,
       restoreDialogVisible: false,
       etag: undefined as string | undefined,
-      pageWidth: [2, 7, 3] as Number[]
+      pageWidths: [2, 7, 3] as Number[]
     };
   },
   async fetch() {
@@ -599,9 +599,9 @@ export default Vue.extend({
     },
     onPageCollapsed(collapsedPages: Boolean[]) {
       if (collapsedPages.some((page) => page)) {
-        this.pageWidth = [0, 9, 3];
+        this.pageWidths = [0, 9, 3];
       } else {
-        this.pageWidth = [2, 7, 3];
+        this.pageWidths = [2, 7, 3];
       }
     }
   }

@@ -167,7 +167,7 @@
       <VeoPage
         heading-level="3"
         :title="t('usedControls')"
-        titlebar-center
+        :titlebar-alignment="VeoPageHeaderAlignment.CENTER"
       >
         <template
           v-if="schemaIsValid.valid"
@@ -213,7 +213,7 @@
         height="100%"
         heading-level="3"
         :title="t('preview')"
-        titlebar-center
+        :titlebar-alignment="VeoPageHeaderAlignment.CENTER"
       >
         <template
           v-if="schemaIsValid.valid"
@@ -321,6 +321,7 @@ import {
   IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
+import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
 
 interface IProps {}
 
@@ -550,6 +551,7 @@ export default defineComponent<IProps>({
       setFormLanguage,
       onUpdateCustomTranslation,
       onFixRequest,
+      VeoPageHeaderAlignment,
 
       t
     };

@@ -16,10 +16,17 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import Vue from 'vue';
+import { ComputedRef, defineComponent, h, PropOptions } from '@nuxtjs/composition-api';
+import { computed } from 'vue-demi';
 import SkeletonLoader from 'vuetify/lib/components/VSkeletonLoader';
 
-export default Vue.extend({
+export enum VeoPageHeaderAlignment {
+  LEFT,
+  CENTER,
+  RIGHT
+}
+
+export default defineComponent({
   components: {
     SkeletonLoader
   },
@@ -40,33 +47,31 @@ export default Vue.extend({
       type: [String],
       default: undefined
     },
-    titlebarCenter: {
-      type: Boolean,
-      default: false
-    },
-    titlebarRight: {
-      type: Boolean,
-      default: false
-    }
+    titlebarAlignment: {
+      type: Number,
+      default: VeoPageHeaderAlignment.LEFT
+    } as PropOptions<VeoPageHeaderAlignment>
   },
-  computed: {
-    titlebarAlignment(): { 'justify-content': string } {
-      return { 'justify-content': this.titlebarCenter ? 'center' : this.titlebarRight ? 'end' : 'start' };
-    }
-  },
-  render(h): any {
-    return h('div', { style: { display: 'contents' } }, [
-      ...(!!this.title || !!this.$slots.title
-        ? [
-            h('div', { class: 'd-flex flex-row flex-wrap veo-page__title', style: this.titlebarAlignment }, [
-              ...(this.loading
-                ? [h(SkeletonLoader, { props: { type: 'text' }, class: 'pb-1 skeleton-title' })]
-                : [h(`h${this.headingLevel}`, { class: 'text-no-wrap d-inline pb-1 flex-grow-0' }, this.title), this.$slots.title])
-            ])
-          ]
-        : []),
-      ...(this.$slots.header ? [h('div', { class: ['veo-page__header', ...(this.stickyHeader ? ['veo-page__header--sticky'] : [])] }, [this.$slots.header])] : [])
-    ]);
+  setup(props, { slots }) {
+    const titlebarAlignment: ComputedRef<{ 'justify-content': string }> = computed(() => {
+      return {
+        'justify-content': props.titlebarAlignment === VeoPageHeaderAlignment.CENTER ? 'center' : props.titlebarAlignment === VeoPageHeaderAlignment.RIGHT ? 'end' : 'start'
+      };
+    });
+
+    return () =>
+      h('div', { style: { display: 'contents' } }, [
+        ...(!!props.title || !!slots.title
+          ? [
+              h('div', { class: 'd-flex flex-row flex-wrap veo-page__title', style: titlebarAlignment.value }, [
+                ...(props.loading
+                  ? [h(SkeletonLoader, { props: { type: 'text' }, class: 'pb-1 skeleton-title' })]
+                  : [h(`h${props.headingLevel}`, { class: 'text-no-wrap d-inline pb-1 flex-grow-0' }, props.title), ...(slots.title ? [slots.title()] : [])])
+              ])
+            ]
+          : []),
+        ...(slots.header ? [h('div', { class: ['veo-page__header', ...(props.stickyHeader ? ['veo-page__header--sticky'] : [])] }, [slots.header()])] : [])
+      ]);
   }
 });
 </script>

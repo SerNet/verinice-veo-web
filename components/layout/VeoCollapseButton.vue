@@ -32,7 +32,7 @@
     <template
       #default
     >
-      {{ t(value ? 'expand' : 'collapse', { pageTitle: pageTitle || t('page').toString() }) }}
+      {{ t(value ? 'expand' : 'collapse', { elementName: elementName || t('page').toString() }) }}
       <span v-if="index !== undefined"><br>(Alt + {{index + 1}})</span>
     </template>
   </v-tooltip>
@@ -54,7 +54,7 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    pageTitle: {
+    elementName: {
       type: String,
       default: undefined
     },
@@ -82,13 +82,13 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "collapse": "Collapse {pageTitle}",
-    "expand": "Expand {pageTitle}",
+    "collapse": "Collapse {elementName}",
+    "expand": "Expand {elementName}",
     "page": "page"
   },
   "de": {
-    "collapse": "{pageTitle} verstecken",
-    "expand": "{pageTitle} anzeigen",
+    "collapse": "{elementName} verstecken",
+    "expand": "{elementName} anzeigen",
     "page": "Seite"
   }
 }
