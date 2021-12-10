@@ -25,9 +25,7 @@ import VueI18n from 'vue-i18n';
 
 import VeoFilterDialog from '~/components/layout/VeoFilterDialog.vue';
 import VeoDialog from '~/components/layout/VeoDialog.vue';
-
-import * as de from '~/locales/de';
-import * as en from '~/locales/en';
+import { prefixCyData } from '~/plugins/utils';
 
 import { install as VeeValidate } from '~/plugins/vee-validate';
 Vue.use(VeeValidate);
@@ -36,6 +34,25 @@ Vue.use(VueI18n);
 
 const i18n = new VueI18n();
 const vuetify = new Vuetify();
+
+const mockDefaults = {
+  vuetify,
+  i18n,
+  components: {
+    VeoDialog
+  },
+  mocks: {
+    $nuxt: {}, // Needed if useFetch() gets used in composition api
+    $utils: {
+      /*
+       * NOTE!! This function will not work as when called in the browser (either npm run dev or cypress), at it has no access to $options
+       * or $route.
+       * This function will thus just return the string one passed to it, however we use it in the template to enable cypress e2e tests in the future
+       */
+      prefixCyData
+    }
+  }
+};
 
 // Needed if useI18n() gets used in compoisition api
 jest.mock('nuxt-i18n-composable', () => ({
@@ -48,25 +65,21 @@ jest.mock('nuxt-i18n-composable', () => ({
 }));
 
 describe('FilterDialog.vue', () => {
-  it.only('should open veo filter dialog with 5 filters and be expandable to 9 filters', async () => {
+  it.only('should open veo filter dialog with 5 filters and 1 divider and be expandable to 10 filters and 1 divider', async () => {
+    document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
     const wrapper = mount(VeoFilterDialog, {
-      vuetify,
-      i18n,
-      components: {
-        VeoDialog
-      },
-      mocks: {
-        $nuxt: {} // Needed if useFetch() gets used in composition api
+      ...mockDefaults,
+      propsData: {
+        value: true,
+        domain: 'my-completely-invalid-uuid-that-doesnt-matter'
       }
     });
 
-    wrapper.find('.filter-button').trigger('click');
-    await wrapper.vm.$nextTick();
     expect(wrapper.find('.veodialog').isVisible()).toBe(true);
-    expect(wrapper.findAll('.veofilter').wrappers.length).toBe(5);
-    wrapper.find('.expand-button').trigger('click');
+    expect(wrapper.findAll('[data-cy=-filter-option]').wrappers.length).toBe(6);
+    wrapper.find('[data-cy=-expand-button]').trigger('click');
     await wrapper.vm.$nextTick();
-    expect(wrapper.findAll('.veofilter').wrappers.length).toBe(10);
+    expect(wrapper.findAll('[data-cy=-filter-option]').wrappers.length).toBe(11);
   });
 
   it('should open veo filter dialog, select a filter and submit selected filter values and reset filter values (no preseted filters)', async () => {

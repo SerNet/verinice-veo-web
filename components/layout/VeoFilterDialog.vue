@@ -27,6 +27,7 @@
           <v-list-item
             v-for="(option, index) of displayedFilterOptions"
             :key="option.name || `${option.type}_${index}`"
+            :data-cy="$utils.prefixCyData($options, 'filter-option')"
             dense
           >
             <v-divider v-if="option.type === IVeoFilterOptionType.DIVIDER" />
@@ -66,6 +67,7 @@
           </v-list-item>
           <v-list-item
             class="justify-center"
+            :data-cy="$utils.prefixCyData($options, 'expand-button')"
             @click="showAllFilters = !showAllFilters"
           >
             <template v-if="showAllFilters">
