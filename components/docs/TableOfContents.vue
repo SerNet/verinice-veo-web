@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021 Markus Werner
+   - Copyright (C) 2021  Markus Werner
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -76,7 +76,7 @@ export default defineComponent({
     a {
       right: 0;
       &::after {
-        content: ' ' target-counter(attr(href), page);
+        content: ' p. ' target-counter(attr(href), page);
         float: right;
         position: absolute;
         right: 0;

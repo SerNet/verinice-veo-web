@@ -66,7 +66,7 @@ export default defineComponent({
   head(): any {
     return {
       title: 'Dokumentation',
-      script: [{ src: 'https://unpkg.com/pagedjs/dist/paged.polyfill.js' }]
+      script: [{ src: '/paged.polyfill.js' }]
     };
   }
 });
