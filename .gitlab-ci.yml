@@ -60,6 +60,6 @@ print:
   artifacts:
     when: always
     paths:
-      - /usr/src/app/dist/output.pdf
+      - ./dist/output.pdf
   rules:
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'

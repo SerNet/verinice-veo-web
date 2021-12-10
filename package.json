@@ -18,7 +18,7 @@
     "test:e2e-open": "cross-env LANG='de_DE.UTF-8' && cypress open",
     "cy:verify": "cypress verify",
     "cy:info": "cypress info",
-    "print": "docker run -v $(pwd)/print.js:/usr/src/app/print.js -v $(pwd)/dist:/usr/src/app/dist ghcr.io/drpayyne/chrome-puppeteer:latest node print.js"
+    "print": "docker run -v $(pwd)/print.js:/usr/src/app/print.js -v $(pwd)/dist:/usr/src/app/dist ghcr.io/drpayyne/chrome-puppeteer:latest node print.js file:///usr/src/app/dist/docs?print"
   },
   "husky": {
     "hooks": {

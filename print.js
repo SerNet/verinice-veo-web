@@ -16,18 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+const path = require('path');
 const puppeteer = require('puppeteer');
 
 async function main() {
+  const output = path.resolve('./dist/output.pdf');
   const url = process.argv[2] || `${process.env.CI_ENVIRONMENT_URL}/docs/?print`;
   console.log(`Printing: ${url}...`);
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--export-tagged-pdf'] });
   const page = await browser.newPage();
+  page
+    .on('console', (message) => console.log(`${message.type().substr(0, 3).toUpperCase()} ${message.text()}`))
+    .on('pageerror', ({ message }) => console.error(message))
+    .on('response', (response) => console.log(`${response.status()} ${response.url()}`))
+    .on('requestfailed', (request) => console.error(`${request.failure().errorText} ${request.url()}`));
   await page.goto(url, { waitUntil: 'networkidle0' });
-  await page.waitForSelector('.pagedjs_pages');
+  await page.waitForSelector('.pagedjs_pages').catch((e) => {
+    console.error(e);
+  });
   await page.waitForTimeout(10000);
-  const pdf = await page.pdf({ path: './dist/output.pdf', format: 'A4' });
-
+  const pdf = await page.pdf({ path: output, format: 'A4' });
+  console.log(`Successfully created: ${output}`);
   await browser.close();
   return pdf;
 }
