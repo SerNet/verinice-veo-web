@@ -48,7 +48,7 @@ jest.mock('nuxt-i18n-composable', () => ({
 }));
 
 describe('FilterDialog.vue', () => {
-  it('should open veo filter dialog with 5 filters and be expandable to 9 filters', async () => {
+  it.only('should open veo filter dialog with 5 filters and be expandable to 9 filters', async () => {
     const wrapper = mount(VeoFilterDialog, {
       vuetify,
       i18n,
