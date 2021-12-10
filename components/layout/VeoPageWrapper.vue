@@ -156,21 +156,23 @@ export default Vue.extend({
           digit = 10;
         }
 
-        // If the page count is two, we have to behave a bit different to avoid not showing any page
-        if (this.currentPagesCount === 2) {
-          if (digit === 1) {
-            this.togglePage(0);
-            if (this.nextPageIsCollapsed(0)) {
-              this.togglePage(1);
-            }
-          } else {
-            this.togglePage(1);
-            if (this.previousPageIsCollapsed(1)) {
+        if (this.collapsablePages[digit - 1]) {
+          // If the page count is two, we have to behave a bit different to avoid not showing any page
+          if (this.currentPagesCount === 2) {
+            if (digit === 1) {
               this.togglePage(0);
+              if (this.nextPageIsCollapsed(0)) {
+                this.togglePage(1);
+              }
+            } else {
+              this.togglePage(1);
+              if (this.previousPageIsCollapsed(1)) {
+                this.togglePage(0);
+              }
             }
+          } else if (digit <= this.currentPagesCount && this.collapsablePages[digit - 1]) {
+            this.togglePage(digit - 1);
           }
-        } else if (digit <= this.currentPagesCount && this.collapsablePages[digit - 1]) {
-          this.togglePage(digit - 1);
         }
       }
     },
