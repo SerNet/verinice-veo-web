@@ -28,7 +28,6 @@
   </div>
   <VeoPage
     v-else-if="!!entityType"
-    absolute-size
     fullsize
     sticky-header
   >
