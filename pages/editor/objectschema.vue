@@ -18,7 +18,7 @@
 <template>
   <VeoPageWrapper
     collapsable-right
-    :page-width="pageWidths"
+    :page-widths="pageWidths"
     @page-collapsed="onPageCollapsed"
   >
     <template #default>

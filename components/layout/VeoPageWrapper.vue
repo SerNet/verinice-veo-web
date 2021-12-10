@@ -151,14 +151,14 @@ export default Vue.extend({
         return;
       }
       if (event.altKey && event.key >= '0' && event.key <= '9') {
-        let number = Number(event.key);
-        if (number === 0) {
-          number = 10;
+        let digit = Number(event.key);
+        if (digit === 0) {
+          digit = 10;
         }
 
         // If the page count is two, we have to behave a bit different to avoid not showing any page
         if (this.currentPagesCount === 2) {
-          if (number === 1) {
+          if (digit === 1) {
             this.togglePage(0);
             if (this.nextPageIsCollapsed(0)) {
               this.togglePage(1);
@@ -169,8 +169,8 @@ export default Vue.extend({
               this.togglePage(0);
             }
           }
-        } else if (number <= this.currentPagesCount && this.collapsablePages[number - 1]) {
-          this.togglePage(number - 1);
+        } else if (digit <= this.currentPagesCount && this.collapsablePages[digit - 1]) {
+          this.togglePage(digit - 1);
         }
       }
     },
