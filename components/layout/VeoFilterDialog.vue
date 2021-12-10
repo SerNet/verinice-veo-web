@@ -88,7 +88,7 @@
         class="reset-btn"
         @click="onReset"
       >
-        {{$t(`resetFilter`)}}
+        {{t(`resetFilter`)}}
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn
@@ -98,7 +98,7 @@
         :disabled="!filterFormValid"
         @click="onSubmit"
       >
-        {{$t(`submitFilter`)}}
+        {{t(`submitFilter`)}}
       </v-btn>
     </template>
   </VeoDialog>
