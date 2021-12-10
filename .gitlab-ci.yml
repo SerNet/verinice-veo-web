@@ -61,5 +61,6 @@ print:
     when: always
     paths:
       - ./dist/output.pdf
+      - /usr/src/app/dist/output.pdf
   rules:
     - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
