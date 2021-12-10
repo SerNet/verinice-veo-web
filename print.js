@@ -19,14 +19,14 @@
 const puppeteer = require('puppeteer');
 
 async function main() {
-  const url = `${process.env.CI_ENVIRONMENT_URL}/docs/?print`;
+  const url = process.argv[2] || `${process.env.CI_ENVIRONMENT_URL}/docs/?print`;
   console.log(`Printing: ${url}...`);
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--export-tagged-pdf'] });
   const page = await browser.newPage();
   await page.goto(url, { waitUntil: 'networkidle0' });
   await page.waitForSelector('.pagedjs_pages');
   await page.waitForTimeout(10000);
-  const pdf = await page.pdf({ path: './output.pdf', format: 'A4' });
+  const pdf = await page.pdf({ path: './dist/output.pdf', format: 'A4' });
 
   await browser.close();
   return pdf;
