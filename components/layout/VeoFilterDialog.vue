@@ -226,7 +226,7 @@ export default defineComponent({
     }
 
     // We keep a copy of the prop filter object as we only want to change the filters if the user clicks submit
-    const localFilter: Ref<IBaseObject> = ref({});
+    const localFilter: Ref<IBaseObject> = ref(clone(props.filter) || {});
     watch(
       () => props.filter,
       (newValue) => {

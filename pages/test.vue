@@ -36,7 +36,9 @@ import { defineComponent, ref } from '@nuxtjs/composition-api';
 
 export default defineComponent({
   setup() {
-    const filter = ref({});
+    const filter = ref({
+      objectType: 'process'
+    });
     const filterIsVisible = ref(false);
 
     return {
