@@ -15,12 +15,85 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<template>
+  <v-navigation-drawer
+    :width="290"
+    :value="value"
+    app
+    :class="{ 'v-application--is-rtl': right }"
+    clipped
+    :mini-variant="!$vuetify.breakpoint.xs && miniVariant"
+    :permanent="!$vuetify.breakpoint.xs"
+    :temporary="$vuetify.breakpoint.xs"
+    :right="right"
+    v-on="$listeners"
+  >
+    <template #default>
+      <div
+        class="d-flex flex-column fill-height">
+        <!-- Default menu -->
+        <v-list
+          nav
+          dense
+          :shaped="!miniVariant"
+          :rounded="miniVariant"
+          expand
+          class="fill-height d-flex flex-column"
+        >
+          <template
+            v-for="(item, index) in items"
+          >
+            <VeoPrimaryNavigationEntry
+              :key="index"
+              v-bind="item"
+              :collapsed.sync="item.collapsed"
+              :mini-variant="miniVariant"
+              :persist-u-i-state="item.persistCollapsedState"
+              @update:collapsed="onUpdateCollapsed(index, $event)"
+              @update-mini-variant="setMiniVariant($event)"
+            />
+          </template>
+        </v-list>
+      </div>
+    </template>
+    <template #append>
+      <v-list
+        nav
+        dense
+        class="pa-0"
+      >
+        <v-divider />
+        <v-list-item
+          v-if="!$vuetify.breakpoint.xs"
+          class="pl-4"
+          @click="setMiniVariant(!miniVariant)"
+        >
+          <v-list-item-icon>
+            <v-icon v-if="miniVariant">
+              mdi-chevron-double-right
+            </v-icon>
+            <v-icon v-else>
+              mdi-chevron-double-left
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-title v-if="miniVariant">
+            {{ $t('fix') }}
+          </v-list-item-title>
+          <v-list-item-title v-else>
+            {{ $t('collapse') }}
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </template>
+  </v-navigation-drawer>
+</template>
+
 <script lang="ts">
+import Vue from 'vue';
 import { upperFirst } from 'lodash';
 import { computed, ComputedRef } from '@nuxtjs/composition-api';
 import { mdiArchive, mdiClipboardList, mdiFileChart, mdiFileDocument, mdiFormatListChecks, mdiHome } from '@mdi/js';
 
-import VeoPrimaryNavigationBase from './VeoPrimaryNavigationBase.vue';
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
@@ -38,7 +111,7 @@ export interface INavItem {
   persistCollapsedState?: (collapsed: boolean) => void;
 }
 
-export default VeoPrimaryNavigationBase.extend({
+export default Vue.extend({
   name: 'VeoPrimaryNavigation',
   props: {
     right: {

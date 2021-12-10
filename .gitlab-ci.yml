@@ -46,3 +46,14 @@ test:e2e:
       - cypress/screenshots/**/*.png
       - cypress/coverage/**/*
     expire_in: 1 day
+
+print:
+  stage: performance
+  image: ghcr.io/drpayyne/chrome-puppeteer:latest
+  script:
+    - export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+    - node print.js
+  artifacts:
+    when: always
+    paths:
+      - output.pdf
