@@ -57,9 +57,11 @@ print:
     - cd /usr/src/app
     - mkdir dist
     - node print.js
+    - cp /usr/src/app/dist/output.pdf "$CI_PROJECT_DIR/output.pdf"
   artifacts:
     when: always
     paths:
+      - output.pdf
       - ./dist/output.pdf
       - /usr/src/app/dist/output.pdf
   rules:
