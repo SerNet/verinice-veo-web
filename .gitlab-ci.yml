@@ -47,3 +47,23 @@ test:e2e:
       - cypress/screenshots/**/*.png
       - cypress/coverage/**/*
     expire_in: 1 day
+
+print:
+  extends: build
+  stage: performance
+  image: ghcr.io/drpayyne/chrome-puppeteer:latest
+  script:
+    - export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+    - cp print.js /usr/src/app/print.js
+    - cd /usr/src/app
+    - mkdir dist
+    - node print.js
+    - cp /usr/src/app/dist/output.pdf "$CI_PROJECT_DIR/output.pdf"
+  artifacts:
+    when: always
+    paths:
+      - output.pdf
+      - ./dist/output.pdf
+      - /usr/src/app/dist/output.pdf
+  rules:
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
