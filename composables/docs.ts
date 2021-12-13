@@ -57,6 +57,7 @@ export const useDoc = (params: { path: string; locale?: string; localeSeparator?
 };
 
 export const useDocs = <T extends DocPageFetchReturn>(params: {
+  root?: string;
   locale?: string;
   localeSeparator?: string;
   fallbackLocale?: string;
@@ -68,7 +69,7 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   const { $content } = useContext();
   const buildItem = params.buildItem ?? ((v) => v);
   return useAsync(async () => {
-    const fetchResult = await $content({ deep: true })
+    const fetchResult = await (params.root ? $content(params.root, { deep: true }) : $content({ deep: true }))
       .where({ lang: { $undefinedin: [locale, undefined] } })
       .sortBy('path', 'asc')
       .fetch<DocPage>();

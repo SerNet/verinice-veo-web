@@ -2,6 +2,6 @@
 title: Willkommen
 position: 0
 ---
-## Home
+## Startseite
 
 Hier ist die Veo Dokumentation

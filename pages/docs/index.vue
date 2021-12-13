@@ -17,24 +17,29 @@
 -->
 <template>
   <div class="document">
+    <nuxt-link
+      to="/docs"
+      class="exit-print">Druckvorschau schließen</nuxt-link>
     <div class="page">
       <h1 class="mx-auto">veo. Documentation</h1>
     </div>
-    <TableOfContents
-class="page"
-children-property="childItems"
-:value="files" />
-    <div
-v-for="document in documents"
-:id="document.path"
-:key="document.path"
-class="page">
-      <NuxtContent :document="document" />
-    </div>
+    <template v-if="documents">
+      <TableOfContents
+        class="page"
+        children-property="childItems"
+        :value="files" />
+              <div
+                v-for="document in documents"
+                :id="document.path"
+                :key="document.path"
+                class="page">
+                <NuxtContent :document="document" />
+              </div>
+    </template>
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api';
+import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useDocs } from '~/composables/docs';
 export default defineComponent({
@@ -48,7 +53,11 @@ export default defineComponent({
     }
   },
   setup() {
+    const route = useRoute();
+    // It is possible to a query parameter root to only print the contents of a folder/chapter
+    const root = [...(route.value.query.root || [])].join('') || undefined;
     const files = useDocs({
+      root,
       createDirs: true,
       buildItem(item) {
         return {
@@ -59,14 +68,15 @@ export default defineComponent({
       }
     });
 
-    const documents = computed(() => files.value || []);
+    const documents = computed(() => files.value);
 
     return { files, documents };
   },
   head(): any {
     return {
       title: 'Dokumentation',
-      script: [{ src: '/paged.polyfill.js' }]
+      // ensure pagedjs is not embedded until documents have been rendered
+      script: this.documents ? [{ src: '/paged.polyfill.js' }] : []
     };
   }
 });
@@ -86,6 +96,9 @@ html {
     max-width: 900px;
     margin: 1em;
   }
+  .exit-print {
+    display: block !important;
+  }
 }
 @media print {
   @page {
@@ -99,6 +112,10 @@ html {
       content: counter(page) '/' counter(pages);
       font-family: Arial, Sans Serif;
     }
+  }
+
+  .exit-print {
+    display: none;
   }
 
   .page {
