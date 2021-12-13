@@ -28,7 +28,8 @@ export default {
         'http-equiv': 'X-UA-Compatible',
         content: 'IE=edge'
       }
-    ]
+    ],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
 
   /**
@@ -89,6 +90,7 @@ export default {
    ** Nuxt.js modules
    */
   modules: [
+    'nuxt-polyfill',
     '@nuxt/content',
     'nuxt-polyfill',
     [
@@ -103,7 +105,6 @@ export default {
       }
     ]
   ],
-
   content: {
     dir: 'docs',
     liveEdit: false,
@@ -124,7 +125,7 @@ export default {
   },
 
   /**
-   * nuxt-i18n config
+   * @nuxtjs/i18n config
    */
   i18n: {
     strategy: 'no_prefix',
@@ -142,7 +143,11 @@ export default {
     },
     defaultLocale: 'de',
     lazy: true,
-    langDir: 'locales/'
+    langDir: 'locales/',
+    vueI18nLoader: true,
+    vueI18n: {
+      silentFallbackWarn: true
+    }
   },
 
   /**

@@ -303,7 +303,7 @@ export default defineComponent<IProps>({
     const objectSchemaPropertiesPatterns = {
       standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description', '#/properties/domains/status', '#/properties/domains/subType'],
       // Regex explanation: We don't use w+, as the value itself is an esacped regexp. (\w+|%|-)* Seems to crash the browser, so we stick to basically matching everything
-      standardRegex: [/^#\/properties\/domains\/patternProperties\/(.[^/]*)\/properties\/status$/],
+      standardRegex: [/^#\/properties\/domains\/properties\/(.[^/]*)\/properties\/status$/],
       regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/,
       regexLinks: /^#\/properties\/links\/properties\/\w+$/,
       regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/

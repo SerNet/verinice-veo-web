@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
-   - 
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -482,7 +482,8 @@ export default Vue.extend({
       }
       this.urlToNavigate = urlToNavigate;
 
-      const objectSchema = cloneDeep(params.schema) ?? (await this.$api.schema.fetch(params.modelType as string));
+      const currentDomain = this.$user.lastDomain ? [this.$user.lastDomain] : undefined;
+      const objectSchema = cloneDeep(params.schema) ?? (await this.$api.schema.fetch(params.modelType as string, currentDomain));
       // os specific translation within by user uploaded OS
       const osTranslation = cloneDeep(JsonPointer.get(objectSchema, '#/properties/translations') as IVeoObjectSchemaTranslations | undefined);
       // The variable mergedOsTranslation serves to merge general and OS specific translations uploaded by a user. Initial value is general translation object

@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize, Markus Werner, Jonas Heitmann, Jessica Lühnen
-   - 
+   - Copyright (C) 2021  Davit Svandize, Markus Werner, Jonas Heitmann, Jessica Lühnen, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -26,14 +26,13 @@
       size="50"
     />
   </div>
-  <VeoPageWrapper v-else>
-    <VeoPage
-      v-if="!contentsCollapsed && formSchemaHasGroups"
-      :cols="2"
-      :md="2"
-      :xl="2"
-      absolute-size
-    >
+  <VeoPageWrapper
+    v-else
+    :collapsable-left="formSchemaHasGroups"
+    :page-widths="pageWidths"
+    @page-collapsed="onPageCollapsed"
+  >
+    <VeoPage v-if="formSchemaHasGroups">
       <div
         class="button text-uppercase accent--text font-weight-medium my-2"
       >
@@ -47,20 +46,11 @@
         class="mx-n4"
       />
     </VeoPage>
-    <v-divider vertical />
     <VeoPage
       id="scroll-wrapper"
-      absolute-size
-      :cols="!contentsCollapsed && formSchemaHasGroups ? 6 : 8"
-      :md="!contentsCollapsed && formSchemaHasGroups ? 6 : 8"
-      :xl="!contentsCollapsed && formSchemaHasGroups ? 6 : 8"
       sticky-header
     >
       <template #header>
-        <VeoCollapseButton
-          v-if="!$vuetify.breakpoint.xs && formSchemaHasGroups"
-          v-model="contentsCollapsed"
-        />
         <v-col>
           <v-row
             no-gutters
@@ -239,14 +229,7 @@
         />
       </template>
     </VeoPage>
-    <v-divider vertical />
-    <VeoPage
-      v-if="!$vuetify.breakpoint.xsOnly"
-      :cols="4"
-      :md="4"
-      :xl="4"
-      absolute-size
-    >
+    <VeoPage v-if="!$vuetify.breakpoint.xsOnly">
       <VeoTabs sticky-tabs>
         <template #tabs>
           <v-tab :disabled="!$route.params.entity">
@@ -271,8 +254,8 @@
 import { cloneDeep } from 'lodash';
 import Vue from 'vue';
 import { Route } from 'vue-router/types/index';
-import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
@@ -295,7 +278,6 @@ interface IData {
   revisionCache: IBaseObject;
   errorMessages: IValidationErrorMessage[];
   saveBtnLoading: boolean;
-  contentsCollapsed: boolean;
   formModified: {
     isModified: boolean;
     dialog: boolean;
@@ -305,6 +287,7 @@ interface IData {
   alertType: VeoAlertType;
   restoreDialogVisible: boolean;
   etag?: string;
+  pageWidths: Number[];
 }
 
 export default Vue.extend({
@@ -339,7 +322,6 @@ export default Vue.extend({
       revisionCache: {},
       errorMessages: [],
       saveBtnLoading: false,
-      contentsCollapsed: false as boolean,
       formModified: {
         isModified: false,
         dialog: false,
@@ -348,17 +330,20 @@ export default Vue.extend({
       },
       alertType: VeoAlertType.INFO,
       restoreDialogVisible: false,
-      etag: undefined as string | undefined
+      etag: undefined as string | undefined,
+      pageWidths: [2, 7, 3] as Number[]
     };
   },
   async fetch() {
-    const formSchema = await this.$api.form.fetch(this.formId);
+    const rawFormSchema = JSON.stringify(await this.$api.form.fetch(this.formId));
+    const formSchema = JSON.parse(rawFormSchema.replaceAll('{CURRENT_DOMAIN_ID}', this.domainId));
+
     this.isRevision = false;
     this.formModified.isModified = false;
 
     this.objectType = formSchema.modelType;
     if (this.objectType) {
-      const objectSchema = await this.$api.schema.fetch(this.objectType);
+      const objectSchema = await this.$api.schema.fetch(this.objectType, this.domainId);
       const objectData = this.$route.params.entity
         ? await this.$api.entity.fetch(this.objectType, this.objectId)
         : {
@@ -455,7 +440,7 @@ export default Vue.extend({
           const res = await this.$api.entity.create(objectType, {
             ...createdObjectData,
             owner: {
-              targetUri: `/units/${this.unitId}`
+              targetUri: `${this.$config.apiUrl}/units/${this.unitId}`
             }
           });
           // TODO: if Backend API changes response to the created object, return only "this.$api[objectType].create(...)" from above
@@ -613,6 +598,13 @@ export default Vue.extend({
         this.showError(500, this.$t('revision_incompatible').toString());
       }
       return isValid;
+    },
+    onPageCollapsed(collapsedPages: Boolean[]) {
+      if (collapsedPages.some((page) => page)) {
+        this.pageWidths = [0, 9, 3];
+      } else {
+        this.pageWidths = [2, 7, 3];
+      }
     }
   }
 });

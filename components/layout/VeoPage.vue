@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Jonas Heitmann
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -17,62 +17,26 @@
 -->
 <template>
   <v-col
-    class="veo-page"
-    :cols="absoluteSize ? cols : 12"
-    :md="absoluteSize ? medium : 12"
-    :xl="absoluteSize ? xlarge : 12"
-    :class="pageClass"
+    class="veo-page py-0"
+    :cols="12"
+    :lg="fullsize ? 12 : 8"
+    :xl="fullsize ? 12 : 7"
+    :class="isPageWrapperChild? 'px-10' : 'px-4'"
   >
-    <v-row
-      v-if="title"
-      no-gutters
-      class="flex-column veo-page__title"
-    >
-      <v-col
-        :cols="!absoluteSize ? cols : 12"
-        :md="!absoluteSize ? medium : 12"
-        :xl="!absoluteSize ? xlarge : 12"
-        class="d-flex flex-wrap"
-      >
-        <v-skeleton-loader
-          v-if="loading"
-          class="px-4 py-1 skeleton-title"
-          type="text"
-        />
-        <template v-else>
-          <h1 class="d-inline px-4 py-1 flex-grow-0">
-            {{ title }}
-            <slot name="title" />
-          </h1>
-        </template>        
-      </v-col>
-    </v-row>
-    <v-row
-      v-if="showExtensionSlot"
-      no-gutters
-      class="veo-page__header"
-      :class="stickyHeader ? 'veo-page__header--sticky' : ''"
-    >
-      <v-col
-        :cols="!absoluteSize ? cols : 12"
-        :md="!absoluteSize ? medium : 12"
-        :xl="!absoluteSize ? xlarge : 12"
-        class="px-4 py-1"
-      >
+    <VeoPageHeader v-bind="$props">
+      <template #title>
+        <slot name="title" />
+      </template>
+      <template #header>
         <slot name="header" />
-      </v-col>
-    </v-row>
+      </template>
+    </VeoPageHeader>
     <v-row
       no-gutters
       :style="{ 'max-height': '100%', 'min-height': 0, height }"
-      :class="noPadding ? '' : 'pa-4'"
+      class="pa-0"
     >
-      <v-col
-        :cols="!absoluteSize ? cols : 12"
-        :md="!absoluteSize ? medium : 12"
-        :xl="!absoluteSize ? xlarge : 12"
-        :class="contentClass"
-      >
+      <v-col :class="contentClass">
         <slot
           v-if="loading && loadContent"
           name="loading"
@@ -101,40 +65,34 @@
   </v-col>
 </template>
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api';
+import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
+
+import { VeoPageHeaderAlignment } from './VeoPageHeader.vue';
 
 interface IProps {
-  absoluteSize: boolean;
-  title?: string;
-  fullsize: boolean;
-  cols: number | string;
-  md: number | string;
-  xl: number | string;
-  noPadding: boolean;
-  stickyHeader: boolean;
-  pageClass: string;
   contentClass: string;
+  headingLevel: string | number;
+  stickyHeader: boolean;
+  fullsize: boolean;
   height: string;
+  loading: boolean;
+  loadContent: boolean;
+  title?: string;
+  titlebarAlignment: VeoPageHeaderAlignment;
+  isPageWrapperChild: boolean;
 }
 
 export default defineComponent<IProps>({
   props: {
-    pageClass: {
-      type: String,
-      default: ''
-    },
     contentClass: {
       type: String,
       default: ''
     },
-    stickyHeader: {
-      type: Boolean,
-      default: false
+    headingLevel: {
+      type: [Number, String],
+      default: 1
     },
-    /**
-     * If set to true, cols, md and xl are applied to the outer element (default is false as in this case the page handles its max-size itself while applying the scrollbar to the outer element)
-     */
-    absoluteSize: {
+    stickyHeader: {
       type: Boolean,
       default: false
     },
@@ -150,41 +108,6 @@ export default defineComponent<IProps>({
       default: 'auto'
     },
     /**
-     * The size of the page on viewports smaller than md
-     */
-    cols: {
-      type: [String, Number],
-      default: 12
-    },
-    /**
-     * The size of the page on viewports smaller than xl
-     */
-    md: {
-      type: [String, Number],
-      default: 8
-    },
-    /**
-     * The size of the page on viewports bigger than xl
-     */
-    xl: {
-      type: [String, Number],
-      default: 6
-    },
-    /**
-     * The title of the page. Used to standardtize headings
-     */
-    title: {
-      type: String,
-      default: undefined
-    },
-    /**
-     * Removes the default padding from the page's content
-     */
-    noPadding: {
-      type: Boolean,
-      default: false
-    },
-    /**
      * Shows a skeleton for the title if set to true
      */
     loading: {
@@ -197,34 +120,25 @@ export default defineComponent<IProps>({
     loadContent: {
       type: Boolean,
       default: false
+    },
+    /**
+     * The title of the page. Used to standardtize headings
+     */
+    title: {
+      type: String,
+      default: undefined
+    },
+    titlebarAlignment: {
+      type: Number,
+      default: VeoPageHeaderAlignment.LEFT
+    } as PropOptions<VeoPageHeaderAlignment>,
+    isPageWrapperChild: {
+      type: Boolean,
+      default: false
     }
   },
-  setup(props, context) {
-    const medium = computed(() => {
-      if (props.fullsize) {
-        return 12;
-      } else if (props.md === 8 && props.cols <= 8) {
-        return props.cols;
-      } else {
-        return props.md;
-      }
-    });
-
-    const xlarge = computed(() => {
-      if (props.fullsize) {
-        return 12;
-      } else if (props.xl === 6 && props.cols <= 6) {
-        return props.cols;
-      } else {
-        return props.xl;
-      }
-    });
-
-    const showExtensionSlot = computed(() => {
-      return !!context.slots.header;
-    });
-
-    return { medium, xlarge, showExtensionSlot };
+  setup() {
+    return {};
   }
 });
 </script>
@@ -240,33 +154,5 @@ export default defineComponent<IProps>({
   overflow-x: hidden;
   overflow-y: auto;
   position: relative;
-}
-
-.veo-page__title {
-  background: white;
-  flex-grow: 0;
-}
-
-.veo-page__header {
-  background: white;
-  flex-grow: 0;
-  position: relative;
-  top: 0;
-  z-index: 4;
-}
-
-.veo-page__header--sticky {
-  position: sticky;
-}
-
-.skeleton-title {
-  align-items: center;
-  display: flex;
-  height: 56px;
-  width: 300px;
-
-  ::v-deep .v-skeleton-loader__text {
-    height: 32px;
-  }
 }
 </style>

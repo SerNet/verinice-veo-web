@@ -243,7 +243,7 @@ export default Vue.extend({
 
 .fse-input {
   border: 1px solid $grey;
-  min-width: 300px;
+  min-width: 250px;
   overflow: hidden;
 
   .row {
