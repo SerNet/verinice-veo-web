@@ -16,8 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-v-if="document">
+  <VeoPage v-if="document">
     <div class="caption">{{document.path}}</div>
     <NuxtContent :document="document"></NuxtContent>
   </VeoPage>
