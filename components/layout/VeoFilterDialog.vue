@@ -27,7 +27,7 @@
           <v-list-item
             v-for="(option, index) of displayedFilterOptions"
             :key="option.name || `${option.type}_${index}`"
-            :data-cy="$utils.prefixCyData($options, 'filter-option')"
+            :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
             dense
           >
             <v-divider v-if="option.type === IVeoFilterOptionType.DIVIDER" />
@@ -38,6 +38,7 @@
               :required="option.required"
               :rules="option.required ? [requiredRule] : []"
               :disabled="option.disabled"
+              :name="option.name"
               clearable
               dense
               @input="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
@@ -50,6 +51,7 @@
               :rules="option.required ? [requiredRule] : []"
               :items="option.selectOptions"
               :disabled="option.disabled"
+              :name="option.name"
               clearable
               dense
               @change="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
@@ -61,6 +63,7 @@
               :required="option.required"
               :rules="option.required ? [requiredRule] : []"
               :disabled="option.disabled"
+              :name="option.name"
               dense
               @change="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
             />
@@ -107,10 +110,12 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import { mdiChevronDoubleDown, mdiChevronDoubleUp } from '@mdi/js';
-import { defineComponent, ref, computed, Ref, watch, PropOptions, ComputedRef, useFetch, useContext } from '@nuxtjs/composition-api';
+import { defineComponent, ref, computed, Ref, watch, PropOptions, ComputedRef, useFetch, useContext, nextTick } from '@nuxtjs/composition-api';
 import { clone, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
+
 import { BaseObject } from '../forms/utils';
 import { IBaseObject } from '~/lib/utils';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
@@ -187,13 +192,16 @@ export default defineComponent({
     async function fetchSubTypesForSchema(schema: string) {
       const _schema = await $api.schema.fetch(schema);
 
-      subTypes.value[schema] =
+      Vue.set(
+        subTypes.value,
+        schema,
         // @ts-ignore TODO: Remove before merge
         Object.values(_schema.properties.domains.properties)[0].allOf?.map((mapping) => ({
           subType: mapping.if.properties.subType.const,
           status: mapping.then.properties.status.enum,
           name: formschemas.value.find((fs) => fs.subType === mapping.if.properties.subType.const)?.name || {}
-        })) || [];
+        })) || []
+      );
     }
 
     // Form actions
@@ -234,88 +242,94 @@ export default defineComponent({
       }
     );
 
-    const filterOptions: ComputedRef<(IVeoFilterOption | IVeoFilterDivider)[]> = computed(() => [
-      {
-        name: 'objectType',
-        type: IVeoFilterOptionType.SELECT,
-        required: props.objectTypeRequired,
-        alwaysVisible: true,
-        selectOptions: objectTypes.value.map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName })),
-        onChange: () => {
-          delete localFilter.value.subType;
-          delete localFilter.value.status;
-        }
-      },
-      {
-        name: 'subType',
-        type: IVeoFilterOptionType.SELECT,
-        alwaysVisible: true,
-        disabled: !localFilter.value.objectType,
-        selectOptions: (subTypes.value[localFilter.value.objectType] || [])
-          .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
-          .sort((a, b) => {
-            const sortValueA = formschemas.value.find((schema) => schema.subType === a.value)?.sorting;
-            const sortValueB = formschemas.value.find((schema) => schema.subType === b.value)?.sorting;
+    const availableSubTypes = computed(() => subTypes.value[localFilter.value.objectType] || []);
 
-            if (!sortValueA) {
-              return 1;
-            }
-            if (!sortValueB) {
-              return 0;
-            }
+    const filterOptions: ComputedRef<(IVeoFilterOption | IVeoFilterDivider)[]> = computed(() => {
+      return [
+        {
+          name: 'objectType',
+          type: IVeoFilterOptionType.SELECT,
+          required: props.objectTypeRequired,
+          alwaysVisible: true,
+          selectOptions: objectTypes.value.map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName })),
+          onChange: () => {
+            nextTick(() => {
+              delete localFilter.value.subType;
+              delete localFilter.value.status;
+            });
+          }
+        },
+        {
+          name: 'subType',
+          type: IVeoFilterOptionType.SELECT,
+          alwaysVisible: true,
+          disabled: !localFilter.value.objectType,
+          selectOptions: availableSubTypes.value
+            .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
+            .sort((a, b) => {
+              const sortValueA = formschemas.value.find((schema) => schema.subType === a.value)?.sorting;
+              const sortValueB = formschemas.value.find((schema) => schema.subType === b.value)?.sorting;
 
-            return sortValueA.localeCompare(sortValueB);
-          }),
-        onChange: () => {
-          delete localFilter.value.status;
+              if (!sortValueA) {
+                return 1;
+              }
+              if (!sortValueB) {
+                return 0;
+              }
+
+              return sortValueA.localeCompare(sortValueB);
+            }),
+          onChange: () => {
+            delete localFilter.value.status;
+          }
+        },
+        {
+          type: IVeoFilterOptionType.DIVIDER
+        } as IVeoFilterDivider,
+        {
+          name: 'designator',
+          type: IVeoFilterOptionType.TEXT,
+          alwaysVisible: true
+        },
+        {
+          name: 'name',
+          type: IVeoFilterOptionType.TEXT,
+          alwaysVisible: true
+        },
+        {
+          name: 'status',
+          type: IVeoFilterOptionType.SELECT,
+          alwaysVisible: true,
+          disabled: !localFilter.value.objectType || !localFilter.value.subType,
+          selectOptions: availableSubTypes.value
+            .find((subType) => subType.subType === localFilter.value.subType)
+            ?.status.map((status) => ({
+              text: translations.value ? translations.value.lang[locale.value][`${localFilter.value.objectType}_${localFilter.value.subType}_status_${status}`] : status,
+              value: status
+            }))
+        },
+        {
+          name: 'description',
+          type: IVeoFilterOptionType.TEXT
+        },
+        {
+          name: 'updatedBy',
+          type: IVeoFilterOptionType.TEXT
+        },
+        {
+          name: 'notPartOfGroup',
+          type: IVeoFilterOptionType.CHECKBOX
+        },
+        {
+          name: 'hasChildObjects',
+          type: IVeoFilterOptionType.CHECKBOX
+        },
+        {
+          name: 'hasLinks',
+          type: IVeoFilterOptionType.CHECKBOX
         }
-      },
-      {
-        type: IVeoFilterOptionType.DIVIDER
-      } as IVeoFilterDivider,
-      {
-        name: 'designator',
-        type: IVeoFilterOptionType.TEXT,
-        alwaysVisible: true
-      },
-      {
-        name: 'name',
-        type: IVeoFilterOptionType.TEXT,
-        alwaysVisible: true
-      },
-      {
-        name: 'status',
-        type: IVeoFilterOptionType.SELECT,
-        alwaysVisible: true,
-        disabled: !localFilter.value.objectType || !localFilter.value.subType,
-        selectOptions: (subTypes.value[localFilter.value.objectType] || [])
-          .find((subType) => subType.subType === localFilter.value.subType)
-          ?.status.map((status) => ({
-            text: translations.value ? translations.value.lang[locale.value][`${localFilter.value.objectType}_${localFilter.value.subType}_status_${status}`] : status,
-            value: status
-          }))
-      },
-      {
-        name: 'description',
-        type: IVeoFilterOptionType.TEXT
-      },
-      {
-        name: 'updatedBy',
-        type: IVeoFilterOptionType.TEXT
-      },
-      {
-        name: 'notPartOfGroup',
-        type: IVeoFilterOptionType.CHECKBOX
-      },
-      {
-        name: 'hasChildObjects',
-        type: IVeoFilterOptionType.CHECKBOX
-      },
-      {
-        name: 'hasLinks',
-        type: IVeoFilterOptionType.CHECKBOX
-      }
-    ]);
+      ];
+    });
 
     // Display stuff
     const dialog = computed({

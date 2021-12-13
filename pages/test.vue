@@ -15,7 +15,7 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<template>
+<!--<template>
   <VeoPage title="Testseite">
     <template #default>
       <p>Filter is visible: {{ filterIsVisible }}</p>
@@ -29,15 +29,25 @@
       />
     </template>
   </VeoPage>
-</template>
+</template>-->
 
 <script lang="ts">
 import { defineComponent, ref } from '@nuxtjs/composition-api';
+import Vue from 'vue';
 
-export default defineComponent({
+/* export default defineComponent({
   setup() {
     const filter = ref({
-      objectType: 'process'
+      objectType: 'scope',
+      subType: 'SCP_ResponsibleBody',
+      designator: 'SCP-1',
+      name: 'Scope 1',
+      status: 'NEW',
+      description: 'My description',
+      updatedBy: 'user1',
+      notPartOfGroup: 'true',
+      hasChildObjects: 'true',
+      hasLinks: 'true'
     });
     const filterIsVisible = ref(false);
 
@@ -45,6 +55,40 @@ export default defineComponent({
       filter,
       filterIsVisible
     };
+  }
+}); */
+import VeoFilterDialog from '~/components/layout/VeoFilterDialog.vue';
+import VeoDialog from '~/components/layout/VeoDialog.vue';
+
+export default Vue.extend({
+  components: {
+    VeoFilterDialog,
+    VeoDialog
+  },
+  data() {
+    return {
+      filter: undefined,
+      filterIsVisible: false
+    };
+  },
+  render(h) {
+    return h('div', [
+      h(
+        { ...VeoFilterDialog, components: { VeoDialog } },
+        {
+          props: {
+            value: true,
+            domain: 'my-completely-invalid-uuid-that-doesnt-matter',
+            filter: this.$data.filter
+          },
+          on: {
+            'update:filter': (bla: any) => {
+              console.log('Asdf111111111111111111111111111111111111111111111111111111111111111111111111111111111111111', bla);
+            }
+          }
+        }
+      )
+    ]);
   }
 });
 </script>
