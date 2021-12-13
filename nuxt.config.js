@@ -93,7 +93,7 @@ export default {
     'nuxt-polyfill',
     '@nuxt/content',
     [
-      'nuxt-i18n',
+      '@nuxtjs/i18n',
       {
         languages: ['de', 'en'],
         defaultLanguage: 'de',
