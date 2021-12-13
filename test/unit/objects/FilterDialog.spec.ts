@@ -27,13 +27,99 @@ import VeoFilterDialog from '~/components/layout/VeoFilterDialog.vue';
 import VeoDialog from '~/components/layout/VeoDialog.vue';
 import { prefixCyData } from '~/plugins/utils';
 
-import { install as VeeValidate } from '~/plugins/vee-validate';
-Vue.use(VeeValidate);
 Vue.use(Vuetify);
 Vue.use(VueI18n);
 
 const i18n = new VueI18n();
 const vuetify = new Vuetify();
+
+const fetchMock = jest.spyOn(global, 'fetch').mockImplementation(
+  () =>
+    Promise.resolve({
+      headers: {
+        append: () => {},
+        delete: () => {},
+        get: () => null,
+        has: () => true,
+        set: () => {},
+        forEach: () => {}
+      },
+      ok: true,
+      redirected: false,
+      status: 200,
+      statusText: 'OK',
+      type: 'cors',
+      url: 'http://example.com',
+      clone: () => {},
+      blob: '',
+      body: [
+        {
+          schemaName: 'scope',
+          endpoint: 'scopes'
+        }
+      ],
+      text: [
+        {
+          schemaName: 'scope',
+          endpoint: 'scopes'
+        }
+      ],
+      json: [
+        {
+          schemaName: 'scope',
+          endpoint: 'scopes'
+        }
+      ],
+      bodyUsed: '',
+      arrayBuffer: '',
+      formData: ''
+    }) as any
+);
+
+beforeAll(() => {
+  global.fetch = () => {
+    console.log('banane');
+    return Promise.resolve({
+      headers: {
+        append: () => {},
+        delete: () => {},
+        get: () => null,
+        has: () => true,
+        set: () => {},
+        forEach: () => {}
+      },
+      ok: true,
+      redirected: false,
+      status: 200,
+      statusText: 'OK',
+      type: 'cors',
+      url: 'http://example.com',
+      clone: () => {},
+      blob: '',
+      body: [
+        {
+          schemaName: 'scope',
+          endpoint: 'scopes'
+        }
+      ],
+      text: [
+        {
+          schemaName: 'scope',
+          endpoint: 'scopes'
+        }
+      ],
+      json: [
+        {
+          schemaName: 'scope',
+          endpoint: 'scopes'
+        }
+      ],
+      bodyUsed: '',
+      arrayBuffer: '',
+      formData: ''
+    }) as any;
+  };
+});
 
 const mockDefaults = {
   vuetify,
@@ -50,6 +136,30 @@ const mockDefaults = {
        * This function will thus just return the string one passed to it, however we use it in the template to enable cypress e2e tests in the future
        */
       prefixCyData
+    },
+    $api: {
+      schema: {
+        fetchAll: () => {
+          console.log('Bla');
+          return Promise.resolve([{ schemaName: 'scope', endpoint: 'scopes' }]);
+        }
+      }
+    },
+    fetch: () => {
+      console.log('Äasdf123');
+      return Promise.resolve([{ schemaName: 'scope', endpoint: 'scopes' }]);
+    },
+    global: {
+      fetch: () => {
+        console.log('Äasdf123');
+        return Promise.resolve([{ schemaName: 'scope', endpoint: 'scopes' }]);
+      }
+    }
+  },
+  global: {
+    fetch: () => {
+      console.log('Äasdf123444');
+      return Promise.resolve([{ schemaName: 'scope', endpoint: 'scopes' }]);
     }
   }
 };
@@ -65,7 +175,7 @@ jest.mock('nuxt-i18n-composable', () => ({
 }));
 
 describe('FilterDialog.vue', () => {
-  it.only('should open veo filter dialog with 5 filters and 1 divider and be expandable to 10 filters and 1 divider', async () => {
+  it('should open veo filter dialog with 5 filters and 1 divider and be expandable to 10 filters and 1 divider', async () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
     const wrapper = mount(VeoFilterDialog, {
       ...mockDefaults,
@@ -80,6 +190,35 @@ describe('FilterDialog.vue', () => {
     wrapper.find('[data-cy=-expand-button]').trigger('click');
     await wrapper.vm.$nextTick();
     expect(wrapper.findAll('[data-cy=-filter-option]').wrappers.length).toBe(11);
+  });
+
+  it.only('Tests whether existing filters passed to the component are present in the form', () => {
+    const filter = {
+      objectType: 'scope',
+      subType: 'SCP_ResponsibleBody',
+      designator: 'SCP-1',
+      name: 'Scope 1',
+      status: 'NEW',
+      description: 'My description',
+      updatedBy: 'user1',
+      notPartOfGroup: 'true',
+      hasChildObjects: 'true',
+      hasLinks: 'true'
+    };
+
+    document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
+    const wrapper = mount(VeoFilterDialog, {
+      ...mockDefaults,
+      propsData: {
+        value: true,
+        domain: 'my-completely-invalid-uuid-that-doesnt-matter',
+        filter
+      }
+    });
+
+    for (let i = 0; i < Object.keys(filter).length; i++) {
+      expect(wrapper.findAll('[data-cy=-filter-option]').at(0).text()).toBe(Object.values(filter)[i]);
+    }
   });
 
   it('should open veo filter dialog, select a filter and submit selected filter values and reset filter values (no preseted filters)', async () => {
