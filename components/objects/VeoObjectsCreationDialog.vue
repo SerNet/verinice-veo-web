@@ -73,7 +73,7 @@
         <v-col class="text-right">
           <v-btn
             outlined
-            @click="doDiscard"
+            @click="onDiscard"
           >
             {{ $t('global.button.discard') }}
           </v-btn>
@@ -216,7 +216,8 @@ export default defineComponent({
     }
   },
   props: {
-    objectType: { type: String, default: undefined, required: true }
+    objectType: { type: String, default: undefined, required: true },
+    subType: { type: String, default: undefined, required: false }
   },
   setup() {
     const route = useRoute();
@@ -240,6 +241,11 @@ export default defineComponent({
     const formattedEntityType = computed(() => capitalize(entityType.value));
     const reactiveFormActions = computed((): IVeoReactiveFormAction[] => (entityType.value === 'person' ? getPersonReactiveFormActions(this) : []));
 
+    function onDiscard() {
+      entityModified.value.isModified = false;
+      showDialog.value = false;
+    }
+
     return {
       showDialog,
       isValid,
@@ -253,7 +259,8 @@ export default defineComponent({
       unitID,
       entityType,
       formattedEntityType,
-      reactiveFormActions
+      reactiveFormActions,
+      onDiscard
     };
   },
 
@@ -286,10 +293,6 @@ export default defineComponent({
     }
   },
   methods: {
-    doDiscard() {
-      this.entityModified.isModified = false;
-      this.$router.go(-1);
-    },
     async save(_event: any, redirect: boolean = false) {
       this.saveBtnLoading = true;
       this.formatObjectData();
