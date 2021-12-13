@@ -92,7 +92,6 @@ export default {
   modules: [
     'nuxt-polyfill',
     '@nuxt/content',
-    'nuxt-polyfill',
     [
       'nuxt-i18n',
       {
