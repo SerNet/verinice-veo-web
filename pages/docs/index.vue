@@ -94,7 +94,7 @@ html {
     counter-increment: page;
   }
 
-  @page:right {
+  @page {
     @bottom-right {
       content: counter(page) '/' counter(pages);
       font-family: Arial, Sans Serif;
