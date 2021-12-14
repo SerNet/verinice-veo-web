@@ -33,7 +33,7 @@
       #default
     >
       {{ t(value ? 'expand' : 'collapse', { elementName: elementName || t('page').toString() }) }}
-      <span v-if="index !== undefined"><br>(Alt + {{index + 1}})</span>
+      <span v-if="index !== undefined"><br>(Alt/{{ t('control') }} + {{index + 1}})</span>
     </template>
   </v-tooltip>
 </template>
@@ -83,11 +83,13 @@ export default defineComponent({
 {
   "en": {
     "collapse": "Collapse {elementName}",
+    "control": "Ctrl",
     "expand": "Expand {elementName}",
     "page": "page"
   },
   "de": {
     "collapse": "{elementName} verstecken",
+    "control": "Strg",
     "expand": "{elementName} anzeigen",
     "page": "Seite"
   }
