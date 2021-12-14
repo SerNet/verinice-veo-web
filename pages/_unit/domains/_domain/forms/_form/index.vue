@@ -25,7 +25,7 @@
         id="stepOne"
         outlined
         color="primary"
-        class="align-self-center px-4 ma-3"
+        class="align-self-center px-4 ma-4"
         @click="startIntro()"
       >
         Start Intro
@@ -69,16 +69,16 @@
           </v-row>
           <v-row dense>
             <v-col
+
               class="flex-grow-1 search-bar"
               :class="{ 'search-bar-desktop': $vuetify.breakpoint.lgAndUp }"
             >
-               <VeoFilterDialog 
+              <VeoListSearchBar
+                id="hintTwo"
                 v-model="filter"
-                :object-type-required="false"
-                :object-type="objectType"
-                :preset-filter="presetFilter"
+                :object-type="formSchema && formSchema.modelType"
                 @reset="filter = $event"
-              /> 
+              />
             </v-col>
           </v-row>
         </template>
@@ -94,6 +94,7 @@
             v-on="on"
           />
         </template>
+
       </VeoEntityModifier>
     </template>
   </VeoPage>
@@ -130,6 +131,7 @@ export default Vue.extend({
     } else {
       this.objects = { items: [], page: 1, pageCount: 0, totalItemCount: 0 };
     }
+
     this.formTypes = await this.$api.form.fetchAll(this.domainId).then((formTypes: IVeoFormSchemaMeta[]) =>
       formTypes.map((entry: IVeoFormSchemaMeta) => {
         return {
@@ -145,9 +147,6 @@ export default Vue.extend({
     };
   },
   computed: {
-    presetFilter(): IVeoFilter {
-      return { designator: undefined, name: undefined, description: undefined, updatedBy: undefined, status: undefined };
-    },
     unitId() {
       return separateUUIDParam(this.$route.params.unit).id;
     },
@@ -185,11 +184,7 @@ export default Vue.extend({
       name: this.$route.query.name,
       status: this.$route.query.status,
       description: this.$route.query.description,
-      updatedBy: this.$route.query.updatedBy,
-      hasLinks: undefined,
-      objectType: undefined,
-      notPartOfGroup: undefined,
-      hasChildObjects: undefined
+      updatedBy: this.$route.query.updatedBy
     };
   },
   methods: {
