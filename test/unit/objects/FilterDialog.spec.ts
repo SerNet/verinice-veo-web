@@ -16,11 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import Vue from 'vue';
-
 import { mount } from '@vue/test-utils';
-
 import Vuetify from 'vuetify';
-import 'regenerator-runtime/runtime';
 import VueI18n from 'vue-i18n';
 
 import VeoFilterDialog from '~/components/layout/VeoFilterDialog.vue';
@@ -128,63 +125,87 @@ describe('FilterDialog.vue', () => {
     }
   });
 
-  it.only('should open veo filter dialog, select a filter and submit selected filter values and reset filter values (no preseted filters)', async () => {
+  it('should open veo filter dialog, select a filter and submit selected filter values', () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
 
-    // We use a wrapper, as vue-test-utils don't work with composition api emit
-    const wrapper = Vue.extend({
-      components: {
-        VeoFilterDialog,
-        VeoDialog
-      },
-      data() {
-        return {
-          filter: undefined,
-          filterIsVisible: false
-        };
-      },
-      render(h) {
-        return h('div', [
-          h(
-            { ...VeoFilterDialog, components: { VeoDialog } },
-            {
-              props: {
-                value: true,
-                domain: 'my-completely-invalid-uuid-that-doesnt-matter',
-                filter: this.$data.filter
-              },
-              on: {
-                'update:filter': (bla: any) => {
-                  console.log('Asdf111111111111111111111111111111111111111111111111111111111111111111111111111111111111111', bla);
-                }
-              }
-            }
-          )
-        ]);
+    const wrapper = mount(VeoFilterDialog, {
+      ...mockDefaults,
+      propsData: {
+        value: true,
+        domain: 'my-completely-invalid-uuid-that-doesnt-matter',
+        filter: {}
       }
     });
-
-    const app = mount(wrapper, {
-      ...mockDefaults
-    });
-    const filterDialog = app.find('.v-dialog');
+    const filterDialog = wrapper.find('.v-dialog');
 
     filterDialog.find('[name=designator]').setValue('Designator Text');
     filterDialog.find('[name=name]').setValue('Name');
-    filterDialog.find('.submit-btn').trigger('click');
+    filterDialog.find('[data-cy=-submit-button]').vm.$emit('click'); // v-btn is NOT native, thus we can't use trigger(click)
 
-    await app.vm.$nextTick();
+    const emittedEvents = wrapper.emitted();
+    expect(emittedEvents['update:filter']).toBeTruthy();
+    const emittedFilters: any[] = emittedEvents['update:filter']?.pop() || [];
 
-    /* expect(submitEvent).toEqual({
+    expect(emittedFilters[0]).toBeTruthy();
+    expect(emittedFilters[0]).toEqual({
       designator: 'Designator Text',
       name: 'Name'
-    }); */
+    });
+  });
 
-    /* filterDialog.find('.reset-btn').trigger('click');
+  it('should open veo filter dialog, select a filter and reset all filters', () => {
+    document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
 
-    const resetEvents = filterDialog.emitted()['updated:filter'];
-    const [resetEvent] = JSON.parse(JSON.stringify(resetEvents?.pop() || []));
+    const wrapper = mount(VeoFilterDialog, {
+      ...mockDefaults,
+      propsData: {
+        value: true,
+        domain: 'my-completely-invalid-uuid-that-doesnt-matter',
+        filter: {
+          objectType: 'scope',
+          name: 'My name'
+        }
+      }
+    });
+    const filterDialog = wrapper.find('.v-dialog');
 
-    expect(resetEvent).toEqual({}); */
+    filterDialog.find('[name=designator]').setValue('Designator Text');
+    filterDialog.find('[data-cy=-reset-button]').vm.$emit('click'); // v-btn is NOT native, thus we can't use trigger(click)
+
+    const emittedEvents = wrapper.emitted();
+    expect(emittedEvents['update:filter']).toBeTruthy();
+    const emittedFilters: any[] = emittedEvents['update:filter']?.pop() || [];
+
+    expect(emittedFilters[0]).toBeTruthy();
+    expect(emittedFilters[0]).toEqual({});
+  });
+
+  it.only('should open veo filter dialog, select a filter, close dialog and reopen dialog. All filters should be reset', () => {
+    document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
+
+    const wrapper = mount(VeoFilterDialog, {
+      ...mockDefaults,
+      propsData: {
+        value: true,
+        domain: 'my-completely-invalid-uuid-that-doesnt-matter',
+        filter: {
+          objectType: 'scope',
+          name: 'My name'
+        }
+      }
+    });
+    const filterDialog = wrapper.find('.v-dialog');
+
+    filterDialog.find('[name=designator]').setValue('Designator Text');
+    expect((wrapper.getComponent(VeoFilterDialog) as any).vm.localFilter).toEqual({
+      objectType: 'scope',
+      name: 'My name',
+      designator: 'Designator Text'
+    });
+    filterDialog.find('.close-button').vm.$emit('click'); // v-btn is NOT native, thus we can't use trigger(click)
+    expect((wrapper.getComponent(VeoFilterDialog) as any).vm.localFilter).toEqual({
+      objectType: 'scope',
+      name: 'My name'
+    });
   });
 });

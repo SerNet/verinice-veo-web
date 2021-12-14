@@ -90,7 +90,7 @@
     <template #dialog-options>
       <v-btn
         text
-        class="reset-btn"
+        :data-cy="$utils.prefixCyData($options, 'reset-button')"
         @click="onReset"
       >
         {{t(`resetFilter`)}}
@@ -98,7 +98,7 @@
       <v-spacer></v-spacer>
       <v-btn
         color="primary"
-        class="submit-btn"
+        :data-cy="$utils.prefixCyData($options, 'submit-button')"
         text
         :disabled="!filterFormValid"
         @click="onSubmit"
