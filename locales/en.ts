@@ -78,10 +78,10 @@ export default {
   'objectlist.name': 'Object name',
   'objectlist.updatedat': 'Last change',
   'objectlist.updatedBy': 'Editor',
-  'objectlist.objectType': 'Objecttype',
+  'objectlist.objectType': 'Object type',
   'objectlist.subType': 'Subtype',
   'objectlist.notPartOfGroup': 'not part of a group',
-  'objectlist.hasChildObjects': 'haa child objects',
+  'objectlist.hasChildObjects': 'has child objects',
   'objectlist.hasLinks': 'has links',
 
   'page.editors.title': 'Editors',

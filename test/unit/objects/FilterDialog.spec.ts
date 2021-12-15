@@ -85,7 +85,7 @@ describe('FilterDialog.vue', () => {
       }
     });
 
-    expect(filterDialog.find('.veodialog').isVisible()).toBe(true);
+    expect(filterDialog.find('.veo-dialog').isVisible()).toBe(true);
     expect(filterDialog.findAll('[data-cy=-filter-option]').wrappers.length).toBe(5);
     filterDialog.find('[data-cy=-expand-button]').trigger('click');
     await filterDialog.vm.$nextTick();

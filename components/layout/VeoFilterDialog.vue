@@ -19,7 +19,7 @@
   <VeoDialog
     v-model="dialog"
     v-bind="$attrs"
-    :headline="t('filterList')"
+    :headline="upperFirst(t('filterList').toString())"
   >
     <template #default>
       <v-form v-model="filterFormValid">
@@ -75,12 +75,12 @@
           >
             <template v-if="showAllFilters">
               <v-icon>{{ mdiChevronDoubleUp }}</v-icon>
-              <span>{{ t('collapseOptions') }}</span>
+              <span>{{ upperFirst(t('collapseOptions').toString()) }}</span>
               <v-icon>{{mdiChevronDoubleUp}}</v-icon>
             </template>
             <template v-else>
               <v-icon>{{ mdiChevronDoubleDown }}</v-icon>
-              <span>{{ t('expandOptions') }}</span>
+              <span>{{ upperFirst(t('expandOptions').toString()) }}</span>
               <v-icon>{{ mdiChevronDoubleDown }}</v-icon>
             </template>
           </v-list-item>
@@ -113,7 +113,7 @@
 import Vue from 'vue';
 import { mdiChevronDoubleDown, mdiChevronDoubleUp } from '@mdi/js';
 import { defineComponent, ref, computed, Ref, watch, PropOptions, ComputedRef, useFetch, useContext, nextTick } from '@nuxtjs/composition-api';
-import { clone, upperFirst } from 'lodash';
+import { clone, omitBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { BaseObject } from '../forms/utils';
@@ -210,11 +210,7 @@ export default defineComponent({
      */
     function onSubmit() {
       // Remove false, null and undefined from object, as we only want filters that are applied in the object
-      for (const key of Object.keys(localFilter.value)) {
-        if (!localFilter.value[key]) {
-          delete localFilter.value[key];
-        }
-      }
+      localFilter.value = omitBy(localFilter.value, (property) => !property);
       emit('update:filter', clone(localFilter.value));
       emit('input', false);
     }
@@ -339,9 +335,11 @@ export default defineComponent({
       set(value: boolean) {
         emit('input', value);
 
-        // If the dialog gets closed, restore pristine state
+        // If the dialog gets closed, restore pristine state, 150ms seems to be the animation duration of v-dialog
         if (!value) {
-          localFilter.value = clone(props.filter) as IBaseObject;
+          setTimeout(() => {
+            localFilter.value = clone(props.filter) as IBaseObject;
+          }, 150);
         }
       }
     });
@@ -370,23 +368,19 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-
-</style>
-
 <i18n>
 {
   "en": {
-    "collapseOptions": "More options",
-    "expandOptions": "Less options",
-    "filterList": "Filter list",
+    "collapseOptions": "more options",
+    "expandOptions": "less options",
+    "filterList": "filter list",
     "resetFilter": "reset filter",
     "submitFilter": "apply filter"
   },
   "de": {
-    "collapseOptions": "Weniger Optionen",
-    "expandOptions": "Weitere Optionen",
-    "filterList": "Liste filtern",
+    "collapseOptions": "weniger Optionen",
+    "expandOptions": "weitere Optionen",
+    "filterList": "liste filtern",
     "resetFilter": "filter zurücksetzen",
     "submitFilter": "filter anwenden"
   }

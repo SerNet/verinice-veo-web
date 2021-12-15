@@ -22,7 +22,7 @@
     :persistent="persistent"
     :eager="eager"
     :width="large ? '900px' : '450px'"
-    class="veodialog"
+    class="veo-dialog"
   >
     <v-card>
       <v-card-title
