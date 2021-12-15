@@ -46,7 +46,6 @@
         />
         <VeoStackedStatusBarChartWidget
           v-else
-          :title="objectStatusInformation.objectType"
           chart-height="30"
           :data="objectStatusInformation.subTypes"
           :loading="$fetchState.pending"
@@ -157,21 +156,35 @@ export default defineComponent({
 
         chartData.value.push({
           objectType: type.schemaName,
-          subTypes: extractAllSubtypeStatusFromSchema(schema).map((subtype) => {
-            let currentColorIndex = 0;
+          subTypes: extractAllSubtypeStatusFromSchema(schema)
+            .map((subtype) => {
+              let currentColorIndex = 0;
 
-            return {
-              subType: subtype.subType,
-              title: formschemas.find((formschema) => formschema.subType === subtype.subType)?.name[locale.value] || subtype.subType,
-              statusTypes: subtype.status.map((status: string) => ({
-                status,
-                label: translations.lang && translations.lang[locale.value] ? translations.lang[locale.value][`${type.schemaName}_${subtype.subType}_status_${status}`] : status,
-                value: 0,
-                color: CHART_COLORS[currentColorIndex++ % CHART_COLORS.length]
-              })),
-              totalEntities: 0
-            };
-          })
+              return {
+                subType: subtype.subType,
+                title: formschemas.find((formschema) => formschema.subType === subtype.subType)?.name[locale.value] || subtype.subType,
+                statusTypes: subtype.status.map((status: string) => ({
+                  status,
+                  label: translations.lang && translations.lang[locale.value] ? translations.lang[locale.value][`${type.schemaName}_${subtype.subType}_status_${status}`] : status,
+                  value: 0,
+                  color: CHART_COLORS[currentColorIndex++ % CHART_COLORS.length]
+                })),
+                totalEntities: 0
+              };
+            })
+            .sort((a, b) => {
+              const sortValueA = formschemas.find((schema) => schema.subType === a.subType)?.sorting;
+              const sortValueB = formschemas.find((schema) => schema.subType === b.subType)?.sorting;
+
+              if (!sortValueA) {
+                return 1;
+              }
+              if (!sortValueB) {
+                return 0;
+              }
+
+              return sortValueA.localeCompare(sortValueB);
+            })
         });
       }
 

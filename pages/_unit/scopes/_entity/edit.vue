@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper>
+  <VeoPageWrapper :page-widths="[9, 3]">
     <template #default>
       <VeoPage
         absolute-size

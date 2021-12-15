@@ -18,7 +18,7 @@
 <template>
   <v-card flat>
     <template v-if="loading">
-      <v-card-title>
+      <v-card-title v-if="title">
         <v-skeleton-loader
           type="heading"
           width="400"
@@ -36,7 +36,7 @@
       </v-card-text>
     </template>
     <template v-else>
-      <v-card-title>{{ title }}</v-card-title>
+      <v-card-title v-if="title">{{ title }}</v-card-title>
       <v-card-text>
         <slot />
       </v-card-text>
@@ -54,7 +54,7 @@ export default defineComponent<IProps>({
   props: {
     title: {
       type: String,
-      required: true
+      default: undefined
     },
     loading: {
       type: Boolean,
