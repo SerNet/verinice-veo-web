@@ -21,7 +21,7 @@
     max-width="80%"
     :persistent="persistent"
     :eager="eager"
-    :width="large ? '900px' : '450px'"
+    :width="width"
   >
     <v-card>
       <v-card-title
@@ -75,6 +75,10 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
+    xLarge: {
+      type: Boolean,
+      default: false
+    },
     persistent: {
       type: Boolean,
       default: false
@@ -117,6 +121,15 @@ export default Vue.extend({
     },
     hasActions(): boolean {
       return (this.$slots['dialog-options']?.length || 0) > 0;
+    },
+    width(): string {
+      if (this.large) {
+        return '900px';
+      } else if (this.xLarge) {
+        return '1350px';
+      } else {
+        return '450px';
+      }
     }
   },
   methods: {
