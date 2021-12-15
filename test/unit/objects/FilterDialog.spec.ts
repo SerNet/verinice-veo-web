@@ -180,7 +180,7 @@ describe('FilterDialog.vue', () => {
     expect(emittedFilters[0]).toEqual({});
   });
 
-  it.only('should open veo filter dialog, select a filter, close dialog and reopen dialog. All filters should be reset', () => {
+  it('should open veo filter dialog, select a filter, close dialog and reopen dialog. All filters should be reset', async () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
 
     const wrapper = mount(VeoFilterDialog, {
@@ -203,6 +203,7 @@ describe('FilterDialog.vue', () => {
       designator: 'Designator Text'
     });
     filterDialog.find('.close-button').vm.$emit('click'); // v-btn is NOT native, thus we can't use trigger(click)
+    await new Promise((resolve) => setTimeout(resolve, 200)); // Waiting for 200ms, as the filter only gets reset after the close animation (150ms)
     expect((wrapper.getComponent(VeoFilterDialog) as any).vm.localFilter).toEqual({
       objectType: 'scope',
       name: 'My name'
