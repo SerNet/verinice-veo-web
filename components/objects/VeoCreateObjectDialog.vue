@@ -59,6 +59,7 @@
 import { defineComponent, computed, ref, useFetch, useContext, Ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
+
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -91,6 +92,13 @@ export default defineComponent({
       },
       set(value: boolean) {
         emit('input', value);
+
+        // If the dialog gets closed, restore pristine state, 150ms seems to be the animation duration of v-dialog
+        if (!value) {
+          setTimeout(() => {
+            objectData.value = {};
+          }, 150);
+        }
       }
     });
 
