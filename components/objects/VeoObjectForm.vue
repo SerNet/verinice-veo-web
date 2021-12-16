@@ -18,30 +18,36 @@
 <template>
   <VeoPageWrapper :page-widths="[8, 4]">
     <template #default>
-      <VeoPage>
-        <template #default>
-          <v-row class="flex-column">
-            <v-col>
-              <v-row class="align-center">
-                <v-col cols="auto">
-                  <h3>{{ upperFirst(t('display').toString()) }}:</h3>
-                </v-col>
-                <v-col cols="auto">
-                  <v-select
-                    dense
-                    hide-details
-                  />
-                </v-col>
-              </v-row>
+      <VeoPage sticky-header>
+        <template #header>
+          <v-row class="align-center mx-0 pb-4">
+            <v-col cols="auto">
+              <h3>{{ upperFirst(t('display').toString()) }}:</h3>
             </v-col>
-            <v-col>
-              <slot name="form" />
-              <VeoForm
-                v-model="objectData"
-                :schema="objectschema"
+            <v-col cols="auto">
+              <v-select
+                v-model="selectedDisplayOption"
+                dense
+                hide-details
+                :items="displayOptions"
               />
             </v-col>
           </v-row>
+        </template>
+        <template #default>
+          <slot name="form" />
+          <VeoForm
+            v-if="!$fetchState.pending && objectschema"
+            v-model="objectData"
+            :schema="objectschema"
+            :ui="currentFormSchema && currentFormSchema.content"
+            :general-translation="translations && translations[locale]"
+            :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
+          />
+          <v-skeleton-loader
+            v-else
+            type="text@3"
+          />
         </template>
       </VeoPage>
       <VeoPage>
@@ -67,10 +73,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropOptions } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, PropOptions, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
+
 import { IBaseObject } from '~/lib/utils';
+import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -80,16 +88,87 @@ export default defineComponent({
     } as PropOptions<IBaseObject>,
     objectschema: {
       type: Object,
-      required: true
-    },
+      default: undefined
+    } as PropOptions<IVeoObjectSchema>,
     disableHistory: {
       type: Boolean,
       default: false
+    },
+    domainId: {
+      type: String,
+      required: true
+    },
+    preselectedSubType: {
+      type: String,
+      default: undefined
     }
   },
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
+    const { $api } = useContext();
 
+    // Formschema/display stuff
+    const translations: Ref<{ [key: string]: IVeoTranslationCollection } | undefined> = ref(undefined);
+    const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
+    const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
+    const { $fetch } = useFetch(async () => {
+      if (!translations.value) {
+        translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
+      }
+      if (formSchemas.value.length === 0) {
+        formSchemas.value = await $api.form.fetchAll(props.domainId);
+
+        if (props.preselectedSubType) {
+          const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
+
+          if (formSchemaId) {
+            selectedDisplayOption.value = formSchemaId;
+          }
+        }
+      }
+      if (selectedDisplayOption.value !== 'objectschema') {
+        currentFormSchema.value = await $api.form.fetch(selectedDisplayOption.value);
+      } else {
+        currentFormSchema.value = undefined;
+      }
+    });
+
+    const selectedDisplayOption = ref('objectschema');
+    const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
+      const availableFormSchemas: { text: string; value: string | undefined }[] = formSchemas.value
+        .filter((formSchema) => formSchema.modelType === props.objectschema?.title)
+        .map((formSchema) => ({
+          text: formSchema.name[locale.value] || formSchema.subType,
+          value: formSchema.id
+        }));
+      availableFormSchemas.unshift({ text: upperFirst(t('objectView').toString()), value: 'objectschema' });
+      return availableFormSchemas;
+    });
+
+    watch(selectedDisplayOption, () => {
+      $fetch();
+    });
+
+    function getFormschemaIdBySubType(subType: string) {
+      const formSchemaId = formSchemas.value.find((formschema) => formschema.subType === subType)?.id;
+      if (formSchemaId) {
+        return formSchemaId;
+      }
+    }
+
+    watch(
+      () => props.preselectedSubType,
+      (newValue) => {
+        const formSchemaId = getFormschemaIdBySubType(newValue);
+        if (newValue && formSchemaId) {
+          selectedDisplayOption.value = formSchemaId;
+        } else {
+          selectedDisplayOption.value = 'objectschema';
+        }
+      }
+    );
+
+    // Form stuff
     const objectData = computed({
       get() {
         return props.value as IBaseObject;
@@ -100,7 +179,12 @@ export default defineComponent({
     });
 
     return {
+      currentFormSchema,
+      displayOptions,
+      locale,
       objectData,
+      selectedDisplayOption,
+      translations,
 
       upperFirst,
       t
@@ -114,11 +198,13 @@ export default defineComponent({
   "en": {
     "display": "display",
     "messages": "messages",
+    "objectView": "object view",
     "tableOfContents": "contents"
   },
   "de": {
     "display": "darstellung",
     "messages": "meldungen",
+    "objectView": "objektansicht",
     "tableOfContents": "inhalt"
   }
 }

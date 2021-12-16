@@ -22,8 +22,9 @@
     :persistent="persistent"
     :eager="eager"
     :width="width"
+    :content-class="contentClass"
   >
-    <v-card>
+    <v-card :class="cardClass">
       <v-card-title
         class="headline"
         :class="large ? '' : 'pl-4 pr-0 py-0'"
@@ -110,6 +111,14 @@ export default Vue.extend({
       default: false
     },
     innerClass: {
+      type: String,
+      default: ''
+    },
+    contentClass: {
+      type: String,
+      default: ''
+    },
+    cardClass: {
       type: String,
       default: ''
     }

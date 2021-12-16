@@ -21,21 +21,27 @@
     <VeoCreateObjectDialog
       v-model="showCreateObjectDialog"
       object-type = "process"
-      domain-id="72df5644-90cf-4ea6-9991-0b8f2b1a3999"
+      :domain-id="domainId"
+      sub-type="PRO_DataProcessing"
     />
     <p class="mt-4">showCreateObjectDialog: {{ showCreateObjectDialog }}</p>
   </VeoPage>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api';
+import { defineComponent, ref, useRoute } from '@nuxtjs/composition-api';
+import { separateUUIDParam } from '~/lib/utils';
 
 export default defineComponent({
   setup() {
+    const route = useRoute();
+
     const showCreateObjectDialog = ref(false);
+    const domainId = ref(separateUUIDParam(route.value.params.domain).id);
 
     return {
-      showCreateObjectDialog
+      showCreateObjectDialog,
+      domainId
     };
   }
 });

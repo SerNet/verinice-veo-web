@@ -20,26 +20,20 @@
     v-model="dialog"
     :headline="upperFirst(t('createObject').toString())"
     x-large
+    persistent
     fixed-footer
     fixed-header
+    content-class="overflow-hidden fill-height"
+    card-class="d-flex flex-column fill-height"
+    inner-class="overflow-hidden"
   >
     <template #default>
       <VeoObjectForm
-        v-if="objectschema"
         v-model="objectData"
         :objectschema="objectschema"
+        :domain-id="domainId"
+        :preselected-sub-type="subType"
       />
-      <template
-        v-for="index in 12"
-        v-else
-      >
-        <v-skeleton-loader
-          :key="index"
-          type="heading"
-          class="my-4"
-        />
-      </template>
-      
     </template>
     <template #dialog-options>
       <div
