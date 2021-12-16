@@ -78,6 +78,11 @@ export default {
   'objectlist.name': 'Object name',
   'objectlist.updatedat': 'Last change',
   'objectlist.updatedBy': 'Editor',
+  'objectlist.objectType': 'Object type',
+  'objectlist.subType': 'Subtype',
+  'objectlist.notPartOfGroup': 'not part of a group',
+  'objectlist.hasChildObjects': 'has child objects',
+  'objectlist.hasLinks': 'has links',
 
   'page.editors.title': 'Editors',
   'page.editors.calltoaction': 'What do you want to do?',
