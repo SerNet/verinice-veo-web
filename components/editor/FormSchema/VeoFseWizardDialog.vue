@@ -403,7 +403,7 @@ export default Vue.extend({
       }
     },
     generateInitialFs() {
-      const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? null : this.createForm.subType;
+      const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? '' : this.createForm.subType;
       const _sorting = !this.createForm.sorting || trim(this.createForm.sorting).length === 0 ? null : this.createForm.sorting;
       this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.title }, this.objectSchema?.title || this.createForm.modelType, _subtype, _sorting);
       this.emitSchemas();

@@ -306,7 +306,7 @@ export interface IVeoTranslations {
 
 export interface IVeoFormSchemaMeta {
   modelType: string;
-  subType: string | null;
+  subType: string;
   name: { [key: string]: string };
   id?: string;
   domainId?: string;
