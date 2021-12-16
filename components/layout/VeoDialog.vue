@@ -43,7 +43,7 @@
         </v-btn>
       </v-card-title>
       <v-card-text
-        class="pa-4"
+        :class="[innerClass, 'pa-4']"
         style="position: relative;"
       >
         <slot />
@@ -108,6 +108,10 @@ export default Vue.extend({
     eager: {
       type: Boolean,
       default: false
+    },
+    innerClass: {
+      type: String,
+      default: ''
     }
   },
   computed: {

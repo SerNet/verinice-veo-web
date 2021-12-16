@@ -16,52 +16,54 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-row>
-    <v-col
-      cols="8"
-      class="flex-grow-1"
-      style="border-right: 1px solid #0000001F"
-    >
-      <v-row class="flex-column">
-        <v-col>
-          <v-row class="align-center">
-            <v-col cols="auto">
-              <h3>{{ upperFirst(t('display').toString()) }}:</h3>
+  <VeoPageWrapper :page-widths="[8, 4]">
+    <template #default>
+      <VeoPage>
+        <template #default>
+          <v-row class="flex-column">
+            <v-col>
+              <v-row class="align-center">
+                <v-col cols="auto">
+                  <h3>{{ upperFirst(t('display').toString()) }}:</h3>
+                </v-col>
+                <v-col cols="auto">
+                  <v-select
+                    dense
+                    hide-details
+                  />
+                </v-col>
+              </v-row>
             </v-col>
-            <v-col cols="auto">
-              <v-select
-                dense
-                hide-details
+            <v-col>
+              <slot name="form" />
+              <VeoForm
+                v-model="objectData"
+                :schema="objectschema"
               />
             </v-col>
           </v-row>
-        </v-col>
-        <v-col>
-          <slot name="form" />
-          <VeoForm
-            v-model="objectData"
-            :schema="objectschema"
-          />
-        </v-col>
-      </v-row>
-    </v-col>
-    <v-col cols="4">
-      <VeoTabs>
-        <template #tabs>
-          <v-tab>{{ t('tableOfContents') }}</v-tab>
-          <v-tab>{{ t('messages') }} (0)</v-tab>
         </template>
-        <template #items>
-          <v-tab-item>
-            Table of contents
-          </v-tab-item>
-          <v-tab-item>
-            messages
-          </v-tab-item>
+      </VeoPage>
+      <VeoPage>
+        <template #default>
+          <VeoTabs>
+            <template #tabs>
+              <v-tab>{{ t('tableOfContents') }}</v-tab>
+              <v-tab>{{ t('messages') }} (0)</v-tab>
+            </template>
+            <template #items>
+              <v-tab-item>
+                Table of contents
+              </v-tab-item>
+              <v-tab-item>
+                messages
+              </v-tab-item>
+            </template>
+          </VeoTabs>
         </template>
-      </VeoTabs>
-    </v-col>
-  </v-row>
+      </VeoPage>
+    </template>
+  </VeoPageWrapper>
 </template>
 
 <script lang="ts">
@@ -90,7 +92,7 @@ export default defineComponent({
 
     const objectData = computed({
       get() {
-        return props.value;
+        return props.value as IBaseObject;
       },
       set(newValue: IBaseObject) {
         emit('input', newValue);

@@ -18,7 +18,7 @@
 <template>
   <VeoDialog
     v-model="dialog"
-    :headline="upperFirst(t('createObject'))"
+    :headline="upperFirst(t('createObject').toString())"
     x-large
     fixed-footer
     fixed-header
@@ -62,9 +62,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, useFetch, useContext } from '@nuxtjs/composition-api';
+import { defineComponent, computed, ref, useFetch, useContext, Ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -100,7 +101,7 @@ export default defineComponent({
     });
 
     // object schema stuff
-    const objectschema = ref(undefined);
+    const objectschema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
     const objectData = ref({});
 
     useFetch(async () => {
