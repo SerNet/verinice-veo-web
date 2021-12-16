@@ -190,7 +190,7 @@ export default defineComponent({
 
     // Create an object containing all subtypes for an object schema with all their status
     async function fetchSubTypesForSchema(schema: string) {
-      const _schema = await $api.schema.fetch(schema);
+      const _schema = await $api.schema.fetch(schema, [props.domain]);
 
       Vue.set(
         subTypes.value,
