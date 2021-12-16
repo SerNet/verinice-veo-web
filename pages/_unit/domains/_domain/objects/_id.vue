@@ -16,40 +16,28 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
+  <VeoObjectNotFound v-if="!loading && notFoundError"/>
   <VeoPageWrapper
+    v-else
     collapsable-left
     collapsable-right
     :page-widths="pageWidths"
     :page-titles="pageTitles"
     @page-collapsed="onPageCollapsed">
-    <VeoPage
-      sticky-header>
-      <template #header>
-        <h1>{{upperFirst(t('object').toString())}}</h1>
-        <h2>{{objectName}}</h2>
-      </template>
-      <template #default>
-        <!-- TODO: add object info in #350 -->
-      </template>
-    </VeoPage>
-    <VeoPage
-      sticky-header>
-      <template
-        v-if="pageWidths[1] === 0"
-        #header
-      >
-        <h1>{{upperFirst(t('object').toString())}}</h1>
-        <h2>{{objectName}}</h2>
-      </template>
-      <template #default>
-        <!-- TODO: add form in #351 -->
-      </template>
-    </VeoPage>
+    <VeoObjectDetails
+      :loading="loading"
+      :object="object"
+    />
+    <VeoObjectForm
+      :loading="loading"
+      :object="object"
+      :show-header="pageWidths[1] === 0"
+    />
   </VeoPageWrapper>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, useContext, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 import { separateUUIDParam } from '~/lib/utils';
@@ -77,11 +65,12 @@ export default defineComponent({
       return separateUUIDParam(route.value.params.id);
     });
     const object = ref<IVeoEntity | undefined>(undefined);
-    const objectName = computed(() => object.value?.displayName);
 
-    onMounted(async () => {
+    const { fetchState } = useFetch(async () => {
       object.value = await $api.entity.fetch(objectParameter.value.type, objectParameter.value.id);
     });
+
+    const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
 
     return {
       t,
@@ -89,7 +78,9 @@ export default defineComponent({
       pageWidths,
       pageTitles,
       onPageCollapsed,
-      objectName
+      loading: fetchState.pending,
+      notFoundError,
+      object
     };
   }
 });
@@ -98,12 +89,10 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "object": "object",
     "objectInfo": "objekt details",
     "objectForm": "form"
   },
   "de": {
-    "object": "Objekt",
     "objectInfo": "Objektdetails",
     "objectForm": "Formular"
   }
