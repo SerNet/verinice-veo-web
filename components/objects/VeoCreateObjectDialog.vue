@@ -39,6 +39,7 @@
       <div
         class="d-flex fill-width pt-3"
         style="border-top: 1px solid #0000001F"
+        @click="dialog = false"
       >
         <v-btn text>
           {{ t('global.button.cancel') }}
@@ -47,6 +48,7 @@
         <v-btn
           text
           color="primary"
+          @click="onSubmit"
         >
           {{ t('global.button.save') }}
         </v-btn>
@@ -61,6 +63,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
 import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { useVeoAlerts } from '~/composables/VeoAlert';
 
 export default defineComponent({
   props: {
@@ -84,6 +87,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const { $api } = useContext();
+    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
     // Display stuff
     const dialog = computed({
@@ -104,16 +108,28 @@ export default defineComponent({
 
     // object schema stuff
     const objectschema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
-    const objectData = ref({});
+    const objectData: any = ref({});
 
     useFetch(async () => {
       objectschema.value = await $api.schema.fetch(props.objectType, [props.domainId]);
     });
 
+    async function onSubmit() {
+      try {
+        const result = await $api.entity.create(props.objectType, objectData.value);
+        emit('success', result.resourceId);
+        displaySuccessMessage(t('objectCreated', { name: objectData.name }).toString());
+        dialog.value = false;
+      } catch (e: any) {
+        displayErrorMessage(t('objectNotCreated').toString(), JSON.stringify(e));
+      }
+    }
+
     return {
       dialog,
       objectschema,
       objectData,
+      onSubmit,
 
       upperFirst,
       t
@@ -125,10 +141,14 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createObject": "create object"
+    "createObject": "create object",
+    "objectCreated": "\"{name}\" was created successfully!",
+    "objectNotCreated": "Couldn't create \"{name}\""
   },
   "de": {
-    "createObject": "Objekt erstellen"
+    "createObject": "Objekt erstellen",
+    "objectCreated": "\"{name}\" wurde erfolgreich erstellt!",
+    "objectNotCreated": "\"{name}\" konnte nicht erstellt werden."
   }
 }
 </i18n>
