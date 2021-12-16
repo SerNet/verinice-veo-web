@@ -229,7 +229,6 @@
               :ui="formSchema.content"
               :general-translation="translation && translation.lang[language]"
               :custom-translation="formSchema.translation && formSchema.translation[language]"
-              :api="dynamicAPI"
             />
           </v-card>
         </template>
@@ -379,16 +378,6 @@ export default defineComponent<IProps>({
 
     const schemaIsValid = computed(() => (formSchema.value ? validate(formSchema.value, objectSchema.value) : { valid: false, errors: [], warnings: [] }));
 
-    const dynamicAPI = computed(() => {
-      return {
-        fetchAll: (_objectType: string, _searchParams?: any) => {
-          return new Promise((resolve: any) => {
-            return resolve({ items: [], page: 1, pageCount: 0, totalItemCount: 0 });
-          });
-        }
-      };
-    });
-
     const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
 
     function updateSchema(formSchema: any) {
@@ -528,7 +517,6 @@ export default defineComponent<IProps>({
       language,
       translation,
       schemaIsValid,
-      dynamicAPI,
       updateSchema,
       setFormSchema,
       setObjectSchema,

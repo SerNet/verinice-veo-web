@@ -19,7 +19,6 @@
 import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
-import { UISchemaElement } from '@/types/UISchema';
 
 import * as InputText from './InputText.vue';
 import * as InputNumber from './InputNumber.vue';
@@ -35,8 +34,8 @@ import * as MarkdownEditor from './MarkdownEditor.vue';
 import * as InputUri from './InputUri.vue';
 import * as InputDateTime from './InputDateTime.vue';
 import * as LinksField from './LinksField.vue';
+import { UISchemaElement } from '@/types/UISchema';
 import { ContextListener } from '~/components/forms/Collection/utils/helpers';
-import { IApi } from '~/components/forms/utils';
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
 
 const components = [
@@ -93,11 +92,7 @@ export default Vue.extend({
     elements: {
       type: Array,
       default: undefined
-    } as PropOptions<UISchemaElement[]>,
-    api: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IApi>
+    } as PropOptions<UISchemaElement[]>
   },
   render(h, context) {
     const props = context.props;

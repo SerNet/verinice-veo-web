@@ -33,7 +33,6 @@
 import Vue, { PropOptions } from 'vue';
 import { JSONSchema7 } from 'json-schema';
 import { UISchemaElement } from '@/types/UISchema';
-import { IApi } from '~/components/forms/utils';
 
 import FormElement from '~/components/forms/Collection/FormElements/FormElement.vue';
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
@@ -76,11 +75,7 @@ export default Vue.extend({
     elements: {
       type: Array,
       default: undefined
-    } as PropOptions<UISchemaElement[]>,
-    api: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IApi>
+    } as PropOptions<UISchemaElement[]>
   }
 });
 </script>
