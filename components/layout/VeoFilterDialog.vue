@@ -380,9 +380,9 @@ export default defineComponent({
   "de": {
     "collapseOptions": "weniger Optionen",
     "expandOptions": "weitere Optionen",
-    "filterList": "liste filtern",
-    "resetFilter": "filter zurücksetzen",
-    "submitFilter": "filter anwenden"
+    "filterList": "Liste filtern",
+    "resetFilter": "Filter zurücksetzen",
+    "submitFilter": "Filter anwenden"
   }
 }
 </i18n>
