@@ -1,4 +1,6 @@
 export default {
+  clone: 'Kopie',
+
   'editor.basicproperties': 'Standardattribute',
   'editor.customaspects': 'Individuelle Aspekte',
   'editor.customaspects.add': 'Aspekte hinzufügen',

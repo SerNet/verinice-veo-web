@@ -158,7 +158,7 @@ export default Vue.extend({
       return this.items
         .filter((item) => item.tailoringReferences.length > 0)
         .map((item) => {
-          const [designator = '', abbreviation = '', title = ''] = item.element.displayName.split(' ');
+          const [designator = '', abbreviation = '', title = ''] = (item.element.displayName as string).split(' ');
 
           return { designator, abbreviation, title, id: item.id, description: item.description };
         });
