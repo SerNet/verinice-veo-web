@@ -18,7 +18,10 @@
 <template>
   <VeoPageWrapper :page-widths="[8, 4]">
     <template #default>
-      <VeoPage sticky-header>
+      <VeoPage
+        id="scroll-wrapper"
+        sticky-header
+      >
         <template #header>
           <v-row class="align-center mx-0 pb-4">
             <v-col cols="auto">
@@ -43,6 +46,7 @@
             :ui="currentFormSchema && currentFormSchema.content"
             :general-translation="translations && translations[locale]"
             :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
+            :error-messages.sync="formErrors"
           />
           <v-skeleton-loader
             v-else
@@ -54,15 +58,27 @@
         <template #default>
           <VeoTabs>
             <template #tabs>
-              <v-tab>{{ t('tableOfContents') }}</v-tab>
-              <v-tab>{{ t('messages') }} (0)</v-tab>
+              <v-tab :disabled="!currentFormSchema">{{ t('tableOfContents') }}</v-tab>
+              <v-tab v-if="!disableHistory">{{ t('history') }}</v-tab>
+              <v-tab>{{ t('messages') }} ({{ messages.errors.length + messages.warnings.length }})</v-tab>
             </template>
             <template #items>
               <v-tab-item>
-                Table of contents
+                <VeoFormNavigation
+                  v-if="currentFormSchema"
+                  :form-schema="currentFormSchema && currentFormSchema.content"
+                  :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
+                  class="mx-n4"
+                />
+              </v-tab-item>
+              <v-tab-item v-if="!disableHistory">
+                <!-- TODO: History einfügen sobald benötigt -->
               </v-tab-item>
               <v-tab-item>
-                messages
+                <VeoValidationResultList
+                  :result="messages"
+                  show-warnings
+                />
               </v-tab-item>
             </template>
           </VeoTabs>
@@ -177,11 +193,20 @@ export default defineComponent({
         emit('input', newValue);
       }
     });
+    const formErrors = ref([]);
+
+    // Messages stuff
+    const messages = computed(() => ({
+      errors: [],
+      warnings: []
+    }));
 
     return {
       currentFormSchema,
       displayOptions,
+      formErrors,
       locale,
+      messages,
       objectData,
       selectedDisplayOption,
       translations,
@@ -197,12 +222,14 @@ export default defineComponent({
 {
   "en": {
     "display": "display",
+    "history": "history",
     "messages": "messages",
     "objectView": "object view",
     "tableOfContents": "contents"
   },
   "de": {
     "display": "darstellung",
+    "history": "verlauf",
     "messages": "meldungen",
     "objectView": "objektansicht",
     "tableOfContents": "inhalt"

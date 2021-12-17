@@ -39,12 +39,12 @@
       </v-list-item>
       <v-list-item v-if="result.errors.length === 0">
         <v-list-item-content>
-          <v-list-item-title>{{ $t('schemaValid') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('noErrors') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
     <template v-if="showWarnings">
-      <h3>{{ $t('schemaValidationWarnings') }}: ({{ result.warnings.length }})</h3>
+      <h3>{{ $t('schemaValidationWarnings') }} ({{ result.warnings.length }}):</h3>
       <v-list>
         <v-list-item
           v-for="(warning, index) of result.warnings"
@@ -97,13 +97,13 @@ export default Vue.extend({
 {
   "en": {
     "fix": "Fix",
-    "schemaValid": "No errors found!",
+    "noErrors": "No errors found!",
     "schemaValidationErrors": "Errors",
     "schemaValidationWarnings": "Warnings"
   },
   "de": {
     "fix": "Beheben",
-    "schemaValid": "Keine Fehler gefunden!",
+    "noErrors": "Keine Fehler gefunden!",
     "schemaValidationErrors": "Fehler",
     "schemaValidationWarnings": "Warnungen"
   }

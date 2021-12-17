@@ -16,3 +16,5 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 declare module 'vuetify/lib/components/VSkeletonLoader';
+declare module 'vuetify/lib/components/VTabs/VTabs';
+declare module 'vuetify/lib/components/VTabs/VTabsItems';

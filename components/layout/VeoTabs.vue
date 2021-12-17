@@ -15,31 +15,22 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<template>
-  <div :class="{'fill-width': fullsize, 'veo-tab-sticky': stickyTabs }">
-    <v-tabs v-model="activeTab">
-      <slot name="tabs" />
-    </v-tabs>
-    <v-tabs-items v-model="activeTab">
-      <slot name="items" />
-    </v-tabs-items>
-  </div>
-</template>
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api';
+import { defineComponent, ref, h, computed, watch } from '@nuxtjs/composition-api';
+import VTabs from 'vuetify/lib/components/VTabs/VTabs';
+import VTabsItems from 'vuetify/lib/components/VTabs/VTabsItems';
 
-interface IProps {
-  fullsize: boolean;
-  startItem: number;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
+  components: {
+    VTabs,
+    VTabsItems
+  },
   props: {
     fullsize: {
       type: Boolean,
       default: false
     },
-    startItem: {
+    startTab: {
       type: Number,
       default: 0
     },
@@ -48,10 +39,57 @@ export default defineComponent<IProps>({
       default: false
     }
   },
-  setup(props) {
-    const activeTab = ref(props.startItem);
+  setup(props, { slots }) {
+    const activeTabIndex = ref(props.startTab);
 
-    return { activeTab };
+    return () => {
+      const tabs = computed(() => (slots.tabs ? slots.tabs() : []));
+      const activeTab = computed(() => tabs.value[activeTabIndex.value]);
+
+      // Automatically switch tabs if the tab the user is currently in gets disabled
+      watch(
+        () => activeTab.value,
+        (newValue) => {
+          const activeTabIsDisabled: boolean = (newValue.componentOptions?.propsData as any)?.disabled;
+          if (activeTabIsDisabled) {
+            activeTabIndex.value = (activeTabIndex.value + 1) % tabs.value.length;
+          }
+        }
+      );
+
+      return h(
+        'div',
+        {
+          class: {
+            'fill-width': props.fullsize,
+            'veo-tab-sticky': props.stickyTabs
+          }
+        },
+        [
+          h(
+            VTabs,
+            {
+              props: {
+                value: activeTabIndex.value
+              },
+              on: {
+                change: (newValue: number) => (activeTabIndex.value = newValue)
+              }
+            },
+            [tabs.value]
+          ),
+          h(
+            VTabsItems,
+            {
+              props: {
+                value: activeTabIndex.value
+              }
+            },
+            [slots.items ? slots.items() : []]
+          )
+        ]
+      );
+    };
   }
 });
 </script>

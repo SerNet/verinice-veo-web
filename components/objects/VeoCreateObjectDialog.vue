@@ -33,6 +33,7 @@
         :objectschema="objectschema"
         :domain-id="domainId"
         :preselected-sub-type="subType"
+        disable-history
       />
     </template>
     <template #dialog-options>
