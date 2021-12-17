@@ -27,7 +27,7 @@
       #header
     >
       <h1>
-        {{ upperFirst(t('object').toString()) }}
+        {{ upperFirst(t('objects').toString()) }}
       </h1>
       <h2>
         {{ object.displayName }}
@@ -72,10 +72,10 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "object": "object"
+    "objects": "objects"
   },
   "de": {
-    "object": "Objekt"
+    "objects": "Objekte"
   }
 }
 </i18n>
