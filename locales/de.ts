@@ -1,5 +1,5 @@
 export default {
-  clone: 'Klon',
+  clone: 'Kopie',
 
   'editor.basicproperties': 'Standardattribute',
   'editor.customaspects': 'Individuelle Aspekte',

@@ -26,14 +26,14 @@ export function useVeoObjectUtilities() {
 
   /**
    * Duplicates an object, including adding its children to the new object.
-   * does NOT add the new object to all parents of the original object.
+   * Does NOT add the new object to all parents of the original object.
    *
    * @param object The object to clone
    * @returns Returns a promise that resolves if the object was cloned successfully and rejects if the object couldn't be cloned
    */
   async function cloneObject(object: IVeoEntity) {
     const newEntity = cloneDeep(object);
-    newEntity.name = `${object.name} (${t('clone')})`;
+    newEntity.name = `${object.name} (${t('clone').toString()})`;
 
     // Remove readonly properties that shouldn't be posted
     // @ts-ignore
@@ -50,26 +50,23 @@ export function useVeoObjectUtilities() {
    * Removes an object as the member of another object.
    *
    * @param object The object to remove the child from
-   * @param objcectToRemove The child to remove
+   * @param objectToRemove The child to remove
    * @param parentType If object is a string, the type of the object to remove the child from has to be specified
    * @returns Returns a promise that resolves if the child was removed successfully and rejects if the child couldn't be removed
    */
-  async function unlinkObject(object: IVeoEntity | string, objcectToRemove: IVeoEntity | string, parentType?: string) {
+  async function unlinkObject(object: IVeoEntity | string, objectToRemove: IVeoEntity | string, parentType?: string) {
     if (isString(object) && !parentType) {
       throw new Error('VeoObjectUtilities::unlinkObject: "parentType" has to be specified if object is a uuid');
     }
     const _object = isString(object) ? await $api.entity.fetch(parentType as string, object) : object;
-    const objcectToRemoveUUID = isString(objcectToRemove) ? objcectToRemove : objcectToRemove.id;
+    const objcectToRemoveUUID = isString(objectToRemove) ? objectToRemove : objectToRemove.id;
 
     if (_object.type === 'scope') {
-      const modifiedChildren = _object.members.filter((member) => !member.targetUri.includes(objcectToRemoveUUID));
-      _object.members = modifiedChildren;
-      return await $api.entity.update(_object.type, _object.id, _object);
+      _object.members = _object.members.filter((member) => !member.targetUri.includes(objcectToRemoveUUID));
     } else {
-      const modifiedChildren = _object.parts.filter((part) => !part.targetUri.includes(objcectToRemoveUUID));
-      _object.parts = modifiedChildren;
-      return await $api.entity.update(_object.type, _object.id, _object);
+      _object.parts = _object.parts.filter((part) => !part.targetUri.includes(objcectToRemoveUUID));
     }
+    return await $api.entity.update(_object.type, _object.id, _object);
   }
 
   return {
