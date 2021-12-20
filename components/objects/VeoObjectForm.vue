@@ -92,8 +92,8 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
 import { IBaseObject } from '~/lib/utils';
+import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
-import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 export default defineComponent({
   name: 'VeoObjectForm',
@@ -130,6 +130,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const context = useContext();
+    const { personReactiveFormActions } = useVeoReactiveFormActions();
 
     // Formschema/display stuff
     const translations: Ref<{ [key: string]: IVeoTranslationCollection } | undefined> = ref(undefined);
@@ -216,7 +217,7 @@ export default defineComponent({
     );
 
     const reactiveFormActions: ComputedRef<IVeoReactiveFormAction[]> = computed(() => {
-      return props.objectschema?.title === 'person' ? getPersonReactiveFormActions(context) : [];
+      return props.objectschema?.title === 'person' ? personReactiveFormActions() : [];
     });
 
     // Messages stuff
