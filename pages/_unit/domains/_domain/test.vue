@@ -19,12 +19,12 @@
   <VeoPage title="Testseite">
     <v-row class="flex-column">
       <v-col>
-        <!--<VeoFilterDialog
+        <VeoFilterDialog
           v-model="showFilter"
           :filter.sync="filter"
           :domain="domainId"
           :object-type-required="objectTypeRequired"
-        />-->
+        />
         <v-btn @click="showFilter = !showFilter">Filter anzeigen</v-btn><br>
         <v-switch v-model="objectTypeRequired" label="Objekttyp verpflichtend" />
         <p>Filter Dialog wird angezeigt: {{ showFilter }}</p>
