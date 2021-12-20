@@ -59,7 +59,7 @@ export default defineComponent({
     const route = useRoute();
 
     const domainId = computed(() => {
-      return separateUUIDParam(route.value.params.id);
+      return separateUUIDParam(route.value.params.id).id;
     })
     const showCreateObjectDialog = ref(false);
 

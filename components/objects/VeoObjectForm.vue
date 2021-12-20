@@ -40,7 +40,7 @@
         <template #default>
           <slot name="form" />
           <VeoForm
-            v-if="!$fetchState.pending && objectschema"
+            v-if="!$fetchState.pending && objectschema && !loading"
             v-model="objectData"
             :schema="objectschema"
             :ui="currentFormSchema && currentFormSchema.content"
@@ -84,28 +84,6 @@
       </VeoPage>
     </template>
   </VeoPageWrapper>
-  <!-- TODO: find a way to bind $attrs, so props don't need to be passed manually
-  <VeoPage
-    sticky-header
-    :is-page-wrapper-child="isPageWrapperChild"
-    fullsize
-  >
-    <template
-      v-if="showHeader && !loading && object"
-      #header
-    >
-      <h1>
-        {{ upperFirst(t('objects').toString()) }}
-      </h1>
-      <h2>
-        {{ object.displayName }}
-      </h2>
-    </template>
-    <template #default>
-      <!-- TODO: add form in #351
-    </template>
-  </VeoPage>
-  -->
 </template>
 
 <script lang="ts">
@@ -120,22 +98,14 @@ import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormAct
 export default defineComponent({
   name: 'VeoObjectForm',
   props: {
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    showHeader: {
-      type: Boolean,
-      default: false
-    },
-    isPageWrapperChild: {
-      type: Boolean,
-      default: false
-    },
     value: {
       type: Object,
       default: () => {}
     } as PropOptions<IBaseObject>,
+    loading: {
+      type: Boolean,
+      default: false
+    },
     objectschema: {
       type: Object,
       default: undefined

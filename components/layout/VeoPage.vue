@@ -21,7 +21,7 @@
     :cols="12"
     :lg="fullsize ? 12 : 8"
     :xl="fullsize ? 12 : 7"
-    :class="isPageWrapperChild? 'px-10' : 'px-4'"
+    :class="noPadding ? 'px-0' : isPageWrapperChild? 'px-10' : 'px-4'"
   >
     <VeoPageHeader v-bind="$props">
       <template #title>
@@ -118,6 +118,10 @@ export default defineComponent<IProps>({
      * If this and loading is set, show a skeleton in the content area. Can be customized with slot#loading
      */
     loadContent: {
+      type: Boolean,
+      default: false
+    },
+    noPadding: {
       type: Boolean,
       default: false
     },

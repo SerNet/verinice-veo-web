@@ -18,21 +18,9 @@
 <template>
   <!-- TODO: find a way to bind $attrs, so props don't need to be passed manually -->
   <VeoPage
-    sticky-header
     :is-page-wrapper-child="isPageWrapperChild"
     fullsize
   >
-    <template
-      v-if="!loading && object"
-      #header
-    >
-      <h1>
-        {{ upperFirst(t('objects').toString()) }}
-      </h1>
-      <h2>
-        {{ object.displayName }}
-      </h2>
-    </template>
     <template #default>
       <!-- TODO: add object info in #350 -->
     </template>
@@ -41,8 +29,6 @@
 
 <script lang="ts">
 import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst } from 'lodash';
 import { IVeoEntity } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -62,20 +48,7 @@ export default defineComponent({
     }
   },
   setup() {
-    const { t } = useI18n();
-
-    return { t, upperFirst };
+    return {};
   }
 });
 </script>
-
-<i18n>
-{
-  "en": {
-    "objects": "objects"
-  },
-  "de": {
-    "objects": "Objekte"
-  }
-}
-</i18n>

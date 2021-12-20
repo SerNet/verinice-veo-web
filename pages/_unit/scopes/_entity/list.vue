@@ -26,10 +26,15 @@
       :root-route="rootRoute"
       @fetch="refetch"
     >
-      <template #menu-bar>
+      <template #menu-bar="{ on }">
         <v-row>
-           <v-col cols="auto">
-          <VeoObjectsCreationDialog :object-type="rootEntityType" />
+          <v-spacer />
+          <v-col cols="auto">
+            <VeoMenuButton
+              :menu-items="menuItems"
+              :primary-item="menuButton"
+              v-on="on"
+            />
           </v-col>
         </v-row>
       </template>
