@@ -53,10 +53,10 @@ export interface IVeoBaseObject {
 }
 
 export interface IVeoLink {
-  displayName: string;
-  resourcesUri: string;
+  displayName?: string;
+  resourcesUri?: string;
   targetUri: string;
-  searchesUri: string;
+  searchesUri?: string;
 }
 
 export interface IVeoDomain extends IVeoBaseObject {

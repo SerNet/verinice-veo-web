@@ -23,6 +23,7 @@
     :eager="eager"
     :width="width"
     :content-class="contentClass"
+    class="veo-dialog"
   >
     <v-card :class="cardClass">
       <v-card-title
@@ -63,6 +64,7 @@
 import Vue from 'vue';
 
 export default Vue.extend({
+  name: 'VeoDialog',
   props: {
     value: {
       type: Boolean,

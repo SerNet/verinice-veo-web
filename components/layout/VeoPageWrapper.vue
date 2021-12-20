@@ -150,7 +150,7 @@ export default Vue.extend({
       if (event.repeat) {
         return;
       }
-      if (event.altKey && event.key >= '0' && event.key <= '9') {
+      if ((event.altKey || event.ctrlKey) && event.key >= '0' && event.key <= '9') {
         let digit = Number(event.key);
         if (digit === 0) {
           digit = 10;
