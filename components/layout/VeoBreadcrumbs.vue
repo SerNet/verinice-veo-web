@@ -232,7 +232,7 @@ export default defineComponent<IProps>({
           text = (await api.fetch(paramSeparated.id))[displayNameKey];
         }
       } catch (ignore) {
-        text = '???';
+        text = '404';
       }
       sessionStorage.setItem(paramSeparated.id, text);
 

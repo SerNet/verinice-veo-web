@@ -39,7 +39,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst } from 'lodash';
+
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 
@@ -74,7 +74,6 @@ export default defineComponent({
 
     return {
       t,
-      upperFirst,
       pageWidths,
       pageTitles,
       onPageCollapsed,

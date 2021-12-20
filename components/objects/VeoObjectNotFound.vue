@@ -41,7 +41,6 @@
 <script lang="ts">
 import { defineComponent, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst } from 'lodash';
 
 export default defineComponent({
   name: 'VeoObjectNotFound',
@@ -53,7 +52,7 @@ export default defineComponent({
       router.back();
     };
 
-    return { t, upperFirst, goBackToPreviousPage };
+    return { t, goBackToPreviousPage };
   }
 });
 </script>
