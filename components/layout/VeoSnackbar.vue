@@ -22,7 +22,7 @@
     color="white"
     :timeout="5000"
     class="ma-0 pa-0"
-    :style="{'paddingBottom': ($vuetify.application.bottom||0)+'px'}"
+    :style="{'paddingBottom': ($vuetify.application.bottom||0)+'px', 'z-index': '301'}"
   >
     <v-row
       dense

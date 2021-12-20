@@ -202,7 +202,7 @@
           <h3 class="text-left">
             {{ $t('incompatibleFormSchema', { objectType }) }}
           </h3>
-          <VeoValidationResultList
+          <VeoValidationResult
             :result="validation"
             show-warnings
             class="mt-4"

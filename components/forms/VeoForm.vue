@@ -140,6 +140,7 @@ export default Vue.extend({
         // IMPORTANT! This is needed to update localSchema when schema is updated
         // Else it cannot detect updated object of schema and does not update veo-form
         this.localSchema = JSON.parse(JSON.stringify(this.schema));
+        this.validate();
       }
     },
     ui: {

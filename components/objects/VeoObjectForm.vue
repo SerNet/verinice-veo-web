@@ -47,18 +47,16 @@
             :general-translation="translations && translations[locale]"
             :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
             :error-messages.sync="formErrors"
+            :reactive-form-actions="reactiveFormActions"
           />
-          <v-skeleton-loader
-            v-else
-            type="text@3"
-          />
+          <VeoObjectFormSkeleton v-else />
         </template>
       </VeoPage>
       <VeoPage>
         <template #default>
           <VeoTabs>
             <template #tabs>
-              <v-tab :disabled="!currentFormSchema">{{ t('tableOfContents') }}</v-tab>
+              <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">{{ t('tableOfContents') }}</v-tab>
               <v-tab v-if="!disableHistory">{{ t('history') }}</v-tab>
               <v-tab>{{ t('messages') }} ({{ messages.errors.length + messages.warnings.length }})</v-tab>
             </template>
@@ -75,7 +73,7 @@
                 <!-- TODO: History einfügen sobald benötigt -->
               </v-tab-item>
               <v-tab-item>
-                <VeoValidationResultList
+                <VeoValidationResult
                   :result="messages"
                   show-warnings
                 />
@@ -94,7 +92,8 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
 import { IBaseObject } from '~/lib/utils';
-import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormSchema, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 export default defineComponent({
   props: {
@@ -117,22 +116,27 @@ export default defineComponent({
     preselectedSubType: {
       type: String,
       default: undefined
+    },
+    valid: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { emit }) {
     const { t, locale } = useI18n();
-    const { $api } = useContext();
+    const context = useContext();
 
     // Formschema/display stuff
     const translations: Ref<{ [key: string]: IVeoTranslationCollection } | undefined> = ref(undefined);
     const formSchemas: Ref<IVeoFormSchemaMeta[]> = ref([]);
     const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
+
     const { $fetch } = useFetch(async () => {
       if (!translations.value) {
-        translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
+        translations.value = (await context.$api.translation.fetch(['de', 'en'])).lang;
       }
       if (formSchemas.value.length === 0) {
-        formSchemas.value = await $api.form.fetchAll(props.domainId);
+        formSchemas.value = await context.$api.form.fetchAll(props.domainId);
 
         if (props.preselectedSubType) {
           const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
@@ -143,7 +147,7 @@ export default defineComponent({
         }
       }
       if (selectedDisplayOption.value !== 'objectschema') {
-        currentFormSchema.value = await $api.form.fetch(selectedDisplayOption.value);
+        currentFormSchema.value = await context.$api.form.fetch(selectedDisplayOption.value);
       } else {
         currentFormSchema.value = undefined;
       }
@@ -163,6 +167,10 @@ export default defineComponent({
 
     watch(selectedDisplayOption, () => {
       $fetch();
+    });
+
+    const formSchemaHasGroups = computed(() => {
+      return currentFormSchema.value?.content.elements?.some((element: any) => (element.type === 'Layout' || element.type === 'Group') && element.options.label);
     });
 
     function getFormschemaIdBySubType(subType: string) {
@@ -193,11 +201,22 @@ export default defineComponent({
         emit('input', newValue);
       }
     });
-    const formErrors = ref([]);
+    const formErrors: Ref<any[]> = ref([]);
+
+    watch(
+      () => formErrors.value,
+      () => {
+        emit('update:valid', formErrors.value.length === 0);
+      }
+    );
+
+    const reactiveFormActions: ComputedRef<IVeoReactiveFormAction[]> = computed(() => {
+      return props.objectschema?.title === 'person' ? getPersonReactiveFormActions(context) : [];
+    });
 
     // Messages stuff
     const messages = computed(() => ({
-      errors: [],
+      errors: formErrors.value.map((entry) => ({ code: entry.pointer, message: entry.message })),
       warnings: []
     }));
 
@@ -205,9 +224,11 @@ export default defineComponent({
       currentFormSchema,
       displayOptions,
       formErrors,
+      formSchemaHasGroups,
       locale,
       messages,
       objectData,
+      reactiveFormActions,
       selectedDisplayOption,
       translations,
 

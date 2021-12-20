@@ -44,7 +44,7 @@
         </v-btn>
       </v-card-title>
       <v-card-text
-        :class="[innerClass, 'pa-4']"
+        :class="[innerClass, 'pa-4', 'flex-grow-1']"
         style="position: relative;"
       >
         <slot />

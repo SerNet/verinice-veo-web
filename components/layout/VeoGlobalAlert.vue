@@ -44,12 +44,12 @@
     v-else
     v-model="value"
     v-bind="$props"
-    :save-button-text="params.buttonText || t('global.button.ok')"
+    :save-button-text="(params && params.buttonText) || t('global.button.ok')"
     class="veo-global-alert"
     @input="onInput"
   >
     <template
-      v-if="params.objectModified"
+      v-if="params && params.objectModified"
       #additional-button
     >
       <v-btn
@@ -155,6 +155,6 @@ export default defineComponent<IVeoGlobalAlert>({
   position: fixed;
   transform: translateX(-50%);
   width: 100%;
-  z-index: 1;
+  z-index: 301;
 }
 </style>

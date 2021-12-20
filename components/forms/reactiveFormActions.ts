@@ -18,16 +18,26 @@
 import { Vue } from 'vue/types/vue';
 import { trim } from 'lodash';
 import vjp from 'vue-json-pointer';
+import { Context } from '@nuxt/types';
+import { Ref } from '@nuxtjs/composition-api';
+import { Route } from 'vue-router/types';
 
 import { IBaseObject } from '~/lib/utils';
 import { IVeoReactiveFormAction } from '~/types/VeoTypes';
+
+interface UseContextReturn extends Omit<Context, 'route' | 'query' | 'from' | 'params'> {
+  route: Ref<Route>;
+  query: Ref<Route['query']>;
+  from: Ref<Context['from']>;
+  params: Ref<Route['params']>;
+}
 
 export default {
   getDefaultReactiveFormActions,
   getPersonReactiveFormActions
 };
 
-export function getDefaultReactiveFormActions(context: Vue): IVeoReactiveFormAction[] {
+export function getDefaultReactiveFormActions(context: Vue | UseContextReturn): IVeoReactiveFormAction[] {
   return [
     {
       attributeName: '/domains/patternProperties',
@@ -39,7 +49,7 @@ export function getDefaultReactiveFormActions(context: Vue): IVeoReactiveFormAct
   ];
 }
 
-export function getPersonReactiveFormActions(_context: Vue): IVeoReactiveFormAction[] {
+export function getPersonReactiveFormActions(_context: Vue | UseContextReturn): IVeoReactiveFormAction[] {
   return [
     {
       attributeName: '/customAspects/person_generalInformation/attributes/person_generalInformation_givenName',

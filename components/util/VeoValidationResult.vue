@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
+   - Copyright (C) 2021  Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,50 +16,45 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoDialog
-    v-bind="$attrs"
-    :headline="t('schemaValidationWarnings')"
-    large
-    v-on="$listeners"
-  >
-    <template #default>
-      <VeoValidationResult
-        :result="$attrs.validation"
-        show-warnings
-        allow-fixing
+  <div class="text-left">
+    <h3>{{ $t('schemaValidationErrors') }} ({{ result.errors.length }}):</h3>
+    <VeoValidationResultList
+      :items="result.errors"
+      show-no-error-text
+      :allow-fixing="allowFixing"
+      v-on="$listeners"
+    />
+    <template v-if="showWarnings">
+      <h3>{{ $t('schemaValidationWarnings') }} ({{ result.warnings.length }}):</h3>
+      <VeoValidationResultList
+        :items="result.warnings"
+        :allow-fixing="allowFixing"
         v-on="$listeners"
       />
     </template>
-    <template #dialog-options>
-      <v-spacer />
-      <v-btn
-        text
-        color="primary"
-        @click="$emit('input', false)"
-      >
-        {{ t('global.button.close') }}
-      </v-btn>
-    </template>
-  </VeoDialog>
+  </div>
 </template>
+
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
-import { useI18n } from 'nuxt-i18n-composable';
+import Vue from 'vue';
+import { Prop } from 'vue/types/options';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
-interface IProps {
-  value: boolean;
-  validation: VeoSchemaValidatorValidationResult;
-}
-
-export default defineComponent<IProps>({
-  setup() {
-    const { t } = useI18n();
-
-    return {
-      t
-    };
+export default Vue.extend({
+  props: {
+    showWarnings: {
+      type: Boolean,
+      default: false
+    },
+    result: {
+      type: Object as Prop<VeoSchemaValidatorValidationResult>,
+      required: true
+    },
+    allowFixing: {
+      type: Boolean,
+      default: false
+    }
   }
 });
 </script>
@@ -67,14 +62,12 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
+    "schemaValidationErrors": "Errors",
     "schemaValidationWarnings": "Warnings"
   },
   "de": {
+    "schemaValidationErrors": "Fehler",
     "schemaValidationWarnings": "Warnungen"
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-</style>

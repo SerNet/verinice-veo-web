@@ -33,6 +33,7 @@
         :objectschema="objectschema"
         :domain-id="domainId"
         :preselected-sub-type="subType"
+        :valid.sync="formValid"
         disable-history
       />
     </template>
@@ -40,15 +41,18 @@
       <div
         class="d-flex fill-width pt-3"
         style="border-top: 1px solid #0000001F"
-        @click="dialog = false"
       >
-        <v-btn text>
+        <v-btn
+          text
+          @click="dialog = false"
+        >
           {{ t('global.button.cancel') }}
         </v-btn>
         <v-spacer />
         <v-btn
           text
           color="primary"
+          :disabled="!formValid"
           @click="onSubmit"
         >
           {{ t('global.button.save') }}
@@ -59,12 +63,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, useFetch, useContext, Ref } from '@nuxtjs/composition-api';
+import { defineComponent, computed, ref, useFetch, useContext, Ref, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { separateUUIDParam } from '~/lib/utils';
 
 export default defineComponent({
   props: {
@@ -87,7 +92,8 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { $api } = useContext();
+    const { $api, $config } = useContext();
+    const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
     // Display stuff
@@ -101,7 +107,7 @@ export default defineComponent({
         // If the dialog gets closed, restore pristine state, 150ms seems to be the animation duration of v-dialog
         if (!value) {
           setTimeout(() => {
-            objectData.value = {};
+            seedInitialData();
           }, 150);
         }
       }
@@ -110,24 +116,37 @@ export default defineComponent({
     // object schema stuff
     const objectschema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
     const objectData: any = ref({});
+    seedInitialData();
+
+    function seedInitialData() {
+      objectData.value = {
+        owner: {
+          targetUri: `${$config.apiUrl}/units/${separateUUIDParam(route.value.params.unit).id}`
+        }
+      };
+    }
 
     useFetch(async () => {
       objectschema.value = await $api.schema.fetch(props.objectType, [props.domainId]);
     });
 
+    // Actions
     async function onSubmit() {
       try {
         const result = await $api.entity.create(props.objectType, objectData.value);
         emit('success', result.resourceId);
-        displaySuccessMessage(t('objectCreated', { name: objectData.name }).toString());
+        displaySuccessMessage(t('objectCreated', { name: objectData.value.name }).toString());
         dialog.value = false;
       } catch (e: any) {
-        displayErrorMessage(t('objectNotCreated').toString(), JSON.stringify(e));
+        displayErrorMessage(t('objectNotCreated', { name: objectData.value.name || t('object').toString() }).toString(), JSON.stringify(e));
       }
     }
 
+    const formValid = ref(false);
+
     return {
       dialog,
+      formValid,
       objectschema,
       objectData,
       onSubmit,
@@ -143,10 +162,12 @@ export default defineComponent({
 {
   "en": {
     "createObject": "create object",
+    "object": "Object",
     "objectCreated": "\"{name}\" was created successfully!",
     "objectNotCreated": "Couldn't create \"{name}\""
   },
   "de": {
+    "object": "Objekt",
     "createObject": "Objekt erstellen",
     "objectCreated": "\"{name}\" wurde erfolgreich erstellt!",
     "objectNotCreated": "\"{name}\" konnte nicht erstellt werden."
