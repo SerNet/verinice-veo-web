@@ -15,4 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-declare module 'vuetify/dist/vuetify';
+import { Wrapper } from '@vue/test-utils';
+
+export function getFormInput(label: string, formWrapper: string = '.vf-wrapper'): Vue {
+  const inputs = Array.from(document.querySelectorAll(`${formWrapper} .v-input`));
+  const inputField = inputs.find((input) => input.querySelector('label')?.textContent === label);
+  return (inputField as any)?.__vue__;
+}
+
+export function getEmittedEvent(wrapper: Wrapper<Vue, Element>, event: string): any {
+  const emittedEvents = wrapper.emitted();
+  expect(emittedEvents[event]).toBeTruthy();
+  const eventValue: any[] = emittedEvents[event]?.pop() || [];
+
+  return eventValue[0];
+}

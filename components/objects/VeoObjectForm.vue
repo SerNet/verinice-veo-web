@@ -33,12 +33,12 @@
                 dense
                 hide-details
                 :items="displayOptions"
+                :data-cy="$utils.prefixCyData($options, 'display-select')"
               />
             </v-col>
           </v-row>
         </template>
         <template #default>
-          {{ $fetchState.pending }}<br>{{ !loading }}
           <slot name="form" />
           <VeoForm
             v-if="!$fetchState.pending && objectschema && !loading"

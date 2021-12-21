@@ -17,7 +17,7 @@
 -->
 <script lang="ts">
 import { ComputedRef, defineComponent, h, PropOptions, computed } from '@nuxtjs/composition-api';
-import { VSkeletonLoader } from 'vuetify/dist/vuetify';
+import { VSkeletonLoader } from 'vuetify/lib';
 
 export enum VeoPageHeaderAlignment {
   LEFT,

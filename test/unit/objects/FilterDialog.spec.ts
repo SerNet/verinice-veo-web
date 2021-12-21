@@ -23,6 +23,7 @@ import VueI18n from 'vue-i18n';
 import VeoFilterDialog from '~/components/layout/VeoFilterDialog.vue';
 import VeoDialog from '~/components/layout/VeoDialog.vue';
 import { prefixCyData } from '~/plugins/utils';
+import { getEmittedEvent } from '~/lib/jestUtils';
 
 Vue.use(Vuetify);
 Vue.use(VueI18n);
@@ -142,12 +143,8 @@ describe('FilterDialog.vue', () => {
     filterDialog.find('[name=name]').setValue('Name');
     filterDialog.find('[data-cy=-submit-button]').vm.$emit('click'); // v-btn is NOT native, thus we can't use trigger(click)
 
-    const emittedEvents = wrapper.emitted();
-    expect(emittedEvents['update:filter']).toBeTruthy();
-    const emittedFilters: any[] = emittedEvents['update:filter']?.pop() || [];
-
-    expect(emittedFilters[0]).toBeTruthy();
-    expect(emittedFilters[0]).toEqual({
+    const emittedFilters = getEmittedEvent(wrapper, 'update:filter');
+    expect(emittedFilters).toEqual({
       designator: 'Designator Text',
       name: 'Name'
     });
@@ -172,12 +169,8 @@ describe('FilterDialog.vue', () => {
     filterDialog.find('[name=designator]').setValue('Designator Text');
     filterDialog.find('[data-cy=-reset-button]').vm.$emit('click'); // v-btn is NOT native, thus we can't use trigger(click)
 
-    const emittedEvents = wrapper.emitted();
-    expect(emittedEvents['update:filter']).toBeTruthy();
-    const emittedFilters: any[] = emittedEvents['update:filter']?.pop() || [];
-
-    expect(emittedFilters[0]).toBeTruthy();
-    expect(emittedFilters[0]).toEqual({});
+    const emittedFilters = getEmittedEvent(wrapper, 'update:filter');
+    expect(emittedFilters).toEqual({});
   });
 
   it('should open veo filter dialog, select a filter, close dialog and reopen dialog. All filters should be reset', async () => {

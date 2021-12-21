@@ -20,7 +20,7 @@
     v-model="dialog"
     :headline="upperFirst(t('createObject').toString())"
     x-large
-    persistent
+    :persistent="formModified"
     fixed-footer
     fixed-header
     content-class="overflow-hidden fill-height"
@@ -35,6 +35,7 @@
         :preselected-sub-type="subType"
         :valid.sync="formValid"
         disable-history
+        @input="formModified = true"
       />
     </template>
     <template #dialog-options>
@@ -44,6 +45,7 @@
       >
         <v-btn
           text
+          :data-cy="$utils.prefixCyData($options, 'cancel-button')"
           @click="dialog = false"
         >
           {{ t('global.button.cancel') }}
@@ -53,6 +55,7 @@
           text
           color="primary"
           :disabled="!formValid"
+          :data-cy="$utils.prefixCyData($options, 'save-button')"
           @click="onSubmit"
         >
           {{ t('global.button.save') }}
@@ -113,6 +116,8 @@ export default defineComponent({
       }
     });
 
+    const formModified = ref(false);
+
     // object schema stuff
     const objectschema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
     const objectData: any = ref({});
@@ -146,6 +151,7 @@ export default defineComponent({
 
     return {
       dialog,
+      formModified,
       formValid,
       objectschema,
       objectData,
