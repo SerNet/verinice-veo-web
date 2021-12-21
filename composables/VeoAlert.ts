@@ -17,8 +17,7 @@
  */
 import { readonly, ref, Ref, SetupContext } from '@nuxtjs/composition-api';
 
-import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
-import { IVeoGlobalAlert, IVeoGlobalAlertParams } from '~/components/layout/VeoGlobalAlert.vue';
+import { IVeoGlobalAlert, IVeoGlobalAlertParams, VeoAlertType } from '~/types/VeoTypes';
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
 
 const alerts: Ref<IVeoGlobalAlert[]> = ref([]);

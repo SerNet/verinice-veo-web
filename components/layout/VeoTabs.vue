@@ -17,8 +17,7 @@
 -->
 <script lang="ts">
 import { defineComponent, ref, h, computed, watch } from '@nuxtjs/composition-api';
-import VTabs from 'vuetify/lib/components/VTabs/VTabs';
-import VTabsItems from 'vuetify/lib/components/VTabs/VTabsItems';
+import { VTabs, VTabsItems } from 'vuetify/dist/vuetify';
 
 export default defineComponent({
   components: {

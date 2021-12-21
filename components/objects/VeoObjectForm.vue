@@ -38,6 +38,7 @@
           </v-row>
         </template>
         <template #default>
+          {{ $fetchState.pending }}<br>{{ !loading }}
           <slot name="form" />
           <VeoForm
             v-if="!$fetchState.pending && objectschema && !loading"
