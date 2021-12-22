@@ -60,6 +60,15 @@
           :object-type="rootEntityType"
           v-on="on"
         />
+        <VeoObjectTable
+          :items="objects"
+          :current-item="currentEntity"
+          :loading="$fetchState.pending || loading"
+          :show-parent-link="showParentLink"
+          :load-children="loadSubEntities"
+          :object-type="rootEntityType"
+          v-on="on"
+        />
       </template>
     </VeoEntityModifier>
   </VeoPage>
