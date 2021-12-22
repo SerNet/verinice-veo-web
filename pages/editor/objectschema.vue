@@ -16,17 +16,15 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper>
+  <VeoPageWrapper
+    collapsable-right
+    :page-widths="pageWidths"
+    @page-collapsed="onPageCollapsed"
+  >
     <template #default>
       <VeoPage
         v-if="objectSchemaHelper"
         sticky-header
-        absolute-size
-        :fullsize="collapsed"
-        no-padding
-        cols="12"
-        :md="collapsed ? 12 : 6"
-        :xl="collapsed ? 12 : 6"
         :title="$t('editor.objectschema.headline')"
       >
         <template #title>
@@ -106,15 +104,10 @@
               {{ $t('help') }}
             </template>
           </v-tooltip>
-          <VeoCollapseButton
-            v-if="!$vuetify.breakpoint.xs"
-            v-model="collapsed"
-            right
-          />
           <v-row
             v-if="schemaIsValid.valid"
             no-gutters
-            class="flex-column overflow-hidden mt-2 fill-width"
+            class="flex-column overflow-hidden py-2 fill-width"
           >
             <v-col>
               <v-row class="mx-4">
@@ -221,14 +214,8 @@
           </v-row>
         </template>
       </VeoPage>
-      <v-divider vertical />
       <VeoPage
-        v-if="!collapsed && objectSchemaHelper && !$vuetify.breakpoint.xs"
-        no-padding
-        absolute-size
-        cols="12"
-        :md="6"
-        :xl="6"
+        v-if="objectSchemaHelper && !$vuetify.breakpoint.xs"
         height="100%"
         content-class="ose__code-editor"
       >
@@ -276,7 +263,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      collapsed: false as boolean,
+      pageWidths: [6, 6] as number[],
       showCreationDialog: false as boolean,
       showErrorDialog: false as boolean,
       showTranslationDialog: false as boolean,
@@ -366,6 +353,13 @@ export default Vue.extend({
     },
     onDisplayLanguageUpdate(newLanguage: string) {
       this.displayLanguage = newLanguage;
+    },
+    onPageCollapsed(collapsedPages: boolean[]) {
+      if (collapsedPages[1]) {
+        this.pageWidths = [12, 0];
+      } else {
+        this.pageWidths = [6, 6];
+      }
     }
   }
 });

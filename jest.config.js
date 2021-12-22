@@ -11,7 +11,6 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^~/(.*)$': '<rootDir>/$1',
-    '@nuxtjs/composition-api': '@nuxtjs/composition-api/lib/entrypoint.js',
     '^vuetify/lib$': 'vuetify'
   },
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],

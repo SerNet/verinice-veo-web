@@ -115,9 +115,7 @@
       class="overflow-hidden"
     >
       <VeoBreadcrumbs :key="breadcrumbsKey" />
-      <VeoPageWrapper>
-        <nuxt />
-      </VeoPageWrapper>
+      <nuxt />
     </v-main>
     <VeoGlobalAlert
       v-if="alerts[0]"

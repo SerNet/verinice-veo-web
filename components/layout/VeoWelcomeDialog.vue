@@ -33,21 +33,33 @@
         path="createEntitiesCTA"
         tag="p"
       >
-        <nuxt-link
-          v-for="(link, index) in formLinks"
-          :key="index"
-          :to="link.to"
-          @click.native="dialog = false"
-        >{{ link.name }}</nuxt-link>
+        <template v-if="firstUnitId">
+          <nuxt-link
+            v-for="(link, index) in formLinks"
+            :key="index"
+            :to="link.to"
+            @click.native="dialog = false"
+          >{{ link.name }}</nuxt-link>
+        </template>
+        <template v-else>
+          <span
+            v-for="(link, index) in formLinks"
+            :key="index"
+          >
+            {{ link.name }}
+          </span>
+        </template>
       </i18n>
       <i18n
         path="dashboardCTA"
         tag="p"
       >
         <nuxt-link
+          v-if="firstUnitId"
           :to="dashboardLink.to"
           @click.native="dialog = false"
         >{{ dashboardLink.name }}</nuxt-link>
+        <span v-else>{{ dashboardLink.name }}</span>
       </i18n>
       <i18n
         v-if="demoUnitLink"
@@ -81,12 +93,12 @@
 
 <script lang="ts">
 import { RawLocation } from 'vue-router/types/router';
-import { computed, defineComponent, Ref, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, Ref, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam } from '~/lib/utils';
-import { IVeoFormSchemaMeta } from '~/types/VeoTypes';
+import { IVeoFormSchemaMeta, IVeoUnit } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -97,29 +109,35 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t, locale } = useI18n();
-    const { $api } = useContext();
+    const { $api, $user } = useContext();
     const route = useRoute();
+
+    const nonDemoUnits: Ref<IVeoUnit[]> = ref([]); // Used if the unit is not present in the url params
+
+    const firstUnitId: ComputedRef<string | undefined> = computed(() => nonDemoUnits.value[0]?.id);
 
     useFetch(async () => {
       const forms = await $api.form.fetchAll();
-
-      createEntityCreateLink('SCP_ResponsibleBody', forms);
-      createEntityCreateLink('PER_DataProtectionOfficer', forms);
-      createEntityCreateLink('PRO_DataProcessing', forms);
-
       const units = await $api.unit.fetchAll();
+      const domains = await $api.form.fetchAll();
       const demoUnit = units.find((unit) => unit.name === 'Demo');
-      if (demoUnit) {
+      nonDemoUnits.value = units.filter((unit) => unit.name !== 'Demo');
+      if (demoUnit && domains[0]) {
         demoUnitLink.value = {
           to: {
             name: 'unit-domains-domain',
             params: {
-              unit: createUUIDUrlParam('unit', demoUnit.id)
+              unit: createUUIDUrlParam('unit', demoUnit.id),
+              domain: createUUIDUrlParam('domain', domains[0].id || '')
             }
           },
           name: 'Demo-Unit'
         };
       }
+
+      createEntityCreateLink('SCP_ResponsibleBody', forms);
+      createEntityCreateLink('PER_DataProtectionOfficer', forms);
+      createEntityCreateLink('PRO_DataProcessing', forms);
     });
     const dialog = computed({
       get() {
@@ -134,15 +152,16 @@ export default defineComponent({
     });
 
     const formLinks: Ref<{ name: string; to: RawLocation }[]> = ref([]);
-    const dashboardLink: Ref<{ name: string; to: RawLocation }> = ref({
+    const dashboardLink: ComputedRef<{ name: string; to: RawLocation }> = computed(() => ({
       to: {
         name: 'unit-domains-domain',
         params: {
-          domain: route.value.params.domain
+          unit: route.value.params.unit || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
+          domain: route.value.params.domain || $user.lastDomain || ''
         }
       },
       name: 'Dashboard'
-    });
+    }));
     const demoUnitLink: Ref<{ name: string; to: RawLocation } | undefined> = ref(undefined);
 
     function createEntityCreateLink(subType: string, forms: IVeoFormSchemaMeta[]) {
@@ -153,7 +172,8 @@ export default defineComponent({
           to: {
             name: 'unit-domains-domain-forms-form-create',
             params: {
-              domain: route.value.params.domain,
+              unit: route.value.params.unit || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
+              domain: route.value.params.domain || $user.lastDomain || '',
               form: createUUIDUrlParam('form', form.id as string)
             }
           }
@@ -166,6 +186,7 @@ export default defineComponent({
       dashboardLink,
       demoUnitLink,
       formLinks,
+      firstUnitId,
 
       t
     };

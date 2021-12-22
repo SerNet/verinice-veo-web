@@ -74,7 +74,13 @@ export default {
    *
    */
   generate: {
-    fallback: '404.html' // if you want to use '404.html'
+    fallback: '404.html', // if you want to use '404.html'
+    async routes() {
+      const { $content } = require('@nuxt/content');
+      const files = await $content({ deep: true }).only(['path']).fetch();
+      const routes = ['/docs?print', ...new Set(files.map((file) => '/docs' + file.path.replace(/\.\w+$/, '').replace(/\/index$/, '/'))).values()];
+      return routes;
+    }
   },
 
   router: {
@@ -83,7 +89,39 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ['nuxt-polyfill', '@nuxtjs/i18n'],
+  modules: [
+    'nuxt-polyfill',
+    '@nuxt/content',
+    [
+      '@nuxtjs/i18n',
+      {
+        languages: ['de', 'en'],
+        defaultLanguage: 'de',
+        vueI18nLoader: true,
+        vueI18n: {
+          silentFallbackWarn: true
+        }
+      }
+    ]
+  ],
+  content: {
+    dir: 'docs',
+    liveEdit: false,
+    markdown: {
+      remarkPlugins: []
+    }
+  },
+  hooks: {
+    'content:file:beforeInsert': (document) => {
+      if (document.extension === '.md') {
+        const [slug, lang] = document.slug.split('.');
+        if (lang) {
+          document.lang = lang;
+          document.slug = slug;
+        }
+      }
+    }
+  },
 
   /**
    * @nuxtjs/i18n config

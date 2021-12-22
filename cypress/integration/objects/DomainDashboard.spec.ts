@@ -45,14 +45,14 @@ describe('Domain dashboard', () => {
 
   it('Checks whether every subtype of an object type gets shown and translated if a translation exists', function () {
     // Widget should contain at least one subtype with a translation and one without
-    const widgetTitle = 'process';
+    const widgetIndex = 2;
+    const objectType = 'process';
 
-    cy.fixture(`api/default/schemas/${widgetTitle}.json`).then((objectSchema) => {
+    cy.fixture(`api/default/schemas/${objectType}.json`).then((objectSchema) => {
       const subTypes = (Object.values(objectSchema.properties.domains.properties)[0] as any).properties.subType.enum;
 
       cy.get('[data-cy=unit-domains-domain-status-bar-chart-widget]')
-        .contains(upperFirst(widgetTitle))
-        .parent()
+        .eq(widgetIndex)
         .within(() => {
           // Correct amount of charts get shown (one for every subtype)
           cy.get('[data-cy=veo-stacked-status-bar-chart-widget-subtype-row]').should('have.length', subTypes.length);
@@ -75,14 +75,13 @@ describe('Domain dashboard', () => {
 
   it('Checks whether a placeholder text gets shown if either no objects or no subtypes exist', function () {
     // Widget should contain at least one subtype with a translation and one without
-    const noSubtypesWidgetTitle = 'document';
-    const noObjectsWidgetTitle = 'incident';
+    const noSubtypesWidgetIndex = 3;
+    const noObjectsWidgetIndex = 1;
     const noObjectsSubtype = 'INC_Incident';
 
     // No subtypes
     cy.get('[data-cy=unit-domains-domain-status-bar-chart-widget]')
-      .contains(upperFirst(noSubtypesWidgetTitle))
-      .parent()
+      .eq(noSubtypesWidgetIndex)
       .within(() => {
         // Placeholder text gets shown
         cy.get('.v-card__text > div').should('contain.text', 'Für diesen Objekttyp existieren keine Subtypen');
@@ -90,11 +89,10 @@ describe('Domain dashboard', () => {
 
     // No objects
     cy.get('[data-cy=unit-domains-domain-status-bar-chart-widget]')
-      .contains(upperFirst(noObjectsWidgetTitle))
-      .parent()
+      .eq(noObjectsWidgetIndex)
       .within(() => {
         // Placeholder text gets shown
-        cy.get('h4').contains(noObjectsSubtype).parent().parent().children().eq(1).children().eq(0).should('contain.text', 'Für diesen Subtyp existieren keine Objekte');
+        cy.get('h4').contains(noObjectsSubtype).parent().parent().children().eq(1).children().eq(0).should('contain.text', 'Keine Objekte vorhanden');
       });
   });
 });

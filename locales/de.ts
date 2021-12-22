@@ -1,4 +1,6 @@
 export default {
+  clone: 'Kopie',
+
   'editor.basicproperties': 'Standardattribute',
   'editor.customaspects': 'Individuelle Aspekte',
   'editor.customaspects.add': 'Aspekte hinzufügen',
@@ -78,6 +80,11 @@ export default {
   'objectlist.name': 'Objektname',
   'objectlist.updatedat': 'Letzte Änderung',
   'objectlist.updatedBy': 'Bearbeiter',
+  'objectlist.objectType': 'Objekttyp',
+  'objectlist.subType': 'Subtyp',
+  'objectlist.notPartOfGroup': 'nicht Teil einer Gruppe',
+  'objectlist.hasChildObjects': 'hat Kindobjekte',
+  'objectlist.hasLinks': 'hat Verlinkungen',
 
   'page.editors.title': 'Editoren',
   'page.editors.calltoaction': 'Was möchten Sie tun?',
