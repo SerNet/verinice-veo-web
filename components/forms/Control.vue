@@ -15,32 +15,46 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<template>
-  <v-col
-    v-if="visible"
-    cols="12"
-    md="auto"
-    class="vf-control"
-  >
-    <FormElement
-      v-bind="$props"
-      v-on="$listeners"
-    />
-  </v-col>
-</template>
-
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
+import { defineComponent, h, PropOptions } from '@nuxtjs/composition-api';
 import { JSONSchema7 } from 'json-schema';
-import { UISchemaElement } from '@/types/UISchema';
+import { VCol } from 'vuetify/lib';
 
-import FormElement from '~/components/forms/Collection/FormElements/FormElement.vue';
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
+import { UISchemaElement } from '~/types/UISchema';
+import * as InputText from '~/components/forms/Collection/FormElements/InputText.vue';
+import * as InputNumber from '~/components/forms/Collection/FormElements/InputNumber.vue';
+import * as InputTextMultiline from '~/components/forms/Collection/FormElements/InputTextMultiline.vue';
+import * as Checkbox from '~/components/forms/Collection/FormElements/Checkbox.vue';
+import * as Select from '~/components/forms/Collection/FormElements/Select.vue';
+import * as Autocomplete from '~/components/forms/Collection/FormElements/Autocomplete.vue';
+import * as ArrayField from '~/components/forms/Collection/FormElements/ArrayField.vue';
+import * as InputDate from '~/components/forms/Collection/FormElements/InputDate.vue';
+import * as Radio from '~/components/forms/Collection/FormElements/Radio.vue';
+import * as Tags from '~/components/forms/Collection/FormElements/Tags.vue';
+import * as MarkdownEditor from '~/components/forms/Collection/FormElements/MarkdownEditor.vue';
+import * as InputUri from '~/components/forms/Collection/FormElements/InputUri.vue';
+import * as InputDateTime from '~/components/forms/Collection/FormElements/InputDateTime.vue';
+import * as LinksField from '~/components/forms/Collection/FormElements/LinksField.vue';
 
-export default Vue.extend({
-  components: {
-    FormElement
-  },
+const components = [
+  InputText,
+  InputNumber,
+  InputTextMultiline,
+  Checkbox,
+  Select,
+  Autocomplete,
+  ArrayField,
+  InputDate,
+  Radio,
+  Tags,
+  MarkdownEditor,
+  InputUri,
+  InputDateTime,
+  LinksField
+];
+
+export default defineComponent({
   props: {
     value: {
       type: undefined,
@@ -76,6 +90,39 @@ export default Vue.extend({
       type: Array,
       default: undefined
     } as PropOptions<UISchemaElement[]>
+  },
+  setup(props, { listeners, emit }) {
+    function appropriateComponent() {
+      return components.sort((a: any, b: any) => b.helpers.matchingScore({ ...props }) - a.helpers.matchingScore({ ...props }))[0].default;
+    }
+
+    return () =>
+      props.visible
+        ? h(
+            VCol,
+            {
+              props: {
+                cols: 12,
+                md: 'auto'
+              },
+              class: 'vf-control'
+            },
+            [
+              h(appropriateComponent(), {
+                props: { ...props },
+                on: {
+                  ...listeners,
+                  input: (newValue: any): void => {
+                    if (newValue === '') {
+                      newValue = undefined;
+                    }
+                    emit('input', newValue);
+                  }
+                }
+              })
+            ]
+          )
+        : undefined;
   }
 });
 </script>

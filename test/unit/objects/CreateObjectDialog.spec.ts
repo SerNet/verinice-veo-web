@@ -31,12 +31,12 @@ import VeoPageHeader from '~/components/layout/VeoPageHeader.vue';
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue';
 import VeoTabs from '~/components/layout/VeoTabs.vue';
 import VeoForm from '~/components/forms/VeoForm.vue';
-import { prefixCyData } from '~/plugins/utils';
 import { getEmittedEvent, getFormInput } from '~/lib/jestUtils';
 
 import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
 import forms from '~/cypress/fixtures/api/forms/fetchAll.json';
 import form from '~/cypress/fixtures/api/forms/3ebd14a2-eb7d-4d18-a9ad-2056da85569e.json';
+import translation from '~/cypress/fixtures/translations/translation.json';
 
 Vue.use(Vuetify);
 Vue.use(VueI18n);
@@ -77,6 +77,13 @@ const mockDefaults = {
             fetch: (_id: string) => {
               return form;
             }
+          },
+          translation: {
+            fetch: (_langs: any) => {
+              return {
+                lang: translation
+              };
+            }
           }
         },
         $config: {
@@ -84,20 +91,11 @@ const mockDefaults = {
         }
       }
     }, // Needed if useFetch() gets used in composition api
-    $utils: {
-      /*
-       * NOTE!! This function will not work as when called in the browser (either npm run dev or cypress), at it has no access to $options
-       * or $route.
-       * This function will thus just return the string one passed to it, however we use it in the template to enable cypress e2e tests in the future
-       */
-      prefixCyData
-    },
     $route: {
       params: {
         unit: 'my-completely-invalid-unit-uuid-that-doesnt-matter'
       }
-    },
-    $t: (t: string) => t
+    }
   }
 } as any;
 
@@ -183,7 +181,7 @@ describe('CreateObjectDialog.vue', () => {
     expect(getEmittedEvent(wrapper, 'input')).toBeFalsy();
   });
 
-  it.only('should open create object dialog with a sub type preselected', async () => {
+  it('should open create object dialog with a sub type preselected', async () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
 
     const wrapper = mount(VeoCreateObjectDialog, {
@@ -191,13 +189,14 @@ describe('CreateObjectDialog.vue', () => {
       propsData: {
         value: true,
         objectType: 'process',
-        domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter'
+        domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter',
+        subType: 'PRO_DataProcessing'
       }
     });
 
     await new Promise((resolve) => setTimeout(resolve, 200));
-    const input = wrapper.find('[data-cy=-display-select]').vm as any;
-    console.log(input);
-    // expect(input.value).toBe('Verarbeitungstätigkeit');
+    const form = wrapper.getComponent(VeoObjectForm);
+    const selectWrapper: ChildNode = form.find('[data-cy=veo-object-form-display-select]').element.parentElement as any;
+    expect(selectWrapper.firstChild?.textContent).toBe('PRO_DataProcessing');
   });
 });

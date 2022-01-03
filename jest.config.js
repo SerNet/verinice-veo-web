@@ -11,7 +11,8 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^~/(.*)$': '<rootDir>/$1',
-    '^vuetify/lib$': 'vuetify'
+    '^vuetify/lib$': 'vuetify',
+    '@nuxtjs/composition-api': '@vue/composition-api'
   },
   moduleFileExtensions: ['js', 'ts', 'json', 'vue'],
   modulePathIgnorePatterns: ['<rootDir>/dist'],
@@ -28,5 +29,6 @@ module.exports = {
   preset: 'ts-jest/presets/js-with-ts',
   testMatch: null,
   verbose: true,
-  reporters: ['default', 'jest-junit']
+  reporters: ['default', 'jest-junit'],
+  setupFiles: ['./test/config/mocks.js']
 };

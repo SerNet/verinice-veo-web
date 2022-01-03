@@ -29,7 +29,7 @@ Vue.use(Vuetify);
 const vuetify = new Vuetify();
 
 describe('Autocomplete.vue', () => {
-  it('should render autocomplete component to choose some list element', async () => {
+  it.only('should render autocomplete component to choose some list element', async () => {
     const form: Renderable = {
       schema: {
         properties: {
@@ -65,6 +65,7 @@ describe('Autocomplete.vue', () => {
       vuetify,
       propsData: { ...form }
     });
+    console.log(wrapper.html());
 
     // Fixes immediate:true bugs with setProps() of vue test utils
     // https://github.com/vuejs/vue-test-utils/issues/1140#issuecomment-544156893

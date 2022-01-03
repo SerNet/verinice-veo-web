@@ -22,7 +22,6 @@ import VueI18n from 'vue-i18n';
 
 import VeoFilterDialog from '~/components/layout/VeoFilterDialog.vue';
 import VeoDialog from '~/components/layout/VeoDialog.vue';
-import { prefixCyData } from '~/plugins/utils';
 import { getEmittedEvent } from '~/lib/jestUtils';
 
 Vue.use(Vuetify);
@@ -53,15 +52,7 @@ const mockDefaults = {
           }
         }
       }
-    }, // Needed if useFetch() gets used in composition api
-    $utils: {
-      /*
-       * NOTE!! This function will not work as when called in the browser (either npm run dev or cypress), at it has no access to $options
-       * or $route.
-       * This function will thus just return the string one passed to it, however we use it in the template to enable cypress e2e tests in the future
-       */
-      prefixCyData
-    }
+    } // Needed if useFetch() gets used in composition api
   }
 };
 
