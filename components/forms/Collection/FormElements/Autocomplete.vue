@@ -49,11 +49,8 @@
 import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
-import VueCompositionAPI from '@vue/composition-api';
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
-
-Vue.use(VueCompositionAPI);
 
 interface IItem {
   value: string | number | boolean;

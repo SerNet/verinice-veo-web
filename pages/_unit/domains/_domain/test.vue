@@ -43,6 +43,9 @@
         />
         <p class="mt-4">showCreateObjectDialog: {{ showCreateObjectDialog }}</p>
       </v-col>
+      <v-col>
+        <CompositionRenderComponent />
+      </v-col>
     </v-row>
   </VeoPage>
 </template>

@@ -109,7 +109,7 @@ export default defineComponent({
             },
             [
               h(appropriateComponent(), {
-                props: { ...props },
+                props,
                 on: {
                   ...listeners,
                   input: (newValue: any): void => {

@@ -15,24 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
-import VueI18n from 'vue-i18n';
 
 import VeoFilterDialog from '~/components/layout/VeoFilterDialog.vue';
 import VeoDialog from '~/components/layout/VeoDialog.vue';
 import { getEmittedEvent } from '~/lib/jestUtils';
 
-Vue.use(Vuetify);
-Vue.use(VueI18n);
-
-const i18n = new VueI18n();
 const vuetify = new Vuetify();
 
 const mockDefaults = {
   vuetify,
-  i18n,
   components: {
     VeoDialog
   },

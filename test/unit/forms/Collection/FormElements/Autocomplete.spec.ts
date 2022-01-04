@@ -19,19 +19,19 @@ import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
-import 'regenerator-runtime/runtime';
 
 import { install as VeeValidate } from '@/plugins/vee-validate';
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
 Vue.use(VeeValidate);
-Vue.use(Vuetify);
+
 const vuetify = new Vuetify();
 
 describe('Autocomplete.vue', () => {
-  it.only('should render autocomplete component to choose some list element', async () => {
+  it('should render autocomplete component to choose some list element', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           list: {
             type: 'string',
@@ -65,7 +65,6 @@ describe('Autocomplete.vue', () => {
       vuetify,
       propsData: { ...form }
     });
-    console.log(wrapper.html());
 
     // Fixes immediate:true bugs with setProps() of vue test utils
     // https://github.com/vuejs/vue-test-utils/issues/1140#issuecomment-544156893
@@ -92,6 +91,7 @@ describe('Autocomplete.vue', () => {
   it('should render autocomplete component to choose multiple list elements', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           list: {
             type: 'array',

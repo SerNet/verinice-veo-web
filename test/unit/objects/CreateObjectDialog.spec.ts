@@ -26,11 +26,14 @@ import VeoCreateObjectDialog from '~/components/objects/VeoCreateObjectDialog.vu
 import VeoDialog from '~/components/layout/VeoDialog.vue';
 import VeoObjectForm from '~/components/objects/VeoObjectForm.vue';
 import VeoObjectFormSkeleton from '~/components/objects/VeoObjectFormSkeleton.vue';
+import VeoFormNavigation from '~/components/layout/VeoFormNavigation.vue';
 import VeoPage from '~/components/layout/VeoPage.vue';
 import VeoPageHeader from '~/components/layout/VeoPageHeader.vue';
 import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue';
 import VeoTabs from '~/components/layout/VeoTabs.vue';
 import VeoForm from '~/components/forms/VeoForm.vue';
+import VeoValidationResult from '~/components/util/VeoValidationResult.vue';
+import VeoValidationResultList from '~/components/util/VeoValidationResultList.vue';
 import { getEmittedEvent, getFormInput } from '~/lib/jestUtils';
 
 import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
@@ -56,10 +59,15 @@ const mockDefaults = {
           VeoPageWrapper,
           VeoPage: (() => merge(VeoPage, { components: { VeoPageHeader } }))(),
           VeoForm,
+          VeoFormNavigation,
+          VeoValidationResult: (() => merge(VeoValidationResult, { components: { VeoValidationResultList } }))(),
           VeoTabs,
           VeoObjectFormSkeleton
         }
       }))()
+  },
+  stubs: {
+    LinksFieldRow: true
   },
   mocks: {
     $nuxt: {
