@@ -31,8 +31,6 @@ ENV VEO_REPORTING_API_URL ${VEO_REPORTING_API_URL}
 
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > static/VERSION && echo ${CI_COMMIT_SHA} > BUILD && echo ${CI_COMMIT_SHA} > static/BUILD
 
-RUN printenv
-
 RUN npm run generate
 
 FROM nginx:1.21 AS release
