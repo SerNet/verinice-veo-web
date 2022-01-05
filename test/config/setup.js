@@ -25,14 +25,4 @@ Vue.use(Vuetify);
 Vue.use(VueCompositionAPI);
 Vue.use(VueI18n);
 
-// Needed if useI18n() gets used in compoisition api
-jest.mock('nuxt-i18n-composable', () => ({
-  useI18n() {
-    return {
-      t: (t) => t,
-      locale: 'de'
-    };
-  }
-}));
-
 window.Vue = Vue;

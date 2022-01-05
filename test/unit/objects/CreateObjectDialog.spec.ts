@@ -32,7 +32,6 @@ import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue';
 import VeoTabs from '~/components/layout/VeoTabs.vue';
 import VeoForm from '~/components/forms/VeoForm.vue';
 import VeoValidationResult from '~/components/util/VeoValidationResult.vue';
-import VeoValidationResultList from '~/components/util/VeoValidationResultList.vue';
 import { getEmittedEvent, getFormInput } from '~/lib/jestUtils';
 
 import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
@@ -55,14 +54,15 @@ const mockDefaults = {
           VeoPage: (() => merge(VeoPage, { components: { VeoPageHeader } }))(),
           VeoForm,
           VeoFormNavigation,
-          VeoValidationResult: (() => merge(VeoValidationResult, { components: { VeoValidationResultList } }))(),
+          VeoValidationResult,
           VeoTabs,
           VeoObjectFormSkeleton
         }
       }))()
   },
   stubs: {
-    LinksFieldRow: true
+    LinksFieldRow: true,
+    VeoValidationResultList: true
   },
   mocks: {
     $nuxt: {
