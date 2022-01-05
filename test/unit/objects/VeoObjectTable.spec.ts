@@ -18,31 +18,17 @@
 import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
-import VueI18n from 'vue-i18n';
 
 import { VDataTable, VSelect } from 'vuetify/lib';
 import VeoObjectTable from '~/components/objects/VeoObjectTable.vue';
 import { IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 Vue.use(Vuetify);
-Vue.use(VueI18n);
-
-// Needed if useI18n() gets used in compoisition api
-jest.mock('nuxt-i18n-composable', () => ({
-  useI18n() {
-    return {
-      t: (t: string) => t,
-      locale: 'de'
-    };
-  }
-}));
 
 describe('VeoObjectTable.vue', () => {
-  const i18n = new VueI18n();
   const vuetify = new Vuetify();
   const mockDefaults = {
     vuetify,
-    i18n,
     mocks: {
       $nuxt: {
         context: {
