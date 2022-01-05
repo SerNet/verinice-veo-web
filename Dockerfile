@@ -23,6 +23,8 @@ ENV CI_JOB_ID ${CI_JOB_ID}
 
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > static/VERSION && echo ${CI_COMMIT_SHA} > BUILD && echo ${CI_COMMIT_SHA} > static/BUILD
 
+RUN echo printenv
+
 RUN npm run generate
 
 FROM nginx:1.21 AS release
