@@ -130,7 +130,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t, locale } = useI18n();
-    const context = useContext();
+    const { $api } = useContext();
     const { personReactiveFormActions } = useVeoReactiveFormActions();
 
     // Formschema/display stuff
@@ -139,11 +139,13 @@ export default defineComponent({
     const currentFormSchema: Ref<undefined | IVeoFormSchema> = ref(undefined);
 
     const { $fetch } = useFetch(async () => {
+      // Only fetch once, as translations changing while the user uses this component is highly unlikely
       if (!translations.value) {
-        translations.value = (await context.$api.translation.fetch(['de', 'en'])).lang;
+        translations.value = (await $api.translation.fetch(['de', 'en'])).lang;
       }
+      // Only fetch formschema overview once, as formschemas getting added/changed while the user uses this component is highly unlikely
       if (formSchemas.value.length === 0) {
-        formSchemas.value = await context.$api.form.fetchAll(props.domainId);
+        formSchemas.value = await $api.form.fetchAll(props.domainId);
 
         if (props.preselectedSubType) {
           const formSchemaId = getFormschemaIdBySubType(props.preselectedSubType);
@@ -154,7 +156,7 @@ export default defineComponent({
         }
       }
       if (selectedDisplayOption.value !== 'objectschema') {
-        currentFormSchema.value = await context.$api.form.fetch(selectedDisplayOption.value);
+        currentFormSchema.value = await $api.form.fetch(selectedDisplayOption.value);
       } else {
         currentFormSchema.value = undefined;
       }

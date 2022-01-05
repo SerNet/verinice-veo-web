@@ -73,6 +73,9 @@ export default defineComponent({
               },
               on: {
                 change: (newValue: number) => (activeTabIndex.value = newValue)
+              },
+              class: {
+                'veo-tabs-sticky': props.stickyTabs
               }
             },
             [tabs.value]
@@ -100,9 +103,11 @@ export default defineComponent({
   position: absolute;
   right: 0;
   top: 0;
+  z-index: 2;
 }
 
-.v-tabs {
+.veo-tabs-sticky {
+  top: 0;
   position: sticky;
   top: 0;
   z-index: 2;
