@@ -18,7 +18,6 @@
 import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
-import VueI18n from 'vue-i18n';
 import { merge } from 'lodash';
 
 import { install as VeeValidate } from '~/plugins/vee-validate';
@@ -41,16 +40,12 @@ import forms from '~/cypress/fixtures/api/forms/fetchAll.json';
 import form from '~/cypress/fixtures/api/forms/3ebd14a2-eb7d-4d18-a9ad-2056da85569e.json';
 import translation from '~/cypress/fixtures/translations/translation.json';
 
-Vue.use(Vuetify);
-Vue.use(VueI18n);
 Vue.use(VeeValidate);
 
-const i18n = new VueI18n();
 const vuetify = new Vuetify();
 
 const mockDefaults = {
   vuetify,
-  i18n,
   components: {
     VeoDialog,
     VeoObjectForm: (() =>
@@ -106,16 +101,6 @@ const mockDefaults = {
     }
   }
 } as any;
-
-// Needed if useI18n() gets used in compoisition api
-jest.mock('nuxt-i18n-composable', () => ({
-  useI18n() {
-    return {
-      t: (t: string) => t,
-      locale: 'de'
-    };
-  }
-}));
 
 describe('CreateObjectDialog.vue', () => {
   it('should open create object dialog, enter a value, close the dialog and check whether the form has been reset', async () => {
