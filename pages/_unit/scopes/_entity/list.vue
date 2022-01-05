@@ -68,7 +68,28 @@
           :load-children="loadSubEntities"
           :object-type="rootEntityType"
           v-on="on"
-        />
+        >
+          <template #actions="{ item }">
+            <v-btn
+              :title="item.name"
+              icon
+            >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            <v-btn
+              :title="item.name"
+              icon
+            >
+              <v-icon>mdi-content-copy</v-icon>
+            </v-btn>
+            <v-btn
+              :title="item.name"
+              icon
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </template>
+        </VeoObjectTable>
       </template>
     </VeoEntityModifier>
   </VeoPage>

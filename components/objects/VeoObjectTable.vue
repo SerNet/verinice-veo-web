@@ -1,26 +1,28 @@
-/*
- * verinice.veo web
- * Copyright (C) 2021  Markus Werner
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-import { computed, defineComponent, PropType, h, useContext, watch, useAsync } from '@nuxtjs/composition-api';
+<!--
+   - verinice.veo web
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<script lang="ts">
+import { computed, defineComponent, PropType, h, useContext, useAsync } from '@nuxtjs/composition-api';
 import { VNode, VNodeChildren, VNodeData } from 'vue/types/vnode';
 import { useI18n } from 'nuxt-i18n-composable';
 import { DataTableHeader } from 'vuetify/types';
 import { VDataTable, VIcon, VTooltip } from 'vuetify/lib';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { useThrottleNextTick } from '~/composables/utils';
 
 export type ObjectTableItems = IVeoPaginatedResponse<IVeoEntity[]> | Array<IVeoEntity>;
 
@@ -45,6 +47,7 @@ function hasOwnProperty<X extends {}, Y extends PropertyKey>(obj: X, prop: Y): o
 }
 
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     /**
      * Items can be `IVeoPaginatedResponse` or an array of `IVeoEntity`
@@ -81,13 +84,16 @@ export default defineComponent({
     'update:sort-desc': () => {},
     'update:sort-by': () => {},
     'update:page': () => {},
-    'update:items-per-page': () => {}
+    'update:items-per-page': () => {},
+    click: () => {}
   },
-  setup(props, { emit, slots }) {
+  setup(props, { emit, slots, attrs, listeners }) {
     const { d, t } = useI18n();
     const { $user, $api, i18n } = useContext();
     const translations = useAsync(() => $api.translation.fetch(i18n.locales as any), 'translations');
-    // Headers:
+    /**
+     * Format date via i18n
+     */
     const formatDate: ObjectTableFormatter = (v) => {
       try {
         return d(new Date(v), 'long').replace(/,/g, '');
@@ -95,6 +101,9 @@ export default defineComponent({
         return '';
       }
     };
+    /**
+     * Render translated status
+     */
     const renderStatus: ObjectTableRenderer = ({ item }) => {
       if (!$user.lastDomain) return '';
       const domainId = $user.lastDomain;
@@ -102,8 +111,13 @@ export default defineComponent({
       const key = `${item.type}_${domainDetails.subType}_status_${domainDetails.status}`;
       return translations.value?.lang?.[i18n.locale]?.[key] || (item.domains[domainId] ? item.domains[domainId].status : '');
     };
+    /**
+     * Distinguish between {@link IVeoPaginatedResponse} and {@link IVeoEntity}[]
+     */
     const isPaginatedResponse = (v: ObjectTableItems): v is IVeoPaginatedResponse<IVeoEntity[]> => 'items' in v;
-
+    /**
+     * Render folder or file icons
+     */
     const renderIcon: ObjectTableRenderer = ({ item }) => {
       if (item.type !== 'scope' && item.parts?.length) return h(VIcon, 'mdi-file-document-multiple');
       else if (item.type === 'scope' && item.parts?.length) return h(VIcon, 'mdi-archive-arrow-down');
@@ -111,46 +125,87 @@ export default defineComponent({
       else if (item.type === 'scope') return h(VIcon, 'mdi-archive');
       return h(VIcon, 'mdi-file-document');
     };
-
+    /**
+     * Render date column using date formatter
+     */
     const renderDate: ObjectTableRenderer = ({ item }) => formatDate(item.updatedAt);
-
+    /**
+     * Render created at / updated at tooltip
+     */
     const renderUpdatedAtTooltip: ObjectTableRenderer = ({ item }) => {
       return h('table', [
         item.createdAt
           ? h('tr', [
-              h('td', [t('objectlist.createdAt').toString(), ': ']),
+              h('td', [t('createdAt').toString(), ': ']),
               h('td', [h('strong', formatDate(item.createdAt) || '???'), ' ', t('by').toString(), ' ', h('strong', item.createdBy)])
             ])
           : [],
         item.updatedAt
           ? h('tr', [
-              h('td', [t('objectlist.updatedAt').toString(), ': ']),
+              h('td', [t('updatedAt').toString(), ': ']),
               h('td', [h('strong', formatDate(item.updatedAt) || '???'), ' ', t('by').toString(), ' ', h('strong', item.updatedBy)])
             ])
           : []
       ]);
     };
+    /**
+     * Render actions slot (aligned right, stopping click propagation)
+     */
+    const renderActions: ObjectTableRenderer = (context) =>
+      h(
+        'div',
+        {
+          class: 'text-right',
+          on: {
+            click(e: Event) {
+              // do not emit row:click events for actions
+              e.stopImmediatePropagation();
+            }
+          }
+        },
+        slots.actions?.(context)
+      );
 
+    /**
+     * Header configuration
+     */
     const headerConfig: ObjectTableHeader[] = [
       { value: 'icon', inDense: false, text: '', class: ['pr-0'], cellClass: ['pr-0'], width: 0, render: renderIcon },
       { value: 'designator', inDense: true, sortable: true, width: 110 },
-      { value: 'abbreviation', inDense: true, sortable: true, truncate: true, width: 80 },
-      { value: 'name', inDense: true, cellClass: ['font-weight-bold'], sortable: true },
+      { value: 'abbreviation', inDense: false, sortable: true, truncate: true, width: 80 },
+      { value: 'name', inDense: true, cellClass: ['font-weight-bold'], width: 300, truncate: true, sortable: true },
       { value: 'status', inDense: false, sortable: true, width: 110, render: renderStatus },
-      { value: 'description', inDense: false, sortable: false, width: 300, truncate: true, tooltip: ({ item }) => item.description || '' },
+      { value: 'description', inDense: false, sortable: false, width: 500, truncate: true, tooltip: ({ item }) => item.description || '' },
       { value: 'updatedBy', inDense: true, sortable: true, width: 110 },
       { value: 'updatedAt', inDense: true, sortable: true, width: 200, tooltip: renderUpdatedAtTooltip, render: renderDate },
-      { value: 'actions', inDense: true, text: '', sortable: false, width: 110 }
+      { value: 'actions', inDense: true, text: '', sortable: false, width: 110, render: renderActions }
     ];
-
-    const defaultClasses: string[] = [];
-    const defaultCellClasses = ['flex-nowrap', 'text-no-wrap'];
-    const truncateClasses = ['text-truncate', 'max-width-zero'];
-
     type Header = DataTableHeader & ObjectTableHeader;
 
+    /**
+     * Default header classes
+     */
+    const defaultClasses: string[] = [];
+    /**
+     * Default cell classes
+     */
+    const defaultCellClasses = ['flex-nowrap', 'text-no-wrap', 'cursor-pointer'];
+    /**
+     * Classes to apply when truncate is set
+     */
+    const truncateClasses = ['text-truncate', 'max-width-zero'];
+
+    /**
+     * Render value inside a cell
+     */
     const renderValue = (item: IVeoEntity, key: keyof IVeoEntity | string) => (hasOwnProperty(item, key) ? String(item[key]) : '');
-    const toNodeChildren = (items: ReturnType<ObjectTableRenderer>): VNodeChildren => (<(VNode | string)[]>[]).concat(items);
+    /**
+     * Convert ObjectTableRenderer to VNode array
+     */
+    const toNodeChildren = (items: ReturnType<ObjectTableRenderer>): VNodeChildren => ([] as (VNode | string)[]).concat(items);
+    /**
+     * Render a tooltip for a cell
+     */
     const renderTooltip = (header: ObjectTableHeader, data?: VNodeData): ObjectTableRenderer => {
       return (props) => {
         const children = header.render ? toNodeChildren(header.render(props)) : renderValue(props.item, header.value);
@@ -166,7 +221,9 @@ export default defineComponent({
         });
       };
     };
-
+    /**
+     * Prepare headers for v-data-table, applying classes and tooltip renderers
+     */
     const _headers: Header[] = headerConfig.map((header) => {
       const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : []);
       return {
@@ -198,8 +255,13 @@ export default defineComponent({
       const items = isPaginatedResponse(props.items) ? props.items.items : props.items;
       return items.map(mapItem);
     });
+    /**
+     * Create scopedSlots to apply renderers
+     */
     const scopedSlots = computed(() => Object.fromEntries(_headers.filter((_) => !!_.render).map((_) => [`item.${_.value}`, _.render!])));
-
+    /**
+     * Calculate pagination properties
+     */
     const paginationProps = computed(() => {
       if (!isPaginatedResponse(props.items)) return;
       return {
@@ -209,14 +271,19 @@ export default defineComponent({
     });
 
     const itemsPerPage = computed(() => $user.tablePageSize);
-    const pageUpdate = { newPage: props.page, sortBy: props.sortBy, sortDesc: props.sortDesc };
-    const emitPageUpdate = (data: Partial<typeof pageUpdate>) => {
-      const update = Object.assign(pageUpdate, data);
-      emit('page-change', { ...update });
+    const firstOrValue = <T extends unknown>(v: T | T[]): T => (Array.isArray(v) ? v[0] : v);
+    const pageUpdate = { newPage: props.page, sortBy: firstOrValue(props.sortBy), sortDesc: firstOrValue(props.sortDesc) };
+    const { throttle } = useThrottleNextTick();
+    const emitPageUpdate = ({ newPage, sortBy, sortDesc }: { newPage?: number; sortBy?: string | string[]; sortDesc?: boolean | boolean[] }) => {
+      // Update data
+      const data = Object.assign(pageUpdate, { newPage, sortBy: firstOrValue(sortBy), sortDesc: firstOrValue(sortDesc) });
+      // ... but only emit once at nextTick
+      return throttle(() => emit('page-change', data));
     };
 
     return () =>
       h(VDataTable, {
+        attrs,
         props: {
           items: items.value,
           headers: headers.value,
@@ -228,6 +295,7 @@ export default defineComponent({
           ...paginationProps.value
         },
         on: {
+          ...listeners,
           'update:page'(page: number) {
             emit('update:page', page);
             emitPageUpdate({ newPage: page });
@@ -239,9 +307,38 @@ export default defineComponent({
           'update:sort-desc'(sortDesc: boolean | boolean[]) {
             emit('update:sort-desc', sortDesc);
             emitPageUpdate({ sortDesc });
+          },
+          'click:row'(_item: any, context: any) {
+            emit('click', context);
           }
         },
         scopedSlots: { ...scopedSlots.value, ...slots }
       });
   }
 });
+</script>
+<style lang="scss" scoped>
+::v-deep {
+  .max-width-zero {
+    max-width: 0;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+}
+</style>
+<i18n>
+{
+  "en": {
+    "by": "by",
+    "createdAt": "Created",
+    "updatedAt": "Updated"
+  },
+  "de": {
+    "by": "von",
+    "createdAt": "Erstellt",
+    "updatedAt": "Aktualisiert"
+  }
+}
+</i18n>
