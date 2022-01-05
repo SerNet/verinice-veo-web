@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import Vue from 'vue';
-import { mount } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import { merge } from 'lodash';
 
@@ -32,7 +32,7 @@ import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue';
 import VeoTabs from '~/components/layout/VeoTabs.vue';
 import VeoForm from '~/components/forms/VeoForm.vue';
 import VeoValidationResult from '~/components/util/VeoValidationResult.vue';
-import { getEmittedEvent, getFormInput } from '~/lib/jestUtils';
+import { getEmittedEvent, getFormInput, getVSelectComponentByDataCy } from '~/lib/jestUtils';
 
 import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
 import forms from '~/cypress/fixtures/api/forms/fetchAll.json';
@@ -191,5 +191,34 @@ describe('CreateObjectDialog.vue', () => {
     const form = wrapper.getComponent(VeoObjectForm);
     const selectWrapper: ChildNode = form.find('[data-cy=veo-object-form-display-select]').element.parentElement as any;
     expect(selectWrapper.firstChild?.textContent).toBe('PRO_DataProcessing');
+  });
+
+  it('should check whether the form gets switched if the user uses the display switcher', async () => {
+    const localVue = createLocalVue();
+    document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
+
+    const wrapper = mount(VeoCreateObjectDialog, {
+      ...mockDefaults,
+      localVue,
+      propsData: {
+        value: true,
+        objectType: 'process',
+        domainId: 'my-completely-invalid-domain-uuid-that-doesnt-matter'
+      }
+    });
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const select = getVSelectComponentByDataCy(wrapper, 'veo-object-form-display-select');
+
+    // One label for each custom aspect
+    expect(wrapper.findAll('.vf-label')).toHaveLength(12);
+
+    // Switch to formschema
+    select.$emit('input', '3ebd14a2-eb7d-4d18-a9ad-2056da85569e');
+
+    // Wait for form to get regenerated
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // This form schema contains no labels
+    expect(wrapper.findAll('.vf-label')).toHaveLength(0);
   });
 });
