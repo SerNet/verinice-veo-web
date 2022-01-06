@@ -74,32 +74,6 @@
               <!-- TODO: change name with displayName after it is implemented -->
               <v-list-item-title>{{ item.displayName }} </v-list-item-title>
             </v-list-item-content>
-            <v-list-item-action>
-              <div class="autocomplete-list-item-action-buttons">
-                <v-btn
-                  icon
-                  x-small
-                  text
-                  color="primary"
-                  class="mr-2"
-                  :disabled="disabled"
-                  @click.stop="onDialogOpen('DIALOG_UPDATE', item)"
-                >
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-                <v-btn
-                  icon
-                  x-small
-                  text
-                  color="primary"
-                  class="mr-2"
-                  :disabled="disabled"
-                  @click.stop="onDialogOpen('DIALOG_DELETE', item)"
-                >
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </div>
-            </v-list-item-action>
           </v-list-item>
         </template>
         <template
@@ -119,7 +93,6 @@
         :value="value"
         :general-translation="generalTranslation"
         :custom-translation="customTranslation"
-        :api="api"
         :disabled="disabled"
         @input="onInput"
       />
@@ -142,7 +115,6 @@
             :general-translation="generalTranslation"
             :custom-translation="customTranslation"
             :disabled="disabled"
-            :api="api"
           />
         </v-card-text>
         <v-card-actions>
@@ -165,76 +137,6 @@
           </v-btn>
         </v-card-actions>
       </v-card>
-
-      <v-card v-else-if="dialog === 'DIALOG_UPDATE'">
-        <v-card-title class="headline">
-          {{ $t('updateTargetObject') }}
-        </v-card-title>
-        <v-card-text>
-          <!-- TODO: ObjectSchema and FormSchema for Dialog must come from Server (Person) -->
-          <VeoForm
-            v-model="itemInDialog"
-            :schema="linksFieldDialogObjectSchema"
-            :ui="linksFieldDialogFormSchema"
-            :general-translation="generalTranslation"
-            :custom-translation="customTranslation"
-            :api="api"
-            :disabled="disabled"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            text
-            @click="onDialogCancel"
-          >
-            {{ $t('global.button.cancel') }}
-          </v-btn>
-          <!-- TODO: change name with displayName after it is implemented -->
-          <v-btn
-            color="primary"
-            :loading="dialogLoading"
-            text
-            :disabled="!(itemInDialog && itemInDialog.name)"
-            @click="onDialogAcceptUpdate"
-          >
-            {{ $t('global.button.save') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-
-      <v-card v-else-if="dialog === 'DIALOG_DELETE'">
-        <v-card-title>
-          {{ $t('deleteTargetObject') }}
-        </v-card-title>
-        <!-- TODO: change name with displayName after it is implemented -->
-        <v-card-text>
-          {{
-            $t('deleteTargetObjectConfirmation', {
-              object: itemInDialog && itemInDialog.name
-            })
-          }}
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            text
-            @click="onDialogCancel"
-          >
-            {{ $t('global.button.cancel') }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            :loading="dialogLoading"
-            text
-            @click="onDialogAcceptDelete"
-          >
-            {{ $t('global.button.delete') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
     </v-dialog>
   </v-row>
 </template>
@@ -245,10 +147,11 @@ import { Prop, PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
 import { UISchema, UISchemaElement } from '@/types/UISchema';
-import { BaseObject, IApi, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
+import { BaseObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { separateUUIDParam } from '~/lib/utils';
+import { IVeoEntityRequestParams } from '~/plugins/api/entity';
 
 interface ITarget {
   targetUri: string | undefined;
@@ -274,7 +177,6 @@ interface IData {
   dialogLoading: boolean;
   search: string | undefined;
   items: IItem[];
-  itemInDialog: IItem | undefined;
   newObject: IVeoEntity;
   targetId: string | undefined;
   linksFieldDialogObjectSchema: JSONSchema7;
@@ -326,10 +228,6 @@ export default Vue.extend({
       type: Array,
       default: () => []
     } as PropOptions<UISchemaElement[]>,
-    api: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IApi>,
     index: {
       type: Number,
       default: undefined
@@ -346,7 +244,6 @@ export default Vue.extend({
       dialogLoading: false,
       search: undefined,
       items: [],
-      itemInDialog: undefined,
       newObject: {} as any,
       targetId: undefined,
       linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
@@ -471,25 +368,20 @@ export default Vue.extend({
         this.loading = false;
       }
     },
-    async fetchEntities(filters: BaseObject) {
-      return await this.api.fetchAll(this.targetType, filters);
+    async fetchEntities(searchParams: IVeoEntityRequestParams) {
+      return await this.$api.entity.fetchAll(this.targetType, searchParams.page || 1, searchParams);
     },
     onInput(event: any) {
       this.$emit('input', event);
     },
-    onDialogOpen(dialogType: DialogEnum, item?: IItem) {
+    onDialogOpen(dialogType: DialogEnum) {
       this.dialog = dialogType;
-
-      if (item) {
-        this.itemInDialog = item;
-      }
     },
     onDialogCancel() {
       this.dialog = false;
       this.newObject = {} as any;
-      this.itemInDialog = undefined;
     },
-    async onDialogAcceptCreate() {
+    onDialogAcceptCreate() {
       this.dialogLoading = true;
       if (this.newObject) {
         this.newObject.domains = {
@@ -499,30 +391,9 @@ export default Vue.extend({
           }
         };
 
-        const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem;
+        /* const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem;
         this.items.push(createItem);
-        this.selected = createItem.id;
-      }
-      this.dialogLoading = false;
-      this.dialog = false;
-      this.newObject = {} as any;
-    },
-    async onDialogAcceptUpdate() {
-      this.dialogLoading = true;
-      if (this.itemInDialog) {
-        await this.api.update(this.targetType, this.itemInDialog);
-        await this.fetchItems();
-      }
-      this.dialogLoading = false;
-      this.dialog = false;
-      this.newObject = {} as any;
-    },
-    async onDialogAcceptDelete() {
-      this.dialogLoading = true;
-      if (this.itemInDialog) {
-        await this.api.delete(this.targetType, this.itemInDialog.id);
-        const itemIndex = this.items.findIndex((item) => this.itemInDialog && item.id === this.itemInDialog.id);
-        this.items.splice(itemIndex, 1);
+        this.selected = createItem.id; */
       }
       this.dialogLoading = false;
       this.dialog = false;

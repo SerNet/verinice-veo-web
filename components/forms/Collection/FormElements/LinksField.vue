@@ -55,7 +55,6 @@
             :visible="visible"
             :general-translation="generalTranslation"
             :custom-translation="customTranslation"
-            :api="api"
             :link-data="localValue"
             @input="onInput"
           />
@@ -93,9 +92,10 @@
 import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
-import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
-import { BaseObject, IApi } from '~/components/forms/utils';
 
+import LinksFieldRow from '~/components/forms/Collection/FormElements/LinksFieldRow.vue';
+import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
+import { BaseObject } from '~/components/forms/utils';
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
 import { UISchemaElement } from '~/types/UISchema';
 
@@ -106,6 +106,9 @@ interface IData {
 
 export default Vue.extend({
   name: 'LinksField',
+  components: {
+    LinksFieldRow
+  },
   props: {
     value: {
       type: Array,
@@ -140,11 +143,7 @@ export default Vue.extend({
     elements: {
       type: Array,
       default: () => []
-    } as PropOptions<UISchemaElement[]>,
-    api: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IApi>
+    } as PropOptions<UISchemaElement[]>
   },
   data(): IData {
     return {

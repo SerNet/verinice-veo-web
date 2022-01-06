@@ -104,7 +104,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
           <div data-v-123abc4d="" class="vf-label">
             dynamic_text_group_title
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-form-element vf-input-text">
               <span
                 ><div
@@ -126,7 +126,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-form-element vf-input-text">
               <span
                 ><div
@@ -148,7 +148,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-select vf-form-element">
               <span
                 ><div
@@ -196,7 +196,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
               >
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
               <div data-v-123abc4d="" class="d-flex">
                 <span data-v-123abc4d="" class="subtitle-1 mb-2">
@@ -301,7 +301,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
               </button>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
               <div data-v-123abc4d="" class="d-flex">
                 <span data-v-123abc4d="" class="subtitle-1 mb-2">
@@ -432,7 +432,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                         >
                           <div
                             data-v-123abc4d=""
-                            class="vf-control col-md-auto col-12"
+                            class="col-md-auto col-12 vf-control"
                           >
                             <div
                               data-v-123abc4d=""
@@ -462,7 +462,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                           </div>
                           <div
                             data-v-123abc4d=""
-                            class="vf-control col-md-auto col-12"
+                            class="col-md-auto col-12 vf-control"
                           >
                             <div
                               data-v-123abc4d=""
@@ -565,7 +565,7 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-form-element vf-input-text">
               <span
                 ><div
@@ -632,7 +632,7 @@ exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor d
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div
               data-v-123abc4d=""
               class="vf-input-text-multiline vf-form-element"
@@ -737,7 +737,7 @@ exports[`Formschema Editor > opens InputUri dialogs, changes data in dialogs and
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-input-uri vf-form-element">
               <span
                 ><div
@@ -818,7 +818,7 @@ exports[`Formschema Editor > opens InputDate dialogs, changes data in dialogs an
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-input-date vf-form-element">
               <span
                 ><div
@@ -893,7 +893,7 @@ exports[`Formschema Editor > opens Checkbox dialogs, changes data in dialogs and
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
               <span
                 ><div
@@ -977,7 +977,7 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-select vf-form-element">
               <span
                 ><div
@@ -1070,7 +1070,7 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-radio vf-form-element">
               <span
                 ><div class="subtitle-1">
@@ -1198,7 +1198,7 @@ exports[`Formschema Editor > opens Select/Radio/Autocomplete dialogs, changes da
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-autocomplete vf-form-element">
               <span
                 ><div
@@ -1304,7 +1304,7 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
               <div data-v-123abc4d="" class="d-flex">
                 <span data-v-123abc4d="" class="subtitle-1 mb-2">
@@ -1387,7 +1387,7 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                                 >
                                   <div
                                     data-v-123abc4d=""
-                                    class="vf-control col-md-auto col-12"
+                                    class="col-md-auto col-12 vf-control"
                                   >
                                     <div
                                       data-v-123abc4d=""
@@ -1420,7 +1420,7 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                                   </div>
                                   <div
                                     data-v-123abc4d=""
-                                    class="vf-control col-md-auto col-12"
+                                    class="col-md-auto col-12 vf-control"
                                   >
                                     <div
                                       data-v-123abc4d=""
@@ -1452,7 +1452,7 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                                   </div>
                                   <div
                                     data-v-123abc4d=""
-                                    class="vf-control col-md-auto col-12"
+                                    class="col-md-auto col-12 vf-control"
                                   >
                                     <div
                                       data-v-123abc4d=""
@@ -1777,7 +1777,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
                   class="row row--dense flex-row direction-horizontal"
                   style="margin-left: 20px;"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -1804,7 +1804,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
                       <span
                         ><div
@@ -1863,7 +1863,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
                   data-v-123abc4d=""
                   class="row flex-column direction-vertical"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -1890,7 +1890,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -2026,7 +2026,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
                   class="row row--dense flex-row direction-horizontal"
                   style="margin-left: 20px;"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -2053,7 +2053,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
                       <span
                         ><div
@@ -2114,7 +2114,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
                   data-v-123abc4d=""
                   class="row flex-column direction-vertical"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -2141,7 +2141,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -2825,7 +2825,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -2880,7 +2884,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -3110,7 +3118,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -3340,7 +3352,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -3354,7 +3370,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-form-element vf-input-text">
               <span
                 ><div
@@ -3376,7 +3392,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-input-uri vf-form-element">
               <span
                 ><div
@@ -3413,7 +3429,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-input-date vf-form-element">
               <span
                 ><div
@@ -3444,7 +3460,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
               <div class="v-menu"><!----></div>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
               <span
                 ><div
@@ -3486,7 +3502,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-select vf-form-element">
               <span
                 ><div
@@ -3534,7 +3550,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
               >
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
               <div data-v-123abc4d="" class="d-flex">
                 <span data-v-123abc4d="" class="subtitle-1 mb-2">
@@ -3657,7 +3673,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                   data-v-123abc4d=""
                   class="row flex-column direction-vertical"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -3684,7 +3700,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
                       <span
                         ><div
@@ -3743,7 +3759,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                   data-v-123abc4d=""
                   class="row flex-column direction-vertical"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -3770,7 +3786,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -4331,7 +4347,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -4386,7 +4406,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -4616,7 +4640,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -4846,7 +4874,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -4860,7 +4892,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-form-element vf-input-text">
               <span
                 ><div
@@ -4882,7 +4914,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-input-uri vf-form-element">
               <span
                 ><div
@@ -4919,7 +4951,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-input-date vf-form-element">
               <span
                 ><div
@@ -4950,7 +4982,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
               <div class="v-menu"><!----></div>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
               <span
                 ><div
@@ -4992,7 +5024,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-select vf-form-element">
               <span
                 ><div
@@ -5040,7 +5072,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
               >
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
               <div data-v-123abc4d="" class="d-flex">
                 <span data-v-123abc4d="" class="subtitle-1 mb-2">
@@ -5163,7 +5195,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                   data-v-123abc4d=""
                   class="row flex-column direction-vertical"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -5190,7 +5222,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
                       <span
                         ><div
@@ -5250,7 +5282,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                   data-v-123abc4d=""
                   class="row flex-column direction-vertical"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -5277,7 +5309,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -5837,7 +5869,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -5891,7 +5927,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -6121,7 +6161,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -6351,7 +6395,11 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       </div>
     </div>
     <!---->
-    <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+    <div
+      data-v-123abc4d=""
+      role="dialog"
+      class="v-dialog__container veo-dialog"
+    >
       <!---->
     </div>
   </div>
@@ -6365,7 +6413,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
       <!---->
       <div data-v-123abc4d="" class="col">
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-form-element vf-input-text">
               <span
                 ><div
@@ -6387,7 +6435,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-input-uri vf-form-element">
               <span
                 ><div
@@ -6424,7 +6472,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-input-date vf-form-element">
               <span
                 ><div
@@ -6455,7 +6503,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
               <div class="v-menu"><!----></div>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
               <span
                 ><div
@@ -6496,7 +6544,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
               ></span>
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-select vf-form-element">
               <span
                 ><div
@@ -6544,7 +6592,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
               >
             </div>
           </div>
-          <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
               <div data-v-123abc4d="" class="d-flex">
                 <span data-v-123abc4d="" class="subtitle-1 mb-2">
@@ -6667,7 +6715,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                   data-v-123abc4d=""
                   class="row flex-column direction-vertical"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -6694,7 +6742,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
                       <span
                         ><div
@@ -6753,7 +6801,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                   data-v-123abc4d=""
                   class="row flex-column direction-vertical"
                 >
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -6780,7 +6828,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                       ></span>
                     </div>
                   </div>
-                  <div data-v-123abc4d="" class="vf-control col-md-auto col-12">
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
                     <div
                       data-v-123abc4d=""
                       class="vf-form-element vf-input-text"
@@ -6817,64 +6865,6 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
   </div>
 </div>
 `;
-
-exports[`Formschema Editor > compares downloaded schema with the actual one #0`] =
-{
-  "content": {
-    "elements": [
-      {
-        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
-        "type": "Label"
-      },
-      {
-        "elements": [
-          {
-            "options": {
-              "label": "#lang/description"
-            },
-            "scope": "#/properties/description",
-            "type": "Control"
-          },
-          {
-            "options": {
-              "label": "#lang/name"
-            },
-            "scope": "#/properties/name",
-            "type": "Control"
-          }
-        ],
-        "options": {
-          "format": "group",
-          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
-        },
-        "type": "Layout"
-      },
-      {
-        "options": {
-          "label": "#lang/abbreviation"
-        },
-        "scope": "#/properties/abbreviation",
-        "type": "Control"
-      }
-    ],
-    "options": {
-      "direction": "vertical",
-      "format": "group"
-    },
-    "type": "Layout"
-  },
-  "modelType": "process",
-  "name": {
-    "de": "Test Formschema"
-  },
-  "subType": "TF",
-  "translation": {
-    "de": {
-      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
-      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
-    }
-  }
-};
 
 exports[`Formschema Editor > adds, updates formSchema meta details #0`] =
 {
@@ -7031,5 +7021,63 @@ exports[`Formschema Editor > checks whether translations get deleted if the cont
       "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
     },
     "en": {}
+  }
+};
+
+exports[`Formschema Editor > compares downloaded schema with the actual one #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
+        "type": "Label"
+      },
+      {
+        "elements": [
+          {
+            "options": {
+              "label": "#lang/description"
+            },
+            "scope": "#/properties/description",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/name"
+            },
+            "scope": "#/properties/name",
+            "type": "Control"
+          }
+        ],
+        "options": {
+          "format": "group",
+          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
+        },
+        "type": "Layout"
+      },
+      {
+        "options": {
+          "label": "#lang/abbreviation"
+        },
+        "scope": "#/properties/abbreviation",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema"
+  },
+  "subType": "TF",
+  "translation": {
+    "de": {
+      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
+      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
+    }
   }
 };

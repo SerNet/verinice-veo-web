@@ -18,20 +18,20 @@
 import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
-import 'regenerator-runtime/runtime';
 
 import { install as VeeValidate } from '@/plugins/vee-validate';
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
 
 Vue.use(VeeValidate);
-Vue.use(Vuetify);
+
 const vuetify = new Vuetify();
 
 describe('InputNumber.vue', () => {
   it('should render input-text-field element for numbers', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           age: {
             type: 'number'

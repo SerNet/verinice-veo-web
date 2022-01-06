@@ -18,20 +18,20 @@
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import Vue from 'vue';
-import 'regenerator-runtime/runtime';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
 
 import { install as VeeValidate } from '~/plugins/vee-validate';
 Vue.use(VeeValidate);
-Vue.use(Vuetify);
+
 const vuetify = new Vuetify();
 
 describe('Layout.vue', () => {
   it('should render certain layout', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           name: {
             type: 'string'

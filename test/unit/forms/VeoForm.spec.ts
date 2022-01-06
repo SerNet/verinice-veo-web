@@ -18,7 +18,6 @@
 import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
-import 'regenerator-runtime/runtime';
 
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
@@ -32,6 +31,7 @@ describe('VeoForm.vue', () => {
   it("should render second text field if first contains text 'hans'", async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           name: {
             type: 'string'

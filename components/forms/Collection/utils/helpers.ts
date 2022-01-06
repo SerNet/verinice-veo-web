@@ -56,6 +56,3 @@ export interface LayoutProps {
 export interface Helpful<T> {
   matchingScore: (props: T) => number;
 }
-
-// TODO: Is it good way to get rid of "as Function" Warnings
-export type ContextListener = (event: any) => void;
