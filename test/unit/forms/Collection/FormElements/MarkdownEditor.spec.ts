@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { install as VeeValidate } from '@/plugins/vee-validate';
 import Vue from 'vue';
-import Vuetify from 'vuetify';
+
+import { install as VeeValidate } from '@/plugins/vee-validate';
 
 Vue.use(VeeValidate);
-Vue.use(Vuetify);
 
 describe('MarkdownEditor.vue', () => {
   it('should render select component to choose some list element', async () => {

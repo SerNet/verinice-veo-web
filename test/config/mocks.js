@@ -30,3 +30,24 @@ config.mocks = {
   },
   $t: (t) => t
 };
+
+// Needed if useI18n() gets used in compoisition api
+jest.mock('nuxt-i18n-composable', () => ({
+  useI18n() {
+    return {
+      t: (t) => t,
+      locale: 'de'
+    };
+  }
+}));
+
+// Mocks the intersection observer, however not as a jest module mock, as it usually resides in the global scope allowing us to mock it there
+function intersectionObserver() {
+  return {
+    observe: () => null,
+    unobserve: () => null,
+    disconnect: () => null
+  };
+}
+
+window.IntersectionObserver = intersectionObserver;

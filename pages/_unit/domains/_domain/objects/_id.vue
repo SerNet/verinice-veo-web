@@ -24,24 +24,50 @@
     :page-widths="pageWidths"
     :page-titles="pageTitles"
     @page-collapsed="onPageCollapsed">
-    <VeoObjectDetails
-      :loading="loading"
-      :object="object"
-    />
-    <VeoObjectForm
-      :loading="loading"
-      :object="object"
-      :show-header="pageWidths[1] === 0"
-    />
+    <template
+      v-if="!loading && object"
+      #header
+    >
+      <div class="px-4">
+        <h1>
+          {{ upperFirst(t('objects').toString()) }}
+        </h1>
+        <h2>
+          {{ object.displayName }}
+        </h2>
+      </div>
+    </template>
+    <template #default>
+      <VeoObjectDetails
+        :loading="loading"
+        :object="object"
+      />
+      <VeoPage
+        fullsize
+        content-class="fill-height"
+        no-padding
+      >
+        <template #default>
+          <VeoObjectForm
+            v-model="object"
+            :objectschema="objectschema"
+            :loading="loading"
+            :domain-id="domainId"
+          />
+        </template>
+      </VeoPage>
+    </template>
+    
   </VeoPageWrapper>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectSchema } from '~/types/VeoTypes';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -50,36 +76,43 @@ export default defineComponent({
     const { $api } = useContext();
     const route = useRoute();
 
-    const pageWidths = ref<Number[]>([6, 6]);
+    const pageWidths = ref<Number[]>([4, 8]);
     const pageTitles = ref<string[]>([t('objectInfo').toString(), t('objectForm').toString()]);
 
     const onPageCollapsed = (collapsedPages: Boolean[]) => {
       if (collapsedPages.some((page) => page)) {
         pageWidths.value = [12, 0];
       } else {
-        pageWidths.value = [6, 6];
+        pageWidths.value = [3, 9];
       }
     };
 
     const objectParameter = computed(() => {
       return separateUUIDParam(route.value.params.id);
     });
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+
     const object = ref<IVeoEntity | undefined>(undefined);
+    const objectschema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
 
     const { fetchState } = useFetch(async () => {
       object.value = await $api.entity.fetch(objectParameter.value.type, objectParameter.value.id);
+      objectschema.value = await $api.schema.fetch(objectParameter.value.type, [domainId.value]);
     });
 
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
 
     return {
+      domainId,
       t,
       pageWidths,
       pageTitles,
       onPageCollapsed,
       loading: fetchState.pending,
       notFoundError,
-      object
+      object,
+      objectschema,
+      upperFirst
     };
   }
 });
@@ -89,11 +122,13 @@ export default defineComponent({
 {
   "en": {
     "objectInfo": "objekt details",
-    "objectForm": "form"
+    "objectForm": "form",
+    "objects": "objects"
   },
   "de": {
     "objectInfo": "Objektdetails",
-    "objectForm": "Formular"
+    "objectForm": "Formular",
+    "objects": "Objekte"
   }
 }
 </i18n>

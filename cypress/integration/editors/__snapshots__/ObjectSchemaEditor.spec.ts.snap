@@ -134,7 +134,7 @@ exports[`Objectschema Editor > adds completely new link and removes it from dial
 
 exports[`Objectschema Editor > compares downloaded schema with the actual one #0`] =
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
   "description": "NBRX Integration Test Schema v1.0 2021-05-21",
   "properties": {
     "abbreviation": {

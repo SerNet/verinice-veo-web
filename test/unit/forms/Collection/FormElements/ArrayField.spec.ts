@@ -19,17 +19,13 @@ import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
-import VueI18n from 'vue-i18n';
-import 'regenerator-runtime/runtime';
 
 import { install as VeeValidate } from '~/plugins/vee-validate';
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
 Vue.use(VeeValidate);
-Vue.use(Vuetify);
-Vue.use(VueI18n);
+
 const vuetify = new Vuetify();
-const i18n = new VueI18n();
 
 // TODO: Fix broken tests
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -98,7 +94,6 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      i18n,
       propsData: { ...form }
     });
 
@@ -124,6 +119,7 @@ describe('ArrayField.vue', () => {
   ignore('elements in arrayField must be listed horizontally for direction option', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           persons: {
             type: 'array',
@@ -186,7 +182,6 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      i18n,
       propsData: { ...form }
     });
 
@@ -212,6 +207,7 @@ describe('ArrayField.vue', () => {
   ignore('elements in arrayField must be listed vertically for direction option', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           persons: {
             type: 'array',
@@ -274,7 +270,6 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      i18n,
       propsData: { ...form }
     });
 
@@ -300,6 +295,7 @@ describe('ArrayField.vue', () => {
   ignore('should render arrayfield element for a list with multiple fields per row', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           persons: {
             type: 'array',
@@ -392,7 +388,6 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      i18n,
       propsData: { ...form }
     });
 
@@ -448,6 +443,7 @@ describe('ArrayField.vue', () => {
   ignore('should change row number arrafield row number with add and remove buttons', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           persons: {
             type: 'array',
@@ -540,7 +536,6 @@ describe('ArrayField.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      i18n,
       propsData: { ...form }
     });
 

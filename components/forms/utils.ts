@@ -49,13 +49,6 @@ export interface ILinksFieldDialogUpdatedObject extends ILinksFieldDialogNewObje
 // Nuxt compile throws warnings if this is no default export exists
 export default {};
 
-export interface IApi {
-  fetchAll(objectType: string, searchParams?: IBaseObject): Promise<IVeoPaginatedResponse<IVeoEntity[]>>;
-  create(objectType: string, createdObjectData: IVeoEntity): Promise<BaseObject>;
-  update(objectType: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void>;
-  delete(objectType: string, id: string): Promise<void>;
-}
-
 export function isContain(array: defaultType[], elementToContain: defaultType[] | defaultType) {
   if (Array.isArray(elementToContain)) {
     // Check if every element of elementToContain is in array included

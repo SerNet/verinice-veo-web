@@ -21,10 +21,11 @@
     max-width="80%"
     :persistent="persistent"
     :eager="eager"
-    :width="large ? '900px' : '450px'"
+    :width="width"
+    :content-class="contentClass"
     class="veo-dialog"
   >
-    <v-card>
+    <v-card :class="cardClass">
       <v-card-title
         class="headline"
         :class="large ? '' : 'pl-4 pr-0 py-0'"
@@ -44,7 +45,7 @@
         </v-btn>
       </v-card-title>
       <v-card-text
-        class="pa-4"
+        :class="[innerClass, 'pa-4', 'flex-grow-1']"
         style="position: relative;"
       >
         <slot />
@@ -77,6 +78,10 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
+    xLarge: {
+      type: Boolean,
+      default: false
+    },
     persistent: {
       type: Boolean,
       default: false
@@ -106,6 +111,18 @@ export default Vue.extend({
     eager: {
       type: Boolean,
       default: false
+    },
+    innerClass: {
+      type: String,
+      default: ''
+    },
+    contentClass: {
+      type: String,
+      default: ''
+    },
+    cardClass: {
+      type: String,
+      default: ''
     }
   },
   computed: {
@@ -119,6 +136,11 @@ export default Vue.extend({
     },
     hasActions(): boolean {
       return (this.$slots['dialog-options']?.length || 0) > 0;
+    },
+    width(): string {
+      if (this.large) return '900px';
+      if (this.xLarge) return '1350px';
+      return '450px';
     }
   },
   methods: {

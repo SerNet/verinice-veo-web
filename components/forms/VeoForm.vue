@@ -24,7 +24,7 @@ import vjp from 'vue-json-pointer';
 import { ErrorObject, ValidateFunction } from 'ajv';
 import { cloneDeep, merge } from 'lodash';
 import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
-import { BaseObject, IApi, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
+import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
@@ -79,10 +79,6 @@ export default Vue.extend({
       type: Array,
       default: () => []
     } as PropOptions<IErrorMessageElement[]>,
-    api: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IApi>,
     reactiveFormActions: {
       type: Array,
       default: () => []
@@ -144,6 +140,7 @@ export default Vue.extend({
         // IMPORTANT! This is needed to update localSchema when schema is updated
         // Else it cannot detect updated object of schema and does not update veo-form
         this.localSchema = JSON.parse(JSON.stringify(this.schema));
+        this.validate();
       }
     },
     ui: {
@@ -320,8 +317,7 @@ export default Vue.extend({
             objectSchema: {
               errorMsg: this.errorsMsgMap[element.scope]
             }
-          },
-          api: this.api
+          }
         };
       }
 

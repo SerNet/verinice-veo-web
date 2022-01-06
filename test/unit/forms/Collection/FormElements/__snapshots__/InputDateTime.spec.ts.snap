@@ -20,7 +20,7 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
           class="row flex-column direction-vertical"
         >
           <div
-            class="vf-control col-md-auto col-12"
+            class="col-md-auto col-12 vf-control"
           >
             <div
               class="vf-input-date vf-form-element"
@@ -113,7 +113,7 @@ exports[`InputDateTime.vue should render input-date-time element for date-times:
           class="row flex-column direction-vertical"
         >
           <div
-            class="vf-control col-md-auto col-12"
+            class="col-md-auto col-12 vf-control"
           >
             <div
               class="vf-input-date vf-form-element"
