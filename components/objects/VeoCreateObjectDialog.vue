@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoDialog
-    :value="value"
+    v-model="dialog"
     :headline="upperFirst(t('createObject').toString())"
     x-large
     :persistent="isFormDirty"
@@ -47,7 +47,7 @@
         <v-btn
           text
           :data-cy="$utils.prefixCyData($options, 'cancel-button')"
-          @click="$emit('input', false)"
+          @click="dialog = false"
         >
           {{ t('global.button.cancel') }}
         </v-btn>
@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useFetch, useContext, Ref, useRoute, watch } from '@nuxtjs/composition-api';
+import { defineComponent, ref, useFetch, useContext, Ref, useRoute, computed } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
@@ -101,16 +101,21 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
     // Display stuff
-    watch(
-      () => props.value,
-      (newValue) => {
-        if (!newValue) {
+    const dialog = computed({
+      get() {
+        return props.value;
+      },
+      set(value: boolean) {
+        emit('input', value);
+
+        // If the dialog gets closed, restore pristine state, 150ms seems to be the animation duration of v-dialog
+        if (!value) {
           setTimeout(() => {
             seedInitialData();
           }, 150);
         }
       }
-    );
+    });
 
     const isFormDirty = ref(false);
 
@@ -138,7 +143,7 @@ export default defineComponent({
         const result = await $api.entity.create(props.objectType, objectData.value);
         emit('success', result.resourceId);
         displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
-        emit('input', false);
+        dialog.value = false;
       } catch (e: any) {
         displayErrorMessage(upperFirst(t('objectNotCreated', { name: objectData.value.name || upperFirst(t('object').toString()) }).toString()), JSON.stringify(e));
       }
@@ -147,6 +152,7 @@ export default defineComponent({
     const formValid = ref(false);
 
     return {
+      dialog,
       isFormDirty,
       formValid,
       objectSchema,
