@@ -17,25 +17,26 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog"
+    :value="value"
     :headline="upperFirst(t('createObject').toString())"
     x-large
-    :persistent="formModified"
+    :persistent="isFormDirty"
     fixed-footer
     fixed-header
     content-class="overflow-hidden fill-height"
     card-class="d-flex flex-column fill-height"
     inner-class="overflow-hidden"
+    v-on="$listeners"
   >
     <template #default>
       <VeoObjectForm
         v-model="objectData"
-        :objectschema="objectschema"
+        :object-schema="objectSchema"
         :domain-id="domainId"
         :preselected-sub-type="subType"
         :valid.sync="formValid"
         disable-history
-        @input="formModified = true"
+        @input="isFormDirty = true"
       />
     </template>
     <template #dialog-options>
@@ -46,7 +47,7 @@
         <v-btn
           text
           :data-cy="$utils.prefixCyData($options, 'cancel-button')"
-          @click="dialog = false"
+          @click="$emit('input', false)"
         >
           {{ t('global.button.cancel') }}
         </v-btn>
@@ -66,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, useFetch, useContext, Ref, useRoute } from '@nuxtjs/composition-api';
+import { defineComponent, ref, useFetch, useContext, Ref, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
@@ -100,26 +101,21 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
     // Display stuff
-    const dialog = computed({
-      get() {
-        return props.value;
-      },
-      set(value: boolean) {
-        emit('input', value);
-
-        // If the dialog gets closed, restore pristine state, 150ms seems to be the animation duration of v-dialog
-        if (!value) {
+    watch(
+      () => props.value,
+      (newValue) => {
+        if (!newValue) {
           setTimeout(() => {
             seedInitialData();
           }, 150);
         }
       }
-    });
+    );
 
-    const formModified = ref(false);
+    const isFormDirty = ref(false);
 
     // object schema stuff
-    const objectschema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
+    const objectSchema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
     const objectData: any = ref({});
     seedInitialData();
 
@@ -129,10 +125,11 @@ export default defineComponent({
           targetUri: `${$config.apiUrl}/units/${separateUUIDParam(route.value.params.unit).id}`
         }
       };
+      isFormDirty.value = false;
     }
 
     useFetch(async () => {
-      objectschema.value = await $api.schema.fetch(props.objectType, [props.domainId]);
+      objectSchema.value = await $api.schema.fetch(props.objectType, [props.domainId]);
     });
 
     // Actions
@@ -140,20 +137,19 @@ export default defineComponent({
       try {
         const result = await $api.entity.create(props.objectType, objectData.value);
         emit('success', result.resourceId);
-        displaySuccessMessage(t('objectCreated', { name: objectData.value.name }).toString());
-        dialog.value = false;
+        displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
+        emit('input', false);
       } catch (e: any) {
-        displayErrorMessage(t('objectNotCreated', { name: objectData.value.name || t('object').toString() }).toString(), JSON.stringify(e));
+        displayErrorMessage(upperFirst(t('objectNotCreated', { name: objectData.value.name || upperFirst(t('object').toString()) }).toString()), JSON.stringify(e));
       }
     }
 
     const formValid = ref(false);
 
     return {
-      dialog,
-      formModified,
+      isFormDirty,
       formValid,
-      objectschema,
+      objectSchema,
       objectData,
       onSubmit,
 
@@ -168,13 +164,13 @@ export default defineComponent({
 {
   "en": {
     "createObject": "create object",
-    "object": "Object",
+    "object": "object",
     "objectCreated": "\"{name}\" was created successfully!",
-    "objectNotCreated": "Couldn't create \"{name}\""
+    "objectNotCreated": "couldn't create \"{name}\""
   },
   "de": {
-    "object": "Objekt",
-    "createObject": "Objekt erstellen",
+    "createObject": "objekt erstellen",
+    "object": "objekt",
     "objectCreated": "\"{name}\" wurde erfolgreich erstellt!",
     "objectNotCreated": "\"{name}\" konnte nicht erstellt werden."
   }

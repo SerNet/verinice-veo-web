@@ -72,7 +72,8 @@
             </v-col>
           </v-row>
           <v-row
-            class="mt-3">
+            class="mt-3"
+          >
             <v-spacer />
             <v-col
               cols="auto"
@@ -204,7 +205,7 @@
           </h3>
           <VeoValidationResult
             :result="validation"
-            show-warnings
+            warnings-visible
             class="mt-4"
           />
         </div>

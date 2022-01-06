@@ -61,7 +61,7 @@ export default defineComponent({
         {
           class: {
             'fill-width': props.fullsize,
-            'veo-tab-sticky': props.stickyTabs
+            'veo-tab--sticky': props.stickyTabs
           }
         },
         [
@@ -106,7 +106,7 @@ export default defineComponent({
   z-index: 2;
 }
 
-.veo-tabs-sticky {
+.veo-tabs--sticky {
   top: 0;
   position: sticky;
   top: 0;

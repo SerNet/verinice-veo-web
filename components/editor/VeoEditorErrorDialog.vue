@@ -25,8 +25,8 @@
     <template #default>
       <VeoValidationResult
         :result="$attrs.validation"
-        show-warnings
-        allow-fixing
+        warnings-visible
+        fixing-allowed
         v-on="$listeners"
       />
     </template>

@@ -138,13 +138,9 @@ export default Vue.extend({
       return (this.$slots['dialog-options']?.length || 0) > 0;
     },
     width(): string {
-      if (this.large) {
-        return '900px';
-      } else if (this.xLarge) {
-        return '1350px';
-      } else {
-        return '450px';
-      }
+      if (this.large) return '900px';
+      if (this.xLarge) return '1350px';
+      return '450px';
     }
   },
   methods: {

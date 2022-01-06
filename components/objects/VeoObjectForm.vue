@@ -41,24 +41,28 @@
         <template #default>
           <slot name="form" />
           <VeoForm
-            v-if="!$fetchState.pending && objectschema && !loading"
+            v-if="!$fetchState.pending && objectSchema && !loading"
             v-model="objectData"
-            :schema="objectschema"
+            :schema="objectSchema"
             :ui="currentFormSchema && currentFormSchema.content"
             :general-translation="translations && translations[locale]"
             :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
             :error-messages.sync="formErrors"
             :reactive-form-actions="reactiveFormActions"
           />
-          <VeoObjectFormSkeleton v-else />
+          <VeoObjectFormSkeletonLoader v-else />
         </template>
       </VeoPage>
       <VeoPage>
         <template #default>
           <VeoTabs>
             <template #tabs>
-              <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">{{ t('tableOfContents') }}</v-tab>
-              <v-tab v-if="!disableHistory">{{ t('history') }}</v-tab>
+              <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">
+                {{ t('tableOfContents') }}
+              </v-tab>
+              <v-tab v-if="!disableHistory">
+                {{ t('history') }}
+              </v-tab>
               <v-tab>{{ t('messages') }} ({{ messages.errors.length + messages.warnings.length }})</v-tab>
             </template>
             <template #items>
@@ -76,7 +80,7 @@
               <v-tab-item>
                 <VeoValidationResult
                   :result="messages"
-                  show-warnings
+                  warnings-visible
                 />
               </v-tab-item>
             </template>
@@ -107,7 +111,7 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    objectschema: {
+    objectSchema: {
       type: Object,
       default: undefined
     } as PropOptions<IVeoObjectSchema>,
@@ -165,7 +169,7 @@ export default defineComponent({
     const selectedDisplayOption = ref('objectschema');
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
       const availableFormSchemas: { text: string; value: string | undefined }[] = formSchemas.value
-        .filter((formSchema) => formSchema.modelType === props.objectschema?.title)
+        .filter((formSchema) => formSchema.modelType === props.objectSchema?.title)
         .map((formSchema) => ({
           text: formSchema.name[locale.value] || formSchema.subType,
           value: formSchema.id
@@ -220,7 +224,7 @@ export default defineComponent({
     );
 
     const reactiveFormActions: ComputedRef<IVeoReactiveFormAction[]> = computed(() => {
-      return props.objectschema?.title === 'person' ? personReactiveFormActions() : [];
+      return props.objectSchema?.title === 'person' ? personReactiveFormActions() : [];
     });
 
     // Messages stuff

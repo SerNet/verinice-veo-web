@@ -19,14 +19,14 @@
   <v-list>
     <v-list-item
       v-for="(item, index) of items"
-      :key="`e_${index}`"
+      :key="index"
       link
     >
       <v-list-item-content style="overflow-wrap: anywhere;">
         <v-list-item-title>{{ item.code }} </v-list-item-title>
         {{ item.message }}
       </v-list-item-content>
-      <v-list-item-action v-if="item.fixable && allowFixing">
+      <v-list-item-action v-if="item.fixable && fixingAllowed">
         <v-btn
           outlined
           @click="$emit('fix', item.code, item.params)"
@@ -35,7 +35,7 @@
         </v-btn>
       </v-list-item-action>
     </v-list-item>
-    <v-list-item v-if="items.length === 0 && showNoErrorText">
+    <v-list-item v-if="items.length === 0 && showNoErrorPlaceholder">
       <v-list-item-content>
         <v-list-item-title>{{ t('noErrors') }}</v-list-item-title>
       </v-list-item-content>
@@ -55,11 +55,11 @@ export default defineComponent({
       type: Array,
       default: () => []
     } as PropOptions<VeoSchemaValidatorMessage[]>,
-    showNoErrorText: {
+    noErrorPlaceholderVisible: {
       type: Boolean,
       default: false
     },
-    allowFixing: {
+    fixingAllowed: {
       type: Boolean,
       default: false
     }

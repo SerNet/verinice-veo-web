@@ -25,7 +25,9 @@
           :domain="domainId"
           :object-type-required="objectTypeRequired"
         />
-        <v-btn @click="showFilter = !showFilter">Filter anzeigen</v-btn><br>
+        <v-btn @click="showFilter = !showFilter">
+          Filter anzeigen
+        </v-btn><br>
         <v-switch
           v-model="objectTypeRequired"
           label="Objekttyp verpflichtend"
@@ -34,24 +36,25 @@
         <p>Angewendete Filter: {{ filter }}</p>
       </v-col>
       <v-col>
-        <v-btn @click="showCreateObjectDialog = !showCreateObjectDialog">Prozess erstellen</v-btn>
+        <v-btn @click="createObjectDialogVisible = !createObjectDialogVisible">
+          Prozess erstellen
+        </v-btn>
         <VeoCreateObjectDialog
-          v-model="showCreateObjectDialog"
-          object-type = "process"
+          v-model="createObjectDialogVisible"
+          object-type="process"
           :domain-id="domainId"
           sub-type="PRO_DataProcessing"
         />
-        <p class="mt-4">showCreateObjectDialog: {{ showCreateObjectDialog }}</p>
-      </v-col>
-      <v-col>
-        <CompositionRenderComponent />
+        <p class="mt-4">
+          createObjectDialogVisible: {{ createObjectDialogVisible }}
+        </p>
       </v-col>
     </v-row>
   </VeoPage>
 </template>
 
-<script lang="de">
-import { defineComponent, ref, computed, useRoute } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { defineComponent, ref, computed, useRoute } from '@nuxtjs/composition-api';
 import { separateUUIDParam } from '~/lib/utils';
 
 export default defineComponent({
@@ -63,10 +66,10 @@ export default defineComponent({
 
     const domainId = computed(() => {
       return separateUUIDParam(route.value.params.id).id;
-    })
-    const showCreateObjectDialog = ref(false);
+    });
+    const createObjectDialogVisible = ref(false);
 
-    return { showFilter, filter, objectTypeRequired, domainId, showCreateObjectDialog };
+    return { showFilter, filter, objectTypeRequired, domainId, createObjectDialogVisible };
   }
-})
+});
 </script>

@@ -92,7 +92,7 @@ export default defineComponent({
     } as PropOptions<UISchemaElement[]>
   },
   setup(props, { listeners, emit }) {
-    function appropriateComponent() {
+    function getAppropriateComponent() {
       return components.sort((a: any, b: any) => b.helpers.matchingScore({ ...props }) - a.helpers.matchingScore({ ...props }))[0].default;
     }
 
@@ -108,7 +108,7 @@ export default defineComponent({
               class: 'vf-control'
             },
             [
-              h(appropriateComponent(), {
+              h(getAppropriateComponent(), {
                 props,
                 on: {
                   ...listeners,

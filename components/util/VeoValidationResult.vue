@@ -17,18 +17,18 @@
 -->
 <template>
   <div class="text-left">
-    <h3>{{ $t('schemaValidationErrors') }} ({{ result.errors.length }}):</h3>
+    <h3>{{ upperFirst(t('schemaValidationErrors').toString()) }} ({{ result.errors.length }}):</h3>
     <VeoValidationResultList
       :items="result.errors"
-      show-no-error-text
-      :allow-fixing="allowFixing"
+      no-error-placeholder-visible
+      :fixing-allowed="fixingAllowed"
       v-on="$listeners"
     />
-    <template v-if="showWarnings">
-      <h3>{{ $t('schemaValidationWarnings') }} ({{ result.warnings.length }}):</h3>
+    <template v-if="warningsVisible">
+      <h3>{{ upperFirst(t('schemaValidationWarnings').toString()) }} ({{ result.warnings.length }}):</h3>
       <VeoValidationResultList
         :items="result.warnings"
-        :allow-fixing="allowFixing"
+        :fixing-allowed="fixingAllowed"
         v-on="$listeners"
       />
     </template>
@@ -36,25 +36,34 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+import { upperFirst } from 'lodash';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
-    showWarnings: {
+    warningsVisible: {
       type: Boolean,
       default: false
     },
     result: {
-      type: Object as Prop<VeoSchemaValidatorValidationResult>,
+      type: Object,
       required: true
-    },
-    allowFixing: {
+    } as PropOptions<VeoSchemaValidatorValidationResult>,
+    fixingAllowed: {
       type: Boolean,
       default: false
     }
+  },
+  setup() {
+    const { t } = useI18n();
+
+    return {
+      t,
+      upperFirst
+    };
   }
 });
 </script>
@@ -62,12 +71,12 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "schemaValidationErrors": "Errors",
-    "schemaValidationWarnings": "Warnings"
+    "schemaValidationErrors": "errors",
+    "schemaValidationWarnings": "warnings"
   },
   "de": {
-    "schemaValidationErrors": "Fehler",
-    "schemaValidationWarnings": "Warnungen"
+    "schemaValidationErrors": "fehler",
+    "schemaValidationWarnings": "warnungen"
   }
 }
 </i18n>

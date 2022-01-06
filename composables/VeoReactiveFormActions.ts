@@ -42,13 +42,13 @@ export function useVeoReactiveFormActions() {
       {
         attributeName: '/customAspects/person_generalInformation/attributes/person_generalInformation_givenName',
         handler: (_newValue, newObject, oldObject) => {
-          computeFullName(newObject, oldObject);
+          getFullName(newObject, oldObject);
         }
       },
       {
         attributeName: '/customAspects/person_generalInformation/attributes/person_generalInformation_familyName',
         handler: (_newValue, newObject, oldObject) => {
-          computeFullName(newObject, oldObject);
+          getFullName(newObject, oldObject);
         }
       }
     ];
@@ -58,7 +58,7 @@ export function useVeoReactiveFormActions() {
    Helpers for previously defined reactive form actions
   
   */
-  function computeFullName(newObject: IBaseObject, oldObject: IBaseObject) {
+  function getFullName(newObject: IBaseObject, oldObject: IBaseObject) {
     let fullnameOld = '';
     let givenNameOld = '';
     let familyNameOld = '';

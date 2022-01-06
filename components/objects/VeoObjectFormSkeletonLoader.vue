@@ -30,11 +30,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api';
+import { defineComponent } from '@nuxtjs/composition-api';
 
 export default defineComponent({
   setup() {
-    const skeletons = ref([
+    const skeleton = [
       {
         type: 'heading',
         width: '30%'
@@ -51,9 +51,9 @@ export default defineComponent({
         type: 'text',
         width: '100%'
       }
-    ]);
-    skeletons.value.push(...skeletons.value);
-    skeletons.value.push(...skeletons.value);
+    ];
+
+    const skeletons = new Array(3).fill(skeleton).flat();
 
     return {
       skeletons

@@ -24,7 +24,7 @@ import { install as VeeValidate } from '~/plugins/vee-validate';
 import VeoCreateObjectDialog from '~/components/objects/VeoCreateObjectDialog.vue';
 import VeoDialog from '~/components/layout/VeoDialog.vue';
 import VeoObjectForm from '~/components/objects/VeoObjectForm.vue';
-import VeoObjectFormSkeleton from '~/components/objects/VeoObjectFormSkeleton.vue';
+import VeoObjectFormSkeletonLoader from '~/components/objects/VeoObjectFormSkeletonLoader.vue';
 import VeoFormNavigation from '~/components/layout/VeoFormNavigation.vue';
 import VeoPage from '~/components/layout/VeoPage.vue';
 import VeoPageHeader from '~/components/layout/VeoPageHeader.vue';
@@ -56,7 +56,7 @@ const mockDefaults = {
           VeoFormNavigation,
           VeoValidationResult,
           VeoTabs,
-          VeoObjectFormSkeleton
+          VeoObjectFormSkeletonLoader
         }
       }))()
   },
