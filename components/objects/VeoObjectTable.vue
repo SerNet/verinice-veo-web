@@ -275,8 +275,8 @@ export default defineComponent({
     const pageUpdate = { newPage: props.page, sortBy: firstOrValue(props.sortBy), sortDesc: firstOrValue(props.sortDesc) };
     const { throttle } = useThrottleNextTick();
     const emitPageUpdate = ({ newPage, sortBy, sortDesc }: { newPage?: number; sortBy?: string | string[]; sortDesc?: boolean | boolean[] }) => {
-      // Update data
-      const data = Object.assign(pageUpdate, { newPage, sortBy: firstOrValue(sortBy), sortDesc: firstOrValue(sortDesc) });
+      // Update data (and keep current values)
+      const data = Object.assign(pageUpdate, { newPage: newPage ?? props.page, sortBy: firstOrValue(sortBy ?? props.sortBy), sortDesc: firstOrValue(sortDesc ?? props.sortDesc) });
       // ... but only emit once at nextTick
       return throttle(() => emit('page-change', data));
     };
