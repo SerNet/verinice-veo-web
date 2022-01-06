@@ -108,8 +108,8 @@ export default defineComponent({
       if (!$user.lastDomain) return '';
       const domainId = $user.lastDomain;
       const domainDetails = item.domains[domainId];
-      const key = `${item.type}_${domainDetails.subType}_status_${domainDetails.status}`;
-      return translations.value?.lang?.[i18n.locale]?.[key] || (item.domains[domainId] ? item.domains[domainId].status : '');
+      const key = `${item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
+      return translations.value?.lang?.[i18n.locale]?.[key] || (item.domains[domainId] ? item.domains[domainId]?.status : '');
     };
     /**
      * Distinguish between {@link IVeoPaginatedResponse} and {@link IVeoEntity}[]

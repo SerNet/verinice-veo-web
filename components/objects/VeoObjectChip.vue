@@ -19,7 +19,7 @@
   <v-chip
     v-bind="$attrs"
     outlined
-    close
+    :close="close"
     class="pa-0 pr-2 elevation-0"
     :class="{flag: value===true}"
     style="height: auto;"
@@ -57,6 +57,7 @@ import { defineComponent } from '@vue/composition-api';
 export default defineComponent({
   props: {
     label: { type: String, default: '' },
+    close: { type: Boolean, default: true },
     value: { type: [String, Boolean], default: undefined }
   },
   setup() {
