@@ -110,6 +110,8 @@ export default {
   'unit.create': 'Neue Unit erstellen',
   'unit.create.short': 'Unit erstellen',
   'unit.created': 'Unit wurde erstellt',
+  'unit.default.name': 'Unit 1',
+  'unit.default.description': 'Deine erste Unit',
   'unit.details.children': 'Untergeordnete Units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'Bitte tragen Sie eine Beschreibung ein.',
