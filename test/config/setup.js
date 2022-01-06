@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Jonas Heitmann
+ * Copyright (C) 2022  Jonas Heitmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,4 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-declare module 'vuetify/lib/components/VSkeletonLoader';
+import Vue from 'vue';
+import VueI18n from 'vue-i18n';
+import Vuetify from 'vuetify/lib';
+import VueCompositionAPI from '@vue/composition-api';
+
+Vue.config.productionTip = false;
+Vue.use(Vuetify);
+Vue.use(VueCompositionAPI);
+Vue.use(VueI18n);
+
+window.Vue = Vue;

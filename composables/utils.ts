@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+ * Copyright (C) 2021  Markus Werner
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { VeoAlertType } from './VeoTypes';
+import { nextTick } from '@nuxtjs/composition-api';
 
-export interface IVeoEventPayload {
-  type?: VeoAlertType;
-  text: string;
-  title?: string;
-  saveButtonText?: string;
-  objectModified?: boolean; // ToDo: Temporary until objects rework
-  refetchCallback?: CallableFunction; // ToDo: Temporary until objects rework
-}
+/**
+ * Performs the action `fn` and ignores further calls until nextTick
+ */
+export const useThrottleNextTick = () => {
+  let lastPromise: Promise<any> | undefined;
 
-export const VeoEvents = {
-  SNACKBAR_SUCCESS: 'snackbar_success',
-  ALERT_ERROR: 'alert_error',
-  ALERT_INFO: 'alert_info',
-  ALERT_EXPIRE: 'alert_expire',
+  const throttle = (fn: () => any) => {
+    if (lastPromise) return lastPromise;
+    lastPromise = new Promise<void>((resolve) =>
+      nextTick(() => {
+        try {
+          fn();
+        } finally {
+          lastPromise = undefined;
+          resolve();
+        }
+      })
+    );
+    return lastPromise;
+  };
 
-  DOMAIN_CHANGED: 'domain_changed',
-  UNIT_CREATE: 'unit-create',
-  UNIT_CHANGED: 'unit_changed',
-
-  ENTITY_UPDATED: 'entity_updated'
+  return { throttle };
 };

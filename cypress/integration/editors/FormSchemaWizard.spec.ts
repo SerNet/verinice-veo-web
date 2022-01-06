@@ -285,7 +285,7 @@ describe('Formschema Wizard', () => {
     });
   });
 
-  it('creates a new formschema based on document objectschema', function () {
+  it.skip('creates a new formschema based on document objectschema', function () {
     cy.goTo('/editor/').goTo('/editor/formschema/');
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();

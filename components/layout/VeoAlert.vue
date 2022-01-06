@@ -65,11 +65,7 @@
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 
-export enum VeoAlertType {
-  ERROR,
-  INFO,
-  SUCCESS
-}
+import { VeoAlertType } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {

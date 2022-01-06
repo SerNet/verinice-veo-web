@@ -25,17 +25,36 @@
           :domain="domainId"
           :object-type-required="objectTypeRequired"
         />
-        <v-btn @click="showFilter = !showFilter">Filter anzeigen</v-btn><br>
-        <v-switch v-model="objectTypeRequired" label="Objekttyp verpflichtend" />
+        <v-btn @click="showFilter = !showFilter">
+          Filter anzeigen
+        </v-btn><br>
+        <v-switch
+          v-model="objectTypeRequired"
+          label="Objekttyp verpflichtend"
+        />
         <p>Filter Dialog wird angezeigt: {{ showFilter }}</p>
         <p>Angewendete Filter: {{ filter }}</p>
+      </v-col>
+      <v-col>
+        <v-btn @click="createObjectDialogVisible = !createObjectDialogVisible">
+          Prozess erstellen
+        </v-btn>
+        <VeoCreateObjectDialog
+          v-model="createObjectDialogVisible"
+          object-type="process"
+          :domain-id="domainId"
+          sub-type="PRO_DataProcessing"
+        />
+        <p class="mt-4">
+          createObjectDialogVisible: {{ createObjectDialogVisible }}
+        </p>
       </v-col>
     </v-row>
   </VeoPage>
 </template>
 
-<script>
-import { defineComponent, ref, computed, useRoute } from '@nuxtjs/composition-api'
+<script lang="ts">
+import { defineComponent, ref, computed, useRoute } from '@nuxtjs/composition-api';
 import { separateUUIDParam } from '~/lib/utils';
 
 export default defineComponent({
@@ -46,10 +65,11 @@ export default defineComponent({
     const route = useRoute();
 
     const domainId = computed(() => {
-      return separateUUIDParam(route.value.params.id);
-    })
+      return separateUUIDParam(route.value.params.id).id;
+    });
+    const createObjectDialogVisible = ref(false);
 
-    return { showFilter, filter, objectTypeRequired, domainId };
-  },
-})
+    return { showFilter, filter, objectTypeRequired, domainId, createObjectDialogVisible };
+  }
+});
 </script>

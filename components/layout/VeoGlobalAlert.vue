@@ -44,12 +44,12 @@
     v-else
     v-model="value"
     v-bind="$props"
-    :save-button-text="params.buttonText || t('global.button.ok')"
+    :save-button-text="(params && params.buttonText) || t('global.button.ok')"
     class="veo-global-alert"
     @input="onInput"
   >
     <template
-      v-if="params.objectModified"
+      v-if="params && params.objectModified"
       #additional-button
     >
       <v-btn
@@ -69,21 +69,7 @@ import { mdiCheckCircleOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
-
-export interface IVeoGlobalAlertParams {
-  buttonText?: String; // If not set defaults to "Okay" in VeoGlobalAlert of types "Info & Error"
-  eventCallbacks?: { [event: string]: CallableFunction };
-  [key: string]: any;
-}
-
-export interface IVeoGlobalAlert {
-  type: VeoAlertType;
-  title?: string; // Not required in snackbars (Success message)
-  text: string;
-  params?: IVeoGlobalAlertParams; // Allows the user to specify certain aspects of the alert
-  alertKey?: number; // Used to display one alert after another (only one should be displayed at once) and to programmatically remove an alert
-}
+import { VeoAlertType, IVeoGlobalAlert, IVeoGlobalAlertParams } from '~/types/VeoTypes';
 
 export default defineComponent<IVeoGlobalAlert>({
   props: {
@@ -155,6 +141,6 @@ export default defineComponent<IVeoGlobalAlert>({
   position: fixed;
   transform: translateX(-50%);
   width: 100%;
-  z-index: 1;
+  z-index: 301;
 }
 </style>

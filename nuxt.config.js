@@ -56,10 +56,10 @@ export default {
     build: process.env.CI_COMMIT_SHA || '0000000',
     commitTimestamp: process.env.CI_COMMIT_TIMESTAMP || Date.now(),
     buildNumber: process.env.CI_JOB_ID || '-1',
-    apiUrl: (process.env.VEO_API_URL || 'https://api.staging.verinice.com/') + 'veo',
-    formsApiUrl: (process.env.VEO_API_URL || 'https://api.staging.verinice.com/') + 'forms',
-    historyApiUrl: (process.env.VEO_API_URL || 'https://api.staging.verinice.com/') + 'history',
-    reportsApiUrl: (process.env.VEO_API_URL || 'https://api.staging.verinice.com/') + 'reporting',
+    apiUrl: process.env.VEO_DEFAULT_API_URL || 'https://api.develop.verinice.com/veo',
+    formsApiUrl: process.env.VEO_FORMS_API_URL || 'https://api.develop.verinice.com/forms',
+    historyApiUrl: process.env.VEO_HISTORY_API_URL || 'https://api.develop.verinice.com/history',
+    reportsApiUrl: process.env.VEO_REPORTING_API_URL || 'https://api.develop.verinice.com/reporting',
     oidcUrl: process.env.VEO_OIDC_URL || 'https://keycloak.staging.verinice.com/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
     oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client'
@@ -145,7 +145,26 @@ export default {
     langDir: 'locales/',
     vueI18nLoader: true,
     vueI18n: {
-      silentFallbackWarn: true
+      silentFallbackWarn: true,
+      dateTimeFormats: Object.fromEntries(
+        ['de', 'en'].map((lang) => [
+          lang,
+          {
+            long: {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            },
+            short: {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+            }
+          }
+        ])
+      )
     }
   },
 

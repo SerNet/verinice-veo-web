@@ -16,49 +16,42 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list>
-    <v-list-item
-      v-for="(item, index) of items"
-      :key="index"
-      link
-    >
-      <v-list-item-content style="overflow-wrap: anywhere;">
-        <v-list-item-title>{{ item.code }} </v-list-item-title>
-        {{ item.message }}
-      </v-list-item-content>
-      <v-list-item-action v-if="item.fixable && fixingAllowed">
-        <v-btn
-          outlined
-          @click="$emit('fix', item.code, item.params)"
-        >
-          {{ t('fix') }}
-        </v-btn>
-      </v-list-item-action>
-    </v-list-item>
-    <v-list-item v-if="items.length === 0 && showNoErrorPlaceholder">
-      <v-list-item-content>
-        <v-list-item-title>{{ t('noErrors') }}</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-  </v-list>
+  <div class="text-left">
+    <h3>{{ upperFirst(t('schemaValidationErrors').toString()) }} ({{ result.errors.length }}):</h3>
+    <VeoValidationResultList
+      :items="result.errors"
+      no-error-placeholder-visible
+      :fixing-allowed="fixingAllowed"
+      v-on="$listeners"
+    />
+    <template v-if="warningsVisible">
+      <h3>{{ upperFirst(t('schemaValidationWarnings').toString()) }} ({{ result.warnings.length }}):</h3>
+      <VeoValidationResultList
+        :items="result.warnings"
+        :fixing-allowed="fixingAllowed"
+        v-on="$listeners"
+      />
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { upperFirst } from 'lodash';
 
-import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
+import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
 export default defineComponent({
   props: {
-    items: {
-      type: Array,
-      default: () => []
-    } as PropOptions<VeoSchemaValidatorMessage[]>,
-    noErrorPlaceholderVisible: {
+    warningsVisible: {
       type: Boolean,
       default: false
     },
+    result: {
+      type: Object,
+      required: true
+    } as PropOptions<VeoSchemaValidatorValidationResult>,
     fixingAllowed: {
       type: Boolean,
       default: false
@@ -67,7 +60,10 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
 
-    return { t };
+    return {
+      t,
+      upperFirst
+    };
   }
 });
 </script>
@@ -75,12 +71,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "fix": "Fix",
-    "noErrors": "No errors found!"
+    "schemaValidationErrors": "errors",
+    "schemaValidationWarnings": "warnings"
   },
   "de": {
-    "fix": "Beheben",
-    "noErrors": "Keine Fehler gefunden!"
+    "schemaValidationErrors": "fehler",
+    "schemaValidationWarnings": "warnungen"
   }
 }
 </i18n>

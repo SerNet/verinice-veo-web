@@ -31,7 +31,6 @@
           :schema="dynamicForm.objectSchema"
           :ui="dynamicForm.formSchema"
           :general-translation="dynamicForm.lang[activeLanguage]"
-          :api="api"
         />
       </v-col>
     </v-row>
@@ -45,11 +44,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { v4 as uuidv4 } from 'uuid';
-
-import { BaseObject, IApi, ILinksFieldDialogUpdatedObject } from '~/components/forms/utils';
-import { IBaseObject } from '~/lib/utils';
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default Vue.extend({
   data() {
@@ -346,88 +340,6 @@ export default Vue.extend({
   computed: {
     dynamicForm(): any {
       return this.form;
-    },
-    api(): IApi {
-      return {
-        fetchAll: this.fetchAll,
-        create: this.create,
-        update: this.update,
-        delete: this.delete
-      };
-    }
-  },
-  methods: {
-    delay(ms: number): Promise<void> {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    },
-    // _ is objectType but here is not used
-    async fetchAll(_: string, searchParams?: IBaseObject): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
-      await this.delay(2000);
-      return new Promise((resolve, reject) => {
-        const res = searchParams?.displayName
-          ? this.items.filter((el: any) =>
-              // TODO:change name with displayName after it is implemented
-              // el.displayName.toLowerCase().includes(searchParams.displayName.toLowerCase()),
-              el.name.toLowerCase().includes(searchParams.displayName.toLowerCase())
-            )
-          : this.items;
-        if (res) {
-          resolve({ items: res as any, totalItemCount: res.length, page: 0, pageCount: 1 });
-        } else {
-          reject(new Error('Search parameters are not defined!'));
-        }
-      });
-    },
-    async create(_: string, createdObjectData: IVeoEntity): Promise<BaseObject> {
-      await this.delay(2000);
-      return new Promise((resolve, reject) => {
-        if (createdObjectData.name) {
-          const newItem = {
-            displayName: createdObjectData.name,
-            name: createdObjectData.name,
-            abbreviation: createdObjectData.abbreviation,
-            description: createdObjectData.description,
-            domains: [],
-            owner: {
-              targetUri: '/units/88bb6ff8-e1be-46ac-87fb-998cff1eac23'
-            },
-            links: {},
-            customAspects: {},
-            id: uuidv4(),
-            references: [
-              {
-                targetUri: '/units/88bb6ff8-e1be-46ac-87fb-998cff1eac23'
-              }
-            ]
-          };
-          this.items.push(newItem);
-          resolve(newItem);
-        } else {
-          reject(new Error('Name is not defined!'));
-        }
-      });
-    },
-    async update(_: string, updatedObjectData: ILinksFieldDialogUpdatedObject): Promise<void> {
-      await this.delay(2000);
-      return new Promise((resolve, reject) => {
-        if (updatedObjectData.name) {
-          const itemIndex = this.items.findIndex((item) => item.id === updatedObjectData.id);
-          // TODO:uncomment the line below after displayName is implemented
-          // updatedObjectData.displayName = updatedObjectData.name
-          this.items[itemIndex] = updatedObjectData as any;
-          resolve();
-        } else {
-          reject(new Error('Name is not defined!'));
-        }
-      });
-    },
-    async delete(_: string, id: string): Promise<void> {
-      await this.delay(2000);
-      return new Promise((resolve) => {
-        const itemIndex = this.items.findIndex((item) => item.id === id);
-        this.items.splice(itemIndex, 1);
-        resolve();
-      });
     }
   }
 });
