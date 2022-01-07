@@ -55,7 +55,6 @@
 import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
 import { defineComponent, ref, computed, Ref, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { useVeoAlerts } from '~/composables/VeoAlert';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
@@ -65,8 +64,6 @@ export default defineComponent({
   setup(_props, context) {
     const { t } = useI18n();
     const { $api, app, params } = useContext();
-    const { listenToRootEvents } = useVeoAlerts();
-    listenToRootEvents(context.root);
 
     // Demo unit/unit selection
     const units: Ref<IVeoUnit[]> = ref([]);
@@ -91,7 +88,7 @@ export default defineComponent({
 
     loadUnits();
 
-    context.root.$on(VeoEvents.UNIT_CHANGED, () => {
+    context.root.$on(VeoEvents.UNIT_CREATED, () => {
       loadUnits();
     });
 

@@ -184,13 +184,15 @@ export default defineComponent<IProps>({
       newUnitDialog.value.persistent = persistent;
     }
 
-    // automatically create first unit if none exists
+    // automatically create first unit if none exists and then change to new unit
     onMounted(async () => {
       const units = await getUnits();
       if (units.length === 0) {
         const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
         const unit = data.resourceId;
-        context.root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: t('unit.created') });
+        const { displaySuccessMessage } = useVeoAlerts();
+        displaySuccessMessage(t('unit.created').toString());
+        context.root.$emit(VeoEvents.UNIT_CREATED);
         context.root.$emit(VeoEvents.UNIT_CHANGED, unit);
       }
     });

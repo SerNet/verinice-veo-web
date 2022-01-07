@@ -280,7 +280,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-    this.$root.$on(VeoEvents.UNIT_CHANGED, () => {
+    this.$root.$on(VeoEvents.UNIT_CREATED, () => {
       this.$nextTick(() => {
         setTimeout(() => this.$fetch(), 5000);
       });
