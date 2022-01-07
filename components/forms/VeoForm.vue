@@ -194,7 +194,6 @@ export default Vue.extend({
     validate() {
       this.formIsValid = this.validateFunction(this.value);
       this.errorsMsgMap = !this.formIsValid && this.validateFunction.errors ? this.validateFunction.errors.reduce(this.validationErrorTransform, {}) : {};
-      console.log(this.errorsMsgMap);
       this.$emit('update:isValid', this.formIsValid);
     },
     executeReactiveFormActions(oldObjectData: IBaseObject, newObjectData: IBaseObject) {
@@ -240,7 +239,6 @@ export default Vue.extend({
       }
     },
     validationErrorTransform(accummulator: {}, error: ErrorObject) {
-      console.log(error);
       const keyMatch = error.schemaPath.match(/((.+\/properties\/\w+\b)|(.+(?=\/required)))/g);
       if (!keyMatch) {
         throw new Error('Key does not match in Errors array');
