@@ -86,6 +86,7 @@ pipeline {
                             dockerImageProd.push("git-${env.GIT_COMMIT}")
                             dockerImageProd.push("git-${env.GIT_COMMIT}-prod")
                             dockerImageProd.push("latest-prod")
+                            dockerImageProd.push("${projectVersion}-prod")
                             dockerImageProd.push("build-${env.BUILD_NUMBER}-prod")
                         }
                         def dockerImageStage = docker.build("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}-stage",
@@ -106,6 +107,7 @@ pipeline {
                         withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
                             dockerImageStage.push("git-${env.GIT_COMMIT}-stage")
                             dockerImageStage.push("latest-stage")
+                            dockerImageStage.push("${projectVersion}-stage")
                             dockerImageStage.push("build-${env.BUILD_NUMBER}-stage")
                         }
                     } else {
