@@ -243,10 +243,11 @@ export default Vue.extend({
       if (!keyMatch) {
         throw new Error('Key does not match in Errors array');
       }
-
+      const indexMatch = error.instancePath.match(/\/\d+$/);
       const missingProperty = (error.params as any).missingProperty;
+      const requiredKey = `${keyMatch[0]}${indexMatch ? indexMatch[0] : ''}/properties/${missingProperty}`;
 
-      const key = error.keyword !== 'required' ? keyMatch[0] : `${keyMatch[0]}/properties/${missingProperty}`;
+      const key = error.keyword !== 'required' ? keyMatch[0] : requiredKey;
       let translatedErrorString = '';
 
       switch (error.keyword) {
