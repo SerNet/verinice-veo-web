@@ -50,6 +50,7 @@
       <h2>{{ upperFirst(t('allObjects').toString()) }}</h2>
       <v-spacer />
       <v-btn
+        v-cy-name="'create-button'"
         color="primary"
         text
         @click="createDialogVisible = true"
@@ -65,7 +66,7 @@
         cols="11"
         class="grow"
       >
-        <v-chip-group>
+        <v-chip-group v-cy-name="'chips'">
           <VeoObjectChip
             v-for="label in activeFilterKeys"
             :key="label"
@@ -80,6 +81,7 @@
         class="shrink text-right"
       >
         <v-btn
+          v-cy-name="'filter-button'"
           class="ma-1"
           icon
           @click="filterDialogVisible = true"

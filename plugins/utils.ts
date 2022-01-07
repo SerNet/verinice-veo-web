@@ -16,16 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Plugin } from '@nuxt/types';
+import { defineNuxtPlugin } from '@nuxtjs/composition-api';
 import { kebabCase } from 'lodash';
+import Vue from 'vue';
 
+/**
+ * @see {@link ~/composables/utils.ts} for Composition API variant or use `v-cy-name` directive
+ */
 export function prefixCyData(options: any, name: string, route?: any) {
   return `${kebabCase(options._componentTag || route?.name)}-${name}`;
 }
 
-export default (function (_context, inject) {
+export default defineNuxtPlugin(function (_context, inject) {
   const utils = {
     prefixCyData
   };
 
   inject('utils', utils);
 } as Plugin);
+
+/**
+ * Set data-cy attribute and prefix name with component name
+ * @example `v-cy-name="'cypress-name'"`
+ */
+Vue.directive('cyName', (el, binding, vnode) => {
+  const componentName = vnode.context?.$options.name;
+  const prefix = componentName;
+  const name = binding.value;
+  const value = [prefix && kebabCase(prefix), name].flat().join('-');
+  el.setAttribute('data-cy', value);
+});
