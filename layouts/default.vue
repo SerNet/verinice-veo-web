@@ -129,9 +129,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { computed, defineComponent, onMounted, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
 import introJs from 'intro.js';
 
+import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -142,10 +143,11 @@ interface IProps {}
 
 export default defineComponent<IProps>({
   setup(_props, context) {
-    const { $user, params, app } = useContext();
+    const { $user, params, app, $api } = useContext();
     const route = useRoute();
     const router = useRouter();
     const { alerts, listenToRootEvents } = useVeoAlerts();
+    const { t } = useI18n();
     listenToRootEvents(context.root);
 
     //
@@ -173,10 +175,27 @@ export default defineComponent<IProps>({
     //
     const newUnitDialog = ref({ value: false, persistent: false });
 
+    const getUnits = () => {
+      return $api.unit.fetchAll();
+    };
+
     function createUnit(persistent: boolean = false) {
       newUnitDialog.value.value = true;
       newUnitDialog.value.persistent = persistent;
     }
+
+    // automatically create first unit if none exists and then change to new unit
+    onMounted(async () => {
+      const units = await getUnits();
+      if (units.length === 0) {
+        const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
+        const unit = data.resourceId;
+        const { displaySuccessMessage } = useVeoAlerts();
+        displaySuccessMessage(t('unit.created').toString());
+        context.root.$emit(VeoEvents.UNIT_CREATED);
+        context.root.$emit(VeoEvents.UNIT_CHANGED, unit);
+      }
+    });
 
     // UI related events (unit switch/creation)
     context.root.$on(VeoEvents.UNIT_CREATE, (persistent: boolean) => {

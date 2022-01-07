@@ -55,13 +55,13 @@
 import { mdiLoginVariant, mdiLogoutVariant } from '@mdi/js';
 import { defineComponent, ref, computed, Ref, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-
+import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 
 export default defineComponent({
-  setup() {
+  setup(_props, context) {
     const { t } = useI18n();
     const { $api, app, params } = useContext();
 
@@ -87,6 +87,10 @@ export default defineComponent({
     }
 
     loadUnits();
+
+    context.root.$on(VeoEvents.UNIT_CREATED, () => {
+      loadUnits();
+    });
 
     return {
       toggleDemoUnit,
