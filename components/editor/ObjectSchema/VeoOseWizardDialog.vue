@@ -210,9 +210,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, isEmpty, isString, trim } from 'lodash';
+import { capitalize, isEmpty, isEqual, isString, trim } from 'lodash';
 
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 
 export default Vue.extend({
   props: {
@@ -252,6 +253,9 @@ export default Vue.extend({
     },
     isDialogOpen(): boolean {
       return this.isNavigatedByDialog || this.isDialogCustom;
+    },
+    domainId(): string {
+      return separateUUIDParam(this.$route.params.domain).id;
     }
   },
   watch: {
@@ -337,17 +341,19 @@ export default Vue.extend({
         schema: undefined,
         meta: { type: this.createForm.type, description: this.createForm.description }
       });
-      this.navigateTo(`type=${encodeURIComponent(this.createForm.type)}&description=${encodeURIComponent(this.createForm.description)}`);
+      this.navigateTo({
+        type: encodeURIComponent(this.createForm.type),
+        description: encodeURIComponent(this.createForm.description)
+      });
     },
     importSchema(schema?: any) {
       if (schema) {
         this.$emit('completed', { schema, meta: undefined });
-        this.navigateTo(`os=custom`);
+        this.navigateTo({ os: 'custom' });
       } else {
-        const currentDomain = this.$user.lastDomain ? [this.$user.lastDomain] : undefined;
-        this.$api.schema.fetch(this.modelType, currentDomain).then((data: any) => {
+        this.$api.schema.fetch(this.modelType, [this.domainId]).then((data: any) => {
           this.$emit('completed', { schema: data, meta: undefined });
-          this.navigateTo(`os=${this.modelType}`);
+          this.navigateTo({ os: this.modelType });
         });
       }
     },
@@ -363,14 +369,18 @@ export default Vue.extend({
       };
     },
     onClose() {
-      this.$router.push('/editor');
+      this.$router.push({
+        name: 'unit-domains-domain-editor'
+      });
       return true;
     },
-    navigateTo(paramUrl: string) {
-      const newUrl = `/editor/objectschema?${paramUrl}`;
+    navigateTo(params: IBaseObject) {
       // If the current path does not match with new url, only then change the URL
-      if (this.$route.path !== newUrl) {
-        this.$router.push(newUrl);
+      if (!isEqual(this.$route.query, params)) {
+        this.$router.push({
+          name: 'unit-domains-domain-editor-objectschema',
+          query: params
+        });
       }
     }
   }

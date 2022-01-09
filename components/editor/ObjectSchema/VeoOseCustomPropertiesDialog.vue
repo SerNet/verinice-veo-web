@@ -191,6 +191,10 @@ export default Vue.extend({
       type: String,
       default: undefined
     },
+    domainId: {
+      type: String,
+      required: true
+    },
     // Doesn't actually get passed as a prop but injected by DI. However Typescript can't handle that so we define it here.
     // The default value gets overwritte by DI
     // See: https://github.com/vuejs/vue/issues/8969
@@ -234,7 +238,7 @@ export default Vue.extend({
   async fetch() {
     // TODO: needs to considered if these can be loaded more efficiently, especially formSchemas
     this.objectTypes = await this.$api.schema.fetchAll();
-    this.formSchemas = await this.$api.form.fetchGlobal();
+    this.formSchemas = await this.$api.form.fetchAll(this.domainId);
   },
   computed: {
     dialog: {

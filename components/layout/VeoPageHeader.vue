@@ -18,7 +18,7 @@
 <script lang="ts">
 import { ComputedRef, defineComponent, h, PropOptions } from '@nuxtjs/composition-api';
 import { computed } from 'vue-demi';
-import SkeletonLoader from 'vuetify/lib/components/VSkeletonLoader';
+import { VSkeletonLoader } from 'vuetify/lib';
 
 export enum VeoPageHeaderAlignment {
   LEFT,
@@ -28,7 +28,7 @@ export enum VeoPageHeaderAlignment {
 
 export default defineComponent({
   components: {
-    SkeletonLoader
+    VSkeletonLoader
   },
   props: {
     headingLevel: {
@@ -65,7 +65,7 @@ export default defineComponent({
           ? [
               h('div', { class: 'd-flex flex-row flex-wrap veo-page__title', style: titlebarAlignment.value }, [
                 ...(props.loading
-                  ? [h(SkeletonLoader, { props: { type: 'text' }, class: 'pb-1 skeleton-title' })]
+                  ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'pb-1 skeleton-title' })]
                   : [h(`h${props.headingLevel}`, { class: 'text-no-wrap d-inline pb-1 flex-grow-0' }, props.title), ...(slots.title ? [slots.title()] : [])])
               ])
             ]

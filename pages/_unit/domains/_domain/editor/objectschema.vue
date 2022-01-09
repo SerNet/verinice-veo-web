@@ -87,6 +87,22 @@
             </template>
           </v-tooltip>
           <v-tooltip bottom>
+            <template #activator="{ on }">
+              <v-btn
+                icon
+                large
+                color="primary"
+                @click="detailsDialogVisible = !detailsDialogVisible"
+                v-on="on"
+              >
+                <v-icon>mdi-wrench</v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ $t("editor.schema.properties") }}
+            </template>
+          </v-tooltip>
+          <v-tooltip bottom>
             <template #activator="{on}">
               <v-btn
                 icon
@@ -177,6 +193,7 @@
             v-if="schemaIsValid.valid"
             :search="search"
             :hide-empty-aspects="hideEmptyAspects"
+            :domain-id="domainId"
             @schema-updated="updateCode"
           />
           <v-row
@@ -230,6 +247,10 @@
         v-model="showCreationDialog"
         @completed="setSchema"
       />
+      <VeoOseDetailsDialog
+        v-model="detailsDialogVisible"
+        :domain-id="domainId"
+      />
       <VeoEditorErrorDialog
         v-model="showErrorDialog"
         :validation="schemaIsValid"
@@ -253,6 +274,7 @@ import { computed } from '@nuxtjs/composition-api';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { separateUUIDParam } from '~/lib/utils';
 
 export default Vue.extend({
   provide(): any {
@@ -267,6 +289,7 @@ export default Vue.extend({
       showCreationDialog: false as boolean,
       showErrorDialog: false as boolean,
       showTranslationDialog: false as boolean,
+      detailsDialogVisible: false as boolean,
       hideEmptyAspects: false as boolean,
       search: '' as string,
       objectSchemaHelper: undefined as ObjectSchemaHelper | undefined,
@@ -291,6 +314,9 @@ export default Vue.extend({
     },
     description(): string {
       return this.objectSchemaHelper?.getDescription() || '';
+    },
+    domainId(): string {
+      return separateUUIDParam(this.$route.params.domain).id;
     }
   },
   watch: {
@@ -303,7 +329,7 @@ export default Vue.extend({
   },
   methods: {
     setSchema(data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) {
-      this.objectSchemaHelper = data.schema || data.meta ? new ObjectSchemaHelper(data.schema) : undefined;
+      this.objectSchemaHelper = data.schema || data.meta ? new ObjectSchemaHelper(data.schema, this.domainId) : undefined;
 
       if (this.objectSchemaHelper) {
         if (data.meta) {
