@@ -279,7 +279,7 @@ export default defineComponent({
       subTypes.value[subTypeIndex].status[statusIndex] = status;
     }
 
-    function onDeleteStatus(subTypeIndex, statusIndex: number) {
+    function onDeleteStatus(subTypeIndex: number, statusIndex: number) {
       subTypes.value[subTypeIndex].status.splice(statusIndex, 1);
     }
 
