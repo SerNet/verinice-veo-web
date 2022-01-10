@@ -306,6 +306,10 @@ export default class ObjectSchemaHelper {
     delete this._translations[language];
   }
 
+  public updateDomain(domainId: string, subTypes: IVeoOSHDomains['domain']) {
+    this._domains[domainId] = subTypes;
+  }
+
   public getCustomLinks(): IVeoOSHCustomLink[] {
     return this._customLinks;
   }
@@ -347,6 +351,10 @@ export default class ObjectSchemaHelper {
 
     for (const link of this._customLinks) {
       this.addLinkToSchema(dummy, link);
+    }
+
+    for (const domainId of Object.keys(this._domains)) {
+      this.addDomainToSchema(dummy, domainId, this._domains[domainId]);
     }
 
     if (Object.keys(this._translations).length > 0) {
@@ -565,6 +573,54 @@ export default class ObjectSchemaHelper {
     return schemaAspect;
   }
 
+  public static generateDomain(domain: IVeoOSHDomains['domain']): any {
+    const dummy = {
+      $schema: 'https://json-schema.org/draft/2019-09/schema',
+      type: 'object',
+      properties: {
+        status: {
+          type: 'string',
+          minLength: 1,
+          maxLength: 255
+        },
+        subType: {
+          type: 'string',
+          minLength: 1,
+          maxLength: 255,
+          enum: [] as string[]
+        }
+      },
+      dependentRequired: {
+        subType: ['status'],
+        status: ['subType']
+      },
+      allOf: [] as any[]
+    };
+
+    dummy.properties.subType.enum = domain.map((subType) => subType.subType);
+
+    for (const subType of domain) {
+      dummy.allOf.push({
+        if: {
+          properties: {
+            subType: {
+              const: subType.subType
+            }
+          }
+        },
+        then: {
+          properties: {
+            status: {
+              enum: subType.status
+            }
+          }
+        }
+      });
+    }
+
+    return dummy;
+  }
+
   private loadObjectSchema(objectSchema: IVeoObjectSchema) {
     this._title = objectSchema.title;
     this._title = objectSchema.title;
@@ -737,6 +793,10 @@ export default class ObjectSchemaHelper {
 
   private addLinkToSchema(schema: IVeoObjectSchema, link: IVeoOSHCustomLink) {
     schema.properties.links.properties[`${link.prefix}${link.title}`] = ObjectSchemaHelper.generateLinkSchema(link);
+  }
+
+  private addDomainToSchema(schema: IVeoObjectSchema, domainId: string, domain: IVeoOSHDomains['domain']) {
+    schema.properties.domains.properties[domainId] = ObjectSchemaHelper.generateDomain(domain);
   }
 
   private getDefaultSchema(domainId: string): any {

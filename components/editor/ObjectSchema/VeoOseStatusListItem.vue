@@ -16,8 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list-item
-                  
+  <v-list-item  
     class="schema-details__status-list-item pl-0 my-0"
     dense
   >
@@ -36,14 +35,16 @@
     <v-list-item-content>
       <v-row no-gutters>
         <v-col class="d-flex align-center">
-          <b>{{ status }}</b>
+          <b>{{ status.key }}</b>
         </v-col>
         <v-col>
           <v-text-field
+            :value="status[lang]"
             dense
             :prepend-inner-icon="mdiTranslate"
             :label="upperFirst(t('translation').toString())"
             hide-details
+            @input="onTranslationInput"
           />
         </v-col>
       </v-row>
@@ -52,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
+import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { mdiMenu, mdiTranslate } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
@@ -62,18 +63,31 @@ import { CHART_COLORS } from '~/lib/utils';
 export default defineComponent({
   props: {
     status: {
-      type: String,
+      type: Object,
       required: true
-    },
+    } as PropOptions<{ key: string; [lang: string]: string }>,
     index: {
       type: Number,
       required: true
+    },
+    lang: {
+      type: String,
+      required: true
     }
   },
-  setup() {
+  setup(props, { emit }) {
     const { t } = useI18n();
 
+    function onTranslationInput(value: string) {
+      emit('update-status', props.index, {
+        ...props.status,
+        [props.lang]: value
+      });
+    }
+
     return {
+      onTranslationInput,
+
       t,
       upperFirst,
       mdiMenu,

@@ -250,6 +250,7 @@
       <VeoOseDetailsDialog
         v-model="detailsDialogVisible"
         :domain-id="domainId"
+        @schema-updated="updateCode"
       />
       <VeoEditorErrorDialog
         v-model="showErrorDialog"
