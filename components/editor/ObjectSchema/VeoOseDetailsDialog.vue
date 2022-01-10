@@ -97,7 +97,8 @@
                   :status="status"
                   :index="statusIndex"
                   :lang="displayLanguage"
-                  @update-status="(index, status) => onUpdateStatus(subTypeIndex, statusIndex, status)"
+                  @update-status="(status) => onUpdateStatus(subTypeIndex, statusIndex, status)"
+                  @delete="onDeleteStatus(subTypeIndex, statusIndex)"
                 />
               </Draggable>
               <v-form
@@ -278,6 +279,10 @@ export default defineComponent({
       subTypes.value[subTypeIndex].status[statusIndex] = status;
     }
 
+    function onDeleteStatus(subTypeIndex, statusIndex: number) {
+      subTypes.value[subTypeIndex].status.splice(statusIndex, 1);
+    }
+
     // Validation
     const requiredRule = (v: string) => !!v || t('global.input.required');
     const alphaNumericUnderscoreRule = (v: string) => !v || /^[A-Z0-9_]+$/.test(v) || t('statusAlphaNumericUnderscore');
@@ -323,6 +328,7 @@ export default defineComponent({
       languages,
       newStatusForms,
       newStatusTextfields,
+      onDeleteStatus,
       onSubmit,
       onUpdateStatus,
       requiredRule,

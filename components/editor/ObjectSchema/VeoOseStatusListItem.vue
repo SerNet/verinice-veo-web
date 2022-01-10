@@ -47,6 +47,22 @@
             @input="onTranslationInput"
           />
         </v-col>
+        <v-col cols="auto">
+          <v-tooltip bottom>
+            <template #activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+                @click="$emit('delete')"
+              >
+                <v-icon>{{ mdiTrashCan }}</v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ upperFirst(t('deleteStatus').toString()) }}
+            </template>
+          </v-tooltip>
+        </v-col>
       </v-row>
     </v-list-item-content>
   </v-list-item>
@@ -55,7 +71,7 @@
 <script lang="ts">
 import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
-import { mdiMenu, mdiTranslate } from '@mdi/js';
+import { mdiMenu, mdiTranslate, mdiTrashCan } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { CHART_COLORS } from '~/lib/utils';
@@ -79,7 +95,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     function onTranslationInput(value: string) {
-      emit('update-status', props.index, {
+      emit('update-status', {
         ...props.status,
         [props.lang]: value
       });
@@ -91,6 +107,7 @@ export default defineComponent({
       t,
       upperFirst,
       mdiMenu,
+      mdiTrashCan,
       mdiTranslate,
       CHART_COLORS
     };
@@ -101,10 +118,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "deleteStatus": "delete status",
     "translation": "translation"
   },
   "de": {
-    "translation": "übersetzung"
+    "translation": "übersetzung",
+    "deleteStatus": "status löschen"
   }
 }
 </i18n>

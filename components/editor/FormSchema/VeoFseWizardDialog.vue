@@ -25,7 +25,7 @@
     fixed-header
     fixed-footer
     :close-function="onClose"
-    @input="(newValue) => $emit('input', newValue)"
+    v-on="$listeners"
   >
     <template #default>
       <v-window v-model="state">
