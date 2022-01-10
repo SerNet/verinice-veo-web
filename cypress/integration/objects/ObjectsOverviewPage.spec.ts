@@ -112,12 +112,9 @@ describe('Objects overview', () => {
 
   it('should be possible create a new entity', function () {
     cy.get('[data-cy=veo-objects-overview-page-create-button]').click();
-    // cy.wait(['@G_fetchForms']);
-    cy.wait(['@G_fetchSchemas', '@G_fetchSchemas', '@G_fetchSchemas'], { timeout: 10000 });
-    // cy.wait(['@G_fetchReports']);
-    cy.get('.v-dialog .v-text-field').contains('Name*').parents('.v-input').type('Testobjekt{enter}');
+    cy.get('.v-dialog .vf-control').contains('Name*').parents('.v-input').type('Testobjekt{enter}');
     cy.get('.v-dialog .v-select').contains('subType').parents('.v-input').type('SCP_Controller{enter}');
-    cy.get('.v-dialog .v-text-field').contains('status').parents('.v-input').type('NEW{enter}');
+    cy.get('.v-dialog .vf-control').contains('status').parents('.v-input').type('NEW{enter}');
     cy.get('[data-cy=veo-create-object-dialog-save-button]').click();
     cy.wait('@G_createObject').then((interception) => {
       cy.log(interception.request.url);
