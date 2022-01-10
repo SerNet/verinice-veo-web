@@ -18,13 +18,14 @@
 <template>
   <VeoDialog
     v-if="isDialogOpen"
-    v-model="dialog"
+    :value="value"
     :large="state !== 'start'"
     :headline="$t('editor.formschema.headline')"
     persistent
     fixed-header
     fixed-footer
     :close-function="onClose"
+    @input="(newValue) => $emit('input', newValue)"
   >
     <template #default>
       <v-window v-model="state">
@@ -91,28 +92,8 @@
                 <v-text-field
                   v-model="createForm.name"
                   :label="$t('editor.formschema.create.title')"
-                  :rules="createForm.rules.name"
+                  :rules="[requiredRule]"
                   required
-                />
-              </v-col>
-            </v-row>
-            <v-row
-              no-gutters
-              class="align-center mt-4"
-            >
-              <v-col
-                cols="12"
-                :md="5"
-              >
-                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.subtype') }}:</span>
-              </v-col>
-              <v-col
-                cols="12"
-                :md="5"
-              >
-                <v-text-field
-                  v-model="createForm.subType"
-                  :label="$t('editor.formschema.subtype')"
                 />
               </v-col>
             </v-row>
@@ -153,19 +134,43 @@
                 <v-select
                   v-model="createForm.modelType"
                   :label="$t('editor.formschema.create.type')"
-                  :rules="createForm.rules.modelType"
+                  :rules="[requiredRule]"
                   :items="objectTypes"
                   required
                 />
               </v-col>
             </v-row>
             <v-row v-if="createForm.modelType === 'custom'">
-              <v-col cols="12">
+              <v-col cols="10">
                 <VeoEditorFileUpload
                   :code="oscode"
                   :input-label="$t('objectSchemaUploadLabel')"
                   :submit-button-text="$t('importObjectschema')"
                   @schema-uploaded="setObjectSchema({ schema: $event })"
+                />
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="align-center mt-4"
+            >
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <span style="font-size: 1.2rem;">{{ $t('editor.formschema.subtype') }}*:</span>
+              </v-col>
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <v-select
+                  v-model="createForm.subType"
+                  :disabled="!createForm.modelType || (createForm.modelType === 'custom' && !objectSchema)"
+                  :items="subTypeOptions"
+                  :loading="!!createForm.modelType && !subTypeOptions.length"
+                  :label="$t('editor.formschema.subtype')"
+                  :rules="[requiredRule]"
                 />
               </v-col>
             </v-row>
@@ -262,22 +267,20 @@ export default Vue.extend({
     value: {
       type: Boolean,
       required: true
+    },
+    domainId: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
-      dialog: false as boolean,
-      noWatch: false as boolean,
       createForm: {
         name: '' as string,
         modelType: '' as string,
         subType: null as string | null,
         sorting: null as string | null,
-        valid: false,
-        rules: {
-          name: [(input: string) => trim(input).length > 0],
-          modelType: [(input: string) => trim(input).length > 0]
-        }
+        valid: false
       },
       oscode: '\n\n\n\n\n' as string,
       fscode: '\n\n\n\n\n' as string,
@@ -290,7 +293,8 @@ export default Vue.extend({
       forceOwnSchema: false as boolean,
       clearInput: false as boolean,
       formSchemaId: undefined as string | undefined,
-      navParams: {} as IBaseObject
+      navParams: {} as IBaseObject,
+      currentObjectTypeSubTypes: [] as string[]
     };
   },
   computed: {
@@ -308,30 +312,14 @@ export default Vue.extend({
         })
       ];
     },
-    isNavigatedByDialog() {
-      return isEmpty(this.$route.query);
-    },
-    isDialogCustom() {
-      return this.$route.query.os === 'custom' || this.$route.query.fs === 'custom';
-    },
     isDialogOpen(): boolean {
-      return this.isNavigatedByDialog || this.isDialogCustom;
+      return isEmpty(this.$route.query) || this.$route.query.modelType === 'custom';
+    },
+    subTypeOptions(): { text: string; value: string }[] {
+      return this.currentObjectTypeSubTypes.map((subType: string) => ({ value: subType, text: subType }));
     }
   },
   watch: {
-    dialog(newValue: boolean) {
-      if (newValue) {
-        // this.state = 'step1'
-      }
-      if (!this.noWatch) {
-        this.$emit('input', newValue);
-      }
-    },
-    value(newValue: boolean) {
-      this.noWatch = true;
-      this.dialog = newValue;
-      this.noWatch = false;
-    },
     async state(newValue) {
       if (newValue === 'create') {
         this.schemas = await this.$api.schema.fetchAll(true);
@@ -344,27 +332,27 @@ export default Vue.extend({
         if (isString(this.$route.query.sorting)) {
           this.createForm.sorting = this.$route.query.sorting;
         }
-        if (isString(this.$route.query.name) && isString(this.$route.query.subtype)) {
-          if (this.$route.query.os === 'custom') {
+        if (isString(this.$route.query.name) && isString(this.$route.query.subType)) {
+          if (this.$route.query.modelType === 'custom') {
             this.state = 'create';
             this.createForm.name = this.$route.query.name;
-            this.createForm.subType = this.$route.query.subtype;
-            this.createForm.modelType = this.$route.query.os;
-          } else if (isString(this.$route.query.os)) {
+            this.createForm.subType = this.$route.query.subType;
+            this.createForm.modelType = this.$route.query.modelType;
+          } else if (isString(this.$route.query.modelType)) {
             this.createForm.name = this.$route.query.name;
-            this.createForm.subType = this.$route.query.subtype;
-            this.createForm.modelType = this.$route.query.os;
+            this.createForm.subType = this.$route.query.subType;
+            this.createForm.modelType = this.$route.query.modelType;
             await this.doCreate();
           }
         } else if (isString(this.$route.query.fs)) {
-          if (this.$route.query.os === 'custom') {
+          if (this.$route.query.modelType === 'custom') {
             this.forceOwnSchema = true;
           }
           if (this.$route.query.fs === 'custom') {
             this.state = 'import-fs';
           } else {
             this.formSchemaId = this.$route.query.fs;
-            if (this.$route.query.os === 'custom') {
+            if (this.$route.query.modelType === 'custom') {
               this.state = 'import-os';
             }
             await this.doImportFs();
@@ -373,12 +361,20 @@ export default Vue.extend({
           this.setStartState();
         }
       }
+    },
+    'createForm.modelType'(newValue: string) {
+      this.loadSubTypes(newValue);
+    },
+    objectSchema() {
+      if (this.objectSchema && this.createForm.modelType === 'custom') {
+        this.loadSubTypes(this.createForm.modelType);
+      }
     }
   },
-  mounted() {
-    this.dialog = this.value;
-  },
   methods: {
+    requiredRule(v: string) {
+      return !!v;
+    },
     goBack() {
       if (this.state === 'create' || this.state === 'import-fs') {
         this.setStartState();
@@ -454,11 +450,7 @@ export default Vue.extend({
         modelType: '' as string,
         subType: null as string | null,
         sorting: null as string | null,
-        valid: false,
-        rules: {
-          name: [(input: string) => trim(input).length > 0],
-          modelType: [(input: string) => trim(input).length > 0]
-        }
+        valid: false
       };
     },
     setStartState() {
@@ -474,7 +466,7 @@ export default Vue.extend({
     },
     async setObjectSchema(params: { schema?: IVeoObjectSchema; modelType?: string }) {
       if (this.createForm.name && this.createForm.subType) {
-        this.navParams = omit(this.createForm, ['valid', 'rules']);
+        this.navParams = omit(this.createForm, ['valid']);
       } else if (['import-fs', 'import-os'].includes(this.state)) {
         this.navParams = {
           fs: this.formSchemaId ?? 'custom',
@@ -509,7 +501,6 @@ export default Vue.extend({
       this.formSchema = schema;
     },
     emitSchemas() {
-      // TODO: maybe emit dialog close value.
       this.$emit('update-form-schema', this.formSchema);
       this.$emit('update-object-schema', this.objectSchema);
       this.$emit('update-translation', this.translation);
@@ -528,6 +519,21 @@ export default Vue.extend({
           query: this.navParams
         });
       }
+    },
+    async loadSubTypes(objectType: string) {
+      this.currentObjectTypeSubTypes = [];
+
+      if (objectType === 'custom' && !this.objectSchema) {
+        return;
+      }
+
+      let _objectSchema;
+      if (objectType === 'custom' && this.objectSchema) {
+        _objectSchema = this.objectSchema;
+      } else {
+        _objectSchema = await this.$api.schema.fetch(objectType, [this.domainId]);
+      }
+      this.currentObjectTypeSubTypes = _objectSchema.properties.domains.properties[this.domainId]?.properties?.subType?.enum || [];
     }
   }
 });

@@ -259,6 +259,7 @@
     <template #helpers>
       <VeoFseWizardDialog
         v-model="showCreationDialog"
+        :domain-id="domainId"
         @update-object-schema="setObjectSchema"
         @update-form-schema="setFormSchema"
         @update-translation="setTranslation"
@@ -291,10 +292,11 @@
       <VeoFseSchemaDetailsDialog
         v-if="formSchema"
         v-model="showDetailDialog"
-        :object-schema="formSchema.modelType"
+        :object-schema="objectSchema"
         :form-schema="formSchema.name[language]"
         :subtype="formSchema.subType"
         :sorting="formSchema.sorting"
+        :domain-id="domainId"
         @update-schema-name="updateSchemaName"
         @update-subtype="updateSubType"
         @update-sorting="updateSorting"
@@ -306,7 +308,7 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer';
 
-import { computed, defineComponent, onMounted, provide, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, onMounted, provide, Ref, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
@@ -320,7 +322,7 @@ import {
   IVeoFormSchemaTranslationCollection,
   IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
-import { IBaseObject } from '~/lib/utils';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
 
 interface IProps {}
@@ -329,6 +331,10 @@ export default defineComponent<IProps>({
   setup(_props) {
     const { t } = useI18n();
     const { $api, app } = useContext();
+    const route = useRoute();
+
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+
     /**
      * Layout specific stuff
      */
@@ -392,6 +398,10 @@ export default defineComponent<IProps>({
     const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
 
     function setFormSchema(schema: IVeoFormSchema) {
+      if (schema) {
+        schema = JSON.parse(JSON.stringify(schema).replaceAll('{CURRENT_DOMAIN_ID}', domainId.value));
+      }
+
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
       if (formSchema.value && !formSchema.value.translation?.[app.i18n.locale]) {
@@ -512,6 +522,7 @@ export default defineComponent<IProps>({
     }
 
     return {
+      domainId,
       showCreationDialog,
       showErrorDialog,
       showCodeEditor,

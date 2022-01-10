@@ -102,10 +102,10 @@ export default class ObjectSchemaHelper {
 
     if (!objectSchema) {
       // @ts-ignore
-      this._schema = DEFAULT_SCHEMA;
       if (!domainId) {
         throw new Error("ObjectSchemaHelper2::constructor: If you don't pass an objectschema, you have to pass a domain id to generate a new one.");
       }
+      this._schema = this.getDefaultSchema(domainId);
       this.loadObjectSchema(this.getDefaultSchema(domainId));
     } else {
       this._schema = JSON.parse(JSON.stringify(objectSchema));
