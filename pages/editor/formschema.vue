@@ -425,33 +425,28 @@ export default defineComponent<IProps>({
 
     async function save() {
       // control whether save new or save updated schema
-      if (formSchema.value?.id) {
-        await saveUpdatedSchema();
-      } else {
-        await saveNewSchema();
+      try {
+        if (formSchema.value?.id) {
+          await saveUpdatedSchema();
+        } else {
+          await saveNewSchema();
+        }
+        displaySuccessMessage(t('saveSchemaSuccess').toString());
+      } catch (err) {
+        displayErrorMessage(t('error').toString(), t('saveSchemaError').toString());
       }
     }
 
     async function saveNewSchema() {
       if (formSchema.value) {
-        try {
-          const id = await $api.form.create(formSchema.value);
-          formSchema.value.id = id; // set id from response, so next save would update schema instead of creating another one
-          displaySuccessMessage(t('saveSchemaSuccess').toString());
-        } catch (err) {
-          displayErrorMessage(t('error').toString(), t('saveSchemaError').toString());
-        }
+        const id = await $api.form.create(formSchema.value);
+        formSchema.value.id = id; // set id from response, so next save would update schema instead of creating another one
       }
     }
 
     async function saveUpdatedSchema() {
-      if (formSchema.value && formSchema.value.id) {
-        try {
-          await $api.form.update(formSchema.value.id, formSchema.value);
-          displaySuccessMessage(t('saveSchemaSuccess').toString());
-        } catch (err) {
-          displayErrorMessage(t('error').toString(), t('saveSchemaError').toString());
-        }
+      if (formSchema.value?.id) {
+        await $api.form.update(formSchema.value.id, formSchema.value);
       }
     }
 

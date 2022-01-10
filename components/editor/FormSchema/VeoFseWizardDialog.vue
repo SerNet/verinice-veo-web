@@ -193,14 +193,14 @@
               :md="5"
             >
               <v-select
-                v-model="modelType"
+                v-model="formId"
                 :label="$t('type')"
                 :items="formTypes"
                 required
               />
             </v-col>
           </v-row>
-          <v-row v-if="modelType === 'custom'">
+          <v-row v-if="formId === 'custom'">
             <v-col cols="12">
               <VeoEditorFileUpload
                 :code="fscode"
@@ -208,16 +208,6 @@
                 :clear-input.sync="clearInput"
                 @schema-uploaded="doImportFs"
               />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <span
-                style="text-decoration: undeline; font-weight: bold; cursor: pointer;"
-                @click="state = 'create'"
-              >
-                {{ $t('importFormSchemaSwitch') }}
-              </span>
             </v-col>
           </v-row>
           <v-checkbox
@@ -279,7 +269,7 @@
         {{ $t('global.button.next') }}
       </v-btn>
       <v-btn
-        v-if="state === 'import-fs' && modelType !== 'custom'"
+        v-if="state === 'import-fs' && formId !== 'custom'"
         color="primary"
         text
         role="submit"
@@ -337,8 +327,8 @@ export default Vue.extend({
       clearInput: false as boolean,
       formSchemaId: undefined as string | undefined,
       urlToNavigate: undefined as string | undefined,
-      modelType: '',
-      formTypes: [] as { value: string; text: string }[]
+      formTypes: [] as { value: string; text: string }[],
+      formId: ''
     };
   },
   computed: {
@@ -357,7 +347,7 @@ export default Vue.extend({
       ];
     },
     importNextDisabled(): boolean {
-      return this.modelType === 'custom' || this.modelType === '';
+      return this.formId === 'custom' || this.formId === '';
     },
     isNavigatedByDialog() {
       return isEmpty(this.$route.query);
@@ -485,8 +475,12 @@ export default Vue.extend({
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     async doImportFs(schema?: IVeoFormSchema) {
       // If schema is not given as parameter, it is probably
-      if (!schema && (this.formSchemaId || this.modelType)) {
-        schema = await this.$api.form.fetch(this.formSchemaId || this.modelType);
+      if (!schema && (this.formSchemaId || this.formId)) {
+        const rawFormSchema = JSON.stringify(await this.$api.form.fetch(this.formSchemaId || this.formId));
+        const domainId = this.$user.lastDomain;
+        if (domainId) {
+          schema = JSON.parse(rawFormSchema.replaceAll('{CURRENT_DOMAIN_ID}', domainId));
+        }
       }
       if (schema) {
         this.setFormSchema(schema);
