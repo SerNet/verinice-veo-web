@@ -111,6 +111,8 @@ describe('Objects overview', () => {
   });
 
   it('should be possible create a new entity', function () {
+    // switch back to scope
+    cy.visit(`/unit-d496f98f-c051-443c-9b1f-65d65b64996d/domains/domain-ed67e4d7-c657-4479-ba8a-c53999d2930a/objects?objectType=scope`);
     cy.get('[data-cy=veo-objects-overview-page-create-button]').click();
     cy.get('.v-dialog .vf-control').contains('Name*').parents('.v-input').type('Testobjekt{enter}');
     cy.get('.v-dialog .v-select').contains('subType').parents('.v-input').type('SCP_Controller{enter}');
