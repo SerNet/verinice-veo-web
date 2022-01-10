@@ -285,6 +285,7 @@
         role="submit"
         type="submit"
         :disabled="importNextDisabled"
+        @click="doImportFs()"
       >
         {{ $t('global.button.next') }}
       </v-btn>
@@ -394,8 +395,8 @@ export default Vue.extend({
             .then((data) =>
               data.map((value: IVeoFormSchemaMeta) => {
                 return {
-                  text: capitalize(value.name.de),
-                  value: value.name
+                  text: capitalize(value.name[this.$i18n.locale]),
+                  value: value.id
                 };
               })
             )
@@ -484,8 +485,8 @@ export default Vue.extend({
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     async doImportFs(schema?: IVeoFormSchema) {
       // If schema is not given as parameter, it is probably
-      if (!schema && this.formSchemaId) {
-        schema = await this.$api.form.fetch(this.formSchemaId);
+      if (!schema && (this.formSchemaId || this.modelType)) {
+        schema = await this.$api.form.fetch(this.formSchemaId || this.modelType);
       }
       if (schema) {
         this.setFormSchema(schema);
