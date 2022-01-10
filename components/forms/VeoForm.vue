@@ -140,6 +140,8 @@ export default Vue.extend({
         // IMPORTANT! This is needed to update localSchema when schema is updated
         // Else it cannot detect updated object of schema and does not update veo-form
         this.localSchema = JSON.parse(JSON.stringify(this.schema));
+        // If no UI has been set, the schema must be considered
+        this.updateUI();
         this.validate();
       }
     },
@@ -149,11 +151,7 @@ export default Vue.extend({
       // if it causes problems or performance issues, should be removed and another solution found
       deep: true,
       handler() {
-        if (this.ui) {
-          this.localUI = this.translate<UISchema>(this.ui);
-        } else {
-          this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.mergedOptions.generator.excludedProperties, Mode.VEO));
-        }
+        this.updateUI();
       }
     },
     generalTranslation: {
@@ -362,6 +360,13 @@ export default Vue.extend({
           return this.createControl(element, h, rule);
         case 'Label':
           return this.createLabel(element, h, rule);
+      }
+    },
+    updateUI() {
+      if (this.ui) {
+        this.localUI = this.translate<UISchema>(this.ui);
+      } else {
+        this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.mergedOptions.generator.excludedProperties, Mode.VEO));
       }
     }
   },

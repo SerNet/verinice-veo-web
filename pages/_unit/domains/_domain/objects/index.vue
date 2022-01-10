@@ -25,6 +25,7 @@
       v-model="filterDialogVisible"
       :domain="domainId"
       :filter="filter"
+      object-type-required
       @update:filter="updateRouteQuery"
     />
     <VeoCreateObjectDialog
@@ -32,6 +33,7 @@
       v-model="createDialogVisible"
       :domain-id="domainId"
       :object-type="objectType"
+      :sub-type="subType"
       @success="fetch"
     />
     <VeoDeleteEntityDialog
@@ -50,6 +52,7 @@
       <h2>{{ upperFirst(t('allObjects').toString()) }}</h2>
       <v-spacer />
       <v-btn
+        v-if="objectType"
         v-cy-name="'create-button'"
         color="primary"
         text
@@ -68,11 +71,12 @@
       >
         <v-chip-group v-cy-name="'chips'">
           <VeoObjectChip
-            v-for="label in activeFilterKeys"
-            :key="label"
-            :label="formatLabel(label)"
-            :value="formatValue(label, filter[label])"
-            @click:close="clearFilter(label)"
+            v-for="k in activeFilterKeys"
+            :key="k"
+            :label="formatLabel(k)"
+            :value="formatValue(k, filter[k])"
+            :close="k!='objectType'"
+            @click:close="clearFilter(k)"
           />
         </v-chip-group>
       </v-col>
@@ -95,6 +99,7 @@
       :items="items"
       :loading="fetchState.pending"
       @page-change="onPageChange"
+      @click="openItem"
     >
       <template #actions="{item}">
         <v-tooltip 
@@ -129,17 +134,17 @@
 
 <script lang="ts">
 import { useI18n } from 'nuxt-i18n-composable';
-import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
-import { separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
 export default defineComponent({
   name: 'VeoObjectsOverviewPage',
   setup(_) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const { $api } = useContext();
     const route = useRoute();
     const router = useRouter();
@@ -148,6 +153,7 @@ export default defineComponent({
     const { cloneObject } = useVeoObjectUtilities();
 
     const items = ref<IVeoPaginatedResponse<IVeoEntity[]>>();
+    const formschemas = ref<IVeoFormSchemaMeta[]>([]);
 
     const itemDelete = ref<IVeoEntity>();
 
@@ -176,8 +182,13 @@ export default defineComponent({
     // pagination parameters (page and sorting), set by VeoObjectTable
     const pagination = reactive({ page: 1, sortBy: undefined as string | undefined, sortOrder: undefined as string | undefined });
 
-    // current object type
+    // current object type and sub type
     const objectType = computed(() => filter.value.objectType);
+    const subType = computed(() => filter.value.subType);
+
+    // change page title
+    useMeta(() => ({ title: [upperFirst(objectType.value) || [], t('breadcrumbs.objects')].flat().join(' - ') }));
+
     // fetch objects of objectType
     const { fetchState, fetch } = useFetch(async () => {
       const objectType = filter.value.objectType;
@@ -186,7 +197,10 @@ export default defineComponent({
       const params = { ...filter.value, ...pagination, page: undefined };
       delete params.objectType;
       delete params.page;
-      items.value = await $api.entity.fetchAll(objectType, pagination.page, params);
+
+      const [schemas, entities] = await Promise.all([$api.form.fetchAll(domainId.value), $api.entity.fetchAll(objectType, pagination.page, params)]);
+      formschemas.value = schemas;
+      items.value = entities;
     });
 
     // refetch on changes via FilterDialog or URL query parameters
@@ -218,7 +232,18 @@ export default defineComponent({
     };
 
     const formatLabel = (label: string) => upperFirst(t(`objectlist.${label}`).toString());
-    const formatValue = (label: FilterKey, value?: string) => (label === 'objectType' ? upperFirst(value) : value);
+    const formatValue = (label: FilterKey, value?: string) => {
+      switch (label) {
+        // Uppercase object types
+        case 'objectType':
+          return upperFirst(value);
+        // Translate sub types
+        case 'subType':
+          return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+        default:
+          return value;
+      }
+    };
 
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {
@@ -228,6 +253,16 @@ export default defineComponent({
 
     const showError = (messageKey: 'clone' | 'unlink', _item: IVeoEntity | undefined, error: Error) => {
       displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
+    };
+
+    const openItem = ({ item }: { item: IVeoEntity }) => {
+      return router.push({
+        name: 'unit-domains-domain-objects-id',
+        params: {
+          ...route.value.params,
+          id: createUUIDUrlParam(item.type, item.id)
+        }
+      });
     };
 
     const actions = computed(() => [
@@ -270,12 +305,17 @@ export default defineComponent({
       itemDelete,
       items,
       objectType,
+      openItem,
       onCloseDeleteDialog,
       onPageChange,
       showError,
+      subType,
       updateRouteQuery,
       upperFirst
     };
+  },
+  head(): any {
+    return {};
   }
 });
 </script>
