@@ -391,10 +391,6 @@ export default defineComponent<IProps>({
 
     const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
 
-    function updateSchema(formSchema: any) {
-      formSchema.value = JSON.parse(JSON.stringify(formSchema));
-    }
-
     function setFormSchema(schema: IVeoFormSchema) {
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
@@ -529,7 +525,6 @@ export default defineComponent<IProps>({
       translation,
       schemaIsValid,
       dynamicAPI,
-      updateSchema,
       setFormSchema,
       setObjectSchema,
       setTranslation,

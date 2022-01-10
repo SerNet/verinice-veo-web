@@ -89,9 +89,9 @@
                 :md="5"
               >
                 <v-text-field
-                  v-model="createForm.title"
+                  v-model="createForm.name"
                   :label="$t('editor.formschema.create.title')"
-                  :rules="createForm.rules.title"
+                  :rules="createForm.rules.name"
                   required
                 />
               </v-col>
@@ -248,13 +248,14 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { capitalize, cloneDeep, isEmpty, isString, merge, trim } from 'lodash';
+import { capitalize, cloneDeep, isEmpty, isString, merge, trim, isEqual, omit } from 'lodash';
 
 import { JsonPointer } from 'json-ptr';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
+import { IBaseObject } from '~/lib/utils';
 
 export default Vue.extend({
   props: {
@@ -268,13 +269,13 @@ export default Vue.extend({
       dialog: false as boolean,
       noWatch: false as boolean,
       createForm: {
-        title: '' as string,
+        name: '' as string,
         modelType: '' as string,
         subType: null as string | null,
         sorting: null as string | null,
         valid: false,
         rules: {
-          title: [(input: string) => trim(input).length > 0],
+          name: [(input: string) => trim(input).length > 0],
           modelType: [(input: string) => trim(input).length > 0]
         }
       },
@@ -289,7 +290,7 @@ export default Vue.extend({
       forceOwnSchema: false as boolean,
       clearInput: false as boolean,
       formSchemaId: undefined as string | undefined,
-      urlToNavigate: undefined as string | undefined
+      navParams: {} as IBaseObject
     };
   },
   computed: {
@@ -346,11 +347,11 @@ export default Vue.extend({
         if (isString(this.$route.query.name) && isString(this.$route.query.subtype)) {
           if (this.$route.query.os === 'custom') {
             this.state = 'create';
-            this.createForm.title = this.$route.query.name;
+            this.createForm.name = this.$route.query.name;
             this.createForm.subType = this.$route.query.subtype;
             this.createForm.modelType = this.$route.query.os;
           } else if (isString(this.$route.query.os)) {
-            this.createForm.title = this.$route.query.name;
+            this.createForm.name = this.$route.query.name;
             this.createForm.subType = this.$route.query.subtype;
             this.createForm.modelType = this.$route.query.os;
             await this.doCreate();
@@ -405,7 +406,7 @@ export default Vue.extend({
     generateInitialFs() {
       const _subtype = !this.createForm.subType || trim(this.createForm.subType).length === 0 ? null : this.createForm.subType;
       const _sorting = !this.createForm.sorting || trim(this.createForm.sorting).length === 0 ? null : this.createForm.sorting;
-      this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.title }, this.objectSchema?.title || this.createForm.modelType, _subtype, _sorting);
+      this.formSchema = generateSchema({ [this.$i18n.locale]: this.createForm.name }, this.objectSchema?.title || this.createForm.modelType, _subtype, _sorting);
       this.emitSchemas();
     },
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
@@ -449,13 +450,13 @@ export default Vue.extend({
     },
     clearCreateForm() {
       this.createForm = {
-        title: '' as string,
+        name: '' as string,
         modelType: '' as string,
         subType: null as string | null,
         sorting: null as string | null,
         valid: false,
         rules: {
-          title: [(input: string) => trim(input).length > 0],
+          name: [(input: string) => trim(input).length > 0],
           modelType: [(input: string) => trim(input).length > 0]
         }
       };
@@ -472,15 +473,14 @@ export default Vue.extend({
       this.emitSchemas();
     },
     async setObjectSchema(params: { schema?: IVeoObjectSchema; modelType?: string }) {
-      let urlToNavigate = '/editor/formschema';
-      if (this.createForm.title && this.createForm.subType) {
-        urlToNavigate = `${urlToNavigate}?name=${this.createForm.title}&subtype=${this.createForm.subType}&sorting=${this.createForm.sorting || ''}&os=`;
-        urlToNavigate += this.createForm.modelType && this.createForm.modelType !== 'custom' ? this.createForm.modelType.toLowerCase() : 'custom';
+      if (this.createForm.name && this.createForm.subType) {
+        this.navParams = omit(this.createForm, ['valid', 'rules']);
       } else if (['import-fs', 'import-os'].includes(this.state)) {
-        urlToNavigate = `${urlToNavigate}?fs=${this.formSchemaId ?? 'custom'}`;
-        urlToNavigate += this.forceOwnSchema ? '&os=custom' : '';
+        this.navParams = {
+          fs: this.formSchemaId ?? 'custom',
+          os: this.forceOwnSchema ? 'custom' : undefined
+        };
       }
-      this.urlToNavigate = urlToNavigate;
 
       const currentDomain = this.$user.lastDomain ? [this.$user.lastDomain] : undefined;
       const objectSchema = cloneDeep(params.schema) ?? (await this.$api.schema.fetch(params.modelType as string, currentDomain));
@@ -522,10 +522,11 @@ export default Vue.extend({
       return true;
     },
     navigateTo() {
-      // If the current path does not match with new url, only then change the URL
-      if (this.urlToNavigate && this.$route.path !== this.urlToNavigate) {
-        // history.pushState({}, '', this.urlToNavigate);
-        this.$router.push(this.urlToNavigate);
+      if (!isEqual(this.$route.query, this.navParams)) {
+        this.$router.push({
+          name: 'unit-domains-domain-editor-formschema',
+          query: this.navParams
+        });
       }
     }
   }
