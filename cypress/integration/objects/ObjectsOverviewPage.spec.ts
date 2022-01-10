@@ -38,13 +38,13 @@ describe('Objects overview', () => {
     cy.wait('@G_fetchObjects');
   });
 
-  it.skip('should display all scopes ', function () {
+  it('should display all scopes ', function () {
     cy.fixture('api/default/entities/scopes/fetchAll.json').then((scopes) => {
       cy.get('.v-data-footer__pagination').should('contain.text', `1-10 von ${scopes.totalItemCount}`);
     });
   });
 
-  it.skip('should be possible to cancel filter dialog without changing filters', function () {
+  it('should be possible to cancel filter dialog without changing filters', function () {
     cy.location('href').then((oldHref) => {
       // open filter dialog
       cy.get('[data-cy=veo-objects-overview-page-filter-button]').click();
@@ -59,7 +59,7 @@ describe('Objects overview', () => {
     });
   });
 
-  it.skip('should filter objects and serialize filters to url and chips', function () {
+  it('should filter objects and serialize filters to url and chips', function () {
     cy.location().then((loc) => {
       // open filter dialog
       cy.get('[data-cy=veo-objects-overview-page-filter-button]').click();
@@ -92,7 +92,7 @@ describe('Objects overview', () => {
     });
   });
 
-  it.skip('should be possible to remove filters via chips', function () {
+  it('should be possible to remove filters via chips', function () {
     cy.get('[data-cy=veo-objects-overview-page-chips]').get('.v-chip').contains('Designator').parents('.v-chip').find('.v-chip__close').click();
     // check API call
     cy.wait('@G_fetchObjects').then((interception) => {
