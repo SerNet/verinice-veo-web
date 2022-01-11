@@ -623,8 +623,7 @@ export default Vue.extend({
     "objectSchemaRequired": "You have to specify an object schema!",
     "proceedWithIncomaptibleSchema": "Proceed",
     "start": "How do you want to start?",
-    "type": "Type of the form schema",
-    "importFormSchemaSwitch": "Create a new form schema instead"
+    "type": "Type of the form schema"
   },
   "de": {
     "createFormSchema": "Formschema erstellen",
@@ -647,8 +646,7 @@ export default Vue.extend({
     "objectSchemaRequired": "Sie müssen ein Objektschema angeben",
     "proceedWithIncomaptibleSchema": "Trotzdem weiter",
     "start": "Wie möchten Sie starten?",
-    "type": "Typ des Formschemas",
-    "importFormSchemaSwitch": "Stattdessen ein neues Formschema erstellen"
+    "type": "Typ des Formschemas"
   }
 }
 </i18n>
