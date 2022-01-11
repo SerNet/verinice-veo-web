@@ -178,12 +178,38 @@
         >
           <h2>{{ $t('importFormSchema') }}</h2>
           <p>{{ $t('importFormSchemaHelp') }}</p>
-          <VeoEditorFileUpload
-            :code="fscode"
-            :input-label="$t('formSchemaUploadLabel')"
-            :clear-input.sync="clearInput"
-            @schema-uploaded="doImportFs"
-          />
+          <v-row
+            no-gutters
+            class="align-center mt-4"
+          >
+            <v-col
+              cols="12"
+              :md="5"
+            >
+              <span style="font-size: 1.2rem;"> {{ $t('type') }}*: </span>
+            </v-col>
+            <v-col
+              cols="12"
+              :md="5"
+            >
+              <v-select
+                v-model="formId"
+                :label="$t('type')"
+                :items="formTypes"
+                required
+              />
+            </v-col>
+          </v-row>
+          <v-row v-if="formId === 'custom'">
+            <v-col cols="12">
+              <VeoEditorFileUpload
+                :code="fscode"
+                :input-label="$t('formSchemaUploadLabel')"
+                :clear-input.sync="clearInput"
+                @schema-uploaded="doImportFs"
+              />
+            </v-col>
+          </v-row>
           <v-checkbox
             v-model="forceOwnSchema"
             :label="$t('forceOwnSchema')"
@@ -242,6 +268,17 @@
       >
         {{ $t('global.button.next') }}
       </v-btn>
+      <v-btn
+        v-if="state === 'import-fs' && formId !== 'custom'"
+        color="primary"
+        text
+        role="submit"
+        type="submit"
+        :disabled="importNextDisabled"
+        @click="doImportFs()"
+      >
+        {{ $t('global.button.next') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>
@@ -254,7 +291,7 @@ import { JsonPointer } from 'json-ptr';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
+import { IVeoTranslations, IVeoObjectSchema, IVeoFormSchema, IVeoObjectSchemaTranslations, IVeoFormSchemaMeta } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -289,7 +326,9 @@ export default Vue.extend({
       forceOwnSchema: false as boolean,
       clearInput: false as boolean,
       formSchemaId: undefined as string | undefined,
-      urlToNavigate: undefined as string | undefined
+      urlToNavigate: undefined as string | undefined,
+      formTypes: [] as { value: string; text: string }[],
+      formId: ''
     };
   },
   computed: {
@@ -306,6 +345,9 @@ export default Vue.extend({
           };
         })
       ];
+    },
+    importNextDisabled(): boolean {
+      return this.formId === 'custom' || this.formId === '';
     },
     isNavigatedByDialog() {
       return isEmpty(this.$route.query);
@@ -334,6 +376,28 @@ export default Vue.extend({
     async state(newValue) {
       if (newValue === 'create') {
         this.schemas = await this.$api.schema.fetchAll(true);
+      }
+      if (newValue === 'import-fs' || newValue === 'start') {
+        // Only load types of schema types if a user navigates by the dialog
+        if ((this.isNavigatedByDialog || this.isDialogCustom) && this.formTypes.length === 0) {
+          this.$api.form
+            .fetchAll()
+            .then((data) =>
+              data.map((value: IVeoFormSchemaMeta) => {
+                return {
+                  text: capitalize(value.name[this.$i18n.locale]),
+                  value: value.id
+                };
+              })
+            )
+            .then((types: any) => {
+              types.unshift({
+                text: this.$t('customObjectSchema') as string,
+                value: 'custom'
+              });
+              this.formTypes = types;
+            });
+        }
       }
     },
     $route: {
@@ -411,8 +475,12 @@ export default Vue.extend({
     // Load a form schema, if its model type is existing in the database, the wizard is done, else the object schema has to get imported.
     async doImportFs(schema?: IVeoFormSchema) {
       // If schema is not given as parameter, it is probably
-      if (!schema && this.formSchemaId) {
-        schema = await this.$api.form.fetch(this.formSchemaId);
+      if (!schema && (this.formSchemaId || this.formId)) {
+        const rawFormSchema = JSON.stringify(await this.$api.form.fetch(this.formSchemaId || this.formId));
+        const domainId = this.$user.lastDomain;
+        if (domainId) {
+          schema = JSON.parse(rawFormSchema.replaceAll('{CURRENT_DOMAIN_ID}', domainId));
+        }
       }
       if (schema) {
         this.setFormSchema(schema);
@@ -554,7 +622,8 @@ export default Vue.extend({
       "It seems like the form schema is using properties not present on the remote object schema. If this form schemaa is based on a modified object schema, please upload it below.",
     "objectSchemaRequired": "You have to specify an object schema!",
     "proceedWithIncomaptibleSchema": "Proceed",
-    "start": "How do you want to start?"
+    "start": "How do you want to start?",
+    "type": "Type of the form schema"
   },
   "de": {
     "createFormSchema": "Formschema erstellen",
@@ -576,7 +645,8 @@ export default Vue.extend({
       "Das Formschema verwendet Eigenschaften, die nicht im in der Anwendung hinterlegten Objektschema existieren. Falls es auf einem modifizierten Objektschema basiert, laden Sie dieses bitte hoch.",
     "objectSchemaRequired": "Sie müssen ein Objektschema angeben",
     "proceedWithIncomaptibleSchema": "Trotzdem weiter",
-    "start": "Wie möchten Sie starten?"
+    "start": "Wie möchten Sie starten?",
+    "type": "Typ des Formschemas"
   }
 }
 </i18n>

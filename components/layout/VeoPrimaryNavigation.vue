@@ -98,6 +98,7 @@ import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 import { nonLinkableSchemas } from '~/plugins/api/schema';
+import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 export interface INavItem {
   name: string;
@@ -277,6 +278,13 @@ export default Vue.extend({
     domainId() {
       this.$fetch();
     }
+  },
+  mounted() {
+    this.$root.$on(VeoEvents.UNIT_CREATED, () => {
+      this.$nextTick(() => {
+        setTimeout(() => this.$fetch(), 5000);
+      });
+    });
   },
   methods: {
     createUUIDUrlParam,

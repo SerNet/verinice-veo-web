@@ -35,6 +35,7 @@ export const VeoEvents = {
   DOMAIN_CHANGED: 'domain_changed',
   UNIT_CREATE: 'unit-create',
   UNIT_CHANGED: 'unit_changed',
+  UNIT_CREATED: 'unit_created',
 
   ENTITY_UPDATED: 'entity_updated'
 };

@@ -143,6 +143,7 @@ export default Vue.extend({
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.created') });
           this.error.value = false;
           this.dialog = false;
+          this.$root.$emit(VeoEvents.UNIT_CREATED);
           this.$root.$emit(VeoEvents.UNIT_CHANGED, unit);
           this.$router.push({ path: `/${createUUIDUrlParam('unit', unit)}` });
         })
