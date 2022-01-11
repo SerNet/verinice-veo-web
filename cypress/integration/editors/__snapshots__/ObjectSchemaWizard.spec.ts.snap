@@ -175,7 +175,7 @@ exports[`Objectschema Wizard > creates a new objectschema #0`] =
 
 exports[`Objectschema Wizard > imports own objectschema by uploading #0`] =
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
   "description": "Test Beschreibung",
   "properties": {
     "abbreviation": {
@@ -318,7 +318,7 @@ exports[`Objectschema Wizard > imports own objectschema by uploading #0`] =
 
 exports[`Objectschema Wizard > imports own objectschema by inserting code #0`] =
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
   "description": "Test Beschreibung",
   "properties": {
     "abbreviation": {
@@ -461,7 +461,7 @@ exports[`Objectschema Wizard > imports own objectschema by inserting code #0`] =
 
 exports[`Objectschema Wizard > imports existing process objectschema #0`] =
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
   "description": "Schema for Process",
   "properties": {
     "abbreviation": {

@@ -48,7 +48,6 @@
             :value="value[i]"
             :general-translation="generalTranslation"
             :custom-translation="customTranslation"
-            :api="api"
             :disabled="disabled"
             @input="onInput"
           />
@@ -88,7 +87,7 @@
 import Vue from 'vue';
 import { PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
-import { BaseObject, IApi } from '~/components/forms/utils';
+import { BaseObject } from '~/components/forms/utils';
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
 
@@ -128,11 +127,7 @@ export default Vue.extend({
       default: undefined
     },
     disabled: Boolean,
-    visible: Boolean,
-    api: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IApi>
+    visible: Boolean
   },
   computed: {
     ui() {

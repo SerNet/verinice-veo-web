@@ -16,8 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { ComputedRef, defineComponent, h, PropOptions } from '@nuxtjs/composition-api';
-import { computed } from 'vue-demi';
+import { ComputedRef, defineComponent, h, PropOptions, computed } from '@nuxtjs/composition-api';
 import { VSkeletonLoader } from 'vuetify/lib';
 
 export enum VeoPageHeaderAlignment {

@@ -306,7 +306,7 @@ export interface IVeoTranslations {
 
 export interface IVeoFormSchemaMeta {
   modelType: string;
-  subType: string | null;
+  subType: string;
   name: { [key: string]: string };
   id?: string;
   domainId?: string;
@@ -392,4 +392,24 @@ export interface IVeoObjectHistoryEntry {
   type: string;
   changeNumber: number;
   uri: string;
+}
+
+export enum VeoAlertType {
+  ERROR,
+  INFO,
+  SUCCESS
+}
+
+export interface IVeoGlobalAlertParams {
+  buttonText?: String; // If not set defaults to "Okay" in VeoGlobalAlert of types "Info & Error"
+  eventCallbacks?: { [event: string]: CallableFunction };
+  [key: string]: any;
+}
+
+export interface IVeoGlobalAlert {
+  type: VeoAlertType;
+  title?: string; // Not required in snackbars (Success message)
+  text: string;
+  params?: IVeoGlobalAlertParams; // Allows the user to specify certain aspects of the alert
+  alertKey?: number; // Used to display one alert after another (only one should be displayed at once) and to programmatically remove an alert
 }

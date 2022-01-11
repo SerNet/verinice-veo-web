@@ -22,7 +22,7 @@ import { IVeoFormSchema, IVeoFormSchemaItem, IVeoFormSchemaTranslationCollection
 export function generateSchema(
   name: IVeoFormSchemaMeta['name'],
   modelType: string,
-  subType: string | null,
+  subType: string,
   sorting: string | null,
   translation: IVeoFormSchemaTranslationCollection = {}
 ): IVeoFormSchema {

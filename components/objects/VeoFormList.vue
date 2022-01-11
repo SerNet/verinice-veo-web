@@ -244,7 +244,7 @@ export default Vue.extend({
         },
         {
           align: 'end',
-          text: this.$t('objectlist.updatedat'),
+          text: this.$t('objectlist.updatedAt'),
           value: 'updatedAt'
         },
         {

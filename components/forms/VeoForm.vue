@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021 Davit Svandize, Jonas Heitmann, Jessica Lühnen
-   - 
+   - Copyright (C) 2021 Davit Svandize, Jonas Heitmann, Jessica Lühnen, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -24,7 +24,7 @@ import vjp from 'vue-json-pointer';
 import { ErrorObject, ValidateFunction } from 'ajv';
 import { cloneDeep, merge } from 'lodash';
 import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
-import { BaseObject, IApi, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
+import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
@@ -79,10 +79,6 @@ export default Vue.extend({
       type: Array,
       default: () => []
     } as PropOptions<IErrorMessageElement[]>,
-    api: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IApi>,
     reactiveFormActions: {
       type: Array,
       default: () => []
@@ -144,6 +140,7 @@ export default Vue.extend({
         // IMPORTANT! This is needed to update localSchema when schema is updated
         // Else it cannot detect updated object of schema and does not update veo-form
         this.localSchema = JSON.parse(JSON.stringify(this.schema));
+        this.validate();
       }
     },
     ui: {
@@ -246,22 +243,21 @@ export default Vue.extend({
       if (!keyMatch) {
         throw new Error('Key does not match in Errors array');
       }
+      const indexMatch = error.instancePath.match(/\/\d+$/);
+      const missingProperty = (error.params as any).missingProperty;
+      const requiredKey = `${keyMatch[0]}${indexMatch ? indexMatch[0] : ''}/properties/${missingProperty}`;
 
-      const key = error.keyword !== 'required' ? keyMatch[0] : `${keyMatch[0]}/properties/${error.params.missingProperty}`;
+      const key = error.keyword !== 'required' ? keyMatch[0] : requiredKey;
       let translatedErrorString = '';
 
       switch (error.keyword) {
         case 'required':
           // Special handling of links, as their last data path entry isn't the string we search for
-          if ((error.params as any).missingProperty === 'targetUri') {
-            const dataPathParts = error.instancePath.split('/');
-            dataPathParts.pop();
-            translatedErrorString = this.$t(`error.${error.keyword}_link`, {
-              field: this.getInvalidFieldLabel(dataPathParts.pop() || (error.params as any).missingProperty)
-            }).toString();
+          if (['targetUri', 'target'].includes(missingProperty)) {
+            translatedErrorString = this.handleRequiredLink(error);
             break;
           }
-          translatedErrorString = this.$t(`error.${error.keyword}`, { field: this.getInvalidFieldLabel((error.params as any).missingProperty) }).toString();
+          translatedErrorString = this.$t(`error.${error.keyword}`, { field: this.getInvalidFieldLabel(missingProperty) }).toString();
           break;
         // While pattern and format are separate errors, we want to display the same error message for both, as both have to be fixed the same way by the user
         case 'format':
@@ -276,6 +272,23 @@ export default Vue.extend({
       }
 
       return { ...accummulator, [key]: translatedErrorString };
+    },
+    handleRequiredLink(error: ErrorObject): string {
+      const dataPathParts = error.instancePath.split('/');
+      const missingProperty = (error.params as any).missingProperty;
+      let index: number | undefined;
+      if (missingProperty === 'targetUri') {
+        dataPathParts.pop();
+        index = Number(dataPathParts.pop());
+      } else if (missingProperty === 'target') {
+        index = Number(dataPathParts.pop());
+      }
+
+      const position = index ? `${index + 1}.` : '';
+      return this.$t(`error.${error.keyword}_link`, {
+        field: this.getInvalidFieldLabel(dataPathParts.pop() || missingProperty),
+        position
+      }).toString();
     },
     getInvalidFieldLabel(field: string): string {
       return (this.customTranslation && this.customTranslation[field]) || (this.generalTranslation && this.generalTranslation[field]) || field;
@@ -320,8 +333,7 @@ export default Vue.extend({
             objectSchema: {
               errorMsg: this.errorsMsgMap[element.scope]
             }
-          },
-          api: this.api
+          }
         };
       }
 
@@ -381,14 +393,14 @@ export default Vue.extend({
     "error": {
       "format": "The field \"{field}\" has to match the format \"{format}\"",
       "required": "The field \"{field}\" is required",
-      "required_link": "The link \"{field}\" has to point to an object or be removed"
+      "required_link": "The {position} link in \"{field}\" has to point to an object or must be removed"
     }
   },
   "de": {
     "error": {
       "format": "Das Feld \"{field}\" muss dem Format \"{format}\" entsprechen",
       "required": "Das Feld \"{field}\" muss ausgefüllt sein",
-      "required_link": "Der Link \"{field}\" muss auf ein Objekt zeigen oder entfernt werden"
+      "required_link": "Der {position} Link in \"{field}\" muss auf ein Objekt zeigen oder entfernt werden"
     }
   }
 }

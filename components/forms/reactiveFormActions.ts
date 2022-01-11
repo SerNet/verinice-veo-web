@@ -44,13 +44,13 @@ export function getPersonReactiveFormActions(_context: Vue): IVeoReactiveFormAct
     {
       attributeName: '/customAspects/person_generalInformation/attributes/person_generalInformation_givenName',
       handler: (_newValue, newObject, oldObject) => {
-        computeFullName(newObject, oldObject);
+        getFullName(newObject, oldObject);
       }
     },
     {
       attributeName: '/customAspects/person_generalInformation/attributes/person_generalInformation_familyName',
       handler: (_newValue, newObject, oldObject) => {
-        computeFullName(newObject, oldObject);
+        getFullName(newObject, oldObject);
       }
     }
   ];
@@ -60,7 +60,7 @@ export function getPersonReactiveFormActions(_context: Vue): IVeoReactiveFormAct
  Helpers for previously defined reactive form actions
 
 */
-export function computeFullName(newObject: IBaseObject, oldObject: IBaseObject) {
+export function getFullName(newObject: IBaseObject, oldObject: IBaseObject) {
   let fullnameOld = '';
   let givenNameOld = '';
   let familyNameOld = '';

@@ -211,9 +211,8 @@ import { Route } from 'vue-router/types/index';
 
 import { IBaseObject, IForm, separateUUIDParam } from '~/lib/utils';
 import { IValidationErrorMessage } from '~/pages/_unit/domains/_domain/forms/_form/_entity.vue';
-import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
 import { IVeoEventPayload, VeoEvents } from '~/types/VeoGlobalEvents';
-import { IVeoEntity, IVeoObjectHistoryEntry, IVeoReactiveFormAction } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry, IVeoReactiveFormAction, VeoAlertType } from '~/types/VeoTypes';
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { getPersonReactiveFormActions } from '~/components/forms/reactiveFormActions';
 

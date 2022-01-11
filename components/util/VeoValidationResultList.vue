@@ -16,79 +16,58 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="text-left">
-    <h3>{{ $t('schemaValidationErrors') }} ({{ result.errors.length }}):</h3>
-    <v-list>
-      <v-list-item
-        v-for="(error, index) of result.errors"
-        :key="`e_${index}`"
-        link
-      >
-        <v-list-item-content style="overflow-wrap: anywhere;">
-          <v-list-item-title>{{ error.code }} </v-list-item-title>
-          {{ error.message }}
-        </v-list-item-content>
-        <v-list-item-action v-if="error.fixable && allowFixing">
-          <v-btn
-            outlined
-            @click="$emit('fix', error.code, error.params)"
-          >
-            {{ $t('fix') }}
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-      <v-list-item v-if="result.errors.length === 0">
-        <v-list-item-content>
-          <v-list-item-title>{{ $t('schemaValid') }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-    <template v-if="showWarnings">
-      <h3>{{ $t('schemaValidationWarnings') }}: ({{ result.warnings.length }})</h3>
-      <v-list>
-        <v-list-item
-          v-for="(warning, index) of result.warnings"
-          :key="`w_${index}`"
-          link
+  <v-list>
+    <v-list-item
+      v-for="(item, index) of items"
+      :key="index"
+      link
+    >
+      <v-list-item-content style="overflow-wrap: anywhere;">
+        <v-list-item-title>{{ item.code }} </v-list-item-title>
+        {{ item.message }}
+      </v-list-item-content>
+      <v-list-item-action v-if="item.fixable && fixingAllowed">
+        <v-btn
+          outlined
+          @click="$emit('fix', item.code, item.params)"
         >
-          <v-list-item-content style="overflow-wrap: anywhere;">
-            <v-list-item-title>{{ warning.code }} </v-list-item-title>
-            {{ warning.message }}
-          </v-list-item-content>
-          <v-list-item-action v-if="warning.fixable && allowFixing">
-            <v-btn
-              outlined
-              @click="$emit('fix', warning.code, warning.params)"
-            >
-              {{ $t('fix') }}
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
-    </template>
-  </div>
+          {{ t('fix') }}
+        </v-btn>
+      </v-list-item-action>
+    </v-list-item>
+    <v-list-item v-if="items.length === 0 && showNoErrorPlaceholder">
+      <v-list-item-content>
+        <v-list-item-title>{{ t('noErrors') }}</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </v-list>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
-    showWarnings: {
+    items: {
+      type: Array,
+      default: () => []
+    } as PropOptions<VeoSchemaValidatorMessage[]>,
+    noErrorPlaceholderVisible: {
       type: Boolean,
       default: false
     },
-    result: {
-      type: Object as Prop<VeoSchemaValidatorValidationResult>,
-      required: true
-    },
-    allowFixing: {
+    fixingAllowed: {
       type: Boolean,
       default: false
     }
+  },
+  setup() {
+    const { t } = useI18n();
+
+    return { t };
   }
 });
 </script>
@@ -97,15 +76,11 @@ export default Vue.extend({
 {
   "en": {
     "fix": "Fix",
-    "schemaValid": "No errors found!",
-    "schemaValidationErrors": "Errors",
-    "schemaValidationWarnings": "Warnings"
+    "noErrors": "No errors found!"
   },
   "de": {
     "fix": "Beheben",
-    "schemaValid": "Keine Fehler gefunden!",
-    "schemaValidationErrors": "Fehler",
-    "schemaValidationWarnings": "Warnungen"
+    "noErrors": "Keine Fehler gefunden!"
   }
 }
 </i18n>

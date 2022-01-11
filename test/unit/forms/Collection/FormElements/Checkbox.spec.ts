@@ -19,19 +19,19 @@ import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
-import 'regenerator-runtime/runtime';
 
 import { install as VeeValidate } from '@/plugins/vee-validate';
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
 Vue.use(VeeValidate);
-Vue.use(Vuetify);
+
 const vuetify = new Vuetify();
 
 describe('VeoForm.vue', () => {
   it('should render checkbox element', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           isMarried: {
             type: 'boolean'

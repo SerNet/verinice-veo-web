@@ -19,19 +19,19 @@ import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
 import flushPromises from 'flush-promises';
-import 'regenerator-runtime/runtime';
 
 import { install as VeeValidate } from '@/plugins/vee-validate';
 import VeoForm from '~/components/forms/VeoForm.vue';
 import { Renderable } from '~/types/renderable';
 Vue.use(VeeValidate);
-Vue.use(Vuetify);
+
 const vuetify = new Vuetify();
 
 describe('Select.vue', () => {
   it('should render select component to choose some list element', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           list: {
             type: 'string',
@@ -90,6 +90,7 @@ describe('Select.vue', () => {
   it('should render select component to choose multiple list elements', async () => {
     const form: Renderable = {
       schema: {
+        type: 'object',
         properties: {
           list: {
             type: 'array',

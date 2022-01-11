@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { VeoAlertType } from '~/components/layout/VeoAlert.vue';
+import { VeoAlertType } from './VeoTypes';
 
 export interface IVeoEventPayload {
   type?: VeoAlertType;
@@ -35,6 +35,7 @@ export const VeoEvents = {
   DOMAIN_CHANGED: 'domain_changed',
   UNIT_CREATE: 'unit-create',
   UNIT_CHANGED: 'unit_changed',
+  UNIT_CREATED: 'unit_created',
 
   ENTITY_UPDATED: 'entity_updated'
 };
