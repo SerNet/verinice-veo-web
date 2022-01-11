@@ -480,10 +480,7 @@ export default Vue.extend({
       // If schema is not given as parameter, it is probably
       if (!schema && (this.formSchemaId || this.formId)) {
         const rawFormSchema = JSON.stringify(await this.$api.form.fetch(this.formSchemaId || this.formId));
-        const domainId = this.$user.lastDomain;
-        if (domainId) {
-          schema = JSON.parse(rawFormSchema.replaceAll('{CURRENT_DOMAIN_ID}', domainId));
-        }
+        schema = JSON.parse(rawFormSchema.replaceAll('{CURRENT_DOMAIN_ID}', this.domainId));
       }
       if (schema) {
         this.setFormSchema(schema);
