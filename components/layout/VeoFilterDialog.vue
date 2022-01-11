@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Annemarie Bufe, Jonas Heitmann
+   - Copyright (C) 2021  Annemarie Bufe, Jonas Heitmann, Markus Werner
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +30,9 @@
             :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
             dense
           >
-            <v-divider v-if="option.type === IVeoFilterOptionType.DIVIDER" />
+            <v-divider
+              v-if="option.type === IVeoFilterOptionType.DIVIDER"
+            />
             <v-text-field
               v-else-if="option.type === IVeoFilterOptionType.TEXT"
               v-model="localFilter[option.name]"
@@ -76,7 +78,7 @@
             <template v-if="showAllFilters">
               <v-icon>{{ mdiChevronDoubleUp }}</v-icon>
               <span>{{ upperFirst(t('collapseOptions').toString()) }}</span>
-              <v-icon>{{mdiChevronDoubleUp}}</v-icon>
+              <v-icon>{{ mdiChevronDoubleUp }}</v-icon>
             </template>
             <template v-else>
               <v-icon>{{ mdiChevronDoubleDown }}</v-icon>
@@ -93,9 +95,9 @@
         :data-cy="$utils.prefixCyData($options, 'reset-button')"
         @click="onReset"
       >
-        {{t(`resetFilter`)}}
+        {{ t(`resetFilter`) }}
       </v-btn>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-btn
         color="primary"
         :data-cy="$utils.prefixCyData($options, 'submit-button')"
@@ -103,7 +105,7 @@
         :disabled="!filterFormValid"
         @click="onSubmit"
       >
-        {{t(`submitFilter`)}}
+        {{ t(`submitFilter`) }}
       </v-btn>
     </template>
   </VeoDialog>

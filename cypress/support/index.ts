@@ -384,4 +384,16 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
       }
     ).as('G_fetchMyLatestRevisions');
   }
+
+  if (!options?.ignoreCreateObject) {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: VEO_API_NEW_ENTITY_REGEX
+      },
+      (req) => {
+        req.reply({});
+      }
+    ).as('G_createObject');
+  }
 });

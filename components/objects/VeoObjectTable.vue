@@ -108,8 +108,8 @@ export default defineComponent({
       if (!$user.lastDomain) return '';
       const domainId = $user.lastDomain;
       const domainDetails = item.domains[domainId];
-      const key = `${item.type}_${domainDetails.subType}_status_${domainDetails.status}`;
-      return translations.value?.lang?.[i18n.locale]?.[key] || (item.domains[domainId] ? item.domains[domainId].status : '');
+      const key = `${item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
+      return translations.value?.lang?.[i18n.locale]?.[key] || (item.domains[domainId] ? item.domains[domainId]?.status : '');
     };
     /**
      * Distinguish between {@link IVeoPaginatedResponse} and {@link IVeoEntity}[]
@@ -275,8 +275,8 @@ export default defineComponent({
     const pageUpdate = { newPage: props.page, sortBy: firstOrValue(props.sortBy), sortDesc: firstOrValue(props.sortDesc) };
     const { throttle } = useThrottleNextTick();
     const emitPageUpdate = ({ newPage, sortBy, sortDesc }: { newPage?: number; sortBy?: string | string[]; sortDesc?: boolean | boolean[] }) => {
-      // Update data
-      const data = Object.assign(pageUpdate, { newPage, sortBy: firstOrValue(sortBy), sortDesc: firstOrValue(sortDesc) });
+      // Update data (and keep current values)
+      const data = Object.assign(pageUpdate, { newPage: newPage ?? props.page, sortBy: firstOrValue(sortBy ?? props.sortBy), sortDesc: firstOrValue(sortDesc ?? props.sortDesc) });
       // ... but only emit once at nextTick
       return throttle(() => emit('page-change', data));
     };
