@@ -59,7 +59,7 @@
         @click="createDialogVisible = true"
       >
         <v-icon left>
-          mdi-plus
+          {{ mdiPlus }}
         </v-icon>
         <span>{{ t('createObject', [objectType]) }}</span>
       </v-btn>
@@ -90,7 +90,7 @@
           icon
           @click="filterDialogVisible = true"
         >
-          <v-icon>mdi-filter</v-icon>
+          <v-icon>{{ mdiFilter }}</v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -133,6 +133,7 @@
 </template>
 
 <script lang="ts">
+import { mdiContentCopy, mdiLinkPlus, mdiFilter, mdiPlus, mdiLinkOff, mdiLinkLock, mdiLinkVariantOff } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
@@ -143,7 +144,7 @@ import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
 export default defineComponent({
   name: 'VeoObjectsOverviewPage',
-  setup(_) {
+  setup() {
     const { t, locale } = useI18n();
     const { $api } = useContext();
     const route = useRoute();
@@ -269,7 +270,7 @@ export default defineComponent({
       {
         id: 'clone',
         label: t('clone'),
-        icon: 'mdi-content-copy',
+        icon: mdiContentCopy,
         async action(item: IVeoEntity) {
           try {
             await cloneObject(item);
@@ -282,7 +283,7 @@ export default defineComponent({
       {
         id: 'unlink',
         label: t('unlink'),
-        icon: 'mdi-delete',
+        icon: mdiLinkOff,
         action(item: IVeoEntity) {
           itemDelete.value = item;
         }
@@ -304,6 +305,8 @@ export default defineComponent({
       formatValue,
       itemDelete,
       items,
+      mdiFilter,
+      mdiPlus,
       objectType,
       openItem,
       onCloseDeleteDialog,
