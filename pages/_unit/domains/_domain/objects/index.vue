@@ -133,7 +133,7 @@
 </template>
 
 <script lang="ts">
-import { mdiContentCopy, mdiLinkPlus, mdiFilter, mdiPlus, mdiLinkOff, mdiLinkLock, mdiLinkVariantOff } from '@mdi/js';
+import { mdiContentCopy, mdiFilter, mdiPlus, mdiLinkOff } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
