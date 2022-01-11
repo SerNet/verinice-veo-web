@@ -133,6 +133,22 @@
           {{ t('help') }}
         </template>
       </v-tooltip>
+      <v-tooltip bottom>
+        <template #activator="{on}">
+          <v-btn
+            icon
+            large
+            color="primary"
+            @click="save"
+            v-on="on"
+          >
+            <v-icon>mdi-content-save</v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ t('save') }}
+        </template>
+      </v-tooltip>
     </template>
     <template
       v-if="formSchema && objectSchema"
@@ -321,6 +337,7 @@ import {
 } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
+import { useVeoAlerts } from '~/composables/VeoAlert';
 
 interface IProps {}
 
@@ -328,6 +345,7 @@ export default defineComponent<IProps>({
   setup(_props) {
     const { t } = useI18n();
     const { $api, app } = useContext();
+    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     /**
      * Layout specific stuff
      */
@@ -403,6 +421,33 @@ export default defineComponent<IProps>({
 
     function setTranslation(newTranslation: IVeoTranslations) {
       translation.value = newTranslation;
+    }
+
+    async function save() {
+      // control whether save new or save updated schema
+      try {
+        if (formSchema.value?.id) {
+          await saveUpdatedSchema();
+        } else {
+          await saveNewSchema();
+        }
+        displaySuccessMessage(t('saveSchemaSuccess').toString());
+      } catch (err) {
+        displayErrorMessage(t('error').toString(), t('saveSchemaError').toString());
+      }
+    }
+
+    async function saveNewSchema() {
+      if (formSchema.value) {
+        const id = await $api.form.create(formSchema.value);
+        formSchema.value.id = id; // set id from response, so next save would update schema instead of creating another one
+      }
+    }
+
+    async function saveUpdatedSchema() {
+      if (formSchema.value?.id) {
+        await $api.form.update(formSchema.value.id, formSchema.value);
+      }
     }
 
     function updateSchemaName(value: string) {
@@ -540,6 +585,9 @@ export default defineComponent<IProps>({
       onUpdateCustomTranslation,
       onFixRequest,
       VeoPageHeaderAlignment,
+      save,
+      saveNewSchema,
+      saveUpdatedSchema,
 
       t
     };
@@ -562,7 +610,11 @@ export default defineComponent<IProps>({
     "invalidFormSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
     "search": "Search for a control...",
-    "help": "Help"
+    "help": "Help",
+    "save": "Save",
+    "saveSchemaSuccess": "Schema saved!",
+    "saveSchemaError": "Couldn't save schema!",
+    "error": "Error"
   },
   "de": {
     "availableControls": "Verfügbare Steuerelemente",
@@ -572,7 +624,11 @@ export default defineComponent<IProps>({
     "invalidFormSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
     "search": "Nach einem Steuerelement suchen",
-    "help": "Hilfe"
+    "help": "Hilfe",
+    "save": "Speichern",
+    "saveSchemaSuccess": "Schema wurde gespeichert!",
+    "saveSchemaError": "Schema konnte nicht gespeichert werden!",
+    "error": "Fehler"
   }
 }
 </i18n>
