@@ -48,10 +48,9 @@ describe('Objects overview', () => {
     cy.location('href').then((oldHref) => {
       // open filter dialog
       cy.get('[data-cy=veo-objects-overview-page-filter-button]').click();
-      cy.get('[data-cy=veo-filter-dialog-filter-option]').each((el) => {
-        // try to change all inputs/selects
-        cy.wrap(el).type('{downarrow}{downarrow}{enter}');
-      });
+      cy.get('[data-cy=veo-filter-dialog-filter-option]').contains('Scope').type('Process{enter}');
+      cy.get('[data-cy=veo-filter-dialog-filter-option]').find('[name=designator]').type('PRO{enter}');
+      cy.get('[data-cy=veo-filter-dialog-filter-option]').find('[name=name]').type('grün{enter}');
       // send escape to close dialog
       cy.get('body').type('{esc}');
       // check wether url remains the same
