@@ -20,6 +20,9 @@
 
 import { getEditorData } from '../../support/utils';
 
+const editorPath = '/unit-d496f98f-c051-443c-9b1f-65d65b64996d/domains/domain-ed67e4d7-c657-4479-ba8a-c53999d2930a/editor/';
+const objectSchemaEditorPath = editorPath + 'objectschema';
+
 describe('Objectschema Wizard', () => {
   before(() => {
     cy.auth();
@@ -28,7 +31,7 @@ describe('Objectschema Wizard', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('/editor/');
+    cy.visit(editorPath);
     cy.wait('@G_fetchSchemas');
   });
 
@@ -37,7 +40,7 @@ describe('Objectschema Wizard', () => {
   });
 
   it('ckecks navigation between wizard start, back button, and objectschema create and import', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
+    cy.goTo(editorPath).goTo(objectSchemaEditorPath);
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-card__actions').contains('Zurück').click();
       cy.get('.v-window-item--active').find('.v-list-item.v-list-item--link').should('contain.text', 'Objektschema erstellen').should('contain.text', 'Objektschema importieren');
@@ -52,7 +55,7 @@ describe('Objectschema Wizard', () => {
   });
 
   it('creates a new objectschema', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
+    cy.goTo(editorPath).goTo(objectSchemaEditorPath);
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Stattdessen ein neues Objektschema erstellen').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Test');
@@ -65,11 +68,11 @@ describe('Objectschema Wizard', () => {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
 
-    cy.validateUrl('/editor/objectschema?type=Test&description=Test%20Beschreibung');
+    cy.validateUrl(objectSchemaEditorPath + '?type=Test&description=Test%20Beschreibung');
   });
 
   it('imports own objectschema by uploading', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
+    cy.goTo(editorPath).goTo(objectSchemaEditorPath);
     // TODO
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Eigenes{enter}');
@@ -80,11 +83,11 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.validateUrl('/editor/objectschema?os=custom');
+    cy.validateUrl(objectSchemaEditorPath + '?os=custom');
   });
 
   it('imports own objectschema by inserting code', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
+    cy.goTo(editorPath).goTo(objectSchemaEditorPath);
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Eigenes{enter}');
       cy.get('.v-window-item--active').contains('.v-tab', 'Code einfügen').click();
@@ -104,11 +107,11 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.validateUrl('/editor/objectschema?os=custom');
+    cy.validateUrl(objectSchemaEditorPath + '?os=custom');
   });
 
   it('imports existing process objectschema', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema/');
+    cy.goTo(editorPath).goTo(objectSchemaEditorPath);
 
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Process{enter}');
@@ -124,17 +127,17 @@ describe('Objectschema Wizard', () => {
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
-    cy.validateUrl('/editor/objectschema?os=process');
+    cy.validateUrl(objectSchemaEditorPath + '?os=process');
   });
 
   it('creates own objectschema by URL', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema?type=Testtyp&description=Testbeschreibung');
+    cy.goTo(editorPath).goTo(objectSchemaEditorPath + '?type=Testtyp&description=Testbeschreibung');
     cy.contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Testtyp');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Testbeschreibung');
   });
 
   it('navigates automatically to the state in wizard by URL, where own objectschema can be uploaded', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema?os=custom');
+    cy.goTo(editorPath).goTo(objectSchemaEditorPath + '?os=custom');
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-select', 'Typ des Objektschemas').should('contain.text', 'Eigenes');
       cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
@@ -143,7 +146,7 @@ describe('Objectschema Wizard', () => {
   });
 
   it('imports existing objectschema by URL', function () {
-    cy.goTo('/editor/').goTo('/editor/objectschema?os=process');
+    cy.goTo(editorPath).goTo(objectSchemaEditorPath + '?os=process');
     cy.contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'process');
     cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Process');
   });

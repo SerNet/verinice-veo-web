@@ -41,6 +41,7 @@
       <v-tab-item>
         <VeoSchemaCodeEditor
           :value="code"
+          :submit-button-text="submitButtonText"
           @schema-updated="sendSchema"
         />
       </v-tab-item>
@@ -56,7 +57,7 @@ export default Vue.extend({
   props: {
     code: {
       type: String,
-      required: true
+      default: ''
     },
     inputLabel: {
       type: String,
@@ -65,6 +66,10 @@ export default Vue.extend({
     clearInput: {
       type: Boolean,
       default: false
+    },
+    submitButtonText: {
+      type: String,
+      default: undefined
     }
   },
   data() {

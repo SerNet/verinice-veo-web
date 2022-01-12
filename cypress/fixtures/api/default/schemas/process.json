@@ -642,22 +642,26 @@
       "description": "The description for the EntityLayerSupertype."
     },
     "domains": {
-      "type": "object",
+      "additionalProperties": false,
       "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
       "properties": {
         "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
           "$schema": "https://json-schema.org/draft/2019-09/schema",
           "type": "object",
           "properties": {
+            "status": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
             "subType": {
               "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
               "enum": [
-                "PRO_DataProcessing",
-                "PRO_DataTransfer"
+                "PRO_DataTransfer",
+                "PRO_DataProcessing"
               ]
-            },
-            "status": {
-              "type": "string"
             }
           },
           "dependentRequired": {
@@ -673,7 +677,7 @@
               "if": {
                 "properties": {
                   "subType": {
-                    "const": "PRO_DataProcessing"
+                    "const": "PRO_DataTransfer"
                   }
                 }
               },
@@ -681,10 +685,10 @@
                 "properties": {
                   "status": {
                     "enum": [
-                      "NEW",
                       "IN_PROGRESS",
-                      "FOR_REVIEW",
+                      "NEW",
                       "RELEASED",
+                      "FOR_REVIEW",
                       "ARCHIVED"
                     ]
                   }
@@ -695,7 +699,7 @@
               "if": {
                 "properties": {
                   "subType": {
-                    "const": "PRO_DataTransfer"
+                    "const": "PRO_DataProcessing"
                   }
                 }
               },
@@ -703,10 +707,10 @@
                 "properties": {
                   "status": {
                     "enum": [
-                      "NEW",
                       "IN_PROGRESS",
-                      "FOR_REVIEW",
+                      "NEW",
                       "RELEASED",
+                      "FOR_REVIEW",
                       "ARCHIVED"
                     ]
                   }
@@ -716,7 +720,7 @@
           ]
         }
       },
-      "additionalProperties": false
+      "type": "object"
     },
     "id": {
       "type": "string",

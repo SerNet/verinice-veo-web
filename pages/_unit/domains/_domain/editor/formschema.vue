@@ -273,11 +273,11 @@
     </template>
     <template #helpers>
       <VeoFseWizardDialog
-        v-model="showCreationDialog"
+        :value="creationDialogVisible"
         :domain-id="domainId"
-        @update-object-schema="setObjectSchema"
-        @update-form-schema="setFormSchema"
-        @update-translation="setTranslation"
+        @objectSchema="setObjectSchema"
+        @formSchema="setFormSchema"
+        @translations="setTranslation"
       />
       <VeoEditorErrorDialog
         v-model="showErrorDialog"
@@ -323,7 +323,7 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer';
 
-import { computed, defineComponent, onMounted, provide, Ref, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, provide, Ref, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
@@ -355,7 +355,7 @@ export default defineComponent<IProps>({
     /**
      * Layout specific stuff
      */
-    const showCreationDialog = ref(false);
+    const creationDialogVisible = computed(() => !objectSchema.value || !formSchema.value);
     const showErrorDialog = ref(false);
     const showDetailDialog = ref(false);
     const showCodeEditor = ref(false);
@@ -365,10 +365,6 @@ export default defineComponent<IProps>({
 
     const downloadButton: Ref<any> = ref(null);
     provide('controlsItems', controlItems);
-
-    onMounted(() => {
-      showCreationDialog.value = objectSchema.value === undefined && formSchema.value === undefined;
-    });
 
     const title = computed(() => {
       const headline = t('editor.formschema.headline');
@@ -417,12 +413,10 @@ export default defineComponent<IProps>({
           ...{ [app.i18n.locale]: {} }
         });
       }
-      showCreationDialog.value = !objectSchema.value || false;
     }
 
     function setObjectSchema(schema: IVeoObjectSchema) {
       objectSchema.value = schema;
-      showCreationDialog.value = !formSchema.value || false;
     }
 
     function setTranslation(newTranslation: IVeoTranslations) {
@@ -556,8 +550,8 @@ export default defineComponent<IProps>({
     }
 
     return {
+      creationDialogVisible,
       domainId,
-      showCreationDialog,
       showErrorDialog,
       showCodeEditor,
       showDetailDialog,

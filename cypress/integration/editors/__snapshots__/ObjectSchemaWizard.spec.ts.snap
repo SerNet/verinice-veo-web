@@ -59,10 +59,14 @@ exports[`Objectschema Wizard > creates a new objectschema #0`] =
           },
           "properties": {
             "status": {
+              "maxLength": 255,
+              "minLength": 1,
               "type": "string"
             },
             "subType": {
               "enum": [],
+              "maxLength": 255,
+              "minLength": 1,
               "type": "string"
             }
           },
@@ -201,30 +205,60 @@ exports[`Objectschema Wizard > imports own objectschema by uploading #0`] =
       "type": "string"
     },
     "domains": {
-      "items": {
-        "description": "The domains this entity is being used in.",
-        "properties": {
-          "displayName": {
-            "description": "A friendly human readable title of the referenced domain.",
-            "type": "string"
+      "additionalProperties": false,
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "properties": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
+          "type": "object",
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "TF"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "STATUS1",
+                      "STATUS2"
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "dependentRequired": {
+            "status": [
+              "subType"
+            ],
+            "subType": [
+              "status"
+            ]
           },
-          "resourcesUri": {
-            "type": "string"
+          "properties": {
+            "status": {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            "subType": {
+              "enum": [
+                "TF"
+              ],
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            }
           },
-          "searchesUri": {
-            "type": "string"
-          },
-          "targetUri": {
-            "description": "The resource URL of the referenced domain.",
-            "type": "string"
-          }
-        },
-        "required": [
-          "targetUri"
-        ],
-        "type": "object"
+          "type": "object"
+        }
       },
-      "type": "array"
+      "type": "object"
     },
     "id": {
       "description": "ID must be a valid UUID string following RFC 4122.",
@@ -344,30 +378,60 @@ exports[`Objectschema Wizard > imports own objectschema by inserting code #0`] =
       "type": "string"
     },
     "domains": {
-      "items": {
-        "description": "The domains this entity is being used in.",
-        "properties": {
-          "displayName": {
-            "description": "A friendly human readable title of the referenced domain.",
-            "type": "string"
+      "additionalProperties": false,
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "properties": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
+          "type": "object",
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "subType": {
+                    "const": "TF"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "STATUS1",
+                      "STATUS2"
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "dependentRequired": {
+            "status": [
+              "subType"
+            ],
+            "subType": [
+              "status"
+            ]
           },
-          "resourcesUri": {
-            "type": "string"
+          "properties": {
+            "status": {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            "subType": {
+              "enum": [
+                "TF"
+              ],
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            }
           },
-          "searchesUri": {
-            "type": "string"
-          },
-          "targetUri": {
-            "description": "The resource URL of the referenced domain.",
-            "type": "string"
-          }
-        },
-        "required": [
-          "targetUri"
-        ],
-        "type": "object"
+          "type": "object"
+        }
       },
-      "type": "array"
+      "type": "object"
     },
     "id": {
       "description": "ID must be a valid UUID string following RFC 4122.",
@@ -1094,6 +1158,8 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
           },
           "properties": {
             "status": {
+              "maxLength": 255,
+              "minLength": 1,
               "type": "string"
             },
             "subType": {
@@ -1101,6 +1167,8 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "PRO_DataProcessing",
                 "PRO_DataTransfer"
               ],
+              "maxLength": 255,
+              "minLength": 1,
               "type": "string"
             }
           }

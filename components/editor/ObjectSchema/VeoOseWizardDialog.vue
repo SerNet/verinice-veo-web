@@ -342,8 +342,8 @@ export default Vue.extend({
         meta: { type: this.createForm.type, description: this.createForm.description }
       });
       this.navigateTo({
-        type: encodeURIComponent(this.createForm.type),
-        description: encodeURIComponent(this.createForm.description)
+        type: this.createForm.type,
+        description: this.createForm.description
       });
     },
     importSchema(schema?: any) {

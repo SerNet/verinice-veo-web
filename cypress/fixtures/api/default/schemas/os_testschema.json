@@ -260,30 +260,38 @@
       "description": "The description for the EntityLayerSupertype."
     },
     "domains": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string",
-            "description": "A friendly human readable title of the referenced domain."
+      "additionalProperties": false,
+      "description": "Details about this element's association with domains. Domain ID is key, association object is value.",
+      "properties": {
+        "ed67e4d7-c657-4479-ba8a-c53999d2930a": {
+          "$schema": "https://json-schema.org/draft/2019-09/schema",
+          "type": "object",
+          "allOf": [],
+          "dependentRequired": {
+            "status": [
+              "subType"
+            ],
+            "subType": [
+              "status"
+            ]
           },
-          "resourcesUri": {
-            "type": "string"
+          "properties": {
+            "status": {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            "subType": {
+              "enum": [],
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            }
           },
-          "searchesUri": {
-            "type": "string"
-          },
-          "targetUri": {
-            "type": "string",
-            "description": "The resource URL of the referenced domain."
-          }
-        },
-        "required": [
-          "targetUri"
-        ],
-        "description": "The domains this entity is being used in."
-      }
+          "type": "object"
+        }
+      },
+      "type": "object"
     },
     "id": {
       "type": "string",
