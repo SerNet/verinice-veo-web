@@ -20,6 +20,7 @@
     v-model="dialog.value"
     large
     :headline="t('schemaDetailsHeadline')"
+    fixed-footer
   >
     <template #default>
       <v-form
