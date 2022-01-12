@@ -35,7 +35,7 @@
         </v-btn>
       </v-list-item-action>
     </v-list-item>
-    <v-list-item v-if="items.length === 0 && showNoErrorPlaceholder">
+    <v-list-item v-if="items.length === 0 && noErrorPlaceholderVisible">
       <v-list-item-content>
         <v-list-item-title>{{ t('noErrors') }}</v-list-item-title>
       </v-list-item-content>

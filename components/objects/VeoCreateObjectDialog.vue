@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann
+   - Copyright (C) 2021  Jonas Heitmann, Markus Werner
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
 <template>
   <VeoDialog
     v-model="dialog"
-    :headline="upperFirst(t('createObject').toString())"
+    :headline="headline"
     x-large
     :persistent="isFormDirty"
     fixed-footer
@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, useFetch, useContext, Ref, useRoute, computed } from '@nuxtjs/composition-api';
+import { defineComponent, ref, useFetch, useContext, Ref, useRoute, computed, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
@@ -133,9 +133,12 @@ export default defineComponent({
       isFormDirty.value = false;
     }
 
-    useFetch(async () => {
+    const { fetch } = useFetch(async () => {
       objectSchema.value = await $api.schema.fetch(props.objectType, [props.domainId]);
     });
+
+    // refetch on objectType change
+    watch(() => props.objectType, fetch);
 
     // Actions
     async function onSubmit() {
@@ -149,10 +152,13 @@ export default defineComponent({
       }
     }
 
+    const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + upperFirst(props.objectType));
+
     const formValid = ref(false);
 
     return {
       dialog,
+      headline,
       isFormDirty,
       formValid,
       objectSchema,
