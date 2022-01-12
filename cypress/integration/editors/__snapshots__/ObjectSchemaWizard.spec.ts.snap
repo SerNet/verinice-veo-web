@@ -1107,7 +1107,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "if": {
                 "properties": {
                   "subType": {
-                    "const": "PRO_DataProcessing"
+                    "const": "PRO_DataTransfer"
                   }
                 }
               },
@@ -1115,10 +1115,10 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "properties": {
                   "status": {
                     "enum": [
-                      "NEW",
                       "IN_PROGRESS",
-                      "FOR_REVIEW",
+                      "NEW",
                       "RELEASED",
+                      "FOR_REVIEW",
                       "ARCHIVED"
                     ]
                   }
@@ -1129,7 +1129,7 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
               "if": {
                 "properties": {
                   "subType": {
-                    "const": "PRO_DataTransfer"
+                    "const": "PRO_DataProcessing"
                   }
                 }
               },
@@ -1137,10 +1137,10 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
                 "properties": {
                   "status": {
                     "enum": [
-                      "NEW",
                       "IN_PROGRESS",
-                      "FOR_REVIEW",
+                      "NEW",
                       "RELEASED",
+                      "FOR_REVIEW",
                       "ARCHIVED"
                     ]
                   }
@@ -1164,8 +1164,9 @@ exports[`Objectschema Wizard > imports existing process objectschema #0`] =
             },
             "subType": {
               "enum": [
-                "PRO_DataProcessing",
-                "PRO_DataTransfer"
+                "PRO_DataTransfer",
+                "PRO_DataProcessing"
+                
               ],
               "maxLength": 255,
               "minLength": 1,

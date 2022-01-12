@@ -111,6 +111,7 @@
           </template>
         </VeoAlert>
         <VeoEditorFileUpload
+          v-cy-name="'objectschema-input'"
           :input-label="t('objectSchemaUploadLabel')"
           :submit-button-text="t('importObjectSchema')"
           @schema-uploaded="$emit('update:objectSchema', $event)"
@@ -244,7 +245,7 @@ export default defineComponent({
     "importObjectSchema": "Objektschema importieren",
     "formSchemaUploadLabel": "Formschema hochladen @:format",
     "objectSchemaIncompatible": "Das Objektschema ist nicht mit dem Formschema kompatibel",
-    "objectSchemaUploadLabel": "Objectschema hochladen @:format",
+    "objectSchemaUploadLabel": "Objektschema hochladen @:format",
     "objectTypeMissing": "Das zum Formschema gehörende Objektschema konnte nicht gefunden werden",
     "uploadObjectSchemaHint": "Bitte laden Sie das zum Formschema gehörende Objektschema hoch"
   }

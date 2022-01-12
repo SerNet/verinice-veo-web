@@ -51,7 +51,7 @@ describe('Formschema Wizard', () => {
     });
   });
 
-  it.only('creates a new formschema based on own uploaded objectschema', function () {
+  it('creates a new formschema based on own uploaded objectschema', function () {
     cy.goTo(editorPath).goTo(formSchemaEditorPath);
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema erstellen').closest('.v-list-item--link').click();
@@ -59,19 +59,17 @@ describe('Formschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sortierwert').type('a1');
       cy.get('.v-window-item--active').contains('.v-select', 'Objektschematyp').type('Eigenes{enter}');
       cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('api/default/schemas/empty.json');
-      cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
+      cy.get('.v-window-item--active').contains('.v-select', 'Sub Typ').type('TF');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
 
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
-    cy.validateUrl(formSchemaEditorPath + '?name=Test%20Formschema&subType=TF&sorting=a1&modelType=custom');
+    cy.validateUrl(formSchemaEditorPath + '?name=Test%20Formschema&sorting=a1&objectType=custom&subType=TF');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'TF');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'Test');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
@@ -101,16 +99,16 @@ describe('Formschema Wizard', () => {
             el[0].__vue__.$emit('input', JSON.stringify(emptyOS));
           });
         });
-      cy.contains('.v-btn', 'Codeänderungen übernehmen').click();
+      cy.contains('.v-btn', 'Objektschema importieren').click();
       cy.get('.v-window-item--active').contains('.v-text-field', 'Sub Typ').type('TF');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl(formSchemaEditorPath + '?name=Test%20Formschema&subType=TF&sorting=&modelType=custom');
+    cy.validateUrl(formSchemaEditorPath + '?name=Test%20Formschema&objectType=custom&subType=TF');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'TF');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'Test');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
@@ -128,15 +126,17 @@ describe('Formschema Wizard', () => {
     cy.goTo(editorPath).goTo(formSchemaEditorPath);
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
-      cy.get('.v-window-item--active').contains('.v-select', 'Typ des Formschemas').type('Eigenes{enter}');
+      cy.get('.v-window-item--active').contains('.v-select', 'Formschema').type('Eigenes{enter}');
       cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile('formschema/empty-process.json');
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl(formSchemaEditorPath + '?fs=custom');
+
+    cy.validateUrl(formSchemaEditorPath + '?formSchema=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'PRO_DataTransfer');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
@@ -154,7 +154,7 @@ describe('Formschema Wizard', () => {
     cy.goTo(editorPath).goTo(formSchemaEditorPath);
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
-      cy.get('.v-window-item--active').contains('.v-select', 'Typ des Formschemas').type('Eigenes{enter}');
+      cy.get('.v-window-item--active').contains('.v-select', 'Formschema').type('Eigenes{enter}');
       cy.get('.v-window-item--active').contains('.v-tab', 'Code einfügen').click();
       cy.get('.v-window-item--active')
         .find('.editor .cm-content')
@@ -165,14 +165,15 @@ describe('Formschema Wizard', () => {
             el[0].__vue__.$emit('input', JSON.stringify(emptyProcessFS));
           });
         });
-      cy.contains('.v-btn', 'Codeänderungen übernehmen').click();
+      cy.contains('.v-btn', 'Formschema importieren').click();
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl(formSchemaEditorPath + '?fs=custom');
+    cy.validateUrl(formSchemaEditorPath + '?formSchema=custom');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'PRO_DataTransfer');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
@@ -190,17 +191,18 @@ describe('Formschema Wizard', () => {
     cy.goTo(editorPath).goTo(formSchemaEditorPath);
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
-      cy.get('.v-window-item--active').contains('.v-select', 'Typ des Formschemas').type('Eigenes{enter}');
+      cy.get('.v-window-item--active').contains('.v-select', 'Formschema').type('Eigenes{enter}');
       cy.get('.v-window-item--active').contains('.v-input--checkbox', 'Existierendes Objektschema selbst hochladen.').click();
       cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile('formschema/empty-process.json');
       cy.contains('.v-window-item--active .v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('api/default/schemas/process.json');
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl(formSchemaEditorPath + '?fs=custom&modelType=custom');
+    cy.validateUrl(formSchemaEditorPath + '?formSchema=custom&forceOwnSchema=true');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'PRO_DataTransfer');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
@@ -218,28 +220,29 @@ describe('Formschema Wizard', () => {
     cy.goTo(editorPath).goTo(formSchemaEditorPath);
     cy.get('.v-dialog--active').within(() => {
       cy.get('.v-window-item--active').contains('Formschema importieren').closest('.v-list-item--link').click();
-      cy.get('.v-window-item--active').contains('.v-select', 'Typ des Formschemas').type('Eigenes{enter}');
+      cy.get('.v-window-item--active').contains('.v-select', 'Formschema').type('Eigenes{enter}');
       cy.get('.v-window-item--active').contains('.v-input--checkbox', 'Existierendes Objektschema selbst hochladen.').click();
       cy.get('.v-window-item--active').contains('.v-file-input', 'Formschema hochladen (.json)').find('input[type="file"]').attachFile('formschema/empty-process.json');
-      cy.contains('h2', 'Objektschema importieren');
-      cy.contains('.v-window-item--active .v-tab', 'Code einfügen').click();
-      cy.get('.v-window-item--active')
-        .find('.editor .cm-content')
-        .closest('.d-flex.flex-column')
-        .then((el: any) => {
-          cy.fixture('api/default/schemas/process.json').then((processOS) => {
-            // TODO: this is a hack to load OS in Code Editor. It needs a better solution
-            el[0].__vue__.$emit('input', JSON.stringify(processOS));
+      cy.get('[data-cy=veo-fse-wizard-state-import-objectschema-input]').within(() => {
+        cy.contains('.v-tab', 'Code einfügen').click();
+        cy.get('.editor .cm-content')
+          .closest('.d-flex.flex-column')
+          .then((el: any) => {
+            cy.fixture('api/default/schemas/process.json').then((processOS) => {
+              // TODO: this is a hack to load OS in Code Editor. It needs a better solution
+              el[0].__vue__.$emit('input', JSON.stringify(processOS));
+            });
           });
-        });
-      cy.contains('.v-btn', 'Codeänderungen übernehmen').click();
+        cy.contains('.v-btn', 'Objektschema importieren').click();
+      });
+      cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.validateUrl(formSchemaEditorPath + '?fs=custom&modelType=custom');
+    cy.validateUrl(formSchemaEditorPath + '?formSchema=custom&forceOwnSchema=true');
     cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'PRO_DataTransfer');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
@@ -254,11 +257,10 @@ describe('Formschema Wizard', () => {
   });
 
   it('navigates to wizard state by URL where formschema will be created based on own objectschema', function () {
-    cy.goTo(editorPath).goTo(formSchemaEditorPath + '?name=Test%20Formschema&subType=TF&modelType=custom');
+    cy.goTo(editorPath).goTo(formSchemaEditorPath + '?name=Test%20Formschema&objectType=custom');
     cy.wait('@G_fetchTranslations');
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
       cy.contains('.v-select', 'Objektschematyp').should('contain.text', 'Eigenes');
       cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
       cy.contains('.v-file-input', 'Objektschema hochladen (.json)').should('contain.text', 'Objektschema hochladen (.json)');
@@ -266,23 +268,22 @@ describe('Formschema Wizard', () => {
   });
 
   it('navigates to wizard state by URL where formschema will be created based on existing objectschema', function () {
-    cy.goTo(editorPath).goTo(formSchemaEditorPath + '?name=Test%20Formschema&subType=TF&modelType=process');
+    cy.goTo(editorPath).goTo(formSchemaEditorPath + '?name=Test%20Formschema&objectType=process&subType=PRO_DataTransfer');
     cy.wait(['@G_fetchTranslations']);
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'PRO_DataTransfer');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
   });
 
   it('navigates to wizard state by URL where own formschema can be imported', function () {
-    cy.goTo(editorPath).goTo(formSchemaEditorPath + '?fs=custom');
+    cy.goTo(editorPath).goTo(formSchemaEditorPath + '?formSchema=custom');
     cy.wait(['@G_fetchTranslations']);
     cy.get('.v-dialog--active').within(() => {
       cy.get('h2').should('contain.text', 'Formschema importieren');
-      cy.get('.v-window-item--active').contains('.v-select', 'Typ des Formschemas').type('Eigenes{enter}');
       cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
       cy.contains('.v-file-input', 'Formschema hochladen (.json)').should('contain.text', 'Formschema hochladen (.json)');
       cy.contains('.v-input--checkbox', 'Existierendes Objektschema selbst hochladen.').should('not.have.class', 'v-input--is-label-active');
@@ -290,11 +291,10 @@ describe('Formschema Wizard', () => {
   });
 
   it('navigates to wizard state by URL where own formschema can be imported with own objectschema', function () {
-    cy.goTo(editorPath).goTo(formSchemaEditorPath + '?fs=custom&modelType=custom');
+    cy.goTo(editorPath).goTo(formSchemaEditorPath + '?formSchema=custom&forceOwnSchema=true');
     cy.wait(['@G_fetchTranslations']);
     cy.get('.v-dialog--active').within(() => {
       cy.get('h2').should('contain.text', 'Formschema importieren');
-      cy.get('.v-window-item--active').contains('.v-select', 'Typ des Formschemas').type('Eigenes{enter}');
       cy.contains('.v-tab', 'Datei hochladen').should('have.class', 'v-tab--active');
       cy.contains('.v-file-input', 'Formschema hochladen (.json)').should('contain.text', 'Formschema hochladen (.json)');
       cy.contains('.v-input--checkbox', 'Existierendes Objektschema selbst hochladen.').should('have.class', 'v-input--is-label-active');
@@ -302,12 +302,12 @@ describe('Formschema Wizard', () => {
   });
 
   it('imports existing formschema by URL ', function () {
-    cy.goTo(editorPath).goTo(formSchemaEditorPath + 'fs=minimal');
+    cy.goTo(editorPath).goTo(formSchemaEditorPath + '?formSchema=minimal');
     cy.wait(['@G_fetchTranslations']);
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'PRO_DataTransfer');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
       cy.get('.v-card__actions').contains('.v-btn', 'Abbrechen').click();
     });
