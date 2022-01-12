@@ -129,6 +129,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { IVeoFormSchema, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
+  name: 'VeoFseWizardStateImport',
   props: {
     value: {
       type: Number,
