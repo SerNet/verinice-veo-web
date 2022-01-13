@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann, Tino Groteloh
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,48 +16,79 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage fullsize>
-    <v-row class="fill-height flex-column text-center align-center">
-      <v-spacer />
-      <v-col>
-        <v-icon
-          style="font-size: 8rem; opacity: 0.5;"
-          color="primary"
-        >
-          mdi-information-outline
-        </v-icon>
-      </v-col>
-      <v-col
-        cols="auto"
-        class="text-left"
+  <div class="d-flex fill-height overflow-y-auto">
+    <div class="ma-auto pa-4 text-center">
+      <v-img
+        :src="`/images/${is404 ? 'pageNotFound' : 'defaultError'}.svg`"
+        max-height="300px"
+        contain
+      />
+      <h1 class="mt-8">
+        {{ is404 ? '404' : '' }} {{ upperFirst(t(is404 ? 'notFound' : 'unknownError').toString()) }}
+      </h1>
+      <p class="mt-2">
+        {{ t(is404 ? 'pageNotFound' : 'unknownErrorOccured') }}
+      </p>
+      <v-btn
+        text
+        color="primary"
+        @click="$router.push('/')"
       >
-        <h3>{{ $t('error.title') }}:</h3>
-        <p>{{ error.message }}</p>
-        <v-card-subtitle>Error code: {{ error.statusCode }}</v-card-subtitle>
-      </v-col>
-      <v-spacer />
-    </v-row>
-  </VeoPage>
+        {{ t('goToHomepage') }}
+      </v-btn>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { useI18n } from 'nuxt-i18n-composable';
+import { NuxtError } from '@nuxt/types';
+import { upperFirst } from 'lodash';
+import { computed, defineComponent, useMeta } from '@nuxtjs/composition-api';
 
-export default Vue.extend({
-  layout: 'default',
+export default defineComponent({
+  layout: 'plain',
   props: {
     error: {
       type: Object,
       default: null
     }
   },
-  head(): any {
-    return {
+  setup(props: { error: NuxtError }) {
+    const { t } = useI18n();
+
+    const is404 = computed(() => props.error.statusCode === 404);
+
+    useMeta(() => ({
       title: 'verinice.',
-      titleTemplate: '%s - verinice.'
+      titleTemplate: '%s - verinice.veo'
+    }));
+
+    return {
+      t,
+      is404,
+      upperFirst
     };
-  }
+  },
+  head: {}
 });
 </script>
 
-<style lang="scss" scoped></style>
+<i18n>
+{
+  "en": {
+    "goToHomepage": "go to homepage",
+    "notFound": "not found",
+    "pageNotFound": "The page you are looking for could not be found.",
+    "unknownError": "unknown error",
+    "unknownErrorOccured": "An unknown error occured."
+  },
+  "de": {
+    "goToHomepage": "Zur Startseite",
+    "notFound": "not found",
+    "pageNotFound": "Die gesuchte Seite konnte leider nicht gefunden werden.",
+    "unknownError": "unbekannter Fehler",
+    "unknownErrorOccured": "Ein unbekannter Fehler ist aufgetreten."
+  }
+}
+</i18n>
