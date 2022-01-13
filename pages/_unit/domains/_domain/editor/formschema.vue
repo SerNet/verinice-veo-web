@@ -298,7 +298,7 @@
         v-model="translationDialogVisible"
         :translation="formSchema.translation"
         :language="language"
-        :languages="avaliableLanguages"
+        :languages="availableLanguages"
         :name="formSchema.name"
         @update-language="setFormLanguage"
         @update-translation="setFormTranslation"
@@ -510,7 +510,7 @@ export default defineComponent<IProps>({
      * Translations related stuff
      */
     const translationDialogVisible: Ref<boolean> = ref(false);
-    const avaliableLanguages: Ref<string[]> = ref([]);
+    const availableLanguages: Ref<string[]> = ref([]);
 
     function onClickTranslationBtn() {
       translationDialogVisible.value = true;
@@ -518,7 +518,7 @@ export default defineComponent<IProps>({
 
     useFetch(async () => {
       // TODO: Backend should create an API endpoint to get available languages dynamically
-      avaliableLanguages.value = Object.keys((await $api.translation.fetch([]))?.lang);
+      availableLanguages.value = Object.keys((await $api.translation.fetch([]))?.lang);
     });
 
     function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {
@@ -578,7 +578,7 @@ export default defineComponent<IProps>({
       code,
       translationDialogVisible,
       onClickTranslationBtn,
-      avaliableLanguages,
+      availableLanguages,
       setFormTranslation,
       setFormName,
       setFormLanguage,
