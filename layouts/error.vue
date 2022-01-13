@@ -19,7 +19,7 @@
   <div class="d-flex fill-height overflow-y-auto">
     <div class="ma-auto pa-4 text-center">
       <v-img
-        :src="`/images/${is404 ? 'objectNotFound' : 'noObjecttypeErrorImage'}.svg`"
+        :src="`/images/${is404 ? 'pageNotFound' : 'defaultError'}.svg`"
         max-height="300px"
         contain
       />
@@ -29,6 +29,13 @@
       <p class="mt-2">
         {{ t(is404 ? 'pageNotFound' : 'unknownErrorOccured') }}
       </p>
+      <v-btn
+        text
+        color="primary"
+        @click="$router.push('/')"
+      >
+        {{ t('goToHomepage') }}
+      </v-btn>
     </div>
   </div>
 </template>
@@ -40,7 +47,7 @@ import { upperFirst } from 'lodash';
 import { computed, defineComponent, useMeta } from '@nuxtjs/composition-api';
 
 export default defineComponent({
-  layout: 'default',
+  layout: 'plain',
   props: {
     error: {
       type: Object,
@@ -54,7 +61,7 @@ export default defineComponent({
 
     useMeta(() => ({
       title: 'verinice.',
-      titleTemplate: '%s - verinice.'
+      titleTemplate: '%s - verinice.veo'
     }));
 
     return {
@@ -70,12 +77,14 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "goToHomepage": "go to homepage",
     "notFound": "not found",
     "pageNotFound": "The page you are looking for could not be found.",
     "unknownError": "unknown error",
     "unknownErrorOccured": "An unknown error occured."
   },
   "de": {
+    "goToHomepage": "Zur Startseite",
     "notFound": "not found",
     "pageNotFound": "Die gesuchte Seite konnte leider nicht gefunden werden.",
     "unknownError": "unbekannter Fehler",

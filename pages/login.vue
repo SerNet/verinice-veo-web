@@ -21,20 +21,7 @@
       <v-col class="d-flex">
         <VeoAppLogoDesktop />
       </v-col>
-      <v-col class="d-flex justify-end mb-6">
-        <v-select
-          :value="$i18n.locale"
-          :items="langs"
-          class="language-btn"
-          label="Languages"
-          flat
-          dense
-          solo
-          hide-details
-          @input="$i18n.setLocale($event)"
-        />
-      </v-col>
-      <v-col>
+      <v-col class="mt-10">
         <v-btn
           depressed
           block
@@ -42,7 +29,7 @@
           class="login-button"
           @click="$user.auth.login('/')"
         >
-          {{ $t('login') }}
+          {{ t('login') }}
         </v-btn>
       </v-col>
       <v-col>
@@ -51,7 +38,7 @@
           block
           @click="$user.auth.register('/')"
         >
-          {{ $t('register') }}
+          {{ t('register') }}
         </v-btn>
       </v-col>
     </v-row>
@@ -59,22 +46,23 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, useMeta } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-export default Vue.extend({
+export default defineComponent({
   layout: 'plain',
-  data() {
+  setup() {
+    const { title } = useMeta();
+    const { t } = useI18n();
+
+    title.value = t('login');
+
     return {
-      langs: [
-        { value: 'en', text: 'English' },
-        { value: 'de', text: 'Deutsch' }
-      ]
+      t
     };
   },
-  head(): any {
-    return {
-      title: 'verinice.'
-    };
+  head() {
+    return {};
   }
 });
 </script>
@@ -110,9 +98,5 @@ export default Vue.extend({
 
 .v-btn {
   border-radius: 0px;
-}
-
-.language-btn {
-  max-width: 120px;
 }
 </style>

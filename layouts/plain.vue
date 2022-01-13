@@ -24,6 +24,18 @@
       flat
     >
       <VeoAppBarLogo />
+      <v-spacer />
+      <div :class="{ 'mr-6': !!$user.auth.profile, 'shrink': true }">
+        <VeoLanguageSwitch />
+      </div>
+      <VeoAppAccountBtn
+        v-if="$user.auth.profile"
+        :username="$user.auth.profile.username"
+        :prename="$user.auth.profile.firstName"
+        :lastname="$user.auth.profile.lastName"
+        :email="$user.auth.profile.email"
+        @logout="$user.auth.logout('/')"
+      />
     </v-app-bar>
     <v-main>
       <nuxt />
@@ -36,7 +48,7 @@ import Vue from 'vue';
 export default Vue.extend({
   head() {
     return {
-      titleTemplate: '%s - verinice.'
+      titleTemplate: '%s - verinice.veo'
     };
   }
 });
