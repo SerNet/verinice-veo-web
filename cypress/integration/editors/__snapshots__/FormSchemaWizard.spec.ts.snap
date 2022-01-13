@@ -222,7 +222,7 @@ exports[`Formschema Wizard > imports a formschema by upload based on process obj
   "name": {
     "de": "Test Formschema"
   },
-  "subType": "TF",
+  "subType": "PRO_DataTransfer",
   "translation": {
     "de": {}
   }
@@ -242,7 +242,7 @@ exports[`Formschema Wizard > imports a formschema by code inserting based on pro
   "name": {
     "de": "Test Formschema"
   },
-  "subType": "TF",
+  "subType": "PRO_DataTransfer",
   "translation": {
     "de": {}
   }
@@ -262,7 +262,7 @@ exports[`Formschema Wizard > imports a formschema by uploading based on process 
   "name": {
     "de": "Test Formschema"
   },
-  "subType": "TF",
+  "subType": "PRO_DataTransfer",
   "translation": {
     "de": {}
   }
@@ -282,7 +282,7 @@ exports[`Formschema Wizard > imports a formschema by uploading based on process 
   "name": {
     "de": "Test Formschema"
   },
-  "subType": "TF",
+  "subType": "PRO_DataTransfer",
   "translation": {
     "de": {}
   }

@@ -3,7 +3,7 @@
     "de": "Test Formschema"
   },
   "modelType": "process",
-  "subType": "TF",
+  "subType": "PRO_DataTransfer",
   "translation": {
     "de": {}
   },

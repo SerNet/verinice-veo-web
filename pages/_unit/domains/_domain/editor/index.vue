@@ -22,7 +22,7 @@
       two-line
       class="overflow-hidden"
     >
-      <v-list-item to="/editor/objectschema">
+      <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">
         <v-list-item-content>
           <v-list-item-title class="font-weight-bold">
             {{ t('editor.objectschema.headline') }}
@@ -35,7 +35,7 @@
           </v-icon>
         </v-list-item-action>
       </v-list-item>
-      <v-list-item to="/editor/formschema">
+      <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
         <v-list-item-content>
           <v-list-item-title class="font-weight-bold">
             {{ t('editor.formschema.headline') }}

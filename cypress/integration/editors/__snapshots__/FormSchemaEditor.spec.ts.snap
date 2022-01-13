@@ -88,7 +88,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
   "name": {
     "de": "Test Formschema"
   },
-  "subType": "TF",
+  "subType": "PRO_DataTransfer",
   "translation": {
     "de": {}
   }
@@ -6881,7 +6881,7 @@ exports[`Formschema Editor > adds, updates formSchema meta details #0`] =
     "de": "Test Formschema 1 DE"
   },
   "sorting": "a1",
-  "subType": "TF 1",
+  "subType": "PRO_DataProcessing",
   "translation": {
     "de": {}
   }
@@ -6903,7 +6903,7 @@ exports[`Formschema Editor > adds, updates formSchema meta details #1`] =
     "en": "Test Formschema 2 EN"
   },
   "sorting": "a1",
-  "subType": "TF 1",
+  "subType": "PRO_DataProcessing",
   "translation": {
     "de": {},
     "en": {}
@@ -6959,7 +6959,7 @@ exports[`Formschema Editor > checks whether translations get deleted if the cont
   "name": {
     "de": "Test Formschema"
   },
-  "subType": "TF",
+  "subType": "PRO_DataTransfer",
   "translation": {
     "de": {
       "abbreviation": "Abkürzung de",
@@ -7014,7 +7014,7 @@ exports[`Formschema Editor > checks whether translations get deleted if the cont
   "name": {
     "de": "Test Formschema"
   },
-  "subType": "TF",
+  "subType": "PRO_DataTransfer",
   "translation": {
     "de": {
       "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
@@ -7073,7 +7073,7 @@ exports[`Formschema Editor > compares downloaded schema with the actual one #0`]
   "name": {
     "de": "Test Formschema"
   },
-  "subType": "TF",
+  "subType": "PRO_DataTransfer",
   "translation": {
     "de": {
       "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",

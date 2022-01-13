@@ -159,6 +159,7 @@
     <VeoOseCustomPropertiesDialog
       v-model="objectSchemaDialog.value"
       v-bind="objectSchemaDialog"
+      :domain-id="domainId"
       @success="onEditPropertySuccess"
       @error="onEditPropertyError"
       @delete="showDeleteDialog(objectSchemaDialog.propertyId, objectSchemaDialog.type)"
@@ -198,6 +199,10 @@ export default defineComponent<IProps>({
     hideEmptyAspects: {
       type: Boolean,
       default: false
+    },
+    domainId: {
+      type: String,
+      required: true
     }
   },
   setup(_props, context) {

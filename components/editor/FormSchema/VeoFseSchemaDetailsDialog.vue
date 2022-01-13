@@ -59,27 +59,6 @@
             cols="12"
             :md="5"
           >
-            <span style="font-size: 1.2rem;">{{ t('editor.formschema.subtype') }}:</span>
-          </v-col>
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <v-text-field
-              v-model="form.data.subType"
-              :label="t('editor.formschema.subtype')"
-              flat
-            />
-          </v-col>
-        </v-row>
-        <v-row
-          no-gutters
-          class="align-center mt-4"
-        >
-          <v-col
-            cols="12"
-            :md="5"
-          >
             <span style="font-size: 1.2rem;">{{ t('editor.formschema.sorting') }}:</span>
           </v-col>
           <v-col
@@ -108,12 +87,34 @@
             :md="5"
           >
             <v-text-field
-              :value="objectSchema"
+              :value="objectSchema.title"
               flat
               :label="t('editor.formschema.create.type')"
               readonly
               disabled
               class="objectschema-type-field"
+            />
+          </v-col>
+        </v-row>
+        <v-row
+          no-gutters
+          class="align-center mt-4"
+        >
+          <v-col
+            cols="12"
+            :md="5"
+          >
+            <span style="font-size: 1.2rem;">{{ t('editor.formschema.subtype') }}:</span>
+          </v-col>
+          <v-col
+            cols="12"
+            :md="5"
+          >
+            <v-select
+              v-model="form.data.subType"
+              :label="t('editor.formschema.subtype')"
+              :items="subTypeOptions"
+              flat
             />
           </v-col>
         </v-row>
@@ -141,28 +142,21 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropOptions, ref, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { trim } from 'lodash';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 
-interface IProps {
-  value: boolean;
-  objectSchema: string;
-  formSchema: string;
-  subtype: string | null;
-  sorting: string | null;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     value: {
       type: Boolean,
       required: true
     },
     objectSchema: {
-      type: String,
+      type: Object,
       required: true
-    },
+    } as PropOptions<IVeoObjectSchema>,
     formSchema: {
       type: String,
       default: ''
@@ -174,6 +168,10 @@ export default defineComponent<IProps>({
     sorting: {
       type: String,
       default: null
+    },
+    domainId: {
+      type: String,
+      required: true
     }
   },
   setup(props, context) {
@@ -222,15 +220,19 @@ export default defineComponent<IProps>({
     watch(
       () => props.subtype,
       (val: string | null) => {
-        form.value.data.subType = val;
+        form.value.data.subType = val as string;
       }
     );
 
     watch(
       () => props.sorting,
       (val: string | null) => {
-        form.value.data.sorting = val;
+        form.value.data.sorting = val as string;
       }
+    );
+
+    const subTypeOptions = computed(() =>
+      (props.objectSchema?.properties?.domains?.properties?.[props.domainId]?.properties?.subType?.enum || []).map((subType: string) => ({ text: subType, value: subType }))
     );
 
     function doSave() {
@@ -240,7 +242,7 @@ export default defineComponent<IProps>({
       context.emit('input', false);
     }
 
-    return { dialog, doSave, form, t };
+    return { dialog, doSave, form, subTypeOptions, t };
   }
 });
 </script>

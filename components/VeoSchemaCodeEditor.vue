@@ -33,7 +33,7 @@
         @click="updateSchema()"
       >
         {{
-          t('saveSchema')
+          submitButtonText || t('saveSchema')
         }}
       </v-btn>
     </div>
@@ -53,8 +53,18 @@ interface IProps {
 
 export default defineComponent<IProps>({
   props: {
-    value: { type: String, default: '' },
-    readonly: { type: Boolean, default: false }
+    value: {
+      type: String,
+      default: ''
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    submitButtonText: {
+      type: String,
+      default: undefined
+    }
   },
   setup(props, context) {
     const { t } = useI18n();

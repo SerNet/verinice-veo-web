@@ -1,4 +1,8 @@
 export default {
+  // Languages
+  de: 'Deutsch',
+  en: 'English',
+
   clone: 'Kopie',
 
   'editor.basicproperties': 'Standardattribute',

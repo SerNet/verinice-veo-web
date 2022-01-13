@@ -25,6 +25,9 @@ import { generateTos, getEditorData, ITo } from '../../support/utils';
 
 let schemaRealValues: { text: string; numberOfProperties: number }[] = [];
 
+const editorPath = '/unit-d496f98f-c051-443c-9b1f-65d65b64996d/domains/domain-ed67e4d7-c657-4479-ba8a-c53999d2930a/editor/';
+const objectSchemaEditorPath = editorPath + 'objectschema';
+
 const attributeTypes = [
   { value: 'string', text: 'Text' },
   { value: 'boolean', text: 'Wahrheitswert' },
@@ -93,12 +96,12 @@ const tos = generateTos({
   testschema: {
     requestUrlPattern: /.*\/schemas\/testschema.*/,
     fixturePath: 'api/default/schemas/os_testschema.json',
-    browserUrl: '/editor/objectschema?os=testschema'
+    browserUrl: objectSchemaEditorPath + '?os=testschema'
   },
   empty: {
     requestUrlPattern: /.*\/schemas\/empty.*/,
     fixturePath: 'api/default/schemas/os_empty.json',
-    browserUrl: '/editor/objectschema?os=empty'
+    browserUrl: objectSchemaEditorPath + '?os=empty'
   }
 });
 
@@ -115,7 +118,7 @@ function goTo(to: ITo) {
     }
   ).as('loadedSchema');
 
-  cy.goTo('/editor/').goTo(to.browserUrl);
+  cy.goTo(editorPath).goTo(to.browserUrl);
 
   cy.wait(['@loadedSchema']);
 
@@ -135,8 +138,8 @@ describe('Objectschema Editor', () => {
 
     cy.fixture('api/default/schemas/os_testschema.json').then((_testSchema) => {
       schemaRealValues = [
-        // -3 = customAspects, customLinks, translations
-        { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 3 },
+        // -3 = customAspects, customLinks, translations, domains
+        { text: 'Standardattribute', numberOfProperties: Object.keys(_testSchema.properties).length - 4 },
         {
           text: 'Individuelle Aspekte',
           numberOfProperties: Object.keys(_testSchema.properties.customAspects.properties).length
@@ -151,7 +154,7 @@ describe('Objectschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('/editor/');
+    cy.visit(editorPath);
     cy.wait('@G_fetchSchemas');
   });
   beforeEach(() => {
