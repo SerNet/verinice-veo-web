@@ -50,51 +50,14 @@
           class="veo-list-searchbar__button"
           role="submit"
           type="submit"
-           @click="addHints()"
+          @click="addHints()"
         >
           <v-icon>
             mdi-information-outline
           </v-icon>
         </v-btn>
         <VeoDemoUnitButton />
-        <v-menu offset-y>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              outlined
-              color="primary"
-              v-on="on"
-            >
-              <v-icon
-                left
-                dark
-              >
-                mdi-earth
-              </v-icon>
-              {{ $i18n.locale.toUpperCase() }}
-              <v-icon
-                right
-                dark
-              >
-                mdi-chevron-down
-              </v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item-group
-              v-model="lang"
-              color="primary"
-            >
-              <v-list-item
-                v-for="(item) in langs"
-                :key="item.text"
-                :value="item.value"
-              >
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-menu>
+        <VeoLanguageSwitch />
       </div>
       <VeoAppAccountBtn
         v-if="$user.auth.profile"
@@ -143,7 +106,7 @@ interface IProps {}
 
 export default defineComponent<IProps>({
   setup(_props, context) {
-    const { $user, params, app, $api } = useContext();
+    const { $user, params, $api } = useContext();
     const route = useRoute();
     const router = useRouter();
     const { alerts, listenToRootEvents } = useVeoAlerts();
@@ -154,21 +117,6 @@ export default defineComponent<IProps>({
     // Global navigation
     //
     const drawer: Ref<boolean> = ref(false);
-    const lang = computed({
-      get() {
-        return app.i18n.locale;
-      },
-      set(newValue: string) {
-        app.i18n.setLocale(newValue);
-        // After the language change, reload the page to avoid synchronisation problems
-        // Reload here should not be a big problem, because a user will not often change the language
-        window.location.reload();
-      }
-    });
-    const langs = ref([
-      { value: 'en', text: 'EN' },
-      { value: 'de', text: 'DE' }
-    ]);
 
     //
     // Unit creation and navigation
@@ -254,8 +202,6 @@ export default defineComponent<IProps>({
       domainId,
       unitId,
       drawer,
-      lang,
-      langs,
       newUnitDialog,
       breadcrumbsKey,
       homeLink,
@@ -265,7 +211,7 @@ export default defineComponent<IProps>({
   },
   head() {
     return {
-      titleTemplate: '%s - verinice.'
+      titleTemplate: '%s - verinice.veo'
     };
   }
 });

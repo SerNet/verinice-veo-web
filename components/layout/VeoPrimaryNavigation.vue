@@ -29,8 +29,7 @@
     v-on="$listeners"
   >
     <template #default>
-      <div
-        class="d-flex flex-column fill-height">
+      <div class="d-flex flex-column fill-height">
         <!-- Default menu -->
         <v-list
           nav
@@ -155,16 +154,6 @@ export default Vue.extend({
   },
   computed: {
     items(): INavItem[] {
-      /* VEO-692
-      const unitDashboard: INavItem = {
-        name: this.$t('unit.index.title').toString(),
-        icon: 'mdi-home',
-        exact: true,
-        to: `/${routeUnitParam}/`,
-        disabled: false,
-        topLevelItem: true
-      };
-      */
       const domainDashboard: INavItem = {
         name: this.$t('domain.index.title').toString(),
         icon: mdiHome,
@@ -268,7 +257,7 @@ export default Vue.extend({
       return [
         ...(!this.$route.params.unit || !maxUnits.value || maxUnits.value > 2 ? [unitSelection] : []),
         ...(this.domainId ? [domainDashboard, forms, catalogs, reports] : []),
-        ...(this.$route.params.unit ? [divider, /* VEO-692 unitDashboard, */ scopes, objects] : [])
+        ...(this.$route.params.unit ? [divider, scopes, objects] : [])
         /* spacer,
         editors */
       ];

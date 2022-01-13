@@ -28,7 +28,7 @@ import Vue from 'vue';
 export default Vue.extend({
   head() {
     return {
-      titleTemplate: '%s - verinice.'
+      titleTemplate: '%s - verinice.veo'
     };
   }
 });

@@ -19,10 +19,10 @@
   <div class="d-flex flex-column align-center fill-height">
     <v-img
       src="/images/noObjecttypeErrorImage.svg"
-      max-height="50%"
+      max-height="300px"
       contain
     />
-    <h1 class="mt-4 ">
+    <h1 class="mt-8">
       {{ t('notFoundCode').toString() }}
     </h1>
     <p class="mt-2">

@@ -544,10 +544,10 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Text des Elements*:');
       cy.contains('.v-text-field', 'Text').type('Text 1 für das Textelement');
 
-      cy.get('.v-form').should('contain.text', 'CSS Klassen:');
+      cy.get('.v-form').should('contain.text', 'CSS-Klassen:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Klassen').type('class1{enter}class2{enter}class3{enter}');
 
-      cy.get('.v-form').should('contain.text', 'CSS Styles:');
+      cy.get('.v-form').should('contain.text', 'CSS-Styles:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Styles').type('color:green{enter}margin-left:50px{enter}font-size:20px{enter}');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
@@ -572,10 +572,10 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Text des Elements*:');
       cy.contains('.v-text-field', 'Text').type('Text 2 für das Textelement');
 
-      cy.get('.v-form').should('contain.text', 'CSS Klassen:');
+      cy.get('.v-form').should('contain.text', 'CSS-Klassen:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Klassen').type('class1{enter}class2{enter}class3{enter}');
 
-      cy.get('.v-form').should('contain.text', 'CSS Styles:');
+      cy.get('.v-form').should('contain.text', 'CSS-Styles:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Styles').type('color:blue{enter}margin-left:80px{enter}font-size:14px{enter}');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
@@ -608,10 +608,10 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Ausrichtung*:');
       cy.contains('.v-autocomplete', 'Ausrichtung').find('input').should('have.value', 'Vertikal').closest('.v-autocomplete').type('Horizontal{enter}');
 
-      cy.get('.v-form').should('contain.text', 'CSS Klassen:');
+      cy.get('.v-form').should('contain.text', 'CSS-Klassen:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Klassen').type('border{enter}');
 
-      cy.get('.v-form').should('contain.text', 'CSS Styles:');
+      cy.get('.v-form').should('contain.text', 'CSS-Styles:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Styles').type('margin-left:20px{enter}');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
@@ -767,7 +767,7 @@ describe('Formschema Editor', () => {
 
   it('adds, updates formSchema meta details', function () {
     goTo(tos.emptyProcess);
-    cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
+    cy.get('h1').should('contain.text', 'Formschema-Editor - Test Formschema');
 
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -781,7 +781,7 @@ describe('Formschema Editor', () => {
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
-    cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema 1 DE');
+    cy.get('h1').should('contain.text', 'Formschema-Editor - Test Formschema 1 DE');
 
     cy.get('.mdi-code-tags').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -798,7 +798,7 @@ describe('Formschema Editor', () => {
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('h1').should('contain.text', 'Formschema Editor - Missing translation for EN');
+    cy.get('h1').should('contain.text', 'Formschema-Editor - Missing translation for EN');
 
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -811,7 +811,7 @@ describe('Formschema Editor', () => {
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
-    cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema 2 EN');
+    cy.get('h1').should('contain.text', 'Formschema-Editor - Test Formschema 2 EN');
 
     cy.get('.mdi-code-tags').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {

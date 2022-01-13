@@ -171,7 +171,7 @@ export default defineComponent({
   },
   head() {
     return {
-      titleTemplate: '%s - verinice.'
+      titleTemplate: '%s - verinice.veo'
     };
   }
 });
