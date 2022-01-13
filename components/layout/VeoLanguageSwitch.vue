@@ -78,7 +78,7 @@ export default defineComponent({
       }
     });
 
-    const langs = app.i18n.locales.map((locale) => ({ text: locale.name, value: locale.code }));
+    const langs = app.i18n.locales.map((locale: any) => ({ text: locale.name, value: locale.code }));
 
     return {
       lang,

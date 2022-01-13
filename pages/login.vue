@@ -55,7 +55,7 @@ export default defineComponent({
     const { title } = useMeta();
     const { t } = useI18n();
 
-    title.value = t('login');
+    title.value = t('login').toString();
 
     return {
       t
