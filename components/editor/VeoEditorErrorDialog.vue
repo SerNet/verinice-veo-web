@@ -20,6 +20,8 @@
     v-bind="$attrs"
     :headline="t('schemaValidationWarnings')"
     large
+    fixed-header
+    fixed-footer
     v-on="$listeners"
   >
     <template #default>

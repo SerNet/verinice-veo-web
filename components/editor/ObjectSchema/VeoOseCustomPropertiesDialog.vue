@@ -22,6 +22,7 @@
     large
     persistent
     fixed-header
+    fixed-footer
   >
     <template #default>
       <v-form

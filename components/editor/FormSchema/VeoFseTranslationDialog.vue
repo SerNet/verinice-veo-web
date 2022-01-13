@@ -20,6 +20,7 @@
     :value="value"
     large
     :headline="$t('editor.formschema.translation')"
+    fixed-footer
     @input="onDialogStatus"
   >
     <template #default>
