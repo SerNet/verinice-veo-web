@@ -55,7 +55,7 @@
             icon
             large
             color="primary"
-            @click="showCodeEditor = true"
+            @click="codeEditorVisible = true"
             v-on="on"
           >
             <v-icon>mdi-code-tags</v-icon>
@@ -73,7 +73,7 @@
             large
             color="warning"
             class="ml-2"
-            @click="showErrorDialog = !showErrorDialog"
+            @click="errorDialogVisible = !errorDialogVisible"
             v-on="on"
           >
             <v-icon>mdi-alert-circle-outline</v-icon>
@@ -105,7 +105,7 @@
             icon
             large
             color="primary"
-            @click="showDetailDialog = !showDetailDialog"
+            @click="detailDialogVisible = !detailDialogVisible"
             v-on="on"
           >
             <v-icon>mdi-wrench</v-icon>
@@ -280,22 +280,22 @@
         @translations="setTranslation"
       />
       <VeoEditorErrorDialog
-        v-model="showErrorDialog"
+        v-model="errorDialogVisible"
         :validation="schemaIsValid"
         @fix="onFixRequest"
       />
       <VeoFseCodeEditorDialog
-        v-model="showCodeEditor"
+        v-model="codeEditorVisible"
         :code="code"
       />
       <VeoFseInvalidSchemaDownloadDialog
         v-model="invalidSchemaDownloadDialogVisible"
         @download="downloadSchema(true)"
       />
-      <!-- Important: showTranslationDialog should be in v-if to only run code in the dialog when it is open  -->
+      <!-- Important: translationDialogVisible should be in v-if to only run code in the dialog when it is open  -->
       <VeoFseTranslationDialog
-        v-if="!$fetchState.pending && showTranslationDialog && formSchema && formSchema.translation"
-        v-model="showTranslationDialog"
+        v-if="!$fetchState.pending && translationDialogVisible && formSchema && formSchema.translation"
+        v-model="translationDialogVisible"
         :translation="formSchema.translation"
         :language="language"
         :languages="avaliableLanguages"
@@ -306,7 +306,7 @@
       />
       <VeoFseSchemaDetailsDialog
         v-if="formSchema"
-        v-model="showDetailDialog"
+        v-model="detailDialogVisible"
         :object-schema="objectSchema"
         :form-schema="formSchema.name[language]"
         :subtype="formSchema.subType"
@@ -356,9 +356,9 @@ export default defineComponent<IProps>({
      * Layout specific stuff
      */
     const creationDialogVisible = computed(() => !objectSchema.value || !formSchema.value);
-    const showErrorDialog = ref(false);
-    const showDetailDialog = ref(false);
-    const showCodeEditor = ref(false);
+    const errorDialogVisible = ref(false);
+    const detailDialogVisible = ref(false);
+    const codeEditorVisible = ref(false);
     const searchQuery: Ref<undefined | string> = ref(undefined);
 
     const controlItems = ref({});
@@ -509,11 +509,11 @@ export default defineComponent<IProps>({
     /**
      * Translations related stuff
      */
-    const showTranslationDialog: Ref<boolean> = ref(false);
+    const translationDialogVisible: Ref<boolean> = ref(false);
     const avaliableLanguages: Ref<string[]> = ref([]);
 
     function onClickTranslationBtn() {
-      showTranslationDialog.value = true;
+      translationDialogVisible.value = true;
     }
 
     useFetch(async () => {
@@ -552,9 +552,9 @@ export default defineComponent<IProps>({
     return {
       creationDialogVisible,
       domainId,
-      showErrorDialog,
-      showCodeEditor,
-      showDetailDialog,
+      errorDialogVisible,
+      codeEditorVisible,
+      detailDialogVisible,
       searchQuery,
       title,
       objectSchema,
@@ -576,7 +576,7 @@ export default defineComponent<IProps>({
       invalidSchemaDownloadDialogVisible,
       downloadButton,
       code,
-      showTranslationDialog,
+      translationDialogVisible,
       onClickTranslationBtn,
       avaliableLanguages,
       setFormTranslation,
