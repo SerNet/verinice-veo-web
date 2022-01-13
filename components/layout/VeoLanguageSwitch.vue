@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, ref, computed } from '@nuxtjs/composition-api';
+import { defineComponent, useContext, computed } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiChevronDown, mdiEarth } from '@mdi/js';
 
@@ -77,10 +77,8 @@ export default defineComponent({
         window.location.reload();
       }
     });
-    const langs = ref([
-      { value: 'en', text: 'EN' },
-      { value: 'de', text: 'DE' }
-    ]);
+
+    const langs = app.i18n.locales.map((locale) => ({ text: locale.name, value: locale.code }));
 
     return {
       lang,
