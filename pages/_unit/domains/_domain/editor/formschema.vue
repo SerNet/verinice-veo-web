@@ -401,10 +401,6 @@ export default defineComponent<IProps>({
     const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
 
     function setFormSchema(schema: IVeoFormSchema) {
-      if (schema) {
-        schema = JSON.parse(JSON.stringify(schema).replaceAll('{CURRENT_DOMAIN_ID}', domainId.value));
-      }
-
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
       if (formSchema.value && !formSchema.value.translation?.[app.i18n.locale]) {
