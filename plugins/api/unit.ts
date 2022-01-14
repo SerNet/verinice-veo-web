@@ -101,7 +101,11 @@ export default function (api: Client) {
         itemIds = itemIds.join(',');
       }
 
-      return api.req(`/api/units/${unitId}/incarnations?itemIds=${itemIds}`);
+      return api.req(`/api/units/${unitId}/incarnations`, {
+        params: {
+          itemIds
+        }
+      });
     },
 
     updateIncarnations(incarnations: IVeoUnitIncarnations, unitId?: string): Promise<IVeoUnitIncarnations> {
