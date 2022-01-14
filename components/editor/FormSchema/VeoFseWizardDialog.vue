@@ -88,7 +88,6 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { IVeoFormSchema, IVeoObjectSchema, IVeoObjectSchemaTranslations, IVeoTranslations } from '~/types/VeoTypes';
-import { separateUUIDParam } from '~/lib/utils';
 
 enum WIZARD_STATES {
   START,
@@ -273,8 +272,7 @@ export default defineComponent({
         JsonPointer.unset(objectSchema, '#/properties/translations');
       }
 
-      const domainId = separateUUIDParam(route.value.params.domain).id;
-      objectSchema.value = JSON.parse(JSON.stringify(objectSchema.value).replaceAll(domainId, '{CURRENT_DOMAIN_ID}'));
+      objectSchema.value = JSON.parse(JSON.stringify(objectSchema.value).replaceAll(props.domainId, '{CURRENT_DOMAIN_ID}'));
 
       emit('objectSchema', objectSchema.value);
       emit('formSchema', formSchema.value);
