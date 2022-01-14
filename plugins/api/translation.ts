@@ -18,8 +18,6 @@
 import { Client } from '~/plugins/api';
 import { IVeoTranslations } from '~/types/VeoTypes';
 
-type Languages = 'de' | 'en' | 'cs' | 'it';
-
 export default function (api: Client) {
   return {
     /**
@@ -28,8 +26,12 @@ export default function (api: Client) {
      * NOT PAGINATED
      *
      */
-    fetch(languages: Languages[]): Promise<IVeoTranslations> {
-      return api.req(`/api/translations?languages=${encodeURIComponent(languages.toString())}`);
+    fetch(languages: string[]): Promise<IVeoTranslations> {
+      return api.req(`/api/translations`, {
+        params: {
+          languages: languages.toString()
+        }
+      });
     }
   };
 }
