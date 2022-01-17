@@ -48,11 +48,12 @@
           :force-own-schema.sync="forceOwnSchema"
           :form-schema-id="formSchemaId"
           :form-schema.sync="formSchema"
-          :object-schema.sync="objectSchema"
+          :object-schema="objectSchema"
           :schemas-compatible="schemasCompatible"
           @forceImport="importFormSchema()"
           @update:formSchemaId="onUpdateFormSchemaId"
           @newObjectType="loadObjectSchema"
+          @update:objectSchema="setObjectSchema($event)"
         />
       </v-window>
     </template>
@@ -198,7 +199,7 @@ export default defineComponent({
 
     async function loadObjectSchema(objectType: string) {
       loadingQueries.value++;
-      objectSchema.value = await $api.schema.fetch(objectType, [props.domainId]);
+      setObjectSchema(await $api.schema.fetch(objectType, [props.domainId]));
       loadingQueries.value--;
     }
 
@@ -234,7 +235,7 @@ export default defineComponent({
       },
       'update:subType': (newValue: string) => set(formSchemaDetails.value, 'subType', newValue),
       'update:valid': (newValue: boolean) => (createFormValid.value = newValue),
-      'update:objectSchema': (newValue: IVeoObjectSchema | undefined) => (objectSchema.value = newValue),
+      'update:objectSchema': (newValue: IVeoObjectSchema | undefined) => setObjectSchema(newValue),
       submit: () => (createFormValid.value ? createFormSchema() : () => {})
     };
 
@@ -263,6 +264,10 @@ export default defineComponent({
       }
     }
 
+    function setObjectSchema(newValue: any) {
+      objectSchema.value = JSON.parse(JSON.stringify(newValue).replaceAll(props.domainId, '{CURRENT_DOMAIN_ID}'));
+    }
+
     function emitSchemas() {
       const mergedTranslations: IVeoTranslations = { lang: {} };
       const osTranslations = (JsonPointer.get(objectSchema, '#/properties/translations') || {}) as IVeoObjectSchemaTranslations | {};
@@ -271,8 +276,6 @@ export default defineComponent({
       if (osTranslations) {
         JsonPointer.unset(objectSchema, '#/properties/translations');
       }
-
-      objectSchema.value = JSON.parse(JSON.stringify(objectSchema.value).replaceAll(props.domainId, '{CURRENT_DOMAIN_ID}'));
 
       emit('objectSchema', objectSchema.value);
       emit('formSchema', formSchema.value);
@@ -297,6 +300,7 @@ export default defineComponent({
       onClose,
       onUpdateFormSchemaId,
       schemasCompatible,
+      setObjectSchema,
       state,
 
       t,
