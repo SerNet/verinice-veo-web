@@ -212,7 +212,7 @@ export default defineComponent({
       ];
     });
 
-    const subTypes = computed(() => props.objectSchema?.properties?.domains?.properties?.[props.domainId]?.properties?.subType?.enum || []);
+    const subTypes = computed(() => props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []);
 
     return {
       objectTypes,
