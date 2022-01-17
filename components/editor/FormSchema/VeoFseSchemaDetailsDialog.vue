@@ -232,7 +232,10 @@ export default defineComponent({
     );
 
     const subTypeOptions = computed(() =>
-      (props.objectSchema?.properties?.domains?.properties?.[props.domainId]?.properties?.subType?.enum || []).map((subType: string) => ({ text: subType, value: subType }))
+      (props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []).map((subType: string) => ({
+        text: subType,
+        value: subType
+      }))
     );
 
     function doSave() {
