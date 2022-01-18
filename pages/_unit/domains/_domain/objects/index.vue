@@ -262,6 +262,9 @@ export default defineComponent({
         params: {
           ...route.value.params,
           id: createUUIDUrlParam(item.type, item.id)
+        },
+        query: {
+          subType: subType.value
         }
       });
     };

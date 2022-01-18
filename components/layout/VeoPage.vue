@@ -34,7 +34,7 @@
     <v-row
       no-gutters
       :style="{ 'max-height': '100%', 'min-height': 0, height }"
-      class="pa-0"
+      class="pa-0 flex-column flex-nowrap"
     >
       <v-col :class="contentClass">
         <slot
@@ -60,6 +60,12 @@
           v-else
           name="default"
         />
+      </v-col>
+      <v-col
+        v-if="$slots.footer"
+        :style="{ bottom: 0, position: fixedFooter ? 'sticky' : undefined, 'flex-grow': 0 }"
+      >
+        <slot name="footer" />
       </v-col>
     </v-row>
   </v-col>
@@ -93,6 +99,10 @@ export default defineComponent<IProps>({
       default: 1
     },
     stickyHeader: {
+      type: Boolean,
+      default: false
+    },
+    fixedFooter: {
       type: Boolean,
       default: false
     },

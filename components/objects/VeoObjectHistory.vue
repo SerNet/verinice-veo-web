@@ -37,26 +37,41 @@
       mandatory
     >
       <div
-        v-for="(version, index) of history"
+        v-for="(version, index) of historyWithCompability"
         :key="version.changeNumber"
       >
         <v-divider v-if="index > 0" />
-        <v-list-item three-line>
-          <v-list-item-content
-            @click="$emit('show-revision', {}, version, index === 0 ? false : true)"
-          >
-            <v-list-item-title>
-              {{ $t('version') }}
-              <b>{{ version.changeNumber }}</b>
-              : {{ (new Date(version.time)).toLocaleString($i18n.locale) }}
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              {{ $t('by') }}
-              <b>{{ version.author }}</b>
-            </v-list-item-subtitle>
-            <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
+        <v-tooltip
+          bottom
+          :disabled="version.compability.valid"
+        >
+          <template #activator="{ on }">
+            <div v-on="on">
+              <v-list-item
+                three-line
+                :disabled="!version.compability.valid"
+              >
+                <v-list-item-content
+                  @click="$emit('show-revision', version, index > 0)"
+                >
+                  <v-list-item-title>
+                    {{ $t('version') }}
+                    <b>{{ version.changeNumber + 1 }}</b>
+                    : {{ (new Date(version.time)).toLocaleString($i18n.locale) }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ $t('by') }}
+                    <b>{{ version.author }}</b>
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>{{ $t('type') }}: {{ $t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
+          </template>
+          <template #default>
+            {{ $t('dataIncompatible') }}
+          </template>
+        </v-tooltip>
       </div>
     </v-list-item-group>
   </v-list>
@@ -66,6 +81,7 @@
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
 
+import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { IVeoEntity, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 interface IData {
@@ -81,6 +97,10 @@ export default Vue.extend({
     loading: {
       type: Boolean,
       default: false
+    },
+    objectSchema: {
+      type: Object,
+      default: undefined
     }
   },
   data(): IData {
@@ -95,13 +115,18 @@ export default Vue.extend({
       });
     }
   },
+  computed: {
+    historyWithCompability(): (IVeoObjectHistoryEntry & { compability: VeoSchemaValidatorValidationResult })[] {
+      return this.history.map((entry) => ({ ...entry, compability: this.dataCompatible(entry) }));
+    }
+  },
   // For some reason we have to check on both, as $fetchState.pending will be false in some cases while the object is not set yet.
   watch: {
     loading(newValue: boolean) {
       if (!newValue && this.object) {
-        this.$nextTick().then(() => {
+        setTimeout(() => {
           this.$fetch();
-        });
+        }, 1000);
       }
     },
     object(newValue: IVeoEntity, oldValue: IVeoEntity | undefined) {
@@ -112,6 +137,14 @@ export default Vue.extend({
         });
       }
     }
+  },
+  methods: {
+    dataCompatible(data: IVeoObjectHistoryEntry): VeoSchemaValidatorValidationResult {
+      if (!this.objectSchema) {
+        return { valid: true, errors: [], warnings: [] };
+      }
+      return ObjectSchemaValidator.fitsObjectSchema(this.objectSchema, data.content);
+    }
   }
 });
 </script>
@@ -120,6 +153,7 @@ export default Vue.extend({
 {
   "en": {
     "by": "by",
+    "dataIncompatible": "This revision is incompatible with the schema and cannot be displayed.",
     "restoreRevision": "Restore version",
     "revisionType": {
       "CREATION": "Object created",
@@ -131,6 +165,7 @@ export default Vue.extend({
   },
   "de": {
     "by": "by",
+    "dataIncompatible": "Diese Version ist inkompatibel mit dem Schema und kann nicht angezeigt werden.",
     "restoreRevision": "Version wiederherstellen",
     "revisionType": {
       "CREATION": "Objekt erstellt",
@@ -142,7 +177,3 @@ export default Vue.extend({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-</style>
