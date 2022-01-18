@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Samuel Vitzthum
+   - Copyright (C) 2021  Samuel Vitzthum, Jonas Heitmann
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -238,6 +238,7 @@ export default defineComponent({
 
         // We have to stringify the content and then manually add the host, as the history api currently doesn't support absolute urls 18-01-2022
         modifiedObject.value = JSON.parse(JSON.stringify(data.content).replaceAll(/"\//g, `"${$config.apiUrl}/`));
+        // @ts-ignore
         modifiedObject.value.displayName = `${data.content.designator} ${data.content.abbreviation || ''} ${data.content.name}`;
         version.value = data.changeNumber;
       };
