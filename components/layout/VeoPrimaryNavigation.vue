@@ -1,17 +1,18 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe
-   - 
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe,
+   - Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -89,21 +90,22 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { upperFirst } from 'lodash';
+import { sortBy, upperFirst } from 'lodash';
 import { computed, ComputedRef } from '@nuxtjs/composition-api';
-import { mdiArchive, mdiClipboardList, mdiFileChart, mdiFileDocument, mdiFormatListChecks, mdiHome } from '@mdi/js';
+import { mdiClipboardList, mdiFileChart, mdiFileDocument, mdiHome } from '@mdi/js';
 
+import { RawLocation } from 'vue-router/types';
+import { ROUTE_NAME as OBJECTS_ROUTE_NAME } from '~/pages/_unit/domains/_domain/objects/index.vue';
 import LocalStorage from '~/util/LocalStorage';
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
-import { nonLinkableSchemas } from '~/plugins/api/schema';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 export interface INavItem {
   name: string;
   icon?: string;
   exact?: boolean;
-  to?: string;
+  to?: RawLocation;
   disabled: boolean;
   childItems?: INavItem[];
   collapsed?: boolean;
@@ -132,9 +134,9 @@ export default Vue.extend({
       miniVariant: LocalStorage.primaryNavMiniVariant,
       domains: [] as IVeoDomain[],
       objectTypes: [] as INavItem[],
-      formTypes: [] as INavItem[],
       reportTypes: [] as INavItem[],
-      catalogs: [] as INavItem[]
+      catalogs: [] as INavItem[],
+      formSchemas: [] as IVeoFormSchemaMeta[] // for translations
     };
   },
   async fetch() {
@@ -144,10 +146,11 @@ export default Vue.extend({
       this.$user.updateLastDomain(this.domains[0].id);
     }
 
-    this.objectTypes = await this.fetchObjectTypes();
-
     if (this.domainId) {
-      this.formTypes = await this.fetchFormTypes(this.domainId);
+      // Load all form schemas to use sub types' translated names instead of their keys in the menu
+      this.formSchemas = await this.$api.form.fetchAll(this.domainId);
+
+      this.objectTypes = await this.fetchObjectTypes(this.domainId);
       this.reportTypes = await this.fetchReportTypes(this.domainId);
       this.catalogs = await this.fetchCatalogs(this.domainId);
     }
@@ -162,14 +165,7 @@ export default Vue.extend({
         disabled: false,
         topLevelItem: true
       };
-      const scopes: INavItem = {
-        name: this.$t('breadcrumbs.scopes').toString(),
-        icon: mdiArchive,
-        exact: false,
-        to: `/${this.$route.params.unit}/scopes`,
-        disabled: false,
-        topLevelItem: true
-      };
+
       const objects: INavItem = {
         name: this.$t('breadcrumbs.objects').toString(),
         icon: mdiFileDocument,
@@ -179,12 +175,6 @@ export default Vue.extend({
         childItems: this.objectTypes,
         collapsed: LocalStorage.expandedNavEntry !== 1,
         persistCollapsedState: (collapsed) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 1),
-        topLevelItem: true
-      };
-
-      const divider: INavItem = {
-        name: 'divider',
-        disabled: false,
         topLevelItem: true
       };
 
@@ -211,18 +201,6 @@ export default Vue.extend({
         disabled: false,
         topLevelItem: true
       }; */
-
-      const forms = {
-        name: this.$t('breadcrumbs.forms').toString(),
-        icon: mdiFormatListChecks,
-        to: undefined,
-        exact: false,
-        disabled: false,
-        childItems: this.formTypes,
-        persistCollapsedState: (collapsed: boolean) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 2),
-        collapsed: LocalStorage.expandedNavEntry !== 2,
-        topLevelItem: true
-      };
 
       const reports = {
         name: this.$t('breadcrumbs.reports').toString(),
@@ -256,8 +234,7 @@ export default Vue.extend({
 
       return [
         ...(!this.$route.params.unit || !maxUnits.value || maxUnits.value > 2 ? [unitSelection] : []),
-        ...(this.domainId ? [domainDashboard, forms, catalogs, reports] : []),
-        ...(this.$route.params.unit ? [divider, scopes, objects] : [])
+        ...(this.domainId ? [domainDashboard, objects, catalogs, reports] : [])
         /* spacer,
         editors */
       ];
@@ -277,32 +254,77 @@ export default Vue.extend({
   },
   methods: {
     createUUIDUrlParam,
-    fetchObjectTypes(): Promise<INavItem[]> {
-      const routeUnitParam = this.$route.params.unit;
-      return this.$api.schema.fetchAll().then((data) => {
-        return data
-          .filter((entry) => !nonLinkableSchemas.includes(entry.schemaName))
-          .map((entry) => {
-            return {
-              name: upperFirst(entry.schemaName),
-              exact: false,
-              to: `/${routeUnitParam}/objects/${entry.endpoint}/`,
-              disabled: false,
-              topLevelItem: false
-            };
-          });
-      });
+    async fetchObjectTypes(domainId: string): Promise<INavItem[]> {
+      const sortOrder = new Map<string, number>([
+        ['scope', 1],
+        ['process', 2],
+        ['asset', 3],
+        ['person', 4],
+        ['incident', 5],
+        ['document', 6],
+        ['scenario', 7],
+        ['control', 8]
+      ]);
+      const data = await this.$api.schema.fetchAll();
+      data.sort((a, b) => (sortOrder.get(a.schemaName) || 0) - (sortOrder.get(b.schemaName) || 0));
+      const navEntries = [];
+      for (const entry of data) {
+        navEntries.push({
+          name: upperFirst(entry.schemaName),
+          exact: false,
+          disabled: false,
+          collapsed: true,
+          topLevelItem: true,
+          childItems: await this.buildSubTypeEntries(entry.schemaName, domainId)
+        });
+      }
+      return navEntries;
     },
-    async fetchFormTypes(domainId: string): Promise<INavItem[]> {
-      const routeUnitParam = separateUUIDParam(this.$route.params.unit).id;
-      const forms = await this.$api.form.fetchAll(domainId);
-      return forms.map((entry: IVeoFormSchemaMeta) => ({
-        name: entry.name[this.$i18n.locale] || 'Missing translation',
-        exact: false,
-        to: `/${createUUIDUrlParam('unit', routeUnitParam)}/domains/${createUUIDUrlParam('domain', domainId)}/forms/${createUUIDUrlParam('form', entry?.id || '')}/`,
-        disabled: false,
-        topLevelItem: false
-      }));
+    async buildSubTypeEntries(objectTypeKey: string, domainId: string): Promise<INavItem[]> {
+      return [
+        {
+          name: upperFirst(this.$t('all').toString()),
+          to: {
+            name: OBJECTS_ROUTE_NAME,
+            params: {
+              unit: this.$route.params.unit,
+              domain: createUUIDUrlParam('domain', domainId)
+            },
+            query: {
+              objectType: objectTypeKey
+            }
+          },
+          exact: true,
+          disabled: false,
+          topLevelItem: false
+        },
+        ...(await this.fetchObjectSubTypes(domainId, objectTypeKey))
+      ];
+    },
+    async fetchObjectSubTypes(domainId: string, objectTypeKey: string): Promise<INavItem[]> {
+      const schema = await this.$api.schema.fetch(objectTypeKey, [domainId]);
+      const subTypes = Object.values(schema.properties.domains.properties)[0].allOf?.map((mapping) => mapping.if.properties.subType.const) || [];
+      const navEntries = subTypes.map((subTypeKey) => {
+        const displayName = this.formSchemas.find((formSchema) => formSchema.subType === subTypeKey)?.name[this.$i18n.locale] || subTypeKey;
+        return {
+          name: displayName,
+          to: {
+            name: OBJECTS_ROUTE_NAME,
+            params: {
+              unit: this.$route.params.unit,
+              domain: createUUIDUrlParam('domain', domainId)
+            },
+            query: {
+              objectType: objectTypeKey,
+              subType: subTypeKey
+            }
+          },
+          exact: true,
+          disabled: false,
+          topLevelItem: false
+        };
+      });
+      return sortBy(navEntries, 'name');
     },
     async fetchReportTypes(domainId: string): Promise<INavItem[]> {
       return await this.$api.report.fetchAll().then((reportTypes: IVeoReportsMeta) =>
@@ -359,12 +381,14 @@ export default Vue.extend({
   "en": {
     "collapse": "Collapse menu",
     "fix": "Fix menu",
-    "noChildItems": "No sub items"
+    "noChildItems": "No sub items",
+    "all": "all"
   },
   "de": {
     "collapse": "Menü verstecken",
     "fix": "Menü fixieren",
-    "noChildItems": "Keine Einträge vorhanden"
+    "noChildItems": "Keine Einträge vorhanden",
+    "all": "alle"
   }
 }
 </i18n>

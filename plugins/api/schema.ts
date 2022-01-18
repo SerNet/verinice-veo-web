@@ -35,12 +35,6 @@ export interface IVeoSchemaEndpoint {
 
 let endpoints: IVeoSchemaEndpoint[];
 
-/**
- * Schemas in this array usually get handled differently than "normal" schemas. While we don't treat them differently in
- * this file, other files in the project might refer to this array
- */
-export const nonLinkableSchemas = ['scope'];
-
 export function getSchemaEndpoint(endpoints: IVeoSchemaEndpoint[], schemaName: string): string | undefined {
   return endpoints.find((endpoint) => endpoint.schemaName === schemaName)?.endpoint;
 }
