@@ -104,7 +104,7 @@ export default class ObjectSchemaValidator {
               errors.push({ code: 'E_SUBTYPE_MISSING', message: `The schema "${schema.title}" is missing the subtype "${data.domains[domainId].subType}"` });
             }
             if (data.domains[domainId].status && !subTypes.some((subType) => subType.status.includes(data.domains[domainId].status))) {
-              errors.push({ code: 'E_STATUS_MISSING', message: `The schema "${schema.title}" is missing the status "${data.domains[domainId].status}"` });
+              // errors.push({ code: 'E_STATUS_MISSING', message: `The schema "${schema.title}" is missing the status "${data.domains[domainId].status}"` });
             }
           }
           break;
