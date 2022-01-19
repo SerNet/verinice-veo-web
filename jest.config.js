@@ -21,5 +21,5 @@ module.exports = {
   testMatch: null,
   verbose: true,
   reporters: ['default', 'jest-junit'],
-  setupFiles: ['./test/config/setup.js', './test/config/mocks.js']
+  setupFiles: ['./.nuxt/components/plugin.js', './test/config/setup.js', './test/config/mocks.js']
 };

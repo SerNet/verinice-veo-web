@@ -15,23 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Vue from 'vue';
-import { createLocalVue, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
-import { merge } from 'lodash';
 
 import { install as VeeValidate } from '~/plugins/vee-validate';
 import VeoCreateObjectDialog from '~/components/objects/VeoCreateObjectDialog.vue';
-import VeoDialog from '~/components/layout/VeoDialog.vue';
 import VeoObjectForm from '~/components/objects/VeoObjectForm.vue';
-import VeoObjectFormSkeletonLoader from '~/components/objects/VeoObjectFormSkeletonLoader.vue';
-import VeoFormNavigation from '~/components/layout/VeoFormNavigation.vue';
-import VeoPage from '~/components/layout/VeoPage.vue';
-import VeoPageHeader from '~/components/layout/VeoPageHeader.vue';
-import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue';
-import VeoTabs from '~/components/layout/VeoTabs.vue';
-import VeoForm from '~/components/forms/VeoForm.vue';
-import VeoValidationResult from '~/components/util/VeoValidationResult.vue';
 import { getEmittedEvent, getFormInput, getVSelectComponentByDataCy } from '~/lib/jestUtils';
 
 import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
@@ -39,27 +28,12 @@ import forms from '~/cypress/fixtures/api/forms/fetchAll.json';
 import form from '~/cypress/fixtures/api/forms/3ebd14a2-eb7d-4d18-a9ad-2056da85569e.json';
 import translation from '~/cypress/fixtures/translations/translation.json';
 
-Vue.use(VeeValidate);
+window.Vue.use(VeeValidate);
 
 const vuetify = new Vuetify();
 
 const mockDefaults = {
   vuetify,
-  components: {
-    VeoDialog,
-    VeoObjectForm: (() =>
-      merge(VeoObjectForm, {
-        components: {
-          VeoPageWrapper,
-          VeoPage: (() => merge(VeoPage, { components: { VeoPageHeader } }))(),
-          VeoForm,
-          VeoFormNavigation,
-          VeoValidationResult,
-          VeoTabs,
-          VeoObjectFormSkeletonLoader
-        }
-      }))()
-  },
   stubs: {
     LinksFieldRow: true,
     VeoValidationResultList: true
@@ -194,12 +168,10 @@ describe('CreateObjectDialog.vue', () => {
   });
 
   it('should check whether the form gets switched if the user uses the display switcher', async () => {
-    const localVue = createLocalVue();
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
 
     const wrapper = mount(VeoCreateObjectDialog, {
       ...mockDefaults,
-      localVue,
       propsData: {
         value: true,
         objectType: 'process',
