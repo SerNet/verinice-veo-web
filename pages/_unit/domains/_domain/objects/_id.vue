@@ -89,6 +89,7 @@
                   </v-btn>
                   <v-spacer />
                   <v-btn
+                    v-cy-name="'save-button'"
                     text
                     color="primary"
                     :disabled="loading || !isFormDirty || !isFormValid"

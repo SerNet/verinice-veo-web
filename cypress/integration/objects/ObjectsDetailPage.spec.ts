@@ -20,6 +20,8 @@
 
 import { cloneDeep } from 'lodash';
 
+import { VEO_API_ENTITY_REGEX } from '../../support';
+
 /**
  * Tests for {@link ~/pages/_unit/domains/_domain/objects/_id.vue}
  */
@@ -43,18 +45,44 @@ describe('Objects details', () => {
       return JSON.stringify((component[0] as any).__vue__.$parent.modifiedObject);
     }
 
-    let bla;
+    let initialFormData;
     cy.get('#app > div.v-application--wrap > main > div > div').then((component) => {
-      bla = cloneDeep(getFormData(component));
+      initialFormData = cloneDeep(getFormData(component));
     });
 
     cy.get('.vf-wrapper').contains('.v-text-field', 'Beschreibung').type('something');
     cy.get('#app > div.v-application--wrap > main > div > div').then((component) => {
-      cy.wrap(getFormData(component)).should('not.equal', bla);
+      cy.wrap(getFormData(component)).should('not.equal', initialFormData);
     });
     cy.get('[data-cy=veo-objects-index-page-restore-button]').click();
     cy.get('#app > div.v-application--wrap > main > div > div').then((component) => {
-      cy.wrap(getFormData(component)).should('equal', bla);
+      cy.wrap(getFormData(component)).should('equal', initialFormData);
     });
+  });
+
+  it('enters something in the form and sends it to the server. The api request should equal the modified data', function () {
+    let modifiedObject;
+    cy.fixture('api/default/entities/processes/0effd1b5-4675-4386-abf0-dc464562546e.json').then((process) => {
+      modifiedObject = process;
+      modifiedObject.description = modifiedObject.description + 'something';
+      modifiedObject.displayName = 'PRO-12 DÜ2 Gelb';
+    });
+
+    cy.intercept(
+      {
+        method: 'PUT',
+        url: VEO_API_ENTITY_REGEX
+      },
+      (req) => req.reply(modifiedObject)
+    ).as('putObject');
+
+    cy.get('.vf-wrapper').contains('.v-text-field', 'Beschreibung').type('something');
+
+    cy.get('[data-cy=veo-objects-index-page-save-button]').click();
+
+    cy.wait('@putObject').should((interception) => {
+      cy.wrap(JSON.stringify(interception.request.body)).should('equal', JSON.stringify(modifiedObject));
+    });
+    cy.get('.v-snack__wrapper').should('be.visible');
   });
 });
