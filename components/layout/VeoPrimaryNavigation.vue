@@ -100,6 +100,7 @@ import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
+import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 export interface INavItem {
   name: string;
@@ -107,11 +108,23 @@ export interface INavItem {
   exact?: boolean;
   to?: RawLocation;
   disabled: boolean;
+  loading?: boolean;
   childItems?: INavItem[];
   collapsed?: boolean;
   topLevelItem: boolean;
   persistCollapsedState?: (collapsed: boolean) => void;
 }
+
+const objectTypeSortOrder = new Map<string, number>([
+  ['scope', 1],
+  ['process', 2],
+  ['asset', 3],
+  ['person', 4],
+  ['incident', 5],
+  ['document', 6],
+  ['scenario', 7],
+  ['control', 8]
+]);
 
 export default Vue.extend({
   name: 'VeoPrimaryNavigation',
@@ -133,7 +146,8 @@ export default Vue.extend({
     return {
       miniVariant: LocalStorage.primaryNavMiniVariant,
       domains: [] as IVeoDomain[],
-      objectTypes: [] as INavItem[],
+      objectTypes: [] as IVeoSchemaEndpoint[],
+      objectSubTypes: {} as { [k: string]: string[] },
       reportTypes: [] as INavItem[],
       catalogs: [] as INavItem[],
       formSchemas: [] as IVeoFormSchemaMeta[] // for translations
@@ -150,12 +164,71 @@ export default Vue.extend({
       // Load all form schemas to use sub types' translated names instead of their keys in the menu
       this.formSchemas = await this.$api.form.fetchAll(this.domainId);
 
-      this.objectTypes = await this.fetchObjectTypes(this.domainId);
+      await this.fetchObjectTypes(this.domainId);
       this.reportTypes = await this.fetchReportTypes(this.domainId);
       this.catalogs = await this.fetchCatalogs(this.domainId);
     }
   },
   computed: {
+    objectTypeItems(): INavItem[] {
+      return [...this.objectTypes]
+        .sort((a, b) => (objectTypeSortOrder.get(a.schemaName) || 0) - (objectTypeSortOrder.get(b.schemaName) || 0))
+        .map((objectType) => {
+          const objectTypeKey = objectType.schemaName;
+          const unitParameter = this.$route.params.unit;
+          const domainParameter = createUUIDUrlParam('domain', this.domainId);
+          return {
+            name: upperFirst(objectTypeKey),
+            exact: false,
+            disabled: false,
+            collapsed: true,
+            topLevelItem: true,
+            childItems: [
+              // all of object type
+              {
+                name: upperFirst(this.$t('all').toString()),
+                to: {
+                  name: OBJECTS_ROUTE_NAME,
+                  params: {
+                    unit: unitParameter,
+                    domain: domainParameter
+                  },
+                  query: {
+                    objectType: objectTypeKey
+                  }
+                },
+                exact: true,
+                disabled: false,
+                topLevelItem: false
+              },
+              // dynamic sub type routes
+              ...sortBy(
+                (this.objectSubTypes[objectTypeKey] || []).map((subTypeKey) => {
+                  const displayName = this.formSchemas.find((formSchema) => formSchema.subType === subTypeKey)?.name[this.$i18n.locale] || subTypeKey;
+                  return {
+                    name: displayName,
+                    to: {
+                      name: OBJECTS_ROUTE_NAME,
+                      params: {
+                        unit: unitParameter,
+                        domain: domainParameter
+                      },
+                      query: {
+                        objectType: objectTypeKey,
+                        subType: subTypeKey
+                      }
+                    },
+                    exact: true,
+                    disabled: false,
+                    topLevelItem: false
+                  };
+                }),
+                'name'
+              )
+            ]
+          };
+        });
+    },
     items(): INavItem[] {
       const domainDashboard: INavItem = {
         name: this.$t('domain.index.title').toString(),
@@ -172,7 +245,8 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        childItems: this.objectTypes,
+        loading: this.$fetchState.pending,
+        childItems: this.objectTypeItems,
         collapsed: LocalStorage.expandedNavEntry !== 1,
         persistCollapsedState: (collapsed) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 1),
         topLevelItem: true
@@ -254,77 +328,16 @@ export default Vue.extend({
   },
   methods: {
     createUUIDUrlParam,
-    async fetchObjectTypes(domainId: string): Promise<INavItem[]> {
-      const sortOrder = new Map<string, number>([
-        ['scope', 1],
-        ['process', 2],
-        ['asset', 3],
-        ['person', 4],
-        ['incident', 5],
-        ['document', 6],
-        ['scenario', 7],
-        ['control', 8]
-      ]);
-      const data = await this.$api.schema.fetchAll();
-      data.sort((a, b) => (sortOrder.get(a.schemaName) || 0) - (sortOrder.get(b.schemaName) || 0));
-      const navEntries = [];
-      for (const entry of data) {
-        navEntries.push({
-          name: upperFirst(entry.schemaName),
-          exact: false,
-          disabled: false,
-          collapsed: true,
-          topLevelItem: true,
-          childItems: await this.buildSubTypeEntries(entry.schemaName, domainId)
-        });
-      }
-      return navEntries;
-    },
-    async buildSubTypeEntries(objectTypeKey: string, domainId: string): Promise<INavItem[]> {
-      return [
-        {
-          name: upperFirst(this.$t('all').toString()),
-          to: {
-            name: OBJECTS_ROUTE_NAME,
-            params: {
-              unit: this.$route.params.unit,
-              domain: createUUIDUrlParam('domain', domainId)
-            },
-            query: {
-              objectType: objectTypeKey
-            }
-          },
-          exact: true,
-          disabled: false,
-          topLevelItem: false
-        },
-        ...(await this.fetchObjectSubTypes(domainId, objectTypeKey))
-      ];
-    },
-    async fetchObjectSubTypes(domainId: string, objectTypeKey: string): Promise<INavItem[]> {
-      const schema = await this.$api.schema.fetch(objectTypeKey, [domainId]);
-      const subTypes = Object.values(schema.properties.domains.properties)[0].allOf?.map((mapping) => mapping.if.properties.subType.const) || [];
-      const navEntries = subTypes.map((subTypeKey) => {
-        const displayName = this.formSchemas.find((formSchema) => formSchema.subType === subTypeKey)?.name[this.$i18n.locale] || subTypeKey;
-        return {
-          name: displayName,
-          to: {
-            name: OBJECTS_ROUTE_NAME,
-            params: {
-              unit: this.$route.params.unit,
-              domain: createUUIDUrlParam('domain', domainId)
-            },
-            query: {
-              objectType: objectTypeKey,
-              subType: subTypeKey
-            }
-          },
-          exact: true,
-          disabled: false,
-          topLevelItem: false
-        };
-      });
-      return sortBy(navEntries, 'name');
+    async fetchObjectTypes(domainId: string) {
+      this.objectTypes = await this.$api.schema.fetchAll();
+      const subTypePromises = this.objectTypes.map((objectType) => this.$api.schema.fetch(objectType.schemaName, [domainId]));
+      const objectSchemas = await Promise.all(subTypePromises);
+      this.objectSubTypes = Object.fromEntries(
+        objectSchemas.map((schema) => {
+          const subTypes = Object.values(schema.properties.domains.properties)[0].allOf?.map((mapping) => mapping.if.properties.subType.const) || [];
+          return [schema.title, subTypes];
+        })
+      );
     },
     async fetchReportTypes(domainId: string): Promise<INavItem[]> {
       return await this.$api.report.fetchAll().then((reportTypes: IVeoReportsMeta) =>

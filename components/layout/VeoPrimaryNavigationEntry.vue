@@ -86,12 +86,21 @@
       </v-tooltip>
     </template>
     <v-list-item
-      v-if="childItems.length === 0"
+      v-if="childItems.length === 0 && !loading"
       style="min-height: 28px;"
       dense
     >
       <v-list-item-subtitle>{{ t('noEntries') }}</v-list-item-subtitle>
     </v-list-item>
+    <template v-if="childItems.length === 0 && loading">
+      <v-skeleton-loader
+        v-for="index in 3"
+        :key="index"
+        type="list-item"
+        style="padding-left: 48px;"
+      >
+      </v-skeleton-loader>
+    </template>
     <VeoPrimaryNavigationEntry
       v-for="child of childItems"
       v-bind="child"
@@ -135,6 +144,10 @@ export default defineComponent<IProps>({
     disabled: {
       type: Boolean,
       required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
     },
     childItems: {
       type: Array as PropType<INavItem[]>,
