@@ -72,6 +72,9 @@ function clearButton(instance: any) {
 
 export default (Vue as VueConstructor<Vue & { $refs: { toastuiEditor: any } }>).extend({
   name: 'MarkdownEditor',
+  components: {
+    editor: Editor
+  },
   props: {
     value: {
       type: String,
