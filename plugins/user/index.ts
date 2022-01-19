@@ -88,10 +88,9 @@ export default (async function ({ route, $config }, inject) {
     realm: $config.oidcRealm,
     clientId: $config.oidcClient
   });
-  const firstMatchedRouteName = route.matched?.[0]?.name;
 
   // If we init keycloak if we are on the sso page, the adapter will get confused as it tries to use the same page as the silent sso check, creating a loop.
-  if (!$user.auth.initialized && (firstMatchedRouteName === 'login' || (firstMatchedRouteName && !publicRoutes.includes(firstMatchedRouteName)))) {
+  if (!$user.auth.initialized && (route.name === 'login' || !publicRoutes.some((r) => route.path.startsWith(`/${r}`)))) {
     await $user.auth.init();
   }
 
