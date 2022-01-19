@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Markus Werner
+ * Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Markus Werner, Tino Groteloh
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,7 +29,7 @@ export default (function ({ app, redirect, from, route }) {
     if (route.path === '/login' && from.path === '/login') {
       return redirect('/');
     }
-  } else if (!publicRoutes.some((entry: RegExp) => entry.test(route.path))) {
+  } else if (!publicRoutes.some((r) => route.path.startsWith(`/${r}`))) {
     // User is not authenticated but needs authentication, so redirect him to the login page.
     return redirect('/login');
   }
