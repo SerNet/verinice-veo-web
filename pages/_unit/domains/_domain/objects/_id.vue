@@ -83,6 +83,7 @@
                     v-cy-name="'restore-button'"
                     text
                     :disabled="loading || !isFormDirty"
+                    @click="resetForm"
                   >
                     {{ t('global.button.reset') }}
                   </v-btn>

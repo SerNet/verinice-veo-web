@@ -26,6 +26,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
+
 import LayoutFormat from '~/components/forms/Collection/LayoutFormats/LayoutFormat.vue';
 
 export default Vue.extend({

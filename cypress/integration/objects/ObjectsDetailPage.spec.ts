@@ -17,6 +17,9 @@
  */
 /// <reference path="../../support/index.d.ts" />
 /// <reference types="cypress" />
+
+import { cloneDeep } from 'lodash';
+
 /**
  * Tests for {@link ~/pages/_unit/domains/_domain/objects/_id.vue}
  */
@@ -36,17 +39,22 @@ describe('Objects details', () => {
   });
 
   it('should enter something in the form and reset it. The data should equal the original data', function () {
-    function getFormData() {
-      // eslint-disable-next-line no-unused-expressions
-      cy.get('#app > div.v-application--wrap > main > div > div').should('not.be.undefined');
-      return (cy.$$('#app > div.v-application--wrap > main > div > div')[0] as any).__vue__.$parent.modifiedObject;
+    function getFormData(component: JQuery<HTMLElement>) {
+      return JSON.stringify((component[0] as any).__vue__.$parent.modifiedObject);
     }
 
-    const originalData = JSON.stringify(getFormData());
+    let bla;
+    cy.get('#app > div.v-application--wrap > main > div > div').then((component) => {
+      bla = cloneDeep(getFormData(component));
+    });
+
     cy.get('.vf-wrapper').contains('.v-text-field', 'Beschreibung').type('something');
-    cy.wait(4000);
-    cy.wrap(JSON.stringify(getFormData())).should('not.equal', originalData);
-    cy.get('[data-cy]=veo-objects-index-page-restore-button').click();
-    cy.wrap(JSON.stringify(getFormData())).should('equal', originalData);
+    cy.get('#app > div.v-application--wrap > main > div > div').then((component) => {
+      cy.wrap(getFormData(component)).should('not.equal', bla);
+    });
+    cy.get('[data-cy=veo-objects-index-page-restore-button]').click();
+    cy.get('#app > div.v-application--wrap > main > div > div').then((component) => {
+      cy.wrap(getFormData(component)).should('equal', bla);
+    });
   });
 });
