@@ -17,10 +17,20 @@
  */
 import { mount } from '@vue/test-utils';
 import Vuetify from 'vuetify';
+import { merge } from 'lodash';
 
 import { install as VeeValidate } from '~/plugins/vee-validate';
 import VeoCreateObjectDialog from '~/components/objects/VeoCreateObjectDialog.vue';
 import VeoObjectForm from '~/components/objects/VeoObjectForm.vue';
+import VeoDialog from '~/components/layout/VeoDialog.vue';
+import VeoObjectFormSkeletonLoader from '~/components/objects/VeoObjectFormSkeletonLoader.vue';
+import VeoFormNavigation from '~/components/layout/VeoFormNavigation.vue';
+import VeoPage from '~/components/layout/VeoPage.vue';
+import VeoPageHeader from '~/components/layout/VeoPageHeader.vue';
+import VeoPageWrapper from '~/components/layout/VeoPageWrapper.vue';
+import VeoTabs from '~/components/layout/VeoTabs.vue';
+import VeoForm from '~/components/forms/VeoForm.vue';
+import VeoValidationResult from '~/components/util/VeoValidationResult.vue';
 import { getEmittedEvent, getFormInput, getVSelectComponentByDataCy } from '~/lib/jestUtils';
 
 import process from '~/cypress/fixtures/api/default/schemas/process.2019.json';
@@ -34,6 +44,21 @@ const vuetify = new Vuetify();
 
 const mockDefaults = {
   vuetify,
+  components: {
+    VeoDialog,
+    VeoObjectForm: (() =>
+      merge(VeoObjectForm, {
+        components: {
+          VeoPageWrapper,
+          VeoPage: (() => merge(VeoPage, { components: { VeoPageHeader } }))(),
+          VeoForm,
+          VeoFormNavigation,
+          VeoValidationResult,
+          VeoTabs,
+          VeoObjectFormSkeletonLoader
+        }
+      }))()
+  },
   stubs: {
     LinksFieldRow: true,
     VeoValidationResultList: true

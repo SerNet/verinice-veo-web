@@ -227,7 +227,6 @@ export default defineComponent({
         return props.value as IBaseObject;
       },
       set(newValue: IBaseObject) {
-        console.log(newValue);
         emit('input', newValue);
       }
     });
