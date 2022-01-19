@@ -29,11 +29,8 @@ export default (function ({ app, redirect, from, route }) {
     if (route.path === '/login' && from.path === '/login') {
       return redirect('/');
     }
-  } else {
-    const firstMatchedRouteName = route.matched?.[0]?.name;
-
-    if (firstMatchedRouteName && !publicRoutes.includes(firstMatchedRouteName))
-      // User is not authenticated but needs authentication, so redirect him to the login page.
-      return redirect('/login');
+  } else if (!publicRoutes.some((r) => route.path.startsWith(`/${r}`))) {
+    // User is not authenticated but needs authentication, so redirect him to the login page.
+    return redirect('/login');
   }
 } as Middleware);
