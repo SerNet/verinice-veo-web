@@ -218,7 +218,10 @@ export default defineComponent({
     const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
       const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
       const newValues = Object.fromEntries(resetValues.concat(Object.entries(v).map(([k, v]) => [k, v === true ? null : v])));
-      await router.push({ ...route.value, name: route.value.name!, query: { ...route.value.query, ...newValues } });
+      const query = { ...route.value.query, ...newValues };
+      // obsolete params need to be removed from the query to match the route exactly
+      Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
+      await router.push({ ...route.value, name: route.value.name!, query });
     };
 
     // Remove a filter by removing it from query params
