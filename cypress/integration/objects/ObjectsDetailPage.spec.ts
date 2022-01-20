@@ -54,7 +54,7 @@ describe('Objects details', () => {
     cy.get('#app > div.v-application--wrap > main > div > div').then((component) => {
       cy.wrap(getFormData(component)).should('not.equal', initialFormData);
     });
-    cy.get('[data-cy=veo-objects-index-page-restore-button]').click();
+    cy.get('[data-cy=veo-objects-index-page-reset-button]').click();
     cy.get('#app > div.v-application--wrap > main > div > div').then((component) => {
       cy.wrap(getFormData(component)).should('equal', initialFormData);
     });
@@ -84,5 +84,40 @@ describe('Objects details', () => {
       cy.wrap(JSON.stringify(interception.request.body)).should('equal', JSON.stringify(modifiedObject));
     });
     cy.get('.v-snack__wrapper').should('be.visible');
+  });
+
+  it('loads an old revision and restores it, while checking whether the information box is present ', function () {
+    let oldVersion;
+    cy.fixture('api/history/revisions/processes/0effd1b5-4675-4386-abf0-dc464562546e.json').then((revisions) => {
+      oldVersion = revisions[0].content;
+      oldVersion.displayName = 'PRO-12 DÜ2 Gelb';
+    });
+
+    cy.intercept(
+      {
+        method: 'PUT',
+        url: VEO_API_ENTITY_REGEX
+      },
+      (req) => req.reply(oldVersion)
+    ).as('putObject');
+
+    // Check "original" state (focus() so the form is scrolled to the top)
+    cy.get('.vf-wrapper').contains('.v-text-field', 'Beschreibung').find('input').focus().should('have.value', 'Prozess mit Subtype Datenübertragung');
+
+    // Open history and select second newest version
+    cy.contains('.v-tab', 'verlauf').click();
+    cy.get('[data-cy=veo-object-history-history-list]').should('be.visible');
+    cy.get('[data-cy=veo-object-history-history-list]').find('.v-item-group').children().eq(1).click();
+    cy.get('[data-cy=veo-objects-index-page-old-version-alert]').should('be.visible');
+    cy.get('.vf-wrapper')
+      .contains('.v-text-field', 'Beschreibung')
+      .find('input')
+      .should('have.value', 'Prozess mit Subtype Datenübertragung mit unnötig langer Beschreibung die am besten verkürzt wird');
+
+    // Clicks retore button and checks whether the correct body is sent to the api
+    cy.get('[data-cy=veo-objects-index-page-restore-button]').click();
+    cy.wait('@putObject').should((interception) => {
+      cy.wrap(JSON.stringify(interception.request.body)).should('equal', JSON.stringify(oldVersion));
+    });
   });
 });

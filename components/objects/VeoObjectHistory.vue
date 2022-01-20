@@ -30,7 +30,10 @@
       <v-skeleton-loader type="text" />
     </div>
   </div>
-  <v-list v-else>
+  <v-list
+    v-else
+    v-cy-name="'history-list'"
+  >
     <v-list-item-group
       color="primary"
       :value="0"
@@ -89,6 +92,7 @@ interface IData {
 }
 
 export default Vue.extend({
+  name: 'VeoObjectHistory',
   props: {
     object: {
       type: Object as Prop<IVeoEntity>,

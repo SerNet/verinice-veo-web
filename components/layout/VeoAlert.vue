@@ -17,7 +17,7 @@
 -->
 <template>
   <v-alert
-    :value="value"
+    v-bind="$attrs"
     :color="alertColor"
     colored-border
     border="left"
