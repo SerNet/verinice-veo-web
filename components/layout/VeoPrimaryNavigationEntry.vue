@@ -231,7 +231,7 @@ export default defineComponent<IProps>({
 .veo-primary-navigation__menu-item.v-list-group--no-action {
   & > .v-list-group__items {
     & > .v-list-item {
-      padding-left: 76px;
+      padding-left: 76px !important;
     }
   }
 }
