@@ -21,7 +21,7 @@
       <VeoPage
         id="scroll-wrapper"
         sticky-header
-        :fixed-footer="!!$slots['append-form-fixed']"
+        :sticky-footer="!!$slots['append-form-fixed']"
       >
         <template #header>
           <v-row class="align-center mx-0 pb-4">
@@ -288,10 +288,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-::v-deep .v-slide-group__next,
-::v-deep .v-slide-group__prev {
-  display: none;
-}
-</style>

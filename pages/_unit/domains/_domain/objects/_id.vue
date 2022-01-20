@@ -139,7 +139,7 @@ export default defineComponent({
   name: 'VeoObjectsIndexPage',
   beforeRouteLeave(to: Route, _from: Route, next: Function) {
     // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
-    if (this.isFormDirty && this.entityModifiedDialogVisible) {
+    if (this.entityModifiedDialogVisible) {
       next();
     } else if (this.isFormDirty) {
       // If the form was modified and the dialog is closed, show it and abort navigation
@@ -157,9 +157,7 @@ export default defineComponent({
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
-    const objectParameter = computed(() => {
-      return separateUUIDParam(route.value.params.id);
-    });
+    const objectParameter = computed(() => separateUUIDParam(route.value.params.id));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const object = ref<IVeoEntity | undefined>(undefined);
@@ -204,11 +202,11 @@ export default defineComponent({
     }
 
     async function saveObject() {
-      await updateObject(t('objectSaved', { name: object.value?.displayName }).toString(), t('objectNotSaved').toString());
+      await updateObject(upperFirst(t('objectSaved', { name: object.value?.displayName }).toString()), upperFirst(t('objectNotSaved').toString()));
     }
 
     async function restoreObject() {
-      await updateObject(t('objectRestored', { name: object.value?.displayName }).toString(), t('objectNotRestored').toString());
+      await updateObject(upperFirst(t('objectRestored', { name: object.value?.displayName }).toString()), upperFirst(t('objectNotRestored').toString()));
     }
 
     async function updateObject(successText: string, errorText: string) {
@@ -290,8 +288,8 @@ export default defineComponent({
   "en": {
     "objectInfo": "objekt details",
     "objectForm": "form",
-    "objectNotRestored": "Couldn't restore object",
-    "objectNotSaved": "Couldn't update object",
+    "objectNotRestored": "couldn't restore object",
+    "objectNotSaved": "couldn't update object",
     "objectRestored": "\"{name}\" was restored successfully!",
     "objectSaved": "\"{name}\" was updated successfully!",
     "oldVersionAlert": "You are currently viewing an old and readonly version of this object. If you want to update the object based on this data, please click \"restore\" first and then make your changes.",
@@ -301,8 +299,8 @@ export default defineComponent({
   "de": {
     "objectInfo": "Objektdetails",
     "objectForm": "Formular",
-    "objectNotRestored": "Objekt konnte nicht wiederhergestellt werden",
-    "objectNotSaved": "Objekt konnte nicht aktualisiert werden",
+    "objectNotRestored": "objekt konnte nicht wiederhergestellt werden",
+    "objectNotSaved": "objekt konnte nicht aktualisiert werden",
     "objectRestored": "\"{name}\" wurde wiederhergestellt!",
     "objectSaved": "\"{name}\" wurde aktualisiert!",
     "oldVersionAlert": "Ihnen wird eine alte, schreibgeschützte Version dieses Objektes angezeigt. Bitte klicken Sie auf \"Wiederherstellen\", wenn Sie Ihr Objekt basierend auf diesen Daten aktualisieren möchten.",

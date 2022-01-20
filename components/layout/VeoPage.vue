@@ -63,7 +63,7 @@
       </v-col>
       <v-col
         v-if="$slots.footer"
-        :style="{ bottom: 0, position: fixedFooter ? 'sticky' : undefined, 'flex-grow': 0 }"
+        :style="{ bottom: 0, position: stickyFooter ? 'sticky' : undefined, 'flex-grow': 0 }"
       >
         <slot name="footer" />
       </v-col>
@@ -102,7 +102,7 @@ export default defineComponent<IProps>({
       type: Boolean,
       default: false
     },
-    fixedFooter: {
+    stickyFooter: {
       type: Boolean,
       default: false
     },

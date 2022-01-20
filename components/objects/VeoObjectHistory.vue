@@ -40,7 +40,7 @@
       mandatory
     >
       <div
-        v-for="(version, index) of historyWithCompability"
+        v-for="(version, index) of historyEntriesWithCompability"
         :key="version.changeNumber"
       >
         <v-divider v-if="index > 0" />
@@ -120,8 +120,8 @@ export default Vue.extend({
     }
   },
   computed: {
-    historyWithCompability(): (IVeoObjectHistoryEntry & { compability: VeoSchemaValidatorValidationResult })[] {
-      return this.history.map((entry) => ({ ...entry, compability: this.dataCompatible(entry) }));
+    historyEntriesWithCompability(): (IVeoObjectHistoryEntry & { compability: VeoSchemaValidatorValidationResult })[] {
+      return this.history.map((entry) => ({ ...entry, compability: this.getIsDataCompatible(entry) }));
     }
   },
   // For some reason we have to check on both, as $fetchState.pending will be false in some cases while the object is not set yet.
@@ -143,7 +143,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    dataCompatible(data: IVeoObjectHistoryEntry): VeoSchemaValidatorValidationResult {
+    getIsDataCompatible(data: IVeoObjectHistoryEntry): VeoSchemaValidatorValidationResult {
       if (!this.objectSchema) {
         return { valid: true, errors: [], warnings: [] };
       }

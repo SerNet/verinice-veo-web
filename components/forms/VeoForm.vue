@@ -231,7 +231,7 @@ export default Vue.extend({
       if (scope) {
         const oldValue = cloneDeep(this.value);
 
-        // We clone the current value again to not edit the prop ourself but let the parent component handle it
+        // We clone the current value again to not edit the prop ourselves but let the parent component handle it
         let newValue = cloneDeep(this.value);
         vjp.set(newValue, propertyPath(scope).replace('#/', '/'), v);
         newValue = this.executeReactiveFormActions(oldValue, newValue);

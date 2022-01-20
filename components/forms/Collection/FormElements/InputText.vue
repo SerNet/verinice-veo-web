@@ -35,8 +35,8 @@
         dense
         hide-details="auto"
         clearable
-        @input="$emit('input', $event);"
         @click:clear="clear"
+        v-on="$listeners"
       />
     </ValidationProvider>
   </div>

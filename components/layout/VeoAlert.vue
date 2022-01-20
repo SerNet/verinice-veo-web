@@ -69,10 +69,6 @@ import { VeoAlertType } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
-    value: {
-      type: Boolean,
-      default: false
-    },
     text: {
       type: String,
       default: undefined
