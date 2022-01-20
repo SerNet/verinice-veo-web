@@ -104,26 +104,36 @@ export default defineComponent({
       {
         key: 'createObject',
         types: ['subEntities', 'parents'],
+        objectTypes: ['scope', 'entity'],
         action: () => onCreateObject()
       },
       {
         key: 'createScope',
         types: ['subEntities', 'parents'],
+        objectTypes: ['scope'],
         action: () => onCreateScope()
       },
       {
         key: 'linkObject',
         types: ['subEntities'],
+        objectTypes: ['scope', 'entity'],
         action: () => onLinkObject()
       },
       {
         key: 'linkScope',
         types: ['subEntities'],
+        objectTypes: ['scope'],
         action: () => onLinkScope()
       }
     ];
     // filter allowed actions for current type
-    const allowedActions = computed(() => actions.filter((a) => a.types.includes(props.type)));
+    const allowedActions = computed(() => {
+      let allowed = actions.filter((a) => a.types.includes(props.type)); // filter by type
+      if (props.object.type !== 'scope') {
+        allowed = allowed.filter((a) => a.objectTypes.includes('entity')); // filter by objecttype if scope
+      }
+      return allowed;
+    });
 
     /**
      * link scopes & objects
@@ -188,8 +198,13 @@ export default defineComponent({
       createObjectDialog.value.value = true;
     };
     const onCreateObject = () => {
-      createEntityDialog.value.parent = props.object; // at first, open dialog for object type selection
-      createEntityDialog.value.value = true;
+      if (props.object.type === 'scope') {
+        createEntityDialog.value.parent = props.object; // at first, open dialog for object type selection (only for scopes)
+        createEntityDialog.value.value = true;
+      } else {
+        createObjectDialog.value.objectType = props.object?.type; // open object creation dialog instantly for any other object types
+        createObjectDialog.value.value = true;
+      }
     };
     // after object type selection open object creation dialog
     const onCreateEntity = (type?: string, _parent?: IVeoEntity) => {

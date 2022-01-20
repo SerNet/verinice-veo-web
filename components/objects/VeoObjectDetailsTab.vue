@@ -23,7 +23,7 @@
           v-if="['subEntities', 'parents'].includes(type)"
           :object="object"
           :type="type"
-          @link-success="fetch"
+          @link-success="$emit('new-object-created'); fetch()"
           @new-object-created="onCreateObjectSuccess"
         />
       </v-col>
@@ -175,6 +175,7 @@ export default defineComponent({
     const onUnlinkEntitySuccess = () => {
       unlinkEntityDialog.value.value = false;
       displaySuccessMessage(upperFirst(t('objectUnlinked').toString()));
+      emit('new-object-created'); // emit to page for refetching object
       fetch();
     };
 
