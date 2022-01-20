@@ -36,7 +36,7 @@
         hide-details="auto"
         clearable
         @click:clear="clear"
-        v-on="$listeners"
+        @input="$emit('input', $event);"
       />
     </ValidationProvider>
   </div>
