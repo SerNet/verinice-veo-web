@@ -133,7 +133,7 @@
 </template>
 
 <script lang="ts">
-import { mdiContentCopy, mdiFilter, mdiPlus, mdiLinkOff } from '@mdi/js';
+import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCan } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
@@ -272,7 +272,7 @@ export default defineComponent({
     const actions = computed(() => [
       {
         id: 'clone',
-        label: t('clone'),
+        label: upperFirst(t('cloneObject').toString()),
         icon: mdiContentCopy,
         async action(item: IVeoEntity) {
           try {
@@ -285,8 +285,8 @@ export default defineComponent({
       },
       {
         id: 'unlink',
-        label: t('unlink'),
-        icon: mdiLinkOff,
+        label: upperFirst(t('unlinkObject').toString()),
+        icon: mdiTrashCan,
         action(item: IVeoEntity) {
           itemDelete.value = item;
         }
@@ -334,8 +334,9 @@ export default defineComponent({
     "allObjects": "all objects",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
-    "clone": "clone",
-    "unlink": "delete",
+    "clone": "duplicated",
+    "cloneObject": "clone object",
+    "unlinkObject": "delete object",
     "errors": {
       "clone": "Could not clone object",
       "unlink": "Could not unlink object"
@@ -347,8 +348,9 @@ export default defineComponent({
     "allObjects": "Alle Objekte",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",
-    "clone": "duplizieren",
-    "unlink": "löschen",
+    "clone": "dupliziert",
+    "cloneObject": "objekt duplizieren",
+    "unlinkObject": "objekt löschen",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden",
       "unlink": "Das Objekt konnte nicht gelöscht werden"

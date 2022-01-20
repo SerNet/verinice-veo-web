@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Markus Werner
+ * Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Markus Werner, Tino Groteloh
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,7 +25,7 @@ import LocalStorage from '~/util/LocalStorage';
 /**
  * These routes will not trigger authentication
  */
-export const publicRoutes = [/^\/help\/?/, /^\/docs\/?/, /^\/login\/?/, /^\/sso\/?/] as const;
+export const publicRoutes = ['help', 'docs', 'login', 'sso'];
 
 /**
  * This class handles all authentication related stuff.
@@ -90,7 +90,7 @@ export default (async function ({ route, $config }, inject) {
   });
 
   // If we init keycloak if we are on the sso page, the adapter will get confused as it tries to use the same page as the silent sso check, creating a loop.
-  if (!publicRoutes.some((r) => r.test(route.path)) && !$user.auth.initialized) {
+  if (!$user.auth.initialized && (route.name === 'login' || !publicRoutes.some((r) => route.path.startsWith(`/${r}`)))) {
     await $user.auth.init();
   }
 
