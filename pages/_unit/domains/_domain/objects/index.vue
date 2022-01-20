@@ -219,7 +219,7 @@ export default defineComponent({
       const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
       const newValues = Object.fromEntries(resetValues.concat(Object.entries(v).map(([k, v]) => [k, v === true ? null : v])));
       const query = { ...route.value.query, ...newValues };
-      // obsolete params need to be removed from the query to match the route exactly
+      // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
       Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
       await router.push({ ...route.value, name: route.value.name!, query });
     };

@@ -91,7 +91,7 @@
       </v-tooltip>
     </template>
     <v-list-item
-      v-if="childItems.length === 0 && !loading"
+      v-if="childItems.length === 0"
       style="min-height: 28px;"
       dense
     >
