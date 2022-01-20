@@ -27,18 +27,15 @@
     <template #default>
       {{ $t('add_subentities', { displayName: entityDisplayName }) }}
       <v-row
-        dense
-        class="justify-space-between"
-      >
+dense
+class="justify-space-between">
         <v-col
           v-if="editedEntity && editedEntity.type === 'scope' && addType === 'entity'"
           lg="3"
           md="6"
           cols="12"
         >
-          <span>
-            {{ $t('shown_objecttype') }}:
-          </span>
+          <span>{{ $t('shown_objecttype') }}:</span>
           <v-select
             v-model="objectType"
             :label="$t('object_type')"
@@ -50,16 +47,13 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col
-          class="flex-grow-1 search-bar"
-        >
+        <v-col class="flex-grow-1 search-bar">
           <VeoListSearchBar
-            v-model="filter"
-            :object-type="objectName"
-            @reset="filter = $event"
-          />
+v-model="filter"
+:object-type="objectName"
+@reset="filter = $event" />
         </v-col>
-      </v-row>   
+      </v-row>
       <VeoEntitySelectionList
         :selected-items="selectedItems"
         :items="entities"
@@ -76,18 +70,13 @@
         color="primary"
         :disabled="saving"
         @click="$emit('input', false)"
-      >
-        {{ $t('global.button.cancel') }}
-      </v-btn>
+      >{{ $t('global.button.cancel') }}</v-btn>
       <v-spacer />
       <v-btn
-        text
-        color="primary"
-        :disabled="saving"
-        @click="addEntities"
-      >
-        {{ $t('add') }}
-      </v-btn>
+text
+color="primary"
+:disabled="saving"
+@click="addEntities">{{ $t('add') }}</v-btn>
     </template>
   </VeoDialog>
 </template>
@@ -119,10 +108,21 @@ export default Vue.extend({
   },
   data() {
     return {
-      filter: { designator: undefined, name: undefined, description: undefined, updatedBy: undefined, status: undefined } as IVeoFilter | undefined,
+      filter: {
+        designator: undefined,
+        name: undefined,
+        description: undefined,
+        updatedBy: undefined,
+        status: undefined
+      } as IVeoFilter | undefined,
       selectedItems: [] as { id: string; type: string }[],
       saving: false as boolean,
-      entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
+      entities: {
+        items: [],
+        page: 1,
+        pageCount: 0,
+        totalItemCount: 0
+      } as IVeoPaginatedResponse<IVeoEntity[]>,
       loading: false as boolean,
       objectType: '' as string,
       schemas: [] as IVeoSchemaEndpoint[]
@@ -207,7 +207,7 @@ export default Vue.extend({
 
       const children = this.selectedItems.map((item) => {
         return {
-          targetUri: `/${getSchemaEndpoint(this.schemas, item.type) || item.type}/${item.id}`
+          targetUri: `${this.$config.apiUrl}/${getSchemaEndpoint(this.schemas, item.type) || item.type}/${item.id}`
         };
       });
       if (this.editedEntity.type === 'scope') {
