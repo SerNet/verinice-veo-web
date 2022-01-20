@@ -106,7 +106,7 @@ describe('Objects details', () => {
 
     // Open history and select second newest version
     cy.get('.v-slide-group__prev').click();
-    cy.contains('.v-tab', 'verlauf').click();
+    cy.contains('.v-tab', 'verlauf').click({ force: true });
     cy.get('[data-cy=veo-object-history-history-list]').should('be.visible');
     cy.get('[data-cy=veo-object-history-history-list]').find('.v-item-group').children().eq(1).click();
     cy.get('[data-cy=veo-objects-index-page-old-version-alert]').should('be.visible');

@@ -236,7 +236,7 @@ export default Vue.extend({
         vjp.set(newValue, propertyPath(scope).replace('#/', '/'), v);
         newValue = this.executeReactiveFormActions(oldValue, newValue);
         this.$emit('input', newValue);
-        this.validate();
+        this.$nextTick().then(() => this.validate());
       }
     },
     validationErrorTransform(accummulator: {}, error: ErrorObject) {
