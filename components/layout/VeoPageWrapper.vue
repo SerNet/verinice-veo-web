@@ -22,9 +22,6 @@ import { PropType } from 'vue/types/options';
 import VeoCollapseButton from '~/components/layout/VeoCollapseButton.vue';
 
 export default Vue.extend({
-  components: {
-    VeoCollapseButton
-  },
   props: {
     title: {
       type: String,

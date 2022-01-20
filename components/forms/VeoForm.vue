@@ -230,10 +230,13 @@ export default Vue.extend({
       // TODO: check the performance of these lines, which can cause slow input process
       if (scope) {
         const oldValue = cloneDeep(this.value);
-        vjp.set(this.value, propertyPath(scope).replace('#/', '/'), v);
-        const newValue = this.executeReactiveFormActions(oldValue, this.value);
+
+        // We clone the current value again to not edit the prop ourselves but let the parent component handle it
+        let newValue = cloneDeep(this.value);
+        vjp.set(newValue, propertyPath(scope).replace('#/', '/'), v);
+        newValue = this.executeReactiveFormActions(oldValue, newValue);
         this.$emit('input', newValue);
-        this.validate();
+        this.$nextTick().then(() => this.validate());
       }
     },
     validationErrorTransform(accummulator: {}, error: ErrorObject) {

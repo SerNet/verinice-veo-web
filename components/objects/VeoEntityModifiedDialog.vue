@@ -17,11 +17,12 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog"
-    :headline="$t('headline')"
+    :value="value && !!item"
+    :headline="t('headline')"
+    v-on="$listeners"
   >
     <template #default>
-      {{ $t('text', { displayName }) }}
+      {{ t('text', { displayName: item && item.displayName }) }}
     </template>
     <template #dialog-options>
       <v-btn
@@ -29,68 +30,44 @@
         color="primary"
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.no') }}
+        {{ t('global.button.no') }}
       </v-btn>
       <v-spacer />
       <v-btn
         text
         color="primary"
         :disabled="!item"
-        @click="$emit('exit', item.id)"
+        @click="$emit('exit', item && item.id)"
       >
-        {{ $t('global.button.yes') }}
+        {{ t('global.button.yes') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoEntity } from '~/types/VeoTypes';
 
-interface IData {
-  dialog: boolean;
-  noWatch: boolean;
-}
-
-export default Vue.extend({
+export default defineComponent({
   props: {
     value: {
       type: Boolean,
       required: true
     },
     item: {
-      type: Object as Prop<IVeoEntity>,
+      type: Object,
       default: undefined
-    }
+    } as PropOptions<IVeoEntity>
   },
-  data(): IData {
+  setup() {
+    const { t } = useI18n();
+
     return {
-      dialog: false,
-      noWatch: false
+      t
     };
-  },
-  computed: {
-    displayName(): string {
-      return this.item?.displayName ? `"${this.item.displayName}"` : '';
-    }
-  },
-  watch: {
-    value(newValue: boolean) {
-      this.noWatch = true;
-      this.dialog = newValue;
-      this.noWatch = false;
-    },
-    dialog(newValue: boolean) {
-      if (!this.noWatch) {
-        this.$emit('input', newValue);
-      }
-    }
-  },
-  mounted() {
-    this.dialog = this.value;
   }
 });
 </script>
@@ -98,11 +75,11 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "text": "The object {displayName} has been edited. Do you really want to leave this page?",
+    "text": "The object \"{displayName}\" has been edited. The changes won't be saved. Do you really want to leave this page?",
     "headline": "Close"
   },
   "de": {
-    "text": "Das Objekt {displayName} wurde bearbeitet. Wollen Sie die Seite wirklich verlassen?",
+    "text": "Das Objekt \"{displayName}\" wurde bearbeitet. Die Änderungen werden nicht gespeichert. Wollen Sie die Seite wirklich verlassen?",
     "headline": "Verlassen"
   }
 }

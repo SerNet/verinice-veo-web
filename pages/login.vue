@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Markus Werner
+   - Copyright (C) 2021  Jonas Heitmann, Markus Werner, Tino Groteloh
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +27,7 @@
           block
           color="primary"
           class="login-button"
-          @click="$user.auth.login('/')"
+          @click="login"
         >
           {{ t('login') }}
         </v-btn>
@@ -36,7 +36,7 @@
         <v-btn
           depressed
           block
-          @click="$user.auth.register('/')"
+          @click="register"
         >
           {{ t('register') }}
         </v-btn>
@@ -46,18 +46,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useMeta } from '@nuxtjs/composition-api';
+import { defineComponent, useContext, useMeta } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 export default defineComponent({
   layout: 'plain',
   setup() {
-    const { title } = useMeta();
     const { t } = useI18n();
+    const { title } = useMeta();
+    const { $user } = useContext();
 
     title.value = t('login').toString();
 
+    const login = () => $user.auth.login('/');
+    const register = () => $user.auth.register('/');
+
     return {
+      login,
+      register,
       t
     };
   },

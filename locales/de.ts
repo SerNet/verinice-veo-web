@@ -5,6 +5,8 @@ export default {
 
   clone: 'Kopie',
 
+  unsavedChanges: 'Es gibt ungespeicherte Änderungen. Wollen Sie die Seite wirklich verlassen?',
+
   'editor.basicproperties': 'Standardattribute',
   'editor.customaspects': 'Individuelle Aspekte',
   'editor.customaspects.add': 'Aspekte hinzufügen',

@@ -5,6 +5,8 @@ export default {
 
   clone: 'Clone',
 
+  unsavedChanges: 'There are unsaved changes. Do you really want to leave this page?',
+
   'editor.basicproperties': 'Basic properties',
   'editor.customaspects': 'Custom aspects',
   'editor.customaspects.add': 'Add aspect',
