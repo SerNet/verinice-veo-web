@@ -46,6 +46,7 @@
             <VeoPrimaryNavigationEntry
               :key="index"
               v-bind="item"
+              :loading="$fetchState.pending"
               :collapsed.sync="item.collapsed"
               :mini-variant="miniVariant"
               :persist-u-i-state="item.persistCollapsedState"
@@ -108,7 +109,6 @@ export interface INavItem {
   exact?: boolean;
   to?: RawLocation;
   disabled: boolean;
-  loading?: boolean;
   childItems?: INavItem[];
   collapsed?: boolean;
   topLevelItem: boolean;
@@ -245,7 +245,6 @@ export default Vue.extend({
         to: undefined,
         exact: false,
         disabled: false,
-        loading: this.$fetchState.pending,
         childItems: this.objectTypeItems,
         collapsed: LocalStorage.expandedNavEntry !== 1,
         persistCollapsedState: (collapsed) => (LocalStorage.expandedNavEntry = collapsed ? -1 : 1),

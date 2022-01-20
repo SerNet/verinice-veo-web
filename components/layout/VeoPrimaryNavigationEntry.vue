@@ -24,6 +24,11 @@
     v-else-if="name === 'divider'"
     class="mt-8"
   />
+  <v-skeleton-loader
+    v-else-if="loading"
+    class="veo-primary-navigation__menu-item"
+    :type="icon ? 'list-item-avatar' : 'list-item'"
+  ></v-skeleton-loader>
   <v-list-item
     v-else-if="childItems === undefined"
     class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
@@ -92,15 +97,6 @@
     >
       <v-list-item-subtitle>{{ t('noEntries') }}</v-list-item-subtitle>
     </v-list-item>
-    <template v-if="childItems.length === 0 && loading">
-      <v-skeleton-loader
-        v-for="index in 3"
-        :key="index"
-        type="list-item"
-        style="padding-left: 48px;"
-      >
-      </v-skeleton-loader>
-    </template>
     <VeoPrimaryNavigationEntry
       v-for="child of childItems"
       v-bind="child"
@@ -227,18 +223,34 @@ export default defineComponent<IProps>({
 }
 </i18n>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .veo-primary-navigation__menu-item {
   flex-basis: auto;
 }
 
-.v-list--nav {
-  .veo-primary-navigation__menu-item.v-list-group--no-action {
-    & > .v-list-group__items {
-      & > .v-list-item {
-        padding-left: 76px;
-      }
+.veo-primary-navigation__menu-item.v-list-group--no-action {
+  & > .v-list-group__items {
+    & > .v-list-item {
+      padding-left: 76px;
     }
+  }
+}
+
+.veo-primary-navigation__menu-item.v-skeleton-loader {
+  margin-bottom: 4px;
+  .v-skeleton-loader__list-item-avatar {
+    height: 40px;
+    padding: 0 8px;
+    .v-skeleton-loader__avatar {
+      width: 24px;
+      height: 24px;
+      margin-right: 32px;
+    }
+  }
+  .v-skeleton-loader__list-item {
+    height: 40px;
+    padding: 0 8px;
+    padding-left: 64px;
   }
 }
 </style>
