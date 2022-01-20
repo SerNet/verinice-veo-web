@@ -120,6 +120,7 @@ export default class ObjectSchemaValidator {
           break;
       }
     }
+
     return { valid: errors.length === 0, errors, warnings: [] };
   }
 
