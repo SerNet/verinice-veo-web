@@ -204,7 +204,8 @@ export default Vue.extend({
               // dynamic sub type routes
               ...sortBy(
                 (this.objectSubTypes[objectTypeKey] || []).map((subTypeKey) => {
-                  const displayName = this.formSchemas.find((formSchema) => formSchema.subType === subTypeKey)?.name[this.$i18n.locale] || subTypeKey;
+                  const formSchema = this.formSchemas.find((formSchema) => formSchema.modelType === objectTypeKey && formSchema.subType === subTypeKey);
+                  const displayName = formSchema?.name[this.$i18n.locale] || subTypeKey;
                   return {
                     name: displayName,
                     to: {
@@ -220,10 +221,11 @@ export default Vue.extend({
                     },
                     exact: true,
                     disabled: false,
-                    topLevelItem: false
+                    topLevelItem: false,
+                    sorting: formSchema?.sorting
                   };
                 }),
-                'name'
+                'sorting'
               )
             ]
           };
