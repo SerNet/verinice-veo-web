@@ -198,12 +198,6 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
           </div>
           <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
               <div
                 data-v-123abc4d=""
                 role="list"
@@ -235,7 +229,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                                   for=""
                                   class="v-label theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
+                                  >Empfänger Intern</label
                                 ><input id="" type="text" autocomplete="off" />
                                 <div class="v-input__append-inner">
                                   <div></div>
@@ -303,12 +297,6 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
           </div>
           <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Art der verarbeiteten Daten
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
               <div
                 data-v-123abc4d=""
                 role="list"
@@ -340,7 +328,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                                   for=""
                                   class="v-label theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
+                                  >Art der verarbeiteten Daten</label
                                 ><input id="" type="text" autocomplete="off" />
                                 <div class="v-input__append-inner">
                                   <div></div>
@@ -1306,12 +1294,6 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
         <div data-v-123abc4d="" class="row flex-column direction-vertical">
           <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern Test
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
               <div
                 data-v-123abc4d=""
                 role="list"
@@ -1343,7 +1325,7 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                                   for=""
                                   class="v-label theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
+                                  >Empfänger Intern Test</label
                                 ><input id="" type="text" autocomplete="off" />
                                 <div class="v-input__append-inner">
                                   <div></div>
@@ -3552,12 +3534,6 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
           </div>
           <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern Test
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
               <div
                 data-v-123abc4d=""
                 role="list"
@@ -3589,7 +3565,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                                   for=""
                                   class="v-label theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
+                                  >Empfänger Intern Test</label
                                 ><input id="" type="text" autocomplete="off" />
                                 <div class="v-input__append-inner">
                                   <div></div>
@@ -5074,12 +5050,6 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
           </div>
           <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern Test geändert
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
               <div
                 data-v-123abc4d=""
                 role="list"
@@ -5111,7 +5081,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                                   for=""
                                   class="v-label theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
+                                  >Empfänger Intern Test geändert</label
                                 ><input id="" type="text" autocomplete="off" />
                                 <div class="v-input__append-inner">
                                   <div></div>
@@ -6594,12 +6564,6 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
           </div>
           <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
               <div
                 data-v-123abc4d=""
                 role="list"
@@ -6631,7 +6595,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                                   for=""
                                   class="v-label theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
+                                  >Empfänger Intern</label
                                 ><input id="" type="text" autocomplete="off" />
                                 <div class="v-input__append-inner">
                                   <div></div>
@@ -6866,6 +6830,64 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
 </div>
 `;
 
+exports[`Formschema Editor > compares downloaded schema with the actual one #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
+        "type": "Label"
+      },
+      {
+        "elements": [
+          {
+            "options": {
+              "label": "#lang/description"
+            },
+            "scope": "#/properties/description",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/name"
+            },
+            "scope": "#/properties/name",
+            "type": "Control"
+          }
+        ],
+        "options": {
+          "format": "group",
+          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
+        },
+        "type": "Layout"
+      },
+      {
+        "options": {
+          "label": "#lang/abbreviation"
+        },
+        "scope": "#/properties/abbreviation",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema"
+  },
+  "subType": "PRO_DataTransfer",
+  "translation": {
+    "de": {
+      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
+      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
+    }
+  }
+};
+
 exports[`Formschema Editor > adds, updates formSchema meta details #0`] =
 {
   "content": {
@@ -7021,63 +7043,5 @@ exports[`Formschema Editor > checks whether translations get deleted if the cont
       "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
     },
     "en": {}
-  }
-};
-
-exports[`Formschema Editor > compares downloaded schema with the actual one #0`] =
-{
-  "content": {
-    "elements": [
-      {
-        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
-        "type": "Label"
-      },
-      {
-        "elements": [
-          {
-            "options": {
-              "label": "#lang/description"
-            },
-            "scope": "#/properties/description",
-            "type": "Control"
-          },
-          {
-            "options": {
-              "label": "#lang/name"
-            },
-            "scope": "#/properties/name",
-            "type": "Control"
-          }
-        ],
-        "options": {
-          "format": "group",
-          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
-        },
-        "type": "Layout"
-      },
-      {
-        "options": {
-          "label": "#lang/abbreviation"
-        },
-        "scope": "#/properties/abbreviation",
-        "type": "Control"
-      }
-    ],
-    "options": {
-      "direction": "vertical",
-      "format": "group"
-    },
-    "type": "Layout"
-  },
-  "modelType": "process",
-  "name": {
-    "de": "Test Formschema"
-  },
-  "subType": "PRO_DataTransfer",
-  "translation": {
-    "de": {
-      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
-      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
-    }
   }
 };
