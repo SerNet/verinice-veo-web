@@ -94,6 +94,470 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
   }
 };
 
+exports[`Formschema Editor > drags and drops elements into dropzone and nests in each other #1`] = `
+<div data-v-123abc4d="" class="vf-wrapper d-flex flex-column">
+  <div data-v-123abc4d="" id="" class="vf-layout vf-group col-md-auto col-12">
+    <div data-v-123abc4d="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-123abc4d="" class="col">
+        <div data-v-123abc4d="" class="row flex-column direction-vertical">
+          <div data-v-123abc4d="" class="vf-label">
+            dynamic_text_group_title
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-form-element vf-input-text">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Name*</label
+                        ><input id="" type="text" />
+                      </div>
+                      <div class="v-input__append-inner"><div></div></div>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-form-element vf-input-text">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Bemerkungen</label
+                        ><input id="" type="text" />
+                      </div>
+                      <div class="v-input__append-inner"><div></div></div>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-select vf-form-element">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select"
+                >
+                  <div class="v-input__control">
+                    <div
+                      role="button"
+                      aria-haspopup="listbox"
+                      aria-expanded="false"
+                      aria-owns=""
+                      class="v-input__slot"
+                    >
+                      <div class="v-select__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Art der Erhebung</label
+                        >
+                        <div class="v-select__selections">
+                          <input
+                            id=""
+                            readonly="readonly"
+                            type="text"
+                            aria-readonly="false"
+                            autocomplete="off"
+                          />
+                        </div>
+                        <div class="v-input__append-inner"><div></div></div>
+                        <div class="v-input__append-inner">
+                          <div class="v-input__icon v-input__icon--append">
+                            <i
+                              aria-hidden="true"
+                              class="v-icon notranslate mdi mdi-menu-down theme--light"
+                            ></i>
+                          </div>
+                        </div>
+                        <input type="hidden" />
+                      </div>
+                      <div class="v-menu"><!----></div>
+                    </div>
+                  </div>
+                </div></span
+              >
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
+              <div
+                data-v-123abc4d=""
+                role="list"
+                class="v-list py-0 v-sheet theme--light v-list--dense"
+              >
+                <div
+                  data-v-123abc4d=""
+                  tabindex="-1"
+                  role="listitem"
+                  class="links-field-item my-2 pt-2 v-list-item theme--light"
+                >
+                  <div data-v-123abc4d="" class="v-list-item__content">
+                    <div data-v-123abc4d="" class="row flex-column row--dense">
+                      <div data-v-123abc4d="" class="col mb-4">
+                        <div
+                          data-v-123abc4d=""
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
+                        >
+                          <div class="v-input__control">
+                            <div
+                              role="combobox"
+                              aria-haspopup="listbox"
+                              aria-expanded="false"
+                              aria-owns=""
+                              class="v-input__slot"
+                            >
+                              <div class="v-select__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Empfänger Intern</label
+                                ><input id="" type="text" autocomplete="off" />
+                                <div class="v-input__append-inner">
+                                  <div></div>
+                                </div>
+                                <div class="v-input__append-inner">
+                                  <div
+                                    class="v-input__icon v-input__icon--append"
+                                  >
+                                    <i
+                                      aria-hidden="true"
+                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
+                                    ></i>
+                                  </div>
+                                </div>
+                                <input type="hidden" />
+                              </div>
+                              <div class="v-menu"><!----></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!---->
+                      <div
+                        data-v-123abc4d=""
+                        role="dialog"
+                        class="v-dialog__container"
+                      >
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="v-list-item__action">
+                    <button
+                      data-v-123abc4d=""
+                      type="button"
+                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><span
+                          data-v-123abc4d=""
+                          aria-hidden="true"
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
+                      ></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                data-v-123abc4d=""
+                type="button"
+                class="v-btn v-btn--text theme--light v-size--small primary--text"
+              >
+                <span class="v-btn__content"
+                  ><span
+                    data-v-123abc4d=""
+                    aria-hidden="true"
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
+                  <span data-v-123abc4d="">Link hinzufügen</span></span
+                >
+              </button>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
+              <div
+                data-v-123abc4d=""
+                role="list"
+                class="v-list py-0 v-sheet theme--light v-list--dense"
+              >
+                <div
+                  data-v-123abc4d=""
+                  tabindex="-1"
+                  role="listitem"
+                  class="links-field-item my-2 pt-2 v-list-item theme--light"
+                >
+                  <div data-v-123abc4d="" class="v-list-item__content">
+                    <div data-v-123abc4d="" class="row flex-column row--dense">
+                      <div data-v-123abc4d="" class="col mb-4">
+                        <div
+                          data-v-123abc4d=""
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
+                        >
+                          <div class="v-input__control">
+                            <div
+                              role="combobox"
+                              aria-haspopup="listbox"
+                              aria-expanded="false"
+                              aria-owns=""
+                              class="v-input__slot"
+                            >
+                              <div class="v-select__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Art der verarbeiteten Daten</label
+                                ><input id="" type="text" autocomplete="off" />
+                                <div class="v-input__append-inner">
+                                  <div></div>
+                                </div>
+                                <div class="v-input__append-inner">
+                                  <div
+                                    class="v-input__icon v-input__icon--append"
+                                  >
+                                    <i
+                                      aria-hidden="true"
+                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
+                                    ></i>
+                                  </div>
+                                </div>
+                                <input type="hidden" />
+                              </div>
+                              <div class="v-menu"><!----></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!---->
+                      <div
+                        data-v-123abc4d=""
+                        role="dialog"
+                        class="v-dialog__container"
+                      >
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="v-list-item__action">
+                    <button
+                      data-v-123abc4d=""
+                      type="button"
+                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><span
+                          data-v-123abc4d=""
+                          aria-hidden="true"
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
+                      ></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                data-v-123abc4d=""
+                type="button"
+                class="v-btn v-btn--text theme--light v-size--small primary--text"
+              >
+                <span class="v-btn__content"
+                  ><span
+                    data-v-123abc4d=""
+                    aria-hidden="true"
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
+                  <span data-v-123abc4d="">Link hinzufügen</span></span
+                >
+              </button>
+            </div>
+          </div>
+          <div
+            data-v-123abc4d=""
+            id="elements-6"
+            class="vf-layout vf-group col-md-auto col-12"
+          >
+            <div data-v-123abc4d="" class="row flex-column row--dense">
+              <!---->
+              <div data-v-123abc4d="" class="col">
+                <div
+                  data-v-123abc4d=""
+                  class="row flex-column direction-vertical"
+                >
+                  <div
+                    data-v-123abc4d=""
+                    id="elements-6-elements-0"
+                    class="vf-layout vf-group col-md-auto col-12"
+                  >
+                    <div data-v-123abc4d="" class="row flex-column row--dense">
+                      <!---->
+                      <div data-v-123abc4d="" class="col">
+                        <div
+                          data-v-123abc4d=""
+                          class="row flex-column direction-vertical"
+                        >
+                          <div
+                            data-v-123abc4d=""
+                            class="col-md-auto col-12 vf-control"
+                          >
+                            <div
+                              data-v-123abc4d=""
+                              class="vf-form-element vf-input-text"
+                            >
+                              <span
+                                ><div
+                                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                                >
+                                  <div class="v-input__control">
+                                    <div class="v-input__slot">
+                                      <div class="v-text-field__slot">
+                                        <label
+                                          for=""
+                                          class="v-label theme--light"
+                                          style="left: 0px; right: auto; position: absolute;"
+                                          >Beschreibung</label
+                                        ><input id="" type="text" />
+                                      </div>
+                                      <div class="v-input__append-inner">
+                                        <div></div>
+                                      </div>
+                                    </div>
+                                  </div></div
+                              ></span>
+                            </div>
+                          </div>
+                          <div
+                            data-v-123abc4d=""
+                            class="col-md-auto col-12 vf-control"
+                          >
+                            <div
+                              data-v-123abc4d=""
+                              class="vf-checkbox vf-form-element"
+                            >
+                              <span
+                                ><div
+                                  class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
+                                >
+                                  <div class="v-input__control">
+                                    <div class="v-input__slot">
+                                      <div
+                                        class="v-input--selection-controls__input"
+                                      >
+                                        <i
+                                          aria-hidden="true"
+                                          class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
+                                        ></i
+                                        ><input
+                                          aria-checked="mixed"
+                                          id=""
+                                          role="checkbox"
+                                          type="checkbox"
+                                          value=""
+                                        />
+                                        <div
+                                          class="v-input--selection-controls__ripple"
+                                        ></div>
+                                      </div>
+                                      <label
+                                        for=""
+                                        class="v-label theme--light"
+                                        style="left: 0px; right: auto; position: relative;"
+                                        >Datenverarbeitung besonders sensitiver
+                                        Daten?</label
+                                      >
+                                    </div>
+                                  </div>
+                                  <div class="v-input__append-outer">
+                                    <div>
+                                      <button
+                                        type="button"
+                                        class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                                      ></button>
+                                    </div>
+                                  </div></div
+                              ></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="vf-label">
+                    dynamic_text_group_title
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Formschema Editor > opens InputText/InputTextMultiline/MarkdownEditor dialogs, changes data in dialogs and save them #0`] =
 {
   "content": {
@@ -860,6 +1324,276 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
     }
   }
 };
+
+exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs and save them #1`] = `
+<div data-v-123abc4d="" class="vf-wrapper d-flex flex-column">
+  <div data-v-123abc4d="" id="" class="vf-layout vf-group col-md-auto col-12">
+    <div data-v-123abc4d="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-123abc4d="" class="col">
+        <div data-v-123abc4d="" class="row flex-column direction-vertical">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
+              <div
+                data-v-123abc4d=""
+                role="list"
+                class="v-list py-0 v-sheet theme--light v-list--dense"
+              >
+                <div
+                  data-v-123abc4d=""
+                  tabindex="-1"
+                  role="listitem"
+                  class="links-field-item my-2 pt-2 v-list-item theme--light"
+                >
+                  <div data-v-123abc4d="" class="v-list-item__content">
+                    <div data-v-123abc4d="" class="row flex-column row--dense">
+                      <div data-v-123abc4d="" class="col">
+                        <div
+                          data-v-123abc4d=""
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
+                        >
+                          <div class="v-input__control">
+                            <div
+                              role="combobox"
+                              aria-haspopup="listbox"
+                              aria-expanded="false"
+                              aria-owns=""
+                              class="v-input__slot"
+                            >
+                              <div class="v-select__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Empfänger Intern Test</label
+                                ><input id="" type="text" autocomplete="off" />
+                                <div class="v-input__append-inner">
+                                  <div></div>
+                                </div>
+                                <div class="v-input__append-inner">
+                                  <div
+                                    class="v-input__icon v-input__icon--append"
+                                  >
+                                    <i
+                                      aria-hidden="true"
+                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
+                                    ></i>
+                                  </div>
+                                </div>
+                                <input type="hidden" />
+                              </div>
+                              <div class="v-menu"><!----></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div data-v-123abc4d="" class="col">
+                        <div
+                          data-v-123abc4d=""
+                          class="vf-wrapper d-flex flex-column"
+                        >
+                          <div
+                            data-v-123abc4d=""
+                            id=""
+                            class="vf-layout vf-group col-md-auto col-12"
+                          >
+                            <div
+                              data-v-123abc4d=""
+                              class="row flex-column row--dense"
+                            >
+                              <!---->
+                              <div data-v-123abc4d="" class="col">
+                                <div
+                                  data-v-123abc4d=""
+                                  class="row flex-column direction-vertical"
+                                >
+                                  <div
+                                    data-v-123abc4d=""
+                                    class="col-md-auto col-12 vf-control"
+                                  >
+                                    <div
+                                      data-v-123abc4d=""
+                                      class="vf-form-element vf-input-text"
+                                    >
+                                      <span
+                                        ><div
+                                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                                        >
+                                          <div class="v-input__control">
+                                            <div class="v-input__slot">
+                                              <div class="v-text-field__slot">
+                                                <label
+                                                  for=""
+                                                  class="v-label theme--light"
+                                                  style="left: 0px; right: auto; position: absolute;"
+                                                  >Zweck des internen
+                                                  Datentransfers</label
+                                                ><input id="" type="text" />
+                                              </div>
+                                              <div
+                                                class="v-input__append-inner"
+                                              >
+                                                <div></div>
+                                              </div>
+                                            </div>
+                                          </div></div
+                                      ></span>
+                                    </div>
+                                  </div>
+                                  <div
+                                    data-v-123abc4d=""
+                                    class="col-md-auto col-12 vf-control"
+                                  >
+                                    <div
+                                      data-v-123abc4d=""
+                                      class="vf-form-element vf-input-text"
+                                    >
+                                      <span
+                                        ><div
+                                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                                        >
+                                          <div class="v-input__control">
+                                            <div class="v-input__slot">
+                                              <div class="v-text-field__slot">
+                                                <label
+                                                  for=""
+                                                  class="v-label theme--light"
+                                                  style="left: 0px; right: auto; position: absolute;"
+                                                  >Erläuterung</label
+                                                ><input id="" type="text" />
+                                              </div>
+                                              <div
+                                                class="v-input__append-inner"
+                                              >
+                                                <div></div>
+                                              </div>
+                                            </div>
+                                          </div></div
+                                      ></span>
+                                    </div>
+                                  </div>
+                                  <div
+                                    data-v-123abc4d=""
+                                    class="col-md-auto col-12 vf-control"
+                                  >
+                                    <div
+                                      data-v-123abc4d=""
+                                      class="vf-input-uri vf-form-element"
+                                    >
+                                      <span
+                                        ><div
+                                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                                        >
+                                          <div class="v-input__control">
+                                            <div class="v-input__slot">
+                                              <div class="v-text-field__slot">
+                                                <label
+                                                  for=""
+                                                  class="v-label theme--light"
+                                                  style="left: 0px; right: auto; position: absolute;"
+                                                  >Dokument</label
+                                                ><input id="" type="text" />
+                                              </div>
+                                              <div
+                                                class="v-input__append-inner"
+                                              >
+                                                <div></div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div class="v-input__append-outer">
+                                            <button
+                                              target="_blank"
+                                              type="button"
+                                              disabled="disabled"
+                                              class="v-btn v-btn--disabled v-btn--icon v-btn--round theme--light v-size--small"
+                                            >
+                                              <span class="v-btn__content"
+                                                ><i
+                                                  aria-hidden="true"
+                                                  class="v-icon notranslate mdi mdi-open-in-new theme--light"
+                                                ></i
+                                              ></span>
+                                            </button>
+                                          </div></div
+                                      ></span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        data-v-123abc4d=""
+                        role="dialog"
+                        class="v-dialog__container"
+                      >
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="v-list-item__action">
+                    <button
+                      data-v-123abc4d=""
+                      type="button"
+                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><span
+                          data-v-123abc4d=""
+                          aria-hidden="true"
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
+                      ></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                data-v-123abc4d=""
+                type="button"
+                class="v-btn v-btn--text theme--light v-size--small primary--text"
+              >
+                <span class="v-btn__content"
+                  ><span
+                    data-v-123abc4d=""
+                    aria-hidden="true"
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
+                  <span data-v-123abc4d="">Link hinzufügen</span></span
+                >
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
 
 exports[`Formschema Editor > opens FseLabel dialogs, changes data in dialogs and save them #0`] =
 {
@@ -2671,6 +3405,481 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
 </div>
 `;
 
+exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
+<div data-v-123abc4d="" class="vf-wrapper d-flex flex-column">
+  <div data-v-123abc4d="" id="" class="vf-layout vf-group col-md-auto col-12">
+    <div data-v-123abc4d="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-123abc4d="" class="col">
+        <div data-v-123abc4d="" class="row flex-column direction-vertical">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-form-element vf-input-text">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Name Test*</label
+                        ><input id="" type="text" />
+                      </div>
+                      <div class="v-input__append-inner"><div></div></div>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-input-uri vf-form-element">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Dokument Test</label
+                        ><input id="" type="text" />
+                      </div>
+                      <div class="v-input__append-inner"><div></div></div>
+                    </div>
+                  </div>
+                  <div class="v-input__append-outer">
+                    <button
+                      target="_blank"
+                      type="button"
+                      disabled="disabled"
+                      class="v-btn v-btn--disabled v-btn--icon v-btn--round theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><i
+                          aria-hidden="true"
+                          class="v-icon notranslate mdi mdi-open-in-new theme--light"
+                        ></i
+                      ></span>
+                    </button>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-input-date vf-form-element">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__prepend-outer">
+                    <div class="v-input__icon v-input__icon--prepend">
+                      <i
+                        aria-hidden="true"
+                        class="v-icon notranslate mdi mdi-calendar theme--light"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Erhebung durchgeführt am Test</label
+                        ><input id="" type="text" />
+                      </div>
+                      <div class="v-input__append-inner"><div></div></div>
+                    </div>
+                  </div></div
+              ></span>
+              <div class="v-menu"><!----></div>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-input--selection-controls__input">
+                        <i
+                          aria-hidden="true"
+                          class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
+                        ></i
+                        ><input
+                          aria-checked="mixed"
+                          id=""
+                          role="checkbox"
+                          type="checkbox"
+                          value=""
+                        />
+                        <div class="v-input--selection-controls__ripple"></div>
+                      </div>
+                      <label
+                        for=""
+                        class="v-label theme--light"
+                        style="left: 0px; right: auto; position: relative;"
+                        >Datenverarbeitung besonders sensitiver Daten?
+                        Test</label
+                      >
+                    </div>
+                  </div>
+                  <div class="v-input__append-outer">
+                    <div>
+                      <button
+                        type="button"
+                        class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                      ></button>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-select vf-form-element">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select"
+                >
+                  <div class="v-input__control">
+                    <div
+                      role="button"
+                      aria-haspopup="listbox"
+                      aria-expanded="false"
+                      aria-owns=""
+                      class="v-input__slot"
+                    >
+                      <div class="v-select__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Art der Erhebung Test</label
+                        >
+                        <div class="v-select__selections">
+                          <input
+                            id=""
+                            readonly="readonly"
+                            type="text"
+                            aria-readonly="false"
+                            autocomplete="off"
+                          />
+                        </div>
+                        <div class="v-input__append-inner"><div></div></div>
+                        <div class="v-input__append-inner">
+                          <div class="v-input__icon v-input__icon--append">
+                            <i
+                              aria-hidden="true"
+                              class="v-icon notranslate mdi mdi-menu-down theme--light"
+                            ></i>
+                          </div>
+                        </div>
+                        <input type="hidden" />
+                      </div>
+                      <div class="v-menu"><!----></div>
+                    </div>
+                  </div>
+                </div></span
+              >
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
+              <div
+                data-v-123abc4d=""
+                role="list"
+                class="v-list py-0 v-sheet theme--light v-list--dense"
+              >
+                <div
+                  data-v-123abc4d=""
+                  tabindex="-1"
+                  role="listitem"
+                  class="links-field-item my-2 pt-2 v-list-item theme--light"
+                >
+                  <div data-v-123abc4d="" class="v-list-item__content">
+                    <div data-v-123abc4d="" class="row flex-column row--dense">
+                      <div data-v-123abc4d="" class="col mb-4">
+                        <div
+                          data-v-123abc4d=""
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
+                        >
+                          <div class="v-input__control">
+                            <div
+                              role="combobox"
+                              aria-haspopup="listbox"
+                              aria-expanded="false"
+                              aria-owns=""
+                              class="v-input__slot"
+                            >
+                              <div class="v-select__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Empfänger Intern Test</label
+                                ><input id="" type="text" autocomplete="off" />
+                                <div class="v-input__append-inner">
+                                  <div></div>
+                                </div>
+                                <div class="v-input__append-inner">
+                                  <div
+                                    class="v-input__icon v-input__icon--append"
+                                  >
+                                    <i
+                                      aria-hidden="true"
+                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
+                                    ></i>
+                                  </div>
+                                </div>
+                                <input type="hidden" />
+                              </div>
+                              <div class="v-menu"><!----></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!---->
+                      <div
+                        data-v-123abc4d=""
+                        role="dialog"
+                        class="v-dialog__container"
+                      >
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="v-list-item__action">
+                    <button
+                      data-v-123abc4d=""
+                      type="button"
+                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><span
+                          data-v-123abc4d=""
+                          aria-hidden="true"
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
+                      ></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                data-v-123abc4d=""
+                type="button"
+                class="v-btn v-btn--text theme--light v-size--small primary--text"
+              >
+                <span class="v-btn__content"
+                  ><span
+                    data-v-123abc4d=""
+                    aria-hidden="true"
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
+                  <span data-v-123abc4d="">Link hinzufügen</span></span
+                >
+              </button>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="vf-label">
+            Text 1 Test
+          </div>
+          <div data-v-123abc4d="" class="vf-label">
+            Text 2 Test
+          </div>
+          <div
+            data-v-123abc4d=""
+            id="elements-8"
+            class="vf-layout vf-group col-md-auto col-12"
+          >
+            <div data-v-123abc4d="" class="row flex-column row--dense">
+              <!---->
+              <div data-v-123abc4d="" class="col">
+                <div
+                  data-v-123abc4d=""
+                  class="row flex-column direction-vertical"
+                >
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+                    <div
+                      data-v-123abc4d=""
+                      class="vf-form-element vf-input-text"
+                    >
+                      <span
+                        ><div
+                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                        >
+                          <div class="v-input__control">
+                            <div class="v-input__slot">
+                              <div class="v-text-field__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Bemerkungen Test</label
+                                ><input id="" type="text" />
+                              </div>
+                              <div class="v-input__append-inner">
+                                <div></div>
+                              </div>
+                            </div>
+                          </div></div
+                      ></span>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+                    <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
+                      <span
+                        ><div
+                          class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
+                        >
+                          <div class="v-input__control">
+                            <div class="v-input__slot">
+                              <div class="v-input--selection-controls__input">
+                                <i
+                                  aria-hidden="true"
+                                  class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
+                                ></i
+                                ><input
+                                  aria-checked="mixed"
+                                  id=""
+                                  role="checkbox"
+                                  type="checkbox"
+                                  value=""
+                                />
+                                <div
+                                  class="v-input--selection-controls__ripple"
+                                ></div>
+                              </div>
+                              <label
+                                for=""
+                                class="v-label theme--light"
+                                style="left: 0px; right: auto; position: relative;"
+                                >Meldeverfahren Art. 33,34 DS-GVO? Test</label
+                              >
+                            </div>
+                          </div>
+                          <div class="v-input__append-outer">
+                            <div>
+                              <button
+                                type="button"
+                                class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                              ></button>
+                            </div>
+                          </div></div
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            data-v-123abc4d=""
+            id="elements-9"
+            class="vf-layout vf-group col-md-auto col-12"
+          >
+            <div data-v-123abc4d="" class="row flex-column row--dense">
+              <!---->
+              <div data-v-123abc4d="" class="col">
+                <div
+                  data-v-123abc4d=""
+                  class="row flex-column direction-vertical"
+                >
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+                    <div
+                      data-v-123abc4d=""
+                      class="vf-form-element vf-input-text"
+                    >
+                      <span
+                        ><div
+                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                        >
+                          <div class="v-input__control">
+                            <div class="v-input__slot">
+                              <div class="v-text-field__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Abkürzung</label
+                                ><input id="" type="text" />
+                              </div>
+                              <div class="v-input__append-inner">
+                                <div></div>
+                              </div>
+                            </div>
+                          </div></div
+                      ></span>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+                    <div
+                      data-v-123abc4d=""
+                      class="vf-form-element vf-input-text"
+                    >
+                      <span
+                        ><div
+                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                        >
+                          <div class="v-input__control">
+                            <div class="v-input__slot">
+                              <div class="v-text-field__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Beschreibung</label
+                                ><input id="" type="text" />
+                              </div>
+                              <div class="v-input__append-inner">
+                                <div></div>
+                              </div>
+                            </div>
+                          </div></div
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Formschema Editor > adds, updates, deletes translations #3`] =
 {
   "group_53731d24-172a-4a7f-b45f-fcddd434434c": "Gruppe 1 Test",
@@ -3727,6 +4936,482 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       class="v-dialog__container veo-dialog"
     >
       <!---->
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
+<div data-v-123abc4d="" class="vf-wrapper d-flex flex-column">
+  <div data-v-123abc4d="" id="" class="vf-layout vf-group col-md-auto col-12">
+    <div data-v-123abc4d="" class="row flex-column row--dense">
+      <!---->
+      <div data-v-123abc4d="" class="col">
+        <div data-v-123abc4d="" class="row flex-column direction-vertical">
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-form-element vf-input-text">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Name Test*</label
+                        ><input id="" type="text" />
+                      </div>
+                      <div class="v-input__append-inner"><div></div></div>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-input-uri vf-form-element">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Dokument Test geändert</label
+                        ><input id="" type="text" />
+                      </div>
+                      <div class="v-input__append-inner"><div></div></div>
+                    </div>
+                  </div>
+                  <div class="v-input__append-outer">
+                    <button
+                      target="_blank"
+                      type="button"
+                      disabled="disabled"
+                      class="v-btn v-btn--disabled v-btn--icon v-btn--round theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><i
+                          aria-hidden="true"
+                          class="v-icon notranslate mdi mdi-open-in-new theme--light"
+                        ></i
+                      ></span>
+                    </button>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-input-date vf-form-element">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                >
+                  <div class="v-input__prepend-outer">
+                    <div class="v-input__icon v-input__icon--prepend">
+                      <i
+                        aria-hidden="true"
+                        class="v-icon notranslate mdi mdi-calendar theme--light"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-text-field__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Erhebung durchgeführt am Test geändert</label
+                        ><input id="" type="text" />
+                      </div>
+                      <div class="v-input__append-inner"><div></div></div>
+                    </div>
+                  </div></div
+              ></span>
+              <div class="v-menu"><!----></div>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
+                >
+                  <div class="v-input__control">
+                    <div class="v-input__slot">
+                      <div class="v-input--selection-controls__input">
+                        <i
+                          aria-hidden="true"
+                          class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
+                        ></i
+                        ><input
+                          aria-checked="mixed"
+                          id=""
+                          role="checkbox"
+                          type="checkbox"
+                          value=""
+                        />
+                        <div class="v-input--selection-controls__ripple"></div>
+                      </div>
+                      <label
+                        for=""
+                        class="v-label theme--light"
+                        style="left: 0px; right: auto; position: relative;"
+                        >Datenverarbeitung besonders sensitiver Daten? Test
+                        geändert</label
+                      >
+                    </div>
+                  </div>
+                  <div class="v-input__append-outer">
+                    <div>
+                      <button
+                        type="button"
+                        class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                      ></button>
+                    </div>
+                  </div></div
+              ></span>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-select vf-form-element">
+              <span
+                ><div
+                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select"
+                >
+                  <div class="v-input__control">
+                    <div
+                      role="button"
+                      aria-haspopup="listbox"
+                      aria-expanded="false"
+                      aria-owns=""
+                      class="v-input__slot"
+                    >
+                      <div class="v-select__slot">
+                        <label
+                          for=""
+                          class="v-label theme--light"
+                          style="left: 0px; right: auto; position: absolute;"
+                          >Art der Erhebung Test geändert</label
+                        >
+                        <div class="v-select__selections">
+                          <input
+                            id=""
+                            readonly="readonly"
+                            type="text"
+                            aria-readonly="false"
+                            autocomplete="off"
+                          />
+                        </div>
+                        <div class="v-input__append-inner"><div></div></div>
+                        <div class="v-input__append-inner">
+                          <div class="v-input__icon v-input__icon--append">
+                            <i
+                              aria-hidden="true"
+                              class="v-icon notranslate mdi mdi-menu-down theme--light"
+                            ></i>
+                          </div>
+                        </div>
+                        <input type="hidden" />
+                      </div>
+                      <div class="v-menu"><!----></div>
+                    </div>
+                  </div>
+                </div></span
+              >
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
+              <div
+                data-v-123abc4d=""
+                role="list"
+                class="v-list py-0 v-sheet theme--light v-list--dense"
+              >
+                <div
+                  data-v-123abc4d=""
+                  tabindex="-1"
+                  role="listitem"
+                  class="links-field-item my-2 pt-2 v-list-item theme--light"
+                >
+                  <div data-v-123abc4d="" class="v-list-item__content">
+                    <div data-v-123abc4d="" class="row flex-column row--dense">
+                      <div data-v-123abc4d="" class="col mb-4">
+                        <div
+                          data-v-123abc4d=""
+                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
+                        >
+                          <div class="v-input__control">
+                            <div
+                              role="combobox"
+                              aria-haspopup="listbox"
+                              aria-expanded="false"
+                              aria-owns=""
+                              class="v-input__slot"
+                            >
+                              <div class="v-select__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Empfänger Intern Test geändert</label
+                                ><input id="" type="text" autocomplete="off" />
+                                <div class="v-input__append-inner">
+                                  <div></div>
+                                </div>
+                                <div class="v-input__append-inner">
+                                  <div
+                                    class="v-input__icon v-input__icon--append"
+                                  >
+                                    <i
+                                      aria-hidden="true"
+                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
+                                    ></i>
+                                  </div>
+                                </div>
+                                <input type="hidden" />
+                              </div>
+                              <div class="v-menu"><!----></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!---->
+                      <div
+                        data-v-123abc4d=""
+                        role="dialog"
+                        class="v-dialog__container"
+                      >
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="v-list-item__action">
+                    <button
+                      data-v-123abc4d=""
+                      type="button"
+                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
+                    >
+                      <span class="v-btn__content"
+                        ><span
+                          data-v-123abc4d=""
+                          aria-hidden="true"
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
+                      ></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <button
+                data-v-123abc4d=""
+                type="button"
+                class="v-btn v-btn--text theme--light v-size--small primary--text"
+              >
+                <span class="v-btn__content"
+                  ><span
+                    data-v-123abc4d=""
+                    aria-hidden="true"
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
+                  <span data-v-123abc4d="">Link hinzufügen</span></span
+                >
+              </button>
+            </div>
+          </div>
+          <div data-v-123abc4d="" class="vf-label">
+            Text 1 Test geändert
+          </div>
+          <div data-v-123abc4d="" class="vf-label">
+            Text 2 Test geändert
+          </div>
+          <div
+            data-v-123abc4d=""
+            id="elements-8"
+            class="vf-layout vf-group col-md-auto col-12"
+          >
+            <div data-v-123abc4d="" class="row flex-column row--dense">
+              <!---->
+              <div data-v-123abc4d="" class="col">
+                <div
+                  data-v-123abc4d=""
+                  class="row flex-column direction-vertical"
+                >
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+                    <div
+                      data-v-123abc4d=""
+                      class="vf-form-element vf-input-text"
+                    >
+                      <span
+                        ><div
+                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                        >
+                          <div class="v-input__control">
+                            <div class="v-input__slot">
+                              <div class="v-text-field__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Bemerkungen Test geändert</label
+                                ><input id="" type="text" />
+                              </div>
+                              <div class="v-input__append-inner">
+                                <div></div>
+                              </div>
+                            </div>
+                          </div></div
+                      ></span>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+                    <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
+                      <span
+                        ><div
+                          class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
+                        >
+                          <div class="v-input__control">
+                            <div class="v-input__slot">
+                              <div class="v-input--selection-controls__input">
+                                <i
+                                  aria-hidden="true"
+                                  class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
+                                ></i
+                                ><input
+                                  aria-checked="mixed"
+                                  id=""
+                                  role="checkbox"
+                                  type="checkbox"
+                                  value=""
+                                />
+                                <div
+                                  class="v-input--selection-controls__ripple"
+                                ></div>
+                              </div>
+                              <label
+                                for=""
+                                class="v-label theme--light"
+                                style="left: 0px; right: auto; position: relative;"
+                                >Meldeverfahren Art. 33,34 DS-GVO? Test
+                                geändert</label
+                              >
+                            </div>
+                          </div>
+                          <div class="v-input__append-outer">
+                            <div>
+                              <button
+                                type="button"
+                                class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
+                              ></button>
+                            </div>
+                          </div></div
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            data-v-123abc4d=""
+            id="elements-9"
+            class="vf-layout vf-group col-md-auto col-12"
+          >
+            <div data-v-123abc4d="" class="row flex-column row--dense">
+              <!---->
+              <div data-v-123abc4d="" class="col">
+                <div
+                  data-v-123abc4d=""
+                  class="row flex-column direction-vertical"
+                >
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+                    <div
+                      data-v-123abc4d=""
+                      class="vf-form-element vf-input-text"
+                    >
+                      <span
+                        ><div
+                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                        >
+                          <div class="v-input__control">
+                            <div class="v-input__slot">
+                              <div class="v-text-field__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Abkürzung</label
+                                ><input id="" type="text" />
+                              </div>
+                              <div class="v-input__append-inner">
+                                <div></div>
+                              </div>
+                            </div>
+                          </div></div
+                      ></span>
+                    </div>
+                  </div>
+                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
+                    <div
+                      data-v-123abc4d=""
+                      class="vf-form-element vf-input-text"
+                    >
+                      <span
+                        ><div
+                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
+                        >
+                          <div class="v-input__control">
+                            <div class="v-input__slot">
+                              <div class="v-text-field__slot">
+                                <label
+                                  for=""
+                                  class="v-label theme--light"
+                                  style="left: 0px; right: auto; position: absolute;"
+                                  >Beschreibung</label
+                                ><input id="" type="text" />
+                              </div>
+                              <div class="v-input__append-inner">
+                                <div></div>
+                              </div>
+                            </div>
+                          </div></div
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -4791,1937 +6476,6 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
 </div>
 `;
 
-exports[`Formschema Editor > adds, updates formSchema meta details #0`] =
-{
-  "content": {
-    "elements": [],
-    "options": {
-      "direction": "vertical",
-      "format": "group"
-    },
-    "type": "Layout"
-  },
-  "modelType": "process",
-  "name": {
-    "de": "Test Formschema 1 DE"
-  },
-  "sorting": "a1",
-  "subType": "PRO_DataProcessing",
-  "translation": {
-    "de": {}
-  }
-};
-
-exports[`Formschema Editor > adds, updates formSchema meta details #1`] =
-{
-  "content": {
-    "elements": [],
-    "options": {
-      "direction": "vertical",
-      "format": "group"
-    },
-    "type": "Layout"
-  },
-  "modelType": "process",
-  "name": {
-    "de": "Test Formschema 1 DE",
-    "en": "Test Formschema 2 EN"
-  },
-  "sorting": "a1",
-  "subType": "PRO_DataProcessing",
-  "translation": {
-    "de": {},
-    "en": {}
-  }
-};
-
-exports[`Formschema Editor > checks whether translations get deleted if the control gets deleted while another language is used #0`] =
-{
-  "content": {
-    "elements": [
-      {
-        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
-        "type": "Label"
-      },
-      {
-        "elements": [
-          {
-            "options": {
-              "label": "#lang/description"
-            },
-            "scope": "#/properties/description",
-            "type": "Control"
-          },
-          {
-            "options": {
-              "label": "#lang/name"
-            },
-            "scope": "#/properties/name",
-            "type": "Control"
-          }
-        ],
-        "options": {
-          "format": "group",
-          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
-        },
-        "type": "Layout"
-      },
-      {
-        "options": {
-          "label": "#lang/abbreviation"
-        },
-        "scope": "#/properties/abbreviation",
-        "type": "Control"
-      }
-    ],
-    "options": {
-      "direction": "vertical",
-      "format": "group"
-    },
-    "type": "Layout"
-  },
-  "modelType": "process",
-  "name": {
-    "de": "Test Formschema"
-  },
-  "subType": "PRO_DataTransfer",
-  "translation": {
-    "de": {
-      "abbreviation": "Abkürzung de",
-      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
-      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
-    },
-    "en": {
-      "abbreviation": "Abbreviation en"
-    }
-  }
-};
-
-exports[`Formschema Editor > checks whether translations get deleted if the control gets deleted while another language is used #1`] =
-{
-  "content": {
-    "elements": [
-      {
-        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
-        "type": "Label"
-      },
-      {
-        "elements": [
-          {
-            "options": {
-              "label": "#lang/description"
-            },
-            "scope": "#/properties/description",
-            "type": "Control"
-          },
-          {
-            "options": {
-              "label": "#lang/name"
-            },
-            "scope": "#/properties/name",
-            "type": "Control"
-          }
-        ],
-        "options": {
-          "format": "group",
-          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
-        },
-        "type": "Layout"
-      }
-    ],
-    "options": {
-      "direction": "vertical",
-      "format": "group"
-    },
-    "type": "Layout"
-  },
-  "modelType": "process",
-  "name": {
-    "de": "Test Formschema"
-  },
-  "subType": "PRO_DataTransfer",
-  "translation": {
-    "de": {
-      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
-      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
-    },
-    "en": {}
-  }
-};
-
-exports[`Formschema Editor > compares downloaded schema with the actual one #0`] =
-{
-  "content": {
-    "elements": [
-      {
-        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
-        "type": "Label"
-      },
-      {
-        "elements": [
-          {
-            "options": {
-              "label": "#lang/description"
-            },
-            "scope": "#/properties/description",
-            "type": "Control"
-          },
-          {
-            "options": {
-              "label": "#lang/name"
-            },
-            "scope": "#/properties/name",
-            "type": "Control"
-          }
-        ],
-        "options": {
-          "format": "group",
-          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
-        },
-        "type": "Layout"
-      },
-      {
-        "options": {
-          "label": "#lang/abbreviation"
-        },
-        "scope": "#/properties/abbreviation",
-        "type": "Control"
-      }
-    ],
-    "options": {
-      "direction": "vertical",
-      "format": "group"
-    },
-    "type": "Layout"
-  },
-  "modelType": "process",
-  "name": {
-    "de": "Test Formschema"
-  },
-  "subType": "PRO_DataTransfer",
-  "translation": {
-    "de": {
-      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
-      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
-    }
-  }
-};
-
-exports[`Formschema Editor > drags and drops elements into dropzone and nests in each other #1`] = `
-<div data-v-123abc4d="" class="vf-wrapper d-flex flex-column">
-  <div data-v-123abc4d="" id="" class="vf-layout vf-group col-md-auto col-12">
-    <div data-v-123abc4d="" class="row flex-column row--dense">
-      <!---->
-      <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="vf-label">
-            dynamic_text_group_title
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-form-element vf-input-text">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                >
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Name*</label
-                        ><input id="" type="text" />
-                      </div>
-                      <div class="v-input__append-inner"><div></div></div>
-                    </div>
-                  </div></div
-              ></span>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-form-element vf-input-text">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                >
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Bemerkungen</label
-                        ><input id="" type="text" />
-                      </div>
-                      <div class="v-input__append-inner"><div></div></div>
-                    </div>
-                  </div></div
-              ></span>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-select vf-form-element">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select"
-                >
-                  <div class="v-input__control">
-                    <div
-                      role="button"
-                      aria-haspopup="listbox"
-                      aria-expanded="false"
-                      aria-owns=""
-                      class="v-input__slot"
-                    >
-                      <div class="v-select__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Art der Erhebung</label
-                        >
-                        <div class="v-select__selections">
-                          <input
-                            id=""
-                            readonly="readonly"
-                            type="text"
-                            aria-readonly="false"
-                            autocomplete="off"
-                          />
-                        </div>
-                        <div class="v-input__append-inner"><div></div></div>
-                        <div class="v-input__append-inner">
-                          <div class="v-input__icon v-input__icon--append">
-                            <i
-                              aria-hidden="true"
-                              class="v-icon notranslate mdi mdi-menu-down theme--light"
-                            ></i>
-                          </div>
-                        </div>
-                        <input type="hidden" />
-                      </div>
-                      <div class="v-menu"><!----></div>
-                    </div>
-                  </div>
-                </div></span
-              >
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
-              <div
-                data-v-123abc4d=""
-                role="list"
-                class="v-list py-0 v-sheet theme--light v-list--dense"
-              >
-                <div
-                  data-v-123abc4d=""
-                  tabindex="-1"
-                  role="listitem"
-                  class="links-field-item my-2 pt-2 v-list-item theme--light"
-                >
-                  <div data-v-123abc4d="" class="v-list-item__content">
-                    <div data-v-123abc4d="" class="row flex-column row--dense">
-                      <div data-v-123abc4d="" class="col mb-4">
-                        <div
-                          data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
-                        >
-                          <div class="v-input__control">
-                            <div
-                              role="combobox"
-                              aria-haspopup="listbox"
-                              aria-expanded="false"
-                              aria-owns=""
-                              class="v-input__slot"
-                            >
-                              <div class="v-select__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
-                                <div class="v-input__append-inner">
-                                  <div></div>
-                                </div>
-                                <div class="v-input__append-inner">
-                                  <div
-                                    class="v-input__icon v-input__icon--append"
-                                  >
-                                    <i
-                                      aria-hidden="true"
-                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
-                                    ></i>
-                                  </div>
-                                </div>
-                                <input type="hidden" />
-                              </div>
-                              <div class="v-menu"><!----></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!---->
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="v-list-item__action">
-                    <button
-                      data-v-123abc4d=""
-                      type="button"
-                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
-                    >
-                      <span class="v-btn__content"
-                        ><span
-                          data-v-123abc4d=""
-                          aria-hidden="true"
-                          class="v-icon notranslate theme--light"
-                          ><svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            role="img"
-                            aria-hidden="true"
-                            class="v-icon__svg"
-                          >
-                            <path
-                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
-                            ></path></svg></span
-                      ></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <button
-                data-v-123abc4d=""
-                type="button"
-                class="v-btn v-btn--text theme--light v-size--small primary--text"
-              >
-                <span class="v-btn__content"
-                  ><span
-                    data-v-123abc4d=""
-                    aria-hidden="true"
-                    class="v-icon notranslate theme--light"
-                    style="font-size: 16px; height: 16px; width: 16px;"
-                    ><svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      role="img"
-                      aria-hidden="true"
-                      class="v-icon__svg"
-                      style="font-size: 16px; height: 16px; width: 16px;"
-                    >
-                      <path
-                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-                      ></path></svg
-                  ></span>
-                  <span data-v-123abc4d="">Link hinzufügen</span></span
-                >
-              </button>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Art der verarbeiteten Daten
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
-              <div
-                data-v-123abc4d=""
-                role="list"
-                class="v-list py-0 v-sheet theme--light v-list--dense"
-              >
-                <div
-                  data-v-123abc4d=""
-                  tabindex="-1"
-                  role="listitem"
-                  class="links-field-item my-2 pt-2 v-list-item theme--light"
-                >
-                  <div data-v-123abc4d="" class="v-list-item__content">
-                    <div data-v-123abc4d="" class="row flex-column row--dense">
-                      <div data-v-123abc4d="" class="col mb-4">
-                        <div
-                          data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
-                        >
-                          <div class="v-input__control">
-                            <div
-                              role="combobox"
-                              aria-haspopup="listbox"
-                              aria-expanded="false"
-                              aria-owns=""
-                              class="v-input__slot"
-                            >
-                              <div class="v-select__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
-                                <div class="v-input__append-inner">
-                                  <div></div>
-                                </div>
-                                <div class="v-input__append-inner">
-                                  <div
-                                    class="v-input__icon v-input__icon--append"
-                                  >
-                                    <i
-                                      aria-hidden="true"
-                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
-                                    ></i>
-                                  </div>
-                                </div>
-                                <input type="hidden" />
-                              </div>
-                              <div class="v-menu"><!----></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!---->
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="v-list-item__action">
-                    <button
-                      data-v-123abc4d=""
-                      type="button"
-                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
-                    >
-                      <span class="v-btn__content"
-                        ><span
-                          data-v-123abc4d=""
-                          aria-hidden="true"
-                          class="v-icon notranslate theme--light"
-                          ><svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            role="img"
-                            aria-hidden="true"
-                            class="v-icon__svg"
-                          >
-                            <path
-                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
-                            ></path></svg></span
-                      ></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <button
-                data-v-123abc4d=""
-                type="button"
-                class="v-btn v-btn--text theme--light v-size--small primary--text"
-              >
-                <span class="v-btn__content"
-                  ><span
-                    data-v-123abc4d=""
-                    aria-hidden="true"
-                    class="v-icon notranslate theme--light"
-                    style="font-size: 16px; height: 16px; width: 16px;"
-                    ><svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      role="img"
-                      aria-hidden="true"
-                      class="v-icon__svg"
-                      style="font-size: 16px; height: 16px; width: 16px;"
-                    >
-                      <path
-                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-                      ></path></svg
-                  ></span>
-                  <span data-v-123abc4d="">Link hinzufügen</span></span
-                >
-              </button>
-            </div>
-          </div>
-          <div
-            data-v-123abc4d=""
-            id="elements-6"
-            class="vf-layout vf-group col-md-auto col-12"
-          >
-            <div data-v-123abc4d="" class="row flex-column row--dense">
-              <!---->
-              <div data-v-123abc4d="" class="col">
-                <div
-                  data-v-123abc4d=""
-                  class="row flex-column direction-vertical"
-                >
-                  <div
-                    data-v-123abc4d=""
-                    id="elements-6-elements-0"
-                    class="vf-layout vf-group col-md-auto col-12"
-                  >
-                    <div data-v-123abc4d="" class="row flex-column row--dense">
-                      <!---->
-                      <div data-v-123abc4d="" class="col">
-                        <div
-                          data-v-123abc4d=""
-                          class="row flex-column direction-vertical"
-                        >
-                          <div
-                            data-v-123abc4d=""
-                            class="col-md-auto col-12 vf-control"
-                          >
-                            <div
-                              data-v-123abc4d=""
-                              class="vf-form-element vf-input-text"
-                            >
-                              <span
-                                ><div
-                                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                                >
-                                  <div class="v-input__control">
-                                    <div class="v-input__slot">
-                                      <div class="v-text-field__slot">
-                                        <label
-                                          for=""
-                                          class="v-label theme--light"
-                                          style="left: 0px; right: auto; position: absolute;"
-                                          >Beschreibung</label
-                                        ><input id="" type="text" />
-                                      </div>
-                                      <div class="v-input__append-inner">
-                                        <div></div>
-                                      </div>
-                                    </div>
-                                  </div></div
-                              ></span>
-                            </div>
-                          </div>
-                          <div
-                            data-v-123abc4d=""
-                            class="col-md-auto col-12 vf-control"
-                          >
-                            <div
-                              data-v-123abc4d=""
-                              class="vf-checkbox vf-form-element"
-                            >
-                              <span
-                                ><div
-                                  class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
-                                >
-                                  <div class="v-input__control">
-                                    <div class="v-input__slot">
-                                      <div
-                                        class="v-input--selection-controls__input"
-                                      >
-                                        <i
-                                          aria-hidden="true"
-                                          class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
-                                        ></i
-                                        ><input
-                                          aria-checked="mixed"
-                                          id=""
-                                          role="checkbox"
-                                          type="checkbox"
-                                          value=""
-                                        />
-                                        <div
-                                          class="v-input--selection-controls__ripple"
-                                        ></div>
-                                      </div>
-                                      <label
-                                        for=""
-                                        class="v-label theme--light"
-                                        style="left: 0px; right: auto; position: relative;"
-                                        >Datenverarbeitung besonders sensitiver
-                                        Daten?</label
-                                      >
-                                    </div>
-                                  </div>
-                                  <div class="v-input__append-outer">
-                                    <div>
-                                      <button
-                                        type="button"
-                                        class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
-                                      ></button>
-                                    </div>
-                                  </div></div
-                              ></span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="vf-label">
-                    dynamic_text_group_title
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
-<div data-v-123abc4d="" class="vf-wrapper d-flex flex-column">
-  <div data-v-123abc4d="" id="" class="vf-layout vf-group col-md-auto col-12">
-    <div data-v-123abc4d="" class="row flex-column row--dense">
-      <!---->
-      <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-form-element vf-input-text">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                >
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Name Test*</label
-                        ><input id="" type="text" />
-                      </div>
-                      <div class="v-input__append-inner"><div></div></div>
-                    </div>
-                  </div></div
-              ></span>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-input-uri vf-form-element">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                >
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Dokument Test</label
-                        ><input id="" type="text" />
-                      </div>
-                      <div class="v-input__append-inner"><div></div></div>
-                    </div>
-                  </div>
-                  <div class="v-input__append-outer">
-                    <button
-                      target="_blank"
-                      type="button"
-                      disabled="disabled"
-                      class="v-btn v-btn--disabled v-btn--icon v-btn--round theme--light v-size--small"
-                    >
-                      <span class="v-btn__content"
-                        ><i
-                          aria-hidden="true"
-                          class="v-icon notranslate mdi mdi-open-in-new theme--light"
-                        ></i
-                      ></span>
-                    </button>
-                  </div></div
-              ></span>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-input-date vf-form-element">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                >
-                  <div class="v-input__prepend-outer">
-                    <div class="v-input__icon v-input__icon--prepend">
-                      <i
-                        aria-hidden="true"
-                        class="v-icon notranslate mdi mdi-calendar theme--light"
-                      ></i>
-                    </div>
-                  </div>
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Erhebung durchgeführt am Test</label
-                        ><input id="" type="text" />
-                      </div>
-                      <div class="v-input__append-inner"><div></div></div>
-                    </div>
-                  </div></div
-              ></span>
-              <div class="v-menu"><!----></div>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
-                >
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-input--selection-controls__input">
-                        <i
-                          aria-hidden="true"
-                          class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
-                        ></i
-                        ><input
-                          aria-checked="mixed"
-                          id=""
-                          role="checkbox"
-                          type="checkbox"
-                          value=""
-                        />
-                        <div class="v-input--selection-controls__ripple"></div>
-                      </div>
-                      <label
-                        for=""
-                        class="v-label theme--light"
-                        style="left: 0px; right: auto; position: relative;"
-                        >Datenverarbeitung besonders sensitiver Daten?
-                        Test</label
-                      >
-                    </div>
-                  </div>
-                  <div class="v-input__append-outer">
-                    <div>
-                      <button
-                        type="button"
-                        class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
-                      ></button>
-                    </div>
-                  </div></div
-              ></span>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-select vf-form-element">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select"
-                >
-                  <div class="v-input__control">
-                    <div
-                      role="button"
-                      aria-haspopup="listbox"
-                      aria-expanded="false"
-                      aria-owns=""
-                      class="v-input__slot"
-                    >
-                      <div class="v-select__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Art der Erhebung Test</label
-                        >
-                        <div class="v-select__selections">
-                          <input
-                            id=""
-                            readonly="readonly"
-                            type="text"
-                            aria-readonly="false"
-                            autocomplete="off"
-                          />
-                        </div>
-                        <div class="v-input__append-inner"><div></div></div>
-                        <div class="v-input__append-inner">
-                          <div class="v-input__icon v-input__icon--append">
-                            <i
-                              aria-hidden="true"
-                              class="v-icon notranslate mdi mdi-menu-down theme--light"
-                            ></i>
-                          </div>
-                        </div>
-                        <input type="hidden" />
-                      </div>
-                      <div class="v-menu"><!----></div>
-                    </div>
-                  </div>
-                </div></span
-              >
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern Test
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
-              <div
-                data-v-123abc4d=""
-                role="list"
-                class="v-list py-0 v-sheet theme--light v-list--dense"
-              >
-                <div
-                  data-v-123abc4d=""
-                  tabindex="-1"
-                  role="listitem"
-                  class="links-field-item my-2 pt-2 v-list-item theme--light"
-                >
-                  <div data-v-123abc4d="" class="v-list-item__content">
-                    <div data-v-123abc4d="" class="row flex-column row--dense">
-                      <div data-v-123abc4d="" class="col mb-4">
-                        <div
-                          data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
-                        >
-                          <div class="v-input__control">
-                            <div
-                              role="combobox"
-                              aria-haspopup="listbox"
-                              aria-expanded="false"
-                              aria-owns=""
-                              class="v-input__slot"
-                            >
-                              <div class="v-select__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
-                                <div class="v-input__append-inner">
-                                  <div></div>
-                                </div>
-                                <div class="v-input__append-inner">
-                                  <div
-                                    class="v-input__icon v-input__icon--append"
-                                  >
-                                    <i
-                                      aria-hidden="true"
-                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
-                                    ></i>
-                                  </div>
-                                </div>
-                                <input type="hidden" />
-                              </div>
-                              <div class="v-menu"><!----></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!---->
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="v-list-item__action">
-                    <button
-                      data-v-123abc4d=""
-                      type="button"
-                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
-                    >
-                      <span class="v-btn__content"
-                        ><span
-                          data-v-123abc4d=""
-                          aria-hidden="true"
-                          class="v-icon notranslate theme--light"
-                          ><svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            role="img"
-                            aria-hidden="true"
-                            class="v-icon__svg"
-                          >
-                            <path
-                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
-                            ></path></svg></span
-                      ></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <button
-                data-v-123abc4d=""
-                type="button"
-                class="v-btn v-btn--text theme--light v-size--small primary--text"
-              >
-                <span class="v-btn__content"
-                  ><span
-                    data-v-123abc4d=""
-                    aria-hidden="true"
-                    class="v-icon notranslate theme--light"
-                    style="font-size: 16px; height: 16px; width: 16px;"
-                    ><svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      role="img"
-                      aria-hidden="true"
-                      class="v-icon__svg"
-                      style="font-size: 16px; height: 16px; width: 16px;"
-                    >
-                      <path
-                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-                      ></path></svg
-                  ></span>
-                  <span data-v-123abc4d="">Link hinzufügen</span></span
-                >
-              </button>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="vf-label">
-            Text 1 Test
-          </div>
-          <div data-v-123abc4d="" class="vf-label">
-            Text 2 Test
-          </div>
-          <div
-            data-v-123abc4d=""
-            id="elements-8"
-            class="vf-layout vf-group col-md-auto col-12"
-          >
-            <div data-v-123abc4d="" class="row flex-column row--dense">
-              <!---->
-              <div data-v-123abc4d="" class="col">
-                <div
-                  data-v-123abc4d=""
-                  class="row flex-column direction-vertical"
-                >
-                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-                    <div
-                      data-v-123abc4d=""
-                      class="vf-form-element vf-input-text"
-                    >
-                      <span
-                        ><div
-                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                        >
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <div class="v-text-field__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Bemerkungen Test</label
-                                ><input id="" type="text" />
-                              </div>
-                              <div class="v-input__append-inner">
-                                <div></div>
-                              </div>
-                            </div>
-                          </div></div
-                      ></span>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-                    <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
-                      <span
-                        ><div
-                          class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
-                        >
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <div class="v-input--selection-controls__input">
-                                <i
-                                  aria-hidden="true"
-                                  class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
-                                ></i
-                                ><input
-                                  aria-checked="mixed"
-                                  id=""
-                                  role="checkbox"
-                                  type="checkbox"
-                                  value=""
-                                />
-                                <div
-                                  class="v-input--selection-controls__ripple"
-                                ></div>
-                              </div>
-                              <label
-                                for=""
-                                class="v-label theme--light"
-                                style="left: 0px; right: auto; position: relative;"
-                                >Meldeverfahren Art. 33,34 DS-GVO? Test</label
-                              >
-                            </div>
-                          </div>
-                          <div class="v-input__append-outer">
-                            <div>
-                              <button
-                                type="button"
-                                class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
-                              ></button>
-                            </div>
-                          </div></div
-                      ></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            data-v-123abc4d=""
-            id="elements-9"
-            class="vf-layout vf-group col-md-auto col-12"
-          >
-            <div data-v-123abc4d="" class="row flex-column row--dense">
-              <!---->
-              <div data-v-123abc4d="" class="col">
-                <div
-                  data-v-123abc4d=""
-                  class="row flex-column direction-vertical"
-                >
-                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-                    <div
-                      data-v-123abc4d=""
-                      class="vf-form-element vf-input-text"
-                    >
-                      <span
-                        ><div
-                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                        >
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <div class="v-text-field__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Abkürzung</label
-                                ><input id="" type="text" />
-                              </div>
-                              <div class="v-input__append-inner">
-                                <div></div>
-                              </div>
-                            </div>
-                          </div></div
-                      ></span>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-                    <div
-                      data-v-123abc4d=""
-                      class="vf-form-element vf-input-text"
-                    >
-                      <span
-                        ><div
-                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                        >
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <div class="v-text-field__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Beschreibung</label
-                                ><input id="" type="text" />
-                              </div>
-                              <div class="v-input__append-inner">
-                                <div></div>
-                              </div>
-                            </div>
-                          </div></div
-                      ></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
-<div data-v-123abc4d="" class="vf-wrapper d-flex flex-column">
-  <div data-v-123abc4d="" id="" class="vf-layout vf-group col-md-auto col-12">
-    <div data-v-123abc4d="" class="row flex-column row--dense">
-      <!---->
-      <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-form-element vf-input-text">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                >
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Name Test*</label
-                        ><input id="" type="text" />
-                      </div>
-                      <div class="v-input__append-inner"><div></div></div>
-                    </div>
-                  </div></div
-              ></span>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-input-uri vf-form-element">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                >
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Dokument Test geändert</label
-                        ><input id="" type="text" />
-                      </div>
-                      <div class="v-input__append-inner"><div></div></div>
-                    </div>
-                  </div>
-                  <div class="v-input__append-outer">
-                    <button
-                      target="_blank"
-                      type="button"
-                      disabled="disabled"
-                      class="v-btn v-btn--disabled v-btn--icon v-btn--round theme--light v-size--small"
-                    >
-                      <span class="v-btn__content"
-                        ><i
-                          aria-hidden="true"
-                          class="v-icon notranslate mdi mdi-open-in-new theme--light"
-                        ></i
-                      ></span>
-                    </button>
-                  </div></div
-              ></span>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-input-date vf-form-element">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                >
-                  <div class="v-input__prepend-outer">
-                    <div class="v-input__icon v-input__icon--prepend">
-                      <i
-                        aria-hidden="true"
-                        class="v-icon notranslate mdi mdi-calendar theme--light"
-                      ></i>
-                    </div>
-                  </div>
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Erhebung durchgeführt am Test geändert</label
-                        ><input id="" type="text" />
-                      </div>
-                      <div class="v-input__append-inner"><div></div></div>
-                    </div>
-                  </div></div
-              ></span>
-              <div class="v-menu"><!----></div>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
-                >
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-input--selection-controls__input">
-                        <i
-                          aria-hidden="true"
-                          class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
-                        ></i
-                        ><input
-                          aria-checked="mixed"
-                          id=""
-                          role="checkbox"
-                          type="checkbox"
-                          value=""
-                        />
-                        <div class="v-input--selection-controls__ripple"></div>
-                      </div>
-                      <label
-                        for=""
-                        class="v-label theme--light"
-                        style="left: 0px; right: auto; position: relative;"
-                        >Datenverarbeitung besonders sensitiver Daten? Test
-                        geändert</label
-                      >
-                    </div>
-                  </div>
-                  <div class="v-input__append-outer">
-                    <div>
-                      <button
-                        type="button"
-                        class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
-                      ></button>
-                    </div>
-                  </div></div
-              ></span>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-select vf-form-element">
-              <span
-                ><div
-                  class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-select"
-                >
-                  <div class="v-input__control">
-                    <div
-                      role="button"
-                      aria-haspopup="listbox"
-                      aria-expanded="false"
-                      aria-owns=""
-                      class="v-input__slot"
-                    >
-                      <div class="v-select__slot">
-                        <label
-                          for=""
-                          class="v-label theme--light"
-                          style="left: 0px; right: auto; position: absolute;"
-                          >Art der Erhebung Test geändert</label
-                        >
-                        <div class="v-select__selections">
-                          <input
-                            id=""
-                            readonly="readonly"
-                            type="text"
-                            aria-readonly="false"
-                            autocomplete="off"
-                          />
-                        </div>
-                        <div class="v-input__append-inner"><div></div></div>
-                        <div class="v-input__append-inner">
-                          <div class="v-input__icon v-input__icon--append">
-                            <i
-                              aria-hidden="true"
-                              class="v-icon notranslate mdi mdi-menu-down theme--light"
-                            ></i>
-                          </div>
-                        </div>
-                        <input type="hidden" />
-                      </div>
-                      <div class="v-menu"><!----></div>
-                    </div>
-                  </div>
-                </div></span
-              >
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern Test geändert
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
-              <div
-                data-v-123abc4d=""
-                role="list"
-                class="v-list py-0 v-sheet theme--light v-list--dense"
-              >
-                <div
-                  data-v-123abc4d=""
-                  tabindex="-1"
-                  role="listitem"
-                  class="links-field-item my-2 pt-2 v-list-item theme--light"
-                >
-                  <div data-v-123abc4d="" class="v-list-item__content">
-                    <div data-v-123abc4d="" class="row flex-column row--dense">
-                      <div data-v-123abc4d="" class="col mb-4">
-                        <div
-                          data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
-                        >
-                          <div class="v-input__control">
-                            <div
-                              role="combobox"
-                              aria-haspopup="listbox"
-                              aria-expanded="false"
-                              aria-owns=""
-                              class="v-input__slot"
-                            >
-                              <div class="v-select__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
-                                <div class="v-input__append-inner">
-                                  <div></div>
-                                </div>
-                                <div class="v-input__append-inner">
-                                  <div
-                                    class="v-input__icon v-input__icon--append"
-                                  >
-                                    <i
-                                      aria-hidden="true"
-                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
-                                    ></i>
-                                  </div>
-                                </div>
-                                <input type="hidden" />
-                              </div>
-                              <div class="v-menu"><!----></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <!---->
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="v-list-item__action">
-                    <button
-                      data-v-123abc4d=""
-                      type="button"
-                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
-                    >
-                      <span class="v-btn__content"
-                        ><span
-                          data-v-123abc4d=""
-                          aria-hidden="true"
-                          class="v-icon notranslate theme--light"
-                          ><svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            role="img"
-                            aria-hidden="true"
-                            class="v-icon__svg"
-                          >
-                            <path
-                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
-                            ></path></svg></span
-                      ></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <button
-                data-v-123abc4d=""
-                type="button"
-                class="v-btn v-btn--text theme--light v-size--small primary--text"
-              >
-                <span class="v-btn__content"
-                  ><span
-                    data-v-123abc4d=""
-                    aria-hidden="true"
-                    class="v-icon notranslate theme--light"
-                    style="font-size: 16px; height: 16px; width: 16px;"
-                    ><svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      role="img"
-                      aria-hidden="true"
-                      class="v-icon__svg"
-                      style="font-size: 16px; height: 16px; width: 16px;"
-                    >
-                      <path
-                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-                      ></path></svg
-                  ></span>
-                  <span data-v-123abc4d="">Link hinzufügen</span></span
-                >
-              </button>
-            </div>
-          </div>
-          <div data-v-123abc4d="" class="vf-label">
-            Text 1 Test geändert
-          </div>
-          <div data-v-123abc4d="" class="vf-label">
-            Text 2 Test geändert
-          </div>
-          <div
-            data-v-123abc4d=""
-            id="elements-8"
-            class="vf-layout vf-group col-md-auto col-12"
-          >
-            <div data-v-123abc4d="" class="row flex-column row--dense">
-              <!---->
-              <div data-v-123abc4d="" class="col">
-                <div
-                  data-v-123abc4d=""
-                  class="row flex-column direction-vertical"
-                >
-                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-                    <div
-                      data-v-123abc4d=""
-                      class="vf-form-element vf-input-text"
-                    >
-                      <span
-                        ><div
-                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                        >
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <div class="v-text-field__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Bemerkungen Test geändert</label
-                                ><input id="" type="text" />
-                              </div>
-                              <div class="v-input__append-inner">
-                                <div></div>
-                              </div>
-                            </div>
-                          </div></div
-                      ></span>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-                    <div data-v-123abc4d="" class="vf-checkbox vf-form-element">
-                      <span
-                        ><div
-                          class="v-input v-input--hide-details v-input--dense theme--light v-input--selection-controls v-input--checkbox v-input--indeterminate"
-                        >
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <div class="v-input--selection-controls__input">
-                                <i
-                                  aria-hidden="true"
-                                  class="v-icon notranslate v-icon--dense mdi mdi-minus-box theme--light"
-                                ></i
-                                ><input
-                                  aria-checked="mixed"
-                                  id=""
-                                  role="checkbox"
-                                  type="checkbox"
-                                  value=""
-                                />
-                                <div
-                                  class="v-input--selection-controls__ripple"
-                                ></div>
-                              </div>
-                              <label
-                                for=""
-                                class="v-label theme--light"
-                                style="left: 0px; right: auto; position: relative;"
-                                >Meldeverfahren Art. 33,34 DS-GVO? Test
-                                geändert</label
-                              >
-                            </div>
-                          </div>
-                          <div class="v-input__append-outer">
-                            <div>
-                              <button
-                                type="button"
-                                class="v-icon notranslate v-icon--link mdi mdi-close theme--light"
-                              ></button>
-                            </div>
-                          </div></div
-                      ></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            data-v-123abc4d=""
-            id="elements-9"
-            class="vf-layout vf-group col-md-auto col-12"
-          >
-            <div data-v-123abc4d="" class="row flex-column row--dense">
-              <!---->
-              <div data-v-123abc4d="" class="col">
-                <div
-                  data-v-123abc4d=""
-                  class="row flex-column direction-vertical"
-                >
-                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-                    <div
-                      data-v-123abc4d=""
-                      class="vf-form-element vf-input-text"
-                    >
-                      <span
-                        ><div
-                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                        >
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <div class="v-text-field__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Abkürzung</label
-                                ><input id="" type="text" />
-                              </div>
-                              <div class="v-input__append-inner">
-                                <div></div>
-                              </div>
-                            </div>
-                          </div></div
-                      ></span>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-                    <div
-                      data-v-123abc4d=""
-                      class="vf-form-element vf-input-text"
-                    >
-                      <span
-                        ><div
-                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                        >
-                          <div class="v-input__control">
-                            <div class="v-input__slot">
-                              <div class="v-text-field__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Beschreibung</label
-                                ><input id="" type="text" />
-                              </div>
-                              <div class="v-input__append-inner">
-                                <div></div>
-                              </div>
-                            </div>
-                          </div></div
-                      ></span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs and save them #1`] = `
-<div data-v-123abc4d="" class="vf-wrapper d-flex flex-column">
-  <div data-v-123abc4d="" id="" class="vf-layout vf-group col-md-auto col-12">
-    <div data-v-123abc4d="" class="row flex-column row--dense">
-      <!---->
-      <div data-v-123abc4d="" class="col">
-        <div data-v-123abc4d="" class="row flex-column direction-vertical">
-          <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
-            <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern Test
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
-              <div
-                data-v-123abc4d=""
-                role="list"
-                class="v-list py-0 v-sheet theme--light v-list--dense"
-              >
-                <div
-                  data-v-123abc4d=""
-                  tabindex="-1"
-                  role="listitem"
-                  class="links-field-item my-2 pt-2 v-list-item theme--light"
-                >
-                  <div data-v-123abc4d="" class="v-list-item__content">
-                    <div data-v-123abc4d="" class="row flex-column row--dense">
-                      <div data-v-123abc4d="" class="col">
-                        <div
-                          data-v-123abc4d=""
-                          class="v-input links-field-row-autocomplete v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted v-text-field--placeholder v-select v-autocomplete"
-                        >
-                          <div class="v-input__control">
-                            <div
-                              role="combobox"
-                              aria-haspopup="listbox"
-                              aria-expanded="false"
-                              aria-owns=""
-                              class="v-input__slot"
-                            >
-                              <div class="v-select__slot">
-                                <label
-                                  for=""
-                                  class="v-label theme--light"
-                                  style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
-                                ><input id="" type="text" autocomplete="off" />
-                                <div class="v-input__append-inner">
-                                  <div></div>
-                                </div>
-                                <div class="v-input__append-inner">
-                                  <div
-                                    class="v-input__icon v-input__icon--append"
-                                  >
-                                    <i
-                                      aria-hidden="true"
-                                      class="v-icon notranslate mdi mdi-menu-down theme--light"
-                                    ></i>
-                                  </div>
-                                </div>
-                                <input type="hidden" />
-                              </div>
-                              <div class="v-menu"><!----></div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div data-v-123abc4d="" class="col">
-                        <div
-                          data-v-123abc4d=""
-                          class="vf-wrapper d-flex flex-column"
-                        >
-                          <div
-                            data-v-123abc4d=""
-                            id=""
-                            class="vf-layout vf-group col-md-auto col-12"
-                          >
-                            <div
-                              data-v-123abc4d=""
-                              class="row flex-column row--dense"
-                            >
-                              <!---->
-                              <div data-v-123abc4d="" class="col">
-                                <div
-                                  data-v-123abc4d=""
-                                  class="row flex-column direction-vertical"
-                                >
-                                  <div
-                                    data-v-123abc4d=""
-                                    class="col-md-auto col-12 vf-control"
-                                  >
-                                    <div
-                                      data-v-123abc4d=""
-                                      class="vf-form-element vf-input-text"
-                                    >
-                                      <span
-                                        ><div
-                                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                                        >
-                                          <div class="v-input__control">
-                                            <div class="v-input__slot">
-                                              <div class="v-text-field__slot">
-                                                <label
-                                                  for=""
-                                                  class="v-label theme--light"
-                                                  style="left: 0px; right: auto; position: absolute;"
-                                                  >Zweck des internen
-                                                  Datentransfers</label
-                                                ><input id="" type="text" />
-                                              </div>
-                                              <div
-                                                class="v-input__append-inner"
-                                              >
-                                                <div></div>
-                                              </div>
-                                            </div>
-                                          </div></div
-                                      ></span>
-                                    </div>
-                                  </div>
-                                  <div
-                                    data-v-123abc4d=""
-                                    class="col-md-auto col-12 vf-control"
-                                  >
-                                    <div
-                                      data-v-123abc4d=""
-                                      class="vf-form-element vf-input-text"
-                                    >
-                                      <span
-                                        ><div
-                                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                                        >
-                                          <div class="v-input__control">
-                                            <div class="v-input__slot">
-                                              <div class="v-text-field__slot">
-                                                <label
-                                                  for=""
-                                                  class="v-label theme--light"
-                                                  style="left: 0px; right: auto; position: absolute;"
-                                                  >Erläuterung</label
-                                                ><input id="" type="text" />
-                                              </div>
-                                              <div
-                                                class="v-input__append-inner"
-                                              >
-                                                <div></div>
-                                              </div>
-                                            </div>
-                                          </div></div
-                                      ></span>
-                                    </div>
-                                  </div>
-                                  <div
-                                    data-v-123abc4d=""
-                                    class="col-md-auto col-12 vf-control"
-                                  >
-                                    <div
-                                      data-v-123abc4d=""
-                                      class="vf-input-uri vf-form-element"
-                                    >
-                                      <span
-                                        ><div
-                                          class="v-input v-input--hide-details v-input--dense theme--light v-text-field v-text-field--is-booted"
-                                        >
-                                          <div class="v-input__control">
-                                            <div class="v-input__slot">
-                                              <div class="v-text-field__slot">
-                                                <label
-                                                  for=""
-                                                  class="v-label theme--light"
-                                                  style="left: 0px; right: auto; position: absolute;"
-                                                  >Dokument</label
-                                                ><input id="" type="text" />
-                                              </div>
-                                              <div
-                                                class="v-input__append-inner"
-                                              >
-                                                <div></div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div class="v-input__append-outer">
-                                            <button
-                                              target="_blank"
-                                              type="button"
-                                              disabled="disabled"
-                                              class="v-btn v-btn--disabled v-btn--icon v-btn--round theme--light v-size--small"
-                                            >
-                                              <span class="v-btn__content"
-                                                ><i
-                                                  aria-hidden="true"
-                                                  class="v-icon notranslate mdi mdi-open-in-new theme--light"
-                                                ></i
-                                              ></span>
-                                            </button>
-                                          </div></div
-                                      ></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
-                    </div>
-                  </div>
-                  <div data-v-123abc4d="" class="v-list-item__action">
-                    <button
-                      data-v-123abc4d=""
-                      type="button"
-                      class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
-                    >
-                      <span class="v-btn__content"
-                        ><span
-                          data-v-123abc4d=""
-                          aria-hidden="true"
-                          class="v-icon notranslate theme--light"
-                          ><svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            role="img"
-                            aria-hidden="true"
-                            class="v-icon__svg"
-                          >
-                            <path
-                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
-                            ></path></svg></span
-                      ></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <button
-                data-v-123abc4d=""
-                type="button"
-                class="v-btn v-btn--text theme--light v-size--small primary--text"
-              >
-                <span class="v-btn__content"
-                  ><span
-                    data-v-123abc4d=""
-                    aria-hidden="true"
-                    class="v-icon notranslate theme--light"
-                    style="font-size: 16px; height: 16px; width: 16px;"
-                    ><svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      role="img"
-                      aria-hidden="true"
-                      class="v-icon__svg"
-                      style="font-size: 16px; height: 16px; width: 16px;"
-                    >
-                      <path
-                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
-                      ></path></svg
-                  ></span>
-                  <span data-v-123abc4d="">Link hinzufügen</span></span
-                >
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
 exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
 <div data-v-123abc4d="" class="vf-wrapper d-flex flex-column">
   <div data-v-123abc4d="" id="" class="vf-layout vf-group col-md-auto col-12">
@@ -6910,12 +6664,6 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
           </div>
           <div data-v-123abc4d="" class="col-md-auto col-12 vf-control">
             <div data-v-123abc4d="" class="vf-links-field vf-form-element">
-              <div data-v-123abc4d="" class="d-flex">
-                <span data-v-123abc4d="" class="subtitle-1 mb-2">
-                  Empfänger Intern
-                </span>
-                <div data-v-123abc4d="" class="spacer"></div>
-              </div>
               <div
                 data-v-123abc4d=""
                 role="list"
@@ -6947,7 +6695,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                                   for=""
                                   class="v-label theme--light"
                                   style="left: 0px; right: auto; position: absolute;"
-                                  >Zielobjekt</label
+                                  >Empfänger Intern</label
                                 ><input id="" type="text" autocomplete="off" />
                                 <div class="v-input__append-inner">
                                   <div></div>
@@ -7201,3 +6949,219 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
   </div>
 </div>
 `;
+
+exports[`Formschema Editor > compares downloaded schema with the actual one #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
+        "type": "Label"
+      },
+      {
+        "elements": [
+          {
+            "options": {
+              "label": "#lang/description"
+            },
+            "scope": "#/properties/description",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/name"
+            },
+            "scope": "#/properties/name",
+            "type": "Control"
+          }
+        ],
+        "options": {
+          "format": "group",
+          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
+        },
+        "type": "Layout"
+      },
+      {
+        "options": {
+          "label": "#lang/abbreviation"
+        },
+        "scope": "#/properties/abbreviation",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema"
+  },
+  "subType": "PRO_DataTransfer",
+  "translation": {
+    "de": {
+      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
+      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
+    }
+  }
+};
+
+exports[`Formschema Editor > adds, updates formSchema meta details #0`] =
+{
+  "content": {
+    "elements": [],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema 1 DE"
+  },
+  "sorting": "a1",
+  "subType": "PRO_DataProcessing",
+  "translation": {
+    "de": {}
+  }
+};
+
+exports[`Formschema Editor > adds, updates formSchema meta details #1`] =
+{
+  "content": {
+    "elements": [],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema 1 DE",
+    "en": "Test Formschema 2 EN"
+  },
+  "sorting": "a1",
+  "subType": "PRO_DataProcessing",
+  "translation": {
+    "de": {},
+    "en": {}
+  }
+};
+
+exports[`Formschema Editor > checks whether translations get deleted if the control gets deleted while another language is used #0`] =
+{
+  "content": {
+    "elements": [
+      {
+        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
+        "type": "Label"
+      },
+      {
+        "elements": [
+          {
+            "options": {
+              "label": "#lang/description"
+            },
+            "scope": "#/properties/description",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/name"
+            },
+            "scope": "#/properties/name",
+            "type": "Control"
+          }
+        ],
+        "options": {
+          "format": "group",
+          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
+        },
+        "type": "Layout"
+      },
+      {
+        "options": {
+          "label": "#lang/abbreviation"
+        },
+        "scope": "#/properties/abbreviation",
+        "type": "Control"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema"
+  },
+  "subType": "PRO_DataTransfer",
+  "translation": {
+    "de": {
+      "abbreviation": "Abkürzung de",
+      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
+      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
+    },
+    "en": {
+      "abbreviation": "Abbreviation en"
+    }
+  }
+};
+
+exports[`Formschema Editor > checks whether translations get deleted if the control gets deleted while another language is used #1`] =
+{
+  "content": {
+    "elements": [
+      {
+        "text": "#lang/text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc",
+        "type": "Label"
+      },
+      {
+        "elements": [
+          {
+            "options": {
+              "label": "#lang/description"
+            },
+            "scope": "#/properties/description",
+            "type": "Control"
+          },
+          {
+            "options": {
+              "label": "#lang/name"
+            },
+            "scope": "#/properties/name",
+            "type": "Control"
+          }
+        ],
+        "options": {
+          "format": "group",
+          "label": "#lang/group_f808d0b0-5c04-4754-a941-18145136112a"
+        },
+        "type": "Layout"
+      }
+    ],
+    "options": {
+      "direction": "vertical",
+      "format": "group"
+    },
+    "type": "Layout"
+  },
+  "modelType": "process",
+  "name": {
+    "de": "Test Formschema"
+  },
+  "subType": "PRO_DataTransfer",
+  "translation": {
+    "de": {
+      "group_f808d0b0-5c04-4754-a941-18145136112a": "Gruppen Titel",
+      "text_23930e90-c9d7-4afe-ad3c-9c2b82dc2ffc": "Beispieltext"
+    },
+    "en": {}
+  }
+};

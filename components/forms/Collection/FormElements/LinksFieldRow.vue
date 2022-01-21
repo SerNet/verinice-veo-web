@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
-   - 
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -30,7 +30,7 @@
         item-text="name"
         item-value="id"
         :search-input.sync="search"
-        :label="$t('targetObject')"
+        :label="options && options.label"
         class="links-field-row-autocomplete"
         :disabled="disabled"
         :placeholder="$t('search_placeholder')"
@@ -411,7 +411,6 @@ export default Vue.extend({
 {
   "en": {
     "be_more_specific": "Please be more specific to show additional objects",
-    "targetObject": "Target object",
     "createTargetObject": "Create new object",
     "createTargetForm": "Create {type}",
     "updateTargetObject": "Change object",
@@ -422,7 +421,6 @@ export default Vue.extend({
   },
   "de": {
     "be_more_specific": "Bitte gebe weitere Zeichen ein um die Auswahl einzuschränken",
-    "targetObject": "Zielobjekt",
     "updateTargetObject": "Objekt ändern",
     "createTargetObject": "Ein neues Objekt anlegen",
     "createTargetForm": "{type} erstellen",
