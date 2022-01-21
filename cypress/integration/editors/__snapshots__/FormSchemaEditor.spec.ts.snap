@@ -268,11 +268,20 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                       class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
                     >
                       <span class="v-btn__content"
-                        ><i
+                        ><span
                           data-v-123abc4d=""
                           aria-hidden="true"
-                          class="v-icon notranslate mdi mdi-delete theme--light"
-                        ></i
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
                       ></span>
                     </button>
                   </div>
@@ -284,12 +293,23 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                 class="v-btn v-btn--text theme--light v-size--small primary--text"
               >
                 <span class="v-btn__content"
-                  ><i
+                  ><span
                     data-v-123abc4d=""
                     aria-hidden="true"
-                    class="v-icon notranslate mdi mdi-plus theme--light"
-                    style="font-size: 16px;"
-                  ></i>
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
                   <span data-v-123abc4d="">Link hinzufügen</span></span
                 >
               </button>
@@ -367,11 +387,20 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                       class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
                     >
                       <span class="v-btn__content"
-                        ><i
+                        ><span
                           data-v-123abc4d=""
                           aria-hidden="true"
-                          class="v-icon notranslate mdi mdi-delete theme--light"
-                        ></i
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
                       ></span>
                     </button>
                   </div>
@@ -383,12 +412,23 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                 class="v-btn v-btn--text theme--light v-size--small primary--text"
               >
                 <span class="v-btn__content"
-                  ><i
+                  ><span
                     data-v-123abc4d=""
                     aria-hidden="true"
-                    class="v-icon notranslate mdi mdi-plus theme--light"
-                    style="font-size: 16px;"
-                  ></i>
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
                   <span data-v-123abc4d="">Link hinzufügen</span></span
                 >
               </button>
@@ -1501,11 +1541,20 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                       class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
                     >
                       <span class="v-btn__content"
-                        ><i
+                        ><span
                           data-v-123abc4d=""
                           aria-hidden="true"
-                          class="v-icon notranslate mdi mdi-delete theme--light"
-                        ></i
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
                       ></span>
                     </button>
                   </div>
@@ -1517,12 +1566,23 @@ exports[`Formschema Editor > opens LinksField dialogs, changes data in dialogs a
                 class="v-btn v-btn--text theme--light v-size--small primary--text"
               >
                 <span class="v-btn__content"
-                  ><i
+                  ><span
                     data-v-123abc4d=""
                     aria-hidden="true"
-                    class="v-icon notranslate mdi mdi-plus theme--light"
-                    style="font-size: 16px;"
-                  ></i>
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
                   <span data-v-123abc4d="">Link hinzufügen</span></span
                 >
               </button>
@@ -3604,11 +3664,20 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                       class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
                     >
                       <span class="v-btn__content"
-                        ><i
+                        ><span
                           data-v-123abc4d=""
                           aria-hidden="true"
-                          class="v-icon notranslate mdi mdi-delete theme--light"
-                        ></i
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
                       ></span>
                     </button>
                   </div>
@@ -3620,12 +3689,23 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                 class="v-btn v-btn--text theme--light v-size--small primary--text"
               >
                 <span class="v-btn__content"
-                  ><i
+                  ><span
                     data-v-123abc4d=""
                     aria-hidden="true"
-                    class="v-icon notranslate mdi mdi-plus theme--light"
-                    style="font-size: 16px;"
-                  ></i>
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
                   <span data-v-123abc4d="">Link hinzufügen</span></span
                 >
               </button>
@@ -5120,11 +5200,20 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                       class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
                     >
                       <span class="v-btn__content"
-                        ><i
+                        ><span
                           data-v-123abc4d=""
                           aria-hidden="true"
-                          class="v-icon notranslate mdi mdi-delete theme--light"
-                        ></i
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
                       ></span>
                     </button>
                   </div>
@@ -5136,12 +5225,23 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                 class="v-btn v-btn--text theme--light v-size--small primary--text"
               >
                 <span class="v-btn__content"
-                  ><i
+                  ><span
                     data-v-123abc4d=""
                     aria-hidden="true"
-                    class="v-icon notranslate mdi mdi-plus theme--light"
-                    style="font-size: 16px;"
-                  ></i>
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
                   <span data-v-123abc4d="">Link hinzufügen</span></span
                 >
               </button>
@@ -6634,11 +6734,20 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                       class="v-btn v-btn--fab v-btn--round v-btn--text theme--light v-size--small"
                     >
                       <span class="v-btn__content"
-                        ><i
+                        ><span
                           data-v-123abc4d=""
                           aria-hidden="true"
-                          class="v-icon notranslate mdi mdi-delete theme--light"
-                        ></i
+                          class="v-icon notranslate theme--light"
+                          ><svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            role="img"
+                            aria-hidden="true"
+                            class="v-icon__svg"
+                          >
+                            <path
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                            ></path></svg></span
                       ></span>
                     </button>
                   </div>
@@ -6650,12 +6759,23 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                 class="v-btn v-btn--text theme--light v-size--small primary--text"
               >
                 <span class="v-btn__content"
-                  ><i
+                  ><span
                     data-v-123abc4d=""
                     aria-hidden="true"
-                    class="v-icon notranslate mdi mdi-plus theme--light"
-                    style="font-size: 16px;"
-                  ></i>
+                    class="v-icon notranslate theme--light"
+                    style="font-size: 16px; height: 16px; width: 16px;"
+                    ><svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      role="img"
+                      aria-hidden="true"
+                      class="v-icon__svg"
+                      style="font-size: 16px; height: 16px; width: 16px;"
+                    >
+                      <path
+                        d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                      ></path></svg
+                  ></span>
                   <span data-v-123abc4d="">Link hinzufügen</span></span
                 >
               </button>

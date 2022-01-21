@@ -29,6 +29,10 @@ const vuetify = new Vuetify();
 
 describe('VeoForm.vue', () => {
   it("should render second text field if first contains text 'hans'", async () => {
+    const onValueUpdate = (newValue: any) => {
+      form.value = newValue;
+    };
+
     const form: Renderable = {
       schema: {
         type: 'object',
@@ -72,13 +76,11 @@ describe('VeoForm.vue', () => {
 
     const wrapper = mount(VeoForm, {
       vuetify,
-      propsData: { ...form }
+      propsData: form,
+      listeners: {
+        input: onValueUpdate
+      }
     });
-
-    // Fixes immediate:true bugs with setProps() of vue test utils
-    // https://github.com/vuejs/vue-test-utils/issues/1140#issuecomment-544156893
-    wrapper.vm.$parent.$forceUpdate();
-    await wrapper.vm.$nextTick();
 
     const inputs = wrapper.findAll('input');
     expect(inputs.length).toBe(2);
@@ -86,7 +88,9 @@ describe('VeoForm.vue', () => {
 
     inputs.at(0).setValue('hans');
 
-    await wrapper.vm.$forceUpdate();
+    // Sadly either vue or the vue test utils won't pick up on the changes made to the value prop, so we have to manually update it.
+    wrapper.setProps({ value: form.value });
+    await wrapper.vm.$nextTick();
 
     const inputsAfter = wrapper.findAll('input');
     expect(inputsAfter.length).toBe(1);

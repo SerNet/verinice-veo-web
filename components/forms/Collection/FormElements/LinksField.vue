@@ -17,7 +17,7 @@
 -->
 <template>
   <div
-    v-if="visible"
+    v-if="visible && value"
     class="vf-links-field vf-form-element"
     :class="options && options.class"
     :style="options && options.style"
@@ -27,39 +27,31 @@
       class="py-0"
     >
       <v-list-item
-        v-for="(val, i) in localValue"
-        :key="i"
+        v-for="(val, index) in localValue"
+        :key="index"
         class="links-field-item my-2 pt-2"
       >
         <v-list-item-content>
           <LinksFieldRow
-            :key="i"
-            :index="i"
-            :value="localValue[i]"
-            :name="name"
-            :selected.sync="selected[i]"
-            :schema="schema"
-            :options="options"
-            :elements="elements"
-            :validation="validation"
-            :disabled="disabled"
-            :visible="visible"
-            :general-translation="generalTranslation"
-            :custom-translation="customTranslation"
-            :link-data="localValue"
-            @input="onInput"
+            v-bind="$props"
+            :key="index"
+            :index="index"
+            :value="val"
+            :selected.sync="selected[index]"
+            :link-data="value"
+            @input="onInput(index, $event)"
           />
         </v-list-item-content>
         <v-list-item-action>
           <v-btn
-            :disabled="!localValue || disabled"
+            :disabled="!value || disabled"
             depressed
             text
             fab
             small
-            @click="removeRow(i)"
+            @click="removeRow(index)"
           >
-            <v-icon>mdi-delete</v-icon>
+            <v-icon>{{ mdiTrashCan }}</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
@@ -72,47 +64,40 @@
       @click="addRow()"
     >
       <v-icon small>
-        mdi-plus
+        {{ mdiPlus }}
       </v-icon>
-      <span>{{ $t('addLink') }}</span>
+      <span>{{ t('addLink') }}</span>
     </v-btn>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { PropOptions } from 'vue/types/options';
+import { computed, defineComponent, PropType, Ref, ref } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 import { JSONSchema7 } from 'json-schema';
+import { mdiPlus, mdiTrashCan } from '@mdi/js';
+import { cloneDeep } from 'lodash';
 
-import LinksFieldRow from '~/components/forms/Collection/FormElements/LinksFieldRow.vue';
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
 import { BaseObject } from '~/components/forms/utils';
 import { IVeoTranslationCollection } from '~/types/VeoTypes';
 import { UISchemaElement } from '~/types/UISchema';
 
-interface IData {
-  selected: string[];
-  localValue: any;
-}
-
-export default Vue.extend({
+export default defineComponent({
   name: 'LinksField',
-  components: {
-    LinksFieldRow
-  },
   props: {
     value: {
-      type: Array,
+      type: Array as PropType<BaseObject[]>,
       default: () => []
-    } as PropOptions<BaseObject[]>,
+    },
     name: {
       type: String,
       default: ''
     },
     schema: {
-      type: Object,
+      type: Object as PropType<JSONSchema7>,
       default: undefined
-    } as PropOptions<JSONSchema7>,
+    },
     options: {
       type: Object,
       default: undefined
@@ -124,67 +109,55 @@ export default Vue.extend({
     disabled: Boolean,
     visible: Boolean,
     generalTranslation: {
-      type: Object,
+      type: Object as PropType<IVeoTranslationCollection>,
       default: () => {}
-    } as PropOptions<IVeoTranslationCollection>,
+    },
     customTranslation: {
-      type: Object,
+      type: Object as PropType<IVeoTranslationCollection>,
       default: () => {}
-    } as PropOptions<IVeoTranslationCollection>,
+    },
     elements: {
-      type: Array,
+      type: Array as PropType<UISchemaElement[]>,
       default: () => []
-    } as PropOptions<UISchemaElement[]>
+    }
   },
-  data(): IData {
+  setup(props, { emit }) {
+    const { t } = useI18n();
+
+    const selected: Ref<string[]> = ref([]);
+
+    // We want at least one link to be displayed at all times, however the schema validation would fail if we passed an empty link upwards, so we keep it in here
+    const localValue = computed(() => (props.value.length ? props.value : [{}]));
+
+    function addRow() {
+      emit('input', [...props.value, {}]);
+    }
+
+    function removeRow(rowIndex: number) {
+      selected.value.splice(rowIndex, 1);
+
+      const dummy = cloneDeep(props.value);
+      dummy.splice(rowIndex, 1);
+      emit('input', dummy);
+    }
+
+    function onInput(index: number, value: any) {
+      const dummy = cloneDeep(props.value);
+      dummy[index] = value;
+      emit('input', dummy);
+    }
+
     return {
-      selected: [],
-      localValue: []
+      addRow,
+      localValue,
+      onInput,
+      removeRow,
+      selected,
+
+      mdiTrashCan,
+      mdiPlus,
+      t
     };
-  },
-  computed: {
-    rowToAdd(): any {
-      return {};
-    }
-  },
-  watch: {
-    value: {
-      deep: true,
-      handler() {
-        this.loadRows();
-      }
-    }
-  },
-  created() {
-    this.loadRows();
-  },
-  methods: {
-    loadRows() {
-      if (!this.value || this.value.length === 0) {
-        this.localValue = [{ ...this.rowToAdd }];
-      } else {
-        this.localValue = JSON.parse(JSON.stringify(this.value));
-      }
-    },
-    addRow() {
-      this.localValue.push({ ...this.rowToAdd });
-      this.$emit('input', this.localValue);
-    },
-    removeRow(rowIndex: number) {
-      // If only one link exists, empty it instead of deleting it.
-      if (this.localValue.length === 1) {
-        this.selected = [];
-        this.localValue = [{ ...this.rowToAdd }];
-        this.$emit('input', []);
-      } else {
-        this.selected.splice(rowIndex, 1);
-        this.localValue.splice(rowIndex, 1);
-        this.$emit('input', this.localValue);
-      }
-    },
-    onInput() {
-      this.$emit('input', this.localValue);
-    }
   }
 });
 

@@ -17,7 +17,7 @@
 -->
 <template>
   <v-alert
-    :value="value"
+    v-bind="$attrs"
     :color="alertColor"
     colored-border
     border="left"
@@ -69,10 +69,6 @@ import { VeoAlertType } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
-    value: {
-      type: Boolean,
-      default: false
-    },
     text: {
       type: String,
       default: undefined
