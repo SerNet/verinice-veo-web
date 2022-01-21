@@ -40,11 +40,20 @@ const ensureArray = <T>(result: T[] | T): T[] => {
   return result && Array.isArray(result) ? result : [result];
 };
 
+export const onContentUpdate = (callback: (context: { event: string; path: string }) => void) => {
+  const { isDev } = useContext();
+  if (isDev && process.client) {
+    (window as any).onNuxtReady(($nuxt: Vue) => {
+      $nuxt.$on('content:update', callback);
+    });
+  }
+};
+
 export const useDoc = (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
   const { localeSeparator, path, fallbackLocale, locale } = getOptions(params);
   const { $content } = useContext();
 
-  return useAsync(async () => {
+  const fetchDoc = async () => {
     const fetchResult = await $content({ deep: true })
       .where({
         $or: [{ path: path + localeSeparator + locale }, { path: path + fallbackLocale }, { path }]
@@ -53,7 +62,15 @@ export const useDoc = (params: { path: string; locale?: string; localeSeparator?
       .fetch<DocPage>();
 
     return ensureArray(fetchResult).shift();
-  }, path);
+  };
+
+  const doc = useAsync(fetchDoc, path);
+
+  onContentUpdate(async () => {
+    doc.value = await fetchDoc();
+  });
+
+  return doc;
 };
 
 export const useDocs = <T extends DocPageFetchReturn>(params: {
@@ -68,7 +85,7 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   const normalizePath = (path: string) => (path.split(localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
   const { $content } = useContext();
   const buildItem = params.buildItem ?? ((v) => v);
-  return useAsync(async () => {
+  const fetchDocs = async () => {
     const fetchResult = await (params.root ? $content(params.root, { deep: true }) : $content({ deep: true }))
       .where({ lang: { $undefinedin: [locale, undefined] } })
       .sortBy('path', 'asc')
@@ -108,7 +125,15 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
         })
       : list;
     return returnVal;
+  };
+
+  const docs = useAsync(fetchDocs);
+
+  onContentUpdate(async () => {
+    docs.value = await fetchDocs();
   });
+
+  return docs;
 };
 export const useDocTree = <T extends DocPageFetchReturn, ChildrenKey extends string = 'children'>(params: {
   locale?: string;
