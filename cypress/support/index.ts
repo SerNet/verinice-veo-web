@@ -17,6 +17,7 @@ export const VEO_API_ALL_ENTITIES_REGEX = /https:\/\/api.(.+)\/veo\/(assets|cont
 export const VEO_API_ENTITY_MEMBERS_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.+)\/members$/;
 export const VEO_API_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/;
 export const VEO_API_NEW_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)$/;
+export const VEO_API_UPDATE_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/;
 export const VEO_UNITS = /https:\/\/api.(.+)\/veo\/units$/;
 export const FORMS_API_ALL_FORMS_REGEX = /https:\/\/api.(.+)\/forms\/$/;
 export const FORMS_API_FORM_REGEX = /https:\/\/api.(.+)\/forms\/(.+)/;
@@ -415,5 +416,17 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
         });
       }
     ).as('G_createObject');
+  }
+
+  if (!options?.ignoreUpdateObject) {
+    cy.intercept(
+      {
+        method: 'PUT',
+        url: VEO_API_UPDATE_ENTITY_REGEX
+      },
+      (req) => {
+        req.reply({});
+      }
+    ).as('G_updateObject');
   }
 });

@@ -75,6 +75,7 @@ v-model="filter"
       <v-btn
 text
 color="primary"
+        :data-cy="$utils.prefixCyData($options, 'save-button')"
 :disabled="saving"
 @click="addEntities">{{ $t('add') }}</v-btn>
     </template>

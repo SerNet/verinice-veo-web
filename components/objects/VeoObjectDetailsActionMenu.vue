@@ -31,7 +31,7 @@ v-on="on">
           <span>{{ t('createType', [t(type)]) }}</span>
         </v-btn>
       </template>
-      <v-list>
+      <v-list v-cy-name="'action-list'">
         <v-list-item
         v-for="action in allowedActions"
 :key="action.key"

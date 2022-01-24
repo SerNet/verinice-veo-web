@@ -49,8 +49,9 @@
         />
       </v-radio-group>
       <v-checkbox
-        v-else
+      v-else
         v-model="item.selected"
+        v-cy-name="'link-checkbox'"
         @click.stop="selectItem(item)"
       />
     </template>

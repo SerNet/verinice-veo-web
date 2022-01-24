@@ -40,24 +40,6 @@ describe('Objects details', () => {
     cy.wait('@G_fetchObject');
   });
 
-  it('should display empty sub-entities table ', function () {
-    cy.fixture('api/default/entities/processes/0effd1b5-4675-4386-abf0-dc464562546e.json').then((_process) => {
-      cy.get('.v-data-footer__pagination').should('contain.text', `-`);
-    });
-  });
-
-  it('should create and link an object', function () {
-    // button click
-    cy.get('[data-cy=veo-object-details-action-menu-create-button]').click();
-    // menu click
-    cy.get('[data-cy=veo-object-details-action-menu-item-createObject]').click();
-    // form name ausfüllen
-    // speichern
-    // tabelle enthält nun eine neue entity
-  });
-
-  // only link an object
-
   it('should enter something in the form and reset it. The data should equal the original data', function () {
     function getFormData(component: JQuery<HTMLElement>) {
       return JSON.stringify((component[0] as any).__vue__.$parent.modifiedObject);
@@ -123,7 +105,7 @@ describe('Objects details', () => {
     cy.get('.vf-wrapper').contains('.v-text-field', 'Beschreibung').find('input').focus().should('have.value', 'Prozess mit Subtype Datenübertragung');
 
     // Open history and select second newest version
-    cy.get('.v-slide-group__prev').click();
+    cy.get('[data-cy=form-tabs] > .v-tabs > .v-item-group > .v-slide-group__prev').click();
     cy.contains('.v-tab', 'verlauf').click({ force: true });
     cy.get('[data-cy=veo-object-history-history-list]').should('be.visible');
     cy.get('[data-cy=veo-object-history-history-list]').find('.v-item-group').children().eq(1).click();
@@ -138,5 +120,48 @@ describe('Objects details', () => {
     cy.wait('@putObject').should((interception) => {
       cy.wrap(JSON.stringify(interception.request.body)).should('equal', JSON.stringify(oldVersion));
     });
+  });
+
+  it('should display empty sub-entities table ', function () {
+    cy.fixture('api/default/entities/processes/0effd1b5-4675-4386-abf0-dc464562546e.json').then((_process) => {
+      cy.get('.v-data-footer__pagination').should('contain.text', `–`);
+    });
+  });
+
+  it('should create and link an object', function () {
+    cy.get('[data-cy=veo-object-details-action-menu-create-button]').click();
+    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(0).click();
+
+    cy.get('.v-dialog .vf-control').contains('Name*').parents('.v-input').type('Testobjekt{enter}');
+    cy.get('[data-cy=veo-create-object-dialog-save-button]').click();
+
+    cy.wait('@G_createObject').then((interception) => {
+      cy.log(interception.request.url);
+      cy.log(JSON.stringify(interception.request.body));
+      expect(interception.request.body.owner.targetUri).match(/\/units\/d496f98f-c051-443c-9b1f-65d65b64996d$/);
+      expect(interception.request.body.name).eq('Testobjekt');
+    });
+  });
+
+  it('should link an object', function () {
+    cy.get('[data-cy=veo-object-details-action-menu-create-button]').click();
+    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(1).click();
+
+    cy.wait('@G_fetchObjects')
+      .wait('@G_fetchTranslations')
+      .then(() => {
+        cy.wait(5000); // needed because otherwise scopes shown before would be selected :(
+
+        cy.get(
+          ':nth-child(4) > :nth-child(1) > [data-cy=-link-checkbox] > .v-input__control > .v-input__slot > .v-input--selection-controls__input > .v-input--selection-controls__ripple'
+        ).click();
+        cy.get('[data-cy=veo-add-entity-dialog-save-button]').click({ force: true });
+
+        cy.wait('@G_updateObject').then((interception) => {
+          cy.log(interception.request.url);
+          cy.log(JSON.stringify(interception.request.body));
+          expect(interception.request.body.parts[0].targetUri).match(/\/processes\/4a4d469f-9e08-4ca8-90b2-77a644ebc4a1$/); // TODO
+        });
+      });
   });
 });

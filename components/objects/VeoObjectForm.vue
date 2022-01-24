@@ -61,7 +61,9 @@
       </VeoPage>
       <VeoPage no-padding>
         <template #default>
-          <VeoTabs sticky-tabs>
+          <VeoTabs
+sticky-tabs
+:data-cy="'form-tabs'">
             <template #tabs>
               <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">
                 {{ t('tableOfContents') }}
