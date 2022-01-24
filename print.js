@@ -35,7 +35,7 @@ async function main() {
     .on('requestfailed', (request) => console.error(` ❌  ${request.failure().errorText} ${request.url()}`));
 
   for (const lang of LANGS) {
-    const outputFile = output + '.' + lang + '.pdf';
+    const outputFile = `${output}.${lang}.pdf`;
     console.log(`Printing: ${url} (${lang})...`);
     await page.goto(url + `&lang=${lang}`);
     await Promise.race([
