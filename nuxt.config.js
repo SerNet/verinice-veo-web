@@ -1,3 +1,5 @@
+import { resolve as pathResolve, relative as pathRelative, dirname as pathDirname } from 'path';
+
 export default {
   /**
    *
@@ -108,10 +110,26 @@ export default {
     dir: 'docs',
     liveEdit: false,
     markdown: {
-      remarkPlugins: []
+      // inline images as base64 urls
+      rehypePlugins: ['rehype-inline']
     }
   },
   hooks: {
+    'content:file:beforeParse': (file) => {
+      // Allow relative image paths in documents:
+      if (/\.md$/.test(file.extension)) {
+        const matchImages = /(!\[[^[\]]*\]\()([^()]+?)(\))|(<[^>]*src=")([^"]+?)("[^>]*>)/gm;
+        // Find markdown images (a): ![Alt](src) OR html image tags (b): <img...src...>
+        file.data = file.data.replace(matchImages, (_, a0, a1, a2, b0, b1, b2) => {
+          const src = b1 || a1;
+          const fileDir = pathDirname(file.path);
+          // ...extract src and resolve it relative to file and build relative path from nuxt root directory
+          const resolved = pathRelative(__dirname, pathResolve(fileDir, src));
+          // replace path with resolved path
+          return b1 ? `${b0}${resolved}${b2}` : `${a0}${resolved}${a2}`;
+        });
+      }
+    },
     'content:file:beforeInsert': (document) => {
       if (document.extension === '.md') {
         const [slug, lang] = document.slug.split('.');

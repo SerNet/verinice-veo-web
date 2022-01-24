@@ -35,4 +35,7 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
+::v-deep img {
+  max-width: 100%;
+}
 </style>

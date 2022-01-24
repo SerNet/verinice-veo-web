@@ -19,26 +19,33 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
 
+const LANGS = ['de', 'en'];
+
 async function main() {
-  const output = path.resolve('./dist/output.pdf');
+  const output = path.resolve('./dist/output');
+  const shorten = (str, len) => (str.length > len ? str.substr(0, len) + '...' : str);
   const url = process.argv[2] || `${process.env.CI_ENVIRONMENT_URL}/docs/?print`;
-  console.log(`Printing: ${url}...`);
+  console.log(`Printing...`);
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--export-tagged-pdf'] });
   const page = await browser.newPage();
   page
-    .on('console', (message) => console.log(`${message.type().substr(0, 3).toUpperCase()} ${message.text()}`))
-    .on('pageerror', ({ message }) => console.error(message))
-    .on('response', (response) => console.log(`${response.status()} ${response.url()}`))
-    .on('requestfailed', (request) => console.error(`${request.failure().errorText} ${request.url()}`));
-  await page.goto(url, { waitUntil: 'networkidle0' });
-  await page.waitForSelector('.pagedjs_pages').catch((e) => {
-    console.error(e);
-  });
-  await page.waitForTimeout(10000);
-  const pdf = await page.pdf({ path: output, format: 'A4' });
-  console.log(`Successfully created: ${output}`);
+    .on('console', (message) => console.log(`    ${message.type().substr(0, 3).toUpperCase()} ${message.text()}`))
+    .on('pageerror', ({ message }) => console.error('    ' + message))
+    .on('response', (response) => console.log(` ☑️  ${response.status()} ${shorten(response.url(), 120)}`))
+    .on('requestfailed', (request) => console.error(` ❌  ${request.failure().errorText} ${request.url()}`));
+
+  for (const lang of LANGS) {
+    const outputFile = `${output}.${lang}.pdf`;
+    console.log(`Printing: ${url} (${lang})...`);
+    await page.goto(url + `&lang=${lang}`);
+    await Promise.race([
+      page.evaluate((event) => new Promise((resolve) => document.addEventListener(event, resolve, { once: true })), 'PAGEDJS_AFTER_RENDERED'),
+      page.waitForTimeout(30000)
+    ]);
+    await page.pdf({ path: outputFile, format: 'A4', printBackground: true });
+    console.log(`Successfully created: ${outputFile}`);
+  }
   await browser.close();
-  return pdf;
 }
 
 main();
