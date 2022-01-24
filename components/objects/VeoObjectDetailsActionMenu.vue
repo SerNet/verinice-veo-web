@@ -17,7 +17,9 @@
 -->
 <template>
   <div>
-    <v-menu offset-y>
+    <v-menu
+v-cy-name="'action-menu'"
+offset-y>
       <template #activator="{ on, attrs }">
         <v-btn
 v-cy-name="'create-button'"
@@ -31,7 +33,7 @@ v-on="on">
       </template>
       <v-list>
         <v-list-item
-v-for="action in allowedActions"
+        v-for="action in allowedActions"
 :key="action.key"
 @click="action.action">
           <v-list-item-title>{{ upperFirst(t(action.key).toString()) }}</v-list-item-title>
@@ -129,7 +131,7 @@ export default defineComponent({
     // filter allowed actions for current type
     const allowedActions = computed(() => {
       let allowed = actions.filter((a) => a.types.includes(props.type)); // filter by type
-      if (props.object.type !== 'scope') {
+      if (props.object?.type !== 'scope') {
         allowed = allowed.filter((a) => a.objectTypes.includes('entity')); // filter by objecttype if scope
       }
       return allowed;
@@ -164,7 +166,7 @@ export default defineComponent({
       addEntityDialog.value.value = false;
       emit('link-success');
     };
-    const onAddEntityError = (error) => {
+    const onAddEntityError = (error: any) => {
       displayErrorMessage(upperFirst(t('objectNotLinked').toString()), JSON.stringify(error));
       addEntityDialog.value.value = false;
     };
@@ -198,7 +200,7 @@ export default defineComponent({
       createObjectDialog.value.value = true;
     };
     const onCreateObject = () => {
-      if (props.object.type === 'scope') {
+      if (props.object?.type === 'scope') {
         createEntityDialog.value.parent = props.object; // at first, open dialog for object type selection (only for scopes)
         createEntityDialog.value.value = true;
       } else {

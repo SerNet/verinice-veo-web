@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2022  Jonas Heitmann
+ * Copyright (C) 2022  Jonas Heitmann, Jessica Lühnen
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,6 +39,24 @@ describe('Objects details', () => {
     cy.visit('/unit-d496f98f-c051-443c-9b1f-65d65b64996d/domains/domain-ed67e4d7-c657-4479-ba8a-c53999d2930a/objects/process-0effd1b5-4675-4386-abf0-dc464562546e');
     cy.wait('@G_fetchObject');
   });
+
+  it('should display empty sub-entities table ', function () {
+    cy.fixture('api/default/entities/processes/0effd1b5-4675-4386-abf0-dc464562546e.json').then((_process) => {
+      cy.get('.v-data-footer__pagination').should('contain.text', `-`);
+    });
+  });
+
+  it('should create and link an object', function () {
+    // button click
+    cy.get('[data-cy=veo-object-details-action-menu-create-button]').click();
+    // menu click
+    cy.get('[data-cy=veo-object-details-action-menu-item-createObject]').click();
+    // form name ausfüllen
+    // speichern
+    // tabelle enthält nun eine neue entity
+  });
+
+  // only link an object
 
   it('should enter something in the form and reset it. The data should equal the original data', function () {
     function getFormData(component: JQuery<HTMLElement>) {

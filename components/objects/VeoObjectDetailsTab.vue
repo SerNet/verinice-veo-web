@@ -31,7 +31,6 @@
     <v-row>
       <v-col>
         <VeoObjectTable
-          v-if="!fetchState.error"
           :items="items"
           :loading="fetchState.pending"
           :dense="!!pageWidths[1]"
@@ -73,7 +72,7 @@ import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter, mdiPlus, mdiContentCopy, mdiLinkOff } from '@mdi/js';
 import { createUUIDUrlParam } from '~/lib/utils';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 import { getSchemaEndpoint } from '~/plugins/api/schema';
@@ -108,21 +107,21 @@ export default defineComponent({
      */
 
     const { fetchState, fetch } = useFetch(async () => {
-      if (props.type === 'subEntities') {
+      if (props.type === 'subEntities' && props.object) {
         items.value = await $api.entity.fetchSubEntities(props.object.type, props.object.id);
       } else {
         // create entities for table from links
-        const links = [];
-        for (const linkName in props.object.links) {
-          props.object.links[linkName].forEach((link) => {
+        const links: Partial<IVeoEntity>[] = [];
+        for (const linkName in props.object?.links) {
+          (props.object?.links[linkName] as any).forEach((link: IVeoCustomLink) => {
             links.push(createEntityFromLink(link));
           });
         }
-        items.value = links;
+        items.value = links as any;
       }
     });
 
-    const createEntityFromLink = (link: any) => {
+    const createEntityFromLink = (link: IVeoCustomLink) => {
       const name = link.target.displayName;
       const type = link.target.targetUri.split('/')[4];
       const id = link.target.targetUri.split('/')[5];
@@ -186,24 +185,26 @@ export default defineComponent({
 
     // link new created object to current object
     const onCreateObjectSuccess = async (newObjectId: string, newObjectType: string) => {
-      const _editedEntity = await $api.entity.fetch(props.object.type, props.object.id);
-      const schemas = await $api.schema.fetchAll();
+      if (props.object) {
+        const _editedEntity = await $api.entity.fetch(props.object.type, props.object.id);
+        const schemas = await $api.schema.fetchAll();
 
-      const currentChildren = props.object.type === 'scope' ? [...props.object.members] : [...props.object.parts];
-      const newChildren = [...currentChildren, { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, newObjectType) || newObjectType}/${newObjectId}` }];
+        const currentChildren = props.object.type === 'scope' ? [...props.object.members] : [...props.object.parts];
+        const newChildren = [...currentChildren, { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, newObjectType) || newObjectType}/${newObjectId}` }];
 
-      if (props.object.type === 'scope') {
-        _editedEntity.members = newChildren;
-      } else {
-        _editedEntity.parts = newChildren;
-      }
+        if (props.object.type === 'scope') {
+          _editedEntity.members = newChildren;
+        } else {
+          _editedEntity.parts = newChildren;
+        }
 
-      try {
-        await $api.entity.update(props.object.type, props.object.id, _editedEntity);
-        emit('new-object-created'); // emit to page for refetching object
-        fetch();
-      } catch (error: any) {
-        displayErrorMessage(upperFirst(t('errors.link').toString()), error?.toString());
+        try {
+          await $api.entity.update(props.object.type, props.object.id, _editedEntity);
+          emit('new-object-created'); // emit to page for refetching object
+          fetch();
+        } catch (error: any) {
+          displayErrorMessage(upperFirst(t('errors.link').toString()), error?.toString());
+        }
       }
     };
 
