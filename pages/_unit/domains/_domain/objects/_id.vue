@@ -33,9 +33,6 @@
         <h1>
           {{ upperFirst(t('breadcrumbs.objects').toString()) }}
         </h1>
-        <h2>
-          {{ object.displayName }}
-        </h2>
       </div>
     </template>
     <template #default>
@@ -43,7 +40,7 @@
         :loading="loading"
         :object="object"
         :page-widths="pageWidths"
-        @new-object-created="fetch"
+        @new-object-created="loadObject"
       />
       <VeoPage
         fullsize
@@ -278,7 +275,8 @@ export default defineComponent({
       notFoundError,
       object,
       objectSchema,
-      upperFirst
+      upperFirst,
+      loadObject
     };
   },
   head: {}

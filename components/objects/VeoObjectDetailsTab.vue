@@ -123,8 +123,9 @@ export default defineComponent({
 
     const createEntityFromLink = (link: IVeoCustomLink) => {
       const name = link.target.displayName;
-      const type = link.target.targetUri.split('/')[4];
-      const id = link.target.targetUri.split('/')[5];
+      const splitted = link.target.targetUri.split('/');
+      const type = splitted[4];
+      const id = splitted[5];
       return { id, name, type };
     };
 
