@@ -50,7 +50,7 @@ v-on="on">
     <VeoCreateEntityDialog
       v-model="createEntityDialog.value"
       :schemas="createEntitySchemas"
-      @create-entity="onCreateEntity($event, createEntityDialog.parent)"
+      @create-entity="onObjectTypeSelected($event, createEntityDialog.parent)"
     />
     <VeoCreateObjectDialog
       v-if="createObjectDialog.objectType"
@@ -209,7 +209,7 @@ export default defineComponent({
       }
     };
     // after object type selection open object creation dialog
-    const onCreateEntity = (type?: string, _parent?: IVeoEntity) => {
+    const onObjectTypeSelected = (type?: string, _parent?: IVeoEntity) => {
       createObjectDialog.value.objectType = type;
       createEntityDialog.value.value = false;
       createObjectDialog.value.value = true;
@@ -228,7 +228,7 @@ export default defineComponent({
       onAddEntitySuccess,
       onAddEntityError,
       addEntityDialog,
-      onCreateEntity,
+      onObjectTypeSelected,
       allowedActions,
       upperFirst,
       domainId,

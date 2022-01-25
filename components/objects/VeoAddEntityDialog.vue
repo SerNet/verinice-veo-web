@@ -115,7 +115,7 @@ export default Vue.extend({
         description: undefined,
         updatedBy: undefined,
         status: undefined
-      } as IVeoFilter | undefined,
+      } as IVeoFilter,
       selectedItems: [] as { id: string; type: string }[],
       saving: false as boolean,
       entities: {

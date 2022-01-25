@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Samuel Vitzthum, Jessica Lühnen
+   - Copyright (C) 2022 Jessica Lühnen
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,20 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <!-- TODO: find a way to bind $attrs, so props don't need to be passed manually -->
-  <VeoPage
-:is-page-wrapper-child="isPageWrapperChild"
-fullsize
-sticky-header>
-    <template #header>
-      <v-row class="pb-4">
-        <v-col cols="auto">
-          <h3>{{ object && object.displayName }}</h3>
-        </v-col>
-      </v-row>
-    </template>
-    <template #default>
-      <div style="min-height: 16vh; max-height: 50vh; overflow-y: auto; overflow-x: hidden;">
+<v-container
+v-bind="$attrs"
+class="pa-0"
+v-on="$listeners">
         <v-row no-gutters>
           <v-col>
             <p class="text-no-wrap mb-0">
@@ -59,66 +49,25 @@ class="text-xl-right text-no-wrap mb-0">
         <v-row>
           <v-col>{{ object && object.description }}</v-col>
         </v-row>
-      </div>
-      <v-divider class="mt-1" />
-      <v-row v-if="object">
-        <v-col>
-          <v-tabs v-model="activeTab">
-            <v-tab
-              v-for="tab in tabs"
-              :key="tab"
-              :href="`#${tab}`"
-              :disabled="tab === 'parents'"
-            >{{ t(tab) }}</v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="activeTab">
-            <v-tab-item
-v-for="tab in tabs"
-:key="tab"
-:value="tab">
-              <VeoObjectDetailsTab
-:type="tab"
-:object="object"
-:page-widths="pageWidths" 
-@new-object-created="$emit('new-object-created')" />
-            </v-tab-item>
-          </v-tabs-items>
-        </v-col>
-      </v-row>
-    </template>
-  </VeoPage>
+</v-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropOptions, computed, useRouter, WritableComputedRef, useRoute } from '@nuxtjs/composition-api';
+import { defineComponent, PropOptions, computed } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { formatDate, formatTime } from '~/lib/utils';
 
 export default defineComponent({
-  name: 'VeoObjectDetails',
+  name: 'VeoObjectDetailsInformation',
   props: {
-    loading: {
-      type: Boolean,
-      default: false
-    },
     object: {
       type: Object,
       default: undefined
-    } as PropOptions<IVeoEntity>,
-    isPageWrapperChild: {
-      type: Boolean,
-      default: false
-    },
-    pageWidths: {
-      type: Array,
-      default: () => []
-    } as PropOptions<number[]>
+    } as PropOptions<IVeoEntity>
   },
   setup(props) {
-    const router = useRouter();
-    const route = useRoute();
     const { t } = useI18n();
 
     // get amount of custom aspects and custom links
@@ -128,26 +77,11 @@ export default defineComponent({
     // format date time to show updated at & created at
     const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
 
-    // configure tabs to distinguish between subentities, parents and links
-    const tabs = ['subEntities', 'parents', 'links'];
-
-    // get active tab by route hash & set route hash by switching tabs
-    const activeTab: WritableComputedRef<string> = computed({
-      get(): string {
-        return route.value.hash.substring(1) || 'subEntities'; // subEntities as default tab
-      },
-      set(hash: string): void {
-        router.replace({ hash });
-      }
-    });
-
     return {
       amountCustomAspects,
       amountCustomLinks,
       formatDateTime,
       upperFirst,
-      activeTab,
-      tabs,
 
       t
     };
@@ -162,20 +96,14 @@ export default defineComponent({
     "customLinks": "custom links",
     "updatedAt": "last change",
     "createdAt": "created",
-    "by": "by",
-    "subEntities": "subentities",
-    "parents": "parents",
-    "links": "links"
+    "by": "by"
   },
   "de": {
     "customAspects": "Custom Aspects",
     "customLinks": "Custom Links",
     "updatedAt": "letzte Änderung",
     "createdAt": "erstellt",
-    "by": "von",
-    "subEntities": "Unterobjekte",
-    "parents": "Eltern",
-    "links": "Verlinkungen"
+    "by": "von"
   }
 }
 </i18n>
