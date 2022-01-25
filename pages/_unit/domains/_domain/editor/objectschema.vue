@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
-   - 
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -118,6 +118,23 @@
             </template>
             <template #default>
               {{ $t('help') }}
+            </template>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template #activator="{on}">
+              <v-btn
+                :disabled="!schemaIsValid.valid"
+                icon
+                large
+                color="primary"
+                @click="saveSchema"
+                v-on="on"
+              >
+                <v-icon>mdi-content-save</v-icon>
+              </v-btn>
+            </template>
+            <template #default>
+              {{ upperFirst($t('save')) }}
             </template>
           </v-tooltip>
           <v-row
@@ -272,10 +289,13 @@
 import Vue from 'vue';
 
 import { computed } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
 export default Vue.extend({
   provide(): any {
@@ -387,7 +407,17 @@ export default Vue.extend({
       } else {
         this.pageWidths = [6, 6];
       }
-    }
+    },
+    async saveSchema() {
+      try {
+        const res = await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema());
+        console.log(res);
+        displaySuccessMessage(this.$t('saveSchemaSuccess'));
+      } catch (e) {
+        displayErrorMessage(this.$t('error.title'), this.$t('saveSchemaError'));
+      }
+    },
+    upperFirst
   }
 });
 </script>
@@ -402,7 +432,10 @@ export default Vue.extend({
       "Couldn't load schema. Please resolve the following errors and try again.",
     "search": "Search for a property",
     "translations": "Translations",
-    "help": "Help"
+    "help": "Help",
+    "save": "save",
+    "saveSchemaSuccess": "Schema saved!",
+    "saveSchemaError": "Couldn't save schema!"
   },
   "de": {
     "description": "Beschreibung",
@@ -412,7 +445,10 @@ export default Vue.extend({
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
     "search": "Nach einer Eigenschaft suchen...",
     "translations": "Übersetzungen",
-    "help": "Hilfe"
+    "help": "Hilfe",
+    "save": "speichern",
+    "saveSchemaSuccess": "Schema wurde gespeichert!",
+    "saveSchemaError": "Schema konnte nicht gespeichert werden!"
   }
 }
 </i18n>
