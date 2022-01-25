@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Annemarie Bufe
-   - 
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Annemarie Bufe, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -24,6 +24,11 @@
     v-else-if="name === 'divider'"
     class="mt-8"
   />
+  <v-skeleton-loader
+    v-else-if="loading"
+    class="veo-primary-navigation__menu-item"
+    :type="icon ? 'list-item-avatar' : 'list-item'"
+  ></v-skeleton-loader>
   <v-list-item
     v-else-if="childItems === undefined"
     class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
@@ -48,7 +53,7 @@
           </div>
         </template>
         <span>{{ name }}</span>
-      </v-tooltip> 
+      </v-tooltip>
     </v-list-item-icon>
     <v-list-item-title>{{ name }}</v-list-item-title>
   </v-list-item>
@@ -83,7 +88,7 @@
           </div>
         </template>
         <span>{{ name }}</span>
-      </v-tooltip> 
+      </v-tooltip>
     </template>
     <v-list-item
       v-if="childItems.length === 0"
@@ -103,7 +108,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, PropType, Ref, ref, watch } from '@nuxtjs/composition-api';
+import { RawLocation } from 'vue-router/types';
+import { defineComponent, nextTick, PropOptions, PropType, Ref, ref, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { INavItem } from './VeoPrimaryNavigation.vue';
 
@@ -124,9 +130,9 @@ export default defineComponent<IProps>({
       default: undefined
     },
     to: {
-      type: String,
+      type: [String, Object],
       default: undefined
-    },
+    } as PropOptions<RawLocation>,
     exact: {
       type: Boolean,
       default: undefined
@@ -134,6 +140,10 @@ export default defineComponent<IProps>({
     disabled: {
       type: Boolean,
       required: true
+    },
+    loading: {
+      type: Boolean,
+      default: false
     },
     childItems: {
       type: Array as PropType<INavItem[]>,
@@ -213,8 +223,34 @@ export default defineComponent<IProps>({
 }
 </i18n>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .veo-primary-navigation__menu-item {
   flex-basis: auto;
+}
+
+.veo-primary-navigation__menu-item.v-list-group--no-action {
+  & > .v-list-group__items {
+    & > .v-list-item {
+      padding-left: 76px !important;
+    }
+  }
+}
+
+.veo-primary-navigation__menu-item.v-skeleton-loader {
+  margin-bottom: 4px;
+  .v-skeleton-loader__list-item-avatar {
+    height: 40px;
+    padding: 0 8px;
+    .v-skeleton-loader__avatar {
+      width: 24px;
+      height: 24px;
+      margin-right: 32px;
+    }
+  }
+  .v-skeleton-loader__list-item {
+    height: 40px;
+    padding: 0 8px;
+    padding-left: 64px;
+  }
 }
 </style>

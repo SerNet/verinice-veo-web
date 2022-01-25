@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann
-   - 
+   - Copyright (C) 2021  Jonas Heitmann, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -102,7 +102,7 @@
       @click="openItem"
     >
       <template #actions="{item}">
-        <v-tooltip 
+        <v-tooltip
           v-for="btn in actions"
           :key="btn.id"
           bottom
@@ -141,6 +141,8 @@ import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
+
+export const ROUTE_NAME = 'unit-domains-domain-objects';
 
 export default defineComponent({
   name: 'VeoObjectsOverviewPage',
@@ -216,7 +218,10 @@ export default defineComponent({
     const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
       const resetValues = reset ? filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
       const newValues = Object.fromEntries(resetValues.concat(Object.entries(v).map(([k, v]) => [k, v === true ? null : v])));
-      await router.push({ ...route.value, name: route.value.name!, query: { ...route.value.query, ...newValues } });
+      const query = { ...route.value.query, ...newValues };
+      // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
+      Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
+      await router.push({ ...route.value, name: route.value.name!, query });
     };
 
     // Remove a filter by removing it from query params
