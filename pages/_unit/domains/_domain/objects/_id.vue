@@ -33,16 +33,56 @@
         <h1>
           {{ upperFirst(t('breadcrumbs.objects').toString()) }}
         </h1>
-        <h2>
-          {{ object.displayName }}
-        </h2>
       </div>
     </template>
     <template #default>
-      <VeoObjectDetails
-        :loading="loading"
-        :object="object"
-      />
+      <VeoPage
+        fullsize
+        sticky-header
+      >
+        <template #header>
+          <v-row class="pb-4">
+            <v-col cols="auto">
+              <h3>{{ object && object.displayName }}</h3>
+            </v-col>
+          </v-row>
+        </template> 
+        <template #default>
+          <VeoObjectDetailsInformation
+            :object="object"
+            class="object-details-information"
+          />
+          <v-divider class="mt-1" />
+          <v-row v-if="object">
+            <v-col>
+              <v-tabs v-model="activeTab">
+                <v-tab
+                  v-for="tab in tabs"
+                  :key="tab"
+                  :href="`#${tab}`"
+                  :disabled="tab === 'parents'"
+                >
+                  {{ t(tab) }}
+                </v-tab>
+              </v-tabs>
+              <v-tabs-items v-model="activeTab">
+                <v-tab-item
+                  v-for="tab in tabs"
+                  :key="tab"
+                  :value="tab"
+                >
+                  <VeoObjectDetailsTab
+                    :type="tab"
+                    :object="object"
+                    :page-widths="pageWidths" 
+                    @new-object-created="loadObject"
+                  />
+                </v-tab-item>
+              </v-tabs-items>
+            </v-col>
+          </v-row>
+        </template>
+      </VeoPage>
       <VeoPage
         fullsize
         content-class="fill-height"
@@ -126,7 +166,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, useMeta } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, useAsync, useMeta, WritableComputedRef, useRouter } from '@nuxtjs/composition-api';
 import { cloneDeep, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
@@ -155,6 +195,7 @@ export default defineComponent({
     const { t } = useI18n();
     const { $api, $config } = useContext();
     const route = useRoute();
+    const router = useRouter();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
     const objectParameter = computed(() => separateUUIDParam(route.value.params.id));
@@ -171,14 +212,14 @@ export default defineComponent({
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
 
     // Display stuff
-    const pageWidths = ref<Number[]>([4, 8]);
+    const pageWidths = ref<Number[]>([5, 7]);
     const pageTitles = ref<string[]>([t('objectInfo').toString(), t('objectForm').toString()]);
 
     const onPageCollapsed = (collapsedPages: Boolean[]) => {
       if (collapsedPages.some((page) => page)) {
         pageWidths.value = [12, 0];
       } else {
-        pageWidths.value = [3, 9];
+        pageWidths.value = [5, 7];
       }
     };
 
@@ -252,6 +293,23 @@ export default defineComponent({
       }
     }
 
+    /**
+     * Object details stuff
+     */
+
+    // configure tabs to distinguish between subentities, parents and links
+    const tabs = ['subEntities', 'parents', 'links'];
+
+    // get active tab by route hash & set route hash by switching tabs
+    const activeTab: WritableComputedRef<string> = computed({
+      get(): string {
+        return route.value.hash.substring(1) || 'subEntities'; // subEntities as default tab
+      },
+      set(hash: string): void {
+        router.replace({ hash });
+      }
+    });
+
     return {
       VeoAlertType,
       domainId,
@@ -276,7 +334,10 @@ export default defineComponent({
       notFoundError,
       object,
       objectSchema,
-      upperFirst
+      upperFirst,
+      loadObject,
+      tabs,
+      activeTab
     };
   },
   head: {}
@@ -294,7 +355,10 @@ export default defineComponent({
     "objectSaved": "\"{name}\" was updated successfully!",
     "oldVersionAlert": "You are currently viewing an old and readonly version of this object. If you want to update the object based on this data, please click \"restore\" first and then make your changes.",
     "restore": "restore",
-    "version": "version {version}"
+    "version": "version {version}",
+    "subEntities": "subentities",
+    "parents": "parents",
+    "links": "links"
   },
   "de": {
     "objectInfo": "Objektdetails",
@@ -305,7 +369,19 @@ export default defineComponent({
     "objectSaved": "\"{name}\" wurde aktualisiert!",
     "oldVersionAlert": "Ihnen wird eine alte, schreibgeschützte Version dieses Objektes angezeigt. Bitte klicken Sie auf \"Wiederherstellen\", wenn Sie Ihr Objekt basierend auf diesen Daten aktualisieren möchten.",
     "restore": "wiederherstellen",
-    "version": "version {version}"
+    "version": "version {version}",
+    "subEntities": "Unterobjekte",
+    "parents": "Eltern",
+    "links": "Verlinkungen"
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.object-details-information {
+  min-height: 16vh;
+  max-height: 50vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+</style>

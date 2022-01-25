@@ -31,7 +31,8 @@ export type ObjectTableTooltip = (value: any) => string;
 export type ObjectTableRenderer = (props: { item: IVeoEntity }) => VNode | VNode[] | string;
 
 export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
-  inDense?: boolean;
+  isDense?: boolean;
+  isSimple?: boolean;
   truncate?: boolean;
   map?: ObjectTableFormatter;
   text?: string;
@@ -60,6 +61,13 @@ export default defineComponent({
      * Reduce number of headers
      */
     dense: {
+      type: Boolean,
+      default: false
+    },
+    /**
+     * Simple table (only name)
+     */
+    simple: {
       type: Boolean,
       default: false
     },
@@ -170,15 +178,82 @@ export default defineComponent({
      * Header configuration
      */
     const headerConfig: ObjectTableHeader[] = [
-      { value: 'icon', inDense: false, text: '', class: ['pr-0'], cellClass: ['pr-0'], width: 0, render: renderIcon },
-      { value: 'designator', inDense: true, sortable: true, width: 110 },
-      { value: 'abbreviation', inDense: false, sortable: true, truncate: true, width: 80 },
-      { value: 'name', inDense: true, cellClass: ['font-weight-bold'], width: 300, truncate: true, sortable: true },
-      { value: 'status', inDense: false, sortable: true, width: 110, render: renderStatus },
-      { value: 'description', inDense: false, sortable: false, width: 500, truncate: true, tooltip: ({ item }) => item.description || '' },
-      { value: 'updatedBy', inDense: true, sortable: true, width: 110 },
-      { value: 'updatedAt', inDense: true, sortable: true, width: 200, tooltip: renderUpdatedAtTooltip, render: renderDate },
-      { value: 'actions', inDense: true, text: '', sortable: false, width: 110, render: renderActions }
+      {
+        value: 'icon',
+        isDense: false,
+        isSimple: true,
+        text: '',
+        class: ['pr-0'],
+        cellClass: ['pr-0'],
+        width: 0,
+        render: renderIcon
+      },
+      {
+        value: 'designator',
+        isDense: true,
+        isSimple: false,
+        sortable: true,
+        width: 110
+      },
+      {
+        value: 'abbreviation',
+        isDense: false,
+        isSimple: false,
+        sortable: true,
+        truncate: true,
+        width: 80
+      },
+      {
+        value: 'name',
+        isDense: true,
+        isSimple: true,
+        cellClass: ['font-weight-bold'],
+        width: 300,
+        truncate: true,
+        sortable: true
+      },
+      {
+        value: 'status',
+        isDense: false,
+        isSimple: false,
+        sortable: true,
+        width: 110,
+        render: renderStatus
+      },
+      {
+        value: 'description',
+        isDense: false,
+        isSimple: false,
+        sortable: false,
+        width: 500,
+        truncate: true,
+        tooltip: ({ item }) => item.description || ''
+      },
+      {
+        value: 'updatedBy',
+        isDense: true,
+        isSimple: false,
+        sortable: true,
+        width: 110
+      },
+      {
+        value: 'updatedAt',
+        isDense: true,
+        isSimple: false,
+        sortable: true,
+        width: 200,
+        tooltip: renderUpdatedAtTooltip,
+        render: renderDate
+      },
+      {
+        value: 'actions',
+        isDense: true,
+        isSimple: false,
+        text: '',
+        sortable: false,
+        width: 110,
+        render: renderActions
+      }
     ];
     type Header = DataTableHeader & ObjectTableHeader;
 
@@ -228,7 +303,8 @@ export default defineComponent({
       const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : []);
       return {
         ...header,
-        inDense: 'inDense' in header ? header.inDense : false,
+        isDense: !!header?.isDense,
+        isSimple: !!header?.isSimple,
         text: header.text ?? t(`objectlist.${header.value}`).toString(),
         cellClass,
         class: defaultClasses.concat(header.class || [], header.truncate ? truncateClasses : []),
@@ -250,7 +326,9 @@ export default defineComponent({
     };
 
     // headers (less in dense mode)
-    const headers = computed(() => (props.dense ? _headers.filter((header) => header.inDense) : _headers));
+    const denseHeaders = _headers.filter((header) => header.isDense);
+    const simpleHeaders = _headers.filter((header) => header.isSimple);
+    const headers = computed(() => (props.simple ? simpleHeaders : props.dense ? denseHeaders : _headers));
     const items = computed(() => {
       const items = isPaginatedResponse(props.items) ? props.items.items : props.items;
       return items.map(mapItem);
@@ -272,11 +350,19 @@ export default defineComponent({
 
     const itemsPerPage = computed(() => $user.tablePageSize);
     const firstOrValue = <T extends unknown>(v: T | T[]): T => (Array.isArray(v) ? v[0] : v);
-    const pageUpdate = { newPage: props.page, sortBy: firstOrValue(props.sortBy), sortDesc: firstOrValue(props.sortDesc) };
+    const pageUpdate = {
+      newPage: props.page,
+      sortBy: firstOrValue(props.sortBy),
+      sortDesc: firstOrValue(props.sortDesc)
+    };
     const { throttle } = useThrottleNextTick();
     const emitPageUpdate = ({ newPage, sortBy, sortDesc }: { newPage?: number; sortBy?: string | string[]; sortDesc?: boolean | boolean[] }) => {
       // Update data (and keep current values)
-      const data = Object.assign(pageUpdate, { newPage: newPage ?? props.page, sortBy: firstOrValue(sortBy ?? props.sortBy), sortDesc: firstOrValue(sortDesc ?? props.sortDesc) });
+      const data = Object.assign(pageUpdate, {
+        newPage: newPage ?? props.page,
+        sortBy: firstOrValue(sortBy ?? props.sortBy),
+        sortDesc: firstOrValue(sortDesc ?? props.sortDesc)
+      });
       // ... but only emit once at nextTick
       return throttle(() => emit('page-change', data));
     };
