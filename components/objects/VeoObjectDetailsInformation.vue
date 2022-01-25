@@ -16,40 +16,43 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-<v-container
-v-bind="$attrs"
-class="pa-0"
-v-on="$listeners">
-        <v-row no-gutters>
-          <v-col>
-            <p class="text-no-wrap mb-0">
-              <strong>{{ amountCustomAspects }}</strong>
-              {{ upperFirst(t('customAspects').toString()) }}
-            </p>
-            <p class="text-no-wrap mb-0">
-              <strong>{{ amountCustomLinks }}</strong>
-              {{ upperFirst(t('customLinks').toString()) }}
-            </p>
-          </v-col>
-          <v-col>
-            <p
-v-if="object"
-class="text-xl-right text-no-wrap mb-0">
-              <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
-              {{ formatDateTime(object.updatedAt) }} {{ t('by') }} {{ object.updatedBy }}
-            </p>
-            <p
-v-if="object"
-class="text-xl-right text-no-wrap mb-0">
-              <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
-              {{ formatDateTime(object.createdAt) }} {{ t('by') }} {{ object.createdBy }}
-            </p>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>{{ object && object.description }}</v-col>
-        </v-row>
-</v-container>
+  <v-container
+    v-bind="$attrs"
+    class="pa-0"
+    v-on="$listeners"
+  >
+    <v-row no-gutters>
+      <v-col>
+        <p class="text-no-wrap mb-0">
+          <strong>{{ amountCustomAspects }}</strong>
+          {{ upperFirst(t('customAspects').toString()) }}
+        </p>
+        <p class="text-no-wrap mb-0">
+          <strong>{{ amountCustomLinks }}</strong>
+          {{ upperFirst(t('customLinks').toString()) }}
+        </p>
+      </v-col>
+      <v-col>
+        <p
+          v-if="object"
+          class="text-xl-right text-no-wrap mb-0"
+        >
+          <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
+          {{ formatDateTime(object.updatedAt) }} {{ t('by') }} {{ object.updatedBy }}
+        </p>
+        <p
+          v-if="object"
+          class="text-xl-right text-no-wrap mb-0"
+        >
+          <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
+          {{ formatDateTime(object.createdAt) }} {{ t('by') }} {{ object.createdBy }}
+        </p>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>{{ object && object.description }}</v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">

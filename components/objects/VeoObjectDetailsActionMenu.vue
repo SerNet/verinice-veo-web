@@ -18,24 +18,29 @@
 <template>
   <div>
     <v-menu
-v-cy-name="'action-menu'"
-offset-y>
+      v-cy-name="'action-menu'"
+      offset-y
+    >
       <template #activator="{ on, attrs }">
         <v-btn
-v-cy-name="'create-button'"
-color="primary"
-text
-v-bind="attrs"
-v-on="on">
-          <v-icon left>{{ mdiPlus }}</v-icon>
+          v-cy-name="'create-button'"
+          color="primary"
+          text
+          v-bind="attrs"
+          v-on="on"
+        >
+          <v-icon left>
+            {{ mdiPlus }}
+          </v-icon>
           <span>{{ t('createType', [t(type)]) }}</span>
         </v-btn>
       </template>
       <v-list v-cy-name="'action-list'">
         <v-list-item
-        v-for="action in allowedActions"
-:key="action.key"
-@click="action.action">
+          v-for="action in allowedActions"
+          :key="action.key"
+          @click="action.action"
+        >
           <v-list-item-title>{{ upperFirst(t(action.key).toString()) }}</v-list-item-title>
         </v-list-item>
       </v-list>

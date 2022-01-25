@@ -36,47 +36,53 @@
       </div>
     </template>
     <template #default>
-       <VeoPage
-fullsize
-sticky-header>
-    <template #header>
-      <v-row class="pb-4">
-        <v-col cols="auto">
-          <h3>{{ object && object.displayName }}</h3>
-        </v-col>
-      </v-row>
-    </template> 
-    <template #default>
-      <VeoObjectDetailsInformation
-:object="object"
-class="object-details-information" />
-            <v-divider class="mt-1" />
-      <v-row v-if="object">
-        <v-col>
-          <v-tabs v-model="activeTab">
-            <v-tab
-              v-for="tab in tabs"
-              :key="tab"
-              :href="`#${tab}`"
-              :disabled="tab === 'parents'"
-            >{{ t(tab) }}</v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="activeTab">
-            <v-tab-item
-v-for="tab in tabs"
-:key="tab"
-:value="tab">
-              <VeoObjectDetailsTab
-:type="tab"
-:object="object"
-:page-widths="pageWidths" 
-@new-object-created="loadObject" />
-            </v-tab-item>
-          </v-tabs-items>
-        </v-col>
-      </v-row>
-      </template>
-       </VeoPage>
+      <VeoPage
+        fullsize
+        sticky-header
+      >
+        <template #header>
+          <v-row class="pb-4">
+            <v-col cols="auto">
+              <h3>{{ object && object.displayName }}</h3>
+            </v-col>
+          </v-row>
+        </template> 
+        <template #default>
+          <VeoObjectDetailsInformation
+            :object="object"
+            class="object-details-information"
+          />
+          <v-divider class="mt-1" />
+          <v-row v-if="object">
+            <v-col>
+              <v-tabs v-model="activeTab">
+                <v-tab
+                  v-for="tab in tabs"
+                  :key="tab"
+                  :href="`#${tab}`"
+                  :disabled="tab === 'parents'"
+                >
+                  {{ t(tab) }}
+                </v-tab>
+              </v-tabs>
+              <v-tabs-items v-model="activeTab">
+                <v-tab-item
+                  v-for="tab in tabs"
+                  :key="tab"
+                  :value="tab"
+                >
+                  <VeoObjectDetailsTab
+                    :type="tab"
+                    :object="object"
+                    :page-widths="pageWidths" 
+                    @new-object-created="loadObject"
+                  />
+                </v-tab-item>
+              </v-tabs-items>
+            </v-col>
+          </v-row>
+        </template>
+      </VeoPage>
       <VeoPage
         fullsize
         content-class="fill-height"

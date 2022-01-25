@@ -27,8 +27,9 @@
     <template #default>
       {{ $t('add_subentities', { displayName: entityDisplayName }) }}
       <v-row
-dense
-class="justify-space-between">
+        dense
+        class="justify-space-between"
+      >
         <v-col
           v-if="editedEntity && editedEntity.type === 'scope' && addType === 'entity'"
           lg="3"
@@ -49,9 +50,10 @@ class="justify-space-between">
       <v-row>
         <v-col class="flex-grow-1 search-bar">
           <VeoListSearchBar
-v-model="filter"
-:object-type="objectName"
-@reset="filter = $event" />
+            v-model="filter"
+            :object-type="objectName"
+            @reset="filter = $event"
+          />
         </v-col>
       </v-row>
       <VeoEntitySelectionList
@@ -70,14 +72,19 @@ v-model="filter"
         color="primary"
         :disabled="saving"
         @click="$emit('input', false)"
-      >{{ $t('global.button.cancel') }}</v-btn>
+      >
+        {{ $t('global.button.cancel') }}
+      </v-btn>
       <v-spacer />
       <v-btn
-text
-color="primary"
+        text
+        color="primary"
         :data-cy="$utils.prefixCyData($options, 'save-button')"
-:disabled="saving"
-@click="addEntities">{{ $t('add') }}</v-btn>
+        :disabled="saving"
+        @click="addEntities"
+      >
+        {{ $t('add') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>

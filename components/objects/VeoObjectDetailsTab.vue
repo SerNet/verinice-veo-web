@@ -39,14 +39,16 @@
         >
           <template #actions="{item}">
             <v-tooltip
-v-for="btn in actions"
-:key="btn.id"
-bottom>
+              v-for="btn in actions"
+              :key="btn.id"
+              bottom
+            >
               <template #activator="{on}">
                 <v-btn
-icon
-@click="btn.action(item)"
-v-on="on">
+                  icon
+                  @click="btn.action(item)"
+                  v-on="on"
+                >
                   <v-icon v-text="btn.icon" />
                 </v-btn>
               </template>
