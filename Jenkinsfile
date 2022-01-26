@@ -27,7 +27,7 @@ pipeline {
                 sh 'env'
                 buildDescription "${env.GIT_BRANCH} ${env.GIT_COMMIT[0..8]}"
                 script {
-                    projectVersion = sh(returnStdout: true, script: '''jq .version package.json''').trim()
+                    projectVersion = sh(returnStdout: true, script: '''jq -r .version package.json''').trim()
                 }
                 sh 'mkdir -p $WORKSPACE/out'
             }
