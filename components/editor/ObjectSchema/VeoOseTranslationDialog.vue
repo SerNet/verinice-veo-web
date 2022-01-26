@@ -20,6 +20,7 @@
     v-model="dialog"
     large
     :headline="$t('editor.formschema.translation')"
+    fixed-footer
   >
     <template #default>
       <div style="min-height: 20vh">

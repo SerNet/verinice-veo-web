@@ -55,7 +55,7 @@
             icon
             large
             color="primary"
-            @click="showCodeEditor = true"
+            @click="codeEditorVisible = true"
             v-on="on"
           >
             <v-icon>mdi-code-tags</v-icon>
@@ -73,7 +73,7 @@
             large
             color="warning"
             class="ml-2"
-            @click="showErrorDialog = !showErrorDialog"
+            @click="errorDialogVisible = !errorDialogVisible"
             v-on="on"
           >
             <v-icon>mdi-alert-circle-outline</v-icon>
@@ -105,7 +105,7 @@
             icon
             large
             color="primary"
-            @click="showDetailDialog = !showDetailDialog"
+            @click="detailDialogVisible = !detailDialogVisible"
             v-on="on"
           >
             <v-icon>mdi-wrench</v-icon>
@@ -131,6 +131,22 @@
         </template>
         <template #default>
           {{ t('help') }}
+        </template>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template #activator="{on}">
+          <v-btn
+            icon
+            large
+            color="primary"
+            @click="save"
+            v-on="on"
+          >
+            <v-icon>mdi-content-save</v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ t('save') }}
         </template>
       </v-tooltip>
     </template>
@@ -257,31 +273,32 @@
     </template>
     <template #helpers>
       <VeoFseWizardDialog
-        v-model="showCreationDialog"
-        @update-object-schema="setObjectSchema"
-        @update-form-schema="setFormSchema"
-        @update-translation="setTranslation"
+        :value="creationDialogVisible"
+        :domain-id="domainId"
+        @objectSchema="setObjectSchema"
+        @formSchema="setFormSchema"
+        @translations="setTranslation"
       />
       <VeoEditorErrorDialog
-        v-model="showErrorDialog"
+        v-model="errorDialogVisible"
         :validation="schemaIsValid"
         @fix="onFixRequest"
       />
       <VeoFseCodeEditorDialog
-        v-model="showCodeEditor"
+        v-model="codeEditorVisible"
         :code="code"
       />
       <VeoFseInvalidSchemaDownloadDialog
         v-model="invalidSchemaDownloadDialogVisible"
         @download="downloadSchema(true)"
       />
-      <!-- Important: showTranslationDialog should be in v-if to only run code in the dialog when it is open  -->
+      <!-- Important: translationDialogVisible should be in v-if to only run code in the dialog when it is open  -->
       <VeoFseTranslationDialog
-        v-if="!$fetchState.pending && showTranslationDialog && formSchema && formSchema.translation"
-        v-model="showTranslationDialog"
+        v-if="!$fetchState.pending && translationDialogVisible && formSchema && formSchema.translation"
+        v-model="translationDialogVisible"
         :translation="formSchema.translation"
         :language="language"
-        :languages="avaliableLanguages"
+        :languages="availableLanguages"
         :name="formSchema.name"
         @update-language="setFormLanguage"
         @update-translation="setFormTranslation"
@@ -289,11 +306,12 @@
       />
       <VeoFseSchemaDetailsDialog
         v-if="formSchema"
-        v-model="showDetailDialog"
-        :object-schema="formSchema.modelType"
+        v-model="detailDialogVisible"
+        :object-schema="objectSchema"
         :form-schema="formSchema.name[language]"
         :subtype="formSchema.subType"
         :sorting="formSchema.sorting"
+        :domain-id="domainId"
         @update-schema-name="updateSchemaName"
         @update-subtype="updateSubType"
         @update-sorting="updateSorting"
@@ -305,7 +323,7 @@
 <script lang="ts">
 import vjp from 'vue-json-pointer';
 
-import { computed, defineComponent, onMounted, provide, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, provide, Ref, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JsonPointer } from 'json-ptr';
 import { validate, deleteElementCustomTranslation } from '~/lib/FormSchemaHelper';
@@ -319,8 +337,9 @@ import {
   IVeoFormSchemaTranslationCollection,
   IVeoFormSchemaMeta
 } from '~/types/VeoTypes';
-import { IBaseObject } from '~/lib/utils';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
+import { useVeoAlerts } from '~/composables/VeoAlert';
 
 interface IProps {}
 
@@ -328,23 +347,24 @@ export default defineComponent<IProps>({
   setup(_props) {
     const { t } = useI18n();
     const { $api, app } = useContext();
+    const route = useRoute();
+    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+
     /**
      * Layout specific stuff
      */
-    const showCreationDialog = ref(false);
-    const showErrorDialog = ref(false);
-    const showDetailDialog = ref(false);
-    const showCodeEditor = ref(false);
+    const creationDialogVisible = computed(() => !objectSchema.value || !formSchema.value);
+    const errorDialogVisible = ref(false);
+    const detailDialogVisible = ref(false);
+    const codeEditorVisible = ref(false);
     const searchQuery: Ref<undefined | string> = ref(undefined);
 
     const controlItems = ref({});
 
     const downloadButton: Ref<any> = ref(null);
     provide('controlsItems', controlItems);
-
-    onMounted(() => {
-      showCreationDialog.value = objectSchema.value === undefined && formSchema.value === undefined;
-    });
 
     const title = computed(() => {
       const headline = t('editor.formschema.headline');
@@ -380,10 +400,6 @@ export default defineComponent<IProps>({
 
     const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
 
-    function updateSchema(formSchema: any) {
-      formSchema.value = JSON.parse(JSON.stringify(formSchema));
-    }
-
     function setFormSchema(schema: IVeoFormSchema) {
       formSchema.value = schema;
       // If a translation for current app language does not exist, initialise it
@@ -393,16 +409,41 @@ export default defineComponent<IProps>({
           ...{ [app.i18n.locale]: {} }
         });
       }
-      showCreationDialog.value = !objectSchema.value || false;
     }
 
     function setObjectSchema(schema: IVeoObjectSchema) {
       objectSchema.value = schema;
-      showCreationDialog.value = !formSchema.value || false;
     }
 
     function setTranslation(newTranslation: IVeoTranslations) {
       translation.value = newTranslation;
+    }
+
+    async function save() {
+      // control whether save new or save updated schema
+      try {
+        if (formSchema.value?.id) {
+          await saveUpdatedSchema();
+        } else {
+          await saveNewSchema();
+        }
+        displaySuccessMessage(t('saveSchemaSuccess').toString());
+      } catch (err) {
+        displayErrorMessage(t('error').toString(), t('saveSchemaError').toString());
+      }
+    }
+
+    async function saveNewSchema() {
+      if (formSchema.value) {
+        const id = await $api.form.create(formSchema.value);
+        formSchema.value.id = id; // set id from response, so next save would update schema instead of creating another one
+      }
+    }
+
+    async function saveUpdatedSchema() {
+      if (formSchema.value?.id) {
+        await $api.form.update(formSchema.value.id, formSchema.value);
+      }
     }
 
     function updateSchemaName(value: string) {
@@ -464,16 +505,16 @@ export default defineComponent<IProps>({
     /**
      * Translations related stuff
      */
-    const showTranslationDialog: Ref<boolean> = ref(false);
-    const avaliableLanguages: Ref<string[]> = ref([]);
+    const translationDialogVisible: Ref<boolean> = ref(false);
+    const availableLanguages: Ref<string[]> = ref([]);
 
     function onClickTranslationBtn() {
-      showTranslationDialog.value = true;
+      translationDialogVisible.value = true;
     }
 
     useFetch(async () => {
       // TODO: Backend should create an API endpoint to get available languages dynamically
-      avaliableLanguages.value = Object.keys((await $api.translation.fetch([]))?.lang);
+      availableLanguages.value = Object.keys((await $api.translation.fetch([]))?.lang);
     });
 
     function setFormTranslation(event: IVeoFormSchemaTranslationCollection) {
@@ -505,10 +546,11 @@ export default defineComponent<IProps>({
     }
 
     return {
-      showCreationDialog,
-      showErrorDialog,
-      showCodeEditor,
-      showDetailDialog,
+      creationDialogVisible,
+      domainId,
+      errorDialogVisible,
+      codeEditorVisible,
+      detailDialogVisible,
       searchQuery,
       title,
       objectSchema,
@@ -517,7 +559,6 @@ export default defineComponent<IProps>({
       language,
       translation,
       schemaIsValid,
-      updateSchema,
       setFormSchema,
       setObjectSchema,
       setTranslation,
@@ -531,15 +572,18 @@ export default defineComponent<IProps>({
       invalidSchemaDownloadDialogVisible,
       downloadButton,
       code,
-      showTranslationDialog,
+      translationDialogVisible,
       onClickTranslationBtn,
-      avaliableLanguages,
+      availableLanguages,
       setFormTranslation,
       setFormName,
       setFormLanguage,
       onUpdateCustomTranslation,
       onFixRequest,
       VeoPageHeaderAlignment,
+      save,
+      saveNewSchema,
+      saveUpdatedSchema,
 
       t
     };
@@ -562,7 +606,11 @@ export default defineComponent<IProps>({
     "invalidFormSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
     "search": "Search for a control...",
-    "help": "Help"
+    "help": "Help",
+    "save": "Save",
+    "saveSchemaSuccess": "Schema saved!",
+    "saveSchemaError": "Couldn't save schema!",
+    "error": "Error"
   },
   "de": {
     "availableControls": "Verfügbare Steuerelemente",
@@ -572,7 +620,11 @@ export default defineComponent<IProps>({
     "invalidFormSchema":
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
     "search": "Nach einem Steuerelement suchen",
-    "help": "Hilfe"
+    "help": "Hilfe",
+    "save": "Speichern",
+    "saveSchemaSuccess": "Schema wurde gespeichert!",
+    "saveSchemaError": "Schema konnte nicht gespeichert werden!",
+    "error": "Fehler"
   }
 }
 </i18n>

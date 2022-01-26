@@ -29,6 +29,8 @@ interface IHashOpts {
   cycles?: boolean;
 }
 
+export const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
+
 export function undefIfEmpty<T extends any>(value: T | T[] | undefined): T[] | undefined {
   const arr = castArray(value || []);
   return arr.length > 0 ? arr : undefined;

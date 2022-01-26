@@ -26,12 +26,12 @@
         >
           <td>
             <nuxt-link
-              :to="createUrlByType(revision)"
+              :to="createUrl(revision)"
             >
               {{ revision.content.designator }} <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
             </nuxt-link>
           </td>
-          <td class="text-right" >
+          <td class="text-right">
             {{ new Date(revision.time).toLocaleString($i18n.locale) }}
           </td>
         </tr>
@@ -67,23 +67,8 @@ export default Vue.extend({
   },
   methods: {
     createUUIDUrlParam,
-    createUrlByType(revision: IVeoObjectHistoryEntry) {
-      let url = '';
-      if (revision.content.domains[this.domainId]?.subType) {
-        // FORMS
-        const form = this.forms.find((form) => form.subType === revision.content.domains[this.domainId].subType);
-        url = `/${this.$route.params.unit}/domains/${this.$route.params.domain}/forms/${createUUIDUrlParam('form', form?.id || '')}/${createUUIDUrlParam(
-          revision.content.type,
-          revision.content.id
-        )}`;
-      } else if (revision.content.type === 'scope') {
-        // SCOPES
-        url = `/${this.$route.params.unit}/scopes/${createUUIDUrlParam('scope', revision.content.id)}/edit`;
-      } else {
-        // OBJECTS
-        url = `/${this.$route.params.unit}/objects/${revision.uri.split('/')[1]}/${createUUIDUrlParam(revision.content.type, revision.content.id)}/edit`;
-      }
-      return url;
+    createUrl(revision: IVeoObjectHistoryEntry) {
+      return `/${this.$route.params.unit}/domains/${this.$route.params.domain}/objects/${createUUIDUrlParam(revision.content.type, revision.content.id)}/`;
     }
   }
 });

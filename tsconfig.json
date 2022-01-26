@@ -37,8 +37,7 @@
       "@nuxtjs/i18n",
       "./types/context",
       "vuetify/types",
-      "./types/vue-json-pointer",
-      "./types/vuetify"
+      "./types/vue-json-pointer"
     ]
   },
   "exclude": [

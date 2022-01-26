@@ -20,6 +20,9 @@
 
 import { generateTos, getEditorData, ITo } from '../../support/utils';
 
+const editorPath = '/unit-d496f98f-c051-443c-9b1f-65d65b64996d/domains/domain-ed67e4d7-c657-4479-ba8a-c53999d2930a/editor/';
+const formSchemaEditorPath = editorPath + 'formschema';
+
 const textOrGroupLangRegex = /(group|text)_[a-zA-Z0-9._-]+/g;
 
 const translationsAdded = {
@@ -56,57 +59,57 @@ const tos = generateTos({
   emptyProcess: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/3ebd14a2-eb7d-4d18-a9ad-2056da85569e/,
     fixturePath: 'formschema/empty-process.json',
-    browserUrl: '/editor/formschema?fs=3ebd14a2-eb7d-4d18-a9ad-2056da85569e'
+    browserUrl: formSchemaEditorPath + '?formSchema=3ebd14a2-eb7d-4d18-a9ad-2056da85569e'
   },
   inputTextMultilineMarkdown: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/1a3b9e9d-b451-4b44-b0c0-b0d18ac806d4/,
     fixturePath: 'formschema/elements/input-text-multiline-markdown.json',
-    browserUrl: '/editor/formschema?fs=1a3b9e9d-b451-4b44-b0c0-b0d18ac806d4'
+    browserUrl: formSchemaEditorPath + '?formSchema=1a3b9e9d-b451-4b44-b0c0-b0d18ac806d4'
   },
   inputUri: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/d8e2e6bc-ea88-49e6-9622-0f64435d9e85/,
     fixturePath: 'formschema/elements/input-uri.json',
-    browserUrl: '/editor/formschema?fs=d8e2e6bc-ea88-49e6-9622-0f64435d9e85'
+    browserUrl: formSchemaEditorPath + '?formSchema=d8e2e6bc-ea88-49e6-9622-0f64435d9e85'
   },
   inputDate: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/a809dbab-7b29-409e-9e5f-9ffb66e33868/,
     fixturePath: 'formschema/elements/input-date.json',
-    browserUrl: '/editor/formschema?fs=a809dbab-7b29-409e-9e5f-9ffb66e33868'
+    browserUrl: formSchemaEditorPath + '?formSchema=a809dbab-7b29-409e-9e5f-9ffb66e33868'
   },
   checkbox: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/6972a6be-6fe6-4905-96d6-12d265c79667/,
     fixturePath: 'formschema/elements/checkbox.json',
-    browserUrl: '/editor/formschema?fs=6972a6be-6fe6-4905-96d6-12d265c79667'
+    browserUrl: formSchemaEditorPath + '?formSchema=6972a6be-6fe6-4905-96d6-12d265c79667'
   },
   selectRadioAutocomplete: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/4a654fcd-387b-4dfa-b96b-b0c8899c284f/,
     fixturePath: 'formschema/elements/select-radio-autocomplete.json',
-    browserUrl: '/editor/formschema?fs=4a654fcd-387b-4dfa-b96b-b0c8899c284f'
+    browserUrl: formSchemaEditorPath + '?formSchema=4a654fcd-387b-4dfa-b96b-b0c8899c284f'
   },
   linksField: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/d25795f6-5399-4535-bcbd-de5010cdb977/,
     fixturePath: 'formschema/elements/links-field.json',
-    browserUrl: '/editor/formschema?fs=d25795f6-5399-4535-bcbd-de5010cdb977'
+    browserUrl: formSchemaEditorPath + '?formSchema=d25795f6-5399-4535-bcbd-de5010cdb977'
   },
   label: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/944ed8b6-3231-467c-a1ef-b54292220020/,
     fixturePath: 'formschema/elements/label.json',
-    browserUrl: '/editor/formschema?fs=944ed8b6-3231-467c-a1ef-b54292220020'
+    browserUrl: formSchemaEditorPath + '?formSchema=944ed8b6-3231-467c-a1ef-b54292220020'
   },
   group: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/6e3de110-6468-418f-a677-4da9c1f51b72/,
     fixturePath: 'formschema/elements/group.json',
-    browserUrl: '/editor/formschema?fs=6e3de110-6468-418f-a677-4da9c1f51b72'
+    browserUrl: formSchemaEditorPath + '?formSchema=6e3de110-6468-418f-a677-4da9c1f51b72'
   },
   minimal: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/ef0971af-ad3c-4eb7-bcda-18088d6899c6/,
     fixturePath: 'api/forms/minimal.json',
-    browserUrl: '/editor/formschema?fs=ef0971af-ad3c-4eb7-bcda-18088d6899c6'
+    browserUrl: formSchemaEditorPath + '?formSchema=ef0971af-ad3c-4eb7-bcda-18088d6899c6'
   },
   dialogs: {
     requestUrlPattern: /https:\/\/api.(.+)\/forms\/653d6d06-f3d1-4f09-b678-2d3f5ed27b35/,
     fixturePath: 'formschema/dialogs.json',
-    browserUrl: '/editor/formschema?fs=653d6d06-f3d1-4f09-b678-2d3f5ed27b35'
+    browserUrl: formSchemaEditorPath + '?formSchema=653d6d06-f3d1-4f09-b678-2d3f5ed27b35'
   }
 });
 
@@ -123,7 +126,7 @@ function goTo(to: ITo) {
     }
   ).as('loadedSchema');
 
-  cy.goTo('/editor/').goTo(to.browserUrl);
+  cy.goTo(editorPath).goTo(to.browserUrl);
 }
 
 describe('Formschema Editor', () => {
@@ -135,7 +138,7 @@ describe('Formschema Editor', () => {
     /**
      * Navigate through Wizard to ObjectSchemaEditor
      */
-    cy.visit('/editor/');
+    cy.visit(editorPath);
     cy.wait('@G_fetchSchemas');
   });
 
@@ -544,10 +547,10 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Text des Elements*:');
       cy.contains('.v-text-field', 'Text').type('Text 1 für das Textelement');
 
-      cy.get('.v-form').should('contain.text', 'CSS Klassen:');
+      cy.get('.v-form').should('contain.text', 'CSS-Klassen:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Klassen').type('class1{enter}class2{enter}class3{enter}');
 
-      cy.get('.v-form').should('contain.text', 'CSS Styles:');
+      cy.get('.v-form').should('contain.text', 'CSS-Styles:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Styles').type('color:green{enter}margin-left:50px{enter}font-size:20px{enter}');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
@@ -572,10 +575,10 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Text des Elements*:');
       cy.contains('.v-text-field', 'Text').type('Text 2 für das Textelement');
 
-      cy.get('.v-form').should('contain.text', 'CSS Klassen:');
+      cy.get('.v-form').should('contain.text', 'CSS-Klassen:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Klassen').type('class1{enter}class2{enter}class3{enter}');
 
-      cy.get('.v-form').should('contain.text', 'CSS Styles:');
+      cy.get('.v-form').should('contain.text', 'CSS-Styles:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Styles').type('color:blue{enter}margin-left:80px{enter}font-size:14px{enter}');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
@@ -608,10 +611,10 @@ describe('Formschema Editor', () => {
       cy.get('.v-form').should('contain.text', 'Ausrichtung*:');
       cy.contains('.v-autocomplete', 'Ausrichtung').find('input').should('have.value', 'Vertikal').closest('.v-autocomplete').type('Horizontal{enter}');
 
-      cy.get('.v-form').should('contain.text', 'CSS Klassen:');
+      cy.get('.v-form').should('contain.text', 'CSS-Klassen:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Klassen').type('border{enter}');
 
-      cy.get('.v-form').should('contain.text', 'CSS Styles:');
+      cy.get('.v-form').should('contain.text', 'CSS-Styles:');
       cy.contains('.v-select--is-multi.v-autocomplete', 'Styles').type('margin-left:20px{enter}');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
@@ -767,21 +770,21 @@ describe('Formschema Editor', () => {
 
   it('adds, updates formSchema meta details', function () {
     goTo(tos.emptyProcess);
-    cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema');
+    cy.get('h1').should('contain.text', 'Formschema-Editor - Test Formschema');
 
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('have.value', 'Test Formschema');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'PRO_DataTransfer');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
 
       cy.contains('.v-text-field', 'Name des Formschemas').type('{selectall}{backspace}Test Formschema 1 DE');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').type('{selectall}{backspace}TF 1');
+      cy.contains('.v-select', 'Sub Typ').type('PRO_DataProcessing{enter}');
       cy.contains('.v-text-field', 'Sortierwert').find('input').type('{selectall}{backspace}a1');
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
-    cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema 1 DE');
+    cy.get('h1').should('contain.text', 'Formschema-Editor - Test Formschema 1 DE');
 
     cy.get('.mdi-code-tags').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -798,12 +801,12 @@ describe('Formschema Editor', () => {
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
 
-    cy.get('h1').should('contain.text', 'Formschema Editor - Missing translation for EN');
+    cy.get('h1').should('contain.text', 'Formschema-Editor - Missing translation for EN');
 
     cy.get('.mdi-wrench').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
       cy.contains('.v-text-field', 'Name des Formschemas').find('input').should('not.have.value');
-      cy.contains('.v-text-field', 'Sub Typ').find('input').should('have.value', 'TF 1');
+      cy.contains('.v-select', 'Sub Typ').find('.v-select__selection').should('have.text', 'PRO_DataProcessing');
       cy.contains('.v-text-field', 'Sortierwert').find('input').should('have.value', 'a1');
       cy.contains('.v-text-field.v-input--is-disabled', 'Objektschematyp').find('input').should('have.value', 'process');
 
@@ -811,7 +814,7 @@ describe('Formschema Editor', () => {
 
       cy.get('.v-card__actions').contains('.v-btn', 'Speichern').click();
     });
-    cy.get('h1').should('contain.text', 'Formschema Editor - Test Formschema 2 EN');
+    cy.get('h1').should('contain.text', 'Formschema-Editor - Test Formschema 2 EN');
 
     cy.get('.mdi-code-tags').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {

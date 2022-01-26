@@ -21,6 +21,7 @@
       <VeoPage
         id="scroll-wrapper"
         sticky-header
+        :sticky-footer="!!$slots['append-form-fixed']"
       >
         <template #header>
           <v-row class="align-center mx-0 pb-4">
@@ -39,7 +40,7 @@
           </v-row>
         </template>
         <template #default>
-          <slot name="form" />
+          <slot name="prepend-form" />
           <VeoForm
             v-if="!$fetchState.pending && objectSchema && !loading"
             v-model="objectData"
@@ -49,13 +50,21 @@
             :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
             :error-messages.sync="formErrors"
             :reactive-form-actions="reactiveFormActions"
+            :disabled="disabled"
           />
           <VeoObjectFormSkeletonLoader v-else />
+          <slot name="append-form" />
+        </template>
+        <template #footer>
+          <slot name="append-form-fixed" />
         </template>
       </VeoPage>
-      <VeoPage>
+      <VeoPage no-padding>
         <template #default>
-          <VeoTabs>
+          <VeoTabs
+            sticky-tabs
+            :data-cy="'form-tabs'"
+          >
             <template #tabs>
               <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">
                 {{ t('tableOfContents') }}
@@ -66,7 +75,7 @@
               <v-tab>{{ t('messages') }} ({{ messages.errors.length + messages.warnings.length }})</v-tab>
             </template>
             <template #items>
-              <v-tab-item>
+              <v-tab-item class="px-4">
                 <VeoFormNavigation
                   v-if="currentFormSchema"
                   :form-schema="currentFormSchema && currentFormSchema.content"
@@ -75,9 +84,15 @@
                 />
               </v-tab-item>
               <v-tab-item v-if="!disableHistory">
-                <!-- TODO: History einfügen sobald benötigt -->
+                <VeoObjectHistory
+                  v-if="objectData"
+                  :object="objectData"
+                  :loading="loading"
+                  :object-schema="objectSchema"
+                  v-on="$listeners"
+                />
               </v-tab-item>
-              <v-tab-item>
+              <v-tab-item class="px-4">
                 <VeoValidationResult
                   :result="messages"
                   warnings-visible
@@ -108,6 +123,10 @@ export default defineComponent({
       default: () => {}
     } as PropOptions<IBaseObject>,
     loading: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
       type: Boolean,
       default: false
     },

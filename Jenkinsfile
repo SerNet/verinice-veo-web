@@ -72,13 +72,13 @@ pipeline {
                             --build-arg CI_JOB_ID='${env.BUILD_NUMBER}' \
                             --build-arg CI_COMMIT_TIMESTAMP='${new Date().time}' \
                             --build-arg NODE_ENV=${nodeEnv} \
-                            --build-arg VEO_DEFAULT_API_URL='https://api.verinice.com/veo' \
-                            --build-arg VEO_FORMS_API_URL='https://api.verinice.com/forms' \
-                            --build-arg VEO_HISTORY_API_URL='https://api.verinice.com/history' \
-                            --build-arg VEO_REPORTING_API_URL='https://api.verinice.com/reporting' \
-                            --build-arg VEO_OIDC_URL='https://auth.verinice.com/auth' \
-                            --build-arg VEO_OIDC_REALM='verinice-veo' \
-                            --build-arg VEO_OIDC_CLIENT='veo-prod' \
+                            --build-arg VEO_DEFAULT_API_URL='${env.API_URL_VEO_PROD}' \
+                            --build-arg VEO_FORMS_API_URL='${env.API_URL_VEO_FORMS_PROD}' \
+                            --build-arg VEO_HISTORY_API_URL='${env.API_URL_VEO_HISTORY_PROD}' \
+                            --build-arg VEO_REPORTING_API_URL='${env.API_URL_VEO_REPORTING_PROD}' \
+                            --build-arg VEO_OIDC_URL='${env.OIDC_URL_PROD}' \
+                            --build-arg VEO_OIDC_REALM='${env.OIDC_REALM_PROD}' \
+                            --build-arg VEO_OIDC_CLIENT='${env.OIDC_CLIENT_PROD}' \
                             --label org.opencontainers.image.version='$projectVersion' \
                             --label org.opencontainers.image.revision='$env.GIT_COMMIT' \
                             .")
@@ -86,6 +86,7 @@ pipeline {
                             dockerImageProd.push("git-${env.GIT_COMMIT}")
                             dockerImageProd.push("git-${env.GIT_COMMIT}-prod")
                             dockerImageProd.push("latest-prod")
+                            dockerImageProd.push("${projectVersion}-prod")
                             dockerImageProd.push("build-${env.BUILD_NUMBER}-prod")
                         }
                         def dockerImageStage = docker.build("eu.gcr.io/veo-projekt/veo-web:git-${env.GIT_COMMIT}-stage",
@@ -93,19 +94,20 @@ pipeline {
                             --build-arg CI_JOB_ID='${env.BUILD_NUMBER}' \
                             --build-arg CI_COMMIT_TIMESTAMP='${new Date().time}' \
                             --build-arg NODE_ENV=${nodeEnv} \
-                            --build-arg VEO_DEFAULT_API_URL='https://api.staging.verinice.com/veo' \
-                            --build-arg VEO_FORMS_API_URL='https://api.staging.verinice.com/forms' \
-                            --build-arg VEO_HISTORY_API_URL='https://api.staging.verinice.com/history' \
-                            --build-arg VEO_REPORTING_API_URL='https://api.staging.verinice.com/reporting' \
-                            --build-arg VEO_OIDC_URL='https://keycloak.staging.verinice.com/auth' \
-                            --build-arg VEO_OIDC_REALM='verinice-veo' \
-                            --build-arg VEO_OIDC_CLIENT='veo-development-client' \
+                            --build-arg VEO_DEFAULT_API_URL='${env.API_URL_VEO_STAGE}' \
+                            --build-arg VEO_FORMS_API_URL='${env.API_URL_VEO_FORMS_STAGE}' \
+                            --build-arg VEO_HISTORY_API_URL='${env.API_URL_VEO_HISTORY_STAGE}' \
+                            --build-arg VEO_REPORTING_API_URL='${env.API_URL_VEO_REPORTING_STAGE}' \
+                            --build-arg VEO_OIDC_URL='${env.OIDC_URL_STAGE}' \
+                            --build-arg VEO_OIDC_REALM='${env.OIDC_REALM_STAGE}' \
+                            --build-arg VEO_OIDC_CLIENT='${env.OIDC_CLIENT_STAGE}' \
                             --label org.opencontainers.image.version='$projectVersion' \
                             --label org.opencontainers.image.revision='$env.GIT_COMMIT' \
                             .")
                         withDockerRegistry(credentialsId: 'gcr:verinice-projekt@gcr', url: 'https://eu.gcr.io') {
                             dockerImageStage.push("git-${env.GIT_COMMIT}-stage")
                             dockerImageStage.push("latest-stage")
+                            dockerImageStage.push("${projectVersion}-stage")
                             dockerImageStage.push("build-${env.BUILD_NUMBER}-stage")
                         }
                     } else {
@@ -114,13 +116,13 @@ pipeline {
                             --build-arg CI_JOB_ID='${env.BUILD_NUMBER}' \
                             --build-arg CI_COMMIT_TIMESTAMP='${new Date().time}' \
                             --build-arg NODE_ENV=${nodeEnv} \
-                            --build-arg VEO_DEFAULT_API_URL='https://api.develop.verinice.com/veo' \
-                            --build-arg VEO_FORMS_API_URL='https://api.develop.verinice.com/forms' \
-                            --build-arg VEO_HISTORY_API_URL='https://api.develop.verinice.com/history' \
-                            --build-arg VEO_REPORTING_API_URL='https://api.develop.verinice.com/reporting' \
-                            --build-arg VEO_OIDC_URL='https://keycloak.staging.verinice.com/auth' \
-                            --build-arg VEO_OIDC_REALM='verinice-veo' \
-                            --build-arg VEO_OIDC_CLIENT='veo-development-client' \
+                            --build-arg VEO_DEFAULT_API_URL='${env.API_URL_VEO_DEV}' \
+                            --build-arg VEO_FORMS_API_URL='${env.API_URL_VEO_FORMS_DEV}' \
+                            --build-arg VEO_HISTORY_API_URL='${env.API_URL_VEO_HISTORY_DEV}' \
+                            --build-arg VEO_REPORTING_API_URL='${env.API_URL_VEO_REPORTING_DEV}' \
+                            --build-arg VEO_OIDC_URL='${env.OIDC_URL_DEV}' \
+                            --build-arg VEO_OIDC_REALM='${env.OIDC_REALM_DEV}' \
+                            --build-arg VEO_OIDC_CLIENT='${env.OIDC_CLIENT_DEV}' \
                             --label org.opencontainers.image.version='$projectVersion' \
                             --label org.opencontainers.image.revision='$env.GIT_COMMIT' \
                             .")

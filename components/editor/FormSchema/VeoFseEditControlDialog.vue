@@ -21,6 +21,7 @@
     v-model="dialog.value"
     :headline="t('editControlHeadline')"
     large
+    fixed-footer
   >
     <template #default>
       <v-form>

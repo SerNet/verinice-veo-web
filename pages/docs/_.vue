@@ -17,8 +17,10 @@
 -->
 <template>
   <VeoPage v-if="document">
-    <div class="caption">{{document.path}}</div>
-    <NuxtContent :document="document"></NuxtContent>
+    <div class="caption">
+      {{ document.path }}
+    </div>
+    <NuxtContent :document="document" />
   </VeoPage>
 </template>
 <script lang="ts">

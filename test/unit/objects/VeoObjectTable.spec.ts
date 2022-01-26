@@ -164,7 +164,9 @@ describe('VeoObjectTable.vue', () => {
       const header = headerByName.get(`objectlist.${column}`);
       expect(header).toBeTruthy();
       await header?.trigger('click');
-      expect(onPageChange).toBeCalledWith({ sortBy: column });
+      expect(onPageChange).toHaveBeenCalled();
+      // the latest call should include sortBy clicked column
+      expect(onPageChange.mock.calls.pop()?.[0]).toMatchObject({ sortBy: column });
     }
   });
 

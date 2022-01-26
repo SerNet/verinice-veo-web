@@ -17,10 +17,12 @@ export const VEO_API_ALL_ENTITIES_REGEX = /https:\/\/api.(.+)\/veo\/(assets|cont
 export const VEO_API_ENTITY_MEMBERS_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/(.+)\/members$/;
 export const VEO_API_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/;
 export const VEO_API_NEW_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)$/;
+export const VEO_API_UPDATE_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/;
 export const VEO_UNITS = /https:\/\/api.(.+)\/veo\/units$/;
 export const FORMS_API_ALL_FORMS_REGEX = /https:\/\/api.(.+)\/forms\/$/;
 export const FORMS_API_FORM_REGEX = /https:\/\/api.(.+)\/forms\/(.+)/;
 export const HISTORY_API_MY_LATEST_REVISIONS = /https:\/\/api.(.+)\/history\/revisions\/my-latest\/\?(.+)$/;
+export const HISTORY_API_ENTITY_REVISIONS = /https:\/\/api.(.+)\/history\/revisions\/\?uri=(.+)$/;
 export const REPORTING_API_ALL_REPORTS_REGEX = /https:\/\/api.(.+)\/reporting\/reports$/;
 
 function createJWT(payload) {
@@ -383,5 +385,48 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
         req.reply([]);
       }
     ).as('G_fetchMyLatestRevisions');
+  }
+
+  if (!options?.ignoreCreateObject) {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: VEO_API_NEW_ENTITY_REGEX
+      },
+      (req) => {
+        req.reply({});
+      }
+    ).as('G_createObject');
+  }
+
+  if (!options?.ignoreFetchEntityRevisions) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: HISTORY_API_ENTITY_REVISIONS
+      },
+      (req) => {
+        const url = req.url.split('?');
+        const entity = url.pop().split('%2F');
+        const id = entity.pop();
+        const type = entity.pop();
+
+        req.reply({
+          fixture: `api/history/revisions/${type}/${id}.json`
+        });
+      }
+    ).as('G_createObject');
+  }
+
+  if (!options?.ignoreUpdateObject) {
+    cy.intercept(
+      {
+        method: 'PUT',
+        url: VEO_API_UPDATE_ENTITY_REGEX
+      },
+      (req) => {
+        req.reply({});
+      }
+    ).as('G_updateObject');
   }
 });

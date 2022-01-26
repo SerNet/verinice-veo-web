@@ -21,6 +21,7 @@
     :value="value"
     :headline="t('editGroupHeadline')"
     large
+    fixed-footer
     @input="onDialogChanged"
   >
     <template #default>

@@ -104,6 +104,9 @@ export class Client {
   public async req(url: string, options: RequestOptions = {}): Promise<any> {
     const $user = this.context.app.$user as User;
 
+    // Only allow alpha-numeric values and dashes in url params (NOTE: Everything behind the ? is NOT a PARAM but part of the QUERY string)
+    url = url.replaceAll(/(_[^\w-])/g, '');
+
     const defaults = {
       headers: {
         Accept: 'application/json',

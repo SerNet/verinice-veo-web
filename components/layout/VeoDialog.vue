@@ -51,7 +51,7 @@
         <slot />
       </v-card-text>
       <v-card-actions
-        v-if="hasActions"
+        v-if="!!$slots['dialog-options']"
         class="pb-3 px-4"
         :style="fixedFooter ? 'position: sticky; bottom: 0; z-index: 1;' : ''"
       >
@@ -133,9 +133,6 @@ export default Vue.extend({
       set(newValue: boolean) {
         this.$emit('input', newValue);
       }
-    },
-    hasActions(): boolean {
-      return (this.$slots['dialog-options']?.length || 0) > 0;
     },
     width(): string {
       if (this.large) return '900px';

@@ -28,11 +28,14 @@ import Vue from 'vue';
 export default Vue.extend({
   head() {
     return {
-      titleTemplate: '%s - verinice.'
+      titleTemplate: '%s - verinice.veo'
     };
   }
 });
 </script>
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
+::v-deep img {
+  max-width: 100%;
+}
 </style>

@@ -1,5 +1,11 @@
 export default {
+  // Languages
+  de: 'Deutsch',
+  en: 'English',
+
   clone: 'Kopie',
+
+  unsavedChanges: 'Es gibt ungespeicherte Änderungen. Wollen Sie die Seite wirklich verlassen?',
 
   'editor.basicproperties': 'Standardattribute',
   'editor.customaspects': 'Individuelle Aspekte',
@@ -20,8 +26,8 @@ export default {
   'editor.formschema.create.title.text': 'Name des neuen Formschemas',
   'editor.formschema.create.type': 'Objektschematyp',
   'editor.formschema.create.type.text': 'Typ des Objektschemas',
-  'editor.formschema.edit.css.class': 'CSS Klassen',
-  'editor.formschema.edit.css.style': 'CSS Styles',
+  'editor.formschema.edit.css.class': 'CSS-Klassen',
+  'editor.formschema.edit.css.style': 'CSS-Styles',
   'editor.formschema.edit.css.class.text': 'Klassen',
   'editor.formschema.edit.css.style.text': 'Styles',
   'editor.formschema.edit.input.direction': 'Ausrichtung',
@@ -29,13 +35,13 @@ export default {
   'editor.formschema.edit.input.direction.vertical': 'Vertikal',
   'editor.formschema.edit.input.label': 'Beschriftung',
   'editor.formschema.edit.input.label.text': 'Beschriftung des Elements',
-  'editor.formschema.headline': 'Formschema Editor',
+  'editor.formschema.headline': 'Formschema-Editor',
   'editor.formschema.sorting': 'Sortierwert',
   'editor.formschema.subtype': 'Sub Typ',
   'editor.formschema.translation': 'Benutzerdefinierte Übersetzungen',
-  'editor.objectschema.headline': 'Objektschema Editor',
+  'editor.objectschema.headline': 'Objektschema-Editor',
   'editor.schema.download': 'Schema herunterladen',
-  'editor.schema.properties': 'Schema Eigenschaften',
+  'editor.schema.properties': 'Schema-Eigenschaften',
   'editor.schema.warnings': 'Hinweise',
 
   'error.title': 'Es ist ein Fehler aufgetreten',
@@ -112,11 +118,13 @@ export default {
   'unit.create': 'Neue Unit erstellen',
   'unit.create.short': 'Unit erstellen',
   'unit.created': 'Unit wurde erstellt',
+  'unit.default.name': 'Unit 1',
+  'unit.default.description': 'Deine erste Unit',
   'unit.details.children': 'Untergeordnete Units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'Bitte tragen Sie eine Beschreibung ein.',
   'unit.details.name': 'Name der Unit',
-  'unit.details.name.required': 'Bitte tragen Sie einen Unit Namen ein.',
+  'unit.details.name.required': 'Bitte tragen Sie einen Unit-Namen ein.',
   'unit.details.nochild': 'Keine untegeordneten Units vorhanden',
   'unit.details.nodescription': 'Keine Beschreibung festgelegt',
   'unit.details.noparent': 'Top-Level Unit',
@@ -125,7 +133,7 @@ export default {
   'unit.objects.tooltip.clone': 'Objekt klonen',
   'unit.objects.tooltip.delete': 'Objekt löschen',
   'unit.objects.tooltip.edit': 'Objekt bearbeiten',
-  'unit.index.title': 'Unit Dashboard',
+  'unit.index.title': 'Unit-Dashboard',
   'unit.select.label': 'Unit',
 
   'breadcrumbs.all': 'Alle',

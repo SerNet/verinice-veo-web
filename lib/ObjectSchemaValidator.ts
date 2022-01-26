@@ -63,45 +63,64 @@ export default class ObjectSchemaValidator {
       if (NON_REQUIRED_PROPERTIES.includes(attribute)) {
         continue;
       }
-      if (attribute === 'customAspects') {
-        for (const customAspect in data.customAspects) {
-          const customAspectTitle = customAspect.split('_').pop() || '';
-          // check if custom aspect exists
-          if (!helper.getCustomAspect(customAspectTitle)) {
-            errors.push({ code: 'E_ASPECT_MISSING', message: `The aspect "${customAspectTitle}" is missing in the schema "${schema.title}"` });
-            continue;
-          }
-          // check if all attributes of custom aspect exist
-          for (const customAspectAttribute in data.customAspects[customAspect].attributes) {
-            if (!helper.getCustomAspect(customAspectTitle)?.attributes.find((a) => (a.prefix + a.title).endsWith(customAspectAttribute))) {
-              errors.push({ code: 'E_ATTRIBUTE_MISSING', message: `The attribute "${customAspectTitle}_${customAspectAttribute}" is missing in the schema "${schema.title}"` });
+      switch (attribute) {
+        case 'customAspects':
+          for (const customAspect in data.customAspects) {
+            const customAspectTitle = customAspect.split('_').pop() || '';
+            // check if custom aspect exists
+            if (!helper.getCustomAspect(customAspectTitle)) {
+              errors.push({ code: 'E_ASPECT_MISSING', message: `The aspect "${customAspectTitle}" is missing in the schema "${schema.title}"` });
+              continue;
+            }
+            // check if all attributes of custom aspect exist
+            for (const customAspectAttribute in data.customAspects[customAspect].attributes) {
+              if (!helper.getCustomAspect(customAspectTitle)?.attributes.find((a) => (a.prefix + a.title).endsWith(customAspectAttribute))) {
+                errors.push({ code: 'E_ATTRIBUTE_MISSING', message: `The attribute "${customAspectTitle}_${customAspectAttribute}" is missing in the schema "${schema.title}"` });
+              }
             }
           }
-        }
-      } else if (attribute === 'links') {
-        for (const link in data.links) {
-          const linkTitle = link.split('_').pop() || '';
-          // check if custom link exists
-          if (!helper.getCustomLink(linkTitle)) {
-            errors.push({ code: 'E_LINK_MISSING', message: `The link "${linkTitle}" is missing in the schema "${schema.title}"` });
-            continue;
-          }
-          // check if all attributes of custom link exists
-          for (const linkAttribute in data.links[link].attributes) {
-            if (!helper.getCustomLink(linkTitle)?.attributes.find((a) => (a.prefix + a.title).endsWith(linkAttribute))) {
-              errors.push({ code: 'E_ATTRIBUTE_MISSING', message: `The attribute "${linkTitle}_${linkAttribute}" is missing in the schema "${schema.title}"` });
+          break;
+        case 'links':
+          for (const link in data.links) {
+            const linkTitle = link.split('_').pop() || '';
+            // check if custom link exists
+            if (!helper.getCustomLink(linkTitle)) {
+              errors.push({ code: 'E_LINK_MISSING', message: `The link "${linkTitle}" is missing in the schema "${schema.title}"` });
+              continue;
+            }
+            // check if all attributes of custom link exists
+            for (const linkAttribute in data.links[link].attributes) {
+              if (!helper.getCustomLink(linkTitle)?.attributes.find((a) => (a.prefix + a.title).endsWith(linkAttribute))) {
+                errors.push({ code: 'E_ATTRIBUTE_MISSING', message: `The attribute "${linkTitle}_${linkAttribute}" is missing in the schema "${schema.title}"` });
+              }
             }
           }
-        }
-      } else if (
-        !helper
-          .getBasicProperties()
-          .map((b) => b.title)
-          .includes(attribute)
-      ) {
-        errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `The schema "${schema.title}" is missing the property "${attribute}"` });
+          break;
+        case 'domains':
+          for (const domainId of Object.keys(data.domains)) {
+            const subTypes = helper.getSubTypes(domainId);
+
+            if (data.domains[domainId].subType && !subTypes.find((subType) => subType.subType === data.domains[domainId].subType)) {
+              errors.push({ code: 'E_SUBTYPE_MISSING', message: `The schema "${schema.title}" is missing the subtype "${data.domains[domainId].subType}"` });
+            }
+            if (data.domains[domainId].status && !subTypes.some((subType) => subType.status.includes(data.domains[domainId].status))) {
+              // errors.push({ code: 'E_STATUS_MISSING', message: `The schema "${schema.title}" is missing the status "${data.domains[domainId].status}"` });
+            }
+          }
+          break;
+        default:
+          if (
+            !helper
+              .getBasicProperties()
+              .map((b) => b.title)
+              .includes(attribute)
+          ) {
+            errors.push({ code: 'E_SCHEMA_PROPERTY_MISSING', message: `The schema "${schema.title}" is missing the property "${attribute}"` });
+          }
+          break;
       }
     }
+
     return { valid: errors.length === 0, errors, warnings: [] };
   }
 

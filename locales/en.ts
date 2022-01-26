@@ -1,5 +1,11 @@
 export default {
+  // Languages
+  de: 'Deutsch',
+  en: 'English',
+
   clone: 'Clone',
+
+  unsavedChanges: 'There are unsaved changes. Do you really want to leave this page?',
 
   'editor.basicproperties': 'Basic properties',
   'editor.customaspects': 'Custom aspects',
@@ -111,6 +117,8 @@ export default {
   'unit.create': 'Create new unit',
   'unit.create.short': 'Create unit',
   'unit.created': 'Unit was created',
+  'unit.default.name': 'Unit 1',
+  'unit.default.description': 'Your first unit',
   'unit.details.children': 'Child units',
   'unit.details.description': 'Beschreibung',
   'unit.details.description.required': 'A unit description is required!',

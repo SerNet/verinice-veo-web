@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Annemarie Bufe, Jonas Heitmann
-   - 
+   - Copyright (C) 2021  Annemarie Bufe, Jonas Heitmann, Markus Werner, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -30,7 +30,9 @@
             :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
             dense
           >
-            <v-divider v-if="option.type === IVeoFilterOptionType.DIVIDER" />
+            <v-divider
+              v-if="option.type === IVeoFilterOptionType.DIVIDER"
+            />
             <v-text-field
               v-else-if="option.type === IVeoFilterOptionType.TEXT"
               v-model="localFilter[option.name]"
@@ -76,7 +78,7 @@
             <template v-if="showAllFilters">
               <v-icon>{{ mdiChevronDoubleUp }}</v-icon>
               <span>{{ upperFirst(t('collapseOptions').toString()) }}</span>
-              <v-icon>{{mdiChevronDoubleUp}}</v-icon>
+              <v-icon>{{ mdiChevronDoubleUp }}</v-icon>
             </template>
             <template v-else>
               <v-icon>{{ mdiChevronDoubleDown }}</v-icon>
@@ -93,9 +95,9 @@
         :data-cy="$utils.prefixCyData($options, 'reset-button')"
         @click="onReset"
       >
-        {{t(`resetFilter`)}}
+        {{ t(`resetFilter`) }}
       </v-btn>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-btn
         color="primary"
         :data-cy="$utils.prefixCyData($options, 'submit-button')"
@@ -103,7 +105,7 @@
         :disabled="!filterFormValid"
         @click="onSubmit"
       >
-        {{t(`submitFilter`)}}
+        {{ t(`submitFilter`) }}
       </v-btn>
     </template>
   </VeoDialog>
@@ -219,7 +221,8 @@ export default defineComponent({
      * Removes all set filters, emits them and closes the dialog
      */
     function onReset() {
-      emit('update:filter', {});
+      const filter = props.objectTypeRequired ? { objectType: localFilter.value.objectType } : {};
+      emit('update:filter', filter);
       emit('input', false);
     }
 

@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { nextTick } from '@nuxtjs/composition-api';
+import { getCurrentInstance, nextTick, useRoute } from '@nuxtjs/composition-api';
+import { kebabCase } from 'lodash';
 
 /**
  * Performs the action `fn` and ignores further calls until nextTick
@@ -39,4 +40,20 @@ export const useThrottleNextTick = () => {
   };
 
   return { throttle };
+};
+
+export const useCypress = () => {
+  const instance = getCurrentInstance();
+  const route = useRoute();
+  return {
+    /**
+     * Composable version of prefixCyData
+     * @param name Name that will be prefixed with component name
+     */
+    prefixCyData(name: string) {
+      const componentName = instance?.type?.name as string | undefined;
+      const prefix = componentName || route.value.name;
+      return [prefix && kebabCase(prefix), name].flat().join('-');
+    }
+  };
 };

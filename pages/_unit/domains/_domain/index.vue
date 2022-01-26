@@ -64,7 +64,7 @@
 import { computed, defineComponent, Ref, ref, useContext, useFetch, useMeta, useRouter, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { CHART_COLORS, createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 import { IChartValue } from '~/components/widgets/VeoStackedStatusBarChartWidget.vue';
@@ -137,7 +137,6 @@ export default defineComponent({
     }
 
     // Create chart data
-    const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
     const chartData: Ref<{ objectType: string; subTypes: { subType: string; title: string; totalEntities: number; statusTypes: (IChartValue & { status: string })[] }[] }[]> = ref(
       []
     );
@@ -218,17 +217,18 @@ export default defineComponent({
 
     // Navigate if the user clicks on a bar
     function onBarClick(subType: string, status: string) {
-      const formId = formschemas.find((formschema) => formschema.subType === subType)?.id;
+      const objectType = formschemas.find((formschema) => formschema.subType === subType)?.modelType;
 
-      if (formId) {
+      if (objectType) {
         router.push({
-          name: 'unit-domains-domain-forms-form',
+          name: 'unit-domains-domain-objects',
           params: {
-            domnain: params.value.domain,
-            form: createUUIDUrlParam('form', formId)
+            domain: params.value.domain
           },
           query: {
-            status
+            status,
+            objectType,
+            subType
           }
         });
       }

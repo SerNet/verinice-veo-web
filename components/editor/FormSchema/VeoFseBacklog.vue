@@ -321,7 +321,7 @@ export default defineComponent<IProps>({
           backlogTitle = backlogTitle.replace('_', ' / ');
         }
         return {
-          scope: key,
+          scope: decodeURIComponent(key), // We use decodeURIComponent, as JSONPointer.flatten() encodes keys, turning {CURRENT_DOMAIN_ID} into %7BCURRENT_DOMAIN_ID%7D
           type: Array.isArray(value.enum) ? 'enum' : value.type,
           label,
           backlogTitle,

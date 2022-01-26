@@ -36,9 +36,7 @@
           md="6"
           cols="12"
         >
-          <span>
-            {{ $t('shown_objecttype') }}:
-          </span>
+          <span>{{ $t('shown_objecttype') }}:</span>
           <v-select
             v-model="objectType"
             :label="$t('object_type')"
@@ -50,16 +48,14 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col
-          class="flex-grow-1 search-bar"
-        >
+        <v-col class="flex-grow-1 search-bar">
           <VeoListSearchBar
             v-model="filter"
             :object-type="objectName"
             @reset="filter = $event"
           />
         </v-col>
-      </v-row>   
+      </v-row>
       <VeoEntitySelectionList
         :selected-items="selectedItems"
         :items="entities"
@@ -83,6 +79,7 @@
       <v-btn
         text
         color="primary"
+        :data-cy="$utils.prefixCyData($options, 'save-button')"
         :disabled="saving"
         @click="addEntities"
       >
@@ -119,10 +116,21 @@ export default Vue.extend({
   },
   data() {
     return {
-      filter: { designator: undefined, name: undefined, description: undefined, updatedBy: undefined, status: undefined } as IVeoFilter | undefined,
+      filter: {
+        designator: undefined,
+        name: undefined,
+        description: undefined,
+        updatedBy: undefined,
+        status: undefined
+      } as IVeoFilter,
       selectedItems: [] as { id: string; type: string }[],
       saving: false as boolean,
-      entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
+      entities: {
+        items: [],
+        page: 1,
+        pageCount: 0,
+        totalItemCount: 0
+      } as IVeoPaginatedResponse<IVeoEntity[]>,
       loading: false as boolean,
       objectType: '' as string,
       schemas: [] as IVeoSchemaEndpoint[]
@@ -207,7 +215,7 @@ export default Vue.extend({
 
       const children = this.selectedItems.map((item) => {
         return {
-          targetUri: `/${getSchemaEndpoint(this.schemas, item.type) || item.type}/${item.id}`
+          targetUri: `${this.$config.apiUrl}/${getSchemaEndpoint(this.schemas, item.type) || item.type}/${item.id}`
         };
       });
       if (this.editedEntity.type === 'scope') {

@@ -54,164 +54,15 @@ export interface IVeoOSHOptions {
   customAspectsKey?: string;
   customLinksKey?: string;
   translationsKey?: string;
+  domainsKey?: string;
 }
 
-const DEFAULT_SCHEMA = {
-  $schema: 'https://json-schema.org/draft/2019-09/schema',
-  $id: 'new-schema',
-  type: 'object',
-  properties: {
-    _self: {
-      type: 'string',
-      description: 'A valid reference to this resource.',
-      readOnly: true,
-      format: 'uri'
-    },
-    abbreviation: {
-      type: 'string',
-      description: 'The abbreviation for the Element.',
-      maxLength: 255
-    },
-    createdAt: {
-      type: 'string',
-      description: 'A timestamp acc. to RFC 3339 specifying when this entity was created.',
-      readOnly: true
-    },
-    createdBy: {
-      type: 'string',
-      description: 'The username of the user who created this object.',
-      readOnly: true
-    },
-    customAspects: {
-      type: 'object',
-      title: 'CustomAspect',
-      description: "Groups of customizable attributes - see '/schemas'",
-      properties: {}
-    },
-    description: {
-      type: 'string',
-      description: 'The description for the Element.',
-      maxLength: 65535
-    },
-    designator: {
-      type: 'string',
-      description: 'Compact human-readable identifier that is unique within the client.',
-      readOnly: true
-    },
-    domains: {
-      type: 'object',
-      description: "Details about this element's association with domains. Domain ID is key, association object is value.",
-      properties: {
-        'ed67e4d7-c657-4479-ba8a-c53999d2930a': {
-          $schema: 'https://json-schema.org/draft/2019-09/schema',
-          type: 'object',
-          properties: {
-            subType: {
-              type: 'string',
-              enum: []
-            },
-            status: {
-              type: 'string'
-            }
-          },
-          dependentRequired: {
-            subType: ['status'],
-            status: ['subType']
-          },
-          allOf: []
-        }
-      },
-      additionalProperties: false
-    },
-    id: {
-      type: 'string',
-      description: 'ID must be a valid UUID string following RFC 4122.',
-      format: 'uuid'
-    },
-    links: {
-      type: 'object',
-      title: 'CustomLink',
-      description: 'Custom relations which do not affect the behavior.',
-      properties: {}
-    },
-    name: {
-      type: 'string',
-      description: 'The name for the Element.',
-      maxLength: 255
-    },
-    owner: {
-      type: 'object',
-      properties: {
-        displayName: {
-          type: 'string',
-          description: 'A friendly human readable title of the referenced unit.',
-          readOnly: true
-        },
-        resourcesUri: {
-          type: 'string',
-          readOnly: true
-        },
-        searchesUri: {
-          type: 'string',
-          readOnly: true
-        },
-        targetUri: {
-          type: 'string',
-          description: 'The resource URL of the referenced unit.',
-          format: 'uri'
-        }
-      },
-      required: ['targetUri'],
-      description: 'A reference to the unit containing this entity.'
-    },
-    parts: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          displayName: {
-            type: 'string',
-            description: 'A friendly human readable title of the referenced entity.',
-            readOnly: true
-          },
-          resourcesUri: {
-            type: 'string',
-            readOnly: true
-          },
-          searchesUri: {
-            type: 'string',
-            readOnly: true
-          },
-          targetUri: {
-            type: 'string',
-            description: 'The resource URL of the referenced entity.',
-            format: 'uri'
-          }
-        },
-        required: ['targetUri'],
-        description: "A reference to an entity's part"
-      }
-    },
-    type: {
-      type: 'string',
-      description: 'Entity type identifier',
-      readOnly: true
-    },
-    updatedAt: {
-      type: 'string',
-      description: 'A timestamp acc. to RFC 3339 specifying when this entity was created.',
-      readOnly: true
-    },
-    updatedBy: {
-      type: 'string',
-      description: 'The username of the user who last updated this object.',
-      readOnly: true
-    }
-  },
-  required: ['_self', 'designator', 'name', 'owner'],
-  title: '',
-  description: ''
-};
+export interface IVeoOSHDomains {
+  [domain: string]: {
+    subType: string;
+    status: string[];
+  }[];
+}
 
 /**
  * This class handles creating the schema for object schemas and editing them.
@@ -233,23 +84,29 @@ export default class ObjectSchemaHelper {
 
   private _translations: { [key: string]: IVeoTranslationCollection };
 
+  private _domains: IVeoOSHDomains;
+
   private _options: IVeoOSHOptions;
 
-  constructor(objectSchema?: IVeoObjectSchema, options?: IVeoOSHOptions) {
+  constructor(objectSchema?: IVeoObjectSchema, domainId?: string, options?: IVeoOSHOptions) {
     this._title = '';
     this._description = '';
     this._customAspects = [];
     this._customLinks = [];
     this._basicProperties = [];
     this._translations = {};
+    this._domains = {};
 
-    this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links', translationsKey: 'translations' };
+    this._options = { customAspectsKey: 'customAspects', customLinksKey: 'links', translationsKey: 'translations', domainsKey: 'domains' };
     merge(this._options, options);
 
     if (!objectSchema) {
       // @ts-ignore
-      this._schema = DEFAULT_SCHEMA;
-      this.loadObjectSchema(DEFAULT_SCHEMA as IVeoObjectSchema);
+      if (!domainId) {
+        throw new Error("ObjectSchemaHelper2::constructor: If you don't pass an objectschema, you have to pass a domain id to generate a new one.");
+      }
+      this._schema = this.getDefaultSchema(domainId);
+      this.loadObjectSchema(this.getDefaultSchema(domainId));
     } else {
       this._schema = JSON.parse(JSON.stringify(objectSchema));
       this._schema.properties.customAspects.properties = {};
@@ -449,6 +306,10 @@ export default class ObjectSchemaHelper {
     delete this._translations[language];
   }
 
+  public updateDomain(domainId: string, subTypes: IVeoOSHDomains['domain']) {
+    this._domains[domainId] = subTypes;
+  }
+
   public getCustomLinks(): IVeoOSHCustomLink[] {
     return this._customLinks;
   }
@@ -477,6 +338,10 @@ export default class ObjectSchemaHelper {
     return this._translations;
   }
 
+  public getSubTypes(domainId: string): IVeoOSHDomains['domain'] {
+    return this._domains[domainId];
+  }
+
   public toSchema(): IVeoObjectSchema {
     const dummy: IVeoObjectSchema = this.generateSchema();
 
@@ -486,6 +351,10 @@ export default class ObjectSchemaHelper {
 
     for (const link of this._customLinks) {
       this.addLinkToSchema(dummy, link);
+    }
+
+    for (const domainId of Object.keys(this._domains)) {
+      this.addDomainToSchema(dummy, domainId, this._domains[domainId]);
     }
 
     if (Object.keys(this._translations).length > 0) {
@@ -704,6 +573,54 @@ export default class ObjectSchemaHelper {
     return schemaAspect;
   }
 
+  public static generateDomain(domain: IVeoOSHDomains['domain']): any {
+    const dummy = {
+      $schema: 'https://json-schema.org/draft/2019-09/schema',
+      type: 'object',
+      properties: {
+        status: {
+          type: 'string',
+          minLength: 1,
+          maxLength: 255
+        },
+        subType: {
+          type: 'string',
+          minLength: 1,
+          maxLength: 255,
+          enum: [] as string[]
+        }
+      },
+      dependentRequired: {
+        subType: ['status'],
+        status: ['subType']
+      },
+      allOf: [] as any[]
+    };
+
+    dummy.properties.subType.enum = domain.map((subType) => subType.subType);
+
+    for (const subType of domain) {
+      dummy.allOf.push({
+        if: {
+          properties: {
+            subType: {
+              const: subType.subType
+            }
+          }
+        },
+        then: {
+          properties: {
+            status: {
+              enum: subType.status
+            }
+          }
+        }
+      });
+    }
+
+    return dummy;
+  }
+
   private loadObjectSchema(objectSchema: IVeoObjectSchema) {
     this._title = objectSchema.title;
     this._title = objectSchema.title;
@@ -722,6 +639,10 @@ export default class ObjectSchemaHelper {
         case this._options.translationsKey:
           // @ts-ignore
           this.loadTranslations(objectSchema.properties[key]);
+          break;
+        case this._options.domainsKey:
+          // @ts-ignore
+          this.loadDomains(objectSchema.properties[key]);
           break;
         default:
           this.loadBasicProperties(objectSchema.properties, key);
@@ -799,6 +720,20 @@ export default class ObjectSchemaHelper {
     this._basicProperties.push({ title: key, description: property.description || '', type: this.getAttributeType(property), prefix: '' });
   }
 
+  private loadDomains(schema: IVeoObjectSchemaProperty) {
+    this._domains = {};
+
+    const domains = Object.keys(schema.properties);
+    for (const domain of domains) {
+      this._domains[domain] = Object.values(
+        schema.properties[domain].allOf?.map((mapping: any) => ({
+          subType: mapping.if.properties.subType.const,
+          status: mapping.then.properties.status.enum
+        }))
+      );
+    }
+  }
+
   private loadTranslations(translations: IVeoObjectSchemaTranslations) {
     this._translations = translations;
   }
@@ -858,5 +793,168 @@ export default class ObjectSchemaHelper {
 
   private addLinkToSchema(schema: IVeoObjectSchema, link: IVeoOSHCustomLink) {
     schema.properties.links.properties[`${link.prefix}${link.title}`] = ObjectSchemaHelper.generateLinkSchema(link);
+  }
+
+  private addDomainToSchema(schema: IVeoObjectSchema, domainId: string, domain: IVeoOSHDomains['domain']) {
+    schema.properties.domains.properties[domainId] = ObjectSchemaHelper.generateDomain(domain);
+  }
+
+  private getDefaultSchema(domainId: string): any {
+    return {
+      $schema: 'https://json-schema.org/draft/2019-09/schema',
+      $id: 'new-schema',
+      type: 'object',
+      properties: {
+        _self: {
+          type: 'string',
+          description: 'A valid reference to this resource.',
+          readOnly: true,
+          format: 'uri'
+        },
+        abbreviation: {
+          type: 'string',
+          description: 'The abbreviation for the Element.',
+          maxLength: 255
+        },
+        createdAt: {
+          type: 'string',
+          description: 'A timestamp acc. to RFC 3339 specifying when this entity was created.',
+          readOnly: true
+        },
+        createdBy: {
+          type: 'string',
+          description: 'The username of the user who created this object.',
+          readOnly: true
+        },
+        customAspects: {
+          type: 'object',
+          title: 'CustomAspect',
+          description: "Groups of customizable attributes - see '/schemas'",
+          properties: {}
+        },
+        description: {
+          type: 'string',
+          description: 'The description for the Element.',
+          maxLength: 65535
+        },
+        designator: {
+          type: 'string',
+          description: 'Compact human-readable identifier that is unique within the client.',
+          readOnly: true
+        },
+        domains: {
+          type: 'object',
+          description: "Details about this element's association with domains. Domain ID is key, association object is value.",
+          properties: {
+            [domainId]: {
+              $schema: 'https://json-schema.org/draft/2019-09/schema',
+              type: 'object',
+              properties: {
+                subType: {
+                  type: 'string',
+                  enum: []
+                },
+                status: {
+                  type: 'string'
+                }
+              },
+              dependentRequired: {
+                subType: ['status'],
+                status: ['subType']
+              },
+              allOf: []
+            }
+          },
+          additionalProperties: false
+        },
+        id: {
+          type: 'string',
+          description: 'ID must be a valid UUID string following RFC 4122.',
+          format: 'uuid'
+        },
+        links: {
+          type: 'object',
+          title: 'CustomLink',
+          description: 'Custom relations which do not affect the behavior.',
+          properties: {}
+        },
+        name: {
+          type: 'string',
+          description: 'The name for the Element.',
+          maxLength: 255
+        },
+        owner: {
+          type: 'object',
+          properties: {
+            displayName: {
+              type: 'string',
+              description: 'A friendly human readable title of the referenced unit.',
+              readOnly: true
+            },
+            resourcesUri: {
+              type: 'string',
+              readOnly: true
+            },
+            searchesUri: {
+              type: 'string',
+              readOnly: true
+            },
+            targetUri: {
+              type: 'string',
+              description: 'The resource URL of the referenced unit.',
+              format: 'uri'
+            }
+          },
+          required: ['targetUri'],
+          description: 'A reference to the unit containing this entity.'
+        },
+        parts: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              displayName: {
+                type: 'string',
+                description: 'A friendly human readable title of the referenced entity.',
+                readOnly: true
+              },
+              resourcesUri: {
+                type: 'string',
+                readOnly: true
+              },
+              searchesUri: {
+                type: 'string',
+                readOnly: true
+              },
+              targetUri: {
+                type: 'string',
+                description: 'The resource URL of the referenced entity.',
+                format: 'uri'
+              }
+            },
+            required: ['targetUri'],
+            description: "A reference to an entity's part"
+          }
+        },
+        type: {
+          type: 'string',
+          description: 'Entity type identifier',
+          readOnly: true
+        },
+        updatedAt: {
+          type: 'string',
+          description: 'A timestamp acc. to RFC 3339 specifying when this entity was created.',
+          readOnly: true
+        },
+        updatedBy: {
+          type: 'string',
+          description: 'The username of the user who last updated this object.',
+          readOnly: true
+        }
+      },
+      required: ['_self', 'designator', 'name', 'owner'],
+      title: '',
+      description: ''
+    };
   }
 }
