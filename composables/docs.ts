@@ -18,6 +18,7 @@
 import { FetchReturn } from '@nuxt/content/types/query-builder';
 import { useAsync, useContext, computed } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { onContentUpdate } from './utils';
 
 export interface DocPage {
   title: string;
@@ -40,15 +41,6 @@ const ensureArray = <T>(result: T[] | T): T[] => {
   return result && Array.isArray(result) ? result : [result];
 };
 
-export const onContentUpdate = (callback: (context: { event: string; path: string }) => void) => {
-  const { isDev } = useContext();
-  if (isDev && process.client) {
-    (window as any).onNuxtReady(($nuxt: Vue) => {
-      $nuxt.$on('content:update', callback);
-    });
-  }
-};
-
 export const useDoc = (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
   const { localeSeparator, path, fallbackLocale, locale } = getOptions(params);
   const { $content } = useContext();
@@ -56,7 +48,8 @@ export const useDoc = (params: { path: string; locale?: string; localeSeparator?
   const fetchDoc = async () => {
     const fetchResult = await $content({ deep: true })
       .where({
-        $or: [{ path: path + localeSeparator + locale }, { path: path + fallbackLocale }, { path }]
+        $or: [{ path: path + localeSeparator + locale }, { path: path + fallbackLocale }, { path }],
+        extension: '.md'
       })
       .limit(1)
       .fetch<DocPage>();
@@ -87,7 +80,7 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   const buildItem = params.buildItem ?? ((v) => v);
   const fetchDocs = async () => {
     const fetchResult = await (params.root ? $content(params.root, { deep: true }) : $content({ deep: true }))
-      .where({ lang: { $undefinedin: [locale, undefined] } })
+      .where({ lang: { $undefinedin: [locale, undefined] }, extension: '.md' })
       .sortBy('path', 'asc')
       .fetch<DocPage>();
 

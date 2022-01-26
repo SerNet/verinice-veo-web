@@ -50,7 +50,8 @@
           class="veo-list-searchbar__button"
           role="submit"
           type="submit"
-          @click="addHints()"
+          :disabled="!hasTutorials"
+          @click="startTutorial()"
         >
           <v-icon>
             mdi-information-outline
@@ -93,26 +94,25 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
-import introJs from 'intro.js';
 
 import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useTutorials } from '~/composables/intro';
 
 import 'intro.js/minified/introjs.min.css';
 
-interface IProps {}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   setup(_props, context) {
     const { $user, params, $api } = useContext();
     const route = useRoute();
     const router = useRouter();
+
     const { alerts, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
     listenToRootEvents(context.root);
-
+    const { start: startTutorial, tutorialsAvailable: hasTutorials } = useTutorials();
     //
     // Global navigation
     //
@@ -180,24 +180,6 @@ export default defineComponent<IProps>({
 
     const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
 
-    const addHints = () => {
-      const intro = introJs();
-      intro.setOptions({
-        hints: [
-          { hint: 'Das ist ein Hinweis', element: '#hintOne' },
-          { hint: 'Das ist ein zweiter Hinweis', element: '#hintTwo' }
-        ]
-      });
-      intro.addHints();
-      const allHints = document.getElementsByClassName('introjs-hint').length;
-      const allHintsDiv = document.getElementsByClassName('introjs-hints')[0];
-      intro.onhintclose(() => {
-        const remainingHints = allHints - document.getElementsByClassName('introjs-hidehint').length;
-        if (allHintsDiv.parentNode !== null && remainingHints === 0) {
-          allHintsDiv.parentNode.removeChild(allHintsDiv);
-        }
-      });
-    };
     return {
       domainId,
       unitId,
@@ -206,7 +188,8 @@ export default defineComponent<IProps>({
       breadcrumbsKey,
       homeLink,
       alerts,
-      addHints
+      hasTutorials,
+      startTutorial
     };
   },
   head() {
