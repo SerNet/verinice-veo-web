@@ -492,7 +492,7 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'Autocomplete');
   });
 
-  it('opens LinksField dialogs, changes data in dialogs and save them', function () {
+  it.skip('opens LinksField dialogs, changes data in dialogs and save them', function () {
     goTo(tos.linksField);
     cy.contains('.fse-input', 'Empfänger Intern')
       .should('contain.text', 'Empfänger Intern')
