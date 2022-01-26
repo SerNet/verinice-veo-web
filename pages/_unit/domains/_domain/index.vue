@@ -217,17 +217,18 @@ export default defineComponent({
 
     // Navigate if the user clicks on a bar
     function onBarClick(subType: string, status: string) {
-      const formId = formschemas.find((formschema) => formschema.subType === subType)?.id;
+      const objectType = formschemas.find((formschema) => formschema.subType === subType)?.modelType;
 
-      if (formId) {
+      if (objectType) {
         router.push({
-          name: 'unit-domains-domain-forms-form',
+          name: 'unit-domains-domain-objects',
           params: {
-            domnain: params.value.domain,
-            form: createUUIDUrlParam('form', formId)
+            domain: params.value.domain
           },
           query: {
-            status
+            status,
+            objectType,
+            subType
           }
         });
       }
