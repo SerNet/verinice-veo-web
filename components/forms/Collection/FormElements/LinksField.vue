@@ -39,6 +39,8 @@
             :value="val"
             :selected.sync="selected[index]"
             :link-data="value"
+            :options="options"
+            :validation="validation"
             @input="onInput(index, $event)"
           />
         </v-list-item-content>

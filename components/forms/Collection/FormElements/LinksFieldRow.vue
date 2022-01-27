@@ -22,69 +22,76 @@
   >
     <v-col :class="noAttributesClass">
       <!-- TODO: change name with displayName after it is implemented -->
-      <v-autocomplete
-        :key="index"
-        v-model="selected"
-        :loading="loading"
-        :items="items"
-        item-text="name"
-        item-value="id"
-        :search-input.sync="search"
-        :label="options && options.label"
-        class="links-field-row-autocomplete"
-        :disabled="disabled"
-        :placeholder="$t('search_placeholder')"
-        dense
-        hide-details="auto"
-        clearable
-        no-filter
+      <ValidationProvider
+        v-slot="{ errors }"
+        :name="options && options.label"
+        :rules="validation"
       >
-        <template #prepend-item>
-          <v-btn
-            color="primary"
-            block
-            text
-            tile
-            @click.stop="onDialogOpen('DIALOG_CREATE')"
-          >
-            <span v-if="currentForm">
-              {{ $t('createTargetForm', { type: currentForm.name[$i18n.locale] }) }}
-            </span>
-            <span v-else>
-              {{ $t('createTargetObject') }}
-            </span>
-          </v-btn>
-          <v-divider />
-        </template>
-        <template #no-data>
-          <v-list-item>
-            <v-list-item-title>
-              {{ $t('noTargets') }}
-            </v-list-item-title>
-          </v-list-item>
-        </template>
-
-        <template #item="{ item, on, attrs }">
-          <v-list-item
-            v-bind="attrs"
-            class="autocomplete-list-item"
-            v-on="on"
-          >
-            <v-list-item-content>
-              <!-- TODO: change name with displayName after it is implemented -->
-              <v-list-item-title>{{ item.displayName }} </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </template>
-        <template
-          v-if="totalItems > itemsPerPage"
-          #append-item
+        <v-autocomplete
+          :key="index"
+          v-model="selected"
+          :loading="loading"
+          :items="items"
+          item-text="name"
+          item-value="id"
+          :search-input.sync="search"
+          :label="options && options.label"
+          class="links-field-row-autocomplete"
+          :disabled="disabled"
+          :placeholder="$t('search_placeholder')"
+          dense
+          hide-details="auto"
+          clearable
+          no-filter
+          :error-messages="errors && errors[0] && errors[0][`_${index}`]"
         >
-          <v-list-item two-line>
-            {{ $t('be_more_specific') }}
-          </v-list-item>
-        </template>
-      </v-autocomplete>
+          <template #prepend-item>
+            <v-btn
+              color="primary"
+              block
+              text
+              tile
+              @click.stop="onDialogOpen('DIALOG_CREATE')"
+            >
+              <span v-if="currentForm">
+                {{ $t('createTargetForm', { type: currentForm.name[$i18n.locale] }) }}
+              </span>
+              <span v-else>
+                {{ $t('createTargetObject') }}
+              </span>
+            </v-btn>
+            <v-divider />
+          </template>
+          <template #no-data>
+            <v-list-item>
+              <v-list-item-title>
+                {{ $t('noTargets') }}
+              </v-list-item-title>
+            </v-list-item>
+          </template>
+
+          <template #item="{ item, on, attrs }">
+            <v-list-item
+              v-bind="attrs"
+              class="autocomplete-list-item"
+              v-on="on"
+            >
+              <v-list-item-content>
+                <!-- TODO: change name with displayName after it is implemented -->
+                <v-list-item-title>{{ item.displayName }} </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+          <template
+            v-if="totalItems > itemsPerPage"
+            #append-item
+          >
+            <v-list-item two-line>
+              {{ $t('be_more_specific') }}
+            </v-list-item>
+          </template>
+        </v-autocomplete>
+      </ValidationProvider>
     </v-col>
     <v-col v-if="ui.elements.length > 0">
       <VeoForm
