@@ -62,7 +62,7 @@ export const useCypress = () => {
 export const onContentUpdate = (callback: (context: { event: string; path: string }) => void) => {
   const { isDev } = useContext();
   if (isDev && process.client) {
-    (window as any).onNuxtReady(($nuxt: Vue) => {
+    withNuxt(($nuxt: Vue) => {
       $nuxt.$on('content:update', callback);
     });
   }

@@ -185,4 +185,12 @@ declare namespace introJs {
     steps?: Step[];
     hints?: Hint[];
   }
+
+  interface IntroJs {
+    /**
+     * Update placement of the intro objects on the screen
+     * @param refreshSteps to refresh the intro steps as well
+     */
+    refresh(refreshSteps?: boolean);
+  }
 }

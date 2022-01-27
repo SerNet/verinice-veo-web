@@ -15,22 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, isRef, nextTick, onBeforeUnmount, onBeforeUpdate, onMounted, Ref, ref, useAsync, useContext, useRoute, watch, WatchStopHandle } from '@nuxtjs/composition-api';
+import { computed, isRef, nextTick, onBeforeUnmount, onMounted, Ref, ref, useAsync, useContext, useRoute, watch, WatchStopHandle } from '@nuxtjs/composition-api';
 import introJs, { Hint, IntroJs } from 'intro.js';
 import { useI18n } from 'nuxt-i18n-composable';
 import * as pathToRegexp from 'path-to-regexp';
 
 import { onContentUpdate, onFetchFinish } from './utils';
 
-interface HintHandle {}
 interface ITutorialDocument extends introJs.Options {
-  title: string;
+  title?: string;
   route?: string;
 }
 
-const step = ref<number | undefined>(undefined);
-const options = ref<introJs.Options>({});
-const instance = ref<IntroJs | undefined>(undefined);
+const step = ref<number>(0);
+const options = ref<ITutorialDocument>({});
 const stepsVisible = ref<boolean>(false);
 const hintsVisible = ref<boolean>(false);
 
@@ -39,8 +37,10 @@ const hintsVisible = ref<boolean>(false);
  */
 const stopOnRouteChange = ref<boolean>(true);
 
-let _instance: IntroJs & { _options?: introJs.Options };
-
+/**
+ * Stop watching options
+ * @see {configure}
+ */
 let _watchHandle: WatchStopHandle;
 const stop = () => {
   _watchHandle?.();
@@ -58,19 +58,12 @@ const stop = () => {
  * @private
  */
 export function createIntro() {
-  if (_instance) return;
   const route = useRoute();
   onMounted(() => {
-    // Configure intro.js to show loading screen
-    _instance = instance.value = introJs().setOptions({
-      disableInteraction: true,
-      showBullets: false,
-      showButtons: false,
-      showProgress: false,
-      showStepNumbers: false,
-      hideNext: true,
-      steps: [{ title: 'Please wait...', intro: 'Waiting for page...' }]
-    });
+    let _instance: IntroJs = (window as any).$intro;
+    if (_instance) return;
+    // Configure intro.js
+    _instance = (window as any).$intro = introJs();
 
     // Stop watching tutorial on route change
     const _watchRouteChange = watch(
@@ -83,24 +76,12 @@ export function createIntro() {
     );
 
     // watch stepsVisible (show tutorial steps)
-    const _watchStepsVisible = watch(
-      stepsVisible,
-      (v) => {
-        if (v) {
-          // Need to exit first, otherwise intro.js will start at step 2
-          _instance.exit(true).start();
-        } else {
-          _instance.exit(true);
-        }
-      },
-      { immediate: true }
-    );
-
     let _watchOptionsHandle: WatchStopHandle;
     let _watchHintsVisible: WatchStopHandle;
+    let _watchStepsVisible: WatchStopHandle;
+    let tutorialReady = false;
     // wait for pending fetches on current page
     onFetchFinish(() => {
-      _instance.exit(true);
       // watch hintsVisible (show hints bubbles)
       _watchHintsVisible = watch(
         hintsVisible,
@@ -113,6 +94,51 @@ export function createIntro() {
         },
         { immediate: true }
       );
+
+      _watchStepsVisible = watch(
+        stepsVisible,
+        (v) => {
+          if (v) {
+            nextTick(() => {
+              _instance.start();
+              // defer step change to happen after start is finished
+              setTimeout(() => {
+                tutorialReady = true;
+                _instance.goToStep(step.value + 1);
+
+                // tutorial has been completed
+                _instance.oncomplete(() => {
+                  // reset step
+                  step.value = 0;
+                  // sync visibility status
+                  stepsVisible.value = false;
+                  step.value = 0;
+                });
+
+                // the current step has been changed
+                _instance.onchange(() => {
+                  // Save current step
+                  step.value = _instance.currentStep() || 0;
+                });
+
+                _instance.onexit(() => {
+                  stepsVisible.value = false;
+                  step.value = 0;
+                  tutorialReady = false;
+                });
+              });
+            });
+          } else {
+            _instance.exit(true);
+            // Reset handlers
+            _instance.oncomplete(() => {});
+            _instance.onchange(() => {});
+            _instance.onexit(() => {});
+          }
+        },
+        { immediate: true }
+      );
+
       // watch options (configure intro.js)
       _watchOptionsHandle = watch(
         options,
@@ -128,15 +154,12 @@ export function createIntro() {
               hideNext: false,
               ...o
             });
-            // is tutorial visible and have steps been configured?
-            if (stepsVisible.value && o?.steps?.length) {
-              _instance.exit(true).start();
-            }
-            const _step = step.value;
-            // Restore last step (goToStep starts to count at 1)
-            if (_step !== undefined) {
-              // TODO: Check goToStep
-              // _instance.goToStep(_step + 1);
+
+            if (stepsVisible.value && tutorialReady) {
+              // refresh options & steps
+              _instance.refresh(true);
+              // make changes visible by refreshing steps
+              _instance.goToStep(step.value + 1);
             }
           }
         },
@@ -144,32 +167,7 @@ export function createIntro() {
       );
     }, 1000);
 
-    // tutorial has been completed
-    _instance.oncomplete(() => {
-      // reset step
-      step.value = undefined;
-      // sync visibility status
-      stepsVisible.value = false;
-    });
-
-    // the current step has been changed
-    _instance.onchange(() => {
-      // Save current step
-      const s = _instance.currentStep();
-      if (s) {
-        // ... if not undefined or 0
-        step.value = s;
-      }
-    });
-
-    onBeforeUpdate(() => {
-      // Save step before updating (for HMR)
-      step.value = _instance.currentStep();
-    });
-
     onBeforeUnmount(() => {
-      // Save step before unmounting (for HMR)
-      step.value = _instance.currentStep();
       _watchStepsVisible();
       _watchHintsVisible();
       _watchRouteChange?.();
@@ -197,7 +195,6 @@ export function useIntro() {
         opts,
         (opts) => {
           if (opts) {
-            console.log('UPDATED', opts);
             options.value = opts;
           } else {
             stop();
@@ -229,6 +226,8 @@ export function useIntro() {
      * Provides information about whether steps are currently present
      */
     hasSteps: computed(() => !!options.value.steps?.length),
+    steps: computed(() => options.value.steps || []),
+    hints: computed(() => options.value.hints || []),
     /**
      * Add a hint to current page
      * @returns list of current hints
@@ -278,19 +277,21 @@ export function useTutorials() {
   const route = useRoute();
   const i18n = useI18n();
   const fetchDocs = async () => {
-    const docs = await $content('', { deep: true })
-      .where({ lang: { $undefinedin: [i18n.locale.value, undefined] }, extension: '.yaml' })
-      .sortBy('path', 'asc')
-      .fetch<ITutorialDocument>();
+    const docs = await $content('', { deep: true }).where({ extension: '.yaml' }).sortBy('path', 'asc').fetch<ITutorialDocument>();
     if (!docs || !Array.isArray(docs)) return [];
 
-    return docs.map((doc) => {
-      const regex = pathToRegex(doc.route);
-      return {
-        ...doc,
-        match: (path: string) => (regex ? regex.test(path) : true)
-      };
-    });
+    return (
+      docs
+        // only include docs with appropriate language
+        .filter((doc) => doc.lang === undefined || doc.lang === i18n.locale.value)
+        .map((doc) => {
+          const regex = pathToRegex(doc.route);
+          return {
+            ...doc,
+            match: (path: string) => (regex ? regex.test(path) : true)
+          };
+        })
+    );
   };
   const _tutorials = useAsync(fetchDocs, 'tutorials');
   onContentUpdate(async () => {
@@ -311,6 +312,7 @@ export function useTutorials() {
     /**
      * Load a specific tutorial or the first applicable if no predicate given
      * @param predicate path of tutorial or find function
+     * @example `load('/tutorials/tutorial-test-steps')`
      */
     load(predicate?: string | TutorialPredicate) {
       const _find: TutorialPredicate = typeof predicate === 'function' ? predicate : (_) => _.path === predicate;

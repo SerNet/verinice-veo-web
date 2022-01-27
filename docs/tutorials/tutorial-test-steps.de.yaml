@@ -1,4 +1,4 @@
-title: Tutorial Test (Steps)
+title: Tutorial Test für Steps (Deutsch)
 description: Ein Test für Steps
 route: /hints
 steps:
@@ -8,3 +8,6 @@ steps:
   - title: Tutorial Schritte
     intro: Den ersten Schritt im Tutorial starten
     element: '[data-hint=showTutorialBtn]'
+  - title: Menü verstecken
+    intro: So klappt man die Navigation ein
+    element: '#app > div > nav > div.v-navigation-drawer__append > div > div'

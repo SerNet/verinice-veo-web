@@ -131,7 +131,7 @@ export default {
       }
     },
     'content:file:beforeInsert': (document) => {
-      if (document.extension === '.md') {
+      if (['.md', '.yaml'].includes(document.extension)) {
         const [slug, lang] = document.slug.split('.');
         if (lang) {
           document.lang = lang;
