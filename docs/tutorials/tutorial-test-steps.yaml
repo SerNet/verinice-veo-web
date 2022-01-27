@@ -1,0 +1,10 @@
+title: Tutorial Test (Steps)
+description: Ein Test für Steps
+route: /hints
+steps:
+  - title: Hinweise AB
+    intro: Die kleinen Bubbles anzeigen, die Hinweise anzeigen
+    element: '[data-hint=showHintBtn]'
+  - title: Tutorial Schritte
+    intro: Den ersten Schritt im Tutorial starten
+    element: '[data-hint=showTutorialBtn]'

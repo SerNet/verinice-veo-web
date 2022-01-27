@@ -112,7 +112,7 @@ export default defineComponent({
     const { alerts, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
     listenToRootEvents(context.root);
-    const { start: startTutorial, tutorialsAvailable: hasTutorials } = useTutorials();
+    const { start: startTutorial, hasTutorials } = useTutorials();
     //
     // Global navigation
     //

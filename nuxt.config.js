@@ -215,7 +215,7 @@ export default {
   /**
    *
    */
-  css: ['~/assets/main.scss', '~/assets/util.scss', '~/assets/vuetify.scss'],
+  css: ['~/assets/main.scss', '~/assets/util.scss', '~/assets/vuetify.scss', '~/assets/intro.scss'],
 
   /**
    *
