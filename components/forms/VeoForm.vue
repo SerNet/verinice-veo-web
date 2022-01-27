@@ -258,7 +258,7 @@ export default Vue.extend({
             translatedErrorString = this.handleRequiredLink(error);
             break;
           }
-          translatedErrorString = this.$t(`error.${error.keyword}`, { field: this.getInvalidFieldLabel(missingProperty), format: (error.params as any)[error.keyword] }).toString();
+          translatedErrorString = this.$t(`error.${error.keyword}`, { field: this.getInvalidFieldLabel(missingProperty) }).toString();
           break;
         // While pattern and format are separate errors, we want to display the same error message for both, as both have to be fixed the same way by the user
         case 'format':
