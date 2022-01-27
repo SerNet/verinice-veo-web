@@ -322,7 +322,7 @@ export default Vue.extend({
         // as custom links may consist of many rows, the errors needs special handling in order to display the error in their belonging input field (row)
         let linkErrors = undefined as any;
         if (element.scope.includes('link')) {
-          const errorKeys = Object.keys(this.errorsMsgMap).filter((em) => em.includes(element.scope!)); // get error keys for all faulty rows of a custom link
+          const errorKeys = Object.keys(this.errorsMsgMap).filter((errorKey) => errorKey.includes(element.scope!)); // get error keys for all faulty rows of a custom link
           if (errorKeys.length > 0) {
             linkErrors = {};
             for (const errorKey of errorKeys) {
