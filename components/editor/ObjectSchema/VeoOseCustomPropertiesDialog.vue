@@ -399,11 +399,8 @@ export default Vue.extend({
           // Add a key for each enum entry
           if (attribute.type === 'enum' && attribute.enum) {
             for (const option of attribute.enum) {
-              this.objectSchemaHelper.value.addTranslation(
-                `${attributePrefix}${attribute.title}_${option}`,
-                `${attributePrefix}${attribute.title}_${option}`,
-                this.displayLanguage.value
-              );
+              const translation = `${attributePrefix}${attribute.title}_${option}`;
+              this.objectSchemaHelper.value.addTranslation(translation, translation, this.displayLanguage.value);
             }
           }
         }
