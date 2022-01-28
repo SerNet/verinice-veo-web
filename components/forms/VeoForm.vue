@@ -326,7 +326,10 @@ export default Vue.extend({
           if (errorKeys.length > 0) {
             linkErrors = {};
             for (const errorKey of errorKeys) {
-              const indexFromString = errorKey.split('/').find((item) => Number.isInteger(Number(item))) as string | undefined;
+              const indexFromString = errorKey
+                .split('/')
+                .splice(5)
+                .find((item) => Number.isInteger(Number(item))) as string | undefined;
               linkErrors[`_${indexFromString || '0'}`] = this.errorsMsgMap[errorKey]; // assign error to belonging index (row) of custom link
             }
           }
