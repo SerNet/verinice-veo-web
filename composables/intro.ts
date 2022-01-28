@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { computed, isRef, nextTick, onBeforeUnmount, onMounted, Ref, ref, useAsync, useContext, useRoute, watch, WatchStopHandle } from '@nuxtjs/composition-api';
+import { computed, isRef, nextTick, onBeforeUnmount, onMounted, Ref, ref, useAsync, useContext, useRoute, useRouter, watch, WatchStopHandle } from '@nuxtjs/composition-api';
 import introJs, { Hint, IntroJs } from 'intro.js';
 import { useI18n } from 'nuxt-i18n-composable';
 import * as pathToRegexp from 'path-to-regexp';
@@ -59,6 +59,7 @@ const stop = () => {
  */
 export function createIntro() {
   const route = useRoute();
+  const router = useRouter();
   onMounted(() => {
     let _instance: IntroJs = (window as any).$intro;
     if (_instance) return;
@@ -106,6 +107,33 @@ export function createIntro() {
                 tutorialReady = true;
                 _instance.goToStep(step.value + 1);
 
+                // check wether element is a link element
+                const isAnchorElement = (el: HTMLElement): el is HTMLAnchorElement => el && el.tagName === 'A';
+                // emulate nuxt-link behaviour
+                const onClickHandler = (event: MouseEvent) => {
+                  const target = event.target as HTMLElement;
+                  if (isAnchorElement(target)) {
+                    const url = new URL(target.href, document.location.href);
+                    const isRelative = url.host === document.location.host;
+                    if (isRelative && (!target.target || target.target === '_self')) {
+                      // Keep tutorial open while navigating inside tooltip
+                      const _oldStopOnRouteChangeValue = stopOnRouteChange.value;
+                      stopOnRouteChange.value = false;
+                      // prevent default browser behaviour
+                      event.preventDefault();
+                      const fullPath = url.pathname + url.search + url.hash;
+                      // use vue router for navigation
+                      router.push(fullPath, () => {
+                        // restore old stopOnRouteChange value
+                        stopOnRouteChange.value = _oldStopOnRouteChangeValue;
+                      });
+                    }
+                  }
+                };
+
+                const tooltipEl = document.querySelector<HTMLDivElement>('.vue-introjs-tooltip');
+                tooltipEl?.addEventListener('click', onClickHandler);
+
                 // tutorial has been completed
                 _instance.oncomplete(() => {
                   // reset step
@@ -145,6 +173,7 @@ export function createIntro() {
         (o) => {
           if (o) {
             _instance.setOptions({
+              tooltipClass: 'vue-introjs-tooltip',
               disableInteraction: false,
               showBullets: false,
               showButtons: true,

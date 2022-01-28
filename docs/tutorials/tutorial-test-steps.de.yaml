@@ -5,9 +5,10 @@ steps:
   - title: Hinweise AB
     intro: Die kleinen Bubbles anzeigen, die Hinweise anzeigen
     element: '[data-hint=showHintBtn]'
-  - title: Tutorial Schritte
-    intro: Den ersten Schritt im Tutorial starten
+  - title: Tutorial Schritte ABC
+    intro: Den ersten [Schritt](/hints?test=123) im <a href="/hints?test=123">Tutorial</a> starten
     element: '[data-hint=showTutorialBtn]'
   - title: Menü verstecken
-    intro: So klappt man die Navigation ein
+    intro: | 
+      So klappt man die **Navigation** ein
     element: '#app > div > nav > div.v-navigation-drawer__append > div > div'

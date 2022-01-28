@@ -192,5 +192,7 @@ declare namespace introJs {
      * @param refreshSteps to refresh the intro steps as well
      */
     refresh(refreshSteps?: boolean);
+
+    onstart(callback?: (targetElm: Element) => void);
   }
 }
