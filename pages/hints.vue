@@ -18,7 +18,7 @@
 <template>
   <VeoPage fullsize>
     <v-container fluid>
-      <h4>Demo page for hints and tutorials</h4>
+      <h1>Demo page for hints and tutorials</h1>
       <v-select
         label="Available tutorials"
         :items="tutorials"

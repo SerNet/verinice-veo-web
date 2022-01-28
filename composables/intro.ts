@@ -49,11 +49,6 @@ const stop = () => {
 };
 
 /**
- * Undocumented Intro.js options
- * @see https://github.com/usablica/intro.js/blob/master/src/index.js
- */
-
-/**
  * Create intro.js instance and watch for global state
  * @private
  */
@@ -311,7 +306,7 @@ export function useTutorials() {
 
     return (
       docs
-        // only include docs with appropriate language
+        // only include docs with current language
         .filter((doc) => doc.lang === undefined || doc.lang === i18n.locale.value)
         .map((doc) => {
           const regex = pathToRegex(doc.route);

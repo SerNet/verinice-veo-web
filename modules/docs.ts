@@ -19,6 +19,10 @@ import { resolve as pathResolve, relative as pathRelative, dirname as pathDirnam
 import { Module } from '@nuxt/types';
 import { contentFileBeforeInstert, contentFileBeforeParse } from '@nuxt/content/types/content';
 
+/**
+ * Fields that may contain markdown
+ */
+const MARKDOWN_FIELDS = { steps: ['title', 'intro'], hints: ['hint'] } as const;
 interface MdNode {
   type: 'root' | 'element' | 'text';
   tag?: string;
@@ -56,31 +60,30 @@ const toHtml = (node: MdNode): string => {
 };
 
 export default (function () {
-  const markdownKeys = { steps: ['title', 'intro'], hints: ['hint'] } as const;
   /**
    * Change image paths before parsing markdown documents
    */
-  const beforeParse: contentFileBeforeParse = (file) => {
-    // Allow relative image paths in documents:
+  const replaceImagePaths: contentFileBeforeParse = (file) => {
+    // Transforms relative image paths in documents:
     if (/\.md$/.test(file.extension)) {
       const matchImages = /(!\[[^[\]]*\]\()([^()]+?)(\))|(<[^>]*src=")([^"]+?)("[^>]*>)/gm;
-      // Find markdown images (a): ![Alt](src) OR html image tags (b): <img...src...>
-      file.data = String(file.data).replace(matchImages, (_, a0, a1, a2, b0, b1, b2) => {
-        const src = b1 || a1;
+      // Find markdown images (a): ![Alt](path) OR html image tags (b): <img...src...>
+      file.data = String(file.data).replace(matchImages, (_, prePath, path, postPath, preSrc, src, postSrc) => {
+        const filePath = src || path;
         const fileDir = pathDirname(file.path);
         // ...extract src and resolve it relative to file and build relative path from nuxt root directory
-        const resolved = pathRelative(this.options.rootDir, pathResolve(fileDir, src));
+        const resolved = pathRelative(this.options.rootDir, pathResolve(fileDir, filePath));
         // replace path with resolved path
-        return b1 ? `${b0}${resolved}${b2}` : `${a0}${resolved}${a2}`;
+        return src ? `${preSrc}${resolved}${postSrc}` : `${prePath}${resolved}${postPath}`;
       });
     }
   };
-  this.nuxt.hook('content:file:beforeParse', beforeParse);
+  this.nuxt.hook('content:file:beforeParse', replaceImagePaths);
 
   /**
    * Add language property and allow specific keys inside yaml to include markdown
    */
-  const beforeInsert: contentFileBeforeInstert = async (document, database) => {
+  const extendDocument: contentFileBeforeInstert = async (document, database) => {
     // Compute language by extension
     if (['.md', '.yaml'].includes(document.extension)) {
       const [slug, lang] = document.slug.split('.');
@@ -92,8 +95,8 @@ export default (function () {
 
     // Intro.js documents:
     if (document.extension === '.yaml') {
-      // Allow markdown in specific fields
-      for (const [key, fields] of Object.entries(markdownKeys)) {
+      // Allow markdown in specific fields (see MARKDOWN_FIELDS)
+      for (const [key, fields] of Object.entries(MARKDOWN_FIELDS)) {
         const arr = document[key];
         if (arr && Array.isArray(arr)) {
           for (let i = 0; i < arr.length; i++) {
@@ -107,5 +110,5 @@ export default (function () {
       }
     }
   };
-  this.nuxt.hook('content:file:beforeInsert', beforeInsert);
+  this.nuxt.hook('content:file:beforeInsert', extendDocument);
 } as Module<any>);
