@@ -230,22 +230,22 @@
               "properties": {
                 "testSchema_Aspekt3_Attribut1": {
                   "enum": [
-                    "a",
-                    "b",
-                    "c",
-                    "d",
-                    "e"
+                    "testSchema_Aspekt3_Attribut1_a",
+                    "testSchema_Aspekt3_Attribut1_b",
+                    "testSchema_Aspekt3_Attribut1_c",
+                    "testSchema_Aspekt3_Attribut1_d",
+                    "testSchema_Aspekt3_Attribut1_e"
                   ]
                 },
                 "testSchema_Aspekt3_Attribut2": {
                   "type": "array",
                   "items": {
                     "enum": [
-                      "a",
-                      "b",
-                      "c",
-                      "d",
-                      "e"
+                      "testSchema_Aspekt3_Attribut2_a",
+                      "testSchema_Aspekt3_Attribut2_b",
+                      "testSchema_Aspekt3_Attribut2_c",
+                      "testSchema_Aspekt3_Attribut2_d",
+                      "testSchema_Aspekt3_Attribut2_e"
                     ]
                   }
                 }
@@ -399,11 +399,11 @@
                   },
                   "testSchema_Link1_Attribut2": {
                     "enum": [
-                      "1",
-                      "2",
-                      "3",
-                      "4",
-                      "5"
+                      "testSchema_Link1_Attribut2_1",
+                      "testSchema_Link1_Attribut2_2",
+                      "testSchema_Link1_Attribut2_3",
+                      "testSchema_Link1_Attribut2_4",
+                      "testSchema_Link1_Attribut2_5"
                     ]
                   }
                 }

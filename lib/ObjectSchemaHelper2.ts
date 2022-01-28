@@ -369,6 +369,10 @@ export default class ObjectSchemaHelper {
     return validator.validate(this.toSchema());
   }
 
+  private static addPrefixToEnum(items: string[], prefix: string) {
+    return items.map((item: string) => `${prefix}_${item}`);
+  }
+
   public static generateLinkSchema(link: IVeoOSHCustomLink): IVeoObjectSchemaCustomLink {
     const schemaLink: IVeoObjectSchemaCustomLink = {
       items: {
@@ -462,6 +466,7 @@ export default class ObjectSchemaHelper {
       // @ts-ignore We cast attribute to IVeoObjectSchemaProperty a couple lines before,
       // however there is still some data in there which is not defined in IVeoObjectSchemaProperty
       if (dummy.type === 'enum') {
+        dummy.enum = this.addPrefixToEnum(dummy.enum, `${attribute.prefix}${attribute.title}`);
         delete dummy.type;
         if (dummy.multiple) {
           dummy.type = 'array';
@@ -548,6 +553,7 @@ export default class ObjectSchemaHelper {
       // @ts-ignore We cast attribute to IVeoObjectSchemaProperty a couple lines before,
       // however there is still some data in there which is not defined in IVeoObjectSchemaProperty
       if (dummy.type === 'enum') {
+        dummy.enum = this.addPrefixToEnum(dummy.enum, `${attribute.prefix}${attribute.title}`);
         delete dummy.type;
         if (dummy.multiple) {
           dummy.type = 'array';
@@ -650,6 +656,10 @@ export default class ObjectSchemaHelper {
     }
   }
 
+  private removePrefixFromEnum(items: string[], prefix: string) {
+    return items.map((item: string) => item.split(`${prefix}_`)[1]);
+  }
+
   private loadCustomAspects(aspects: IVeoObjectSchema['properties']['customAspects']) {
     for (const aspectName in aspects.properties) {
       const aspect = aspects.properties[aspectName] as IVeoObjectSchemaCustomAspect;
@@ -673,6 +683,10 @@ export default class ObjectSchemaHelper {
           toPush.enum = toPush.items.enum;
           toPush.multiple = true;
           toPush.type = 'enum';
+        }
+
+        if (toPush.enum) {
+          toPush.enum = this.removePrefixFromEnum(toPush.enum, `${toPush.prefix}${toPush.title}`);
         }
 
         dummy.attributes.push(toPush);
@@ -706,6 +720,10 @@ export default class ObjectSchemaHelper {
           toPush.enum = toPush.items.enum;
           toPush.multiple = true;
           toPush.type = 'enum';
+        }
+
+        if (toPush.enum) {
+          toPush.enum = this.removePrefixFromEnum(toPush.enum, `${toPush.prefix}${toPush.title}`);
         }
 
         dummy.attributes.push(toPush);

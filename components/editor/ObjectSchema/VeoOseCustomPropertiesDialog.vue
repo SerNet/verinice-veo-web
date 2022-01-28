@@ -399,7 +399,8 @@ export default Vue.extend({
           // Add a key for each enum entry
           if (attribute.type === 'enum' && attribute.enum) {
             for (const option of attribute.enum) {
-              this.objectSchemaHelper.value.addTranslation(option, option, this.displayLanguage.value);
+              const translation = `${attributePrefix}${attribute.title}_${option}`;
+              this.objectSchemaHelper.value.addTranslation(translation, translation, this.displayLanguage.value);
             }
           }
         }
@@ -409,6 +410,16 @@ export default Vue.extend({
           for (const attribute of this.editedProperty?.attributes) {
             if (!this.form.data.attributes.find((attribute2) => attribute2.originalId === attribute.title)) {
               this.objectSchemaHelper.value.removeTranslation(`${attribute.prefix}${attribute.title}`);
+            }
+
+            // check for removed enum items to remove their translations
+            if (attribute.type === 'enum') {
+              const pastEnumItems = attribute.enum || [];
+              const nowEnumItems = this.form.data.attributes.find((attribute2) => attribute2.originalId === attribute.title)?.enum || [];
+              const removedEnumItems = pastEnumItems.filter((x) => !nowEnumItems.includes(x));
+              for (const removedEnumItem of removedEnumItems) {
+                this.objectSchemaHelper.value.removeTranslation(`${attributePrefix}${attribute.title}_${removedEnumItem}`);
+              }
             }
           }
         }

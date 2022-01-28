@@ -28,19 +28,19 @@ exports[`Objectschema Editor > removes and adds aspect attributes #0`] =
   },
   "testSchema_Aspekt1_e": {
     "enum": [
-      "a",
-      "b",
-      "c",
-      "d"
+      "testSchema_Aspekt1_e_a",
+      "testSchema_Aspekt1_e_b",
+      "testSchema_Aspekt1_e_c",
+      "testSchema_Aspekt1_e_d"
     ]
   },
   "testSchema_Aspekt1_f": {
     "items": {
       "enum": [
-        "a",
-        "b",
-        "c",
-        "d"
+        "testSchema_Aspekt1_f_a",
+        "testSchema_Aspekt1_f_b",
+        "testSchema_Aspekt1_f_c",
+        "testSchema_Aspekt1_f_d"
       ]
     },
     "type": "array"
@@ -106,19 +106,19 @@ exports[`Objectschema Editor > removes and adds link attributes #0`] =
   },
   "testSchema_Link1_e": {
     "enum": [
-      "a",
-      "b",
-      "c",
-      "d"
+      "testSchema_Link1_e_a",
+      "testSchema_Link1_e_b",
+      "testSchema_Link1_e_c",
+      "testSchema_Link1_e_d"
     ]
   },
   "testSchema_Link1_f": {
     "items": {
       "enum": [
-        "a",
-        "b",
-        "c",
-        "d"
+        "testSchema_Link1_f_a",
+        "testSchema_Link1_f_b",
+        "testSchema_Link1_f_c",
+        "testSchema_Link1_f_d"
       ]
     },
     "type": "array"
@@ -299,21 +299,21 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
               "properties": {
                 "testSchema_Aspekt3_Attribut1": {
                   "enum": [
-                    "a",
-                    "b",
-                    "c",
-                    "d",
-                    "e"
+                    "testSchema_Aspekt3_Attribut1_a",
+                    "testSchema_Aspekt3_Attribut1_b",
+                    "testSchema_Aspekt3_Attribut1_c",
+                    "testSchema_Aspekt3_Attribut1_d",
+                    "testSchema_Aspekt3_Attribut1_e"
                   ]
                 },
                 "testSchema_Aspekt3_Attribut2": {
                   "items": {
                     "enum": [
-                      "a",
-                      "b",
-                      "c",
-                      "d",
-                      "e"
+                      "testSchema_Aspekt3_Attribut2_a",
+                      "testSchema_Aspekt3_Attribut2_b",
+                      "testSchema_Aspekt3_Attribut2_c",
+                      "testSchema_Aspekt3_Attribut2_d",
+                      "testSchema_Aspekt3_Attribut2_e"
                     ]
                   },
                   "type": "array"
@@ -434,11 +434,11 @@ exports[`Objectschema Editor > compares downloaded schema with the actual one #0
                   },
                   "testSchema_Link1_Attribut2": {
                     "enum": [
-                      "1",
-                      "2",
-                      "3",
-                      "4",
-                      "5"
+                      "testSchema_Link1_Attribut2_1",
+                      "testSchema_Link1_Attribut2_2",
+                      "testSchema_Link1_Attribut2_3",
+                      "testSchema_Link1_Attribut2_4",
+                      "testSchema_Link1_Attribut2_5"
                     ]
                   }
                 },

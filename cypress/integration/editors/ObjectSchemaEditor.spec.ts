@@ -599,12 +599,12 @@ describe('Objectschema Editor', () => {
       for (const enumEntry of currentAttrData.enum) {
         cy.get('@currentOS')
           .then((currentOS) => {
-            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null;
+            return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestAspectTwo_${currentAttrData.writeTitle}_${enumEntry}`) || null;
           })
           .should('not.be.null');
         cy.get('@currentOS')
           .then((currentOS) => {
-            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null;
+            return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestAspectTwo_${currentAttrData.writeTitle}_${enumEntry}`) || null;
           })
           .should('be.null');
       }
@@ -661,12 +661,12 @@ describe('Objectschema Editor', () => {
       for (const enumEntry of currentAttrData.enum) {
         cy.get('@currentOS')
           .then((currentOS) => {
-            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null;
+            return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestAspectTwo_${currentAttrData.writeTitle}_${enumEntry}`) || null;
           })
           .should('not.be.null');
         cy.get('@currentOS')
           .then((currentOS) => {
-            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null;
+            return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestAspectTwo_${currentAttrData.writeTitle}_${enumEntry}`) || null;
           })
           .should('not.be.null');
       }
@@ -755,12 +755,12 @@ describe('Objectschema Editor', () => {
       for (const enumEntry of currentAttrData.enum) {
         cy.get('@currentOS')
           .then((currentOS) => {
-            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null;
+            return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo_${currentAttrData.writeTitle}_${enumEntry}`) || null;
           })
           .should('not.be.null');
         cy.get('@currentOS')
           .then((currentOS) => {
-            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null;
+            return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}_${enumEntry}`) || null;
           })
           .should('be.null');
       }
@@ -819,12 +819,12 @@ describe('Objectschema Editor', () => {
       for (const enumEntry of currentAttrData.enum) {
         cy.get('@currentOS')
           .then((currentOS) => {
-            return JsonPointer.get(currentOS, `#/properties/translations/de/${enumEntry}`) || null;
+            return JsonPointer.get(currentOS, `#/properties/translations/de/empty_TestLinkTwo_${currentAttrData.writeTitle}_${enumEntry}`) || null;
           })
           .should('not.be.null');
         cy.get('@currentOS')
           .then((currentOS) => {
-            return JsonPointer.get(currentOS, `#/properties/translations/en/${enumEntry}`) || null;
+            return JsonPointer.get(currentOS, `#/properties/translations/en/empty_TestLinkTwo_${currentAttrData.writeTitle}_${enumEntry}`) || null;
           })
           .should('not.be.null');
       }
