@@ -207,7 +207,12 @@ export default defineComponent({
     });
 
     // refetch on changes via FilterDialog or URL query parameters
-    watch(filter, fetch);
+    watch(filter, (oldVal, newVal) => {
+      if (oldVal.objectType !== newVal.objectType) {
+        pagination.page = 1;
+      }
+      fetch();
+    });
 
     // parse UUID from URL
     const domainId = computed(() => {
