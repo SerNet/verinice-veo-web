@@ -47,17 +47,6 @@ export default {
   'error.title': 'Es ist ein Fehler aufgetreten',
   error404: '404 - Nicht gefunden',
 
-  'forms.input.array.add': 'Element hinzufügen',
-  'forms.input.linkadd': 'Link hinzufügen',
-  'forms.input.link.noattributes': 'Keine weiteren Eigenschaften',
-  'forms.input.link.targetObject': 'Ziel Objekt',
-  'forms.input.link.targetObject.change.headline': 'Objekt ändern',
-  'forms.input.link.targetObject.create': 'Erstellen',
-  'forms.input.link.targetObject.create.headline': 'Ein neues Objekt anlegen',
-  'forms.input.link.targetObject.delete.headline': 'Objekt löschen',
-  'forms.input.link.targetObject.delete.text': 'Sind sie sicher, dass das Objekt "{object}" gelöscht werden soll?',
-  'forms.input.link.targetObject.notFound': 'Nicht gefunden',
-
   'global.appstate.alert.object_modified': 'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
   'global.appstate.alert.success': 'Erfolgreich durchgeführt!',
   'global.appstate.alert.error': 'Ein Fehler ist aufgetreten!',
