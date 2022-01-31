@@ -319,6 +319,22 @@ export default Vue.extend({
       };
 
       if (element.scope) {
+        // as custom links may consist of many rows, the errors needs special handling in order to display the error in their belonging input field (row)
+        let linkErrors = undefined as any;
+        if (element.scope.includes('link')) {
+          const errorKeys = Object.keys(this.errorsMsgMap).filter((errorKey) => errorKey.includes(element.scope!)); // get error keys for all faulty rows of a custom link
+          if (errorKeys.length > 0) {
+            linkErrors = {};
+            for (const errorKey of errorKeys) {
+              const indexFromString = errorKey
+                .split('/')
+                .splice(5)
+                .find((item) => Number.isInteger(Number(item))) as string | undefined;
+              linkErrors[`_${indexFromString || '0'}`] = this.errorsMsgMap[errorKey]; // assign error to belonging index (row) of custom link
+            }
+          }
+        }
+
         const elementName = element.scope.split('/').pop() as string;
         const elementSchema: any = JsonPointer.get(this.localSchema, element.scope);
         const elementValue: any = JsonPointer.get(this.value, propertyPath(element.scope));
@@ -332,7 +348,7 @@ export default Vue.extend({
           value: typeof elementValue !== 'undefined' ? elementValue : elementSchema && elementSchema.default,
           validation: {
             objectSchema: {
-              errorMsg: this.errorsMsgMap[element.scope]
+              errorMsg: this.errorsMsgMap[element.scope] || linkErrors
             }
           }
         };
