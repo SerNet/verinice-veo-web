@@ -25,7 +25,7 @@
         item-text="title"
         item-value="path"
         :value="options.route"
-        @change="openTutorial"
+        @change="openTutorial($event, false)"
       >
         <template #item="{item, on}">
           <v-list-item
