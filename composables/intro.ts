@@ -96,6 +96,7 @@ export function createIntro() {
         (v) => {
           if (v) {
             nextTick(() => {
+              if (!options.value.steps?.length) return;
               _instance.start();
               // defer step change to happen after start is finished
               setTimeout(() => {
@@ -231,13 +232,17 @@ export function useIntro() {
     }
   };
 
+  const visible = computed(() => hintsVisible.value || stepsVisible.value);
+
   return {
     options,
     stepsVisible,
     stopOnRouteChange,
     hintsVisible,
+    visible,
     step,
     start() {
+      hintsVisible.value = true;
       stepsVisible.value = true;
     },
     configure,
@@ -322,8 +327,10 @@ export function useTutorials() {
     _tutorials.value = await fetchDocs();
   });
 
+  // Ignore hash part in current route url
+  const currentRouteHref = computed(() => route.value.fullPath.replace(/#.*$/, ''));
   // Make sure tutorials is always present
-  const tutorials = computed(() => _tutorials.value?.map((tutorial) => ({ ...tutorial, applicable: tutorial.match(route.value.fullPath) })) || []);
+  const tutorials = computed(() => _tutorials.value?.map((tutorial) => ({ ...tutorial, applicable: tutorial.match(currentRouteHref.value) })) || []);
   type Tutorial = typeof tutorials.value extends Array<infer U> ? U : never;
 
   const tutorialsForRoute = computed(() => tutorials.value?.filter((tutorial) => tutorial.applicable));
@@ -336,12 +343,16 @@ export function useTutorials() {
     /**
      * Load a specific tutorial or the first applicable if no predicate given
      * @param predicate path of tutorial or find function
+     * @param autoplay automatically start tutorial (display steps or hints)
      * @example `load('/tutorials/tutorial-test-steps')`
      */
-    load(predicate?: string | TutorialPredicate) {
+    load(predicate?: string | TutorialPredicate, autoplay = true) {
       const _find: TutorialPredicate = typeof predicate === 'function' ? predicate : (_) => _.path === predicate;
       const tutorial = computed(() => (predicate ? tutorials.value?.find(_find) : tutorialsForRoute.value?.[0]));
       intro.configure(tutorial);
+      if (autoplay) {
+        intro.start();
+      }
     },
     /**
      * All tutorials

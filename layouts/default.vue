@@ -43,20 +43,25 @@
       <div
         class="d-flex flex-grow-0 mr-6"
       >
-        <v-btn
-          id="stepFour"
-          outlined
-          color="primary"
-          class="veo-list-searchbar__button"
-          role="submit"
-          type="submit"
-          :disabled="!hasTutorials"
-          @click="startTutorial()"
-        >
-          <v-icon>
-            mdi-information-outline
-          </v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              outlined
+              color="primary"
+              class="veo-list-searchbar__button"
+              role="submit"
+              type="submit"
+              :disabled="!hasTutorials"
+              v-bind="attrs"
+              @click="tutorialVisible?stopTutorial():startTutorial()"
+              v-on="on"
+            >
+              <v-icon v-text="tutorialVisible?'mdi-information-off-outline':'mdi-information-outline'" />
+            </v-btn>
+          </template>
+          <span v-text="t(tutorialVisible?'hideHelp':'showHelp')" />
+        </v-tooltip>
+        
         <VeoDemoUnitButton />
         <VeoLanguageSwitch />
       </div>
@@ -112,7 +117,7 @@ export default defineComponent({
     const { alerts, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
     listenToRootEvents(context.root);
-    const { start: startTutorial, hasTutorials } = useTutorials();
+    const { load: startTutorial, stop: stopTutorial, hasTutorials, visible: tutorialVisible } = useTutorials();
     //
     // Global navigation
     //
@@ -189,7 +194,10 @@ export default defineComponent({
       homeLink,
       alerts,
       hasTutorials,
-      startTutorial
+      startTutorial,
+      stopTutorial,
+      tutorialVisible,
+      t
     };
   },
   head() {
@@ -215,3 +223,16 @@ export default defineComponent({
   }
 }
 </style>
+
+<i18n>
+{
+  "de": {
+    "showHelp": "Kontext-Hilfe anzeigen",
+    "hideHelp": "Kontext-Hilfe ausblenden"
+  },
+  "en": {
+    "showHelp": "Show contextual help",
+    "hideHelp": "Hide contextual help"
+  }
+}
+</i18n>
