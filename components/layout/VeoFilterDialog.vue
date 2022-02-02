@@ -29,6 +29,7 @@
             :key="option.name || `${option.type}_${index}`"
             :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
             dense
+            class="px-0"
           >
             <v-divider
               v-if="option.type === IVeoFilterOptionType.DIVIDER"
@@ -41,7 +42,7 @@
               :rules="option.required ? [requiredRule] : []"
               :disabled="option.disabled"
               :name="option.name"
-              clearable
+              :clearable="!option.required"
               dense
               @input="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
             />
@@ -54,7 +55,7 @@
               :items="option.selectOptions"
               :disabled="option.disabled"
               :name="option.name"
-              clearable
+              :clearable="!option.required"
               dense
               @change="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
             />
@@ -71,7 +72,7 @@
             />
           </v-list-item>
           <v-list-item
-            class="justify-center"
+            class="justify-center px-0"
             :data-cy="$utils.prefixCyData($options, 'expand-button')"
             @click="showAllFilters = !showAllFilters"
           >

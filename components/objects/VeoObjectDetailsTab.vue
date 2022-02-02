@@ -72,7 +72,7 @@ import { useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter }
 import { defineComponent, onMounted } from '@vue/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiFilter, mdiPlus, mdiContentCopy, mdiLinkOff } from '@mdi/js';
+import { mdiContentCopy, mdiLinkOff } from '@mdi/js';
 import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -233,9 +233,7 @@ export default defineComponent({
       fetch,
       items,
 
-      t,
-      mdiFilter,
-      mdiPlus
+      t
     };
   }
 });

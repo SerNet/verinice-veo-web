@@ -65,9 +65,21 @@
       </v-btn>
     </div>
     <v-row no-gutters>
+      <v-col cols="auto">
+        <v-btn
+          v-cy-name="'filter-button'"
+          class="ma-1"
+          rounded
+          primary
+          depressed
+          @click="filterDialogVisible = true"
+        >
+          <v-icon>{{ mdiFilter }}</v-icon> Filtern
+        </v-btn>
+      </v-col>
       <v-col
-        cols="11"
-        class="grow"
+        cols="auto"
+        class="grow ml-8"
       >
         <v-chip-group v-cy-name="'chips'">
           <VeoObjectChip
@@ -79,19 +91,6 @@
             @click:close="clearFilter(k)"
           />
         </v-chip-group>
-      </v-col>
-      <v-col
-        cols="1"
-        class="shrink text-right"
-      >
-        <v-btn
-          v-cy-name="'filter-button'"
-          class="ma-1"
-          icon
-          @click="filterDialogVisible = true"
-        >
-          <v-icon>{{ mdiFilter }}</v-icon>
-        </v-btn>
       </v-col>
     </v-row>
     <VeoObjectTable
@@ -138,7 +137,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
@@ -157,6 +156,7 @@ export default defineComponent({
 
     const items = ref<IVeoPaginatedResponse<IVeoEntity[]>>();
     const formschemas = ref<IVeoFormSchemaMeta[]>([]);
+    const translations = ref<IVeoTranslations['lang']>({});
 
     const itemDelete = ref<IVeoEntity>();
 
@@ -201,9 +201,14 @@ export default defineComponent({
       delete params.objectType;
       delete params.page;
 
-      const [schemas, entities] = await Promise.all([$api.form.fetchAll(domainId.value), $api.entity.fetchAll(objectType, pagination.page, params)]);
+      const [schemas, entities, _translations] = await Promise.all([
+        $api.form.fetchAll(domainId.value),
+        $api.entity.fetchAll(objectType, pagination.page, params),
+        $api.translation.fetch(['de', 'en'])
+      ]);
       formschemas.value = schemas;
       items.value = entities;
+      translations.value = _translations.lang;
     });
 
     // refetch on changes via FilterDialog or URL query parameters
@@ -251,6 +256,8 @@ export default defineComponent({
         // Translate sub types
         case 'subType':
           return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+        case 'status':
+          return translations.value[locale.value]?.[`${objectType.value}_${subType.value}_status_${value}`] || value;
         default:
           return value;
       }
