@@ -198,7 +198,7 @@ export default defineComponent({
     async function loadEntitiesPerStatus() {
       if (domain.value) {
         for (const schemaType of schemaTypes) {
-          const allEntitiesPerType = await $api.entity.fetchAll(schemaType.schemaName, 1, { size: Number.MAX_VALUE });
+          const allEntitiesPerType = await $api.entity.fetchAll(schemaType.schemaName, 1, { size: 1000 });
           const chartDataType = chartData.value.find((type) => type.objectType === schemaType.schemaName);
           for (const subType of chartDataType?.subTypes || []) {
             for (const status of subType.statusTypes) {

@@ -54,8 +54,17 @@ export default function (api: Client) {
 
       // -1, because the first page for the api is 0, however vuetify expects it to be 1
       page = max([page - 1, 0]) || 0;
+      query = { ...query, page };
 
-      query = { ...query, page, size: api._context.$user.tablePageSize };
+      if (!query.size) {
+        // if size is not set use the default user tablePageSize
+        query.size = api._context.$user.tablePageSize;
+      }
+
+      if (query.size === -1) {
+        // vuetify sets pageSite to "-1" if "all" is selected
+        query.size = 1000;
+      }
 
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
       return api

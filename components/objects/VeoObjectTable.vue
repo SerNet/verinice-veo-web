@@ -386,6 +386,11 @@ export default defineComponent({
             emit('update:page', page);
             emitPageUpdate({ newPage: page });
           },
+          'update:items-per-page'(itemsPerPage: number) {
+            $user.tablePageSize = itemsPerPage;
+            emit('update:items-per-page', itemsPerPage);
+            emitPageUpdate({});
+          },
           'update:sort-by'(sortBy: string | string[]) {
             emit('update:sort-by', sortBy);
             emitPageUpdate({ sortBy });
