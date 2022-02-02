@@ -24,7 +24,7 @@
   >
     <p
       v-if="domain"
-      class="veo-domain-description"
+      class="mt-n2 accent--text"
     >
       <span v-if="domain.description">{{ domain.description }}</span>
       <i v-else>{{ t('unit.details.nodescription') }}</i>
@@ -64,7 +64,7 @@
 import { computed, defineComponent, Ref, ref, useContext, useFetch, useMeta, useRouter, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { CHART_COLORS, createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { CHART_COLORS, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 import { IChartValue } from '~/components/widgets/VeoStackedStatusBarChartWidget.vue';
@@ -266,12 +266,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.veo-domain-description {
-  color: $accent;
-  margin-top: -20px;
-}
-</style>
