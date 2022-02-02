@@ -32,6 +32,7 @@ import monitoring from '~/plugins/api/monitoring';
 import catalog from '~/plugins/api/catalog';
 import { User } from '~/plugins/user';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
+import { sanitizeURLParams } from '~/lib/utils';
 
 export function createAPI(context: Context) {
   return Client.create(context, { form, entity, history, schema, translation, unit, report, domain, catalog, monitoring });
@@ -49,7 +50,8 @@ export enum VeoApiReponseType {
 
 // eslint-disable-next-line no-undef
 export interface RequestOptions extends RequestInit {
-  params?: Record<string, string | number | undefined> & IVeoPaginationOptions;
+  query?: Record<string, string | number | undefined> & IVeoPaginationOptions;
+  params?: Record<string, string | number | undefined>;
   json?: any;
   retry?: boolean;
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
@@ -105,7 +107,19 @@ export class Client {
     const $user = this.context.app.$user as User;
 
     // Only allow alpha-numeric values and dashes in url params (NOTE: Everything behind the ? is NOT a PARAM but part of the QUERY string)
-    url = url.replaceAll(/(_[^\w-])/g, '');
+    const splittedUrl = url.split('/');
+    for (const index in splittedUrl) {
+      if (splittedUrl[index].startsWith(':')) {
+        const replaceValue = options.params?.[splittedUrl[index].substring(1)];
+        if (replaceValue) {
+          splittedUrl[index] = sanitizeURLParams(String(replaceValue));
+        } else {
+          // eslint-disable-next-line no-console
+          console.warn(`API Request is missing the value for parameter "${splittedUrl[index]}"`);
+        }
+      }
+    }
+    url = splittedUrl.join('/');
 
     const defaults = {
       headers: {
@@ -134,9 +148,9 @@ export class Client {
     combinedOptions.headers.Authorization = defaults.headers.Authorization;
 
     let queryString = '';
-    if (options.params !== undefined) {
-      for (const key in options.params) {
-        const value = options.params[key];
+    if (options.query !== undefined) {
+      for (const key in options.query) {
+        const value = options.query[key];
         if (value !== undefined) {
           queryString += '&' + key + '=' + encodeURIComponent(value);
         }

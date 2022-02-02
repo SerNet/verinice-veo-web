@@ -30,9 +30,9 @@ export default function (api: Client) {
      *
      * @param parent
      */
-    fetchAll(params?: Record<string, string>): Promise<IVeoUnit[]> {
+    fetchAll(query?: Record<string, string>): Promise<IVeoUnit[]> {
       return api.req('/api/units', {
-        params
+        query
       });
     },
 
@@ -58,7 +58,11 @@ export default function (api: Client) {
      * @param id
      */
     fetch(id: string): Promise<IVeoUnit> {
-      return api.req(`/api/units/${id}`);
+      return api.req('/api/units/:id', {
+        params: {
+          id
+        }
+      });
     },
 
     /**
@@ -70,8 +74,11 @@ export default function (api: Client) {
      * @param unit
      */
     update(id: string, unit: Object): Promise<IVeoUnit> {
-      return api.req(`/api/units/${id}`, {
+      return api.req('/api/units/:id', {
         method: 'PUT',
+        params: {
+          id
+        },
         json: unit
       });
     },
@@ -84,8 +91,11 @@ export default function (api: Client) {
      * @param id
      */
     delete(id: string): Promise<IVeoAPIMessage> {
-      return api.req(`/api/units/${id}`, {
-        method: 'DELETE'
+      return api.req('/api/units/:id', {
+        method: 'DELETE',
+        params: {
+          id
+        }
       });
     },
 
@@ -101,8 +111,11 @@ export default function (api: Client) {
         itemIds = itemIds.join(',');
       }
 
-      return api.req(`/api/units/${unitId}/incarnations`, {
+      return api.req('/api/units/:unitId/incarnations', {
         params: {
+          unitId
+        },
+        query: {
           itemIds
         }
       });
@@ -113,8 +126,11 @@ export default function (api: Client) {
         unitId = separateUUIDParam(api._context.route.params.unit).id;
       }
 
-      return api.req(`/api/units/${unitId}/incarnations`, {
+      return api.req('/api/units/:unitId/incarnations', {
         method: 'POST',
+        params: {
+          unitId
+        },
         json: incarnations
       });
     }

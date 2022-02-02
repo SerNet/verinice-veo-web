@@ -73,3 +73,7 @@ export function getEntityDetailsFromLink(link: IVeoLink): { type: string; id: st
     type: destructedLink.pop() || ''
   };
 }
+
+export function sanitizeURLParams(url: string) {
+  return url.replaceAll(/(\/|[^\w-])/g, '');
+}

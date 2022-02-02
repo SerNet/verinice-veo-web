@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { max } from 'lodash';
+
 import { getSchemaEndpoint } from './schema';
 import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
@@ -44,22 +45,25 @@ export default function (api: Client) {
      *
      * @param parent
      */
-    async fetchAll(objectType: string, page: number = 0, params: IVeoEntityRequestParams = {}, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
+    async fetchAll(objectType: string, page: number = 0, query: IVeoEntityRequestParams = {}, noUnit: boolean = false): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
       // Entities don't get accessed without their unit as a context, for this reason we manually add the unit if omitted by the developer.
       // To override this behaviour, set noUnit to true.
-      if (!params.unit && !noUnit) {
-        params.unit = separateUUIDParam(api._context.params.unit).id;
+      if (!query.unit && !noUnit) {
+        query.unit = separateUUIDParam(api._context.params.unit).id;
       }
 
       // -1, because the first page for the api is 0, however vuetify expects it to be 1
       page = max([page - 1, 0]) || 0;
 
-      params = { ...params, page, size: api._context.$user.tablePageSize };
+      query = { ...query, page, size: api._context.$user.tablePageSize };
 
-      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
       return api
-        .req(`/api/${endpoint}`, {
-          params
+        .req('/api/:objectType', {
+          params: {
+            objectType
+          },
+          query
         })
         .then((result: IVeoPaginatedResponse<IVeoEntity[]>) => {
           result.items.forEach((entry: IVeoEntity) => {
@@ -87,10 +91,10 @@ export default function (api: Client) {
      * @param entity
      */
     async create(objectType: string, entity: IVeoEntity): Promise<IVeoAPIMessage> {
-      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       // Remove properties of the object only used in the frontend
-      if (entity.type === 'scope') {
+      if (entity.type === 'scopes') {
         // @ts-ignore
         delete entity.parts;
       } else {
@@ -98,8 +102,11 @@ export default function (api: Client) {
         delete entity.members;
       }
 
-      return api.req(`/api/${endpoint}`, {
+      return api.req('/api/:objectType', {
         method: 'POST',
+        params: {
+          objectType
+        },
         json: entity
       });
     },
@@ -109,22 +116,29 @@ export default function (api: Client) {
      * @param id
      */
     async fetch(objectType: string, id: string): Promise<IVeoEntity> {
-      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
-      return api.req(`/api/${endpoint}/${id}`).then((result: IVeoEntity) => {
-        /*
-         * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
-         * members. However we combine both entity types as they get used more or less the same way
-         */
-        if (!result.parts) {
-          result.parts = [];
-        }
-        if (!result.members) {
-          result.members = [];
-        }
-        result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
-        return result;
-      });
+      return api
+        .req('/api/:objectType/:id', {
+          params: {
+            objectType,
+            id
+          }
+        })
+        .then((result: IVeoEntity) => {
+          /*
+           * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+           * members. However we combine both entity types as they get used more or less the same way
+           */
+          if (!result.parts) {
+            result.parts = [];
+          }
+          if (!result.members) {
+            result.members = [];
+          }
+          result.displayName = `${result.designator} ${result.abbreviation || ''} ${result.name}`;
+          return result;
+        });
     },
 
     /**
@@ -133,10 +147,10 @@ export default function (api: Client) {
      * @param entity
      */
     async update(objectType: string, id: string, entity: IVeoEntity): Promise<IVeoEntity> {
-      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       // Remove properties of the object only used in the frontend
-      if (entity.type === 'scope') {
+      if (entity.type === 'scopes') {
         // @ts-ignore
         delete entity.parts;
       } else {
@@ -145,9 +159,13 @@ export default function (api: Client) {
       }
 
       return api
-        .req(`/api/${endpoint}/${id}`, {
+        .req('/api/:objectType/:id', {
           method: 'PUT',
-          json: entity
+          json: entity,
+          params: {
+            objectType,
+            id
+          }
         })
         .then((result: IVeoEntity) => {
           /*
@@ -170,9 +188,13 @@ export default function (api: Client) {
      * @param id
      */
     async delete(objectType: string, id: string): Promise<IVeoAPIMessage> {
-      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
-      return api.req(`/api/${endpoint}/${id}`, {
+      return api.req('/api/:objectType/:id', {
+        params: {
+          objectType,
+          id
+        },
         method: 'DELETE'
       });
     },
@@ -184,42 +206,55 @@ export default function (api: Client) {
      * @param id The uuid of the entity to fetch the sub entities for.
      */
     async fetchSubEntities(objectType: string, id: string): Promise<IVeoEntity[]> {
-      const endpoint = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
-      if (objectType === 'scope') {
-        return api.req(`/api/scopes/${id}/members`).then((result: IVeoEntity[]) => {
-          result.forEach((entry: IVeoEntity) => {
-            /*
-             * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
-             * members. However we combine both entity types as they get used more or less the same way
-             */
-            if (!entry.parts) {
-              entry.parts = [];
+      if (objectType === 'scopes') {
+        return api
+          .req(`/api/scopes/:id/members`, {
+            params: {
+              id
             }
-            if (!entry.members) {
-              entry.members = [];
-            }
-            entry.displayName = `${entry.designator} ${entry.abbreviation || ''} ${entry.name}`;
+          })
+          .then((result: IVeoEntity[]) => {
+            result.forEach((entry: IVeoEntity) => {
+              /*
+               * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+               * members. However we combine both entity types as they get used more or less the same way
+               */
+              if (!entry.parts) {
+                entry.parts = [];
+              }
+              if (!entry.members) {
+                entry.members = [];
+              }
+              entry.displayName = `${entry.designator} ${entry.abbreviation || ''} ${entry.name}`;
+            });
+            return result;
           });
-          return result;
-        });
       } else {
-        return api.req(`/api/${endpoint}/${id}/parts`).then((result: IVeoEntity[]) => {
-          result.forEach((entry: IVeoEntity) => {
-            /*
-             * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
-             * members. However we combine both entity types as they get used more or less the same way
-             */
-            if (!entry.parts) {
-              entry.parts = [];
+        return api
+          .req('/api/:objectType/:id/parts', {
+            params: {
+              objectType,
+              id
             }
-            if (!entry.members) {
-              entry.members = [];
-            }
-            entry.displayName = `${entry.designator} ${entry.abbreviation || ''} ${entry.name}`;
+          })
+          .then((result: IVeoEntity[]) => {
+            result.forEach((entry: IVeoEntity) => {
+              /*
+               * We set both objects if they don't exist, as scopes don't contain parts and other entities don't contain
+               * members. However we combine both entity types as they get used more or less the same way
+               */
+              if (!entry.parts) {
+                entry.parts = [];
+              }
+              if (!entry.members) {
+                entry.members = [];
+              }
+              entry.displayName = `${entry.designator} ${entry.abbreviation || ''} ${entry.name}`;
+            });
+            return result;
           });
-          return result;
-        });
       }
     }
   };

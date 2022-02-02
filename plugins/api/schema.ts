@@ -51,10 +51,10 @@ export default function (api: Client) {
      * NOT PAGINATED
      *
      */
-    async fetchAll(ignoreMissingEndpoints: boolean = false, params?: Record<string, string>): Promise<IVeoSchemaEndpoint[]> {
+    async fetchAll(ignoreMissingEndpoints: boolean = false, query?: Record<string, string>): Promise<IVeoSchemaEndpoint[]> {
       if (!endpoints) {
         const schemas: IVeoEntitiesMetaInfo = await api.req('/api/types', {
-          params
+          query
         });
 
         const types = Object.keys(schemas);
@@ -78,8 +78,11 @@ export default function (api: Client) {
      */
     // TODO: don't allow undefined to be passed since this is required by the API
     fetch(type: string, domainIds: string[] | undefined): Promise<IVeoObjectSchema> {
-      return api.req(`/api/schemas/${type}`, {
+      return api.req('/api/schemas/:type', {
         params: {
+          type
+        },
+        query: {
           domains: (domainIds || []).toString()
         }
       });

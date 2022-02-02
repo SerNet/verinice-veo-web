@@ -27,20 +27,20 @@ export default function (api: Client) {
      *
      * @param parent
      */
-    fetchAll(domain?: string, params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
-      if (!params) {
-        params = {};
+    fetchAll(domain?: string, query?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+      if (!query) {
+        query = {};
       }
 
       if (domain) {
-        params.domainId = domain;
+        query.domainId = domain;
       }
 
       // TODO: Remove: Currently the domainId in the forms api isn't linked with the id of the existing domain, so we ignore the filter.
-      delete params.domainId;
+      delete query.domainId;
 
       return api.req('/api/forms/', {
-        params
+        query
       });
     },
 
@@ -66,7 +66,11 @@ export default function (api: Client) {
      * @param id
      */
     fetch(id: string): Promise<IVeoFormSchema> {
-      return api.req(`/api/forms/${id}`);
+      return api.req('/api/forms/:id', {
+        params: {
+          id
+        }
+      });
     },
 
     /**
@@ -78,8 +82,11 @@ export default function (api: Client) {
      * @param form
      */
     update(id: string, form: IVeoFormSchema): Promise<void> {
-      return api.req(`/api/forms/${id}`, {
+      return api.req('/api/forms/:id', {
         method: 'PUT',
+        params: {
+          id
+        },
         json: form
       });
     },
@@ -92,8 +99,11 @@ export default function (api: Client) {
      * @param id
      */
     delete(id: string): Promise<void> {
-      return api.req(`/api/forms/${id}`, {
-        method: 'DELETE'
+      return api.req('/api/forms/:id', {
+        method: 'DELETE',
+        params: {
+          id
+        }
       });
     }
   };

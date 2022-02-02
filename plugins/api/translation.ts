@@ -28,7 +28,7 @@ export default function (api: Client) {
      */
     fetch(languages: string[]): Promise<IVeoTranslations> {
       return api.req(`/api/translations`, {
-        params: {
+        query: {
           languages: languages.toString()
         }
       });

@@ -28,14 +28,14 @@ export default function (api: Client) {
      *
      * @param entity The entity to load the versions of.
      */
-    async fetchVersions(entity: IVeoEntity, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
-      if (!params) {
-        params = {};
+    async fetchVersions(entity: IVeoEntity, query?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
+      if (!query) {
+        query = {};
       }
 
-      params.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
+      query.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
       return api.req('/api/history/revisions/', {
-        params
+        query
       });
     },
 
@@ -47,14 +47,17 @@ export default function (api: Client) {
      * @param entity The entity to load the version of.
      * @param changeNumber The version of the entity to load.
      */
-    async fetchVersion(entity: IVeoEntity, changeNumber: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry> {
-      if (!params) {
-        params = {};
+    async fetchVersion(entity: IVeoEntity, changeNumber: string, query?: Record<string, string>): Promise<IVeoObjectHistoryEntry> {
+      if (!query) {
+        query = {};
       }
 
-      params.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
-      return api.req(`/api/history/revisions/change/${changeNumber}`, {
-        params
+      query.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
+      return api.req('/api/history/revisions/change/:changeNumber', {
+        params: {
+          changeNumber
+        },
+        query
       });
     },
 
@@ -66,14 +69,17 @@ export default function (api: Client) {
      * @param entity The entity to load the version of.
      * @param date The date at which to retrieve the most current version.
      */
-    async fetchVersionAt(entity: IVeoEntity, date: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry> {
-      if (!params) {
-        params = {};
+    async fetchVersionAt(entity: IVeoEntity, date: string, query?: Record<string, string>): Promise<IVeoObjectHistoryEntry> {
+      if (!query) {
+        query = {};
       }
 
-      params.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
-      return api.req(`/api/history/revisions/contemporary/${date}`, {
-        params
+      query.uri = `/${getSchemaEndpoint(await api._context.$api.schema.fetchAll(), entity.type)}/${entity.id}`;
+      return api.req('/api/history/revisions/contemporary/:date', {
+        params: {
+          date
+        },
+        query
       });
     },
 
@@ -82,14 +88,14 @@ export default function (api: Client) {
      *
      * @param entity The entity to load the versions of.
      */
-    fetchLatest(unitId: string, params?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
-      if (!params) {
-        params = {};
+    fetchLatest(unitId: string, query?: Record<string, string>): Promise<IVeoObjectHistoryEntry[]> {
+      if (!query) {
+        query = {};
       }
 
-      params.owner = `/units/${unitId}`;
+      query.owner = `/units/${unitId}`;
       return api.req('/api/history/revisions/my-latest/', {
-        params
+        query
       });
     }
   };
