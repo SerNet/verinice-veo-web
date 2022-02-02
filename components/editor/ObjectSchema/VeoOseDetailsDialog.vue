@@ -148,26 +148,21 @@
       </v-row>
     </template>
     <template #dialog-options>
-      <div
-        class="d-flex fill-width pt-3"
-        style="border-top: 1px solid #0000001F"
+      <v-btn
+        text
+        @click="$emit('input', false)"
       >
-        <v-btn
-          text
-          @click="$emit('input', false)"
-        >
-          {{ t('global.button.cancel') }}
-        </v-btn>
-        <v-spacer />
-        <v-btn
-          text
-          color="primary"
-          :disabled="subTypeForms.some((form) => !form)"
-          @click="onSubmit"
-        >
-          {{ t('global.button.save') }}
-        </v-btn>
-      </div>
+        {{ t('global.button.cancel') }}
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        text
+        color="primary"
+        :disabled="subTypeForms.some((form) => !form)"
+        @click="onSubmit"
+      >
+        {{ t('global.button.save') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>
