@@ -26,24 +26,30 @@
     class="veo-dialog"
   >
     <v-card :class="cardClass">
-      <v-card-title
-        class="headline"
-        :class="large ? '' : 'pl-4 pr-0 py-0'"
-        :style="fixedHeader ? 'position: sticky; top: 0; z-index: 1;' : ''"
-      >
-        <span>{{ headline }}</span>
-        <v-spacer />
-        <v-btn
-          v-if="!closeHidden"
-          :disabled="closeDisabled"
-          icon
-          large
-          class="close-button"
-          @click="closeDialog()"
+      <div>
+        <v-card-title
+          class="white"
+          :class="{
+            'pl-4 pr-0 py-0': !large && !xLarge,
+            'pt-2 pb-1': large || xLarge
+          }"
+          :style="fixedHeader ? 'position: sticky; top: 0; z-index: 1;' : ''"
         >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
+          <span>{{ headline }}</span>
+          <v-spacer />
+          <v-btn
+            v-if="!closeHidden"
+            :disabled="closeDisabled"
+            icon
+            large
+            class="close-button"
+            @click="closeDialog()"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-divider class="mx-4" />
+      </div>
       <v-card-text
         :class="[innerClass, 'pa-4', 'flex-grow-1']"
         style="position: relative;"
@@ -52,10 +58,13 @@
       </v-card-text>
       <v-card-actions
         v-if="!!$slots['dialog-options']"
-        class="pb-3 px-4"
-        :style="fixedFooter ? 'position: sticky; bottom: 0; z-index: 1;' : ''"
+        class="pb-3 px-4 white d-block"
+        :style="fixedFooter ? 'position: sticky; bottom: -1px; z-index: 1;' : ''"
       >
-        <slot name="dialog-options" />
+        <v-divider v-if="fixedFooter" />
+        <div class="d-flex pt-3">
+          <slot name="dialog-options" />
+        </div>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -149,16 +158,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.v-card__actions {
-  background: white;
-}
-
-.headline {
-  background: white;
-  border-bottom: 1px solid $grey;
-}
-</style>

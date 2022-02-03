@@ -25,13 +25,13 @@
       {{ $t('invalidSchemaConfirmation') }}
     </template>
     <template #dialog-options>
-      <v-spacer />
       <v-btn
         text
         @click="$emit('input', false)"
       >
         {{ $t('global.button.no') }}
       </v-btn>
+      <v-spacer />
       <v-btn
         color="primary"
         text
