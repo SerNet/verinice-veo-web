@@ -152,14 +152,15 @@ export default defineComponent<IProps>({
       ':unit': { text: '', icon: 'mdi-home' },
       forms: { text: t('breadcrumbs.forms').toString() },
       objects: { text: t('breadcrumbs.objects').toString() },
-      list: { text: t('breadcrumbs.list_view').toString() },
-      tree: { text: t('breadcrumbs.tree_view').toString() },
       domains: { text: t('breadcrumbs.domain').toString() }
     };
 
     // TODO: check if :group should be added here, after groups are implemented
     // Definition of route fragments in path, which is represented with UUID in standard path
     const paramsWithUUID: ParamsWithUUID[] = [':form', ':entity', ':id', ':domain'];
+
+    // This array contains route parts that should not be part of the breadcrumbs
+    const hiddenRouteParts = ['domains'];
 
     // KeyMap for definition of object properties which represent displayName
     const displayNameKeyMap = {
@@ -286,14 +287,17 @@ export default defineComponent<IProps>({
       });
 
       // Generate for each route parameter dynamic breadcrumbs listItem
-      return routes.map((param: string, i: number) => {
-        const item = breadcrumbsReplacement[param] ? { ...breadcrumbsReplacement[param] } : { text: getText(params, param) };
-        return {
-          ...defaultListItem,
-          ...item,
-          to: generatItemRoute(routes, params, i)
-        };
-      });
+      return routes
+        .map((param: string, i: number) => {
+          const item = breadcrumbsReplacement[param] ? { ...breadcrumbsReplacement[param] } : { text: getText(params, param) };
+          return {
+            ...defaultListItem,
+            ...item,
+            to: generatItemRoute(routes, params, i),
+            param
+          };
+        })
+        .filter((route) => !hiddenRouteParts.includes(route.param)); // We filter afterwards to not impact route generation that uses the index of the route parameter
     }
 
     // Collapse breadcrumbs listItems, if number of them is higher than the custom threshold, else return original listItems
@@ -355,7 +359,3 @@ export default defineComponent<IProps>({
   }
 });
 </script>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-</style>

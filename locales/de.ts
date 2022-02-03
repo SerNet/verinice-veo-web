@@ -134,12 +134,10 @@ export default {
   'breadcrumbs.editor': 'Editoren',
   'breadcrumbs.forms': 'Formulare',
   'breadcrumbs.index': 'Unitauswahl',
-  'breadcrumbs.list_view': 'Listenansicht',
   'breadcrumbs.more_modules': 'Weitere Module',
   'breadcrumbs.objects': 'Objekte',
   'breadcrumbs.objectschema': 'Objektschema',
   'breadcrumbs.scopes': 'Scopes',
-  'breadcrumbs.tree_view': 'Baumansicht',
   'breadcrumbs.history': 'Verlauf',
   'breadcrumbs.create': 'Erstellen',
 
