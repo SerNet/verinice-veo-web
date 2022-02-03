@@ -65,21 +65,26 @@
       </v-btn>
     </div>
     <v-row no-gutters>
-      <v-col cols="auto">
+      <v-col
+        cols="auto"
+        class="d-flex align-center"
+      >
         <v-btn
           v-cy-name="'filter-button'"
-          class="ma-1"
+          class="mr-2"
           rounded
           primary
           depressed
+          small
+          style="border: 1px solid black"
           @click="filterDialogVisible = true"
         >
-          <v-icon>{{ mdiFilter }}</v-icon> Filtern
+          <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter')) }}
         </v-btn>
       </v-col>
       <v-col
         cols="auto"
-        class="grow ml-8"
+        class="grow"
       >
         <v-chip-group v-cy-name="'chips'">
           <VeoObjectChip
@@ -349,6 +354,7 @@ export default defineComponent({
     "objects": "objects",
     "overview": "overview",
     "allObjects": "all objects",
+    "filter": "filter",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
     "clone": "duplicated",
@@ -363,6 +369,7 @@ export default defineComponent({
     "objects": "Objekte",
     "overview": "Übersicht",
     "allObjects": "Alle Objekte",
+    "filter": "filter",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",
     "clone": "dupliziert",
