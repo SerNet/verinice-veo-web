@@ -34,23 +34,27 @@
       class="mb-4"
     >
       <v-col
-        v-for="objectStatusInformation of chartData"
-        :key="objectStatusInformation.objectType"
+        v-for="(rows, rowIndex) of WIDGET_LAYOUT"
+        :key="rowIndex"
         cols="12"
         lg="6"
-        class="my-4 px-2"
-        :data-cy="objectStatusInformation.objectType !== 'my_latest_widget' ? $utils.prefixCyData($options, 'status-bar-chart-widget', $route) : ''"
       >
-        <VeoMyLatestRevisionsWidget
-          v-if="objectStatusInformation.objectType === 'my_latest_widget'"
-        />
-        <VeoStackedStatusBarChartWidget
-          v-else
-          chart-height="30"
-          :data="objectStatusInformation.subTypes"
-          :loading="$fetchState.pending"
-          @click="onBarClick"
-        />
+        <v-sheet
+          v-for="(widget, widgetIndex) of rows"
+          :key="widgetIndex"
+          class="my-4 px-2"
+        >
+          <VeoMyLatestRevisionsWidget
+            v-if="widget === 'my_latest_widget'"
+          />
+          <VeoStackedStatusBarChartWidget
+            v-else
+            chart-height="30"
+            :data="widgets[widget]"
+            :loading="$fetchState.pending"
+            @click="onBarClick"
+          />
+        </v-sheet>
       </v-col>
     </v-row>
     <VeoWelcomeDialog
@@ -70,6 +74,13 @@ import LocalStorage from '~/util/LocalStorage';
 import { IChartValue } from '~/components/widgets/VeoStackedStatusBarChartWidget.vue';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+
+interface ISubTypeAggregation {
+  subType: string;
+  title: string;
+  totalEntities: number;
+  statusTypes: (IChartValue & { status: string })[];
+}
 
 export default defineComponent({
   setup(_props) {
@@ -137,10 +148,14 @@ export default defineComponent({
     }
 
     // Create chart data
-    const chartData: Ref<{ objectType: string; subTypes: { subType: string; title: string; totalEntities: number; statusTypes: (IChartValue & { status: string })[] }[] }[]> = ref(
-      []
-    );
-    const WIDGET_ORDER = ['scope', 'incident', 'process', 'document', 'asset', 'scenario', 'person', 'my_latest_widget', 'control'];
+    const chartData: Ref<{ objectType: string; subTypes: ISubTypeAggregation[] }[]> = ref([]);
+    const widgets = ref<{ [key: string]: ISubTypeAggregation[] }>({});
+
+    const WIDGET_LAYOUT = [
+      ['scope', 'process', 'asset', 'person', 'control'],
+      ['incident', 'document', 'scenario', 'my_latest_widget']
+    ];
+
     let schemaTypes: IVeoSchemaEndpoint[] = [];
 
     async function fetchAllStatusTypes() {
@@ -190,8 +205,10 @@ export default defineComponent({
       // Add my latest widget, so it gets included in the sorting
       chartData.value.push({ objectType: 'my_latest_widget', subTypes: [] });
 
-      // Sort by order defined in WIDGET_ORDER
-      chartData.value.sort((a, b) => WIDGET_ORDER.findIndex((widgetTitle) => widgetTitle === a.objectType) - WIDGET_ORDER.findIndex((widgetTitle) => widgetTitle === b.objectType));
+      widgets.value = chartData.value.reduce((previousValue, currentValue) => {
+        previousValue[currentValue.objectType] = currentValue.subTypes;
+        return previousValue;
+      }, {} as any);
     }
 
     // As there is no introspection endpoint, we have to fetch all entities of a type with a very high items per page count and count them manually
@@ -241,11 +258,12 @@ export default defineComponent({
     }));
 
     return {
-      chartData,
       domain,
       onBarClick,
       title,
       welcomeDialog,
+      widgets,
+      WIDGET_LAYOUT,
 
       t
     };
