@@ -25,28 +25,18 @@
     :page-titles="pageTitles"
     @page-collapsed="onPageCollapsed"
   >
-    <template
-      v-if="!loading && object"
-      #header
-    >
-      <div class="px-4">
-        <h1>
-          {{ upperFirst(t('breadcrumbs.objects').toString()) }}
-        </h1>
-      </div>
-    </template>
+    <template #header>
+      <v-row class="ml-7">
+        <v-col cols="auto">
+          <h3>{{ object && object.displayName }}</h3>
+        </v-col>
+      </v-row>
+    </template> 
     <template #default>
       <VeoPage
         fullsize
         sticky-header
       >
-        <template #header>
-          <v-row class="pb-4">
-            <v-col cols="auto">
-              <h3>{{ object && object.displayName }}</h3>
-            </v-col>
-          </v-row>
-        </template> 
         <template #default>
           <VeoObjectDetailsInformation
             :object="object"
