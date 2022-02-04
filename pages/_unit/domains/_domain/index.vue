@@ -42,6 +42,7 @@
         <v-sheet
           v-for="(widget, widgetIndex) of rows"
           :key="widgetIndex"
+          v-cy-name="widget !== 'my_latest_widget' ? 'status-bar-chart-widget' : ''"
           class="my-4 px-2"
         >
           <VeoMyLatestRevisionsWidget
