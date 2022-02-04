@@ -38,7 +38,7 @@ describe('Domain dashboard', () => {
 
   it('Checks whether for every object type a widget gets shown', function () {
     cy.fixture('api/default/schemas/fetchAll.json').then((allSchemas) => {
-      cy.get('[data-cy=pages-unit-domains-domain-index-vue-status-bar-chart-widget]').should('have.length', Object.keys(allSchemas).length);
+      cy.get('[data-cy=veo-domain-dashboard-page-status-bar-chart-widget]').should('have.length', Object.keys(allSchemas).length);
     });
   });
 
@@ -50,7 +50,7 @@ describe('Domain dashboard', () => {
     cy.fixture(`api/default/schemas/${objectType}.json`).then((objectSchema) => {
       const subTypes = (Object.values(objectSchema.properties.domains.properties)[0] as any).properties.subType.enum;
 
-      cy.get('[data-cy=pages-unit-domains-domain-index-vue-status-bar-chart-widget]')
+      cy.get('[data-cy=veo-domain-dashboard-page-status-bar-chart-widget]')
         .eq(widgetIndex)
         .within(() => {
           // Correct amount of charts get shown (one for every subtype)
@@ -79,7 +79,7 @@ describe('Domain dashboard', () => {
     const noObjectsSubtype = 'INC_Incident';
 
     // No subtypes
-    cy.get('[data-cy=pages-unit-domains-domain-index-vue-status-bar-chart-widget]')
+    cy.get('[data-cy=veo-domain-dashboard-page-status-bar-chart-widget]')
       .eq(noSubtypesWidgetIndex)
       .within(() => {
         // Placeholder text gets shown
@@ -87,7 +87,7 @@ describe('Domain dashboard', () => {
       });
 
     // No objects
-    cy.get('[data-cy=pages-unit-domains-domain-index-vue-status-bar-chart-widget]')
+    cy.get('[data-cy=veo-domain-dashboard-page-status-bar-chart-widget]')
       .eq(noObjectsWidgetIndex)
       .within(() => {
         // Placeholder text gets shown

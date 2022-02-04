@@ -84,6 +84,7 @@ interface ISubTypeAggregation {
 }
 
 export default defineComponent({
+  name: 'VeoDomainDashboardPage',
   setup(_props) {
     const { t, locale } = useI18n();
     const { $api, params } = useContext();
