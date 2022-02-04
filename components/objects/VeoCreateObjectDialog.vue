@@ -36,6 +36,8 @@
         :preselected-sub-type="subType"
         :valid.sync="formValid"
         disable-history
+        scroll-wrapper-id="scroll-wrapper-create-dialog"
+        disable-object-creation
         @input="isFormDirty = true"
       />
     </template>

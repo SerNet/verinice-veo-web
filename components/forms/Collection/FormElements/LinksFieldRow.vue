@@ -45,13 +45,17 @@
           no-filter
           :error-messages="errors && errors[0] && errors[0][`_${index}`]"
         >
-          <template #prepend-item>
+          <template
+            v-if="!disableObjectCreation"
+            #prepend-item
+          >
             <v-btn
               color="primary"
+              :disabled="disabled"
               block
               text
               tile
-              @click.stop="onDialogOpen('DIALOG_CREATE')"
+              @click="createObjectDialogVisible = true"
             >
               <span v-if="currentForm">
                 {{ $t('createTargetForm', { type: currentForm.name[$i18n.locale] }) }}
@@ -104,47 +108,14 @@
         @input="onInput"
       />
     </v-col>
-    <v-dialog
-      :value="!!dialog"
-      persistent
-      max-width="500"
-      @input="dialog = !$event ? false : dialog"
-    >
-      <v-card v-if="dialog === 'DIALOG_CREATE'">
-        <v-card-title class="headline">
-          {{ $t('createTargetObject') }}
-        </v-card-title>
-        <v-card-text>
-          <VeoForm
-            v-model="newObject"
-            :schema="linksFieldDialogObjectSchema"
-            :ui="linksFieldDialogFormSchema"
-            :general-translation="generalTranslation"
-            :custom-translation="customTranslation"
-            :disabled="disabled"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            text
-            @click="onDialogCancel"
-          >
-            {{ $t('global.button.cancel') }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            :loading="dialogLoading"
-            text
-            :disabled="!newObject || !newObject.name"
-            @click="onDialogAcceptCreate"
-          >
-            {{ $t('global.button.save') }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <VeoCreateObjectDialog
+      v-if="createObjectDialogVisible"
+      v-model="createObjectDialogVisible"
+      :object-type="targetType"
+      :sub-type="subType"
+      :domain-id="domainId"
+      @success="onTargetCreated"
+    />
   </v-row>
 </template>
 
@@ -153,8 +124,8 @@ import Vue from 'vue';
 import { Prop, PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
-import { UISchema, UISchemaElement } from '@/types/UISchema';
-import { BaseObject, linksFieldDialogObjectSchema, linksFieldDialogFormSchema } from '~/components/forms/utils';
+import { UISchemaElement } from '@/types/UISchema';
+import { BaseObject } from '~/components/forms/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { separateUUIDParam } from '~/lib/utils';
@@ -176,22 +147,17 @@ interface IItem {
   [key: string]: any;
 }
 
-type DialogEnum = 'DIALOG_CREATE' | 'DIALOG_UPDATE' | 'DIALOG_DELETE';
-
 interface IData {
-  dialog: DialogEnum | false;
   loading: boolean;
-  dialogLoading: boolean;
   search: string | undefined;
   items: IItem[];
   newObject: IVeoEntity;
   targetId: string | undefined;
-  linksFieldDialogObjectSchema: JSONSchema7;
-  linksFieldDialogFormSchema: UISchema;
   currentForm: IVeoFormSchemaMeta | undefined;
   totalItems: number;
   initialized: boolean;
   schemas: IVeoSchemaEndpoint[];
+  createObjectDialogVisible: boolean;
 }
 
 export default Vue.extend({
@@ -238,23 +204,27 @@ export default Vue.extend({
     linkData: {
       type: Array as Prop<BaseObject[]>,
       default: () => []
+    },
+    /**
+     * If set to true, objects can't be created from within the custom link dropdown
+     */
+    disableObjectCreation: {
+      type: Boolean,
+      default: false
     }
   },
   data(): IData {
     return {
-      dialog: false,
       loading: false,
-      dialogLoading: false,
       search: undefined,
       items: [],
       newObject: {} as any,
       targetId: undefined,
-      linksFieldDialogObjectSchema: { ...linksFieldDialogObjectSchema },
-      linksFieldDialogFormSchema: { ...linksFieldDialogFormSchema },
       currentForm: undefined,
       totalItems: 0 as number,
       initialized: false,
-      schemas: [] as IVeoSchemaEndpoint[]
+      schemas: [] as IVeoSchemaEndpoint[],
+      createObjectDialogVisible: false as boolean
     };
   },
   async fetch() {
@@ -335,6 +305,9 @@ export default Vue.extend({
     }
   },
   methods: {
+    onTargetCreated(id: string) {
+      this.selected = id;
+    },
     async fetchItems(filter?: string) {
       this.loading = true;
 
@@ -376,31 +349,6 @@ export default Vue.extend({
     },
     onInput(event: any) {
       this.$emit('input', event);
-    },
-    onDialogOpen(dialogType: DialogEnum) {
-      this.dialog = dialogType;
-    },
-    onDialogCancel() {
-      this.dialog = false;
-      this.newObject = {} as any;
-    },
-    onDialogAcceptCreate() {
-      this.dialogLoading = true;
-      if (this.newObject) {
-        this.newObject.domains = {
-          [this.domainId]: {
-            ...(this.subType ? { subType: this.subType } : { subType: '' }),
-            status: 'NEW'
-          }
-        };
-
-        /* const createItem = (await this.api.create(this.targetType, this.newObject)) as IItem;
-        this.items.push(createItem);
-        this.selected = createItem.id; */
-      }
-      this.dialogLoading = false;
-      this.dialog = false;
-      this.newObject = {} as any;
     },
     onInputAutocomplete(event: string | undefined) {
       this.targetId = event;
