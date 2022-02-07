@@ -95,7 +95,7 @@ export default defineComponent({
 
     // general stuff
     const schemas = ref<IVeoSchemaEndpoint[]>([]);
-    const domainId = computed(() => separateUUIDParam(route.value.params.id).id);
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     // fetch schemas from api
