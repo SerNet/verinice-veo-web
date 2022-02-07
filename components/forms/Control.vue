@@ -93,7 +93,7 @@ export default defineComponent({
     /**
      * If set to true, objects can't be created from within the custom link dropdown
      */
-    disableObjectCreation: {
+    objectCreationDisabled: {
       type: Boolean,
       default: false
     }

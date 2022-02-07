@@ -37,7 +37,7 @@
         :valid.sync="formValid"
         disable-history
         scroll-wrapper-id="scroll-wrapper-create-dialog"
-        disable-object-creation
+        object-creation-disabled
         @input="isFormDirty = true"
       />
     </template>

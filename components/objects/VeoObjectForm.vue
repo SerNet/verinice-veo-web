@@ -51,7 +51,7 @@
             :error-messages.sync="formErrors"
             :reactive-form-actions="reactiveFormActions"
             :disabled="disabled"
-            :disable-object-creation="disableObjectCreation"
+            :object-creation-disabled="objectCreationDisabled"
           />
           <VeoObjectFormSkeletonLoader v-else />
           <slot name="append-form" />
@@ -159,7 +159,7 @@ export default defineComponent({
     /**
      * If set to true, objects can't be created from within the custom link dropdown
      */
-    disableObjectCreation: {
+    objectCreationDisabled: {
       type: Boolean,
       default: false
     }

@@ -41,7 +41,7 @@
             :link-data="value"
             :options="options"
             :validation="validation"
-            :disable-object-creation="disableObjectCreation"
+            :object-creation-disabled="objectCreationDisabled"
             @input="onInput(index, $event)"
           />
         </v-list-item-content>
@@ -126,7 +126,7 @@ export default defineComponent({
     /**
      * If set to true, objects can't be created from within the custom link dropdown
      */
-    disableObjectCreation: {
+    objectCreationDisabled: {
       type: Boolean,
       default: false
     }

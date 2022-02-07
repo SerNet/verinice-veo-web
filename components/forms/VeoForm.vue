@@ -63,7 +63,7 @@ export default Vue.extend({
     /**
      * If set to true, objects can't be created from within the custom link dropdown
      */
-    disableObjectCreation: {
+    objectCreationDisabled: {
       type: Boolean,
       default: false
     },
@@ -367,7 +367,7 @@ export default Vue.extend({
           elements: element.elements,
           options: { ...element.options, label: this.schema.required?.includes(partOfProps.name) ? element.options?.label + '*' : element.options?.label },
           disabled: this.disabled,
-          disableObjectCreation: this.disableObjectCreation,
+          objectCreationDisabled: this.objectCreationDisabled,
           ...partOfProps
         },
         on: {

@@ -46,7 +46,7 @@
           :error-messages="errors && errors[0] && errors[0][`_${index}`]"
         >
           <template
-            v-if="!disableObjectCreation"
+            v-if="!objectCreationDisabled"
             #prepend-item
           >
             <v-btn
@@ -208,7 +208,7 @@ export default Vue.extend({
     /**
      * If set to true, objects can't be created from within the custom link dropdown
      */
-    disableObjectCreation: {
+    objectCreationDisabled: {
       type: Boolean,
       default: false
     }
