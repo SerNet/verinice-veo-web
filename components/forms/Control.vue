@@ -89,7 +89,14 @@ export default defineComponent({
     elements: {
       type: Array,
       default: undefined
-    } as PropOptions<UISchemaElement[]>
+    } as PropOptions<UISchemaElement[]>,
+    /**
+     * If set to true, objects can't be created from within the custom link dropdown
+     */
+    objectCreationDisabled: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props, { listeners, emit }) {
     function getAppropriateComponent() {

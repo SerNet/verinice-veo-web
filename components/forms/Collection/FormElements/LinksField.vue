@@ -41,6 +41,7 @@
             :link-data="value"
             :options="options"
             :validation="validation"
+            :object-creation-disabled="objectCreationDisabled"
             @input="onInput(index, $event)"
           />
         </v-list-item-content>
@@ -121,6 +122,13 @@ export default defineComponent({
     elements: {
       type: Array as PropType<UISchemaElement[]>,
       default: () => []
+    },
+    /**
+     * If set to true, objects can't be created from within the custom link dropdown
+     */
+    objectCreationDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {

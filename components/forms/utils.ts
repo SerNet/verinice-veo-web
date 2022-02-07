@@ -19,9 +19,7 @@ import { JSONSchema7 } from 'json-schema';
 import Ajv2019 from 'ajv/dist/2019';
 import addFormats from 'ajv-formats';
 import { JsonPointer } from 'json-ptr';
-import { UIRule, UISchema, UISchemaElement } from '~/types/UISchema';
-import { IBaseObject } from '~/lib/utils';
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { UIRule, UISchemaElement } from '~/types/UISchema';
 
 type defaultType = string | boolean | number | undefined | null;
 
@@ -57,52 +55,6 @@ export function isContain(array: defaultType[], elementToContain: defaultType[] 
     return array.includes(elementToContain);
   }
 }
-
-export const linksFieldDialogObjectSchema: JSONSchema7 = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string'
-    },
-    abbreviation: {
-      type: 'string'
-    },
-    description: {
-      type: 'string'
-    }
-  }
-};
-
-export const linksFieldDialogFormSchema: UISchema = {
-  type: 'Layout',
-  options: {
-    format: 'group',
-    direction: 'vertical'
-  },
-  elements: [
-    {
-      type: 'Control',
-      scope: '#/properties/name',
-      options: {
-        label: '#lang/name'
-      }
-    },
-    {
-      type: 'Control',
-      scope: '#/properties/abbreviation',
-      options: {
-        label: '#lang/abbreviation'
-      }
-    },
-    {
-      type: 'Control',
-      scope: '#/properties/description',
-      options: {
-        label: '#lang/description'
-      }
-    }
-  ]
-};
 
 // Evaluate Rule
 export const ajv = new Ajv2019({

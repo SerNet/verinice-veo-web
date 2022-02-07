@@ -19,7 +19,7 @@
   <VeoPageWrapper :page-widths="[8, 4]">
     <template #default>
       <VeoPage
-        id="scroll-wrapper"
+        :id="scrollWrapperId"
         sticky-header
         :sticky-footer="!!$slots['append-form-fixed']"
       >
@@ -51,6 +51,7 @@
             :error-messages.sync="formErrors"
             :reactive-form-actions="reactiveFormActions"
             :disabled="disabled"
+            :object-creation-disabled="objectCreationDisabled"
           />
           <VeoObjectFormSkeletonLoader v-else />
           <slot name="append-form" />
@@ -81,6 +82,7 @@
                   :form-schema="currentFormSchema && currentFormSchema.content"
                   :custom-translation="currentFormSchema && currentFormSchema.translation && currentFormSchema.translation[locale]"
                   class="mx-n4"
+                  :scroll-wrapper-id="scrollWrapperId"
                 />
               </v-tab-item>
               <v-tab-item v-if="!disableHistory">
@@ -149,6 +151,17 @@ export default defineComponent({
     valid: {
       type: Boolean,
       default: true
+    },
+    scrollWrapperId: {
+      type: String,
+      default: 'scroll-wrapper'
+    },
+    /**
+     * If set to true, objects can't be created from within the custom link dropdown
+     */
+    objectCreationDisabled: {
+      type: Boolean,
+      default: false
     }
   },
   setup(props, { emit }) {

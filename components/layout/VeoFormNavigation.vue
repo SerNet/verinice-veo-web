@@ -88,6 +88,10 @@ export default Vue.extend({
     nestingLevel: {
       type: Number,
       default: 0
+    },
+    scrollWrapperId: {
+      type: String,
+      default: 'scroll-wrapper'
     }
   },
   data(): IData {
@@ -134,11 +138,11 @@ export default Vue.extend({
   },
   mounted() {
     // Cache scrollWrapper element
-    this.scrollWrapper = document.getElementById('scroll-wrapper');
+    this.scrollWrapper = document.getElementById(this.scrollWrapperId);
 
     // Activate Observer when the component is mounted
     const options = {
-      root: document.getElementById('scroll-wrapper'),
+      root: document.getElementById(this.scrollWrapperId),
       rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
       threshold: 0
     };

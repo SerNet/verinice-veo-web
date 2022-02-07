@@ -258,13 +258,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                         >
                       </div>
                       <!---->
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
+                      <!---->
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="v-list-item__action">
@@ -383,13 +377,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                         >
                       </div>
                       <!---->
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
+                      <!---->
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="v-list-item__action">
@@ -3343,13 +3331,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #2`] = `
                         >
                       </div>
                       <!---->
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
+                      <!---->
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="v-list-item__action">
@@ -4885,13 +4867,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #5`] = `
                         >
                       </div>
                       <!---->
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
+                      <!---->
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="v-list-item__action">
@@ -6425,13 +6401,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #8`] = `
                         >
                       </div>
                       <!---->
-                      <div
-                        data-v-123abc4d=""
-                        role="dialog"
-                        class="v-dialog__container"
-                      >
-                        <!---->
-                      </div>
+                      <!---->
                     </div>
                   </div>
                   <div data-v-123abc4d="" class="v-list-item__action">
