@@ -78,6 +78,7 @@
     <VeoPrimaryNavigation
       v-model="drawer"
       :domain-id="domainId"
+      :unit-id="unitId"
     />
     <v-main
       style="max-height: 100vh;"
