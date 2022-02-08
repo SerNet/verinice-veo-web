@@ -68,8 +68,7 @@
   </v-container>
 </template>
 <script lang="ts">
-import { useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter } from '@nuxtjs/composition-api';
-import { defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter, mdiPlus, mdiContentCopy, mdiLinkOff } from '@mdi/js';
@@ -131,7 +130,16 @@ export default defineComponent({
       return { id, name, type };
     };
 
-    onMounted(() => fetch());
+    watch(
+      () => props.object,
+      () => {
+        fetch();
+      },
+      {
+        deep: true,
+        immediate: true
+      }
+    );
 
     /**
      * actions for cloning or unlinking objects
