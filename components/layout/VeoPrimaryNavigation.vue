@@ -106,7 +106,7 @@ export interface INavItem {
   to?: RawLocation;
   childItems?: INavItem[];
   childItemsLoading?: boolean;
-  expanded?: string;
+  expanded?: boolean;
 }
 
 const objectTypeSortOrder = new Map<string, number>([
