@@ -1,0 +1,14 @@
+title: Top-Nav Elements
+description: Die Bedienelemente der Top-Navigation erklärt
+route: /hints
+hints:
+  - hint: Home of verinice.veo
+    element: '#app > div.v-application--wrap > header > div > div.d-flex.align-center.fill-height > a > div > svg'
+  - hint: Kontext-Hilfe
+    element: '#app > div.v-application--wrap > header > div > div.d-flex.flex-grow-0.mr-6 > button.veo-list-searchbar__button.v-btn.v-btn--outlined.theme--light.v-size--default.primary--text'
+  - hint: Zur Demo-Unit
+    element: '#app > div.v-application--wrap > header > div > div.d-flex.flex-grow-0.mr-6 > div.d-inline-block > button'
+  - hint: Sprachauswahl
+    element: '#app > div.v-application--wrap > header > div > div.d-flex.flex-grow-0.mr-6 > button:nth-child(6)'
+  - hint: Profil
+    element: '#app > div.v-application--wrap > header > div > div.mr-0.text-right.flex-grow-0 > button > span > div'
