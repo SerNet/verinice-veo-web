@@ -16,7 +16,8 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import Vue, { VNode, PropOptions, CreateElement } from 'vue';
+import Vue from 'vue';
+import { VNode, PropOptions, CreateElement } from 'vue/types';
 import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
@@ -86,7 +87,6 @@ export default Vue.extend({
   },
   data() {
     return {
-      localSchema: this.schema,
       localUI: this.ui,
       defaultOptions: {
         generator: {
@@ -124,7 +124,7 @@ export default Vue.extend({
   },
   computed: {
     validateFunction(): ValidateFunction {
-      return ajv.compile(this.localSchema);
+      return ajv.compile(this.schema);
     },
     mergedOptions(): IOptions {
       return merge(this.defaultOptions, this.options);
@@ -137,10 +137,6 @@ export default Vue.extend({
     schema: {
       immediate: true,
       handler() {
-        // IMPORTANT! This is needed to update localSchema when schema is updated
-        // Else it cannot detect updated object of schema and does not update veo-form
-        this.localSchema = JSON.parse(JSON.stringify(this.schema));
-        // If no UI has been set, the schema must be considered
         this.updateUI();
         this.validate();
       }
@@ -294,7 +290,7 @@ export default Vue.extend({
     getInvalidFieldLabel(field: string): string {
       return (this.customTranslation && this.customTranslation[field]) || (this.generalTranslation && this.generalTranslation[field]) || field;
     },
-    createLayout(element: ILayout, formSchemaPointer: string, elementLevel: number, h: CreateElement, rule: IRule): VNode {
+    createLayout(element: ILayout, formSchemaPointer: string, h: CreateElement, rule: IRule): VNode {
       return h(
         Layout,
         {
@@ -304,7 +300,7 @@ export default Vue.extend({
             ...rule
           }
         },
-        this.createChildren(element, formSchemaPointer, elementLevel, h, this.createComponent)
+        this.createChildren(element, formSchemaPointer, h)
       );
     },
     createControl(element: IControl, h: CreateElement, rule: IRule): VNode {
@@ -336,7 +332,7 @@ export default Vue.extend({
         }
 
         const elementName = element.scope.split('/').pop() as string;
-        const elementSchema: any = JsonPointer.get(this.localSchema, element.scope);
+        const elementSchema: any = JsonPointer.get(this.schema, element.scope);
         const elementValue: any = JsonPointer.get(this.value, propertyPath(element.scope));
 
         partOfProps = {
@@ -377,20 +373,14 @@ export default Vue.extend({
         }
       });
     },
-    createChildren(
-      element: UISchemaElement,
-      formSchemaPointer: string,
-      elementLevel: number,
-      h: CreateElement,
-      createComponent: (element: UISchemaElement, formSchemaPointer: string, elementLevel: number, h: CreateElement) => VNode
-    ) {
-      return element.elements && element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`, elementLevel + 1, h));
+    createChildren(element: UISchemaElement, formSchemaPointer: string, h: CreateElement) {
+      return element.elements && element.elements.map((elem, index) => this.createComponent(elem, `${formSchemaPointer}/elements/${index}`, h));
     },
-    createComponent(element: UISchemaElement, formSchemaPointer: string, elementLevel: number, h: CreateElement): VNode {
+    createComponent(element: UISchemaElement, formSchemaPointer: string, h: CreateElement): VNode {
       const rule = evaluateRule(this.value, element.rule);
       switch (element.type) {
         case 'Layout':
-          return this.createLayout(element, formSchemaPointer, elementLevel, h, rule);
+          return this.createLayout(element, formSchemaPointer, h, rule);
         case 'Control':
           return this.createControl(element, h, rule);
         case 'Label':
@@ -406,7 +396,7 @@ export default Vue.extend({
     }
   },
   render(h): VNode {
-    return h(Wrapper, [this.createComponent(this.localUI, '#', 0, h)]);
+    return h(Wrapper, [this.createComponent(this.localUI, '#', h)]);
   }
 });
 </script>
