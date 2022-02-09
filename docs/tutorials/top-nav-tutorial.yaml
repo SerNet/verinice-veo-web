@@ -1,4 +1,4 @@
-title: Top-Nav Elements
+title: Top-Nav Elements (Tutorial)
 description: Die Bedienelemente der Top-Navigation erklärt
 route: /hints
 steps:
@@ -9,6 +9,5 @@ steps:
     intro: Greifen Sie hier auf verfügbare Tutorials zu
     element: '[#app > div.v-application--wrap > header > div > div.d-flex.flex-grow-0.mr-6 > button.veo-list-searchbar__button.v-btn.v-btn--outlined.theme--light.v-size--default.primary--text'
   - title: Menü verstecken
-    intro: | 
-      So klappt man die **Navigation** ein
+    intro: So klappt man die **Navigation** ein
     element: '#app > div > nav > div.v-navigation-drawer__append > div > div'

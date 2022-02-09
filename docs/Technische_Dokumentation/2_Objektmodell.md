@@ -119,7 +119,7 @@ Der Objekttyp "Document" ist beispielsweise geeignet für die Abbildung der folg
 
 * ISO 27001: "Documented information", "Documentation" und "Records" (über Subtypen)
 
-### Composite
+### Composites
 
 Jedes der Fachobjekte, kann ein einzelnes Objekt oder eine Gruppe von Objekten repräsentieren. Zu diesem Zweck kann jedes Fachobjekt Objekte gleichen Typs enthalten. Wenn ein Fachobjekt solche Teilobjekte enthält, dann ist es als ein zusammengesetztes Objekt (English: Composite) modelliert. Jedes Fachobjekt kann zu jedem Zeitpunkt zu einem Composite gemacht werden, indem man ihm Unterobjekte hinzufügt.
 
