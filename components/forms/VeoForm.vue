@@ -23,7 +23,7 @@ import { JsonPointer } from 'json-ptr';
 
 import vjp from 'vue-json-pointer';
 import { ErrorObject, ValidateFunction } from 'ajv';
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, dropRight, merge, pull } from 'lodash';
 import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
 import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
@@ -332,12 +332,14 @@ export default Vue.extend({
         }
 
         const elementName = element.scope.split('/').pop() as string;
-        const elementSchema: any = JsonPointer.get(this.schema, element.scope);
+        let elementSchema: any = cloneDeep(JsonPointer.get(this.schema, element.scope) || {});
         const elementValue: any = JsonPointer.get(this.value, propertyPath(element.scope));
+
+        elementSchema = this.addConditionalSchemaPropertiesToControlSchema(elementSchema, element.scope);
 
         partOfProps = {
           name: elementName,
-          schema: elementSchema ?? {},
+          schema: elementSchema,
           generalTranslation: this.generalTranslation,
           customTranslation: this.customTranslation,
           // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug
@@ -393,6 +395,54 @@ export default Vue.extend({
       } else {
         this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.mergedOptions.generator.excludedProperties, Mode.VEO));
       }
+    },
+    getParentPointer(elementPointer: string): string {
+      const parentParts = elementPointer.split('/');
+      return dropRight(parentParts, 2).join('/');
+    },
+    addConditionalSchemaPropertiesToControlSchema(initialControlSchema: JSONSchema7, pointer: string) {
+      let schema = cloneDeep(initialControlSchema);
+
+      const controlName = pointer.split('/').pop() as string;
+      // Search for conditionally applied properties of the new control (based in the parent object in the objectschema)
+      const parentPointer = this.getParentPointer(pointer);
+      const parentSchema: any = JsonPointer.get(this.schema, parentPointer);
+
+      const affectedAllOfs = parentSchema.allOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+      const affectedAnyOfs = parentSchema.anyOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+      const affectedOneOfs = parentSchema.oneOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+
+      const conditionsToCheck = [
+        ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ? [parentSchema] : []),
+        ...affectedAllOfs,
+        ...affectedAnyOfs,
+        ...affectedOneOfs
+      ];
+
+      for (const condition of conditionsToCheck) {
+        schema = this.addConditionalSchemaPropertiesIfConditionIsSatisfied(schema, condition, parentPointer, controlName);
+      }
+
+      return schema;
+    },
+    addConditionalSchemaPropertiesIfConditionIsSatisfied(
+      initialControlSchema: JSONSchema7,
+      ifElseThenBlock: { if?: any; else?: any; then?: any },
+      parentPointer: string,
+      controlName: string
+    ) {
+      for (const propertyWithCondition of Object.keys(ifElseThenBlock.if?.properties)) {
+        const pathInFormDataParts = pull(parentPointer.split('/'), 'properties', 'attributes');
+        pathInFormDataParts.push(propertyWithCondition);
+        const pathInFormData = pathInFormDataParts.join('/');
+
+        if (JsonPointer.get(this.value, pathInFormData) === ifElseThenBlock.if.properties[propertyWithCondition].const) {
+          initialControlSchema = merge(initialControlSchema, ifElseThenBlock.then?.properties?.[controlName]);
+        } else {
+          initialControlSchema = merge(initialControlSchema, ifElseThenBlock.else?.properties?.[controlName]);
+        }
+      }
+      return initialControlSchema;
     }
   },
   render(h): VNode {
