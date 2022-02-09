@@ -132,9 +132,7 @@ export default defineComponent({
 
     watch(
       () => props.object,
-      () => {
-        fetch();
-      },
+      () => fetch(),
       {
         deep: true,
         immediate: true
