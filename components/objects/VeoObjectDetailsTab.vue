@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2022  Jessica Lühnen
+   - Copyright (C) 2022  Jessica Lühnen, Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -68,8 +68,7 @@
   </v-container>
 </template>
 <script lang="ts">
-import { useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter } from '@nuxtjs/composition-api';
-import { defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiContentCopy, mdiLinkOff } from '@mdi/js';
@@ -131,7 +130,14 @@ export default defineComponent({
       return { id, name, type };
     };
 
-    onMounted(() => fetch());
+    watch(
+      () => props.object,
+      () => fetch(),
+      {
+        deep: true,
+        immediate: true
+      }
+    );
 
     /**
      * actions for cloning or unlinking objects
