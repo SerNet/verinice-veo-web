@@ -220,10 +220,10 @@ export default defineComponent({
     // push to object detail site (on click in table)
     const openItem = ({ item }: { item: IVeoEntity }) => {
       return router.push({
-        name: 'unit-domains-domain-objects-id',
+        name: 'unit-domains-domain-objects-entity',
         params: {
           ...route.value.params,
-          id: createUUIDUrlParam(item.type, item.id)
+          entity: createUUIDUrlParam(item.type, item.id)
         }
       });
     };
