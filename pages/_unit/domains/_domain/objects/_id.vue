@@ -21,17 +21,11 @@
     v-else
     collapsable-left
     collapsable-right
+    :title="object && object.displayName"
     :page-widths="pageWidths"
     :page-titles="pageTitles"
     @page-collapsed="onPageCollapsed"
   >
-    <template #header>
-      <v-row class="ml-7">
-        <v-col cols="auto">
-          <h3>{{ object && object.displayName }}</h3>
-        </v-col>
-      </v-row>
-    </template> 
     <template #default>
       <VeoPage
         fullsize
