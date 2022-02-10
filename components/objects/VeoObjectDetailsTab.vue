@@ -17,10 +17,9 @@
 -->
 <template>
   <v-container>
-    <v-row>
+    <v-row v-if="['subEntities', 'parents'].includes(type)">
       <v-col class="text-right">
         <VeoObjectDetailsActionMenu
-          v-if="['subEntities', 'parents'].includes(type)"
           :object="object"
           :type="type"
           @link-success="$emit('new-object-created'); fetch()"

@@ -57,15 +57,14 @@ export default defineComponent({
         'justify-content': props.titlebarAlignment === VeoPageHeaderAlignment.CENTER ? 'center' : props.titlebarAlignment === VeoPageHeaderAlignment.RIGHT ? 'end' : 'start'
       };
     });
-
     return () =>
       h('div', { style: { display: 'contents' } }, [
         ...(!!props.title || !!slots.title
           ? [
               h('div', { class: 'd-flex flex-row flex-wrap veo-page__title', style: titlebarAlignment.value }, [
                 ...(props.loading
-                  ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'pb-1 skeleton-title' })]
-                  : [h(`h${props.headingLevel}`, { class: 'text-no-wrap d-inline pb-1 flex-grow-0' }, props.title), ...(slots.title ? [slots.title()] : [])])
+                  ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title' })]
+                  : [h(`h${props.headingLevel}`, { class: 'text-no-wrap d-inline flex-grow-0' }, props.title), ...(slots.title ? [slots.title()] : [])])
               ])
             ]
           : []),

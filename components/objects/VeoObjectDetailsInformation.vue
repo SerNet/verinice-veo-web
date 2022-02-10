@@ -75,7 +75,13 @@ export default defineComponent({
 
     // get amount of custom aspects and custom links
     const amountCustomAspects = computed(() => Object.keys(props.object?.customAspects || {}).length);
-    const amountCustomLinks = computed(() => Object.keys(props.object?.links || {}).length);
+    const amountCustomLinks = computed(() => {
+      let totalLinks = 0;
+      Object.values(props.object?.links || {}).forEach((object) => {
+        totalLinks += Object.keys(object).length;
+      });
+      return totalLinks;
+    });
 
     // format date time to show updated at & created at
     const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));

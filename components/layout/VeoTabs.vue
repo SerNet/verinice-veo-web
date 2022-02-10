@@ -85,7 +85,8 @@ export default defineComponent({
             {
               props: {
                 value: activeTabIndex.value
-              }
+              },
+              class: 'pt-4'
             },
             [slots.items ? slots.items() : []]
           )
