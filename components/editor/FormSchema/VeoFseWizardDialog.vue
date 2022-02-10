@@ -189,7 +189,7 @@ export default defineComponent({
 
     async function loadFormSchema(id: string) {
       loadingQueries.value++;
-      formSchema.value = await $api.form.fetch(id);
+      formSchema.value = await $api.form.fetch(props.domainId, id);
       loadingQueries.value--;
     }
 

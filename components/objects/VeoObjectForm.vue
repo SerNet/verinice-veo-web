@@ -51,6 +51,7 @@
             :error-messages.sync="formErrors"
             :reactive-form-actions="reactiveFormActions"
             :disabled="disabled"
+            :disable-sub-type-select="disableSubTypeSelect"
           />
           <VeoObjectFormSkeletonLoader v-else />
           <slot name="append-form" />
@@ -138,6 +139,10 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    disableSubTypeSelect: {
+      type: Boolean,
+      default: false
+    },
     domainId: {
       type: String,
       required: true
@@ -179,7 +184,7 @@ export default defineComponent({
         }
       }
       if (selectedDisplayOption.value !== 'objectschema') {
-        currentFormSchema.value = await $api.form.fetch(selectedDisplayOption.value);
+        currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
       } else {
         currentFormSchema.value = undefined;
       }
@@ -282,7 +287,7 @@ export default defineComponent({
     "tableOfContents": "contents"
   },
   "de": {
-    "display": "darstellung",
+    "display": "ansicht",
     "history": "verlauf",
     "messages": "meldungen",
     "objects": "Objekte",

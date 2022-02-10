@@ -63,14 +63,16 @@ export default function (api: Client) {
      *
      * NOT PAGINATED
      *
+     * @param domainId The id of the domain to load the formschema for
      * @param id
      */
-    fetch(id: string): Promise<IVeoFormSchema> {
-      return api.req('/api/forms/:id', {
+    async fetch(domainId: string, id: string): Promise<IVeoFormSchema> {
+      const formSchema = await api.req('/api/forms/:id', {
         params: {
           id
         }
       });
+      return JSON.parse(JSON.stringify(formSchema).replaceAll('{CURRENT_DOMAIN_ID}', domainId));
     },
 
     /**

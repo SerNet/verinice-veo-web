@@ -76,6 +76,10 @@ export default Vue.extend({
     isValid: {
       type: Boolean
     },
+    disableSubTypeSelect: {
+      type: Boolean,
+      default: false
+    },
     errorMessages: {
       type: Array,
       default: () => []
@@ -123,8 +127,7 @@ export default Vue.extend({
         }
       },
       formIsValid: true,
-      errorsMsgMap: {} as BaseObject,
-      subTypeAlreadySet: false as boolean
+      errorsMsgMap: {} as BaseObject
     };
   },
   computed: {
@@ -147,7 +150,7 @@ export default Vue.extend({
             disabled: !this.value.domains?.[this.domainId]?.subType
           },
           [`#/properties/domains/properties/${this.domainId}/properties/subType`]: {
-            disabled: this.subTypeAlreadySet
+            disabled: this.disableSubTypeSelect
           }
         };
       } else {
@@ -207,11 +210,6 @@ export default Vue.extend({
           }))
         );
       }
-    }
-  },
-  mounted() {
-    if (this.domainId) {
-      this.subTypeAlreadySet = !!this.value?.domains?.[this.domainId]?.subType;
     }
   },
   methods: {
@@ -444,9 +442,6 @@ export default Vue.extend({
       const controlName = pointer.split('/').pop() as string;
       // Search for conditionally applied properties of the new control (based in the parent object in the objectschema)
       const parentPointer = this.getParentPointer(pointer);
-      if (parentPointer.includes('#/properties/domains/properties')) {
-        console.log(parentPointer);
-      }
       const parentSchema: any = JsonPointer.get(this.schema, parentPointer);
 
       const affectedAllOfs = parentSchema.allOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
