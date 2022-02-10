@@ -127,7 +127,10 @@ enum CATALOG_STATE {
   CHOOSE_ENTITIES
 }
 
+export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
+
 export default Vue.extend({
+  name: 'VeoCatalogPage',
   data() {
     return {
       items: [] as IVeoCatalogItem[],

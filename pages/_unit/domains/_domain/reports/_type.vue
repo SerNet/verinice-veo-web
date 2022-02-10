@@ -128,7 +128,10 @@ import Vue from 'vue';
 import { IVeoCreateReportData, IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoReportMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
 
+export const ROUTE_NAME = 'unit-domains-domain-reports-type';
+
 export default Vue.extend({
+  name: 'VeoReportPage',
   data() {
     return {
       filter: undefined as IVeoFilter | undefined,

@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 const PRIMARY_NAV_MINI_VARIANT = 'primary-navigation-drawer--mini-variant';
-const NAV_ENTRY_EXPANDED = 'primary-navigation-drawer--nav-entry-expanded';
 const LAST_DOMAIN = 'last-domain';
 const LAST_UNIT = 'last-unit';
 export const FIRST_STEPS_COMPLETED = 'first-steps-completed';
@@ -81,14 +80,6 @@ export default class LocalStorage {
 
   static get primaryNavMiniVariant() {
     return LocalStorage.getBoolean(PRIMARY_NAV_MINI_VARIANT, false);
-  }
-
-  static get expandedNavEntry() {
-    return LocalStorage.getNumber(NAV_ENTRY_EXPANDED) || -1;
-  }
-
-  static set expandedNavEntry(value: number) {
-    LocalStorage.setNumber(NAV_ENTRY_EXPANDED, value);
   }
 
   static get lastDomain() {

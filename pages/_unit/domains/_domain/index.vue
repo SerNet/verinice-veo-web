@@ -69,8 +69,8 @@
 import { computed, defineComponent, Ref, ref, useContext, useFetch, useMeta, useRouter, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { CHART_COLORS, separateUUIDParam } from '~/lib/utils';
-import { IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
+import { CHART_COLORS, separateUUIDParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
+import { IVeoDomain, IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 import { IChartValue } from '~/components/widgets/VeoStackedStatusBarChartWidget.vue';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
@@ -82,6 +82,8 @@ interface ISubTypeAggregation {
   totalEntities: number;
   statusTypes: (IChartValue & { status: string })[];
 }
+
+export const ROUTE_NAME = 'unit-domains-domain';
 
 export default defineComponent({
   name: 'VeoDomainDashboardPage',
@@ -139,16 +141,6 @@ export default defineComponent({
       }
     }
 
-    // Extract subtypes and status from schemas
-    function extractAllSubtypeStatusFromSchema(schema: IVeoObjectSchema): { subType: string; status: string[] }[] {
-      return (
-        Object.values(schema.properties.domains.properties)[0].allOf?.map((mapping) => ({
-          subType: mapping.if.properties.subType.const,
-          status: mapping.then.properties.status.enum
-        })) || []
-      );
-    }
-
     // Create chart data
     const chartData: Ref<{ objectType: string; subTypes: ISubTypeAggregation[] }[]> = ref([]);
     const widgets = ref<{ [key: string]: ISubTypeAggregation[] }>({});
@@ -172,7 +164,7 @@ export default defineComponent({
 
         chartData.value.push({
           objectType: type.schemaName,
-          subTypes: extractAllSubtypeStatusFromSchema(schema)
+          subTypes: extractSubTypesFromObjectSchema(schema)
             .map((subtype) => {
               let currentColorIndex = 0;
 
