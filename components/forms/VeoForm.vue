@@ -30,8 +30,8 @@ import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
-import { IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
-import { IBaseObject } from '~/lib/utils';
+import { IVeoFormsAdditionalContext, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { getDefaultReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 interface IErrorMessageElement {
@@ -83,7 +83,11 @@ export default Vue.extend({
     reactiveFormActions: {
       type: Array,
       default: () => []
-    } as PropOptions<IVeoReactiveFormAction[]>
+    } as PropOptions<IVeoReactiveFormAction[]>,
+    additionalContext: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVeoFormsAdditionalContext>
   },
   data() {
     return {
@@ -119,10 +123,14 @@ export default Vue.extend({
         }
       },
       formIsValid: true,
-      errorsMsgMap: {} as BaseObject
+      errorsMsgMap: {} as BaseObject,
+      subTypeAlreadySet: false as boolean
     };
   },
   computed: {
+    domainId(): string {
+      return separateUUIDParam(this.$route.params.domain).id;
+    },
     validateFunction(): ValidateFunction {
       return ajv.compile(this.schema);
     },
@@ -131,6 +139,23 @@ export default Vue.extend({
     },
     localReactiveFormActions(): IVeoReactiveFormAction[] {
       return [...this.reactiveFormActions, ...getDefaultReactiveFormActions(this)];
+    },
+    defaultAdditionalContext(): IVeoFormsAdditionalContext {
+      if (this.domainId) {
+        return {
+          [`#/properties/domains/properties/${this.domainId}/properties/status`]: {
+            disabled: !this.value.domains?.[this.domainId]?.subType
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/subType`]: {
+            disabled: this.subTypeAlreadySet
+          }
+        };
+      } else {
+        return {};
+      }
+    },
+    localAdditionalContext(): IVeoFormsAdditionalContext {
+      return { ...this.defaultAdditionalContext, ...this.additionalContext };
     }
   },
   watch: {
@@ -182,6 +207,11 @@ export default Vue.extend({
           }))
         );
       }
+    }
+  },
+  mounted() {
+    if (this.domainId) {
+      this.subTypeAlreadySet = !!this.value?.domains?.[this.domainId]?.subType;
     }
   },
   methods: {
@@ -352,12 +382,20 @@ export default Vue.extend({
         };
       }
 
+      let options = element.options || {};
+      if (element.scope && this.localAdditionalContext[element.scope]) {
+        options = merge(this.localAdditionalContext[element.scope], options);
+      }
+
       return h(Control, {
         props: {
           ...rule,
           elements: element.elements,
-          options: { ...element.options, label: this.schema.required?.includes(partOfProps.name) ? element.options?.label + '*' : element.options?.label },
-          disabled: this.disabled,
+          options: {
+            ...options,
+            label: this.schema.required?.includes(partOfProps.name) ? element.options?.label + '*' : element.options?.label
+          },
+          disabled: this.disabled || options.disabled,
           ...partOfProps
         },
         on: {
@@ -406,6 +444,9 @@ export default Vue.extend({
       const controlName = pointer.split('/').pop() as string;
       // Search for conditionally applied properties of the new control (based in the parent object in the objectschema)
       const parentPointer = this.getParentPointer(pointer);
+      if (parentPointer.includes('#/properties/domains/properties')) {
+        console.log(parentPointer);
+      }
       const parentSchema: any = JsonPointer.get(this.schema, parentPointer);
 
       const affectedAllOfs = parentSchema.allOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
