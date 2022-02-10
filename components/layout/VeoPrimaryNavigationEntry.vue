@@ -25,7 +25,7 @@
     class="mt-8"
   />
   <v-skeleton-loader
-    v-else-if="loading"
+    v-else-if="childItemsLoading"
     class="veo-primary-navigation__menu-item"
     :type="icon ? 'list-item-avatar' : 'list-item'"
   />
@@ -102,7 +102,6 @@
       :key="child.name"
       style="min-height: 28px;"
       :top-level-item="false"
-      :loading="childItemsLoading"
       v-on="$listeners"
     />
   </v-list-group>
@@ -138,10 +137,6 @@ export default defineComponent({
       default: undefined
     },
     childItemsLoading: {
-      type: Boolean,
-      default: false
-    },
-    loading: {
       type: Boolean,
       default: false
     },
