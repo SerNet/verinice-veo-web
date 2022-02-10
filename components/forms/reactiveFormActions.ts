@@ -37,7 +37,7 @@ export function getDefaultReactiveFormActions(context: Vue): IVeoReactiveFormAct
       }
     },
     {
-      attributeName: `/domains/${context.$user.lastDomain}/subType`,
+      attributeName: `/domains/${context.$user?.lastDomain}/subType`,
       handler: (newValue: any, newObject) => {
         if (!newValue && context.$user.lastDomain) {
           delete newObject.domains[context.$user.lastDomain].status;

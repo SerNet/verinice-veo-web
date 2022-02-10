@@ -245,6 +245,7 @@
               :ui="formSchema.content"
               :general-translation="translation && translation.lang[language]"
               :custom-translation="formSchema.translation && formSchema.translation[language]"
+              :domain-id="domainId"
             />
           </v-card>
         </template>

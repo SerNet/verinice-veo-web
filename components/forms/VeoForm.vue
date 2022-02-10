@@ -60,6 +60,10 @@ export default Vue.extend({
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
+    domainId: {
+      type: String,
+      default: undefined
+    },
     disabled: Boolean,
     generalTranslation: {
       type: Object,
@@ -131,9 +135,6 @@ export default Vue.extend({
     };
   },
   computed: {
-    domainId(): string {
-      return separateUUIDParam(this.$route.params.domain).id;
-    },
     validateFunction(): ValidateFunction {
       return ajv.compile(this.schema);
     },
@@ -444,19 +445,21 @@ export default Vue.extend({
       const parentPointer = this.getParentPointer(pointer);
       const parentSchema: any = JsonPointer.get(this.schema, parentPointer);
 
-      const affectedAllOfs = parentSchema.allOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
-      const affectedAnyOfs = parentSchema.anyOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
-      const affectedOneOfs = parentSchema.oneOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+      if (parentSchema) {
+        const affectedAllOfs = parentSchema.allOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+        const affectedAnyOfs = parentSchema.anyOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+        const affectedOneOfs = parentSchema.oneOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
 
-      const conditionsToCheck = [
-        ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ? [parentSchema] : []),
-        ...affectedAllOfs,
-        ...affectedAnyOfs,
-        ...affectedOneOfs
-      ];
+        const conditionsToCheck = [
+          ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ? [parentSchema] : []),
+          ...affectedAllOfs,
+          ...affectedAnyOfs,
+          ...affectedOneOfs
+        ];
 
-      for (const condition of conditionsToCheck) {
-        schema = this.addConditionalSchemaPropertiesIfConditionIsSatisfied(schema, condition, parentPointer, controlName);
+        for (const condition of conditionsToCheck) {
+          schema = this.addConditionalSchemaPropertiesIfConditionIsSatisfied(schema, condition, parentPointer, controlName);
+        }
       }
 
       return schema;

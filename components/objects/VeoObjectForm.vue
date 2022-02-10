@@ -52,6 +52,7 @@
             :reactive-form-actions="reactiveFormActions"
             :disabled="disabled"
             :disable-sub-type-select="disableSubTypeSelect"
+            :domain-id="domainId"
           />
           <VeoObjectFormSkeletonLoader v-else />
           <slot name="append-form" />
