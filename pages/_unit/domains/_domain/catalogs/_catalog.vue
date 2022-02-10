@@ -162,7 +162,10 @@ export default Vue.extend({
         this.items
           // .filter((item) => item.tailoringReferences.length > 0) VEO-1182
           .map((item) => {
-            const [designator = '', abbreviation = '', title = ''] = (item.element.displayName as string).split(' ');
+            const displayNameParts = (item.element.displayName as string).split(' ');
+            const designator = displayNameParts.shift() as string;
+            const abbreviation = displayNameParts.shift() as string;
+            const title = displayNameParts.join(' ') as string;
 
             return { designator, abbreviation, title, id: item.id, description: item.description };
           })
