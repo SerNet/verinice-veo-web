@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoPage
-    :title="t('objects')"
+    :title="t('objectOverview')"
     fullsize
     :loading="fetchState.pending"
   >
@@ -43,13 +43,7 @@
       @success="fetch(); onCloseDeleteDialog(false)"
       @error="showError('unlink', itemDelete, $event)"
     />
-    <template #header>
-      <h2 class="mb-5">
-        {{ upperFirst(t('overview').toString()) }}
-      </h2>
-    </template>
     <div class="d-flex my-2">
-      <h2>{{ upperFirst(t('allObjects').toString()) }}</h2>
       <v-spacer />
       <v-btn
         v-if="objectType"
@@ -351,9 +345,7 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "objects": "objects",
-    "overview": "overview",
-    "allObjects": "all objects",
+    "objectOverview": "object overview",
     "filter": "filter",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
@@ -366,9 +358,7 @@ export default defineComponent({
     }
   },
   "de": {
-    "objects": "Objekte",
-    "overview": "Übersicht",
-    "allObjects": "Alle Objekte",
+    "objectOverview": "Objektübersicht",
     "filter": "filter",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",
