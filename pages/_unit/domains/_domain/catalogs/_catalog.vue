@@ -155,13 +155,15 @@ export default Vue.extend({
       return this.items.length > 0 && this.items[0].catalog ? this.$t('catalog', { name: this.items[0].catalog.displayName }).toString() : '';
     },
     formattedTomItems(): { designator: string; abbreviation: string; title: string; id: string }[] {
-      return this.items
-        .filter((item) => item.tailoringReferences.length > 0)
-        .map((item) => {
-          const [designator = '', abbreviation = '', title = ''] = (item.element.displayName as string).split(' ');
+      return (
+        this.items
+          // .filter((item) => item.tailoringReferences.length > 0) VEO-1182
+          .map((item) => {
+            const [designator = '', abbreviation = '', title = ''] = (item.element.displayName as string).split(' ');
 
-          return { designator, abbreviation, title, id: item.id, description: item.description };
-        });
+            return { designator, abbreviation, title, id: item.id, description: item.description };
+          })
+      );
     },
     formattedSelectedToms(): { designator: string; abbreviation: string; title: string; id: string }[] {
       return this.formattedTomItems.filter((item) => this.selectedToms.includes(item.id));
