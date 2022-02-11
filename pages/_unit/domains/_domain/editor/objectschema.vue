@@ -120,7 +120,10 @@
               {{ $t('help') }}
             </template>
           </v-tooltip>
-          <v-tooltip bottom>
+          <v-tooltip
+            v-if="$route.query.os"
+            bottom
+          >
             <template #activator="{on}">
               <v-btn
                 :disabled="!schemaIsValid.valid"
@@ -410,8 +413,7 @@ export default Vue.extend({
     },
     async saveSchema() {
       try {
-        const res = await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema());
-        console.log(res);
+        await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema());
         displaySuccessMessage(this.$t('saveSchemaSuccess'));
       } catch (e) {
         displayErrorMessage(this.$t('error.title'), this.$t('saveSchemaError'));
