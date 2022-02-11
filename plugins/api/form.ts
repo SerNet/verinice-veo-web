@@ -52,9 +52,9 @@ export default function (api: Client) {
      * @param form
      * @returns UUID of the new form
      */
-    create(form: IVeoFormSchema): Promise<string> {
+    create(domainId: string, form: IVeoFormSchema): Promise<string> {
       return api.req('/api/forms/', {
-        json: form
+        json: { domainId, ...form }
       });
     },
 
@@ -81,13 +81,13 @@ export default function (api: Client) {
      * @param id
      * @param form
      */
-    update(id: string, form: IVeoFormSchema): Promise<void> {
+    update(id: string, domainId: string, form: IVeoFormSchema): Promise<void> {
       return api.req('/api/forms/:id', {
         method: 'PUT',
         params: {
           id
         },
-        json: form
+        json: { domainId, ...form }
       });
     },
 
