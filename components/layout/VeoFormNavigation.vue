@@ -111,11 +111,9 @@ export default Vue.extend({
     },
     // eslint-disable-next-line no-undef
     itemsToObserve(): NodeListOf<Element> | false {
-      if (this.items.length) {
-        return document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', '));
-      } else {
-        return false;
-      }
+      return this.items.length
+          ? document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', '))
+          : false;
     }
   },
   watch: {
