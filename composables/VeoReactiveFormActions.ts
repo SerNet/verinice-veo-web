@@ -33,6 +33,14 @@ export function useVeoReactiveFormActions() {
           newObject.domains[$user.lastDomain as string] = { ...newObject.domains[$user.lastDomain as string], ...newValue[Object.keys(newValue)[0]] };
           delete newObject.domains.patternProperties;
         }
+      },
+      {
+        attributeName: `/domains/${$user?.lastDomain}/subType`,
+        handler: (newValue: any, newObject) => {
+          if (!newValue && $user.lastDomain) {
+            delete newObject.domains[$user.lastDomain].status;
+          }
+        }
       }
     ];
   }

@@ -106,6 +106,7 @@
         :general-translation="generalTranslation"
         :custom-translation="customTranslation"
         :disabled="disabled"
+        :domain-id="domainId"
         @input="onInput"
       />
     </v-col>

@@ -81,6 +81,7 @@
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
+            :disable-sub-type-select="object && object.domains[domainId] && !!object.domains[domainId].subType"
             @input="onFormInput"
             @show-revision="onShowRevision"
           >
