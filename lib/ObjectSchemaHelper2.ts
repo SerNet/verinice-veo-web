@@ -339,7 +339,7 @@ export default class ObjectSchemaHelper {
   }
 
   public getSubTypes(domainId: string): IVeoOSHDomains['domain'] {
-    return this._domains[domainId];
+    return this._domains[domainId] || [];
   }
 
   public toSchema(): IVeoObjectSchema {

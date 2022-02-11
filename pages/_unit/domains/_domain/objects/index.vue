@@ -274,10 +274,10 @@ export default defineComponent({
 
     const openItem = ({ item }: { item: IVeoEntity }) => {
       return router.push({
-        name: 'unit-domains-domain-objects-id',
+        name: 'unit-domains-domain-objects-entity',
         params: {
           ...route.value.params,
-          id: createUUIDUrlParam(item.type, item.id)
+          entity: createUUIDUrlParam(item.type, item.id)
         },
         query: {
           subType: subType.value

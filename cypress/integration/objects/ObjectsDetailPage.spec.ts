@@ -105,8 +105,8 @@ describe('Objects details', () => {
     cy.get('.vf-wrapper').contains('.v-text-field', 'Beschreibung').find('input').focus().should('have.value', 'Prozess mit Subtype Datenübertragung');
 
     // Open history and select second newest version
-    cy.get('[data-cy=form-tabs] > .v-tabs > .v-item-group > .v-slide-group__prev').click();
-    cy.contains('.v-tab', 'verlauf').click({ force: true });
+    cy.get('[data-cy=veo-object-form-form-tabs] > .v-tabs > .v-item-group > .v-slide-group__prev').click();
+    cy.get('[data-cy=veo-object-form-history-tab]').click({ force: true });
     cy.get('[data-cy=veo-object-history-history-list]').should('be.visible');
     cy.get('[data-cy=veo-object-history-history-list]').find('.v-item-group').children().eq(1).click();
     cy.get('[data-cy=veo-objects-index-page-old-version-alert]').should('be.visible');

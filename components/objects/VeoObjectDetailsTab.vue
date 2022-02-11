@@ -17,10 +17,9 @@
 -->
 <template>
   <v-container>
-    <v-row>
+    <v-row v-if="objectTypesWithActions.includes(type)">
       <v-col class="text-right">
         <VeoObjectDetailsActionMenu
-          v-if="['subEntities', 'parents'].includes(type)"
           :object="object"
           :type="type"
           @link-success="$emit('new-object-created'); fetch()"
@@ -101,6 +100,8 @@ export default defineComponent({
     const { cloneObject } = useVeoObjectUtilities();
 
     const items = ref<IVeoEntity[]>();
+
+    const objectTypesWithActions = ['subEntities', 'parents'];
 
     /**
      * fetch sub entities or links
@@ -220,15 +221,16 @@ export default defineComponent({
     // push to object detail site (on click in table)
     const openItem = ({ item }: { item: IVeoEntity }) => {
       return router.push({
-        name: 'unit-domains-domain-objects-id',
+        name: 'unit-domains-domain-objects-entity',
         params: {
           ...route.value.params,
-          id: createUUIDUrlParam(item.type, item.id)
+          entity: createUUIDUrlParam(item.type, item.id)
         }
       });
     };
 
     return {
+      objectTypesWithActions,
       onCreateObjectSuccess,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,

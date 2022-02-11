@@ -63,17 +63,29 @@
       <VeoPage no-padding>
         <template #default>
           <VeoTabs
+            v-cy-name="'form-tabs'"
             sticky-tabs
-            :data-cy="'form-tabs'"
           >
             <template #tabs>
               <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">
-                {{ t('tableOfContents') }}
+                <v-icon v-text="mdiFormatListBulleted" />
               </v-tab>
               <v-tab v-if="!disableHistory">
-                {{ t('history') }}
+                <v-icon
+                  v-cy-name="'history-tab'"
+                  v-text="mdiHistory"
+                />
               </v-tab>
-              <v-tab>{{ t('messages') }} ({{ messages.errors.length + messages.warnings.length }})</v-tab>
+              <v-tab>
+                <v-badge
+                  :content="messages.errors.length + messages.warnings.length"
+                  :value="messages.errors.length + messages.warnings.length > 0"
+                  color="primary"
+                  overlap
+                >
+                  <v-icon v-text="mdiInformationOutline" />
+                </v-badge>
+              </v-tab>
             </template>
             <template #items>
               <v-tab-item class="px-4">
@@ -112,6 +124,7 @@
 import { computed, ComputedRef, defineComponent, PropOptions, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
+import { mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
 
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
@@ -277,6 +290,9 @@ export default defineComponent({
       selectedDisplayOption,
       translations,
 
+      mdiFormatListBulleted,
+      mdiHistory,
+      mdiInformationOutline,
       upperFirst,
       t
     };

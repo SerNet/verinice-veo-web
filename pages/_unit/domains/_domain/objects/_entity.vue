@@ -182,7 +182,7 @@ export default defineComponent({
     const router = useRouter();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
-    const objectParameter = computed(() => separateUUIDParam(route.value.params.id));
+    const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const object = ref<IVeoEntity | undefined>(undefined);
