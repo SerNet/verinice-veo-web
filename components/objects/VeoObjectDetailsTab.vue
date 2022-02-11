@@ -17,7 +17,7 @@
 -->
 <template>
   <v-container>
-    <v-row v-if="['subEntities', 'parents'].includes(type)">
+    <v-row v-if="objectTypesWithActions.includes(type)">
       <v-col class="text-right">
         <VeoObjectDetailsActionMenu
           :object="object"
@@ -100,6 +100,8 @@ export default defineComponent({
     const { cloneObject } = useVeoObjectUtilities();
 
     const items = ref<IVeoEntity[]>();
+
+    const objectTypesWithActions = ['subEntities', 'parents'];
 
     /**
      * fetch sub entities or links
@@ -228,6 +230,7 @@ export default defineComponent({
     };
 
     return {
+      objectTypesWithActions,
       onCreateObjectSuccess,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
