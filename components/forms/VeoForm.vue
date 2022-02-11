@@ -448,7 +448,7 @@ export default Vue.extend({
 
       if (parentSchema) {
         const getSchemaCompositionConditions = (schemaCompositionObject: any) =>
-          schemaCompositionObject.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+          schemaCompositionObject?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
 
         const conditionsToCheck = [
           ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ? [parentSchema] : []),
