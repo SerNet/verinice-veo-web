@@ -63,15 +63,18 @@
       <VeoPage no-padding>
         <template #default>
           <VeoTabs
+            v-cy-name="'form-tabs'"
             sticky-tabs
-            :data-cy="'form-tabs'"
           >
             <template #tabs>
               <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">
                 <v-icon v-text="mdiFormatListBulleted" />
               </v-tab>
               <v-tab v-if="!disableHistory">
-                <v-icon v-text="mdiHistory" />
+                <v-icon
+                  v-cy-name="'history-tab'"
+                  v-text="mdiHistory"
+                />
               </v-tab>
               <v-tab>
                 <v-badge
