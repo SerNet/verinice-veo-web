@@ -65,11 +65,15 @@ export default function (api: Client) {
      * @param id domain ID
      * @param objectType object type
      * @param data object schema
-     * @returns ?
+     * @returns void
      */
-    updateTypeDefinition(id: string, objectType: string, data: IVeoObjectSchema): Promise<unknown> {
-      return api.req(`/api/domains/${id}/elementtypedefinitions/${objectType}/updatefromobjectschema`, {
+    updateTypeDefinition(id: string, objectType: string, data: IVeoObjectSchema): Promise<void> {
+      return api.req(`/api/domains/:id/elementtypedefinitions/:type/updatefromobjectschema`, {
         method: 'POST',
+        params: {
+          id,
+          type: objectType
+        },
         json: data
       });
     }
