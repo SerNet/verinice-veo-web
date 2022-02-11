@@ -24,6 +24,7 @@
       <!-- TODO: change name with displayName after it is implemented -->
       <ValidationProvider
         v-slot="{ errors }"
+        ref="validationProvider"
         :name="options && options.label"
         :rules="validation"
       >
@@ -303,6 +304,10 @@ export default Vue.extend({
         }
       }
     }
+  },
+  mounted() {
+    // We have to wait for the component to be fully rendered before we can validate and display the error message ($nextTick doesn't suffice)
+    setTimeout(() => (this.$refs.validationProvider as any).validate(), 100);
   },
   methods: {
     onTargetCreated(id: string) {
