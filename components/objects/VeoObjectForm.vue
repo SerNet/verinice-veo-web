@@ -295,7 +295,7 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "display": "display",
+    "display": "view as",
     "history": "history",
     "messages": "messages",
     "objects": "objects",
@@ -303,12 +303,12 @@ export default defineComponent({
     "tableOfContents": "contents"
   },
   "de": {
-    "display": "ansicht",
-    "history": "verlauf",
-    "messages": "meldungen",
+    "display": "Ansicht",
+    "history": "Verlauf",
+    "messages": "Meldungen",
     "objects": "Objekte",
-    "objectView": "objektansicht",
-    "tableOfContents": "inhalt"
+    "objectView": "Objektansicht",
+    "tableOfContents": "Inhalt"
   }
 }
 </i18n>

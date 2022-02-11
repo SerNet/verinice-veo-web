@@ -31,7 +31,7 @@ import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
 import { IVeoFormsAdditionalContext, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
-import { IBaseObject, separateUUIDParam } from '~/lib/utils';
+import { IBaseObject } from '~/lib/utils';
 import { getDefaultReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 interface IErrorMessageElement {
@@ -381,10 +381,11 @@ export default Vue.extend({
         };
       }
 
-      let options = element.options || {};
-      if (element.scope && this.localAdditionalContext[element.scope]) {
-        options = merge(this.localAdditionalContext[element.scope], options);
-      }
+      const conditionsForControl = element.scope && this.localAdditionalContext[element.scope];
+      const options = {
+        ...element.options,
+        ...conditionsForControl
+      };
 
       return h(Control, {
         props: {
@@ -446,42 +447,42 @@ export default Vue.extend({
       const parentSchema: any = JsonPointer.get(this.schema, parentPointer);
 
       if (parentSchema) {
-        const affectedAllOfs = parentSchema.allOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
-        const affectedAnyOfs = parentSchema.anyOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
-        const affectedOneOfs = parentSchema.oneOf?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+        const getSchemaCompositionConditions = (schemaCompositionObject: any) =>
+          schemaCompositionObject.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
 
         const conditionsToCheck = [
           ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ? [parentSchema] : []),
-          ...affectedAllOfs,
-          ...affectedAnyOfs,
-          ...affectedOneOfs
+          ...getSchemaCompositionConditions(parentSchema.allOf),
+          ...getSchemaCompositionConditions(parentSchema.AnyOf),
+          ...getSchemaCompositionConditions(parentSchema.OneOf)
         ];
 
         for (const condition of conditionsToCheck) {
-          schema = this.addConditionalSchemaPropertiesIfConditionIsSatisfied(schema, condition, parentPointer, controlName);
+          schema = this.getSchemaWithAppliedConditionalSchemaProperties(schema, condition, parentPointer, controlName);
         }
       }
 
       return schema;
     },
-    addConditionalSchemaPropertiesIfConditionIsSatisfied(
+    getSchemaWithAppliedConditionalSchemaProperties(
       initialControlSchema: JSONSchema7,
       ifElseThenBlock: { if?: any; else?: any; then?: any },
       parentPointer: string,
       controlName: string
     ) {
+      let schema;
       for (const propertyWithCondition of Object.keys(ifElseThenBlock.if?.properties)) {
         const pathInFormDataParts = pull(parentPointer.split('/'), 'properties', 'attributes');
         pathInFormDataParts.push(propertyWithCondition);
         const pathInFormData = pathInFormDataParts.join('/');
 
         if (JsonPointer.get(this.value, pathInFormData) === ifElseThenBlock.if.properties[propertyWithCondition].const) {
-          initialControlSchema = merge(initialControlSchema, ifElseThenBlock.then?.properties?.[controlName]);
+          schema = merge(initialControlSchema, ifElseThenBlock.then?.properties?.[controlName]);
         } else {
-          initialControlSchema = merge(initialControlSchema, ifElseThenBlock.else?.properties?.[controlName]);
+          schema = merge(initialControlSchema, ifElseThenBlock.else?.properties?.[controlName]);
         }
       }
-      return initialControlSchema;
+      return schema;
     }
   },
   render(h): VNode {
