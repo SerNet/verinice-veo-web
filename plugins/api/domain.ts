@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Jonas Heitmann
+ * Copyright (C) 2021  Jonas Heitmann, Samuel Vitzthum
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Client } from '~/plugins/api';
-import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoObjectSchema, IVeoUnit } from '~/types/VeoTypes';
 
 export default function (api: Client) {
   return {
@@ -57,6 +57,20 @@ export default function (api: Client) {
           id
         },
         query
+      });
+    },
+
+    /**
+     * Update a type definition (object schema) in a domain
+     * @param id domain ID
+     * @param objectType object type
+     * @param data object schema
+     * @returns ?
+     */
+    updateTypeDefinition(id: string, objectType: string, data: IVeoObjectSchema): Promise<unknown> {
+      return api.req(`/api/domains/${id}/elementtypedefinitions/${objectType}/updatefromobjectschema`, {
+        method: 'POST',
+        json: data
       });
     }
   };
