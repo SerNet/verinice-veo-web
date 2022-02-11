@@ -111,7 +111,7 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropOptions, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst } from 'lodash';
+import { upperFirst, merge } from 'lodash';
 
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
@@ -188,6 +188,21 @@ export default defineComponent({
         currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
       } else {
         currentFormSchema.value = undefined;
+      }
+
+      const subType = formSchemas.value.find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
+
+      // Set sub type and status if subType was not set and the user views the object with a subtype
+      if (subType && props.domainId && !objectData.value.domains?.[props.domainId]?.subType) {
+        const newDomainObject = {
+          domains: {
+            [props.domainId]: {
+              subType,
+              status: 'NEW'
+            }
+          }
+        };
+        objectData.value = merge(objectData.value, newDomainObject);
       }
     });
 
