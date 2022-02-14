@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { JSONSchema7TypeName } from 'json-schema';
+import { UISchemaElement } from './UISchema';
 import { IBaseObject } from '~/lib/utils';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
@@ -93,13 +94,37 @@ export interface IVeoCustomAspects {
   [key: string]: IVeoCustomAspect;
 }
 
+export interface IVeoTranslationCollection {
+  [key: string]: string;
+}
+
 export interface IVeoReactiveFormAction {
   attributeName: string;
   handler: (newValue: string, newObject: IBaseObject, oldObject: IBaseObject) => void;
 }
 
 export interface IVeoFormsAdditionalContext {
-  [pointer: string]: IBaseObject;
+  [pointer: string]: {
+    objectSchema?: IBaseObject;
+    formSchema?: IBaseObject;
+  };
+}
+
+export interface IVeoFormsControlProps {
+  customTranslation: IVeoTranslationCollection;
+  disabled: boolean;
+  elements: UISchemaElement[] | undefined;
+  generalTranslation: IVeoTranslationCollection;
+  name: string;
+  objectCreationDisabled: boolean;
+  options: {
+    label: any;
+    [option: string]: any;
+  };
+  schema: IBaseObject;
+  validation: { objectSchema: { errorMsg: any } };
+  value: any;
+  visible: boolean;
 }
 
 export interface IVeoPaginatedResponseMeta {
@@ -153,10 +178,6 @@ export interface IVeoObjectSchemaPatternObject extends IVeoObjectSchemaProperty 
 export interface IVeoObjectSchemaArray extends IVeoObjectSchemaProperty {
   type: 'array';
   items: any;
-}
-
-export interface IVeoTranslationCollection {
-  [key: string]: string;
 }
 
 export interface IVeoObjectSchemaTranslations {

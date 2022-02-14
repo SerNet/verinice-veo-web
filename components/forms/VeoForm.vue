@@ -30,7 +30,7 @@ import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
-import { IVeoFormsAdditionalContext, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormsAdditionalContext, IVeoFormsControlProps, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 import { getDefaultReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
@@ -155,10 +155,20 @@ export default Vue.extend({
       if (this.domainId) {
         return {
           [`#/properties/domains/properties/${this.domainId}/properties/status`]: {
-            disabled: !this.value.domains?.[this.domainId]?.subType
+            formSchema: {
+              disabled: !this.value.domains?.[this.domainId]?.subType,
+              enum: (() => {
+                const scope = `#/properties/domains/properties/${this.domainId}/properties/status`;
+                let elementSchema: any = cloneDeep(JsonPointer.get(this.schema, scope) || {});
+                elementSchema = this.addConditionalSchemaPropertiesToControlSchema(elementSchema, scope);
+                return elementSchema?.enum?.map(
+                  (status: string) => this.generalTranslation[`${this.schema.title}_${this.value.domains?.[this.domainId]?.subType}_status_${status}`] || status
+                );
+              })()
+            }
           },
           [`#/properties/domains/properties/${this.domainId}/properties/subType`]: {
-            disabled: this.disableSubTypeSelect
+            formSchema: { disabled: this.disableSubTypeSelect }
           }
         };
       } else {
@@ -388,10 +398,11 @@ export default Vue.extend({
         };
       }
 
-      const conditionsForControl = element.scope && this.localAdditionalContext[element.scope];
+      const additionalFSConditions = element.scope && this.localAdditionalContext[element.scope]?.formSchema;
+      const additionalOSContext = element.scope && this.localAdditionalContext[element.scope]?.objectSchema;
       const options = {
         ...element.options,
-        ...conditionsForControl
+        ...additionalFSConditions
       };
 
       return h(Control, {
@@ -404,8 +415,9 @@ export default Vue.extend({
           },
           disabled: this.disabled || options.disabled,
           objectCreationDisabled: this.objectCreationDisabled,
-          ...partOfProps
-        },
+          ...partOfProps,
+          schema: { ...partOfProps.schema, ...additionalOSContext }
+        } as IVeoFormsControlProps,
         on: {
           input: (v: any) => element.scope && this.setValue(element.scope, v),
           change: (v: any) => element.scope && this.setValue(element.scope, v)
