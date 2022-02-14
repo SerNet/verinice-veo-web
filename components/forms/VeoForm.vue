@@ -161,7 +161,7 @@ export default Vue.extend({
                 const scope = `#/properties/domains/properties/${this.domainId}/properties/status`;
                 let elementSchema: any = cloneDeep(JsonPointer.get(this.schema, scope) || {});
                 elementSchema = this.addConditionalSchemaPropertiesToControlSchema(elementSchema, scope);
-                return elementSchema.enum.map(
+                return elementSchema?.enum?.map(
                   (status: string) => this.generalTranslation[`${this.schema.title}_${this.value.domains?.[this.domainId]?.subType}_status_${status}`] || status
                 );
               })()
