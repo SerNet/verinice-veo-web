@@ -159,10 +159,14 @@ export default defineComponent({
         objectTypes.value = await $api.schema.fetchAll();
       }
       objectSchemas.value = [];
-      for (const objectType of objectTypes.value) {
-        objectSchemas.value.push(await $api.schema.fetch(objectType.schemaName, [props.domainId]));
+
+      // We only load the objectschemas to avoid loading some when the domain id is set and some if it isn't set
+      if (props.domainId) {
+        for (const objectType of objectTypes.value) {
+          objectSchemas.value.push(await $api.schema.fetch(objectType.schemaName, [props.domainId]));
+        }
+        formSchemas.value = await $api.form.fetchAll(props.domainId);
       }
-      formSchemas.value = await $api.form.fetchAll(props.domainId);
     });
 
     const objectTypesChildItems = computed<INavItem[]>(() =>
