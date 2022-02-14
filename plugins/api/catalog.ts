@@ -24,24 +24,27 @@ export default function (api: Client) {
      * Loads all catalogs
      *
      * @param domainId The id of the domain to fetch the catalogs for.
-     * @param params Additional request params
+     * @param query Additional request query params
      */
-    fetchAll(domainId: string, params: Record<string, string> = {}): Promise<IVeoCatalog[]> {
-      params.domain = domainId;
+    fetchAll(domainId: string, query: Record<string, string> = {}): Promise<IVeoCatalog[]> {
+      query.domain = domainId;
 
       return api.req('/api/catalogs/', {
-        params
+        query
       });
     },
 
     /**
      * Loads a catalog by its uuid
      *
-     * @param params Additional request params
+     * @param query Additional request query params
      */
-    fetch(id: string, params: Record<string, string> = {}): Promise<IVeoCatalog> {
-      return api.req(`/api/catalogs/${id}`, {
-        params
+    fetch(id: string, query: Record<string, string> = {}): Promise<IVeoCatalog> {
+      return api.req('/api/catalogs/:id', {
+        params: {
+          id
+        },
+        query
       });
     },
 
@@ -49,13 +52,16 @@ export default function (api: Client) {
      * Load all items belonging to a catalog.
      *
      * @param catalogId Id of the catalog to fetch the items for.
-     * @param params Additional request params.
+     * @param query Additional request query params.
      */
-    fetchItems(catalogId: string, domainId: string, params: Record<string, string> = {}): Promise<IVeoCatalogItem[]> {
-      params.domain = domainId;
+    fetchItems(catalogId: string, domainId: string, query: Record<string, string> = {}): Promise<IVeoCatalogItem[]> {
+      query.domain = domainId;
 
-      return api.req(`/api/catalogs/${catalogId}/items`, {
-        params
+      return api.req('/api/catalogs/:catalogId/items', {
+        params: {
+          catalogId
+        },
+        query
       });
     },
 
@@ -63,13 +69,17 @@ export default function (api: Client) {
      * Load a specific catalog item
      *
      * @param catalogId Id of the catalog to fetch the items for.
-     * @param params Additional request params.
+     * @param query Additional request query params.
      */
-    fetchItem(catalogId: string, itemId: string, domainId: string, params: Record<string, string> = {}): Promise<IVeoCatalogItem> {
-      params.domain = domainId;
+    fetchItem(catalogId: string, itemId: string, domainId: string, query: Record<string, string> = {}): Promise<IVeoCatalogItem> {
+      query.domain = domainId;
 
-      return api.req(`/api/catalogs/${catalogId}/items/${itemId}`, {
-        params
+      return api.req('/api/catalogs/:catalogId/items/:itemId', {
+        params: {
+          catalogId,
+          itemId
+        },
+        query
       });
     }
   };

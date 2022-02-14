@@ -1,0 +1,14 @@
+title: Tutorial test for steps (english)
+description: A test for steps
+route: /hints
+steps:
+  - title: Hints
+    intro: Show those little bubbles which are hints
+    element: '[data-hint=showHintBtn]'
+  - title: Tutorial steps
+    intro: Start first [steps](/hints?test=123) of the <a href="/hints?test=123">tutorial</a>
+    element: '[data-hint=showTutorialBtn]'
+  - title: Hide menu
+    intro: |
+      That's how you hide the **navigation**
+    element: '#app > div > nav > div.v-navigation-drawer__append > div > div'

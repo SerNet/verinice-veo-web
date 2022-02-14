@@ -1,0 +1,15 @@
+title: Unitauswahl
+description: Wahl der Unit
+route: /
+steps:
+  - title: Demo Unit starten
+    element: '#app > div > header > div > div.d-flex.flex-grow-0.mr-6 > div.d-inline-block'
+    intro: Hiermit starten sie die Demo Unit
+  - title: Wählen Sie eine Unit
+    element: '#app > div > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.v-data-iterator > div.v-input'
+    intro: Einfach den Namen der Unit eintippen
+hints:
+  - hint: Demo Unit starten
+    element: '#app > div > header > div > div.d-flex.flex-grow-0.mr-6 > div.d-inline-block'
+  - hint: Wählen Sie eine Unit
+    element: '#app > div > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.v-data-iterator > div.v-input'

@@ -49,6 +49,7 @@
             :general-translation="generalTranslation"
             :custom-translation="customTranslation"
             :disabled="disabled"
+            :domain-id="domainId"
             @input="onInput"
           />
         </v-list-item-content>
@@ -120,6 +121,10 @@ export default Vue.extend({
     },
     elements: {
       type: Array,
+      default: undefined
+    },
+    domainId: {
+      type: String,
       default: undefined
     },
     disabled: Boolean,

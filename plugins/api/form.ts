@@ -27,20 +27,20 @@ export default function (api: Client) {
      *
      * @param parent
      */
-    fetchAll(domain?: string, params?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
-      if (!params) {
-        params = {};
+    fetchAll(domain?: string, query?: Record<string, string>): Promise<IVeoFormSchemaMeta[]> {
+      if (!query) {
+        query = {};
       }
 
       if (domain) {
-        params.domainId = domain;
+        query.domainId = domain;
       }
 
       // TODO: Remove: Currently the domainId in the forms api isn't linked with the id of the existing domain, so we ignore the filter.
-      delete params.domainId;
+      delete query.domainId;
 
       return api.req('/api/forms/', {
-        params
+        query
       });
     },
 
@@ -52,9 +52,9 @@ export default function (api: Client) {
      * @param form
      * @returns UUID of the new form
      */
-    create(form: IVeoFormSchema): Promise<string> {
+    create(domainId: string, form: IVeoFormSchema): Promise<string> {
       return api.req('/api/forms/', {
-        json: form
+        json: { domainId, ...form }
       });
     },
 
@@ -63,10 +63,16 @@ export default function (api: Client) {
      *
      * NOT PAGINATED
      *
+     * @param domainId The id of the domain to load the formschema for
      * @param id
      */
-    fetch(id: string): Promise<IVeoFormSchema> {
-      return api.req(`/api/forms/${id}`);
+    async fetch(domainId: string, id: string): Promise<IVeoFormSchema> {
+      const formSchema = await api.req('/api/forms/:id', {
+        params: {
+          id
+        }
+      });
+      return JSON.parse(JSON.stringify(formSchema).replaceAll('{CURRENT_DOMAIN_ID}', domainId));
     },
 
     /**
@@ -77,10 +83,13 @@ export default function (api: Client) {
      * @param id
      * @param form
      */
-    update(id: string, form: IVeoFormSchema): Promise<void> {
-      return api.req(`/api/forms/${id}`, {
+    update(id: string, domainId: string, form: IVeoFormSchema): Promise<void> {
+      return api.req('/api/forms/:id', {
         method: 'PUT',
-        json: form
+        params: {
+          id
+        },
+        json: { domainId, ...form }
       });
     },
 
@@ -92,8 +101,11 @@ export default function (api: Client) {
      * @param id
      */
     delete(id: string): Promise<void> {
-      return api.req(`/api/forms/${id}`, {
-        method: 'DELETE'
+      return api.req('/api/forms/:id', {
+        method: 'DELETE',
+        params: {
+          id
+        }
       });
     }
   };

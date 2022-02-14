@@ -25,22 +25,21 @@
     class="mt-8"
   />
   <v-skeleton-loader
-    v-else-if="loading"
+    v-else-if="childItemsLoading"
     class="veo-primary-navigation__menu-item"
     :type="icon ? 'list-item-avatar' : 'list-item'"
-  ></v-skeleton-loader>
+  />
   <v-list-item
     v-else-if="childItems === undefined"
     class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
     :to="to"
-    :exact="exact"
-    :disabled="disabled"
-    active-class="veo-active-link-item"
+    exact
+    active-class="primary--text"
   >
     <v-list-item-icon v-if="icon">
       <v-tooltip
         right
-        :disabled="!miniVariant || false"
+        :disabled="!miniVariant"
       >
         <template #activator="{ on, attrs }">
           <div
@@ -61,11 +60,10 @@
     v-else
     :key="name"
     class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
-    :value="expanded"
     no-action
-    active-class="veo-active-link-group"
-    :sub-group="!topLevelItem"
-    @input="onInputExpanded"
+    color="black"
+    :value="expanded"
+    @click="onGroupClick"
   >
     <template #activator>
       <v-list-item-title>
@@ -75,7 +73,7 @@
     <template #prependIcon>
       <v-tooltip
         right
-        :disabled="!miniVariant || false"
+        :disabled="!miniVariant"
       >
         <template #activator="{ on, attrs }">
           <div
@@ -83,6 +81,7 @@
             v-on="on"
           >
             <v-icon
+              color="rgba(0, 0, 0, 0.54)"
               v-text="icon"
             />
           </div>
@@ -102,25 +101,25 @@
       v-bind="child"
       :key="child.name"
       style="min-height: 28px;"
-      :persist-u-i-state="child.persistCollapsedState"
+      :top-level-item="false"
+      v-on="$listeners"
     />
   </v-list-group>
 </template>
 
 <script lang="ts">
 import { RawLocation } from 'vue-router/types';
-import { defineComponent, nextTick, PropOptions, PropType, Ref, ref, watch } from '@nuxtjs/composition-api';
+import { defineComponent, PropOptions, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { INavItem } from './VeoPrimaryNavigation.vue';
 
-interface IProps extends INavItem {
-  persistUIState: Function;
-  miniVariant: boolean;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   name: 'VeoPrimaryNavigationEntry',
   props: {
+    miniVariant: {
+      type: Boolean,
+      default: false
+    },
     name: {
       type: String,
       required: true
@@ -133,81 +132,33 @@ export default defineComponent<IProps>({
       type: [String, Object],
       default: undefined
     } as PropOptions<RawLocation>,
-    exact: {
-      type: Boolean,
-      default: undefined
-    },
-    disabled: {
-      type: Boolean,
-      required: true
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
     childItems: {
       type: Array as PropType<INavItem[]>,
       default: undefined
     },
-    collapsed: {
+    childItemsLoading: {
       type: Boolean,
       default: false
     },
-    miniVariant: {
-      type: Boolean
-    },
-    topLevelItem: {
+    expanded: {
       type: Boolean,
-      required: true
-    },
-    persistUIState: {
-      type: Function,
-      default: undefined
+      default: false
     }
   },
-  setup(props, context) {
+  setup(props, { emit }) {
     const { t } = useI18n();
-    const expanded: Ref<boolean | undefined> = ref(!props.collapsed);
 
-    watch(
-      () => props.collapsed,
-      (newValue: boolean | undefined) => {
-        if (expanded.value !== !newValue) {
-          expanded.value = !newValue;
-        }
-      }
-    );
-
-    function emitCollapsed(newExpandedVal: boolean | undefined) {
-      context.emit('update:collapsed', !newExpandedVal);
-      props.persistUIState?.(!newExpandedVal);
-    }
-
-    function onInputExpanded(newExpandedVal: boolean | undefined) {
-      // Set local expanded variable to new value
-      expanded.value = newExpandedVal;
-      // Create a special behavior, when minivariant is active
+    function onGroupClick() {
       if (props.miniVariant) {
-        // If new state of a list group is not expanded (false),
-        // but after clicking expansion panel it should be in minivariant it should be opened
-        // therefore hack it with $nextTick to force expansion
-        if (!expanded.value) {
-          nextTick(() => {
-            expanded.value = true;
-            emitCollapsed(expanded.value);
-            context.emit('update-mini-variant', false);
-          });
-        } else {
-          // If a new state of the group is expanded (true), then no need for hack
-          emitCollapsed(expanded.value);
-          context.emit('update-mini-variant', false);
-        }
-      } else {
-        emitCollapsed(expanded.value);
+        emit('expand-menu');
       }
     }
 
-    return { expanded, onInputExpanded, t };
+    return {
+      onGroupClick,
+
+      t
+    };
   }
 });
 </script>

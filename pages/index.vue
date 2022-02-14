@@ -67,8 +67,10 @@ import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 
+export const ROUTE_NAME = 'index';
+
 export default Vue.extend({
-  props: {},
+  name: 'VeoUnitSelectionPage',
   data() {
     return {
       search: '',
@@ -82,7 +84,7 @@ export default Vue.extend({
 
     // Only applicable if the user has only two units (one demo and one main)
     if (this.maxUnits === 2) {
-      const nonDemoUnits = units.filter((unit) => unit.name !== 'Demo');
+      const nonDemoUnits: IVeoUnit[] = units.filter((unit: IVeoUnit) => unit.name !== 'Demo');
       const myNonDemoUnit = nonDemoUnits.find((unit) => unit.createdBy === this.$user.auth.profile?.username);
 
       // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect

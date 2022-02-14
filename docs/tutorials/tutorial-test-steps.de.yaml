@@ -1,0 +1,14 @@
+title: Tutorial Test für Steps (Deutsch)
+description: Ein Test für Steps
+route: /hints
+steps:
+  - title: Hinweise
+    intro: Die kleinen Bubbles anzeigen, die Hinweise anzeigen
+    element: '[data-hint=showHintBtn]'
+  - title: Tutorial Schritte
+    intro: Den ersten [Schritt](/hints?test=123) im <a href="/hints?test=123">Tutorial</a> starten
+    element: '[data-hint=showTutorialBtn]'
+  - title: Menü verstecken
+    intro: | 
+      So klappt man die **Navigation** ein
+    element: '#app > div > nav > div.v-navigation-drawer__append > div > div'

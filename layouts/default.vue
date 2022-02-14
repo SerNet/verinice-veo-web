@@ -43,19 +43,25 @@
       <div
         class="d-flex flex-grow-0 mr-6"
       >
-        <v-btn
-          id="stepFour"
-          outlined
-          color="primary"
-          class="veo-list-searchbar__button"
-          role="submit"
-          type="submit"
-          @click="addHints()"
-        >
-          <v-icon>
-            mdi-information-outline
-          </v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-btn
+              outlined
+              color="primary"
+              class="veo-list-searchbar__button"
+              role="submit"
+              type="submit"
+              :disabled="!hasTutorials"
+              v-bind="attrs"
+              @click="tutorialVisible?stopTutorial():startTutorial()"
+              v-on="on"
+            >
+              <v-icon v-text="tutorialVisible?'mdi-information-off-outline':'mdi-information-outline'" />
+            </v-btn>
+          </template>
+          <span v-text="t(tutorialVisible?'hideHelp':'showHelp')" />
+        </v-tooltip>
+        
         <VeoDemoUnitButton />
         <VeoLanguageSwitch />
       </div>
@@ -72,6 +78,7 @@
     <VeoPrimaryNavigation
       v-model="drawer"
       :domain-id="domainId"
+      :unit-id="unitId"
     />
     <v-main
       style="max-height: 100vh;"
@@ -93,26 +100,25 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, Ref, ref, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
-import introJs from 'intro.js';
 
 import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useTutorials } from '~/composables/intro';
 
 import 'intro.js/minified/introjs.min.css';
 
-interface IProps {}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   setup(_props, context) {
     const { $user, params, $api } = useContext();
     const route = useRoute();
     const router = useRouter();
+
     const { alerts, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
     listenToRootEvents(context.root);
-
+    const { load: startTutorial, stop: stopTutorial, hasTutorials, visible: tutorialVisible } = useTutorials();
     //
     // Global navigation
     //
@@ -180,24 +186,6 @@ export default defineComponent<IProps>({
 
     const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
 
-    const addHints = () => {
-      const intro = introJs();
-      intro.setOptions({
-        hints: [
-          { hint: 'Das ist ein Hinweis', element: '#hintOne' },
-          { hint: 'Das ist ein zweiter Hinweis', element: '#hintTwo' }
-        ]
-      });
-      intro.addHints();
-      const allHints = document.getElementsByClassName('introjs-hint').length;
-      const allHintsDiv = document.getElementsByClassName('introjs-hints')[0];
-      intro.onhintclose(() => {
-        const remainingHints = allHints - document.getElementsByClassName('introjs-hidehint').length;
-        if (allHintsDiv.parentNode !== null && remainingHints === 0) {
-          allHintsDiv.parentNode.removeChild(allHintsDiv);
-        }
-      });
-    };
     return {
       domainId,
       unitId,
@@ -206,7 +194,11 @@ export default defineComponent<IProps>({
       breadcrumbsKey,
       homeLink,
       alerts,
-      addHints
+      hasTutorials,
+      startTutorial,
+      stopTutorial,
+      tutorialVisible,
+      t
     };
   },
   head() {
@@ -232,3 +224,16 @@ export default defineComponent<IProps>({
   }
 }
 </style>
+
+<i18n>
+{
+  "de": {
+    "showHelp": "Kontext-Hilfe anzeigen",
+    "hideHelp": "Kontext-Hilfe ausblenden"
+  },
+  "en": {
+    "showHelp": "Show contextual help",
+    "hideHelp": "Hide contextual help"
+  }
+}
+</i18n>

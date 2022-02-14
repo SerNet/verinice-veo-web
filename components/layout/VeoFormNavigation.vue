@@ -88,6 +88,10 @@ export default Vue.extend({
     nestingLevel: {
       type: Number,
       default: 0
+    },
+    scrollWrapperId: {
+      type: String,
+      default: 'scroll-wrapper'
     }
   },
   data(): IData {
@@ -106,8 +110,10 @@ export default Vue.extend({
       return `ml-${this.nestingLevel * 4}`;
     },
     // eslint-disable-next-line no-undef
-    itemsToObserve(): NodeListOf<Element> {
-      return document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', '));
+    itemsToObserve(): NodeListOf<Element> | false {
+      return this.items.length
+          ? document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', '))
+          : false;
     }
   },
   watch: {
@@ -134,11 +140,11 @@ export default Vue.extend({
   },
   mounted() {
     // Cache scrollWrapper element
-    this.scrollWrapper = document.getElementById('scroll-wrapper');
+    this.scrollWrapper = document.getElementById(this.scrollWrapperId);
 
     // Activate Observer when the component is mounted
     const options = {
-      root: document.getElementById('scroll-wrapper'),
+      root: document.getElementById(this.scrollWrapperId),
       rootMargin: '-200px 0px 0px 0px', // -72px because of sticky header
       threshold: 0
     };
@@ -174,14 +180,18 @@ export default Vue.extend({
       }
     },
     activateObserver() {
-      this.itemsToObserve.forEach((section) => {
-        this.observer?.observe(section);
-      });
+      if (this.itemsToObserve) {
+        this.itemsToObserve.forEach((section) => {
+          this.observer?.observe(section);
+        });
+      }
     },
     deactivateObserver() {
-      this.itemsToObserve.forEach((section) => {
-        this.observer?.unobserve(section);
-      });
+      if (this.itemsToObserve) {
+        this.itemsToObserve.forEach((section) => {
+          this.observer?.unobserve(section);
+        });
+      }
     }
   }
 });

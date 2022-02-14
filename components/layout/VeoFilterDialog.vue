@@ -29,6 +29,7 @@
             :key="option.name || `${option.type}_${index}`"
             :data-cy="option.type !== IVeoFilterOptionType.DIVIDER ? $utils.prefixCyData($options, 'filter-option') : ''"
             dense
+            class="px-0"
           >
             <v-divider
               v-if="option.type === IVeoFilterOptionType.DIVIDER"
@@ -41,7 +42,7 @@
               :rules="option.required ? [requiredRule] : []"
               :disabled="option.disabled"
               :name="option.name"
-              clearable
+              :clearable="!option.required"
               dense
               @input="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
             />
@@ -54,7 +55,7 @@
               :items="option.selectOptions"
               :disabled="option.disabled"
               :name="option.name"
-              clearable
+              :clearable="!option.required"
               dense
               @change="(newValue) => option.onChange ? option.onChange(newValue) : () => {}"
             />
@@ -71,7 +72,7 @@
             />
           </v-list-item>
           <v-list-item
-            class="justify-center"
+            class="justify-center px-0"
             :data-cy="$utils.prefixCyData($options, 'expand-button')"
             @click="showAllFilters = !showAllFilters"
           >
@@ -119,7 +120,7 @@ import { clone, omitBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { BaseObject } from '../forms/utils';
-import { IBaseObject } from '~/lib/utils';
+import { IBaseObject, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoFormSchemaMeta, IVeoTranslations } from '~/types/VeoTypes';
 
@@ -198,11 +199,10 @@ export default defineComponent({
         subTypes.value,
         schema,
         // @ts-ignore TODO: Remove before merge
-        Object.values(_schema.properties.domains.properties)[0].allOf?.map((mapping) => ({
-          subType: mapping.if.properties.subType.const,
-          status: mapping.then.properties.status.enum,
-          name: formschemas.value.find((fs) => fs.subType === mapping.if.properties.subType.const)?.name || {}
-        })) || []
+        extractSubTypesFromObjectSchema(_schema).map((subType) => ({
+          ...subType,
+          name: formschemas.value.find((fs) => fs.subType === subType.subType)?.name || {}
+        }))
       );
     }
 

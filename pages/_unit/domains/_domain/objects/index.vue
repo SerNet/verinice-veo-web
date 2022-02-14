@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoPage
-    :title="t('objects')"
+    :title="t('objectOverview')"
     fullsize
     :loading="fetchState.pending"
   >
@@ -43,13 +43,7 @@
       @success="fetch(); onCloseDeleteDialog(false)"
       @error="showError('unlink', itemDelete, $event)"
     />
-    <template #header>
-      <h2 class="mb-5">
-        {{ upperFirst(t('overview').toString()) }}
-      </h2>
-    </template>
     <div class="d-flex my-2">
-      <h2>{{ upperFirst(t('allObjects').toString()) }}</h2>
       <v-spacer />
       <v-btn
         v-if="objectType"
@@ -61,12 +55,29 @@
         <v-icon left>
           {{ mdiPlus }}
         </v-icon>
-        <span>{{ t('createObject', [objectType]) }}</span>
+        <span>{{ t('createObject', [createObjectLabel]) }}</span>
       </v-btn>
     </div>
     <v-row no-gutters>
       <v-col
-        cols="11"
+        cols="auto"
+        class="d-flex align-center"
+      >
+        <v-btn
+          v-cy-name="'filter-button'"
+          class="mr-2"
+          rounded
+          primary
+          depressed
+          small
+          style="border: 1px solid black"
+          @click="filterDialogVisible = true"
+        >
+          <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
+        </v-btn>
+      </v-col>
+      <v-col
+        cols="auto"
         class="grow"
       >
         <v-chip-group v-cy-name="'chips'">
@@ -79,19 +90,6 @@
             @click:close="clearFilter(k)"
           />
         </v-chip-group>
-      </v-col>
-      <v-col
-        cols="1"
-        class="shrink text-right"
-      >
-        <v-btn
-          v-cy-name="'filter-button'"
-          class="ma-1"
-          icon
-          @click="filterDialogVisible = true"
-        >
-          <v-icon>{{ mdiFilter }}</v-icon>
-        </v-btn>
       </v-col>
     </v-row>
     <VeoObjectTable
@@ -138,7 +136,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
@@ -157,6 +155,7 @@ export default defineComponent({
 
     const items = ref<IVeoPaginatedResponse<IVeoEntity[]>>();
     const formschemas = ref<IVeoFormSchemaMeta[]>([]);
+    const translations = ref<IVeoTranslations['lang']>({});
 
     const itemDelete = ref<IVeoEntity>();
 
@@ -201,13 +200,23 @@ export default defineComponent({
       delete params.objectType;
       delete params.page;
 
-      const [schemas, entities] = await Promise.all([$api.form.fetchAll(domainId.value), $api.entity.fetchAll(objectType, pagination.page, params)]);
+      const [schemas, entities, _translations] = await Promise.all([
+        $api.form.fetchAll(domainId.value),
+        $api.entity.fetchAll(objectType, pagination.page, params),
+        $api.translation.fetch(['de', 'en'])
+      ]);
       formschemas.value = schemas;
       items.value = entities;
+      translations.value = _translations.lang;
     });
 
     // refetch on changes via FilterDialog or URL query parameters
-    watch(filter, fetch);
+    watch(filter, (oldVal, newVal) => {
+      if (oldVal.objectType !== newVal.objectType) {
+        pagination.page = 1;
+      }
+      fetch();
+    });
 
     // parse UUID from URL
     const domainId = computed(() => {
@@ -246,10 +255,14 @@ export default defineComponent({
         // Translate sub types
         case 'subType':
           return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+        case 'status':
+          return translations.value[locale.value]?.[`${objectType.value}_${subType.value}_status_${value}`] || value;
         default:
           return value;
       }
     };
+
+    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : upperFirst(objectType.value)));
 
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {
@@ -263,10 +276,10 @@ export default defineComponent({
 
     const openItem = ({ item }: { item: IVeoEntity }) => {
       return router.push({
-        name: 'unit-domains-domain-objects-id',
+        name: 'unit-domains-domain-objects-entity',
         params: {
           ...route.value.params,
-          id: createUUIDUrlParam(item.type, item.id)
+          entity: createUUIDUrlParam(item.type, item.id)
         },
         query: {
           subType: subType.value
@@ -304,6 +317,7 @@ export default defineComponent({
       domainId,
       activeFilterKeys,
       clearFilter,
+      createObjectLabel,
       fetch,
       fetchState,
       filter,
@@ -334,9 +348,8 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "objects": "objects",
-    "overview": "overview",
-    "allObjects": "all objects",
+    "objectOverview": "object overview",
+    "filter": "filter",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
     "clone": "duplicated",
@@ -348,9 +361,8 @@ export default defineComponent({
     }
   },
   "de": {
-    "objects": "Objekte",
-    "overview": "Übersicht",
-    "allObjects": "Alle Objekte",
+    "objectOverview": "Objektübersicht",
+    "filter": "filter",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",
     "clone": "dupliziert",

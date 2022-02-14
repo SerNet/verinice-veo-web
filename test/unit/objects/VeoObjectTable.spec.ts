@@ -141,6 +141,9 @@ describe('VeoObjectTable.vue', () => {
     const perPageSelect = table.find('.v-data-footer .v-input').findComponent<VSelectImpl>(VSelect);
     await perPageSelect.vm.selectItem(15);
     expect(onUpdateItemsPerPage).toBeCalledWith(15);
+    // "reset" items per page in order to not influence following unit tests
+    await perPageSelect.vm.selectItem(20);
+    expect(onUpdateItemsPerPage).toBeCalledWith(20);
   });
 
   it('tests sorting for every sortable column', async () => {

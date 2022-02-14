@@ -16,20 +16,21 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import Vue, { VNode, PropOptions, CreateElement } from 'vue';
+import Vue from 'vue';
+import { VNode, PropOptions, CreateElement } from 'vue/types';
 import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import vjp from 'vue-json-pointer';
 import { ErrorObject, ValidateFunction } from 'ajv';
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, dropRight, merge, pull } from 'lodash';
 import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
 import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
-import { IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoFormsAdditionalContext, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 import { getDefaultReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
@@ -59,7 +60,18 @@ export default Vue.extend({
       type: Object,
       default: undefined
     } as PropOptions<UISchema>,
+    domainId: {
+      type: String,
+      default: undefined
+    },
     disabled: Boolean,
+    /**
+     * If set to true, objects can't be created from within the custom link dropdown
+     */
+    objectCreationDisabled: {
+      type: Boolean,
+      default: false
+    },
     generalTranslation: {
       type: Object,
       default: () => {}
@@ -75,6 +87,10 @@ export default Vue.extend({
     isValid: {
       type: Boolean
     },
+    disableSubTypeSelect: {
+      type: Boolean,
+      default: false
+    },
     errorMessages: {
       type: Array,
       default: () => []
@@ -82,11 +98,14 @@ export default Vue.extend({
     reactiveFormActions: {
       type: Array,
       default: () => []
-    } as PropOptions<IVeoReactiveFormAction[]>
+    } as PropOptions<IVeoReactiveFormAction[]>,
+    additionalContext: {
+      type: Object,
+      default: () => {}
+    } as PropOptions<IVeoFormsAdditionalContext>
   },
   data() {
     return {
-      localSchema: this.schema,
       localUI: this.ui,
       defaultOptions: {
         generator: {
@@ -124,23 +143,36 @@ export default Vue.extend({
   },
   computed: {
     validateFunction(): ValidateFunction {
-      return ajv.compile(this.localSchema);
+      return ajv.compile(this.schema);
     },
     mergedOptions(): IOptions {
       return merge(this.defaultOptions, this.options);
     },
     localReactiveFormActions(): IVeoReactiveFormAction[] {
       return [...this.reactiveFormActions, ...getDefaultReactiveFormActions(this)];
+    },
+    defaultAdditionalContext(): IVeoFormsAdditionalContext {
+      if (this.domainId) {
+        return {
+          [`#/properties/domains/properties/${this.domainId}/properties/status`]: {
+            disabled: !this.value.domains?.[this.domainId]?.subType
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/subType`]: {
+            disabled: this.disableSubTypeSelect
+          }
+        };
+      } else {
+        return {};
+      }
+    },
+    localAdditionalContext(): IVeoFormsAdditionalContext {
+      return { ...this.defaultAdditionalContext, ...this.additionalContext };
     }
   },
   watch: {
     schema: {
       immediate: true,
       handler() {
-        // IMPORTANT! This is needed to update localSchema when schema is updated
-        // Else it cannot detect updated object of schema and does not update veo-form
-        this.localSchema = JSON.parse(JSON.stringify(this.schema));
-        // If no UI has been set, the schema must be considered
         this.updateUI();
         this.validate();
       }
@@ -294,7 +326,7 @@ export default Vue.extend({
     getInvalidFieldLabel(field: string): string {
       return (this.customTranslation && this.customTranslation[field]) || (this.generalTranslation && this.generalTranslation[field]) || field;
     },
-    createLayout(element: ILayout, formSchemaPointer: string, elementLevel: number, h: CreateElement, rule: IRule): VNode {
+    createLayout(element: ILayout, formSchemaPointer: string, h: CreateElement, rule: IRule): VNode {
       return h(
         Layout,
         {
@@ -304,7 +336,7 @@ export default Vue.extend({
             ...rule
           }
         },
-        this.createChildren(element, formSchemaPointer, elementLevel, h, this.createComponent)
+        this.createChildren(element, formSchemaPointer, h)
       );
     },
     createControl(element: IControl, h: CreateElement, rule: IRule): VNode {
@@ -319,31 +351,59 @@ export default Vue.extend({
       };
 
       if (element.scope) {
+        // as custom links may consist of many rows, the errors needs special handling in order to display the error in their belonging input field (row)
+        let linkErrors = undefined as any;
+        if (element.scope.includes('link')) {
+          const errorKeys = Object.keys(this.errorsMsgMap).filter((errorKey) => errorKey.includes(element.scope!)); // get error keys for all faulty rows of a custom link
+          if (errorKeys.length > 0) {
+            linkErrors = {};
+            for (const errorKey of errorKeys) {
+              const indexFromString = errorKey
+                .split('/')
+                .splice(5)
+                .find((item) => Number.isInteger(Number(item))) as string | undefined;
+              linkErrors[`_${indexFromString || '0'}`] = this.errorsMsgMap[errorKey]; // assign error to belonging index (row) of custom link
+            }
+          }
+        }
+
         const elementName = element.scope.split('/').pop() as string;
-        const elementSchema: any = JsonPointer.get(this.localSchema, element.scope);
+        let elementSchema: any = cloneDeep(JsonPointer.get(this.schema, element.scope) || {});
         const elementValue: any = JsonPointer.get(this.value, propertyPath(element.scope));
+
+        elementSchema = this.addConditionalSchemaPropertiesToControlSchema(elementSchema, element.scope);
 
         partOfProps = {
           name: elementName,
-          schema: elementSchema ?? {},
+          schema: elementSchema,
           generalTranslation: this.generalTranslation,
           customTranslation: this.customTranslation,
           // TODO: Check InputNumber.vue or other Elements with "clear" and deafult value. Change how default value is used to fix bug
           value: typeof elementValue !== 'undefined' ? elementValue : elementSchema && elementSchema.default,
           validation: {
             objectSchema: {
-              errorMsg: this.errorsMsgMap[element.scope]
+              errorMsg: this.errorsMsgMap[element.scope] || linkErrors
             }
           }
         };
       }
 
+      const conditionsForControl = element.scope && this.localAdditionalContext[element.scope];
+      const options = {
+        ...element.options,
+        ...conditionsForControl
+      };
+
       return h(Control, {
         props: {
           ...rule,
           elements: element.elements,
-          options: { ...element.options, label: this.schema.required?.includes(partOfProps.name) ? element.options?.label + '*' : element.options?.label },
-          disabled: this.disabled,
+          options: {
+            ...options,
+            label: this.schema.required?.includes(partOfProps.name) ? element.options?.label + '*' : element.options?.label
+          },
+          disabled: this.disabled || options.disabled,
+          objectCreationDisabled: this.objectCreationDisabled,
           ...partOfProps
         },
         on: {
@@ -361,20 +421,14 @@ export default Vue.extend({
         }
       });
     },
-    createChildren(
-      element: UISchemaElement,
-      formSchemaPointer: string,
-      elementLevel: number,
-      h: CreateElement,
-      createComponent: (element: UISchemaElement, formSchemaPointer: string, elementLevel: number, h: CreateElement) => VNode
-    ) {
-      return element.elements && element.elements.map((elem, index) => createComponent(elem, `${formSchemaPointer}/elements/${index}`, elementLevel + 1, h));
+    createChildren(element: UISchemaElement, formSchemaPointer: string, h: CreateElement) {
+      return element.elements && element.elements.map((elem, index) => this.createComponent(elem, `${formSchemaPointer}/elements/${index}`, h));
     },
-    createComponent(element: UISchemaElement, formSchemaPointer: string, elementLevel: number, h: CreateElement): VNode {
+    createComponent(element: UISchemaElement, formSchemaPointer: string, h: CreateElement): VNode {
       const rule = evaluateRule(this.value, element.rule);
       switch (element.type) {
         case 'Layout':
-          return this.createLayout(element, formSchemaPointer, elementLevel, h, rule);
+          return this.createLayout(element, formSchemaPointer, h, rule);
         case 'Control':
           return this.createControl(element, h, rule);
         case 'Label':
@@ -387,10 +441,60 @@ export default Vue.extend({
       } else {
         this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.mergedOptions.generator.excludedProperties, Mode.VEO));
       }
+    },
+    getParentPointer(elementPointer: string): string {
+      const parentParts = elementPointer.split('/');
+      return dropRight(parentParts, 2).join('/');
+    },
+    addConditionalSchemaPropertiesToControlSchema(initialControlSchema: JSONSchema7, pointer: string) {
+      let schema = cloneDeep(initialControlSchema);
+
+      const controlName = pointer.split('/').pop() as string;
+      // Search for conditionally applied properties of the new control (based in the parent object in the objectschema)
+      const parentPointer = this.getParentPointer(pointer);
+      const parentSchema: any = JsonPointer.get(this.schema, parentPointer);
+
+      if (parentSchema) {
+        const getSchemaCompositionConditions = (schemaCompositionObject: any) =>
+          schemaCompositionObject?.filter((condition: any) => condition.then?.properties?.[controlName] || condition.else?.properties?.[controlName]) || [];
+
+        const conditionsToCheck = [
+          ...(parentSchema.then?.properties?.[controlName] || parentSchema.else?.properties?.[controlName] ? [parentSchema] : []),
+          ...getSchemaCompositionConditions(parentSchema.allOf),
+          ...getSchemaCompositionConditions(parentSchema.AnyOf),
+          ...getSchemaCompositionConditions(parentSchema.OneOf)
+        ];
+
+        for (const condition of conditionsToCheck) {
+          schema = this.getSchemaWithAppliedConditionalSchemaProperties(schema, condition, parentPointer, controlName);
+        }
+      }
+
+      return schema;
+    },
+    getSchemaWithAppliedConditionalSchemaProperties(
+      initialControlSchema: JSONSchema7,
+      ifElseThenBlock: { if?: any; else?: any; then?: any },
+      parentPointer: string,
+      controlName: string
+    ) {
+      let schema;
+      for (const propertyWithCondition of Object.keys(ifElseThenBlock.if?.properties)) {
+        const pathInFormDataParts = pull(parentPointer.split('/'), 'properties', 'attributes');
+        pathInFormDataParts.push(propertyWithCondition);
+        const pathInFormData = pathInFormDataParts.join('/');
+
+        if (JsonPointer.get(this.value, pathInFormData) === ifElseThenBlock.if.properties[propertyWithCondition].const) {
+          schema = merge(initialControlSchema, ifElseThenBlock.then?.properties?.[controlName]);
+        } else {
+          schema = merge(initialControlSchema, ifElseThenBlock.else?.properties?.[controlName]);
+        }
+      }
+      return schema;
     }
   },
   render(h): VNode {
-    return h(Wrapper, [this.createComponent(this.localUI, '#', 0, h)]);
+    return h(Wrapper, [this.createComponent(this.localUI, '#', h)]);
   }
 });
 </script>

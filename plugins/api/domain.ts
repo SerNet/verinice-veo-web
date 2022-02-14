@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Jonas Heitmann
+ * Copyright (C) 2021  Jonas Heitmann, Samuel Vitzthum
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,18 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Client } from '~/plugins/api';
-import { IVeoDomain, IVeoUnit } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoObjectSchema, IVeoUnit } from '~/types/VeoTypes';
 
 export default function (api: Client) {
   return {
     /**
      * Loads all domains
      *
-     * @param params Additional request params
+     * @param query Additional request query params
      */
-    fetchAll(params?: Record<string, string>): Promise<IVeoDomain[]> {
+    fetchAll(query?: Record<string, string>): Promise<IVeoDomain[]> {
       return api.req('/api/domains/', {
-        params
+        query
       });
     },
 
@@ -35,12 +35,12 @@ export default function (api: Client) {
      * Load all domains belonging to a certain unit
      *
      * @param unitId Id of the unit to load the domains for
-     * @param params Additional request params
+     * @param query Additional request query params
      */
-    async fetchUnitDomains(unitId: string, params?: Record<string, string>): Promise<IVeoDomain[]> {
+    async fetchUnitDomains(unitId: string, query?: Record<string, string>): Promise<IVeoDomain[]> {
       // @ts-ignore
       const unit: IVeoUnit = await api.unit.fetch(unitId);
-      const domains: IVeoDomain[] = await this.fetchAll(params);
+      const domains: IVeoDomain[] = await this.fetchAll(query);
 
       // Only return domains that are present in the current unit
       return domains.filter((domain) => unit.domains.some((unitDomain) => unitDomain.targetUri.includes(domain.id)));
@@ -49,11 +49,32 @@ export default function (api: Client) {
     /**
      * Loads a domain by its uuid
      *
-     * @param params Additional request params
+     * @param query Additional request query params
      */
-    fetch(id: string, params?: Record<string, string>): Promise<IVeoDomain> {
-      return api.req(`/api/domains/${id}`, {
-        params
+    fetch(id: string, query?: Record<string, string>): Promise<IVeoDomain> {
+      return api.req('/api/domains/:id', {
+        params: {
+          id
+        },
+        query
+      });
+    },
+
+    /**
+     * Update a type definition (object schema) in a domain
+     * @param id domain ID
+     * @param objectType object type
+     * @param data object schema
+     * @returns void
+     */
+    updateTypeDefinition(id: string, objectType: string, data: IVeoObjectSchema): Promise<void> {
+      return api.req(`/api/domains/:id/elementtypedefinitions/:type/updatefromobjectschema`, {
+        method: 'POST',
+        params: {
+          id,
+          type: objectType
+        },
+        json: data
       });
     }
   };

@@ -98,6 +98,10 @@ export interface IVeoReactiveFormAction {
   handler: (newValue: string, newObject: IBaseObject, oldObject: IBaseObject) => void;
 }
 
+export interface IVeoFormsAdditionalContext {
+  [pointer: string]: IBaseObject;
+}
+
 export interface IVeoPaginatedResponseMeta {
   totalItemCount: number;
   pageCount: number;

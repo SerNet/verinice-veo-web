@@ -18,7 +18,6 @@
 /// <reference path="../../support/index.d.ts" />
 /// <reference types="cypress" />
 
-import { upperFirst } from 'lodash';
 import { FIRST_STEPS_COMPLETED } from '../../../util/LocalStorage';
 
 describe('Domain dashboard', () => {
@@ -39,19 +38,19 @@ describe('Domain dashboard', () => {
 
   it('Checks whether for every object type a widget gets shown', function () {
     cy.fixture('api/default/schemas/fetchAll.json').then((allSchemas) => {
-      cy.get('[data-cy=unit-domains-domain-status-bar-chart-widget]').should('have.length', Object.keys(allSchemas).length);
+      cy.get('[data-cy=veo-domain-dashboard-page-status-bar-chart-widget]').should('have.length', Object.keys(allSchemas).length);
     });
   });
 
   it('Checks whether every subtype of an object type gets shown and translated if a translation exists', function () {
     // Widget should contain at least one subtype with a translation and one without
-    const widgetIndex = 2;
+    const widgetIndex = 1;
     const objectType = 'process';
 
     cy.fixture(`api/default/schemas/${objectType}.json`).then((objectSchema) => {
       const subTypes = (Object.values(objectSchema.properties.domains.properties)[0] as any).properties.subType.enum;
 
-      cy.get('[data-cy=unit-domains-domain-status-bar-chart-widget]')
+      cy.get('[data-cy=veo-domain-dashboard-page-status-bar-chart-widget]')
         .eq(widgetIndex)
         .within(() => {
           // Correct amount of charts get shown (one for every subtype)
@@ -75,12 +74,12 @@ describe('Domain dashboard', () => {
 
   it('Checks whether a placeholder text gets shown if either no objects or no subtypes exist', function () {
     // Widget should contain at least one subtype with a translation and one without
-    const noSubtypesWidgetIndex = 3;
-    const noObjectsWidgetIndex = 1;
+    const noSubtypesWidgetIndex = 6;
+    const noObjectsWidgetIndex = 5;
     const noObjectsSubtype = 'INC_Incident';
 
     // No subtypes
-    cy.get('[data-cy=unit-domains-domain-status-bar-chart-widget]')
+    cy.get('[data-cy=veo-domain-dashboard-page-status-bar-chart-widget]')
       .eq(noSubtypesWidgetIndex)
       .within(() => {
         // Placeholder text gets shown
@@ -88,7 +87,7 @@ describe('Domain dashboard', () => {
       });
 
     // No objects
-    cy.get('[data-cy=unit-domains-domain-status-bar-chart-widget]')
+    cy.get('[data-cy=veo-domain-dashboard-page-status-bar-chart-widget]')
       .eq(noObjectsWidgetIndex)
       .within(() => {
         // Placeholder text gets shown

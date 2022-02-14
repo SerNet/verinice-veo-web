@@ -68,8 +68,7 @@
 </template>
 
 <script lang="ts">
-import { useRoute, ref, computed, PropOptions, useContext } from '@nuxtjs/composition-api';
-import { defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, onMounted, useRoute, ref, computed, PropOptions, useContext } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiPlus } from '@mdi/js';
@@ -95,7 +94,7 @@ export default defineComponent({
 
     // general stuff
     const schemas = ref<IVeoSchemaEndpoint[]>([]);
-    const domainId = computed(() => separateUUIDParam(route.value.params.id).id);
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     // fetch schemas from api

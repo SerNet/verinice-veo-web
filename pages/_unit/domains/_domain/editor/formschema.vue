@@ -245,6 +245,7 @@
               :ui="formSchema.content"
               :general-translation="translation && translation.lang[language]"
               :custom-translation="formSchema.translation && formSchema.translation[language]"
+              :domain-id="domainId"
             />
           </v-card>
         </template>
@@ -435,14 +436,14 @@ export default defineComponent<IProps>({
 
     async function saveNewSchema() {
       if (formSchema.value) {
-        const id = await $api.form.create(formSchema.value);
+        const id = await $api.form.create(domainId.value, formSchema.value);
         formSchema.value.id = id; // set id from response, so next save would update schema instead of creating another one
       }
     }
 
     async function saveUpdatedSchema() {
       if (formSchema.value?.id) {
-        await $api.form.update(formSchema.value.id, formSchema.value);
+        await $api.form.update(formSchema.value.id, domainId.value, formSchema.value);
       }
     }
 

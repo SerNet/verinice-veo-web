@@ -23,7 +23,6 @@
     :headline="$t('editor.objectschema.headline')"
     persistent
     fixed-header
-    fixed-footer
     :close-function="onClose"
   >
     <template #default>

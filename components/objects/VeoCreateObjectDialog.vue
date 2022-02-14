@@ -36,32 +36,29 @@
         :preselected-sub-type="subType"
         :valid.sync="formValid"
         disable-history
+        scroll-wrapper-id="scroll-wrapper-create-dialog"
+        object-creation-disabled
         @input="isFormDirty = true"
       />
     </template>
     <template #dialog-options>
-      <div
-        class="d-flex fill-width pt-3"
-        style="border-top: 1px solid #0000001F"
+      <v-btn
+        text
+        :data-cy="$utils.prefixCyData($options, 'cancel-button')"
+        @click="dialog = false"
       >
-        <v-btn
-          text
-          :data-cy="$utils.prefixCyData($options, 'cancel-button')"
-          @click="dialog = false"
-        >
-          {{ t('global.button.cancel') }}
-        </v-btn>
-        <v-spacer />
-        <v-btn
-          text
-          color="primary"
-          :disabled="!formValid"
-          :data-cy="$utils.prefixCyData($options, 'save-button')"
-          @click="onSubmit"
-        >
-          {{ t('global.button.save') }}
-        </v-btn>
-      </div>
+        {{ t('global.button.cancel') }}
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        text
+        color="primary"
+        :disabled="!formValid"
+        :data-cy="$utils.prefixCyData($options, 'save-button')"
+        @click="onSubmit"
+      >
+        {{ t('global.button.save') }}
+      </v-btn>
     </template>
   </VeoDialog>
 </template>

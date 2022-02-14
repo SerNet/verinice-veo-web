@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { getCurrentInstance, nextTick, useRoute } from '@nuxtjs/composition-api';
+import { NuxtApp } from '@nuxt/types/app';
+import { getCurrentInstance, nextTick, onMounted, useContext, useRoute } from '@nuxtjs/composition-api';
 import { kebabCase } from 'lodash';
 
 /**
@@ -57,3 +58,33 @@ export const useCypress = () => {
     }
   };
 };
+
+export const onContentUpdate = (callback: (context: { event: string; path: string }) => void) => {
+  const { isDev } = useContext();
+  if (isDev && process.client) {
+    withNuxt(($nuxt: Vue) => {
+      $nuxt.$on('content:update', callback);
+    });
+  }
+};
+
+export const withNuxt = (callback: (nuxt: NuxtApp) => any) => {
+  const win = window as any;
+  if ('$nuxt' in win) {
+    callback(win.$nuxt);
+  } else {
+    win.onNuxtReady(callback);
+  }
+};
+
+export const onFetchFinish = (callback: (nuxt: NuxtApp) => any, interval: number = 100) =>
+  withNuxt((nuxt) => {
+    const intervalHandle = setInterval(() => {
+      if (!nuxt.isFetching) {
+        clearInterval(intervalHandle);
+        nextTick(() => callback(nuxt));
+      }
+    }, interval);
+  });
+
+export const onMountedFetchFinish = (callback: (nuxt: NuxtApp) => any, interval: number = 100) => onMounted(() => onFetchFinish(callback, interval));
