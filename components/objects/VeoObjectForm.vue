@@ -38,6 +38,7 @@
               />
             </v-col>
           </v-row>
+          <v-divider />
         </template>
         <template #default>
           <slot name="prepend-form" />
@@ -234,8 +235,9 @@ export default defineComponent({
 
     const selectedDisplayOption = ref('objectschema');
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
+      const currentSubType = props.value?.domains?.[props.domainId]?.subType;
       const availableFormSchemas: { text: string; value: string | undefined }[] = formSchemas.value
-        .filter((formSchema) => formSchema.modelType === props.objectSchema?.title)
+        .filter((formSchema) => formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType))
         .map((formSchema) => ({
           text: formSchema.name[locale.value] || formSchema.subType,
           value: formSchema.id
