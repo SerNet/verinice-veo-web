@@ -191,8 +191,8 @@ export function createIntro() {
     }, 1000);
 
     onBeforeUnmount(() => {
-      toggleHints();
       hintsVisible.value = false;
+      toggleHints();
       _watchStepsVisible();
       _watchHintsVisible();
       _watchRouteChange?.();
