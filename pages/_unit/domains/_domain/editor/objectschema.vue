@@ -25,128 +25,130 @@
       <VeoPage
         v-if="objectSchemaHelper"
         sticky-header
-        :title="$t('editor.objectschema.headline')"
       >
-        <template #title>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <a
-                ref="downloadButton"
-                href="#"
-                class="text-decoration-none"
-                style="vertical-align: bottom;"
-                @click="downloadSchema()"
-                v-on="on"
-              >
+        <template #header>
+          <div class="d-flex flex-row">
+            <h1>{{ $t('editor.objectschema.headline') }}</h1>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <a
+                  ref="downloadButton"
+                  href="#"
+                  class="text-decoration-none"
+                  style="vertical-align: bottom;"
+                  @click="downloadSchema()"
+                  v-on="on"
+                >
+                  <v-btn
+                    icon
+                    large
+                    color="primary"
+                  >
+                    <v-icon>mdi-download</v-icon>
+                  </v-btn>
+                </a>
+              </template>
+              <template #default>
+                {{ $t('editor.schema.download') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn
+                  v-if="schemaIsValid.warnings.length > 0"
+                  icon
+                  large
+                  color="warning"
+                  class="ml-2"
+                  @click="showErrorDialog = !showErrorDialog"
+                  v-on="on"
+                >
+                  <v-icon>mdi-alert-circle-outline</v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('editor.schema.warnings') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn
+                  icon
+                  large
+                  class="translate-button"
+                  color="primary"
+                  @click="showTranslationDialog = true"
+                  v-on="on"
+                >
+                  <v-icon>mdi-translate</v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('translations') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{ on }">
                 <v-btn
                   icon
                   large
                   color="primary"
+                  @click="detailsDialogVisible = !detailsDialogVisible"
+                  v-on="on"
                 >
-                  <v-icon>mdi-download</v-icon>
+                  <v-icon>mdi-wrench</v-icon>
                 </v-btn>
-              </a>
-            </template>
-            <template #default>
-              {{ $t('editor.schema.download') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn
-                v-if="schemaIsValid.warnings.length > 0"
-                icon
-                large
-                color="warning"
-                class="ml-2"
-                @click="showErrorDialog = !showErrorDialog"
-                v-on="on"
-              >
-                <v-icon>mdi-alert-circle-outline</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('editor.schema.warnings') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn
-                icon
-                large
-                class="translate-button"
-                color="primary"
-                @click="showTranslationDialog = true"
-                v-on="on"
-              >
-                <v-icon>mdi-translate</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('translations') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{ on }">
-              <v-btn
-                icon
-                large
-                color="primary"
-                @click="detailsDialogVisible = !detailsDialogVisible"
-                v-on="on"
-              >
-                <v-icon>mdi-wrench</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t("editor.schema.properties") }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn
-                icon
-                large
-                target="_blank"
-                to="/help"
-                class="help-button"
-                color="primary"
-                v-on="on"
-              >
-                <v-icon>mdi-help-circle-outline</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('help') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip
-            v-if="$route.query.os"
-            bottom
-          >
-            <template #activator="{on}">
-              <v-btn
-                :disabled="!schemaIsValid.valid"
-                icon
-                large
-                color="primary"
-                @click="saveSchema"
-                v-on="on"
-              >
-                <v-icon>mdi-content-save</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ upperFirst($t('save')) }}
-            </template>
-          </v-tooltip>
+              </template>
+              <template #default>
+                {{ $t("editor.schema.properties") }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn
+                  icon
+                  large
+                  target="_blank"
+                  to="/help"
+                  class="help-button"
+                  color="primary"
+                  v-on="on"
+                >
+                  <v-icon>mdi-help-circle-outline</v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('help') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip
+              v-if="$route.query.os"
+              bottom
+            >
+              <template #activator="{on}">
+                <v-btn
+                  :disabled="!schemaIsValid.valid"
+                  icon
+                  large
+                  color="primary"
+                  @click="saveSchema"
+                  v-on="on"
+                >
+                  <v-icon>mdi-content-save</v-icon>
+                </v-btn>
+              </template>
+              <template #default>
+                {{ upperFirst($t('save')) }}
+              </template>
+            </v-tooltip>
+          </div>
           <v-row
             v-if="schemaIsValid.valid"
             no-gutters
             class="flex-column overflow-hidden py-2 fill-width"
           >
             <v-col>
-              <v-row class="mx-4">
+              <v-row>
                 <v-col
                   cols="12"
                   lg="4"
@@ -175,15 +177,10 @@
               </v-row>
             </v-col>
           </v-row>
-        </template>
-        <template #header>
           <v-row
             v-if="schemaIsValid.valid"
             dense
             class="flex-column"
-            :style="{
-              borderBottom: `1px solid ${$vuetify.theme.themes.light.grey}`
-            }"
           >
             <v-col>
               <v-text-field
@@ -207,6 +204,7 @@
               />
             </v-col>
           </v-row>
+          <v-divider class="mt-2" />
         </template>
         <template #default>
           <VeoObjectSchemaEditor
