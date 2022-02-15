@@ -38,6 +38,7 @@
               />
             </v-col>
           </v-row>
+          <v-divider />
         </template>
         <template #default>
           <slot name="prepend-form" />
