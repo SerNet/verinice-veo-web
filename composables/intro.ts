@@ -71,25 +71,22 @@ export function createIntro() {
       }
     );
 
+    const toggleHints = () => {
+      if (hintsVisible.value) {
+        _instance.showHints();
+      } else {
+        _instance.hideHints();
+      }
+    };
+
     // watch stepsVisible (show tutorial steps)
     let _watchOptionsHandle: WatchStopHandle;
-    let _watchHintsVisible: WatchStopHandle;
     let _watchStepsVisible: WatchStopHandle;
     let tutorialReady = false;
     // wait for pending fetches on current page
     onFetchFinish(() => {
       // watch hintsVisible (show hints bubbles)
-      _watchHintsVisible = watch(
-        hintsVisible,
-        (v) => {
-          if (v) {
-            _instance.showHints();
-          } else {
-            _instance.hideHints();
-          }
-        },
-        { immediate: true }
-      );
+      watch(hintsVisible, () => toggleHints(), { immediate: true });
 
       _watchStepsVisible = watch(
         stepsVisible,
@@ -193,8 +190,9 @@ export function createIntro() {
     }, 1000);
 
     onBeforeUnmount(() => {
+      hintsVisible.value = false;
       _watchStepsVisible();
-      _watchHintsVisible();
+      toggleHints();
       _watchRouteChange?.();
       _watchOptionsHandle?.();
       _instance.exit(true);
