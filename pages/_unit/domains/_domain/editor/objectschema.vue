@@ -27,7 +27,7 @@
         sticky-header
       >
         <template #header>
-          <div class="d-flex flex-row">
+          <div class="d-flex flex-row align-center">
             <h1>{{ $t('editor.objectschema.headline') }}</h1>
             <v-tooltip bottom>
               <template #activator="{on}">
@@ -60,7 +60,7 @@
                   large
                   color="warning"
                   class="ml-2"
-                  @click="showErrorDialog = !showErrorDialog"
+                  @click="errorDialogVisible = !errorDialogVisible"
                   v-on="on"
                 >
                   <v-icon v-text="mdiAlertCircleOutline" />
@@ -77,7 +77,7 @@
                   large
                   class="translate-button"
                   color="primary"
-                  @click="showTranslationDialog = true"
+                  @click="translationDialogVisible = true"
                   v-on="on"
                 >
                   <v-icon v-text="mdiTranslate" />
@@ -109,7 +109,7 @@
                   icon
                   large
                   target="_blank"
-                  to="/help"
+                  :to="HELP_ROUTE"
                   class="help-button"
                   color="primary"
                   v-on="on"
@@ -261,7 +261,7 @@
     </template>
     <template #helpers>
       <VeoOseWizardDialog
-        v-model="showCreationDialog"
+        v-model="creationDialogVisible"
         @completed="setSchema"
       />
       <VeoOseDetailsDialog
@@ -270,12 +270,12 @@
         @schema-updated="updateCode"
       />
       <VeoEditorErrorDialog
-        v-model="showErrorDialog"
+        v-model="errorDialogVisible"
         :validation="schemaIsValid"
       />
       <VeoOseTranslationDialog
-        v-if="!$fetchState.pending && showTranslationDialog"
-        v-model="showTranslationDialog"
+        v-if="!$fetchState.pending && translationDialogVisible"
+        v-model="translationDialogVisible"
         :current-display-language="displayLanguage"
         :available-languages="availableLanguages"
         @display-language-changed="onDisplayLanguageUpdate"
@@ -296,6 +296,8 @@ import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
+
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
 export default Vue.extend({
@@ -308,9 +310,9 @@ export default Vue.extend({
   data() {
     return {
       pageWidths: [6, 6] as number[],
-      showCreationDialog: false as boolean,
-      showErrorDialog: false as boolean,
-      showTranslationDialog: false as boolean,
+      creationDialogVisible: false as boolean,
+      errorDialogVisible: false as boolean,
+      translationDialogVisible: false as boolean,
       detailsDialogVisible: false as boolean,
       hideEmptyAspects: false as boolean,
       search: '' as string,
@@ -326,7 +328,8 @@ export default Vue.extend({
       mdiInformationOutline,
       mdiMagnify,
       mdiTranslate,
-      mdiWrench
+      mdiWrench,
+      HELP_ROUTE
     };
   },
   async fetch() {
@@ -355,7 +358,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-    this.showCreationDialog = true;
+    this.creationDialogVisible = true;
   },
   methods: {
     setSchema(data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) {
@@ -374,7 +377,7 @@ export default Vue.extend({
         this.validate();
       }
 
-      this.showCreationDialog = !this.objectSchemaHelper || false;
+      this.creationDialogVisible = !this.objectSchemaHelper || false;
     },
     updateSchema(schema: IVeoObjectSchema) {
       this.objectSchemaHelper = new ObjectSchemaHelper(schema);
