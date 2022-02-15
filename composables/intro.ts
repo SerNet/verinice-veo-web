@@ -81,12 +81,13 @@ export function createIntro() {
 
     // watch stepsVisible (show tutorial steps)
     let _watchOptionsHandle: WatchStopHandle;
+    let _watchHintsVisible: WatchStopHandle;
     let _watchStepsVisible: WatchStopHandle;
     let tutorialReady = false;
     // wait for pending fetches on current page
     onFetchFinish(() => {
       // watch hintsVisible (show hints bubbles)
-      watch(hintsVisible, () => toggleHints(), { immediate: true });
+      _watchHintsVisible = watch(hintsVisible, () => toggleHints(), { immediate: true });
 
       _watchStepsVisible = watch(
         stepsVisible,
@@ -190,9 +191,10 @@ export function createIntro() {
     }, 1000);
 
     onBeforeUnmount(() => {
+      toggleHints();
       hintsVisible.value = false;
       _watchStepsVisible();
-      toggleHints();
+      _watchHintsVisible();
       _watchRouteChange?.();
       _watchOptionsHandle?.();
       _instance.exit(true);
