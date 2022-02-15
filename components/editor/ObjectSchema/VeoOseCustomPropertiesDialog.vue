@@ -73,19 +73,18 @@
           dense
           class="py-0"
         >
-          <template
+          <v-list-item
             v-for="(attribute, index) of form.data.attributes"
+            :key="index"
             class="veo-attribute-list-attribute my-2"
           >
             <VeoOseCustomAspectAttribute
               v-bind="attribute"
-              :key="index"
               :aspect-name="aspectPrefix"
               @delete="removeAttribute(index)"
               @update="updateAttribute($event, index)"
             />
-          </template>
-
+          </v-list-item>
           <v-list-item v-if="form.data.attributes.length === 0">
             <v-list-item-content
               class="veo-attribute-list-no-content justify-center"

@@ -17,7 +17,7 @@
 -->
 <template>
   <v-list-item class="veo-attribute-list-attribute my-2">
-    <v-list-item-content>
+    <v-list-item-content class="d-block">
       <v-row>
         <v-col
           :cols="8"
@@ -44,7 +44,7 @@
           />
         </v-col>
       </v-row>
-      <v-row>
+      <v-row dense>
         <v-col class="py-0">
           <v-text-field
             :value="form.data.description"
@@ -57,6 +57,7 @@
       <v-row
         v-if="form.data.type === 'enum'"
         class="flex-column"
+        dense
       >
         <v-col class="py-0 d-flex align-center">
           <h3>{{ t('values') }}</h3>
