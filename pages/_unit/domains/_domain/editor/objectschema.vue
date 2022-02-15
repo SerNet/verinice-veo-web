@@ -44,7 +44,7 @@
                     large
                     color="primary"
                   >
-                    <v-icon>mdi-download</v-icon>
+                    <v-icon v-text="mdiDownload" />
                   </v-btn>
                 </a>
               </template>
@@ -63,7 +63,7 @@
                   @click="showErrorDialog = !showErrorDialog"
                   v-on="on"
                 >
-                  <v-icon>mdi-alert-circle-outline</v-icon>
+                  <v-icon v-text="mdiAlertCircleOutline" />
                 </v-btn>
               </template>
               <template #default>
@@ -80,7 +80,7 @@
                   @click="showTranslationDialog = true"
                   v-on="on"
                 >
-                  <v-icon>mdi-translate</v-icon>
+                  <v-icon v-text="mdiTranslate" />
                 </v-btn>
               </template>
               <template #default>
@@ -96,7 +96,7 @@
                   @click="detailsDialogVisible = !detailsDialogVisible"
                   v-on="on"
                 >
-                  <v-icon>mdi-wrench</v-icon>
+                  <v-icon v-text="mdiWrench" />
                 </v-btn>
               </template>
               <template #default>
@@ -114,7 +114,7 @@
                   color="primary"
                   v-on="on"
                 >
-                  <v-icon>mdi-help-circle-outline</v-icon>
+                  <v-icon v-text="mdiHelpCircleOutline" />
                 </v-btn>
               </template>
               <template #default>
@@ -134,7 +134,7 @@
                   @click="saveSchema"
                   v-on="on"
                 >
-                  <v-icon>mdi-content-save</v-icon>
+                  <v-icon v-text="mdiContentSave" />
                 </v-btn>
               </template>
               <template #default>
@@ -190,7 +190,7 @@
                 flat
                 solo-inverted
                 hide-details
-                prepend-inner-icon="mdi-magnify"
+                :prepend-inner-icon="mdiMagnify"
                 :label="$t('search')"
               />
             </v-col>
@@ -225,9 +225,8 @@
               <v-icon
                 style="font-size: 8rem; opacity: 0.5;"
                 color="primary"
-              >
-                mdi-information-outline
-              </v-icon>
+                v-text="mdiInformationOutline"
+              />
             </v-col>
             <v-col
               cols="auto"
@@ -288,9 +287,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-
 import { computed } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
+import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
+
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
@@ -318,7 +318,15 @@ export default Vue.extend({
       code: '' as string,
       schemaIsValid: { valid: false, errors: [], warnings: [] } as VeoSchemaValidatorValidationResult,
       availableLanguages: [] as string[],
-      displayLanguage: this.$i18n.locale as string
+      displayLanguage: this.$i18n.locale as string,
+      mdiAlertCircleOutline,
+      mdiContentSave,
+      mdiDownload,
+      mdiHelpCircleOutline,
+      mdiInformationOutline,
+      mdiMagnify,
+      mdiTranslate,
+      mdiWrench
     };
   },
   async fetch() {
