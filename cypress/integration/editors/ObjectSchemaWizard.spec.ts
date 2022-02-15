@@ -62,8 +62,8 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Beschreibung').type('Test Beschreibung');
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Test');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Test Beschreibung');
+    cy.get('[data-cy=object-schema-editor-objectschema-title-input]').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Test');
+    cy.get('[data-cy=object-schema-editor-objectschema-description-input]').find('input').should('have.value', 'Test Beschreibung');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
@@ -78,8 +78,8 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-window-item--active').contains('.v-text-field', 'Typ des Objektschemas').type('Eigenes{enter}');
       cy.get('.v-window-item--active').contains('.v-file-input', 'Objektschema hochladen (.json)').find('input[type="file"]').attachFile('api/default/schemas/empty.json');
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Test');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Test Beschreibung');
+    cy.get('[data-cy=object-schema-editor-objectschema-title-input]').find('input').should('have.value', 'Test');
+    cy.get('[data-cy=object-schema-editor-objectschema-description-input]').find('input').should('have.value', 'Test Beschreibung');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
@@ -102,8 +102,8 @@ describe('Objectschema Wizard', () => {
         });
       cy.contains('.v-btn', 'Codeänderungen übernehmen').click();
     });
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Test');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Test Beschreibung');
+    cy.get('[data-cy=object-schema-editor-objectschema-title-input]').find('input').should('have.value', 'Test');
+    cy.get('[data-cy=object-schema-editor-objectschema-description-input]').find('input').should('have.value', 'Test Beschreibung');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
@@ -122,8 +122,8 @@ describe('Objectschema Wizard', () => {
       cy.get('.v-card__actions').contains('.v-btn', 'Weiter').click();
     });
 
-    cy.get('.veo-page__title').contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'process');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Process');
+    cy.get('[data-cy=object-schema-editor-objectschema-title-input]').find('input').should('have.value', 'process');
+    cy.get('[data-cy=object-schema-editor-objectschema-description-input]').find('input').should('have.value', 'Schema for Process');
     cy.get('.editor .cm-content').then(function (editor) {
       cy.wrap(getEditorData(editor)).toMatchSnapshot();
     });
@@ -132,8 +132,8 @@ describe('Objectschema Wizard', () => {
 
   it('creates own objectschema by URL', function () {
     cy.goTo(editorPath).goTo(objectSchemaEditorPath + '?type=Testtyp&description=Testbeschreibung');
-    cy.contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'Testtyp');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Testbeschreibung');
+    cy.get('[data-cy=object-schema-editor-objectschema-title-input]').find('input').should('have.value', 'Testtyp');
+    cy.get('[data-cy=object-schema-editor-objectschema-description-input]').find('input').should('have.value', 'Testbeschreibung');
   });
 
   it('navigates automatically to the state in wizard by URL, where own objectschema can be uploaded', function () {
@@ -147,7 +147,7 @@ describe('Objectschema Wizard', () => {
 
   it('imports existing objectschema by URL', function () {
     cy.goTo(editorPath).goTo(objectSchemaEditorPath + '?os=process');
-    cy.contains('.v-text-field', 'Objektschema').find('input').should('have.value', 'process');
-    cy.contains('.v-text-field', 'Beschreibung').find('input').should('have.value', 'Schema for Process');
+    cy.get('[data-cy=object-schema-editor-objectschema-title-input]').find('input').should('have.value', 'process');
+    cy.get('[data-cy=object-schema-editor-objectschema-description-input]').find('input').should('have.value', 'Schema for Process');
   });
 });
