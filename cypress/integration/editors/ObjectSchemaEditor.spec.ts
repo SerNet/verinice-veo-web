@@ -541,7 +541,7 @@ describe('Objectschema Editor', () => {
 
   it('compares downloaded schema with the actual one', function () {
     goTo(tos.testschema);
-    cy.get('.mdi-download').closest('.v-btn').click();
+    cy.get('[data-cy=object-schema-editor-download-button]').children('.v-btn').click();
     cy.readFile('cypress/downloads/os_testSchema.json').toMatchSnapshot();
   });
 

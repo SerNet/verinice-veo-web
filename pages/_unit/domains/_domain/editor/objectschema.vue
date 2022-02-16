@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
-   - 
+   - Copyright (C) 2021  Davit Svandize, Jonas Heitmann, Samuel Vitzthum
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -25,113 +25,137 @@
       <VeoPage
         v-if="objectSchemaHelper"
         sticky-header
-        :title="$t('editor.objectschema.headline')"
       >
-        <template #title>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <a
-                ref="downloadButton"
-                href="#"
-                class="text-decoration-none"
-                style="vertical-align: bottom;"
-                @click="downloadSchema()"
-                v-on="on"
-              >
+        <template #header>
+          <div class="d-flex flex-row align-center">
+            <h1>{{ $t('editor.objectschema.headline') }}</h1>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <a
+                  ref="downloadButton"
+                  v-cy-name="'download-button'"
+                  href="#"
+                  class="text-decoration-none"
+                  style="vertical-align: bottom;"
+                  @click="downloadSchema()"
+                  v-on="on"
+                >
+                  <v-btn
+                    icon
+                    large
+                    color="primary"
+                  >
+                    <v-icon v-text="mdiDownload" />
+                  </v-btn>
+                </a>
+              </template>
+              <template #default>
+                {{ $t('editor.schema.download') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn
+                  v-if="schemaIsValid.warnings.length > 0"
+                  icon
+                  large
+                  color="warning"
+                  class="ml-2"
+                  @click="errorDialogVisible = !errorDialogVisible"
+                  v-on="on"
+                >
+                  <v-icon v-text="mdiAlertCircleOutline" />
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('editor.schema.warnings') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn
+                  icon
+                  large
+                  class="translate-button"
+                  color="primary"
+                  @click="translationDialogVisible = true"
+                  v-on="on"
+                >
+                  <v-icon v-text="mdiTranslate" />
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('translations') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{ on }">
                 <v-btn
                   icon
                   large
                   color="primary"
+                  @click="detailsDialogVisible = !detailsDialogVisible"
+                  v-on="on"
                 >
-                  <v-icon>mdi-download</v-icon>
+                  <v-icon v-text="mdiWrench" />
                 </v-btn>
-              </a>
-            </template>
-            <template #default>
-              {{ $t('editor.schema.download') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn
-                v-if="schemaIsValid.warnings.length > 0"
-                icon
-                large
-                color="warning"
-                class="ml-2"
-                @click="showErrorDialog = !showErrorDialog"
-                v-on="on"
-              >
-                <v-icon>mdi-alert-circle-outline</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('editor.schema.warnings') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn
-                icon
-                large
-                class="translate-button"
-                color="primary"
-                @click="showTranslationDialog = true"
-                v-on="on"
-              >
-                <v-icon>mdi-translate</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('translations') }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{ on }">
-              <v-btn
-                icon
-                large
-                color="primary"
-                @click="detailsDialogVisible = !detailsDialogVisible"
-                v-on="on"
-              >
-                <v-icon>mdi-wrench</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t("editor.schema.properties") }}
-            </template>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template #activator="{on}">
-              <v-btn
-                icon
-                large
-                target="_blank"
-                to="/help"
-                class="help-button"
-                color="primary"
-                v-on="on"
-              >
-                <v-icon>mdi-help-circle-outline</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ $t('help') }}
-            </template>
-          </v-tooltip>
+              </template>
+              <template #default>
+                {{ $t("editor.schema.properties") }}
+              </template>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template #activator="{on}">
+                <v-btn
+                  icon
+                  large
+                  target="_blank"
+                  :to="HELP_ROUTE"
+                  class="help-button"
+                  color="primary"
+                  v-on="on"
+                >
+                  <v-icon v-text="mdiHelpCircleOutline" />
+                </v-btn>
+              </template>
+              <template #default>
+                {{ $t('help') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip
+              v-if="$route.query.os"
+              bottom
+            >
+              <template #activator="{on}">
+                <v-btn
+                  :disabled="!schemaIsValid.valid"
+                  icon
+                  large
+                  color="primary"
+                  @click="saveSchema"
+                  v-on="on"
+                >
+                  <v-icon v-text="mdiContentSave" />
+                </v-btn>
+              </template>
+              <template #default>
+                {{ upperFirst($t('save')) }}
+              </template>
+            </v-tooltip>
+          </div>
           <v-row
             v-if="schemaIsValid.valid"
             no-gutters
             class="flex-column overflow-hidden py-2 fill-width"
           >
             <v-col>
-              <v-row class="mx-4">
+              <v-row>
                 <v-col
                   cols="12"
                   lg="4"
                 >
                   <v-text-field
+                    v-cy-name="'objectschema-title-input'"
                     :value="title"
                     dense
                     hide-details
@@ -145,6 +169,7 @@
                   lg="8"
                 >
                   <v-text-field
+                    v-cy-name="'objectschema-description-input'"
                     :value="description"
                     dense
                     hide-details
@@ -155,15 +180,10 @@
               </v-row>
             </v-col>
           </v-row>
-        </template>
-        <template #header>
           <v-row
             v-if="schemaIsValid.valid"
             dense
             class="flex-column"
-            :style="{
-              borderBottom: `1px solid ${$vuetify.theme.themes.light.grey}`
-            }"
           >
             <v-col>
               <v-text-field
@@ -173,7 +193,7 @@
                 flat
                 solo-inverted
                 hide-details
-                prepend-inner-icon="mdi-magnify"
+                :prepend-inner-icon="mdiMagnify"
                 :label="$t('search')"
               />
             </v-col>
@@ -187,6 +207,7 @@
               />
             </v-col>
           </v-row>
+          <v-divider class="mt-2" />
         </template>
         <template #default>
           <VeoObjectSchemaEditor
@@ -207,9 +228,8 @@
               <v-icon
                 style="font-size: 8rem; opacity: 0.5;"
                 color="primary"
-              >
-                mdi-information-outline
-              </v-icon>
+                v-text="mdiInformationOutline"
+              />
             </v-col>
             <v-col
               cols="auto"
@@ -244,7 +264,7 @@
     </template>
     <template #helpers>
       <VeoOseWizardDialog
-        v-model="showCreationDialog"
+        v-model="creationDialogVisible"
         @completed="setSchema"
       />
       <VeoOseDetailsDialog
@@ -253,12 +273,12 @@
         @schema-updated="updateCode"
       />
       <VeoEditorErrorDialog
-        v-model="showErrorDialog"
+        v-model="errorDialogVisible"
         :validation="schemaIsValid"
       />
       <VeoOseTranslationDialog
-        v-if="!$fetchState.pending && showTranslationDialog"
-        v-model="showTranslationDialog"
+        v-if="!$fetchState.pending && translationDialogVisible"
+        v-model="translationDialogVisible"
         :current-display-language="displayLanguage"
         :available-languages="availableLanguages"
         @display-language-changed="onDisplayLanguageUpdate"
@@ -270,14 +290,21 @@
 
 <script lang="ts">
 import Vue from 'vue';
-
 import { computed } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
+import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
+
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
+
+const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
 export default Vue.extend({
+  name: 'ObjectSchemaEditor',
   provide(): any {
     return {
       displayLanguage: computed(() => this.displayLanguage),
@@ -287,9 +314,9 @@ export default Vue.extend({
   data() {
     return {
       pageWidths: [6, 6] as number[],
-      showCreationDialog: false as boolean,
-      showErrorDialog: false as boolean,
-      showTranslationDialog: false as boolean,
+      creationDialogVisible: false as boolean,
+      errorDialogVisible: false as boolean,
+      translationDialogVisible: false as boolean,
       detailsDialogVisible: false as boolean,
       hideEmptyAspects: false as boolean,
       search: '' as string,
@@ -297,7 +324,16 @@ export default Vue.extend({
       code: '' as string,
       schemaIsValid: { valid: false, errors: [], warnings: [] } as VeoSchemaValidatorValidationResult,
       availableLanguages: [] as string[],
-      displayLanguage: this.$i18n.locale as string
+      displayLanguage: this.$i18n.locale as string,
+      mdiAlertCircleOutline,
+      mdiContentSave,
+      mdiDownload,
+      mdiHelpCircleOutline,
+      mdiInformationOutline,
+      mdiMagnify,
+      mdiTranslate,
+      mdiWrench,
+      HELP_ROUTE
     };
   },
   async fetch() {
@@ -326,7 +362,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-    this.showCreationDialog = true;
+    this.creationDialogVisible = true;
   },
   methods: {
     setSchema(data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) {
@@ -345,7 +381,7 @@ export default Vue.extend({
         this.validate();
       }
 
-      this.showCreationDialog = !this.objectSchemaHelper || false;
+      this.creationDialogVisible = !this.objectSchemaHelper || false;
     },
     updateSchema(schema: IVeoObjectSchema) {
       this.objectSchemaHelper = new ObjectSchemaHelper(schema);
@@ -387,7 +423,16 @@ export default Vue.extend({
       } else {
         this.pageWidths = [6, 6];
       }
-    }
+    },
+    async saveSchema() {
+      try {
+        await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema());
+        displaySuccessMessage(this.$t('saveSchemaSuccess'));
+      } catch (e) {
+        displayErrorMessage(this.$t('error.title'), this.$t('saveSchemaError'));
+      }
+    },
+    upperFirst
   }
 });
 </script>
@@ -402,7 +447,10 @@ export default Vue.extend({
       "Couldn't load schema. Please resolve the following errors and try again.",
     "search": "Search for a property",
     "translations": "Translations",
-    "help": "Help"
+    "help": "Help",
+    "save": "save",
+    "saveSchemaSuccess": "Schema saved!",
+    "saveSchemaError": "Couldn't save schema!"
   },
   "de": {
     "description": "Beschreibung",
@@ -412,7 +460,10 @@ export default Vue.extend({
       "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
     "search": "Nach einer Eigenschaft suchen...",
     "translations": "Übersetzungen",
-    "help": "Hilfe"
+    "help": "Hilfe",
+    "save": "speichern",
+    "saveSchemaSuccess": "Schema wurde gespeichert!",
+    "saveSchemaError": "Schema konnte nicht gespeichert werden!"
   }
 }
 </i18n>

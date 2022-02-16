@@ -21,17 +21,11 @@
     v-else
     collapsable-left
     collapsable-right
+    :title="object && object.displayName"
     :page-widths="pageWidths"
     :page-titles="pageTitles"
     @page-collapsed="onPageCollapsed"
   >
-    <template #header>
-      <v-row class="ml-7">
-        <v-col cols="auto">
-          <h3>{{ object && object.displayName }}</h3>
-        </v-col>
-      </v-row>
-    </template> 
     <template #default>
       <VeoPage
         fullsize
@@ -87,6 +81,7 @@
             :domain-id="domainId"
             :preselected-sub-type="preselectedSubType"
             :valid.sync="isFormValid"
+            :disable-sub-type-select="object && object.domains[domainId] && !!object.domains[domainId].subType"
             @input="onFormInput"
             @show-revision="onShowRevision"
           >
@@ -188,7 +183,7 @@ export default defineComponent({
     const router = useRouter();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
-    const objectParameter = computed(() => separateUUIDParam(route.value.params.id));
+    const objectParameter = computed(() => separateUUIDParam(route.value.params.entity));
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
     const object = ref<IVeoEntity | undefined>(undefined);

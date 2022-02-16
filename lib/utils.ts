@@ -77,3 +77,12 @@ export function getEntityDetailsFromLink(link: IVeoLink): { type: string; id: st
 export function sanitizeURLParams(url: string) {
   return url.replaceAll(/(\/|[^\w-])/g, '');
 }
+
+export function extractSubTypesFromObjectSchema(schema: IVeoObjectSchema): { subType: string; status: string[] }[] {
+  return (
+    Object.values(schema.properties.domains.properties)[0]?.allOf?.map((mapping) => ({
+      subType: mapping.if.properties.subType.const,
+      status: mapping.then.properties.status.enum
+    })) || []
+  );
+}

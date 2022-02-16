@@ -38,6 +38,7 @@
               />
             </v-col>
           </v-row>
+          <v-divider />
         </template>
         <template #default>
           <slot name="prepend-form" />
@@ -52,6 +53,8 @@
             :reactive-form-actions="reactiveFormActions"
             :disabled="disabled"
             :object-creation-disabled="objectCreationDisabled"
+            :disable-sub-type-select="disableSubTypeSelect"
+            :domain-id="domainId"
           />
           <VeoObjectFormSkeletonLoader v-else />
           <slot name="append-form" />
@@ -63,17 +66,29 @@
       <VeoPage no-padding>
         <template #default>
           <VeoTabs
+            v-cy-name="'form-tabs'"
             sticky-tabs
-            :data-cy="'form-tabs'"
           >
             <template #tabs>
               <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">
-                {{ t('tableOfContents') }}
+                <v-icon v-text="mdiFormatListBulleted" />
               </v-tab>
               <v-tab v-if="!disableHistory">
-                {{ t('history') }}
+                <v-icon
+                  v-cy-name="'history-tab'"
+                  v-text="mdiHistory"
+                />
               </v-tab>
-              <v-tab>{{ t('messages') }} ({{ messages.errors.length + messages.warnings.length }})</v-tab>
+              <v-tab>
+                <v-badge
+                  :content="messages.errors.length + messages.warnings.length"
+                  :value="messages.errors.length + messages.warnings.length > 0"
+                  color="primary"
+                  overlap
+                >
+                  <v-icon v-text="mdiInformationOutline" />
+                </v-badge>
+              </v-tab>
             </template>
             <template #items>
               <v-tab-item class="px-4">
@@ -111,7 +126,8 @@
 <script lang="ts">
 import { computed, ComputedRef, defineComponent, PropOptions, Ref, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst } from 'lodash';
+import { upperFirst, merge } from 'lodash';
+import { mdiFormatListBulleted, mdiHistory, mdiInformationOutline } from '@mdi/js';
 
 import { IBaseObject } from '~/lib/utils';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
@@ -137,6 +153,10 @@ export default defineComponent({
       default: undefined
     } as PropOptions<IVeoObjectSchema>,
     disableHistory: {
+      type: Boolean,
+      default: false
+    },
+    disableSubTypeSelect: {
       type: Boolean,
       default: false
     },
@@ -192,16 +212,32 @@ export default defineComponent({
         }
       }
       if (selectedDisplayOption.value !== 'objectschema') {
-        currentFormSchema.value = await $api.form.fetch(selectedDisplayOption.value);
+        currentFormSchema.value = await $api.form.fetch(props.domainId, selectedDisplayOption.value);
       } else {
         currentFormSchema.value = undefined;
+      }
+
+      const subType = formSchemas.value.find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
+
+      // Set sub type and status if subType was not set and the user views the object with a subtype
+      if (subType && props.domainId && !objectData.value.domains?.[props.domainId]?.subType) {
+        const newDomainObject = {
+          domains: {
+            [props.domainId]: {
+              subType,
+              status: 'NEW'
+            }
+          }
+        };
+        objectData.value = merge(objectData.value, newDomainObject);
       }
     });
 
     const selectedDisplayOption = ref('objectschema');
     const displayOptions: ComputedRef<{ text: string; value: string | undefined }[]> = computed(() => {
+      const currentSubType = props.value?.domains?.[props.domainId]?.subType;
       const availableFormSchemas: { text: string; value: string | undefined }[] = formSchemas.value
-        .filter((formSchema) => formSchema.modelType === props.objectSchema?.title)
+        .filter((formSchema) => formSchema.modelType === props.objectSchema?.title && (!currentSubType || currentSubType === formSchema.subType))
         .map((formSchema) => ({
           text: formSchema.name[locale.value] || formSchema.subType,
           value: formSchema.id
@@ -277,6 +313,9 @@ export default defineComponent({
       selectedDisplayOption,
       translations,
 
+      mdiFormatListBulleted,
+      mdiHistory,
+      mdiInformationOutline,
       upperFirst,
       t
     };
@@ -287,7 +326,7 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "display": "display",
+    "display": "view as",
     "history": "history",
     "messages": "messages",
     "objects": "objects",
@@ -295,12 +334,12 @@ export default defineComponent({
     "tableOfContents": "contents"
   },
   "de": {
-    "display": "darstellung",
-    "history": "verlauf",
-    "messages": "meldungen",
+    "display": "Ansicht",
+    "history": "Verlauf",
+    "messages": "Meldungen",
     "objects": "Objekte",
-    "objectView": "objektansicht",
-    "tableOfContents": "inhalt"
+    "objectView": "Objektansicht",
+    "tableOfContents": "Inhalt"
   }
 }
 </i18n>

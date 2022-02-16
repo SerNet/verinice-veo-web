@@ -52,9 +52,9 @@ export default function (api: Client) {
      * @param form
      * @returns UUID of the new form
      */
-    create(form: IVeoFormSchema): Promise<string> {
+    create(domainId: string, form: IVeoFormSchema): Promise<string> {
       return api.req('/api/forms/', {
-        json: form
+        json: { domainId, ...form }
       });
     },
 
@@ -63,14 +63,16 @@ export default function (api: Client) {
      *
      * NOT PAGINATED
      *
+     * @param domainId The id of the domain to load the formschema for
      * @param id
      */
-    fetch(id: string): Promise<IVeoFormSchema> {
-      return api.req('/api/forms/:id', {
+    async fetch(domainId: string, id: string): Promise<IVeoFormSchema> {
+      const formSchema = await api.req('/api/forms/:id', {
         params: {
           id
         }
       });
+      return JSON.parse(JSON.stringify(formSchema).replaceAll('{CURRENT_DOMAIN_ID}', domainId));
     },
 
     /**
@@ -81,13 +83,13 @@ export default function (api: Client) {
      * @param id
      * @param form
      */
-    update(id: string, form: IVeoFormSchema): Promise<void> {
+    update(id: string, domainId: string, form: IVeoFormSchema): Promise<void> {
       return api.req('/api/forms/:id', {
         method: 'PUT',
         params: {
           id
         },
-        json: form
+        json: { domainId, ...form }
       });
     },
 

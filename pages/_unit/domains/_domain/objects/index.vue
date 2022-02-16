@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoPage
-    :title="t('objects')"
+    :title="t('objectOverview')"
     fullsize
     :loading="fetchState.pending"
   >
@@ -43,13 +43,7 @@
       @success="fetch(); onCloseDeleteDialog(false)"
       @error="showError('unlink', itemDelete, $event)"
     />
-    <template #header>
-      <h2 class="mb-5">
-        {{ upperFirst(t('overview').toString()) }}
-      </h2>
-    </template>
     <div class="d-flex my-2">
-      <h2>{{ upperFirst(t('allObjects').toString()) }}</h2>
       <v-spacer />
       <v-btn
         v-if="objectType"
@@ -61,7 +55,7 @@
         <v-icon left>
           {{ mdiPlus }}
         </v-icon>
-        <span>{{ t('createObject', [objectType]) }}</span>
+        <span>{{ t('createObject', [createObjectLabel]) }}</span>
       </v-btn>
     </div>
     <v-row no-gutters>
@@ -79,7 +73,7 @@
           style="border: 1px solid black"
           @click="filterDialogVisible = true"
         >
-          <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter')) }}
+          <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
         </v-btn>
       </v-col>
       <v-col
@@ -268,6 +262,8 @@ export default defineComponent({
       }
     };
 
+    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : upperFirst(objectType.value)));
+
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {
         itemDelete.value = undefined;
@@ -280,10 +276,10 @@ export default defineComponent({
 
     const openItem = ({ item }: { item: IVeoEntity }) => {
       return router.push({
-        name: 'unit-domains-domain-objects-id',
+        name: 'unit-domains-domain-objects-entity',
         params: {
           ...route.value.params,
-          id: createUUIDUrlParam(item.type, item.id)
+          entity: createUUIDUrlParam(item.type, item.id)
         },
         query: {
           subType: subType.value
@@ -321,6 +317,7 @@ export default defineComponent({
       domainId,
       activeFilterKeys,
       clearFilter,
+      createObjectLabel,
       fetch,
       fetchState,
       filter,
@@ -351,9 +348,7 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "objects": "objects",
-    "overview": "overview",
-    "allObjects": "all objects",
+    "objectOverview": "object overview",
     "filter": "filter",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
@@ -366,9 +361,7 @@ export default defineComponent({
     }
   },
   "de": {
-    "objects": "Objekte",
-    "overview": "Übersicht",
-    "allObjects": "Alle Objekte",
+    "objectOverview": "Objektübersicht",
     "filter": "filter",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",

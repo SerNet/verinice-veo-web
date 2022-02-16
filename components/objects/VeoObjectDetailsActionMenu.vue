@@ -68,8 +68,7 @@
 </template>
 
 <script lang="ts">
-import { useRoute, ref, computed, PropOptions, useContext } from '@nuxtjs/composition-api';
-import { defineComponent, onMounted } from '@vue/composition-api';
+import { defineComponent, onMounted, useRoute, ref, computed, PropOptions, useContext } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiPlus } from '@mdi/js';

@@ -110,8 +110,10 @@ export default Vue.extend({
       return `ml-${this.nestingLevel * 4}`;
     },
     // eslint-disable-next-line no-undef
-    itemsToObserve(): NodeListOf<Element> {
-      return document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', '));
+    itemsToObserve(): NodeListOf<Element> | false {
+      return this.items.length
+          ? document.querySelectorAll(this.items.map((item) => `#${item.initialId}`).join(', '))
+          : false;
     }
   },
   watch: {
@@ -178,14 +180,18 @@ export default Vue.extend({
       }
     },
     activateObserver() {
-      this.itemsToObserve.forEach((section) => {
-        this.observer?.observe(section);
-      });
+      if (this.itemsToObserve) {
+        this.itemsToObserve.forEach((section) => {
+          this.observer?.observe(section);
+        });
+      }
     },
     deactivateObserver() {
-      this.itemsToObserve.forEach((section) => {
-        this.observer?.unobserve(section);
-      });
+      if (this.itemsToObserve) {
+        this.itemsToObserve.forEach((section) => {
+          this.observer?.unobserve(section);
+        });
+      }
     }
   }
 });

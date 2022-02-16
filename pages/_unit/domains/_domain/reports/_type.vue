@@ -161,7 +161,10 @@ import { mdiFilter } from '@mdi/js';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoCreateReportData, IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoReportMeta, IVeoReportsMeta } from '~/types/VeoTypes';
 
+export const ROUTE_NAME = 'unit-domains-domain-reports-type';
+
 export default Vue.extend({
+  name: 'VeoReportPage',
   data() {
     return {
       entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,

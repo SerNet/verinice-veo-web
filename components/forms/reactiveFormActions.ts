@@ -35,6 +35,14 @@ export function getDefaultReactiveFormActions(context: Vue): IVeoReactiveFormAct
         newObject.domains[context.$user.lastDomain as string] = { ...newObject.domains[context.$user.lastDomain as string], ...newValue[Object.keys(newValue)[0]] };
         delete newObject.domains.patternProperties;
       }
+    },
+    {
+      attributeName: `/domains/${context.$user?.lastDomain}/subType`,
+      handler: (newValue: any, newObject) => {
+        if (!newValue && context.$user.lastDomain) {
+          delete newObject.domains[context.$user.lastDomain].status;
+        }
+      }
     }
   ];
 }
