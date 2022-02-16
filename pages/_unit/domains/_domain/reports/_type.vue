@@ -102,20 +102,53 @@
           />
         </v-col>
       </v-row>
-      <VeoListSearchBar
-        v-model="filter"
-        :object-type="objectType"
-        @reset="filter = $event"
-      />
+      <v-row no-gutters>
+        <v-col
+          cols="auto"
+          class="d-flex align-center"
+        >
+          <v-btn
+            v-cy-name="'filter-button'"
+            class="mr-2"
+            rounded
+            primary
+            depressed
+            small
+            style="border: 1px solid black"
+            @click="filterDialogVisible = true"
+          >
+            <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst($t('filter').toString()) }}
+          </v-btn>
+        </v-col>
+        <v-col
+          cols="auto"
+          class="grow"
+        >
+          <v-chip-group v-cy-name="'chips'">
+            <VeoObjectChip
+              v-for="k in activeFilterKeys"
+              :key="k"
+              :label="formatLabel(k)"
+              :value="formatValue(k, filter[k])"
+              :close="k!='objectType'"
+              @click:close="clearFilter(k)"
+            />
+          </v-chip-group>
+        </v-col>
+      </v-row>
       <VeoEntitySelectionList
-        :selected-items="selectedEntities"
+        v-model="selectedEntities"
         :items="entities"
         :loading="$fetchState.pending || global_loading"
         single-select
-        :object-type="objectType"
-        @new-subentities="onNewSubEntities"
-        @page-change="fetchEntities"
-        @refetch="fetchEntities"
+        @page-change="onPageChange"
+      />
+      <VeoFilterDialog
+        v-model="filterDialogVisible"
+        :domain="domainId"
+        :filter="filter"
+        object-type-required
+        @update:filter="updateRouteQuery"
       />
     </template>
   </VeoPage>
@@ -124,14 +157,13 @@
 <script lang="ts">
 import { upperCase, upperFirst } from 'lodash';
 import Vue from 'vue';
-
+import { mdiFilter } from '@mdi/js';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoCreateReportData, IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoReportMeta, IVeoReportsMeta } from '~/types/VeoTypes';
-import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
 
 export default Vue.extend({
   data() {
     return {
-      filter: undefined as IVeoFilter | undefined,
       entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
       selectedEntities: [] as { id: string; type: string }[],
       report: undefined as IVeoReportMeta | undefined,
@@ -139,7 +171,12 @@ export default Vue.extend({
       loading: false as boolean,
       objectType: undefined as undefined | string,
       userSelectedSubType: undefined as undefined | string,
-      forms: [] as IVeoFormSchemaMeta[]
+      forms: [] as IVeoFormSchemaMeta[],
+      filterDialogVisible: false,
+      filterKeys: ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects', 'hasLinks'],
+      formschemas: [] as IVeoFormSchemaMeta[],
+      mdiFilter,
+      upperFirst
     };
   },
   async fetch() {
@@ -149,6 +186,10 @@ export default Vue.extend({
 
     // Preselect the object type (and trigger the api request)
     this.objectType = this.report.targetTypes[0].modelType;
+
+    this.formschemas = await this.$api.form.fetchAll(this.domainId);
+
+    this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
   },
   head(): any {
     return {
@@ -193,37 +234,32 @@ export default Vue.extend({
         text: this.forms.find((form) => form.subType === entry)?.name[this.$i18n.locale] || '',
         value: entry
       }));
+    },
+    domainId(): string {
+      return separateUUIDParam(this.$route.params.domain).id;
+    },
+    activeFilterKeys(): string[] {
+      return this.filterKeys.filter((k) => this.filter[k] !== undefined);
+    },
+    // filter built from URL query parameters
+    filter(): IBaseObject {
+      const query = this.$route.query;
+      return Object.fromEntries(
+        this.filterKeys.map((key) => {
+          // Extract first query value
+          const val = ([] as (string | null)[]).concat(query[key]).shift();
+          return [key, val === null ? true : val];
+        })
+      );
     }
   },
   watch: {
-    filter(newValue: IVeoFilter) {
-      this.$router.push({
-        ...this.$route,
-        query: {
-          designator: newValue?.designator,
-          name: newValue?.name,
-          description: newValue?.description,
-          updatedBy: newValue?.updatedBy,
-          status: newValue?.status
-        }
-      });
-      this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
-    },
     objectType() {
       // Preselect the first subtype fitting the previous selected object type
       this.userSelectedSubType = this.currentTargetType?.subTypes?.[0];
 
       this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
     }
-  },
-  mounted() {
-    this.filter = {
-      designator: this.$route.query.designator,
-      name: this.$route.query.name,
-      status: this.$route.query.status,
-      description: this.$route.query.description,
-      updatedBy: this.$route.query.updatedBy
-    };
   },
   methods: {
     async generateReport() {
@@ -263,6 +299,37 @@ export default Vue.extend({
       }
 
       this.loading = false;
+    },
+    formatLabel(label: string) {
+      return upperFirst(this.$t(`objectlist.${label}`).toString());
+    },
+    formatValue(label: string, value?: string) {
+      switch (label) {
+        // Uppercase object types
+        case 'objectType':
+          return upperFirst(value);
+        // Translate sub types
+        case 'subType':
+          return this.formschemas.find((formschema) => formschema.subType === value)?.name?.[this.$i18n.locale] || value;
+        default:
+          return value;
+      }
+    },
+    clearFilter(key: string) {
+      this.updateRouteQuery({ [key]: undefined }, false);
+    },
+    // refetch on page or sort changes (in VeoObjectTable)
+    async onPageChange(opts: { newPage: number; sortBy: string; sortDesc?: boolean }) {
+      await this.fetchEntities({ page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+    },
+    // Update query parameters but keep other route options
+    async updateRouteQuery(v: Record<string, string | undefined | null | true>, reset = true) {
+      const resetValues = reset ? this.filterKeys.map((key) => [key, undefined as string | undefined | null]) : [];
+      const newValues = Object.fromEntries(resetValues.concat(Object.entries(v).map(([k, v]) => [k, v === true ? null : v])));
+      const query = { ...this.$route.query, ...newValues };
+      // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
+      Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
+      await this.$router.push({ ...this.$route, name: this.$route.name!, query });
     }
   }
 });
@@ -272,6 +339,7 @@ export default Vue.extend({
 {
   "en": {
     "create": "Create {type} ({format})",
+    "filter": "filter",
     "filterObjects": "Filter objects",
     "form": "Sub type",
     "generateReport": "Generate report",
@@ -281,6 +349,7 @@ export default Vue.extend({
   },
   "de": {
     "create": "{type} ({format}) erstellen",
+    "filter": "filter",
     "filterObjects": "Objektauswahl weiter einschränken",
     "form": "Subtyp",
     "generateReport": "Report generieren",
