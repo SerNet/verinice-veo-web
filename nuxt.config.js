@@ -1,7 +1,3 @@
-import { writeFileSync } from 'fs';
-import { resolve } from 'path';
-import hash from 'hash-sum';
-
 export default {
   /**
    *
@@ -176,7 +172,7 @@ export default {
   /*
    ** Nuxt.js build modules
    */
-  buildModules: ['@nuxt/typescript-build', '@nuxtjs/composition-api/module', '@nuxtjs/vuetify', './modules/docs'],
+  buildModules: ['@nuxt/typescript-build', '@nuxtjs/composition-api/module', '@nuxtjs/vuetify', './modules/docs', './modules/externalize-scripts'],
 
   /**
    * Vuetify configuration
@@ -224,25 +220,6 @@ export default {
           }
         ]
       ]
-    }
-  },
-
-  hooks: {
-    /**
-     * Externalize inline scripts
-     */
-    'generate:before'(me) {
-      const _minifyHtml = me.minifyHtml;
-      me.minifyHtml = function () {
-        const html = _minifyHtml.apply(this, arguments);
-        return html.replace(/<script>(.*?)<\/script>/g, (_, code) => {
-          const h = hash(code);
-          const inlineFile = `${h}.js`;
-          const inlineFilePath = resolve(me.distNuxtPath, inlineFile);
-          writeFileSync(inlineFilePath, code);
-          return `<script src="${me.options.build.publicPath}${inlineFile}"></script>`;
-        });
-      };
     }
   }
 };
