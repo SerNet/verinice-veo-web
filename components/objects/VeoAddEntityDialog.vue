@@ -27,27 +27,6 @@
   >
     <template #default>
       {{ $t('add_subentities', { displayName: entityDisplayName }) }}
-      <!--<v-row
-        dense
-        class="justify-space-between"
-      >
-        <v-col
-          v-if="editedEntity && editedEntity.type === 'scope' && addType === 'entity'"
-          lg="3"
-          md="6"
-          cols="12"
-        >
-          <span>{{ $t('shown_objecttype') }}:</span>
-          <v-select
-            v-model="objectType"
-            :label="$t('object_type')"
-            :items="objectTypes"
-            class="mt-2"
-            outlined
-            dense
-          />
-        </v-col>
-      </v-row>-->
       <v-row no-gutters>
         <v-col
           cols="auto"
@@ -112,6 +91,7 @@
         v-model="filterDialogVisible"
         :domain="domainId"
         :filter="filter"
+        :allowed-object-types="allowedObjectTypes"
         object-type-required
         @update:filter="updateFilter"
       />
@@ -127,7 +107,7 @@ import { mdiFilter } from '@mdi/js';
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
 
 import { getSchemaEndpoint, getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 
 export default Vue.extend({
   props: {
@@ -156,47 +136,53 @@ export default Vue.extend({
         totalItemCount: 0
       } as IVeoPaginatedResponse<IVeoEntity[]>,
       loading: false as boolean,
-      objectType: '' as string,
       schemas: [] as IVeoSchemaEndpoint[],
       formschemas: [] as IVeoFormSchemaMeta[],
       filterDialogVisible: false,
       filterKeys: ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects', 'hasLinks'],
+      translations: {} as IVeoTranslations['lang'],
       mdiFilter,
       upperFirst
     };
   },
   async fetch() {
     this.schemas = await this.$api.schema.fetchAll();
-    this.objectType = this.objectTypes[0].value;
     this.formschemas = await this.$api.form.fetchAll(this.domainId);
-
-    this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
+    this.translations = (await this.$api.translation.fetch(['de', 'en'])).lang;
   },
   computed: {
     entityDisplayName(): string {
       return this.editedEntity?.displayName || '';
     },
-    objectTypes(): { value: string; text: string }[] {
-      let schemas = this.schemas.map((schema: IVeoSchemaEndpoint) => ({
-        text: upperFirst(schema.schemaName),
-        value: schema.endpoint
-      }));
-
+    allowedObjectTypes(): IVeoSchemaEndpoint[] {
+      let schemas = [...this.schemas];
       // Filter out scopes if the user wants to add objects and the parent is a scope
-      if (this.editedEntity?.type === 'scope') {
-        schemas = schemas.filter((item) => item.value !== 'scopes');
+      if (this.editedEntity?.type === 'scope' && this.addType === 'entity') {
+        schemas = schemas.filter((item) => item.endpoint !== 'scopes');
+      }
+      // Only scope if the user wants to add scopes and the parent is a scope
+      if (this.editedEntity?.type === 'scope' && this.addType === 'scope') {
+        schemas = schemas.filter((item) => item.endpoint === 'scopes');
+      }
+      // Only own object type if the user wants to add objects and the parent is a object
+      if (this.editedEntity?.type !== 'scope' && this.addType === 'entity') {
+        schemas = schemas.filter((item) => item.schemaName === this.editedEntity?.type);
       }
 
       return schemas;
-    },
-    objectName(): string | undefined {
-      return this.schemas.find((schema) => schema.endpoint === this.objectType)?.schemaName;
     },
     dialog: {
       get(): boolean {
         return this.value;
       },
       set(newValue: boolean) {
+        // reset dialog items + filter before close
+        this.entities = {
+          items: [],
+          page: 1,
+          pageCount: 0,
+          totalItemCount: 0
+        };
         this.$emit('input', newValue);
       }
     },
@@ -210,6 +196,7 @@ export default Vue.extend({
   watch: {
     value(newValue: boolean) {
       if (newValue) {
+        this.filter = { objectType: this.allowedObjectTypes[0].schemaName };
         this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
 
         let presetEntities: IVeoLink[];
@@ -231,13 +218,8 @@ export default Vue.extend({
         });
       }
     },
-    objectType(_newValue: string, oldValue: string) {
-      if (oldValue) {
-        this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
-      }
-    },
     filter() {
-      this.$fetch();
+      if (this.filter.objectType) this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
     }
   },
   methods: {
@@ -274,30 +256,9 @@ export default Vue.extend({
           this.saving = false;
         });
     },
-    onNewSubEntities(items: { type: string; id: string }[]) {
-      this.selectedItems = items;
-    },
     async fetchEntities(options: { page: number; sortBy: string; sortDesc: boolean }) {
       this.loading = true;
-      let _objectType = '';
-
-      // If add type is scope, only load scopes
-      if (this.addType === 'scope') {
-        _objectType = 'scope';
-        // this.filter.objectType = 'scope';
-      } else if (this.addType === 'entity') {
-        // If add type is entity and parent type is scope, allow the user to choose all object types but scope
-        if (this.editedEntity?.type === 'scope') {
-          _objectType = this.objectType;
-          // this.filter.objectType = this.objectType;
-        } else {
-          // If add type is entity and parent type is anything but scope, only show entities of the same type
-          _objectType = (this.editedEntity as IVeoEntity).type;
-          // this.filter.objectType = (this.editedEntity as IVeoEntity).type;
-        }
-      }
-
-      this.entities = await this.$api.entity.fetchAll(_objectType, options.page, {
+      this.entities = await this.$api.entity.fetchAll(this.filter.objectType, options.page, {
         size: this.$user.tablePageSize,
         sortBy: options.sortBy,
         sortOrder: options.sortDesc ? 'desc' : 'asc',
@@ -316,6 +277,8 @@ export default Vue.extend({
         // Translate sub types
         case 'subType':
           return this.formschemas.find((formschema) => formschema.subType === value)?.name?.[this.$i18n.locale] || value;
+        case 'status':
+          return this.translations[this.$i18n.locale]?.[`${this.filter.objectType}_${this.filter.subType}_status_${value}`] || value;
         default:
           return value;
       }
@@ -342,23 +305,13 @@ export default Vue.extend({
     "add": "Add",
     "add_subentities": "Add sub objects to \"{displayName}\"",
     "headline": "Edit sub objects",
-    "object_type": "Object type",
-    "shown_objecttype": "Object type to link",
     "filter": "filter"
   },
   "de": {
     "add": "Hinzufügen",
     "add_subentities": "Unterobjekte zu \"{displayName}\" hinzufügen",
     "headline": "Unterobjekte bearbeiten",
-    "object_type": "Objekttyp",
-    "shown_objecttype": "Zu verknüpfender Objekttyp",
     "filter": "filter"
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.search-bar-desktop {
-  margin: 0 100px;
-}
-</style>

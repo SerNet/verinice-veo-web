@@ -156,6 +156,14 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    objectTypeDisabled: {
+      type: Boolean,
+      default: false
+    },
+    allowedObjectTypes: {
+      type: Array,
+      default: () => undefined
+    } as PropOptions<IVeoSchemaEndpoint[] | undefined>,
     filter: {
       type: Object,
       default: () => {}
@@ -250,7 +258,12 @@ export default defineComponent({
           type: IVeoFilterOptionType.SELECT,
           required: props.objectTypeRequired,
           alwaysVisible: true,
-          selectOptions: objectTypes.value.map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName })),
+          disabled: props.objectTypeDisabled,
+          selectOptions: props.allowedObjectTypes
+            ? objectTypes.value
+                .filter((ot) => props.allowedObjectTypes!.includes(ot))
+                .map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName }))
+            : objectTypes.value.map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName })),
           onChange: () => {
             nextTick(() => {
               delete localFilter.value.subType;
