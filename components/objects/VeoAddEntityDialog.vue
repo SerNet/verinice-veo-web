@@ -224,7 +224,7 @@ export default defineComponent({
           return upperFirst(value);
         // Translate sub types
         case 'subType':
-          return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale] || value;
+          return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
         case 'status':
           return translations.value[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
         default:
