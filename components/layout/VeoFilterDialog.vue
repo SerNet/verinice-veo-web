@@ -254,7 +254,6 @@ export default defineComponent({
           type: IVeoFilterOptionType.SELECT,
           required: props.objectTypeRequired,
           alwaysVisible: true,
-          disabled: props.objectTypeDisabled,
           selectOptions: props.allowedObjectTypes
             ? objectTypes.value
                 .filter((ot) => props.allowedObjectTypes!.includes(ot))
