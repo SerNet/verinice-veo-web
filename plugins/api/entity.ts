@@ -159,7 +159,7 @@ export default function (api: Client) {
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
       // Remove properties of the object only used in the frontend
-      if (entity.type === 'scope') {
+      if (entity.type === 'scopes' || entity.type === 'scope') {
         // @ts-ignore
         delete entity.parts;
       } else {
