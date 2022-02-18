@@ -270,6 +270,7 @@ export default defineComponent({
           name: 'subType',
           type: IVeoFilterOptionType.SELECT,
           alwaysVisible: true,
+          disabled: !localFilter.value.objectType,
           selectOptions: availableSubTypes.value
             .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
             .sort((a, b) => {

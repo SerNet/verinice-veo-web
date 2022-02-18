@@ -262,6 +262,10 @@ export default Vue.extend({
       this.userSelectedSubType = this.currentTargetType?.subTypes?.[0];
 
       this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
+    },
+    // refetch on changes via FilterDialog or URL query parameters
+    filter() {
+      this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
     }
   },
   methods: {

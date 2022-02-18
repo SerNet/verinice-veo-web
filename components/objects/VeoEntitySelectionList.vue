@@ -19,6 +19,7 @@
   <VeoObjectTable
     v-model="selectedItems"
     show-select
+    checkbox-color="primary"
     v-bind="$attrs"
     v-on="$listeners"
     @page-change="$emit('page-change', $event)"
