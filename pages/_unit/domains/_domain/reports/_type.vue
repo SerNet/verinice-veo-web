@@ -130,7 +130,7 @@
               :key="k"
               :label="formatLabel(k)"
               :value="formatValue(k, filter[k])"
-              :close="k!='objectType'"
+              :close="k!='objectType' && k!='subType'"
               @click:close="clearFilter(k)"
             />
           </v-chip-group>
@@ -147,6 +147,7 @@
         v-model="filterDialogVisible"
         :domain="domainId"
         :filter="filter"
+        :disable-fields="['objectType', 'subType']"
         object-type-required
         @update:filter="updateRouteQuery"
       />
@@ -247,13 +248,22 @@ export default Vue.extend({
     // filter built from URL query parameters
     filter(): IBaseObject {
       const query = this.$route.query;
-      return Object.fromEntries(
+
+      let filterObject = Object.fromEntries(
         this.filterKeys.map((key) => {
           // Extract first query value
           const val = ([] as (string | null)[]).concat(query[key]).shift();
           return [key, val === null ? true : val];
         })
       );
+
+      const fixedSubTypes = this.report?.targetTypes?.[0]?.subTypes || [];
+      filterObject = {
+        ...filterObject,
+        objectType: this.report?.targetTypes?.[0]?.modelType,
+        subType: fixedSubTypes.length === 1 ? fixedSubTypes[0] : undefined
+      };
+      return filterObject;
     }
   },
   watch: {
