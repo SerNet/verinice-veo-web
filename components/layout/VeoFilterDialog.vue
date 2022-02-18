@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Annemarie Bufe, Jonas Heitmann, Markus Werner, Samuel Vitzthum
+   - Copyright (C) 2021  Annemarie Bufe, Jonas Heitmann, Markus Werner, Samuel Vitzthum, Jessica Lühnen
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -156,10 +156,6 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    objectTypeDisabled: {
-      type: Boolean,
-      default: false
-    },
     allowedObjectTypes: {
       type: Array,
       default: () => undefined
@@ -275,7 +271,6 @@ export default defineComponent({
           name: 'subType',
           type: IVeoFilterOptionType.SELECT,
           alwaysVisible: true,
-          disabled: !localFilter.value.objectType,
           selectOptions: availableSubTypes.value
             .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
             .sort((a, b) => {
