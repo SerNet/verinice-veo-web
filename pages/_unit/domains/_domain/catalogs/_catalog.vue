@@ -105,8 +105,7 @@
         v-model="selectedEntities"
         :items="entities"
         :loading="loadingEntities"
-        @page-change="fetchEntities"
-        @refetch="fetchEntities"
+        @page-change="onPageChange"
       />
     </template>
   </VeoPage>
@@ -261,6 +260,10 @@ export default Vue.extend({
       } finally {
         this.applying = false;
       }
+    },
+    // refetch on page or sort changes (in VeoObjectTable)
+    async onPageChange(opts: { newPage: number; sortBy: string; sortDesc?: boolean }) {
+      await this.fetchEntities({ page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
     },
     upperFirst
   }

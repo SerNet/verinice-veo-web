@@ -19,51 +19,53 @@
   <VeoDialog
     v-model="dialog"
     large
-    :headline="$t('headline')"
+    :headline="t('headline')"
     :persistent="saving"
     :close-disabled="saving"
     fixed-header
+    fixed-footer
   >
     <template #default>
-      {{ $t('add_subentities', { displayName: entityDisplayName }) }}
-      <v-row
-        dense
-        class="justify-space-between"
-      >
+      {{ t('add_subentities', { displayName: entityDisplayName }) }}
+      <v-row no-gutters>
         <v-col
-          v-if="editedEntity && editedEntity.type === 'scope' && addType === 'entity'"
-          lg="3"
-          md="6"
-          cols="12"
+          cols="auto"
+          class="d-flex align-center"
         >
-          <span>{{ $t('shown_objecttype') }}:</span>
-          <v-select
-            v-model="objectType"
-            :label="$t('object_type')"
-            :items="objectTypes"
-            class="mt-2"
-            outlined
-            dense
-          />
+          <v-btn
+            v-cy-name="'filter-button'"
+            class="mr-2"
+            rounded
+            primary
+            depressed
+            small
+            style="border: 1px solid black"
+            @click="filterDialogVisible = true"
+          >
+            <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
+          </v-btn>
         </v-col>
-      </v-row>
-      <v-row>
-        <v-col class="flex-grow-1 search-bar">
-          <VeoListSearchBar
-            v-model="filter"
-            :object-type="objectName"
-            @reset="filter = $event"
-          />
+        <v-col
+          cols="auto"
+          class="grow"
+        >
+          <v-chip-group v-cy-name="'chips'">
+            <VeoObjectChip
+              v-for="k in activeFilterKeys"
+              :key="k"
+              :label="formatLabel(k)"
+              :value="formatValue(k, filter[k])"
+              :close="k!='objectType'"
+              @click:close="clearFilter(k)"
+            />
+          </v-chip-group>
         </v-col>
       </v-row>
       <VeoEntitySelectionList
-        :selected-items="selectedItems"
+        v-model="selectedItems"
         :items="entities"
-        :loading="$fetchState.pending || loading"
-        :object-type="objectName"
-        @new-subentities="onNewSubEntities"
-        @page-change="fetchEntities"
-        @refetch="fetchEntities"
+        :loading="fetchState.pending || loading"
+        @page-change="onPageChange"
       />
     </template>
     <template #dialog-options>
@@ -73,7 +75,7 @@
         :disabled="saving"
         @click="$emit('input', false)"
       >
-        {{ $t('global.button.cancel') }}
+        {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -83,142 +85,219 @@
         :disabled="saving"
         @click="addEntities"
       >
-        {{ $t('add') }}
+        {{ t('add') }}
       </v-btn>
+      <VeoFilterDialog
+        v-model="filterDialogVisible"
+        :domain="domainId"
+        :filter="filter"
+        :allowed-object-types="allowedObjectTypes"
+        object-type-required
+        @update:filter="updateFilter"
+      />
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent, useRoute, ref, computed, useContext, useFetch, useRouter, watch, PropOptions } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
-import { Prop } from 'vue/types/options';
-import { getEntityDetailsFromLink } from '~/lib/utils';
-
+import { useI18n } from 'nuxt-i18n-composable';
+import { mdiFilter } from '@mdi/js';
+import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { getSchemaEndpoint, getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
-import { IVeoFilter } from '~/components/layout/VeoListSearchBar.vue';
+import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
 
-export default Vue.extend({
+export default defineComponent({
+  name: 'VeoAddEntityDialog',
   props: {
     value: {
       type: Boolean,
       required: true
     },
     addType: {
-      type: String as Prop<'entity' | 'scope' | undefined>,
+      type: [String, undefined],
       default: undefined
-    },
+    } as PropOptions<'entity' | 'scope' | undefined>,
     editedEntity: {
-      type: Object as Prop<IVeoEntity | undefined>,
+      type: [Object, undefined],
       default: undefined
-    }
+    } as PropOptions<IVeoEntity | undefined>
   },
-  data() {
-    return {
-      filter: {
-        designator: undefined,
-        name: undefined,
-        description: undefined,
-        updatedBy: undefined,
-        status: undefined
-      } as IVeoFilter,
-      selectedItems: [] as { id: string; type: string }[],
-      saving: false as boolean,
-      entities: {
-        items: [],
-        page: 1,
-        pageCount: 0,
-        totalItemCount: 0
-      } as IVeoPaginatedResponse<IVeoEntity[]>,
-      loading: false as boolean,
-      objectType: '' as string,
-      schemas: [] as IVeoSchemaEndpoint[]
-    };
-  },
-  async fetch() {
-    this.schemas = await this.$api.schema.fetchAll();
-    this.objectType = this.objectTypes[0].value;
+  setup(props, { emit }) {
+    const route = useRoute();
+    const { t, locale } = useI18n();
+    const { $api, $config, $user } = useContext();
 
-    this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
-  },
-  computed: {
-    entityDisplayName(): string {
-      return this.editedEntity?.displayName || '';
-    },
-    objectTypes(): { value: string; text: string }[] {
-      let schemas = this.schemas.map((schema: IVeoSchemaEndpoint) => ({
-        text: upperFirst(schema.schemaName),
-        value: schema.endpoint
-      }));
+    const filter = ref<IBaseObject>({});
+    const selectedItems = ref<{ id: string; type: string }[]>([]);
+    const saving = ref(false); // saving status for adding entities
+    const loading = ref(false); // loading status for fetch entities
+    const entities = ref<IVeoPaginatedResponse<IVeoEntity[]>>({ items: [], page: 1, pageCount: 0, totalItemCount: 0 });
+    const schemas = ref<IVeoSchemaEndpoint[]>([]);
+    const formschemas = ref<IVeoFormSchemaMeta[]>([]);
+    const filterDialogVisible = ref(false);
+    const translations = ref<IVeoTranslations['lang']>({});
 
-      // Filter out scopes if the user wants to add objects and the parent is a scope
-      if (this.editedEntity?.type === 'scope') {
-        schemas = schemas.filter((item) => item.value !== 'scopes');
-      }
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
-      return schemas;
-    },
-    objectName(): string | undefined {
-      return this.schemas.find((schema) => schema.endpoint === this.objectType)?.schemaName;
-    },
-    dialog: {
+    const { fetchState } = useFetch(async () => {
+      const [_schemas, _formschemas, _translations] = await Promise.all([$api.schema.fetchAll(), $api.form.fetchAll(domainId.value), $api.translation.fetch(['de', 'en'])]);
+      schemas.value = _schemas;
+      formschemas.value = _formschemas;
+      translations.value = _translations.lang;
+    });
+
+    const entityDisplayName = computed(() => props.editedEntity?.displayName || '');
+
+    // control own dialog
+    const dialog = computed({
       get(): boolean {
-        return this.value;
+        return props.value;
       },
-      set(newValue: boolean) {
-        this.$emit('input', newValue);
+      set() {
+        entities.value = {
+          items: [],
+          page: 1,
+          pageCount: 0,
+          totalItemCount: 0
+        };
+        emit('input', false);
       }
-    }
-  },
-  watch: {
-    value(newValue: boolean) {
-      if (newValue) {
-        this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
+    });
 
-        let presetEntities: IVeoLink[];
-        if (!this.editedEntity) {
-          presetEntities = [];
-        } else if (this.editedEntity.type === 'scope') {
-          presetEntities = this.editedEntity.members;
-        } else {
-          presetEntities = this.editedEntity.parts;
+    // on open dialog do ...
+    watch(
+      () => props.value,
+      (newValue: boolean) => {
+        if (newValue) {
+          filter.value = { objectType: allowedObjectTypes.value[0].schemaName };
+          fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
+
+          let presetEntities: IVeoLink[];
+          if (!props.editedEntity) {
+            presetEntities = [];
+          } else if (props.editedEntity.type === 'scope') {
+            presetEntities = props.editedEntity.members;
+          } else {
+            presetEntities = props.editedEntity.parts;
+          }
+
+          selectedItems.value = presetEntities.map((member) => {
+            const details = getEntityDetailsFromLink(member);
+            const id = details.id;
+            let type = details.type;
+            type = getSchemaName(schemas.value, type) || type;
+
+            return { id, type };
+          });
         }
-
-        this.selectedItems = presetEntities.map((member) => {
-          const details = getEntityDetailsFromLink(member);
-          const id = details.id;
-          let type = details.type;
-          type = getSchemaName(this.schemas, type) || type;
-
-          return { id, type };
-        });
       }
-    },
-    objectType(_newValue: string, oldValue: string) {
-      if (oldValue) {
-        this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
+    );
+
+    /**
+     * filter stuff
+     */
+
+    // available & active filter options
+    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects', 'hasLinks'];
+    const activeFilterKeys = computed(() => {
+      return filterKeys.filter((k) => filter.value[k] !== undefined);
+    });
+
+    // fetch new entities on filters' objectType change
+    watch(
+      () => filter.value,
+      () => {
+        if (filter.value.objectType) fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
       }
-    },
-    filter() {
-      this.$fetch();
-    }
-  },
-  methods: {
-    async addEntities() {
-      if (!this.editedEntity) {
+    );
+
+    // formatting filter chips and their translations
+    const formatLabel = (label: string) => {
+      return upperFirst(t(`objectlist.${label}`).toString());
+    };
+    const formatValue = (label: string, value?: string) => {
+      switch (label) {
+        // Uppercase object types
+        case 'objectType':
+          return upperFirst(value);
+        // Translate sub types
+        case 'subType':
+          return formschemas.value.find((formschema) => formschema.subType === value)?.name?.[locale.value] || value;
+        case 'status':
+          return translations.value[locale.value]?.[`${filter.value.objectType}_${filter.value.subType}_status_${value}`] || value;
+        default:
+          return value;
+      }
+    };
+
+    // remove one filter
+    const clearFilter = (key: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [key]: remove, ...rest } = filter.value;
+      filter.value = { ...rest };
+    };
+
+    // update filter options
+    const updateFilter = (newFilter: IBaseObject) => {
+      filter.value = { ...newFilter };
+    };
+
+    // get allowed filter-objectTypes for current parent and child type
+    const allowedObjectTypes = computed(() => {
+      let _schemas = [...schemas.value];
+      // Filter out scopes if the user wants to add objects and the parent is a scope
+      if (props.editedEntity?.type === 'scope' && props.addType === 'entity') {
+        _schemas = _schemas.filter((item) => item.endpoint !== 'scopes');
+      }
+      // Only scope if the user wants to add scopes and the parent is a scope
+      if (props.editedEntity?.type === 'scope' && props.addType === 'scope') {
+        _schemas = _schemas.filter((item) => item.endpoint === 'scopes');
+      }
+      // Only own object type if the user wants to add objects and the parent is a object
+      if (props.editedEntity?.type !== 'scope' && props.addType === 'entity') {
+        _schemas = _schemas.filter((item) => item.schemaName === props.editedEntity?.type);
+      }
+      return _schemas;
+    });
+
+    /**
+     * entity control
+     */
+
+    // fetch entities for table
+    const fetchEntities = async (options: { page: number; sortBy: string; sortDesc: boolean }) => {
+      loading.value = true;
+      entities.value = await $api.entity.fetchAll(filter.value.objectType, options.page, {
+        size: $user.tablePageSize,
+        sortBy: options.sortBy,
+        sortOrder: options.sortDesc ? 'desc' : 'asc',
+        ...(filter.value || {})
+      });
+      loading.value = false;
+    };
+
+    // refetch entities on page or sort changes (in VeoObjectTable)
+    const onPageChange = async (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
+      await fetchEntities({ page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
+    };
+
+    // add child entities to parent
+    const addEntities = async () => {
+      if (!props.editedEntity) {
         return;
       }
 
-      this.saving = true;
-      const _editedEntity = await this.$api.entity.fetch(this.editedEntity.type, this.editedEntity.id);
+      saving.value = true;
+      const _editedEntity = await $api.entity.fetch(props.editedEntity.type, props.editedEntity.id);
 
-      const children = this.selectedItems.map((item) => {
+      const children = selectedItems.value.map((item) => {
         return {
-          targetUri: `${this.$config.apiUrl}/${getSchemaEndpoint(this.schemas, item.type) || item.type}/${item.id}`
+          targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value, item.type) || item.type}/${item.id}`
         };
       });
-      if (this.editedEntity.type === 'scope') {
+      if (props.editedEntity.type === 'scope') {
         // @ts-ignore
         _editedEntity.members = children;
       } else {
@@ -226,46 +305,44 @@ export default Vue.extend({
         _editedEntity.parts = children;
       }
 
-      this.$api.entity
-        .update(this.editedEntity.type, this.editedEntity.id, _editedEntity)
+      $api.entity
+        .update(props.editedEntity.type, props.editedEntity.id, _editedEntity)
         .then(() => {
-          this.$emit('success');
+          emit('success');
         })
         .catch((error: any) => {
-          this.$emit('error', error);
+          emit('error', error);
         })
         .finally(() => {
-          this.saving = false;
+          saving.value = false;
         });
-    },
-    onNewSubEntities(items: { type: string; id: string }[]) {
-      this.selectedItems = items;
-    },
-    async fetchEntities(options: { page: number; sortBy: string; sortDesc: boolean }) {
-      this.loading = true;
-      let _objectType = '';
+    };
 
-      // If add type is scope, only load scopes
-      if (this.addType === 'scope') {
-        _objectType = 'scope';
-      } else if (this.addType === 'entity') {
-        // If add type is entity and parent type is scope, allow the user to choose all object types but scope
-        if (this.editedEntity?.type === 'scope') {
-          _objectType = this.objectType;
-        } else {
-          // If add type is entity and parent type is anything but scope, only show entities of the same type
-          _objectType = (this.editedEntity as IVeoEntity).type;
-        }
-      }
+    return {
+      dialog,
+      filter,
+      saving,
+      loading,
+      entities,
+      domainId,
+      fetchState,
+      selectedItems,
+      activeFilterKeys,
+      entityDisplayName,
+      allowedObjectTypes,
+      filterDialogVisible,
 
-      this.entities = await this.$api.entity.fetchAll(_objectType, options.page, {
-        size: this.$user.tablePageSize,
-        sortBy: options.sortBy,
-        sortOrder: options.sortDesc ? 'desc' : 'asc',
-        ...(this.filter || {})
-      });
-      this.loading = false;
-    }
+      addEntities,
+      formatLabel,
+      formatValue,
+      clearFilter,
+      updateFilter,
+      onPageChange,
+
+      t,
+      upperFirst,
+      mdiFilter
+    };
   }
 });
 </script>
@@ -276,21 +353,13 @@ export default Vue.extend({
     "add": "Add",
     "add_subentities": "Add sub objects to \"{displayName}\"",
     "headline": "Edit sub objects",
-    "object_type": "Object type",
-    "shown_objecttype": "Object type to link"
+    "filter": "filter"
   },
   "de": {
     "add": "Hinzufügen",
     "add_subentities": "Unterobjekte zu \"{displayName}\" hinzufügen",
     "headline": "Unterobjekte bearbeiten",
-    "object_type": "Objekttyp",
-    "shown_objecttype": "Zu verknüpfender Objekttyp"
+    "filter": "filter"
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.search-bar-desktop {
-  margin: 0 100px;
-}
-</style>
