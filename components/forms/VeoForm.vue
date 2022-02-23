@@ -30,7 +30,7 @@ import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
-import { IVeoFormsAdditionalContext, IVeoFormsControlProps, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoFormsAdditionalContext, IVeoFormsControlProps, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 import { getDefaultReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
@@ -109,7 +109,8 @@ export default Vue.extend({
     return {
       localUI: this.ui,
       formIsValid: true,
-      errorsMsgMap: {} as BaseObject
+      errorsMsgMap: {} as BaseObject,
+      domain: undefined as undefined | IVeoDomain
     };
   },
   computed: {
@@ -165,6 +166,17 @@ export default Vue.extend({
           },
           [`#/properties/domains/properties/${this.domainId}/properties/subType`]: {
             formSchema: { disabled: this.disableSubTypeSelect }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
+            formSchema: {
+              enum: (() => {
+                if (this.domain) {
+                  return this.domain.riskDefinitions.DSRA.implementationStateDefinition.levels.map((level: any) => level.name);
+                } else {
+                  return [];
+                }
+              })()
+            }
           }
         };
       } else {
@@ -224,9 +236,18 @@ export default Vue.extend({
           }))
         );
       }
+    },
+    domainId: {
+      handler() {
+        this.fetchDomain();
+      },
+      immediate: true
     }
   },
   methods: {
+    async fetchDomain() {
+      this.domain = await this.$api.domain.fetch(this.domainId);
+    },
     validate() {
       this.formIsValid = this.validateFunction(this.value);
       this.errorsMsgMap = !this.formIsValid && this.validateFunction.errors ? this.validateFunction.errors.reduce(this.validationErrorTransform, {}) : {};

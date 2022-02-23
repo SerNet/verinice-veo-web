@@ -65,6 +65,7 @@ export interface IVeoDomain extends IVeoBaseObject {
   abbreviation: string;
   description: string;
   catalogs: any[];
+  riskDefinitions: any;
 }
 
 // At the moment, we only use strings in the frontend for custom attributes.
