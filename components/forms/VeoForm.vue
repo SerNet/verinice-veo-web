@@ -24,7 +24,7 @@ import { JsonPointer } from 'json-ptr';
 import vjp from 'vue-json-pointer';
 import { ErrorObject, ValidateFunction } from 'ajv';
 import { cloneDeep, dropRight, merge, pull } from 'lodash';
-import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
+import { Layout as ILayout, IVeoFormSchemaControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
 import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
@@ -41,7 +41,8 @@ interface IErrorMessageElement {
 
 interface IOptions {
   generator: {
-    excludedProperties?: string[];
+    excludedProperties: string[];
+    groupedNamespaces: { namespace: string; label?: string }[];
   };
 }
 
@@ -107,36 +108,6 @@ export default Vue.extend({
   data() {
     return {
       localUI: this.ui,
-      defaultOptions: {
-        generator: {
-          excludedProperties: [
-            '/id$',
-            '/type$',
-            '/domains$',
-            '/owner$',
-            '/href$',
-            '/validFrom$',
-            '/displayName$',
-            '/resourcesUri$',
-            '/searchesUri$',
-            '/targetUri$',
-            '/riskvalues$',
-            '/assets$',
-            '^#/properties/links',
-            '/applicableTo$',
-            '/references$',
-            '/updatedAt$',
-            '/updatedBy$',
-            '/createdAt$',
-            '/createdBy$',
-            '/parts$',
-            '/members$',
-            '/designator$',
-            '/links$',
-            '_self'
-          ]
-        }
-      },
       formIsValid: true,
       errorsMsgMap: {} as BaseObject
     };
@@ -144,6 +115,31 @@ export default Vue.extend({
   computed: {
     validateFunction(): ValidateFunction {
       return ajv.compile(this.schema);
+    },
+    defaultOptions() {
+      return {
+        generator: {
+          excludedProperties: [
+            '/id$',
+            '/type$',
+            '/owner$',
+            '^#/properties/links',
+            '/updatedAt$',
+            '/updatedBy$',
+            '/createdAt$',
+            '/createdBy$',
+            '/parts$',
+            '/members$',
+            '/designator$',
+            '(\\w+)/properties/domains$',
+            '_self'
+          ],
+          groupedNamespaces: Object.keys((this.schema as any).properties?.customAspects?.properties || {}).map((key) => ({
+            namespace: `#/properties/customAspects/properties/${key}`,
+            label: key
+          }))
+        }
+      };
     },
     mergedOptions(): IOptions {
       return merge(this.defaultOptions, this.options);
@@ -349,7 +345,7 @@ export default Vue.extend({
         this.createChildren(element, formSchemaPointer, h)
       );
     },
-    createControl(element: IControl, h: CreateElement, rule: IRule): VNode {
+    createControl(element: IVeoFormSchemaControl, h: CreateElement, rule: IRule): VNode {
       let partOfProps: { [key: string]: any } = {
         name: undefined,
         schema: {},
@@ -451,7 +447,7 @@ export default Vue.extend({
       if (this.ui) {
         this.localUI = this.translate<UISchema>(this.ui);
       } else {
-        this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.mergedOptions.generator.excludedProperties, Mode.VEO));
+        this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.mergedOptions.generator, Mode.VEO));
       }
     },
     getParentPointer(elementPointer: string): string {

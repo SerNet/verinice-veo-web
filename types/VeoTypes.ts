@@ -342,6 +342,7 @@ export interface IVeoFormSchemaItemOptions {
   label?: string;
   format?: string;
   direction?: string;
+  class?: string;
 }
 
 export interface IVeoFormSchemaItemRule {
@@ -437,4 +438,9 @@ export interface IVeoGlobalAlert {
   text: string;
   params?: IVeoGlobalAlertParams; // Allows the user to specify certain aspects of the alert
   alertKey?: number; // Used to display one alert after another (only one should be displayed at once) and to programmatically remove an alert
+}
+
+export interface IVeoFormSchemaGeneratorOptions {
+  excludedProperties?: string[];
+  groupedNamespaces?: { namespace: string; label?: string }[];
 }
