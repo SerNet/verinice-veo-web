@@ -19,7 +19,9 @@ import { JSONSchema7 } from 'json-schema';
 import Ajv2019 from 'ajv/dist/2019';
 import addFormats from 'ajv-formats';
 import { JsonPointer } from 'json-ptr';
-import { UIRule, UISchemaElement } from '~/types/UISchema';
+import { merge, partition } from 'lodash';
+import { UIRule, UISchemaElement, IVeoFormSchemaControl } from '~/types/UISchema';
+import { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
 
 type defaultType = string | boolean | number | undefined | null;
 
@@ -123,89 +125,78 @@ export enum Mode {
   VEO = 'VEO'
 }
 
-function generateControl(scope: string, items: BaseObject, mode: Mode = Mode.GENERAL): UISchemaElement {
-  const propertyName = scope.split('/').pop();
-  const label = propertyName ? (mode === Mode.VEO ? `#lang/${propertyName}` : propertyName) : '';
-  return {
-    type: 'Control',
-    scope,
-    options: {
-      label
-    },
-    // Add property only if condition(here: items[scope]) is true https://stackoverflow.com/a/40560953/6072503
-    ...(items[scope] && {
-      elements: items[scope].map(generateControl)
-    })
-  };
+function isGroup(schema: JSONSchema7): boolean {
+  return !!schema.properties;
 }
 
-function generateGroups(content: UISchemaElement[], scopes: string[]) {
-  const regCustomAspect = /#\/properties\/customAspects\/properties\/\w+/;
-  const uniqueCustomAspects = [
-    ...new Set(
-      scopes
-        .filter((scope) => scope.includes('#/properties/customAspects/properties'))
-        .map((scope) => {
-          const matchedCustomAspect = scope.match(regCustomAspect);
-          return matchedCustomAspect && matchedCustomAspect[0];
-        })
-    )
-  ] as string[];
-
-  return [
-    ...content.filter((el: any) => el.scope && !regCustomAspect.test(el.scope)),
-    ...uniqueCustomAspects.map((uniqueCustomAspect) => {
-      return {
-        type: 'Layout',
-        options: {
-          type: 'group',
-          direction: 'vertical',
-          class: 'border'
-        },
-        elements: [
-          {
-            type: 'Label',
-            text: uniqueCustomAspect.split('/').pop(),
-            options: { class: 'font-italic accent--text text-body-2 ml-3' }
-          },
-          ...content.filter((el: any) => el.scope && el.scope.includes(uniqueCustomAspect))
-        ]
-      };
-    })
-  ] as UISchemaElement[];
-}
-
-export function generateFormSchema(objectSchema: JSONSchema7, excludedProperties: string[] = [], mode: Mode = Mode.GENERAL): any {
-  const items: BaseObject = {};
-  // @ts-ignore
-  let schemaMap = Object.keys(JsonPointer.flatten(objectSchema, '#'));
+function isPropertyExcludedFromFormSchema(pointer: string, excludedProperties: string[]): boolean {
   const excludedPropertiesRegexp = excludedProperties.map((prop) => new RegExp(prop));
-  schemaMap = excludedPropertiesRegexp.length > 0 ? schemaMap.filter((el) => !excludedPropertiesRegexp.some((reg) => reg.test(el))) : schemaMap;
-  // Regex explanation: Match all paths containing either /properties/<smth> (custom aspect/link attributes) or /properties/<uuid>/properties/<smth> (currently only used for domain properties (subType & status))
-  const scopes = schemaMap
-    .filter((el) => /#\/(\w|\/)*properties\/\w+$/g.test(el) || /#\/(\w|\/)*properties\/(.[^/]*)\/properties\/\w+$/g.test(el))
-    .filter((el, _, arr) => !arr.some((someEl) => new RegExp(String.raw`${el}/properties/\w+`, 'g').test(someEl)))
-    .filter((el) => {
-      // Regex explanation: Match all custom link attributes, but set them in context with their parent
-      if (/\/properties\/\w+\/items\/properties\/\w+$/g.test(el)) {
-        const [parent, child] = el.split(/\/items(?=\/properties\/\w+$)/g);
-        items[parent] = items[parent] ? [...items[parent], `#${child}`] : [`#${child}`];
-        return false;
-      } else {
-        return true;
-      }
-    });
-  let content = scopes.map((scope) => generateControl(scope, items, mode));
 
-  // Generate Groups for each customAspect
-  // TODO: should be added the same for links
-  content = generateGroups(content, scopes);
+  return excludedPropertiesRegexp.some((regexp) => regexp.test(pointer));
+}
+
+export function generateFormSchemaGroup(children: UISchemaElement[], label?: string): UISchemaElement {
+  const labelElement = label
+    ? {
+        type: 'Label',
+        text: label,
+        options: { class: 'font-italic accent--text text-body-2 ml-3' }
+      }
+    : undefined;
+
   return {
     type: 'Layout',
     options: {
-      format: 'group',
+      class: 'border',
       direction: 'vertical'
     },
-    elements: content
+    elements: [...(labelElement ? [labelElement as any] : []), ...children]
   };
+}
+
+export function generateFormSchemaControl(pointer: string, _schema: BaseObject, mode: Mode): IVeoFormSchemaControl {
+  const propertyName = pointer.split('/').pop();
+  const label = propertyName ? (mode === Mode.VEO ? `#lang/${propertyName}` : propertyName) : '';
+
+  return {
+    type: 'Control',
+    scope: pointer,
+    options: {
+      label
+    }
+  };
+}
+
+function generateFormSchemaControls(pointer: string, schema: JSONSchema7, generatorOptions: IVeoFormSchemaGeneratorOptions, mode: Mode = Mode.GENERAL): any[] {
+  const controls: IVeoFormSchemaControl[] = [];
+
+  if (isPropertyExcludedFromFormSchema(pointer, generatorOptions.excludedProperties as string[])) {
+    return [];
+  }
+
+  if (!isGroup(schema)) {
+    controls.push(generatorOptions.generateControlFunction(pointer, schema, mode));
+  } else {
+    const properties = schema.properties || {};
+    for (const property of Object.keys(properties)) {
+      controls.push(...generateFormSchemaControls(`${pointer}/properties/${property}`, properties[property] as any, generatorOptions, mode));
+    }
+  }
+
+  return controls;
+}
+
+export function generateFormSchema(objectSchema: JSONSchema7, generatorOptions: IVeoFormSchemaGeneratorOptions, mode: Mode = Mode.GENERAL): any {
+  const _generatorOptions = merge({ excludedProperties: [] as string[], groupedNamespaces: [] as string[] }, generatorOptions);
+  let schema: UISchemaElement[] = generateFormSchemaControls('#', objectSchema, _generatorOptions, mode);
+
+  for (const namespace of _generatorOptions.groupedNamespaces) {
+    const [controlsToAddToGroup, untouchedControls] = partition(schema, (control) => new RegExp(namespace.namespace).test((control as any).scope || ''));
+    schema = [...untouchedControls, generatorOptions.generateGroupFunction(controlsToAddToGroup, namespace.label)];
+  }
+
+  const formSchema = generatorOptions.generateGroupFunction(schema);
+  delete formSchema.options?.class;
+
+  return formSchema;
 }

@@ -24,25 +24,19 @@ import { JsonPointer } from 'json-ptr';
 import vjp from 'vue-json-pointer';
 import { ErrorObject, ValidateFunction } from 'ajv';
 import { cloneDeep, dropRight, merge, pull } from 'lodash';
-import { Layout as ILayout, Control as IControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
-import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
+import { Layout as ILayout, IVeoFormSchemaControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
+import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule, generateFormSchemaControl, generateFormSchemaGroup } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
-import { IVeoFormsAdditionalContext, IVeoFormsControlProps, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoFormsAdditionalContext, IVeoFormSchemaGeneratorOptions, IVeoFormsControlProps, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 import { getDefaultReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 interface IErrorMessageElement {
   pointer: string;
   message: string;
-}
-
-interface IOptions {
-  generator: {
-    excludedProperties?: string[];
-  };
 }
 
 export default Vue.extend({
@@ -80,10 +74,6 @@ export default Vue.extend({
       type: Object,
       default: () => {}
     } as PropOptions<IVeoTranslationCollection>,
-    options: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IOptions>,
     isValid: {
       type: Boolean
     },
@@ -107,46 +97,39 @@ export default Vue.extend({
   data() {
     return {
       localUI: this.ui,
-      defaultOptions: {
-        generator: {
-          excludedProperties: [
-            '/id$',
-            '/type$',
-            '/domains$',
-            '/owner$',
-            '/href$',
-            '/validFrom$',
-            '/displayName$',
-            '/resourcesUri$',
-            '/searchesUri$',
-            '/targetUri$',
-            '/riskvalues$',
-            '/assets$',
-            '^#/properties/links',
-            '/applicableTo$',
-            '/references$',
-            '/updatedAt$',
-            '/updatedBy$',
-            '/createdAt$',
-            '/createdBy$',
-            '/parts$',
-            '/members$',
-            '/designator$',
-            '/links$',
-            '_self'
-          ]
-        }
-      },
       formIsValid: true,
-      errorsMsgMap: {} as BaseObject
+      errorsMsgMap: {} as BaseObject,
+      domain: undefined as undefined | IVeoDomain
     };
   },
   computed: {
     validateFunction(): ValidateFunction {
       return ajv.compile(this.schema);
     },
-    mergedOptions(): IOptions {
-      return merge(this.defaultOptions, this.options);
+    generatorOptions(): IVeoFormSchemaGeneratorOptions {
+      return {
+        excludedProperties: [
+          '/id$',
+          '/type$',
+          '/owner$',
+          '^#/properties/links',
+          '/updatedAt$',
+          '/updatedBy$',
+          '/createdAt$',
+          '/createdBy$',
+          '/parts$',
+          '/members$',
+          '/designator$',
+          '(\\w+)/properties/domains$',
+          '_self'
+        ],
+        groupedNamespaces: Object.keys((this.schema as any).properties?.customAspects?.properties || {}).map((key) => ({
+          namespace: `#/properties/customAspects/properties/${key}`,
+          label: key
+        })),
+        generateControlFunction: generateFormSchemaControl,
+        generateGroupFunction: generateFormSchemaGroup
+      };
     },
     localReactiveFormActions(): IVeoReactiveFormAction[] {
       return [...this.reactiveFormActions, ...getDefaultReactiveFormActions(this)];
@@ -169,6 +152,17 @@ export default Vue.extend({
           },
           [`#/properties/domains/properties/${this.domainId}/properties/subType`]: {
             formSchema: { disabled: this.disableSubTypeSelect }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
+            formSchema: {
+              enum: (() => {
+                if (this.domain) {
+                  return (this.domain.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name);
+                } else {
+                  return [];
+                }
+              })()
+            }
           }
         };
       } else {
@@ -228,9 +222,21 @@ export default Vue.extend({
           }))
         );
       }
+    },
+    domainId: {
+      handler() {
+        this.fetchDomain();
+      },
+      immediate: true
     }
   },
   methods: {
+    async fetchDomain() {
+      // ToDo: Workaround for unit tests, find a way to mock when using composition api
+      if (this.$api) {
+        this.domain = await this.$api.domain.fetch(this.domainId);
+      }
+    },
     validate() {
       this.formIsValid = this.validateFunction(this.value);
       this.errorsMsgMap = !this.formIsValid && this.validateFunction.errors ? this.validateFunction.errors.reduce(this.validationErrorTransform, {}) : {};
@@ -349,7 +355,7 @@ export default Vue.extend({
         this.createChildren(element, formSchemaPointer, h)
       );
     },
-    createControl(element: IControl, h: CreateElement, rule: IRule): VNode {
+    createControl(element: IVeoFormSchemaControl, h: CreateElement, rule: IRule): VNode {
       let partOfProps: { [key: string]: any } = {
         name: undefined,
         schema: {},
@@ -451,7 +457,7 @@ export default Vue.extend({
       if (this.ui) {
         this.localUI = this.translate<UISchema>(this.ui);
       } else {
-        this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.mergedOptions.generator.excludedProperties, Mode.VEO));
+        this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.generatorOptions, Mode.VEO));
       }
     },
     getParentPointer(elementPointer: string): string {

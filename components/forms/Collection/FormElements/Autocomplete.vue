@@ -66,7 +66,7 @@ export default Vue.extend({
   name: 'Autocomplete',
   props: {
     value: {
-      type: [String, Array],
+      type: [String, Array, Number],
       default: undefined
     } as PropOptions<string | string[]>,
     name: {
@@ -145,7 +145,7 @@ export default Vue.extend({
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
     return calculateConditionsScore([
-      typeof props.schema.type === 'undefined' || props.schema.type === 'string' || props.schema.type === 'array',
+      typeof props.schema.type === 'undefined' || props.schema.type === 'string' || props.schema.type === 'array' || props.schema.type === 'integer',
       typeof props.schema.enum !== 'undefined' || (props.schema.items instanceof Object && !Array.isArray(props.schema.items) && typeof props.schema.items.enum !== 'undefined'),
       typeof props.options !== 'undefined' && props.options.format === 'autocomplete'
     ]);

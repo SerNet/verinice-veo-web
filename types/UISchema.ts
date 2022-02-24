@@ -18,7 +18,7 @@
 import { JSONSchema7 } from 'json-schema';
 
 // eslint-disable-next-line no-use-before-define
-export type UISchemaElement = Layout | Control | Label;
+export type UISchemaElement = Layout | IVeoFormSchemaControl | Label;
 
 export type UISchema = UISchemaElement;
 
@@ -43,7 +43,7 @@ export interface Layout extends UIElement {
   };
 }
 
-export interface Control extends UIElement {
+export interface IVeoFormSchemaControl extends UIElement {
   type: 'Control';
   scope?: string;
   label?: string;
