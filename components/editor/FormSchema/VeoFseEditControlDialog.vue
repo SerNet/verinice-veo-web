@@ -266,8 +266,6 @@ export default defineComponent<IProps>({
   setup(props, context) {
     const { t } = useI18n();
 
-    console.log('1', props.customTranslations);
-
     // TODO: Refactor the component
     /**
      * General variables
