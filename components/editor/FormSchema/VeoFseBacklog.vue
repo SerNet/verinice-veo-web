@@ -318,11 +318,11 @@ export default defineComponent<IProps>({
           category = 'links';
           const attributes = value.items?.properties?.attributes?.properties || [];
 
-          for (const attributeKey of Object.keys(attributes)) {
+          for (const [attributeKey, attributeValue] of Object.entries<BaseObject>(attributes)) {
             if (!nestedControls.value[key]) {
               nestedControls.value[key] = [];
             }
-            nestedControls.value[key].push(createControl(`#/properties/attributes/properties/${attributeKey}`, attributes[attributeKey], mode));
+            nestedControls.value[key].push(createControl(`#/properties/attributes/properties/${attributeKey}`, attributeValue, mode));
           }
         }
 
