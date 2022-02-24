@@ -232,7 +232,10 @@ export default Vue.extend({
   },
   methods: {
     async fetchDomain() {
-      this.domain = await this.$api.domain.fetch(this.domainId);
+      // ToDo: Workaround for unit tests, find a way to mock when using composition api
+      if (this.$api) {
+        this.domain = await this.$api.domain.fetch(this.domainId);
+      }
     },
     validate() {
       this.formIsValid = this.validateFunction(this.value);
