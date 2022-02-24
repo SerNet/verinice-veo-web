@@ -119,6 +119,7 @@ export default Vue.extend({
               language: this.language
             };
           }
+          console.log(element, partOfProps);
           return h(FseControl, {
             props: {
               elements: element.elements,

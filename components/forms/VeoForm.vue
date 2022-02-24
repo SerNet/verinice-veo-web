@@ -25,25 +25,18 @@ import vjp from 'vue-json-pointer';
 import { ErrorObject, ValidateFunction } from 'ajv';
 import { cloneDeep, dropRight, merge, pull } from 'lodash';
 import { Layout as ILayout, IVeoFormSchemaControl, Label as ILabel, UISchema, UISchemaElement } from '~/types/UISchema';
-import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule } from '~/components/forms/utils';
+import { BaseObject, ajv, propertyPath, generateFormSchema, Mode, evaluateRule, IRule, generateFormSchemaControl, generateFormSchemaGroup } from '~/components/forms/utils';
 import Label from '~/components/forms/Label.vue';
 import Control from '~/components/forms/Control.vue';
 import Layout from '~/components/forms/Layout.vue';
 import Wrapper from '~/components/forms/Wrapper.vue';
-import { IVeoDomain, IVeoFormsAdditionalContext, IVeoFormsControlProps, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoFormsAdditionalContext, IVeoFormSchemaGeneratorOptions, IVeoFormsControlProps, IVeoReactiveFormAction, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { IBaseObject } from '~/lib/utils';
 import { getDefaultReactiveFormActions } from '~/components/forms/reactiveFormActions';
 
 interface IErrorMessageElement {
   pointer: string;
   message: string;
-}
-
-interface IOptions {
-  generator: {
-    excludedProperties: string[];
-    groupedNamespaces: { namespace: string; label?: string }[];
-  };
 }
 
 export default Vue.extend({
@@ -81,10 +74,6 @@ export default Vue.extend({
       type: Object,
       default: () => {}
     } as PropOptions<IVeoTranslationCollection>,
-    options: {
-      type: Object,
-      default: undefined
-    } as PropOptions<IOptions>,
     isValid: {
       type: Boolean
     },
@@ -117,33 +106,30 @@ export default Vue.extend({
     validateFunction(): ValidateFunction {
       return ajv.compile(this.schema);
     },
-    defaultOptions() {
+    generatorOptions(): IVeoFormSchemaGeneratorOptions {
       return {
-        generator: {
-          excludedProperties: [
-            '/id$',
-            '/type$',
-            '/owner$',
-            '^#/properties/links',
-            '/updatedAt$',
-            '/updatedBy$',
-            '/createdAt$',
-            '/createdBy$',
-            '/parts$',
-            '/members$',
-            '/designator$',
-            '(\\w+)/properties/domains$',
-            '_self'
-          ],
-          groupedNamespaces: Object.keys((this.schema as any).properties?.customAspects?.properties || {}).map((key) => ({
-            namespace: `#/properties/customAspects/properties/${key}`,
-            label: key
-          }))
-        }
+        excludedProperties: [
+          '/id$',
+          '/type$',
+          '/owner$',
+          '^#/properties/links',
+          '/updatedAt$',
+          '/updatedBy$',
+          '/createdAt$',
+          '/createdBy$',
+          '/parts$',
+          '/members$',
+          '/designator$',
+          '(\\w+)/properties/domains$',
+          '_self'
+        ],
+        groupedNamespaces: Object.keys((this.schema as any).properties?.customAspects?.properties || {}).map((key) => ({
+          namespace: `#/properties/customAspects/properties/${key}`,
+          label: key
+        })),
+        generateControlFunction: generateFormSchemaControl,
+        generateGroupFunction: generateFormSchemaGroup
       };
-    },
-    mergedOptions(): IOptions {
-      return merge(this.defaultOptions, this.options);
     },
     localReactiveFormActions(): IVeoReactiveFormAction[] {
       return [...this.reactiveFormActions, ...getDefaultReactiveFormActions(this)];
@@ -468,7 +454,7 @@ export default Vue.extend({
       if (this.ui) {
         this.localUI = this.translate<UISchema>(this.ui);
       } else {
-        this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.mergedOptions.generator, Mode.VEO));
+        this.localUI = this.translate<UISchema>(generateFormSchema(this.schema, this.generatorOptions, Mode.VEO));
       }
     },
     getParentPointer(elementPointer: string): string {

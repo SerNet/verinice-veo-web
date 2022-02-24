@@ -135,7 +135,7 @@ function isPropertyExcludedFromFormSchema(pointer: string, excludedProperties: s
   return excludedPropertiesRegexp.some((regexp) => regexp.test(pointer));
 }
 
-function generateFormSchemaGroup(children: UISchemaElement[], label?: string): UISchemaElement {
+export function generateFormSchemaGroup(children: UISchemaElement[], label?: string): UISchemaElement {
   const labelElement = label
     ? {
         type: 'Label',
@@ -154,7 +154,7 @@ function generateFormSchemaGroup(children: UISchemaElement[], label?: string): U
   };
 }
 
-function generateFormSchemaControl(pointer: string, mode: Mode): IVeoFormSchemaControl {
+export function generateFormSchemaControl(pointer: string, _schema: BaseObject, mode: Mode): IVeoFormSchemaControl {
   const propertyName = pointer.split('/').pop();
   const label = propertyName ? (mode === Mode.VEO ? `#lang/${propertyName}` : propertyName) : '';
 
@@ -167,39 +167,36 @@ function generateFormSchemaControl(pointer: string, mode: Mode): IVeoFormSchemaC
   };
 }
 
-function generateFormSchemaControls(pointer: string, schema: JSONSchema7, excludedProperties: string[], mode: Mode = Mode.GENERAL): IVeoFormSchemaControl[] {
+function generateFormSchemaControls(pointer: string, schema: JSONSchema7, generatorOptions: IVeoFormSchemaGeneratorOptions, mode: Mode = Mode.GENERAL): any[] {
   const controls: IVeoFormSchemaControl[] = [];
 
-  if (isPropertyExcludedFromFormSchema(pointer, excludedProperties)) {
+  if (isPropertyExcludedFromFormSchema(pointer, generatorOptions.excludedProperties as string[])) {
     return [];
   }
 
   if (!isGroup(schema)) {
-    controls.push(generateFormSchemaControl(pointer, mode));
+    controls.push(generatorOptions.generateControlFunction(pointer, schema, mode));
   } else {
     const properties = schema.properties || {};
     for (const property of Object.keys(properties)) {
-      controls.push(...generateFormSchemaControls(`${pointer}/properties/${property}`, properties[property] as any, excludedProperties, mode));
+      controls.push(...generateFormSchemaControls(`${pointer}/properties/${property}`, properties[property] as any, generatorOptions, mode));
     }
   }
 
   return controls;
 }
 
-export function generateFormSchema(objectSchema: JSONSchema7, generatorOptions?: IVeoFormSchemaGeneratorOptions, mode: Mode = Mode.GENERAL): UISchemaElement {
+export function generateFormSchema(objectSchema: JSONSchema7, generatorOptions: IVeoFormSchemaGeneratorOptions, mode: Mode = Mode.GENERAL): any {
   const _generatorOptions = merge({ excludedProperties: [] as string[], groupedNamespaces: [] as string[] }, generatorOptions);
-  let schema: UISchemaElement[] = generateFormSchemaControls('#', objectSchema, _generatorOptions.excludedProperties, mode);
+  let schema: UISchemaElement[] = generateFormSchemaControls('#', objectSchema, _generatorOptions, mode);
 
   for (const namespace of _generatorOptions.groupedNamespaces) {
     const [controlsToAddToGroup, untouchedControls] = partition(schema, (control) => new RegExp(namespace.namespace).test((control as any).scope || ''));
-    schema = [...untouchedControls, generateFormSchemaGroup(controlsToAddToGroup, namespace.label)];
+    schema = [...untouchedControls, generatorOptions.generateGroupFunction(controlsToAddToGroup, namespace.label)];
   }
 
-  return {
-    type: 'Layout',
-    options: {
-      direction: 'vertical'
-    },
-    elements: schema
-  };
+  const formSchema = generatorOptions.generateGroupFunction(schema);
+  delete formSchema.options?.class;
+
+  return formSchema;
 }

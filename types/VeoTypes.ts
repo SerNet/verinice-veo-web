@@ -18,6 +18,7 @@
 import { JSONSchema7TypeName } from 'json-schema';
 import { UISchemaElement } from './UISchema';
 import { IBaseObject } from '~/lib/utils';
+import { Mode } from '~/components/forms/utils';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
@@ -444,4 +445,6 @@ export interface IVeoGlobalAlert {
 export interface IVeoFormSchemaGeneratorOptions {
   excludedProperties?: string[];
   groupedNamespaces?: { namespace: string; label?: string }[];
+  generateControlFunction: (pointer: string, schema: IBaseObject, mode: Mode) => any;
+  generateGroupFunction: (children: any[], label?: string) => any;
 }

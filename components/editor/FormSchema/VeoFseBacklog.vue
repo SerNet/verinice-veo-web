@@ -216,6 +216,7 @@ import Draggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
 import { INPUT_TYPES } from '~/types/VeoEditor';
 import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
+import { generateFormSchema, Mode } from '~/components/forms/utils';
 
 interface IProps {
   searchQuery: string;
@@ -297,23 +298,33 @@ export default defineComponent<IProps>({
 
     // Nested Control items in a Control element, e.g. LinksField and its attributes
     const controlsItems: Ref<IControlItem> = ref({});
-    /**
-     * React to formschema or objectschema changes
-     */
+
+    // We want to group links but show each custom aspect attribute on their own, thus we use two different regex
     const objectSchemaPropertiesPatterns = {
-      standard: ['#/properties/name', '#/properties/abbreviation', '#/properties/description'],
-      standardRegex: [/^#\/properties\/domains\/properties\/%7BCURRENT_DOMAIN_ID%7D\/properties\/\w+$/],
       regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/attributes\/properties\/\w+$/,
-      regexLinks: /^#\/properties\/links\/properties\/\w+$/,
-      regexLinksAttributes: /^#\/properties\/links\/properties\/\w+\/items\/properties\/attributes\/properties\/\w+$/
+      regexLinks: /^#\/properties\/links\/properties\/\w+/
     };
 
     // When ObjectSchema is loaded, controls and controlsItems should be initialized to use them in other functions
     function initializeControls() {
-      const createControl = (key: string, value: any, category: IControl['category']): IControl => {
+      const createControl = (key: string, value: any, mode: Mode): IControl => {
         const propertyName = key.split('/').slice(-1)[0];
         const label = propertyName.split('_').pop() || '';
         let backlogTitle = propertyName;
+        let category: IControl['category'] = 'basics';
+        if (objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)) {
+          category = 'aspects';
+        } else if (objectSchemaPropertiesPatterns.regexLinks.test(key)) {
+          category = 'links';
+          const attributes = value.items?.properties?.attributes?.properties || [];
+
+          for (const attributeKey of Object.keys(attributes)) {
+            if (!controlsItems.value[key]) {
+              controlsItems.value[key] = [];
+            }
+            controlsItems.value[key].push(createControl(`#/properties/attributes/properties/${attributeKey}`, attributes[attributeKey], mode));
+          }
+        }
 
         if (category !== 'basics') {
           backlogTitle = backlogTitle.replace(`${props.formSchema.modelType}_`, '');
@@ -329,21 +340,29 @@ export default defineComponent<IProps>({
           used: false
         };
       };
-      Object.entries(JsonPointer.flatten(props.objectSchema, true) as Record<string, any>).forEach(([key, value]) => {
-        if (objectSchemaPropertiesPatterns.standard.includes(key) || objectSchemaPropertiesPatterns.standardRegex.some((regex) => regex.test(key))) {
-          controls.value.push(createControl(key, value, 'basics'));
-        } else if (objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)) {
-          controls.value.push(createControl(key, value, 'aspects'));
-        } else if (objectSchemaPropertiesPatterns.regexLinks.test(key)) {
-          controls.value.push(createControl(key, value, 'links'));
-        } else if (objectSchemaPropertiesPatterns.regexLinksAttributes.test(key)) {
-          const [linksKey, linksAttribute] = key.split('/items/');
-          if (!controlsItems.value[linksKey]) {
-            controlsItems.value[linksKey] = [];
-          }
-          controlsItems.value[linksKey].push(createControl(`#/${linksAttribute}`, value, 'links'));
-        }
-      });
+
+      controls.value = generateFormSchema(
+        props.objectSchema,
+        {
+          generateControlFunction: createControl,
+          generateGroupFunction: (children) => children,
+          excludedProperties: [
+            '/id$',
+            '/type$',
+            '/owner$',
+            '/updatedAt$',
+            '/updatedBy$',
+            '/createdAt$',
+            '/createdBy$',
+            '/parts$',
+            '/members$',
+            '/designator$',
+            '(\\w+)/properties/domains$',
+            '_self'
+          ]
+        },
+        Mode.VEO
+      );
 
       context.emit('controlItems', controlsItems.value);
     }
@@ -452,7 +471,6 @@ export default defineComponent<IProps>({
       onCollapseAll,
       onCloneFormElement,
       onCloneControl,
-      controlsItems,
       typeMap,
 
       t
