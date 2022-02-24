@@ -216,7 +216,7 @@ import Draggable from 'vuedraggable';
 import { v4 as uuid } from 'uuid';
 import { INPUT_TYPES } from '~/types/VeoEditor';
 import { IVeoFormSchema, IVeoObjectSchema } from '~/types/VeoTypes';
-import { generateFormSchema, Mode } from '~/components/forms/utils';
+import { BaseObject, generateFormSchema, Mode } from '~/components/forms/utils';
 
 interface IProps {
   searchQuery: string;
@@ -242,8 +242,8 @@ export interface IUnused {
   links: IControl[];
 }
 
-export interface IControlItem {
-  [key: string]: IControl[];
+export interface IControlItemMap {
+  [parent: string]: IControl[];
 }
 
 export default defineComponent<IProps>({
@@ -297,7 +297,7 @@ export default defineComponent<IProps>({
     const controls: Ref<IControl[]> = ref([]);
 
     // Nested Control items in a Control element, e.g. LinksField and its attributes
-    const controlsItems: Ref<IControlItem> = ref({});
+    const nestedControls: Ref<IControlItemMap> = ref({});
 
     // We want to group links but show each custom aspect attribute on their own, thus we use two different regex
     const objectSchemaPropertiesPatterns = {
@@ -307,7 +307,7 @@ export default defineComponent<IProps>({
 
     // When ObjectSchema is loaded, controls and controlsItems should be initialized to use them in other functions
     function initializeControls() {
-      const createControl = (key: string, value: any, mode: Mode): IControl => {
+      const createControl = (key: string, value: BaseObject, mode: Mode): IControl => {
         const propertyName = key.split('/').slice(-1)[0];
         const label = propertyName.split('_').pop() || '';
         let backlogTitle = propertyName;
@@ -319,10 +319,10 @@ export default defineComponent<IProps>({
           const attributes = value.items?.properties?.attributes?.properties || [];
 
           for (const attributeKey of Object.keys(attributes)) {
-            if (!controlsItems.value[key]) {
-              controlsItems.value[key] = [];
+            if (!nestedControls.value[key]) {
+              nestedControls.value[key] = [];
             }
-            controlsItems.value[key].push(createControl(`#/properties/attributes/properties/${attributeKey}`, attributes[attributeKey], mode));
+            nestedControls.value[key].push(createControl(`#/properties/attributes/properties/${attributeKey}`, attributes[attributeKey], mode));
           }
         }
 
@@ -364,7 +364,7 @@ export default defineComponent<IProps>({
         Mode.VEO
       );
 
-      context.emit('controlItems', controlsItems.value);
+      context.emit('controlItems', nestedControls.value);
     }
     initializeControls();
 
