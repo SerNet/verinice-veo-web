@@ -157,7 +157,7 @@ export default Vue.extend({
             formSchema: {
               enum: (() => {
                 if (this.domain) {
-                  return this.domain.riskDefinitions.DSRA.implementationStateDefinition.levels.map((level: any) => level.name);
+                  return (this.domain.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name);
                 } else {
                   return [];
                 }
