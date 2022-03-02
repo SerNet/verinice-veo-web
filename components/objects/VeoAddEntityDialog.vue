@@ -26,7 +26,7 @@
     fixed-footer
   >
     <template #default>
-      {{ t('add_subentities', { displayName: entityDisplayName }) }}
+      {{ t('link_subentities', { displayName: entityDisplayName }) }}
       <v-row no-gutters>
         <v-col
           cols="auto"
@@ -85,7 +85,7 @@
         :disabled="saving"
         @click="addEntities"
       >
-        {{ t('add') }}
+        {{ t('link') }}
       </v-btn>
       <VeoFilterDialog
         v-model="filterDialogVisible"
@@ -350,15 +350,15 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "add": "Add",
-    "add_subentities": "Add sub objects to \"{displayName}\"",
-    "headline": "Edit sub objects",
+    "link": "link",
+    "link_subentities": "link components to \"{displayName}\"",
+    "headline": "Edit components",
     "filter": "filter"
   },
   "de": {
-    "add": "Hinzufügen",
-    "add_subentities": "Unterobjekte zu \"{displayName}\" hinzufügen",
-    "headline": "Unterobjekte bearbeiten",
+    "link": "verknüpfen",
+    "link_subentities": "Bestandteile zu \"{displayName}\" verknüpfen",
+    "headline": "Bestandteile bearbeiten",
     "filter": "filter"
   }
 }
