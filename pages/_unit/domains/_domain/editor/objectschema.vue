@@ -291,12 +291,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { computed } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { upperFirst, pickBy } from 'lodash';
 import { mdiAlertCircleOutline, mdiContentSave, mdiDownload, mdiHelpCircleOutline, mdiInformationOutline, mdiMagnify, mdiTranslate, mdiWrench } from '@mdi/js';
 
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoObjectSchema, IVeoTranslations } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
@@ -317,13 +317,13 @@ export default Vue.extend({
       creationDialogVisible: false as boolean,
       errorDialogVisible: false as boolean,
       translationDialogVisible: false as boolean,
+      translations: {} as IVeoTranslations['lang'],
       detailsDialogVisible: false as boolean,
       hideEmptyAspects: false as boolean,
       search: '' as string,
       objectSchemaHelper: undefined as ObjectSchemaHelper | undefined,
       code: '' as string,
       schemaIsValid: { valid: false, errors: [], warnings: [] } as VeoSchemaValidatorValidationResult,
-      availableLanguages: [] as string[],
       displayLanguage: this.$i18n.locale as string,
       mdiAlertCircleOutline,
       mdiContentSave,
@@ -338,7 +338,7 @@ export default Vue.extend({
   },
   async fetch() {
     // TODO: Backend should create an API endpoint to get available languages dynamically
-    this.availableLanguages = Object.keys((await this.$api.translation.fetch([]))?.lang);
+    this.translations = (await this.$api.translation.fetch([]))?.lang || {};
   },
   head(): any {
     return {
@@ -354,6 +354,19 @@ export default Vue.extend({
     },
     domainId(): string {
       return separateUUIDParam(this.$route.params.domain).id;
+    },
+    availableLanguages(): string[] {
+      return Object.keys(this.translations);
+    },
+    schemaSpecificTranslations(): IVeoTranslations['lang'] {
+      const translationsToReturn: IVeoTranslations['lang'] = {};
+      const schemaTitle = this.objectSchemaHelper?.getTitle() || '';
+
+      for (const language of this.availableLanguages) {
+        translationsToReturn[language] = pickBy(this.translations[language], (_value, key) => key.startsWith(schemaTitle));
+      }
+
+      return translationsToReturn;
     }
   },
   watch: {
@@ -375,7 +388,9 @@ export default Vue.extend({
         }
 
         if (this.objectSchemaHelper.getLanguages().length === 0) {
-          this.objectSchemaHelper.updateTranslations(this.$i18n.locale, {});
+          for (const [languageKey, translations] of Object.entries(this.schemaSpecificTranslations)) {
+            this.objectSchemaHelper.updateTranslations(languageKey, translations);
+          }
         }
         this.code = JSON.stringify(this.objectSchemaHelper.toSchema(), undefined, 2);
         this.validate();
