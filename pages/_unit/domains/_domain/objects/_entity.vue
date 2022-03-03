@@ -332,7 +332,7 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "objectInfo": "objekt details",
+    "objectInfo": "object details",
     "objectForm": "form",
     "objectNotRestored": "couldn't restore object",
     "objectNotSaved": "couldn't update object",
@@ -341,8 +341,8 @@ export default defineComponent({
     "oldVersionAlert": "You are currently viewing an old and readonly version of this object. If you want to update the object based on this data, please click \"restore\" first and then make your changes.",
     "restore": "restore",
     "version": "version {version}",
-    "subEntities": "subentities",
-    "parents": "parents",
+    "subEntities": "components",
+    "parents": "part of",
     "links": "links"
   },
   "de": {
@@ -355,9 +355,9 @@ export default defineComponent({
     "oldVersionAlert": "Ihnen wird eine alte, schreibgeschützte Version dieses Objektes angezeigt. Bitte klicken Sie auf \"Wiederherstellen\", wenn Sie Ihr Objekt basierend auf diesen Daten aktualisieren möchten.",
     "restore": "wiederherstellen",
     "version": "version {version}",
-    "subEntities": "Unterobjekte",
-    "parents": "Eltern",
-    "links": "Verlinkungen"
+    "subEntities": "Bestandteile",
+    "parents": "Teil von",
+    "links": "Links"
   }
 }
 </i18n>
