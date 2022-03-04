@@ -251,8 +251,8 @@ export default defineComponent({
     "linkObject": "link object",
     "createScope": "create scope",
     "linkScope": "link scope",
-    "subEntities": "subentities",
-    "parents": "parents",
+    "subEntities": "components",
+    "parents": "part of",
     "objectLinked": "The links are successfully updated.",
     "objectNotLinked": "The links could not be updated.",
     "createType": "create {0}"
@@ -262,8 +262,8 @@ export default defineComponent({
     "linkObject": "Objekt verknüpfen",
     "createScope": "Scope erstellen",
     "linkScope": "Scope verknüpfen",
-    "subEntities": "Unterobjekte",
-    "parents": "Eltern",
+    "subEntities": "Bestandteile",
+    "parents": "Teil von",
     "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
     "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden.",
     "createType": "{0} erstellen"

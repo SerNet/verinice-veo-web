@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Annemarie Bufe, Jonas Heitmann, Markus Werner, Samuel Vitzthum
+   - Copyright (C) 2021  Annemarie Bufe, Jonas Heitmann, Markus Werner, Samuel Vitzthum, Jessica Lühnen
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -156,6 +156,10 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    allowedObjectTypes: {
+      type: Array,
+      default: () => undefined
+    } as PropOptions<IVeoSchemaEndpoint[] | undefined>,
     filter: {
       type: Object,
       default: () => {}
@@ -163,7 +167,11 @@ export default defineComponent({
     domain: {
       type: String,
       required: true
-    }
+    },
+    disableFields: {
+      type: Array,
+      default: () => []
+    } as PropOptions<string[]>
   },
   setup(props, { emit }) {
     const { $api } = useContext();
@@ -249,8 +257,13 @@ export default defineComponent({
           name: 'objectType',
           type: IVeoFilterOptionType.SELECT,
           required: props.objectTypeRequired,
+          disabled: props.disableFields?.includes('objectType'),
           alwaysVisible: true,
-          selectOptions: objectTypes.value.map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName })),
+          selectOptions: props.allowedObjectTypes
+            ? objectTypes.value
+                .filter((ot) => props.allowedObjectTypes!.includes(ot))
+                .map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName }))
+            : objectTypes.value.map((objectType) => ({ text: upperFirst(objectType.schemaName), value: objectType.schemaName })),
           onChange: () => {
             nextTick(() => {
               delete localFilter.value.subType;
@@ -262,7 +275,7 @@ export default defineComponent({
           name: 'subType',
           type: IVeoFilterOptionType.SELECT,
           alwaysVisible: true,
-          disabled: !localFilter.value.objectType,
+          disabled: !localFilter.value.objectType || props.disableFields?.includes('subType'),
           selectOptions: availableSubTypes.value
             .map((subTypes) => ({ text: subTypes.name[locale.value], value: subTypes.subType }))
             .sort((a, b) => {
@@ -287,11 +300,13 @@ export default defineComponent({
         } as IVeoFilterDivider,
         {
           name: 'designator',
+          disabled: props.disableFields?.includes('designator'),
           type: IVeoFilterOptionType.TEXT,
           alwaysVisible: true
         },
         {
           name: 'name',
+          disabled: props.disableFields?.includes('name'),
           type: IVeoFilterOptionType.TEXT,
           alwaysVisible: true
         },
@@ -299,7 +314,7 @@ export default defineComponent({
           name: 'status',
           type: IVeoFilterOptionType.SELECT,
           alwaysVisible: true,
-          disabled: !localFilter.value.objectType || !localFilter.value.subType,
+          disabled: !localFilter.value.objectType || !localFilter.value.subType || props.disableFields?.includes('status'),
           selectOptions: availableSubTypes.value
             .find((subType) => subType.subType === localFilter.value.subType)
             ?.status.map((status) => ({
@@ -309,22 +324,27 @@ export default defineComponent({
         },
         {
           name: 'description',
+          disabled: props.disableFields?.includes('description'),
           type: IVeoFilterOptionType.TEXT
         },
         {
           name: 'updatedBy',
+          disabled: props.disableFields?.includes('updatedBy'),
           type: IVeoFilterOptionType.TEXT
         },
         {
           name: 'notPartOfGroup',
+          disabled: props.disableFields?.includes('notPartOfGroup'),
           type: IVeoFilterOptionType.CHECKBOX
         },
         {
           name: 'hasChildObjects',
+          disabled: props.disableFields?.includes('hasChildObjects'),
           type: IVeoFilterOptionType.CHECKBOX
         },
         {
           name: 'hasLinks',
+          disabled: props.disableFields?.includes('hasLinks'),
           type: IVeoFilterOptionType.CHECKBOX
         }
       ];

@@ -162,7 +162,7 @@ describe('VeoObjectTable.vue', () => {
     const headers = table.findAll('th[role=columnheader]');
     const headerByName = new Map(headers.wrappers.map((_) => [_.text(), _]));
     // Array containing the property that should be sorted for:
-    const sortableColumns = ['designator', 'name', 'updatedAt', 'updatedBy', 'status'];
+    const sortableColumns = ['designator', 'name', 'updatedAt', 'updatedBy'];
     for (const column of sortableColumns) {
       const header = headerByName.get(`objectlist.${column}`);
       expect(header).toBeTruthy();

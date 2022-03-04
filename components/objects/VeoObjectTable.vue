@@ -182,6 +182,7 @@ export default defineComponent({
         value: 'icon',
         isDense: false,
         isSimple: true,
+        sortable: false,
         text: '',
         class: ['pr-0'],
         cellClass: ['pr-0'],
@@ -216,7 +217,7 @@ export default defineComponent({
         value: 'status',
         isDense: false,
         isSimple: false,
-        sortable: true,
+        sortable: false,
         width: 110,
         render: renderStatus
       },

@@ -155,7 +155,7 @@
               :form-schema="attribute"
               :form-schema-pointer="`${formSchemaPointer}/elements/${index}`"
               :general-translation="generalTranslation"
-              :custom-translation="localCustomTranslation"
+              :custom-translations="localCustomTranslation"
               :language="language"
               @update="onLinksAttributeUpdate(index, $event)"
               @delete="onLinksAttributeDelete(index, attribute.scope)"

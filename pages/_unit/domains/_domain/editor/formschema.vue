@@ -121,7 +121,7 @@
             icon
             large
             target="_blank"
-            to="/help"
+            :to="HELP_ROUTE"
             class="help-button"
             color="primary"
             v-on="on"
@@ -341,6 +341,7 @@ import {
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 
 interface IProps {}
 
@@ -586,7 +587,8 @@ export default defineComponent<IProps>({
       saveNewSchema,
       saveUpdatedSchema,
 
-      t
+      t,
+      HELP_ROUTE
     };
   },
   head(): any {
