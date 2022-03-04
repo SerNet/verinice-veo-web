@@ -22,7 +22,6 @@
   >
     <v-speed-dial
       v-model="speedDialIsOpen"
-      :disabled="!allowedActions.length"
       direction="top"
       transition="slide-y-reverse"
       absolute
@@ -33,6 +32,7 @@
         <v-btn
           v-model="speedDialIsOpen"
           color="primary"
+          :disabled="!allowedActions.length"
           depressed
           fab
         >
