@@ -16,35 +16,77 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
-    <v-menu
-      v-cy-name="'action-menu'"
-      offset-y
+  <div
+    class="mb-3"
+    style="position: relative;"
+  >
+    <v-tooltip
+      v-if="allowedActions.length < 2"
+      top
     >
-      <template #activator="{ on, attrs }">
+      <template #activator="{ on }">
         <v-btn
-          v-cy-name="'create-button'"
+          absolute
           color="primary"
-          text
-          v-bind="attrs"
+          depressed
+          :disabled="!allowedActions.length"
+          fab
+          right
+          style="bottom: 12px"
           v-on="on"
+          @click="allowedActions && allowedActions[0].action"
         >
-          <v-icon left>
-            {{ mdiPlus }}
+          <v-icon>
+            {{ allowedActions[0] && allowedActions[0].icon || mdiPlus }}
           </v-icon>
-          <span>{{ t('createType', [t(type)]) }}</span>
         </v-btn>
       </template>
-      <v-list v-cy-name="'action-list'">
-        <v-list-item
+      <template #default>
+        {{ allowedActions[0] && upperFirst(t(allowedActions[0].key).toString()) }}
+      </template>
+    </v-tooltip>
+    <v-speed-dial
+      v-else
+      v-model="speedDialIsOpen"
+      direction="top"
+      transition="slide-y-reverse"
+      absolute
+      right
+      style="bottom: 12px"
+    >
+      <template #activator>
+        <v-btn
+          v-model="speedDialIsOpen"
+          color="primary"
+          depressed
+          fab
+        >
+          <v-icon v-if="speedDialIsOpen">
+            {{ mdiClose }}
+          </v-icon>
+          <v-icon v-else>
+            {{ mdiPlus }}
+          </v-icon>
+        </v-btn>
+      </template>
+      <template #default>
+        <div
           v-for="action in allowedActions"
           :key="action.key"
           @click="action.action"
         >
-          <v-list-item-title>{{ upperFirst(t(action.key).toString()) }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+          <v-btn
+            depressed
+            rounded
+          >
+            {{ upperFirst(t(action.key).toString()) }}
+            <v-icon right>
+              {{ action.icon }}
+            </v-icon>
+          </v-btn>
+        </div>
+      </template>
+    </v-speed-dial>
     <!-- dialogs -->
     <VeoAddEntityDialog
       v-model="addEntityDialog.value"
@@ -64,6 +106,12 @@
       :object-type="createObjectDialog.objectType"
       @success="onCreateObjectSuccess"
     />
+    <VeoCreateRiskDialog
+      v-if="object"
+      v-model="createRiskDialogVisible"
+      :object-id="object.id"
+      @success="onCreateRiskSuccess"
+    />
   </div>
 </template>
 
@@ -71,7 +119,7 @@
 import { defineComponent, onMounted, useRoute, ref, computed, PropOptions, useContext } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiPlus } from '@mdi/js';
+import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
@@ -97,6 +145,8 @@ export default defineComponent({
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
+    const speedDialIsOpen = ref(false);
+
     // fetch schemas from api
     onMounted(async () => {
       const fetchedSchemas = await $api.schema.fetchAll(false, {
@@ -108,33 +158,44 @@ export default defineComponent({
     // configure possible action items
     const actions = [
       {
-        key: 'createObject',
-        types: ['subEntities', 'parents'],
-        objectTypes: ['scope', 'entity'],
-        action: () => onCreateObject()
-      },
-      {
-        key: 'createScope',
-        types: ['subEntities', 'parents'],
-        objectTypes: ['scope'],
-        action: () => onCreateScope()
-      },
-      {
         key: 'linkObject',
-        types: ['subEntities'],
+        icon: mdiLinkPlus,
+        tab: ['subEntities'],
         objectTypes: ['scope', 'entity'],
         action: () => onLinkObject()
       },
       {
+        key: 'createObject',
+        icon: mdiPlus,
+        tab: ['subEntities', 'parents'],
+        objectTypes: ['scope', 'entity'],
+        action: () => onCreateObject()
+      },
+      {
         key: 'linkScope',
-        types: ['subEntities'],
+        icon: mdiLinkPlus,
+        tab: ['subEntities'],
         objectTypes: ['scope'],
         action: () => onLinkScope()
+      },
+      {
+        key: 'createScope',
+        icon: mdiPlus,
+        tab: ['subEntities', 'parents'],
+        objectTypes: ['scope'],
+        action: () => onCreateScope()
+      },
+      {
+        key: 'createRisk',
+        icon: mdiPlus,
+        tab: ['risks'],
+        objectTypes: ['entity'],
+        action: () => onCreateRisk()
       }
     ];
     // filter allowed actions for current type
     const allowedActions = computed(() => {
-      let allowed = actions.filter((a) => a.types.includes(props.type)); // filter by type
+      let allowed = actions.filter((a) => a.tab.includes(props.type)); // filter by type
       if (props.object?.type !== 'scope') {
         allowed = allowed.filter((a) => a.objectTypes.includes('entity')); // filter by objecttype if scope
       }
@@ -168,7 +229,7 @@ export default defineComponent({
     const onAddEntitySuccess = () => {
       displaySuccessMessage(upperFirst(t('objectLinked').toString()));
       addEntityDialog.value.value = false;
-      emit('link-success');
+      emit('reload');
     };
     const onAddEntityError = (error: any) => {
       displayErrorMessage(upperFirst(t('objectNotLinked').toString()), JSON.stringify(error));
@@ -224,20 +285,36 @@ export default defineComponent({
       emit('new-object-created', newObjectId, createObjectDialog.value.objectType);
     };
 
+    // Risk stuff
+    const createRiskDialogVisible = ref(false);
+
+    const onCreateRisk = () => {
+      createRiskDialogVisible.value = true;
+    };
+
+    const onCreateRiskSuccess = () => {
+      createRiskDialogVisible.value = false;
+      emit('reload');
+    };
+
     return {
-      onCreateObjectSuccess,
       createEntitySchemas,
       createEntityDialog,
       createObjectDialog,
+      createRiskDialogVisible,
       onAddEntitySuccess,
       onAddEntityError,
+      onCreateObjectSuccess,
+      onCreateRiskSuccess,
       addEntityDialog,
       onObjectTypeSelected,
+      speedDialIsOpen,
       allowedActions,
       upperFirst,
       domainId,
 
       t,
+      mdiClose,
       mdiPlus
     };
   }
@@ -248,6 +325,7 @@ export default defineComponent({
 {
   "en": {
     "createObject": "create object",
+    "createRisk": "create risk",
     "linkObject": "link object",
     "createScope": "create scope",
     "linkScope": "link scope",
@@ -259,6 +337,7 @@ export default defineComponent({
   },
   "de": {
     "createObject": "Objekt erstellen",
+    "createRisk": "Risiko hinzufügen",
     "linkObject": "Objekt verknüpfen",
     "createScope": "Scope erstellen",
     "linkScope": "Scope verknüpfen",
@@ -270,3 +349,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+::v-deep .v-speed-dial__list {
+  align-items: flex-end !important;
+}
+</style>

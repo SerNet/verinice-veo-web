@@ -30,41 +30,38 @@
       <VeoPage
         fullsize
         sticky-header
+        sticky-footer
       >
         <template #default>
-          <VeoObjectDetailsInformation
+          <VeoObjectDetails
+            class="mb-10"
+            :loading="$fetchState.pending"
             :object="object"
-            class="object-details-information"
+            :domain-id="domainId"
+            :active-tab.sync="activeTab"
+            @reload="loadObject"
           />
-          <v-divider class="mt-1" />
-          <v-row v-if="object">
-            <v-col>
-              <v-tabs v-model="activeTab">
-                <v-tab
-                  v-for="tab in tabs"
-                  :key="tab"
-                  :href="`#${tab}`"
-                  :disabled="tab === 'parents'"
-                >
-                  {{ t(tab) }}
-                </v-tab>
-              </v-tabs>
-              <v-tabs-items v-model="activeTab">
-                <v-tab-item
-                  v-for="tab in tabs"
-                  :key="tab"
-                  :value="tab"
-                >
-                  <VeoObjectDetailsTab
-                    :type="tab"
-                    :object="object"
-                    :page-widths="pageWidths" 
-                    @new-object-created="loadObject"
-                  />
-                </v-tab-item>
-              </v-tabs-items>
-            </v-col>
-          </v-row>
+        </template>
+        <template #footer>
+          <VeoObjectDetailsActionMenu
+            :object="object"
+            :type="activeTab"
+            @reload="loadObject"
+            @new-object-created="onChildObjectCreated"
+          />
+          <div class="text-right">
+            <v-btn
+              fab
+              color="green"
+              depressed
+              @click="objectActionDialogVisible = true"
+            >
+              <v-icon>
+                {{ mdiCog }}
+              </v-icon>
+            </v-btn>
+          </div>
+          <VeoObjectActionDialog v-model="objectActionDialogVisible" />
         </template>
       </VeoPage>
       <VeoPage
@@ -155,10 +152,12 @@ import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, us
 import { cloneDeep, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
+import { mdiCog } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { getSchemaEndpoint } from '~/plugins/api/schema';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -278,12 +277,7 @@ export default defineComponent({
       }
     }
 
-    /**
-     * Object details stuff
-     */
-
-    // configure tabs to distinguish between subentities, parents and links
-    const tabs = ['subEntities', 'parents', 'links'];
+    // object details stuff
 
     // get active tab by route hash & set route hash by switching tabs
     const activeTab: WritableComputedRef<string> = computed({
@@ -291,9 +285,36 @@ export default defineComponent({
         return route.value.hash.substring(1) || 'subEntities'; // subEntities as default tab
       },
       set(hash: string): void {
-        router.replace({ hash });
+        router.push({ hash });
       }
     });
+
+    // actions
+    const objectActionDialogVisible = ref(false);
+
+    // link new created object to current object
+    const onChildObjectCreated = async (newObjectId: string, newObjectType: string) => {
+      if (object.value) {
+        const _editedEntity = await $api.entity.fetch(object.value.type, object.value.id);
+        const schemas = await $api.schema.fetchAll();
+
+        const currentChildren = object.value.type === 'scope' ? [...object.value.members] : [...object.value.parts];
+        const newChildren = [...currentChildren, { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, newObjectType) || newObjectType}/${newObjectId}` }];
+
+        if (object.value.type === 'scope') {
+          _editedEntity.members = newChildren;
+        } else {
+          _editedEntity.parts = newChildren;
+        }
+
+        try {
+          await $api.entity.update(object.value.type, object.value.id, _editedEntity);
+          loadObject();
+        } catch (error: any) {
+          displayErrorMessage(upperFirst(t('errors.link').toString()), error?.toString());
+        }
+      }
+    };
 
     return {
       VeoAlertType,
@@ -319,10 +340,12 @@ export default defineComponent({
       notFoundError,
       object,
       objectSchema,
+      onChildObjectCreated,
       upperFirst,
       loadObject,
-      tabs,
-      activeTab
+      activeTab,
+      mdiCog,
+      objectActionDialogVisible
     };
   },
   head: {}
@@ -340,10 +363,7 @@ export default defineComponent({
     "objectSaved": "\"{name}\" was updated successfully!",
     "oldVersionAlert": "You are currently viewing an old and readonly version of this object. If you want to update the object based on this data, please click \"restore\" first and then make your changes.",
     "restore": "restore",
-    "version": "version {version}",
-    "subEntities": "subentities",
-    "parents": "parents",
-    "links": "links"
+    "version": "version {version}"
   },
   "de": {
     "objectInfo": "Objektdetails",
@@ -354,19 +374,7 @@ export default defineComponent({
     "objectSaved": "\"{name}\" wurde aktualisiert!",
     "oldVersionAlert": "Ihnen wird eine alte, schreibgeschützte Version dieses Objektes angezeigt. Bitte klicken Sie auf \"Wiederherstellen\", wenn Sie Ihr Objekt basierend auf diesen Daten aktualisieren möchten.",
     "restore": "wiederherstellen",
-    "version": "version {version}",
-    "subEntities": "Unterobjekte",
-    "parents": "Eltern",
-    "links": "Verlinkungen"
+    "version": "version {version}"
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.object-details-information {
-  min-height: 16vh;
-  max-height: 50vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-</style>

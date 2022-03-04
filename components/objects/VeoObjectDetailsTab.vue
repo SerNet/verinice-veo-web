@@ -17,22 +17,12 @@
 -->
 <template>
   <v-container>
-    <v-row v-if="objectTypesWithActions.includes(type)">
-      <v-col class="text-right">
-        <VeoObjectDetailsActionMenu
-          :object="object"
-          :type="type"
-          @link-success="$emit('new-object-created'); fetch()"
-          @new-object-created="onCreateObjectSuccess"
-        />
-      </v-col>
-    </v-row>
     <v-row>
       <v-col>
         <VeoObjectTable
           :items="items"
           :loading="fetchState.pending"
-          :dense="!!pageWidths[1]"
+          :dense="dense"
           :simple="type==='links'"
           @click="openItem"
         >
@@ -75,7 +65,6 @@ import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -85,15 +74,15 @@ export default defineComponent({
       type: Object,
       default: undefined
     } as PropOptions<IVeoEntity>,
-    pageWidths: {
-      type: Array,
-      default: () => []
-    } as PropOptions<number[]>
+    dense: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props, { emit }) {
     const { t } = useI18n();
     const route = useRoute();
-    const { $api, $config } = useContext();
+    const { $api } = useContext();
     const router = useRouter();
 
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -111,6 +100,8 @@ export default defineComponent({
     const { fetchState, fetch } = useFetch(async () => {
       if (props.type === 'subEntities' && props.object) {
         items.value = await $api.entity.fetchSubEntities(props.object.type, props.object.id);
+      } else if (props.type === 'risks' && props.object) {
+        items.value = await $api.entity.fetchRisks(props.object.type, props.object.id);
       } else {
         // create entities for table from links
         const links: Partial<IVeoEntity>[] = [];
@@ -193,31 +184,6 @@ export default defineComponent({
       displayErrorMessage(upperFirst(t('errors.unlink').toString()), error?.toString());
     };
 
-    // link new created object to current object
-    const onCreateObjectSuccess = async (newObjectId: string, newObjectType: string) => {
-      if (props.object) {
-        const _editedEntity = await $api.entity.fetch(props.object.type, props.object.id);
-        const schemas = await $api.schema.fetchAll();
-
-        const currentChildren = props.object.type === 'scope' ? [...props.object.members] : [...props.object.parts];
-        const newChildren = [...currentChildren, { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, newObjectType) || newObjectType}/${newObjectId}` }];
-
-        if (props.object.type === 'scope') {
-          _editedEntity.members = newChildren;
-        } else {
-          _editedEntity.parts = newChildren;
-        }
-
-        try {
-          await $api.entity.update(props.object.type, props.object.id, _editedEntity);
-          emit('new-object-created'); // emit to page for refetching object
-          fetch();
-        } catch (error: any) {
-          displayErrorMessage(upperFirst(t('errors.link').toString()), error?.toString());
-        }
-      }
-    };
-
     // push to object detail site (on click in table)
     const openItem = ({ item }: { item: IVeoEntity }) => {
       return router.push({
@@ -231,7 +197,6 @@ export default defineComponent({
 
     return {
       objectTypesWithActions,
-      onCreateObjectSuccess,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
       unlinkEntityDialog,

@@ -58,7 +58,8 @@ export function isContain(array: defaultType[], elementToContain: defaultType[] 
 
 // Evaluate Rule
 export const ajv = new Ajv2019({
-  allErrors: true
+  allErrors: true,
+  strict: false // ToDo: Currently the process schema isn't adhering to the json schema standard, so we disable strict mode to prevent errors beeing shown
 });
 addFormats(ajv);
 

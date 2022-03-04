@@ -150,6 +150,21 @@ export default function (api: Client) {
         });
     },
 
+    async fetchRisks(objectType: string, id: string): Promise<IVeoEntity[]> {
+      if (objectType !== 'process') {
+        throw new Error(`api::fetchRisks: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
+      }
+
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+
+      return api.req('/api/:objectType/:id/risks', {
+        params: {
+          objectType,
+          id
+        }
+      });
+    },
+
     /**
      * Updates an entity
      * @param id
