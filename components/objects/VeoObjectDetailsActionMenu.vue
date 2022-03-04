@@ -20,34 +20,9 @@
     class="mb-3"
     style="position: relative;"
   >
-    <v-tooltip
-      v-if="allowedActions.length < 2"
-      top
-    >
-      <template #activator="{ on }">
-        <v-btn
-          absolute
-          color="primary"
-          depressed
-          :disabled="!allowedActions.length"
-          fab
-          right
-          style="bottom: 12px"
-          v-on="on"
-          @click="allowedActions && allowedActions[0].action"
-        >
-          <v-icon>
-            {{ allowedActions[0] && allowedActions[0].icon || mdiPlus }}
-          </v-icon>
-        </v-btn>
-      </template>
-      <template #default>
-        {{ allowedActions[0] && upperFirst(t(allowedActions[0].key).toString()) }}
-      </template>
-    </v-tooltip>
     <v-speed-dial
-      v-else
       v-model="speedDialIsOpen"
+      :disabled="!allowedActions.length"
       direction="top"
       transition="slide-y-reverse"
       absolute

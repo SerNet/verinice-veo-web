@@ -39,6 +39,7 @@
             :object="object"
             :domain-id="domainId"
             :active-tab.sync="activeTab"
+            :dense="!!pageWidths[1]"
             @reload="loadObject"
           />
         </template>
@@ -285,7 +286,7 @@ export default defineComponent({
         return route.value.hash.substring(1) || 'subEntities'; // subEntities as default tab
       },
       set(hash: string): void {
-        router.push({ hash });
+        router.push({ hash, query: route.value.query });
       }
     });
 
