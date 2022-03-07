@@ -55,7 +55,7 @@ export default Vue.extend({
   },
   async fetch() {
     this.revisions = await this.$api.history.fetchLatest(this.unitId);
-    this.forms = await this.$api.form.fetchAll();
+    this.forms = await this.$api.form.fetchAll(this.domainId);
   },
   computed: {
     unitId() {
