@@ -438,11 +438,3 @@ export interface IVeoGlobalAlert {
   params?: IVeoGlobalAlertParams; // Allows the user to specify certain aspects of the alert
   alertKey?: number; // Used to display one alert after another (only one should be displayed at once) and to programmatically remove an alert
 }
-
-export interface IVeoNestedMenuEntries {
-  key: string;
-  title: string;
-  icon?: string;
-  action?: CallableFunction;
-  children?: IVeoNestedMenuEntries[];
-}

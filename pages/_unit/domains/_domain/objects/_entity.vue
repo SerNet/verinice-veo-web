@@ -50,19 +50,6 @@
             @reload="loadObject"
             @new-object-created="onChildObjectCreated"
           />
-          <div class="text-right">
-            <v-btn
-              fab
-              color="green"
-              depressed
-              @click="objectActionDialogVisible = true"
-            >
-              <v-icon>
-                {{ mdiCog }}
-              </v-icon>
-            </v-btn>
-          </div>
-          <VeoObjectActionDialog v-model="objectActionDialogVisible" />
         </template>
       </VeoPage>
       <VeoPage
@@ -153,7 +140,6 @@ import { computed, defineComponent, ref, useContext, useFetch, useRoute, Ref, us
 import { cloneDeep, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { Route } from 'vue-router/types';
-import { mdiCog } from '@mdi/js';
 
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
@@ -290,9 +276,6 @@ export default defineComponent({
       }
     });
 
-    // actions
-    const objectActionDialogVisible = ref(false);
-
     // link new created object to current object
     const onChildObjectCreated = async (newObjectId: string, newObjectType: string) => {
       if (object.value) {
@@ -344,9 +327,7 @@ export default defineComponent({
       onChildObjectCreated,
       upperFirst,
       loadObject,
-      activeTab,
-      mdiCog,
-      objectActionDialogVisible
+      activeTab
     };
   },
   head: {}

@@ -84,6 +84,7 @@
     <VeoCreateRiskDialog
       v-if="object"
       v-model="createRiskDialogVisible"
+      :domain-id="domainId"
       :object-id="object.id"
       @success="onCreateRiskSuccess"
     />

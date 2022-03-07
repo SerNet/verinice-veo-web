@@ -26,6 +26,7 @@
     v-on="$listeners"
   >
     <template #default>
+      {{ dialog }}
       asdf123
     </template>
     <template #dialog-actions>
@@ -60,6 +61,10 @@ export default defineComponent({
     value: {
       type: Boolean,
       default: false
+    },
+    domainId: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
@@ -79,9 +84,12 @@ export default defineComponent({
     const isFormDirty = ref(false);
     const formValid = ref(true);
 
+    const data = ref({});
+
     const onSubmit = () => console.log('Bla123');
 
     return {
+      data,
       dialog,
       formValid,
       isFormDirty,
@@ -99,7 +107,7 @@ export default defineComponent({
     "createRisk": "create risk"
   },
   "de": {
-    "createRoisk": "risiko erstellen"
+    "createRisk": "risiko erstellen"
   }
 }
 </i18n>

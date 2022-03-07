@@ -18,49 +18,21 @@
 <template>
   <v-row class="fill-height flex-column flex-nowrap">
     <v-col class="flex-grow-0">
-      <v-row>
-        <v-col
-          cols="auto"
-          class="grow"
-        >
-          <template v-if="!loading">
-            <p class="text-no-wrap mb-0">
-              <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
-              {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
-            </p>
-            <p class="text-no-wrap mb-0">
-              <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
-              {{ object && formatDateTime(object.createdAt) || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
-            </p>
-          </template>
-          <v-skeleton-loader
-            v-else
-            type="text@2"
-            width="60%"
-          />
-        </v-col>
-        <v-col
-          cols="auto"
-          class="shrink"
-        >
-          <VeoNestedMenu :items="actions">
-            <template
-              #activator="{ on }"
-            >
-              <v-btn
-                color="blue"
-                text
-                v-on="on"
-              >
-                Aktionen
-                <v-icon right>
-                  {{ mdiChevronDown }}
-                </v-icon>
-              </v-btn>
-            </template>
-          </VeoNestedMenu>
-        </v-col>
-      </v-row>
+      <template v-if="!loading">
+        <p class="text-no-wrap mb-0">
+          <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
+          {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
+        </p>
+        <p class="text-no-wrap mb-0">
+          <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
+          {{ object && formatDateTime(object.createdAt) || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
+        </p>
+      </template>
+      <v-skeleton-loader
+        v-else
+        type="text@2"
+        width="60%"
+      />
     </v-col>
     <v-col
       v-if="!loading"
@@ -110,12 +82,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropOptions, ref } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropOptions } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
-import { mdiChevronDown, mdiPlus, mdiLinkPlus } from '@mdi/js';
-import { IVeoEntity, IVeoNestedMenuEntries } from '~/types/VeoTypes';
+import { mdiChevronDown } from '@mdi/js';
+import { IVeoEntity } from '~/types/VeoTypes';
 import { formatDate, formatTime } from '~/lib/utils';
 
 export default defineComponent({
@@ -149,71 +121,7 @@ export default defineComponent({
     // format date time to show updated at & created at
     const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
 
-    const actions = ref<IVeoNestedMenuEntries[]>([
-      {
-        title: 'Bestandteile...',
-        key: 'subEntities',
-        children: [
-          {
-            icon: mdiPlus,
-            key: 'create-subentity-scope',
-            title: 'Scope erstellen & hinzufügen',
-            action: () => console.log('1')
-          },
-          {
-            icon: mdiLinkPlus,
-            key: 'add-subentity-scope',
-            title: 'Scope hinzufügen',
-            action: () => console.log('2')
-          },
-          {
-            icon: mdiPlus,
-            key: 'create-subentity-object',
-            title: 'Objekt erstellen & hinzufügen',
-            action: () => console.log('3')
-          },
-          {
-            icon: mdiLinkPlus,
-            key: 'add-subentity-object',
-            title: 'Objekt hinzufügen',
-            action: () => console.log('4')
-          }
-        ]
-      },
-      {
-        title: 'Teil von...',
-        key: 'parents',
-        children: [
-          {
-            icon: mdiLinkPlus,
-            key: 'add-parent-scope',
-            title: 'Zu Scope hinzufügen',
-            action: () => console.log('5')
-          },
-          {
-            icon: mdiLinkPlus,
-            key: 'add-parent-object',
-            title: 'Zu Objekt hinzufügen',
-            action: () => console.log('6')
-          }
-        ]
-      },
-      {
-        title: 'Risiken...',
-        key: 'risks',
-        children: [
-          {
-            icon: mdiPlus,
-            key: 'add-risk',
-            title: 'Risiko erstellen & hinzufügen',
-            action: () => console.log('7')
-          }
-        ]
-      }
-    ]);
-
     return {
-      actions,
       tabs,
 
       mdiChevronDown,
