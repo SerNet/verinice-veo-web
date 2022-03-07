@@ -60,7 +60,7 @@
 import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiContentCopy, mdiLinkOff } from '@mdi/js';
+import { mdiContentCopy, mdiLinkOff, mdiTrashCan } from '@mdi/js';
 import { createUUIDUrlParam } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -135,32 +135,51 @@ export default defineComponent({
      * actions for cloning or unlinking objects
      */
 
-    const actions = computed(() => [
-      {
-        id: 'clone',
-        label: upperFirst(t('cloneObject').toString()),
-        icon: mdiContentCopy,
-        async action(item: IVeoEntity) {
-          try {
-            await cloneObject(item);
-            displaySuccessMessage(upperFirst(t('objectCloned').toString()));
-            fetch();
-          } catch (error: any) {
-            displayErrorMessage(upperFirst(t('errors.clone').toString()), error?.toString());
-          }
-        }
-      },
-      {
-        id: 'unlink',
-        label: upperFirst(t('unlinkObject').toString()),
-        icon: mdiLinkOff,
-        action(item: IVeoEntity) {
-          unlinkEntityDialog.value.item = item;
-          unlinkEntityDialog.value.parent = props.object;
-          unlinkEntityDialog.value.value = true;
-        }
-      }
-    ]);
+    const actions = computed(() =>
+      props.type === 'risks'
+        ? [
+            {
+              id: 'delete',
+              label: upperFirst(t('deleteRisk').toString()),
+              icon: mdiTrashCan,
+              async action(item: IVeoEntity) {
+                try {
+                  await $api.entity.deleteRisk(props.object?.type || '', props.object?.id || '', item.id);
+                  displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
+                  fetch();
+                } catch (error: any) {
+                  displayErrorMessage(upperFirst(t('deleteRiskError').toString()), error?.toString());
+                }
+              }
+            }
+          ]
+        : [
+            {
+              id: 'clone',
+              label: upperFirst(t('cloneObject').toString()),
+              icon: mdiContentCopy,
+              async action(item: IVeoEntity) {
+                try {
+                  await cloneObject(item);
+                  displaySuccessMessage(upperFirst(t('objectCloned').toString()));
+                  fetch();
+                } catch (error: any) {
+                  displayErrorMessage(upperFirst(t('errors.clone').toString()), error?.toString());
+                }
+              }
+            },
+            {
+              id: 'unlink',
+              label: upperFirst(t('unlinkObject').toString()),
+              icon: mdiLinkOff,
+              action(item: IVeoEntity) {
+                unlinkEntityDialog.value.item = item;
+                unlinkEntityDialog.value.parent = props.object;
+                unlinkEntityDialog.value.value = true;
+              }
+            }
+          ]
+    );
 
     /**
      * control unlink dialogs
@@ -216,26 +235,32 @@ export default defineComponent({
 {
   "en": {
     "cloneObject": "clone object",
+    "deleteRisk": "delete risk",
     "unlinkObject": "unlink object",
     "objectCloned": "Object successfully cloned.",
     "objectUnlinked": "Object successfully unlinked.",
     "errors": {
       "clone": "Could not clone object.",
       "unlink": "Could not unlink object.",
-      "link": "Could not link new object."
-    }
+      "link": "Could not link new object.",
+      "risk": "Couldn't delete risk"
+    },
+    "riskDeleted": "The risk was removed"
 
   },
   "de": {
     "cloneObject": "Objekt duplizieren",
+    "deleteRisk": "Risiko löschen",
     "unlinkObject": "Verknüpfung entfernen",
     "objectCloned": "Das Objekt wurde erfolgreich dupliziert.",
     "objectUnlinked": "Die Verknüpfung wurde erfolgreich entfernt.",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden.",
       "unlink": "Die Verknüpfung konnte nicht entfernt werden.",
-      "link": "Das neue Objekt konnte nicht verknüpft werden."
-    }
+      "link": "Das neue Objekt konnte nicht verknüpft werden.",
+      "risk": "Risiko konnte nicht gelöscht werden"
+    },
+    "riskDeleted": "Das Risiko wurde entfernt"
   }
 }
 </i18n>

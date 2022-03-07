@@ -240,6 +240,23 @@ export default function (api: Client) {
       });
     },
 
+    async deleteRisk(objectType: string, objectId: string, riskId: string): Promise<IVeoEntity[]> {
+      if (objectType !== 'process') {
+        throw new Error(`api::fetchRisks: Risks can only be deleted for processes. You tried deleting a risk for a ${objectType}`);
+      }
+
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+
+      return api.req('/api/:objectType/:objectId/risks/:riskId', {
+        method: 'DELETE',
+        params: {
+          objectType,
+          objectId,
+          riskId
+        }
+      });
+    },
+
     /**
      * Returns all entities that are a sub entity of this entity.
      *
