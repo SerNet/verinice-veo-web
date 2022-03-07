@@ -53,6 +53,7 @@
           <v-btn
             depressed
             rounded
+            color="grey"
           >
             {{ upperFirst(t(action.key).toString()) }}
             <v-icon right>
@@ -82,7 +83,7 @@
       @success="onCreateObjectSuccess"
     />
     <VeoCreateRiskDialog
-      v-if="object"
+      v-if="object && createRiskDialogVisible"
       v-model="createRiskDialogVisible"
       :domain-id="domainId"
       :object-id="object.id"

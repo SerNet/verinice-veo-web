@@ -141,7 +141,7 @@ export interface IVeoPaginationOptions {
   page?: number;
   size?: number;
   sortBy?: string;
-  sortOder?: 'asc' | 'desc';
+  sortOrder?: 'asc' | 'desc';
   [key: string]: any;
 }
 
@@ -321,6 +321,12 @@ export interface IVeoEntity extends IVeoBaseObject {
   descriptionShort?: string; // Frontend only attribute used in VeoObjectList.vue
   type: string;
   _self: string;
+}
+
+export interface IVeoRisk {
+  scenario: IVeoLink;
+  mitigation?: IVeoLink;
+  process?: IVeoLink;
 }
 
 export interface IVeoTranslations {

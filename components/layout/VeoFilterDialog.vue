@@ -229,8 +229,18 @@ export default defineComponent({
      * Removes all set filters, emits them and closes the dialog
      */
     function onReset() {
-      const filter = props.objectTypeRequired ? { objectType: localFilter.value.objectType } : {};
-      emit('update:filter', filter);
+      const newFilterObject: IBaseObject = {};
+      if (props.objectTypeRequired) {
+        newFilterObject.objectType = localFilter.value.objectType;
+      }
+
+      for (const key of Object.keys(localFilter.value)) {
+        if (props.disableFields?.includes(key)) {
+          newFilterObject[key] = localFilter.value[key];
+        }
+      }
+
+      emit('update:filter', newFilterObject);
       emit('input', false);
     }
 

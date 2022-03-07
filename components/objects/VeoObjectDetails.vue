@@ -55,6 +55,7 @@
       >
         <v-tab
           v-for="tab in tabs"
+          v-show="tab !== 'risks' || (loading || subType === 'PRO_DataProcessing')"
           :key="tab"
           :href="`#${tab}`"
           :disabled="tab === 'parents'"
@@ -82,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropOptions } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropOptions, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
@@ -113,15 +114,30 @@ export default defineComponent({
       default: false
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
 
-    const tabs = computed(() => ['subEntities', 'parents', 'links', ...(props.object?.domains[props.domainId]?.subType === 'PRO_DataProcessing' ? ['risks'] : [])]);
+    const tabs = ['subEntities', 'parents', 'links', 'risks'];
+
+    const subType = computed(() => props.object?.domains[props.domainId]?.subType);
+
+    // If the user accessed the object in the risks tab but the object doesn't have the subType data processing, force another tab
+    watch(
+      () => props.loading,
+      (newValue, previousValue) => {
+        if (previousValue && !newValue) {
+          if (subType.value !== 'PRO_DataProcessing' && props.activeTab === 'risks') {
+            emit('update:activeTab', 'subEntities');
+          }
+        }
+      }
+    );
 
     // format date time to show updated at & created at
     const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
 
     return {
+      subType,
       tabs,
 
       mdiChevronDown,

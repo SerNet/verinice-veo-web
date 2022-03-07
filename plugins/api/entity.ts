@@ -20,7 +20,7 @@ import { max } from 'lodash';
 import { getSchemaEndpoint } from './schema';
 import { separateUUIDParam } from '~/lib/utils';
 import { Client } from '~/plugins/api';
-import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
+import { IVeoAPIMessage, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions, IVeoRisk } from '~/types/VeoTypes';
 
 export interface IVeoEntityRequestParams extends IVeoPaginationOptions {
   displayName?: string;
@@ -117,6 +117,23 @@ export default function (api: Client) {
           objectType
         },
         json: entity
+      });
+    },
+
+    async createRisk(objectType: string, id: string, risk: IVeoRisk): Promise<IVeoEntity[]> {
+      if (objectType !== 'process') {
+        throw new Error(`api::fetchRisks: Risks can only be created for processes. You tried creating a risk for a ${objectType}`);
+      }
+
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+
+      return api.req('/api/:objectType/:id/risks', {
+        method: 'POST',
+        params: {
+          objectType,
+          id
+        },
+        json: risk
       });
     },
 
