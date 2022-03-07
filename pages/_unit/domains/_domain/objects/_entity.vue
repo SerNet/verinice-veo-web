@@ -21,7 +21,8 @@
     v-else
     collapsable-left
     collapsable-right
-    :title="object && object.displayName"
+    :title="(object && object.displayName) || ''"
+    :loading="loading"
     :page-widths="pageWidths"
     :page-titles="pageTitles"
     @page-collapsed="onPageCollapsed"
@@ -295,6 +296,8 @@ export default defineComponent({
       }
     });
 
+    const loading = computed(() => fetchState.pending);
+
     return {
       VeoAlertType,
       domainId,
@@ -315,7 +318,7 @@ export default defineComponent({
       pageTitles,
       version,
       onPageCollapsed,
-      loading: fetchState.pending,
+      loading,
       notFoundError,
       object,
       objectSchema,
