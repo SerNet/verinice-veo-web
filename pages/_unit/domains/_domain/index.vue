@@ -29,6 +29,11 @@
       <span v-if="domain.description">{{ domain.description }}</span>
       <i v-else>{{ t('unit.details.nodescription') }}</i>
     </p>
+    <v-skeleton-loader
+      v-else
+      class="mt-n2 mb-4 skeleton-subtitle"
+      type="text"
+    />
     <v-row
       no-gutters
       class="mb-4"
@@ -278,3 +283,16 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.skeleton-subtitle {
+  align-items: center;
+  display: flex;
+  height: 18.89;
+  width: 300px;
+
+  ::v-deep .v-skeleton-loader__text {
+    height: 16px;
+  }
+}
+</style>

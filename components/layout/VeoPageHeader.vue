@@ -95,11 +95,11 @@ export default defineComponent({
 .skeleton-title {
   align-items: center;
   display: flex;
-  height: 56px;
+  height: 33.59px;
   width: 300px;
 
   ::v-deep .v-skeleton-loader__text {
-    height: 32px;
+    height: 22.4px;
   }
 }
 </style>
