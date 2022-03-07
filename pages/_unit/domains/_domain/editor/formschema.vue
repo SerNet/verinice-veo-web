@@ -135,18 +135,21 @@
       </v-tooltip>
       <v-tooltip bottom>
         <template #activator="{on}">
-          <v-btn
-            icon
-            large
-            color="primary"
-            @click="save"
-            v-on="on"
-          >
-            <v-icon>mdi-content-save</v-icon>
-          </v-btn>
+          <div v-on="on">
+            <v-btn
+              icon
+              large
+              color="primary"
+              :disabled="!isContentCreator"
+              @click="save"
+            >
+              <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+          </div>
         </template>
         <template #default>
-          {{ t('save') }}
+          <span v-if="isContentCreator">{{ t('save') }}</span>
+          <span v-else>{{ t('saveContentCreator') }}</span>
         </template>
       </v-tooltip>
     </template>
@@ -348,7 +351,7 @@ interface IProps {}
 export default defineComponent<IProps>({
   setup(_props) {
     const { t } = useI18n();
-    const { $api, app } = useContext();
+    const { $api, app, $user } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
@@ -547,6 +550,8 @@ export default defineComponent<IProps>({
       }
     }
 
+    const isContentCreator = computed(() => !!$user.auth.roles.find((r: string) => r === 'veo-content-creator'));
+
     return {
       creationDialogVisible,
       domainId,
@@ -561,6 +566,7 @@ export default defineComponent<IProps>({
       language,
       translation,
       schemaIsValid,
+      isContentCreator,
       setFormSchema,
       setObjectSchema,
       setTranslation,
@@ -613,7 +619,8 @@ export default defineComponent<IProps>({
     "save": "Save",
     "saveSchemaSuccess": "Schema saved!",
     "saveSchemaError": "Couldn't save schema!",
-    "error": "Error"
+    "error": "Error",
+    "saveContentCreator": "You need the role \"Content Creator\" to save the formschema."
   },
   "de": {
     "availableControls": "Verfügbare Steuerelemente",
@@ -627,7 +634,8 @@ export default defineComponent<IProps>({
     "save": "Speichern",
     "saveSchemaSuccess": "Schema wurde gespeichert!",
     "saveSchemaError": "Schema konnte nicht gespeichert werden!",
-    "error": "Fehler"
+    "error": "Fehler",
+    "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Formschema zu speichern."
   }
 }
 </i18n>
