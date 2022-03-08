@@ -249,6 +249,7 @@
               :general-translation="translation && translation.lang[language]"
               :custom-translation="formSchema.translation && formSchema.translation[language]"
               :domain-id="domainId"
+              :additional-context="additionalContext"
             />
           </v-card>
         </template>
@@ -339,7 +340,8 @@ import {
   IVeoFormSchemaItem,
   IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaMeta
+  IVeoFormSchemaMeta,
+  IVeoDomain
 } from '~/types/VeoTypes';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
@@ -507,6 +509,16 @@ export default defineComponent<IProps>({
       controlItems.value = items;
     }
 
+    const domain = ref<IVeoDomain | undefined>(undefined);
+    const { fetch: fetchDomain } = useFetch(async () => {
+      domain.value = await $api.domain.fetch(domainId.value);
+    });
+
+    watch(
+      () => domainId.value,
+      () => fetchDomain()
+    );
+
     /**
      * Translations related stuff
      */
@@ -552,7 +564,19 @@ export default defineComponent<IProps>({
 
     const isContentCreator = computed(() => !!$user.auth.roles.find((r: string) => r === 'veo-content-creator'));
 
+    // Circumventing {CURRENT_DOMAIN_ID} in fse controls
+    const additionalContext = computed(() => ({
+      [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
+        formSchema: {
+          enum: (() => {
+            return (domain.value?.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name);
+          })()
+        }
+      }
+    }));
+
     return {
+      additionalContext,
       creationDialogVisible,
       domainId,
       errorDialogVisible,
