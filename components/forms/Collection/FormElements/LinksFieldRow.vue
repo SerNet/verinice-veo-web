@@ -98,8 +98,8 @@
         </v-autocomplete>
       </ValidationProvider>
     </v-col>
-    {{ ui }}
     <v-col v-if="ui.elements.length > 0">
+      <!-- For some reason the form would only get rendered local. Might have been a caching issue, but this fixed it nonetheless -->
       <LazyVeoForm
         :schema="schema.items"
         :ui="ui"
@@ -311,9 +311,6 @@ export default Vue.extend({
   mounted() {
     // We have to wait for the component to be fully rendered before we can validate and display the error message ($nextTick doesn't suffice)
     setTimeout(() => (this.$refs.validationProvider as any).validate(), 100);
-  },
-  created() {
-    console.log('2', this.$props);
   },
   methods: {
     onTargetCreated(id: string) {
