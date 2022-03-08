@@ -130,7 +130,9 @@ import Vue from 'vue';
 import { Prop, PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
-import { UISchemaElement } from '@/types/UISchema';
+
+import VeoForm from '~/components/forms/VeoForm.vue';
+import { UISchemaElement } from '~/types/UISchema';
 import { BaseObject } from '~/components/forms/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
@@ -168,6 +170,9 @@ interface IData {
 
 export default Vue.extend({
   name: 'LinksFieldRow',
+  components: {
+    VeoForm
+  },
   props: {
     value: {
       type: Object,
