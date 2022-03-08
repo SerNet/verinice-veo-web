@@ -210,7 +210,14 @@ export default defineComponent({
       const risks = selectedScenarios.value.map((scenario) => ({
         scenario: {
           targetUri: `${$config.apiUrl}/scenarios/${scenario.id}`
-        }
+        },
+        domains: [
+          {
+            reference: {
+              targetUri: `${$config.apiUrl}/domains/${props.domainId}`
+            }
+          }
+        ]
       }));
 
       try {

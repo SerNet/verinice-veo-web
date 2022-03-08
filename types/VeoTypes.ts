@@ -327,6 +327,9 @@ export interface IVeoRisk {
   scenario: IVeoLink;
   mitigation?: IVeoLink;
   process?: IVeoLink;
+  domains: {
+    reference: IVeoLink;
+  }[];
 }
 
 export interface IVeoTranslations {
