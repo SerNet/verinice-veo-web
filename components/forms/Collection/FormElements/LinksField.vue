@@ -134,8 +134,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    console.log('1', props);
-
     const selected: Ref<string[]> = ref([]);
 
     // We want at least one link to be displayed at all times, however the schema validation would fail if we passed an empty link upwards, so we keep it in here

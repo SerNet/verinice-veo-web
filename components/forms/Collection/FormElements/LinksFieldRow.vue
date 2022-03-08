@@ -98,6 +98,7 @@
         </v-autocomplete>
       </ValidationProvider>
     </v-col>
+    {{ ui }}
     <v-col v-if="ui.elements.length > 0">
       <VeoForm
         :schema="schema.items"
@@ -109,6 +110,9 @@
         :domain-id="domainId"
         @input="onInput"
       />
+    </v-col>
+    <v-col v-else>
+      bla1234
     </v-col>
     <VeoCreateObjectDialog
       v-if="createObjectDialogVisible"
