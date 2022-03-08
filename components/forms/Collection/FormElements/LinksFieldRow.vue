@@ -310,6 +310,9 @@ export default Vue.extend({
     // We have to wait for the component to be fully rendered before we can validate and display the error message ($nextTick doesn't suffice)
     setTimeout(() => (this.$refs.validationProvider as any).validate(), 100);
   },
+  created() {
+    console.log('2', this.$props);
+  },
   methods: {
     onTargetCreated(id: string) {
       this.selected = id;
