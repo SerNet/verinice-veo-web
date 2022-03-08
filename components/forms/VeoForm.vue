@@ -163,6 +163,17 @@ export default Vue.extend({
                 }
               })()
             }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
+            formSchema: {
+              enum: (() => {
+                if (this.domain) {
+                  return (this.domain.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name);
+                } else {
+                  return [];
+                }
+              })()
+            }
           }
         };
       } else {

@@ -572,6 +572,13 @@ export default defineComponent<IProps>({
             return (domain.value?.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name);
           })()
         }
+      },
+      [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
+        formSchema: {
+          enum: (() => {
+            return (domain.value?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name);
+          })()
+        }
       }
     }));
 
