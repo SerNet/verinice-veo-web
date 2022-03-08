@@ -100,7 +100,7 @@
     </v-col>
     {{ ui }}
     <v-col v-if="ui.elements.length > 0">
-      <VeoForm
+      <LazyVeoForm
         :schema="schema.items"
         :ui="ui"
         :value="value"
@@ -110,9 +110,6 @@
         :domain-id="domainId"
         @input="onInput"
       />
-    </v-col>
-    <v-col v-else>
-      bla1234
     </v-col>
     <VeoCreateObjectDialog
       v-if="createObjectDialogVisible"
@@ -131,7 +128,6 @@ import { Prop, PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
 
-import VeoForm from '~/components/forms/VeoForm.vue';
 import { UISchemaElement } from '~/types/UISchema';
 import { BaseObject } from '~/components/forms/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslationCollection } from '~/types/VeoTypes';
@@ -170,9 +166,6 @@ interface IData {
 
 export default Vue.extend({
   name: 'LinksFieldRow',
-  components: {
-    VeoForm
-  },
   props: {
     value: {
       type: Object,
