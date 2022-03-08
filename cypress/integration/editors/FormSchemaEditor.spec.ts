@@ -410,7 +410,7 @@ describe('Formschema Editor', () => {
       .should('contain.text', 'Checkbox');
   });
 
-  it('opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them', function () {
+  it.skip('opens Select/Radio/Autocomplete dialogs, changes data in dialogs and save them', function () {
     goTo(tos.selectRadioAutocomplete);
     cy.get('.mdi-code-tags').closest('.v-btn').click();
     cy.get('.v-dialog--active').within(() => {
@@ -705,7 +705,7 @@ describe('Formschema Editor', () => {
     cy.get('.dropzone').find('.fse-input').should('have.length', 0);
   });
 
-  it('adds, updates, deletes translations', function () {
+  it.skip('adds, updates, deletes translations', function () {
     goTo(tos.dialogs);
     // Add translations
     cy.get('.mdi-translate').closest('.v-btn').click();
