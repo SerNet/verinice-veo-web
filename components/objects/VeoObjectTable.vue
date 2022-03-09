@@ -34,6 +34,7 @@ export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
   isDense?: boolean;
   isSimple?: boolean;
   isRisk?: boolean;
+  riskOnly?: boolean;
   truncate?: boolean;
   map?: ObjectTableFormatter;
   text?: string;
@@ -225,7 +226,8 @@ export default defineComponent({
         isRisk: true,
         cellClass: ['font-weight-bold'],
         width: 300,
-        truncate: true
+        truncate: true,
+        riskOnly: true
       },
       {
         value: 'status',
@@ -346,7 +348,8 @@ export default defineComponent({
     const denseHeaders = _headers.filter((header) => header.isDense);
     const simpleHeaders = _headers.filter((header) => header.isSimple);
     const riskHeaders = _headers.filter((header) => header.isRisk);
-    const headers = computed(() => (props.risk ? riskHeaders : props.simple ? simpleHeaders : props.dense ? denseHeaders : _headers));
+    const defaultHeaders = _headers.filter((header) => !header.riskOnly); // Risk headers shoul
+    const headers = computed(() => (props.risk ? riskHeaders : props.simple ? simpleHeaders : props.dense ? denseHeaders : defaultHeaders));
     const items = computed(() => {
       const items = isPaginatedResponse(props.items) ? props.items.items : props.items;
       return items.map(mapItem);

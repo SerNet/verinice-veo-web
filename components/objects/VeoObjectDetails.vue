@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2022  Jonas Heitmann
-   - 
+   - Copyright (C) 2022  Jessica Lühnen, Jonas Heitmann
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -53,6 +53,7 @@
         :value="activeTab"
         @change="$emit('update:activeTab', $event)"
       >
+        <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
         <v-tab
           v-for="tab in tabs"
           v-show="tab !== 'risks' || (loading || subType === 'PRO_DataProcessing')"
@@ -86,8 +87,8 @@
 import { computed, defineComponent, PropOptions, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
-
 import { mdiChevronDown } from '@mdi/js';
+
 import { IVeoEntity } from '~/types/VeoTypes';
 import { formatDate, formatTime } from '~/lib/utils';
 
