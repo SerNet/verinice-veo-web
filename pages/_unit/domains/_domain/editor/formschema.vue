@@ -568,16 +568,12 @@ export default defineComponent<IProps>({
     const additionalContext = computed(() => ({
       [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
         formSchema: {
-          enum: (() => {
-            return (domain.value?.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name);
-          })()
+          enum: (() => (domain.value?.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name))()
         }
       },
       [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
         formSchema: {
-          enum: (() => {
-            return (domain.value?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name);
-          })()
+          enum: (() => (domain.value?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name))()
         }
       }
     }));
