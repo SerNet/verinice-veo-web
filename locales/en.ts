@@ -69,18 +69,24 @@ export default {
   'global.menu.collapse': 'Collapse menu',
   'global.menu.expand': 'Fix menu',
 
-  'objectlist.designator': 'Designator',
-  'objectlist.description': 'Description',
-  'objectlist.status': 'Status',
-  'objectlist.name': 'Object name',
-  'objectlist.createdAt': 'Created at',
-  'objectlist.updatedAt': 'Last change',
-  'objectlist.updatedBy': 'Editor',
-  'objectlist.objectType': 'Object type',
-  'objectlist.subType': 'Subtype',
-  'objectlist.notPartOfGroup': 'not part of a group',
-  'objectlist.hasChildObjects': 'has child objects',
-  'objectlist.hasLinks': 'has links',
+  objectlist: {
+    abbreviation: 'Abbreviation',
+    createdAt: 'Created at',
+    designator: 'Designator',
+    description: 'Description',
+    hasChildObjects: 'has child objects',
+    hasLinks: 'has links',
+    name: 'object name',
+    notPartOfGroup: 'not part of a group',
+    objectType: 'Object type',
+    scenario: {
+      displayName: 'Risk'
+    },
+    status: 'Status',
+    subType: 'Subtype',
+    updatedAt: 'Last change',
+    updatedBy: 'Editor'
+  },
 
   'page.editors.title': 'Editors',
   'page.editors.calltoaction': 'What do you want to do?',

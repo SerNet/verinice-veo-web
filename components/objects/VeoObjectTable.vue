@@ -33,6 +33,7 @@ export type ObjectTableRenderer = (props: { item: IVeoEntity }) => VNode | VNode
 export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
   isDense?: boolean;
   isSimple?: boolean;
+  isRisk?: boolean;
   truncate?: boolean;
   map?: ObjectTableFormatter;
   text?: string;
@@ -87,9 +88,9 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    headers: {
-      type: Array as PropType<ObjectTableHeader[]>,
-      default: () => []
+    risk: {
+      type: Boolean,
+      default: false
     }
   },
   emits: {
@@ -196,6 +197,7 @@ export default defineComponent({
         value: 'designator',
         isDense: true,
         isSimple: false,
+        isRisk: true,
         sortable: true,
         width: 110
       },
@@ -215,6 +217,15 @@ export default defineComponent({
         width: 300,
         truncate: true,
         sortable: true
+      },
+      {
+        value: 'scenario.displayName',
+        isDense: false,
+        isSimple: false,
+        isRisk: true,
+        cellClass: ['font-weight-bold'],
+        width: 300,
+        truncate: true
       },
       {
         value: 'status',
@@ -243,6 +254,7 @@ export default defineComponent({
       {
         value: 'updatedAt',
         isDense: true,
+        isRisk: true,
         isSimple: false,
         sortable: true,
         width: 200,
@@ -252,6 +264,7 @@ export default defineComponent({
       {
         value: 'actions',
         isDense: true,
+        isRisk: true,
         isSimple: false,
         text: '',
         sortable: false,
@@ -332,7 +345,8 @@ export default defineComponent({
     // headers (less in dense mode)
     const denseHeaders = _headers.filter((header) => header.isDense);
     const simpleHeaders = _headers.filter((header) => header.isSimple);
-    const headers = computed(() => (props.headers.length ? props.headers : props.simple ? simpleHeaders : props.dense ? denseHeaders : _headers));
+    const riskHeaders = _headers.filter((header) => header.isRisk);
+    const headers = computed(() => (props.risk ? riskHeaders : props.simple ? simpleHeaders : props.dense ? denseHeaders : _headers));
     const items = computed(() => {
       const items = isPaginatedResponse(props.items) ? props.items.items : props.items;
       return items.map(mapItem);

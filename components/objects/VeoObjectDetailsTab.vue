@@ -24,6 +24,7 @@
           :loading="fetchState.pending"
           :dense="dense"
           :simple="type==='links'"
+          :risk="type==='risks'"
           @click="openItem"
         >
           <template #actions="{item}">
@@ -61,8 +62,8 @@ import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useF
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiContentCopy, mdiLinkOff, mdiTrashCan } from '@mdi/js';
-import { createUUIDUrlParam } from '~/lib/utils';
-import { IVeoCustomLink, IVeoEntity } from '~/types/VeoTypes';
+import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
+import { IVeoCustomLink, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
@@ -142,9 +143,10 @@ export default defineComponent({
               id: 'delete',
               label: upperFirst(t('deleteRisk').toString()),
               icon: mdiTrashCan,
-              async action(item: IVeoEntity) {
+              async action(item: IVeoRisk) {
                 try {
-                  await $api.entity.deleteRisk(props.object?.type || '', props.object?.id || '', item.id);
+                  const { id } = getEntityDetailsFromLink(item.scenario);
+                  await $api.entity.deleteRisk(props.object?.type || '', props.object?.id || '', id);
                   displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
                   fetch();
                 } catch (error: any) {

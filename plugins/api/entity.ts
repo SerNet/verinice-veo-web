@@ -240,19 +240,19 @@ export default function (api: Client) {
       });
     },
 
-    async deleteRisk(objectType: string, objectId: string, riskId: string): Promise<IVeoEntity[]> {
+    async deleteRisk(objectType: string, objectId: string, scenarioId: string): Promise<IVeoEntity[]> {
       if (objectType !== 'process') {
         throw new Error(`api::fetchRisks: Risks can only be deleted for processes. You tried deleting a risk for a ${objectType}`);
       }
 
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
-      return api.req('/api/:objectType/:objectId/risks/:riskId', {
+      return api.req('/api/:objectType/:objectId/risks/:scenarioId', {
         method: 'DELETE',
         params: {
           objectType,
           objectId,
-          riskId
+          scenarioId
         }
       });
     },
