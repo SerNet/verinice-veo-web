@@ -211,13 +211,13 @@ export default defineComponent({
         scenario: {
           targetUri: `${$config.apiUrl}/scenarios/${scenario.id}`
         },
-        domains: [
-          {
+        domains: {
+          [props.domainId]: {
             reference: {
               targetUri: `${$config.apiUrl}/domains/${props.domainId}`
             }
           }
-        ]
+        }
       }));
 
       try {

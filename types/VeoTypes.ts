@@ -328,8 +328,10 @@ export interface IVeoRisk {
   mitigation?: IVeoLink;
   process?: IVeoLink;
   domains: {
-    reference: IVeoLink;
-  }[];
+    [domainId: string]: {
+      reference: IVeoLink;
+    };
+  };
 }
 
 export interface IVeoTranslations {

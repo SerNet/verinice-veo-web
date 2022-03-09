@@ -86,6 +86,10 @@ export default defineComponent({
     loading: {
       type: Boolean,
       default: false
+    },
+    headers: {
+      type: Array as PropType<ObjectTableHeader[]>,
+      default: () => []
     }
   },
   emits: {
@@ -328,7 +332,7 @@ export default defineComponent({
     // headers (less in dense mode)
     const denseHeaders = _headers.filter((header) => header.isDense);
     const simpleHeaders = _headers.filter((header) => header.isSimple);
-    const headers = computed(() => (props.simple ? simpleHeaders : props.dense ? denseHeaders : _headers));
+    const headers = computed(() => (props.headers.length ? props.headers : props.simple ? simpleHeaders : props.dense ? denseHeaders : _headers));
     const items = computed(() => {
       const items = isPaginatedResponse(props.items) ? props.items.items : props.items;
       return items.map(mapItem);
