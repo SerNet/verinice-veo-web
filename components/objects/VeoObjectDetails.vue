@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2022  Jessica Lühnen, Jonas Heitmann
+   - Copyright (C) 2022 Jessica Lühnen, Jonas Heitmann
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by

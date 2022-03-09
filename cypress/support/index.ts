@@ -5,7 +5,7 @@ import 'cypress-plugin-snapshots/commands';
 import '@cypress/code-coverage/support';
 import { IBaseObject } from '../../lib/utils';
 
-export const VEO_API_TYPES_REGEX = /https:\/\/api.(.+)\/veo\/types$/;
+export const VEO_API_TYPES_REGEX = /https:\/\/api.(.+)\/veo\/types/;
 export const VEO_API_SCHEMA_REGEX = /https:\/\/api.(.+)\/veo\/schemas\/(.+)/;
 export const VEO_API_ALL_CATALOGS_REGEX = /https:\/\/api.(.+)\/veo\/catalogs\/\?/;
 export const VEO_API_CATALOG_ITEMS_REGEX = /https:\/\/api.(.+)\/veo\/catalogs\/(.+)\/items/;
@@ -425,7 +425,7 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
         url: VEO_API_UPDATE_ENTITY_REGEX
       },
       (req) => {
-        req.reply({});
+        req.reply(req.body);
       }
     ).as('G_updateObject');
   }

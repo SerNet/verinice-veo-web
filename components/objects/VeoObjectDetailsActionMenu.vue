@@ -22,6 +22,7 @@
   >
     <v-speed-dial
       v-model="speedDialIsOpen"
+      v-cy-name="'action-menu'"
       direction="top"
       transition="slide-y-reverse"
       absolute
@@ -31,6 +32,7 @@
       <template #activator>
         <v-btn
           v-model="speedDialIsOpen"
+          v-cy-name="'show-actions-button'"
           color="primary"
           :disabled="!allowedActions.length"
           depressed
@@ -45,15 +47,14 @@
         </v-btn>
       </template>
       <template #default>
-        <div
-          v-for="action in allowedActions"
-          :key="action.key"
-          @click="action.action"
-        >
+        <div v-cy-name="'action-list'">
           <v-btn
+            v-for="action in allowedActions"
+            :key="action.key"
             depressed
             rounded
             color="grey"
+            @click="action.action"
           >
             {{ upperFirst(t(action.key).toString()) }}
             <v-icon right>
@@ -330,5 +331,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 ::v-deep .v-speed-dial__list {
   align-items: flex-end !important;
+  text-align: right;
 }
 </style>
