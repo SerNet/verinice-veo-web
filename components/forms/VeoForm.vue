@@ -155,12 +155,12 @@ export default Vue.extend({
           },
           [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
             formSchema: {
-              enum: (() => (this.domain ? (this.domain.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name) : []))()
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name))()
             }
           },
           [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
             formSchema: {
-              enum: (() => (this.domain ? (this.domain.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name) : []))()
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name))()
             }
           }
         };
