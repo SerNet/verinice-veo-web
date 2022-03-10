@@ -61,12 +61,81 @@ export interface IVeoLink {
   searchesUri?: string;
 }
 
+export interface IVeoRiskValue {
+  abbreviation: string;
+  description: string;
+  htmlColor: string;
+  name: string;
+  ordinalValue: number;
+  symbolicRisk: string;
+}
+
+export interface IVeoRiskPotentialImpact {
+  abbreviation: string;
+  description: string;
+  htmlColor: string;
+  name: string;
+  ordinalValue: string;
+  valueMatrix: IVeoRiskValue[][];
+}
+
+export interface IVeoRiskCategory {
+  abbreviation: string;
+  description: string;
+  id: string;
+  name: string;
+  potentialImpacts: IVeoRiskPotentialImpact;
+  valueMatrix: IVeoRiskValue[][];
+}
+
+export interface IVeoRiskProbabilityLevel {
+  name: string;
+  abbreviation: string;
+  description: string;
+  htmlColor: string;
+  ordinalValue: number;
+}
+
+export interface IVeoRiskProbability {
+  id: string;
+  name: string;
+  abbreviation: string;
+  description: string;
+  levels: IVeoRiskProbabilityLevel[];
+}
+
+export interface IVeoRiskImplementationState {
+  name: string;
+  abbreviation: string;
+  description: string;
+  htmlColor: string;
+  ordinalValue: number;
+}
+
 export interface IVeoDomain extends IVeoBaseObject {
   name: string;
   abbreviation: string;
   description: string;
   catalogs: any[];
-  riskDefinitions: IBaseObject;
+  riskDefinitions: {
+    [key: string]: {
+      id: string;
+      probability: IVeoRiskProbability;
+      implementationStateDefinition: {
+        id: string;
+        name: string;
+        abbreviation: string;
+        description: string;
+        levels: IVeoRiskImplementationState[];
+      };
+      categories: IVeoRiskCategory[];
+      riskValues: IVeoRiskValue[];
+      riskMethod: {
+        impactMethod: string;
+        description: string;
+      };
+    };
+  };
 }
 
 // At the moment, we only use strings in the frontend for custom attributes.

@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="upperFirst(t('risks').toString())">
+  <VeoPage
+    :title="upperFirst(t('risks').toString())"
+    fullsize
+  >
     <template #default>
       <div>
         <p class="pt-3 mb-0">
@@ -51,20 +54,9 @@
               />
             </v-tab>
           </template>
-          <template
-            v-if="domain"
-            #items
-          >
+          <template #items>
             <v-tab-item>
               <nuxt-child />
-            </v-tab-item>
-          </template>
-          <template
-            v-else
-            #items
-          >
-            <v-tab-item>
-              <v-skeleton-loader type="image" />
             </v-tab-item>
           </template>
         </VeoTabs>
@@ -74,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { upperFirst } from 'lodash';
 
@@ -91,17 +83,13 @@ export default defineComponent({
     const domain = ref<IVeoDomain | undefined>(undefined);
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
-    const { fetch } = useFetch(async () => {
+    useFetch(async () => {
       domain.value = await $api.domain.fetch(domainId.value);
 
       if (!route.value.params.matrix) {
         viewRiskDefinition(Object.values(domain.value.riskDefinitions)[0].id);
       }
     });
-    watch(
-      () => domainId.value,
-      () => fetch()
-    );
 
     const viewRiskDefinition = (id: string) => {
       router.push({

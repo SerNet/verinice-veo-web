@@ -16,17 +16,103 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>Hello world</div>
+  <div>
+    <div class="d-flex align-center mb-4">
+      <span class="text-body-1 mr-2">
+        {{ upperFirst(t('protectionGoal').toString()) }}:
+      </span>
+      <v-select
+        v-model="protectionGoal"
+        :items="protectionGoals"
+        :loading="$fetchState.pending"
+        class="flex-grow-0"
+        hide-details
+        dense
+      />
+    </div>
+    <VeoRiskMatrix
+      v-if="!$fetchState.pending"
+      :value="matrixValues"
+      :probabilities="probabilities"
+      :risk-values="riskValues"
+    />
+    <v-skeleton-loader
+      v-else
+      type="image"
+      width="600px"
+    />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+import { upperFirst } from 'lodash';
+
+import { IVeoDomain } from '~/types/VeoTypes';
+import { separateUUIDParam } from '~/lib/utils';
 
 export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
 
 export default defineComponent({
   setup() {
-    return {};
+    const { $api } = useContext();
+    const { t } = useI18n();
+    const route = useRoute();
+    const router = useRouter();
+
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const riskDefinition = computed(() => route.value.params.matrix);
+
+    const data = ref<undefined | IVeoDomain['riskDefinitions']['x']>(undefined);
+    useFetch(async () => {
+      data.value = (await $api.domain.fetch(domainId.value)).riskDefinitions[riskDefinition.value];
+      protectionGoal.value = data.value.categories[0].id;
+    });
+
+    // Matrix selection
+    const protectionGoal = computed({
+      get() {
+        return route.value.query.protectionGoal as string;
+      },
+      set(newValue: string) {
+        router.push({
+          params: route.value.params,
+          query: {
+            protectionGoal: newValue
+          }
+        });
+      }
+    });
+    const protectionGoals = computed(() => (data.value?.categories || []).map((category) => ({ text: category.name, value: category.id })));
+
+    // Matrix stuff
+    const probabilities = computed(() => data.value?.probability.levels || []);
+    const riskValues = computed(() => data.value?.riskValues || []);
+
+    const matrixValues = computed(() => data.value?.categories.find((category) => category.id === protectionGoal.value)?.valueMatrix || []);
+
+    return {
+      matrixValues,
+      probabilities,
+      protectionGoal,
+      protectionGoals,
+      riskValues,
+
+      t,
+      upperFirst
+    };
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "protectionGoal": "protection goal"
+  },
+  "de": {
+    "protectionGoal": "Schutzziel"
+  }
+}
+</i18n>
