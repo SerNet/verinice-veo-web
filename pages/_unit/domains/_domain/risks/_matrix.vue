@@ -22,6 +22,8 @@
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api';
 
+export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
+
 export default defineComponent({
   setup() {
     return {};

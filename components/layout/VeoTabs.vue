@@ -41,6 +41,13 @@ export default defineComponent({
   setup(props, { slots }) {
     const activeTabIndex = ref(props.startTab);
 
+    watch(
+      () => props.startTab,
+      (newValue: number) => {
+        activeTabIndex.value = newValue;
+      }
+    );
+
     return () => {
       const tabs = computed(() => (slots.tabs ? slots.tabs() : []));
       const activeTab = computed(() => tabs.value[activeTabIndex.value]);
@@ -49,7 +56,7 @@ export default defineComponent({
       watch(
         () => activeTab.value,
         (newValue) => {
-          const activeTabIsDisabled: boolean = (newValue.componentOptions?.propsData as any)?.disabled;
+          const activeTabIsDisabled: boolean = (newValue?.componentOptions?.propsData as any)?.disabled;
           if (activeTabIsDisabled) {
             activeTabIndex.value = (activeTabIndex.value + 1) % tabs.value.length;
           }
