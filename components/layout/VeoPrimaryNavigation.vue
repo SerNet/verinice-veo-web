@@ -108,6 +108,7 @@ export interface INavItem {
   childItems?: INavItem[];
   childItemsLoading?: boolean;
   expanded?: boolean;
+  exact?: boolean;
 }
 
 const objectTypeSortOrder = new Map<string, number>([
@@ -277,6 +278,7 @@ export default defineComponent({
     const riskChildItems = computed<INavItem[]>(() =>
       Object.values(riskDefinitions.value).map((riskDefinition: any) => ({
         name: riskDefinition.id,
+        exact: false,
         to: {
           name: RISKS_MATRIX_ROUTE_NAME,
           params: {
