@@ -16,91 +16,78 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-menu offset-y>
-    <template #activator="{ on }">
-      <v-btn
-        outlined
-        color="primary"
-        v-on="on"
-      >
-        {{ $route.name === 'unit-domains-more' ? $t('breadcrumbs.more_modules') : currentDomainName }}
-        <v-icon
-          right
-          dark
-        >
-          {{ mdiChevronDown }}
-        </v-icon>
-      </v-btn>
-    </template>
-    <template #default>
-      <v-list>
-        <v-list-item-group
-          color="primary"
-        >
-          <v-list-item
-            v-for="(domain) in domains"
-            :key="domain.id"
-            :to="`${ baseUrl }${ createUUIDUrlParam('domain', domain.id) }`"
-            nuxt
-          >
-            <v-list-item-title>{{ domain.name }}</v-list-item-title>
-          </v-list-item>
-          <v-divider class="mt-6" />
-          <v-list-item
-            value="more"
-            nuxt
-            :to="`/${$route.params.unit}/domains/more`"
-          >
-            {{ $t('breadcrumbs.more_modules') }}
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </template>
-  </v-menu>
+  <v-select
+    v-model="domainId"
+    class="veo-domain-select"
+    color="primary"
+    dense
+    hide-details
+    :items="selectItems"
+    outlined
+    :placeholder="t('noDomainSelected')"
+    style="width: 175px;"
+  />
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { mdiChevronDown } from '@mdi/js';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-import { separateUUIDParam, createUUIDUrlParam } from '~/lib/utils';
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
 
-export default Vue.extend({
-  data() {
+export default defineComponent({
+  setup() {
+    const { $api } = useContext();
+    const router = useRouter();
+    const route = useRoute();
+    const { t } = useI18n();
+
+    const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
+
+    const domainId = computed({
+      get() {
+        return separateUUIDParam(route.value.params.domain).id || 'more';
+      },
+      set(newValue: string) {
+        if (newValue === 'more') {
+          router.push({
+            name: 'unit-domains-more',
+            params: {
+              ...route.value.params,
+              domain: 'more'
+            }
+          });
+        } else {
+          router.push({
+            name: 'unit-domains-domain',
+            params: {
+              ...route.value.params,
+              domain: createUUIDUrlParam('domain', newValue)
+            }
+          });
+        }
+      }
+    });
+    const domains = ref<IVeoDomain[]>([]);
+    useFetch(async () => {
+      domains.value = await $api.domain.fetchUnitDomains(unitId.value);
+    });
+
+    const selectItems = computed(() => {
+      const items = domains.value.map((domain) => ({ value: domain.id, text: domain.name }));
+
+      items.push({ value: 'more', text: t('breadcrumbs.more_modules').toString() });
+
+      return items;
+    });
+
     return {
-      domains: [] as IVeoDomain[],
-      mdiChevronDown
+      domainId,
+      selectItems,
+
+      t
     };
-  },
-  async fetch() {
-    this.domains = await this.$api.domain.fetchAll();
-  },
-  computed: {
-    baseUrl(): string {
-      return `/${this.$route.params.unit}/domains/`;
-    },
-    currentDomainId(): string | undefined {
-      return separateUUIDParam(this.$route.params.domain).id;
-    },
-    currentDomainName(): string {
-      return this.domains.find((domain) => domain.id === this.domainId)?.name || '';
-    },
-    currentUnitId(): string | undefined {
-      return separateUUIDParam(this.$route.params.unit).id;
-    },
-    domainId(): string | undefined {
-      if (this.$route.name === 'unit-domains-more') {
-        return undefined;
-      }
-      if (!this.currentDomainId) {
-        return this.currentUnitId && this.currentUnitId === this.$user.lastUnit ? this.$user.lastDomain : undefined;
-      }
-      return this.currentDomainId;
-    }
-  },
-  methods: {
-    createUUIDUrlParam
   }
 });
 </script>
@@ -115,3 +102,13 @@ export default Vue.extend({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+@import '~/assets/vuetify.scss';
+
+::v-deep.veo-domain-select fieldset,
+::v-deep.veo-domain-select .v-select__selection,
+::v-deep.veo-domain-select i {
+  color: $primary !important;
+}
+</style>

@@ -134,20 +134,24 @@ export default defineComponent({
     const { fetch } = useFetch(async () => {
       const forms = await $api.form.fetchAll(domainId.value);
       const units = await $api.unit.fetchAll();
-      const domains = await $api.domain.fetchAll();
       const demoUnit = units.find((unit) => unit.name === 'Demo');
       nonDemoUnits.value = units.filter((unit) => unit.name !== 'Demo');
-      if (demoUnit && domains[0]) {
-        demoUnitLink.value = {
-          to: {
-            name: 'unit-domains-domain',
-            params: {
-              unit: createUUIDUrlParam('unit', demoUnit.id),
-              domain: createUUIDUrlParam('domain', domains[0].id || '')
-            }
-          },
-          name: 'Demo-Unit'
-        };
+      if (demoUnit) {
+        const demoUnitDomains = await $api.domain.fetchUnitDomains(demoUnit.id);
+        const dsgvoDomain = demoUnitDomains.find((domain) => domain.name === 'DS-GVO');
+
+        if (dsgvoDomain) {
+          demoUnitLink.value = {
+            to: {
+              name: 'unit-domains-domain',
+              params: {
+                unit: createUUIDUrlParam('unit', demoUnit.id),
+                domain: createUUIDUrlParam('domain', dsgvoDomain.id || '')
+              }
+            },
+            name: 'Demo-Unit'
+          };
+        }
       }
 
       createEntityCreateLink('scope', 'SCP_ResponsibleBody', forms);
