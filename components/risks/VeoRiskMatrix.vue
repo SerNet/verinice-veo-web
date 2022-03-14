@@ -19,14 +19,14 @@
   <table>
     <thead>
       <td class="text-center font-weight-bold">
-        {{ t('riskMatrix') }}
+        {{ upperFirst(t('riskMatrix').toString()) }}
       </td>
       <th
         v-for="_value of riskValues"
         :key="_value.ordinalValue"
         scope="col"
         class="px-4 py-2"
-        :style="{ backgroundColor: _value.htmlColor, color: fontColor(_value.htmlColor) }"
+        :style="{ backgroundColor: _value.htmlColor, color: getMostContrastyColor(_value.htmlColor) }"
       >
         {{ _value.name }}
         <v-tooltip
@@ -35,7 +35,7 @@
         >
           <template #activator="{ on }">
             <v-icon
-              :color="fontColor(_value.htmlColor)"
+              :color="getMostContrastyColor(_value.htmlColor)"
               right
               v-on="on"
             >
@@ -56,7 +56,7 @@
         <th
           scope="row"
           class="px-4 py-2"
-          :style="{ backgroundColor: probability.htmlColor, color: fontColor(probability.htmlColor) }"
+          :style="{ backgroundColor: probability.htmlColor, color: getMostContrastyColor(probability.htmlColor) }"
         >
           {{ probability.name }}<v-tooltip
             max-width="400px"
@@ -64,7 +64,7 @@
           >
             <template #activator="{ on }">
               <v-icon
-                :color="fontColor(probability.htmlColor)"
+                :color="getMostContrastyColor(probability.htmlColor)"
                 right
                 v-on="on"
               >
@@ -81,7 +81,7 @@
             v-for="(_value, colIndex) of value[rowIndex]"
             :key="colIndex"
             class="px-4 py-2"
-            :style="{ backgroundColor: _value.htmlColor, color: fontColor(_value.htmlColor) }"
+            :style="{ backgroundColor: _value.htmlColor, color: getMostContrastyColor(_value.htmlColor) }"
           >
             {{ _value.name }}
           </td>
@@ -90,7 +90,7 @@
             :key="index + value[rowIndex].length"
             class="px-4 py-2"
           >
-            {{ t('noData') }}
+            {{ upperFirst(t('noData').toString()) }}
           </td>
         </template>
         <td
@@ -98,7 +98,7 @@
           :colspan="riskValues.length"
           class="px-4 py-2"
         >
-          {{ t('noData') }}
+          {{ upperFirst(t('noData').toString()) }}
         </td>
       </tr>
     </tbody>
@@ -109,6 +109,7 @@
 import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiHelpCircle } from '@mdi/js';
+import { upperFirst } from 'lodash';
 
 import { IVeoRiskProbabilityLevel, IVeoRiskValue } from '~/types/VeoTypes';
 
@@ -131,7 +132,7 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
 
-    const fontColor = (backgroundColor: string) => {
+    const getMostContrastyColor = (backgroundColor: string) => {
       const hex = backgroundColor.substring(1);
       const r = parseInt(hex.slice(0, 2), 16);
       const g = parseInt(hex.slice(2, 4), 16);
@@ -141,9 +142,10 @@ export default defineComponent({
     };
 
     return {
-      fontColor,
+      getMostContrastyColor,
 
       mdiHelpCircle,
+      upperFirst,
       t
     };
   }
@@ -153,12 +155,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "noData": "No data",
-    "riskMatrix": "Risk matrix"
+    "noData": "no data",
+    "riskMatrix": "risk matrix"
   },
   "de": {
-    "noData": "Keine Daten",
-    "riskMatrix": "Risikomatrix"
+    "noData": "keine Daten",
+    "riskMatrix": "risikomatrix"
   }
 }
 </i18n>

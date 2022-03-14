@@ -276,15 +276,15 @@ export default defineComponent({
     });
 
     const riskChildItems = computed<INavItem[]>(() =>
-      Object.values(riskDefinitions.value).map((riskDefinition: any) => ({
-        name: riskDefinition.id,
+      Object.values(riskDefinitions.value).map(({ id }: { id: string }) => ({
+        name: id,
         exact: false,
         to: {
           name: RISKS_MATRIX_ROUTE_NAME,
           params: {
             unit: createUUIDUrlParam('unit', props.unitId),
             domain: createUUIDUrlParam('domain', props.domainId),
-            type: riskDefinition.id
+            matrix: id
           }
         }
       }))
