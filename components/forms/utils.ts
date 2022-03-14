@@ -60,7 +60,8 @@ export function isContain(array: defaultType[], elementToContain: defaultType[] 
 
 // Evaluate Rule
 export const ajv = new Ajv2019({
-  allErrors: true
+  allErrors: true,
+  strict: false
 });
 addFormats(ajv);
 

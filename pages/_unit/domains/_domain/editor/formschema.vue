@@ -135,18 +135,21 @@
       </v-tooltip>
       <v-tooltip bottom>
         <template #activator="{on}">
-          <v-btn
-            icon
-            large
-            color="primary"
-            @click="save"
-            v-on="on"
-          >
-            <v-icon>mdi-content-save</v-icon>
-          </v-btn>
+          <div v-on="on">
+            <v-btn
+              icon
+              large
+              color="primary"
+              :disabled="!isContentCreator"
+              @click="save"
+            >
+              <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+          </div>
         </template>
         <template #default>
-          {{ t('save') }}
+          <span v-if="isContentCreator">{{ t('save') }}</span>
+          <span v-else>{{ t('saveContentCreator') }}</span>
         </template>
       </v-tooltip>
     </template>
@@ -246,6 +249,7 @@
               :general-translation="translation && translation.lang[language]"
               :custom-translation="formSchema.translation && formSchema.translation[language]"
               :domain-id="domainId"
+              :additional-context="additionalContext"
             />
           </v-card>
         </template>
@@ -336,7 +340,8 @@ import {
   IVeoFormSchemaItem,
   IVeoFormSchemaItemUpdateEvent,
   IVeoFormSchemaTranslationCollection,
-  IVeoFormSchemaMeta
+  IVeoFormSchemaMeta,
+  IVeoDomain
 } from '~/types/VeoTypes';
 import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
@@ -348,7 +353,7 @@ interface IProps {}
 export default defineComponent<IProps>({
   setup(_props) {
     const { t } = useI18n();
-    const { $api, app } = useContext();
+    const { $api, app, $user } = useContext();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
@@ -504,6 +509,16 @@ export default defineComponent<IProps>({
       controlItems.value = items;
     }
 
+    const domain = ref<IVeoDomain | undefined>(undefined);
+    const { fetch: fetchDomain } = useFetch(async () => {
+      domain.value = await $api.domain.fetch(domainId.value);
+    });
+
+    watch(
+      () => domainId.value,
+      () => fetchDomain()
+    );
+
     /**
      * Translations related stuff
      */
@@ -547,7 +562,24 @@ export default defineComponent<IProps>({
       }
     }
 
+    const isContentCreator = computed(() => !!$user.auth.roles.find((r: string) => r === 'veo-content-creator'));
+
+    // Circumventing {CURRENT_DOMAIN_ID} in fse controls
+    const additionalContext = computed(() => ({
+      [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
+        formSchema: {
+          enum: (() => (domain.value?.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map((level: any) => level.name))()
+        }
+      },
+      [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
+        formSchema: {
+          enum: (() => (domain.value?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name))()
+        }
+      }
+    }));
+
     return {
+      additionalContext,
       creationDialogVisible,
       domainId,
       errorDialogVisible,
@@ -561,6 +593,7 @@ export default defineComponent<IProps>({
       language,
       translation,
       schemaIsValid,
+      isContentCreator,
       setFormSchema,
       setObjectSchema,
       setTranslation,
@@ -613,7 +646,8 @@ export default defineComponent<IProps>({
     "save": "Save",
     "saveSchemaSuccess": "Schema saved!",
     "saveSchemaError": "Couldn't save schema!",
-    "error": "Error"
+    "error": "Error",
+    "saveContentCreator": "You need the role \"Content Creator\" to save the formschema."
   },
   "de": {
     "availableControls": "Verfügbare Steuerelemente",
@@ -627,7 +661,8 @@ export default defineComponent<IProps>({
     "save": "Speichern",
     "saveSchemaSuccess": "Schema wurde gespeichert!",
     "saveSchemaError": "Schema konnte nicht gespeichert werden!",
-    "error": "Fehler"
+    "error": "Fehler",
+    "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Formschema zu speichern."
   }
 }
 </i18n>

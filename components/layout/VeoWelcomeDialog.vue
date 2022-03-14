@@ -28,7 +28,9 @@
       >
         <VeoAppLogoDesktop />
       </div>
-      <h2 class="mb-4">{{ t('veoClaim') }}</h2>
+      <h2 class="mb-4">
+        {{ t('veoClaim') }}
+      </h2>
       <i18n
         path="createEntitiesCTA"
         tag="p"
@@ -39,7 +41,9 @@
             :key="index"
             :to="link.to"
             @click.native="dialog = false"
-          >{{ link.name }}</nuxt-link>
+          >
+            {{ link.name }}
+          </nuxt-link>
         </template>
         <template v-else>
           <span
@@ -58,7 +62,9 @@
           v-if="firstUnitId"
           :to="dashboardLink.to"
           @click.native="dialog = false"
-        >{{ dashboardLink.name }}</nuxt-link>
+        >
+          {{ dashboardLink.name }}
+        </nuxt-link>
         <span v-else>{{ dashboardLink.name }}</span>
       </i18n>
       <i18n
@@ -69,7 +75,9 @@
         <nuxt-link
           :to="demoUnitLink.to"
           @click.native="dialog = false"
-        >{{ demoUnitLink.name }}</nuxt-link>
+        >
+          {{ demoUnitLink.name }}
+        </nuxt-link>
       </i18n>
       <i18n
         path="lastLine"
@@ -93,7 +101,7 @@
 
 <script lang="ts">
 import { RawLocation } from 'vue-router/types/router';
-import { computed, ComputedRef, defineComponent, Ref, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { computed, ComputedRef, defineComponent, Ref, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import LocalStorage from '~/util/LocalStorage';
@@ -116,28 +124,39 @@ export default defineComponent({
 
     const firstUnitId: ComputedRef<string | undefined> = computed(() => nonDemoUnits.value[0]?.id);
 
-    useFetch(async () => {
-      const forms = await $api.form.fetchAll();
+    const domainId = computed(() => route.value.params.domain);
+
+    watch(
+      () => domainId.value,
+      () => fetch()
+    );
+
+    const { fetch } = useFetch(async () => {
+      const forms = await $api.form.fetchAll(domainId.value);
       const units = await $api.unit.fetchAll();
-      const domains = await $api.form.fetchAll();
       const demoUnit = units.find((unit) => unit.name === 'Demo');
       nonDemoUnits.value = units.filter((unit) => unit.name !== 'Demo');
-      if (demoUnit && domains[0]) {
-        demoUnitLink.value = {
-          to: {
-            name: 'unit-domains-domain',
-            params: {
-              unit: createUUIDUrlParam('unit', demoUnit.id),
-              domain: createUUIDUrlParam('domain', domains[0].id || '')
-            }
-          },
-          name: 'Demo-Unit'
-        };
+      if (demoUnit) {
+        const demoUnitDomains = await $api.domain.fetchUnitDomains(demoUnit.id);
+        const dsgvoDomain = demoUnitDomains.find((domain) => domain.name === 'DS-GVO');
+
+        if (dsgvoDomain) {
+          demoUnitLink.value = {
+            to: {
+              name: 'unit-domains-domain',
+              params: {
+                unit: createUUIDUrlParam('unit', demoUnit.id),
+                domain: createUUIDUrlParam('domain', dsgvoDomain.id || '')
+              }
+            },
+            name: 'Demo-Unit'
+          };
+        }
       }
 
-      createEntityCreateLink('SCP_ResponsibleBody', forms);
-      createEntityCreateLink('PER_DataProtectionOfficer', forms);
-      createEntityCreateLink('PRO_DataProcessing', forms);
+      createEntityCreateLink('scope', 'SCP_ResponsibleBody', forms);
+      createEntityCreateLink('person', 'PER_DataProtectionOfficer', forms);
+      createEntityCreateLink('process', 'PRO_DataProcessing', forms);
     });
     const dialog = computed({
       get() {
@@ -164,17 +183,20 @@ export default defineComponent({
     }));
     const demoUnitLink: Ref<{ name: string; to: RawLocation } | undefined> = ref(undefined);
 
-    function createEntityCreateLink(subType: string, forms: IVeoFormSchemaMeta[]) {
+    function createEntityCreateLink(objectType: string, subType: string, forms: IVeoFormSchemaMeta[]) {
       const form = forms.find((form) => form.subType === subType);
       if (form) {
         formLinks.value.push({
           name: form.name[locale.value],
           to: {
-            name: 'unit-domains-domain-forms-form-create',
+            name: 'unit-domains-domain-objects',
             params: {
               unit: route.value.params.unit || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
-              domain: route.value.params.domain || $user.lastDomain || '',
-              form: createUUIDUrlParam('form', form.id as string)
+              domain: route.value.params.domain || $user.lastDomain || ''
+            },
+            query: {
+              objectType,
+              subType
             }
           }
         });

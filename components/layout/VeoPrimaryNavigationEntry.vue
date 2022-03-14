@@ -33,7 +33,7 @@
     v-else-if="childItems === undefined"
     class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
     :to="to"
-    exact
+    :exact="exact === undefined || exact"
     active-class="primary--text"
   >
     <v-list-item-icon v-if="icon">
@@ -123,6 +123,10 @@ export default defineComponent({
     name: {
       type: String,
       required: true
+    },
+    exact: {
+      type: Boolean,
+      default: undefined
     },
     icon: {
       type: String,

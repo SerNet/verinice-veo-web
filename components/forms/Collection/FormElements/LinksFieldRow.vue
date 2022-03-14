@@ -99,7 +99,8 @@
       </ValidationProvider>
     </v-col>
     <v-col v-if="ui.elements.length > 0">
-      <VeoForm
+      <!-- For some reason the form would only get rendered local. Might have been a caching issue, but this fixed it nonetheless -->
+      <LazyVeoForm
         :schema="schema.items"
         :ui="ui"
         :value="value"
@@ -126,7 +127,8 @@ import Vue from 'vue';
 import { Prop, PropOptions } from 'vue/types/options';
 import { JSONSchema7 } from 'json-schema';
 import vjp from 'vue-json-pointer';
-import { UISchemaElement } from '@/types/UISchema';
+
+import { UISchemaElement } from '~/types/UISchema';
 import { BaseObject } from '~/components/forms/utils';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoPaginatedResponse, IVeoTranslationCollection } from '~/types/VeoTypes';
 import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
@@ -343,7 +345,7 @@ export default Vue.extend({
         }
 
         if (this.subType) {
-          const forms = await this.$api.form.fetchAll();
+          const forms = await this.$api.form.fetchAll(this.domainId);
           this.currentForm = forms.find((form) => form.subType === this.subType);
         }
       } finally {

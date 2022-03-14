@@ -141,6 +141,10 @@ export class Auth {
     return this._profile as any;
   }
 
+  public get roles(): string[] {
+    return this._keycloak.realmAccess?.roles || [];
+  }
+
   /**
    * Loads the profile of the logged in user (such as firstname, lastname and mail address). Fails if the user is not authenticated.
    */

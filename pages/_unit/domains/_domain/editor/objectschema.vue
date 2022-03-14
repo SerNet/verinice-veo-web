@@ -127,19 +127,21 @@
               bottom
             >
               <template #activator="{on}">
-                <v-btn
-                  :disabled="!schemaIsValid.valid"
-                  icon
-                  large
-                  color="primary"
-                  @click="saveSchema"
-                  v-on="on"
-                >
-                  <v-icon v-text="mdiContentSave" />
-                </v-btn>
+                <div v-on="on">
+                  <v-btn
+                    :disabled="!schemaIsValid.valid || !isContentCreator"
+                    icon
+                    large
+                    color="primary"
+                    @click="saveSchema"
+                  >
+                    <v-icon v-text="mdiContentSave" />
+                  </v-btn>
+                </div>
               </template>
               <template #default>
-                {{ upperFirst($t('save')) }}
+                <span v-if="isContentCreator">{{ upperFirst(t('save')) }}</span>
+                <span v-else>{{ $t('saveContentCreator') }}</span>
               </template>
             </v-tooltip>
           </div>
@@ -367,6 +369,9 @@ export default Vue.extend({
       }
 
       return translationsToReturn;
+    },
+    isContentCreator(): boolean {
+      return !!this.$user.auth.roles.find((r: string) => r === 'veo-content-creator');
     }
   },
   watch: {
@@ -465,7 +470,8 @@ export default Vue.extend({
     "help": "Help",
     "save": "save",
     "saveSchemaSuccess": "Schema saved!",
-    "saveSchemaError": "Couldn't save schema!"
+    "saveSchemaError": "Couldn't save schema!",
+    "saveContentCreator": "You need the role \"Content Creator\" to save the objectschema."
   },
   "de": {
     "description": "Beschreibung",
@@ -478,7 +484,8 @@ export default Vue.extend({
     "help": "Hilfe",
     "save": "speichern",
     "saveSchemaSuccess": "Schema wurde gespeichert!",
-    "saveSchemaError": "Schema konnte nicht gespeichert werden!"
+    "saveSchemaError": "Schema konnte nicht gespeichert werden!",
+    "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Objektschema zu speichern."
   }
 }
 </i18n>

@@ -18,10 +18,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import { PropType } from 'vue/types/options';
+import { VSkeletonLoader } from 'vuetify/lib';
 
 import VeoCollapseButton from '~/components/layout/VeoCollapseButton.vue';
 
 export default Vue.extend({
+  components: {
+    VSkeletonLoader
+  },
   props: {
     title: {
       type: String,
@@ -30,6 +34,13 @@ export default Vue.extend({
     titleClass: {
       type: String,
       default: undefined
+    },
+    /**
+     * Shows a skeleton for the title if set to true
+     */
+    loading: {
+      type: Boolean,
+      default: false
     },
     collapsableLeft: {
       type: Boolean,
@@ -213,16 +224,17 @@ export default Vue.extend({
             class: this.$props.titleClass
           },
           [
-            ...(this.$props.title
-              ? [
+            ...(this.$props.loading
+              ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title px-10 py-1' })]
+              : [
                   h('h1', {
                     domProps: {
                       innerText: this.$props.title
                     },
                     class: 'd-inline px-10 py-1 flex-grow-0'
-                  })
-                ]
-              : [this.$slots.title ? this.$slots.title : []]),
+                  }),
+                  ...(this.$slots.title ? [this.$slots.title] : [])
+                ]),
             this.$slots.header ? this.$slots.header : []
           ]
         ),
@@ -299,3 +311,16 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.skeleton-title {
+  align-items: center;
+  display: flex;
+  height: 33.59px;
+  width: 300px;
+
+  ::v-deep .v-skeleton-loader__text {
+    height: 22.4px;
+  }
+}
+</style>

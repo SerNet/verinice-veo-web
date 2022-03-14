@@ -19,7 +19,6 @@
   <VeoPage
     :title="t('objectOverview')"
     fullsize
-    :loading="fetchState.pending"
   >
     <VeoFilterDialog
       v-model="filterDialogVisible"

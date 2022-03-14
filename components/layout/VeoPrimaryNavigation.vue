@@ -84,14 +84,14 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
-import { /* mdiApplicationCog, */ mdiChevronDoubleLeft, mdiChevronDoubleRight, mdiClipboardList, mdiFileChart, mdiFileDocument, mdiHome } from '@mdi/js';
+import { /* mdiApplicationCog, */ mdiChevronDoubleLeft, mdiChevronDoubleRight, mdiClipboardList, mdiFileChart, mdiFileDocument, mdiHome, mdiTableLarge } from '@mdi/js';
 import { RawLocation } from 'vue-router/types';
 import { useI18n } from 'nuxt-i18n-composable';
 import { sortBy, upperFirst } from 'lodash';
 
 import LocalStorage from '~/util/LocalStorage';
 import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoCatalog, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
+import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
 import { ROUTE_NAME as UNIT_SELECTION_ROUTE_NAME } from '~/pages/index.vue';
@@ -99,6 +99,7 @@ import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/_unit/domains
 import { ROUTE_NAME as OBJECTS_ROUTE_NAME } from '~/pages/_unit/domains/_domain/objects/index.vue';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/_unit/domains/_domain/catalogs/_catalog.vue';
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/_unit/domains/_domain/reports/_type.vue';
+import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/risks/_matrix.vue';
 
 export interface INavItem {
   name: string;
@@ -107,6 +108,7 @@ export interface INavItem {
   childItems?: INavItem[];
   childItemsLoading?: boolean;
   expanded?: boolean;
+  exact?: boolean;
 }
 
 const objectTypeSortOrder = new Map<string, number>([
@@ -267,6 +269,27 @@ export default defineComponent({
           .filter((entry) => entry.name) // Don't show reports which aren't translated in the users language
     );
 
+    // risk specific stuff
+    const riskDefinitions = ref<IVeoDomain['riskDefinitions']>({});
+    const { fetchState: riskDefinitionsLoading } = useFetch(async () => {
+      riskDefinitions.value = (await $api.domain.fetch(props.domainId)).riskDefinitions;
+    });
+
+    const riskChildItems = computed<INavItem[]>(() =>
+      Object.values(riskDefinitions.value).map(({ id }: { id: string }) => ({
+        name: id,
+        exact: false,
+        to: {
+          name: RISKS_MATRIX_ROUTE_NAME,
+          params: {
+            unit: createUUIDUrlParam('unit', props.unitId),
+            domain: createUUIDUrlParam('domain', props.domainId),
+            matrix: id
+          }
+        }
+      }))
+    );
+
     // nav item stuff
     const maxUnits = computed<number | undefined>(() => {
       const _maxUnits = $user.auth.profile?.attributes?.maxUnits?.[0];
@@ -334,6 +357,15 @@ export default defineComponent({
       expanded: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/reports`)
     }));
 
+    const risksNavEntry = computed<INavItem>(() => ({
+      name: t('breadcrumbs.risks').toString(),
+      icon: mdiTableLarge,
+      to: undefined,
+      childItems: riskChildItems.value,
+      childItemsLoading: riskDefinitionsLoading.pending,
+      expanded: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/risks`)
+    }));
+
     /* const editorsNavEntry = computed<INavItem>(() => ({
       name: t('breadcrumbs.editor').toString(),
       icon: mdiApplicationCog,
@@ -348,7 +380,9 @@ export default defineComponent({
 
     const items = computed<INavItem[]>(() => [
       ...(maxUnits.value && maxUnits.value > 2 ? [unitSelectionNavEntry] : []),
-      ...(props.unitId && props.domainId ? [domainDashboardNavEntry.value, objectsNavEntry.value, catalogsNavEntry.value, reportsNavEntry.value /*, editorsNavEntry.value */] : [])
+      ...(props.unitId && props.domainId
+        ? [domainDashboardNavEntry.value, objectsNavEntry.value, catalogsNavEntry.value, reportsNavEntry.value, risksNavEntry.value /*, editorsNavEntry.value */]
+        : [])
     ]);
 
     return {
