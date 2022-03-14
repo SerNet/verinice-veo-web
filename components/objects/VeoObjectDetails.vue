@@ -93,6 +93,7 @@ import { IVeoEntity } from '~/types/VeoTypes';
 import { formatDate, formatTime } from '~/lib/utils';
 
 export default defineComponent({
+  name: 'VeoObjectDetails',
   props: {
     object: {
       type: Object,
@@ -126,10 +127,8 @@ export default defineComponent({
     watch(
       () => props.loading,
       (newValue, previousValue) => {
-        if (previousValue && !newValue) {
-          if (subType.value !== 'PRO_DataProcessing' && props.activeTab === 'risks') {
-            emit('update:activeTab', 'subEntities');
-          }
+        if (previousValue && !newValue && subType.value !== 'PRO_DataProcessing' && props.activeTab === 'risks') {
+          emit('update:activeTab', 'subEntities');
         }
       }
     );

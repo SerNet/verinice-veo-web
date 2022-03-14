@@ -229,10 +229,7 @@ export default defineComponent({
      * Removes all set filters, emits them and closes the dialog
      */
     function onReset() {
-      const newFilterObject: IBaseObject = {};
-      if (props.objectTypeRequired) {
-        newFilterObject.objectType = localFilter.value.objectType;
-      }
+      const newFilterObject: IBaseObject = props.objectTypeRequired ? { objectType: localFilter.value.objectType } : {};
 
       for (const key of Object.keys(localFilter.value)) {
         if (props.disableFields?.includes(key)) {
