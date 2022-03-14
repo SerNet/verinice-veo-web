@@ -213,7 +213,6 @@ export default defineComponent({
 @import '~/assets/vuetify.scss';
 
 .veo-app-bar {
-  background-color: white !important;
   box-shadow: inset 0 -1px 0 $grey !important;
 
   .v-toolbar__content {

@@ -31,10 +31,7 @@
   />
   <v-list-item
     v-else-if="childItems === undefined"
-    :class="{
-      'flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item': true,
-      'veo-primary-navigation__menu-item--active-path': expanded
-    }"
+    class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
     :to="to"
     :exact="exact === undefined || exact"
     active-class="primary--text"
@@ -50,7 +47,7 @@
             v-on="on"
           >
             <v-icon
-              color="black"
+              :color="expanded ? 'primary' : 'black'"
               v-text="icon"
             />
           </div>
@@ -65,7 +62,10 @@
   <v-list-group
     v-else
     :key="name"
-    class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
+    :class="{
+      'flex-grow-0 flex-auto veo-primary-navigation__menu-item': true,
+      'veo-primary-navigation__menu-item--active-path': expanded
+    }"
     no-action
     :value="expanded"
     @click="onGroupClick"
@@ -86,7 +86,7 @@
             v-on="on"
           >
             <v-icon
-              color="black"
+              :color="expanded ? 'primary' : 'black'"
               v-text="icon"
             />
           </div>
@@ -183,12 +183,12 @@ export default defineComponent({
 }
 </i18n>
 
-<style lang="scss">
-.veo-primary-navigation__menu-item {
+<style lang="scss" scoped>
+::v-deep.veo-primary-navigation__menu-item {
   flex-basis: auto;
 }
 
-.veo-primary-navigation__menu-item.v-list-group--no-action {
+::v-deep.veo-primary-navigation__menu-item.v-list-group--no-action {
   & > .v-list-group__items {
     & > .v-list-item {
       padding-left: 76px !important;
@@ -196,9 +196,10 @@ export default defineComponent({
   }
 }
 
-.veo-primary-navigation__menu-item.v-skeleton-loader {
+::v-deep.veo-primary-navigation__menu-item.v-skeleton-loader {
   margin-bottom: 4px;
   .v-skeleton-loader__list-item-avatar {
+    background: transparent;
     height: 40px;
     padding: 0 8px;
     .v-skeleton-loader__avatar {
@@ -214,10 +215,8 @@ export default defineComponent({
   }
 }
 
-.veo-primary-navigation__menu-item--active-path {
-}
-
-::v-deep.v-list-item--active::before {
+::v-deep.veo-primary-navigation__menu-item--active-path > .v-list-group__header::before {
+  background: red;
   opacity: 0.12 !important;
 }
 </style>

@@ -43,10 +43,16 @@
         </v-btn>
       </template>
       <v-card>
-        <v-list dense>
+        <v-list
+          dense
+          class="pb-0"
+        >
           <v-list-item>
             <v-list-item-avatar color="secondary">
-              <v-icon class="white--text headline">
+              <v-icon
+                class="white--text"
+                style="font-style: normal"
+              >
                 {{ initials }}
               </v-icon>
             </v-list-item-avatar>
@@ -62,13 +68,16 @@
             <v-divider />
             <VeoUnitSelection :units="units" />
           </template>
+          <v-divider class="mt-4" />
           <v-list-item @click="displayDeploymentDetails = true">
             <v-list-item-icon class="ml-2">
               <v-icon>
                 mdi-information-outline
               </v-icon>
             </v-list-item-icon>
-            <v-list-item-title>{{ $t('about') }}</v-list-item-title>
+            <v-list-item-title class="font-weight-regular">
+              {{ $t('about') }}
+            </v-list-item-title>
             <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
           </v-list-item>
         </v-list>

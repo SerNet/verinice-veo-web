@@ -22,7 +22,6 @@
     :value="value"
     app
     clipped
-    floating
     :mini-variant="!$vuetify.breakpoint.xs && miniVariant"
     :permanent="!$vuetify.breakpoint.xs"
     :temporary="$vuetify.breakpoint.xs"
@@ -34,8 +33,7 @@
         <v-list
           nav
           dense
-          :shaped="!miniVariant"
-          :rounded="miniVariant"
+          rounded
           expand
           class="fill-height d-flex flex-column"
         >
