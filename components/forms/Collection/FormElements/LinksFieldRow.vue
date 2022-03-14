@@ -345,7 +345,7 @@ export default Vue.extend({
         }
 
         if (this.subType) {
-          const forms = await this.$api.form.fetchAll();
+          const forms = await this.$api.form.fetchAll(this.domainId);
           this.currentForm = forms.find((form) => form.subType === this.subType);
         }
       } finally {

@@ -23,6 +23,8 @@ export default function (api: Client) {
     /**
      * Loads all domains
      *
+     * WARNING: Usually you want to use fetchUnitDomains instead
+     *
      * @param query Additional request query params
      */
     fetchAll(query?: Record<string, string>): Promise<IVeoDomain[]> {
