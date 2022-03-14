@@ -31,7 +31,10 @@
   />
   <v-list-item
     v-else-if="childItems === undefined"
-    class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
+    :class="{
+      'flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item': true,
+      'veo-primary-navigation__menu-item--active-path': expanded
+    }"
     :to="to"
     :exact="exact === undefined || exact"
     active-class="primary--text"
@@ -47,6 +50,7 @@
             v-on="on"
           >
             <v-icon
+              color="black"
               v-text="icon"
             />
           </div>
@@ -54,19 +58,20 @@
         <span>{{ name }}</span>
       </v-tooltip>
     </v-list-item-icon>
-    <v-list-item-title>{{ name }}</v-list-item-title>
+    <v-list-item-title style="color: black">
+      {{ name }}
+    </v-list-item-title>
   </v-list-item>
   <v-list-group
     v-else
     :key="name"
     class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
     no-action
-    color="black"
     :value="expanded"
     @click="onGroupClick"
   >
     <template #activator>
-      <v-list-item-title>
+      <v-list-item-title style="color: black">
         {{ name }}
       </v-list-item-title>
     </template>
@@ -81,7 +86,7 @@
             v-on="on"
           >
             <v-icon
-              color="rgba(0, 0, 0, 0.54)"
+              color="black"
               v-text="icon"
             />
           </div>
@@ -207,5 +212,12 @@ export default defineComponent({
     padding: 0 8px;
     padding-left: 64px;
   }
+}
+
+.veo-primary-navigation__menu-item--active-path {
+}
+
+::v-deep.v-list-item--active::before {
+  opacity: 0.12 !important;
 }
 </style>

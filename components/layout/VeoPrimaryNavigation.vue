@@ -22,9 +22,11 @@
     :value="value"
     app
     clipped
+    floating
     :mini-variant="!$vuetify.breakpoint.xs && miniVariant"
     :permanent="!$vuetify.breakpoint.xs"
     :temporary="$vuetify.breakpoint.xs"
+    class="veo-primary-navigation"
     v-on="$listeners"
   >
     <template #default>
@@ -63,17 +65,29 @@
           @click="setMiniVariant(!miniVariant)"
         >
           <v-list-item-icon>
-            <v-icon v-if="miniVariant">
+            <v-icon
+              v-if="miniVariant"
+              color="black"
+            >
               {{ mdiChevronDoubleRight }}
             </v-icon>
-            <v-icon v-else>
+            <v-icon
+              v-else
+              color="black"
+            >
               {{ mdiChevronDoubleLeft }}
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-title v-if="miniVariant">
+          <v-list-item-title
+            v-if="miniVariant"
+            style="color: black"
+          >
             {{ t('fix') }}
           </v-list-item-title>
-          <v-list-item-title v-else>
+          <v-list-item-title
+            v-else
+            style="color: black"
+          >
             {{ t('collapse') }}
           </v-list-item-title>
         </v-list-item>
@@ -412,3 +426,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.veo-primary-navigation.v-navigation-drawer {
+  background-color: #f2f2f2;
+}
+</style>
