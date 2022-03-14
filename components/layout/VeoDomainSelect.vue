@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
@@ -70,7 +70,7 @@ export default defineComponent({
       }
     });
     const domains = ref<IVeoDomain[]>([]);
-    useFetch(async () => {
+    const { fetch } = useFetch(async () => {
       domains.value = await $api.domain.fetchUnitDomains(unitId.value);
     });
 
@@ -81,6 +81,11 @@ export default defineComponent({
 
       return items;
     });
+
+    watch(
+      () => unitId.value,
+      () => fetch()
+    );
 
     return {
       domainId,
