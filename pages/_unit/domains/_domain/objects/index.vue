@@ -181,7 +181,7 @@ export default defineComponent({
     const activeFilterKeys = computed(() => filterKeys.filter((k) => filter.value[k] !== undefined));
 
     // pagination parameters (page and sorting), set by VeoObjectTable
-    const pagination = reactive({ page: 1, sortBy: undefined as string | undefined, sortOrder: undefined as string | undefined });
+    const pagination = reactive({ page: 1, sortBy: undefined as string | undefined, sortOrder: undefined as 'desc' | 'asc' | undefined });
 
     // current object type and sub type
     const objectType = computed(() => filter.value.objectType);

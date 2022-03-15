@@ -129,8 +129,9 @@ describe('Objects details', () => {
   });
 
   it('should create and link an object', function () {
-    cy.get('[data-cy=veo-object-details-action-menu-create-button]').click();
-    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(0).click();
+    cy.wait(5000); // needed to wait for previous snackbar to be dismissed
+    cy.get('[data-cy=veo-object-details-action-menu-show-actions-button]').click();
+    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(1).click();
 
     cy.get('.v-dialog .vf-control').contains('Name*').parents('.v-input').type('Testobjekt{enter}');
     cy.get('[data-cy=veo-create-object-dialog-save-button]').click();
@@ -144,8 +145,9 @@ describe('Objects details', () => {
   });
 
   it('should link an object', function () {
-    cy.get('[data-cy=veo-object-details-action-menu-create-button]').click();
-    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(1).click();
+    cy.wait(5000); // needed to wait for previous snackbar to be dismissed
+    cy.get('[data-cy=veo-object-details-action-menu-show-actions-button]').click();
+    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(0).click();
 
     cy.wait('@G_fetchObjects')
       .wait('@G_fetchTranslations')

@@ -220,7 +220,7 @@ export default defineComponent({
       const subType = formSchemas.value.find((formschema) => formschema.id === selectedDisplayOption.value)?.subType;
 
       // Set sub type and status if subType was not set and the user views the object with a subtype
-      if (subType && props.domainId && !objectData.value.domains?.[props.domainId]?.subType) {
+      if (subType && props.domainId && !objectData.value?.domains?.[props.domainId]?.subType) {
         const newDomainObject = {
           domains: {
             [props.domainId]: {

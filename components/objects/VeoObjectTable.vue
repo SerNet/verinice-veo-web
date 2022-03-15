@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021 Markus Werner
+   - Copyright (C) 2021 Markus Werner, Jonas Heitmann
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -33,6 +33,8 @@ export type ObjectTableRenderer = (props: { item: IVeoEntity }) => VNode | VNode
 export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
   isDense?: boolean;
   isSimple?: boolean;
+  isRisk?: boolean;
+  riskOnly?: boolean;
   truncate?: boolean;
   map?: ObjectTableFormatter;
   text?: string;
@@ -84,6 +86,10 @@ export default defineComponent({
       default: () => []
     },
     loading: {
+      type: Boolean,
+      default: false
+    },
+    risk: {
       type: Boolean,
       default: false
     }
@@ -193,6 +199,7 @@ export default defineComponent({
         value: 'designator',
         isDense: true,
         isSimple: false,
+        isRisk: true,
         sortable: true,
         width: 110
       },
@@ -212,6 +219,16 @@ export default defineComponent({
         width: 300,
         truncate: true,
         sortable: true
+      },
+      {
+        value: 'scenario.displayName',
+        isDense: false,
+        isSimple: false,
+        isRisk: true,
+        cellClass: ['font-weight-bold'],
+        width: 300,
+        truncate: true,
+        riskOnly: true
       },
       {
         value: 'status',
@@ -240,6 +257,7 @@ export default defineComponent({
       {
         value: 'updatedAt',
         isDense: true,
+        isRisk: true,
         isSimple: false,
         sortable: true,
         width: 200,
@@ -249,6 +267,7 @@ export default defineComponent({
       {
         value: 'actions',
         isDense: true,
+        isRisk: true,
         isSimple: false,
         text: '',
         sortable: false,
@@ -329,7 +348,9 @@ export default defineComponent({
     // headers (less in dense mode)
     const denseHeaders = _headers.filter((header) => header.isDense);
     const simpleHeaders = _headers.filter((header) => header.isSimple);
-    const headers = computed(() => (props.simple ? simpleHeaders : props.dense ? denseHeaders : _headers));
+    const riskHeaders = _headers.filter((header) => header.isRisk);
+    const defaultHeaders = _headers.filter((header) => !header.riskOnly); // Risk headers shoul
+    const headers = computed(() => (props.risk ? riskHeaders : props.simple ? simpleHeaders : props.dense ? denseHeaders : defaultHeaders));
     const items = computed(() => {
       const items = isPaginatedResponse(props.items) ? props.items.items : props.items;
       return items.map(mapItem);

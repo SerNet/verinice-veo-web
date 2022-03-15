@@ -69,19 +69,24 @@ export default {
   'global.menu.collapse': 'Menü verstecken',
   'global.menu.expand': 'Menü fixieren',
 
-  'objectlist.designator': 'Designator',
-  'objectlist.description': 'Beschreibung',
-  'objectlist.status': 'Status',
-  'objectlist.name': 'Objektname',
-  'objectlist.abbreviation': 'Abkürzung',
-  'objectlist.createdAt': 'Erstellzeitpunkt',
-  'objectlist.updatedAt': 'Letzte Änderung',
-  'objectlist.updatedBy': 'Bearbeiter',
-  'objectlist.objectType': 'Objekttyp',
-  'objectlist.subType': 'Subtyp',
-  'objectlist.notPartOfGroup': 'nicht Teil einer Gruppe',
-  'objectlist.hasChildObjects': 'hat Kindobjekte',
-  'objectlist.hasLinks': 'hat Verlinkungen',
+  objectlist: {
+    abbreviation: 'Abkürzung',
+    createdAt: 'Erstellzeitpunkt',
+    designator: 'Designator',
+    description: 'Beschreibung',
+    hasChildObjects: 'hat Kindobjekte',
+    hasLinks: 'hat Verlinkungen',
+    name: 'Objektname',
+    notPartOfGroup: 'nicht Teil einer Gruppe',
+    objectType: 'Objekttyp',
+    scenario: {
+      displayName: 'Risiko'
+    },
+    status: 'Status',
+    subType: 'Subtyp',
+    updatedAt: 'Letzte Änderung',
+    updatedBy: 'Bearbeiter'
+  },
 
   'page.editors.title': 'Editoren',
   'page.editors.calltoaction': 'Was möchten Sie tun?',
