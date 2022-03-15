@@ -251,7 +251,7 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .fse-group {
-  border: 1px solid $grey;
+  border: 1px solid $medium-grey;
 }
 
 .dropzone-placeholder {
@@ -263,7 +263,7 @@ export default Vue.extend({
 
 .dropzone-placeholder-text {
   text-align: center;
-  color: $grey;
+  color: $medium-grey;
 }
 
 .level-0 {

@@ -23,11 +23,14 @@
       clipped-left
       flat
     >
-      <VeoAppBarLogo />
+      <nuxt-link
+        to="/"
+        class="text-decoration-none fill-height"
+      >
+        <VeoAppBarLogo />
+      </nuxt-link>
       <v-spacer />
-      <div :class="{ 'mr-6': !!$user.auth.profile, 'shrink': true }">
-        <VeoLanguageSwitch />
-      </div>
+      <VeoLanguageSwitch class="mx-3" />
       <VeoAppAccountBtn
         v-if="$user.auth.profile"
         :username="$user.auth.profile.username"
@@ -54,17 +57,7 @@ export default Vue.extend({
 });
 </script>
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
 .veo-app-bar {
-  background-color: white !important;
-  box-shadow: inset 0 -1px 0 $grey !important;
-
-  .v-toolbar__content {
-    > * {
-      flex-grow: 1;
-      flex-basis: 0;
-    }
-  }
+  background-color: $background-primary !important;
 }
 </style>

@@ -23,10 +23,12 @@
     <v-menu
       v-model="value"
       :close-on-content-click="false"
+      content-class="veo-account-menu"
       max-width="350px"
-      nudge-bottom="5"
+      nudge-bottom="8"
       offset-y
       origin="top right"
+      tile
     >
       <template #activator="{ on }">
         <v-btn
@@ -68,10 +70,10 @@
             <v-divider />
             <VeoUnitSelection :units="units" />
           </template>
-          <v-divider class="mt-4" />
+          <v-divider class="mt-2" />
           <v-list-item @click="displayDeploymentDetails = true">
-            <v-list-item-icon class="ml-2">
-              <v-icon>
+            <v-list-item-icon>
+              <v-icon color="black">
                 mdi-information-outline
               </v-icon>
             </v-list-item-icon>
@@ -152,3 +154,14 @@ export default Vue.extend({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.veo-account-menu {
+  border-bottom: 1px solid $medium-grey;
+  border-bottom-left-radius: 8px !important;
+  border-left: 1px solid $medium-grey;
+  border-top: 1px solid $medium-grey;
+  left: auto !important;
+  right: 0 !important;
+}
+</style>

@@ -34,7 +34,6 @@
     class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
     :to="to"
     :exact="exact === undefined || exact"
-    active-class="primary--text"
   >
     <v-list-item-icon v-if="icon">
       <v-tooltip
@@ -47,7 +46,7 @@
             v-on="on"
           >
             <v-icon
-              :color="expanded ? 'primary' : 'black'"
+              color="black"
               v-text="icon"
             />
           </div>
@@ -56,23 +55,25 @@
       </v-tooltip>
     </v-list-item-icon>
     <v-list-item-title style="color: black">
-      {{ name }}
+      {{ name }} {{ groupIsExpanded }}
     </v-list-item-title>
   </v-list-item>
   <v-list-group
     v-else
     :key="name"
-    :class="{
-      'flex-grow-0 flex-auto veo-primary-navigation__menu-item': true,
-      'veo-primary-navigation__menu-item--active-path': expanded
-    }"
+    :value="groupIsExpanded"
+    class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
+    color="black"
     no-action
-    :value="expanded"
+    :sub-group="subGroup"
     @click="onGroupClick"
   >
     <template #activator>
-      <v-list-item-title style="color: black">
-        {{ name }}
+      <v-list-item-title
+        :class="{ 'font-weight-bold': partOfActivePath }"
+        style="color: black"
+      >
+        {{ name }} {{ groupIsExpanded }}
       </v-list-item-title>
     </template>
     <template #prependIcon>
@@ -86,7 +87,7 @@
             v-on="on"
           >
             <v-icon
-              :color="expanded ? 'primary' : 'black'"
+              color="black"
               v-text="icon"
             />
           </div>
@@ -105,6 +106,9 @@
       v-for="child of childItems"
       v-bind="child"
       :key="child.name"
+      sub-group
+      :path="currentPath"
+      :expanded-nav-items-map="expandedNavItemsMap"
       style="min-height: 28px;"
       :top-level-item="false"
       v-on="$listeners"
@@ -114,9 +118,11 @@
 
 <script lang="ts">
 import { RawLocation } from 'vue-router/types';
-import { defineComponent, PropOptions, PropType } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropOptions, PropType, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+
 import { INavItem } from './VeoPrimaryNavigation.vue';
+import { IBaseObject } from '~/lib/utils';
 
 export default defineComponent({
   name: 'VeoPrimaryNavigationEntry',
@@ -149,22 +155,52 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    expanded: {
+    partOfActivePath: {
       type: Boolean,
       default: false
+    },
+    subGroup: {
+      type: Boolean,
+      default: false
+    },
+    path: {
+      type: String,
+      required: true
+    },
+    expandedNavItemsMap: {
+      type: Object as PropType<IBaseObject>,
+      required: true
     }
   },
   setup(props, { emit }) {
     const { t } = useI18n();
 
+    const currentPath = computed(() => `${props.path}/${props.name}`);
+    const groupIsExpanded = computed(() => props.expandedNavItemsMap[currentPath.value] || false);
+
+    watch(
+      () => props.expandedNavItemsMap,
+      () => {
+        console.log('blub1', props.expandedNavItemsMap);
+      },
+      {
+        deep: true
+      }
+    );
+
     function onGroupClick() {
       if (props.miniVariant) {
         emit('expand-menu');
+        return;
       }
+
+      emit('collapse-other-submenus', currentPath.value);
     }
 
     return {
+      currentPath,
       onGroupClick,
+      groupIsExpanded,
 
       t
     };
@@ -215,8 +251,7 @@ export default defineComponent({
   }
 }
 
-::v-deep.veo-primary-navigation__menu-item--active-path > .v-list-group__header::before {
-  background: red;
-  opacity: 0.12 !important;
+::v-deep.v-list-item--active .v-list-item__title {
+  font-weight: 700;
 }
 </style>

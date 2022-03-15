@@ -16,44 +16,20 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-menu offset-y>
-    <template #activator="{ on, attrs }">
-      <v-btn
-        v-bind="attrs"
-        outlined
-        color="primary"
-        v-on="on"
-      >
-        <v-icon
-          left
-          dark
-        >
-          {{ mdiEarth }}
-        </v-icon>
-        {{ locale.toUpperCase() }}
-        <v-icon
-          right
-          dark
-        >
-          {{ mdiChevronDown }}
-        </v-icon>
-      </v-btn>
+  <v-select
+    v-model="lang"
+    class="veo-language-select"
+    color="primary"
+    dense
+    filled
+    hide-details
+    :items="langs"
+    :prepend-inner-icon="mdiEarth"
+  >
+    <template #selection="{ item }">
+      {{ item.value.toUpperCase() }}
     </template>
-    <v-list>
-      <v-list-item-group
-        v-model="lang"
-        color="primary"
-      >
-        <v-list-item
-          v-for="(item) in langs"
-          :key="item.text"
-          :value="item.value"
-        >
-          <v-list-item-title>{{ item.text }}</v-list-item-title>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
-  </v-menu>
+  </v-select>
 </template>
 
 <script lang="ts">
@@ -92,3 +68,20 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.veo-language-select {
+  border-radius: 4px;
+  flex-grow: 0;
+  overflow: hidden;
+  width: 100px;
+}
+
+::v-deep.veo-language-select .v-select__selections {
+  align-items: baseline;
+}
+
+::v-deep.veo-language-select .v-input__icon--prepend-inner .v-icon {
+  color: $primary;
+}
+</style>
