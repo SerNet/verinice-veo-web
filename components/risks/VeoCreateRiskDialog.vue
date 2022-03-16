@@ -38,7 +38,7 @@
             primary
             depressed
             small
-            style="border: 1px solid black"
+            style="outline: 1px solid black"
             @click="filterDialogVisible = true"
           >
             <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
