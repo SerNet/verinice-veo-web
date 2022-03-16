@@ -119,6 +119,7 @@
       fab
       absolute
       right
+      style="bottom: 12px"
       @click="createDialogVisible = true"
     >
       <v-icon>
