@@ -44,7 +44,6 @@
             <VeoPrimaryNavigationEntry
               :key="index"
               v-bind="item"
-              dense
               path="#"
               :mini-variant="miniVariant"
               @expand-menu="setMiniVariant(false)"
