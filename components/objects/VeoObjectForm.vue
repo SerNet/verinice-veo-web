@@ -31,6 +31,7 @@
             <v-col cols="auto">
               <v-select
                 v-model="selectedDisplayOption"
+                class="mt-n2"
                 dense
                 hide-details
                 :items="displayOptions"
