@@ -85,7 +85,11 @@ const INPUT_ELEMENTS = [
     options: { format: 'autocomplete' },
     weight: (weights) =>
       calculateConditionsScore([
-        typeof weights.schema.type === 'undefined' || weights.schema.type === 'string' || weights.schema.type === 'array',
+        typeof weights.schema.type === 'undefined' ||
+          weights.schema.type === 'string' ||
+          weights.schema.type === 'integer' ||
+          weights.schema.type === 'number' ||
+          weights.schema.type === 'array',
         typeof weights.schema.enum !== 'undefined' ||
           (weights.schema.items instanceof Object && !Array.isArray(weights.schema.items) && typeof weights.schema.items.enum !== 'undefined'),
         typeof weights.options !== 'undefined' && weights.options.format === 'autocomplete'
@@ -158,7 +162,7 @@ const INPUT_ELEMENTS = [
     },
     weight: (weights) =>
       calculateConditionsScore([
-        typeof weights.schema.type === 'undefined' || weights.schema.type === 'string',
+        typeof weights.schema.type === 'undefined' || weights.schema.type === 'string' || weights.schema.type === 'integer' || weights.schema.type === 'number',
         typeof weights.schema.enum !== 'undefined',
         typeof weights.options !== 'undefined' && weights.options.format === 'radio'
       ])
@@ -168,7 +172,11 @@ const INPUT_ELEMENTS = [
     type: ['undefined', 'enum', 'array'],
     weight: (weights) =>
       calculateConditionsScore([
-        typeof weights.schema.type === 'undefined' || weights.schema.type === 'string' || weights.schema.type === 'array',
+        typeof weights.schema.type === 'undefined' ||
+          weights.schema.type === 'string' ||
+          weights.schema.type === 'array' ||
+          weights.schema.type === 'integer' ||
+          weights.schema.type === 'number',
         typeof weights.schema.enum !== 'undefined' ||
           (weights.schema.items instanceof Object && !Array.isArray(weights.schema.items) && typeof weights.schema.items.enum !== 'undefined')
       ])
