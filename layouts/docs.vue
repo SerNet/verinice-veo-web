@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useDocTree } from '~/composables/docs';
 
@@ -84,22 +84,6 @@ export default defineComponent({
     // Global navigation
     //
     const drawer: Ref<boolean> = ref(false);
-    const domainId = ref('');
-    const lang = computed({
-      get() {
-        return app.i18n.locale;
-      },
-      set(newValue: string) {
-        app.i18n.setLocale(newValue);
-        // After the language change, reload the page to avoid synchronisation problems
-        // Reload here should not be a big problem, because a user will not often change the language
-        window.location.reload();
-      }
-    });
-    const langs = ref([
-      { value: 'en', text: 'EN' },
-      { value: 'de', text: 'DE' }
-    ]);
 
     const items = useDocTree({
       childrenKey: 'children',
@@ -123,10 +107,7 @@ export default defineComponent({
 
     return {
       openItem,
-      domainId,
       drawer,
-      lang,
-      langs,
       items
     };
   },
