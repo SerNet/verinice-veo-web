@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoPage
-    :title="t('objectOverview')"
+    :title="upperFirst(t('objectOverview').toString())"
     fullsize
   >
     <VeoFilterDialog
@@ -42,21 +42,6 @@
       @success="fetch(); onCloseDeleteDialog(false)"
       @error="showError('unlink', itemDelete, $event)"
     />
-    <div class="d-flex my-2">
-      <v-spacer />
-      <v-btn
-        v-if="objectType"
-        v-cy-name="'create-button'"
-        color="primary"
-        text
-        @click="createDialogVisible = true"
-      >
-        <v-icon left>
-          {{ mdiPlus }}
-        </v-icon>
-        <span>{{ t('createObject', [createObjectLabel]) }}</span>
-      </v-btn>
-    </div>
     <v-row no-gutters>
       <v-col
         cols="auto"
@@ -69,7 +54,7 @@
           primary
           depressed
           small
-          style="border: 1px solid black"
+          style="outline: 1px solid black;"
           @click="filterDialogVisible = true"
         >
           <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
@@ -126,6 +111,21 @@
         {{ t('filterObjects') }}
       </v-btn>
     </VeoObjectTypeError>
+    <v-btn
+      v-if="objectType"
+      v-cy-name="'create-button'"
+      color="primary"
+      depressed
+      fab
+      absolute
+      right
+      style="bottom: 12px"
+      @click="createDialogVisible = true"
+    >
+      <v-icon>
+        {{ mdiPlus }}
+      </v-icon>
+    </v-btn>
   </VeoPage>
 </template>
 
@@ -261,8 +261,6 @@ export default defineComponent({
       }
     };
 
-    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : upperFirst(objectType.value)));
-
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {
         itemDelete.value = undefined;
@@ -316,7 +314,6 @@ export default defineComponent({
       domainId,
       activeFilterKeys,
       clearFilter,
-      createObjectLabel,
       fetch,
       fetchState,
       filter,
