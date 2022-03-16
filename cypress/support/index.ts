@@ -20,7 +20,7 @@ export const VEO_API_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|d
 export const VEO_API_NEW_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)$/;
 export const VEO_API_UPDATE_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/;
 export const FORMS_API_ALL_FORMS_REGEX = /https:\/\/api.(.+)\/forms\/($|\?(.+)$)/;
-export const FORMS_API_FORM_REGEX = /https:\/\/api.(.+)\/forms\/(w+)/;
+export const FORMS_API_FORM_REGEX = /https:\/\/api.(.+)\/forms\/(\w+)/;
 export const HISTORY_API_MY_LATEST_REVISIONS = /https:\/\/api.(.+)\/history\/revisions\/my-latest\/\?(.+)$/;
 export const HISTORY_API_ENTITY_REVISIONS = /https:\/\/api.(.+)\/history\/revisions\/\?uri=(.+)$/;
 export const REPORTING_API_ALL_REPORTS_REGEX = /https:\/\/api.(.+)\/reporting\/reports$/;
