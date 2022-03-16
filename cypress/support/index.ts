@@ -11,6 +11,7 @@ export const VEO_API_ALL_CATALOGS_REGEX = /https:\/\/api.(.+)\/veo\/catalogs\/\?
 export const VEO_API_CATALOG_ITEMS_REGEX = /https:\/\/api.(.+)\/veo\/catalogs\/(.+)\/items/;
 export const VEO_API_TRANSLATIONS_REGEX = /https:\/\/api.(.+)\/veo\/translations(.*)$/;
 export const VEO_API_ALL_UNITS_REGEX = /https:\/\/api.(.+)\/veo\/units$/;
+export const VEO_API_UNIT_REGEX = /https:\/\/api.(.+)\/veo\/units\/(.+)$/;
 export const VEO_API_ALL_DOMAINS_REGEX = /https:\/\/api.(.+)\/veo\/domains\/$/;
 export const VEO_API_DOMAIN_REGEX = /https:\/\/api.(.+)\/veo\/domains\/(.+)$/;
 export const VEO_API_ALL_ENTITIES_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\?(.+)$/;
@@ -18,7 +19,6 @@ export const VEO_API_ENTITY_MEMBERS_REGEX = /https:\/\/api.(.+)\/veo\/(assets|co
 export const VEO_API_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/;
 export const VEO_API_NEW_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)$/;
 export const VEO_API_UPDATE_ENTITY_REGEX = /https:\/\/api.(.+)\/veo\/(assets|controls|documents|incidents|persons|processes|scenarios|scopes)\/([^/]+)$/;
-export const VEO_UNITS = /https:\/\/api.(.+)\/veo\/units$/;
 export const FORMS_API_ALL_FORMS_REGEX = /https:\/\/api.(.+)\/forms\/($|\?(.+)$)/;
 export const FORMS_API_FORM_REGEX = /https:\/\/api.(.+)\/forms\/(w+)/;
 export const HISTORY_API_MY_LATEST_REVISIONS = /https:\/\/api.(.+)\/history\/revisions\/my-latest\/\?(.+)$/;
@@ -103,7 +103,7 @@ Cypress.Commands.add('auth', () => {
   cy.intercept(
     {
       method: 'GET', // GET VEO Units
-      url: VEO_UNITS
+      url: VEO_API_ALL_UNITS_REGEX
     },
     (req) => {
       // Reply demo units
@@ -291,6 +291,23 @@ Cypress.Commands.add('interceptLayoutCalls', (options?: IBaseObject) => {
         });
       }
     ).as('G_fetchUnits');
+  }
+
+  if (!options?.ignoreFetchSpecificUnit) {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: VEO_API_UNIT_REGEX
+      },
+      (req) => {
+        const url = req.url.split('/');
+        const id = url.pop();
+
+        req.reply({
+          fixture: `api/default/units/${id}.json`
+        });
+      }
+    ).as('G_fetchObject');
   }
 
   if (!options?.ignoreFetchAllDomains) {
