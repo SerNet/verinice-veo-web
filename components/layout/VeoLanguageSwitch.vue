@@ -19,7 +19,6 @@
   <v-select
     v-model="lang"
     class="veo-language-select"
-    color="primary"
     dense
     filled
     hide-details

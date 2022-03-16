@@ -20,7 +20,7 @@
     offset-y
     bottom
   >
-    <template #activator="{ on }">
+    <template #activator="{ on, value }">
       <v-list-item
         style="margin: -4px 0; height: calc(100% + 8px)"
         v-on="on"
@@ -29,6 +29,15 @@
           {{ domainName }}
         </span>
         <v-icon
+          v-if="value"
+          right
+          large
+          color="primary"
+        >
+          {{ mdiChevronUp }}
+        </v-icon>
+        <v-icon
+          v-else
           right
           large
           color="primary"
@@ -39,13 +48,19 @@
     </template>
     <template #default>
       <v-list dense>
-        <v-list-item
-          v-for="domain of selectItems"
-          :key="domain.value"
-          @click="domainId = domain.value"
+        <v-list-item-group
+          :value="domainId"
+          color="primary"
         >
-          <v-list-item-title>{{ domain.text }}</v-list-item-title>
-        </v-list-item>
+          <v-list-item
+            v-for="domain of selectItems"
+            :key="domain.value"
+            :value="domain.value"
+            @click="domainId = domain.value"
+          >
+            <v-list-item-title>{{ domain.text }}</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
       </v-list>
     </template>
   </v-menu>
@@ -54,7 +69,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiChevronDown } from '@mdi/js';
+import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
@@ -118,7 +133,8 @@ export default defineComponent({
       selectItems,
 
       t,
-      mdiChevronDown
+      mdiChevronDown,
+      mdiChevronUp
     };
   }
 });

@@ -46,7 +46,6 @@
               v-bind="item"
               dense
               path="#"
-              :expanded-nav-items-map="expandedNavItemsMap"
               :mini-variant="miniVariant"
               @expand-menu="setMiniVariant(false)"
               @collapse-other-submenus="onCollapseMenus"
@@ -100,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, provide, reactive, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import {
   /* mdiApplicationCog, */ mdiChevronDoubleLeft,
   mdiChevronDoubleRight,
@@ -115,7 +114,7 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { sortBy, upperFirst } from 'lodash';
 
 import LocalStorage from '~/util/LocalStorage';
-import { createUUIDUrlParam, extractSubTypesFromObjectSchema, IBaseObject } from '~/lib/utils';
+import { createUUIDUrlParam, extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoCatalog, IVeoDomain, IVeoFormSchemaMeta, IVeoObjectSchema, IVeoReportsMeta } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 
@@ -410,17 +409,18 @@ export default defineComponent({
         : [])
     ]);
 
-    const expandedNavItemsMap = reactive<IBaseObject>({});
+    const expandedNavItems = reactive<string[]>([]);
+    provide('expandedNavItems', expandedNavItems);
 
-    const addItemToNavItemKeyCollection = (item: INavItem, previousPath: string) => {
+    const addExpandedNavItemsToSet = (item: INavItem, previousPath: string) => {
       const newPath = `${previousPath}/${item.name}`;
 
-      if (expandedNavItemsMap[newPath] === undefined) {
-        expandedNavItemsMap[newPath] = item.partOfActivePath || false;
+      if (item.partOfActivePath && !expandedNavItems.includes(newPath)) {
+        expandedNavItems.push(newPath);
       }
 
       for (const child of item.childItems || []) {
-        addItemToNavItemKeyCollection(child, newPath);
+        addExpandedNavItemsToSet(child, newPath);
       }
     };
 
@@ -428,38 +428,32 @@ export default defineComponent({
       () => items.value,
       () => {
         for (const item of items.value) {
-          addItemToNavItemKeyCollection(item, '#');
+          addExpandedNavItemsToSet(item, '#');
         }
       }
     );
 
     const onCollapseMenus = (itemToExpandKey: string) => {
-      console.log('Blub');
-      // Set expand state to true for clicked menu item
-      expandedNavItemsMap[itemToExpandKey] = true;
+      // If The key is already part of the array, collapse the item
+      if (!expandedNavItems.includes(itemToExpandKey)) {
+        expandedNavItems.push(itemToExpandKey);
+      } else {
+        const index = expandedNavItems.findIndex((key) => key === itemToExpandKey);
+        expandedNavItems.splice(index, 1);
+      }
 
-      // Only collapse items on second level or below that are not parents of the clicked element
-      const objectsToCollapse = Object.entries(expandedNavItemsMap)
-        .filter(([key, value]) => key.split('/').length > 2 && !itemToExpandKey.includes(key) && value)
-        .map(([key, _value]) => key);
+      for (let i = 0; i < expandedNavItems.length; i++) {
+        const key = expandedNavItems[i];
 
-      for (const key of objectsToCollapse) {
-        expandedNavItemsMap[key] = false;
+        // Only remove items on second level or below that are not parents of the clicked element. We splice as to not completely remove the object. This would destroy reactivity
+        if (key.split('/').length > 2 && !itemToExpandKey.includes(key)) {
+          expandedNavItems.splice(i, 1);
+          i--;
+        }
       }
     };
 
-    watch(
-      () => expandedNavItemsMap,
-      () => {
-        console.log('blub2', expandedNavItemsMap);
-      },
-      {
-        deep: true
-      }
-    );
-
     return {
-      expandedNavItemsMap,
       items,
       miniVariant,
       onCollapseMenus,

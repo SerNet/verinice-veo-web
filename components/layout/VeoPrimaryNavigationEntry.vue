@@ -55,7 +55,7 @@
       </v-tooltip>
     </v-list-item-icon>
     <v-list-item-title style="color: black">
-      {{ name }} {{ groupIsExpanded }}
+      {{ name }}
     </v-list-item-title>
   </v-list-item>
   <v-list-group
@@ -65,7 +65,6 @@
     class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
     color="black"
     no-action
-    :sub-group="subGroup"
     @click="onGroupClick"
   >
     <template #activator>
@@ -73,7 +72,7 @@
         :class="{ 'font-weight-bold': partOfActivePath }"
         style="color: black"
       >
-        {{ name }} {{ groupIsExpanded }}
+        {{ name }}
       </v-list-item-title>
     </template>
     <template #prependIcon>
@@ -106,9 +105,7 @@
       v-for="child of childItems"
       v-bind="child"
       :key="child.name"
-      sub-group
       :path="currentPath"
-      :expanded-nav-items-map="expandedNavItemsMap"
       style="min-height: 28px;"
       :top-level-item="false"
       v-on="$listeners"
@@ -118,11 +115,10 @@
 
 <script lang="ts">
 import { RawLocation } from 'vue-router/types';
-import { computed, defineComponent, PropOptions, PropType, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, inject, PropOptions, PropType, ref, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { INavItem } from './VeoPrimaryNavigation.vue';
-import { IBaseObject } from '~/lib/utils';
 
 export default defineComponent({
   name: 'VeoPrimaryNavigationEntry',
@@ -159,29 +155,24 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    subGroup: {
-      type: Boolean,
-      default: false
-    },
     path: {
       type: String,
-      required: true
-    },
-    expandedNavItemsMap: {
-      type: Object as PropType<IBaseObject>,
       required: true
     }
   },
   setup(props, { emit }) {
     const { t } = useI18n();
 
+    const expandedNavItems = inject<string[]>('expandedNavItems');
     const currentPath = computed(() => `${props.path}/${props.name}`);
-    const groupIsExpanded = computed(() => props.expandedNavItemsMap[currentPath.value] || false);
+
+    // Sadly a computed doesn't pick up the changes, so we have to manually update the ref
+    const groupIsExpanded = ref((expandedNavItems && expandedNavItems.includes(currentPath.value)) || false);
 
     watch(
-      () => props.expandedNavItemsMap,
+      () => expandedNavItems,
       () => {
-        console.log('blub1', props.expandedNavItemsMap);
+        groupIsExpanded.value = (expandedNavItems && expandedNavItems.includes(currentPath.value)) || false;
       },
       {
         deep: true

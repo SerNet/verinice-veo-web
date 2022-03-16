@@ -37,7 +37,7 @@
     "@mdi/font": "^6.1.95",
     "@mdi/js": "^6.1.95",
     "@nuxt/content": "^1.15.1",
-    "@nuxtjs/composition-api": "^0.29.2",
+    "@nuxtjs/composition-api": "^0.32.0",
     "@nuxtjs/i18n": "^7.2.0",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
     "@toast-ui/vue-editor": "^3.1.0",
