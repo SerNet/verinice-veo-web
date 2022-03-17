@@ -75,14 +75,19 @@
         </template>
         <v-icon
           v-else-if="item.icon"
-          style="color: inherit; line-height: 21px"
+          style="color: inherit;"
         >
           {{ item.icon }}
         </v-icon>
       </v-breadcrumbs-item>
     </template>
     <template #divider>
-      <v-icon>mdi-chevron-right</v-icon>
+      <v-icon
+        color="black"
+        small
+      >
+        {{ mdiChevronRight }}
+      </v-icon>
     </template>
   </v-breadcrumbs>
 </template>
@@ -91,6 +96,7 @@
 import { ref, defineComponent, watch, Ref, PropOptions, useRoute, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { capitalize, last, intersection } from 'lodash';
+import { mdiChevronRight, mdiHomeOutline } from '@mdi/js';
 import { separateUUIDParam } from '~/lib/utils';
 
 interface IBaseStringObject {
@@ -149,7 +155,7 @@ export default defineComponent<IProps>({
 
     // Define which keys from path should be replaces with custom Text
     let breadcrumbsReplacement: ICustomBreadcrumbTextEntry = {
-      ':unit': { text: '', icon: 'mdi-home' },
+      ':unit': { text: '', icon: mdiHomeOutline },
       forms: { text: t('breadcrumbs.forms').toString() },
       objects: { text: t('breadcrumbs.objects').toString() },
       domains: { text: t('breadcrumbs.domain').toString() }
@@ -355,7 +361,7 @@ export default defineComponent<IProps>({
      * Definition of returned values to templace
      */
 
-    return { breadcrumbItems };
+    return { breadcrumbItems, mdiChevronRight };
   }
 });
 </script>

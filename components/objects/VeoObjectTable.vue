@@ -95,11 +95,12 @@ export default defineComponent({
     }
   },
   emits: {
-    'update:sort-desc': () => {},
-    'update:sort-by': () => {},
-    'update:page': () => {},
-    'update:items-per-page': () => {},
-    click: () => {}
+    'update:sort-desc': (_: boolean | boolean[]) => {},
+    'update:sort-by': (_: string | string[]) => {},
+    'update:page': (_: number) => {},
+    'update:items-per-page': (_: number) => {},
+    'page-change': (_: { newPage: number; sortBy: string; sortDesc: boolean }) => {},
+    click: (_: any) => {}
   },
   setup(props, { emit, slots, attrs, listeners }) {
     const { d, t } = useI18n();

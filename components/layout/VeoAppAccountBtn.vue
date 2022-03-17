@@ -23,10 +23,12 @@
     <v-menu
       v-model="value"
       :close-on-content-click="false"
+      content-class="veo-account-menu"
       max-width="350px"
-      nudge-bottom="5"
+      nudge-bottom="8"
       offset-y
       origin="top right"
+      tile
     >
       <template #activator="{ on }">
         <v-btn
@@ -43,10 +45,16 @@
         </v-btn>
       </template>
       <v-card>
-        <v-list dense>
+        <v-list
+          dense
+          class="pb-0"
+        >
           <v-list-item>
             <v-list-item-avatar color="secondary">
-              <v-icon class="white--text headline">
+              <v-icon
+                class="white--text"
+                style="font-style: normal"
+              >
                 {{ initials }}
               </v-icon>
             </v-list-item-avatar>
@@ -62,13 +70,16 @@
             <v-divider />
             <VeoUnitSelection :units="units" />
           </template>
+          <v-divider class="mt-2" />
           <v-list-item @click="displayDeploymentDetails = true">
-            <v-list-item-icon class="ml-2">
-              <v-icon>
+            <v-list-item-icon>
+              <v-icon color="black">
                 mdi-information-outline
               </v-icon>
             </v-list-item-icon>
-            <v-list-item-title>{{ $t('about') }}</v-list-item-title>
+            <v-list-item-title class="font-weight-regular">
+              {{ $t('about') }}
+            </v-list-item-title>
             <VeoDeploymentDetailsDialog v-model="displayDeploymentDetails" />
           </v-list-item>
         </v-list>
@@ -143,3 +154,14 @@ export default Vue.extend({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.veo-account-menu {
+  border-bottom: 1px solid $medium-grey;
+  border-bottom-left-radius: 8px !important;
+  border-left: 1px solid $medium-grey;
+  border-top: 1px solid $medium-grey;
+  left: auto !important;
+  right: 0 !important;
+}
+</style>

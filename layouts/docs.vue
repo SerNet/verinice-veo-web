@@ -23,72 +23,33 @@
       clipped-left
       flat
     >
-      <div class="d-flex align-center fill-height">
-        <v-app-bar-nav-icon
-          v-if="$vuetify.breakpoint.xs"
-          @click="drawer = true"
-        />
-        <nuxt-link
-          to="/docs"
-          class="text-decoration-none fill-height"
-        >
-          <VeoAppBarLogo class="ml-2" />
-        </nuxt-link>
-      </div>
-      <div class="d-flex flex-grow-0 mr-6">
-        <v-btn
-          to="/docs?print"
-          outlined
-          color="primary"
-          class="mr-2"
-        >
-          Print
-        </v-btn>
-        <v-menu offset-y>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              outlined
-              color="primary"
-              v-on="on"
-            >
-              <v-icon
-                left
-                dark
-              >
-                mdi-earth
-              </v-icon>
-              {{ $i18n.locale.toUpperCase() }}
-              <v-icon
-                right
-                dark
-              >
-                mdi-chevron-down
-              </v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item-group
-              v-model="lang"
-              color="primary"
-            >
-              <v-list-item
-                v-for="(item) in langs"
-                :key="item.text"
-                :value="item.value"
-              >
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-menu>
-      </div>
-      <span />
+      <v-app-bar-nav-icon
+        v-if="$vuetify.breakpoint.xs"
+        @click="drawer = true"
+      />
+      <nuxt-link
+        to="/docs"
+        class="text-decoration-none fill-height"
+      >
+        <VeoAppBarLogo />
+      </nuxt-link>
+      <v-spacer />
+      <v-btn
+        depressed
+        to="/docs?print"
+        color="primary"
+        class="mr-2"
+      >
+        Print
+      </v-btn>
+      <VeoLanguageSwitch />
     </v-app-bar>
     <v-navigation-drawer
       :width="290"
       app
+      class="veo-docs-navigation"
       clipped
+      floating
       v-on="$listeners"
     >
       <v-treeview
@@ -112,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useDocTree } from '~/composables/docs';
 
@@ -123,22 +84,6 @@ export default defineComponent({
     // Global navigation
     //
     const drawer: Ref<boolean> = ref(false);
-    const domainId = ref('');
-    const lang = computed({
-      get() {
-        return app.i18n.locale;
-      },
-      set(newValue: string) {
-        app.i18n.setLocale(newValue);
-        // After the language change, reload the page to avoid synchronisation problems
-        // Reload here should not be a big problem, because a user will not often change the language
-        window.location.reload();
-      }
-    });
-    const langs = ref([
-      { value: 'en', text: 'EN' },
-      { value: 'de', text: 'DE' }
-    ]);
 
     const items = useDocTree({
       childrenKey: 'children',
@@ -162,10 +107,7 @@ export default defineComponent({
 
     return {
       openItem,
-      domainId,
       drawer,
-      lang,
-      langs,
       items
     };
   },
@@ -178,17 +120,22 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
 .veo-app-bar {
-  background-color: white !important;
-  box-shadow: inset 0 -1px 0 $grey !important;
+  background-color: $background-primary !important;
+}
 
-  .v-toolbar__content {
-    > * {
-      flex-grow: 1;
-      flex-basis: 0;
-    }
-  }
+::v-deep.v-main {
+  background: $background-primary;
+}
+
+::v-deep.v-main > .v-main__wrap {
+  background: white;
+  border-left: 1px solid $medium-grey;
+  border-top: 1px solid $medium-grey;
+  border-top-left-radius: 32px;
+}
+
+.veo-docs-navigation.v-navigation-drawer {
+  background-color: $background-primary;
 }
 </style>

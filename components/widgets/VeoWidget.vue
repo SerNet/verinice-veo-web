@@ -36,7 +36,9 @@
       </v-card-text>
     </template>
     <template v-else>
-      <v-card-title v-if="title">{{ title }}</v-card-title>
+      <v-card-title v-if="title">
+        {{ title }}
+      </v-card-title>
       <v-card-text>
         <slot />
       </v-card-text>
@@ -67,6 +69,6 @@ export default defineComponent<IProps>({
 @import '~/assets/vuetify.scss';
 
 .v-card {
-  border: 1px solid $grey;
+  border: 1px solid $medium-grey;
 }
 </style>

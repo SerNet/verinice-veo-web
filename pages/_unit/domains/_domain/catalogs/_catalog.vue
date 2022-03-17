@@ -303,6 +303,6 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .v-card.border {
-  border: 1px solid $grey;
+  border: 1px solid $medium-grey;
 }
 </style>

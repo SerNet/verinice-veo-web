@@ -204,7 +204,7 @@ export const helpers: Helpful<FormElementProps> = {
 }
 
 .vf-array-field-item {
-  border: 1px solid $grey;
+  border: 1px solid $medium-grey;
   border-radius: 4px;
 }
 

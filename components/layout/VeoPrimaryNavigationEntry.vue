@@ -34,7 +34,6 @@
     class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
     :to="to"
     :exact="exact === undefined || exact"
-    active-class="primary--text"
   >
     <v-list-item-icon v-if="icon">
       <v-tooltip
@@ -47,6 +46,7 @@
             v-on="on"
           >
             <v-icon
+              color="black"
               v-text="icon"
             />
           </div>
@@ -54,19 +54,24 @@
         <span>{{ name }}</span>
       </v-tooltip>
     </v-list-item-icon>
-    <v-list-item-title>{{ name }}</v-list-item-title>
+    <v-list-item-title style="color: black">
+      {{ name }}
+    </v-list-item-title>
   </v-list-item>
   <v-list-group
     v-else
     :key="name"
+    :value="groupIsExpanded"
     class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
-    no-action
     color="black"
-    :value="expanded"
+    no-action
     @click="onGroupClick"
   >
     <template #activator>
-      <v-list-item-title>
+      <v-list-item-title
+        :class="{ 'font-weight-bold': partOfActivePath }"
+        style="color: black"
+      >
         {{ name }}
       </v-list-item-title>
     </template>
@@ -81,7 +86,7 @@
             v-on="on"
           >
             <v-icon
-              color="rgba(0, 0, 0, 0.54)"
+              color="black"
               v-text="icon"
             />
           </div>
@@ -100,6 +105,7 @@
       v-for="child of childItems"
       v-bind="child"
       :key="child.name"
+      :path="currentPath"
       style="min-height: 28px;"
       :top-level-item="false"
       v-on="$listeners"
@@ -109,8 +115,9 @@
 
 <script lang="ts">
 import { RawLocation } from 'vue-router/types';
-import { defineComponent, PropOptions, PropType } from '@nuxtjs/composition-api';
+import { computed, defineComponent, inject, PropOptions, PropType, ref, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+
 import { INavItem } from './VeoPrimaryNavigation.vue';
 
 export default defineComponent({
@@ -144,22 +151,47 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    expanded: {
+    partOfActivePath: {
       type: Boolean,
       default: false
+    },
+    path: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
     const { t } = useI18n();
 
+    const expandedNavItems = inject<string[]>('expandedNavItems');
+    const currentPath = computed(() => `${props.path}/${props.name}`);
+
+    // Sadly a computed doesn't pick up the changes, so we have to manually update the ref
+    const groupIsExpanded = ref((expandedNavItems && expandedNavItems.includes(currentPath.value)) || false);
+
+    watch(
+      () => expandedNavItems,
+      () => {
+        groupIsExpanded.value = (expandedNavItems && expandedNavItems.includes(currentPath.value)) || false;
+      },
+      {
+        deep: true
+      }
+    );
+
     function onGroupClick() {
       if (props.miniVariant) {
         emit('expand-menu');
+        return;
       }
+
+      emit('collapse-other-submenus', currentPath.value);
     }
 
     return {
+      currentPath,
       onGroupClick,
+      groupIsExpanded,
 
       t
     };
@@ -178,12 +210,12 @@ export default defineComponent({
 }
 </i18n>
 
-<style lang="scss">
-.veo-primary-navigation__menu-item {
+<style lang="scss" scoped>
+::v-deep.veo-primary-navigation__menu-item {
   flex-basis: auto;
 }
 
-.veo-primary-navigation__menu-item.v-list-group--no-action {
+::v-deep.veo-primary-navigation__menu-item.v-list-group--no-action {
   & > .v-list-group__items {
     & > .v-list-item {
       padding-left: 76px !important;
@@ -191,9 +223,10 @@ export default defineComponent({
   }
 }
 
-.veo-primary-navigation__menu-item.v-skeleton-loader {
+::v-deep.veo-primary-navigation__menu-item.v-skeleton-loader {
   margin-bottom: 4px;
   .v-skeleton-loader__list-item-avatar {
+    background: transparent;
     height: 40px;
     padding: 0 8px;
     .v-skeleton-loader__avatar {
@@ -207,5 +240,9 @@ export default defineComponent({
     padding: 0 8px;
     padding-left: 64px;
   }
+}
+
+::v-deep.v-list-item--active .v-list-item__title {
+  font-weight: 700;
 }
 </style>
