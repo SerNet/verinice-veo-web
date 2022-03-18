@@ -133,6 +133,8 @@ export default defineComponent({
   border-left: 1px solid $medium-grey;
   border-top: 1px solid $medium-grey;
   border-top-left-radius: 32px;
+  display: flex;
+  flex-direction: column;
 }
 
 .veo-docs-navigation.v-navigation-drawer {
