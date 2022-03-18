@@ -111,21 +111,33 @@
         {{ t('filterObjects') }}
       </v-btn>
     </VeoObjectTypeError>
-    <v-btn
+    <v-tooltip
       v-if="objectType"
-      v-cy-name="'create-button'"
-      color="primary"
-      depressed
-      fab
-      absolute
-      right
-      style="bottom: 12px"
-      @click="createDialogVisible = true"
+      left
     >
-      <v-icon>
-        {{ mdiPlus }}
-      </v-icon>
-    </v-btn>
+      <template
+        #activator="{ on }"
+      >
+        <v-btn
+          v-cy-name="'create-button'"
+          color="primary"
+          depressed
+          fab
+          absolute
+          right
+          style="bottom: 12px"
+          @click="createDialogVisible = true"
+          v-on="on"
+        >
+          <v-icon>
+            {{ mdiPlus }}
+          </v-icon>
+        </v-btn>
+      </template>
+      <template #default>
+        <span>{{ t('createObject', [createObjectLabel]) }}</span>
+      </template>
+    </v-tooltip>
   </VeoPage>
 </template>
 
@@ -261,6 +273,8 @@ export default defineComponent({
       }
     };
 
+    const createObjectLabel = computed(() => (subType.value ? formatValue('subType', subType.value) : upperFirst(objectType.value)));
+
     const onCloseDeleteDialog = (visible: boolean) => {
       if (visible === false) {
         itemDelete.value = undefined;
@@ -314,6 +328,7 @@ export default defineComponent({
       domainId,
       activeFilterKeys,
       clearFilter,
+      createObjectLabel,
       fetch,
       fetchState,
       filter,
