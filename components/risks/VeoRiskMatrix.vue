@@ -18,63 +18,85 @@
 <template>
   <table>
     <thead>
-      <td class="text-center font-weight-bold">
-        {{ upperFirst(t('riskMatrix').toString()) }}
-      </td>
-      <th
-        v-for="_value of riskValues"
-        :key="_value.ordinalValue"
-        scope="col"
-        class="px-4 py-2"
-        :style="{ backgroundColor: _value.htmlColor, color: getMostContrastyColor(_value.htmlColor) }"
-      >
-        {{ _value.name }}
-        <v-tooltip
-          max-width="400px"
-          top
+      <tr>
+        <th
+          :colspan="probabilities.length + 1"
+          class="py-1"
+          style="height: auto"
         >
-          <template #activator="{ on }">
-            <v-icon
-              :color="getMostContrastyColor(_value.htmlColor)"
-              right
-              v-on="on"
+          {{ upperFirst(t('probability').toString()) }}
+        </th>
+      </tr>
+      <tr>
+        <td colspan="2" />
+        <th
+          v-for="probability of probabilities"
+          :key="probability.ordinalValue"
+          scope="col"
+          class="px-4 py-2"
+          :style="{ backgroundColor: probability.htmlColor, color: getMostContrastyColor(probability.htmlColor) }"
+        >
+          <div class="d-flex flex-wrap justify-center">
+            <span>{{ probability.name }}&nbsp;</span>
+            <v-tooltip
+              max-width="400px"
+              top
             >
-              {{ mdiHelpCircle }}
-            </v-icon>
-          </template>
-          <template #default>
-            {{ _value.description }}
-          </template>
-        </v-tooltip>
-      </th>
+              <template #activator="{ on }">
+                <v-icon
+                  :color="getMostContrastyColor(probability.htmlColor)"
+                  right
+                  v-on="on"
+                >
+                  {{ mdiInformationOutline }}
+                </v-icon>
+              </template>
+              <template #default>
+                {{ probability.description }}
+              </template>
+            </v-tooltip>
+          </div>
+        </th>
+      </tr>
     </thead>
     <tbody>
+      <tr>
+        <th
+          :rowspan="impacts.length + 1"
+          class="px-2"
+          style="text-orientation: upright; writing-mode: vertical-rl; width: auto;"
+        >
+          {{ upperFirst(t('impact').toString()) }}
+        </th>
+      </tr>
       <tr
-        v-for="(probability, rowIndex) of probabilities"
-        :key="probability.ordinalValue"
+        v-for="(impact, rowIndex) of impacts"
+        :key="impact.ordinalValue"
       >
         <th
           scope="row"
           class="px-4 py-2"
-          :style="{ backgroundColor: probability.htmlColor, color: getMostContrastyColor(probability.htmlColor) }"
+          :style="{ backgroundColor: impact.htmlColor, color: getMostContrastyColor(impact.htmlColor) }"
         >
-          {{ probability.name }}<v-tooltip
-            max-width="400px"
-            top
-          >
-            <template #activator="{ on }">
-              <v-icon
-                :color="getMostContrastyColor(probability.htmlColor)"
-                right
-                v-on="on"
-              >
-                {{ mdiHelpCircle }}
-              </v-icon>
-            </template>
-            <template #default>
-              {{ probability.description }}
-            </template>
-          </v-tooltip>
+          <div class="d-flex flex-wrap justify-center">
+            <span>{{ impact.name }}&nbsp;</span>
+            <v-tooltip
+              max-width="400px"
+              top
+            >
+              <template #activator="{ on }">
+                <v-icon
+                  :color="getMostContrastyColor(impact.htmlColor)"
+                  v-on="on"
+                >
+                  {{ mdiInformationOutline }}
+                </v-icon>
+              </template>
+              <template #default>
+                {{ impact.description }}
+              </template>
+            </v-tooltip>
+          </div>
         </th>
         <template v-if="value[rowIndex]">
           <td
@@ -83,10 +105,28 @@
             class="px-4 py-2"
             :style="{ backgroundColor: _value.htmlColor, color: getMostContrastyColor(_value.htmlColor) }"
           >
-            {{ _value.name }}
+            <div class="d-flex flex-wrap justify-center">
+              <span>{{ _value.name }}&nbsp;</span>
+              <v-tooltip
+                max-width="400px"
+                top
+              >
+                <template #activator="{ on }">
+                  <v-icon
+                    :color="getMostContrastyColor(_value.htmlColor)"
+                    v-on="on"
+                  >
+                    {{ mdiInformationOutline }}
+                  </v-icon>
+                </template>
+                <template #default>
+                  {{ _value.description }}
+                </template>
+              </v-tooltip>
+            </div>
           </td>
           <td
-            v-for="index in riskValues.length - value[rowIndex].length"
+            v-for="index in impacts.length - value[rowIndex].length"
             :key="index + value[rowIndex].length"
             class="px-4 py-2"
           >
@@ -95,7 +135,7 @@
         </template>
         <td
           v-else
-          :colspan="riskValues.length"
+          :colspan="impacts.length"
           class="px-4 py-2"
         >
           {{ upperFirst(t('noData').toString()) }}
@@ -108,10 +148,10 @@
 <script lang="ts">
 import { defineComponent, PropType } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiHelpCircle } from '@mdi/js';
+import { mdiInformationOutline } from '@mdi/js';
 import { upperFirst } from 'lodash';
 
-import { IVeoRiskProbabilityLevel, IVeoRiskValue } from '~/types/VeoTypes';
+import { IVeoRiskProbabilityLevel, IVeoRiskValue, IVeoRiskPotentialImpact } from '~/types/VeoTypes';
 
 export default defineComponent({
   inheritAttrs: false,
@@ -124,8 +164,8 @@ export default defineComponent({
       type: Array as PropType<IVeoRiskProbabilityLevel[]>,
       default: () => []
     },
-    riskValues: {
-      type: Array as PropType<IVeoRiskValue[]>,
+    impacts: {
+      type: Array as PropType<IVeoRiskPotentialImpact[]>,
       default: () => []
     }
   },
@@ -144,7 +184,7 @@ export default defineComponent({
     return {
       getMostContrastyColor,
 
-      mdiHelpCircle,
+      mdiInformationOutline,
       upperFirst,
       t
     };
@@ -155,23 +195,28 @@ export default defineComponent({
 <i18n>
 {
   "en": {
+    "impact": "impact",
     "noData": "no data",
-    "riskMatrix": "risk matrix"
+    "probability": "probability"
   },
   "de": {
+    "impact": "auswirkung",
     "noData": "keine Daten",
-    "riskMatrix": "risikomatrix"
+    "probability": "eintrittswahrscheinlichkeit"
   }
 }
 </i18n>
 
 <style lang="scss" scoped>
 table {
-  border-spacing: 0;
+  border-spacing: 4px;
 }
 
-td {
-  height: 150px;
-  width: 150px;
+td,
+th {
+  font-weight: normal;
+  height: 100px;
+  text-align: center;
+  width: 100px;
 }
 </style>

@@ -76,7 +76,7 @@ export interface IVeoRiskPotentialImpact {
   htmlColor: string;
   name: string;
   ordinalValue: string;
-  valueMatrix: IVeoRiskValue[][];
+  valueMatrix?: IVeoRiskValue[][];
 }
 
 export interface IVeoRiskCategory {
@@ -84,7 +84,7 @@ export interface IVeoRiskCategory {
   description: string;
   id: string;
   name: string;
-  potentialImpacts: IVeoRiskPotentialImpact;
+  potentialImpacts: IVeoRiskPotentialImpact[];
   valueMatrix: IVeoRiskValue[][];
 }
 

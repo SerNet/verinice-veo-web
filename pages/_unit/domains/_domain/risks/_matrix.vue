@@ -34,7 +34,7 @@
       v-if="!$fetchState.pending"
       :value="matrixValues"
       :probabilities="probabilities"
-      :risk-values="riskValues"
+      :impacts="impacts"
     />
     <v-skeleton-loader
       v-else
@@ -47,7 +47,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { upperFirst } from 'lodash';
+import { cloneDeep, reverse, upperFirst } from 'lodash';
 
 import { IVeoDomain } from '~/types/VeoTypes';
 import { separateUUIDParam } from '~/lib/utils';
@@ -88,16 +88,17 @@ export default defineComponent({
 
     // Matrix stuff
     const probabilities = computed(() => data.value?.probability.levels || []);
-    const riskValues = computed(() => data.value?.riskValues || []);
+    const currentCategory = computed(() => data.value?.categories.find((category) => category.id === protectionGoal.value));
+    const impacts = computed(() => reverse(cloneDeep(currentCategory.value?.potentialImpacts || [])));
 
-    const matrixValues = computed(() => data.value?.categories.find((category) => category.id === protectionGoal.value)?.valueMatrix || []);
+    const matrixValues = computed(() => reverse(cloneDeep(currentCategory.value?.valueMatrix || [])));
 
     return {
+      impacts,
       matrixValues,
       probabilities,
       protectionGoal,
       protectionGoals,
-      riskValues,
 
       t,
       upperFirst
