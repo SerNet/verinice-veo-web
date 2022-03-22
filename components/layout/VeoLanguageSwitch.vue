@@ -24,6 +24,7 @@
     hide-details
     :items="langs"
     :prepend-inner-icon="mdiEarth"
+    :menu-props="{ offsetY: true, bottom: true }"
   >
     <template #selection="{ item }">
       {{ item.value.toUpperCase() }}
