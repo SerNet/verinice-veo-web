@@ -156,19 +156,19 @@ export default defineComponent({
     "createdAt": "created",
     "links": "links",
     "noDescription": "No description provided",
-    "parents": "parents",
+    "parents": "part of",
     "risks": "risks",
-    "subEntities": "subentities",
+    "subEntities": "parts",
     "updatedAt": "last change"
   },
   "de": {
     "by": "von",
     "createdAt": "erstellt",
-    "links": "Verlinkungen",
+    "links": "links",
     "noDescription": "Keine Beschreibung vorhanden",
-    "parents": "Eltern",
+    "parents": "teil von",
     "risks": "Risiken",
-    "subEntities": "Unterobjekte",
+    "subEntities": "bestandteile",
     "updatedAt": "letzte Änderung"
   }
 }

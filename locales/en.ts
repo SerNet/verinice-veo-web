@@ -1,8 +1,4 @@
 export default {
-  // Languages
-  de: 'Deutsch',
-  en: 'English',
-
   clone: 'Clone',
 
   unsavedChanges: 'There are unsaved changes. Do you really want to leave this page?',
@@ -74,10 +70,10 @@ export default {
     createdAt: 'Created at',
     designator: 'Designator',
     description: 'Description',
-    hasChildObjects: 'has child objects',
+    hasChildObjects: 'has parts',
     hasLinks: 'has links',
     name: 'object name',
-    notPartOfGroup: 'not part of a group',
+    notPartOfGroup: 'not part of another object',
     objectType: 'Object type',
     scenario: {
       displayName: 'Risk'
@@ -97,16 +93,6 @@ export default {
   'page.index.chooseunit': 'Please choose a Unit',
   'page.index.chooseunitplaceholder': 'Search for a unit...',
 
-  'page.login.button.login': 'Login',
-  'page.login.button.register': 'Register',
-
-  'page.settings.title': 'Settings',
-  'page.settings.language': 'Language',
-  'page.settings.version': 'Version',
-  'page.settings.build': 'Build',
-
-  'search.label': 'Search verinice.',
-
   'domain.index.title': 'Dashboard',
 
   'unit.create': 'Create new unit',
@@ -124,9 +110,6 @@ export default {
   'unit.details.noparent': 'Top-Level unit',
   'unit.details.objects': 'Object overview',
   'unit.details.parent': 'Parent unit',
-  'unit.objects.tooltip.clone': 'Clone object',
-  'unit.objects.tooltip.delete': 'Delete object',
-  'unit.objects.tooltip.edit': 'Edit object',
   'unit.index.title': 'Unit Dashboard',
   'unit.select.label': 'Unit',
 
@@ -148,8 +131,6 @@ export default {
   'breadcrumbs.create': 'Create',
 
   // temporary until the composition api supports <i18n></i18n>
-  headline_aspect: 'Delete aspect',
-  headline_link: 'Delete link',
   saveSchemaError: "Couldn't update schema",
   saveSchemaSuccess: 'Schema updated!',
   attributeTypes: {
