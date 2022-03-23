@@ -20,5 +20,15 @@ $secondary: #c62828;
 $accent: #757575;
 $accentHighlight: #2f2f2f;
 $error: #c90000;
-$grey: #d7d7d7;
+$medium-grey: #d7d7d7;
 $light-grey: #fafafa;
+
+$background-primary: rgb(243 244 246);
+
+// Overriding default variables
+$list-item-dense-title-font-weight: 400;
+
+// Overriding default styles
+.v-application--is-ltr .v-list-item__icon:first-child {
+    margin-right: 16px;    
+}

@@ -242,7 +242,7 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .fse-input {
-  border: 1px solid $grey;
+  border: 1px solid $medium-grey;
   min-width: 250px;
   overflow: hidden;
 

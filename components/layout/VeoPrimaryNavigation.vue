@@ -22,9 +22,11 @@
     :value="value"
     app
     clipped
+    floating
     :mini-variant="!$vuetify.breakpoint.xs && miniVariant"
     :permanent="!$vuetify.breakpoint.xs"
     :temporary="$vuetify.breakpoint.xs"
+    class="veo-primary-navigation"
     v-on="$listeners"
   >
     <template #default>
@@ -32,7 +34,6 @@
         <v-list
           nav
           dense
-          :shaped="!miniVariant"
           :rounded="miniVariant"
           expand
           class="fill-height d-flex flex-column"
@@ -43,8 +44,10 @@
             <VeoPrimaryNavigationEntry
               :key="index"
               v-bind="item"
+              path="#"
               :mini-variant="miniVariant"
               @expand-menu="setMiniVariant(false)"
+              @collapse-other-submenus="onCollapseMenus"
             />
           </template>
         </v-list>
@@ -63,17 +66,29 @@
           @click="setMiniVariant(!miniVariant)"
         >
           <v-list-item-icon>
-            <v-icon v-if="miniVariant">
+            <v-icon
+              v-if="miniVariant"
+              color="black"
+            >
               {{ mdiChevronDoubleRight }}
             </v-icon>
-            <v-icon v-else>
+            <v-icon
+              v-else
+              color="black"
+            >
               {{ mdiChevronDoubleLeft }}
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-title v-if="miniVariant">
+          <v-list-item-title
+            v-if="miniVariant"
+            style="color: black"
+          >
             {{ t('fix') }}
           </v-list-item-title>
-          <v-list-item-title v-else>
+          <v-list-item-title
+            v-else
+            style="color: black"
+          >
             {{ t('collapse') }}
           </v-list-item-title>
         </v-list-item>
@@ -83,8 +98,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
-import { /* mdiApplicationCog, */ mdiChevronDoubleLeft, mdiChevronDoubleRight, mdiClipboardList, mdiFileChart, mdiFileDocument, mdiHome, mdiTableLarge } from '@mdi/js';
+import { computed, defineComponent, provide, reactive, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import {
+  /* mdiApplicationCog, */ mdiChevronDoubleLeft,
+  mdiChevronDoubleRight,
+  mdiClipboardListOutline,
+  mdiFileChartOutline,
+  mdiFileDocumentOutline,
+  mdiHomeOutline,
+  mdiTableLarge
+} from '@mdi/js';
 import { RawLocation } from 'vue-router/types';
 import { useI18n } from 'nuxt-i18n-composable';
 import { sortBy, upperFirst } from 'lodash';
@@ -107,7 +130,7 @@ export interface INavItem {
   to?: RawLocation;
   childItems?: INavItem[];
   childItemsLoading?: boolean;
-  expanded?: boolean;
+  partOfActivePath?: boolean;
   exact?: boolean;
 }
 
@@ -179,7 +202,7 @@ export default defineComponent({
 
           return {
             name: upperFirst(objectSchema.title),
-            expanded: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/objects?objectType=${objectSchema.title}`),
+            partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/objects?objectType=${objectSchema.title}`),
             childItems: [
               // all of object type
               {
@@ -312,7 +335,7 @@ export default defineComponent({
 
     const unitSelectionNavEntry: INavItem = {
       name: t('breadcrumbs.index').toString(),
-      icon: mdiHome,
+      icon: mdiHomeOutline,
       to: {
         name: UNIT_SELECTION_ROUTE_NAME
       }
@@ -320,7 +343,7 @@ export default defineComponent({
 
     const domainDashboardNavEntry = computed<INavItem>(() => ({
       name: t('domain.index.title').toString(),
-      icon: mdiHome,
+      icon: mdiHomeOutline,
       to: {
         name: DOMAIN_DASHBOARD_ROUTE_NAME,
         params: {
@@ -332,29 +355,29 @@ export default defineComponent({
 
     const objectsNavEntry = computed<INavItem>(() => ({
       name: t('breadcrumbs.objects').toString(),
-      icon: mdiFileDocument,
+      icon: mdiFileDocumentOutline,
       to: undefined,
       childItems: objectTypesChildItems.value,
       childItemsLoading: objectEntriesLoading.pending,
-      expanded: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/objects`)
+      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/objects`)
     }));
 
     const catalogsNavEntry = computed<INavItem>(() => ({
       name: t('breadcrumbs.catalogs').toString(),
-      icon: mdiClipboardList,
+      icon: mdiClipboardListOutline,
       to: undefined,
       childItems: catalogsEntriesChildItems.value,
       childItemsLoading: catalogsEntriesLoading.pending,
-      expanded: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/catalogs`)
+      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/catalogs`)
     }));
 
     const reportsNavEntry = computed<INavItem>(() => ({
       name: t('breadcrumbs.reports').toString(),
-      icon: mdiFileChart,
+      icon: mdiFileChartOutline,
       to: undefined,
       childItems: reportsEntriesChildItems.value,
       childItemsLoading: reportsEntriesLoading.pending,
-      expanded: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/reports`)
+      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/reports`)
     }));
 
     const risksNavEntry = computed<INavItem>(() => ({
@@ -363,7 +386,7 @@ export default defineComponent({
       to: undefined,
       childItems: riskChildItems.value,
       childItemsLoading: riskDefinitionsLoading.pending,
-      expanded: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/risks`)
+      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/risks`)
     }));
 
     /* const editorsNavEntry = computed<INavItem>(() => ({
@@ -385,9 +408,54 @@ export default defineComponent({
         : [])
     ]);
 
+    const expandedNavItems = reactive<string[]>([]);
+    provide('expandedNavItems', expandedNavItems);
+
+    const addExpandedNavItemsToSet = (item: INavItem, previousPath: string) => {
+      const newPath = `${previousPath}/${item.name}`;
+
+      if (item.partOfActivePath && !expandedNavItems.includes(newPath)) {
+        expandedNavItems.push(newPath);
+      }
+
+      for (const child of item.childItems || []) {
+        addExpandedNavItemsToSet(child, newPath);
+      }
+    };
+
+    watch(
+      () => items.value,
+      () => {
+        for (const item of items.value) {
+          addExpandedNavItemsToSet(item, '#');
+        }
+      }
+    );
+
+    const onCollapseMenus = (itemToExpandKey: string) => {
+      // If The key is already part of the array, collapse the item
+      if (!expandedNavItems.includes(itemToExpandKey)) {
+        expandedNavItems.push(itemToExpandKey);
+      } else {
+        const index = expandedNavItems.findIndex((key) => key === itemToExpandKey);
+        expandedNavItems.splice(index, 1);
+      }
+
+      for (let i = 0; i < expandedNavItems.length; i++) {
+        const key = expandedNavItems[i];
+
+        // Only remove items on second level or below that are not parents of the clicked element. We splice as to not completely remove the object. This would destroy reactivity
+        if (key.split('/').length > 2 && !itemToExpandKey.includes(key)) {
+          expandedNavItems.splice(i, 1);
+          i--;
+        }
+      }
+    };
+
     return {
       items,
       miniVariant,
+      onCollapseMenus,
       setMiniVariant,
 
       mdiChevronDoubleLeft,
@@ -412,3 +480,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.veo-primary-navigation.v-navigation-drawer {
+  background-color: $background-primary;
+}
+</style>

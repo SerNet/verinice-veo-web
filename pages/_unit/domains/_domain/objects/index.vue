@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoPage
-    :title="t('objectOverview')"
+    :title="upperFirst(t('objectOverview').toString())"
     fullsize
   >
     <VeoFilterDialog
@@ -42,21 +42,6 @@
       @success="fetch(); onCloseDeleteDialog(false)"
       @error="showError('unlink', itemDelete, $event)"
     />
-    <div class="d-flex my-2">
-      <v-spacer />
-      <v-btn
-        v-if="objectType"
-        v-cy-name="'create-button'"
-        color="primary"
-        text
-        @click="createDialogVisible = true"
-      >
-        <v-icon left>
-          {{ mdiPlus }}
-        </v-icon>
-        <span>{{ t('createObject', [createObjectLabel]) }}</span>
-      </v-btn>
-    </div>
     <v-row no-gutters>
       <v-col
         cols="auto"
@@ -69,7 +54,7 @@
           primary
           depressed
           small
-          style="border: 1px solid black"
+          style="outline: 1px solid black;"
           @click="filterDialogVisible = true"
         >
           <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
@@ -126,6 +111,33 @@
         {{ t('filterObjects') }}
       </v-btn>
     </VeoObjectTypeError>
+    <v-tooltip
+      v-if="objectType"
+      left
+    >
+      <template
+        #activator="{ on }"
+      >
+        <v-btn
+          v-cy-name="'create-button'"
+          color="primary"
+          depressed
+          fab
+          absolute
+          right
+          style="bottom: 12px"
+          @click="createDialogVisible = true"
+          v-on="on"
+        >
+          <v-icon>
+            {{ mdiPlus }}
+          </v-icon>
+        </v-btn>
+      </template>
+      <template #default>
+        <span>{{ t('createObject', [createObjectLabel]) }}</span>
+      </template>
+    </v-tooltip>
   </VeoPage>
 </template>
 
@@ -181,7 +193,7 @@ export default defineComponent({
     const activeFilterKeys = computed(() => filterKeys.filter((k) => filter.value[k] !== undefined));
 
     // pagination parameters (page and sorting), set by VeoObjectTable
-    const pagination = reactive({ page: 1, sortBy: undefined as string | undefined, sortOrder: undefined as string | undefined });
+    const pagination = reactive({ page: 1, sortBy: undefined as string | undefined, sortOrder: undefined as 'desc' | 'asc' | undefined });
 
     // current object type and sub type
     const objectType = computed(() => filter.value.objectType);

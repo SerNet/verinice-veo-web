@@ -201,7 +201,7 @@ export const helpers: Helpful<FormElementProps> = {
 @import '~/assets/vuetify.scss';
 
 .links-field-item {
-  border: 1px solid $grey;
+  border: 1px solid $medium-grey;
   border-radius: 4px;
 }
 

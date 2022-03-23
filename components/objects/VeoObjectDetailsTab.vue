@@ -17,23 +17,14 @@
 -->
 <template>
   <v-container>
-    <v-row v-if="objectTypesWithActions.includes(type)">
-      <v-col class="text-right">
-        <VeoObjectDetailsActionMenu
-          :object="object"
-          :type="type"
-          @link-success="$emit('new-object-created'); fetch()"
-          @new-object-created="onCreateObjectSuccess"
-        />
-      </v-col>
-    </v-row>
     <v-row>
       <v-col>
         <VeoObjectTable
           :items="items"
           :loading="fetchState.pending"
-          :dense="!!pageWidths[1]"
+          :dense="dense"
           :simple="type==='links'"
+          :risk="type==='risks'"
           @click="openItem"
         >
           <template #actions="{item}">
@@ -70,12 +61,11 @@
 import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiContentCopy, mdiLinkOff } from '@mdi/js';
-import { createUUIDUrlParam } from '~/lib/utils';
-import { IVeoCustomLink, IVeoEntity } from '~/types/VeoTypes';
+import { mdiContentCopy, mdiLinkOff, mdiTrashCan } from '@mdi/js';
+import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
+import { IVeoCustomLink, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
-import { getSchemaEndpoint } from '~/plugins/api/schema';
 
 export default defineComponent({
   name: 'VeoObjectDetailsTab',
@@ -85,15 +75,15 @@ export default defineComponent({
       type: Object,
       default: undefined
     } as PropOptions<IVeoEntity>,
-    pageWidths: {
-      type: Array,
-      default: () => []
-    } as PropOptions<number[]>
+    dense: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props, { emit }) {
     const { t } = useI18n();
     const route = useRoute();
-    const { $api, $config } = useContext();
+    const { $api } = useContext();
     const router = useRouter();
 
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -111,6 +101,8 @@ export default defineComponent({
     const { fetchState, fetch } = useFetch(async () => {
       if (props.type === 'subEntities' && props.object) {
         items.value = await $api.entity.fetchSubEntities(props.object.type, props.object.id);
+      } else if (props.type === 'risks' && props.object) {
+        items.value = await $api.entity.fetchRisks(props.object.type, props.object.id);
       } else {
         // create entities for table from links
         const links: Partial<IVeoEntity>[] = [];
@@ -144,32 +136,52 @@ export default defineComponent({
      * actions for cloning or unlinking objects
      */
 
-    const actions = computed(() => [
-      {
-        id: 'clone',
-        label: upperFirst(t('cloneObject').toString()),
-        icon: mdiContentCopy,
-        async action(item: IVeoEntity) {
-          try {
-            await cloneObject(item);
-            displaySuccessMessage(upperFirst(t('objectCloned').toString()));
-            fetch();
-          } catch (error: any) {
-            displayErrorMessage(upperFirst(t('errors.clone').toString()), error?.toString());
-          }
-        }
-      },
-      {
-        id: 'unlink',
-        label: upperFirst(t('unlinkObject').toString()),
-        icon: mdiLinkOff,
-        action(item: IVeoEntity) {
-          unlinkEntityDialog.value.item = item;
-          unlinkEntityDialog.value.parent = props.object;
-          unlinkEntityDialog.value.value = true;
-        }
-      }
-    ]);
+    const actions = computed(() =>
+      props.type === 'risks'
+        ? [
+            {
+              id: 'delete',
+              label: upperFirst(t('deleteRisk').toString()),
+              icon: mdiTrashCan,
+              async action(item: IVeoRisk) {
+                try {
+                  const { id } = getEntityDetailsFromLink(item.scenario);
+                  await $api.entity.deleteRisk(props.object?.type || '', props.object?.id || '', id);
+                  displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
+                  fetch();
+                } catch (error: any) {
+                  displayErrorMessage(upperFirst(t('deleteRiskError').toString()), error?.toString());
+                }
+              }
+            }
+          ]
+        : [
+            {
+              id: 'clone',
+              label: upperFirst(t('cloneObject').toString()),
+              icon: mdiContentCopy,
+              async action(item: IVeoEntity) {
+                try {
+                  await cloneObject(item);
+                  displaySuccessMessage(upperFirst(t('objectCloned').toString()));
+                  fetch();
+                } catch (error: any) {
+                  displayErrorMessage(upperFirst(t('errors.clone').toString()), error?.toString());
+                }
+              }
+            },
+            {
+              id: 'unlink',
+              label: upperFirst(t('unlinkObject').toString()),
+              icon: mdiLinkOff,
+              action(item: IVeoEntity) {
+                unlinkEntityDialog.value.item = item;
+                unlinkEntityDialog.value.parent = props.object;
+                unlinkEntityDialog.value.value = true;
+              }
+            }
+          ]
+    );
 
     /**
      * control unlink dialogs
@@ -193,31 +205,6 @@ export default defineComponent({
       displayErrorMessage(upperFirst(t('errors.unlink').toString()), error?.toString());
     };
 
-    // link new created object to current object
-    const onCreateObjectSuccess = async (newObjectId: string, newObjectType: string) => {
-      if (props.object) {
-        const _editedEntity = await $api.entity.fetch(props.object.type, props.object.id);
-        const schemas = await $api.schema.fetchAll();
-
-        const currentChildren = props.object.type === 'scope' ? [...props.object.members] : [...props.object.parts];
-        const newChildren = [...currentChildren, { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, newObjectType) || newObjectType}/${newObjectId}` }];
-
-        if (props.object.type === 'scope') {
-          _editedEntity.members = newChildren;
-        } else {
-          _editedEntity.parts = newChildren;
-        }
-
-        try {
-          await $api.entity.update(props.object.type, props.object.id, _editedEntity);
-          emit('new-object-created'); // emit to page for refetching object
-          fetch();
-        } catch (error: any) {
-          displayErrorMessage(upperFirst(t('errors.link').toString()), error?.toString());
-        }
-      }
-    };
-
     // push to object detail site (on click in table)
     const openItem = ({ item }: { item: IVeoEntity }) => {
       return router.push({
@@ -231,7 +218,6 @@ export default defineComponent({
 
     return {
       objectTypesWithActions,
-      onCreateObjectSuccess,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
       unlinkEntityDialog,
@@ -251,26 +237,32 @@ export default defineComponent({
 {
   "en": {
     "cloneObject": "clone object",
+    "deleteRisk": "delete risk",
     "unlinkObject": "unlink object",
     "objectCloned": "Object successfully cloned.",
     "objectUnlinked": "Object successfully unlinked.",
     "errors": {
       "clone": "Could not clone object.",
       "unlink": "Could not unlink object.",
-      "link": "Could not link new object."
-    }
+      "link": "Could not link new object.",
+      "risk": "Couldn't delete risk"
+    },
+    "riskDeleted": "The risk was removed"
 
   },
   "de": {
     "cloneObject": "Objekt duplizieren",
+    "deleteRisk": "Risiko löschen",
     "unlinkObject": "Verknüpfung entfernen",
     "objectCloned": "Das Objekt wurde erfolgreich dupliziert.",
     "objectUnlinked": "Die Verknüpfung wurde erfolgreich entfernt.",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden.",
       "unlink": "Die Verknüpfung konnte nicht entfernt werden.",
-      "link": "Das neue Objekt konnte nicht verknüpft werden."
-    }
+      "link": "Das neue Objekt konnte nicht verknüpft werden.",
+      "risk": "Risiko konnte nicht gelöscht werden"
+    },
+    "riskDeleted": "Das Risiko wurde entfernt"
   }
 }
 </i18n>

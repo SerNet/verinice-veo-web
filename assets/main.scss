@@ -17,21 +17,6 @@
  */
 @import '~/assets/vuetify.scss';
 
-.v-application {
-  .__nuxt-error-page {
-    background-color: white !important;
-    .error {
-      border-color: transparent !important;
-      background-color: transparent !important;
-    }
-  }
-
-  .v-main__wrap {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
 html {
   overflow: hidden !important;
 }
@@ -63,8 +48,4 @@ h4 {
 
 h5 {
   font-size: 1rem;
-}
-
-.v-navigation-drawer__border {
-  background-color: $grey !important;
 }

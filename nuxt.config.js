@@ -178,6 +178,7 @@ export default {
    * Vuetify configuration
    */
   vuetify: {
+    customVariables: ['~/assets/vuetify.scss'],
     defaultAssets: false,
     treeShake: true, // needed for IE11 -> transpile: vuetify/lib
     optionsPath: '~/plugins/vuetify.options.ts'
@@ -186,7 +187,7 @@ export default {
   /**
    *
    */
-  css: ['~/assets/main.scss', '~/assets/util.scss', '~/assets/vuetify.scss', '~/assets/intro.scss'],
+  css: ['~/assets/main.scss', '~/assets/util.scss', '~/assets/intro.scss'],
 
   /**
    *

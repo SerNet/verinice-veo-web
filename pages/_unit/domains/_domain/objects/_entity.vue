@@ -31,41 +31,26 @@
       <VeoPage
         fullsize
         sticky-header
+        sticky-footer
       >
         <template #default>
-          <VeoObjectDetailsInformation
+          <VeoObjectDetails
+            class="mb-10"
+            :loading="$fetchState.pending"
             :object="object"
-            class="object-details-information"
+            :domain-id="domainId"
+            :active-tab.sync="activeTab"
+            :dense="!!pageWidths[1]"
+            @reload="loadObject"
           />
-          <v-divider class="mt-1" />
-          <v-row v-if="object">
-            <v-col>
-              <v-tabs v-model="activeTab">
-                <v-tab
-                  v-for="tab in tabs"
-                  :key="tab"
-                  :href="`#${tab}`"
-                  :disabled="tab === 'parents'"
-                >
-                  {{ t(tab) }}
-                </v-tab>
-              </v-tabs>
-              <v-tabs-items v-model="activeTab">
-                <v-tab-item
-                  v-for="tab in tabs"
-                  :key="tab"
-                  :value="tab"
-                >
-                  <VeoObjectDetailsTab
-                    :type="tab"
-                    :object="object"
-                    :page-widths="pageWidths" 
-                    @new-object-created="loadObject"
-                  />
-                </v-tab-item>
-              </v-tabs-items>
-            </v-col>
-          </v-row>
+        </template>
+        <template #footer>
+          <VeoObjectDetailsActionMenu
+            :object="object"
+            :type="activeTab"
+            @reload="loadObject"
+            @new-object-created="onChildObjectCreated"
+          />
         </template>
       </VeoPage>
       <VeoPage
@@ -160,6 +145,7 @@ import { Route } from 'vue-router/types';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity, IVeoObjectHistoryEntry, IVeoObjectSchema, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { getSchemaEndpoint } from '~/plugins/api/schema';
 
 export default defineComponent({
   name: 'VeoObjectsIndexPage',
@@ -279,12 +265,7 @@ export default defineComponent({
       }
     }
 
-    /**
-     * Object details stuff
-     */
-
-    // configure tabs to distinguish between subentities, parents and links
-    const tabs = ['subEntities', 'parents', 'links'];
+    // object details stuff
 
     // get active tab by route hash & set route hash by switching tabs
     const activeTab: WritableComputedRef<string> = computed({
@@ -292,11 +273,34 @@ export default defineComponent({
         return route.value.hash.substring(1) || 'subEntities'; // subEntities as default tab
       },
       set(hash: string): void {
-        router.replace({ hash });
+        router.push({ hash, query: route.value.query });
       }
     });
 
     const loading = computed(() => fetchState.pending);
+    // link new created object to current object
+    const onChildObjectCreated = async (newObjectId: string, newObjectType: string) => {
+      if (object.value) {
+        const _editedEntity = await $api.entity.fetch(object.value.type, object.value.id);
+        const schemas = await $api.schema.fetchAll();
+
+        const currentChildren = object.value.type === 'scope' ? [...object.value.members] : [...object.value.parts];
+        const newChildren = [...currentChildren, { targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, newObjectType) || newObjectType}/${newObjectId}` }];
+
+        if (object.value.type === 'scope') {
+          _editedEntity.members = newChildren;
+        } else {
+          _editedEntity.parts = newChildren;
+        }
+
+        try {
+          await $api.entity.update(object.value.type, object.value.id, _editedEntity);
+          loadObject();
+        } catch (error: any) {
+          displayErrorMessage(upperFirst(t('errors.link').toString()), error?.toString());
+        }
+      }
+    };
 
     return {
       VeoAlertType,
@@ -322,9 +326,9 @@ export default defineComponent({
       notFoundError,
       object,
       objectSchema,
+      onChildObjectCreated,
       upperFirst,
       loadObject,
-      tabs,
       activeTab
     };
   },
@@ -364,12 +368,3 @@ export default defineComponent({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.object-details-information {
-  min-height: 16vh;
-  max-height: 50vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-</style>

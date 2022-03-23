@@ -383,7 +383,7 @@ export default Vue.extend({
     "search_placeholder": "Start typing to search for objects to link"
   },
   "de": {
-    "be_more_specific": "Bitte gebe weitere Zeichen ein um die Auswahl einzuschränken",
+    "be_more_specific": "Bitte geben Sie weitere Zeichen ein, um die Auswahl einzuschränken",
     "updateTargetObject": "Objekt ändern",
     "createTargetObject": "Ein neues Objekt anlegen",
     "createTargetForm": "{type} erstellen",

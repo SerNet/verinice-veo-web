@@ -1,8 +1,4 @@
 export default {
-  // Languages
-  de: 'Deutsch',
-  en: 'English',
-
   clone: 'Kopie',
 
   unsavedChanges: 'Es gibt ungespeicherte Änderungen. Wollen Sie die Seite wirklich verlassen?',
@@ -69,19 +65,24 @@ export default {
   'global.menu.collapse': 'Menü verstecken',
   'global.menu.expand': 'Menü fixieren',
 
-  'objectlist.designator': 'Designator',
-  'objectlist.description': 'Beschreibung',
-  'objectlist.status': 'Status',
-  'objectlist.name': 'Objektname',
-  'objectlist.abbreviation': 'Abkürzung',
-  'objectlist.createdAt': 'Erstellzeitpunkt',
-  'objectlist.updatedAt': 'Letzte Änderung',
-  'objectlist.updatedBy': 'Bearbeiter',
-  'objectlist.objectType': 'Objekttyp',
-  'objectlist.subType': 'Subtyp',
-  'objectlist.notPartOfGroup': 'nicht Teil einer Gruppe',
-  'objectlist.hasChildObjects': 'hat Kindobjekte',
-  'objectlist.hasLinks': 'hat Verlinkungen',
+  objectlist: {
+    abbreviation: 'Abkürzung',
+    createdAt: 'Erstellzeitpunkt',
+    designator: 'Designator',
+    description: 'Beschreibung',
+    hasChildObjects: 'hat Bestandteile',
+    hasLinks: 'hat Links',
+    name: 'Objektname',
+    notPartOfGroup: 'nicht Teil eines anderen Objektes',
+    objectType: 'Objekttyp',
+    scenario: {
+      displayName: 'Risiko'
+    },
+    status: 'Status',
+    subType: 'Subtyp',
+    updatedAt: 'Letzte Änderung',
+    updatedBy: 'Bearbeiter'
+  },
 
   'page.editors.title': 'Editoren',
   'page.editors.calltoaction': 'Was möchten Sie tun?',
@@ -91,16 +92,6 @@ export default {
   'page.index.title': 'Unitauswahl',
   'page.index.chooseunit': 'Bitte wählen Sie eine Unit',
   'page.index.chooseunitplaceholder': 'Nach einer Unit suchen...',
-
-  'page.login.button.login': 'Anmelden',
-  'page.login.button.register': 'Registrieren',
-
-  'page.settings.title': 'Einstellungen',
-  'page.settings.language': 'Sprache',
-  'page.settings.version': 'Version',
-  'page.settings.build': 'Build',
-
-  'search.label': 'verinice. durchsuchen',
 
   'domain.index.title': 'Dashboard',
 
@@ -119,9 +110,6 @@ export default {
   'unit.details.noparent': 'Top-Level Unit',
   'unit.details.objects': 'Objekte',
   'unit.details.parent': 'Übergeordnete Unit',
-  'unit.objects.tooltip.clone': 'Objekt klonen',
-  'unit.objects.tooltip.delete': 'Objekt löschen',
-  'unit.objects.tooltip.edit': 'Objekt bearbeiten',
   'unit.index.title': 'Unit-Dashboard',
   'unit.select.label': 'Unit',
 
@@ -143,9 +131,6 @@ export default {
   'breadcrumbs.create': 'Erstellen',
 
   // temporary until the composition api supports <i18n></i18n>
-  headline_aspect: 'Aspekt löschen',
-  headline_link: 'Link löschen',
-
   saveSchemaError: 'Das Schema konnte nicht aktualisiert werden',
   saveSchemaSuccess: 'Schema wurde aktualisiert!',
   attributeTypes: {

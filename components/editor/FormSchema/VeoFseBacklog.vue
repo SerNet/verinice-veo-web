@@ -17,7 +17,6 @@
 -->
 <template>
   <div
-    class="px-2"
     style="height: 100%"
   >
     <v-card
@@ -32,7 +31,7 @@
       </div>
       <div
         v-show="controlElementsVisible"
-        class="px-4 py-4"
+        class="pt-4 text-center"
       >
         <v-btn
           text
@@ -56,7 +55,7 @@
         flat
       >
         <v-expansion-panel v-show="filteredFormElements.length">
-          <v-expansion-panel-header class="overline">
+          <v-expansion-panel-header class="overline px-0">
             {{ t('formElements') }} ({{ filteredFormElements.length }})
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -91,7 +90,7 @@
         </v-expansion-panel>
 
         <v-expansion-panel v-show="filteredBasics.length">
-          <v-expansion-panel-header class="overline">
+          <v-expansion-panel-header class="overline px-0">
             {{ t('editor.basicproperties') }} ({{ filteredBasics.length }})
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -129,7 +128,7 @@
         </v-expansion-panel>
 
         <v-expansion-panel v-show="filteredAspects.length">
-          <v-expansion-panel-header class="overline">
+          <v-expansion-panel-header class="overline px-0">
             {{ t('editor.customaspects') }} ({{ filteredAspects.length }})
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -167,7 +166,7 @@
         </v-expansion-panel>
 
         <v-expansion-panel v-show="filteredLinks.length">
-          <v-expansion-panel-header class="overline">
+          <v-expansion-panel-header class="overline px-0">
             {{ t('editor.customlinks') }} ({{ filteredLinks.length }})
           </v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -478,6 +477,12 @@ export default defineComponent<IProps>({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.v-expansion-panel-content::v-deep .v-expansion-panel-content__wrap {
+  padding: 0 0 16px !important;
+}
+</style>
 
 <i18n>
 {

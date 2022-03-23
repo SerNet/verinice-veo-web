@@ -23,48 +23,40 @@
       clipped-left
       flat
     >
-      <div class="d-flex align-center fill-height">
-        <v-app-bar-nav-icon
-          v-if="$vuetify.breakpoint.xs"
-          @click="drawer = true"
-        />
-        <nuxt-link
-          :to="homeLink"
-          class="text-decoration-none fill-height"
-        >
-          <VeoAppBarLogo
-            class="ml-2"
-          />
-        </nuxt-link>
-        <div class="ml-4">
-          <VeoDomainSelect v-if="$route.params.unit" />
-        </div>
-      </div>
-      <div
-        class="d-flex flex-grow-0 mr-6"
+      <v-app-bar-nav-icon
+        v-if="$vuetify.breakpoint.xs"
+        @click="drawer = true"
+      />
+      <nuxt-link
+        :to="homeLink"
+        class="text-decoration-none fill-height"
       >
-        <v-tooltip bottom>
-          <template #activator="{ on, attrs }">
-            <v-btn
-              outlined
-              color="primary"
-              class="veo-list-searchbar__button"
-              role="submit"
-              type="submit"
-              :disabled="!hasTutorials"
-              v-bind="attrs"
-              @click="tutorialVisible?stopTutorial():startTutorial()"
-              v-on="on"
-            >
-              <v-icon v-text="tutorialVisible?'mdi-information-off-outline':'mdi-information-outline'" />
-            </v-btn>
-          </template>
-          <span v-text="t(tutorialVisible?'hideHelp':'showHelp')" />
-        </v-tooltip>
-        
-        <VeoDemoUnitButton />
-        <VeoLanguageSwitch />
+        <VeoAppBarLogo />
+      </nuxt-link>
+      <div class="ml-6 fill-height">
+        <VeoDomainSelect v-if="$route.params.unit" />
       </div>
+      <v-spacer />
+      <VeoDemoUnitButton />
+      <VeoLanguageSwitch />
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            class="veo-list-searchbar__button mx-3"
+            color="black"
+            icon
+            role="submit"
+            type="submit"
+            :disabled="!hasTutorials"
+            v-bind="attrs"
+            @click="tutorialVisible?stopTutorial():startTutorial()"
+            v-on="on"
+          >
+            <v-icon v-text="tutorialVisible?'mdi-information-off-outline':'mdi-information-outline'" />
+          </v-btn>
+        </template>
+        <span v-text="t(tutorialVisible?'hideHelp':'showHelp')" />
+      </v-tooltip>
       <VeoAppAccountBtn
         v-if="$user.auth.profile"
         :username="$user.auth.profile.username"
@@ -73,7 +65,6 @@
         :email="$user.auth.profile.email"
         @logout="$user.auth.logout('/')"
       />
-      <span v-else />
     </v-app-bar>
     <VeoPrimaryNavigation
       v-model="drawer"
@@ -210,18 +201,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
 .veo-app-bar {
-  background-color: white !important;
-  box-shadow: inset 0 -1px 0 $grey !important;
+  background-color: $background-primary !important;
+}
 
-  .v-toolbar__content {
-    > * {
-      flex-grow: 1;
-      flex-basis: 0;
-    }
-  }
+::v-deep.v-main {
+  background: $background-primary;
+}
+
+::v-deep.v-main > .v-main__wrap {
+  background: white;
+  border-left: 1px solid $medium-grey;
+  border-top: 1px solid $medium-grey;
+  border-top-left-radius: 32px;
+  display: flex;
+  flex-direction: column;
 }
 </style>
 

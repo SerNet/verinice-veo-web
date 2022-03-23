@@ -16,22 +16,60 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-select
-    v-model="domainId"
-    class="veo-domain-select"
-    color="primary"
-    dense
-    hide-details
-    :items="selectItems"
-    outlined
-    :placeholder="t('noDomainSelected')"
-    style="width: 175px;"
-  />
+  <v-menu
+    offset-y
+    bottom
+  >
+    <template #activator="{ on, value }">
+      <v-list-item
+        style="margin: -4px 0; height: calc(100% + 8px)"
+        v-on="on"
+      >
+        <span class="veo-domain-select__selection">
+          {{ domainName }}
+        </span>
+        <v-icon
+          v-if="value"
+          right
+          large
+          color="primary"
+        >
+          {{ mdiChevronUp }}
+        </v-icon>
+        <v-icon
+          v-else
+          right
+          large
+          color="primary"
+        >
+          {{ mdiChevronDown }}
+        </v-icon>
+      </v-list-item>
+    </template>
+    <template #default>
+      <v-list dense>
+        <v-list-item-group
+          :value="domainId"
+          color="primary"
+        >
+          <v-list-item
+            v-for="domain of selectItems"
+            :key="domain.value"
+            :value="domain.value"
+            @click="domainId = domain.value"
+          >
+            <v-list-item-title>{{ domain.text }}</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </template>
+  </v-menu>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter, watch } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
+import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
 
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
@@ -69,6 +107,8 @@ export default defineComponent({
         }
       }
     });
+    const domainName = computed(() => selectItems.value.find((domain) => domain.value === domainId.value)?.text || t('noDomainSelected').toString());
+
     const domains = ref<IVeoDomain[]>([]);
     const { fetch } = useFetch(async () => {
       domains.value = await $api.domain.fetchUnitDomains(unitId.value);
@@ -89,9 +129,12 @@ export default defineComponent({
 
     return {
       domainId,
+      domainName,
       selectItems,
 
-      t
+      t,
+      mdiChevronDown,
+      mdiChevronUp
     };
   }
 });
@@ -109,11 +152,17 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
+.veo-domain-select {
+  border-radius: 4px;
+  overflow: hidden;
+  width: 175px;
+}
 
-::v-deep.veo-domain-select fieldset,
-::v-deep.veo-domain-select .v-select__selection,
-::v-deep.veo-domain-select i {
-  color: $primary !important;
+.veo-domain-select__selection {
+  color: #666666;
+  font-size: 1.6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 </style>
