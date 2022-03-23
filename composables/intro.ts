@@ -246,9 +246,6 @@ export function useIntro() {
     return h || s;
   });
 
-  watch(stepsVisible, (v) => console.log(`Steps Visible: ${!!v}`));
-  watch(visible, (v) => console.log(`Tutorial Visible: ${!!v}`));
-
   return {
     options,
     stepsVisible,
