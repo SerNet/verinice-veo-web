@@ -55,6 +55,11 @@
       @success="onUnlinkEntitySuccess"
       @error="onUnlinkEntityError"
     />
+    <VeoCreateRiskDialogSingle
+      v-model="editRiskDialog.visible"
+      v-bind="editRiskDialog"
+      :domain-id="domainId"
+    />
   </v-container>
 </template>
 <script lang="ts">
@@ -78,6 +83,10 @@ export default defineComponent({
     dense: {
       type: Boolean,
       default: false
+    },
+    domainId: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
@@ -90,8 +99,6 @@ export default defineComponent({
     const { cloneObject } = useVeoObjectUtilities();
 
     const items = ref<IVeoEntity[]>();
-
-    const objectTypesWithActions = ['subEntities', 'parents'];
 
     /**
      * fetch sub entities or links
@@ -205,19 +212,32 @@ export default defineComponent({
       displayErrorMessage(upperFirst(t('errors.unlink').toString()), error?.toString());
     };
 
+    /**
+     * risks edit dialog
+     */
+    const editRiskDialog = ref<{ visible: boolean; risk?: IVeoEntity }>({
+      visible: false,
+      risk: undefined
+    });
+
     // push to object detail site (on click in table)
     const openItem = ({ item }: { item: IVeoEntity }) => {
-      return router.push({
-        name: 'unit-domains-domain-objects-entity',
-        params: {
-          ...route.value.params,
-          entity: createUUIDUrlParam(item.type, item.id)
-        }
-      });
+      if (props.type === 'risks') {
+        editRiskDialog.value.risk = item;
+        editRiskDialog.value.visible = true;
+      } else {
+        router.push({
+          name: 'unit-domains-domain-objects-entity',
+          params: {
+            ...route.value.params,
+            entity: createUUIDUrlParam(item.type, item.id)
+          }
+        });
+      }
     };
 
     return {
-      objectTypesWithActions,
+      editRiskDialog,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
       unlinkEntityDialog,

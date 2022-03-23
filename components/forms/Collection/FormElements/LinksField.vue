@@ -45,7 +45,7 @@
             @input="onInput(index, $event)"
           />
         </v-list-item-content>
-        <v-list-item-action>
+        <v-list-item-action v-if="!options.singleLink">
           <v-btn
             :disabled="!value || disabled"
             depressed
@@ -60,6 +60,7 @@
       </v-list-item>
     </v-list>
     <v-btn
+      v-if="!options.singleLink"
       small
       text
       :disabled="disabled"
@@ -173,6 +174,7 @@ export default defineComponent({
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
+    // console.log(props);
     const schemaItemsProperties =
       props.schema &&
       props.schema.items &&

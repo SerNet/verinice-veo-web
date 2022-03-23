@@ -74,7 +74,8 @@
             v-if="object"
             :type="tab"
             :object="object"
-            :dense="dense" 
+            :dense="dense"
+            :domain-id="domainId"
             @new-object-created="$emit('reload')"
           />
         </v-tab-item>
