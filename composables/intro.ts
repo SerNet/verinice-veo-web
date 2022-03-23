@@ -146,6 +146,13 @@ export function createIntro() {
                 _instance.onexit(() => {
                   stepsVisible.value = false;
                   step.value = 0;
+                  // Hide hints when no hints are avaiable (-> set visible to false)
+                  if (!options.value?.hints?.length) {
+                    hintsVisible.value = false;
+                  } else if (hintsVisible.value) {
+                    // show hints after steps finished (-> visible remains true)
+                    _instance.showHints();
+                  }
                   tutorialReady = false;
                 });
               });
@@ -232,7 +239,15 @@ export function useIntro() {
     }
   };
 
-  const visible = computed(() => hintsVisible.value || stepsVisible.value);
+  // We have to access both hintsVisible AND stepsVisible explicitly to ensure they are considered
+  const visible = computed(() => {
+    const h = hintsVisible.value;
+    const s = stepsVisible.value;
+    return h || s;
+  });
+
+  watch(stepsVisible, (v) => console.log(`Steps Visible: ${!!v}`));
+  watch(visible, (v) => console.log(`Tutorial Visible: ${!!v}`));
 
   return {
     options,
