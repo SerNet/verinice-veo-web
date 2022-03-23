@@ -102,7 +102,7 @@ import 'intro.js/minified/introjs.min.css';
 
 export default defineComponent({
   setup(_props, context) {
-    const { $user, params, $api } = useContext();
+    const { params, $api } = useContext();
     const route = useRoute();
     const router = useRouter();
 
@@ -161,18 +161,13 @@ export default defineComponent({
     });
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
-    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : `/${params.value.unit}`));
-
-    const domain = computed((): string | undefined => separateUUIDParam(route.value.params.domain).id);
+    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : params.value.unit ? `/${params.value.unit}` : '/'));
 
     const domainId = computed((): string | undefined => {
       if (route.value.name === 'unit-domains-more') {
         return undefined;
       }
-      if (!domain.value) {
-        return unitId && unitId.value === $user.lastUnit ? $user.lastDomain : undefined;
-      }
-      return domain.value;
+      return separateUUIDParam(route.value.params.domain).id;
     });
 
     const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));

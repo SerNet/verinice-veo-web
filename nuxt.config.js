@@ -68,7 +68,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vee-validate', '~/plugins/user', '~/plugins/api', '~/plugins/utils'],
+  plugins: ['~/plugins/vee-validate', '~/plugins/user', '~/plugins/api', '~/plugins/utils', '~/plugins/navigationHelper'],
 
   /**
    *
@@ -84,7 +84,7 @@ export default {
   },
 
   router: {
-    middleware: ['authentication', 'unitValidation', 'navigationHelper']
+    middleware: ['authentication', 'unitValidation']
   },
   /*
    ** Nuxt.js modules

@@ -16,13 +16,14 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { computed, defineComponent, PropType, h, useContext, useAsync } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, h, useContext, useAsync, useRoute } from '@nuxtjs/composition-api';
 import { VNode, VNodeChildren, VNodeData } from 'vue/types/vnode';
 import { useI18n } from 'nuxt-i18n-composable';
 import { DataTableHeader } from 'vuetify/types';
 import { VDataTable, VIcon, VTooltip } from 'vuetify/lib';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useThrottleNextTick } from '~/composables/utils';
+import { separateUUIDParam } from '~/lib/utils';
 
 export type ObjectTableItems = IVeoPaginatedResponse<IVeoEntity[]> | Array<IVeoEntity>;
 
@@ -104,8 +105,11 @@ export default defineComponent({
   },
   setup(props, { emit, slots, attrs, listeners }) {
     const { d, t } = useI18n();
+    const route = useRoute();
     const { $user, $api, i18n } = useContext();
     const translations = useAsync(() => $api.translation.fetch(i18n.locales as any), 'translations');
+
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     /**
      * Format date via i18n
      */
@@ -120,11 +124,10 @@ export default defineComponent({
      * Render translated status
      */
     const renderStatus: ObjectTableRenderer = ({ item }) => {
-      if (!$user.lastDomain) return '';
-      const domainId = $user.lastDomain;
-      const domainDetails = item.domains[domainId];
+      if (!domainId.value) return '';
+      const domainDetails = item.domains[domainId.value];
       const key = `${item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
-      return translations.value?.lang?.[i18n.locale]?.[key] || (item.domains[domainId] ? item.domains[domainId]?.status : '');
+      return translations.value?.lang?.[i18n.locale]?.[key] || (item.domains[domainId.value] ? item.domains[domainId.value]?.status : '');
     };
     /**
      * Distinguish between {@link IVeoPaginatedResponse} and {@link IVeoEntity}[]

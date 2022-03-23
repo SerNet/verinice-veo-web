@@ -19,7 +19,7 @@ import { Vue } from 'vue/types/vue';
 import { trim } from 'lodash';
 import vjp from 'vue-json-pointer';
 
-import { IBaseObject } from '~/lib/utils';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoReactiveFormAction } from '~/types/VeoTypes';
 
 export default {
@@ -28,22 +28,20 @@ export default {
 };
 
 export function getDefaultReactiveFormActions(context: Vue): IVeoReactiveFormAction[] {
+  const domainId = separateUUIDParam(context.$route.params.domain).id;
   return [
-    {
-      attributeName: '/domains/patternProperties',
-      handler: (newValue: any, newObject) => {
-        newObject.domains[context.$user.lastDomain as string] = { ...newObject.domains[context.$user.lastDomain as string], ...newValue[Object.keys(newValue)[0]] };
-        delete newObject.domains.patternProperties;
-      }
-    },
-    {
-      attributeName: `/domains/${context.$user?.lastDomain}/subType`,
-      handler: (newValue: any, newObject) => {
-        if (!newValue && context.$user.lastDomain) {
-          delete newObject.domains[context.$user.lastDomain].status;
-        }
-      }
-    }
+    ...(domainId
+      ? [
+          {
+            attributeName: `/domains/${domainId}/subType`,
+            handler: (newValue: any, newObject: any) => {
+              if (domainId && !!newValue) {
+                delete newObject.domains[domainId].status;
+              }
+            }
+          }
+        ]
+      : [])
   ];
 }
 
