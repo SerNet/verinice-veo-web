@@ -155,7 +155,7 @@ export function generateFormSchemaGroup(children: UISchemaElement[], label?: str
   };
 }
 
-export function generateFormSchemaControl(pointer: string, _schema: BaseObject, mode: Mode): IVeoFormSchemaControl {
+export function generateFormSchemaControl(pointer: string, schema: BaseObject, mode: Mode): IVeoFormSchemaControl {
   const propertyName = pointer.split('/').pop();
   const label = propertyName ? (mode === Mode.VEO ? `#lang/${propertyName}` : propertyName) : '';
 
@@ -164,7 +164,8 @@ export function generateFormSchemaControl(pointer: string, _schema: BaseObject, 
     scope: pointer,
     options: {
       label
-    }
+    },
+    ...(schema?.items.required?.includes('target') ? { elements: [] } : {})
   };
 }
 
