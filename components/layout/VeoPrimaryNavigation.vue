@@ -252,7 +252,9 @@ export default defineComponent({
     // catalog specific stuff
     const catalogs = ref<IVeoCatalog[]>([]);
     const { fetch: fetchCatalogsEntries, fetchState: catalogsEntriesLoading } = useFetch(async () => {
-      catalogs.value = await $api.catalog.fetchAll(props.domainId);
+      if (props.domainId) {
+        catalogs.value = await $api.catalog.fetchAll(props.domainId);
+      }
     });
 
     const catalogsEntriesChildItems = computed<INavItem[]>(() =>
@@ -294,8 +296,10 @@ export default defineComponent({
 
     // risk specific stuff
     const riskDefinitions = ref<IVeoDomain['riskDefinitions']>({});
-    const { fetchState: riskDefinitionsLoading } = useFetch(async () => {
-      riskDefinitions.value = (await $api.domain.fetch(props.domainId)).riskDefinitions;
+    const { fetch: fetchRiskDefinitions, fetchState: riskDefinitionsLoading } = useFetch(async () => {
+      if (props.domainId) {
+        riskDefinitions.value = (await $api.domain.fetch(props.domainId)).riskDefinitions;
+      }
     });
 
     const riskChildItems = computed<INavItem[]>(() =>
@@ -326,6 +330,7 @@ export default defineComponent({
       () => {
         fetchObjectsEntries();
         fetchCatalogsEntries();
+        fetchRiskDefinitions();
       }
     );
 
