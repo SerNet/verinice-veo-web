@@ -75,7 +75,7 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import { createUUIDUrlParam } from '~/lib/utils';
+import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 
 export default Vue.extend({
@@ -138,14 +138,23 @@ export default Vue.extend({
       this.loading = true;
       this.$api.unit
         .create(this.newUnit)
-        .then((data: any) => {
-          const unit = data.resourceId;
+        .then(async (data: any) => {
+          const unit = await this.$api.unit.fetch(data.resourceId);
           this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('unit.created') });
           this.error.value = false;
           this.dialog = false;
           this.$root.$emit(VeoEvents.UNIT_CREATED);
-          this.$root.$emit(VeoEvents.UNIT_CHANGED, unit);
-          this.$router.push({ path: `/${createUUIDUrlParam('unit', unit)}` });
+          const domainId = getFirstDomainDomaindId(unit);
+
+          if (domainId) {
+            this.$router.push({
+              name: 'unit-domains-domain',
+              params: {
+                unit: createUUIDUrlParam('unit', unit.id),
+                domain: createUUIDUrlParam('domain', domainId)
+              }
+            });
+          }
         })
         .catch((error: string) => {
           this.error.value = true;

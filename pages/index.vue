@@ -64,7 +64,7 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
+import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 
@@ -94,7 +94,7 @@ export default Vue.extend({
         const unitToRedirectTo = myNonDemoUnit ?? nonDemoUnits[0];
 
         if (unitToRedirectTo) {
-          const domainId = this.getFirstDomainDomaindId(unitToRedirectTo);
+          const domainId = getFirstDomainDomaindId(unitToRedirectTo);
 
           if (domainId) {
             this.$router.push({
@@ -112,7 +112,7 @@ export default Vue.extend({
           description: this.$t('firstUnitDescription')
         });
         const unit = await this.$api.unit.fetch(result.resourceId);
-        const domainId = this.getFirstDomainDomaindId(unit);
+        const domainId = getFirstDomainDomaindId(unit);
 
         if (domainId) {
           this.$router.push({
@@ -144,17 +144,12 @@ export default Vue.extend({
     this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
   },
   methods: {
-    getFirstDomainDomaindId(unit: IVeoUnit): string | undefined {
-      const firstDomain = unit.domains?.[0];
-
-      return firstDomain ? getEntityDetailsFromLink(firstDomain).id : undefined;
-    },
     generateUnitDashboardLink(unitId: string) {
       const unitToLinkTo = this.units.find((unit) => unit.id === unitId);
       let domainId;
 
       if (unitToLinkTo) {
-        domainId = this.getFirstDomainDomaindId(unitToLinkTo);
+        domainId = getFirstDomainDomaindId(unitToLinkTo);
       }
 
       return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;

@@ -94,7 +94,7 @@ import { computed, defineComponent, onMounted, Ref, ref, useContext, useRoute, u
 
 import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useTutorials } from '~/composables/intro';
 
@@ -134,21 +134,26 @@ export default defineComponent({
       const units = await getUnits();
       if (units.length === 0) {
         const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
-        const unit = data.resourceId;
+        const unit = await $api.unit.fetch(data.resourceId);
         const { displaySuccessMessage } = useVeoAlerts();
         displaySuccessMessage(t('unit.created').toString());
         context.root.$emit(VeoEvents.UNIT_CREATED);
-        context.root.$emit(VeoEvents.UNIT_CHANGED, unit);
+        const domainId = getFirstDomainDomaindId(unit);
+        if (domainId) {
+          router.push({
+            name: 'unit-domains-domain',
+            params: {
+              unit: createUUIDUrlParam('unit', unit.id),
+              domain: createUUIDUrlParam('domain', domainId)
+            }
+          });
+        }
       }
     });
 
     // UI related events (unit switch/creation)
     context.root.$on(VeoEvents.UNIT_CREATE, (persistent: boolean) => {
       createUnit(persistent);
-    });
-
-    context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
-      router.push('/' + createUUIDUrlParam('unit', newUnit));
     });
 
     // Breadcrumbs related events

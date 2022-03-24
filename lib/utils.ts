@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { JSONSchema7 } from 'json-schema';
-import { IVeoEntity, IVeoFormSchema, IVeoLink, IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoFormSchema, IVeoLink, IVeoObjectSchema, IVeoUnit } from '~/types/VeoTypes';
 
 export const CHART_COLORS = ['#c90000', '#ffc107', '#3f51b5', '#8bc34a', '#858585'];
 
@@ -85,4 +85,10 @@ export function extractSubTypesFromObjectSchema(schema: IVeoObjectSchema): { sub
       status: mapping.then.properties.status.enum
     })) || []
   );
+}
+
+export function getFirstDomainDomaindId(unit: IVeoUnit): string | undefined {
+  const firstDomain = unit.domains?.[0];
+
+  return firstDomain ? getEntityDetailsFromLink(firstDomain).id : undefined;
 }
