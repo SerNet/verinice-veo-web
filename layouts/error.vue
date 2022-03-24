@@ -29,13 +29,23 @@
       <p class="mt-2">
         {{ t(is404 ? 'pageNotFound' : 'unknownErrorOccured') }}
       </p>
-      <v-btn
-        text
-        color="primary"
-        @click="$router.push('/')"
-      >
-        {{ t('goToHomepage') }}
-      </v-btn>
+      <div>
+        <v-btn
+          v-if="is404"
+          text
+          color="primary"
+          @click="$router.back()"
+        >
+          {{ t('global.button.previous') }}
+        </v-btn>
+        <v-btn
+          text
+          color="primary"
+          @click="$router.push('/')"
+        >
+          {{ t('goToHomepage') }}
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
