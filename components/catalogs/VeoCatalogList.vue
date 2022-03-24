@@ -56,7 +56,7 @@ import { IVeoCatalog } from '~/types/VeoTypes';
 export default defineComponent({
   props: {
     catalogs: {
-      type: Array as PropType<IVeoCatalog>,
+      type: Array as PropType<IVeoCatalog[]>,
       default: () => []
     },
     loading: {
