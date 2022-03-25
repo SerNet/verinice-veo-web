@@ -132,7 +132,7 @@ export default defineComponent({
   background: white;
   border-left: 1px solid $medium-grey;
   border-top: 1px solid $medium-grey;
-  border-top-left-radius: 32px;
+  border-top-left-radius: 16px;
   display: flex;
   flex-direction: column;
 }

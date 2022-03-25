@@ -25,15 +25,16 @@
     :content-class="contentClass"
     class="veo-dialog"
   >
-    <v-card :class="cardClass">
-      <div>
+    <v-card
+      :class="cardClass"
+      tile
+    >
+      <div :style="fixedHeader ? 'position: sticky; top: 0; z-index: 1;' : ''">
         <v-card-title
-          class="white"
           :class="{
             'pl-4 pr-0 py-0': !large && !xLarge,
             'pt-2 pb-1': large || xLarge
           }"
-          :style="fixedHeader ? 'position: sticky; top: 0; z-index: 1;' : ''"
         >
           <span>{{ headline }}</span>
           <v-spacer />
@@ -58,7 +59,7 @@
       </v-card-text>
       <v-card-actions
         v-if="!!$slots['dialog-options']"
-        class="pb-3 px-4 white d-block"
+        class="pb-3 px-4 d-block pt-0"
         :style="fixedFooter ? 'position: sticky; bottom: -1px; z-index: 1;' : ''"
       >
         <v-divider v-if="fixedFooter" />
@@ -158,3 +159,11 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.v-card,
+.v-card__actions,
+.v-card__title {
+  background: $background-primary;
+}
+</style>

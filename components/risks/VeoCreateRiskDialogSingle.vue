@@ -20,8 +20,8 @@
     v-model="dialog"
     :close-disabled="savingRisk"
     :persistent="savingRisk || formIsDirty"
-    :headline="upperFirst(!!risk ? t('editRisk') : t('createRisk').toString())"
-    x-large
+    :headline="upperFirst(!!risk ? t('editRisk', [risk.designator]) : t('createRisk').toString())"
+    large
     fixed-footer
     fixed-header
     v-on="$listeners"
@@ -31,12 +31,50 @@
         v-if="data"
         v-model="formIsValid"
       >
-        <VeoObjectSelect
-          v-model="data.scenario"
-          object-type="scenario"
-          sub-type="SCN_Scenario"
-          :domain-id="domainId"
-          value-as-link
+        <h2 class="mb-2">
+          Allgemeines
+        </h2>
+        <v-card
+          flat
+          outlined
+        >
+          <v-card-text>
+            <VeoObjectSelect
+              v-model="data.scenario"
+              object-type="scenario"
+              required
+              sub-type="SCN_Scenario"
+              :domain-id="domainId"
+              value-as-link
+            />
+            <v-row>
+              <v-col
+                xs="12"
+                md="6"
+              >
+                <VeoObjectSelect
+                  v-model="data.riskOwner"
+                  object-type="person"
+                  :label="t('riskOwner')"
+                  value-as-link
+                />
+              </v-col>
+              <v-col
+                xs="12"
+                md="6"
+              >
+                <VeoObjectSelect
+                  v-model="data.mitigation"
+                  object-type="control"
+                  :label="t('mitigation')"
+                  value-as-link
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+        <VeoCreateRiskDialogRiskDefinitions
+          :domain="domain"
         />
       </v-form>
     </template>
@@ -58,18 +96,19 @@
         :disabled="!formIsValid"
         @click="saveRisk"
       >
-        {{ !!risk ? t('editRisk') : t('createRisk') }}
+        {{ t('global.button.save') }}
       </v-btn>
     </template>
   </VeoDialog>
 </template>
 
 <script lang="ts">
+import { useContext, useFetch } from '@nuxtjs/composition-api';
 import { computed, defineComponent, PropType, ref, watch } from '@vue/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
-import { IVeoRisk } from '~/types/VeoTypes';
+import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -87,6 +126,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
+    const { $api } = useContext();
     const { t } = useI18n();
 
     const dialog = computed({
@@ -97,6 +137,16 @@ export default defineComponent({
         emit('input', newValue);
       }
     });
+
+    // Domain stuff, used for risk definitions
+    const domain = ref<IVeoDomain | undefined>();
+    const { fetch: fetchDomain } = useFetch(async () => {
+      domain.value = await $api.domain.fetch(props.domainId);
+    });
+    watch(
+      () => props.domainId,
+      () => fetchDomain()
+    );
 
     const formIsValid = ref(false);
     const formIsDirty = ref(false);
@@ -123,6 +173,7 @@ export default defineComponent({
     return {
       data,
       dialog,
+      domain,
       formIsDirty,
       formIsValid,
       saveRisk,
@@ -139,11 +190,15 @@ export default defineComponent({
 {
   "en": {
     "createRisk": "create risk",
-    "editRisk": "edit risk"
+    "editRisk": "edit risk \"{0}\"",
+    "mitigation": "mitigation",
+    "riskOwner": "risk owner"
   },
   "de": {
-    "createRisk": "risiko erstellen",
-    "editRisk": "risiko bearbeiten"
+    "createRisk": "Risiko erstellen",
+    "editRisk": "Risiko \"{0}\" bearbeiten",
+    "mitigation": "Gegenmaßnahme",
+    "riskOwner": "Verantwortlicher"
   }
 }
 </i18n>

@@ -21,11 +21,10 @@
     :items="items"
     item-text="name"
     item-value="id"
-    dense
-    hide-details
     no-filter
-    :label="label"
+    :label="localLabel"
     :search-input.sync="searchQuery"
+    :clearable="!required"
     v-bind="$attrs"
     @change="onInput"
     @input="onInput"
@@ -54,6 +53,14 @@ export default defineComponent({
   props: {
     value: {
       type: [String, Object] as PropType<string | IVeoLink>,
+      default: undefined
+    },
+    required: {
+      type: Boolean,
+      default: false
+    },
+    label: {
+      type: String,
       default: undefined
     },
     objectType: {
@@ -104,7 +111,6 @@ export default defineComponent({
     const loadObject = async (id: string) => {
       items.value.push(await $api.entity.fetch(props.objectType, id));
     };
-    console.log(props);
 
     const internalValue = computed<string | undefined>(() => {
       if (typeof props.value === 'object') {
@@ -118,7 +124,6 @@ export default defineComponent({
       () => internalValue.value,
       (newValue) => {
         if (!!newValue && !items.value.find((item) => item.id === newValue)) {
-          console.log('Blub');
           loadObject(newValue);
         }
       },
@@ -153,10 +158,10 @@ export default defineComponent({
     );
 
     const currentSubTypeFormName = computed(() => props.subType && formSchemas.value.find((formSchema) => formSchema.subType === props.subType)?.name[locale.value]);
-    const label = computed(() => (currentSubTypeFormName ? currentSubTypeFormName.value : upperFirst(props.objectType)));
+    const localLabel = computed(() => props.label ?? `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${props.required ? '*' : ''}`);
 
     return {
-      label,
+      localLabel,
       internalValue,
       items,
       moreItemsAvailable,
