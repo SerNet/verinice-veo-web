@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { defineNuxtPlugin } from '@nuxtjs/composition-api';
-import { separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import LocalStorage from '~/util/LocalStorage';
 
 export default defineNuxtPlugin(async (context) => {
@@ -27,7 +27,6 @@ export default defineNuxtPlugin(async (context) => {
 
   if (context.route.path === '/' && LocalStorage.lastUnit && LocalStorage.lastDomain) {
     try {
-      console.log('Bla123');
       const domains = await context.$api.domain.fetchUnitDomains(LocalStorage.lastUnit);
       console.log(domains, LocalStorage.lastDomain);
       if (domains.find((domain) => domain.id === LocalStorage.lastDomain)) {
@@ -35,8 +34,8 @@ export default defineNuxtPlugin(async (context) => {
         context.app.router?.push({
           name: 'unit-domains-domain',
           params: {
-            unit: LocalStorage.lastUnit,
-            domain: LocalStorage.lastDomain
+            unit: createUUIDUrlParam('unit', LocalStorage.lastUnit),
+            domain: createUUIDUrlParam('domain', LocalStorage.lastDomain)
           }
         });
       } else {

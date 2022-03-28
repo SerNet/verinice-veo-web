@@ -98,7 +98,7 @@ export default Vue.extend({
 
           if (domainId) {
             this.$router.push({
-              name: 'unit-domain-domains',
+              name: 'unit-domains-domain',
               params: {
                 unit: createUUIDUrlParam('unit', unitToRedirectTo.id),
                 domain: createUUIDUrlParam('domain', domainId)
@@ -116,7 +116,7 @@ export default Vue.extend({
 
         if (domainId) {
           this.$router.push({
-            name: 'unit-domain-domains',
+            name: 'unit-domains-domain',
             params: {
               unit: createUUIDUrlParam('unit', unit.id),
               domain: createUUIDUrlParam('domain', domainId)
