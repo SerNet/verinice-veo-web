@@ -20,7 +20,7 @@
     v-model="dialog"
     :close-disabled="savingRisk"
     :persistent="savingRisk || formIsDirty"
-    :headline="upperFirst(!!risk ? t('editRisk', [risk.designator]) : t('createRisk').toString())"
+    :headline="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
     large
     fixed-footer
     fixed-header
@@ -105,7 +105,7 @@
 <script lang="ts">
 import { useContext, useFetch } from '@nuxtjs/composition-api';
 import { computed, defineComponent, PropType, ref, watch } from '@vue/composition-api';
-import { upperFirst } from 'lodash';
+import { merge, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
@@ -151,13 +151,11 @@ export default defineComponent({
     const formIsValid = ref(false);
     const formIsDirty = ref(false);
 
-    const data = ref({
-      scenario: {}
-    });
+    const data = ref<IVeoRisk>(makeRiskObject({} as any, props.domainId));
     watch(
       () => props.risk,
       (newValue) => {
-        data.value = newValue;
+        data.value = makeRiskObject(newValue, props.domainId);
         formIsValid.value = false;
         formIsDirty.value = false;
       },
@@ -184,6 +182,60 @@ export default defineComponent({
     };
   }
 });
+
+const makeRiskObject = (initialData: IVeoRisk, domainId: string): IVeoRisk => {
+  return merge(
+    {
+      scenario: undefined,
+      mitigation: undefined,
+      riskOwner: undefined,
+      process: undefined,
+      domains: {
+        [domainId]: {
+          riskDefinitions: {
+            probability: {
+              effectiveProbability: undefined,
+              potentialProbability: undefined,
+              specificProbability: undefined,
+              specificProbabilityExplanation: undefined
+            },
+            impactValues: [
+              {
+                category: 'C',
+                effectiveImpact: undefined,
+                specificImpact: undefined,
+                specificImpactExplanation: undefined,
+                potentialImpact: undefined
+              },
+              {
+                category: 'I',
+                effectiveImpact: undefined,
+                specificImpact: undefined,
+                specificImpactExplanation: undefined,
+                potentialImpact: undefined
+              },
+              {
+                category: 'A',
+                effectiveImpact: undefined,
+                specificImpact: undefined,
+                specificImpactExplanation: undefined,
+                potentialImpact: undefined
+              },
+              {
+                category: 'R',
+                effectiveImpact: undefined,
+                specificImpact: undefined,
+                specificImpactExplanation: undefined,
+                potentialImpact: undefined
+              }
+            ]
+          }
+        }
+      }
+    },
+    initialData
+  );
+};
 </script>
 
 <i18n>

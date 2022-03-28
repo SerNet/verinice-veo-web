@@ -21,6 +21,7 @@
     :items="items"
     item-text="name"
     item-value="id"
+    :no-data-text="t('noObjects')"
     no-filter
     :label="localLabel"
     :search-input.sync="searchQuery"
@@ -177,10 +178,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "beMoreSpecific": "Please be more specific to show additional objects"
+    "beMoreSpecific": "Please be more specific to show additional objects",
+    "noObjects": "No objects found"
   },
   "de": {
-    "beMoreSpecific": "Bitte geben Sie weitere Zeichen ein, um die Auswahl einzuschränken"
+    "beMoreSpecific": "Bitte geben Sie weitere Zeichen ein, um die Auswahl einzuschränken",
+    "noObjects": "Keine Objekte vorhanden"
   }
 }
 </i18n>
