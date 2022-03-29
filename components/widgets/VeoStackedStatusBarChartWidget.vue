@@ -27,8 +27,11 @@
       >
         <v-col
           cols="12"
-          md="4"
-          class="body-1"
+          sm="12"
+          md="5"
+          lg="7"
+          xl="4"
+          class="body-1 text-no-wrap"
         >
           {{ chart.labels[0] }}
         </v-col>
