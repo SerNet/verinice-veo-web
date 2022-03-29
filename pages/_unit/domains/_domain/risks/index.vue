@@ -16,5 +16,5 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <h1>Hello world</h1><!-- This page is never visible, however the breadcrumbs and navigation need it for some reason -->
+  <span>Hello world</span><!-- This page is never visible, however the breadcrumbs and navigation need it for some reason -->
 </template>

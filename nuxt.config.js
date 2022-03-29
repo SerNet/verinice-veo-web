@@ -187,7 +187,7 @@ export default {
   /**
    *
    */
-  css: ['~/assets/main.scss', '~/assets/util.scss', '~/assets/intro.scss'],
+  css: ['~/assets/main.scss', '~/assets/intro.scss'],
 
   /**
    *

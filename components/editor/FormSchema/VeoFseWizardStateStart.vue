@@ -17,7 +17,7 @@
 -->
 <template>
   <v-window-item v-bind="$attrs">
-    <h2 class="mb-2">
+    <h2 class="text-h2 mb-2">
       {{ t('start') }}
     </h2>
     <v-list two-line>

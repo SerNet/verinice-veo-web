@@ -25,7 +25,7 @@
       v-if="state === CATALOG_STATE.CHOOSE_TOMS"
       #default
     >
-      <h2>
+      <h2 class="text-h2">
         {{ $t('selectTOMs') }}
       </h2>
       <v-row dense>
@@ -61,7 +61,7 @@
       v-else-if="state === CATALOG_STATE.CHOOSE_ENTITIES"
       #default
     >
-      <h2>
+      <h2 class="text-h2">
         {{ $t('applyTOMs') }}
       </h2>
       <v-row dense>

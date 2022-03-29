@@ -60,7 +60,9 @@
         dense
       >
         <v-col class="py-0 d-flex align-center">
-          <h3>{{ t('values') }}</h3>
+          <h3 class="text-h3">
+            {{ t('values') }}
+          </h3>
           <v-checkbox
             v-model="form.data.multiple"
             dense

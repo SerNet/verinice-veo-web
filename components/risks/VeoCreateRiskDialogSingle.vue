@@ -31,7 +31,7 @@
         v-if="data"
         v-model="formIsValid"
       >
-        <h2 class="mb-2">
+        <h2 class="text-h2 mb-2">
           {{ upperFirst(t('common').toString()) }}
         </h2>
         <v-card

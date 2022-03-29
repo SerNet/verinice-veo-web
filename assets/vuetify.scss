@@ -26,8 +26,39 @@ $light-grey: #fafafa;
 $background-primary: rgb(243 244 246);
 
 // Overriding default variables
+$headings: (
+    'h1': (
+      'size': 1.4rem,
+      'weight': 500,
+      'line-height': 2rem
+    ),
+    'h2': (
+      'size': 1.3rem,
+      'weight': 500,
+      'line-height': 1.8rem
+    ),
+    'h3': (
+      'size': 1.2rem,
+      'weight': 500,
+      'line-height': 1.7rem
+    ),
+    'h4': (
+      'size': 1.1rem,
+      'weight': 500,
+      'line-height': 1.6rem
+    ),
+    'h5': (
+      'size': 1rem,
+      'weight': 500,
+      'line-height': 1.5rem
+    )
+);
+
 $list-item-dense-title-font-weight: 400;
 $card-border-radius: 16px;
+$card-title-font-size: 1.3rem; // Equals h2
+$card-title-font-weight: 500; // Equals h2
+$card-title-line-height: 1.8rem; // Equals h2
 
 // Overriding default styles
 .v-application--is-ltr .v-list-item__icon:first-child {

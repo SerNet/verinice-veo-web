@@ -50,6 +50,10 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
+    headingLevel: {
+      type: Number,
+      default: 1
+    },
     pageWidths: {
       type: Array as PropType<(String | Number)[]>,
       default: () => []
@@ -227,11 +231,11 @@ export default Vue.extend({
             ...(this.$props.loading
               ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title px-10 py-1' })]
               : [
-                  h('h1', {
+                  h(`h${this.$props.headingLevel}`, {
                     domProps: {
                       innerText: this.$props.title
                     },
-                    class: 'd-inline px-10 py-1 flex-grow-0'
+                    class: `d-inline px-10 py-1 flex-grow-0 text-h${this.$props.headingLevel}`
                   }),
                   ...(this.$slots.title ? [this.$slots.title] : [])
                 ]),

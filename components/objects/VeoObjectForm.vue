@@ -26,7 +26,9 @@
         <template #header>
           <v-row class="align-center mx-0 pb-4">
             <v-col cols="auto">
-              <h3>{{ upperFirst(t('display').toString()) }}:</h3>
+              <span class="text-h3">
+                {{ upperFirst(t('display').toString()) }}:
+              </span>
             </v-col>
             <v-col cols="auto">
               <v-select

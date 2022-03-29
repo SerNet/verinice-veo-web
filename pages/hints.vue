@@ -16,9 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage fullsize>
+  <VeoPage
+    fullsize
+    title="Demo page for hints and tutorials"
+  >
     <v-container fluid>
-      <h1>Demo page for hints and tutorials</h1>
       <v-select
         label="Available tutorials"
         :items="tutorials"

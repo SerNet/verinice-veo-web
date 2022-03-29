@@ -74,7 +74,9 @@
             v-model="createForm.valid"
             @submit.prevent="createSchema()"
           >
-            <h2>{{ $t('createObjectSchema') }}</h2>
+            <h2 class="text-h2">
+              {{ $t('createObjectSchema') }}
+            </h2>
             <v-row
               no-gutters
               class="align-center mt-4"
@@ -126,7 +128,9 @@
           value="import"
           class="px-4"
         >
-          <h2>{{ $t('importObjectSchema') }}</h2>
+          <h2 class="text-h2">
+            {{ $t('importObjectSchema') }}
+          </h2>
           <v-row
             no-gutters
             class="align-center mt-4"

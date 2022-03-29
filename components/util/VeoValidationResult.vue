@@ -17,7 +17,9 @@
 -->
 <template>
   <div class="text-left">
-    <h3>{{ upperFirst(t('schemaValidationErrors').toString()) }} ({{ result.errors.length }}):</h3>
+    <h3 class="text-h3">
+      {{ upperFirst(t('schemaValidationErrors').toString()) }} ({{ result.errors.length }}):
+    </h3>
     <VeoValidationResultList
       :items="result.errors"
       no-error-placeholder-visible
@@ -25,7 +27,9 @@
       v-on="$listeners"
     />
     <template v-if="warningsVisible">
-      <h3>{{ upperFirst(t('schemaValidationWarnings').toString()) }} ({{ result.warnings.length }}):</h3>
+      <h3 class="text-h3">
+        {{ upperFirst(t('schemaValidationWarnings').toString()) }} ({{ result.warnings.length }}):
+      </h3>
       <VeoValidationResultList
         :items="result.warnings"
         :fixing-allowed="fixingAllowed"

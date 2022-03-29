@@ -34,7 +34,10 @@
         cols="auto"
         class="accent--text"
       >
-        <h3 v-text="title" />
+        <h3
+          class="text-h3"
+          v-text="title"
+        />
         <slot />
         <p
           v-if="text"

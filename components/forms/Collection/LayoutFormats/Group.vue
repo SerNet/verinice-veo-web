@@ -30,7 +30,9 @@
       :style="options && options.style"
     >
       <v-col v-if="options && options.label">
-        <h3>{{ options.label }}</h3>
+        <h3 class="text-h3">
+          {{ options.label }}
+        </h3>
       </v-col>
       <v-col>
         <v-row

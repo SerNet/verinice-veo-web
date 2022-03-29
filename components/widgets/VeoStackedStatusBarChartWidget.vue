@@ -16,9 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoWidget
-    :loading="loading"
-  >
+  <VeoWidget :loading="loading">
     <template #default>
       <v-row
         v-for="(chart, index) of chartData"
@@ -30,8 +28,9 @@
         <v-col
           cols="12"
           md="4"
+          class="body-1"
         >
-          <h4 class="ml-6">{{ chart.labels[0] }}</h4>
+          {{ chart.labels[0] }}
         </v-col>
         <v-col>
           <BarChart

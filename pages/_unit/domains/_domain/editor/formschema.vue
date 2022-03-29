@@ -159,7 +159,7 @@
     >
       <VeoPage sticky-header>
         <template #header>
-          <h3 class="text-center pb-1">
+          <h3 class="text-h3 text-center pb-1">
             {{ t("availableControls") }}
           </h3>
           <v-text-field
@@ -222,7 +222,9 @@
               cols="auto"
               class="text-left"
             >
-              <h3>{{ t("invalidFormSchema") }}</h3>
+              <span class="text-h3">
+                {{ t("invalidFormSchema") }}
+              </span>
             </v-col>
           </v-row>
         </template>
@@ -270,7 +272,9 @@
               cols="auto"
               class="text-left"
             >
-              <h3>{{ t("invalidFormSchema") }}</h3>
+              <span class="text-h3">
+                {{ t("invalidFormSchema") }}
+              </span>
             </v-col>
           </v-row>
         </template>

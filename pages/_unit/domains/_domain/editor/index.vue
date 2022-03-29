@@ -17,7 +17,9 @@
 -->
 <template>
   <VeoPage>
-    <h2>{{ t('calltoaction') }}</h2>
+    <h2 class="text-h2">
+      {{ t('calltoaction') }}
+    </h2>
     <v-list
       two-line
       class="overflow-hidden"

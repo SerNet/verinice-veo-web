@@ -27,7 +27,9 @@
   >
     <template #default>
       <div class="d-flex justify-space-between align-center px-1 pb-2">
-        <h2>{{ t('subtypesForDomain', { domain: domain && domain.name }) }}</h2>
+        <h2 class="text-h2">
+          {{ t('subtypesForDomain', { domain: domain && domain.name }) }}
+        </h2>
         <v-select
           v-model="displayLanguage"
           :prepend-inner-icon="mdiTranslate"
@@ -83,7 +85,7 @@
                   </v-tooltip>
                 </v-col>
               </v-row>
-              <h3 class="my-2">
+              <h3 class="text-h3 my-2">
                 {{ upperFirst(t('availableStatus').toString()) }}
               </h3>
               <Draggable
