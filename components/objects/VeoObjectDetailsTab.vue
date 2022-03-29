@@ -59,6 +59,8 @@
       v-model="editRiskDialog.visible"
       v-bind="editRiskDialog"
       :domain-id="domainId"
+      :object-type="object && object.type"
+      :object-id="object && object.id"
     />
   </v-container>
 </template>

@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, useContext, useFetch, watch } from '@nuxtjs/composition-api';
-import { throttle, upperFirst } from 'lodash';
+import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { getSchemaEndpoint } from '~/plugins/api/schema';
@@ -94,7 +94,7 @@ export default defineComponent({
       () => searchQuery.value,
       (newValue, oldValue) => {
         if (newValue !== oldValue) {
-          throttle(loadObjects, 100);
+          loadObjects();
         }
       }
     );
@@ -102,7 +102,7 @@ export default defineComponent({
     const loadObjects = async () => {
       const data = await $api.entity.fetchAll(props.objectType, 1, {
         subType: props.subType,
-        displayName: searchQuery.value
+        displayName: searchQuery.value ?? undefined
       });
       moreItemsAvailable.value = data.pageCount > 1;
       items.value = data.items;
@@ -126,6 +126,8 @@ export default defineComponent({
       (newValue) => {
         if (!!newValue && !items.value.find((item) => item.id === newValue)) {
           loadObject(newValue);
+        } else if (!newValue) {
+          loadObjects();
         }
       },
       {

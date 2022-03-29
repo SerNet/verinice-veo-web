@@ -65,6 +65,7 @@
                 md="6"
               >
                 <v-select
+                  v-model="internalValue[riskDefinition.id].probability.specificProbability"
                   color="primary"
                   :label="upperFirst(t('specificProbability').toString())"
                   :items="probabilities"
@@ -76,13 +77,14 @@
                 md="12"
               >
                 <v-text-field
+                  v-model="internalValue[riskDefinition.id].probability.specificProbabilityExplanation"
                   :label="upperFirst(t('explanation').toString())"
                   clearable
                 />
               </v-col>
             </v-row>
             <div
-              v-for="protectionGoal of riskDefinition.categories"
+              v-for="(protectionGoal, index) of riskDefinition.categories"
               :key="protectionGoal.id"
               class="mt-8"
             >
@@ -93,6 +95,7 @@
                   md="6"
                 >
                   <v-select
+                    v-model="internalValue[riskDefinition.id].impactValues[index].specificImpact"
                     color="primary"
                     :label="upperFirst(t('specificImpact').toString())"
                     :items="impacts[protectionGoal.id]"
@@ -104,6 +107,7 @@
                   md="12"
                 >
                   <v-text-field
+                    v-model="internalValue[riskDefinition.id].impactValues[index].specificImpactExplanation"
                     :label="upperFirst(t('explanation').toString())"
                     clearable
                   />
@@ -121,23 +125,32 @@
 import { computed, defineComponent, PropType, ref } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { IBaseObject } from '~/lib/utils';
 
-import { IVeoDomain } from '~/types/VeoTypes';
+import { IBaseObject } from '~/lib/utils';
+import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
     value: {
-      type: Object,
-      default: () => {}
+      type: Object as PropType<IVeoRisk['domains']['x']['riskDefinitions']>,
+      required: true
     },
     domain: {
       type: Object as PropType<IVeoDomain>,
       default: () => undefined
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
+
+    const internalValue = computed({
+      get() {
+        return props.value;
+      },
+      set(newValue: IVeoRisk['domains']['x']['riskDefinitions']) {
+        emit('input', newValue);
+      }
+    });
 
     const activeTab = ref(0);
     const activeRiskDefinition = computed(() => Object.values(props.domain?.riskDefinitions || {})[activeTab.value]);
@@ -153,6 +166,7 @@ export default defineComponent({
       activeTab,
       activeRiskDefinition,
       impacts,
+      internalValue,
       probabilities,
 
       upperFirst,

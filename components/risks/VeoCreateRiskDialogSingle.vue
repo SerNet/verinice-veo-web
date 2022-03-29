@@ -32,7 +32,7 @@
         v-model="formIsValid"
       >
         <h2 class="mb-2">
-          Allgemeines
+          {{ upperFirst(t('common').toString()) }}
         </h2>
         <v-card
           flat
@@ -74,6 +74,7 @@
           </v-card-text>
         </v-card>
         <VeoCreateRiskDialogRiskDefinitions
+          v-model="data.domains[domainId].riskDefinitions"
           :domain="domain"
         />
       </v-form>
@@ -107,6 +108,8 @@ import { useContext, useFetch } from '@nuxtjs/composition-api';
 import { computed, defineComponent, PropType, ref, watch } from '@vue/composition-api';
 import { merge, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { getEntityDetailsFromLink } from '~/lib/utils';
 
 import { IVeoDomain, IVeoRisk } from '~/types/VeoTypes';
 
@@ -123,11 +126,20 @@ export default defineComponent({
     domainId: {
       type: String,
       required: true
+    },
+    objectType: {
+      type: String,
+      required: true
+    },
+    objectId: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
     const { $api } = useContext();
     const { t } = useI18n();
+    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
     const dialog = computed({
       get() {
@@ -142,6 +154,7 @@ export default defineComponent({
     const domain = ref<IVeoDomain | undefined>();
     const { fetch: fetchDomain } = useFetch(async () => {
       domain.value = await $api.domain.fetch(props.domainId);
+      data.value = makeRiskObject(data.value, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
     });
     watch(
       () => props.domainId,
@@ -151,11 +164,11 @@ export default defineComponent({
     const formIsValid = ref(false);
     const formIsDirty = ref(false);
 
-    const data = ref<IVeoRisk>(makeRiskObject({} as any, props.domainId));
+    const data = ref<IVeoRisk>(makeRiskObject({} as any, props.domainId, Object.keys(domain.value?.riskDefinitions || {})));
     watch(
       () => props.risk,
       (newValue) => {
-        data.value = makeRiskObject(newValue, props.domainId);
+        data.value = makeRiskObject(newValue, props.domainId, Object.keys(domain.value?.riskDefinitions || {}));
         formIsValid.value = false;
         formIsDirty.value = false;
       },
@@ -166,7 +179,23 @@ export default defineComponent({
     );
 
     const savingRisk = ref(false);
-    const saveRisk = () => console.log('Bla123');
+    const saveRisk = async () => {
+      savingRisk.value = true;
+
+      try {
+        if (props.risk) {
+          const { id } = getEntityDetailsFromLink(props.risk.scenario);
+          await $api.entity.updateRisk(props.objectType, props.objectId, id, data.value);
+        } else {
+          await $api.entity.createRisk(props.objectType, props.objectId, data.value);
+        }
+        displaySuccessMessage(props.risk ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
+      } catch (e) {
+        displayErrorMessage(upperFirst(t('riskNotSaved').toString()), JSON.stringify(e));
+      } finally {
+        savingRisk.value = false;
+      }
+    };
 
     return {
       data,
@@ -183,8 +212,8 @@ export default defineComponent({
   }
 });
 
-const makeRiskObject = (initialData: IVeoRisk, domainId: string): IVeoRisk => {
-  return merge(
+const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition: string[]): IVeoRisk => {
+  const object: any = merge(
     {
       scenario: undefined,
       mitigation: undefined,
@@ -192,64 +221,78 @@ const makeRiskObject = (initialData: IVeoRisk, domainId: string): IVeoRisk => {
       process: undefined,
       domains: {
         [domainId]: {
-          riskDefinitions: {
-            probability: {
-              effectiveProbability: undefined,
-              potentialProbability: undefined,
-              specificProbability: undefined,
-              specificProbabilityExplanation: undefined
-            },
-            impactValues: [
-              {
-                category: 'C',
-                effectiveImpact: undefined,
-                specificImpact: undefined,
-                specificImpactExplanation: undefined,
-                potentialImpact: undefined
-              },
-              {
-                category: 'I',
-                effectiveImpact: undefined,
-                specificImpact: undefined,
-                specificImpactExplanation: undefined,
-                potentialImpact: undefined
-              },
-              {
-                category: 'A',
-                effectiveImpact: undefined,
-                specificImpact: undefined,
-                specificImpactExplanation: undefined,
-                potentialImpact: undefined
-              },
-              {
-                category: 'R',
-                effectiveImpact: undefined,
-                specificImpact: undefined,
-                specificImpactExplanation: undefined,
-                potentialImpact: undefined
-              }
-            ]
-          }
+          riskDefinitions: {}
         }
       }
     },
     initialData
   );
+
+  for (const _riskDefinition of riskDefinition) {
+    object.domains[domainId].riskDefinitions[_riskDefinition] = {
+      probability: {
+        effectiveProbability: undefined,
+        potentialProbability: undefined,
+        specificProbability: undefined,
+        specificProbabilityExplanation: undefined
+      },
+      impactValues: [
+        {
+          category: 'C',
+          effectiveImpact: undefined,
+          specificImpact: undefined,
+          specificImpactExplanation: undefined,
+          potentialImpact: undefined
+        },
+        {
+          category: 'I',
+          effectiveImpact: undefined,
+          specificImpact: undefined,
+          specificImpactExplanation: undefined,
+          potentialImpact: undefined
+        },
+        {
+          category: 'A',
+          effectiveImpact: undefined,
+          specificImpact: undefined,
+          specificImpactExplanation: undefined,
+          potentialImpact: undefined
+        },
+        {
+          category: 'R',
+          effectiveImpact: undefined,
+          specificImpact: undefined,
+          specificImpactExplanation: undefined,
+          potentialImpact: undefined
+        }
+      ]
+    };
+  }
+
+  return object;
 };
 </script>
 
 <i18n>
 {
   "en": {
+    "common": "common",
     "createRisk": "create risk",
     "editRisk": "edit risk \"{0}\"",
     "mitigation": "mitigation",
+    "riskCreated": "the risk was created successfully",
+    "riskEdited": "the risk was edited successfully",
+    "riskNotSaved": "the risk couldn't be saved",
     "riskOwner": "risk owner"
   },
   "de": {
+    "common": "allgemein",
     "createRisk": "Risiko erstellen",
     "editRisk": "Risiko \"{0}\" bearbeiten",
     "mitigation": "Gegenmaßnahme",
+    "riskCreated": "das Risiko wurde erfolgreich erstellt",
+    "riskEdited": "das Risiko wurde erfolgreich bearbeitet",
+    "riskNotSaved": "das Risiko konnte nicht gespeichert werden",
     "riskOwner": "Verantwortlicher"
   }
 }

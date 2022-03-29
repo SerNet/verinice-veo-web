@@ -406,35 +406,38 @@ export interface IVeoRisk {
   scenario: IVeoLink;
   mitigation?: IVeoLink;
   process?: IVeoLink;
+  riskOwner?: IVeoLink;
   domains: {
     [domainId: string]: {
       reference: IVeoLink;
-      riskDefinitions?: {
-        probability: {
-          effectiveProbability: number;
-          potentialProbability: number;
-          specificProbability: number;
-          specificProbabilityExplanation: string;
+      riskDefinitions: {
+        [riskDefinition: string]: {
+          probability: {
+            effectiveProbability: number;
+            potentialProbability: number;
+            specificProbability: number;
+            specificProbabilityExplanation: string;
+          };
+          impactValues: [
+            {
+              category: string;
+              effectiveImpact: number;
+              specificImpact: string;
+              specificImpactExplanation: string;
+              potentialImpact: string;
+            }
+          ];
+          riskValues: [
+            {
+              category: string;
+              residualRisk: number;
+              residualRiskExplanation: string;
+              riskTreatments: string;
+              riskTreatmentExplanation: string;
+              inherentRisk: number;
+            }
+          ];
         };
-        impactValues: [
-          {
-            category: string;
-            effectiveImpact: number;
-            specificImpact: string;
-            specificImpactExplanation: string;
-            potentialImpact: string;
-          }
-        ];
-        riskValues: [
-          {
-            category: string;
-            residualRisk: number;
-            residualRiskExplanation: string;
-            riskTreatments: string;
-            riskTreatmentExplanation: string;
-            inherentRisk: number;
-          }
-        ];
       };
     };
   };

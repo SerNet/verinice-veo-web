@@ -122,7 +122,7 @@ export default function (api: Client) {
 
     async createRisk(objectType: string, id: string, risk: IVeoRisk): Promise<IVeoEntity[]> {
       if (objectType !== 'process') {
-        throw new Error(`api::fetchRisks: Risks can only be created for processes. You tried creating a risk for a ${objectType}`);
+        throw new Error(`api::createRisk: Risks can only be created for processes. You tried creating a risk for a ${objectType}`);
       }
 
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
@@ -169,7 +169,7 @@ export default function (api: Client) {
 
     async fetchRisks(objectType: string, id: string): Promise<IVeoEntity[]> {
       if (objectType !== 'process') {
-        throw new Error(`api::fetchRisks: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
+        throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
       }
 
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
@@ -224,6 +224,24 @@ export default function (api: Client) {
         });
     },
 
+    async updateRisk(objectType: string, id: string, scenarioId: string, risk: IVeoRisk): Promise<IVeoEntity[]> {
+      if (objectType !== 'process') {
+        throw new Error(`api::updateRisk: Risks can only be created for processes. You tried updating a risk for a ${objectType}`);
+      }
+
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+
+      return api.req('/api/:objectType/:id/risks/:scenarioId', {
+        method: 'PUT',
+        params: {
+          objectType,
+          id,
+          scenarioId
+        },
+        json: risk
+      });
+    },
+
     /**
      * Deletes an entity
      * @param id
@@ -242,7 +260,7 @@ export default function (api: Client) {
 
     async deleteRisk(objectType: string, objectId: string, scenarioId: string): Promise<IVeoEntity[]> {
       if (objectType !== 'process') {
-        throw new Error(`api::fetchRisks: Risks can only be deleted for processes. You tried deleting a risk for a ${objectType}`);
+        throw new Error(`api::deleteRisk: Risks can only be deleted for processes. You tried deleting a risk for a ${objectType}`);
       }
 
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;

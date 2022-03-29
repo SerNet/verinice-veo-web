@@ -165,7 +165,7 @@ export function generateFormSchemaControl(pointer: string, schema: BaseObject, m
     options: {
       label
     },
-    ...(schema?.items.required?.includes('target') ? { elements: [] } : {})
+    ...(schema?.items?.required?.includes('target') ? { elements: [] } : {})
   };
 }
 
