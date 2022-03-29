@@ -102,6 +102,8 @@ export const helpers: Helpful<LayoutProps> = {
 }
 
 .direction-horizontal > .vf-control {
+  flex-grow: 1;
+
   ::v-deep {
     & > .vf-autocomplete,
     & > .vf-input-date,
