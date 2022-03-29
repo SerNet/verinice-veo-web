@@ -25,7 +25,17 @@
         style="margin: -4px 0; height: calc(100% + 8px)"
         v-on="on"
       >
-        <span class="veo-domain-select__selection">
+        <v-skeleton-loader
+          v-if="$fetchState.pending"
+          height="24px"
+          style="border-radius: 999px"
+          type="image"
+          width="100px"
+        />
+        <span
+          v-else
+          class="veo-domain-select__selection"
+        >
           {{ domainName }}
         </span>
         <v-icon
