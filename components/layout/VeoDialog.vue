@@ -19,10 +19,9 @@
   <v-dialog
     :value="value"
     max-width="80%"
-    :persistent="persistent"
-    :eager="eager"
     :width="width"
     :content-class="dialogClasses"
+    v-bind="$attrs"
     v-on="$listeners"
   >
     <v-card
@@ -98,10 +97,6 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    persistent: {
-      type: Boolean,
-      default: false
-    },
     closeDisabled: {
       type: Boolean,
       default: false
@@ -113,10 +108,6 @@ export default defineComponent({
       }
     },
     fixedFooter: {
-      type: Boolean,
-      default: false
-    },
-    eager: {
       type: Boolean,
       default: false
     },
