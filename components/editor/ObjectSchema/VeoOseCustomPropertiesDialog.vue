@@ -21,7 +21,6 @@
     :headline="headline"
     large
     persistent
-    fixed-header
     fixed-footer
   >
     <template #default>

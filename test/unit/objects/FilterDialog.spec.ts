@@ -87,8 +87,7 @@ describe('FilterDialog.vue', () => {
       description: 'My description',
       updatedBy: 'user1',
       notPartOfGroup: 'true',
-      hasChildObjects: 'true',
-      hasLinks: 'true'
+      hasChildObjects: 'true'
     };
 
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app

@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-card flat>
+  <v-card
+    flat
+    outlined
+  >
     <template v-if="loading">
       <v-card-title v-if="title">
         <v-skeleton-loader
@@ -66,9 +69,7 @@ export default defineComponent<IProps>({
 });
 </script>
 <style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
 .v-card {
-  border: 1px solid $medium-grey;
+  background: $background-primary;
 }
 </style>

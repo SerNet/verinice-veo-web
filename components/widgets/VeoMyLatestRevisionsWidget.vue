@@ -90,6 +90,10 @@ tbody {
     white-space: nowrap;
   }
 }
+
+.v-data-table {
+  background: transparent;
+}
 </style>
 
 <i18n>

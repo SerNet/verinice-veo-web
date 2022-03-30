@@ -20,7 +20,6 @@
     :value="value"
     :headline="t('editor.schema.properties')"
     fixed-footer
-    fixed-header
     large
     persistent
     v-on="$listeners"

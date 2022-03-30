@@ -22,7 +22,6 @@
     :large="state !== 'start'"
     :headline="$t('editor.objectschema.headline')"
     persistent
-    fixed-header
     :close-function="onClose"
   >
     <template #default>

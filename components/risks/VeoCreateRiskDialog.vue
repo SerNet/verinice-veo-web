@@ -23,7 +23,6 @@
     :headline="upperFirst(tc('createRisk', 0).toString())"
     x-large
     fixed-footer
-    fixed-header
     v-on="$listeners"
   >
     <template #default>
@@ -163,7 +162,7 @@ export default defineComponent({
 
     const selectedScenarios = ref<IVeoEntity[]>([]);
 
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects', 'hasLinks'];
+    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'];
     const filter = ref<IBaseObject>({
       objectType: 'scenario',
       subType: 'SCN_Scenario'

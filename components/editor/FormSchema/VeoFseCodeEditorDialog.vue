@@ -19,7 +19,6 @@
   <VeoDialog
     v-model="dialog.value"
     large
-    fixed-header
     fixed-footer
     :headline="t('formSchema')"
   >

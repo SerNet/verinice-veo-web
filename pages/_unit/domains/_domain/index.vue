@@ -34,10 +34,7 @@
       class="mt-n2 mb-4 skeleton-subtitle"
       type="text"
     />
-    <v-row
-      no-gutters
-      class="mb-4"
-    >
+    <v-row class="mb-4">
       <v-col
         v-for="(rows, rowIndex) of WIDGET_LAYOUT"
         :key="rowIndex"
@@ -48,7 +45,7 @@
           v-for="(widget, widgetIndex) of rows"
           :key="widgetIndex"
           v-cy-name="widget !== 'my_latest_widget' ? 'status-bar-chart-widget' : ''"
-          class="my-4 px-2"
+          class="my-4"
         >
           <VeoMyLatestRevisionsWidget
             v-if="widget === 'my_latest_widget'"

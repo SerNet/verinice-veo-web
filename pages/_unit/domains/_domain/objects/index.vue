@@ -174,7 +174,7 @@ export default defineComponent({
     const filterDialogVisible = ref(false);
 
     // accepted filter keys (others wont be respected when specified in URL query parameters)
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects', 'hasLinks'] as const;
+    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'] as const;
     type FilterKey = typeof filterKeys[number];
 
     // filter built from URL query parameters

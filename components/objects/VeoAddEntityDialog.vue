@@ -22,7 +22,6 @@
     :headline="t('headline')"
     :persistent="saving"
     :close-disabled="saving"
-    fixed-header
     fixed-footer
   >
     <template #default>
@@ -100,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, useContext, useFetch, useRouter, watch, PropOptions } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, ref, computed, useContext, useFetch, watch, PropOptions } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter } from '@mdi/js';
@@ -200,7 +199,7 @@ export default defineComponent({
      */
 
     // available & active filter options
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects', 'hasLinks'];
+    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'];
     const activeFilterKeys = computed(() => {
       return filterKeys.filter((k) => filter.value[k] !== undefined);
     });

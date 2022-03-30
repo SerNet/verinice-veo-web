@@ -21,7 +21,6 @@
     large
     :headline="$t('editor.formschema.translation')"
     fixed-footer
-    fixed-header
   >
     <template #default>
       <div style="min-height: 20vh">

@@ -23,7 +23,6 @@
     :headline="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
     large
     fixed-footer
-    fixed-header
     v-on="$listeners"
   >
     <template #default>

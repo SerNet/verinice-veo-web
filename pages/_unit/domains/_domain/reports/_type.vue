@@ -177,7 +177,7 @@ export default Vue.extend({
       userSelectedSubType: undefined as undefined | string,
       forms: [] as IVeoFormSchemaMeta[],
       filterDialogVisible: false,
-      filterKeys: ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects', 'hasLinks'],
+      filterKeys: ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'],
       formschemas: [] as IVeoFormSchemaMeta[],
       mdiFilter,
       upperFirst
