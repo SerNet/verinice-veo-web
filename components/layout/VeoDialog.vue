@@ -19,6 +19,7 @@
   <v-dialog
     :value="value"
     max-width="80%"
+    :fullscreen="fullscreen"
     :width="width"
     :content-class="dialogClasses"
     v-bind="$attrs"
@@ -31,6 +32,10 @@
     >
       <div :class="{ 'border-bottom': xLarge }">
         <v-card-title class="pt-2 pb-1">
+          <VeoAppLogoMobile
+            v-if="fullscreen"
+            style="height: 36px"
+          />
           <span>{{ headline }}</span>
           <v-spacer />
           <v-btn
@@ -49,7 +54,7 @@
         />
       </div>
       <v-card-text
-        class="pa-4 overflow-x-hidden overflow-y-auto"
+        class="pa-4 overflow-x-hidden overflow-y-auto flex-grow-1"
         style="position: relative;"
       >
         <div :class="innerClass">
@@ -76,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from '@nuxtjs/composition-api';
+import { computed, defineComponent, useContext, watch } from '@nuxtjs/composition-api';
 import { mdiClose } from '@mdi/js';
 
 export default defineComponent({
@@ -121,6 +126,11 @@ export default defineComponent({
     input: (_: boolean) => {}
   },
   setup(props, { emit }) {
+    // @ts-ignore $vuetify exists
+    const { $vuetify } = useContext();
+
+    const fullscreen = computed(() => (props.xLarge && $vuetify.breakpoint.mdAndDown) || (props.large && $vuetify.breakpoint.smAndDown) || $vuetify.breakpoint.xsOnly);
+
     const width = computed(() => {
       if (props.large) return '900px';
       if (props.xLarge) return '1350px';
@@ -149,6 +159,7 @@ export default defineComponent({
     return {
       closeDialog,
       dialogClasses,
+      fullscreen,
       width,
 
       mdiClose
