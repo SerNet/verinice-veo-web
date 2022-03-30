@@ -81,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useContext, watch } from '@nuxtjs/composition-api';
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api';
 import { mdiClose } from '@mdi/js';
 
 export default defineComponent({

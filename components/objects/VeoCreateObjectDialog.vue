@@ -22,7 +22,7 @@
     x-large
     :persistent="isFormDirty"
     fixed-footer
-    inner-class="overflow-hidden"
+    inner-class="fill-height"
     v-on="$listeners"
   >
     <template #default>
