@@ -74,6 +74,7 @@
     </v-card>
   </v-dialog>
 </template>
+
 <script lang="ts">
 import { computed, defineComponent } from '@nuxtjs/composition-api';
 import { mdiClose } from '@mdi/js';
