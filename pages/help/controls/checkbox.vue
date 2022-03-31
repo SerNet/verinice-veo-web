@@ -16,11 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage fullsize>
+  <VeoPage
+    fullsize
+    title="Checkbox"
+    fixed-header
+  >
     <v-row justify="center">
-      <v-col cols="12">
-        <PageHeader>Checkbox</PageHeader>
-      </v-col>
       <v-col
         cols="auto"
         class="docs-form-sector"

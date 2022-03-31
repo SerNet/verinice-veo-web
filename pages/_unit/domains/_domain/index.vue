@@ -24,7 +24,7 @@
   >
     <p
       v-if="domain"
-      class="mt-n2 accent--text"
+      class="mt-n2 accent--text text-body-1"
     >
       <span v-if="domain.description">{{ domain.description }}</span>
       <i v-else>{{ t('unit.details.nodescription') }}</i>

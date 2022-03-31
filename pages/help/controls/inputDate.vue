@@ -16,11 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage fullsize>
+  <VeoPage
+    fullsize
+    title="Input Date"
+    fixed-header
+  >
     <v-row justify="center">
-      <v-col cols="12">
-        <PageHeader>Input Date</PageHeader>
-      </v-col>
       <v-col
         cols="12"
         sm="6"

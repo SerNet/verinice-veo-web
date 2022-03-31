@@ -46,7 +46,7 @@
           />
           <div
             v-else
-            class="ml-2 font-italic"
+            class="ml-2 font-italic text-body-2"
           >
             {{ t('noObjects') }}
           </div>
@@ -54,7 +54,7 @@
       </v-row>
       <div
         v-if="chartData.length === 0"
-        class="ml-6 font-italic"
+        class="ml-6 font-italic text-body-2"
       >
         {{ t('noSubtypes') }}
       </div>
@@ -70,14 +70,14 @@
           md="4"
         >
           <v-skeleton-loader
-            class="ml-6 my-2"
+            class="ml-6"
             type="text"
             width="70%"
           />
         </v-col>
         <v-col>
           <v-skeleton-loader
-            class="ml-6 my-2"
+            class="ml-6"
             type="heading"
             width="210%"
           />
