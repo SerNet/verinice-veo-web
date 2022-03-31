@@ -24,114 +24,122 @@
     fixed-footer
   >
     <template #default>
-      <v-form>
-        <v-row
-          no-gutters
-          class="align-center mt-4"
-        >
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.label.text') }}*:</span>
-          </v-col>
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <v-text-field
-              :value="localCustomTranslation[language][name] || defaultLabel"
-              :label="t('editor.formschema.edit.input.label')"
-              required
-              @input="onInputLabel"
+      <h3 class="text-h3">
+        {{ upperFirst(t('common').toString()) }}
+      </h3>
+      <VeoCard inverted>
+        <v-card-text>
+          <v-form>
+            <v-row
+              no-gutters
+              class="align-center mt-4"
+            >
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.label.text') }}*:</span>
+              </v-col>
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <v-text-field
+                  :value="localCustomTranslation[language][name] || defaultLabel"
+                  :label="t('editor.formschema.edit.input.label')"
+                  required
+                  @input="onInputLabel"
+                />
+              </v-col>
+            </v-row>
+            <v-row
+              no-gutters
+              class="align-center"
+            >
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <span style="font-size: 1.2rem;">{{ t('type') }}:</span>
+              </v-col>
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <v-select
+                  v-model="activeControlType.name"
+                  :label="t('typeInput')"
+                  :disabled="alternatives.length === 1"
+                  :append-icon="alternatives.length === 1 ? '' : undefined"
+                  :items="alternatives"
+                  item-text="name"
+                  item-value="name"
+                  @input="updateActiveControlType()"
+                />
+              </v-col>
+            </v-row>
+            <v-row
+              v-if="activeControlType.name === 'LinksField'"
+              no-gutters
+              class="align-center"
+            >
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <span style="font-size: 1.2rem;">{{ t('linkAttributes') }}:</span>
+              </v-col>
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <v-autocomplete
+                  v-model="linksAttributes"
+                  item-text="label"
+                  :items="linksAttributesItems"
+                  multiple
+                  return-object
+                  :label="t('linkAttributes')"
+                  @input="onInputLinksAttributes"
+                />
+              </v-col>
+            </v-row>
+            <v-row
+              v-if="activeControlType.name === 'Radio'"
+              no-gutters
+              class="align-center"
+            >
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.direction') }}:</span>
+              </v-col>
+              <v-col
+                cols="12"
+                :md="5"
+              >
+                <v-autocomplete
+                  v-model="activeControlType.direction"
+                  :items="directionItems"
+                  :label="t('editor.formschema.edit.input.direction')"
+                />
+              </v-col>
+            </v-row>
+            <VeoFseConditions
+              v-model="activeControlType.rule"
+              :current-scope="formSchema.scope"
             />
-          </v-col>
-        </v-row>
-        <v-row
-          no-gutters
-          class="align-center"
-        >
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <span style="font-size: 1.2rem;">{{ t('type') }}:</span>
-          </v-col>
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <v-select
-              v-model="activeControlType.name"
-              :label="t('typeInput')"
-              :disabled="alternatives.length === 1"
-              :append-icon="alternatives.length === 1 ? '' : undefined"
-              :items="alternatives"
-              item-text="name"
-              item-value="name"
-              @input="updateActiveControlType()"
-            />
-          </v-col>
-        </v-row>
-        <v-row
-          v-if="activeControlType.name === 'LinksField'"
-          no-gutters
-          class="align-center"
-        >
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <span style="font-size: 1.2rem;">{{ t('linkAttributes') }}:</span>
-          </v-col>
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <v-autocomplete
-              v-model="linksAttributes"
-              item-text="label"
-              :items="linksAttributesItems"
-              multiple
-              return-object
-              :label="t('linkAttributes')"
-              @input="onInputLinksAttributes"
-            />
-          </v-col>
-        </v-row>
-        <v-row
-          v-if="activeControlType.name === 'Radio'"
-          no-gutters
-          class="align-center"
-        >
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <span style="font-size: 1.2rem;">{{ t('editor.formschema.edit.input.direction') }}:</span>
-          </v-col>
-          <v-col
-            cols="12"
-            :md="5"
-          >
-            <v-autocomplete
-              v-model="activeControlType.direction"
-              :items="directionItems"
-              :label="t('editor.formschema.edit.input.direction')"
-            />
-          </v-col>
-        </v-row>
-        <VeoFseConditions
-          v-model="activeControlType.rule"
-          :current-scope="formSchema.scope"
-        />
-      </v-form>
-      <small>{{ t('global.input.requiredfields') }}</small>
-
-      <v-card
+          </v-form>
+          <small>{{ t('global.input.requiredfields') }}</small>
+        </v-card-text>
+      </VeoCard>
+      <h3 class="text-h3 mt-6">
+        {{ t('linkAttributes') }}
+      </h3>
+      <VeoCard
         v-if="activeControlType.name === 'LinksField' && formSchemaElements.length > 0"
-        flat
-        style="border: 1px solid grey"
+        inverted
       >
         <Draggable
           class="dragArea d-flex flex-column fill-width fill-height"
@@ -163,7 +171,7 @@
             />
           </div>
         </Draggable>
-      </v-card>
+      </VeoCard>
     </template>
     <template #dialog-options>
       <v-btn
@@ -189,7 +197,7 @@
 import { computed, defineComponent, PropType, Ref, ref, watch, inject, provide } from '@nuxtjs/composition-api';
 import Draggable from 'vuedraggable';
 import { JsonPointer } from 'json-ptr';
-import { differenceBy } from 'lodash';
+import { differenceBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { controlTypeAlternatives, IControlType } from '~/types/VeoEditor';
@@ -481,6 +489,7 @@ export default defineComponent<IProps>({
       updateElement,
       ...linksField,
 
+      upperFirst,
       t
     };
   }
@@ -490,12 +499,14 @@ export default defineComponent<IProps>({
 <i18n>
 {
   "en": {
+    "common": "common",
     "editControlHeadline": "Edit input element",
     "linkAttributes": "Link attributes",
     "type": "Control type",
     "typeInput": "Typ"
   },
   "de": {
+    "common": "allgemein",
     "editControlHeadline": "Input Element anpassen",
     "linkAttributes": "Linkattribute",
     "type": "Steuerelement Typ",

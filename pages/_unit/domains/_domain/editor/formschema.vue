@@ -240,20 +240,15 @@
           v-if="schemaIsValid.valid"
           #default
         >
-          <v-card
-            style="height: 100%"
-            flat
-          >
-            <VeoForm
-              v-model="objectData"
-              :schema="objectSchema"
-              :ui="formSchema.content"
-              :general-translation="translation && translation.lang[language]"
-              :custom-translation="formSchema.translation && formSchema.translation[language]"
-              :domain-id="domainId"
-              :additional-context="additionalContext"
-            />
-          </v-card>
+          <VeoForm
+            v-model="objectData"
+            :schema="objectSchema"
+            :ui="formSchema.content"
+            :general-translation="translation && translation.lang[language]"
+            :custom-translation="formSchema.translation && formSchema.translation[language]"
+            :domain-id="domainId"
+            :additional-context="additionalContext"
+          />
         </template>
         <template v-else>
           <v-row class="fill-height flex-column text-center align-center px-8">

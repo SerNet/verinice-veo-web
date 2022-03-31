@@ -78,7 +78,7 @@
               (!hideEmptyAspects || aspect.item.attributes.length > 0) && itemContainsAttributeTitle(aspect, search)
             "
             :key="index"
-            class="mb-2"
+            class="mb-2 overflow-hidden"
             outlined
           >
             <v-list

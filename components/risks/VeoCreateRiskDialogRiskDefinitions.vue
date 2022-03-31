@@ -199,7 +199,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .risk-definitions {
-  border: 1px solid $medium-grey;
   border-radius: 16px;
   overflow: hidden;
 }

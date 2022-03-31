@@ -18,7 +18,8 @@
 <template>
   <v-card
     rounded
-    elevation="0"
+    flat
+    outlined
     class="fse-input mx-3 my-2"
   >
     <v-card-text class="pa-0">
@@ -242,7 +243,6 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .fse-input {
-  border: 1px solid $medium-grey;
   min-width: 250px;
   overflow: hidden;
 

@@ -33,10 +33,7 @@
         <h2 class="text-h2 mb-2">
           {{ upperFirst(t('common').toString()) }}
         </h2>
-        <v-card
-          flat
-          outlined
-        >
+        <VeoCard inverted>
           <v-card-text>
             <VeoObjectSelect
               v-model="data.scenario"
@@ -71,7 +68,7 @@
               </v-col>
             </v-row>
           </v-card-text>
-        </v-card>
+        </VeoCard>
         <VeoCreateRiskDialogRiskDefinitions
           v-model="data.domains[domainId].riskDefinitions"
           :domain="domain"
