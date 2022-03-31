@@ -18,19 +18,22 @@
 <template>
   <div class="text-left">
     <h3 class="text-h3">
-      {{ upperFirst(t('schemaValidationErrors').toString()) }} ({{ result.errors.length }}):
+      {{ upperFirst(t('schemaValidationErrors').toString()) }} ({{ result.errors.length }})
     </h3>
     <VeoValidationResultList
+      v-bind="$attrs"
       :items="result.errors"
       no-error-placeholder-visible
       :fixing-allowed="fixingAllowed"
       v-on="$listeners"
     />
     <template v-if="warningsVisible">
-      <h3 class="text-h3">
-        {{ upperFirst(t('schemaValidationWarnings').toString()) }} ({{ result.warnings.length }}):
+      <h3 class="text-h3 mt-4">
+        {{ upperFirst(t('schemaValidationWarnings').toString()) }} ({{ result.warnings.length }})
       </h3>
       <VeoValidationResultList
+        v-if="result.warnings.length"
+        v-bind="$attrs"
         :items="result.warnings"
         :fixing-allowed="fixingAllowed"
         v-on="$listeners"

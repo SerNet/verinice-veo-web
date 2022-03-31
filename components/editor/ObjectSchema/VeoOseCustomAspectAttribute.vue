@@ -16,119 +16,124 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list-item class="veo-attribute-list-attribute my-2">
-    <v-list-item-content class="d-block">
-      <v-row>
-        <v-col
-          :cols="8"
-          class="py-0"
-        >
-          <v-text-field
-            :value="form.data.title"
-            :label="`${t('aspectName')} *`"
-            required
-            :rules="form.rules.title"
-            :prefix="prefix"
-            @input="doUpdate($event, 'title')"
-          />
-        </v-col>
-        <v-col
-          :cols="4"
-          class="py-0"
-        >
-          <v-select
-            :value="form.data.type"
-            :label="t('aspectType')"
-            :items="types"
-            @input="doUpdate($event, 'type')"
-          />
-        </v-col>
-      </v-row>
-      <v-row dense>
-        <v-col class="py-0">
-          <v-text-field
-            :value="form.data.description"
-            :label="t('aspectDescription')"
-            clearable
-            @input="doUpdate($event, 'description')"
-          />
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="form.data.type === 'enum'"
-        class="flex-column"
-        dense
-      >
-        <v-col class="py-0 d-flex align-center">
-          <h3 class="text-h3">
-            {{ t('values') }}
-          </h3>
-          <v-checkbox
-            v-model="form.data.multiple"
-            dense
-            hide-details
-            :label="t('multiple')"
-            class="mt-0 pt-0 ml-4"
-            @change="doUpdate($event, 'multiple')"
-          />
-        </v-col>
-        <v-col class="py-0">
-          <v-combobox
-            :value="form.data.enum"
-            chips
-            multiple
-            disable-lookup
-            hide-no-data
-            append-icon=""
-            clearable
-            @input="doUpdate($event, 'enum')"
+  <VeoCard
+    inverted
+    class="mb-6"
+  >
+    <v-list-item>
+      <v-list-item-content>
+        <v-row>
+          <v-col
+            :cols="8"
+            class="py-0"
           >
-            <template #label>
-              <span>
-                {{ t('valuesHint') }}
-              </span>
-            </template>
-            <template #selection="data">
-              <v-chip
-                :key="JSON.stringify(data.item)"
-                v-bind="data.attrs"
-                close
-                @click:close="removeValueFromEnum(data.item)"
-              >
-                {{ data.item }}
-              </v-chip>
-            </template>
-          </v-combobox>
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="formatOptions.length > 0"
-        class="flex-column"
-      >
-        <v-col class="py-0">
-          <v-select
-            :value="currentFormatOption"
-            :label="t('inputFormat')"
-            :items="formatOptions"
-            item-text="displayName"
-            item-value="name"
-            @input="updateOptions($event)"
-          />
-        </v-col>
-      </v-row>
-    </v-list-item-content>
-    <v-list-item-action>
-      <v-btn
-        fab
-        depressed
-        text
-        color="black"
-        @click="doDelete()"
-      >
-        <v-icon>mdi-delete</v-icon>
-      </v-btn>
-    </v-list-item-action>
-  </v-list-item>
+            <v-text-field
+              :value="form.data.title"
+              :label="`${t('aspectName')} *`"
+              required
+              :rules="form.rules.title"
+              :prefix="prefix"
+              @input="doUpdate($event, 'title')"
+            />
+          </v-col>
+          <v-col
+            :cols="4"
+            class="py-0"
+          >
+            <v-select
+              :value="form.data.type"
+              :label="t('aspectType')"
+              :items="types"
+              @input="doUpdate($event, 'type')"
+            />
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col class="py-0">
+            <v-text-field
+              :value="form.data.description"
+              :label="t('aspectDescription')"
+              clearable
+              @input="doUpdate($event, 'description')"
+            />
+          </v-col>
+        </v-row>
+        <v-row
+          v-if="form.data.type === 'enum'"
+          class="flex-column"
+          dense
+        >
+          <v-col class="py-0 d-flex align-center">
+            <h4 class="text-h4">
+              {{ t('values') }}
+            </h4>
+            <v-checkbox
+              v-model="form.data.multiple"
+              dense
+              hide-details
+              :label="t('multiple')"
+              class="mt-0 pt-0 ml-4"
+              @change="doUpdate($event, 'multiple')"
+            />
+          </v-col>
+          <v-col class="py-0">
+            <v-combobox
+              :value="form.data.enum"
+              chips
+              multiple
+              disable-lookup
+              hide-no-data
+              append-icon=""
+              clearable
+              @input="doUpdate($event, 'enum')"
+            >
+              <template #label>
+                <span>
+                  {{ t('valuesHint') }}
+                </span>
+              </template>
+              <template #selection="data">
+                <v-chip
+                  :key="JSON.stringify(data.item)"
+                  v-bind="data.attrs"
+                  close
+                  @click:close="removeValueFromEnum(data.item)"
+                >
+                  {{ data.item }}
+                </v-chip>
+              </template>
+            </v-combobox>
+          </v-col>
+        </v-row>
+        <v-row
+          v-if="formatOptions.length > 0"
+          class="flex-column"
+        >
+          <v-col class="py-0">
+            <v-select
+              :value="currentFormatOption"
+              :label="t('inputFormat')"
+              :items="formatOptions"
+              item-text="displayName"
+              item-value="name"
+              @input="updateOptions($event)"
+            />
+          </v-col>
+        </v-row>
+      </v-list-item-content>
+      <v-list-item-action>
+        <v-btn
+          fab
+          depressed
+          text
+          color="black"
+          @click="doDelete()"
+        >
+          <v-icon>mdi-trash-can-outline</v-icon>
+        </v-btn>
+      </v-list-item-action>
+    </v-list-item>
+  </VeoCard>
 </template>
 
 <script lang="ts">
@@ -383,11 +388,3 @@ export default defineComponent<IProps>({
 }
 </i18n>
 
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.veo-attribute-list-attribute {
-  border: 1px solid $medium-grey;
-  border-radius: 4px;
-}
-</style>

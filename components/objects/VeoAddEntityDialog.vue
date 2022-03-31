@@ -70,7 +70,6 @@
     <template #dialog-options>
       <v-btn
         text
-        color="primary"
         :disabled="saving"
         @click="$emit('input', false)"
       >
@@ -362,3 +361,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.v-data-table {
+  background-color: transparent;
+}
+</style>

@@ -142,7 +142,7 @@
 </template>
 
 <script lang="ts">
-import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCan } from '@mdi/js';
+import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
@@ -315,7 +315,7 @@ export default defineComponent({
       {
         id: 'unlink',
         label: upperFirst(t('unlinkObject').toString()),
-        icon: mdiTrashCan,
+        icon: mdiTrashCanOutline,
         action(item: IVeoEntity) {
           itemDelete.value = item;
         }

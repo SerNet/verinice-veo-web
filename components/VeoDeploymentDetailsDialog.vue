@@ -22,7 +22,7 @@
     large
     v-on="$listeners"
   >
-    <v-simple-table>
+    <v-simple-table dense>
       <thead>
         <tr>
           <th>
@@ -155,3 +155,9 @@ export default Vue.extend({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.v-data-table {
+  background-color: transparent !important;
+}
+</style>

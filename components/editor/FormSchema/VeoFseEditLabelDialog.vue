@@ -101,7 +101,6 @@
     <template #dialog-options>
       <v-btn
         text
-        color="primary"
         @click="onDialogChanged(false)"
       >
         {{ t('global.button.close') }}

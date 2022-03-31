@@ -172,7 +172,7 @@ export default defineComponent({
 .v-card,
 .v-card__actions,
 .v-card__title {
-  background-color: $background-primary;
+  background-color: $background-accent;
 }
 
 .border-bottom {

@@ -62,7 +62,7 @@
             dense
             small
           >
-            mdi-delete
+            mdi-trash-can-outline
           </v-icon>
         </v-btn>
       </v-col>

@@ -20,7 +20,10 @@
     <h2 class="text-h2 mb-2">
       {{ t('start') }}
     </h2>
-    <v-list two-line>
+    <v-list
+      two-line
+      color="transparent"
+    >
       <v-list-item
         v-for="action of actions"
         :key="action.title"

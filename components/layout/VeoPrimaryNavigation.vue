@@ -483,6 +483,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-primary-navigation.v-navigation-drawer {
-  background-color: $background-primary;
+  background-color: $background-accent;
 }
 </style>

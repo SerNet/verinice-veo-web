@@ -30,14 +30,17 @@
           value="start"
           class="py-4"
         >
-          <h2>
+          <h3 class="text-h3">
             {{ $t('start') }}
-          </h2>
+          </h3>
           <v-list
-            two-line
             class="px-0 overflow-hidden"
+            color="transparent"
           >
-            <v-list-item @click="state = 'create'">
+            <v-list-item
+              two-line
+              @click="state = 'create'"
+            >
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
                   {{ $t('createObjectSchema') }}
@@ -50,7 +53,10 @@
                 </v-icon>
               </v-list-item-action>
             </v-list-item>
-            <v-list-item @click="state = 'import'">
+            <v-list-item
+              two-line
+              @click="state = 'import'"
+            >
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
                   {{ $t('importObjectSchema') }}
@@ -175,7 +181,6 @@
       </v-window>
     </template>
     <template #dialog-options>
-      <span />
       <v-btn
         v-if="state !== 'start'"
         text

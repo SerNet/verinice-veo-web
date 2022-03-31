@@ -121,11 +121,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-primary !important;
+  background-color: $background-accent !important;
 }
 
 ::v-deep.v-main {
-  background: $background-primary;
+  background: $background-accent;
 }
 
 ::v-deep.v-main > .v-main__wrap {
@@ -138,6 +138,6 @@ export default defineComponent({
 }
 
 .veo-docs-navigation.v-navigation-drawer {
-  background-color: $background-primary;
+  background-color: $background-accent;
 }
 </style>

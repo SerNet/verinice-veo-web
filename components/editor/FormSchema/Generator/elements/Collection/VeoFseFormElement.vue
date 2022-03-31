@@ -81,7 +81,7 @@
               small
               :data-cy="$utils.prefixCyData($options, 'delete-button')"
             >
-              mdi-delete
+              mdi-trash-can-outline
             </v-icon>
           </v-btn>
         </v-col>

@@ -85,11 +85,16 @@
               :key="item.name"
               cols="12"
             >
-              <v-card
+              <h3
                 :key="item.name"
-                outlined
+                class="text-h3"
               >
-                <v-card-title>{{ item.fullName }}</v-card-title>
+                {{ item.fullName }}
+              </h3>
+              <VeoCard
+                :key="item.name"
+                inverted
+              >
                 <v-card-text>
                   <v-row no-gutters>
                     <v-col
@@ -111,7 +116,7 @@
                     @input="onInputCode($event, item)"
                   />
                 </v-card-text>
-              </v-card>
+              </VeoCard>
             </v-col>
           </v-row>
         </v-form>
@@ -121,7 +126,6 @@
     <template #dialog-options>
       <v-btn
         text
-        color="primary"
         @click="onDialogStatus(false)"
       >
         {{ $t('global.button.close') }}

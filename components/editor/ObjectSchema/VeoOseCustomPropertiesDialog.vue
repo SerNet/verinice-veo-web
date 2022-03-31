@@ -28,108 +28,105 @@
         v-model="form.valid"
         @submit.prevent="onSubmit"
       >
-        <v-row>
-          <v-col
-            cols="12"
-            md="8"
-          >
-            <v-text-field
-              v-model="form.data.title"
-              :label="`${$t('propertyName')} *`"
-              required
-              :rules="form.rules.title"
-              :prefix="prefix"
-            />
-          </v-col>
-        </v-row>
-        <v-row v-if="type === 'link'">
-          <v-col
-            cols="4"
-            class="py-0"
-          >
-            <v-select
-              v-model="form.data.targetType"
-              :label="`${$t('linkType')} *`"
-              :items="formattedObjectTypes"
-              required
-              :rules="form.rules.targetType"
-            />
-          </v-col>
-          <v-col
-            cols="4"
-            class="py-0"
-          >
-            <v-select
-              v-model="form.data.subType"
-              :disabled="!form.data.targetType || form.data.targetType === ''"
-              :label="`${$t('linkSubType')}`"
-              :items="filteredFormSchemas"
-            />
-          </v-col>
-        </v-row>
-        <v-list
-          v-if="dialogMode === 'edit'"
-          dense
-          class="py-0"
-        >
-          <v-list-item
+        <h3 class="text-h3">
+          {{ upperFirst($t('common').toString()) }}
+        </h3>
+        <VeoCard inverted>
+          <v-card-text>
+            <v-row>
+              <v-col
+                cols="12"
+                md="8"
+              >
+                <v-text-field
+                  v-model="form.data.title"
+                  :label="`${$t('propertyName')} *`"
+                  required
+                  :rules="form.rules.title"
+                  :prefix="prefix"
+                />
+              </v-col>
+            </v-row>
+            <v-row v-if="type === 'link'">
+              <v-col
+                cols="4"
+                class="py-0"
+              >
+                <v-select
+                  v-model="form.data.targetType"
+                  :label="`${$t('linkType')} *`"
+                  :items="formattedObjectTypes"
+                  required
+                  :rules="form.rules.targetType"
+                />
+              </v-col>
+              <v-col
+                cols="4"
+                class="py-0"
+              >
+                <v-select
+                  v-model="form.data.subType"
+                  :disabled="!form.data.targetType || form.data.targetType === ''"
+                  :label="`${$t('linkSubType')}`"
+                  :items="filteredFormSchemas"
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </VeoCard>
+        <template v-if="dialogMode === 'edit'">
+          <h3 class="text-h3 mt-6">
+            {{ upperFirst($t('attributes').toString()) }} ({{ form.data.attributes.length }})
+          </h3>
+          <VeoOseCustomAspectAttribute
             v-for="(attribute, index) of form.data.attributes"
             :key="index"
-            class="veo-attribute-list-attribute my-2"
+            v-bind="attribute"
+            :aspect-name="aspectPrefix"
+            @delete="removeAttribute(index)"
+            @update="updateAttribute($event, index)"
+          />
+          <p
+            v-if="form.data.attributes.length === 0"
+            class="text-body-1 font-italic"
           >
-            <VeoOseCustomAspectAttribute
-              v-bind="attribute"
-              :aspect-name="aspectPrefix"
-              @delete="removeAttribute(index)"
-              @update="updateAttribute($event, index)"
-            />
-          </v-list-item>
-          <v-list-item v-if="form.data.attributes.length === 0">
-            <v-list-item-content
-              class="veo-attribute-list-no-content justify-center"
-            >
-              {{ $t(`noProperties.${type}`) }}
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item class="veo-attribute-list-add-button">
-            <v-list-item-action>
-              <v-spacer />
-              <v-btn
-                color="primary"
-                text
-                @click="addAttribute()"
+            {{ $t(`noProperties.${type}`) }}
+          </p>
+          <v-alert
+            v-if="duplicates.length > 0"
+            type="error"
+            class="mb-4 mt-6"
+            border="left"
+            colored-border
+          >
+            <span>{{ $t('duplicateAttributes') }}:</span>
+            <ul>
+              <li
+                v-for="duplicate of duplicates"
+                :key="duplicate"
               >
-                <v-icon>mdi-plus-circle-outline</v-icon>
-                <span class="ml-2">{{ $t('addAttribute') }}</span>
-              </v-btn>
-            </v-list-item-action>
-          </v-list-item>
-        </v-list>
-        <v-alert
-          v-if="duplicates.length > 0"
-          type="error"
-          class="mb-4 mt-6"
-          border="left"
-          colored-border
-        >
-          <span>{{ $t('duplicateAttributes') }}:</span>
-          <ul>
-            <li
-              v-for="duplicate of duplicates"
-              :key="duplicate"
-            >
-              {{ duplicate }}
-            </li>
-          </ul>
-        </v-alert>
+                {{ duplicate }}
+              </li>
+            </ul>
+          </v-alert>
+          <v-btn
+            text
+            @click="addAttribute()"
+          >
+            <v-icon left>
+              mdi-plus
+            </v-icon>
+            {{ $t('addAttribute') }}
+          </v-btn>
+        </template>
       </v-form>
       <small>{{ $t('global.input.requiredfields') }}</small>
     </template>
     <template #dialog-options>
       <v-btn
         v-if="propertyId"
-        color="primary"
-        outlined
+        color="error"
+        text
         @click="$emit('delete')"
       >
         {{ $t(`delete.${type}`) }}
@@ -138,7 +135,6 @@
       <template v-if="dialogMode === 'edit'">
         <v-btn
           text
-          color="primary"
           @click="close()"
         >
           {{ $t('global.button.close') }}
@@ -168,7 +164,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Prop } from 'vue/types/options';
-import { capitalize, cloneDeep, trim } from 'lodash';
+import { capitalize, cloneDeep, trim, upperFirst } from 'lodash';
 
 import { Ref } from '@nuxtjs/composition-api';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
@@ -322,6 +318,7 @@ export default Vue.extend({
     }
   },
   methods: {
+    upperFirst,
     close() {
       this.$emit('input', false);
     },
@@ -461,7 +458,9 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
+    "attributes": "attributes",
     "addAttribute": "Add attribute",
+    "common": "common",
     "delete": {
       "aspect": "Delete aspect",
       "link": "Delete link"
@@ -485,7 +484,9 @@ export default Vue.extend({
     "propertyName": "Name"
   },
   "de": {
+    "attributes": "attribute",
     "addAttribute": "Attribut hinzufügen",
+    "common": "allgemein",
     "delete": {
       "aspect": "Aspekt löschen",
       "link": "Link löschen"
@@ -502,8 +503,8 @@ export default Vue.extend({
     "linkSubType": "Link Subtyp",
     "linkType": "Typ des Linkziels",
     "noProperties": {
-      "aspect": "Dieser Aspekt besitzt keine Eigenschaften",
-      "link": "Dieser Link besitzt keine Eigenschaften"
+      "aspect": "Dieser Aspekt besitzt keine Attribute",
+      "link": "Dieser Link besitzt keine Attribute"
     },
     "no_subtype": "Kein spezieller Subtyp",
     "propertyName": "Name"
@@ -511,15 +512,3 @@ export default Vue.extend({
 }
 </i18n>
 
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.veo-attribute-list-no-content {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.veo-attribute-list-add-button {
-  background-color: $light-grey;
-}
-</style>

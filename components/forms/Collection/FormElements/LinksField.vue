@@ -54,7 +54,7 @@
             small
             @click="removeRow(index)"
           >
-            <v-icon>{{ mdiTrashCan }}</v-icon>
+            <v-icon>{{ mdiTrashCanOutline }}</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
@@ -79,7 +79,7 @@
 import { computed, defineComponent, PropType, Ref, ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JSONSchema7 } from 'json-schema';
-import { mdiPlus, mdiTrashCan } from '@mdi/js';
+import { mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
@@ -165,7 +165,7 @@ export default defineComponent({
       removeRow,
       selected,
 
-      mdiTrashCan,
+      mdiTrashCanOutline,
       mdiPlus,
       t
     };

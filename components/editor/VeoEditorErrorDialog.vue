@@ -25,6 +25,7 @@
   >
     <template #default>
       <VeoValidationResult
+        inverted
         :result="$attrs.validation"
         warnings-visible
         fixing-allowed

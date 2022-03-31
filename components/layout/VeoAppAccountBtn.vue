@@ -73,7 +73,7 @@
             <v-divider />
             <VeoUnitSelection :units="units" />
           </template>
-          <v-divider class="mt-2" />
+          <v-divider />
           <v-list-item @click="displayDeploymentDetails = true">
             <v-list-item-icon>
               <v-icon color="black">

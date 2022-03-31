@@ -83,15 +83,15 @@
               :key="language"
               cols="12"
             >
-              <v-card outlined>
-                <v-card-title>{{ $t(`languageName.${ language }`) }}</v-card-title>
-                <v-card-text>
-                  <VeoCodeEditor
-                    :value="JSON.stringify(data.translations[language], undefined, 2)"
-                    @input="onCodeUpdate($event, language)"
-                  />
-                </v-card-text>
-              </v-card>
+              <h3 class="text-h3">
+                {{ $t(`languageName.${ language }`) }}
+              </h3>
+              <VeoCard inverted>
+                <VeoCodeEditor
+                  :value="JSON.stringify(data.translations[language], undefined, 2)"
+                  @input="onCodeUpdate($event, language)"
+                />
+              </VeoCard>
             </v-col>
           </v-row>
         </v-form>

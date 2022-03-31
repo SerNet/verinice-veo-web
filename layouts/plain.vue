@@ -58,6 +58,6 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-primary !important;
+  background-color: $background-accent !important;
 }
 </style>

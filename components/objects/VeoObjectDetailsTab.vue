@@ -68,7 +68,7 @@
 import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiContentCopy, mdiLinkOff, mdiTrashCan } from '@mdi/js';
+import { mdiContentCopy, mdiLinkOff, mdiTrashCanOutline } from '@mdi/js';
 import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -151,7 +151,7 @@ export default defineComponent({
             {
               id: 'delete',
               label: upperFirst(t('deleteRisk').toString()),
-              icon: mdiTrashCan,
+              icon: mdiTrashCanOutline,
               async action(item: IVeoRisk) {
                 try {
                   const { id } = getEntityDetailsFromLink(item.scenario);

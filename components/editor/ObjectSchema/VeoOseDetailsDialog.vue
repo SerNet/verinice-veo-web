@@ -45,7 +45,7 @@
           :key="subTypeIndex"
           cols="6"
         >
-          <v-card outlined>
+          <VeoCard inverted>
             <v-card-text>
               <v-row>
                 <v-col
@@ -74,7 +74,7 @@
                         @click="deleteSubType(subTypeIndex)"
                       >
                         <v-icon>
-                          {{ mdiTrashCan }}
+                          {{ mdiTrashCanOutline }}
                         </v-icon>
                       </v-btn>
                     </template>
@@ -133,7 +133,7 @@
                 </v-list-item>
               </v-form>
             </v-card-text>
-          </v-card>
+          </VeoCard>
         </v-col>
         <v-col cols="12">
           <v-btn
@@ -171,7 +171,7 @@
 <script lang="ts">
 import { defineComponent, inject, useRoute, Ref, ref, watch, useAsync, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiMenu, mdiPlus, mdiTranslate, mdiTrashCan } from '@mdi/js';
+import { mdiMenu, mdiPlus, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
 import { upperFirst, cloneDeep } from 'lodash';
 
@@ -335,7 +335,7 @@ export default defineComponent({
       mdiMenu,
       mdiPlus,
       mdiTranslate,
-      mdiTrashCan,
+      mdiTrashCanOutline,
       upperFirst,
       CHART_COLORS
     };

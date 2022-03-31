@@ -414,6 +414,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-list {
-  background: $background-primary;
+  background: $background-accent;
 }
 </style>
