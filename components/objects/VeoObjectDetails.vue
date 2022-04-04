@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-row class="fill-height flex-column flex-nowrap">
+  <v-row
+    no-gutters
+    class="fill-height flex-column flex-nowrap"
+  >
     <v-col class="flex-grow-0 text-body-1">
       <template v-if="!loading">
         <p class="text-no-wrap mb-0">

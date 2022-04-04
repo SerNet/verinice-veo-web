@@ -16,7 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper :page-widths="[8, 4]">
+  <VeoPageWrapper
+    :page-widths="[6, 6]"
+    :page-widths-lg="[7, 5]"
+    :page-widths-xl="[8, 4]"
+  >
     <template #default>
       <VeoPage
         :id="scrollWrapperId"
