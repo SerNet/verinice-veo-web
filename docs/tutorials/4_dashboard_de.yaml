@@ -1,0 +1,36 @@
+title: Dashboard-Tutorial
+description: Das veo.Dashboard
+route: /unit-:unit/domains/domain-:domain
+steps:
+  - title: 'Das Dashboard'
+    element: '#app > div.v-application--wrap > main > div'
+    intro: Das Dashboard zeigt Ihre zuletzt bearbeiteten Objekte sowie eine graphische Darstellung aller Objekte. Durch Mausklick in den Balkendiagrammen navigieren Sie direkt zur Objektübersicht für alle Subtypen im jeweiligen Status bzw. zu dem zuletzt bearbeiteten Objekt.
+  - title: 'Meine zuletzt bearbeiteten Objekte'
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div:nth-child(2) > div:nth-child(4) > div'
+    intro: In diesem Bereich navigieren Sie schnell zu Ihren zuletzt bearbeiteten Objekten.
+  - title: 'Scopes'
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div:nth-child(1) > div:nth-child(1) > div'
+    intro: In diesem Bereich werden Subtypen eins Objekttyps dargestellt, hier die verfügbaren Scopes.
+  - title: 'Prozesse'
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div:nth-child(1) > div:nth-child(2) > div'
+    intro: Die Subtypen dienen der unterschiedlichen Darstellung der Objekte eines Typs in speziellen Formularen. Prozesse können so z.B. als Verarbeitungstätigkeiten, Datenübertragungen oder Datenschutzfolgenabschätzung präsentiert werden.
+  - title: 'Assets'
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div:nth-child(1) > div:nth-child(3) > div'
+    intro: Jeder Subtyp kann einen spezifischen Status besitzen. Standardmäßig wird ein Lebenszyklus der einzelnen Objekte dargestellt, z.B. für die Assets.
+  - title: 'Personen'
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div:nth-child(1) > div:nth-child(4) > div'
+    intro: Die Status der Objekte sind farblich codiert - rot = neu, gelb = in Bearbeitung, blau = in Prüfung, grün = freigegeben und grau = archiviert.
+  - title: 'Controls'
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div:nth-child(1) > div:nth-child(5) > div'
+    intro: Rote, gelbe und blaue Objekte bedürfen weiterer Dokumentation, grüne und graue haben Sie als hinreichend dokumentiert definiert.
+  - title: 'Incidents'
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div:nth-child(2) > div:nth-child(1) > div'
+    intro: Ein neuer Datenschutzvorfall, der eine fristgerechte Reaktion erfordert, wird Ihnen im Bereich Incidents rot dargestellt.
+  - title: 'Documents'
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div:nth-child(2) > div:nth-child(2) > div'
+    intro: Oder steht ein Vertrag zur Prüfung an, so finden Sie diesen blau im Balkendiagramm im Bereich Dokumente.
+  - title: 'Scenarios'
+    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div:nth-child(2) > div:nth-child(3) > div'
+    intro: Navigieren Sie vom Dashboard direkt zu den "gelben" Gefährdungen, die weiter betrachtet werden müssen.
+  - title: 'Geschafft'
+    intro: Weitere Informationen zum Dashboard finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>

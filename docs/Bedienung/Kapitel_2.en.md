@@ -1,7 +1,21 @@
 ---
-title: Chapter 2
+title: Features & Benefits
 ---
 
-## Chapter 2
+## Features & Benefits
 
-To be defined
+### Up and running in 5 minutes
+
+### A true perspective
+
+Domains
+
+### It's all a matter of opinion
+
+Scopes / object of observation
+
+### Construction kit
+
+All Lego? Composites
+
+### Audit trail

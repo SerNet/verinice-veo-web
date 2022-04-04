@@ -1,0 +1,9 @@
+title: Kataloge-Tutorial
+description: Verwendung von Katalogen
+route: /unit-:unit/domains/domain-:domain/catalogs/catalog-:catalog
+steps:
+  - title: 'Kataloge'
+    element: '#app > div.v-application--wrap > main > div'
+    intro: Im diesem Abschnitt können vorhandene Kataloge angewendet werde.
+  - title: 'Geschafft'
+    intro: Weitere Informationen zu Katalogen finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>

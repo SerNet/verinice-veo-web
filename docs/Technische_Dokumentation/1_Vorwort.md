@@ -4,6 +4,8 @@ title: Vorwort
 
 # Vorwort
 
+Hallo Team
+
 `Model once, manage all`
 
 verinice.veo ist nicht nur eine Anwendung für den Aufbau und Betrieb eines Information Security Management System (ISMS), es ist Platform und Baukasten für das Verwalten verschiedener Standards. In diesem Baukasten kann jeder Standard für die eigenen Zwecke angepasst werden und veo erlaubt es, auf Basis vorhandener Standards neue Vorgehen zu beschreiben und zu verwalten. Alle Informationen werden dabei in einem universell verwendbaren Modell gespeichert. veo speichert alle Daten in einem Modell, egal welche Norm oder Vorgehensweise zur Anwendung kommt.
