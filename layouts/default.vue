@@ -217,6 +217,12 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
 }
+
+@media screen and (max-width: 600px) {
+  ::v-deep.v-main > .v-main__wrap {
+    border-top-left-radius: 0;
+  }
+}
 </style>
 
 <i18n>
