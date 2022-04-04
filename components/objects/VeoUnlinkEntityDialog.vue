@@ -21,9 +21,9 @@
     :headline="$t('headline')"
   >
     <template #default>
-      {{ $t('text', { displayName, parentDisplayName }) }}
+      <span class="text-body-1">{{ $t('text', { displayName, parentDisplayName }) }}</span>
       <br>
-      {{ $t('hint') }}
+      <span class="text-body-2">{{ $t('hint') }}</span>
     </template>
     <template #dialog-options>
       <v-btn

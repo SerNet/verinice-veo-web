@@ -21,7 +21,7 @@
     :headline="$t('headline')"
   >
     <template #default>
-      {{ $t('text', { displayName }) }}
+      <span class="text-body-1">{{ $t('text', { displayName }) }}</span>
     </template>
     <template #dialog-options>
       <v-btn

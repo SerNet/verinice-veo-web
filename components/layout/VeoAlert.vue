@@ -41,7 +41,7 @@
         <slot />
         <p
           v-if="text"
-          class="mb-0 accent--text"
+          class="mb-0 accent--text text-body-1"
           v-text="text"
         />
       </v-col>

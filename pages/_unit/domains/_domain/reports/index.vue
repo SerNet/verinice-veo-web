@@ -21,7 +21,7 @@
     fullsize
   >
     <template #header>
-      <p class="mt-4">
+      <p class="mt-4 text-body-1">
         {{ $t('hint') }}
       </p>
     </template>
