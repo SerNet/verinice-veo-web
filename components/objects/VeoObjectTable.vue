@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { computed, defineComponent, PropType, h, useContext, useAsync } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, h, useContext, useAsync, ComputedRef } from '@nuxtjs/composition-api';
 import { VNode, VNodeChildren, VNodeData } from 'vue/types/vnode';
 import { useI18n } from 'nuxt-i18n-composable';
 import { DataTableHeader } from 'vuetify/types';
@@ -31,10 +31,8 @@ export type ObjectTableTooltip = (value: any) => string;
 export type ObjectTableRenderer = (props: { item: IVeoEntity }) => VNode | VNode[] | string;
 
 export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
-  isDense?: boolean;
-  isSimple?: boolean;
-  isRisk?: boolean;
-  riskOnly?: boolean;
+  importance: number;
+  order: number;
   truncate?: boolean;
   map?: ObjectTableFormatter;
   text?: string;
@@ -60,18 +58,15 @@ export default defineComponent({
       default: () => []
     },
     /**
-     * Reduce number of headers
+     * Keys of the defa
      */
-    dense: {
-      type: Boolean,
-      default: false
+    commonlyUsedHeaderKeys: {
+      type: Array as PropType<String[]>,
+      default: () => []
     },
-    /**
-     * Simple table (only name)
-     */
-    simple: {
-      type: Boolean,
-      default: false
+    additionalHeaders: {
+      type: Array as PropType<ObjectTableHeader[]>,
+      default: () => []
     },
     page: {
       type: Number,
@@ -86,10 +81,6 @@ export default defineComponent({
       default: () => []
     },
     loading: {
-      type: Boolean,
-      default: false
-    },
-    risk: {
       type: Boolean,
       default: false
     }
@@ -182,100 +173,87 @@ export default defineComponent({
       );
 
     /**
-     * Header configuration
+     * Headers that are used by multiple tables, thus it makes sense to define them in one place
      */
-    const headerConfig: ObjectTableHeader[] = [
-      {
+    const commonlyUsedHeaders: { [key: string]: ObjectTableHeader } = {
+      icon: {
         value: 'icon',
-        isDense: false,
-        isSimple: true,
         sortable: false,
         text: '',
         class: ['pr-0'],
         cellClass: ['pr-0'],
         width: 0,
-        render: renderIcon
+        render: renderIcon,
+        importance: 70,
+        order: 1
       },
-      {
+      designator: {
         value: 'designator',
-        isDense: true,
-        isSimple: false,
-        isRisk: true,
         sortable: true,
-        width: 110
+        width: 110,
+        importance: 90,
+        order: 2
       },
-      {
+      abbreviation: {
         value: 'abbreviation',
-        isDense: false,
-        isSimple: false,
         sortable: true,
         truncate: true,
-        width: 80
+        width: 80,
+        importance: 60,
+        order: 3
       },
-      {
+      name: {
         value: 'name',
-        isDense: true,
-        isSimple: true,
         cellClass: ['font-weight-bold'],
         width: 300,
         truncate: true,
-        sortable: true
+        sortable: true,
+        importance: 100,
+        order: 4
       },
-      {
-        value: 'scenario.displayName',
-        isDense: false,
-        isSimple: false,
-        isRisk: true,
-        cellClass: ['font-weight-bold'],
-        width: 300,
-        truncate: true,
-        riskOnly: true
-      },
-      {
+      status: {
         value: 'status',
-        isDense: false,
-        isSimple: false,
         sortable: false,
         width: 110,
-        render: renderStatus
+        render: renderStatus,
+        importance: 40,
+        order: 5
       },
-      {
+      description: {
         value: 'description',
-        isDense: false,
-        isSimple: false,
         sortable: false,
         width: 500,
         truncate: true,
-        tooltip: ({ item }) => item.description || ''
+        tooltip: ({ item }) => item.description || '',
+        importance: 30,
+        order: 6
       },
-      {
+      updatedBy: {
         value: 'updatedBy',
-        isDense: true,
-        isSimple: false,
         sortable: true,
-        width: 110
+        width: 110,
+        importance: 50,
+        order: 7
       },
-      {
+      updatedAt: {
         value: 'updatedAt',
-        isDense: true,
-        isRisk: true,
-        isSimple: false,
         sortable: true,
         width: 200,
         tooltip: renderUpdatedAtTooltip,
-        render: renderDate
+        render: renderDate,
+        importance: 80,
+        order: 8
       },
-      {
+      actions: {
         value: 'actions',
-        isDense: true,
-        isRisk: true,
-        isSimple: false,
         text: '',
         sortable: false,
         width: 110,
-        render: renderActions
+        render: renderActions,
+        importance: 100,
+        order: 9
       }
-    ];
+    };
     type Header = DataTableHeader & ObjectTableHeader;
 
     /**
@@ -320,21 +298,28 @@ export default defineComponent({
     /**
      * Prepare headers for v-data-table, applying classes and tooltip renderers
      */
-    const _headers: Header[] = headerConfig.map((header) => {
-      const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : []);
-      return {
-        ...header,
-        isDense: !!header?.isDense,
-        isSimple: !!header?.isSimple,
-        text: header.text ?? t(`objectlist.${header.value}`).toString(),
-        cellClass,
-        class: defaultClasses.concat(header.class || [], header.truncate ? truncateClasses : []),
-        render: header.tooltip ? renderTooltip(header, { class: cellClass }) : header.render
-      };
-    });
+    const _headers: ComputedRef<Header[]> = computed(() =>
+      [
+        ...Object.entries(commonlyUsedHeaders)
+          .filter(([key, _header]) => props.commonlyUsedHeaderKeys.includes(key))
+          .map(([_key, header]) => header),
+        ...props.additionalHeaders
+      ]
+        .map((header) => {
+          const cellClass = defaultCellClasses.concat(header.cellClass || [], header.truncate ? truncateClasses : []);
+          return {
+            ...header,
+            text: header.text ?? t(`objectlist.${header.value}`).toString(),
+            cellClass,
+            class: defaultClasses.concat(header.class || [], header.truncate ? truncateClasses : []),
+            render: header.tooltip ? renderTooltip(header, { class: cellClass }) : header.render
+          };
+        })
+        .sort((a, b) => a.order - b.order)
+    );
 
     // Apply formatters to items:
-    const mappers = _headers.filter((_) => !!_.map);
+    const mappers = _headers.value.filter((_) => !!_.map);
     const mapItem = (item: IVeoEntity) => {
       const mappedValues = Object.fromEntries(
         mappers.map((formatter) => {
@@ -346,12 +331,6 @@ export default defineComponent({
       return { ...item, ...mappedValues };
     };
 
-    // headers (less in dense mode)
-    const denseHeaders = _headers.filter((header) => header.isDense);
-    const simpleHeaders = _headers.filter((header) => header.isSimple);
-    const riskHeaders = _headers.filter((header) => header.isRisk);
-    const defaultHeaders = _headers.filter((header) => !header.riskOnly); // Risk headers shoul
-    const headers = computed(() => (props.risk ? riskHeaders : props.simple ? simpleHeaders : props.dense ? denseHeaders : defaultHeaders));
     const items = computed(() => {
       const items = isPaginatedResponse(props.items) ? props.items.items : props.items;
       return items.map(mapItem);
@@ -359,7 +338,7 @@ export default defineComponent({
     /**
      * Create scopedSlots to apply renderers
      */
-    const scopedSlots = computed(() => Object.fromEntries(_headers.filter((_) => !!_.render).map((_) => [`item.${_.value}`, _.render!])));
+    const scopedSlots = computed(() => Object.fromEntries(_headers.value.filter((_) => !!_.render).map((_) => [`item.${_.value}`, _.render!])));
     /**
      * Calculate pagination properties
      */
@@ -395,7 +374,7 @@ export default defineComponent({
         attrs,
         props: {
           items: items.value,
-          headers: headers.value,
+          headers: _headers.value,
           sortBy: props.sortBy,
           sortDesc: props.sortDesc,
           page: props.page,

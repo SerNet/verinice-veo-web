@@ -80,6 +80,7 @@
       v-if="!fetchState.error"
       :items="items"
       :loading="fetchState.pending"
+      :commonly-used-header-keys="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
       @page-change="onPageChange"
       @click="openItem"
     >

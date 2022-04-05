@@ -74,9 +74,6 @@ export default {
     name: 'object name',
     notPartOfGroup: 'not part of another object',
     objectType: 'Object type',
-    scenario: {
-      displayName: 'Risk'
-    },
     status: 'Status',
     subType: 'Subtype',
     updatedAt: 'Last change',

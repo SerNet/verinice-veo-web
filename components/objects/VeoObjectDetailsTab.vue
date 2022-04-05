@@ -20,11 +20,10 @@
     <v-row>
       <v-col>
         <VeoObjectTable
+          :additional-headers="additionalHeaders"
+          :commonly-used-header-keys="commonlyUsedHeaderKeys"
           :items="items"
           :loading="fetchState.pending"
-          :dense="dense"
-          :simple="type==='links'"
-          :risk="type==='risks'"
           @click="openItem"
         >
           <template #actions="{item}">
@@ -141,6 +140,36 @@ export default defineComponent({
       }
     );
 
+    const commonlyUsedHeaderKeys = computed(() =>
+      props.type === 'parents' || props.type === 'subEntities'
+        ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']
+        : props.type === 'links'
+        ? ['icon', 'name']
+        : ['designator', 'updatedAt', 'updatedBy']
+    );
+
+    const additionalHeaders = computed(() =>
+      props.type === 'risks'
+        ? [
+            {
+              value: 'scenario.displayName',
+              text: t('scenario').toString(),
+              cellClass: ['font-weight-bold'],
+              width: 300,
+              truncate: true,
+              importance: 10,
+              order: 4,
+              render: ({ value }) => {
+                // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
+                // As the abbreviation is optional and at this point we have no ability to check whether it is set here, we simply remove the designator and display everything else
+                const title = value.split(' ').slice(1).join(' ');
+                return title;
+              }
+            }
+          ]
+        : []
+    );
+
     /**
      * actions for cloning or unlinking objects
      */
@@ -239,6 +268,8 @@ export default defineComponent({
     };
 
     return {
+      additionalHeaders,
+      commonlyUsedHeaderKeys,
       editRiskDialog,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
@@ -269,7 +300,8 @@ export default defineComponent({
       "link": "Could not link new object.",
       "risk": "Couldn't delete risk"
     },
-    "riskDeleted": "The risk was removed"
+    "riskDeleted": "The risk was removed",
+    "scenario": "Scenario"
 
   },
   "de": {
@@ -284,7 +316,8 @@ export default defineComponent({
       "link": "Das neue Objekt konnte nicht verknüpft werden.",
       "risk": "Risiko konnte nicht gelöscht werden"
     },
-    "riskDeleted": "Das Risiko wurde entfernt"
+    "riskDeleted": "Das Risiko wurde entfernt",
+    "scenario": "Szenario"
   }
 }
 </i18n>
