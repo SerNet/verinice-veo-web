@@ -145,7 +145,7 @@ export default defineComponent({
         ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']
         : props.type === 'links'
         ? ['icon', 'name']
-        : ['designator', 'updatedAt', 'updatedBy']
+        : ['designator', 'updatedAt', 'updatedBy', 'actions']
     );
 
     const additionalHeaders = computed(() =>
