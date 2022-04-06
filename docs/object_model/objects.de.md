@@ -1,45 +1,40 @@
 ---
-title: Objektmodell
+title: Objekte
+position: 2
 ---
 
-# Objektmodell
-
-In diesem Abschnitt wird das Objektmodell von verinice.veo beschrieben. veo unterstützt Anwender bei Aufbau und Betrieb von Managementsystemen für Informationssicherheit und Datenschutz. Im Modell sind dafür generische Fachobjekte definiert, die gleichzeitig für die verschiedenen Managementsysteme verwendet werden können. Es gibt ein Modell, mit dem alle Verfahren und Standards abgebildet werden können. Das hat den Vorteil, dass Anwender zum Beispiel mit dem Aufbau eines ISMS nach ISO 27000 beginnen können. Dieselben Daten können später aber auch für ein Verzeichnis der Verarbeitungstätigkeiten verwendet werden. Das Fachobjekt Prozess kann im Datenschutz ein Verfahren für ein Verzeichnis der Verarbeitungstätigkeiten sein. Gleichzeitig kann derselbe Prozess aber auch Teil einer Risikoanalyse nach ISO 27005 sein.
-
-Das Modell erfüllt aber auch Voraussetzungen für den Betrieb einer SaaS Anwendung, die von vielen unterschiedlichen Kunden genutzt wird. Die Daten von verschiedenen Kunden im Modell werden durch Organisationsobjekte sicher voneinander getrennt. Die Organisationsobjekte erlauben es aber auch, die Daten der zum Teil großen Kunden flexibel aufzuteilen.
-
-## Organisationsobjekte
+### Organisationsobjekte
 
 Organisationsobjekte helfen bei der Zuordnung der Objekte zu Anwendern. Organisationsobjekte realisieren die Trennung der Daten in unterschiedliche Mandanten. Innerhalb eines Mandanten können weitere Untergruppen angelegt werden, z.B. für Tochtergesellschaften oder Fachabteilungen.
 
 ![veo-organisationsobjekte](media/veo-organisationsobjekte.png)
 
-### Client
+#### Client
 
 Der Client im Objektmodell bildet einen Kunden bzw. ein Mandanten ab. Ein Kunde kann eine Organisation sein, ein Kunde kann aber auch eine einzelne Person sein. Die Daten, die zu einem Client gehören sind von den Daten anderer Clients getrennt und können in keiner Weise mit einander vermischt oder verknüpft werden. Es ist nicht möglich Daten von einem Client zu einem anderen Client zu übertragen. Jedes Objekt in veo gehört zu genau einem Client. Einem Client können mehrere Anwender (Accounts) zugeordnet werden. Ein Anwender kann niemals auf Daten zugreifen, die zu einem Client gehören, dem er nicht zugeordnet ist.
 
-### Unit
+#### Unit
 
 Die Unit teilt einen Mandanten in eine oder mehrere Untereinheiten auf. Eine Unit stellt eine Organisation dar (z.B. ein Unternehmen) oder eine Abteilung in einer Organisation. Die Unit ist der Stammknoten im Objektmodell von veo und die hierarchische Wurzel von Objekten und Gruppen. Eine Unit ist genau einem Client zugeordnet. Es kann beliebig viele Units in einem Client geben. Wenn ein Nutzer mit veo arbeitet, muss zuerst immer eine Unit ausgewählt werden. Alle anderen Objekte und Gruppen sind immer genau einer Unit zugeordnet. Es ist nicht möglich, Objekte in veo zu erstellen, die keiner Unit zugeordnet sind. Die Unit ist ein Organisationsobjekt, das keine fachliche Funktion hat. Wenn eine Unit gelöscht wird, dann werden auch alle in Objekte in der Unit gelöscht.
 
-## Fachobjekte
+### Fachobjekte
 
 Für den Betrieb von Managementsystemen für Informationssicherheit und Datenschutz enthält das Objektmodell von veo die Fachobjekte [Prozess](#prozess), [Asset](#asset), [Szenario](#szenario), [Risiko](#risiko), [Control](#control), [Incident](#incident), [Dokument](#dokument) und [Person](#person). Diese Objekte können über sogenannte Subtypen weiter präzisiert werden.
 
 ![veo-fachobjekte](media/veo-fachobjekte.png)
 
-### Prozess
+#### Prozess
 
 Ein Geschäftsprozess ist eine Folge von Aktivitäten, die Betriebsmittel verwendet, um Eingaben in Ergebnisse umzuwandeln:
 
 * BSI IT-Grundschutz: "Geschäftsprozess"
 * DS-GVO: "Verarbeitungstätigkeit"
 
-### Asset
+#### Asset
 
 Ein Objekt, das einen erkennbaren Wert für ein Unternehmen hat, ein Vermögenswert. Es gibt viele Arten von Assets: Informationen, Software, Server, Menschen und ihre Qualifikationen, Fähigkeiten und Erfahrungen außerdem immaterielle Werte, wie z. B. Ruf und Image.
 
-Assets können andere Assets enthalten (siehe [Composites](#composites)). System komponenten haben häufig einen rekursiven Aufbau:
+Assets können andere Assets enthalten (siehe [Composites](#composites)). Systemkomponenten haben häufig einen rekursiven Aufbau:
 
 > NIST SP 800-160 Vol. 1 under system element from ISO/IEC/IEEE 15288
 > Component: Member of a set of elements that constitute a system.
@@ -54,7 +49,7 @@ Der Objekttyp "Asset" ist beispielsweise geeignet für die Abbildung der folgend
 * ISO 2700x: Assets
 * NIST SP 800-61: Component, System, System-of-Interest, Capability
 
-### Szenario
+#### Szenario
 
 Eine Situation, die eintreten kann und die Informationssicherheit gefährdet. Beschreibt ein einzelnes Schadensereignis oder einen Satz von Schadensereignissen, die einer spezifischen Bedrohungsquelle zugeordnet werden können.
 
@@ -64,7 +59,7 @@ Der Objekttyp "Szenario" ist beispielsweise geeignet für die Abbildung der folg
 * NIST SP 800-30: sowohl "Threat Event" als auch "Threat Scenario" (über Subtypen)
 * ISO 27005: "Incident Scenario", "Threat" (über Subtypen)
 
-### Risiko
+#### Risiko
 
 Das Risiko ist ein Maß dafür, inwieweit ein Ereignis oder ein Umstand ein zu erreichendes Ziel beeinflusst. Der Effekt kann auch positiv sein (Chance). Risiko drückt eine Unsicherheit/Unwägbarkeit (ISO 27000: "Uncertainty") aus. Risiko wird in der Anwendung stets über die Zuordnung von Risikoträgern zu Szenarien definiert. Risikoträger können sein: Assets, Prozesse, Scopes.
 
@@ -79,7 +74,7 @@ Der Objekttyp "Risiko" ist beispielsweise geeignet für die Abbildung der folgen
 * BSI IT-Grundschutz: "Risiko"
 * NIST SP 800-30: "Risk"
 
-### Control
+#### Control
 
 Ein Control ist eine Maßnahme, die ein Risiko verändert. Ein Control kann eine Richtlinie, ein Verfahren, eine Leitlinie oder eine Vorgehensweise sein mit administrativer, technischer, managementbezogener oder rechtlicher Natur.
 
@@ -91,7 +86,7 @@ Der Objekttyp "Control" ist beispielsweise geeignet für die Abbildung der folge
 * NIST SP 1800-15B: "Control"
 * DS-GVO: "Technische und organisatorische Maßnahmen"
 
-### Incident
+#### Incident
 
 Ein Vorfall bzw. Sicherheitsvorfall (Englisch: Incident) ist ein Ereignis, dass eingetreten ist und möglicherweise die Informationssicherheit gefährdet hat. Ein Incident kann ausgelöst werden durch eine Bedrohung.
 
@@ -101,7 +96,7 @@ Der Objekttyp "Incident" ist beispielsweise geeignet für die Abbildung der folg
 * NIST CSF/FIPS 200: "Incident"
 * DS-GVO: "Verletzung des Schutzes personenbezogener Daten"
 
-### Person
+#### Person
 
 Eine Person, Personengruppe oder eine Rolle, die in Beziehung zu den anderen Objekten steht. Jede Person, die als Asset betrachtet wird.
 
@@ -109,7 +104,7 @@ Der Objekttyp "Person" ist beispielsweise geeignet für die Abbildung der folgen
 
 * NISTIR 7693: "Person"
 
-### Dokument
+#### Dokument
 
 Ein Dokument, das eine anderes Objekt beschreibt oder zusätzliche Informationen liefert. Dient der Abbildung von Richtlinien, Leitlinien, Policy-Dokumenten, Vorfallsdokumentation etc. unabhängig von Format, Medium oder Quelle.
 
@@ -119,7 +114,7 @@ Der Objekttyp "Document" ist beispielsweise geeignet für die Abbildung der folg
 
 * ISO 27001: "Documented information", "Documentation" und "Records" (über Subtypen)
 
-### Composites
+#### Composites
 
 Jedes der Fachobjekte, kann ein einzelnes Objekt oder eine Gruppe von Objekten repräsentieren. Zu diesem Zweck kann jedes Fachobjekt Objekte gleichen Typs enthalten. Wenn ein Fachobjekt solche Teilobjekte enthält, dann ist es als ein zusammengesetztes Objekt (English: Composite) modelliert. Jedes Fachobjekt kann zu jedem Zeitpunkt zu einem Composite gemacht werden, indem man ihm Unterobjekte hinzufügt.
 
@@ -131,7 +126,7 @@ Ein Fachobjekt kann in mehreren Composites gleichzeitig enthalten sein. Die Pers
 
 ![veo-szenario-RZ-server](media/veo-szenario-RZ-server.png)
 
-### Scope
+#### Scope
 
 Scopes stellen einen weiteren Gruppierungsmechanismus zur Verfügung. Anders als bei Composites können hier Fachobjekte unterschiedlichen Typs zu einer Gruppe zusammengeführt werden.
 
