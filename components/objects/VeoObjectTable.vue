@@ -16,11 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { computed, defineComponent, PropType, h, useContext, useAsync, ComputedRef } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, h, useContext, useAsync, ComputedRef, getCurrentInstance, onMounted, onUnmounted, ref, watch } from '@nuxtjs/composition-api';
 import { VNode, VNodeChildren, VNodeData } from 'vue/types/vnode';
 import { useI18n } from 'nuxt-i18n-composable';
 import { DataTableHeader } from 'vuetify/types';
 import { VDataTable, VIcon, VTooltip } from 'vuetify/lib';
+import { cloneDeep } from 'lodash';
+
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useThrottleNextTick } from '~/composables/utils';
 
@@ -96,6 +98,8 @@ export default defineComponent({
   setup(props, { emit, slots, attrs, listeners }) {
     const { d, t } = useI18n();
     const { $user, $api, i18n } = useContext();
+    const vm = getCurrentInstance();
+
     const translations = useAsync(() => $api.translation.fetch(i18n.locales as any), 'translations');
     /**
      * Format date via i18n
@@ -182,17 +186,17 @@ export default defineComponent({
         text: '',
         class: ['pr-0'],
         cellClass: ['pr-0'],
-        width: 0,
+        width: 30,
         render: renderIcon,
         importance: 70,
-        order: 1
+        order: 10
       },
       designator: {
         value: 'designator',
         sortable: true,
         width: 110,
         importance: 90,
-        order: 2
+        order: 20
       },
       abbreviation: {
         value: 'abbreviation',
@@ -200,7 +204,7 @@ export default defineComponent({
         truncate: true,
         width: 80,
         importance: 60,
-        order: 3
+        order: 30
       },
       name: {
         value: 'name',
@@ -209,7 +213,7 @@ export default defineComponent({
         truncate: true,
         sortable: true,
         importance: 100,
-        order: 4
+        order: 40
       },
       status: {
         value: 'status',
@@ -217,7 +221,7 @@ export default defineComponent({
         width: 110,
         render: renderStatus,
         importance: 40,
-        order: 5
+        order: 50
       },
       description: {
         value: 'description',
@@ -226,32 +230,33 @@ export default defineComponent({
         truncate: true,
         tooltip: ({ item }) => item.description || '',
         importance: 30,
-        order: 6
+        order: 60
       },
       updatedBy: {
         value: 'updatedBy',
         sortable: true,
-        width: 110,
+        truncate: true,
+        width: 80,
         importance: 50,
-        order: 7
+        order: 70
       },
       updatedAt: {
         value: 'updatedAt',
         sortable: true,
-        width: 200,
+        width: 100,
         tooltip: renderUpdatedAtTooltip,
         render: renderDate,
         importance: 80,
-        order: 8
+        order: 80
       },
       actions: {
         value: 'actions',
         text: '',
         sortable: false,
-        width: 110,
+        width: 80,
         render: renderActions,
         importance: 100,
-        order: 9
+        order: 90
       }
     };
     type Header = DataTableHeader & ObjectTableHeader;
@@ -369,12 +374,90 @@ export default defineComponent({
       return throttle(() => emit('page-change', data));
     };
 
+    /**
+     * Calculate which columns should be shown based on overflow
+     */
+    // The headers actually displayed. This changes based on space available (resizeObserver).
+    const displayedHeaders = ref<Header[]>([]);
+
+    const calculateTableWidth = (headers: Header[]) =>
+      headers.reduce((previousValue, currentValue) => {
+        // The 32 is the left and right padding of each cell
+        previousValue += Number(currentValue.width || 0) + 32;
+        return previousValue;
+      }, 0);
+
+    const indexOfHeaderWithLowestImportance = (headers: Header[]) => {
+      if (!headers.length) {
+        return undefined;
+      }
+
+      let lowestImportanceHeaderIndex = 0;
+      let lowestImportance = Infinity;
+      for (const index in headers) {
+        if (headers[index].importance < lowestImportance) {
+          lowestImportanceHeaderIndex = Number(index);
+          lowestImportance = headers[index].importance;
+        }
+      }
+      return lowestImportanceHeaderIndex;
+    };
+
+    const onTableWidthChange = () => {
+      if (table) {
+        const tableWrapperWidth = (table.parentElement as HTMLElement).getBoundingClientRect().width;
+
+        const headers = cloneDeep(_headers.value);
+
+        // We use a for loop instead of a while loop to avoid creating an endless loop (normally shouldn't happen, but can't go wrong with precaution)
+        for (let i = 0; i < _headers.value.length; i++) {
+          if (calculateTableWidth(headers) > tableWrapperWidth) {
+            const leastImportantHeaderIndex = indexOfHeaderWithLowestImportance(headers);
+
+            // If undefined, no header is left, so leave the loop
+            if (leastImportantHeaderIndex === undefined) {
+              break;
+            }
+            headers.splice(leastImportantHeaderIndex, 1);
+
+            // If the remaining headers width is equal or lower than the width of the table, we can exit as the table now fits
+          } else {
+            break;
+          }
+        }
+
+        displayedHeaders.value = headers;
+      }
+    };
+
+    watch(() => _headers.value, onTableWidthChange);
+
+    const resizeObserver = new ResizeObserver(onTableWidthChange);
+
+    let table: Element | null = null;
+    onMounted(() => {
+      // ToDo: Refs in render functions currently don't work, so we have to use the query selector
+      table = document.querySelector(`#veo-object-table-${vm?.uid} table`);
+      if (table) {
+        resizeObserver.observe(table.parentElement as HTMLElement);
+      }
+    });
+
+    onUnmounted(() => {
+      if (table) {
+        resizeObserver.unobserve(table.parentElement as HTMLElement);
+      }
+    });
+
     return () =>
       h(VDataTable, {
-        attrs,
+        attrs: {
+          id: `veo-object-table-${vm?.uid}`,
+          ...attrs
+        },
         props: {
           items: items.value,
-          headers: _headers.value,
+          headers: displayedHeaders.value,
           sortBy: props.sortBy,
           sortDesc: props.sortDesc,
           page: props.page,

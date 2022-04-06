@@ -165,6 +165,10 @@ export default {
       {
         require: 'intersection-observer',
         detect: () => 'IntersectionObserver' in window
+      },
+      {
+        require: 'resize-observer',
+        detect: () => 'ResizeObserver' in window
       }
     ]
   },
