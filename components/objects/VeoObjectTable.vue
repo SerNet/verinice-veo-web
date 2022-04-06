@@ -414,8 +414,8 @@ export default defineComponent({
           if (calculateTableWidth(headers) > tableWrapperWidth) {
             const leastImportantHeaderIndex = indexOfHeaderWithLowestImportance(headers);
 
-            // If undefined, no header is left, so leave the loop
-            if (leastImportantHeaderIndex === undefined) {
+            // If undefined, no header is left, so leave the loop. Also we always want at least one column to be shown
+            if (leastImportantHeaderIndex === undefined || headers.length <= 1) {
               break;
             }
             headers.splice(leastImportantHeaderIndex, 1);
