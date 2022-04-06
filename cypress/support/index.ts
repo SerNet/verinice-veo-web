@@ -42,7 +42,7 @@ Cypress.Commands.add('auth', () => {
   cy.intercept(
     {
       method: 'GET', // intercept all requests to auth endpoint
-      url: 'https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/auth*'
+      url: 'https://auth.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/auth*'
     },
     (req) => {
       const query = new URL(req.url).searchParams;
@@ -65,7 +65,7 @@ Cypress.Commands.add('auth', () => {
   cy.intercept(
     {
       method: 'POST', // intercept all requests to token endpoint
-      url: 'https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/token'
+      url: 'https://auth.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/token'
     },
     (req) => {
       const response = {
@@ -91,7 +91,7 @@ Cypress.Commands.add('auth', () => {
   cy.intercept(
     {
       method: 'GET', // intercept all requests to account endpoint
-      url: 'https://keycloak.staging.verinice.com/auth/realms/verinice-veo/account'
+      url: 'https://auth.staging.verinice.com/auth/realms/verinice-veo/account'
     },
     (req) => {
       // and reply currently logged in user

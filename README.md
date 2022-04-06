@@ -22,7 +22,7 @@ $ npm run generate
 Required env variables:
 ```
 VEO_API_URL=https://api.develop.verinice.com/
-VEO_OIDC_URL=https://keycloak.staging.verinice.com/auth
+VEO_OIDC_URL=https://auth.staging.verinice.com/auth
 VEO_OIDC_REALM=verinice-veo
 VEO_OIDC_CLIENT=veo-development-client
 ```
