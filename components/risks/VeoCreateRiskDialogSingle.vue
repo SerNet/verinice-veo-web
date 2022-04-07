@@ -265,6 +265,36 @@ const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition:
           specificImpactExplanation: undefined,
           potentialImpact: undefined
         }
+      ],
+      riskValues: [
+        {
+          category: 'C',
+          residualRisk: undefined,
+          residualRiskExplanation: undefined,
+          riskTreatments: [],
+          riskTreatmentExplanation: undefined
+        },
+        {
+          category: 'I',
+          residualRisk: undefined,
+          residualRiskExplanation: undefined,
+          riskTreatments: [],
+          riskTreatmentExplanation: undefined
+        },
+        {
+          category: 'A',
+          residualRisk: undefined,
+          residualRiskExplanation: undefined,
+          riskTreatments: [],
+          riskTreatmentExplanation: undefined
+        },
+        {
+          category: 'R',
+          residualRisk: undefined,
+          residualRiskExplanation: undefined,
+          riskTreatments: [],
+          riskTreatmentExplanation: undefined
+        }
       ]
     };
   }

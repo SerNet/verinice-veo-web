@@ -113,6 +113,55 @@
                   />
                 </v-col>
               </v-row>
+              <v-row no-gutters>
+                <v-col
+                  xs="12"
+                  md="6"
+                >
+                  <v-select
+                    v-model="internalValue[riskDefinition.id].riskValues[index].riskTreatments"
+                    multiple
+                    color="primary"
+                    :label="upperFirst(t('riskTreatment').toString())"
+                    :items="treatmentOptions"
+                    clearable
+                  />
+                </v-col>
+                <v-col
+                  xs="12"
+                  md="12"
+                >
+                  <v-text-field
+                    v-model="internalValue[riskDefinition.id].riskValues[index].riskTreatmentExplanation"
+                    :label="upperFirst(t('explanation').toString())"
+                    clearable
+                  />
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col
+                  xs="12"
+                  md="6"
+                >
+                  <v-select
+                    v-model="internalValue[riskDefinition.id].riskValues[index].residualRisk"
+                    color="primary"
+                    :label="upperFirst(t('residualRisk').toString())"
+                    :items="riskValues"
+                    clearable
+                  />
+                </v-col>
+                <v-col
+                  xs="12"
+                  md="12"
+                >
+                  <v-text-field
+                    v-model="internalValue[riskDefinition.id].riskValues[index].residualRiskExplanation"
+                    :label="upperFirst(t('explanation').toString())"
+                    clearable
+                  />
+                </v-col>
+              </v-row>
             </div>
           </v-tab-item>
         </template>
@@ -162,12 +211,23 @@ export default defineComponent({
       return previousValue;
     }, {});
 
+    const riskValues = activeRiskDefinition.value?.riskValues.map((level) => ({ text: level.name, value: level.ordinalValue }));
+
+    const treatmentOptions = computed(() =>
+      ['RISK_TREATMENT_NONE', 'RISK_TREATMENT_ACCEPTANCE', 'RISK_TREATMENT_AVOIDANCE', 'RISK_TREATMENT_REDUCTION', 'RISK_TREATMENT_TRANSFER'].map((option) => ({
+        text: t(`riskTreatments.${option}`).toString(),
+        value: option
+      }))
+    );
+
     return {
       activeTab,
       activeRiskDefinition,
       impacts,
       internalValue,
       probabilities,
+      riskValues,
+      treatmentOptions,
 
       upperFirst,
       t
@@ -181,14 +241,32 @@ export default defineComponent({
   "en": {
     "explanation": "explanation",
     "protectionGoals": "protection goals",
+    "residualRisk": "residual risk",
     "riskDefinitions": "risk definitions",
+    "riskTreatment": "risk treatment",
+    "riskTreatments": {
+      "RISK_TREATMENT_ACCEPTANCE": "risk retention",
+      "RISK_TREATMENT_AVOIDANCE": "risk avoidance",
+      "RISK_TREATMENT_NONE": "none",
+      "RISK_TREATMENT_REDUCTION": "risk reduction",
+      "RISK_TREATMENT_TRANSFER": "risk transfer"
+    },
     "specificImpact": "specific impact",
     "specificProbability": "specific probability"
   },
   "de": {
     "explanation": "Erklärung",
+    "residualRisk": "verbleibendes Risiko",
     "protectionGoals": "Schutzziele",
-    "riskDefinitions": "risikodefinitionen",
+    "riskDefinitions": "Risikodefinitionen",
+    "riskTreatment": "Risikobehandlung",
+    "riskTreatments": {
+      "RISK_TREATMENT_ACCEPTANCE": "Risiko-Akzeptanz",
+      "RISK_TREATMENT_AVOIDANCE": "Risikovermeidung",
+      "RISK_TREATMENT_NONE": "Keins",
+      "RISK_TREATMENT_REDUCTION": "Risikominderung",
+      "RISK_TREATMENT_TRANSFER": "Risikotransfer"
+    },
     "specificImpact": "spezifische Auswirkungen",
     "specificProbability": "spezifische Wahrscheinlichkeit"
   }
