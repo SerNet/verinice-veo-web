@@ -43,6 +43,13 @@ const mockDefaults = {
               ]);
             }
           }
+        },
+        $vuetify: {
+          breakpoint: {
+            mdAndDown: false,
+            smAndDown: false,
+            xsOnly: false
+          }
         }
       }
     } // Needed if useFetch() gets used in composition api
@@ -60,7 +67,7 @@ jest.mock('nuxt-i18n-composable', () => ({
 }));
 
 describe('FilterDialog.vue', () => {
-  it('should open veo filter dialog with 5 filters and be expandable to 10 filters', async () => {
+  it('should open veo filter dialog with 5 filters and be expandable to 9 filters', async () => {
     document.body.setAttribute('data-app', 'true'); // Needed to avoid vuetify throwing a warning about not finding the app
     const filterDialog = mount(VeoFilterDialog, {
       ...mockDefaults,
@@ -70,11 +77,11 @@ describe('FilterDialog.vue', () => {
       }
     });
 
-    expect(filterDialog.find('.veo-dialog').isVisible()).toBe(true);
+    expect(filterDialog.find('.v-dialog').isVisible()).toBe(true);
     expect(filterDialog.findAll('[data-cy=-filter-option]').wrappers.length).toBe(5);
     filterDialog.find('[data-cy=-expand-button]').trigger('click');
     await filterDialog.vm.$nextTick();
-    expect(filterDialog.findAll('[data-cy=-filter-option]').wrappers.length).toBe(10);
+    expect(filterDialog.findAll('[data-cy=-filter-option]').wrappers.length).toBe(9);
   });
 
   it('Tests whether existing filters passed to the component are present in the form', async () => {

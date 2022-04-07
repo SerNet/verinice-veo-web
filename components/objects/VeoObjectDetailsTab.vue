@@ -21,7 +21,7 @@
       <v-col>
         <VeoObjectTable
           :additional-headers="additionalHeaders"
-          :commonly-used-header-keys="commonlyUsedHeaderKeys"
+          :default-headers="defaultHeaders"
           :items="items"
           :loading="fetchState.pending"
           @click="openItem"
@@ -140,7 +140,7 @@ export default defineComponent({
       }
     );
 
-    const commonlyUsedHeaderKeys = computed(() =>
+    const defaultHeaders = computed(() =>
       props.type === 'parents' || props.type === 'subEntities'
         ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']
         : props.type === 'links'
@@ -269,7 +269,7 @@ export default defineComponent({
 
     return {
       additionalHeaders,
-      commonlyUsedHeaderKeys,
+      defaultHeaders,
       editRiskDialog,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,

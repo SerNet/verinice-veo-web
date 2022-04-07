@@ -90,6 +90,13 @@ const mockDefaults = {
         },
         $config: {
           apiUrl: 'some-url'
+        },
+        $vuetify: {
+          breakpoint: {
+            mdAndDown: false,
+            smAndDown: false,
+            xsOnly: false
+          }
         }
       }
     }, // Needed if useFetch() gets used in composition api

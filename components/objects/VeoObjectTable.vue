@@ -62,7 +62,7 @@ export default defineComponent({
     /**
      * Keys of the defa
      */
-    commonlyUsedHeaderKeys: {
+    defaultHeaders: {
       type: Array as PropType<String[]>,
       default: () => []
     },
@@ -83,6 +83,10 @@ export default defineComponent({
       default: () => []
     },
     loading: {
+      type: Boolean,
+      default: false
+    },
+    showAllColumns: {
       type: Boolean,
       default: false
     }
@@ -179,7 +183,7 @@ export default defineComponent({
     /**
      * Headers that are used by multiple tables, thus it makes sense to define them in one place
      */
-    const commonlyUsedHeaders: { [key: string]: ObjectTableHeader } = {
+    const defaultHeaders: { [key: string]: ObjectTableHeader } = {
       icon: {
         value: 'icon',
         sortable: false,
@@ -305,8 +309,8 @@ export default defineComponent({
      */
     const _headers: ComputedRef<Header[]> = computed(() =>
       [
-        ...Object.entries(commonlyUsedHeaders)
-          .filter(([key, _header]) => props.commonlyUsedHeaderKeys.includes(key))
+        ...Object.entries(defaultHeaders)
+          .filter(([key, _header]) => props.defaultHeaders.includes(key))
           .map(([_key, header]) => header),
         ...props.additionalHeaders
       ]
@@ -378,7 +382,7 @@ export default defineComponent({
      * Calculate which columns should be shown based on overflow
      */
     // The headers actually displayed. This changes based on space available (resizeObserver).
-    const displayedHeaders = ref<Header[]>([]);
+    const displayedHeaders = ref<Header[]>(_headers.value);
 
     const calculateTableWidth = (headers: Header[]) =>
       headers.reduce((previousValue, currentValue) => {
@@ -404,6 +408,10 @@ export default defineComponent({
     };
 
     const onTableWidthChange = () => {
+      if (props.showAllColumns) {
+        displayedHeaders.value = _headers.value;
+        return;
+      }
       if (table) {
         const tableWrapperWidth = (table.parentElement as HTMLElement).getBoundingClientRect().width;
 
