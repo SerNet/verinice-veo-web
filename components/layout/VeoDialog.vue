@@ -60,12 +60,12 @@
         <div :class="innerClass">
           <slot />
         </div>
-        <div
+        <v-card-actions
           v-if="!!$slots['dialog-options'] && !fixedFooter"
-          class="d-flex pt-3"
+          class="pt-3 pb-0"
         >
           <slot name="dialog-options" />
-        </div>
+        </v-card-actions>
       </v-card-text>
       <v-card-actions
         v-if="!!$slots['dialog-options'] && fixedFooter"
