@@ -194,7 +194,7 @@ describe('Objectschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('Test');
 
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
+      cy.get('[data-cy="-attribute"]').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = changedAttributes[wrapperIndex];
           if (currentAttrData) {
@@ -230,7 +230,7 @@ describe('Objectschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       // Delete all 3 existing attributes
       times(3, () => {
-        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn').eq(0).click();
+        cy.get('[data-cy="-attribute"] .v-list-item__action > .v-btn').eq(0).click();
       });
 
       // Add 6 new attributes
@@ -238,7 +238,7 @@ describe('Objectschema Editor', () => {
         cy.contains('Attribut hinzufügen').closest('.v-btn').click();
       });
 
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
+      cy.get('[data-cy="-attribute"]').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = addAttributes[wrapperIndex];
           if (currentAttrData) {
@@ -305,7 +305,7 @@ describe('Objectschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestAspectTwo{enter}');
       cy.contains('Attribut hinzufügen').closest('.v-btn').click();
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+      cy.get('[data-cy="-attribute"]')
         .first()
         .then((el) => {
           cy.wrap(el).within(() => {
@@ -379,7 +379,7 @@ describe('Objectschema Editor', () => {
       cy.contains('Typ des Linkziels *').closest('.v-select').should('contain.text', 'Scope').type('Asset{enter}');
       cy.contains('Link Subtyp').closest('.v-select').type('Datenart{enter}');
 
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
+      cy.get('[data-cy="-attribute"]').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = changedAttributes[wrapperIndex];
           if (currentAttrData) {
@@ -413,14 +413,14 @@ describe('Objectschema Editor', () => {
 
     cy.get('.v-dialog--active').within(() => {
       times(2, () => {
-        cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child) .v-list-item__action > .v-btn').eq(0).click();
+        cy.get('[data-cy="-attribute"] .v-list-item__action > .v-btn').eq(0).click();
       });
 
       times(6, () => {
         cy.contains('Attribut hinzufügen').closest('.v-btn').click();
       });
 
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute:not(:last-child)').each((el, wrapperIndex) => {
+      cy.get('[data-cy="-attribute"]').each((el, wrapperIndex) => {
         cy.wrap(el).within(() => {
           const currentAttrData = addAttributes[wrapperIndex];
           if (currentAttrData) {
@@ -495,7 +495,7 @@ describe('Objectschema Editor', () => {
       cy.get('.v-card__actions').contains('Weiter').closest('.v-btn').click();
 
       cy.contains('Attribut hinzufügen').closest('.v-btn').click();
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+      cy.get('[data-cy="-attribute"]')
         .first()
         .then((el) => {
           cy.wrap(el).within(() => {
@@ -563,7 +563,7 @@ describe('Objectschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       cy.contains('Name *').closest('.v-text-field').type('TestAspectTwo{enter}');
       cy.contains('Attribut hinzufügen').closest('.v-btn').click();
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+      cy.get('[data-cy="-attribute"]')
         .first()
         .then((el) => {
           cy.wrap(el).within(() => {
@@ -628,7 +628,7 @@ describe('Objectschema Editor', () => {
     cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:first-child .edit-button').click();
 
     cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+      cy.get('[data-cy="-attribute"]')
         .first()
         .then((el) => {
           cy.wrap(el).within(() => {
@@ -676,7 +676,7 @@ describe('Objectschema Editor', () => {
     cy.get('@expansionPanelContent').eq(1).find('.v-card:last-child .v-list-item:first-child .edit-button').click();
 
     cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+      cy.get('[data-cy="-attribute"]')
         .first()
         .then((el) => {
           cy.wrap(el).within(() => {
@@ -714,7 +714,7 @@ describe('Objectschema Editor', () => {
       cy.contains('Weiter').closest('.v-btn').click();
 
       cy.contains('Attribut hinzufügen').closest('.v-btn').click();
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+      cy.get('[data-cy="-attribute"]')
         .first()
         .then((el) => {
           cy.wrap(el).within(() => {
@@ -786,7 +786,7 @@ describe('Objectschema Editor', () => {
     cy.get('.v-dialog--active').within(() => {
       // Add english link description
 
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+      cy.get('[data-cy="-attribute"]')
         .first()
         .then((el) => {
           cy.wrap(el).within(() => {
@@ -834,7 +834,7 @@ describe('Objectschema Editor', () => {
     cy.get('@expansionPanelContent').eq(2).find('.v-card:last-child .v-list-item:first-child .edit-button').click();
 
     cy.get('.v-dialog--active').within(() => {
-      cy.get('.v-form .v-list > .veo-attribute-list-attribute')
+      cy.get('[data-cy="-attribute"]')
         .first()
         .then((el) => {
           cy.wrap(el).within(() => {

@@ -26,15 +26,15 @@
         :data-cy="$utils.prefixCyData($options, 'subtype-row', $route)"
       >
         <v-col
+          v-cy-name="'subtype-label'"
           cols="12"
           sm="12"
           md="5"
           lg="7"
           xl="4"
           class="body-1 text-no-wrap"
-        >
-          {{ chart.labels[0] }}
-        </v-col>
+          v-text="chart.labels[0]"
+        />
         <v-col>
           <BarChart
             v-if="chart.totalEntities > 0"
@@ -104,6 +104,7 @@ export interface IChartValue {
 }
 
 export default defineComponent({
+  name: 'VeoStackedStatusBarChartWidget',
   components: {
     BarChart
   },
