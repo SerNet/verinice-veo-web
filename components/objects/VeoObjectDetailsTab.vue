@@ -162,8 +162,7 @@ export default defineComponent({
               render: ({ value }: { value: string }) => {
                 // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
                 // As the abbreviation is optional and at this point we have no ability to check whether it is set here, we simply remove the designator and display everything else
-                const title = value.split(' ').slice(1).join(' ');
-                return title;
+                return value.split(' ').slice(1).join(' ');
               }
             }
           ]

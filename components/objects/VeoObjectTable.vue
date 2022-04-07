@@ -33,7 +33,7 @@ export type ObjectTableTooltip = (value: any) => string;
 export type ObjectTableRenderer = (props: { item: IVeoEntity }) => VNode | VNode[] | string;
 
 export interface ObjectTableHeader extends Omit<DataTableHeader, 'text'> {
-  importance: number;
+  priority: number;
   order: number;
   truncate?: boolean;
   map?: ObjectTableFormatter;
@@ -60,7 +60,7 @@ export default defineComponent({
       default: () => []
     },
     /**
-     * Keys of the defa
+     * Keys of the default columns defined in the VeoObjectTable that should get shown
      */
     defaultHeaders: {
       type: Array as PropType<String[]>,
@@ -192,14 +192,14 @@ export default defineComponent({
         cellClass: ['pr-0'],
         width: 30,
         render: renderIcon,
-        importance: 70,
+        priority: 70,
         order: 10
       },
       designator: {
         value: 'designator',
         sortable: true,
         width: 110,
-        importance: 90,
+        priority: 90,
         order: 20
       },
       abbreviation: {
@@ -207,7 +207,7 @@ export default defineComponent({
         sortable: true,
         truncate: true,
         width: 80,
-        importance: 60,
+        priority: 60,
         order: 30
       },
       name: {
@@ -216,7 +216,7 @@ export default defineComponent({
         width: 300,
         truncate: true,
         sortable: true,
-        importance: 100,
+        priority: 100,
         order: 40
       },
       status: {
@@ -224,7 +224,7 @@ export default defineComponent({
         sortable: false,
         width: 110,
         render: renderStatus,
-        importance: 40,
+        priority: 40,
         order: 50
       },
       description: {
@@ -233,7 +233,7 @@ export default defineComponent({
         width: 500,
         truncate: true,
         tooltip: ({ item }) => item.description || '',
-        importance: 30,
+        priority: 30,
         order: 60
       },
       updatedBy: {
@@ -241,7 +241,7 @@ export default defineComponent({
         sortable: true,
         truncate: true,
         width: 80,
-        importance: 50,
+        priority: 50,
         order: 70
       },
       updatedAt: {
@@ -250,7 +250,7 @@ export default defineComponent({
         width: 100,
         tooltip: renderUpdatedAtTooltip,
         render: renderDate,
-        importance: 80,
+        priority: 80,
         order: 80
       },
       actions: {
@@ -259,7 +259,7 @@ export default defineComponent({
         sortable: false,
         width: 80,
         render: renderActions,
-        importance: 100,
+        priority: 100,
         order: 90
       }
     };
@@ -391,7 +391,7 @@ export default defineComponent({
         return previousValue;
       }, 0);
 
-    const indexOfHeaderWithLowestImportance = (headers: Header[]) => {
+    const indexOfHeaderWithLowestPriority = (headers: Header[]) => {
       if (!headers.length) {
         return undefined;
       }
@@ -399,9 +399,9 @@ export default defineComponent({
       let lowestImportanceHeaderIndex = 0;
       let lowestImportance = Infinity;
       for (const index in headers) {
-        if (headers[index].importance < lowestImportance) {
+        if (headers[index].priority < lowestImportance) {
           lowestImportanceHeaderIndex = Number(index);
-          lowestImportance = headers[index].importance;
+          lowestImportance = headers[index].priority;
         }
       }
       return lowestImportanceHeaderIndex;
@@ -412,15 +412,15 @@ export default defineComponent({
         displayedHeaders.value = _headers.value;
         return;
       }
-      if (table) {
-        const tableWrapperWidth = (table.parentElement as HTMLElement).getBoundingClientRect().width;
+      if (tableWrapper) {
+        const tableWrapperWidth = tableWrapper.getBoundingClientRect().width;
 
         const headers = cloneDeep(_headers.value);
 
         // We use a for loop instead of a while loop to avoid creating an endless loop (normally shouldn't happen, but can't go wrong with precaution)
         for (let i = 0; i < _headers.value.length; i++) {
           if (calculateTableWidth(headers) > tableWrapperWidth) {
-            const leastImportantHeaderIndex = indexOfHeaderWithLowestImportance(headers);
+            const leastImportantHeaderIndex = indexOfHeaderWithLowestPriority(headers);
 
             // If undefined, no header is left, so leave the loop. Also we always want at least one column to be shown
             if (leastImportantHeaderIndex === undefined || headers.length <= 1) {
@@ -442,18 +442,18 @@ export default defineComponent({
 
     const resizeObserver = new ResizeObserver(onTableWidthChange);
 
-    let table: Element | null = null;
+    let tableWrapper: Element | null = null;
     onMounted(() => {
       // ToDo: Refs in render functions currently don't work, so we have to use the query selector
-      table = document.querySelector(`#veo-object-table-${vm?.uid} table`);
-      if (table) {
-        resizeObserver.observe(table.parentElement as HTMLElement);
+      tableWrapper = document.querySelector(`#veo-object-table-${vm?.uid} .v-data-table__wrapper`);
+      if (tableWrapper) {
+        resizeObserver.observe(tableWrapper);
       }
     });
 
     onUnmounted(() => {
-      if (table) {
-        resizeObserver.unobserve(table.parentElement as HTMLElement);
+      if (tableWrapper) {
+        resizeObserver.unobserve(tableWrapper);
       }
     });
 
