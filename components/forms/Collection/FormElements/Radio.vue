@@ -171,7 +171,7 @@ export default Vue.extend({
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
     return calculateConditionsScore([
-      typeof props.schema.type === 'undefined' || props.schema.type === 'string' || props.schema.type === 'integer',
+      typeof props.schema.type === 'undefined' || props.schema.type === 'string' || props.schema.type === 'integer' || props.schema.type === 'number',
       typeof props.schema.enum !== 'undefined',
       typeof props.options !== 'undefined' && props.options.format === 'radio'
     ]);

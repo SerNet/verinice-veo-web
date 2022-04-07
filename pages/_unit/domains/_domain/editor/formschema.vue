@@ -575,6 +575,26 @@ export default defineComponent<IProps>({
         formSchema: {
           enum: (() => (domain.value?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name))()
         }
+      },
+      [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]: {
+        formSchema: {
+          enum: (() => (domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'C')?.potentialImpacts || []).map((level: any) => level.name))()
+        }
+      },
+      [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]: {
+        formSchema: {
+          enum: (() => (domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'I')?.potentialImpacts || []).map((level: any) => level.name))()
+        }
+      },
+      [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]: {
+        formSchema: {
+          enum: (() => (domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'A')?.potentialImpacts || []).map((level: any) => level.name))()
+        }
+      },
+      [`#/properties/domains/properties/{CURRENT_DOMAIN_ID}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]: {
+        formSchema: {
+          enum: (() => (domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'R')?.potentialImpacts || []).map((level: any) => level.name))()
+        }
       }
     }));
 
