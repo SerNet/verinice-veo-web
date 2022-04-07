@@ -162,6 +162,26 @@ export default Vue.extend({
             formSchema: {
               enum: (() => (this.domain?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name))()
             }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]: {
+            formSchema: {
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'C')?.potentialImpacts || []).map((level: any) => level.name))()
+            }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]: {
+            formSchema: {
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'I')?.potentialImpacts || []).map((level: any) => level.name))()
+            }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]: {
+            formSchema: {
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'A')?.potentialImpacts || []).map((level: any) => level.name))()
+            }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]: {
+            formSchema: {
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'R')?.potentialImpacts || []).map((level: any) => level.name))()
+            }
           }
         };
       } else {

@@ -145,7 +145,11 @@ export default Vue.extend({
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
     return calculateConditionsScore([
-      typeof props.schema.type === 'undefined' || props.schema.type === 'string' || props.schema.type === 'array' || props.schema.type === 'integer',
+      typeof props.schema.type === 'undefined' ||
+        props.schema.type === 'string' ||
+        props.schema.type === 'array' ||
+        props.schema.type === 'integer' ||
+        props.schema.type === 'number',
       typeof props.schema.enum !== 'undefined' || (props.schema.items instanceof Object && !Array.isArray(props.schema.items) && typeof props.schema.items.enum !== 'undefined'),
       typeof props.options !== 'undefined' && props.options.format === 'autocomplete'
     ]);
