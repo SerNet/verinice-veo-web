@@ -19,37 +19,39 @@ import { defineNuxtPlugin } from '@nuxtjs/composition-api';
 import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import LocalStorage from '~/util/LocalStorage';
 
-export default defineNuxtPlugin(async (context) => {
+export default defineNuxtPlugin(async ({ $api, app, route }) => {
   const clearLastVisitData = () => {
     LocalStorage.lastUnit = null;
     LocalStorage.lastDomain = null;
   };
 
-  if (context.route.path === '/' && LocalStorage.lastUnit && LocalStorage.lastDomain) {
+  if (route.path === '/' && LocalStorage.lastUnit && LocalStorage.lastDomain) {
     try {
-      const domains = await context.$api.domain.fetchUnitDomains(LocalStorage.lastUnit);
-      console.log(domains, LocalStorage.lastDomain);
+      const domains = await $api.domain.fetchUnitDomains(LocalStorage.lastUnit);
       if (domains.find((domain) => domain.id === LocalStorage.lastDomain)) {
-        console.log('Bla456');
-        context.app.router?.push({
-          name: 'unit-domains-domain',
-          params: {
-            unit: createUUIDUrlParam('unit', LocalStorage.lastUnit),
-            domain: createUUIDUrlParam('domain', LocalStorage.lastDomain)
-          }
-        });
+        // Without setTimeout, the user won't be navigated, even though no error is thrown. Also nextTick doesn't work, so we have to increase the timeout
+        setTimeout(() => {
+          app.router?.push({
+            name: 'unit-domains-domain',
+            params: {
+              unit: createUUIDUrlParam('unit', LocalStorage.lastUnit as string),
+              domain: createUUIDUrlParam('domain', LocalStorage.lastDomain as string)
+            }
+          });
+        }, 100);
       } else {
+        // If the domain doesn't exist, the last unit & domain are outdated, so we remove them
         clearLastVisitData();
       }
 
-      // Usually gets thrown if the unit doesn't exist
+      // Usually gets thrown if the unit doesn't exist. This means the last unit & domain are outdated, so we remove them
     } catch (e) {
       clearLastVisitData();
     }
   }
 
   // Update last unit and last domain every time the route changes
-  context.app.router?.afterEach((to, _from) => {
+  app.router?.afterEach((to, _from) => {
     const currentRouteUnitId = separateUUIDParam(to.params.unit).id;
     const currentRouteDomainId = separateUUIDParam(to.params.domain).id;
 
