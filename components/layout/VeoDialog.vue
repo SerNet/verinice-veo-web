@@ -30,7 +30,7 @@
       :color="xLarge ? 'white' : undefined"
       tile
     >
-      <div :class="{ 'border-bottom': xLarge }">
+      <div :class="{ 'veo-dialog__inner--border-bottom': xLarge }">
         <v-card-title class="pt-2 pb-1">
           <VeoAppLogoMobile
             v-if="fullscreen"
@@ -69,7 +69,7 @@
       </v-card-text>
       <v-card-actions
         v-if="!!$slots['dialog-options'] && fixedFooter"
-        :class="{ 'pb-3 px-4 d-block pt-0': true, 'border-top': xLarge }"
+        :class="{ 'pb-3 px-4 d-block pt-0': true, 'veo-dialog__actions--border-top': xLarge }"
       >
         <v-divider v-if="!xLarge" />
         <div class="d-flex pt-3">
@@ -175,11 +175,11 @@ export default defineComponent({
   background-color: $background-accent;
 }
 
-.border-bottom {
+.veo-dialog__inner--border-bottom {
   border-bottom: 1px solid $medium-grey;
 }
 
-.border-top {
+.veo-dialog__actions--border-top {
   border-top: 1px solid $medium-grey;
 }
 </style>
