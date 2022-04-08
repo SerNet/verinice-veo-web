@@ -13,6 +13,8 @@ basic concepts of the verinice.veo object model. You can learn more about these 
 
 ### Authentication
 
+verinice.veo uses [OpenID Connect (OIDC)](https://openid.net/connect/) for authentication, which is built on top of [OAuth 2.0](https://oauth.net/2/). [Keycloak](https://www.keycloak.org/) is used as authentication server. Keycloak exposes a variety of REST endpoints for OAuth 2.0 flows. The token endpoint allows us to retrieve an access tokens. For each request sent to the verinice.veo API such an access token is required.
+
 ```python
 import requests
 
@@ -29,16 +31,40 @@ def get_token():
         print("Error while getting token, status code: " + str(response.status_code))
     return "Bearer " + response.json().get('access_token')
 
-def load_first_element():
-    token = get_token()
-    url = veo_base_url + "/domains"
-    headers = {
-        'Authorization': token,
-    }
-    requests.get(url, headers=headers, verify=True)
-
 ```
+For the creation of a token these parameters must be set:
+ - `KEYCLOAK_BASE_URL`: i.g. https://auth.verinice.com/
+ - `KEYCLOAK_REALM`: verinice-veo
+ - `KEYCLOAK_CLIENT_ID`: verinice-veo-api
+ - `USER_NAME`: A valid user name
+ - `PASSWORD`: The password for the user
 
 ### Load Units
 
+The unit is the root node in veo's object model and the hierarchical root of objects and groups. A unit represents an organization (e.g. a company) or a department in an organization. Therefore, almost all functions in the verinice.veo API require a Unit.
+
+All units owned by the client of an account are loaded with the call of this endpoint:
+```python
+import requests
+
+token = get_token()
+headers = {
+    'Authorization': token,
+}
+units = requests.get("/units", headers=headers, verify=verify_ssl)
+```
+
 ### Load Domains
+
+The different areas of expertise, which can be managed with veo, are called domains. If a function is called in the API, then mostly a domain must be specified.
+
+All domains that can be edited are loaded with the call of this endpoint:
+```python
+import requests
+
+token = get_token()
+headers = {
+    'Authorization': token,
+}
+domains = requests.get("/domains", headers=headers, verify=verify_ssl)
+```
