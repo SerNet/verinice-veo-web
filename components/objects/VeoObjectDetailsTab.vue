@@ -20,11 +20,10 @@
     <v-row>
       <v-col>
         <VeoObjectTable
+          :additional-headers="additionalHeaders"
+          :default-headers="defaultHeaders"
           :items="items"
           :loading="fetchState.pending"
-          :dense="dense"
-          :simple="type==='links'"
-          :risk="type==='risks'"
           @click="openItem"
         >
           <template #actions="{item}">
@@ -68,7 +67,7 @@
 import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiContentCopy, mdiLinkOff, mdiTrashCan } from '@mdi/js';
+import { mdiContentCopy, mdiLinkOff, mdiTrashCanOutline } from '@mdi/js';
 import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoCustomLink, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -141,6 +140,35 @@ export default defineComponent({
       }
     );
 
+    const defaultHeaders = computed(() =>
+      props.type === 'parents' || props.type === 'subEntities'
+        ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']
+        : props.type === 'links'
+        ? ['icon', 'name']
+        : ['designator', 'updatedAt', 'updatedBy', 'actions']
+    );
+
+    const additionalHeaders = computed(() =>
+      props.type === 'risks'
+        ? [
+            {
+              value: 'scenario.displayName',
+              text: t('scenario').toString(),
+              cellClass: ['font-weight-bold'],
+              width: 200,
+              truncate: true,
+              importance: 100,
+              order: 40,
+              render: ({ value }: { value: string }) => {
+                // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
+                // As the abbreviation is optional and at this point we have no ability to check whether it is set here, we simply remove the designator and display everything else
+                return value.split(' ').slice(1).join(' ');
+              }
+            }
+          ]
+        : []
+    );
+
     /**
      * actions for cloning or unlinking objects
      */
@@ -151,7 +179,7 @@ export default defineComponent({
             {
               id: 'delete',
               label: upperFirst(t('deleteRisk').toString()),
-              icon: mdiTrashCan,
+              icon: mdiTrashCanOutline,
               async action(item: IVeoRisk) {
                 try {
                   const { id } = getEntityDetailsFromLink(item.scenario);
@@ -239,6 +267,8 @@ export default defineComponent({
     };
 
     return {
+      additionalHeaders,
+      defaultHeaders,
       editRiskDialog,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
@@ -269,7 +299,8 @@ export default defineComponent({
       "link": "Could not link new object.",
       "risk": "Couldn't delete risk"
     },
-    "riskDeleted": "The risk was removed"
+    "riskDeleted": "The risk was removed",
+    "scenario": "Scenario"
 
   },
   "de": {
@@ -284,7 +315,8 @@ export default defineComponent({
       "link": "Das neue Objekt konnte nicht verknüpft werden.",
       "risk": "Risiko konnte nicht gelöscht werden"
     },
-    "riskDeleted": "Das Risiko wurde entfernt"
+    "riskDeleted": "Das Risiko wurde entfernt",
+    "scenario": "Szenario"
   }
 }
 </i18n>

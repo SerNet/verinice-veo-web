@@ -62,9 +62,9 @@ describe('Domain dashboard', () => {
 
               // If the translation of the name exists, display it, else display the subtype
               if (form.name.de) {
-                cy.get('h4').eq(Number(i)).should('have.text', form.name.de);
+                cy.get('[data-cy="veo-stacked-status-bar-chart-widget-subtype-label"]').eq(Number(i)).should('have.text', form.name.de);
               } else {
-                cy.get('h4').eq(Number(i)).should('have.text', subTypes[i]);
+                cy.get('[data-cy="veo-stacked-status-bar-chart-widget-subtype-label"]').eq(Number(i)).should('have.text', subTypes[i]);
               }
             });
           }
@@ -91,7 +91,15 @@ describe('Domain dashboard', () => {
       .eq(noObjectsWidgetIndex)
       .within(() => {
         // Placeholder text gets shown
-        cy.get('h4').contains(noObjectsSubtype).parent().parent().children().eq(1).children().eq(0).should('contain.text', 'Keine Objekte vorhanden');
+        cy.get('[data-cy="veo-stacked-status-bar-chart-widget-subtype-label"]')
+          .contains(noObjectsSubtype)
+          .parent()
+          .parent()
+          .children()
+          .eq(0)
+          .children()
+          .eq(1)
+          .should('contain.text', 'Keine Objekte vorhanden');
       });
   });
 });

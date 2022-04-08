@@ -159,7 +159,7 @@
     >
       <VeoPage sticky-header>
         <template #header>
-          <h3 class="text-center pb-1">
+          <h3 class="text-h3 text-center pb-1">
             {{ t("availableControls") }}
           </h3>
           <v-text-field
@@ -222,7 +222,9 @@
               cols="auto"
               class="text-left"
             >
-              <h3>{{ t("invalidFormSchema") }}</h3>
+              <span class="text-h3">
+                {{ t("invalidFormSchema") }}
+              </span>
             </v-col>
           </v-row>
         </template>
@@ -238,20 +240,15 @@
           v-if="schemaIsValid.valid"
           #default
         >
-          <v-card
-            style="height: 100%"
-            flat
-          >
-            <VeoForm
-              v-model="objectData"
-              :schema="objectSchema"
-              :ui="formSchema.content"
-              :general-translation="translation && translation.lang[language]"
-              :custom-translation="formSchema.translation && formSchema.translation[language]"
-              :domain-id="domainId"
-              :additional-context="additionalContext"
-            />
-          </v-card>
+          <VeoForm
+            v-model="objectData"
+            :schema="objectSchema"
+            :ui="formSchema.content"
+            :general-translation="translation && translation.lang[language]"
+            :custom-translation="formSchema.translation && formSchema.translation[language]"
+            :domain-id="domainId"
+            :additional-context="additionalContext"
+          />
         </template>
         <template v-else>
           <v-row class="fill-height flex-column text-center align-center px-8">
@@ -270,7 +267,9 @@
               cols="auto"
               class="text-left"
             >
-              <h3>{{ t("invalidFormSchema") }}</h3>
+              <span class="text-h3">
+                {{ t("invalidFormSchema") }}
+              </span>
             </v-col>
           </v-row>
         </template>

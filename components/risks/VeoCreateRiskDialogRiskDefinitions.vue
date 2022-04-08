@@ -17,7 +17,7 @@
 -->
 <template>
   <div>
-    <h2 class="mb-2 mt-6">
+    <h2 class="text-h2 mb-2 mt-6">
       {{ upperFirst(t('riskDefinitions').toString()) }}
     </h2>
     <div class="risk-definitions">
@@ -88,7 +88,9 @@
               :key="protectionGoal.id"
               class="mt-8"
             >
-              <h3>{{ protectionGoal.name }}</h3>
+              <h3 class="text-h3">
+                {{ protectionGoal.name }}
+              </h3>
               <v-row no-gutters>
                 <v-col
                   xs="12"
@@ -275,7 +277,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .risk-definitions {
-  border: 1px solid $medium-grey;
   border-radius: 16px;
   overflow: hidden;
 }

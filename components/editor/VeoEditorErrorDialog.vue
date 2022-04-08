@@ -20,12 +20,12 @@
     v-bind="$attrs"
     :headline="t('schemaValidationWarnings')"
     large
-    fixed-header
     fixed-footer
     v-on="$listeners"
   >
     <template #default>
       <VeoValidationResult
+        inverted
         :result="$attrs.validation"
         warnings-visible
         fixing-allowed

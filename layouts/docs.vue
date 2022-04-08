@@ -121,11 +121,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-primary !important;
+  background-color: $background-accent !important;
 }
 
 ::v-deep.v-main {
-  background: $background-primary;
+  background: $background-accent;
 }
 
 ::v-deep.v-main > .v-main__wrap {
@@ -137,7 +137,13 @@ export default defineComponent({
   flex-direction: column;
 }
 
+@media screen and (max-width: 600px) {
+  ::v-deep.v-main > .v-main__wrap {
+    border-top-left-radius: 0;
+  }
+}
+
 .veo-docs-navigation.v-navigation-drawer {
-  background-color: $background-primary;
+  background-color: $background-accent;
 }
 </style>

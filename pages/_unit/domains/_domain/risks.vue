@@ -22,7 +22,7 @@
   >
     <template #default>
       <div>
-        <p class="pt-3 mb-0">
+        <p class="pt-3 mb-0 text-body-1">
           {{ t('selectRiskMatrixToView') }}
         </p>
         <VeoTabs>

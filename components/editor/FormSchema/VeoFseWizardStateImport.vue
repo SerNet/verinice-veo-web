@@ -17,23 +17,17 @@
 -->
 <template>
   <v-window-item v-bind="$attrs">
-    <h2 class="mb-2">
+    <h2 class="text-h2 mb-6">
       {{ t('importFormSchema') }}
     </h2>
-    <v-row
-      no-gutters
-      class="align-center mt-4"
+    <h3 class="text-h3">
+      {{ t('formSchema') }}
+    </h3>
+    <VeoCard
+      inverted
+      class="full-width"
     >
-      <v-col
-        cols="12"
-        md="5"
-      >
-        <span>{{ t('formSchemaType') }}*:</span>
-      </v-col>
-      <v-col
-        cols="12"
-        md="7"
-      >
+      <v-card-text>
         <v-select
           :value="formSchemaId"
           :label="t('formSchema')"
@@ -42,51 +36,12 @@
           required
           @change="onChangeFormSchema"
         />
-      </v-col>
-    </v-row>
-    <v-row
-      v-if="formSchemaId === 'custom'"
-      no-gutters
-    >
-      <v-col
-        cols="0"
-        md="5"
-      />
-      <v-col
-        cols="12"
-        md="7"
-      >
         <VeoEditorFileUpload
+          v-if="formSchemaId === 'custom'"
           :input-label="t('formSchemaUploadLabel')"
           :submit-button-text="t('importFormSchema')"
           @schema-uploaded="$emit('update:formSchema', $event)"
         />
-      </v-col>
-    </v-row>
-    <v-row
-      no-gutters
-      class="align-center mt-4"
-    >
-      <v-col cols="12">
-        <v-checkbox
-          :input-value="forceOwnSchema"
-          :label="t('forceOwnSchema')"
-          @change="$emit('update:forceOwnSchema', $event)"
-        />
-      </v-col>
-    </v-row>
-    <v-row
-      v-if="forceOwnSchema || objectTypeMissing || !schemasCompatible"
-      no-gutters
-    >
-      <v-col
-        cols="0"
-        md="5"
-      />
-      <v-col
-        cols="12"
-        md="7"
-      >
         <VeoAlert
           :value="objectTypeMissing || !schemasCompatible"
           :type="!schemasCompatible && !objectTypeMissing ? VeoAlertType.INFO : VeoAlertType.ERROR"
@@ -110,14 +65,31 @@
             </v-btn>
           </template>
         </VeoAlert>
-        <VeoEditorFileUpload
-          v-cy-name="'objectschema-input'"
-          :input-label="t('objectSchemaUploadLabel')"
-          :submit-button-text="t('importObjectSchema')"
-          @schema-uploaded="$emit('update:objectSchema', $event)"
+      </v-card-text>
+    </VeoCard>
+    <h3 class="text-h3 mt-6">
+      {{ t('objectschema') }}
+    </h3>
+    <VeoCard
+      inverted
+      class="full-width"
+    >
+      <v-card-text>
+        <v-checkbox
+          :input-value="forceOwnSchema"
+          :label="t('forceOwnSchema')"
+          @change="$emit('update:forceOwnSchema', $event)"
         />
-      </v-col>
-    </v-row>
+        <div v-if="forceOwnSchema">
+          <VeoEditorFileUpload
+            v-cy-name="'objectschema-input'"
+            :input-label="t('objectSchemaUploadLabel')"
+            :submit-button-text="t('importObjectSchema')"
+            @schema-uploaded="$emit('update:objectSchema', $event)"
+          />
+        </div>
+      </v-card-text>
+    </VeoCard>
   </v-window-item>
 </template>
 
@@ -230,6 +202,7 @@ export default defineComponent({
     "importFormSchema": "Import form schema",
     "importObjectSchema": "Import object schema",
     "formSchemaUploadLabel": "Form schema upload @:format",
+    "objectschema": "Objectschema",
     "objectSchemaIncompatible": "The object schema is not compatible with the form schema",
     "objectSchemaUploadLabel": "Object schema upload @:format",
     "objectTypeMissing": "The object schema belonging to the form schema couldn't be found",
@@ -245,6 +218,7 @@ export default defineComponent({
     "importFormSchema": "Formschema importieren",
     "importObjectSchema": "Objektschema importieren",
     "formSchemaUploadLabel": "Formschema hochladen @:format",
+    "objectschema": "Objektschema",
     "objectSchemaIncompatible": "Das Objektschema ist nicht mit dem Formschema kompatibel",
     "objectSchemaUploadLabel": "Objektschema hochladen @:format",
     "objectTypeMissing": "Das zum Formschema gehörende Objektschema konnte nicht gefunden werden",

@@ -16,19 +16,17 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage fullsize>
+  <VeoPage
+    fullsize
+    title="Dokumentation"
+  >
     <v-row>
-      <v-col cols="12">
-        <div class="display-1 font-weight-bold">
-          Dokumentation
-        </div>
-      </v-col>
       <v-col
         v-for="(doc, i) in docs"
         :key="i"
       >
         <v-list color="transparent">
-          <v-subheader class="font-weight-black font-italic black--text">
+          <v-subheader class="black--text font-weight-bold text-body-1">
             {{ doc.title }}
           </v-subheader>
           <v-list-item-group>
@@ -56,6 +54,7 @@ export const ROUTE = '/help';
 
 export default Vue.extend({
   name: 'Docs',
+  layout: 'plain',
   data() {
     return {
       docs: [
@@ -120,5 +119,3 @@ export default Vue.extend({
   }
 });
 </script>
-
-<style lang="scss"></style>

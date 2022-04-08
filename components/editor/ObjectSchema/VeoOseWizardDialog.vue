@@ -22,7 +22,6 @@
     :large="state !== 'start'"
     :headline="$t('editor.objectschema.headline')"
     persistent
-    fixed-header
     :close-function="onClose"
   >
     <template #default>
@@ -31,14 +30,17 @@
           value="start"
           class="py-4"
         >
-          <h2>
+          <h3 class="text-h3">
             {{ $t('start') }}
-          </h2>
+          </h3>
           <v-list
-            two-line
             class="px-0 overflow-hidden"
+            color="transparent"
           >
-            <v-list-item @click="state = 'create'">
+            <v-list-item
+              two-line
+              @click="state = 'create'"
+            >
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
                   {{ $t('createObjectSchema') }}
@@ -51,7 +53,10 @@
                 </v-icon>
               </v-list-item-action>
             </v-list-item>
-            <v-list-item @click="state = 'import'">
+            <v-list-item
+              two-line
+              @click="state = 'import'"
+            >
               <v-list-item-content>
                 <v-list-item-title class="font-weight-bold">
                   {{ $t('importObjectSchema') }}
@@ -74,7 +79,9 @@
             v-model="createForm.valid"
             @submit.prevent="createSchema()"
           >
-            <h2>{{ $t('createObjectSchema') }}</h2>
+            <h2 class="text-h2">
+              {{ $t('createObjectSchema') }}
+            </h2>
             <v-row
               no-gutters
               class="align-center mt-4"
@@ -126,7 +133,9 @@
           value="import"
           class="px-4"
         >
-          <h2>{{ $t('importObjectSchema') }}</h2>
+          <h2 class="text-h2">
+            {{ $t('importObjectSchema') }}
+          </h2>
           <v-row
             no-gutters
             class="align-center mt-4"
@@ -172,7 +181,6 @@
       </v-window>
     </template>
     <template #dialog-options>
-      <span />
       <v-btn
         v-if="state !== 'start'"
         text

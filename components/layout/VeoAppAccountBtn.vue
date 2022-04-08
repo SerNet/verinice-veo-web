@@ -40,11 +40,14 @@
             size="48"
             color="secondary"
           >
-            <span class="white--text headline">{{ initials }}</span>
+            <span class="white--text text-h1">{{ initials }}</span>
           </v-avatar>
         </v-btn>
       </template>
-      <v-card>
+      <v-card
+        flat
+        tile
+      >
         <v-list
           dense
           class="pb-0"
@@ -52,7 +55,7 @@
           <v-list-item>
             <v-list-item-avatar color="secondary">
               <v-icon
-                class="white--text"
+                class="white--text text-h1"
                 style="font-style: normal"
               >
                 {{ initials }}
@@ -70,7 +73,7 @@
             <v-divider />
             <VeoUnitSelection :units="units" />
           </template>
-          <v-divider class="mt-2" />
+          <v-divider />
           <v-list-item @click="displayDeploymentDetails = true">
             <v-list-item-icon>
               <v-icon color="black">

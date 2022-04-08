@@ -25,14 +25,19 @@
       v-if="state === CATALOG_STATE.CHOOSE_TOMS"
       #default
     >
-      <h2>
+      <h2 class="text-h2">
         {{ $t('selectTOMs') }}
       </h2>
       <v-row dense>
+        <v-col cols="auto">
+          <p class="text-body-1">
+            {{ $t('selectTOMCTA') }}
+          </p>
+        </v-col>
         <v-spacer />
-        <v-col class="flex-grow-0 d-flex">
+        <v-col cols="auto">
           <v-btn
-            outlined
+            text
             class="mr-2"
             :disabled="selectedToms.length === 0"
             @click="selectedToms = []"
@@ -42,14 +47,13 @@
           <v-btn
             color="primary"
             :disabled="selectedToms.length === 0"
-            outlined
+            text
             @click="chooseEntities"
           >
             {{ $t('global.button.next') }}
           </v-btn>
         </v-col>
       </v-row>
-      <p>{{ $t('selectTOMCTA') }}</p>
       <VeoCatalogSelectionList
         v-model="selectedToms"
         :items="formattedTomItems"
@@ -61,14 +65,14 @@
       v-else-if="state === CATALOG_STATE.CHOOSE_ENTITIES"
       #default
     >
-      <h2>
+      <h2 class="text-h2">
         {{ $t('applyTOMs') }}
       </h2>
       <v-row dense>
         <v-spacer />
         <v-col class="flex-grow-0 d-flex">
           <v-btn
-            outlined
+            text
             class="mr-2"
             :disabled="selectedToms.length === 0"
             @click="selectedToms = []"
@@ -76,7 +80,7 @@
             {{ $t('global.button.cancel') }}
           </v-btn>
           <v-btn
-            outlined
+            text
             class="mr-2"
             @click="chooseToms"
           >
@@ -85,20 +89,22 @@
           <v-btn
             color="primary"
             :disabled="selectedEntities.length === 0"
-            outlined
+            text
             @click="apply"
           >
             {{ $t('apply') }}
           </v-btn>
         </v-col>
       </v-row>
-      <p>{{ upperFirst($t('selectedTOMs').toString()) }}</p>
+      <p class="text-h3">
+        {{ upperFirst($t('selectedTOMs').toString()) }}
+      </p>
       <VeoCatalogSelectionList
         :items="formattedSelectedToms"
         :headers="tomSelectionHeaders"
         :selectable="false"
       />
-      <p class="mt-6">
+      <p class="mt-6 text-body-1">
         {{ $t('selectDPEntitiesCTA') }}
       </p>
       <VeoEntitySelectionList

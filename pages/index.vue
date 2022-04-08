@@ -17,7 +17,7 @@
 -->
 <template>
   <VeoPage :title="$t('breadcrumbs.index')">
-    <div class="body-1 mb-4">
+    <div class="text-body-1 mb-4">
       {{ $t('unitpicker') }}:
     </div>
     <v-data-iterator

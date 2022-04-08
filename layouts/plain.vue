@@ -58,6 +58,12 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-primary !important;
+  background-color: $background-accent !important;
+}
+
+::v-deep.v-main > .v-main__wrap {
+  border-top: 1px solid $medium-grey;
+  display: flex;
+  flex-direction: column;
 }
 </style>

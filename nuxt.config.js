@@ -165,6 +165,10 @@ export default {
       {
         require: 'intersection-observer',
         detect: () => 'IntersectionObserver' in window
+      },
+      {
+        require: 'resize-observer',
+        detect: () => 'ResizeObserver' in window
       }
     ]
   },
@@ -187,7 +191,7 @@ export default {
   /**
    *
    */
-  css: ['~/assets/main.scss', '~/assets/util.scss', '~/assets/intro.scss'],
+  css: ['~/assets/main.scss', '~/assets/intro.scss'],
 
   /**
    *

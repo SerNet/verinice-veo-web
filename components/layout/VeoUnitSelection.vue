@@ -17,17 +17,6 @@
 -->
 <template>
   <div style="display: contents">
-    <v-list-item>
-      <v-list-item-title class="d-flex justify-end">
-        <v-btn
-          color="primary"
-          text
-          @click="doCreateUnit()"
-        >
-          <v-icon>mdi-plus</v-icon> {{ $t('unit.create.short') }}
-        </v-btn>
-      </v-list-item-title>
-    </v-list-item>
     <v-list-item dense>
       <v-list-item-content>
         <v-autocomplete
@@ -38,41 +27,70 @@
           dense
           outlined
           hide-details
-          :label="$t('unit.select.label')"
+          :label="t('unit.select.label')"
           @change="doChangeUnit"
         />
       </v-list-item-content>
+    </v-list-item>
+    <v-list-item
+      dense
+      @click="doCreateUnit()"
+    >
+      <v-list-item-icon>
+        <v-icon color="black">
+          {{ mdiPlus }}
+        </v-icon>
+      </v-list-item-icon>
+      <v-list-item-title>
+        {{ t('unit.create.short') }}
+        </v-btn>
+      </v-list-item-title>
     </v-list-item>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Prop } from 'vue/types/options';
+import { computed, defineComponent, PropType, useRoute } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+import { mdiPlus } from '@mdi/js';
 
 import { IVeoUnit } from '~/types/VeoTypes';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { separateUUIDParam } from '~/lib/utils';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     units: {
-      type: Array as Prop<IVeoUnit[]>,
+      type: Array as PropType<IVeoUnit[]>,
       required: true
     }
   },
-  computed: {
-    unit(): string | undefined {
-      return (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id) || '-';
-    }
+  emits: {
+    [VeoEvents.UNIT_CHANGED]: (_: boolean) => {},
+    [VeoEvents.UNIT_CREATE]: (_: boolean) => {}
   },
-  methods: {
-    doChangeUnit(unit: string) {
-      this.$root.$emit(VeoEvents.UNIT_CHANGED, unit);
-    },
-    doCreateUnit(persistent: boolean = false) {
-      this.$root.$emit(VeoEvents.UNIT_CREATE, persistent);
-    }
+  setup(_, { root }) {
+    const { t } = useI18n();
+    const route = useRoute();
+
+    const unit = computed(() => (route.value.params.unit && separateUUIDParam(route.value.params.unit).id) || undefined);
+
+    const doChangeUnit = (unit: string) => {
+      root.$emit(VeoEvents.UNIT_CHANGED, unit);
+    };
+
+    const doCreateUnit = (persistent: boolean = false) => {
+      root.$emit(VeoEvents.UNIT_CREATE, persistent);
+    };
+
+    return {
+      doChangeUnit,
+      doCreateUnit,
+      unit,
+
+      mdiPlus,
+      t
+    };
   }
 });
 </script>

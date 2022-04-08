@@ -100,7 +100,8 @@
 <script lang="ts">
 import { computed, defineComponent, provide, reactive, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import {
-  /* mdiApplicationCog, */ mdiChevronDoubleLeft,
+  mdiApplicationCogOutline,
+  mdiChevronDoubleLeft,
   mdiChevronDoubleRight,
   mdiClipboardListOutline,
   mdiFileChartOutline,
@@ -123,6 +124,7 @@ import { ROUTE_NAME as OBJECTS_ROUTE_NAME } from '~/pages/_unit/domains/_domain/
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/_unit/domains/_domain/catalogs/_catalog.vue';
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/_unit/domains/_domain/reports/_type.vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/risks/_matrix.vue';
+import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/editor/index.vue';
 
 export interface INavItem {
   name: string;
@@ -320,6 +322,8 @@ export default defineComponent({
       return _maxUnits ? parseInt(_maxUnits, 10) : _maxUnits;
     });
 
+    const isContentCreator = computed(() => !!$user.auth.roles.find((r: string) => r === 'veo-content-creator'));
+
     // Reload certain navigation items if domain changes
     watch(
       () => props.domainId,
@@ -329,9 +333,9 @@ export default defineComponent({
       }
     );
 
-    /* const spacer: INavItem = {
+    const spacer: INavItem = {
       name: 'spacer'
-    }; */
+    };
 
     const unitSelectionNavEntry: INavItem = {
       name: t('breadcrumbs.index').toString(),
@@ -389,9 +393,9 @@ export default defineComponent({
       partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/risks`)
     }));
 
-    /* const editorsNavEntry = computed<INavItem>(() => ({
+    const editorsNavEntry = computed<INavItem>(() => ({
       name: t('breadcrumbs.editor').toString(),
-      icon: mdiApplicationCog,
+      icon: mdiApplicationCogOutline,
       to: {
         name: EDITOR_INDEX_ROUTE_NAME,
         params: {
@@ -399,13 +403,14 @@ export default defineComponent({
           domain: createUUIDUrlParam('domain', props.domainId)
         }
       }
-    })); */
+    }));
 
     const items = computed<INavItem[]>(() => [
       ...(maxUnits.value && maxUnits.value > 2 ? [unitSelectionNavEntry] : []),
       ...(props.unitId && props.domainId
         ? [domainDashboardNavEntry.value, objectsNavEntry.value, catalogsNavEntry.value, reportsNavEntry.value, risksNavEntry.value /*, editorsNavEntry.value */]
-        : [])
+        : []),
+      ...(props.domainId && props.unitId && isContentCreator.value ? [spacer, editorsNavEntry.value] : [])
     ]);
 
     const expandedNavItems = reactive<string[]>([]);
@@ -483,6 +488,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-primary-navigation.v-navigation-drawer {
-  background-color: $background-primary;
+  background-color: $background-accent;
 }
 </style>

@@ -17,7 +17,9 @@
 -->
 <template>
   <v-card
-    elevation="0"
+    flat
+    outlined
+    rounded
     class="fse-label mx-3 my-2 px-2"
   >
     <v-row no-gutters>
@@ -62,7 +64,7 @@
             dense
             small
           >
-            mdi-delete
+            mdi-trash-can-outline
           </v-icon>
         </v-btn>
       </v-col>
@@ -168,7 +170,6 @@ export default Vue.extend({
 @import '~/assets/vuetify.scss';
 
 .fse-label {
-  border: 1px solid $medium-grey;
   min-width: 250px;
   overflow: hidden;
 

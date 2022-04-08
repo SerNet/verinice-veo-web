@@ -16,7 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper :page-widths="[8, 4]">
+  <VeoPageWrapper
+    :page-widths="[6, 6]"
+    :page-widths-lg="[7, 5]"
+    :page-widths-xl="[8, 4]"
+  >
     <template #default>
       <VeoPage
         :id="scrollWrapperId"
@@ -26,7 +30,9 @@
         <template #header>
           <v-row class="align-center mx-0 pb-4">
             <v-col cols="auto">
-              <h3>{{ upperFirst(t('display').toString()) }}:</h3>
+              <span class="text-h3">
+                {{ upperFirst(t('display').toString()) }}:
+              </span>
             </v-col>
             <v-col cols="auto">
               <v-select

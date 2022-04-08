@@ -47,31 +47,31 @@
             @input="onTranslationInput"
           />
         </v-col>
-        <v-col cols="auto">
-          <v-tooltip bottom>
-            <template #activator="{ on }">
-              <v-btn
-                icon
-                v-on="on"
-                @click="$emit('delete')"
-              >
-                <v-icon>{{ mdiTrashCan }}</v-icon>
-              </v-btn>
-            </template>
-            <template #default>
-              {{ upperFirst(t('deleteStatus').toString()) }}
-            </template>
-          </v-tooltip>
-        </v-col>
       </v-row>
     </v-list-item-content>
+    <v-list-item-action>
+      <v-tooltip bottom>
+        <template #activator="{ on }">
+          <v-btn
+            icon
+            v-on="on"
+            @click="$emit('delete')"
+          >
+            <v-icon>{{ mdiTrashCanOutline }}</v-icon>
+          </v-btn>
+        </template>
+        <template #default>
+          {{ upperFirst(t('deleteStatus').toString()) }}
+        </template>
+      </v-tooltip>
+    </v-list-item-action>
   </v-list-item>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropOptions } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
-import { mdiMenu, mdiTranslate, mdiTrashCan } from '@mdi/js';
+import { mdiMenu, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { CHART_COLORS } from '~/lib/utils';
@@ -107,7 +107,7 @@ export default defineComponent({
       t,
       upperFirst,
       mdiMenu,
-      mdiTrashCan,
+      mdiTrashCanOutline,
       mdiTranslate,
       CHART_COLORS
     };
@@ -130,13 +130,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .schema-details__status-list-item {
-  background-color: white;
-  border: 1px solid #efefef;
-  border-radius: 4px;
+  background-color: $background-primary;
+  border: 1px solid $medium-grey;
+  border-radius: 0px;
   overflow: hidden;
 
   .v-list-item__icon {
-    height: 46px;
+    height: 56px;
   }
 }
 </style>

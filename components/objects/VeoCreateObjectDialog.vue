@@ -22,10 +22,7 @@
     x-large
     :persistent="isFormDirty"
     fixed-footer
-    fixed-header
-    content-class="overflow-hidden fill-height"
-    card-class="d-flex flex-column fill-height"
-    inner-class="overflow-hidden"
+    inner-class="fill-height"
     v-on="$listeners"
   >
     <template #default>

@@ -51,3 +51,14 @@ function intersectionObserver() {
 }
 
 window.IntersectionObserver = intersectionObserver;
+
+// Mocks the intersection observer, however not as a jest module mock, as it usually resides in the global scope allowing us to mock it there
+function resizeObserver() {
+  return {
+    observe: () => null,
+    unobserve: () => null,
+    disconnect: () => null
+  };
+}
+
+window.ResizeObserver = resizeObserver;

@@ -17,52 +17,61 @@
 -->
 <template>
   <v-dialog
-    v-model="dialog"
+    :value="value"
     max-width="80%"
-    :persistent="persistent"
-    :eager="eager"
+    :fullscreen="fullscreen"
     :width="width"
-    :content-class="contentClass"
-    class="veo-dialog"
+    :content-class="dialogClasses"
+    v-bind="$attrs"
+    v-on="$listeners"
   >
     <v-card
-      :class="cardClass"
+      class="d-flex flex-column"
+      :color="xLarge ? 'white' : undefined"
       tile
     >
-      <div :style="fixedHeader ? 'position: sticky; top: 0; z-index: 1;' : ''">
-        <v-card-title
-          :class="{
-            'pl-4 pr-0 py-0': !large && !xLarge,
-            'pt-2 pb-1': large || xLarge
-          }"
-        >
+      <div :class="{ 'veo-dialog__inner--border-bottom': xLarge }">
+        <v-card-title class="pt-2 pb-1">
+          <VeoAppLogoMobile
+            v-if="fullscreen"
+            style="height: 36px"
+          />
           <span>{{ headline }}</span>
           <v-spacer />
           <v-btn
-            v-if="!closeHidden"
             :disabled="closeDisabled"
             icon
             large
             class="close-button"
             @click="closeDialog()"
           >
-            <v-icon>mdi-close</v-icon>
+            <v-icon>{{ mdiClose }}</v-icon>
           </v-btn>
         </v-card-title>
-        <v-divider class="mx-4" />
+        <v-divider
+          v-if="!xLarge"
+          class="mx-4"
+        />
       </div>
       <v-card-text
-        :class="[innerClass, 'pa-4', 'flex-grow-1']"
+        class="pa-4 overflow-x-hidden overflow-y-auto flex-grow-1"
         style="position: relative;"
       >
-        <slot />
+        <div :class="innerClass">
+          <slot />
+        </div>
+        <v-card-actions
+          v-if="!!$slots['dialog-options'] && !fixedFooter"
+          class="pt-3 pb-0"
+        >
+          <slot name="dialog-options" />
+        </v-card-actions>
       </v-card-text>
       <v-card-actions
-        v-if="!!$slots['dialog-options']"
-        class="pb-3 px-4 d-block pt-0"
-        :style="fixedFooter ? 'position: sticky; bottom: -1px; z-index: 1;' : ''"
+        v-if="!!$slots['dialog-options'] && fixedFooter"
+        :class="{ 'pb-3 px-4 d-block pt-0': true, 'veo-dialog__actions--border-top': xLarge }"
       >
-        <v-divider v-if="fixedFooter" />
+        <v-divider v-if="!xLarge" />
         <div class="d-flex pt-3">
           <slot name="dialog-options" />
         </div>
@@ -70,10 +79,12 @@
     </v-card>
   </v-dialog>
 </template>
-<script lang="ts">
-import Vue from 'vue';
 
-export default Vue.extend({
+<script lang="ts">
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api';
+import { mdiClose } from '@mdi/js';
+
+export default defineComponent({
   name: 'VeoDialog',
   props: {
     value: {
@@ -92,15 +103,7 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
-    persistent: {
-      type: Boolean,
-      default: false
-    },
     closeDisabled: {
-      type: Boolean,
-      default: false
-    },
-    closeHidden: {
       type: Boolean,
       default: false
     },
@@ -110,52 +113,57 @@ export default Vue.extend({
         return true;
       }
     },
-    fixedHeader: {
-      type: Boolean,
-      default: false
-    },
     fixedFooter: {
-      type: Boolean,
-      default: false
-    },
-    eager: {
       type: Boolean,
       default: false
     },
     innerClass: {
       type: String,
       default: ''
-    },
-    contentClass: {
-      type: String,
-      default: ''
-    },
-    cardClass: {
-      type: String,
-      default: ''
     }
   },
-  computed: {
-    dialog: {
-      get(): boolean {
-        return this.value;
-      },
-      set(newValue: boolean) {
-        this.$emit('input', newValue);
-      }
-    },
-    width(): string {
-      if (this.large) return '900px';
-      if (this.xLarge) return '1350px';
+  emits: {
+    input: (_: boolean) => {}
+  },
+  setup(props, { emit }) {
+    // @ts-ignore $vuetify exists
+    const { $vuetify } = useContext();
+
+    const fullscreen = computed(() => (props.xLarge && $vuetify.breakpoint.mdAndDown) || (props.large && $vuetify.breakpoint.smAndDown) || $vuetify.breakpoint.xsOnly);
+
+    const width = computed(() => {
+      if (props.large) return '900px';
+      if (props.xLarge) return '1350px';
       return '450px';
-    }
-  },
-  methods: {
-    closeDialog() {
-      if (this.closeFunction()) {
-        this.$emit('input', false);
+    });
+
+    const closeDialog = () => {
+      // @ts-ignore For some reason closeFunction has a value of never, but no Prop type seems to fit a function
+      if (props.closeFunction()) {
+        emit('input', false);
       }
-    }
+    };
+
+    const dialogClasses = computed(() => {
+      const classes = {
+        'overflow-hidden': true,
+        'd-flex': props.value
+      };
+
+      return Object.entries(classes)
+        .filter(([_, value]) => !!value)
+        .map(([key, _]) => key)
+        .join(' ');
+    });
+
+    return {
+      closeDialog,
+      dialogClasses,
+      fullscreen,
+      width,
+
+      mdiClose
+    };
   }
 });
 </script>
@@ -164,6 +172,14 @@ export default Vue.extend({
 .v-card,
 .v-card__actions,
 .v-card__title {
-  background: $background-primary;
+  background-color: $background-accent;
+}
+
+.veo-dialog__inner--border-bottom {
+  border-bottom: 1px solid $medium-grey;
+}
+
+.veo-dialog__actions--border-top {
+  border-top: 1px solid $medium-grey;
 }
 </style>

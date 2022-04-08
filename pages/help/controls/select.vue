@@ -16,11 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage fullsize>
+  <VeoPage
+    fullsize
+    title="Select"
+    fixed-header
+  >
     <v-row justify="center">
-      <v-col cols="12">
-        <PageHeader>Select</PageHeader>
-      </v-col>
       <v-col cols="12">
         <v-switch
           v-model="isMultiselect"

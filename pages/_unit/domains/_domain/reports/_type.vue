@@ -29,7 +29,7 @@
         <v-col cols="auto">
           <p
             v-if="report"
-            class="mt-2 mb-0"
+            class="mt-2 mb-0 text-body-1"
           >
             {{ report.description[$i18n.locale] }}
           </p>
@@ -38,10 +38,16 @@
     </template>
     <template #default>
       <VeoLoadingWrapper v-if="generatingReport" />
-      <p v-if="report && report.multipleTargetsSupported">
+      <p
+        v-if="report && report.multipleTargetsSupported"
+        class="text-body-1"
+      >
         {{ $t('hintMultiple') }}
       </p>
-      <p v-else-if="report">
+      <p
+        v-else-if="report"
+        class="text-body-1"
+      >
         {{ $t('hintSingle') }}
       </p>
       <v-row
@@ -86,10 +92,12 @@
           />
         </v-col>
         <v-spacer v-if="objectTypes.length <= 1 && subTypes.length <= 1" />
+      </v-row>
+      <v-row no-gutters>
+        <v-spacer />
         <v-col cols="auto">
           <v-btn
-            outlined
-            class="my-4"
+            text
             color="primary"
             :disabled="global_loading || !selectedEntities.length"
             @click="generateReport"
@@ -177,7 +185,7 @@ export default Vue.extend({
       userSelectedSubType: undefined as undefined | string,
       forms: [] as IVeoFormSchemaMeta[],
       filterDialogVisible: false,
-      filterKeys: ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects', 'hasLinks'],
+      filterKeys: ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'],
       formschemas: [] as IVeoFormSchemaMeta[],
       mdiFilter,
       upperFirst
