@@ -25,10 +25,12 @@
     </div>
     <p>{{ t('moreModulesInfo') }}</p>
     <p>{{ t('moreModulesEta') }}</p>
-    <p>{{ t('furtherInformation') }} <a
-      :href="locale === 'de' ? 'https://verinice.com/veo' : `https://verinice.com/${locale}/veo`"
-      target="_blank"
-    >{{ t('linkName') }}</a>.</p>
+    <p>
+      {{ t('furtherInformation') }} <a
+        :href="locale === 'de' ? 'https://verinice.com/veo' : `https://verinice.com/${locale}/veo`"
+        target="_blank"
+      >{{ t('linkName') }}</a>.
+    </p>
   </VeoPage>
 </template>
 

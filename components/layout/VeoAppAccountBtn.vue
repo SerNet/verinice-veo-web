@@ -21,7 +21,7 @@
     class="mr-0 text-right flex-grow-0"
   >
     <v-menu
-      v-model="value"
+      v-model="menuVisible"
       :close-on-content-click="false"
       content-class="veo-account-menu"
       max-width="350px"
@@ -100,44 +100,65 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 
-import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { IVeoUnit } from '~/types/VeoTypes';
 
-export default Vue.extend({
+export default defineComponent({
   props: {
-    prename: { type: String, default: '' },
-    lastname: { type: String, default: '' },
-    username: { type: String, default: '' },
-    email: { type: String, default: '' }
-  },
-  data() {
-    return {
-      value: false,
-      units: [] as IVeoUnit[],
-      displayDeploymentDetails: false as boolean
-    };
-  },
-  async fetch() {
-    this.units = await this.$api.unit.fetchAll();
-  },
-  computed: {
-    initials(): string {
-      return this.prename.substring(0, 1) + this.lastname.substring(0, 1);
+    prename: {
+      type: String,
+      default: ''
     },
-    maxUnits(): number | undefined {
-      const maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
-
-      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
+    lastname: {
+      type: String,
+      default: ''
+    },
+    username: {
+      type: String,
+      default: ''
+    },
+    email: {
+      type: String,
+      default: ''
     }
   },
-  mounted() {
-    this.$root.$on(VeoEvents.UNIT_CHANGED, () => {
-      this.$nextTick(() => {
-        this.$fetch();
-      });
+  setup(props) {
+    const { $api, $user } = useContext();
+    const route = useRoute();
+
+    const displayDeploymentDetails = ref(false);
+    const menuVisible = ref(false);
+
+    const initials = computed(() => props.prename.substring(0, 1) + props.lastname.substring(0, 1));
+
+    const maxUnits = computed(() => {
+      const maxUnits = $user.auth.profile?.attributes?.maxUnits?.[0];
+
+      return maxUnits ? parseInt(maxUnits, 10) : maxUnits;
     });
+
+    const unitId = computed(() => route.value.params.unit);
+
+    watch(
+      () => unitId.value,
+      () => fetch()
+    );
+
+    // Unit selection stuff
+    const units = ref<IVeoUnit[]>([]);
+
+    const { fetch } = useFetch(async () => {
+      units.value = await $api.unit.fetchAll();
+    });
+
+    return {
+      displayDeploymentDetails,
+      initials,
+      maxUnits,
+      menuVisible,
+      units
+    };
   }
 });
 </script>

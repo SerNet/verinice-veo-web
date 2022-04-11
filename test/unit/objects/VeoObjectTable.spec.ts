@@ -49,6 +49,11 @@ describe('VeoObjectTable.vue', () => {
             tablePageSize: 20
           }
         }
+      },
+      $route: {
+        params: {
+          domain: undefined
+        }
       }
     }
   };

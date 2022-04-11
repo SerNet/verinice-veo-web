@@ -32,7 +32,7 @@
       <v-list-item-content>
         <v-autocomplete
           :value="unit"
-          :items="units"
+          :items="displayedUnits"
           item-text="name"
           item-value="id"
           dense
@@ -52,7 +52,7 @@ import { Prop } from 'vue/types/options';
 
 import { IVeoUnit } from '~/types/VeoTypes';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 
 export default Vue.extend({
   props: {
@@ -64,11 +64,23 @@ export default Vue.extend({
   computed: {
     unit(): string | undefined {
       return (this.$route.params.unit && separateUUIDParam(this.$route.params.unit).id) || '-';
+    },
+    displayedUnits(): IVeoUnit[] {
+      // Only display units with at least one domain
+      return this.units.filter((unit) => unit.domains[0]);
     }
   },
   methods: {
-    doChangeUnit(unit: string) {
-      this.$root.$emit(VeoEvents.UNIT_CHANGED, unit);
+    doChangeUnit(unitId: string) {
+      const unit = this.units.find((unit) => unit.id === unitId) as IVeoUnit;
+      const domainId = getFirstDomainDomaindId(unit) as string;
+      this.$router.push({
+        name: 'unit-domains-domain',
+        params: {
+          unit: createUUIDUrlParam('unit', unitId),
+          domain: createUUIDUrlParam('domain', domainId)
+        }
+      });
     },
     doCreateUnit(persistent: boolean = false) {
       this.$root.$emit(VeoEvents.UNIT_CREATE, persistent);
