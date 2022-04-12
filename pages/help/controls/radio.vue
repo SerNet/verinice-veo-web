@@ -17,7 +17,6 @@
 -->
 <template>
   <VeoPage
-    fullsize
     title="Radio"
     fixed-header
   >

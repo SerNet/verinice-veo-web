@@ -17,7 +17,6 @@
 -->
 <template>
   <VeoPage
-    fullsize
     title="Input Text Multiline"
     fixed-header
   >

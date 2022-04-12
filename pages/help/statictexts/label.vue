@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-    fullsize
-    title="Label"
-  >
+  <VeoPage title="Label">
     <v-row justify="center">
       <v-col
         cols="12"

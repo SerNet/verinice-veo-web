@@ -17,7 +17,6 @@
 -->
 <template>
   <VeoPage
-    fullsize
     title="Autocomplete"
     fixed-header
   >

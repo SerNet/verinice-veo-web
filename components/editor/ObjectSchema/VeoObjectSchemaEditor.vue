@@ -126,7 +126,7 @@
             v-for="(link, index) of customLinks"
             v-show="itemContainsAttributeTitle(link, search)"
             :key="index"
-            class="mb-2"
+            class="mb-2 overflow-hidden"
             outlined
           >
             <v-list
@@ -387,7 +387,13 @@ export default defineComponent<IProps>({
 
 .v-expansion-panel-header {
   min-height: auto !important;
-  padding: 8px 24px !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.v-expansion-panel-content > ::v-deep.v-expansion-panel-content__wrap {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .json-highlighter {
@@ -399,7 +405,3 @@ export default defineComponent<IProps>({
   }
 }
 </style>
-
-function deepClone(arg0: IVeoOSHCustomLink|undefined): any {
-  throw new Error('Function not implemented.')
-}

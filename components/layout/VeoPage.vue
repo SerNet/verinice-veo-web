@@ -18,9 +18,7 @@
 <template>
   <v-col
     class="veo-page py-0"
-    :cols="12"
-    :lg="fullsize ? 12 : 8"
-    :xl="fullsize ? 12 : 7"
+    cols="12"
     :class="noPadding ? 'px-0' : isPageWrapperChild? 'px-10' : 'px-4'"
   >
     <VeoPageHeader v-bind="$props">
@@ -79,7 +77,6 @@ interface IProps {
   contentClass: string;
   headingLevel: string | number;
   stickyHeader: boolean;
-  fullsize: boolean;
   height: string;
   loading: boolean;
   loadContent: boolean;
@@ -107,13 +104,6 @@ export default defineComponent<IProps>({
       default: false
     },
     stickyFooter: {
-      type: Boolean,
-      default: false
-    },
-    /**
-     * If set to true, the page has 100% width on all viewports.
-     */
-    fullsize: {
       type: Boolean,
       default: false
     },

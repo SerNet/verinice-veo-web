@@ -19,12 +19,11 @@
   <VeoPage
     :title="t('calltoaction').toString()"
     :heading-level="2"
-    fullsize
   >
     <div class="d-flex justify-center">
       <VeoCard
         class="mt-10"
-        style="width: 70%"
+        style="width: 70%; max-width: 1000px;"
       >
         <v-list
           two-line

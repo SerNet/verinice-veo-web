@@ -17,7 +17,6 @@
 -->
 <template>
   <VeoPage
-    fullsize
     :loading="$fetchState.pending"
     :title="title"
   >

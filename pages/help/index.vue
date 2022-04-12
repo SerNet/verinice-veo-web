@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-    fullsize
-    title="Dokumentation"
-  >
+  <VeoPage title="Dokumentation">
     <v-row>
       <v-col
         v-for="(doc, i) in docs"

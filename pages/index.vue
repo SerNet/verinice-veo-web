@@ -20,41 +20,43 @@
     <div class="text-body-1 my-4">
       {{ $t('unitpicker') }}
     </div>
-    <VeoCard>
-      <v-data-iterator
-        :search="search"
-        :items="units"
-        item-key="id"
-      >
-        <template #header>
-          <v-text-field
-            v-model="search"
-            dense
-            clearable
-            filled
-            hide-details
-            color="black"
-            prepend-inner-icon="mdi-magnify"
-            :label="$t('unitpickerPlaceholder')"
-          />
-        </template>
-        <template #default="{ items }">
-          <v-list dense>
-            <v-list-item
-              v-for="item in items"
-              :key="item.id"
-              two-line
-              :to="'/' + createUUIDUrlParam('unit', item.id)"
-            >
-              <v-list-item-content>
-                <v-list-item-title v-text="item.name" />
-                <v-list-item-subtitle v-text="item.description" />
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </template>
-      </v-data-iterator>
-    </VeoCard>
+    <div class="d-flex justify-center">
+      <VeoCard style="width: 70%; max-width: 1000px;">
+        <v-data-iterator
+          :search="search"
+          :items="units"
+          item-key="id"
+        >
+          <template #header>
+            <v-text-field
+              v-model="search"
+              dense
+              clearable
+              filled
+              hide-details
+              color="black"
+              prepend-inner-icon="mdi-magnify"
+              :label="$t('unitpickerPlaceholder')"
+            />
+          </template>
+          <template #default="{ items }">
+            <v-list dense>
+              <v-list-item
+                v-for="item in items"
+                :key="item.id"
+                two-line
+                :to="'/' + createUUIDUrlParam('unit', item.id)"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.name" />
+                  <v-list-item-subtitle v-text="item.description" />
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </template>
+        </v-data-iterator>
+      </VeoCard>
+    </div>
     <VeoWelcomeDialog
       v-if="showWelcomeDialog"
       v-model="showWelcomeDialog"

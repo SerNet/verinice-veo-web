@@ -30,8 +30,7 @@
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
-      <VeoPage
-        fullsize
+      <VeoPage        
         sticky-header
         sticky-footer
         color="#ffffff"
@@ -58,7 +57,6 @@
         </template>
       </VeoPage>
       <VeoPage
-        fullsize
         content-class="fill-height"
         no-padding
         :title="!pageWidths[1] ? (object && object.displayName) : undefined"

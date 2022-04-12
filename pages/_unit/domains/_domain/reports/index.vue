@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-    :title="$t('breadcrumbs.reports')"
-    fullsize
-  >
+  <VeoPage :title="$t('breadcrumbs.reports')">
     <template #header>
       <p class="mt-4 text-body-1">
         {{ $t('hint') }}

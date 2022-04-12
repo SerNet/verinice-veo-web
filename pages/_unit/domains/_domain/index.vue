@@ -20,7 +20,6 @@
     :title="title"
     :loading="!domain"
     padding
-    fullsize
   >
     <p
       v-if="domain"

@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-    :title="upperFirst(t('objectOverview').toString())"
-    fullsize
-  >
+  <VeoPage :title="upperFirst(t('objectOverview').toString())">
     <VeoFilterDialog
       v-model="filterDialogVisible"
       :domain="domainId"

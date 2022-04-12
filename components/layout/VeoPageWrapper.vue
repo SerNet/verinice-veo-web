@@ -260,7 +260,6 @@ export default Vue.extend({
             .map((slotItem, index) => {
               if (slotItem.componentOptions?.propsData) {
                 (slotItem.componentOptions.propsData as any).isPageWrapperChild = true;
-                (slotItem.componentOptions.propsData as any).fullsize = true;
               }
 
               return [
