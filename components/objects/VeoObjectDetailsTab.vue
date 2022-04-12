@@ -16,37 +16,33 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <VeoObjectTable
-          :additional-headers="additionalHeaders"
-          :default-headers="defaultHeaders"
-          :items="items"
-          :loading="fetchState.pending"
-          @click="openItem"
+  <div>
+    <VeoObjectTable
+      :additional-headers="additionalHeaders"
+      :default-headers="defaultHeaders"
+      :items="items"
+      :loading="fetchState.pending"
+      @click="openItem"
+    >
+      <template #actions="{item}">
+        <v-tooltip
+          v-for="btn in actions"
+          :key="btn.id"
+          bottom
         >
-          <template #actions="{item}">
-            <v-tooltip
-              v-for="btn in actions"
-              :key="btn.id"
-              bottom
+          <template #activator="{on}">
+            <v-btn
+              icon
+              @click="btn.action(item)"
+              v-on="on"
             >
-              <template #activator="{on}">
-                <v-btn
-                  icon
-                  @click="btn.action(item)"
-                  v-on="on"
-                >
-                  <v-icon v-text="btn.icon" />
-                </v-btn>
-              </template>
-              {{ btn.label }}
-            </v-tooltip>
+              <v-icon v-text="btn.icon" />
+            </v-btn>
           </template>
-        </VeoObjectTable>
-      </v-col>
-    </v-row>
+          {{ btn.label }}
+        </v-tooltip>
+      </template>
+    </VeoObjectTable>
     <!-- dialogs -->
     <VeoUnlinkEntityDialog
       v-model="unlinkEntityDialog.value"
@@ -61,7 +57,7 @@
       :object-type="object && object.type"
       :object-id="object && object.id"
     />
-  </v-container>
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';

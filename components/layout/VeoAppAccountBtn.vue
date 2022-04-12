@@ -62,11 +62,15 @@
               </v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
-              <span>
+              <span v-if="prename || lastname">
                 {{ prename }}
                 {{ lastname }}
               </span>
-              <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
+              <span
+                v-else
+                v-text="$t('notAvailable')"
+              />
+              <v-list-item-subtitle>{{ email || $t('notAvailable') }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <template v-if="!maxUnits || maxUnits > 2">
@@ -127,7 +131,7 @@ export default Vue.extend({
   },
   computed: {
     initials(): string {
-      return this.prename.substring(0, 1) + this.lastname.substring(0, 1);
+      return this.prename.substring(0, 1) + this.lastname.substring(0, 1) || '??';
     },
     maxUnits(): number | undefined {
       const maxUnits = this.$user.auth.profile?.attributes?.maxUnits?.[0];
@@ -149,11 +153,13 @@ export default Vue.extend({
 {
   "en": {
     "about": "About verinice.",
-    "logout": "Logout"
+    "logout": "Logout",
+    "notAvailable": "Not available"
   },
   "de": {
     "about": "Über verinice.",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "notAvailable": "Keine Angabe"
   }
 }
 </i18n>

@@ -133,7 +133,7 @@ export default defineComponent({
 }
 
 .veo-docs-navigation.v-navigation-drawer {
-  background-color: #1b1b1b;
+  background-color: #2f2f2f;
 
   .v-treeview,
   .v-treeview ::v-deep.v-icon {
