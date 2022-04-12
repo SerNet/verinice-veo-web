@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoCard v-bind="$attrs">
+  <VeoCard
+    v-if="items.length > 0"
+    v-bind="$attrs"
+  >
     <v-list>
       <v-list-item
         v-for="(item, index) of items"
@@ -43,13 +46,14 @@
           </v-btn>
         </v-list-item-action>
       </v-list-item>
-      <v-list-item v-if="items.length === 0 && noErrorPlaceholderVisible">
-        <v-list-item-content class="text-body-1">
-          {{ t('noErrors') }}
-        </v-list-item-content>
-      </v-list-item>
     </v-list>
   </VeoCard>
+  <p
+    v-else-if="noErrorPlaceholderVisible"
+    class="font-italic text-body-2 mt-2"
+  >
+    {{ t('noErrors') }}
+  </p>
 </template>
 
 <script lang="ts">

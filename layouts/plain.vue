@@ -20,7 +20,6 @@
     <v-app-bar
       class="veo-app-bar"
       app
-      clipped-left
       flat
     >
       <nuxt-link
@@ -41,6 +40,7 @@
       />
     </v-app-bar>
     <v-main>
+      <v-divider class="mx-4" />
       <nuxt />
     </v-main>
   </v-app>
@@ -58,11 +58,11 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-accent !important;
+  background-color: $background-primary !important;
 }
 
 ::v-deep.v-main > .v-main__wrap {
-  border-top: 1px solid $medium-grey;
+  background: $background-primary;
   display: flex;
   flex-direction: column;
 }

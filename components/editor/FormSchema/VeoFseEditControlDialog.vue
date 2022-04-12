@@ -27,7 +27,7 @@
       <h3 class="text-h3">
         {{ upperFirst(t('common').toString()) }}
       </h3>
-      <VeoCard inverted>
+      <VeoCard>
         <v-card-text>
           <v-form>
             <v-row
@@ -137,10 +137,7 @@
       <h3 class="text-h3 mt-6">
         {{ t('linkAttributes') }}
       </h3>
-      <VeoCard
-        v-if="activeControlType.name === 'LinksField' && formSchemaElements.length > 0"
-        inverted
-      >
+      <VeoCard v-if="activeControlType.name === 'LinksField' && formSchemaElements.length > 0">
         <Draggable
           class="dragArea d-flex flex-column fill-width fill-height"
           tag="div"

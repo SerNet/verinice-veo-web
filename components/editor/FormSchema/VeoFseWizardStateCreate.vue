@@ -31,7 +31,6 @@
         class="d-none"
       >
       <VeoCard
-        inverted
         class="mb-4"
       >
         <v-card-text>
@@ -81,7 +80,7 @@
           </v-row>
         </v-card-text>
       </VeoCard>
-      <VeoCard inverted>
+      <VeoCard>
         <v-card-text>
           <v-row
             no-gutters

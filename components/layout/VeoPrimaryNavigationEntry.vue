@@ -32,10 +32,15 @@
   <v-list-item
     v-else-if="childItems === undefined"
     class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
+    :class="{
+      'pl-2': level === 0,
+      'pl-2': level === 1,
+      'pl-8': level === 2
+    }"
     :to="to"
     :exact="exact === undefined || exact"
   >
-    <v-list-item-icon v-if="icon">
+    <v-list-item-icon>
       <v-tooltip
         right
         :disabled="!miniVariant"
@@ -45,16 +50,13 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-icon
-              color="black"
-              v-text="icon"
-            />
+            <v-icon v-text="icon" />
           </div>
         </template>
         <span>{{ name }}</span>
       </v-tooltip>
     </v-list-item-icon>
-    <v-list-item-title style="color: black">
+    <v-list-item-title>
       {{ name }}
     </v-list-item-title>
   </v-list-item>
@@ -63,15 +65,12 @@
     :key="name"
     :value="groupIsExpanded"
     class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
-    color="black"
+    color="white"
     no-action
     @click="onGroupClick"
   >
     <template #activator>
-      <v-list-item-title
-        :class="{ 'font-weight-bold': partOfActivePath }"
-        style="color: black"
-      >
+      <v-list-item-title :class="{ 'font-weight-bold': partOfActivePath }">
         {{ name }}
       </v-list-item-title>
     </template>
@@ -85,10 +84,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-icon
-              color="black"
-              v-text="icon"
-            />
+            <v-icon v-text="icon" />
           </div>
         </template>
         <span>{{ name }}</span>
@@ -105,9 +101,9 @@
       v-for="child of childItems"
       v-bind="child"
       :key="child.name"
+      :level="level + 1"
       :path="currentPath"
       style="min-height: 28px;"
-      :top-level-item="false"
       v-on="$listeners"
     />
   </v-list-group>
@@ -158,6 +154,10 @@ export default defineComponent({
     path: {
       type: String,
       required: true
+    },
+    level: {
+      type: Number,
+      default: 0
     }
   },
   setup(props, { emit }) {
@@ -215,14 +215,6 @@ export default defineComponent({
   flex-basis: auto;
 }
 
-::v-deep.veo-primary-navigation__menu-item.v-list-group--no-action {
-  & > .v-list-group__items {
-    & > .v-list-item {
-      padding-left: 76px !important;
-    }
-  }
-}
-
 ::v-deep.veo-primary-navigation__menu-item.v-skeleton-loader {
   margin-bottom: 4px;
   .v-skeleton-loader__list-item-avatar {
@@ -244,5 +236,10 @@ export default defineComponent({
 
 ::v-deep.v-list-item--active .v-list-item__title {
   font-weight: 700;
+}
+
+.veo-primary-navigation__menu-item ::v-deep.v-icon,
+.veo-primary-navigation__menu-item ::v-deep.v-list-item__title {
+  color: #dddddd;
 }
 </style>

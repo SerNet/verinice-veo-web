@@ -45,7 +45,7 @@
           :key="subTypeIndex"
           cols="6"
         >
-          <VeoCard inverted>
+          <VeoCard>
             <v-card-text>
               <v-row>
                 <v-col

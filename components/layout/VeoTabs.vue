@@ -17,10 +17,11 @@
 -->
 <script lang="ts">
 import { defineComponent, ref, h, computed, watch } from '@nuxtjs/composition-api';
-import { VTabs, VTabsItems } from 'vuetify/lib';
+import { VDivider, VTabs, VTabsItems } from 'vuetify/lib';
 
 export default defineComponent({
   components: {
+    VDivider,
     VTabs,
     VTabsItems
   },
@@ -78,7 +79,8 @@ export default defineComponent({
             VTabs,
             {
               props: {
-                value: internalValue.value
+                value: internalValue.value,
+                color: 'primary'
               },
               on: {
                 change: (newValue: number) => {
@@ -87,18 +89,20 @@ export default defineComponent({
                 }
               },
               class: {
+                'veo-tabs': true,
                 'veo-tabs--sticky': props.stickyTabs
               }
             },
             [tabs.value]
           ),
+          h(VDivider),
           h(
             VTabsItems,
             {
               props: {
                 value: internalValue.value
               },
-              class: 'pt-4'
+              class: 'pt-2 transparent'
             },
             [slots.items ? slots.items() : []]
           )
@@ -117,6 +121,11 @@ export default defineComponent({
   right: 0;
   top: 0;
   z-index: 2;
+}
+
+.veo-tabs ::v-deep.v-slide-group__wrapper,
+.veo-tabs ::v-deep.v-slide-group {
+  background: transparent;
 }
 
 .veo-tabs--sticky {

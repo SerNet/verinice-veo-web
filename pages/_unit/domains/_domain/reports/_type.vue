@@ -94,23 +94,6 @@
         <v-spacer v-if="objectTypes.length <= 1 && subTypes.length <= 1" />
       </v-row>
       <v-row no-gutters>
-        <v-spacer />
-        <v-col cols="auto">
-          <v-btn
-            text
-            color="primary"
-            :disabled="global_loading || !selectedEntities.length"
-            @click="generateReport"
-          >
-            {{ $t('generateReport') }}
-          </v-btn>
-          <a
-            ref="downloadButton"
-            href="#"
-          />
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
         <v-col
           cols="auto"
           class="d-flex align-center"
@@ -144,13 +127,35 @@
           </v-chip-group>
         </v-col>
       </v-row>
-      <VeoEntitySelectionList
-        v-model="selectedEntities"
-        :items="entities"
-        :loading="$fetchState.pending || global_loading"
-        single-select
-        @page-change="onPageChange"
-      />
+      <VeoCard>
+        <VeoEntitySelectionList
+          v-model="selectedEntities"
+          :items="entities"
+          :loading="$fetchState.pending || global_loading"
+          single-select
+          @page-change="onPageChange"
+        />
+      </VeoCard>
+      <v-row
+        no-gutters
+        class="mt-4"
+      >
+        <v-spacer />
+        <v-col cols="auto">
+          <v-btn
+            depressed
+            color="primary"
+            :disabled="global_loading || !selectedEntities.length"
+            @click="generateReport"
+          >
+            {{ $t('generateReport') }}
+          </v-btn>
+          <a
+            ref="downloadButton"
+            href="#"
+          />
+        </v-col>
+      </v-row>
       <VeoFilterDialog
         v-model="filterDialogVisible"
         :domain="domainId"

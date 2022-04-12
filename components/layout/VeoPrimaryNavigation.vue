@@ -21,7 +21,6 @@
     :width="290"
     :value="value"
     app
-    clipped
     floating
     :mini-variant="!$vuetify.breakpoint.xs && miniVariant"
     :permanent="!$vuetify.breakpoint.xs"
@@ -31,6 +30,12 @@
   >
     <template #default>
       <div class="d-flex flex-column fill-height">
+        <div>
+          <slot
+            name="header"
+            v-bind="{ miniVariant }"
+          />
+        </div>
         <v-list
           nav
           dense
@@ -45,6 +50,7 @@
               :key="index"
               v-bind="item"
               path="#"
+              :level="0"
               :mini-variant="miniVariant"
               @expand-menu="setMiniVariant(false)"
               @collapse-other-submenus="onCollapseMenus"
@@ -59,7 +65,7 @@
         dense
         class="pa-0"
       >
-        <v-divider />
+        <v-divider style="background: rgba(255, 255, 255, 0.2)" />
         <v-list-item
           v-if="!$vuetify.breakpoint.xs"
           class="pl-4"
@@ -68,26 +74,26 @@
           <v-list-item-icon>
             <v-icon
               v-if="miniVariant"
-              color="black"
+              color="white"
             >
               {{ mdiChevronDoubleRight }}
             </v-icon>
             <v-icon
               v-else
-              color="black"
+              color="white"
             >
               {{ mdiChevronDoubleLeft }}
             </v-icon>
           </v-list-item-icon>
           <v-list-item-title
             v-if="miniVariant"
-            style="color: black"
+            style="color: white"
           >
             {{ t('fix') }}
           </v-list-item-title>
           <v-list-item-title
             v-else
-            style="color: black"
+            style="color: white"
           >
             {{ t('collapse') }}
           </v-list-item-title>
@@ -106,6 +112,7 @@ import {
   mdiClipboardListOutline,
   mdiFileChartOutline,
   mdiFileDocumentOutline,
+  mdiFormatListBulleted,
   mdiHomeOutline,
   mdiTableLarge
 } from '@mdi/js';
@@ -240,7 +247,6 @@ export default defineComponent({
                     },
                     exact: true,
                     disabled: false,
-                    topLevelItem: false,
                     sorting: formSchema?.sorting
                   };
                 }),
@@ -339,7 +345,7 @@ export default defineComponent({
 
     const unitSelectionNavEntry: INavItem = {
       name: t('breadcrumbs.index').toString(),
-      icon: mdiHomeOutline,
+      icon: mdiFormatListBulleted,
       to: {
         name: UNIT_SELECTION_ROUTE_NAME
       }
@@ -488,6 +494,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-primary-navigation.v-navigation-drawer {
-  background-color: $background-accent;
+  background-color: #1b1b1b;
 }
 </style>

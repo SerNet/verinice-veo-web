@@ -33,7 +33,7 @@
     </VeoPageHeader>
     <v-row
       no-gutters
-      :style="{ 'max-height': '100%', 'min-height': 0, height }"
+      :style="{ 'max-height': '100%', 'min-height': 0, height, 'background-color': color }"
       class="pa-0 flex-column flex-nowrap"
     >
       <v-col :class="contentClass">
@@ -90,6 +90,10 @@ interface IProps {
 
 export default defineComponent<IProps>({
   props: {
+    color: {
+      type: String,
+      default: undefined
+    },
     contentClass: {
       type: String,
       default: ''

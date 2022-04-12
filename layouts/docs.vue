@@ -20,19 +20,12 @@
     <v-app-bar
       class="veo-app-bar"
       app
-      clipped-left
       flat
     >
       <v-app-bar-nav-icon
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <nuxt-link
-        to="/docs"
-        class="text-decoration-none fill-height"
-      >
-        <VeoAppBarLogo />
-      </nuxt-link>
       <v-spacer />
       <v-btn
         depressed
@@ -48,14 +41,22 @@
       :width="290"
       app
       class="veo-docs-navigation"
-      clipped
       floating
       v-on="$listeners"
     >
+      <div style="min-height: 65px">
+        <nuxt-link
+          to="/docs"
+          class="text-decoration-none"
+        >
+          <VeoAppBarLogo />
+        </nuxt-link>
+      </div>
       <v-treeview
         dense
         :items="items"
         activatable
+        color="white"
         item-key="to"
         open-on-click
         @update:active="openItem"
@@ -65,6 +66,7 @@
       style="max-height: 100vh;"
       class="overflow-hidden"
     >
+      <v-divider class="mx-4" />
       <VeoPageWrapper>
         <nuxt />
       </VeoPageWrapper>
@@ -121,29 +123,21 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-accent !important;
-}
-
-::v-deep.v-main {
-  background: $background-accent;
+  background-color: $background-primary !important;
 }
 
 ::v-deep.v-main > .v-main__wrap {
-  background: white;
-  border-left: 1px solid $medium-grey;
-  border-top: 1px solid $medium-grey;
-  border-top-left-radius: 16px;
+  background: $background-primary;
   display: flex;
   flex-direction: column;
 }
 
-@media screen and (max-width: 600px) {
-  ::v-deep.v-main > .v-main__wrap {
-    border-top-left-radius: 0;
-  }
-}
-
 .veo-docs-navigation.v-navigation-drawer {
-  background-color: $background-accent;
+  background-color: #1b1b1b;
+
+  .v-treeview,
+  .v-treeview ::v-deep.v-icon {
+    color: #ffffff;
+  }
 }
 </style>

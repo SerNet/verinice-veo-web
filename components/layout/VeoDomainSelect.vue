@@ -22,7 +22,8 @@
   >
     <template #activator="{ on, value }">
       <v-list-item
-        style="margin: -4px 0; height: calc(100% + 8px)"
+        class="veo-domain-select"
+        dense
         v-on="on"
       >
         <v-skeleton-loader
@@ -41,7 +42,6 @@
         <v-icon
           v-if="value"
           right
-          large
           color="primary"
         >
           {{ mdiChevronUp }}
@@ -49,7 +49,6 @@
         <v-icon
           v-else
           right
-          large
           color="primary"
         >
           {{ mdiChevronDown }}
@@ -163,14 +162,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-domain-select {
+  background: rgba(0, 0, 0, 0.06);
   border-radius: 4px;
-  overflow: hidden;
-  width: 175px;
 }
 
 .veo-domain-select__selection {
   color: #666666;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;

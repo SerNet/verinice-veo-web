@@ -91,10 +91,7 @@
               >
                 {{ item.fullName }}
               </h3>
-              <VeoCard
-                :key="item.name"
-                inverted
-              >
+              <VeoCard :key="item.name">
                 <v-card-text>
                   <v-row no-gutters>
                     <v-col

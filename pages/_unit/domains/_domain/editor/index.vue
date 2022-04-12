@@ -16,41 +16,49 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage>
-    <h2 class="text-h2">
-      {{ t('calltoaction') }}
-    </h2>
-    <v-list
-      two-line
-      class="overflow-hidden"
-    >
-      <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">
-        <v-list-item-content>
-          <v-list-item-title class="font-weight-bold">
-            {{ t('editor.objectschema.headline') }}
-          </v-list-item-title>
-          <v-list-item-subtitle>{{ t('objectSchemaDescription') }}</v-list-item-subtitle>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-icon x-large>
-            mdi-chevron-right
-          </v-icon>
-        </v-list-item-action>
-      </v-list-item>
-      <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
-        <v-list-item-content>
-          <v-list-item-title class="font-weight-bold">
-            {{ t('editor.formschema.headline') }}
-          </v-list-item-title>
-          <v-list-item-subtitle>{{ t('formSchemaDescription') }}</v-list-item-subtitle>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-icon x-large>
-            mdi-chevron-right
-          </v-icon>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
+  <VeoPage
+    :title="t('calltoaction').toString()"
+    :heading-level="2"
+    fullsize
+  >
+    <div class="d-flex justify-center">
+      <VeoCard
+        class="mt-10"
+        style="width: 70%"
+      >
+        <v-list
+          two-line
+          class="overflow-hidden"
+        >
+          <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">
+            <v-list-item-content>
+              <v-list-item-title class="font-weight-bold">
+                {{ t('editor.objectschema.headline') }}
+              </v-list-item-title>
+              <v-list-item-subtitle>{{ t('objectSchemaDescription') }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-icon x-large>
+                mdi-chevron-right
+              </v-icon>
+            </v-list-item-action>
+          </v-list-item>
+          <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
+            <v-list-item-content>
+              <v-list-item-title class="font-weight-bold">
+                {{ t('editor.formschema.headline') }}
+              </v-list-item-title>
+              <v-list-item-subtitle>{{ t('formSchemaDescription') }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-icon x-large>
+                mdi-chevron-right
+              </v-icon>
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+      </VeoCard>
+    </div>
   </VeoPage>
 </template>
 

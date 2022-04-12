@@ -21,12 +21,12 @@
     v-else
     collapsable-left
     collapsable-right
-    :title="(object && object.displayName) || ''"
     :loading="loading"
     :page-widths="pageWidths"
     :page-widths-xl="pageWidthsXl"
     :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
+    class="veo-page-wrapper-white"
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
@@ -34,6 +34,8 @@
         fullsize
         sticky-header
         sticky-footer
+        color="#ffffff"
+        :title="(object && object.displayName) || ''"
       >
         <template #default>
           <VeoObjectDetails
@@ -59,6 +61,7 @@
         fullsize
         content-class="fill-height"
         no-padding
+        :title="!pageWidths[1] ? (object && object.displayName) : undefined"
       >
         <template #default>
           <VeoObjectForm

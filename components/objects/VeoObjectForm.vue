@@ -24,11 +24,12 @@
     <template #default>
       <VeoPage
         :id="scrollWrapperId"
+        color="#ffffff"
         sticky-header
         :sticky-footer="!!$slots['append-form-fixed']"
       >
         <template #header>
-          <v-row class="align-center mx-0 pb-4">
+          <v-row class="align-center mx-0 pb-3 pt-2">
             <v-col cols="auto">
               <span class="text-h3">
                 {{ upperFirst(t('display').toString()) }}:
@@ -70,7 +71,10 @@
           <slot name="append-form-fixed" />
         </template>
       </VeoPage>
-      <VeoPage no-padding>
+      <VeoPage
+        color="#ffffff"
+        no-padding
+      >
         <template #default>
           <VeoTabs
             v-cy-name="'form-tabs'"

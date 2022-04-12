@@ -20,20 +20,13 @@
     <v-app-bar
       class="veo-app-bar"
       app
-      clipped-left
       flat
     >
       <v-app-bar-nav-icon
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <nuxt-link
-        :to="homeLink"
-        class="text-decoration-none fill-height"
-      >
-        <VeoAppBarLogo />
-      </nuxt-link>
-      <div class="ml-6 fill-height">
+      <div>
         <VeoDomainSelect v-if="$route.params.unit" />
       </div>
       <v-spacer />
@@ -70,11 +63,23 @@
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="unitId"
-    />
+    >
+      <template #header="{ miniVariant }">
+        <div style="min-height: 65px">
+          <nuxt-link
+            :to="homeLink"
+            class="text-decoration-none"
+          >
+            <VeoAppBarLogo :size="miniVariant ? 'small' : 'large'" />
+          </nuxt-link>
+        </div>
+      </template>
+    </VeoPrimaryNavigation>
     <v-main
       style="max-height: 100vh;"
       class="overflow-hidden"
     >
+      <v-divider class="mx-4" />
       <VeoBreadcrumbs :key="breadcrumbsKey" />
       <nuxt />
     </v-main>
@@ -202,26 +207,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-accent !important;
-}
-
-::v-deep.v-main {
-  background: $background-accent;
+  background-color: $background-primary !important;
 }
 
 ::v-deep.v-main > .v-main__wrap {
-  background: white;
-  border-left: 1px solid $medium-grey;
-  border-top: 1px solid $medium-grey;
-  border-top-left-radius: 16px;
+  background: $background-primary;
   display: flex;
   flex-direction: column;
-}
-
-@media screen and (max-width: 600px) {
-  ::v-deep.v-main > .v-main__wrap {
-    border-top-left-radius: 0;
-  }
 }
 </style>
 

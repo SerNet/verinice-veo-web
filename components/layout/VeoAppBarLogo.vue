@@ -16,14 +16,17 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="fill-height py-2">
-    <VeoAppLogoDesktop v-if="size !== 'small' && ($vuetify.breakpoint.mdAndUp || size === 'large')" />
-    <VeoAppLogoMobile v-else-if="size !== 'large' || size === 'small'" />
+  <div class="py-2 text-center">
+    <VeoAppLogoDesktop
+      v-if="showDesktop"
+      style="width: 90%"
+    />
+    <VeoAppLogoMobile v-else-if="showMobile" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@nuxtjs/composition-api';
+import { computed, defineComponent, useContext } from '@nuxtjs/composition-api';
 
 export default defineComponent({
   props: {
@@ -32,8 +35,16 @@ export default defineComponent({
       default: 'auto'
     }
   },
-  setup() {
-    return {};
+  setup(props) {
+    // @ts-ignore
+    const { $vuetify } = useContext();
+
+    const showDesktop = computed(() => props.size !== 'small' && ($vuetify.breakpoint.mdAndUp || props.size === 'large'));
+    const showMobile = computed(() => props.size !== 'large');
+    return {
+      showDesktop,
+      showMobile
+    };
   }
 });
 </script>

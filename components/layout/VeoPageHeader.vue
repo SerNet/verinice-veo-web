@@ -49,7 +49,11 @@ export default defineComponent({
     titlebarAlignment: {
       type: Number,
       default: VeoPageHeaderAlignment.LEFT
-    } as PropOptions<VeoPageHeaderAlignment>
+    } as PropOptions<VeoPageHeaderAlignment>,
+    color: {
+      type: String,
+      default: undefined
+    }
   },
   setup(props, { slots }) {
     const titlebarAlignment: ComputedRef<{ 'justify-content': string }> = computed(() => {
@@ -61,14 +65,16 @@ export default defineComponent({
       h('div', { style: { display: 'contents' } }, [
         ...(!!props.title || !!slots.title
           ? [
-              h('div', { class: 'd-flex flex-row flex-wrap veo-page__title', style: titlebarAlignment.value }, [
+              h('div', { class: 'd-flex flex-row flex-wrap veo-page__title', style: { ...titlebarAlignment.value, 'background-color': props.color } }, [
                 ...(props.loading
                   ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title' })]
                   : [h(`h${props.headingLevel}`, { class: `text-no-wrap d-inline flex-grow-0 text-h${props.headingLevel}` }, props.title), ...(slots.title ? [slots.title()] : [])])
               ])
             ]
           : []),
-        ...(slots.header ? [h('div', { class: ['veo-page__header', ...(props.stickyHeader ? ['veo-page__header--sticky'] : [])] }, [slots.header()])] : [])
+        ...(slots.header
+          ? [h('div', { class: ['veo-page__header', ...(props.stickyHeader ? ['veo-page__header--sticky'] : [])], style: { 'background-color': props.color } }, [slots.header()])]
+          : [])
       ]);
   }
 });
@@ -76,12 +82,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-page__title {
-  background: white;
+  background: $background-primary;
   flex-grow: 0;
 }
 
 .veo-page__header {
-  background: white;
+  background: $background-primary;
   flex-grow: 0;
   position: relative;
   top: 0;

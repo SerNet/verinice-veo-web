@@ -20,7 +20,7 @@
     viewBox="0 -3 28 28"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"
-    class="fill-height"
+    style="max-height: 42px"
   >
     <g
       stroke="none"

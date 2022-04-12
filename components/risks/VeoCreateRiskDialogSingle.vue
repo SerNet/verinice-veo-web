@@ -33,7 +33,7 @@
         <h2 class="text-h2 mb-2">
           {{ upperFirst(t('common').toString()) }}
         </h2>
-        <VeoCard inverted>
+        <VeoCard>
           <v-card-text>
             <VeoObjectSelect
               v-model="data.scenario"

@@ -24,10 +24,7 @@
     v-on="$listeners"
   >
     <template #default>
-      <VeoCard
-        inverted
-        style="min-height: 20vh"
-      >
+      <VeoCard style="min-height: 20vh">
         <VeoCodeEditor
           :value="$props.code"
           readonly

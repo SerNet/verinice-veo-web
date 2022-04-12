@@ -20,7 +20,7 @@
     no-gutters
     class="fill-height flex-column flex-nowrap"
   >
-    <v-col class="flex-grow-0 text-body-1">
+    <v-col class="flex-grow-0 text-body-1 py-2">
       <template v-if="!loading">
         <p class="text-no-wrap mb-0">
           <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>

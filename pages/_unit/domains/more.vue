@@ -18,8 +18,8 @@
 <template>
   <VeoPage :title="t('moreModules')">
     <div
-      class="mb-6"
-      style="height: 50px"
+      class="my-3"
+      style="width: 300px"
     >
       <VeoAppLogoDesktop />
     </div>

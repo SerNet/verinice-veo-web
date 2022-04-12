@@ -26,10 +26,12 @@
       </p>
     </template>
     <template #default>
-      <VeoReportList
-        :items="reports"
-        @create-report="createReport"
-      />
+      <VeoCard>
+        <VeoReportList
+          :items="reports"
+          @create-report="createReport"
+        />
+      </VeoCard>
     </template>
   </VeoPage>
 </template>

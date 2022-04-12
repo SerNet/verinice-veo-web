@@ -41,7 +41,7 @@
         cols="12"
         lg="6"
       >
-        <v-sheet
+        <div
           v-for="(widget, widgetIndex) of rows"
           :key="widgetIndex"
           v-cy-name="widget !== 'my_latest_widget' ? 'status-bar-chart-widget' : ''"
@@ -57,7 +57,7 @@
             :loading="$fetchState.pending"
             @click="onBarClick"
           />
-        </v-sheet>
+        </div>
       </v-col>
     </v-row>
     <VeoWelcomeDialog

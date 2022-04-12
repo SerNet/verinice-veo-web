@@ -28,12 +28,21 @@
       <h2 class="text-h2">
         {{ $t('selectTOMs') }}
       </h2>
-      <v-row dense>
-        <v-col cols="auto">
-          <p class="text-body-1">
-            {{ $t('selectTOMCTA') }}
-          </p>
-        </v-col>
+      <p class="text-body-1">
+        {{ $t('selectTOMCTA') }}
+      </p>
+      <VeoCard>
+        <VeoCatalogSelectionList
+          v-model="selectedToms"
+          :items="formattedTomItems"
+          :headers="tomSelectionHeaders"
+          selectable
+        />
+      </VeoCard>
+      <v-row
+        dense
+        class="mt-4"
+      >
         <v-spacer />
         <v-col cols="auto">
           <v-btn
@@ -45,21 +54,15 @@
             {{ $t('global.button.cancel') }}
           </v-btn>
           <v-btn
+            depressed
             color="primary"
             :disabled="selectedToms.length === 0"
-            text
             @click="chooseEntities"
           >
             {{ $t('global.button.next') }}
           </v-btn>
         </v-col>
       </v-row>
-      <VeoCatalogSelectionList
-        v-model="selectedToms"
-        :items="formattedTomItems"
-        :headers="tomSelectionHeaders"
-        selectable
-      />
     </template>
     <template
       v-else-if="state === CATALOG_STATE.CHOOSE_ENTITIES"
@@ -68,7 +71,31 @@
       <h2 class="text-h2">
         {{ $t('applyTOMs') }}
       </h2>
-      <v-row dense>
+      <p class="text-h3">
+        {{ upperFirst($t('selectedTOMs').toString()) }}
+      </p>
+      <VeoCard>
+        <VeoCatalogSelectionList
+          :items="formattedSelectedToms"
+          :headers="tomSelectionHeaders"
+          :selectable="false"
+        />
+      </VeoCard>
+      <p class="mt-6 text-body-1">
+        {{ $t('selectDPEntitiesCTA') }}
+      </p>
+      <VeoCard>
+        <VeoEntitySelectionList
+          v-model="selectedEntities"
+          :items="entities"
+          :loading="loadingEntities"
+          @page-change="onPageChange"
+        />
+      </VeoCard>
+      <v-row
+        dense
+        class="mt-4"
+      >
         <v-spacer />
         <v-col class="flex-grow-0 d-flex">
           <v-btn
@@ -89,30 +116,13 @@
           <v-btn
             color="primary"
             :disabled="selectedEntities.length === 0"
-            text
+            depressed
             @click="apply"
           >
             {{ $t('apply') }}
           </v-btn>
         </v-col>
       </v-row>
-      <p class="text-h3">
-        {{ upperFirst($t('selectedTOMs').toString()) }}
-      </p>
-      <VeoCatalogSelectionList
-        :items="formattedSelectedToms"
-        :headers="tomSelectionHeaders"
-        :selectable="false"
-      />
-      <p class="mt-6 text-body-1">
-        {{ $t('selectDPEntitiesCTA') }}
-      </p>
-      <VeoEntitySelectionList
-        v-model="selectedEntities"
-        :items="entities"
-        :loading="loadingEntities"
-        @page-change="onPageChange"
-      />
     </template>
   </VeoPage>
 </template>
@@ -304,11 +314,3 @@ export default Vue.extend({
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.v-card.border {
-  border: 1px solid $medium-grey;
-}
-</style>

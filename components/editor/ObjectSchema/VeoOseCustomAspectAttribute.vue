@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoCard
-    inverted
-    class="mb-6"
-  >
+  <VeoCard class="mb-6">
     <v-list-item>
       <v-list-item-content>
         <v-row>

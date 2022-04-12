@@ -23,8 +23,8 @@ $error: #c90000;
 $medium-grey: #d7d7d7;
 $light-grey: #fafafa;
 
-$background-primary: #ffffff;
-$background-accent: rgb(243 244 246);
+$background-primary: rgb(243 244 246);
+$background-accent: #ffffff;
 
 // Overriding default variables
 $headings: (
@@ -56,7 +56,7 @@ $headings: (
 );
 
 $list-item-dense-title-font-weight: 400;
-$card-border-radius: 16px;
+$card-border-radius: 12px;
 $card-title-font-size: 1.3rem; // Equals h2
 $card-title-font-weight: 500; // Equals h2
 $card-title-line-height: 1.8rem; // Equals h2

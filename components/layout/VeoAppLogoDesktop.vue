@@ -20,7 +20,7 @@
     viewBox="20 35 328 50"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"
-    class="fill-height"
+    v-bind="$attrs"
   >
     <style type="text/css">
       .st0{fill:#C81517;}

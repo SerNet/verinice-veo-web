@@ -17,6 +17,7 @@
 -->
 <template>
   <VeoPageWrapper
+    class="veo-page-wrapper-white"
     collapsable-right
     :page-widths="pageWidths"
     @page-collapsed="onPageCollapsed"
@@ -24,6 +25,7 @@
     <template #default>
       <VeoPage
         v-if="objectSchemaHelper"
+        color="#ffffff"
         sticky-header
       >
         <template #header>
@@ -195,7 +197,7 @@
                 dense
                 clearable
                 flat
-                solo-inverted
+                filled
                 hide-details
                 :prepend-inner-icon="mdiMagnify"
                 :label="$t('search')"

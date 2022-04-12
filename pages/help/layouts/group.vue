@@ -82,6 +82,7 @@ import Vue from 'vue';
 import vjp from 'vue-json-pointer';
 
 export default Vue.extend({
+  layout: 'plain',
   data() {
     return {
       form: {

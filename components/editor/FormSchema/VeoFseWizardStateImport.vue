@@ -23,10 +23,7 @@
     <h3 class="text-h3">
       {{ t('formSchema') }}
     </h3>
-    <VeoCard
-      inverted
-      class="full-width"
-    >
+    <VeoCard class="full-width">
       <v-card-text>
         <v-select
           :value="formSchemaId"
@@ -70,10 +67,7 @@
     <h3 class="text-h3 mt-6">
       {{ t('objectschema') }}
     </h3>
-    <VeoCard
-      inverted
-      class="full-width"
-    >
+    <VeoCard class="full-width">
       <v-card-text>
         <v-checkbox
           :input-value="forceOwnSchema"

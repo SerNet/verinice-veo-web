@@ -76,33 +76,34 @@
         </v-chip-group>
       </v-col>
     </v-row>
-    <VeoObjectTable
-      v-if="!fetchState.error"
-      :items="items"
-      :loading="fetchState.pending"
-      :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
-      @page-change="onPageChange"
-      @click="openItem"
-    >
-      <template #actions="{item}">
-        <v-tooltip
-          v-for="btn in actions"
-          :key="btn.id"
-          bottom
-        >
-          <template #activator="{on}">
-            <v-btn
-              icon
-              @click="btn.action(item)"
-              v-on="on"
-            >
-              <v-icon v-text="btn.icon" />
-            </v-btn>
-          </template>
-          {{ btn.label }}
-        </v-tooltip>
-      </template>
-    </VeoObjectTable>
+    <VeoCard v-if="!fetchState.error">
+      <VeoObjectTable
+        :items="items"
+        :loading="fetchState.pending"
+        :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
+        @page-change="onPageChange"
+        @click="openItem"
+      >
+        <template #actions="{item}">
+          <v-tooltip
+            v-for="btn in actions"
+            :key="btn.id"
+            bottom
+          >
+            <template #activator="{on}">
+              <v-btn
+                icon
+                @click="btn.action(item)"
+                v-on="on"
+              >
+                <v-icon v-text="btn.icon" />
+              </v-btn>
+            </template>
+            {{ btn.label }}
+          </v-tooltip>
+        </template>
+      </VeoObjectTable>
+    </VeoCard>
     <VeoObjectTypeError v-else>
       <v-btn
         color="primary"

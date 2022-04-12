@@ -86,7 +86,7 @@
               <h3 class="text-h3">
                 {{ $t(`languageName.${ language }`) }}
               </h3>
-              <VeoCard inverted>
+              <VeoCard>
                 <VeoCodeEditor
                   :value="JSON.stringify(data.translations[language], undefined, 2)"
                   @input="onCodeUpdate($event, language)"

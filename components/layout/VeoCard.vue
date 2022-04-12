@@ -37,8 +37,7 @@ export default defineComponent({
           },
           props: {
             ...props,
-            ...attrs,
-            flat: true
+            ...attrs
           },
           on: listeners as any // Type for value: Funcion | Function[] vs Function | undefined
         },
@@ -55,5 +54,8 @@ export default defineComponent({
 
 .veo-card {
   background: $background-accent;
+  border: 1px solid darken($background-primary, 7%);
+  box-shadow: 0px 2px 2px -2px rgb(200, 200, 200) !important;
+  overflow: hidden;
 }
 </style>

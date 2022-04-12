@@ -31,7 +31,7 @@
         <h3 class="text-h3">
           {{ upperFirst($t('common').toString()) }}
         </h3>
-        <VeoCard inverted>
+        <VeoCard>
           <v-card-text>
             <v-row>
               <v-col
