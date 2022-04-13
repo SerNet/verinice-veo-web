@@ -26,16 +26,19 @@
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <div>
-        <VeoDomainSelect v-if="$route.params.unit" />
+      <div
+        v-if="$route.params.unit"
+        class="mr-4"
+      >
+        <VeoDomainSelect />
       </div>
+      <VeoDemoUnitButton v-if="$route.params.unit" />
       <v-spacer />
-      <VeoDemoUnitButton />
       <VeoLanguageSwitch />
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <v-btn
-            class="veo-list-searchbar__button mx-3"
+            class="veo-list-searchbar__button mr-3"
             color="black"
             icon
             role="submit"

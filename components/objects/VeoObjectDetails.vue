@@ -50,39 +50,40 @@
     >
       <v-skeleton-loader type="paragraph" />
     </v-col>
-    <v-divider class="mt-1" />
     <v-col>
-      <v-tabs
+      <VeoTabs
         :value="activeTab"
-        @change="$emit('update:activeTab', $event)"
+        @input="$emit('update:activeTab', $event)"
       >
-        <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
-        <v-tab
-          v-for="tab in tabs"
-          v-show="tab !== 'risks' || (loading || subType === 'PRO_DataProcessing')"
-          :key="tab"
-          :href="`#${tab}`"
-          :disabled="tab === 'parents'"
-        >
-          {{ t(tab) }}
-        </v-tab>
-      </v-tabs>
-      <v-tabs-items :value="activeTab">
-        <v-tab-item
-          v-for="tab in tabs"
-          :key="tab"
-          :value="tab"
-        >
-          <VeoObjectDetailsTab
-            v-if="object"
-            :type="tab"
-            :object="object"
-            :dense="dense"
-            :domain-id="domainId"
-            @new-object-created="$emit('reload')"
-          />
-        </v-tab-item>
-      </v-tabs-items>
+        <template #tabs>
+          <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
+          <v-tab
+            v-for="tab in tabs"
+            v-show="tab !== 'risks' || (loading || subType === 'PRO_DataProcessing')"
+            :key="tab"
+            :href="`#${tab}`"
+            :disabled="tab === 'parents'"
+          >
+            {{ t(tab) }}
+          </v-tab>
+        </template>
+        <template #items>
+          <v-tab-item
+            v-for="tab in tabs"
+            :key="tab"
+            :value="tab"
+          >
+            <VeoObjectDetailsTab
+              v-if="object"
+              :type="tab"
+              :object="object"
+              :dense="dense"
+              :domain-id="domainId"
+              @new-object-created="$emit('reload')"
+            />
+          </v-tab-item>
+        </template>
+      </VeoTabs>
     </v-col>
   </v-row>
 </template>

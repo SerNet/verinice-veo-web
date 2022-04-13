@@ -29,11 +29,11 @@
         <v-btn
           color="primary"
           :disabled="!demoUnit || units.length === 0"
-          class="mx-4"
           depressed
+          style="height: 40px"
           @click="toggleDemoUnit"
         >
-          <v-icon class="mr-2">
+          <v-icon left>
             {{ buttonIcon }}
           </v-icon>
           <span v-if="userIsInDemoUnit">

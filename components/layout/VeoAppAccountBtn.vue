@@ -78,7 +78,7 @@
         </v-list-item>
         <v-divider />
         <v-list-item @click="$emit('logout')">
-          <v-list-item-title class="text--grey">
+          <v-list-item-title class="font-weight-medium">
             {{ $t('logout') }}
           </v-list-item-title>
         </v-list-item>
