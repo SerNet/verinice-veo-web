@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+// Vuetify variables
 $primary: #c90000;
-$secondary: #c62828;
-$accent: #757575;
-$accentHighlight: #2f2f2f;
-$error: #c90000;
+
+// Custom variables
 $medium-grey: #d7d7d7;
 $light-grey: #fafafa;
-
 $background-primary: rgb(243 244 246);
 $background-accent: #ffffff;
 
@@ -57,6 +55,9 @@ $headings: (
 
 $list-item-dense-title-font-weight: 400;
 $card-border-radius: 12px;
+$dialog-border-radius: 12px;
+$menu-content-border-radius: 12px;
+$menu-content-elevation: 4;
 $card-title-font-size: 1.3rem; // Equals h2
 $card-title-font-weight: 500; // Equals h2
 $card-title-line-height: 1.8rem; // Equals h2

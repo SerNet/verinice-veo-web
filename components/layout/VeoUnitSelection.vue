@@ -17,30 +17,25 @@
 -->
 <template>
   <div style="display: contents">
-    <v-list-item dense>
+    <v-list-item>
       <v-list-item-content>
         <v-autocomplete
           :value="unit"
           :items="units"
           item-text="name"
           item-value="id"
-          dense
-          outlined
           hide-details
           :label="t('unit.select.label')"
+          dense
+          flat
+          single-line
           @change="doChangeUnit"
         />
       </v-list-item-content>
     </v-list-item>
     <v-list-item
-      dense
       @click="doCreateUnit()"
     >
-      <v-list-item-icon>
-        <v-icon color="black">
-          {{ mdiPlus }}
-        </v-icon>
-      </v-list-item-icon>
       <v-list-item-title>
         {{ t('unit.create.short') }}
         </v-btn>
@@ -52,7 +47,6 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiPlus } from '@mdi/js';
 
 import { IVeoUnit } from '~/types/VeoTypes';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
@@ -88,7 +82,6 @@ export default defineComponent({
       doCreateUnit,
       unit,
 
-      mdiPlus,
       t
     };
   }
