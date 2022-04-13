@@ -120,6 +120,7 @@ export default Vue.extend({
           '/parts$',
           '/members$',
           '/designator$',
+          '/decisionResults',
           '(\\w+)/properties/domains$',
           '_self'
         ],
@@ -282,20 +283,38 @@ export default Vue.extend({
         let newValue = cloneDeep(this.value);
 
         const path = propertyPath(scope).replace('#/', '/');
-        if (v === undefined || v === null) {
+        if (v !== undefined && v !== null) {
           vjp.set(newValue, path, v);
-          newValue = this.executeReactiveFormActions(oldValue, newValue);
         } else {
-          vjp.remove(newValue, path);
-          const parts = path.split('/');
-          console.log(parts);
-        }
+          // If a new value is undefined or null, unset it in the object and check whether any parent elements are empty now and can be removed
+          try {
+            vjp.remove(newValue, path);
 
-        console.log('1', scope, v);
-        console.log('2', newValue);
+            let parts = [];
+
+            parts = path.split('/');
+            while (parts.length > 1) {
+              parts.pop();
+              const tempPath = parts.join('/');
+
+              if (!this.propertyIsEmpty(newValue, tempPath)) {
+                break;
+              }
+
+              vjp.remove(newValue, tempPath);
+              parts = tempPath.split('/');
+            }
+          } catch (_) {}
+        }
+        newValue = this.executeReactiveFormActions(oldValue, newValue);
+
         this.$emit('input', newValue);
         this.$nextTick().then(() => this.validate());
       }
+    },
+    propertyIsEmpty(object: IBaseObject, pointer: string): boolean {
+      const property = vjp.get(object, pointer);
+      return !property || (Array.isArray(property) && !property.length) || (typeof property === 'object' && !Array.isArray(property) && !Object.keys(property).length);
     },
     validationErrorTransform(accummulator: {}, error: ErrorObject) {
       const keyMatch = error.schemaPath.match(/((.+\/properties\/\w+\b)|(.+(?=\/required)))/g);
