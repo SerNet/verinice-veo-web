@@ -26,6 +26,7 @@ export interface IVeoEntityRequestParams extends IVeoPaginationOptions {
   displayName?: string;
   subType?: string;
   unit?: string;
+  childElementIds?: string;
 }
 
 /**
@@ -332,6 +333,18 @@ export default function (api: Client) {
             return result;
           });
       }
+    },
+    /**
+     * Get parent entities of this entities. Sadly only entities of one type get returned.
+     *
+     * @param parentType The type of the parent element(s)
+     * @param id The id of the element to search for parents for
+     * @returns a paginated response with all found parents
+     */
+    async fetchParents(parentType: string, id: string): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
+      return await this.fetchAll(parentType, undefined, {
+        childElementIds: id
+      });
     }
   };
 }

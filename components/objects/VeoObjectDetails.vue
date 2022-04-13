@@ -58,7 +58,6 @@
             v-for="tab in tabs"
             v-show="tab !== 'risks' || (loading || subType === 'PRO_DataProcessing')"
             :key="tab"
-            :disabled="tab === 'parents'"
           >
             {{ t(tab) }}
           </v-tab>

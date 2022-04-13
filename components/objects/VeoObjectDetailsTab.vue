@@ -17,6 +17,20 @@
 -->
 <template>
   <div>
+    <v-select
+      v-if="type === 'parents'"
+      v-model="parentType"
+      background-color="rgb(0, 0, 0, 0.06)"
+      dense
+      :disabled="object.type === 'scope'"
+      flat
+      hide-details
+      :items="parentTypeItems"
+      :label="upperFirst(t('parentType').toString())"
+      :menu-props="{ offsetY: true, bottom: true }"
+      solo
+      style="width: 150px"
+    />
     <VeoObjectTable
       :additional-headers="additionalHeaders"
       :default-headers="defaultHeaders"
@@ -60,12 +74,12 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch, useAsync } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiContentCopy, mdiLinkOff, mdiTrashCanOutline } from '@mdi/js';
 import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoCustomLink, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
@@ -95,7 +109,23 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { cloneObject } = useVeoObjectUtilities();
 
-    const items = ref<IVeoEntity[]>();
+    const items = ref<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>();
+
+    /**
+     * Stuff for fetching parents
+     */
+    const objectTypes = useAsync(() => $api.schema.fetchAll());
+    const parentTypeItems = computed(() =>
+      (objectTypes.value || [])
+        .map((type) => ({ text: upperFirst(type.schemaName), value: type.schemaName }))
+        .filter((item) => item.value === 'scope' || item.value === props.object?.type)
+    );
+    const parentType = ref(props.object?.type);
+
+    watch(
+      () => parentType.value,
+      () => fetch()
+    );
 
     /**
      * fetch sub entities or links
@@ -105,6 +135,8 @@ export default defineComponent({
     const { fetchState, fetch } = useFetch(async () => {
       if (props.type === 'subEntities' && props.object) {
         items.value = await $api.entity.fetchSubEntities(props.object.type, props.object.id);
+      } else if (props.type === 'parents' && props.object && parentType.value) {
+        items.value = await $api.entity.fetchParents(parentType.value, props.object.id);
       } else if (props.type === 'risks' && props.object) {
         items.value = await $api.entity.fetchRisks(props.object.type, props.object.id);
       } else {
@@ -274,8 +306,11 @@ export default defineComponent({
       actions,
       fetch,
       items,
+      parentType,
+      parentTypeItems,
 
-      t
+      t,
+      upperFirst
     };
   }
 });
@@ -295,6 +330,7 @@ export default defineComponent({
       "link": "Could not link new object.",
       "risk": "Couldn't delete risk"
     },
+    "parentType": "parent type",
     "riskDeleted": "The risk was removed",
     "scenario": "Scenario"
 
@@ -311,6 +347,7 @@ export default defineComponent({
       "link": "Das neue Objekt konnte nicht verknüpft werden.",
       "risk": "Risiko konnte nicht gelöscht werden"
     },
+    "parentType": "Elterntyp",
     "riskDeleted": "Das Risiko wurde entfernt",
     "scenario": "Szenario"
   }
