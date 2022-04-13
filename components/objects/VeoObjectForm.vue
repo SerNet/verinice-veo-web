@@ -79,6 +79,7 @@
           <VeoTabs
             v-cy-name="'form-tabs'"
             sticky-tabs
+            grow
           >
             <template #tabs>
               <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">

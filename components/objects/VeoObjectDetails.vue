@@ -51,17 +51,13 @@
       <v-skeleton-loader type="paragraph" />
     </v-col>
     <v-col>
-      <VeoTabs
-        :value="activeTab"
-        @input="$emit('update:activeTab', $event)"
-      >
+      <VeoTabs v-model="internalActiveTab">
         <template #tabs>
           <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
           <v-tab
             v-for="tab in tabs"
             v-show="tab !== 'risks' || (loading || subType === 'PRO_DataProcessing')"
             :key="tab"
-            :href="`#${tab}`"
             :disabled="tab === 'parents'"
           >
             {{ t(tab) }}
@@ -71,7 +67,6 @@
           <v-tab-item
             v-for="tab in tabs"
             :key="tab"
-            :value="tab"
           >
             <VeoObjectDetailsTab
               v-if="object"
@@ -138,10 +133,23 @@ export default defineComponent({
       }
     );
 
+    const internalActiveTab = computed({
+      get() {
+        return Math.max(
+          0,
+          tabs.findIndex((tab) => tab === props.activeTab)
+        );
+      },
+      set(newValue: number) {
+        emit('update:activeTab', tabs[newValue] || 'subEntities');
+      }
+    });
+
     // format date time to show updated at & created at
     const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
 
     return {
+      internalActiveTab,
       subType,
       tabs,
 

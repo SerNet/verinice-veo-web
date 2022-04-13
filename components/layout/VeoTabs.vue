@@ -39,7 +39,7 @@ export default defineComponent({
       default: false
     }
   },
-  setup(props, { slots, emit }) {
+  setup(props, { attrs, slots, emit }) {
     const internalValue = ref(props.value);
 
     watch(
@@ -80,7 +80,8 @@ export default defineComponent({
             {
               props: {
                 value: internalValue.value,
-                color: 'primary'
+                color: 'primary',
+                ...attrs
               },
               on: {
                 change: (newValue: number) => {
