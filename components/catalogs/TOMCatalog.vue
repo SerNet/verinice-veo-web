@@ -222,9 +222,9 @@ export default defineComponent({
     const selectedEntities = ref<{ id: string; type: string }[]>([]);
     const entitiesLoading = ref(false);
 
-    const availableEntities = ref<IVeoPaginatedResponse<IVeoEntity[]>>([]);
+    const availableEntities = ref<IVeoPaginatedResponse<IVeoEntity[]> | IVeoEntity[]>([]);
 
-    const fetchEntities = async (options) => {
+    const fetchEntities = async (options: { page: number; sortBy: string; sortDesc?: boolean }) => {
       entitiesLoading.value = true;
       availableEntities.value = await $api.entity.fetchAll('process', options.page, {
         subType: 'PRO_DataProcessing',
@@ -261,7 +261,7 @@ export default defineComponent({
             incarnation.references = [
               {
                 referencedElement: {
-                  targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value, entity.type)}/${entity.id}`
+                  targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value || [], entity.type)}/${entity.id}`
                 },
                 referenceType: incarnation.references[0].referenceType
               }
