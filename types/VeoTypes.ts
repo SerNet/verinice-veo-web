@@ -374,8 +374,9 @@ export interface IVeoCatalogItem extends IVeoBaseObject {
 
 export interface IVeoEntityDomain {
   [key: string]: {
-    status: string;
-    subType: string;
+    status?: string;
+    subType?: string;
+    riskDefinition?: string;
   };
 }
 

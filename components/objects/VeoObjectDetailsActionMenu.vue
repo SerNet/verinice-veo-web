@@ -30,21 +30,33 @@
       style="bottom: 12px"
     >
       <template #activator>
-        <v-btn
-          v-model="speedDialIsOpen"
-          v-cy-name="'show-actions-button'"
-          color="primary"
-          :disabled="!allowedActions.length"
-          depressed
-          fab
+        <v-tooltip
+          left
+          :disabled="!tooltipText"
         >
-          <v-icon v-if="speedDialIsOpen">
-            {{ mdiClose }}
-          </v-icon>
-          <v-icon v-else>
-            {{ mdiPlus }}
-          </v-icon>
-        </v-btn>
+          <template #activator="{ on }">
+            <div v-on="on">
+              <v-btn
+                v-model="speedDialIsOpen"
+                v-cy-name="'show-actions-button'"
+                color="primary"
+                :disabled="!allowedActions.length || disabled"
+                depressed
+                fab
+              >
+                <v-icon v-if="speedDialIsOpen">
+                  {{ mdiClose }}
+                </v-icon>
+                <v-icon v-else>
+                  {{ mdiPlus }}
+                </v-icon>
+              </v-btn>
+            </div>
+          </template>
+          <template #default>
+            {{ tooltipText }}
+          </template>
+        </v-tooltip>
       </template>
       <template #default>
         <div v-cy-name="'action-list'">
@@ -94,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, useRoute, ref, computed, PropOptions, useContext } from '@nuxtjs/composition-api';
+import { defineComponent, onMounted, useRoute, ref, computed, useContext, watch, PropType } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
@@ -106,11 +118,14 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 export default defineComponent({
   name: 'VeoObjectDetailsActionMenu',
   props: {
-    type: { type: String, default: '' },
+    type: {
+      type: String,
+      default: ''
+    },
     object: {
-      type: Object,
+      type: Object as PropType<IVeoEntity | undefined>,
       default: undefined
-    } as PropOptions<IVeoEntity>
+    }
   },
   setup(props, { emit }) {
     const { t } = useI18n();
@@ -124,6 +139,19 @@ export default defineComponent({
     const unitId = computed(() => separateUUIDParam(route.value.params.unit).id);
 
     const speedDialIsOpen = ref(false);
+    const tooltipText = ref<string | undefined>(undefined);
+    const disabled = ref(false);
+
+    watch(
+      () => disabled.value,
+      (newValue) => {
+        if (newValue) {
+          tooltipText.value = t('parentScopeNoRiskDefinition').toString();
+        } else {
+          tooltipText.value = undefined;
+        }
+      }
+    );
 
     // fetch schemas from api
     onMounted(async () => {
@@ -275,6 +303,29 @@ export default defineComponent({
       emit('reload');
     };
 
+    const hasScopeWithRiskDefinitionAsParent = (eligibleEntities: IVeoEntity[]) => eligibleEntities.some((entity) => !!entity.domains?.[domainId.value]?.riskDefinition);
+
+    const parents = ref<IVeoEntity[]>([]);
+    watch(
+      () => props.object,
+      async (newValue) => {
+        if (newValue) {
+          parents.value = (await $api.entity.fetchParents('scope', newValue.id)).items;
+        }
+      },
+      {
+        immediate: true
+      }
+    );
+    watch(
+      () => props.type,
+      () => {
+        disabled.value = props.type === 'risks' && !hasScopeWithRiskDefinitionAsParent(parents.value);
+      },
+      {
+        immediate: true
+      }
+    );
     return {
       createEntitySchemas,
       createEntityDialog,
@@ -288,10 +339,12 @@ export default defineComponent({
       onObjectTypeSelected,
       speedDialIsOpen,
       allowedActions,
-      upperFirst,
+      disabled,
       domainId,
+      tooltipText,
 
       t,
+      upperFirst,
       mdiClose,
       mdiPlus
     };
@@ -311,7 +364,8 @@ export default defineComponent({
     "parents": "part of",
     "objectLinked": "The links are successfully updated.",
     "objectNotLinked": "The links could not be updated.",
-    "createType": "create {0}"
+    "createType": "create {0}",
+    "parentScopeNoRiskDefinition": "This object needs a parent scope with a risk definition to create a risk"
   },
   "de": {
     "createObject": "Objekt erstellen",
@@ -323,7 +377,8 @@ export default defineComponent({
     "parents": "Teil von",
     "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
     "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden.",
-    "createType": "{0} erstellen"
+    "createType": "{0} erstellen",
+    "parentScopeNoRiskDefinition": "Dieses Objekt muss Teil eines Scopes mit Risikodefinition sein, um ein Risiko zu erstellen"
   }
 }
 </i18n>
