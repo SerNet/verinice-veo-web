@@ -186,6 +186,7 @@ export default defineComponent({
           await $api.entity.createRisk(props.objectType, props.objectId, data.value);
         }
         displaySuccessMessage(props.risk ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
+        dialog.value = false;
       } catch (e) {
         displayErrorMessage(upperFirst(t('riskNotSaved').toString()), JSON.stringify(e));
       } finally {
@@ -209,20 +210,17 @@ export default defineComponent({
 });
 
 const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition: string[]): IVeoRisk => {
-  const object: any = merge(
-    {
-      scenario: undefined,
-      mitigation: undefined,
-      riskOwner: undefined,
-      process: undefined,
-      domains: {
-        [domainId]: {
-          riskDefinitions: {}
-        }
+  const object: any = {
+    scenario: undefined,
+    mitigation: undefined,
+    riskOwner: undefined,
+    process: undefined,
+    domains: {
+      [domainId]: {
+        riskDefinitions: {}
       }
-    },
-    initialData
-  );
+    }
+  };
 
   for (const _riskDefinition of riskDefinition) {
     object.domains[domainId].riskDefinitions[_riskDefinition] = {
@@ -295,7 +293,7 @@ const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition:
     };
   }
 
-  return object;
+  return merge(object, initialData);
 };
 </script>
 
@@ -307,7 +305,7 @@ const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition:
     "editRisk": "edit risk \"{0}\"",
     "mitigation": "mitigation",
     "riskCreated": "the risk was created successfully",
-    "riskEdited": "the risk was edited successfully",
+    "riskUpdated": "the risk was edited successfully",
     "riskNotSaved": "the risk couldn't be saved",
     "riskOwner": "risk owner"
   },
@@ -317,7 +315,7 @@ const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition:
     "editRisk": "Risiko \"{0}\" bearbeiten",
     "mitigation": "Gegenmaßnahme",
     "riskCreated": "das Risiko wurde erfolgreich erstellt",
-    "riskEdited": "das Risiko wurde erfolgreich bearbeitet",
+    "riskUpdated": "das Risiko wurde erfolgreich bearbeitet",
     "riskNotSaved": "das Risiko konnte nicht gespeichert werden",
     "riskOwner": "Verantwortlicher"
   }

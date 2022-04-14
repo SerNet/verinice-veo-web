@@ -121,7 +121,7 @@ export default function (api: Client) {
       });
     },
 
-    async createRisk(objectType: string, id: string, risk: IVeoRisk): Promise<IVeoEntity[]> {
+    async createRisk(objectType: string, id: string, risk: IVeoRisk): Promise<IVeoRisk> {
       if (objectType !== 'process') {
         throw new Error(`api::createRisk: Risks can only be created for processes. You tried creating a risk for a ${objectType}`);
       }
@@ -225,19 +225,28 @@ export default function (api: Client) {
         });
     },
 
-    async updateRisk(objectType: string, id: string, scenarioId: string, risk: IVeoRisk): Promise<IVeoEntity[]> {
+    /**
+     * Updates a risk
+     * NOTE: CURRENTLY USES THE SAME ENDPOINT AS FOR POSTING AS THE PUTTING ENDPOINT IS INOP
+     *
+     * @param objectType The type of the object to update the risk for (currently has to be process)
+     * @param id The id of the process to update the risk for
+     * @param _scenarioId Currently not used, see note
+     * @param risk The new risk data
+     * @returns Returns the updated risk
+     */
+    async updateRisk(objectType: string, id: string, _scenarioId: string, risk: IVeoRisk): Promise<IVeoRisk> {
       if (objectType !== 'process') {
         throw new Error(`api::updateRisk: Risks can only be created for processes. You tried updating a risk for a ${objectType}`);
       }
 
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
 
-      return api.req('/api/:objectType/:id/risks/:scenarioId', {
-        method: 'PUT',
+      return api.req('/api/:objectType/:id/risks', {
+        method: 'POST',
         params: {
           objectType,
-          id,
-          scenarioId
+          id
         },
         json: risk
       });
