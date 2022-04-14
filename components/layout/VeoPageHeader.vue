@@ -68,7 +68,7 @@ export default defineComponent({
               h('div', { class: 'd-flex flex-row flex-wrap veo-page__title', style: { ...titlebarAlignment.value, 'background-color': props.color } }, [
                 ...(props.loading
                   ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title' })]
-                  : [h(`h${props.headingLevel}`, { class: `text-no-wrap d-inline flex-grow-0 text-h${props.headingLevel}` }, props.title), ...(slots.title ? [slots.title()] : [])])
+                  : [h(`h${props.headingLevel}`, { class: `d-inline flex-grow-0 text-h${props.headingLevel}` }, props.title), ...(slots.title ? [slots.title()] : [])])
               ])
             ]
           : []),
