@@ -150,6 +150,9 @@ export default defineComponent({
         } else {
           tooltipText.value = undefined;
         }
+      },
+      {
+        immediate: true
       }
     );
 
@@ -319,6 +322,16 @@ export default defineComponent({
     );
     watch(
       () => props.type,
+      () => {
+        disabled.value = props.type === 'risks' && !hasScopeWithRiskDefinitionAsParent(parents.value);
+      },
+      {
+        immediate: true
+      }
+    );
+
+    watch(
+      () => parents.value,
       () => {
         disabled.value = props.type === 'risks' && !hasScopeWithRiskDefinitionAsParent(parents.value);
       },
