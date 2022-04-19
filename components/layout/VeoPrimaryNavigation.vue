@@ -56,6 +56,8 @@
               @collapse-other-submenus="onCollapseMenus"
             />
           </template>
+          <v-divider class="my-4" />
+          <slot name="append-content" />
         </v-list>
       </div>
     </template>
@@ -74,27 +76,21 @@
           <v-list-item-icon>
             <v-icon
               v-if="miniVariant"
-              color="white"
+              color="black"
             >
               {{ mdiChevronDoubleRight }}
             </v-icon>
             <v-icon
               v-else
-              color="white"
+              color="black"
             >
               {{ mdiChevronDoubleLeft }}
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-title
-            v-if="miniVariant"
-            style="color: white"
-          >
+          <v-list-item-title v-if="miniVariant">
             {{ t('fix') }}
           </v-list-item-title>
-          <v-list-item-title
-            v-else
-            style="color: white"
-          >
+          <v-list-item-title v-else>
             {{ t('collapse') }}
           </v-list-item-title>
         </v-list-item>
@@ -494,6 +490,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-primary-navigation.v-navigation-drawer {
-  background-color: #2f2f2f;
+  background-color: $background-accent;
 }
 </style>

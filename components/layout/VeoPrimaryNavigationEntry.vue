@@ -26,19 +26,19 @@
   />
   <v-skeleton-loader
     v-else-if="childItemsLoading"
-    class="veo-primary-navigation__menu-item"
+    class="veo-primary-navigation__menu-item overflow-hidden"
     :type="icon ? 'list-item-avatar' : 'list-item'"
   />
   <v-list-item
     v-else-if="childItems === undefined"
-    class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item"
+    class="flex-grow-0 flex-basis-auto veo-primary-navigation__menu-item overflow-hidden"
     :class="{
-      'pl-2': level === 0,
-      'pl-2': level === 1,
+      'pl-2': level === 0 || level === 1,
       'pl-8': level === 2
     }"
     :to="to"
     :exact="exact === undefined || exact"
+    active-class="veo-primary-navigation-entry--active"
   >
     <v-list-item-icon>
       <v-tooltip
@@ -50,7 +50,10 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-icon v-text="icon" />
+            <v-icon
+              color="black"
+              v-text="icon"
+            />
           </div>
         </template>
         <span>{{ name }}</span>
@@ -64,8 +67,8 @@
     v-else
     :key="name"
     :value="groupIsExpanded"
-    class="flex-grow-0 flex-auto veo-primary-navigation__menu-item"
-    color="white"
+    class="flex-grow-0 flex-auto veo-primary-navigation__menu-item overflow-hidden"
+    color="black"
     no-action
     @click="onGroupClick"
   >
@@ -84,7 +87,10 @@
             v-bind="attrs"
             v-on="on"
           >
-            <v-icon v-text="icon" />
+            <v-icon
+              color="black"
+              v-text="icon"
+            />
           </div>
         </template>
         <span>{{ name }}</span>
@@ -212,6 +218,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 ::v-deep.veo-primary-navigation__menu-item {
+  border-radius: 12px;
   flex-basis: auto;
 }
 
@@ -238,8 +245,13 @@ export default defineComponent({
   font-weight: 700;
 }
 
-.veo-primary-navigation__menu-item ::v-deep.v-icon,
-.veo-primary-navigation__menu-item ::v-deep.v-list-item__title {
-  color: #dddddd;
+.veo-primary-navigation-entry--active,
+.veo-primary-navigation-entry--active .v-icon {
+  color: $primary !important;
+}
+
+.veo-primary-navigation-entry--active::before {
+  background-color: $primary;
+  opacity: 0.1;
 }
 </style>

@@ -30,7 +30,8 @@
           color="primary"
           :disabled="!demoUnit || units.length === 0"
           depressed
-          style="height: 40px"
+          class="veo-demo-unit-button"
+          style="width: 100%; border-radius: 12px"
           @click="toggleDemoUnit"
         >
           <v-icon left>
@@ -119,3 +120,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.veo-demo-unit-button ::v-deep.v-btn__content {
+  justify-content: start;
+}
+</style>

@@ -24,6 +24,7 @@
       <v-list-item
         class="veo-domain-select"
         dense
+        :disabled="disabled"
         v-on="on"
       >
         <v-skeleton-loader
@@ -41,6 +42,7 @@
         </span>
         <v-icon
           v-if="value"
+          :disabled="disabled"
           right
           color="primary"
         >
@@ -48,6 +50,7 @@
         </v-icon>
         <v-icon
           v-else
+          :disabled="disabled"
           right
           color="primary"
         >
@@ -84,6 +87,12 @@ import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
 
 export default defineComponent({
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup() {
     const { $api } = useContext();
     const router = useRouter();
@@ -164,6 +173,10 @@ export default defineComponent({
 .veo-domain-select {
   background: rgba(0, 0, 0, 0.06);
   border-radius: 4px;
+}
+
+.veo-domain-select.v-list-item--disabled {
+  background: rgba(0, 0, 0, 0.16);
 }
 
 .veo-domain-select__selection {

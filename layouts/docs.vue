@@ -44,19 +44,22 @@
       floating
       v-on="$listeners"
     >
-      <div style="min-height: 65px">
+      <div
+        class="d-flex align-center"
+        style="min-height: 65px"
+      >
         <nuxt-link
           to="/docs"
           class="text-decoration-none"
         >
-          <VeoAppBarLogo />
+          <VeoAppBarLogo style="width: 85%" />
         </nuxt-link>
       </div>
       <v-treeview
         dense
         :items="items"
         activatable
-        color="white"
+        color="primary"
         item-key="to"
         open-on-click
         @update:active="openItem"
@@ -133,11 +136,11 @@ export default defineComponent({
 }
 
 .veo-docs-navigation.v-navigation-drawer {
-  background-color: #2f2f2f;
+  background-color: $background-accent;
 
   .v-treeview,
   .v-treeview ::v-deep.v-icon {
-    color: #ffffff;
+    color: #000000;
   }
 }
 </style>

@@ -26,13 +26,9 @@
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <div
-        v-if="$route.params.unit"
-        class="mr-4"
-      >
+      <div v-if="$route.params.unit">
         <VeoDomainSelect />
       </div>
-      <VeoDemoUnitButton v-if="$route.params.unit" />
       <v-spacer />
       <VeoLanguageSwitch />
       <v-tooltip bottom>
@@ -68,14 +64,25 @@
       :unit-id="unitId"
     >
       <template #header="{ miniVariant }">
-        <div style="min-height: 65px">
-          <nuxt-link
-            :to="homeLink"
-            class="text-decoration-none"
+        <div>
+          <div
+            class="d-flex align-center"
+            style="min-height: 65px;"
           >
-            <VeoAppBarLogo :size="miniVariant ? 'small' : 'large'" />
-          </nuxt-link>
+            <nuxt-link
+              :to="homeLink"
+              class="text-decoration-none"
+            >
+              <VeoAppBarLogo
+                :size="miniVariant ? 'small' : 'large'"
+                style="width: 85%"
+              />
+            </nuxt-link>
+          </div>
         </div>
+      </template>
+      <template #append-content>
+        <VeoDemoUnitButton />
       </template>
     </VeoPrimaryNavigation>
     <v-main

@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="py-2 text-center">
+  <div class="text-center">
     <VeoAppLogoDesktop
       v-if="showDesktop"
       style="width: 90%"
