@@ -140,7 +140,7 @@ export default defineComponent({
       if (!domainId.value) return '';
       const domainDetails = item.domains[domainId.value];
       const key = `${item.type}_${domainDetails?.subType}_status_${domainDetails?.status}`;
-      return translations.value?.lang?.[i18n.locale]?.[key] || (item.domains[domainId.value] ? item.domains[domainId.value]?.status : '');
+      return translations.value?.lang?.[i18n.locale]?.[key] || item.domains[domainId.value]?.status || '';
     };
     /**
      * Distinguish between {@link IVeoPaginatedResponse} and {@link IVeoEntity}[]

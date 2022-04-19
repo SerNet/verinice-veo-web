@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, useAsync, useContext, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { computed, defineComponent, PropType, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 import { IVeoUnit } from '~/types/VeoTypes';
@@ -69,18 +69,24 @@ export default defineComponent({
     const router = useRouter();
 
     const unit = computed(() => (route.value.params.unit && separateUUIDParam(route.value.params.unit).id) || undefined);
-    const units = useAsync(() => $api.unit.fetchAll());
+    const displayedUnits = ref<IVeoUnit[]>();
+
+    useFetch(async () => {
+      displayedUnits.value = await $api.unit.fetchAll();
+    });
 
     const doChangeUnit = (unitId: string) => {
-      const unit = units.find((unit) => unit.id === unitId) as IVeoUnit;
-      const domainId = getFirstDomainDomaindId(unit) as string;
-      router.push({
-        name: 'unit-domains-domain',
-        params: {
-          unit: createUUIDUrlParam('unit', unitId),
-          domain: createUUIDUrlParam('domain', domainId)
-        }
-      });
+      const unit = displayedUnits.value?.find((unit) => unit.id === unitId);
+      if (unit) {
+        const domainId = getFirstDomainDomaindId(unit) as string;
+        router.push({
+          name: 'unit-domains-domain',
+          params: {
+            unit: createUUIDUrlParam('unit', unitId),
+            domain: createUUIDUrlParam('domain', domainId)
+          }
+        });
+      }
     };
 
     const doCreateUnit = (persistent: boolean = false) => {
@@ -88,6 +94,7 @@ export default defineComponent({
     };
 
     return {
+      displayedUnits,
       doChangeUnit,
       doCreateUnit,
       unit,
