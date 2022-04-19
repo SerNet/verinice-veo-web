@@ -140,7 +140,7 @@ export default defineComponent({
 
     const speedDialIsOpen = ref(false);
     const tooltipText = ref<string | undefined>(undefined);
-    const disabled = ref(false);
+    const disabled = computed(() => props.type === 'risks' && !hasScopeWithRiskDefinitionAsParent(parents.value));
 
     watch(
       () => disabled.value,
@@ -320,25 +320,7 @@ export default defineComponent({
         immediate: true
       }
     );
-    watch(
-      () => props.type,
-      () => {
-        disabled.value = props.type === 'risks' && !hasScopeWithRiskDefinitionAsParent(parents.value);
-      },
-      {
-        immediate: true
-      }
-    );
 
-    watch(
-      () => parents.value,
-      () => {
-        disabled.value = props.type === 'risks' && !hasScopeWithRiskDefinitionAsParent(parents.value);
-      },
-      {
-        immediate: true
-      }
-    );
     return {
       createEntitySchemas,
       createEntityDialog,
