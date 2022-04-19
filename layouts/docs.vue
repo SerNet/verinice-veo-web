@@ -45,7 +45,7 @@
       v-on="$listeners"
     >
       <div
-        class="d-flex align-center"
+        class="d-flex align-end"
         style="min-height: 65px"
       >
         <nuxt-link
@@ -69,7 +69,6 @@
       style="max-height: 100vh;"
       class="overflow-hidden"
     >
-      <v-divider class="mx-4" />
       <VeoPageWrapper>
         <nuxt />
       </VeoPageWrapper>
@@ -126,17 +125,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-primary !important;
+  background-color: $background-accent !important;
+  border-bottom: 1px solid $medium-grey;
 }
 
 ::v-deep.v-main > .v-main__wrap {
   background: $background-primary;
   display: flex;
   flex-direction: column;
+  padding-top: 8px;
 }
 
 .veo-docs-navigation.v-navigation-drawer {
   background-color: $background-accent;
+  border-right: 1px solid $medium-grey;
 
   .v-treeview,
   .v-treeview ::v-deep.v-icon {

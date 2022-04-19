@@ -22,7 +22,7 @@
   >
     <template #activator="{ on, value }">
       <v-list-item
-        class="veo-domain-select"
+        class="veo-domain-select mx-2"
         dense
         :disabled="disabled"
         v-on="on"
@@ -172,7 +172,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .veo-domain-select {
   background: rgba(0, 0, 0, 0.06);
-  border-radius: 4px;
+  border-radius: 12px;
 }
 
 .veo-domain-select.v-list-item--disabled {

@@ -26,9 +26,7 @@
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <div v-if="$route.params.unit">
-        <VeoDomainSelect />
-      </div>
+      <VeoBreadcrumbs :key="breadcrumbsKey" />
       <v-spacer />
       <VeoLanguageSwitch />
       <v-tooltip bottom>
@@ -66,7 +64,7 @@
       <template #header="{ miniVariant }">
         <div>
           <div
-            class="d-flex align-center"
+            class="d-flex align-end"
             style="min-height: 65px;"
           >
             <nuxt-link
@@ -79,6 +77,7 @@
               />
             </nuxt-link>
           </div>
+          <VeoDomainSelect v-if="$route.params.unit" />
         </div>
       </template>
       <template #append-content="{ miniVariant }">
@@ -89,8 +88,6 @@
       style="max-height: 100vh;"
       class="overflow-hidden"
     >
-      <v-divider class="mx-4" />
-      <VeoBreadcrumbs :key="breadcrumbsKey" />
       <nuxt />
     </v-main>
     <VeoGlobalAlert
@@ -217,13 +214,15 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-primary !important;
+  background-color: $background-accent !important;
+  border-bottom: 1px solid $medium-grey;
 }
 
 ::v-deep.v-main > .v-main__wrap {
   background: $background-primary;
   display: flex;
   flex-direction: column;
+  padding-top: 8px;
 }
 </style>
 

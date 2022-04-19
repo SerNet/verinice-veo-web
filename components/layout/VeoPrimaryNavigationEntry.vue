@@ -218,7 +218,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 ::v-deep.veo-primary-navigation__menu-item {
-  border-radius: 12px;
   flex-basis: auto;
 }
 
