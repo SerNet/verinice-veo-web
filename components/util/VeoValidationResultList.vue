@@ -16,31 +16,44 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list>
-    <v-list-item
-      v-for="(item, index) of items"
-      :key="index"
-      link
-    >
-      <v-list-item-content style="overflow-wrap: anywhere;">
-        <v-list-item-title>{{ item.code }} </v-list-item-title>
-        {{ item.message }}
-      </v-list-item-content>
-      <v-list-item-action v-if="item.fixable && fixingAllowed">
-        <v-btn
-          outlined
-          @click="$emit('fix', item.code, item.params)"
+  <VeoCard
+    v-if="items.length > 0"
+    v-bind="$attrs"
+  >
+    <v-list>
+      <v-list-item
+        v-for="(item, index) of items"
+        :key="index"
+      >
+        <span
+          style="font-size: 2rem;"
+          class="pr-2 pt-3 align-self-start"
         >
-          {{ t('fix') }}
-        </v-btn>
-      </v-list-item-action>
-    </v-list-item>
-    <v-list-item v-if="items.length === 0 && noErrorPlaceholderVisible">
-      <v-list-item-content>
-        <v-list-item-title>{{ t('noErrors') }}</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-  </v-list>
+          &bull;
+        </span>
+        <v-list-item-content
+          class="text-body-2 d-block"
+          style="overflow-wrap: anywhere;"
+        >
+          {{ item.message }}
+        </v-list-item-content>
+        <v-list-item-action v-if="item.fixable && fixingAllowed">
+          <v-btn
+            text
+            @click="$emit('fix', item.code, item.params)"
+          >
+            {{ t('fix') }}
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+    </v-list>
+  </VeoCard>
+  <p
+    v-else-if="noErrorPlaceholderVisible"
+    class="font-italic text-body-2 mt-2"
+  >
+    {{ t('noErrors') }}
+  </p>
 </template>
 
 <script lang="ts">
@@ -84,3 +97,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.v-list {
+  background-color: transparent;
+}
+</style>

@@ -16,9 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoWidget
-    :loading="loading"
-  >
+  <VeoWidget :loading="loading">
     <template #default>
       <v-row
         v-for="(chart, index) of chartData"
@@ -28,11 +26,15 @@
         :data-cy="$utils.prefixCyData($options, 'subtype-row', $route)"
       >
         <v-col
+          v-cy-name="'subtype-label'"
           cols="12"
-          md="4"
-        >
-          <h4 class="ml-6">{{ chart.labels[0] }}</h4>
-        </v-col>
+          sm="12"
+          md="5"
+          lg="7"
+          xl="4"
+          class="body-1 text-no-wrap"
+          v-text="chart.labels[0]"
+        />
         <v-col>
           <BarChart
             v-if="chart.totalEntities > 0"
@@ -44,7 +46,7 @@
           />
           <div
             v-else
-            class="ml-2 font-italic"
+            class="ml-2 font-italic text-body-2"
           >
             {{ t('noObjects') }}
           </div>
@@ -52,7 +54,7 @@
       </v-row>
       <div
         v-if="chartData.length === 0"
-        class="ml-6 font-italic"
+        class="ml-6 font-italic text-body-2"
       >
         {{ t('noSubtypes') }}
       </div>
@@ -68,14 +70,14 @@
           md="4"
         >
           <v-skeleton-loader
-            class="ml-6 my-2"
+            class="ml-6"
             type="text"
             width="70%"
           />
         </v-col>
         <v-col>
           <v-skeleton-loader
-            class="ml-6 my-2"
+            class="ml-6"
             type="heading"
             width="210%"
           />
@@ -102,6 +104,7 @@ export interface IChartValue {
 }
 
 export default defineComponent({
+  name: 'VeoStackedStatusBarChartWidget',
   components: {
     BarChart
   },

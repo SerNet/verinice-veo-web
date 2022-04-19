@@ -16,13 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-    :title="upperFirst(t('risks').toString())"
-    fullsize
-  >
+  <VeoPage :title="upperFirst(t('risks').toString())">
     <template #default>
       <div>
-        <p class="pt-3 mb-0">
+        <p class="pt-3 mb-0 text-body-1">
           {{ t('selectRiskMatrixToView') }}
         </p>
         <VeoTabs>

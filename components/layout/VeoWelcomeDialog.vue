@@ -28,7 +28,7 @@
       >
         <VeoAppLogoDesktop />
       </div>
-      <h2 class="mb-4">
+      <h2 class="text-h2 mb-4">
         {{ t('veoClaim') }}
       </h2>
       <i18n

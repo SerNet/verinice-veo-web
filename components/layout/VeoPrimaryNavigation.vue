@@ -21,7 +21,6 @@
     :width="290"
     :value="value"
     app
-    clipped
     floating
     :mini-variant="!$vuetify.breakpoint.xs && miniVariant"
     :permanent="!$vuetify.breakpoint.xs"
@@ -31,6 +30,12 @@
   >
     <template #default>
       <div class="d-flex flex-column fill-height">
+        <div>
+          <slot
+            name="header"
+            v-bind="{ miniVariant }"
+          />
+        </div>
         <v-list
           nav
           dense
@@ -45,11 +50,17 @@
               :key="index"
               v-bind="item"
               path="#"
+              :level="0"
               :mini-variant="miniVariant"
               @expand-menu="setMiniVariant(false)"
               @collapse-other-submenus="onCollapseMenus"
             />
           </template>
+          <v-divider class="my-4" />
+          <slot
+            name="append-content"
+            v-bind="{ miniVariant }"
+          />
         </v-list>
       </div>
     </template>
@@ -59,7 +70,7 @@
         dense
         class="pa-0"
       >
-        <v-divider />
+        <v-divider style="background: rgba(255, 255, 255, 0.2)" />
         <v-list-item
           v-if="!$vuetify.breakpoint.xs"
           class="pl-4"
@@ -79,16 +90,10 @@
               {{ mdiChevronDoubleLeft }}
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-title
-            v-if="miniVariant"
-            style="color: black"
-          >
+          <v-list-item-title v-if="miniVariant">
             {{ t('fix') }}
           </v-list-item-title>
-          <v-list-item-title
-            v-else
-            style="color: black"
-          >
+          <v-list-item-title v-else>
             {{ t('collapse') }}
           </v-list-item-title>
         </v-list-item>
@@ -100,11 +105,13 @@
 <script lang="ts">
 import { computed, defineComponent, provide, reactive, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
 import {
-  /* mdiApplicationCog, */ mdiChevronDoubleLeft,
+  mdiApplicationCogOutline,
+  mdiChevronDoubleLeft,
   mdiChevronDoubleRight,
   mdiClipboardListOutline,
   mdiFileChartOutline,
   mdiFileDocumentOutline,
+  mdiFormatListBulleted,
   mdiHomeOutline,
   mdiTableLarge
 } from '@mdi/js';
@@ -123,6 +130,7 @@ import { ROUTE_NAME as OBJECTS_ROUTE_NAME } from '~/pages/_unit/domains/_domain/
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/_unit/domains/_domain/catalogs/_catalog.vue';
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/_unit/domains/_domain/reports/_type.vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/risks/_matrix.vue';
+import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/_unit/domains/_domain/editor/index.vue';
 
 export interface INavItem {
   name: string;
@@ -238,7 +246,6 @@ export default defineComponent({
                     },
                     exact: true,
                     disabled: false,
-                    topLevelItem: false,
                     sorting: formSchema?.sorting
                   };
                 }),
@@ -324,6 +331,8 @@ export default defineComponent({
       return _maxUnits ? parseInt(_maxUnits, 10) : _maxUnits;
     });
 
+    const isContentCreator = computed(() => !!$user.auth.roles.find((r: string) => r === 'veo-content-creator'));
+
     // Reload certain navigation items if domain changes
     watch(
       () => props.domainId,
@@ -340,7 +349,7 @@ export default defineComponent({
 
     const unitSelectionNavEntry: INavItem = {
       name: t('breadcrumbs.index').toString(),
-      icon: mdiHomeOutline,
+      icon: mdiFormatListBulleted,
       to: {
         name: UNIT_SELECTION_ROUTE_NAME
       }
@@ -394,23 +403,25 @@ export default defineComponent({
       partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/risks`)
     }));
 
-    /* const editorsNavEntry = computed<INavItem>(() => ({
+    const editorsNavEntry = computed<INavItem>(() => ({
       name: t('breadcrumbs.editor').toString(),
-      icon: mdiApplicationCog,
+      icon: mdiApplicationCogOutline,
       to: {
         name: EDITOR_INDEX_ROUTE_NAME,
         params: {
           unit: createUUIDUrlParam('unit', props.unitId),
           domain: createUUIDUrlParam('domain', props.domainId)
         }
-      }
-    })); */
+      },
+      exact: false
+    }));
 
     const items = computed<INavItem[]>(() => [
       ...(maxUnits.value && maxUnits.value > 2 ? [unitSelectionNavEntry] : []),
       ...(props.unitId && props.domainId
         ? [domainDashboardNavEntry.value, objectsNavEntry.value, catalogsNavEntry.value, reportsNavEntry.value, risksNavEntry.value /*, editorsNavEntry.value */]
-        : [])
+        : []),
+      ...(props.domainId && props.unitId && isContentCreator.value ? [editorsNavEntry.value] : [])
     ]);
 
     const expandedNavItems = reactive<string[]>([]);
@@ -488,6 +499,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-primary-navigation.v-navigation-drawer {
-  background-color: $background-primary;
+  background-color: $background-accent;
+  border-right: 1px solid $medium-grey;
 }
 </style>

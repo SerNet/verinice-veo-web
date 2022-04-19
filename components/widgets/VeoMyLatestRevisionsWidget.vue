@@ -27,11 +27,12 @@
           <td>
             <nuxt-link
               :to="createUrl(revision)"
+              class="text-body-2"
             >
               {{ revision.content.designator }} <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
             </nuxt-link>
           </td>
-          <td class="text-right">
+          <td class="text-right text-body-2">
             {{ new Date(revision.time).toLocaleString($i18n.locale) }}
           </td>
         </tr>
@@ -89,6 +90,10 @@ tbody {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+.v-data-table {
+  background: transparent;
 }
 </style>
 

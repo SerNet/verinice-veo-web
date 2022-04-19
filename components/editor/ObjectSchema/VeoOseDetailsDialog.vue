@@ -20,14 +20,15 @@
     :value="value"
     :headline="t('editor.schema.properties')"
     fixed-footer
-    fixed-header
     large
     persistent
     v-on="$listeners"
   >
     <template #default>
       <div class="d-flex justify-space-between align-center px-1 pb-2">
-        <h2>{{ t('subtypesForDomain', { domain: domain && domain.name }) }}</h2>
+        <h2 class="text-h2">
+          {{ t('subtypesForDomain', { domain: domain && domain.name }) }}
+        </h2>
         <v-select
           v-model="displayLanguage"
           :prepend-inner-icon="mdiTranslate"
@@ -44,7 +45,7 @@
           :key="subTypeIndex"
           cols="6"
         >
-          <v-card outlined>
+          <VeoCard>
             <v-card-text>
               <v-row>
                 <v-col
@@ -73,7 +74,7 @@
                         @click="deleteSubType(subTypeIndex)"
                       >
                         <v-icon>
-                          {{ mdiTrashCan }}
+                          {{ mdiTrashCanOutline }}
                         </v-icon>
                       </v-btn>
                     </template>
@@ -83,7 +84,7 @@
                   </v-tooltip>
                 </v-col>
               </v-row>
-              <h3 class="my-2">
+              <h3 class="text-h3 my-2">
                 {{ upperFirst(t('availableStatus').toString()) }}
               </h3>
               <Draggable
@@ -132,7 +133,7 @@
                 </v-list-item>
               </v-form>
             </v-card-text>
-          </v-card>
+          </VeoCard>
         </v-col>
         <v-col cols="12">
           <v-btn
@@ -170,7 +171,7 @@
 <script lang="ts">
 import { defineComponent, inject, useRoute, Ref, ref, watch, useAsync, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiMenu, mdiPlus, mdiTranslate, mdiTrashCan } from '@mdi/js';
+import { mdiMenu, mdiPlus, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
 import { upperFirst, cloneDeep } from 'lodash';
 
@@ -334,7 +335,7 @@ export default defineComponent({
       mdiMenu,
       mdiPlus,
       mdiTranslate,
-      mdiTrashCan,
+      mdiTrashCanOutline,
       upperFirst,
       CHART_COLORS
     };

@@ -71,13 +71,9 @@ export default {
     designator: 'Designator',
     description: 'Description',
     hasChildObjects: 'has parts',
-    hasLinks: 'has links',
     name: 'object name',
     notPartOfGroup: 'not part of another object',
     objectType: 'Object type',
-    scenario: {
-      displayName: 'Risk'
-    },
     status: 'Status',
     subType: 'Subtype',
     updatedAt: 'Last change',

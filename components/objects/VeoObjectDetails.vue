@@ -16,8 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-row class="fill-height flex-column flex-nowrap">
-    <v-col class="flex-grow-0">
+  <v-row
+    no-gutters
+    class="fill-height flex-column flex-nowrap"
+  >
+    <v-col class="flex-grow-0 text-body-1 py-2">
       <template v-if="!loading">
         <p class="text-no-wrap mb-0">
           <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
@@ -36,7 +39,7 @@
     </v-col>
     <v-col
       v-if="!loading"
-      class="flex-grow-0 object-details-information"
+      class="flex-grow-0 object-details-information text-body-1"
     >
       <span v-if="object && object.description">{{ object.description }}</span>
       <i v-else>{{ t('noDescription') }}</i>
@@ -47,38 +50,34 @@
     >
       <v-skeleton-loader type="paragraph" />
     </v-col>
-    <v-divider class="mt-1" />
     <v-col>
-      <v-tabs
-        :value="activeTab"
-        @change="$emit('update:activeTab', $event)"
-      >
-        <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
-        <v-tab
-          v-for="tab in tabs"
-          v-show="tab !== 'risks' || (loading || subType === 'PRO_DataProcessing')"
-          :key="tab"
-          :href="`#${tab}`"
-          :disabled="tab === 'parents'"
-        >
-          {{ t(tab) }}
-        </v-tab>
-      </v-tabs>
-      <v-tabs-items :value="activeTab">
-        <v-tab-item
-          v-for="tab in tabs"
-          :key="tab"
-          :value="tab"
-        >
-          <VeoObjectDetailsTab
-            v-if="object"
-            :type="tab"
-            :object="object"
-            :dense="dense" 
-            @new-object-created="$emit('reload')"
-          />
-        </v-tab-item>
-      </v-tabs-items>
+      <VeoTabs v-model="internalActiveTab">
+        <template #tabs>
+          <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
+          <v-tab
+            v-for="tab in tabs"
+            v-show="tab !== 'risks' || (loading || subType === 'PRO_DataProcessing')"
+            :key="tab"
+          >
+            {{ t(tab) }}
+          </v-tab>
+        </template>
+        <template #items>
+          <v-tab-item
+            v-for="tab in tabs"
+            :key="tab"
+          >
+            <VeoObjectDetailsTab
+              v-if="object"
+              :type="tab"
+              :object="object"
+              :dense="dense"
+              :domain-id="domainId"
+              @new-object-created="$emit('reload')"
+            />
+          </v-tab-item>
+        </template>
+      </VeoTabs>
     </v-col>
   </v-row>
 </template>
@@ -133,10 +132,23 @@ export default defineComponent({
       }
     );
 
+    const internalActiveTab = computed({
+      get() {
+        return Math.max(
+          0,
+          tabs.findIndex((tab) => tab === props.activeTab)
+        );
+      },
+      set(newValue: number) {
+        emit('update:activeTab', tabs[newValue] || 'subEntities');
+      }
+    });
+
     // format date time to show updated at & created at
     const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
 
     return {
+      internalActiveTab,
       subType,
       tabs,
 

@@ -22,10 +22,10 @@
       max-height="300px"
       contain
     />
-    <h1 class="mt-8">
+    <h1 class="text-h1 mt-8">
       {{ t('notFoundCode').toString() }}
     </h1>
-    <p class="mt-2">
+    <p class="mt-2 text-body-1">
       {{ t('notFound').toString() }}
     </p>
     <v-btn

@@ -20,7 +20,6 @@
     :value="value"
     :headline="t('formSchemaEditor')"
     persistent
-    fixed-header
     fixed-footer
     :large="state !== WIZARD_STATES.START"
     :close-function="onClose"

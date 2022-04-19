@@ -21,17 +21,20 @@
     v-else
     collapsable-left
     collapsable-right
-    :title="(object && object.displayName) || ''"
     :loading="loading"
     :page-widths="pageWidths"
+    :page-widths-xl="pageWidthsXl"
+    :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
+    class="veo-page-wrapper-white"
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
-      <VeoPage
-        fullsize
+      <VeoPage        
         sticky-header
         sticky-footer
+        color="#ffffff"
+        :title="(object && object.displayName) || ''"
       >
         <template #default>
           <VeoObjectDetails
@@ -54,9 +57,9 @@
         </template>
       </VeoPage>
       <VeoPage
-        fullsize
         content-class="fill-height"
         no-padding
+        :title="!pageWidths[1] ? (object && object.displayName) : undefined"
       >
         <template #default>
           <VeoObjectForm
@@ -184,14 +187,20 @@ export default defineComponent({
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
 
     // Display stuff
-    const pageWidths = ref<Number[]>([5, 7]);
+    const pageWidths = ref<Number[]>([3, 9]);
+    const pageWidthsLg = ref<Number[]>([5, 7]);
+    const pageWidthsXl = ref<Number[]>([5, 7]);
     const pageTitles = ref<string[]>([t('objectInfo').toString(), t('objectForm').toString()]);
 
     const onPageCollapsed = (collapsedPages: Boolean[]) => {
       if (collapsedPages.some((page) => page)) {
         pageWidths.value = [12, 0];
+        pageWidthsLg.value = [12, 0];
+        pageWidthsXl.value = [12, 0];
       } else {
-        pageWidths.value = [5, 7];
+        pageWidths.value = [3, 9];
+        pageWidthsLg.value = [4, 8];
+        pageWidthsXl.value = [5, 7];
       }
     };
 
@@ -319,6 +328,8 @@ export default defineComponent({
       saveObject,
       t,
       pageWidths,
+      pageWidthsLg,
+      pageWidthsXl,
       pageTitles,
       version,
       onPageCollapsed,

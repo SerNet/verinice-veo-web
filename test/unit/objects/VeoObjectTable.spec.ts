@@ -80,7 +80,8 @@ describe('VeoObjectTable.vue', () => {
     const wrapper = mount(VeoObjectTable, {
       ...mockDefaults,
       propsData: {
-        items
+        items,
+        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       }
     });
     const table = wrapper.findComponent(VDataTable);
@@ -94,7 +95,8 @@ describe('VeoObjectTable.vue', () => {
     const wrapper = mount(VeoObjectTable, {
       ...mockDefaults,
       propsData: {
-        items
+        items,
+        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       }
     });
     const table = wrapper.findComponent(VDataTable);
@@ -109,7 +111,8 @@ describe('VeoObjectTable.vue', () => {
     const wrapper = mount(VeoObjectTable, {
       ...mockDefaults,
       propsData: {
-        items: data
+        items: data,
+        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       },
       listeners: {
         'update:page': onUpdatePage
@@ -135,7 +138,8 @@ describe('VeoObjectTable.vue', () => {
     const wrapper = mount(VeoObjectTable, {
       ...mockDefaults,
       propsData: {
-        items: data
+        items: data,
+        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       },
       listeners: {
         'update:items-per-page': onUpdateItemsPerPage
@@ -157,7 +161,8 @@ describe('VeoObjectTable.vue', () => {
     const wrapper = mount(VeoObjectTable, {
       ...mockDefaults,
       propsData: {
-        items: data
+        items: data,
+        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       },
       listeners: {
         'page-change': onPageChange
@@ -184,7 +189,8 @@ describe('VeoObjectTable.vue', () => {
     const wrapper = mount(VeoObjectTable, {
       ...mockDefaults,
       propsData: {
-        items: data
+        items: data,
+        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       },
       listeners: {
         click: onItemClick
@@ -208,7 +214,8 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items: data,
-        page: 2 // simulate page 2
+        page: 2, // simulate page 2
+        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       }
     });
     const table = wrapper.findComponent(VDataTable);
@@ -231,6 +238,7 @@ describe('VeoObjectTable.vue', () => {
       ...mockDefaults,
       propsData: {
         items: data,
+        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt'],
         sortBy: 'designator'
       }
     });
@@ -256,7 +264,8 @@ describe('VeoObjectTable.vue', () => {
     const wrapper = mount(VeoObjectTable, {
       ...mockDefaults,
       propsData: {
-        items: data
+        items: data,
+        defaultHeaders: ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']
       }
     });
     const table = wrapper.findComponent(VDataTable);
@@ -267,24 +276,5 @@ describe('VeoObjectTable.vue', () => {
       .map((_) => _.split('.').pop());
 
     expect(columns).toMatchObject(['designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt']);
-  });
-
-  it('should display expected headers in dense mode', () => {
-    const data = new Array(50).fill(undefined);
-    const wrapper = mount(VeoObjectTable, {
-      ...mockDefaults,
-      propsData: {
-        items: data,
-        dense: true
-      }
-    });
-    const table = wrapper.findComponent(VDataTable);
-    const columns = table
-      .findAll('th[role=columnheader]')
-      .wrappers.map((_) => _.text())
-      .filter((_) => _.startsWith('objectlist.'))
-      .map((_) => _.split('.').pop());
-
-    expect(columns).toMatchObject(['designator', 'name', 'updatedBy', 'updatedAt']);
   });
 });

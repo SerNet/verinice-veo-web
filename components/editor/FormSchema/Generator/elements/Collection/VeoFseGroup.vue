@@ -19,6 +19,8 @@
   <v-card
     v-if="level === 0"
     flat
+    rounded
+    outlined
     class="fse-group level-0 fill-width fill-height"
   >
     <div
@@ -43,7 +45,9 @@
   </v-card>
   <v-card
     v-else
-    elevation="0"
+    flat
+    rounded
+    outlined
     class="fse-group mx-3 my-2 px-2 pb-2"
   >
     <v-row
@@ -92,7 +96,7 @@
             dense
             small
           >
-            mdi-delete
+            mdi-trash-can-outline
           </v-icon>
         </v-btn>
       </v-col>
@@ -249,10 +253,6 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
-
-.fse-group {
-  border: 1px solid $medium-grey;
-}
 
 .dropzone-placeholder {
   position: absolute;

@@ -16,72 +16,63 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-select
-    v-model="lang"
-    class="veo-language-select"
-    dense
-    filled
-    hide-details
-    :items="langs"
-    :prepend-inner-icon="mdiEarth"
-    :menu-props="{ offsetY: true, bottom: true }"
+  <v-menu
+    offset-y
+    bottom
   >
-    <template #selection="{ item }">
-      {{ item.value.toUpperCase() }}
+    <template #activator="{ on }">
+      <v-btn
+        color="black"
+        icon
+        v-on="on"
+      >
+        <v-icon>{{ mdiTranslate }}</v-icon>
+      </v-btn>
     </template>
-  </v-select>
+    <template #default>
+      <v-list>
+        <v-list-item-group
+          :value="$i18n.locale"
+          color="primary"
+          mandatory
+        >
+          <v-list-item
+            v-for="locale of $i18n.locales"
+            :key="locale.code"
+            :value="locale.code"
+            @click="onLanguageSwitch(locale.code)"
+          >
+            <v-list-item-title>{{ locale.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </template>
+  </v-menu>
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, computed } from '@nuxtjs/composition-api';
+import { defineComponent, useContext } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiChevronDown, mdiEarth } from '@mdi/js';
+import { mdiTranslate } from '@mdi/js';
 
 export default defineComponent({
   setup() {
     const { app } = useContext();
-    const { t, locale } = useI18n();
+    const { t } = useI18n();
 
-    const lang = computed({
-      get() {
-        return locale.value;
-      },
-      set(newValue: string) {
-        app.i18n.setLocale(newValue);
-        // After the language change, reload the page to avoid synchronisation problems
-        // Reload here should not be a big problem, because a user will not often change the language
-        window.location.reload();
-      }
-    });
+    const onLanguageSwitch = (locale: string) => {
+      app.i18n.setLocale(locale);
 
-    const langs = app.i18n.locales.map((locale: any) => ({ text: locale.name, value: locale.code }));
+      // Reload to make sure everything changed language
+      window.location.reload();
+    };
 
     return {
-      lang,
-      langs,
+      onLanguageSwitch,
 
-      mdiChevronDown,
-      mdiEarth,
-      locale,
+      mdiTranslate,
       t
     };
   }
 });
 </script>
-
-<style lang="scss" scoped>
-.veo-language-select {
-  border-radius: 4px;
-  flex-grow: 0;
-  overflow: hidden;
-  width: 100px;
-}
-
-::v-deep.veo-language-select .v-select__selections {
-  align-items: baseline;
-}
-
-::v-deep.veo-language-select .v-input__icon--prepend-inner .v-icon {
-  color: $primary;
-}
-</style>

@@ -17,19 +17,19 @@
 -->
 <template>
   <VeoDialog
-    v-model="dialog.value"
+    v-bind="$attrs"
     large
-    fixed-header
     fixed-footer
     :headline="t('formSchema')"
+    v-on="$listeners"
   >
     <template #default>
-      <div style="min-height: 20vh">
+      <VeoCard style="min-height: 20vh">
         <VeoCodeEditor
           :value="$props.code"
           readonly
         />
-      </div>
+      </VeoCard>
     </template>
     <template #dialog-options>
       <v-spacer />
@@ -44,7 +44,7 @@
   </VeoDialog>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from '@nuxtjs/composition-api';
+import { defineComponent } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 
 interface IProps {
@@ -54,40 +54,15 @@ interface IProps {
 
 export default defineComponent<IProps>({
   props: {
-    value: {
-      type: Boolean,
-      required: true
-    },
     code: {
       type: String,
       required: true
     }
   },
-  setup(props, context) {
+  setup() {
     const { t } = useI18n();
 
-    /**
-     * Common dialog stuff (opening and closing)
-     */
-    const dialog = ref({ value: props.value });
-
-    watch(
-      () => props.value,
-      (val: boolean) => {
-        dialog.value.value = val;
-      }
-    );
-
-    watch(
-      () => dialog.value.value,
-      (val: boolean) => {
-        if (!val) {
-          context.emit('input', val);
-        }
-      }
-    );
-
-    return { dialog, close, t };
+    return { t };
   }
 });
 </script>

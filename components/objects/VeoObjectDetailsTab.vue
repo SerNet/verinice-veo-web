@@ -16,38 +16,47 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-container>
-    <v-row>
-      <v-col>
-        <VeoObjectTable
-          :items="items"
-          :loading="fetchState.pending"
-          :dense="dense"
-          :simple="type==='links'"
-          :risk="type==='risks'"
-          @click="openItem"
+  <div>
+    <v-select
+      v-if="type === 'parents'"
+      v-model="parentType"
+      background-color="rgb(0, 0, 0, 0.06)"
+      dense
+      :disabled="object.type === 'scope'"
+      flat
+      hide-details
+      :items="parentTypeItems"
+      :label="upperFirst(t('parentType').toString())"
+      :menu-props="{ offsetY: true, bottom: true }"
+      solo
+      style="width: 150px"
+    />
+    <VeoObjectTable
+      :additional-headers="additionalHeaders"
+      :default-headers="defaultHeaders"
+      :items="items"
+      :loading="fetchState.pending"
+      @click="openItem"
+    >
+      <template #actions="{item}">
+        <v-tooltip
+          v-for="btn in actions"
+          :key="btn.id"
+          bottom
         >
-          <template #actions="{item}">
-            <v-tooltip
-              v-for="btn in actions"
-              :key="btn.id"
-              bottom
+          <template #activator="{on}">
+            <v-btn
+              icon
+              @click="btn.action(item)"
+              v-on="on"
             >
-              <template #activator="{on}">
-                <v-btn
-                  icon
-                  @click="btn.action(item)"
-                  v-on="on"
-                >
-                  <v-icon v-text="btn.icon" />
-                </v-btn>
-              </template>
-              {{ btn.label }}
-            </v-tooltip>
+              <v-icon v-text="btn.icon" />
+            </v-btn>
           </template>
-        </VeoObjectTable>
-      </v-col>
-    </v-row>
+          {{ btn.label }}
+        </v-tooltip>
+      </template>
+    </VeoObjectTable>
     <!-- dialogs -->
     <VeoUnlinkEntityDialog
       v-model="unlinkEntityDialog.value"
@@ -55,15 +64,22 @@
       @success="onUnlinkEntitySuccess"
       @error="onUnlinkEntityError"
     />
-  </v-container>
+    <VeoCreateRiskDialogSingle
+      v-model="editRiskDialog.visible"
+      v-bind="editRiskDialog"
+      :domain-id="domainId"
+      :object-type="object && object.type"
+      :object-id="object && object.id"
+    />
+  </div>
 </template>
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch, useAsync } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiContentCopy, mdiLinkOff, mdiTrashCan } from '@mdi/js';
+import { mdiContentCopy, mdiLinkOff, mdiTrashCanOutline } from '@mdi/js';
 import { createUUIDUrlParam, getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoCustomLink, IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoEntity, IVeoPaginatedResponse, IVeoRisk } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
@@ -78,6 +94,10 @@ export default defineComponent({
     dense: {
       type: Boolean,
       default: false
+    },
+    domainId: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
@@ -89,9 +109,23 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { cloneObject } = useVeoObjectUtilities();
 
-    const items = ref<IVeoEntity[]>();
+    const items = ref<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>();
 
-    const objectTypesWithActions = ['subEntities', 'parents'];
+    /**
+     * Stuff for fetching parents
+     */
+    const objectTypes = useAsync(() => $api.schema.fetchAll());
+    const parentTypeItems = computed(() =>
+      (objectTypes.value || [])
+        .map((type) => ({ text: upperFirst(type.schemaName), value: type.schemaName }))
+        .filter((item) => item.value === 'scope' || item.value === props.object?.type)
+    );
+    const parentType = ref(props.object?.type);
+
+    watch(
+      () => parentType.value,
+      () => fetch()
+    );
 
     /**
      * fetch sub entities or links
@@ -101,6 +135,8 @@ export default defineComponent({
     const { fetchState, fetch } = useFetch(async () => {
       if (props.type === 'subEntities' && props.object) {
         items.value = await $api.entity.fetchSubEntities(props.object.type, props.object.id);
+      } else if (props.type === 'parents' && props.object && parentType.value) {
+        items.value = await $api.entity.fetchParents(parentType.value, props.object.id);
       } else if (props.type === 'risks' && props.object) {
         items.value = await $api.entity.fetchRisks(props.object.type, props.object.id);
       } else {
@@ -132,6 +168,35 @@ export default defineComponent({
       }
     );
 
+    const defaultHeaders = computed(() =>
+      props.type === 'parents' || props.type === 'subEntities'
+        ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']
+        : props.type === 'links'
+        ? ['icon', 'name']
+        : ['designator', 'updatedAt', 'updatedBy', 'actions']
+    );
+
+    const additionalHeaders = computed(() =>
+      props.type === 'risks'
+        ? [
+            {
+              value: 'scenario.displayName',
+              text: t('scenario').toString(),
+              cellClass: ['font-weight-bold'],
+              width: 200,
+              truncate: true,
+              importance: 100,
+              order: 40,
+              render: ({ value }: { value: string }) => {
+                // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
+                // As the abbreviation is optional and at this point we have no ability to check whether it is set here, we simply remove the designator and display everything else
+                return value.split(' ').slice(1).join(' ');
+              }
+            }
+          ]
+        : []
+    );
+
     /**
      * actions for cloning or unlinking objects
      */
@@ -142,7 +207,7 @@ export default defineComponent({
             {
               id: 'delete',
               label: upperFirst(t('deleteRisk').toString()),
-              icon: mdiTrashCan,
+              icon: mdiTrashCanOutline,
               async action(item: IVeoRisk) {
                 try {
                   const { id } = getEntityDetailsFromLink(item.scenario);
@@ -205,19 +270,34 @@ export default defineComponent({
       displayErrorMessage(upperFirst(t('errors.unlink').toString()), error?.toString());
     };
 
+    /**
+     * risks edit dialog
+     */
+    const editRiskDialog = ref<{ visible: boolean; risk?: IVeoEntity }>({
+      visible: false,
+      risk: undefined
+    });
+
     // push to object detail site (on click in table)
     const openItem = ({ item }: { item: IVeoEntity }) => {
-      return router.push({
-        name: 'unit-domains-domain-objects-entity',
-        params: {
-          ...route.value.params,
-          entity: createUUIDUrlParam(item.type, item.id)
-        }
-      });
+      if (props.type === 'risks') {
+        editRiskDialog.value.risk = item;
+        editRiskDialog.value.visible = true;
+      } else {
+        router.push({
+          name: 'unit-domains-domain-objects-entity',
+          params: {
+            ...route.value.params,
+            entity: createUUIDUrlParam(item.type, item.id)
+          }
+        });
+      }
     };
 
     return {
-      objectTypesWithActions,
+      additionalHeaders,
+      defaultHeaders,
+      editRiskDialog,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
       unlinkEntityDialog,
@@ -226,8 +306,11 @@ export default defineComponent({
       actions,
       fetch,
       items,
+      parentType,
+      parentTypeItems,
 
-      t
+      t,
+      upperFirst
     };
   }
 });
@@ -247,7 +330,9 @@ export default defineComponent({
       "link": "Could not link new object.",
       "risk": "Couldn't delete risk"
     },
-    "riskDeleted": "The risk was removed"
+    "parentType": "parent type",
+    "riskDeleted": "The risk was removed",
+    "scenario": "Scenario"
 
   },
   "de": {
@@ -262,7 +347,9 @@ export default defineComponent({
       "link": "Das neue Objekt konnte nicht verknüpft werden.",
       "risk": "Risiko konnte nicht gelöscht werden"
     },
-    "riskDeleted": "Das Risiko wurde entfernt"
+    "parentType": "Elterntyp",
+    "riskDeleted": "Das Risiko wurde entfernt",
+    "scenario": "Szenario"
   }
 }
 </i18n>

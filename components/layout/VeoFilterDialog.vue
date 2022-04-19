@@ -348,11 +348,6 @@ export default defineComponent({
           name: 'hasChildObjects',
           disabled: props.disableFields?.includes('hasChildObjects'),
           type: IVeoFilterOptionType.CHECKBOX
-        },
-        {
-          name: 'hasLinks',
-          disabled: props.disableFields?.includes('hasLinks'),
-          type: IVeoFilterOptionType.CHECKBOX
         }
       ];
     });
@@ -416,3 +411,9 @@ export default defineComponent({
   }
 }
 </i18n>
+
+<style lang="scss" scoped>
+.v-list {
+  background: $background-accent;
+}
+</style>

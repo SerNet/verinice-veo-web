@@ -688,15 +688,15 @@ describe('Formschema Editor', () => {
 
   it('deletes elements', function () {
     goTo(tos.minimal);
-    cy.get('.fse-label').find('.mdi-delete').closest('.v-btn').click();
+    cy.get('.fse-label').find('.mdi-trash-can-outline').closest('.v-btn').click();
     cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen');
     cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click();
 
-    cy.get('.fse-group').find('.mdi-delete').eq(0).closest('.v-btn').click();
+    cy.get('.fse-group').find('.mdi-trash-can-outline').eq(0).closest('.v-btn').click();
     cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen');
     cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click();
 
-    cy.get('.fse-input').find('.mdi-delete').closest('.v-btn').click();
+    cy.get('.fse-input').find('.mdi-trash-can-outline').closest('.v-btn').click();
     cy.get('.v-dialog--active .v-card__title').should('contain.text', 'Element löschen');
     cy.get('.v-dialog--active .v-card__actions').contains('.v-btn', 'Löschen').click();
 

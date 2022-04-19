@@ -16,11 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage fullsize>
+  <VeoPage
+    title="Class"
+    fixed-header
+  >
     <v-row justify="center">
-      <v-col cols="12">
-        <PageHeader>Class</PageHeader>
-      </v-col>
       <v-col cols="12">
         <v-select
           v-model="definition.value"
@@ -54,6 +54,7 @@
 import Vue from 'vue';
 
 export default Vue.extend({
+  layout: 'plain',
   data() {
     return {
       form: {

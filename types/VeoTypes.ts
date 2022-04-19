@@ -112,29 +112,31 @@ export interface IVeoRiskImplementationState {
   ordinalValue: number;
 }
 
+export interface IVeoRiskDefinition {
+  id: string;
+  probability: IVeoRiskProbability;
+  implementationStateDefinition: {
+    id: string;
+    name: string;
+    abbreviation: string;
+    description: string;
+    levels: IVeoRiskImplementationState[];
+  };
+  categories: IVeoRiskCategory[];
+  riskValues: IVeoRiskValue[];
+  riskMethod: {
+    impactMethod: string;
+    description: string;
+  };
+}
+
 export interface IVeoDomain extends IVeoBaseObject {
   name: string;
   abbreviation: string;
   description: string;
   catalogs: any[];
   riskDefinitions: {
-    [key: string]: {
-      id: string;
-      probability: IVeoRiskProbability;
-      implementationStateDefinition: {
-        id: string;
-        name: string;
-        abbreviation: string;
-        description: string;
-        levels: IVeoRiskImplementationState[];
-      };
-      categories: IVeoRiskCategory[];
-      riskValues: IVeoRiskValue[];
-      riskMethod: {
-        impactMethod: string;
-        description: string;
-      };
-    };
+    [key: string]: IVeoRiskDefinition;
   };
 }
 
@@ -372,8 +374,9 @@ export interface IVeoCatalogItem extends IVeoBaseObject {
 
 export interface IVeoEntityDomain {
   [key: string]: {
-    status: string;
-    subType: string;
+    status?: string;
+    subType?: string;
+    riskDefinition?: string;
   };
 }
 
@@ -395,12 +398,48 @@ export interface IVeoEntity extends IVeoBaseObject {
 }
 
 export interface IVeoRisk {
+  _self?: string;
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
+  designator?: string;
   scenario: IVeoLink;
   mitigation?: IVeoLink;
   process?: IVeoLink;
+  riskOwner?: IVeoLink;
   domains: {
     [domainId: string]: {
       reference: IVeoLink;
+      riskDefinitions: {
+        [riskDefinition: string]: {
+          probability: {
+            effectiveProbability: number;
+            potentialProbability: number;
+            specificProbability: number;
+            specificProbabilityExplanation: string;
+          };
+          impactValues: [
+            {
+              category: string;
+              effectiveImpact: number;
+              specificImpact: string;
+              specificImpactExplanation: string;
+              potentialImpact: string;
+            }
+          ];
+          riskValues: [
+            {
+              category: string;
+              residualRisk: number;
+              residualRiskExplanation: string;
+              riskTreatments: string;
+              riskTreatmentExplanation: string;
+              inherentRisk: number;
+            }
+          ];
+        };
+      };
     };
   };
 }

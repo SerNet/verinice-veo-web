@@ -17,10 +17,11 @@
 -->
 <script lang="ts">
 import { defineComponent, ref, h, computed, watch } from '@nuxtjs/composition-api';
-import { VTabs, VTabsItems } from 'vuetify/lib';
+import { VDivider, VTabs, VTabsItems } from 'vuetify/lib';
 
 export default defineComponent({
   components: {
+    VDivider,
     VTabs,
     VTabsItems
   },
@@ -29,7 +30,7 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    startTab: {
+    value: {
       type: Number,
       default: 0
     },
@@ -38,19 +39,19 @@ export default defineComponent({
       default: false
     }
   },
-  setup(props, { slots }) {
-    const activeTabIndex = ref(props.startTab);
+  setup(props, { attrs, slots, emit }) {
+    const internalValue = ref(props.value);
 
     watch(
-      () => props.startTab,
+      () => props.value,
       (newValue: number) => {
-        activeTabIndex.value = newValue;
+        internalValue.value = newValue;
       }
     );
 
     return () => {
       const tabs = computed(() => (slots.tabs ? slots.tabs() : []));
-      const activeTab = computed(() => tabs.value[activeTabIndex.value]);
+      const activeTab = computed(() => tabs.value[internalValue.value]);
 
       // Automatically switch tabs if the tab the user is currently in gets disabled
       watch(
@@ -58,7 +59,9 @@ export default defineComponent({
         (newValue) => {
           const activeTabIsDisabled: boolean = (newValue?.componentOptions?.propsData as any)?.disabled;
           if (activeTabIsDisabled) {
-            activeTabIndex.value = (activeTabIndex.value + 1) % tabs.value.length;
+            const newValue = (internalValue.value + 1) % tabs.value.length;
+            internalValue.value = newValue;
+            emit('input', newValue);
           }
         }
       );
@@ -76,24 +79,31 @@ export default defineComponent({
             VTabs,
             {
               props: {
-                value: activeTabIndex.value
+                value: internalValue.value,
+                color: 'primary',
+                ...attrs
               },
               on: {
-                change: (newValue: number) => (activeTabIndex.value = newValue)
+                change: (newValue: number) => {
+                  internalValue.value = newValue;
+                  emit('input', newValue);
+                }
               },
               class: {
+                'veo-tabs': true,
                 'veo-tabs--sticky': props.stickyTabs
               }
             },
             [tabs.value]
           ),
+          h(VDivider),
           h(
             VTabsItems,
             {
               props: {
-                value: activeTabIndex.value
+                value: internalValue.value
               },
-              class: 'pt-4'
+              class: 'pt-2 transparent'
             },
             [slots.items ? slots.items() : []]
           )
@@ -112,6 +122,11 @@ export default defineComponent({
   right: 0;
   top: 0;
   z-index: 2;
+}
+
+.veo-tabs ::v-deep.v-slide-group__wrapper,
+.veo-tabs ::v-deep.v-slide-group {
+  background: transparent;
 }
 
 .veo-tabs--sticky {
