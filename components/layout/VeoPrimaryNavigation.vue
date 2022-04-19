@@ -57,7 +57,10 @@
             />
           </template>
           <v-divider class="my-4" />
-          <slot name="append-content" />
+          <slot
+            name="append-content"
+            v-bind="{ miniVariant }"
+          />
         </v-list>
       </div>
     </template>
@@ -335,9 +338,9 @@ export default defineComponent({
       }
     );
 
-    const spacer: INavItem = {
+    /* const spacer: INavItem = {
       name: 'spacer'
-    };
+    }; */
 
     const unitSelectionNavEntry: INavItem = {
       name: t('breadcrumbs.index').toString(),
@@ -404,7 +407,8 @@ export default defineComponent({
           unit: createUUIDUrlParam('unit', props.unitId),
           domain: createUUIDUrlParam('domain', props.domainId)
         }
-      }
+      },
+      exact: false
     }));
 
     const items = computed<INavItem[]>(() => [
@@ -412,7 +416,7 @@ export default defineComponent({
       ...(props.unitId && props.domainId
         ? [domainDashboardNavEntry.value, objectsNavEntry.value, catalogsNavEntry.value, reportsNavEntry.value, risksNavEntry.value /*, editorsNavEntry.value */]
         : []),
-      ...(props.domainId && props.unitId && isContentCreator.value ? [spacer, editorsNavEntry.value] : [])
+      ...(props.domainId && props.unitId && isContentCreator.value ? [editorsNavEntry.value] : [])
     ]);
 
     const expandedNavItems = reactive<string[]>([]);

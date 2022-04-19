@@ -29,18 +29,23 @@
         <v-btn
           color="primary"
           :disabled="!demoUnit || units.length === 0"
+          :icon="iconOnly"
           depressed
-          class="veo-demo-unit-button"
-          style="width: 100%; border-radius: 12px"
+          :class="{
+            'veo-demo-unit-button': !iconOnly
+          }"
+          style="height: 40px; width: 100%; border-radius: 12px"
           @click="toggleDemoUnit"
         >
-          <v-icon left>
+          <v-icon
+            :left="!iconOnly"
+          >
             {{ buttonIcon }}
           </v-icon>
-          <span v-if="userIsInDemoUnit">
+          <span v-if="userIsInDemoUnit && !iconOnly">
             {{ t('leaveDemoUnit') }}
           </span>
-          <span v-else>
+          <span v-else-if="!iconOnly">
             {{ t('goToDemoUnit') }}
           </span>
         </v-btn>
@@ -62,6 +67,12 @@ import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 
 export default defineComponent({
+  props: {
+    iconOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup(_props, context) {
     const { t } = useI18n();
     const { $api, app, params } = useContext();

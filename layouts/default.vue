@@ -75,14 +75,14 @@
             >
               <VeoAppBarLogo
                 :size="miniVariant ? 'small' : 'large'"
-                style="width: 85%"
+                style="width: 85%; min-width: 56px;"
               />
             </nuxt-link>
           </div>
         </div>
       </template>
-      <template #append-content>
-        <VeoDemoUnitButton />
+      <template #append-content="{ miniVariant }">
+        <VeoDemoUnitButton :icon-only="miniVariant" />
       </template>
     </VeoPrimaryNavigation>
     <v-main
