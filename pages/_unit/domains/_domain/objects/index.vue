@@ -16,10 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage
-    :title="upperFirst(t('objectOverview').toString())"
-    fullsize
-  >
+  <VeoPage :title="upperFirst(t('objectOverview').toString())">
     <VeoFilterDialog
       v-model="filterDialogVisible"
       :domain="domainId"
@@ -76,32 +73,34 @@
         </v-chip-group>
       </v-col>
     </v-row>
-    <VeoObjectTable
-      v-if="!fetchState.error"
-      :items="items"
-      :loading="fetchState.pending"
-      @page-change="onPageChange"
-      @click="openItem"
-    >
-      <template #actions="{item}">
-        <v-tooltip
-          v-for="btn in actions"
-          :key="btn.id"
-          bottom
-        >
-          <template #activator="{on}">
-            <v-btn
-              icon
-              @click="btn.action(item)"
-              v-on="on"
-            >
-              <v-icon v-text="btn.icon" />
-            </v-btn>
-          </template>
-          {{ btn.label }}
-        </v-tooltip>
-      </template>
-    </VeoObjectTable>
+    <VeoCard v-if="!fetchState.error">
+      <VeoObjectTable
+        :items="items"
+        :loading="fetchState.pending"
+        :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
+        @page-change="onPageChange"
+        @click="openItem"
+      >
+        <template #actions="{item}">
+          <v-tooltip
+            v-for="btn in actions"
+            :key="btn.id"
+            bottom
+          >
+            <template #activator="{on}">
+              <v-btn
+                icon
+                @click="btn.action(item)"
+                v-on="on"
+              >
+                <v-icon v-text="btn.icon" />
+              </v-btn>
+            </template>
+            {{ btn.label }}
+          </v-tooltip>
+        </template>
+      </VeoObjectTable>
+    </VeoCard>
     <VeoObjectTypeError v-else>
       <v-btn
         color="primary"
@@ -142,7 +141,7 @@
 </template>
 
 <script lang="ts">
-import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCan } from '@mdi/js';
+import { mdiContentCopy, mdiFilter, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { useI18n } from 'nuxt-i18n-composable';
 import { computed, defineComponent, useContext, useFetch, useRoute, useRouter, ref, reactive, watch, useMeta } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
@@ -174,7 +173,7 @@ export default defineComponent({
     const filterDialogVisible = ref(false);
 
     // accepted filter keys (others wont be respected when specified in URL query parameters)
-    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects', 'hasLinks'] as const;
+    const filterKeys = ['objectType', 'subType', 'designator', 'name', 'status', 'description', 'updatedBy', 'notPartOfGroup', 'hasChildObjects'] as const;
     type FilterKey = typeof filterKeys[number];
 
     // filter built from URL query parameters
@@ -315,7 +314,7 @@ export default defineComponent({
       {
         id: 'unlink',
         label: upperFirst(t('unlinkObject').toString()),
-        icon: mdiTrashCan,
+        icon: mdiTrashCanOutline,
         action(item: IVeoEntity) {
           itemDelete.value = item;
         }

@@ -22,12 +22,11 @@
     v-on="$listeners"
   >
     <template #default>
-      {{ t('text', { displayName: item && item.displayName }) }}
+      <span class="text-body-1">{{ t('text', { displayName: item && item.displayName }) }}</span>
     </template>
     <template #dialog-options>
       <v-btn
         text
-        color="primary"
         @click="$emit('input', false)"
       >
         {{ t('global.button.no') }}

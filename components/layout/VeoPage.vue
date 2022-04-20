@@ -18,9 +18,7 @@
 <template>
   <v-col
     class="veo-page py-0"
-    :cols="12"
-    :lg="fullsize ? 12 : 8"
-    :xl="fullsize ? 12 : 7"
+    cols="12"
     :class="noPadding ? 'px-0' : isPageWrapperChild? 'px-10' : 'px-4'"
   >
     <VeoPageHeader v-bind="$props">
@@ -33,7 +31,7 @@
     </VeoPageHeader>
     <v-row
       no-gutters
-      :style="{ 'max-height': '100%', 'min-height': 0, height }"
+      :style="{ 'max-height': '100%', 'min-height': 0, height, 'background-color': color }"
       class="pa-0 flex-column flex-nowrap"
     >
       <v-col :class="contentClass">
@@ -79,7 +77,6 @@ interface IProps {
   contentClass: string;
   headingLevel: string | number;
   stickyHeader: boolean;
-  fullsize: boolean;
   height: string;
   loading: boolean;
   loadContent: boolean;
@@ -90,6 +87,10 @@ interface IProps {
 
 export default defineComponent<IProps>({
   props: {
+    color: {
+      type: String,
+      default: undefined
+    },
     contentClass: {
       type: String,
       default: ''
@@ -103,13 +104,6 @@ export default defineComponent<IProps>({
       default: false
     },
     stickyFooter: {
-      type: Boolean,
-      default: false
-    },
-    /**
-     * If set to true, the page has 100% width on all viewports.
-     */
-    fullsize: {
       type: Boolean,
       default: false
     },

@@ -25,6 +25,15 @@ export const HISTORY_API_MY_LATEST_REVISIONS = /https:\/\/api.(.+)\/history\/rev
 export const HISTORY_API_ENTITY_REVISIONS = /https:\/\/api.(.+)\/history\/revisions\/\?uri=(.+)$/;
 export const REPORTING_API_ALL_REPORTS_REGEX = /https:\/\/api.(.+)\/reporting\/reports$/;
 
+// Ignore resizeObserver loop limit exceeded error @see https://stackoverflow.com/a/63519375
+const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
+Cypress.on('uncaught:exception', (err) => {
+  /* returning false here prevents Cypress from failing the test */
+  if (resizeObserverLoopErrRe.test(err.message)) {
+    return false;
+  }
+});
+
 function createJWT(payload) {
   const header = {
     alg: 'RS256',

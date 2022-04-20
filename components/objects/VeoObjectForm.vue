@@ -16,17 +16,24 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPageWrapper :page-widths="[8, 4]">
+  <VeoPageWrapper
+    :page-widths="[6, 6]"
+    :page-widths-lg="[7, 5]"
+    :page-widths-xl="[8, 4]"
+  >
     <template #default>
       <VeoPage
         :id="scrollWrapperId"
+        color="#ffffff"
         sticky-header
         :sticky-footer="!!$slots['append-form-fixed']"
       >
         <template #header>
-          <v-row class="align-center mx-0 pb-4">
+          <v-row class="align-center mx-0 pb-3 pt-2">
             <v-col cols="auto">
-              <h3>{{ upperFirst(t('display').toString()) }}:</h3>
+              <span class="text-h3">
+                {{ upperFirst(t('display').toString()) }}:
+              </span>
             </v-col>
             <v-col cols="auto">
               <v-select
@@ -64,11 +71,15 @@
           <slot name="append-form-fixed" />
         </template>
       </VeoPage>
-      <VeoPage no-padding>
+      <VeoPage
+        color="#ffffff"
+        no-padding
+      >
         <template #default>
           <VeoTabs
             v-cy-name="'form-tabs'"
             sticky-tabs
+            grow
           >
             <template #tabs>
               <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">

@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-card flat>
+  <VeoCard>
     <template v-if="loading">
       <v-card-title v-if="title">
         <v-skeleton-loader
@@ -43,7 +43,7 @@
         <slot />
       </v-card-text>
     </template>
-  </v-card>
+  </VeoCard>
 </template>
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api';
@@ -65,10 +65,3 @@ export default defineComponent<IProps>({
   }
 });
 </script>
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.v-card {
-  border: 1px solid $medium-grey;
-}
-</style>

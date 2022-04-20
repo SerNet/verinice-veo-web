@@ -60,7 +60,7 @@
         @click="$emit('delete-item', $event)"
       >
         <v-icon>
-          mdi-delete
+          mdi-trash-can-outline
         </v-icon>
       </v-btn>
     </v-list-item-action>

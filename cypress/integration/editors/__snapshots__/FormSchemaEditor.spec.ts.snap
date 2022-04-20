@@ -280,7 +280,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                             class="v-icon__svg"
                           >
                             <path
-                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"
                             ></path></svg></span
                       ></span>
                     </button>
@@ -399,7 +399,7 @@ exports[`Formschema Editor > drags and drops elements into dropzone and nests in
                             class="v-icon__svg"
                           >
                             <path
-                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z"
+                              d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z"
                             ></path></svg></span
                       ></span>
                     </button>
@@ -1488,7 +1488,9 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
               style="margin-left: 20px;"
             >
               <div data-v-123abc4d="" class="col">
-                <h3 data-v-123abc4d="">Gruppe Test 1</h3>
+                <h3 data-v-123abc4d="" class="text-h3">
+                  Gruppe Test 1
+                </h3>
               </div>
               <div data-v-123abc4d="" class="col">
                 <div
@@ -1737,7 +1739,9 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
               style="margin-left: 20px;"
             >
               <div data-v-123abc4d="" class="col">
-                <h3 data-v-123abc4d="">Gruppe Test 1</h3>
+                <h3 data-v-123abc4d="" class="text-h3">
+                  Gruppe Test 1
+                </h3>
               </div>
               <div data-v-123abc4d="" class="col">
                 <div
@@ -1826,7 +1830,9 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
           >
             <div data-v-123abc4d="" class="row flex-column row--dense">
               <div data-v-123abc4d="" class="col">
-                <h3 data-v-123abc4d="">Gruppe Test 2</h3>
+                <h3 data-v-123abc4d="" class="text-h3">
+                  Gruppe Test 2
+                </h3>
               </div>
               <div data-v-123abc4d="" class="col">
                 <div
@@ -1901,7 +1907,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
 exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and save them #4`] = `
 <div
   data-v-123abc4d=""
-  class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+  class="fse-group mx-3 my-2 px-2 pb-2 v-card v-card--flat v-sheet v-sheet--outlined theme--light rounded"
 >
   <div data-v-123abc4d="" class="row no-gutters align-center">
     <div data-v-123abc4d="" class="col col-auto">
@@ -1942,7 +1948,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
           ><i
             data-v-123abc4d=""
             aria-hidden="true"
-            class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+            class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
             style="font-size: 16px;"
           ></i
         ></span>
@@ -1960,7 +1966,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
     </div>
   </div>
   <!---->
-  <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+  <div data-v-123abc4d="" role="dialog" class="v-dialog__container">
     <!---->
   </div>
 </div>
@@ -1969,7 +1975,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
 exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and save them #5`] = `
 <div
   data-v-123abc4d=""
-  class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+  class="fse-group mx-3 my-2 px-2 pb-2 v-card v-card--flat v-sheet v-sheet--outlined theme--light rounded"
 >
   <div data-v-123abc4d="" class="row no-gutters align-center">
     <div data-v-123abc4d="" class="col col-auto">
@@ -2010,7 +2016,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
           ><i
             data-v-123abc4d=""
             aria-hidden="true"
-            class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+            class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
             style="font-size: 16px;"
           ></i
         ></span>
@@ -2028,7 +2034,7 @@ exports[`Formschema Editor > opens FseGroup dialogs, changes data in dialogs and
     </div>
   </div>
   <!---->
-  <div data-v-123abc4d="" role="dialog" class="v-dialog__container veo-dialog">
+  <div data-v-123abc4d="" role="dialog" class="v-dialog__container">
     <!---->
   </div>
 </div>
@@ -2100,7 +2106,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -2112,7 +2118,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -2175,7 +2181,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -2187,7 +2193,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -2250,7 +2256,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -2262,7 +2268,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -2325,7 +2331,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -2337,7 +2343,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -2400,7 +2406,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -2412,7 +2418,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -2475,7 +2481,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -2487,7 +2493,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -2536,7 +2542,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -2547,7 +2553,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
@@ -2595,7 +2601,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -2606,14 +2612,14 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
   </div>
   <div
     data-v-123abc4d=""
-    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-card--flat v-sheet v-sheet--outlined theme--light rounded"
   >
     <div data-v-123abc4d="" class="row no-gutters align-center">
       <div data-v-123abc4d="" class="col col-auto">
@@ -2654,7 +2660,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -2733,7 +2739,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -2745,7 +2751,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -2815,7 +2821,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -2827,7 +2833,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -2840,14 +2846,14 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
   </div>
   <div
     data-v-123abc4d=""
-    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-card--flat v-sheet v-sheet--outlined theme--light rounded"
   >
     <div data-v-123abc4d="" class="row no-gutters align-center">
       <div data-v-123abc4d="" class="col col-auto">
@@ -2888,7 +2894,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -2967,7 +2973,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -2979,7 +2985,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -3049,7 +3055,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -3061,7 +3067,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -3074,7 +3080,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #1`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
@@ -3636,7 +3642,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -3648,7 +3654,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -3711,7 +3717,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -3723,7 +3729,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -3786,7 +3792,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -3798,7 +3804,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -3861,7 +3867,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -3873,7 +3879,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -3936,7 +3942,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -3948,7 +3954,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -4011,7 +4017,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -4023,7 +4029,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -4072,7 +4078,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -4083,7 +4089,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
@@ -4131,7 +4137,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -4142,14 +4148,14 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
   </div>
   <div
     data-v-123abc4d=""
-    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-card--flat v-sheet v-sheet--outlined theme--light rounded"
   >
     <div data-v-123abc4d="" class="row no-gutters align-center">
       <div data-v-123abc4d="" class="col col-auto">
@@ -4190,7 +4196,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -4269,7 +4275,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -4281,7 +4287,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -4351,7 +4357,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -4363,7 +4369,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -4376,14 +4382,14 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
   </div>
   <div
     data-v-123abc4d=""
-    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-card--flat v-sheet v-sheet--outlined theme--light rounded"
   >
     <div data-v-123abc4d="" class="row no-gutters align-center">
       <div data-v-123abc4d="" class="col col-auto">
@@ -4424,7 +4430,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -4503,7 +4509,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -4515,7 +4521,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -4585,7 +4591,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -4597,7 +4603,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -4610,7 +4616,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #4`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
@@ -5173,7 +5179,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -5185,7 +5191,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -5248,7 +5254,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -5260,7 +5266,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -5323,7 +5329,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -5335,7 +5341,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -5398,7 +5404,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -5410,7 +5416,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -5473,7 +5479,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -5485,7 +5491,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -5548,7 +5554,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                   data-v-123abc4d=""
                   aria-hidden="true"
                   data-cy="veo-fse-form-element-delete-button"
-                  class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                  class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                   style="font-size: 16px;"
                 ></i
               ></span>
@@ -5560,7 +5566,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
       <div
         data-v-123abc4d=""
         role="dialog"
-        class="v-dialog__container veo-dialog"
+        class="v-dialog__container"
       >
         <!---->
       </div>
@@ -5608,7 +5614,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -5619,7 +5625,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
@@ -5666,7 +5672,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -5677,14 +5683,14 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
   </div>
   <div
     data-v-123abc4d=""
-    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-card--flat v-sheet v-sheet--outlined theme--light rounded"
   >
     <div data-v-123abc4d="" class="row no-gutters align-center">
       <div data-v-123abc4d="" class="col col-auto">
@@ -5725,7 +5731,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -5804,7 +5810,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -5816,7 +5822,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -5886,7 +5892,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -5898,7 +5904,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -5911,14 +5917,14 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>
   </div>
   <div
     data-v-123abc4d=""
-    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-sheet theme--light elevation-0"
+    class="fse-group mx-3 my-2 px-2 pb-2 v-card v-card--flat v-sheet v-sheet--outlined theme--light rounded"
   >
     <div data-v-123abc4d="" class="row no-gutters align-center">
       <div data-v-123abc4d="" class="col col-auto">
@@ -5959,7 +5965,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
             ><i
               data-v-123abc4d=""
               aria-hidden="true"
-              class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+              class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
               style="font-size: 16px;"
             ></i
           ></span>
@@ -6038,7 +6044,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -6050,7 +6056,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -6120,7 +6126,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
                           data-v-123abc4d=""
                           aria-hidden="true"
                           data-cy="veo-fse-form-element-delete-button"
-                          class="v-icon notranslate v-icon--dense mdi mdi-delete theme--light"
+                          class="v-icon notranslate v-icon--dense mdi mdi-trash-can-outline theme--light"
                           style="font-size: 16px;"
                         ></i
                       ></span>
@@ -6132,7 +6138,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
               <div
                 data-v-123abc4d=""
                 role="dialog"
-                class="v-dialog__container veo-dialog"
+                class="v-dialog__container"
               >
                 <!---->
               </div>
@@ -6145,7 +6151,7 @@ exports[`Formschema Editor > adds, updates, deletes translations #7`] = `
     <div
       data-v-123abc4d=""
       role="dialog"
-      class="v-dialog__container veo-dialog"
+      class="v-dialog__container"
     >
       <!---->
     </div>

@@ -22,44 +22,40 @@
     :class="options && options.class"
     :style="options && options.style"
   >
-    <v-list
-      dense
-      class="py-0"
+    <VeoCard
+      v-for="(val, index) in localValue"
+      :key="index"
+      class="links-field-item my-2 pt-2 d-flex flex-row"
     >
-      <v-list-item
-        v-for="(val, index) in localValue"
-        :key="index"
-        class="links-field-item my-2 pt-2"
-      >
-        <v-list-item-content>
-          <LinksFieldRow
-            v-bind="$props"
-            :key="index"
-            :index="index"
-            :value="val"
-            :selected.sync="selected[index]"
-            :link-data="value"
-            :options="options"
-            :validation="validation"
-            :object-creation-disabled="objectCreationDisabled"
-            @input="onInput(index, $event)"
-          />
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-btn
-            :disabled="!value || disabled"
-            depressed
-            text
-            fab
-            small
-            @click="removeRow(index)"
-          >
-            <v-icon>{{ mdiTrashCan }}</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
+      <v-card-text>
+        <LinksFieldRow
+          v-bind="$props"
+          :key="index"
+          :index="index"
+          :value="val"
+          :selected.sync="selected[index]"
+          :link-data="value"
+          :options="options"
+          :validation="validation"
+          :object-creation-disabled="objectCreationDisabled"
+          @input="onInput(index, $event)"
+        />
+      </v-card-text>
+      <v-card-actions v-if="!options.singleLink">
+        <v-btn
+          :disabled="!value || disabled"
+          depressed
+          text
+          fab
+          small
+          @click="removeRow(index)"
+        >
+          <v-icon>{{ mdiTrashCanOutline }}</v-icon>
+        </v-btn>
+      </v-card-actions>
+    </VeoCard>
     <v-btn
+      v-if="!options.singleLink"
       small
       text
       :disabled="disabled"
@@ -78,7 +74,7 @@
 import { computed, defineComponent, PropType, Ref, ref } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { JSONSchema7 } from 'json-schema';
-import { mdiPlus, mdiTrashCan } from '@mdi/js';
+import { mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 
 import { calculateConditionsScore, FormElementProps, Helpful } from '~/components/forms/Collection/utils/helpers';
@@ -164,7 +160,7 @@ export default defineComponent({
       removeRow,
       selected,
 
-      mdiTrashCan,
+      mdiTrashCanOutline,
       mdiPlus,
       t
     };
@@ -173,6 +169,7 @@ export default defineComponent({
 
 export const helpers: Helpful<FormElementProps> = {
   matchingScore(props) {
+    // console.log(props);
     const schemaItemsProperties =
       props.schema &&
       props.schema.items &&
@@ -199,11 +196,6 @@ export const helpers: Helpful<FormElementProps> = {
 
 <style lang="scss" scoped>
 @import '~/assets/vuetify.scss';
-
-.links-field-item {
-  border: 1px solid $medium-grey;
-  border-radius: 4px;
-}
 
 .links-field-item ::v-deep .vf-layout {
   padding-left: 0;

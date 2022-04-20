@@ -26,6 +26,7 @@ export interface IVeoEntityRequestParams extends IVeoPaginationOptions {
   displayName?: string;
   subType?: string;
   unit?: string;
+  childElementIds?: string;
 }
 
 /**
@@ -120,9 +121,9 @@ export default function (api: Client) {
       });
     },
 
-    async createRisk(objectType: string, id: string, risk: IVeoRisk): Promise<IVeoEntity[]> {
+    async createRisk(objectType: string, id: string, risk: IVeoRisk): Promise<IVeoRisk> {
       if (objectType !== 'process') {
-        throw new Error(`api::fetchRisks: Risks can only be created for processes. You tried creating a risk for a ${objectType}`);
+        throw new Error(`api::createRisk: Risks can only be created for processes. You tried creating a risk for a ${objectType}`);
       }
 
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
@@ -169,7 +170,7 @@ export default function (api: Client) {
 
     async fetchRisks(objectType: string, id: string): Promise<IVeoEntity[]> {
       if (objectType !== 'process') {
-        throw new Error(`api::fetchRisks: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
+        throw new Error(`api::fetchRisk: Risks can only be fetched for processes. You tried fetching a risk for a ${objectType}`);
       }
 
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
@@ -225,6 +226,33 @@ export default function (api: Client) {
     },
 
     /**
+     * Updates a risk
+     * NOTE: CURRENTLY USES THE SAME ENDPOINT AS FOR POSTING AS THE PUTTING ENDPOINT IS INOP
+     *
+     * @param objectType The type of the object to update the risk for (currently has to be process)
+     * @param id The id of the process to update the risk for
+     * @param _scenarioId Currently not used, see note
+     * @param risk The new risk data
+     * @returns Returns the updated risk
+     */
+    async updateRisk(objectType: string, id: string, _scenarioId: string, risk: IVeoRisk): Promise<IVeoRisk> {
+      if (objectType !== 'process') {
+        throw new Error(`api::updateRisk: Risks can only be created for processes. You tried updating a risk for a ${objectType}`);
+      }
+
+      objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
+
+      return api.req('/api/:objectType/:id/risks', {
+        method: 'POST',
+        params: {
+          objectType,
+          id
+        },
+        json: risk
+      });
+    },
+
+    /**
      * Deletes an entity
      * @param id
      */
@@ -242,7 +270,7 @@ export default function (api: Client) {
 
     async deleteRisk(objectType: string, objectId: string, scenarioId: string): Promise<IVeoEntity[]> {
       if (objectType !== 'process') {
-        throw new Error(`api::fetchRisks: Risks can only be deleted for processes. You tried deleting a risk for a ${objectType}`);
+        throw new Error(`api::deleteRisk: Risks can only be deleted for processes. You tried deleting a risk for a ${objectType}`);
       }
 
       objectType = getSchemaEndpoint(await api._context.$api.schema.fetchAll(), objectType) || objectType;
@@ -314,6 +342,18 @@ export default function (api: Client) {
             return result;
           });
       }
+    },
+    /**
+     * Get parent entities of this entities. Sadly only entities of one type get returned.
+     *
+     * @param parentType The type of the parent element(s)
+     * @param id The id of the element to search for parents for
+     * @returns a paginated response with all found parents
+     */
+    async fetchParents(parentType: string, id: string): Promise<IVeoPaginatedResponse<IVeoEntity[]>> {
+      return await this.fetchAll(parentType, undefined, {
+        childElementIds: id
+      });
     }
   };
 }

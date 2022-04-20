@@ -20,6 +20,7 @@
     v-model="selectedItems"
     show-select
     checkbox-color="primary"
+    :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
     v-bind="$attrs"
     v-on="$listeners"
     @page-change="$emit('page-change', $event)"

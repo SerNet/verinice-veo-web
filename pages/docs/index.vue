@@ -24,7 +24,7 @@
       {{ t('closePreview') }}
     </nuxt-link>
     <div class="page">
-      <h1 class="mx-auto">
+      <h1 class="text-h1 mx-auto">
         {{ title }}
       </h1>
     </div>

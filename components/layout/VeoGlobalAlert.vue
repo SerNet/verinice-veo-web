@@ -35,7 +35,10 @@
           {{ mdiCheckCircleOutline }}
         </v-icon>
       </v-col>
-      <v-col cols="auto">
+      <v-col
+        cols="auto"
+        class="text-body-1"
+      >
         {{ text }}
       </v-col>
     </v-row>

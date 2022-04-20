@@ -22,24 +22,36 @@
   >
     <template #activator="{ on, value }">
       <v-list-item
-        style="margin: -4px 0; height: calc(100% + 8px)"
+        class="veo-domain-select mx-2"
+        dense
+        :disabled="disabled"
         v-on="on"
       >
-        <span class="veo-domain-select__selection">
+        <v-skeleton-loader
+          v-if="$fetchState.pending"
+          height="24px"
+          style="border-radius: 999px"
+          type="image"
+          width="100px"
+        />
+        <span
+          v-else
+          class="veo-domain-select__selection"
+        >
           {{ domainName }}
         </span>
         <v-icon
           v-if="value"
+          :disabled="disabled"
           right
-          large
           color="primary"
         >
           {{ mdiChevronUp }}
         </v-icon>
         <v-icon
           v-else
+          :disabled="disabled"
           right
-          large
           color="primary"
         >
           {{ mdiChevronDown }}
@@ -75,6 +87,12 @@ import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
 import { IVeoDomain } from '~/types/VeoTypes';
 
 export default defineComponent({
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup() {
     const { $api } = useContext();
     const router = useRouter();
@@ -153,14 +171,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-domain-select {
-  border-radius: 4px;
-  overflow: hidden;
-  width: 175px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+}
+
+.veo-domain-select.v-list-item--disabled {
+  background: rgba(0, 0, 0, 0.16);
 }
 
 .veo-domain-select__selection {
   color: #666666;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;

@@ -17,7 +17,7 @@
 -->
 <template>
   <v-window-item v-bind="$attrs">
-    <h2 class="mb-2">
+    <h2 class="text-h2 mb-2">
       {{ t('createFormSchema') }}
     </h2>
     <v-form
@@ -30,118 +30,128 @@
         role="submit"
         class="d-none"
       >
-      <v-row
-        no-gutters
-        class="align-center mt-4"
+      <VeoCard
+        class="mb-4"
       >
-        <v-col
-          cols="12"
-          md="5"
-        >
-          <span>{{ t('editor.formschema.create.title.text') }}*:</span>
-        </v-col>
-        <v-col
-          cols="12"
-          md="7"
-        >
-          <v-text-field
-            :value="name"
-            :label="t('editor.formschema.create.title')"
-            :rules="[requiredRule]"
-            required
-            @input="$emit('update:name', $event)"
-          />
-        </v-col>
-      </v-row>
-      <v-row
-        no-gutters
-        class="align-center mt-4"
-      >
-        <v-col
-          cols="12"
-          md="5"
-        >
-          <span>{{ t('editor.formschema.sorting') }}:</span>
-        </v-col>
-        <v-col
-          cols="12"
-          md="7"
-        >
-          <v-text-field
-            :value="sorting"
-            :label="t('editor.formschema.sorting')"
-            @input="$emit('update:sorting', $event)"
-          />
-        </v-col>
-      </v-row>
-      <v-row
-        no-gutters
-        class="align-center mt-4"
-      >
-        <v-col
-          cols="12"
-          md="5"
-        >
-          <span>{{ t('editor.formschema.create.type.text') }}*:</span>
-        </v-col>
-        <v-col
-          cols="12"
-          md="7"
-        >
-          <v-select
-            :value="objectType"
-            :label="t('editor.formschema.create.type')"
-            :rules="[requiredRule]"
-            :items="objectTypes"
-            required
-            @change="$emit('update:objectType', $event)"
-          />
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="objectType === 'custom'"
-        no-gutters
-      >
-        <v-col
-          cols="0"
-          md="5"
-        />
-        <v-col
-          cols="12"
-          md="7"
-        >
-          <VeoEditorFileUpload
-            :input-label="t('objectSchemaUploadLabel')"
-            :submit-button-text="t('importObjectSchema')"
-            @schema-uploaded="$emit('update:objectSchema', $event)"
-          />
-        </v-col>
-      </v-row>
-      <v-row
-        no-gutters
-        class="align-center mt-4"
-      >
-        <v-col
-          cols="12"
-          md="5"
-        >
-          <span>{{ t('editor.formschema.subtype') }}*:</span>
-        </v-col>
-        <v-col
-          cols="12"
-          md="7"
-        >
-          <v-select
-            :value="subType"
-            :disabled="!objectType || (objectType === 'custom' && !objectSchema)"
-            :items="subTypes"
-            :loading="!!objectType && !objectSchema"
-            :label="t('editor.formschema.subtype')"
-            :rules="[requiredRule]"
-            @change="$emit('update:subType', $event)"
-          />
-        </v-col>
-      </v-row>
+        <v-card-text>
+          <v-row
+            no-gutters
+            class="align-center mt-4"
+          >
+            <v-col
+              cols="12"
+              md="5"
+            >
+              <span>{{ t('editor.formschema.create.title.text') }}*:</span>
+            </v-col>
+            <v-col
+              cols="12"
+              md="7"
+            >
+              <v-text-field
+                :value="name"
+                :label="t('editor.formschema.create.title')"
+                :rules="[requiredRule]"
+                required
+                @input="$emit('update:name', $event)"
+              />
+            </v-col>
+          </v-row>
+          <v-row
+            no-gutters
+            class="align-center mt-4"
+          >
+            <v-col
+              cols="12"
+              md="5"
+            >
+              <span>{{ t('editor.formschema.sorting') }}:</span>
+            </v-col>
+            <v-col
+              cols="12"
+              md="7"
+            >
+              <v-text-field
+                :value="sorting"
+                :label="t('editor.formschema.sorting')"
+                @input="$emit('update:sorting', $event)"
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </VeoCard>
+      <VeoCard>
+        <v-card-text>
+          <v-row
+            no-gutters
+            class="align-center"
+          >
+            <v-col
+              cols="12"
+              md="5"
+            >
+              <span>{{ t('editor.formschema.create.type.text') }}*:</span>
+            </v-col>
+            <v-col
+              cols="12"
+              md="7"
+            >
+              <v-select
+                :value="objectType"
+                :label="t('editor.formschema.create.type')"
+                :rules="[requiredRule]"
+                :items="objectTypes"
+                required
+                @change="$emit('update:objectType', $event)"
+              />
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="objectType === 'custom'"
+            no-gutters
+          >
+            <v-col
+              cols="0"
+              md="5"
+            />
+            <v-col
+              cols="12"
+              md="7"
+            >
+              <VeoEditorFileUpload
+                :input-label="t('objectSchemaUploadLabel')"
+                :submit-button-text="t('importObjectSchema')"
+                @schema-uploaded="$emit('update:objectSchema', $event)"
+              />
+            </v-col>
+          </v-row>
+          <v-row
+            no-gutters
+            class="align-center mt-4"
+          >
+            <v-col
+              cols="12"
+              md="5"
+            >
+              <span>{{ t('editor.formschema.subtype') }}*:</span>
+            </v-col>
+            <v-col
+              cols="12"
+              md="7"
+            >
+              <v-select
+                :value="subType"
+                :disabled="!objectType || (objectType === 'custom' && !objectSchema)"
+                :items="subTypes"
+                :loading="!!objectType && !objectSchema"
+                :label="t('editor.formschema.subtype')"
+                :rules="[requiredRule]"
+                @change="$emit('update:subType', $event)"
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </VeoCard>
     </v-form>
     {{ t('global.input.requiredfields') }}
   </v-window-item>

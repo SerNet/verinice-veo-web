@@ -21,12 +21,11 @@
     :headline="$t('headline')"
   >
     <template #default>
-      {{ $t('text', { displayName }) }}
+      <span class="text-body-1">{{ $t('text', { displayName }) }}</span>
     </template>
     <template #dialog-options>
       <v-btn
         text
-        color="primary"
         :data-cy="$utils.prefixCyData($options, 'cancel-button')"
         @click="$emit('input', false)"
       >

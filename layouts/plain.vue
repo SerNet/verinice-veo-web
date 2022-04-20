@@ -20,15 +20,19 @@
     <v-app-bar
       class="veo-app-bar"
       app
-      clipped-left
       flat
     >
-      <nuxt-link
-        to="/"
-        class="text-decoration-none fill-height"
+      <div
+        class="d-flex align-end"
+        style="min-height: 65px;"
       >
-        <VeoAppBarLogo />
-      </nuxt-link>
+        <nuxt-link
+          to="/"
+          class="text-decoration-none"
+        >
+          <VeoAppBarLogo style="width: 85%; min-width: 56px;" />
+        </nuxt-link>
+      </div>
       <v-spacer />
       <VeoLanguageSwitch class="mx-3" />
       <VeoAppAccountBtn
@@ -58,7 +62,19 @@ export default Vue.extend({
 </script>
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-primary !important;
+  background-color: $background-accent !important;
+  border-bottom: 1px solid $medium-grey;
+
+  ::v-deep.v-toolbar__content {
+    padding-left: 0;
+  }
+}
+
+::v-deep.v-main > .v-main__wrap {
+  background: $background-primary;
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
 }
 
 ::v-deep.v-main > .v-main__wrap {

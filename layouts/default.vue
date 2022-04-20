@@ -20,29 +20,19 @@
     <v-app-bar
       class="veo-app-bar"
       app
-      clipped-left
       flat
     >
       <v-app-bar-nav-icon
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <nuxt-link
-        :to="homeLink"
-        class="text-decoration-none fill-height"
-      >
-        <VeoAppBarLogo />
-      </nuxt-link>
-      <div class="ml-6 fill-height">
-        <VeoDomainSelect v-if="$route.params.unit" />
-      </div>
+      <VeoBreadcrumbs :key="breadcrumbsKey" />
       <v-spacer />
-      <VeoDemoUnitButton />
       <VeoLanguageSwitch />
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <v-btn
-            class="veo-list-searchbar__button mx-3"
+            class="veo-list-searchbar__button mr-3"
             color="black"
             icon
             role="submit"
@@ -70,12 +60,34 @@
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="unitId"
-    />
+    >
+      <template #header="{ miniVariant }">
+        <div>
+          <div
+            class="d-flex align-end"
+            style="min-height: 65px;"
+          >
+            <nuxt-link
+              :to="homeLink"
+              class="text-decoration-none"
+            >
+              <VeoAppBarLogo
+                :size="miniVariant ? 'small' : 'large'"
+                style="width: 85%; min-width: 56px;"
+              />
+            </nuxt-link>
+          </div>
+          <VeoDomainSelect v-if="$route.params.unit" />
+        </div>
+      </template>
+      <template #append-content="{ miniVariant }">
+        <VeoDemoUnitButton :icon-only="miniVariant" />
+      </template>
+    </VeoPrimaryNavigation>
     <v-main
       style="max-height: 100vh;"
       class="overflow-hidden"
     >
-      <VeoBreadcrumbs :key="breadcrumbsKey" />
       <nuxt />
     </v-main>
     <VeoGlobalAlert
@@ -202,20 +214,15 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-primary !important;
-}
-
-::v-deep.v-main {
-  background: $background-primary;
+  background-color: $background-accent !important;
+  border-bottom: 1px solid $medium-grey;
 }
 
 ::v-deep.v-main > .v-main__wrap {
-  background: white;
-  border-left: 1px solid $medium-grey;
-  border-top: 1px solid $medium-grey;
-  border-top-left-radius: 32px;
+  background: $background-primary;
   display: flex;
   flex-direction: column;
+  padding-top: 8px;
 }
 </style>
 

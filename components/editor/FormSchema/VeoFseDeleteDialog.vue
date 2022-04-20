@@ -26,7 +26,6 @@
     <template #dialog-options>
       <v-btn
         text
-        color="primary"
         :data-cy="$utils.prefixCyData($options, 'cancel')"
         @click="$emit('input', false)"
       >

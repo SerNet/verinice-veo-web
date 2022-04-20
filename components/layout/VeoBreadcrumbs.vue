@@ -18,7 +18,7 @@
 <template>
   <v-breadcrumbs
     :items="breadcrumbItems"
-    class="px-4 py-3"
+    class="px-0"
   >
     <template #item="{ item }">
       <v-menu
