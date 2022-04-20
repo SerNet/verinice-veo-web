@@ -55,18 +55,7 @@
           <VeoAppBarLogo style="width: 85%" />
         </nuxt-link>
       </div>
-      <v-treeview
-        dense
-        :items="items"
-        :active="activeItems"
-        :open="openItems"
-        activatable
-        color="primary"
-        item-key="to"
-        open-on-click
-        @update:active="onActive"
-        @update:open="onOpen"
-      />
+      <VeoDocNavigation :items="items" />
     </v-navigation-drawer>
     <v-main
       style="max-height: 100vh;"
@@ -80,64 +69,31 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, useRouter } from '@nuxtjs/composition-api';
-import { last, upperFirst } from 'lodash';
+import { defineComponent, Ref, ref } from '@nuxtjs/composition-api';
+import { upperFirst } from 'lodash';
 import { useDocTree } from '~/composables/docs';
 
 export default defineComponent({
   setup() {
-    const router = useRouter();
     //
     // Global navigation
     //
     const drawer: Ref<boolean> = ref(false);
-
-    const openItems = ref<string[]>([]);
-    const activeItems = ref<string[]>([]);
 
     const items = useDocTree({
       childrenKey: 'children',
       buildItem(item) {
         return {
           ...item,
-          disabled: false,
           name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)}`,
-          exact: true,
           to: `/docs${item.path}`
         };
       }
     });
 
-    const onActive = (newActiveItems: string[]) => {
-      console.log('event', JSON.stringify(newActiveItems));
-      console.log('active', JSON.stringify(activeItems.value));
-
-      if (newActiveItems.length >= activeItems.value.length) {
-        activeItems.value = newActiveItems;
-
-        if (activeItems.value[0]) {
-          router.push(activeItems.value[0]);
-        }
-      }
-    };
-
-    const onOpen = (newOpenItems: string[]) => {
-      const newestItem = last(newOpenItems);
-      if (newestItem && !activeItems.value.includes(newestItem)) {
-        onActive([newestItem]);
-      }
-      console.log('event', JSON.stringify(newOpenItems));
-      console.log('open', JSON.stringify(openItems.value));
-      openItems.value = newOpenItems;
-    };
-
     return {
-      activeItems,
-      openItems,
       drawer,
-      items,
-      onActive,
-      onOpen
+      items
     };
   },
   head() {
