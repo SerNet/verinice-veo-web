@@ -38,6 +38,15 @@
       />
     </v-col>
     <v-col
+      v-if="showCreateDPIAMenu"
+      class="flex-grow-0"
+    >
+      <VeoObjectActionMenu
+        :object="object"
+        @new-object-created="onCreateObjectSuccess"
+      />
+    </v-col>
+    <v-col
       v-if="!loading"
       class="flex-grow-0 object-details-information text-body-1"
     >
@@ -147,8 +156,17 @@ export default defineComponent({
     // format date time to show updated at & created at
     const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
 
+    // emit after new object creation
+    const onCreateObjectSuccess = (newObjectId: string, objectType: string) => {
+      emit('new-object-created', newObjectId, objectType);
+    };
+
+    const showCreateDPIAMenu = computed(() => props.object?.type === 'process' && subType.value === 'PRO_DataProcessing');
+
     return {
+      onCreateObjectSuccess,
       internalActiveTab,
+      showCreateDPIAMenu,
       subType,
       tabs,
 
