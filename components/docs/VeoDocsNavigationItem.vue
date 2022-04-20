@@ -25,7 +25,7 @@
     <v-list-item-title>{{ name }}</v-list-item-title>
   </v-list-item>
   <v-list-group
-    v-else-if="children"
+    v-else-if="children && level <= 2"
     :sub-group="level > 1"
     no-action
     class="veo-docs-navigation-group"
