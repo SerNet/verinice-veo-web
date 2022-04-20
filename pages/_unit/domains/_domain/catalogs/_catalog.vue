@@ -27,13 +27,13 @@
         </template>
         <template #items>
           <v-tab-item>
-            <DefaultCatalog
+            <VeoDefaultCatalog
               :catalog-items="catalogItems"
               :loading="$fetchState.pending"
             />
           </v-tab-item>
           <v-tab-item>
-            <TOMCatalog
+            <VeoTOMCatalog
               :catalog-items="catalogItems"
               :loading="$fetchState.pending"
             />

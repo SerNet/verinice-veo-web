@@ -41,7 +41,7 @@
         <v-btn
           text
           class="mr-2"
-          :disabled="selectedToms.length === 0"
+          :disabled="selectedTomsIds.length === 0"
           @click="selectedToms = []"
         >
           {{ t('global.button.cancel') }}
@@ -49,7 +49,7 @@
         <v-btn
           depressed
           color="primary"
-          :disabled="selectedToms.length === 0"
+          :disabled="selectedTomsIds.length === 0"
           @click="state = CATALOG_STATE.CHOOSE_ENTITIES"
         >
           {{ t('global.button.next') }}
@@ -63,7 +63,7 @@
     </p>
     <VeoCard>
       <VeoCatalogSelectionList
-        :items="selectedTOMsFormatted"
+        :items="selectedTOMs"
         :headers="catalogTableHeaders"
         :selectable="false"
       />
@@ -91,8 +91,8 @@
         <v-btn
           text
           class="mr-2"
-          :disabled="selectedToms.length === 0 || applyingTOMs"
-          @click="onAbort"
+          :disabled="selectedTomsIds.length === 0 || applyingTOMs"
+          @click="reset"
         >
           {{ t('global.button.cancel') }}
         </v-btn>
@@ -100,7 +100,7 @@
           :disabled="applyingTOMs"
           text
           class="mr-2"
-          @click="onAbortEntitySelection"
+          @click="resetEntitySelection"
         >
           {{ t('global.button.previous') }}
         </v-btn>
@@ -165,35 +165,32 @@ export default defineComponent({
     // Layout stuff
     const state = ref<CATALOG_STATE>(CATALOG_STATE.CHOOSE_TOMS);
 
-    const onAbort = () => {
-      selectedToms.value = [];
-      onAbortEntitySelection();
+    const reset = () => {
+      selectedTomsIds.value = [];
+      resetEntitySelection();
     };
 
     // Choose toms
     const catalogTableHeaders = computed<IVeoCatalogSelectionListHeader[]>(() => [
       {
-        filterable: true,
         sortable: true,
         text: t('objectlist.abbreviation').toString(),
         value: 'item.abbreviation',
         width: 150
       },
       {
-        filterable: true,
         sortable: true,
         text: t('objectlist.name').toString(),
         value: 'item.title'
       },
       {
-        filterable: true,
         sortable: false,
         text: t('objectlist.description').toString(),
         value: 'item.description'
       }
     ]);
 
-    const selectedToms = ref<string[]>([]);
+    const selectedTomsIds = ref<string[]>([]);
     const availableToms = computed(() =>
       props.catalogItems
         .filter((item) => item.tailoringReferences.length > 0)
@@ -207,7 +204,7 @@ export default defineComponent({
         })
     );
 
-    const selectedTOMsFormatted = computed(() => availableToms.value.filter((tom) => selectedToms.value.includes(tom.id)));
+    const selectedTOMs = computed(() => availableToms.value.filter((tom) => selectedTomsIds.value.includes(tom.id)));
 
     // Choose entities
     watch(
@@ -226,20 +223,23 @@ export default defineComponent({
 
     const fetchEntities = async (options: { page: number; sortBy: string; sortDesc?: boolean }) => {
       entitiesLoading.value = true;
-      availableEntities.value = await $api.entity.fetchAll('process', options.page, {
-        subType: 'PRO_DataProcessing',
-        size: $user.tablePageSize,
-        sortBy: options.sortBy,
-        sortOrder: options.sortDesc ? 'desc' : 'asc'
-      });
-      entitiesLoading.value = false;
+      try {
+        availableEntities.value = await $api.entity.fetchAll('process', options.page, {
+          subType: 'PRO_DataProcessing',
+          size: $user.tablePageSize,
+          sortBy: options.sortBy,
+          sortOrder: options.sortDesc ? 'desc' : 'asc'
+        });
+      } finally {
+        entitiesLoading.value = false;
+      }
     };
 
     const onPageChange = (opts: { newPage: number; sortBy: string; sortDesc?: boolean }) => {
       fetchEntities({ page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
     };
 
-    const onAbortEntitySelection = () => {
+    const resetEntitySelection = () => {
       selectedEntities.value = [];
       state.value = CATALOG_STATE.CHOOSE_TOMS;
     };
@@ -252,7 +252,7 @@ export default defineComponent({
 
       try {
         // Fetch incarnations for all selected toms
-        const incarnations = await $api.unit.fetchIncarnations(selectedToms.value);
+        const incarnations = await $api.unit.fetchIncarnations(selectedTomsIds.value);
 
         // Add a reference for every selected entity to every incarnation
         for (const entity of selectedEntities.value) {
@@ -269,7 +269,7 @@ export default defineComponent({
           }
           await $api.unit.updateIncarnations(incarnationsToModify);
           displaySuccessMessage(t('incarnationsApplied').toString());
-          onAbort();
+          reset();
         }
       } catch (e: any) {
         displayErrorMessage(t('applyIncarnaionError').toString(), JSON.stringify(e.message || e));
@@ -285,12 +285,12 @@ export default defineComponent({
       availableToms,
       catalogTableHeaders,
       entitiesLoading,
-      onAbort,
-      onAbortEntitySelection,
+      reset,
+      resetEntitySelection,
       onPageChange,
       selectedEntities,
-      selectedToms,
-      selectedTOMsFormatted,
+      selectedTomsIds,
+      selectedTOMs,
       state,
 
       CATALOG_STATE,
@@ -305,20 +305,20 @@ export default defineComponent({
 {
   "en": {
     "apply": "apply",
-    "applyIncarnaionError": "Couldn't apply TOMs.",
+    "applyIncarnaionError": "Couldn't apply TOMs",
     "applyTOMs": "Apply TOMs",
     "incarnationsApplied": "TOMs were applied",
     "selectTOMs": "Select TOMs",
     "selectedTOMs": "Selected TOMs",
-    "selectTOMCTA": "Please choose one or more technical organizational measures to apply",
+    "selectTOMCTA": "Please choose one or more technical organizational measures to apply.",
     "selectDPEntitiesCTA": "Please choose data processes to apply the technical organizational measures to.",
     "somethingWentWrong": "something went wrong"
   },
   "de": {
     "apply": "anwenden",
-    "applyIncarnaionError": "Die TOMs konnten nicht angewendet werden.",
+    "applyIncarnaionError": "Die TOMs konnten nicht angewendet werden",
     "applyTOMs": "TOMs anwenden",
-    "incarnationsApplied": "TOMs wurden angewendet.",
+    "incarnationsApplied": "TOMs wurden angewendet",
     "selectTOMs": "TOMs auswählen",
     "selectedTOMs": "Ausgewählte TOMs",
     "selectTOMCTA": "Wählen Sie eine oder mehrere technische und organisatorische Maßnahmen aus, die angewendet werden sollen.",

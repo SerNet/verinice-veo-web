@@ -84,20 +84,17 @@ export default defineComponent({
     // Selecting
     const catalogTableHeaders = computed<IVeoCatalogSelectionListHeader[]>(() => [
       {
-        filterable: true,
         sortable: true,
         text: t('objectlist.abbreviation').toString(),
         value: 'item.abbreviation',
         width: 150
       },
       {
-        filterable: true,
         sortable: true,
         text: t('objectlist.name').toString(),
         value: 'item.title'
       },
       {
-        filterable: true,
         sortable: false,
         text: t('objectlist.description').toString(),
         value: 'item.description'
@@ -156,7 +153,7 @@ export default defineComponent({
     "apply": "apply",
     "applyCatalogItemsError": "Couldn't apply scenarios",
     "catalogItemsApplied": "Scenarios were applied successfully",
-    "selectEntitiesCTA": "Please select the scenarios you want to apply"
+    "selectEntitiesCTA": "Please select the scenarios you want to apply."
   },
   "de": {
     "apply": "anwenden",
