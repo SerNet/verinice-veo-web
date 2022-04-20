@@ -16,119 +16,108 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div v-if="state === CATALOG_STATE.CHOOSE_TOMS">
-    <h2 class="text-h2 mt-0">
-      {{ t('selectTOMs') }}
-    </h2>
-    <p class="text-body-1">
-      {{ t('selectTOMCTA') }}
-    </p>
-    <VeoCard>
-      <VeoCatalogSelectionList
-        v-model="selectedToms"
-        :items="availableToms"
-        :loading="loading"
-        :headers="catalogTableHeaders"
-        selectable
-      />
-    </VeoCard>
-    <v-row
-      dense
-      class="mt-4"
-    >
-      <v-spacer />
-      <v-col cols="auto">
-        <v-btn
-          text
-          class="mr-2"
-          :disabled="selectedTomsIds.length === 0"
-          @click="selectedToms = []"
-        >
-          {{ t('global.button.cancel') }}
-        </v-btn>
-        <v-btn
-          depressed
-          color="primary"
-          :disabled="selectedTomsIds.length === 0"
-          @click="state = CATALOG_STATE.CHOOSE_ENTITIES"
-        >
-          {{ t('global.button.next') }}
-        </v-btn>
-      </v-col>
-    </v-row>
-  </div>
-  <div v-else-if="state === CATALOG_STATE.CHOOSE_ENTITIES">
-    <p class="text-h3">
-      {{ upperFirst(t('selectedTOMs').toString()) }}
-    </p>
-    <VeoCard>
-      <VeoCatalogSelectionList
-        :items="selectedTOMs"
-        :headers="catalogTableHeaders"
-        :selectable="false"
-      />
-    </VeoCard>
-    <h2 class="text-h2 mt-6">
-      {{ t('applyTOMs') }}
-    </h2>
-    <p class="text-body-1">
-      {{ t('selectDPEntitiesCTA') }}
-    </p>
-    <VeoCard>
-      <VeoEntitySelectionList
-        v-model="selectedEntities"
-        :items="availableEntities"
-        :loading="entitiesLoading"
-        @page-change="onPageChange"
-      />
-    </VeoCard>
-    <v-row
-      dense
-      class="mt-4"
-    >
-      <v-spacer />
-      <v-col class="flex-grow-0 d-flex">
-        <v-btn
-          text
-          class="mr-2"
-          :disabled="selectedTomsIds.length === 0 || applyingTOMs"
-          @click="reset"
-        >
-          {{ t('global.button.cancel') }}
-        </v-btn>
-        <v-btn
-          :disabled="applyingTOMs"
-          text
-          class="mr-2"
-          @click="resetEntitySelection"
-        >
-          {{ t('global.button.previous') }}
-        </v-btn>
-        <v-btn
-          color="primary"
-          :disabled="selectedEntities.length === 0"
-          depressed
-          :loading="applyingTOMs"
-          @click="applyTOMs"
-        >
-          {{ t('apply') }}
-        </v-btn>
-      </v-col>
-    </v-row>
-  </div>
-  <div
-    v-else
-    class="d-flex flex-column align-center justify-center fill-height"
-  >
-    <v-img
-      src="/images/defaultError.svg"
-      max-height="300px"
-      contain
-    />
-    <h2 class="text-h2">
-      {{ t('somethingWentWrong') }}
-    </h2>
-  </div>
+  <v-window v-model="state">
+    <v-window-item :value="CATALOG_STATE.CHOOSE_TOMS">
+      <h2 class="text-h2 mt-0">
+        {{ t('selectTOMs') }}
+      </h2>
+      <p class="text-body-1">
+        {{ t('selectTOMCTA') }}
+      </p>
+      <VeoCard>
+        <VeoCatalogSelectionList
+          v-model="selectedTomsIds"
+          :items="availableToms"
+          :loading="loading"
+          :headers="catalogTableHeaders"
+          selectable
+        />
+      </VeoCard>
+      <v-row
+        dense
+        class="mt-4"
+      >
+        <v-spacer />
+        <v-col cols="auto">
+          <v-btn
+            text
+            class="mr-2"
+            :disabled="selectedTomsIds.length === 0"
+            @click="selectedToms = []"
+          >
+            {{ t('global.button.cancel') }}
+          </v-btn>
+          <v-btn
+            depressed
+            color="primary"
+            :disabled="selectedTomsIds.length === 0"
+            @click="state = CATALOG_STATE.CHOOSE_ENTITIES"
+          >
+            {{ t('global.button.next') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-window-item>
+    <v-window-item :value="CATALOG_STATE.CHOOSE_ENTITIES">
+      <p class="text-h3">
+        {{ upperFirst(t('selectedTOMs').toString()) }}
+      </p>
+      <VeoCard>
+        <VeoCatalogSelectionList
+          :items="selectedTOMs"
+          :headers="catalogTableHeaders"
+          :selectable="false"
+        />
+      </VeoCard>
+      <h2 class="text-h2 mt-6">
+        {{ t('applyTOMs') }}
+      </h2>
+      <p class="text-body-1">
+        {{ t('selectDPEntitiesCTA') }}
+      </p>
+      <VeoCard>
+        <VeoEntitySelectionList
+          v-model="selectedEntities"
+          :items="availableEntities"
+          :loading="entitiesLoading"
+          @page-change="onPageChange"
+        />
+      </VeoCard>
+      <v-row
+        dense
+        class="mt-4"
+      >
+        <v-spacer />
+        <v-col class="flex-grow-0 d-flex">
+          <v-btn
+            text
+            class="mr-2"
+            :disabled="selectedTomsIds.length === 0 || applyingTOMs"
+            @click="reset"
+          >
+            {{ t('global.button.cancel') }}
+          </v-btn>
+          <v-btn
+            :disabled="applyingTOMs"
+            text
+            class="mr-2"
+            @click="resetEntitySelection"
+          >
+            {{ t('global.button.previous') }}
+          </v-btn>
+          <v-btn
+            color="primary"
+            :disabled="selectedEntities.length === 0"
+            depressed
+            :loading="applyingTOMs"
+            @click="applyTOMs"
+          >
+            {{ t('apply') }}
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-window-item>
+  </v-window>
 </template>
 
 <script lang="ts">
@@ -311,8 +300,7 @@ export default defineComponent({
     "selectTOMs": "Select TOMs",
     "selectedTOMs": "Selected TOMs",
     "selectTOMCTA": "Please choose one or more technical organizational measures to apply.",
-    "selectDPEntitiesCTA": "Please choose data processes to apply the technical organizational measures to.",
-    "somethingWentWrong": "something went wrong"
+    "selectDPEntitiesCTA": "Please choose data processes to apply the technical organizational measures to."
   },
   "de": {
     "apply": "anwenden",
@@ -322,8 +310,7 @@ export default defineComponent({
     "selectTOMs": "TOMs auswählen",
     "selectedTOMs": "Ausgewählte TOMs",
     "selectTOMCTA": "Wählen Sie eine oder mehrere technische und organisatorische Maßnahmen aus, die angewendet werden sollen.",
-    "selectDPEntitiesCTA": "Wählen Sie die Verarbeitungstätigkeiten aus, auf die die TOMs angewendet werden sollen.",
-    "somethingWentWrong": "etwas ist schiefgelaufen"
+    "selectDPEntitiesCTA": "Wählen Sie die Verarbeitungstätigkeiten aus, auf die die TOMs angewendet werden sollen."
   }
 }
 </i18n>
