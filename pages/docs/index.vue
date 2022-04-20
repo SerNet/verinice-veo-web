@@ -25,14 +25,14 @@
     </nuxt-link>
     <div class="page">
       <h1 class="text-h1 mx-auto">
-        {{ title }}
+        {{ t('documentation') }}
       </h1>
     </div>
     <template v-if="documents">
       <TableOfContents
         class="page"
         children-property="childItems"
-        :value="files"
+        :value="documents"
       />
       <div
         v-for="document in documents"
@@ -46,7 +46,7 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { useDocs } from '~/composables/docs';
@@ -69,7 +69,7 @@ export default defineComponent({
     }
     // It is possible to a query parameter root to only print the contents of a folder/chapter
     const root = [...(route.value.query.root || [])].join('') || undefined;
-    const files = useDocs({
+    const documents = useDocs({
       root,
       createDirs: true,
       buildItem(item) {
@@ -81,10 +81,11 @@ export default defineComponent({
       }
     });
 
-    const documents = computed(() => files.value);
-    const title = computed(() => t('documentation'));
+    return {
+      documents,
 
-    return { files, documents, t, title };
+      t
+    };
   },
   head(): any {
     return {

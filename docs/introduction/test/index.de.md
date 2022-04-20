@@ -1,6 +1,6 @@
 ---
 title: Test
-position: 1
+position: 4
 ---
 
 Mein Test 123
