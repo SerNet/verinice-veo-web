@@ -96,12 +96,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "applyEntries": "apply entries",
+    "applyEntries": "apply scenarios",
     "applyTOMs": "apply TOMs",
     "catalog": "Catalog {name}"
   },
   "de": {
-    "applyEntries": "Einträge anwenden",
+    "applyEntries": "Gefährdungen anwenden",
     "applyTOMs": "TOMs anwenden",
     "catalog": "Katalog {name}"
   }

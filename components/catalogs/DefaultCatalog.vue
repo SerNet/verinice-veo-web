@@ -154,15 +154,15 @@ export default defineComponent({
 {
   "en": {
     "apply": "apply",
-    "applyCatalogItemsError": "Couldn't apply catalog items",
-    "catalogItemsApplied": "Catalog items were applied successfully",
-    "selectEntitiesCTA": "Please select the catalog items you want to apply"
+    "applyCatalogItemsError": "Couldn't apply scenarios",
+    "catalogItemsApplied": "Scenarios were applied successfully",
+    "selectEntitiesCTA": "Please select the scenarios you want to apply"
   },
   "de": {
     "apply": "anwenden",
-    "applyCatalogItemsError": "Katalogeinträge konnten nicht angewandt werden",
-    "catalogItemsApplied": "Katalogeinträge wurden erfolgreich angewandt",
-    "selectEntitiesCTA": "Bitte wählen Sie die Katalogeinträge aus, die Sie anwenden möchten."
+    "applyCatalogItemsError": "Gefährdungen konnten nicht angewandt werden",
+    "catalogItemsApplied": "Gefährdungen wurden erfolgreich angewandt",
+    "selectEntitiesCTA": "Bitte wählen Sie die Gefährdungen aus, die Sie anwenden möchten."
   }
 }
 </i18n>
