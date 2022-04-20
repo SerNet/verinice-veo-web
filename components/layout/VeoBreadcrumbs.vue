@@ -115,7 +115,7 @@ interface IBreadcrumbEntry extends IBaseBreadcrumbEntry {
 }
 
 // TODO: check if :group should be added here, after groups are implemented
-type ParamsWithUUID = ':form' | ':entity' | ':id' | ':domain';
+type ParamsWithUUID = ':form' | ':entity' | ':id' | ':domain' | ':catalog';
 
 interface ICustomBreadcrumbEntry {
   [key: string]: IBaseBreadcrumbEntry[];
@@ -130,18 +130,14 @@ interface ICustomBreadcrumbTextEntry {
   [key: string]: { text: string; icon?: string };
 }
 
-interface IProps {
-  customBreadcrumbs: ICustomBreadcrumbEntry;
-}
-
-export default defineComponent<IProps>({
+export default defineComponent({
   props: {
     customBreadcrumbs: {
       type: Object,
       default: undefined
     } as PropOptions<ICustomBreadcrumbEntry>
   },
-  setup(_props) {
+  setup(props) {
     const { t, te } = useI18n();
     const { app, $api } = useContext();
     const route = useRoute();
@@ -163,7 +159,7 @@ export default defineComponent<IProps>({
 
     // TODO: check if :group should be added here, after groups are implemented
     // Definition of route fragments in path, which is represented with UUID in standard path
-    const paramsWithUUID: ParamsWithUUID[] = [':form', ':entity', ':id', ':domain'];
+    const paramsWithUUID: ParamsWithUUID[] = [':form', ':entity', ':id', ':domain', ':catalog'];
 
     // This array contains route parts that should not be part of the breadcrumbs
     const hiddenRouteParts = ['domains'];
@@ -173,7 +169,8 @@ export default defineComponent<IProps>({
       ':form': 'name',
       ':entity': 'displayName',
       ':id': 'displayName',
-      ':domain': 'name'
+      ':domain': 'name',
+      ':catalog': 'name'
     };
 
     // KeyMap for definition of KEY in $api.KEY.fetch()
@@ -181,7 +178,8 @@ export default defineComponent<IProps>({
       ':form': 'form',
       ':entity': 'entity',
       ':id': 'entity',
-      ':domain': 'domain'
+      ':domain': 'domain',
+      ':catalog': 'catalog'
     };
 
     // Default properties for Breadcrumb listItem
@@ -264,7 +262,7 @@ export default defineComponent<IProps>({
 
     // Generate custom breadcrumbs if a user externally defined component props "customBreadcrumbs"
     function generateCustomBreadcrumb(pathTemplate: string, params: IBaseStringObject) {
-      return _props.customBreadcrumbs[pathTemplate].map((item) => {
+      return (props.customBreadcrumbs?.[pathTemplate] || []).map((item) => {
         return {
           ...defaultListItem,
           ...item,
@@ -326,10 +324,9 @@ export default defineComponent<IProps>({
       // Pathtemplate is general definition of current path without real values (e.g. /:unit/domains/:domain/forms/:form)
       const pathTemplate = last(route.value.matched)?.path;
       if (pathTemplate) {
-        const listItems: IBreadcrumbEntry[] =
-          _props.customBreadcrumbs && _props.customBreadcrumbs[pathTemplate]
-            ? generateCustomBreadcrumb(pathTemplate, params)
-            : await generateStandardBreadcrumb(pathTemplate, params);
+        const listItems: IBreadcrumbEntry[] = props.customBreadcrumbs?.[pathTemplate]
+          ? generateCustomBreadcrumb(pathTemplate, params)
+          : await generateStandardBreadcrumb(pathTemplate, params);
 
         breadcrumbItems.value = collapseBreadcrumb(listItems);
       } else {
