@@ -58,11 +58,14 @@
       <v-treeview
         dense
         :items="items"
+        :active="activeItems"
+        :open="openItems"
         activatable
         color="primary"
         item-key="to"
         open-on-click
-        @update:active="openItem"
+        @update:active="onActive"
+        @update:open="onOpen"
       />
     </v-navigation-drawer>
     <v-main
@@ -77,17 +80,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { defineComponent, Ref, ref, useRouter } from '@nuxtjs/composition-api';
+import { last, upperFirst } from 'lodash';
 import { useDocTree } from '~/composables/docs';
 
 export default defineComponent({
   setup() {
-    const { app } = useContext();
+    const router = useRouter();
     //
     // Global navigation
     //
     const drawer: Ref<boolean> = ref(false);
+
+    const openItems = ref<string[]>([]);
+    const activeItems = ref<string[]>([]);
 
     const items = useDocTree({
       childrenKey: 'children',
@@ -102,17 +108,36 @@ export default defineComponent({
       }
     });
 
-    const openItem = (items: string[]) => {
-      const item = items.shift();
-      if (item) {
-        app.router?.push(item);
+    const onActive = (newActiveItems: string[]) => {
+      console.log('event', JSON.stringify(newActiveItems));
+      console.log('active', JSON.stringify(activeItems.value));
+
+      if (newActiveItems.length >= activeItems.value.length) {
+        activeItems.value = newActiveItems;
+
+        if (activeItems.value[0]) {
+          router.push(activeItems.value[0]);
+        }
       }
     };
 
+    const onOpen = (newOpenItems: string[]) => {
+      const newestItem = last(newOpenItems);
+      if (newestItem && !activeItems.value.includes(newestItem)) {
+        onActive([newestItem]);
+      }
+      console.log('event', JSON.stringify(newOpenItems));
+      console.log('open', JSON.stringify(openItems.value));
+      openItems.value = newOpenItems;
+    };
+
     return {
-      openItem,
+      activeItems,
+      openItems,
       drawer,
-      items
+      items,
+      onActive,
+      onOpen
     };
   },
   head() {

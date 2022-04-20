@@ -48,7 +48,13 @@ export const useDoc = (params: { path: string; locale?: string; localeSeparator?
   const fetchDoc = async () => {
     const fetchResult = await $content({ deep: true })
       .where({
-        $or: [{ path: path + localeSeparator + locale }, { path: path + fallbackLocale }, { path }],
+        $or: [
+          { path: path + localeSeparator + locale },
+          { path: path + localeSeparator + fallbackLocale },
+          { path: path + '/index' + localeSeparator + locale },
+          { path: path + '/index' + localeSeparator + fallbackLocale },
+          { path }
+        ],
         extension: '.md'
       })
       .limit(1)
