@@ -22,28 +22,33 @@
   >
     <v-col class="flex-grow-0 text-body-1 py-2">
       <template v-if="!loading">
-        <p class="text-no-wrap mb-0">
-          <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
-          {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
-        </p>
-        <p class="text-no-wrap mb-0">
-          <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
-          {{ object && formatDateTime(object.createdAt) || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
-        </p>
+        <v-row>
+          <v-col class="pb-0">
+            <p class="text-no-wrap mb-0">
+              <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
+              {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
+            </p>
+            <p class="text-no-wrap mb-0">
+              <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
+              {{ object && formatDateTime(object.createdAt) || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
+            </p>
+          </v-col>
+          <v-col
+            v-if="showCreateDPIAMenu"
+            cols="auto"
+            class="text-right ml-auto"
+          >
+            <VeoObjectActionMenu
+              :object="object"
+              @new-object-created="onCreateObjectSuccess"
+            />
+          </v-col>
+        </v-row>
       </template>
       <v-skeleton-loader
         v-else
         type="text@2"
         width="60%"
-      />
-    </v-col>
-    <v-col
-      v-if="showCreateDPIAMenu"
-      class="flex-grow-0"
-    >
-      <VeoObjectActionMenu
-        :object="object"
-        @new-object-created="onCreateObjectSuccess"
       />
     </v-col>
     <v-col

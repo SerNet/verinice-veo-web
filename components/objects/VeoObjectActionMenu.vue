@@ -16,16 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div
-    class="mb-12"
-    style="position: relative;"
-  >
+  <div style="position: relative;">
     <v-speed-dial
       v-model="speedDialIsOpen"
       v-cy-name="'action-menu'"
-      direction="right"
+      direction="left"
       transition="slide-y-reverse"
-      absolute
     >
       <template #activator>
         <v-tooltip
@@ -41,17 +37,16 @@
                 :disabled="!allowedActions.length || disabled"
                 depressed
                 fab
+                text
                 small
               >
                 <v-icon
                   v-if="speedDialIsOpen"
-                  small
                 >
                   {{ mdiClose }}
                 </v-icon>
                 <v-icon
                   v-else
-                  small
                 >
                   {{ mdiDotsVertical }}
                 </v-icon>
