@@ -7,8 +7,8 @@ position: 2
 
 Die Benutzungsoberfläche besteht aus den Bereichen:
 
-1. [Anwendungsleiste](app_bar)
-1. [Menü](menu)
+1. <DocLink to="user_interface/app_bar">Anwendungsleiste</DocLink>
+1. <DocLink to="/user_interface/menu">Menü</DocLink>
 1. [Hauptbereich](main)
 
 ![Die Benutzungsoberfläche](media/veo_user-interface.de.jpg)
