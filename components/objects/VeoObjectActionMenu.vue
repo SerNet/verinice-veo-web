@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2022  Jessica Lühnen, Jonas Heitmann
+   - Copyright (C) 2022  Jessica Lühnen
    - 
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,66 +16,62 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div style="position: relative;">
-    <v-speed-dial
-      v-model="speedDialIsOpen"
-      v-cy-name="'action-menu'"
-      direction="left"
-      transition="slide-y-reverse"
+  <div>
+    <v-menu
+      top
+      left
+      offset-y
     >
-      <template #activator>
-        <v-tooltip
-          left
-          :disabled="!tooltipText"
+      <template #activator="{ on }">
+        <v-badge
+          :value="dpiaMandatory"
+          bordered
+          color="error"
+          :icon="mdiExclamationThick"
+          overlap
         >
-          <template #activator="{ on }">
-            <div v-on="on">
-              <v-btn
-                v-model="speedDialIsOpen"
-                v-cy-name="'show-actions-button'"
-                color="primary"
-                :disabled="!allowedActions.length || disabled"
-                depressed
-                fab
-                text
-                small
-              >
-                <v-icon
-                  v-if="speedDialIsOpen"
-                >
-                  {{ mdiClose }}
-                </v-icon>
-                <v-icon
-                  v-else
-                >
-                  {{ mdiDotsVertical }}
-                </v-icon>
-              </v-btn>
-            </div>
-          </template>
-          <template #default>
-            {{ tooltipText }}
-          </template>
-        </v-tooltip>
-      </template>
-      <template #default>
-        <div v-cy-name="'action-list'">
           <v-btn
-            v-for="action in allowedActions"
-            :key="action.key"
-            depressed
-            rounded
-            color="grey"
-            @click="action.action"
+            color="primary"
+            :disabled="!allowedActions.length"
+            fab
+            text
+            small
+            v-on="on"
           >
-            {{ upperFirst(t(action.key).toString()) }}
-            <v-icon right>
-              {{ action.icon }}
+            <v-icon>
+              {{ mdiDotsVertical }}
             </v-icon>
           </v-btn>
-        </div>
+        </v-badge>
       </template>
-    </v-speed-dial>
+      <v-list class="py-0">
+        <v-list-item
+          v-for="action in allowedActions"
+          :key="action.key"
+          @click="action.action"
+        >
+          <v-list-item-icon v-if="dpiaMandatory && action.key === 'createDPIA'">
+            <v-tooltip bottom>
+              <template #activator="{ on }">
+                <v-icon
+                  color="primary"
+                  v-on="on"
+                >
+                  {{ mdiAlertOutline }}
+                </v-icon>
+              </template>
+              <span>{{ t('mandatoryDPIA') }}</span>
+            </v-tooltip>
+          </v-list-item-icon>
+          <v-list-item-title>
+            {{ upperFirst(t(action.key).toString()) }}
+          </v-list-item-title>
+          <v-list-item-icon>
+            <v-icon>{{ action.icon }}</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     <!-- dialogs -->
     <VeoCreateObjectDialog
       v-if="createObjectDialog.objectType"
@@ -92,7 +88,7 @@
 import { defineComponent, useRoute, ref, computed, PropType } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { mdiClose, mdiPlus, mdiDotsVertical } from '@mdi/js';
+import { mdiClose, mdiPlus, mdiDotsVertical, mdiAlertOutline, mdiExclamationThick } from '@mdi/js';
 import { separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 
@@ -111,10 +107,7 @@ export default defineComponent({
     // general stuff
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const subType = computed(() => props.object?.domains[domainId.value]?.subType);
-
-    const speedDialIsOpen = ref(false);
-    const tooltipText = ref<string | undefined>(undefined);
-    const disabled = ref(false);
+    const dpiaMandatory = computed(() => !props.object?.domains[domainId.value]?.decisionResults?.piaMandatory?.value);
 
     // configure possible action items
     const actions = [
@@ -127,7 +120,7 @@ export default defineComponent({
       }
     ];
 
-    // filter allowed actions for current type
+    // filter allowed actions for current object type & sub type
     const allowedActions = computed(() =>
       actions.filter((a) => props.object?.type && subType.value && a.objectTypes.includes(props.object?.type) && a.subTypes.includes(subType.value))
     );
@@ -151,19 +144,19 @@ export default defineComponent({
     };
 
     return {
+      domainId,
+      dpiaMandatory,
+      allowedActions,
       createObjectDialog,
       onCreateObjectSuccess,
-      speedDialIsOpen,
-      allowedActions,
-      disabled,
-      domainId,
-      tooltipText,
 
       t,
-      upperFirst,
-      mdiClose,
       mdiPlus,
-      mdiDotsVertical
+      mdiClose,
+      upperFirst,
+      mdiDotsVertical,
+      mdiAlertOutline,
+      mdiExclamationThick
     };
   }
 });
@@ -172,39 +165,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-      "createDPIA": "create DPIA",
-    "createObject": "create object",
-    "createRisk": "create risk",
-    "linkObject": "link object",
-    "createScope": "create scope",
-    "linkScope": "link scope",
-    "subEntities": "components",
-    "parents": "part of",
-    "objectLinked": "The links are successfully updated.",
-    "objectNotLinked": "The links could not be updated.",
-    "createType": "create {0}",
-    "parentScopeNoRiskDefinition": "This object needs a parent scope with a risk definition to create a risk"
+    "createDPIA": "create DPIA",
+    "mandatoryDPIA": "Please create a data protection impact assessment for the current data processing"
   },
   "de": {
-      "createDPIA": "DSFA erstellen",
-    "createObject": "Objekt erstellen",
-    "createRisk": "Risiko hinzufügen",
-    "linkObject": "Objekt verknüpfen",
-    "createScope": "Scope erstellen",
-    "linkScope": "Scope verknüpfen",
-    "subEntities": "Bestandteile",
-    "parents": "Teil von",
-    "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
-    "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden.",
-    "createType": "{0} erstellen",
-    "parentScopeNoRiskDefinition": "Dieses Objekt muss Teil eines Scopes mit Risikodefinition sein, um ein Risiko zu erstellen"
+    "createDPIA": "DSFA erstellen",
+    "mandatoryDPIA": "Bitte erstellen Sie für die aktuelle Verarbeitungstätigkeit eine Datenschutz-Folgeabschätzung"
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-::v-deep .v-speed-dial__list {
-  align-items: flex-end !important;
-  text-align: right;
-}
-</style>

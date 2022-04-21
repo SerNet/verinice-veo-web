@@ -23,7 +23,7 @@
     <v-col class="flex-grow-0 text-body-1 py-2">
       <template v-if="!loading">
         <v-row>
-          <v-col class="pb-0">
+          <v-col>
             <p class="text-no-wrap mb-0">
               <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
               {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
@@ -36,7 +36,8 @@
           <v-col
             v-if="showCreateDPIAMenu"
             cols="auto"
-            class="text-right ml-auto"
+            class="text-right ml-auto pt-1"
+            align-self="center"
           >
             <VeoObjectActionMenu
               :object="object"

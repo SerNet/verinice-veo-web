@@ -372,11 +372,21 @@ export interface IVeoCatalogItem extends IVeoBaseObject {
   element: IVeoLink;
 }
 
+export interface IVeoDecisionResults {
+  piaMandatory?: {
+    value?: boolean;
+    decisiveRule?: number;
+    matchingRules?: number[];
+    agreeingRules?: number[];
+  };
+}
+
 export interface IVeoEntityDomain {
   [key: string]: {
     status?: string;
     subType?: string;
     riskDefinition?: string;
+    decisionResults?: IVeoDecisionResults;
   };
 }
 
