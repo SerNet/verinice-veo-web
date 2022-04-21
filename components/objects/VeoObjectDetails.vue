@@ -39,7 +39,7 @@
             class="text-right ml-auto pt-1"
             align-self="center"
           >
-            <VeoObjectActionMenu
+            <VeoObjectDetailsActionMenu
               :object="object"
               @new-object-created="onCreateObjectSuccess"
             />

@@ -49,7 +49,7 @@
           />
         </template>
         <template #footer>
-          <VeoObjectDetailsActionMenu
+          <VeoObjectActionMenu
             :object="object"
             :type="activeTab"
             @reload="loadObject"
