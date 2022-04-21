@@ -16,12 +16,18 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="text-center">
+  <div>
     <VeoAppLogoDesktop
       v-if="showDesktop"
-      style="width: 90%"
+      height="50%"
+      width="85%"
     />
-    <VeoAppLogoMobile v-else-if="showMobile" />
+    <VeoAppLogoMobile
+      v-else-if="showMobile"
+      height="80%"
+      width="80%"
+      style="max-height: 40px"
+    />
   </div>
 </template>
 

@@ -23,14 +23,14 @@
       flat
     >
       <div
-        class="d-flex align-end"
+        class="d-flex align-end ml-4"
         style="min-height: 65px;"
       >
         <nuxt-link
           to="/"
           class="text-decoration-none"
         >
-          <VeoAppBarLogo style="width: 85%; min-width: 56px;" />
+          <VeoAppBarLogo />
         </nuxt-link>
       </div>
       <v-spacer />

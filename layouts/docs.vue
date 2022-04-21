@@ -45,14 +45,14 @@
       v-on="$listeners"
     >
       <div
-        class="d-flex align-end"
+        class="d-flex align-end ml-4"
         style="min-height: 65px"
       >
         <nuxt-link
           to="/docs"
           class="text-decoration-none"
         >
-          <VeoAppBarLogo style="width: 85%" />
+          <VeoAppBarLogo />
         </nuxt-link>
       </div>
       <v-treeview

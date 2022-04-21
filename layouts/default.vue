@@ -65,16 +65,17 @@
         <div>
           <div
             class="d-flex align-end"
+            :class="{
+              'ml-4': !miniVariant,
+              'ml-2': miniVariant
+            }"
             style="min-height: 65px;"
           >
             <nuxt-link
               :to="homeLink"
               class="text-decoration-none"
             >
-              <VeoAppBarLogo
-                :size="miniVariant ? 'small' : 'large'"
-                style="width: 85%; min-width: 56px;"
-              />
+              <VeoAppBarLogo :size="miniVariant ? 'small' : 'large'" />
             </nuxt-link>
           </div>
           <VeoDomainSelect v-if="$route.params.unit" />

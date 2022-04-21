@@ -303,7 +303,8 @@ export default Vue.extend({
         let newValue = cloneDeep(this.value);
 
         const path = propertyPath(scope).replace('#/', '/');
-        if (v) {
+        // We don't use !v, as false is a valid value we want to save in the object data
+        if (v !== undefined && v !== null) {
           vjp.set(newValue, path, v);
         } else {
           // If a new value is undefined or null, unset it in the object and check whether any parent elements are empty now and can be removed
