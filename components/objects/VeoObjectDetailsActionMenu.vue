@@ -104,7 +104,7 @@ export default defineComponent({
     // general stuff
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const subType = computed(() => props.object?.domains[domainId.value]?.subType);
-    const dpiaMandatory = computed(() => !props.object?.domains[domainId.value]?.decisionResults?.piaMandatory?.value);
+    const dpiaMandatory = computed(() => !!props.object?.domains[domainId.value]?.decisionResults?.piaMandatory?.value);
 
     // configure possible action items
     const actions = [
