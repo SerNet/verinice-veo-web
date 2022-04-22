@@ -16,33 +16,40 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="document">
-    <nuxt-link
-      to="/docs"
-      class="exit-print"
-    >
-      {{ t('closePreview') }}
-    </nuxt-link>
-    <div class="page">
-      <h1 class="text-h1 mx-auto">
-        {{ title }}
-      </h1>
-    </div>
-    <template v-if="documents">
-      <TableOfContents
-        class="page"
-        children-property="childItems"
-        :value="files"
-      />
-      <div
-        v-for="document in documents"
-        :id="document.path"
-        :key="document.path"
-        class="page"
+  <div>
+    <div class="preview-controls justify-space-between pb-2">
+      <v-btn
+        text
+        plain
+        to="/docs"
       >
-        <NuxtContent :document="document" />
-      </div>
-    </template>
+        {{ t('closePreview') }}
+      </v-btn>
+      <v-btn
+        id="print-button"
+        text
+        color="primary"
+      >
+        {{ t('print') }}
+      </v-btn>
+    </div>
+    <div class="document">
+      <template v-if="documents">
+        <TableOfContents
+          class="page"
+          children-property="childItems"
+          :value="files"
+        />
+        <div
+          v-for="document in documents"
+          :id="document.path"
+          :key="document.path"
+          class="page"
+        >
+          <NuxtContent :document="document" />
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -104,6 +111,9 @@ export default defineComponent({
                 class MyHandler extends Paged.Handler {
                   afterRendered() {
                     document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
+                    document.querySelector('#print-button')?.addEventListener('click', () => {
+                      window.print();
+                    });
                   }
                 }
                 Paged.registerHandlers(MyHandler);
@@ -119,12 +129,14 @@ export default defineComponent({
 <i18n>
 {
   "de": {
-    "closePreview": "Druckvorschau schließen",
-    "documentation": "Dokumentation"
+    "closePreview": "druckvorschau schließen",
+    "documentation": "Dokumentation",
+    "print": "drucken"
   },
   "en": {
     "closePreview": "Close print preview",
-    "documentation": "Documentation"
+    "documentation": "Documentation",
+    "print": "print"
   }
 }
 </i18n>
@@ -143,8 +155,9 @@ html {
     max-width: 900px;
     margin: 1em;
   }
-  .exit-print {
-    display: block !important;
+  .preview-controls {
+    border-bottom: 1px solid $medium-grey;
+    display: flex !important;
   }
 }
 @media print {
@@ -161,7 +174,7 @@ html {
     }
   }
 
-  .exit-print {
+  .preview-controls {
     display: none;
   }
 

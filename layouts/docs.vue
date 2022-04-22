@@ -33,7 +33,7 @@
         color="primary"
         class="mr-2"
       >
-        Print
+        {{ t('printPreview') }}
       </v-btn>
       <VeoLanguageSwitch />
     </v-app-bar>
@@ -79,11 +79,13 @@
 <script lang="ts">
 import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
+import { useI18n } from 'nuxt-i18n-composable';
 import { useDocTree } from '~/composables/docs';
 
 export default defineComponent({
   setup() {
     const { app } = useContext();
+    const { t } = useI18n();
     //
     // Global navigation
     //
@@ -112,7 +114,9 @@ export default defineComponent({
     return {
       openItem,
       drawer,
-      items
+      items,
+
+      t
     };
   },
   head() {
@@ -122,6 +126,17 @@ export default defineComponent({
   }
 });
 </script>
+
+<i18n>
+{
+  "en": {
+    "printPreview": "print preview"
+  },
+  "de": {
+    "printPreview": "Druckvorschau"
+  }
+}  
+</i18n>
 
 <style lang="scss" scoped>
 .veo-app-bar {
