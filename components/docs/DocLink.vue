@@ -19,7 +19,9 @@
   <a
     v-if="isPrintView"
     :href="`#${toWithLeadingSlash}`"
-  ><slot name="default" /></a>
+  >
+    <slot name="default" />
+  </a>
   <nuxt-link
     v-else
     :to="`/docs${toWithLeadingSlash}`"
