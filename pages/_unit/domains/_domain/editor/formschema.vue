@@ -353,10 +353,8 @@ import { VeoPageHeaderAlignment } from '~/components/layout/VeoPageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 
-interface IProps {}
-
-export default defineComponent<IProps>({
-  setup(_props) {
+export default defineComponent({
+  setup() {
     const { t } = useI18n();
     const { $api, app, $user } = useContext();
     const route = useRoute();

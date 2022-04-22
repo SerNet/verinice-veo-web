@@ -46,11 +46,12 @@
           :domain-id="domainId"
           :force-own-schema.sync="forceOwnSchema"
           :form-schema-id="formSchemaId"
-          :form-schema.sync="formSchema"
+          :form-schema="formSchema"
           :object-schema="objectSchema"
           :schemas-compatible="schemasCompatible"
           @forceImport="importFormSchema()"
           @update:formSchemaId="onUpdateFormSchemaId"
+          @update:formSchema="setFormSchema($event)"
           @newObjectType="loadObjectSchema"
           @update:objectSchema="setObjectSchema($event)"
         />
@@ -188,7 +189,7 @@ export default defineComponent({
 
     async function loadFormSchema(id: string) {
       loadingQueries.value++;
-      formSchema.value = await $api.form.fetch(props.domainId, id);
+      setFormSchema(await $api.form.fetch(props.domainId, id));
       loadingQueries.value--;
     }
 
@@ -267,6 +268,10 @@ export default defineComponent({
       objectSchema.value = JSON.parse(JSON.stringify(newValue).replaceAll(props.domainId, '{CURRENT_DOMAIN_ID}'));
     }
 
+    function setFormSchema(newValue: any) {
+      formSchema.value = JSON.parse(JSON.stringify(newValue).replaceAll(props.domainId, '{CURRENT_DOMAIN_ID}'));
+    }
+
     function emitSchemas() {
       const mergedTranslations: IVeoTranslations = { lang: {} };
       const osTranslations = (JsonPointer.get(objectSchema, '#/properties/translations') || {}) as IVeoObjectSchemaTranslations | {};
@@ -299,6 +304,7 @@ export default defineComponent({
       onClose,
       onUpdateFormSchemaId,
       schemasCompatible,
+      setFormSchema,
       setObjectSchema,
       state,
 
