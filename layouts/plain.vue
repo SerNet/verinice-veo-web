@@ -78,7 +78,6 @@ export default Vue.extend({
 }
 
 ::v-deep.v-main > .v-main__wrap {
-  border-top: 1px solid $medium-grey;
   display: flex;
   flex-direction: column;
 }

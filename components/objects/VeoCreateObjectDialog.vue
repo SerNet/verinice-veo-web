@@ -31,7 +31,7 @@
         :object-schema="objectSchema"
         :domain-id="domainId"
         :preselected-sub-type="subType"
-        :valid.sync="formValid"
+        :valid.sync="isFormValid"
         disable-history
         scroll-wrapper-id="scroll-wrapper-create-dialog"
         object-creation-disabled
@@ -50,7 +50,7 @@
       <v-btn
         text
         color="primary"
-        :disabled="!formValid"
+        :disabled="!isFormValid"
         :data-cy="$utils.prefixCyData($options, 'save-button')"
         @click="onSubmit"
       >
@@ -112,6 +112,7 @@ export default defineComponent({
     });
 
     const isFormDirty = ref(false);
+    const isFormValid = ref(false);
 
     // object schema stuff
     const objectSchema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
@@ -124,7 +125,19 @@ export default defineComponent({
           targetUri: `${$config.apiUrl}/units/${separateUUIDParam(route.value.params.unit).id}`
         }
       };
+
+      // Set subtype if a subtype is preselected
+      if (props.domainId && props.subType) {
+        objectData.value.domains = {
+          [props.domainId]: {
+            subType: props.subType,
+            status: 'NEW'
+          }
+        };
+      }
+
       isFormDirty.value = false;
+      isFormValid.value = false;
     }
 
     const { fetch } = useFetch(async () => {
@@ -148,13 +161,11 @@ export default defineComponent({
 
     const headline = computed(() => upperFirst(t('createObject').toString()) + ': ' + upperFirst(props.objectType));
 
-    const formValid = ref(false);
-
     return {
       dialog,
       headline,
       isFormDirty,
-      formValid,
+      isFormValid,
       objectSchema,
       objectData,
       onSubmit,
