@@ -160,4 +160,8 @@ export default defineComponent({
     color: #000000;
   }
 }
+
+::v-deep img {
+  max-width: 100%;
+}
 </style>
