@@ -26,7 +26,6 @@
     v-on="$listeners"
   >
     <template #default>
-      {{ objectData }}
       <VeoObjectForm
         v-model="objectData"
         :object-schema="objectSchema"
