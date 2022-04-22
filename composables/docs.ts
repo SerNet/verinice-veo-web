@@ -27,7 +27,7 @@ export interface DocPage {
   isDir?: boolean;
 }
 
-type DocPageFetchReturn = FetchReturn & DocPage;
+export type DocPageFetchReturn = FetchReturn & DocPage;
 
 type ContentOptions = { path?: string; locale?: string; localeSeparator?: string; fallbackLocale?: string; where?: object };
 const getOptions = (params: ContentOptions) => {

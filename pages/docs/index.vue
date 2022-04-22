@@ -47,6 +47,9 @@
           class="page"
         >
           <NuxtContent :document="document" />
+          <div class="chapter-context">
+            {{ getTranslatedHierarchyAsString(document) }}
+          </div>
         </div>
       </template>
     </div>
@@ -56,7 +59,8 @@
 import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { useDocs } from '~/composables/docs';
+
+import { DocPageFetchReturn, useDocs } from '~/composables/docs';
 export default defineComponent({
   layout: 'print',
   validate({ route, redirect }) {
@@ -88,10 +92,31 @@ export default defineComponent({
       }
     });
 
-    const documents = computed(() => files.value);
+    const documents = computed(() => files.value || []);
     const title = computed(() => t('documentation'));
 
-    return { files, documents, t, title };
+    const documentsAsMap = computed(() => new Map(documents.value.map((document) => [document.path, document])));
+
+    const getTranslatedHierarchyAsString = (document: DocPageFetchReturn) => {
+      const segments = [...document.segments];
+
+      let translatedSegments = [];
+
+      while (segments.length > 0) {
+        segments.pop();
+        translatedSegments.push(documentsAsMap.value.get(segments.join('/'))?.title);
+      }
+      translatedSegments = translatedSegments.reverse().filter((segment) => segment);
+      return translatedSegments.join(' / ');
+    };
+
+    return {
+      documents,
+      files,
+      getTranslatedHierarchyAsString,
+      t,
+      title
+    };
   },
   head(): any {
     return {
@@ -126,6 +151,7 @@ export default defineComponent({
   }
 });
 </script>
+
 <i18n>
 {
   "de": {
@@ -140,12 +166,21 @@ export default defineComponent({
   }
 }
 </i18n>
+
 <style lang="scss">
 html {
   overflow: initial !important;
 }
 </style>
 <style lang="scss" scoped>
+.veo-pdf-preview-copyright {
+  position: running(copyright);
+}
+
+.veo-pdf-preview-chapter-context {
+  position: running(context);
+}
+
 @media screen {
   .page {
     margin-bottom: 4em;
@@ -160,6 +195,7 @@ html {
     display: flex !important;
   }
 }
+
 @media print {
   @page {
     size: A4;
@@ -171,6 +207,14 @@ html {
     @bottom-right {
       content: counter(page) '/' counter(pages);
       font-family: Arial, Sans Serif;
+    }
+
+    @bottom-center {
+      content: element(copyright);
+    }
+
+    @bottom-left {
+      content: element(context);
     }
   }
 
