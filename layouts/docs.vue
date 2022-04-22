@@ -139,6 +139,8 @@ export default defineComponent({
 </i18n>
 
 <style lang="scss" scoped>
+@import '~/assets/docs.scss';
+
 .veo-app-bar {
   background-color: $background-accent !important;
   border-bottom: 1px solid $medium-grey;
@@ -159,9 +161,5 @@ export default defineComponent({
   .v-treeview ::v-deep.v-icon {
     color: #000000;
   }
-}
-
-::v-deep img {
-  max-width: 100%;
 }
 </style>
