@@ -55,15 +55,7 @@
           <VeoAppBarLogo />
         </nuxt-link>
       </div>
-      <v-treeview
-        dense
-        :items="items"
-        activatable
-        color="primary"
-        item-key="to"
-        open-on-click
-        @update:active="openItem"
-      />
+      <VeoDocNavigation :items="items" />
     </v-navigation-drawer>
     <v-main
       style="max-height: 100vh;"
@@ -77,13 +69,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { defineComponent, Ref, ref } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useDocTree } from '~/composables/docs';
 
 export default defineComponent({
   setup() {
-    const { app } = useContext();
     //
     // Global navigation
     //
@@ -94,23 +85,13 @@ export default defineComponent({
       buildItem(item) {
         return {
           ...item,
-          disabled: false,
           name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)}`,
-          exact: true,
           to: `/docs${item.path}`
         };
       }
     });
 
-    const openItem = (items: string[]) => {
-      const item = items.shift();
-      if (item) {
-        app.router?.push(item);
-      }
-    };
-
     return {
-      openItem,
       drawer,
       items
     };
