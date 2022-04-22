@@ -47,8 +47,11 @@
           class="page"
         >
           <NuxtContent :document="document" />
-          <div class="chapter-context">
+          <div class="veo-pdf-preview-chapter-context">
             {{ getTranslatedHierarchyAsString(document) }}
+          </div>
+          <div class="veo-pdf-preview-copyright">
+            <p>verinice.veo {{ t('documentation') }}<br>&copy; 2022, SerNet GmbH</p>
           </div>
         </div>
       </template>
