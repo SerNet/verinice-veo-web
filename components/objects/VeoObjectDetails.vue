@@ -22,14 +22,29 @@
   >
     <v-col class="flex-grow-0 text-body-1 py-2">
       <template v-if="!loading">
-        <p class="text-no-wrap mb-0">
-          <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
-          {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
-        </p>
-        <p class="text-no-wrap mb-0">
-          <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
-          {{ object && formatDateTime(object.createdAt) || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
-        </p>
+        <v-row>
+          <v-col>
+            <p class="text-no-wrap mb-0">
+              <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
+              {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
+            </p>
+            <p class="text-no-wrap mb-0">
+              <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
+              {{ object && formatDateTime(object.createdAt) || '-' }} {{ t('by') }} {{ object && object.createdBy || '-' }}
+            </p>
+          </v-col>
+          <v-col
+            v-if="showCreateDPIAMenu"
+            cols="auto"
+            class="text-right ml-auto pt-1"
+            align-self="center"
+          >
+            <VeoObjectDetailsActionMenu
+              :object="object"
+              @new-object-created="onCreateObjectSuccess"
+            />
+          </v-col>
+        </v-row>
       </template>
       <v-skeleton-loader
         v-else
@@ -147,8 +162,17 @@ export default defineComponent({
     // format date time to show updated at & created at
     const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
 
+    // emit after new object creation
+    const onCreateObjectSuccess = (newObjectId: string, objectType: string) => {
+      emit('new-object-created', newObjectId, objectType);
+    };
+
+    const showCreateDPIAMenu = computed(() => props.object?.type === 'process' && subType.value === 'PRO_DataProcessing');
+
     return {
+      onCreateObjectSuccess,
       internalActiveTab,
+      showCreateDPIAMenu,
       subType,
       tabs,
 

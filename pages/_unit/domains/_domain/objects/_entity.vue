@@ -45,10 +45,11 @@
             :active-tab.sync="activeTab"
             :dense="!!pageWidths[1]"
             @reload="loadObject"
+            @new-object-created="onChildObjectCreated"
           />
         </template>
         <template #footer>
-          <VeoObjectDetailsActionMenu
+          <VeoObjectActionMenu
             :object="object"
             :type="activeTab"
             @reload="loadObject"
