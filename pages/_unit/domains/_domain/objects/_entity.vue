@@ -243,8 +243,19 @@ export default defineComponent({
           formDataIsRevision.value = false;
           displaySuccessMessage(successText);
         }
-      } catch (e) {
-        displayErrorMessage(errorText, JSON.stringify(e));
+      } catch (e: any) {
+        console.log(JSON.stringify(e));
+        if (e.code === 412) {
+          displayErrorMessage(errorText, t('global.appstate.alert.object_modified').toString(), {
+            objectModified: true,
+            buttonText: t('global.button.no').toString(),
+            eventCallbacks: {
+              refetch: () => loadObject()
+            }
+          });
+        } else {
+          displayErrorMessage(errorText, JSON.stringify(e));
+        }
       }
     }
 
