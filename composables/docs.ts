@@ -125,7 +125,7 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   const buildItem = params.buildItem ?? ((v) => v);
   const fetchDocs = async () => {
     const fetchResult = await (params.root ? $content(params.root, { deep: true }) : $content({ deep: true }))
-      .where({ lang: { $undefinedin: [locale, undefined] }, extension: '.md' })
+      .where({ lang: { $in: [locale, undefined] }, extension: '.md' })
       .sortBy('path', 'asc')
       .fetch<DocPage>();
 
