@@ -155,7 +155,7 @@ export default defineComponent({
         displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
         dialog.value = false;
       } catch (e: any) {
-        displayErrorMessage(upperFirst(t('objectNotCreated', { name: objectData.value.name || upperFirst(t('object').toString()) }).toString()), JSON.stringify(e));
+        displayErrorMessage(upperFirst(t('objectNotCreated', { name: objectData.value.name || upperFirst(t('object').toString()) }).toString()), e.message);
       }
     }
 

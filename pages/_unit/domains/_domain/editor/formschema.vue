@@ -438,8 +438,8 @@ export default defineComponent({
           await saveNewSchema();
         }
         displaySuccessMessage(t('saveSchemaSuccess').toString());
-      } catch (err) {
-        displayErrorMessage(t('error').toString(), t('saveSchemaError').toString());
+      } catch (err: any) {
+        displayErrorMessage(t('error').toString(), t('saveSchemaError').toString() + err.message);
       }
     }
 

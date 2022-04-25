@@ -187,8 +187,8 @@ export default defineComponent({
         }
         displaySuccessMessage(props.risk ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString()));
         dialog.value = false;
-      } catch (e) {
-        displayErrorMessage(upperFirst(t('riskNotSaved').toString()), JSON.stringify(e));
+      } catch (e: any) {
+        displayErrorMessage(upperFirst(t('riskNotSaved').toString()), e.message);
       } finally {
         savingRisk.value = false;
       }

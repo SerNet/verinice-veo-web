@@ -244,7 +244,6 @@ export default defineComponent({
           displaySuccessMessage(successText);
         }
       } catch (e: any) {
-        console.log(JSON.stringify(e));
         if (e.code === 412) {
           displayErrorMessage(errorText, t('global.appstate.alert.object_modified').toString(), {
             objectModified: true,
@@ -254,7 +253,7 @@ export default defineComponent({
             }
           });
         } else {
-          displayErrorMessage(errorText, JSON.stringify(e));
+          displayErrorMessage(errorText, e.message);
         }
       }
     }
@@ -317,8 +316,8 @@ export default defineComponent({
         try {
           await $api.entity.update(object.value.type, object.value.id, _editedEntity);
           loadObject();
-        } catch (error: any) {
-          displayErrorMessage(upperFirst(t('errors.link').toString()), error?.toString());
+        } catch (e: any) {
+          displayErrorMessage(upperFirst(t('errors.link').toString()), e.message);
         }
       }
     };

@@ -18,8 +18,6 @@
 import defaultsDeep from 'lodash/defaultsDeep';
 import { Plugin, Context } from '@nuxt/types';
 
-import { VeoError, VeoErrorTypes } from '~/types/VeoError';
-
 import entity from '~/plugins/api/entity';
 import form from '~/plugins/api/form';
 import history from '~/plugins/api/history';
@@ -48,6 +46,24 @@ export enum VeoApiReponseType {
   BLOB
 }
 
+/*
+{"success":false,"resourceId":null,"message":"Cannot use risk definition 'DSRA' because the element is not a member of a scope with that risk definition"}
+*/
+export class VeoApiError extends Error {
+  public readonly code;
+  public readonly url;
+  public additionalInformation: any;
+
+  constructor(url: string, code: number, message: string, params: any) {
+    super(`Error ${code} while accessing ${url}: ${message}`);
+
+    this.url = url;
+    this.code = code;
+    this.message = message;
+    this.additionalInformation = params;
+  }
+}
+
 // eslint-disable-next-line no-undef
 export interface RequestOptions extends RequestInit {
   query?: Record<string, string | number | undefined> & IVeoPaginationOptions;
@@ -65,7 +81,6 @@ export class Client {
   public baseFormURL: string;
   public baseHistoryURL: string;
   public baseReportURL: string;
-  // public sentry: any
   public _context: Context;
 
   static create<T extends Record<keyof T, IAPIClient>>(context: Context, namespaces: T): Client & { [K in keyof T]: ReturnType<T[K]> } {
@@ -83,7 +98,7 @@ export class Client {
     this.baseFormURL = `${context.$config.formsApiUrl}`.replace(/\/$/, '');
     this.baseHistoryURL = `${context.$config.historyApiUrl}`.replace(/\/$/, '');
     this.baseReportURL = `${context.$config.reportsApiUrl}`.replace(/\/$/, '');
-    // this.sentry = context.app.$sentry
+
     this._context = context;
   }
 
@@ -157,41 +172,35 @@ export class Client {
       }
     }
     const combinedUrl = queryString === '' ? url : url + '?' + queryString.substr(1);
-    let status = 0;
-    try {
-      const reqURL = this.getURL(combinedUrl);
-      const res = await fetch(reqURL, combinedOptions);
-      status = res.status;
-      if (Number(res.status) === 401) {
-        // Check whether the error was returned because of keycloak or an invalid api endpoint configuration
-        try {
-          await $user.auth.loadUserProfile();
-        } catch (e) {
-          // If the user profile couldn't get loaded, the session seems to be invalid, so we try to refresh it
-          if (options.retry) {
-            try {
-              await $user.auth.refreshSession();
-              return this.req(url, { ...options, retry: false });
-            } catch (e) {
-              // eslint-disable-next-line no-console
-              console.error("Couldn't refresh session");
-              await $user.auth.logout('/');
-            }
-          } else if (options.retry === false) {
+
+    const reqURL = this.getURL(combinedUrl);
+    const res = await fetch(reqURL, combinedOptions);
+
+    if (Number(res.status) === 401) {
+      // Check whether the error was returned because of keycloak or an invalid api endpoint configuration
+      try {
+        await $user.auth.loadUserProfile();
+      } catch (e) {
+        // If the user profile couldn't get loaded, the session seems to be invalid, so we try to refresh it
+        if (options.retry) {
+          try {
+            await $user.auth.refreshSession();
+            return this.req(url, { ...options, retry: false });
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error("Couldn't refresh session");
             await $user.auth.logout('/');
           }
+        } else if (options.retry === false) {
+          await $user.auth.logout('/');
         }
-
-        return Promise.reject(new Error(`Invalid JWT: ${combinedOptions.method || 'GET'} ${reqURL}`));
-      } else if (options.method === 'DELETE') {
-        return Promise.resolve();
-      } else {
-        return await this.parseResponse(reqURL, res, options);
       }
-    } catch (e) {
-      // this.sentry.setTag('error_level', 'warning')
-      // this.sentry.captureException(e)
-      return Promise.reject(Object.assign(e, { status }));
+
+      return Promise.reject(new Error(`Invalid JWT: ${combinedOptions.method || 'GET'} ${reqURL}`));
+    } else if (options.method === 'DELETE') {
+      return Promise.resolve();
+    } else {
+      return await this.parseResponse(reqURL, res, options);
     }
   }
 
@@ -210,15 +219,11 @@ export class Client {
     if (parsed) {
       if (res.status >= 200 && res.status <= 300) {
         return parsed;
-      } else if (parsed.code) {
-        throw new VeoError(parsed.code, VeoErrorTypes.VEO_ERROR_COMMON);
       } else {
-        const e = new VeoError(`Error ${res.status || '?'} while accessing ${url}: ${parsed.name}`, res.status);
-        e.name = 'API_EXCEPTION';
-        throw e;
+        throw new VeoApiError(url, res.status, parsed.message, parsed);
       }
     } else {
-      throw new VeoError('Invalid response');
+      throw new Error('Invalid response');
     }
   }
 
@@ -226,16 +231,11 @@ export class Client {
     const raw = await res.text();
     const etag = res.headers.get('etag');
 
-    let parsed;
-    try {
-      parsed = raw ? JSON.parse(raw) : true;
-      if (typeof parsed === 'object' && etag) {
-        Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag });
-      }
-      return parsed;
-    } catch (e) {
-      throw new VeoError(`Non JSON response: ${res}`);
+    const parsed = raw ? JSON.parse(raw) : true;
+    if (typeof parsed === 'object' && etag) {
+      Object.defineProperty(parsed, '$etag', { enumerable: false, configurable: false, value: etag });
     }
+    return parsed;
   }
 }
 

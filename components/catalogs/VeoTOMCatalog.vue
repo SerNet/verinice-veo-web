@@ -261,7 +261,7 @@ export default defineComponent({
           reset();
         }
       } catch (e: any) {
-        displayErrorMessage(t('applyIncarnaionError').toString(), JSON.stringify(e.message || e));
+        displayErrorMessage(t('applyIncarnaionError').toString(), e.message);
       } finally {
         applyingTOMs.value = false;
       }

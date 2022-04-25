@@ -454,8 +454,8 @@ export default Vue.extend({
       try {
         await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema());
         displaySuccessMessage(this.$t('saveSchemaSuccess'));
-      } catch (e) {
-        displayErrorMessage(this.$t('error.title'), this.$t('saveSchemaError'));
+      } catch (e: any) {
+        displayErrorMessage(this.$t('error.title'), this.$t('saveSchemaError').toString() + e.message);
       }
     },
     upperFirst
