@@ -71,7 +71,7 @@
           <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
           <v-tab
             v-for="tab in tabs"
-            v-show="tab !== 'risks' || (loading || subType === 'PRO_DataProcessing')"
+            v-show="tab !== 'risks' || (object && object.type === 'process')"
             :key="tab"
           >
             {{ t(tab) }}
