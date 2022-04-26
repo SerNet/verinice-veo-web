@@ -21,7 +21,7 @@ print:
     - mkdir dist
     - pwd
     - ls -la
-    - (npm run start&)
+    - (npm run start)
     - node print.js
     - cp /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
     - ls -la /usr/src/app
