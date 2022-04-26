@@ -54,13 +54,13 @@ export class VeoApiError extends Error {
   public readonly url;
   public additionalInformation: any;
 
-  constructor(url: string, code: number, message: string, params: any) {
+  constructor(url: string, code: number, message: string, additionalInformation: any) {
     super(`Error ${code} while accessing ${url}: ${message}`);
 
     this.url = url;
     this.code = code;
     this.message = message;
-    this.additionalInformation = params;
+    this.additionalInformation = additionalInformation;
   }
 }
 
