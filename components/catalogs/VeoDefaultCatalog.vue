@@ -128,7 +128,7 @@ export default defineComponent({
         displaySuccessMessage(t('catalogItemsApplied').toString());
         selectedItems.value = [];
       } catch (e: any) {
-        displayErrorMessage(t('applyCatalogItemsError').toString(), JSON.stringify(e.message || e));
+        displayErrorMessage(t('applyCatalogItemsError').toString(), e.message);
       } finally {
         applyingItems.value = false;
       }

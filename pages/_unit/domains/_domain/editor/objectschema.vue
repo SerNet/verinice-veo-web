@@ -144,7 +144,7 @@
                 </div>
               </template>
               <template #default>
-                <span v-if="isContentCreator">{{ upperFirst(t('save')) }}</span>
+                <span v-if="isContentCreator">{{ upperFirst($t('save')) }}</span>
                 <span v-else>{{ $t('saveContentCreator') }}</span>
               </template>
             </v-tooltip>
@@ -454,8 +454,8 @@ export default Vue.extend({
       try {
         await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema());
         displaySuccessMessage(this.$t('saveSchemaSuccess'));
-      } catch (e) {
-        displayErrorMessage(this.$t('error.title'), this.$t('saveSchemaError'));
+      } catch (e: any) {
+        displayErrorMessage(this.$t('error.title'), `${this.$t('saveSchemaError').toString()}: ${e.message}`);
       }
     },
     upperFirst
@@ -490,7 +490,7 @@ export default Vue.extend({
     "help": "Hilfe",
     "save": "speichern",
     "saveSchemaSuccess": "Schema wurde gespeichert!",
-    "saveSchemaError": "Schema konnte nicht gespeichert werden!",
+    "saveSchemaError": "Schema konnte nicht gespeichert werden",
     "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Objektschema zu speichern."
   }
 }

@@ -224,8 +224,8 @@ export default defineComponent({
         displaySuccessMessage(tc('risksCreated', selectedScenarios.value.length));
         selectedScenarios.value = [];
         emit('success');
-      } catch (e) {
-        displayErrorMessage(tc('createRiskError', selectedScenarios.value.length), JSON.stringify(e));
+      } catch (e: any) {
+        displayErrorMessage(tc('createRiskError', selectedScenarios.value.length), e.message);
       }
 
       creatingRisks.value = false;

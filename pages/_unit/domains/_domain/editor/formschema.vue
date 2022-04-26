@@ -438,8 +438,8 @@ export default defineComponent({
           await saveNewSchema();
         }
         displaySuccessMessage(t('saveSchemaSuccess').toString());
-      } catch (err) {
-        displayErrorMessage(t('error').toString(), t('saveSchemaError').toString());
+      } catch (err: any) {
+        displayErrorMessage(t('error').toString(), `${t('saveSchemaError').toString()}: ${err.message}`);
       }
     }
 
@@ -683,7 +683,7 @@ export default defineComponent({
     "help": "Hilfe",
     "save": "Speichern",
     "saveSchemaSuccess": "Schema wurde gespeichert!",
-    "saveSchemaError": "Schema konnte nicht gespeichert werden!",
+    "saveSchemaError": "Schema konnte nicht gespeichert werden",
     "error": "Fehler",
     "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Formschema zu speichern."
   }

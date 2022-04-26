@@ -243,8 +243,18 @@ export default defineComponent({
           formDataIsRevision.value = false;
           displaySuccessMessage(successText);
         }
-      } catch (e) {
-        displayErrorMessage(errorText, JSON.stringify(e));
+      } catch (e: any) {
+        if (e.code === 412) {
+          displayErrorMessage(errorText, t('outdatedObject').toString(), {
+            objectModified: true,
+            buttonText: t('global.button.no').toString(),
+            eventCallbacks: {
+              refetch: () => loadObject()
+            }
+          });
+        } else {
+          displayErrorMessage(errorText, e.message);
+        }
       }
     }
 
@@ -306,8 +316,8 @@ export default defineComponent({
         try {
           await $api.entity.update(object.value.type, object.value.id, _editedEntity);
           loadObject();
-        } catch (error: any) {
-          displayErrorMessage(upperFirst(t('errors.link').toString()), error?.toString());
+        } catch (e: any) {
+          displayErrorMessage(upperFirst(t('errors.link').toString()), e.message);
         }
       }
     };
@@ -358,6 +368,7 @@ export default defineComponent({
     "objectRestored": "\"{name}\" was restored successfully!",
     "objectSaved": "\"{name}\" was updated successfully!",
     "oldVersionAlert": "You are currently viewing an old and readonly version of this object. If you want to update the object based on this data, please click \"restore\" first and then make your changes.",
+    "outdatedObject": "This dataset has been edited by another user. Do you want to load the changes?",
     "restore": "restore",
     "version": "version {version}",
     "subEntities": "components",
@@ -372,6 +383,7 @@ export default defineComponent({
     "objectRestored": "\"{name}\" wurde wiederhergestellt!",
     "objectSaved": "\"{name}\" wurde aktualisiert!",
     "oldVersionAlert": "Ihnen wird eine alte, schreibgeschützte Version dieses Objektes angezeigt. Bitte klicken Sie auf \"Wiederherstellen\", wenn Sie Ihr Objekt basierend auf diesen Daten aktualisieren möchten.",
+    "outdatedObject": "Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?",
     "restore": "wiederherstellen",
     "version": "version {version}",
     "subEntities": "Bestandteile",

@@ -214,8 +214,8 @@ export default defineComponent({
                   await $api.entity.deleteRisk(props.object?.type || '', props.object?.id || '', id);
                   displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
                   fetch();
-                } catch (error: any) {
-                  displayErrorMessage(upperFirst(t('deleteRiskError').toString()), error?.toString());
+                } catch (e: any) {
+                  displayErrorMessage(upperFirst(t('deleteRiskError').toString()), e.message);
                 }
               }
             }
@@ -230,8 +230,8 @@ export default defineComponent({
                   await cloneObject(item);
                   displaySuccessMessage(upperFirst(t('objectCloned').toString()));
                   fetch();
-                } catch (error: any) {
-                  displayErrorMessage(upperFirst(t('errors.clone').toString()), error?.toString());
+                } catch (e: any) {
+                  displayErrorMessage(upperFirst(t('errors.clone').toString()), e.message);
                 }
               }
             },
