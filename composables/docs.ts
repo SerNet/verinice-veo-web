@@ -119,13 +119,18 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   createDirs?: boolean;
   buildItem?: (item: DocPageFetchReturn) => T;
 }) => {
+  const { app } = useContext();
+  const locales: any = app.i18n.locales;
+
   const { localeSeparator, locale } = getOptions(params);
   const normalizePath = (path: string) => (path.split(localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
   const { $content } = useContext();
   const buildItem = params.buildItem ?? ((v) => v);
   const fetchDocs = async () => {
+    // The nuxt content queries are using lokiJS, however they aren't properly implemented and most operators aren't working. To circumvent undefinedIn (checking for a key or its value), we use nin to only check for the value
+    // In addition, lang: { $eq: undefined } or lang: undefined seems to unset the filter, so we have to take all possible other values expect the current language and undefined and check if the page does have one of those
     const fetchResult = await (params.root ? $content(params.root, { deep: true }) : $content({ deep: true }))
-      .where({ lang: { $undefinedin: [locale, undefined] }, extension: '.md' })
+      .where({ lang: { $nin: locales.filter((_locale: any) => _locale.code !== locale).map((_locale: any) => _locale.code) }, extension: '.md' })
       .sortBy('path', 'asc')
       .fetch<DocPage>();
 
