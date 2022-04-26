@@ -35,29 +35,7 @@
       class="pa-0 flex-column flex-nowrap"
     >
       <v-col :class="contentClass">
-        <slot
-          v-if="loading && loadContent"
-          name="loading"
-        >
-          <v-skeleton-loader
-            width="100%"
-            type="image"
-          />
-          <v-skeleton-loader
-            type="heading"
-            class="pt-3"
-            height="56"
-            width="100%"
-          />
-          <v-skeleton-loader
-            width="100%"
-            type="image"
-          />
-        </slot>
-        <slot
-          v-else
-          name="default"
-        />
+        <slot name="default" />
       </v-col>
       <v-col
         v-if="$slots.footer"
@@ -79,7 +57,6 @@ interface IProps {
   stickyHeader: boolean;
   height: string;
   loading: boolean;
-  loadContent: boolean;
   title?: string;
   titlebarAlignment: VeoPageHeaderAlignment;
 }
@@ -114,13 +91,6 @@ export default defineComponent<IProps>({
      * Shows a skeleton for the title if set to true
      */
     loading: {
-      type: Boolean,
-      default: false
-    },
-    /**
-     * If this and loading is set, show a skeleton in the content area. Can be customized with slot#loading
-     */
-    loadContent: {
       type: Boolean,
       default: false
     },
