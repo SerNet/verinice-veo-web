@@ -278,33 +278,44 @@ export default Vue.extend({
                       : []),
                     ...((index === this.collapsablePages.length - 1 && this.collapsablePages[index]) || this.previousPageIsCollapsed(index)
                       ? [
-                          h(VeoCollapseButton, {
-                            props: {
-                              value: this.previousPageIsCollapsed(index),
-                              right: false,
-                              elementName: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
-                              index: this.previousPageIsCollapsed(index) ? index - 1 : index
+                          h(
+                            'div',
+                            {
+                              style: 'width: 20px',
+                              class: 'fill-height'
                             },
-                            on: {
-                              input: () => this.togglePage(this.previousPageIsCollapsed(index) ? index - 1 : index)
-                            }
-                          })
+                            [
+                              h(VeoCollapseButton, {
+                                props: {
+                                  value: this.previousPageIsCollapsed(index),
+                                  right: false,
+                                  elementName: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
+                                  index: this.previousPageIsCollapsed(index) ? index - 1 : index
+                                },
+                                on: {
+                                  input: () => this.togglePage(this.previousPageIsCollapsed(index) ? index - 1 : index)
+                                }
+                              })
+                            ]
+                          )
                         ]
                       : []),
                     slotItem,
                     ...((index === 0 && this.collapsablePages[index]) || this.nextPageIsCollapsed(index)
                       ? [
-                          h(VeoCollapseButton, {
-                            props: {
-                              value: this.nextPageIsCollapsed(index),
-                              right: true,
-                              elementName: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
-                              index: this.nextPageIsCollapsed(index) ? index + 1 : index
-                            },
-                            on: {
-                              input: () => this.togglePage(this.nextPageIsCollapsed(index) ? index + 1 : index)
-                            }
-                          })
+                          h('div', { style: 'width: 20px', class: 'fill-height' }, [
+                            h(VeoCollapseButton, {
+                              props: {
+                                value: this.nextPageIsCollapsed(index),
+                                right: true,
+                                elementName: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
+                                index: this.nextPageIsCollapsed(index) ? index + 1 : index
+                              },
+                              on: {
+                                input: () => this.togglePage(this.nextPageIsCollapsed(index) ? index + 1 : index)
+                              }
+                            })
+                          ])
                         ]
                       : [])
                   ]

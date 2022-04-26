@@ -19,7 +19,7 @@
   <v-col
     class="veo-page py-0"
     cols="12"
-    :class="noPadding ? 'px-0' : isPageWrapperChild? 'px-10' : 'px-4'"
+    :class="noPadding ? 'px-0' : 'px-4'"
   >
     <VeoPageHeader v-bind="$props">
       <template #title>
@@ -82,7 +82,6 @@ interface IProps {
   loadContent: boolean;
   title?: string;
   titlebarAlignment: VeoPageHeaderAlignment;
-  isPageWrapperChild: boolean;
 }
 
 export default defineComponent<IProps>({
@@ -139,11 +138,7 @@ export default defineComponent<IProps>({
     titlebarAlignment: {
       type: Number,
       default: VeoPageHeaderAlignment.LEFT
-    } as PropOptions<VeoPageHeaderAlignment>,
-    isPageWrapperChild: {
-      type: Boolean,
-      default: false
-    }
+    } as PropOptions<VeoPageHeaderAlignment>
   },
   setup() {
     return {};
