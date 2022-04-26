@@ -25,7 +25,7 @@ async function main() {
   const outputFolder = path.resolve('./dist');
   const fileName = 'Documentation';
   const shorten = (str, len) => (str.length > len ? str.substr(0, len) + '...' : str);
-  const url = process.argv[2] || `${process.env.CI_ENVIRONMENT_URL}/docs/?print`;
+  const url = process.argv[2] || `localhost:3000/docs/?print`;
   console.log(`Printing...`);
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--export-tagged-pdf'] });
   const page = await browser.newPage();
