@@ -10,6 +10,28 @@ variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
   CYPRESS_BASE_URL: ''
 
+print:
+  extends: build
+  dependes_on: build
+  stage: build
+  image: ghcr.io/drpayyne/chrome-puppeteer:latest
+  script:
+    - cp print.js /usr/src/app/print.js
+    - cd /usr/src/app
+    - mkdir dist
+    - (npm run start&)
+    - node print.js
+    - cp /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
+    - ls -la /usr/src/app
+  after_script:
+    - ps -ef | grep node
+  artifacts:
+    when: always
+    paths:
+      - '*.pdf'
+  rules:
+    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+
 review:
   environment:
     auto_stop_in: 4 week
@@ -46,21 +68,3 @@ test:e2e:
       - cypress/screenshots/**/*.png
       - cypress/coverage/**/*
     expire_in: 1 day
-
-print:
-  extends: build
-  stage: performance
-  image: ghcr.io/drpayyne/chrome-puppeteer:latest
-  script:
-    - export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
-    - cp print.js /usr/src/app/print.js
-    - cd /usr/src/app
-    - mkdir dist
-    - node print.js
-    - cp /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
-  artifacts:
-    when: always
-    paths:
-      - '*.pdf'
-  rules:
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
