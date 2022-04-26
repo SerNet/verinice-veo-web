@@ -148,8 +148,8 @@ describe('Objects details', () => {
 
   it('should link an object', function () {
     cy.wait(5000); // needed to wait for previous snackbar to be dismissed
-    cy.get('[data-cy=veo-object-details-action-menu-show-actions-button]').click();
-    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(0).click();
+    cy.get('[data-cy=veo-object-action-menu-show-actions-button]').click();
+    cy.get('[data-cy=veo-object-action-menu-action-list').children().eq(0).click();
 
     cy.wait('@G_fetchObjects')
       .wait('@G_fetchTranslations')
