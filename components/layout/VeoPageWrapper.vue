@@ -69,6 +69,10 @@ export default Vue.extend({
     pageTitles: {
       type: Array as PropType<String[]>,
       default: () => []
+    },
+    unresponsivePageSizes: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -195,6 +199,7 @@ export default Vue.extend({
      */
     localPageWidth(index: number): string[] {
       const classes = [];
+      const styles = {};
 
       if (this.pageWidths[index]) {
         classes.push(`col-${this.pageWidths[index]}`);
