@@ -12,15 +12,14 @@ variables:
 
 print:
   extends: build
-  needs: ['build']
+  needs: ['build'] # We reuse the build stage in order to have a faster startup time of the server (no need to wait for compiling)
   stage: build
   image: ghcr.io/drpayyne/chrome-puppeteer:latest
   script:
     - cp print.js /usr/src/app/print.js
     - cd /usr/src/app
     - mkdir dist
-    - npm i
-    - (npm run start&)
+    - (nuxt start&)
     - node print.js
     - cp /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
     - ls -la /usr/src/app
