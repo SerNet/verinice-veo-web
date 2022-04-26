@@ -132,8 +132,8 @@ describe('Objects details', () => {
 
   it('should create and link an object', function () {
     cy.wait(5000); // needed to wait for previous snackbar to be dismissed
-    cy.get('[data-cy=veo-object-details-action-menu-show-actions-button]').click();
-    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(1).click();
+    cy.get('[data-cy=veo-object-action-menu-show-actions-button]').click();
+    cy.get('[data-cy=veo-object-action-menu-action-list').children().eq(1).click();
 
     cy.get('.v-dialog .vf-control').contains('Name*').parents('.v-input').type('Testobjekt{enter}');
     cy.get('[data-cy=veo-create-object-dialog-save-button]').click();
