@@ -16,11 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
+import { isObject } from 'lodash';
 import Vue from 'vue';
 import { PropType } from 'vue/types/options';
 import { VSkeletonLoader } from 'vuetify/lib';
 
 import VeoCollapseButton from '~/components/layout/VeoCollapseButton.vue';
+import { IBaseObject } from '~/lib/utils';
 
 export default Vue.extend({
   components: {
@@ -70,7 +72,7 @@ export default Vue.extend({
       type: Array as PropType<String[]>,
       default: () => []
     },
-    unresponsivePageSizes: {
+    unresponsivePageWidths: {
       type: Boolean,
       default: false
     }
@@ -197,27 +199,58 @@ export default Vue.extend({
      *
      * @param index The index of the page to look for values for
      */
-    localPageWidth(index: number): string[] {
+    localPageWidth(index: number): { classes: string[]; styles: IBaseObject } {
       const classes = [];
-      const styles = {};
+      let styles = {};
 
       if (this.pageWidths[index]) {
         classes.push(`col-${this.pageWidths[index]}`);
+
+        if (this.unresponsivePageWidths) {
+          if (isObject(this.pageWidths[index])) {
+            styles = this.pageWidths[index];
+          } else {
+            styles = {
+              width: this.pageWidths[index],
+              minWidth: this.pageWidths[index]
+            };
+          }
+        }
       }
 
       if (this.pageWidthsLg[index]) {
         classes.push(`col-lg-${this.pageWidthsLg[index]}`);
+        if (this.unresponsivePageWidths && this.$vuetify.breakpoint.lgAndUp) {
+          if (isObject(this.pageWidthsLg[index])) {
+            styles = this.pageWidthsLg[index];
+          } else {
+            styles = {
+              width: this.pageWidthsLg[index],
+              minWidth: this.pageWidthsLg[index]
+            };
+          }
+        }
       }
 
       if (this.pageWidthsXl[index]) {
         classes.push(`col-xl-${this.pageWidthsXl[index]}`);
+        if (this.unresponsivePageWidths && this.$vuetify.breakpoint.xl) {
+          if (isObject(this.pageWidthsXl[index])) {
+            styles = this.pageWidthsXl[index];
+          } else {
+            styles = {
+              width: this.pageWidthsXl[index],
+              minWidth: this.pageWidthsXl[index]
+            };
+          }
+        }
       }
 
       if (classes.length === 0) {
         classes.push(`col-${Math.floor(12 / (this.currentPagesCount - this.pagesCollapsedStates.filter((page) => page).length))}`);
       }
 
-      return classes;
+      return { classes: this.unresponsivePageWidths ? [] : classes, styles: this.unresponsivePageWidths ? styles : {} };
     }
   },
   render(h): any {
@@ -267,15 +300,18 @@ export default Vue.extend({
                 (slotItem.componentOptions.propsData as any).isPageWrapperChild = true;
               }
 
+              const { classes, styles } = this.localPageWidth(index);
+
               return [
                 h(
                   'div',
                   {
                     style: {
                       position: 'relative',
-                      display: this.pagesCollapsedStates[index] ? 'none' : 'flex'
+                      display: this.pagesCollapsedStates[index] ? 'none' : 'flex',
+                      ...styles
                     },
-                    class: ['flex-row', ...this.localPageWidth(index), 'pa-0']
+                    class: ['flex-row', classes, 'pa-0']
                   },
                   [
                     ...(index > 0 && !this.previousPageIsCollapsed(index) && index < this.pagesCollapsedStates.length
