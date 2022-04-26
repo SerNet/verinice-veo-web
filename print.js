@@ -22,7 +22,8 @@ const puppeteer = require('puppeteer');
 const LANGS = ['de', 'en'];
 
 async function main() {
-  const output = path.resolve('./dist/output');
+  const outputFolder = path.resolve('./dist');
+  const fileName = 'Documentation';
   const shorten = (str, len) => (str.length > len ? str.substr(0, len) + '...' : str);
   const url = process.argv[2] || `${process.env.CI_ENVIRONMENT_URL}/docs/?print`;
   console.log(`Printing...`);
@@ -35,7 +36,7 @@ async function main() {
     .on('requestfailed', (request) => console.error(` ❌  ${request.failure().errorText} ${request.url()}`));
 
   for (const lang of LANGS) {
-    const outputFile = `${output}.${lang}.pdf`;
+    const outputFile = `${outputFolder}/${fileName}_${lang}.pdf`;
     console.log(`Printing: ${url} (${lang})...`);
     await page.goto(url + `&lang=${lang}`);
     await Promise.race([

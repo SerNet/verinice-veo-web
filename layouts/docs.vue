@@ -27,14 +27,27 @@
         @click="drawer = true"
       />
       <v-spacer />
-      <v-btn
-        depressed
-        to="/docs?print"
-        color="primary"
-        class="mr-2"
+      <v-tooltip
+        bottom
+        :disabled="pdfExists"
       >
-        {{ t('printPreview') }}
-      </v-btn>
+        <template #activator="{ on }">
+          <div v-on="on">
+            <v-btn
+              depressed
+              :disabled="!pdfExists"
+              :to="pdfPath"
+              color="primary"
+              class="mr-2"
+            >
+              {{ t('exportAsPDF') }}
+            </v-btn>
+          </div>
+        </template>
+        <template #default>
+          {{ t('noPdfExists') }}
+        </template>
+      </v-tooltip>
       <VeoLanguageSwitch />
     </v-app-bar>
     <v-navigation-drawer
@@ -77,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { computed, defineComponent, onMounted, Ref, ref, useContext } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { useDocTree } from '~/composables/docs';
@@ -85,7 +98,7 @@ import { useDocTree } from '~/composables/docs';
 export default defineComponent({
   setup() {
     const { app } = useContext();
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     //
     // Global navigation
     //
@@ -111,10 +124,21 @@ export default defineComponent({
       }
     };
 
+    const pdfExists = ref(false);
+    const pdfPath = computed(() => `/Documentation_${locale.value}.pdf`);
+    onMounted(async () => {
+      try {
+        const response = await fetch(pdfPath.value);
+        pdfExists.value = !!response.headers.get('content-type')?.startsWith('application/pdf');
+      } catch (_) {}
+    });
+
     return {
       openItem,
       drawer,
       items,
+      pdfPath,
+      pdfExists,
 
       t
     };
@@ -130,10 +154,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "printPreview": "print preview"
+    "exportAsPDF": "download as pdf",
+    "noPdfExists": "There is no downloadable pdf for this language"
   },
   "de": {
-    "printPreview": "Druckvorschau"
+    "exportAsPDF": "Als PDF herunterladen",
+    "noPdfExists": "Für diese Sprache existiert keine PDF"
   }
 }  
 </i18n>
