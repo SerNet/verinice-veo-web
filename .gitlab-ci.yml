@@ -20,7 +20,6 @@ print:
     - cd /usr/src/app
     - mkdir dist
     - pwd
-    - cwd
     - ls -la
     - (npm run start&)
     - node print.js
