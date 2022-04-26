@@ -12,7 +12,7 @@ variables:
 
 print:
   extends: build
-  depends_on: build
+  needs: ['build']
   stage: build
   image: ghcr.io/drpayyne/chrome-puppeteer:latest
   script:
