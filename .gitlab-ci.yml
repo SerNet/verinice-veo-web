@@ -19,6 +19,9 @@ print:
     - cp print.js /usr/src/app/print.js
     - cd /usr/src/app
     - mkdir dist
+    - pwd
+    - cwd
+    - ls -la
     - (npm run start&)
     - node print.js
     - cp /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
