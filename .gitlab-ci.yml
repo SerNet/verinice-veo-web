@@ -12,20 +12,20 @@ variables:
 
 print:
   extends: build
-  needs: ['build'] # We reuse the build stage in order to have a faster startup time of the server (no need to wait for compiling)
+  dependencies: ['build'] # We reuse the generated build artifact, thus we have to wait for the build job to finish
   stage: build
   image: ghcr.io/drpayyne/chrome-puppeteer:latest
   script:
+    - ls -la
     - cp print.js /usr/src/app/print.js
     - cd /usr/src/app
     - mkdir dist
     - ls -la
     - cat package.json
-    - npm run start
-    - sleep 30
+    #- (npm run start&)
+    #- sleep 30
     - node print.js
     - cp /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
-    - ls -la /usr/src/app
   after_script:
     - ps -ef | grep node
   artifacts:
