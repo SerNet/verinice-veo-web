@@ -57,7 +57,10 @@ COPY print.js .
 RUN mkdir dist
 
 # Start nuxt app in background, wait for startup and generate pdf documentation
-RUN (cd /usr/src/veo && (npm run start &)) && sleep 15 && node print.js
+RUN (cd /usr/src/veo && (npm run start &))
+RUN echo "böa"
+RUN sleep 15 && node print.js
+RUN echo "asdf"
 
 # Kill veo in background
 RUN ps -ef | grep node
