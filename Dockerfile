@@ -41,9 +41,6 @@ RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > static/
 
 RUN npm run generate
 
-RUN pwd
-RUN ls -la
-
 FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 
 # copy generated application and install dependencies
@@ -51,6 +48,8 @@ WORKDIR /usr/src/veo
 RUN pwd
 RUN ls -la
 COPY --from=builder /usr/src/app/dist /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
+RUN pwd
+RUN ls -la
 RUN npm ci
 
 # copy print.js
