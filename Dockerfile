@@ -13,6 +13,7 @@ RUN npm ci
 # Bundle app source
 COPY . .
 
+ARG CI_PROJECT_DIR
 ARG CI_COMMIT_REF_NAME=master
 ARG CI_COMMIT_SHA=latest
 ARG CI_JOB_ID=-1
@@ -25,6 +26,7 @@ ARG VEO_OIDC_REALM
 ARG VEO_OIDC_CLIENT
 ARG NODE_ENV=production
 
+ENV CI_PROJECT_DIR ${CI_PROJECT_DIR}
 ENV CI_COMMIT_REF_NAME ${CI_COMMIT_REF_NAME}
 ENV CI_COMMIT_SHA ${CI_COMMIT_SHA}
 ENV CI_JOB_ID ${CI_JOB_ID}
@@ -47,7 +49,7 @@ FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 WORKDIR /usr/src/veo
 COPY --from=builder /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
 COPY --from=builder /usr/src/app/dist ./dist
-RUN npm ci
+COPY --from=builder /usr/src/app/node_modules ./node_modules
 
 # copy print.js
 WORKDIR /usr/src/app
@@ -55,11 +57,12 @@ COPY print.js .
 RUN mkdir dist
 
 # Start nuxt app in background, wait for startup and generate pdf documentation
-RUN (cd /usr/src/veo && npm run start&)
-RUN sleep 15 && node print.js
+RUN nohup sh -c "(cd /usr/src/veo && (./node_modules/nuxt/bin/nuxt.js start&))" && sleep 5 && node print.js
 
 # Kill veo in background
-RUN pkill node
+RUN ps -ef | grep node | awk '{print $2}'
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
 
 # Copy files to veo dist folder to bundle it with application and copy it to project root to expose as artifacts
 COPY /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
