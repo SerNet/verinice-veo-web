@@ -47,7 +47,7 @@ FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 WORKDIR /usr/src/veo
 RUN pwd
 RUN ls -la
-COPY --from=builder /usr/src/app/dist /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
+COPY --from=builder /usr/src/app/dist/ /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
 RUN pwd
 RUN ls -la
 RUN npm ci
