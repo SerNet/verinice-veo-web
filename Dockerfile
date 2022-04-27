@@ -46,7 +46,7 @@ FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 # copy generated application and install dependencies
 WORKDIR /usr/src/veo
 COPY --from=builder /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
-COPY --from=builder /usr/src/app/dist /usr/src/app/dist
+COPY --from=builder /usr/src/app/dist ./dist
 RUN pwd
 RUN ls -la
 RUN npm ci
