@@ -47,6 +47,7 @@ FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 WORKDIR /usr/src/veo
 COPY --from=builder /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
 COPY --from=builder /usr/src/app/dist ./dist
+RUN npm ci
 
 # copy print.js
 WORKDIR /usr/src/app
