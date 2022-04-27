@@ -19,8 +19,7 @@ print:
     - cp print.js /usr/src/app/print.js
     - cd /usr/src/app
     - mkdir dist
-    - npm i nuxt
-    - npm ci
+    - ls -la
     - cat package.json
     - npm run start
     - sleep 30
