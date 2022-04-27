@@ -68,7 +68,7 @@ ENTRYPOINT ["tail", "-f", "/dev/null"]
 # COPY /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
 RUN ls -la /usr/src/veo
 RUN ls -la /usr/src/veo/dist
-COPY /usr/src/app/dist/*.pdf /usr/src/veo/dist/
+COPY ./dist/*.pdf ../veo/dist/
 
 FROM nginx:1.21 AS release
 
