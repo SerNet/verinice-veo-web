@@ -21,6 +21,7 @@ print:
     - mkdir dist
     - npm i nuxt
     - npm ci
+    - cat package.json
     - npm run start
     - sleep 30
     - node print.js
