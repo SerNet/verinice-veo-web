@@ -20,8 +20,8 @@ print:
     - cd /usr/src/app
     - mkdir dist
     - npm i nuxt
-    - npx nuxt generate
     - (npm run start&)
+    - sleep 30
     - node print.js
     - cp /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
     - ls -la /usr/src/app
