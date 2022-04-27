@@ -20,7 +20,6 @@ print:
     - cd /usr/src/app
     - mkdir dist
     - npm i nuxt
-    - nuxt --version
     - npm run generate
     - (npm run start&)
     - node print.js
