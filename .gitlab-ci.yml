@@ -21,7 +21,7 @@ print:
     - mkdir dist
     - npm i nuxt
     - npm ci
-    - (npm run start&)
+    - npm run start
     - sleep 30
     - node print.js
     - cp /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
