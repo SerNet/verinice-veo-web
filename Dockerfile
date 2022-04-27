@@ -47,9 +47,6 @@ FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 WORKDIR /usr/src/veo
 COPY --from=builder /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
 COPY --from=builder /usr/src/app/dist ./dist
-RUN pwd
-RUN ls -la
-RUN npm ci
 
 # copy print.js
 WORKDIR /usr/src/app
@@ -63,13 +60,11 @@ RUN sleep 15 && node print.js
 RUN echo "asdf"
 
 # Kill veo in background
-RUN ps -ef | grep node
-RUN pgrep node
+RUN pkill node
 
 # Copy files to veo dist folder to bundle it with application and copy it to project root to expose as artifacts
 COPY /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
 COPY /usr/src/app/dist/*.pdf /usr/src/veo/dist/
-
 
 FROM nginx:1.21 AS release
 
@@ -77,8 +72,6 @@ COPY --from=printer /usr/src/veo/dist /usr/src/app
 
 # Add custom config to serve the index.html as entrypoint if the server would otherwise return a 404
 COPY  nginx.conf /etc/nginx/conf.d/custom.conf
-
-RUN ls -la
 
 EXPOSE 80
 
