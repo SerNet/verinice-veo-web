@@ -19,6 +19,8 @@ print:
     - cp print.js /usr/src/app/print.js
     - cd /usr/src/app
     - mkdir dist
+    - npm config set user 0
+    - npm config set unsafe-perm true
     - npm i -g nuxt
     - nuxt --version
     - npm run generate
