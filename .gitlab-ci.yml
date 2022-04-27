@@ -12,6 +12,7 @@ variables:
 
 print:
   extends: build
+  needs: ['build'] # Wait for build to finish
   dependencies: ['build'] # We reuse the generated build artifact, thus we have to wait for the build job to finish
   stage: build
   image: ghcr.io/drpayyne/chrome-puppeteer:latest
