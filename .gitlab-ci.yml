@@ -19,8 +19,8 @@ print:
     - cp print.js /usr/src/app/print.js
     - cd /usr/src/app
     - mkdir dist
-    - npm i
-    - npm -v
+    - npm i -g nuxt
+    - nuxt --version
     - npm run generate
     - (npm run start&)
     - node print.js
