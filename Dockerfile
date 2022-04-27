@@ -66,7 +66,9 @@ ENTRYPOINT ["tail", "-f", "/dev/null"]
 
 # Copy files to veo dist folder to bundle it with application and copy it to project root to expose as artifacts
 # COPY /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
-COPY /usr/src/app/dist/ /usr/src/veo/dist/
+RUN ls -la /usr/src/app
+RUN ls -la /usr/src/app/dist
+# COPY /usr/src/app/dist/ /usr/src/veo/dist/
 
 FROM nginx:1.21 AS release
 
