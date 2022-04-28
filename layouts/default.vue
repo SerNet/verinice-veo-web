@@ -19,6 +19,7 @@
   <v-app>
     <v-app-bar
       class="veo-app-bar"
+      data-component-name="app-bar"
       app
       flat
     >
@@ -55,6 +56,7 @@
               'ml-2': miniVariant
             }"
             style="min-height: 65px;"
+            data-component-name="logo"
           >
             <nuxt-link
               :to="homeLink"

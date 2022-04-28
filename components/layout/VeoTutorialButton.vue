@@ -27,6 +27,7 @@
           type="submit"
           :disabled="!tutorialsForRoute.length"
           v-bind="attrs"
+          data-component-name="tutorial-select"
           @click="visible ? stop(): load()"
         >
           <v-icon v-text="visible ? mdiInformationOffOutline : mdiInformationOutline" />
@@ -42,6 +43,7 @@
             <v-btn
               color="black"
               icon
+              data-component-name="tutorial-select"
               v-on="menuOn"
             >
               <v-icon v-text="visible ? mdiInformationOffOutline : mdiInformationOutline" />

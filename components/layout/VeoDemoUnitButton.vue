@@ -35,6 +35,7 @@
             'veo-demo-unit-button': !iconOnly
           }"
           style="height: 40px; width: 100%; border-radius: 12px"
+          data-component-name="demo-unit-button"
           @click="toggleDemoUnit"
         >
           <v-icon

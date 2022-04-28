@@ -24,6 +24,7 @@
       <v-list-item
         class="veo-domain-select mx-2"
         dense
+        data-component-name="domain-select"
         :disabled="disabled"
         v-on="on"
       >

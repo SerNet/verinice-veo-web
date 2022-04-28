@@ -26,6 +26,7 @@
       <v-btn
         color="black"
         icon
+        data-component-name="language-select"
         v-on="on"
       >
         <v-icon>{{ mdiTranslate }}</v-icon>

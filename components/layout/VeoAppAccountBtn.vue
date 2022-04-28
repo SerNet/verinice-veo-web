@@ -30,6 +30,7 @@
         icon
         class="mr-0"
         dark
+        data-component-name="account-menu-button"
         v-on="on"
       >
         <v-avatar
