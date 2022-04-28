@@ -19,6 +19,8 @@
   <v-menu
     offset-y
     bottom
+    left
+    nudge-bottom="2"
   >
     <template #activator="{ on }">
       <v-btn

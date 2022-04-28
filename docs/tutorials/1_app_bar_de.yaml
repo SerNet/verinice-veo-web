@@ -1,6 +1,6 @@
 title: Tutorial Anwendungsleiste
 description: Beschreibung der Anwendungsleiste
-# route: /
+route: /
 steps:
   - title: 'Anwendungsleiste'
     element: '#app > div.v-application--wrap > header'
