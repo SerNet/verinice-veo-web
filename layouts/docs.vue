@@ -39,9 +39,10 @@
               :to="pdfPath"
               color="primary"
               class="mr-2"
+              target="_blank"
             >
               {{ t('exportAsPDF') }}
-            </v-btn>
+            </v-btn>            
           </div>
         </template>
         <template #default>
