@@ -6,13 +6,13 @@ steps:
   - title: 'Die Unitauswahl'
     intro: Auf der Seite Unitauswahl können Sie eine der verfügbaren Units zur weiteren Bearbeitung auswählen.
   - title: 'Verfügbare Units'
-    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.v-data-iterator > div.v-list.v-sheet.theme--light.v-list--dense'
+    element: '[data-component-name=unit-selection-available-units]'
     intro: Wählen Sie die gewünschte Unit aus.
   - title: 'Paginierung'
-    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div.v-data-iterator > div.v-data-footer'
+    element: 'div.v-data-iterator > div.v-data-footer'
     intro: Existieren viele Units können Sie durch die Paginierung die Anzahl der je Seite dargestellten Units anpassen und zwischen den einzelnen Seiten navigieren.
   - title: 'Unit suchen'
-    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div'
+    element: '[data-component-name=unit-selection-search]'
     intro: Unit suchen
   - title: 'Geschafft'
     intro: Weitere Informationen zur Units finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>

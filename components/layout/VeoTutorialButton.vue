@@ -56,7 +56,9 @@
                 :key="tutorial.slug"
                 @click="load(tutorial.path)"
               >
-                {{ tutorial.title }}
+                <v-list-item-title>
+                  {{ tutorial.title }}
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </template>

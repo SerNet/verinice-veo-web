@@ -33,7 +33,7 @@
       </v-btn>
     </template>
     <template #default>
-      <v-list>
+      <v-list dense>
         <v-list-item-group
           :value="$i18n.locale"
           color="primary"
