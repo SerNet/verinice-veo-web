@@ -69,4 +69,6 @@ COPY  nginx.conf /etc/nginx/conf.d/custom.conf
 
 EXPOSE 80
 
+RUN ls -la /usr/src/app
+
 CMD ["nginx", "-c", "/etc/nginx/conf.d/custom.conf", "-g", "pid /tmp/nginx.pid; daemon off;"]
