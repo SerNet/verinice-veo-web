@@ -20,6 +20,7 @@
     :title="title"
     :loading="!domain"
     padding
+    data-component-name="domain-dashboard-page"
   >
     <p
       v-if="domain"
@@ -48,12 +49,14 @@
         >
           <VeoMyLatestRevisionsWidget
             v-if="widget === 'my_latest_widget'"
+            data-component-name="domain-dashboard-latest-revisions-widget"
           />
           <VeoStackedStatusBarChartWidget
             v-else
             chart-height="30"
             :data="widgets[widget]"
             :loading="$fetchState.pending"
+            :data-component-name="`domain-dashboard-${widget}-widget`"
             @click="onBarClick"
           />
         </div>
