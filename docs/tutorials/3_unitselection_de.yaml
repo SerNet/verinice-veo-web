@@ -1,6 +1,7 @@
 title: Die Unitauswahl
 description: Beschreibung der Unitauswahl
 route: /
+exact: true
 steps:
   - title: 'Die Unitauswahl'
     intro: Auf der Seite Unitauswahl können Sie eine der verfügbaren Units zur weiteren Bearbeitung auswählen.

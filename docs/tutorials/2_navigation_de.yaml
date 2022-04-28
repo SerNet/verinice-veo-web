@@ -1,6 +1,6 @@
 title: Die Navigation
 description: Beschreibung der Navigationsleiste
-route: /unit-:unit/domains/domain-:domain
+route: /
 steps:
   - title: 'Die Navigation'
     element: '#app > div.v-application--wrap > nav > div.v-navigation-drawer__content > div > div'

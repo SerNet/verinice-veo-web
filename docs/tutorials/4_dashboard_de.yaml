@@ -1,6 +1,7 @@
 title: Dashboard-Tutorial
 description: Das veo.Dashboard
 route: /unit-:unit/domains/domain-:domain
+exact: true
 steps:
   - title: 'Das Dashboard'
     element: '#app > div.v-application--wrap > main > div'
