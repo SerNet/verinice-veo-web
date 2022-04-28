@@ -13,7 +13,6 @@ RUN npm ci
 # Bundle app source
 COPY . .
 
-ARG CI_PROJECT_DIR
 ARG CI_COMMIT_REF_NAME=master
 ARG CI_COMMIT_SHA=latest
 ARG CI_JOB_ID=-1
@@ -26,7 +25,6 @@ ARG VEO_OIDC_REALM
 ARG VEO_OIDC_CLIENT
 ARG NODE_ENV=production
 
-ENV CI_PROJECT_DIR ${CI_PROJECT_DIR}
 ENV CI_COMMIT_REF_NAME ${CI_COMMIT_REF_NAME}
 ENV CI_COMMIT_SHA ${CI_COMMIT_SHA}
 ENV CI_JOB_ID ${CI_JOB_ID}
@@ -44,6 +42,12 @@ RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > static/
 RUN npm run generate
 
 FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
+
+ARG CI_PROJECT_DIR
+ARG NODE_ENV=production
+
+ENV CI_PROJECT_DIR ${CI_PROJECT_DIR}
+ENV NODE_ENV=$NODE_ENV
 
 # copy generated application and install dependencies
 WORKDIR /usr/src/veo
