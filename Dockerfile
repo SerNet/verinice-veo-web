@@ -64,8 +64,7 @@ RUN ps -ef | grep node | awk '{print $2}'
 
 # Copy files to veo dist folder to bundle it with application and copy it to project root to expose as artifacts
 # COPY /usr/src/app/dist/*.pdf "$CI_PROJECT_DIR/"
-RUN echo "$CI_PROJECT_DIR/"
-RUN whoami
+RUN echo "${CI_PROJECT_DIR}/"
 RUN cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
 
 FROM nginx:1.21 AS release
