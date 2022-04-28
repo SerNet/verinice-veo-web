@@ -57,8 +57,7 @@ RUN mkdir dist
 # Start nuxt app in background, wait for startup and generate pdf documentation
 RUN nohup sh -c "(cd /usr/src/veo && (./node_modules/nuxt/bin/nuxt.js start&))" && sleep 5 && node print.js
 
-# Copy files to veo dist folder to bundle it with application and copy it to project root to expose as artifacts
-RUN cp /usr/src/app/dist/*.pdf /
+# Copy files to veo dist folder to bundle it with application
 RUN cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
 
 FROM nginx:1.21 AS release
