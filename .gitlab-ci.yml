@@ -14,7 +14,7 @@ build:
   artifacts:
     when: always
     paths:
-      - '/usr/src/veo/dist/*.pdf'
+      - '/usr/src/app/*.pdf'
 
 review:
   environment:
