@@ -43,6 +43,7 @@
                 :disabled="!allowedActions.length || disabled"
                 depressed
                 fab
+                data-component-name="object-details-actions-button"
               >
                 <v-icon v-if="speedDialIsOpen">
                   {{ mdiClose }}

@@ -219,7 +219,8 @@ export default Vue.extend({
     return h(
       'div',
       {
-        class: 'fill-width fill-height d-flex flex-column overflow-hidden'
+        class: 'fill-width fill-height d-flex flex-column overflow-hidden',
+        ...this.$attrs
       },
       [
         h(
