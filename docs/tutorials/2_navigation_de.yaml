@@ -3,28 +3,28 @@ description: Beschreibung der Navigationsleiste
 route: /
 steps:
   - title: 'Die Navigation'
-    element: '#app > div.v-application--wrap > nav > div.v-navigation-drawer__content > div > div'
+    element: '[data-component-name=primary-navigation]'
     intro: Über die Navigation können die einzelnen Detailseiten aufgerufen werden.
   - title: 'Unitauswahl'
-    element: '#app > div.v-application--wrap > nav > div.v-navigation-drawer__content > div > div > a:nth-child(1)'
+    element: '[data-component-name=unit-select-nav-item]'
     intro: Im Bereich Unitauswahl wechseln Sie zu einer anderen Unit.
   - title: 'Dashboard'
-    element: '#app > div.v-application--wrap > nav > div.v-navigation-drawer__content > div > div > a:nth-child(2)'
+    element: '[data-component-name=domain-dashboard-nav-item]'
     intro: Das Dashboard präsentiert alle Objekte je Subtyp und Status als Lebenszyklus.
   - title: 'Objekte'
-    element: '#app > div.v-application--wrap > nav > div.v-navigation-drawer__content > div > div > div.v-list-group.flex-grow-0.flex-auto.veo-primary-navigation__menu-item.v-list-group--active.v-list-group--no-action.black--text > div.v-list-group__header.v-list-item.v-list-item--active.v-list-item--link.theme--light'
+    element: '[data-component-name=objects-nav-item]'
     intro: Im Bereich Objekte navigieren Sie direkt zu den Übersichtsseiten der Objekttypen Scopes, Prozesse, Assets, Personen, Incidents, Documente, Szenarien und Controls.
   - title: 'Kataloge'
-    element: '#app > div.v-application--wrap > nav > div.v-navigation-drawer__content > div > div > div:nth-child(4)'
+    element: '[data-component-name=catalogs-nav-item]'
     intro: Um Kataloge wie z.B. Controls anzuwenden wählen Sie aus den verfügbaren Katalogen aus.
   - title: 'Reports'
-    element: '#app > div.v-application--wrap > nav > div.v-navigation-drawer__content > div > div > div:nth-child(5)'
+    element: '[data-component-name=reports-nav-item]'
     intro: Um einen Report auszugeben wählen Sie im Bereich Reports eine der verfügbaren Reportvorlagen aus.
   - title: 'Risiken'
-    element: '#app > div.v-application--wrap > nav > div.v-navigation-drawer__content > div > div > div:nth-child(6)'
+    element: '[data-component-name=risks-nav-item]'
     intro: Im Bereich Risiken können Sie eine der verfügbaren Risikodefinitionen einsehen.
   - title: 'Menü verstecken'
-    element: '#app > div.v-application--wrap > nav > div.v-navigation-drawer__append > div > div'
+    element: '[data-component-name=toggle-navigation]'
     intro: Über Menü verstecken können Sie die Navigation ein- bzw. ausklappen.
   - title: 'Geschafft'
     intro: Weitere Informationen finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>

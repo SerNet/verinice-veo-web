@@ -39,6 +39,7 @@
     :to="to"
     :exact="exact === undefined || exact"
     active-class="veo-primary-navigation-entry--active"
+    :data-component-name="componentName"
   >
     <v-list-item-icon>
       <v-tooltip
@@ -70,6 +71,7 @@
     class="flex-grow-0 flex-auto veo-primary-navigation__menu-item overflow-hidden"
     color="black"
     no-action
+    :data-component-name="componentName"
     @click="onGroupClick"
   >
     <template #activator>
@@ -164,6 +166,10 @@ export default defineComponent({
     level: {
       type: Number,
       default: 0
+    },
+    componentName: {
+      type: String,
+      default: undefined
     }
   },
   setup(props, { emit }) {

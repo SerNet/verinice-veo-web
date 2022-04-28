@@ -46,6 +46,7 @@
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="unitId"
+      data-component-name="primary-navigation"
     >
       <template #header="{ miniVariant }">
         <div>

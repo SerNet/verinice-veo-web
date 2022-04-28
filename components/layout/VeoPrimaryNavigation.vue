@@ -74,6 +74,7 @@
         <v-list-item
           v-if="!$vuetify.breakpoint.xs"
           class="pl-4"
+          data-component-name="toggle-navigation"
           @click="setMiniVariant(!miniVariant)"
         >
           <v-list-item-icon>
@@ -140,6 +141,7 @@ export interface INavItem {
   childItemsLoading?: boolean;
   partOfActivePath?: boolean;
   exact?: boolean;
+  componentName?: string;
 }
 
 const objectTypeSortOrder = new Map<string, number>([
@@ -352,7 +354,8 @@ export default defineComponent({
       icon: mdiFormatListBulleted,
       to: {
         name: UNIT_SELECTION_ROUTE_NAME
-      }
+      },
+      componentName: 'unit-select-nav-item'
     };
 
     const domainDashboardNavEntry = computed<INavItem>(() => ({
@@ -364,7 +367,8 @@ export default defineComponent({
           unit: createUUIDUrlParam('unit', props.unitId),
           domain: createUUIDUrlParam('domain', props.domainId)
         }
-      }
+      },
+      componentName: 'domain-dashboard-nav-item'
     }));
 
     const objectsNavEntry = computed<INavItem>(() => ({
@@ -373,7 +377,8 @@ export default defineComponent({
       to: undefined,
       childItems: objectTypesChildItems.value,
       childItemsLoading: objectEntriesLoading.pending,
-      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/objects`)
+      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/objects`),
+      componentName: 'objects-nav-item'
     }));
 
     const catalogsNavEntry = computed<INavItem>(() => ({
@@ -382,7 +387,8 @@ export default defineComponent({
       to: undefined,
       childItems: catalogsEntriesChildItems.value,
       childItemsLoading: catalogsEntriesLoading.pending,
-      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/catalogs`)
+      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/catalogs`),
+      componentName: 'catalogs-nav-item'
     }));
 
     const reportsNavEntry = computed<INavItem>(() => ({
@@ -391,7 +397,8 @@ export default defineComponent({
       to: undefined,
       childItems: reportsEntriesChildItems.value,
       childItemsLoading: reportsEntriesLoading.pending,
-      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/reports`)
+      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/reports`),
+      componentName: 'reports-nav-item'
     }));
 
     const risksNavEntry = computed<INavItem>(() => ({
@@ -400,7 +407,8 @@ export default defineComponent({
       to: undefined,
       childItems: riskChildItems.value,
       childItemsLoading: riskDefinitionsLoading.pending,
-      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/risks`)
+      partOfActivePath: route.value.fullPath.includes(`/unit-${props.unitId}/domains/domain-${props.domainId}/risks`),
+      componentName: 'risks-nav-item'
     }));
 
     const editorsNavEntry = computed<INavItem>(() => ({
