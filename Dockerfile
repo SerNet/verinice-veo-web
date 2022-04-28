@@ -4,6 +4,8 @@ FROM node:14-alpine AS builder
 # Install Git & Install Python for node-14
 RUN apk --no-cache add git python3 make g++
 
+RUN pwd
+
 # Create app directory
 WORKDIR /usr/src/app
 # Copy .npmrc for installing @nbrx/eslint-config-nuxt and package.json and lock file
@@ -64,6 +66,7 @@ RUN mkdir dist
 RUN nohup sh -c "(cd /usr/src/veo && (./node_modules/nuxt/bin/nuxt.js start&))" && sleep 5 && node print.js
 
 # Copy files to veo dist folder to bundle it with application and copy it to project root to expose as artifacts
+RUN pwd
 RUN cp /usr/src/app/dist/*.pdf "${CI_PROJECT_DIR}/"
 RUN cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
 
