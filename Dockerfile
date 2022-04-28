@@ -4,8 +4,6 @@ FROM node:14-alpine AS builder
 # Install Git & Install Python for node-14
 RUN apk --no-cache add git python3 make g++
 
-RUN pwd
-
 # Create app directory
 WORKDIR /usr/src/app
 # Copy .npmrc for installing @nbrx/eslint-config-nuxt and package.json and lock file
@@ -45,12 +43,6 @@ RUN npm run generate
 
 FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
 
-ARG CI_PROJECT_DIR
-ARG NODE_ENV=production
-
-ENV CI_PROJECT_DIR ${CI_PROJECT_DIR}
-ENV NODE_ENV=$NODE_ENV
-
 # copy generated application and install dependencies
 WORKDIR /usr/src/veo
 COPY --from=builder /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
@@ -66,8 +58,7 @@ RUN mkdir dist
 RUN nohup sh -c "(cd /usr/src/veo && (./node_modules/nuxt/bin/nuxt.js start&))" && sleep 5 && node print.js
 
 # Copy files to veo dist folder to bundle it with application and copy it to project root to expose as artifacts
-RUN pwd
-RUN cp /usr/src/app/dist/*.pdf "${CI_PROJECT_DIR}/"
+RUN cp /usr/src/app/dist/*.pdf /
 RUN cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
 
 FROM nginx:1.21 AS release
