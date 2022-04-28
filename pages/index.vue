@@ -61,11 +61,6 @@
             </v-list>
           </template>
         </v-data-iterator>
-      </veocard>
-    </div>
-  </veopage>
-</template>
-        </v-data-iterator>
       </VeoCard>
     </div>
     <VeoWelcomeDialog
