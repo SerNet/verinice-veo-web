@@ -19,7 +19,7 @@
   <v-col
     class="veo-page py-0"
     cols="12"
-    :class="noPadding ? 'px-0' : isPageWrapperChild? 'px-10' : 'px-4'"
+    :class="noPadding ? 'px-0' : 'px-4'"
   >
     <VeoPageHeader v-bind="$props">
       <template #title>
@@ -35,29 +35,7 @@
       class="pa-0 flex-column flex-nowrap"
     >
       <v-col :class="contentClass">
-        <slot
-          v-if="loading && loadContent"
-          name="loading"
-        >
-          <v-skeleton-loader
-            width="100%"
-            type="image"
-          />
-          <v-skeleton-loader
-            type="heading"
-            class="pt-3"
-            height="56"
-            width="100%"
-          />
-          <v-skeleton-loader
-            width="100%"
-            type="image"
-          />
-        </slot>
-        <slot
-          v-else
-          name="default"
-        />
+        <slot name="default" />
       </v-col>
       <v-col
         v-if="$slots.footer"
@@ -79,10 +57,8 @@ interface IProps {
   stickyHeader: boolean;
   height: string;
   loading: boolean;
-  loadContent: boolean;
   title?: string;
   titlebarAlignment: VeoPageHeaderAlignment;
-  isPageWrapperChild: boolean;
 }
 
 export default defineComponent<IProps>({
@@ -118,13 +94,6 @@ export default defineComponent<IProps>({
       type: Boolean,
       default: false
     },
-    /**
-     * If this and loading is set, show a skeleton in the content area. Can be customized with slot#loading
-     */
-    loadContent: {
-      type: Boolean,
-      default: false
-    },
     noPadding: {
       type: Boolean,
       default: false
@@ -139,11 +108,7 @@ export default defineComponent<IProps>({
     titlebarAlignment: {
       type: Number,
       default: VeoPageHeaderAlignment.LEFT
-    } as PropOptions<VeoPageHeaderAlignment>,
-    isPageWrapperChild: {
-      type: Boolean,
-      default: false
-    }
+    } as PropOptions<VeoPageHeaderAlignment>
   },
   setup() {
     return {};

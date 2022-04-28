@@ -17,9 +17,8 @@
 -->
 <template>
   <VeoPageWrapper
-    :page-widths="[6, 6]"
-    :page-widths-lg="[7, 5]"
-    :page-widths-xl="[8, 4]"
+    unresponsive-page-widths
+    :page-widths="[{ width: '100%', minWidth: 'auto' }, '300px']"
   >
     <template #default>
       <VeoPage
