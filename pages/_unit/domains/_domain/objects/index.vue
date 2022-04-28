@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="upperFirst(t('objectOverview').toString())">
+  <VeoPage
+    :title="upperFirst(t('objectOverview').toString())"
+    data-component-name="object-overview-page"
+  >
     <VeoFilterDialog
       v-model="filterDialogVisible"
       :domain="domainId"
@@ -37,7 +40,7 @@
       :item="itemDelete"
       @input="onCloseDeleteDialog"
       @success="fetch(); onCloseDeleteDialog(false)"
-      @error="showError('unlink', itemDelete, $event)"
+      @error="showError('delete', itemDelete, $event)"
     />
     <v-row no-gutters>
       <v-col
@@ -52,6 +55,7 @@
           depressed
           small
           style="outline: 1px solid black;"
+          data-component-name="object-overview-filter"
           @click="filterDialogVisible = true"
         >
           <v-icon>{{ mdiFilter }}</v-icon> {{ upperFirst(t('filter').toString()) }}
@@ -61,7 +65,10 @@
         cols="auto"
         class="grow"
       >
-        <v-chip-group v-cy-name="'chips'">
+        <v-chip-group
+          v-cy-name="'chips'"
+          data-component-name="object-overview-active-filters"
+        >
           <VeoObjectChip
             v-for="k in activeFilterKeys"
             :key="k"
@@ -78,6 +85,7 @@
         :items="items"
         :loading="fetchState.pending"
         :default-headers="['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']"
+        data-component-name="object-overview-table"
         @page-change="onPageChange"
         @click="openItem"
       >
@@ -90,6 +98,7 @@
             <template #activator="{on}">
               <v-btn
                 icon
+                :data-component-name="`object-overview-${btn.id}-button`"
                 @click="btn.action(item)"
                 v-on="on"
               >
@@ -125,6 +134,7 @@
           absolute
           right
           style="bottom: 12px"
+          data-component-name="create-object-button"
           @click="createDialogVisible = true"
           v-on="on"
         >
@@ -280,7 +290,7 @@ export default defineComponent({
       }
     };
 
-    const showError = (messageKey: 'clone' | 'unlink', _item: IVeoEntity | undefined, error: Error) => {
+    const showError = (messageKey: 'clone' | 'delete', _item: IVeoEntity | undefined, error: Error) => {
       displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
     };
 
@@ -312,8 +322,8 @@ export default defineComponent({
         }
       },
       {
-        id: 'unlink',
-        label: upperFirst(t('unlinkObject').toString()),
+        id: 'delete',
+        label: upperFirst(t('deleteObject').toString()),
         icon: mdiTrashCanOutline,
         action(item: IVeoEntity) {
           itemDelete.value = item;
@@ -364,10 +374,10 @@ export default defineComponent({
     "createObject": "create {0}",
     "clone": "duplicated",
     "cloneObject": "clone object",
-    "unlinkObject": "delete object",
+    "deleteObject": "delete object",
     "errors": {
       "clone": "Could not clone object",
-      "unlink": "Could not unlink object"
+      "delete": "Could not delete object"
     }
   },
   "de": {
@@ -377,10 +387,10 @@ export default defineComponent({
     "createObject": "{0} erstellen",
     "clone": "dupliziert",
     "cloneObject": "objekt duplizieren",
-    "unlinkObject": "objekt löschen",
+    "deleteObject": "objekt löschen",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden",
-      "unlink": "Das Objekt konnte nicht gelöscht werden"
+      "delete": "Das Objekt konnte nicht gelöscht werden"
     }
   }
 }

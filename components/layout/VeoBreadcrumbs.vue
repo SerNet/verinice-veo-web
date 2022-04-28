@@ -19,6 +19,7 @@
   <v-breadcrumbs
     :items="breadcrumbItems"
     class="px-0"
+    data-component-name="breadcrumbs"
   >
     <template #item="{ item }">
       <v-menu
