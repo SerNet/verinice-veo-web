@@ -125,7 +125,7 @@ export default defineComponent({
     return {
       title: this.title,
       // ensure pagedjs is not embedded until documents have been rendered
-      script: this.documents
+      script: this.documents.length
         ? [
             {
               // Do not execute PagedJS automatically

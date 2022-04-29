@@ -10,12 +10,6 @@ variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress' # for cypress tests
   CYPRESS_BASE_URL: ''
 
-build:
-  artifacts:
-    when: always
-    paths:
-      - '/usr/src/app/*.pdf'
-
 review:
   environment:
     auto_stop_in: 4 week
