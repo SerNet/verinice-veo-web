@@ -24,6 +24,7 @@
     :class="{flag: value===true}"
     style="height: auto;"
     color="primary"
+    data-component-name="veo-object-chip"
     v-on="$listeners"
   >
     <div

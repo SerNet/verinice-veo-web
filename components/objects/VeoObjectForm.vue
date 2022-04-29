@@ -26,6 +26,7 @@
         color="#ffffff"
         sticky-header
         :sticky-footer="!!$slots['append-form-fixed']"
+        data-component-name="object-form-form"
       >
         <template #header>
           <v-row class="align-center mx-0 pb-3 pt-2">
@@ -73,6 +74,7 @@
       <VeoPage
         color="#ffffff"
         no-padding
+        data-component-name="object-form-sidebar"
       >
         <template #default>
           <VeoTabs
@@ -81,16 +83,22 @@
             grow
           >
             <template #tabs>
-              <v-tab :disabled="!currentFormSchema || !formSchemaHasGroups">
+              <v-tab
+                :disabled="!currentFormSchema || !formSchemaHasGroups"
+                data-component-name="object-form-form-navigation"
+              >
                 <v-icon v-text="mdiFormatListBulleted" />
               </v-tab>
-              <v-tab v-if="!disableHistory">
+              <v-tab
+                v-if="!disableHistory"
+                data-component-name="object-form-history"
+              >
                 <v-icon
                   v-cy-name="'history-tab'"
                   v-text="mdiHistory"
                 />
               </v-tab>
-              <v-tab>
+              <v-tab data-component-name="object-form-validation">
                 <v-badge
                   :content="messages.errors.length + messages.warnings.length"
                   :value="messages.errors.length + messages.warnings.length > 0"

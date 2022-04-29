@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-row class="mb-2">
+  <v-row
+    class="mb-2"
+    data-component-name="risk-matrix-wrapper"
+  >
     <v-col
       v-for="protectionGoal of protectionGoals"
       :key="protectionGoal.id"

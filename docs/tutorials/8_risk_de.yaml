@@ -3,16 +3,16 @@ description: Risikokonfiguration verstehen
 route: /unit-:units/domains/domain-:domain/risks/:risk
 steps:
   - title: 'Risiken'
-    element: '#app > div.v-application--wrap > main > div'
+    element: '[data-component-name=risk-page]'
     intro: Im Abschnitt Risikodefinitionen können die verfügbaren Risikodefinitionen eingesehen werden.
   - title: 'Risikodefinition DSRA'
-    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div > div.v-tabs.theme--light > div > div.v-slide-group__wrapper'
+    element: '[data-component-name=risk-definition-DSRA]'
     intro: zur Verfügung steht die Risikodefinition DSRA für die Risikoanalyse im Datenschutz.
   - title: 'Schutzziele'
-    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div > div.v-window.v-item-group.theme--light.v-tabs-items.pt-4 > div > div > div > div > div > div > div > div.v-select__slot'
+    element: '[data-component-name=risk-matrix-wrapper]'
     intro: Für die DSRA wird die Risikomatrix für die Schutzziele Vertraulichkeit, Integrität, Verfügbarkeit und Belastbarkeit dargestellt.
   - title: 'Risikomatrix'
-    element: '#app > div.v-application--wrap > main > div > div > div.row.pa-0.flex-column.flex-nowrap.no-gutters > div > div > div > div.v-window.v-item-group.theme--light.v-tabs-items.pt-4 > div > div > div > table'
+    element: '[data-component-name=risk-matrix-wrapper] .veo-card'
     intro: Die Risikomatrix stellt die Zuordnung der Kombination aus Eintrittswahrscheinlichkeit und möglicher Auswirkung zu den Risikokategorien dar.
   - title: 'Wichtig'
     intro: Die Risikodefinition wird in Zukunft von Anwendenden anpassbar sein!

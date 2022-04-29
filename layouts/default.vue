@@ -19,6 +19,7 @@
   <v-app>
     <v-app-bar
       class="veo-app-bar"
+      data-component-name="app-bar"
       app
       flat
     >
@@ -29,24 +30,9 @@
       <VeoBreadcrumbs :key="breadcrumbsKey" />
       <v-spacer />
       <VeoLanguageSwitch />
-      <v-tooltip bottom>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            class="veo-list-searchbar__button mr-3"
-            color="black"
-            icon
-            role="submit"
-            type="submit"
-            :disabled="!hasTutorials"
-            v-bind="attrs"
-            @click="tutorialVisible?stopTutorial():startTutorial()"
-            v-on="on"
-          >
-            <v-icon v-text="tutorialVisible?'mdi-information-off-outline':'mdi-information-outline'" />
-          </v-btn>
-        </template>
-        <span v-text="t(tutorialVisible?'hideHelp':'showHelp')" />
-      </v-tooltip>
+      <div class="mx-3">
+        <VeoTutorialButton />
+      </div>
       <VeoAppAccountBtn
         v-if="$user.auth.profile"
         :username="$user.auth.profile.username"
@@ -60,6 +46,7 @@
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="unitId"
+      data-component-name="primary-navigation"
     >
       <template #header="{ miniVariant }">
         <div>
@@ -70,6 +57,7 @@
               'ml-2': miniVariant
             }"
             style="min-height: 65px;"
+            data-component-name="logo"
           >
             <nuxt-link
               :to="homeLink"
@@ -109,7 +97,6 @@ import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
 import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useTutorials } from '~/composables/intro';
 
 import 'intro.js/minified/introjs.min.css';
 
@@ -122,7 +109,6 @@ export default defineComponent({
     const { alerts, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
     listenToRootEvents(context.root);
-    const { load: startTutorial, stop: stopTutorial, hasTutorials, visible: tutorialVisible } = useTutorials();
     //
     // Global navigation
     //
@@ -197,12 +183,7 @@ export default defineComponent({
       newUnitDialog,
       breadcrumbsKey,
       homeLink,
-      alerts,
-      hasTutorials,
-      startTutorial,
-      stopTutorial,
-      tutorialVisible,
-      t
+      alerts
     };
   },
   head() {
@@ -226,16 +207,3 @@ export default defineComponent({
   padding-top: 8px;
 }
 </style>
-
-<i18n>
-{
-  "de": {
-    "showHelp": "Kontext-Hilfe anzeigen",
-    "hideHelp": "Kontext-Hilfe ausblenden"
-  },
-  "en": {
-    "showHelp": "Show contextual help",
-    "hideHelp": "Hide contextual help"
-  }
-}
-</i18n>

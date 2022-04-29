@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="title">
+  <VeoPage
+    :title="title"
+    data-component-name="catalog-page"
+  >
     <template #default>
       <VeoTabs class="mt-6">
         <template #tabs>

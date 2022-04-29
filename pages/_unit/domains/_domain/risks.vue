@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage :title="upperFirst(t('risks').toString())">
+  <VeoPage
+    :title="upperFirst(t('risks').toString())"
+    data-component-name="risk-page"
+  >
     <template #default>
       <div>
         <p class="pt-3 mb-0 text-body-1">
@@ -30,6 +33,7 @@
             <v-tab
               v-for="riskDefinition of domain.riskDefinitions"
               :key="riskDefinition.id"
+              :data-component-name="`risk-definition-${riskDefinition.id}`"
             >
               {{ riskDefinition.id }}
             </v-tab>

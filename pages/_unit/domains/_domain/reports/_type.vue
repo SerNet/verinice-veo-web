@@ -19,6 +19,7 @@
   <VeoPage
     :title="title"
     :loading="$fetchState.pending"
+    data-component-name="report-page"
   >
     <template #header>
       <v-row
@@ -29,6 +30,7 @@
           <p
             v-if="report"
             class="mt-2 mb-0 text-body-1"
+            data-component-name="report-description"
           >
             {{ report.description[$i18n.locale] }}
           </p>
@@ -92,7 +94,10 @@
         </v-col>
         <v-spacer v-if="objectTypes.length <= 1 && subTypes.length <= 1" />
       </v-row>
-      <v-row no-gutters>
+      <v-row
+        no-gutters
+        data-component-name="report-entity-selection-filter-bar"
+      >
         <v-col
           cols="auto"
           class="d-flex align-center"
@@ -132,6 +137,7 @@
           :items="entities"
           :loading="$fetchState.pending || global_loading"
           single-select
+          data-component-name="report-entity-selection"
           @page-change="onPageChange"
         />
       </VeoCard>
@@ -145,6 +151,7 @@
             depressed
             color="primary"
             :disabled="global_loading || !selectedEntities.length"
+            data-component-name="generate-report-button"
             @click="generateReport"
           >
             {{ $t('generateReport') }}

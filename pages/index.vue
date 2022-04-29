@@ -28,19 +28,24 @@
           item-key="id"
         >
           <template #header>
-            <v-text-field
-              v-model="search"
-              dense
-              clearable
-              filled
-              hide-details
-              color="black"
-              prepend-inner-icon="mdi-magnify"
-              :label="$t('unitpickerPlaceholder')"
-            />
+            <div data-component-name="unit-selection-search">
+              <v-text-field
+                v-model="search"
+                dense
+                clearable
+                filled
+                hide-details
+                color="black"
+                prepend-inner-icon="mdi-magnify"
+                :label="$t('unitpickerPlaceholder')"
+              />
+            </div>
           </template>
           <template #default="{ items }">
-            <v-list dense>
+            <v-list
+              dense
+              data-component-name="unit-selection-available-units"
+            >
               <v-list-item
                 v-for="item in items"
                 :key="item.id"

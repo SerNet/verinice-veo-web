@@ -1,28 +1,28 @@
 title: Tutorial Anwendungsleiste
 description: Beschreibung der Anwendungsleiste
-# route: /
+route: /
 steps:
   - title: 'Anwendungsleiste'
-    element: '#app > div.v-application--wrap > header'
+    element: '[data-component-name=app-bar]'
     intro: Über die Anwendungsleiste steuern Sie die grundlegenden Funktionen. Sie steht in allen Ansichten zur Verfügung.
   - title: 'Logo'
-    element: '#app > div.v-application--wrap > header > div > a'
+    element: '[data-component-name=logo]'
     intro: Über das Logo kommen Sie immer zurück auf das Dashboard der aktiven Unit
 # Das Element Domain Selector ist auf der Seite Unitauswahl nicht verfügbar!
   - title: 'Domain Selector'
-    element: '#app > div.v-application--wrap > header > div > div.ml-6.fill-height'
+    element: '[data-component-name=domain-select]'
     intro: Wählen Sie aus den zur Verfügung stehenden Domänen aus.
   - title: 'Demo'
-    element: '#app > div.v-application--wrap > header > div > div.d-inline-block > button'
+    element: '[data-component-name=demo-unit-button]'
     intro: Die Demo stellt Ihnen schreibgeschützt alle Funktionen und Inhalte zur Verfügung.
   - title: 'Sprachauswahl'
-    element: '#app > div.v-application--wrap > header > div > div.v-input.veo-language-select.v-input--hide-details.v-input--is-label-active.v-input--is-dirty.v-input--dense.theme--light.v-text-field.v-text-field--single-line.v-text-field--filled.v-text-field--is-booted.v-text-field--enclosed.v-select > div'
+    element: '[data-component-name=language-select]'
     intro: Mit dem Sprachumschalter wählen Sie aus den verfügbaren Sprachen.
   - title: 'Kontext-Hilfe'
-    element: '#app > div.v-application--wrap > header > div > button > span > i'
+    element: '[data-component-name=tutorial-select]'
     intro: Über die Kontext-Hilfe rufen Sie alle verfügbaren Tutorials auf.
   - title: 'Account Button'
-    element: '#app > div.v-application--wrap > header > div > div.mr-0.text-right.flex-grow-0 > button'
+    element: '[data-component-name=account-menu-button]'
     intro: Über den Account Button können Sie sich abmelden und weitere Informationen zu verinice.veo abrufen.
   - title: 'Geschafft'
     intro: Weitere Informationen finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>

@@ -23,7 +23,7 @@
     <v-col class="flex-grow-0 text-body-1 py-2">
       <template v-if="!loading">
         <v-row>
-          <v-col>
+          <v-col data-component-name="object-details-date-time">
             <p class="text-no-wrap mb-0">
               <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
               {{ object && formatDateTime(object.updatedAt) || '-' }} {{ t('by') }} {{ object && object.updatedBy || '-' }}
@@ -55,6 +55,7 @@
     <v-col
       v-if="!loading"
       class="flex-grow-0 object-details-information text-body-1"
+      data-component-name="object-details-description"
     >
       <span v-if="object && object.description">{{ object.description }}</span>
       <i v-else>{{ t('noDescription') }}</i>
@@ -73,6 +74,7 @@
             v-for="tab in tabs"
             v-show="tab !== 'risks' || (object && object.type === 'process')"
             :key="tab"
+            :data-component-name="`object-details-${tab}-tab`"
           >
             {{ t(tab) }}
           </v-tab>

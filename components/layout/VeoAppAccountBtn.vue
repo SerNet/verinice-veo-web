@@ -22,13 +22,15 @@
     content-class="veo-account-menu"
     max-width="300px"
     offset-y
-    origin="top right"
+    bottom
+    left
   >
     <template #activator="{ on }">
       <v-btn
         icon
         class="mr-0"
         dark
+        data-component-name="account-menu-button"
         v-on="on"
       >
         <v-avatar
@@ -173,7 +175,7 @@ export default defineComponent({
   position: absolute;
   content: '';
   top: 0;
-  right: 16px;
+  right: 14px;
   transform: translateY(-100%);
   width: 10px;
   height: 13px;

@@ -326,7 +326,7 @@ export function useTutorials() {
         // only include docs with current language
         .filter((doc) => doc.lang === undefined || doc.lang === i18n.locale.value)
         .map((doc) => {
-          const regex = pathToRegex(doc.route);
+          const regex = pathToRegex(doc.route, doc.exact);
           return {
             ...doc,
             match: (path: string) => (regex ? regex.test(path) : true)
@@ -385,9 +385,9 @@ export function useTutorials() {
  * Vue uses path-to-regexp 1.7.0 (wildcard asterisk support)
  * @see https://router.vuejs.org/guide/essentials/dynamic-matching.html#advanced-matching-patterns
  */
-function pathToRegex(route?: string) {
+function pathToRegex(route?: string, exact: boolean = false) {
   try {
-    return route && pathToRegexp.default(route);
+    return route && pathToRegexp.default(route, { end: exact });
   } catch (e) {
     throw new Error(`${e} while parsing route: ${route}`);
   }

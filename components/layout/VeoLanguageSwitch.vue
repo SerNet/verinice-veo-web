@@ -19,18 +19,21 @@
   <v-menu
     offset-y
     bottom
+    left
+    nudge-bottom="2"
   >
     <template #activator="{ on }">
       <v-btn
         color="black"
         icon
+        data-component-name="language-select"
         v-on="on"
       >
         <v-icon>{{ mdiTranslate }}</v-icon>
       </v-btn>
     </template>
     <template #default>
-      <v-list>
+      <v-list dense>
         <v-list-item-group
           :value="$i18n.locale"
           color="primary"

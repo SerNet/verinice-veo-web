@@ -27,6 +27,7 @@
     :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
     class="veo-page-wrapper-white"
+    data-component-name="object-details-page"
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
@@ -35,6 +36,7 @@
         sticky-footer
         color="#ffffff"
         :title="(object && object.displayName) || ''"
+        data-component-name="object-details-details"
       >
         <template #default>
           <VeoObjectDetails
@@ -61,6 +63,7 @@
         content-class="fill-height"
         no-padding
         :title="!pageWidths[1] ? (object && object.displayName) : undefined"
+        data-component-name="object-details-form"
       >
         <template #default>
           <VeoObjectForm
@@ -93,6 +96,7 @@
               <div
                 class="d-flex pt-2 pb-4 white"
                 style="border-top: 1px solid #efefef"
+                data-component-name="object-details-actions"
               >
                 <template v-if="!formDataIsRevision">
                   <v-btn
