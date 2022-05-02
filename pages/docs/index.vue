@@ -16,40 +16,54 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="document">
-    <nuxt-link
-      to="/docs"
-      class="exit-print"
-    >
-      {{ t('closePreview') }}
-    </nuxt-link>
-    <div class="page">
-      <h1 class="text-h1 mx-auto">
-        {{ t('documentation') }}
-      </h1>
-    </div>
-    <template v-if="documents">
-      <TableOfContents
-        class="page"
-        children-property="childItems"
-        :value="documents"
-      />
-      <div
-        v-for="document in documents"
-        :id="document.path"
-        :key="document.path"
-        class="page"
+  <div>
+    <div class="preview-controls justify-space-between pb-2">
+      <v-btn
+        text
+        plain
+        to="/docs"
       >
-        <NuxtContent :document="document" />
-      </div>
-    </template>
+        {{ t('closePreview') }}
+      </v-btn>
+      <v-btn
+        id="print-button"
+        text
+        color="primary"
+      >
+        {{ t('print') }}
+      </v-btn>
+    </div>
+    <div class="document">
+      <template v-if="documents">
+        <TableOfContents
+          class="page"
+          children-property="childItems"
+          :value="documents"
+        />
+        <div
+          v-for="document in documents"
+          :id="document.path"
+          :key="document.path"
+          class="page"
+        >
+          <NuxtContent :document="document" />
+          <div class="veo-pdf-preview-chapter-context">
+            {{ getTranslatedHierarchyAsString(document) }}
+          </div>
+          <div class="veo-pdf-preview-copyright">
+            <p>verinice.veo {{ t('documentation') }}<br>&copy; 2022, SerNet GmbH</p>
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, useRoute } from '@nuxtjs/composition-api';
+import { computed, defineComponent, useRoute } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
-import { useDocs } from '~/composables/docs';
+
+import { DocPageFetchReturn, useDocs } from '~/composables/docs';
 export default defineComponent({
   layout: 'print',
   validate({ route, redirect }) {
@@ -81,10 +95,28 @@ export default defineComponent({
       }
     });
 
+    const title = computed(() => t('documentation'));
+
+    const documentsAsMap = computed(() => new Map((documents.value || []).map((document) => [document.path, document])));
+
+    const getTranslatedHierarchyAsString = (document: DocPageFetchReturn) => {
+      const segments = [...document.segments];
+
+      let translatedSegments = [];
+
+      while (segments.length > 0) {
+        segments.pop();
+        translatedSegments.push(documentsAsMap.value.get(segments.join('/'))?.title);
+      }
+      translatedSegments = translatedSegments.reverse().filter((segment) => segment);
+      return translatedSegments.join(' / ');
+    };
+
     return {
       documents,
-
-      t
+      getTranslatedHierarchyAsString,
+      t,
+      title
     };
   },
   head(): any {
@@ -105,6 +137,9 @@ export default defineComponent({
                 class MyHandler extends Paged.Handler {
                   afterRendered() {
                     document.dispatchEvent(new Event('PAGEDJS_AFTER_RENDERED'));
+                    document.querySelector('#print-button')?.addEventListener('click', () => {
+                      window.print();
+                    });
                   }
                 }
                 Paged.registerHandlers(MyHandler);
@@ -117,24 +152,36 @@ export default defineComponent({
   }
 });
 </script>
+
 <i18n>
 {
   "de": {
-    "closePreview": "Druckvorschau schließen",
-    "documentation": "Dokumentation"
+    "closePreview": "druckvorschau schließen",
+    "documentation": "Dokumentation",
+    "print": "drucken"
   },
   "en": {
     "closePreview": "Close print preview",
-    "documentation": "Documentation"
+    "documentation": "Documentation",
+    "print": "print"
   }
 }
 </i18n>
+
 <style lang="scss">
 html {
   overflow: initial !important;
 }
 </style>
 <style lang="scss" scoped>
+.veo-pdf-preview-copyright {
+  position: running(copyright);
+}
+
+.veo-pdf-preview-chapter-context {
+  position: running(context);
+}
+
 @media screen {
   .page {
     margin-bottom: 4em;
@@ -144,10 +191,12 @@ html {
     max-width: 900px;
     margin: 1em;
   }
-  .exit-print {
-    display: block !important;
+  .preview-controls {
+    border-bottom: 1px solid $medium-grey;
+    display: flex !important;
   }
 }
+
 @media print {
   @page {
     size: A4;
@@ -160,9 +209,17 @@ html {
       content: counter(page) '/' counter(pages);
       font-family: Arial, Sans Serif;
     }
+
+    @bottom-center {
+      content: element(copyright);
+    }
+
+    @bottom-left {
+      content: element(context);
+    }
   }
 
-  .exit-print {
+  .preview-controls {
     display: none;
   }
 
