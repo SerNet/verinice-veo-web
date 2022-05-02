@@ -79,6 +79,13 @@ describe('VeoForm.vue', () => {
       propsData: form,
       listeners: {
         input: onValueUpdate
+      },
+      mocks: {
+        $route: {
+          params: {
+            domain: 'my-completely-invalid-domain-uuid-that-doesnt-matter'
+          }
+        }
       }
     });
 

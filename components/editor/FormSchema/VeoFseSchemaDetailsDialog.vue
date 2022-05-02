@@ -124,7 +124,6 @@
     <template #dialog-options>
       <v-btn
         text
-        color="primary"
         @click="$emit('input', false)"
       >
         {{ t('global.button.cancel') }}

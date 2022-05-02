@@ -15,10 +15,58 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<template>
+  <VeoPage :title="$t('breadcrumbs.catalogs')">
+    <template #header>
+      <p class="mt-4">
+        {{ t('hint') }}
+      </p>
+    </template>
+    <template #default>
+      <VeoCatalogList
+        :catalogs="catalogs"
+        :loading="$fetchState.pending"
+      />
+    </template>
+  </VeoPage>
+</template>
+
 <script>
-export default {
-  middleware({ redirect, params }) {
-    redirect(`/${params.unit}/domains/${params.domain}`);
+import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
+
+import { separateUUIDParam } from '~/lib/utils';
+
+export default defineComponent({
+  setup() {
+    const { $api } = useContext();
+    const route = useRoute();
+    const { t } = useI18n();
+
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+
+    const catalogs = ref();
+
+    useFetch(async () => {
+      catalogs.value = await $api.catalog.fetchAll(domainId.value);
+    });
+
+    return {
+      catalogs,
+
+      t
+    };
   }
-};
+});
 </script>
+
+<i18n>
+{
+  "en": {
+    "hint": "Please choose the catelog you want to apply items from."
+  },
+  "de": {
+    "hint": "Bitte wählen Sie aus der Liste den Katalog aus, aus dem Sie Einträge anwenden möchten."
+  }
+}
+</i18n>

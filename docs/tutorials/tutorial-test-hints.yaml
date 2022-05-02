@@ -1,8 +1,0 @@
-title: Tutorial Test (Hints)
-description: Ein Test für Hints
-route: /hints
-hints:
-  - hint: Hinweise
-    element: '[data-hint=showHintBtn]'
-  - hint: Tutorial Schritte
-    element: '[data-hint=showTutorialBtn]'

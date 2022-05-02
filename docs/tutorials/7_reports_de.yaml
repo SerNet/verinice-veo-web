@@ -1,0 +1,24 @@
+title: Report-Tutorial
+description: Erzeugen von Reports
+route: /unit-:unit/domains/domain-:domain/reports/:reports
+steps:
+  - title: 'Reports'
+    element: '[data-component-name=report-page]'
+    intro: Erzeugen von Reports
+  - title: 'Name der Reportvorlage'
+    element: '[data-component-name=report-page] h1'
+    intro: Im oberen Bereich finden Sie den Namen der jeweiligen Reportvorlage...
+  - title: 'Beschreibung der Reportvorlage'
+    element: '[data-component-name=report-description]'
+    intro: ... sowie eine Beschreibung der Inhalte.
+  - title: 'Scopeauswahl'
+    element: '[data-component-name=report-entity-selection]'
+    intro: In der bereits bekannten Listenansicht wählen Sie den Scope aus, für den der Report erzeugt werden soll.
+  - title: 'Wichtig'
+    element: '[data-component-name=report-entity-selection-filter-bar]'
+    intro: Reports werden auf spezifischen Scopes ausgeführt, weswegen Objekttyp und Subtyp als Filterkriterien unveränderlich sind!
+  - title: 'Report generieren'
+    element: '[data-component-name=generate-report-button]'
+    intro: Erzeugen Sie den Report zur Ausgabe als PDF.
+  - title: 'Geschafft'
+    intro: Weitere Informationen zu Reports finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>

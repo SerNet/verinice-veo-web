@@ -36,6 +36,7 @@
         <v-btn
           depressed
           block
+          color="white"
           @click="register"
         >
           {{ t('register') }}

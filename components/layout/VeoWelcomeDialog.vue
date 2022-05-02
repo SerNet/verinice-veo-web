@@ -28,7 +28,7 @@
       >
         <VeoAppLogoDesktop />
       </div>
-      <h2 class="mb-4">
+      <h2 class="text-h2 mb-4">
         {{ t('veoClaim') }}
       </h2>
       <i18n
@@ -117,7 +117,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t, locale } = useI18n();
-    const { $api, $user } = useContext();
+    const { $api } = useContext();
     const route = useRoute();
 
     const nonDemoUnits: Ref<IVeoUnit[]> = ref([]); // Used if the unit is not present in the url params
@@ -176,7 +176,7 @@ export default defineComponent({
         name: 'unit-domains-domain',
         params: {
           unit: route.value.params.unit || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
-          domain: route.value.params.domain || $user.lastDomain || ''
+          domain: route.value.params.domain || ''
         }
       },
       name: 'Dashboard'
@@ -192,7 +192,7 @@ export default defineComponent({
             name: 'unit-domains-domain-objects',
             params: {
               unit: route.value.params.unit || (firstUnitId.value ? createUUIDUrlParam('unit', firstUnitId.value) : ''),
-              domain: route.value.params.domain || $user.lastDomain || ''
+              domain: route.value.params.domain || ''
             },
             query: {
               objectType,

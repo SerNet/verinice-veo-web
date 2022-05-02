@@ -120,6 +120,7 @@ export default Vue.extend({
           '/parts$',
           '/members$',
           '/designator$',
+          '/decisionResults',
           '(\\w+)/properties/domains$',
           '_self'
         ],
@@ -161,6 +162,26 @@ export default Vue.extend({
           [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
             formSchema: {
               enum: (() => (this.domain?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name))()
+            }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]: {
+            formSchema: {
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'C')?.potentialImpacts || []).map((level: any) => level.name))()
+            }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]: {
+            formSchema: {
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'I')?.potentialImpacts || []).map((level: any) => level.name))()
+            }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]: {
+            formSchema: {
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'A')?.potentialImpacts || []).map((level: any) => level.name))()
+            }
+          },
+          [`#/properties/domains/properties/${this.domainId}/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]: {
+            formSchema: {
+              enum: (() => (this.domain?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'R')?.potentialImpacts || []).map((level: any) => level.name))()
             }
           }
         };
@@ -280,11 +301,41 @@ export default Vue.extend({
 
         // We clone the current value again to not edit the prop ourselves but let the parent component handle it
         let newValue = cloneDeep(this.value);
-        vjp.set(newValue, propertyPath(scope).replace('#/', '/'), v);
+
+        const path = propertyPath(scope).replace('#/', '/');
+        // We don't use !v, as false is a valid value we want to save in the object data
+        if (v !== undefined && v !== null) {
+          vjp.set(newValue, path, v);
+        } else {
+          // If a new value is undefined or null, unset it in the object and check whether any parent elements are empty now and can be removed
+          try {
+            vjp.remove(newValue, path);
+
+            let parts = [];
+
+            parts = path.split('/');
+            while (parts.length > 1) {
+              parts.pop();
+              const tempPath = parts.join('/');
+
+              if (!this.propertyIsEmpty(newValue, tempPath)) {
+                break;
+              }
+
+              vjp.remove(newValue, tempPath);
+              parts = tempPath.split('/');
+            }
+          } catch (_) {}
+        }
         newValue = this.executeReactiveFormActions(oldValue, newValue);
+
         this.$emit('input', newValue);
         this.$nextTick().then(() => this.validate());
       }
+    },
+    propertyIsEmpty(object: IBaseObject, pointer: string): boolean {
+      const property = vjp.get(object, pointer);
+      return !property || (Array.isArray(property) && !property.length) || (typeof property === 'object' && !Array.isArray(property) && !Object.keys(property).length);
     },
     validationErrorTransform(accummulator: {}, error: ErrorObject) {
       const keyMatch = error.schemaPath.match(/((.+\/properties\/\w+\b)|(.+(?=\/required)))/g);

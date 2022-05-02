@@ -146,6 +146,13 @@ export function createIntro() {
                 _instance.onexit(() => {
                   stepsVisible.value = false;
                   step.value = 0;
+                  // Hide hints when no hints are avaiable (-> set visible to false)
+                  if (!options.value?.hints?.length) {
+                    hintsVisible.value = false;
+                  } else if (hintsVisible.value) {
+                    // show hints after steps finished (-> visible remains true)
+                    _instance.showHints();
+                  }
                   tutorialReady = false;
                 });
               });
@@ -232,7 +239,12 @@ export function useIntro() {
     }
   };
 
-  const visible = computed(() => hintsVisible.value || stepsVisible.value);
+  // We have to access both hintsVisible AND stepsVisible explicitly to ensure they are considered
+  const visible = computed(() => {
+    const h = hintsVisible.value;
+    const s = stepsVisible.value;
+    return h || s;
+  });
 
   return {
     options,
@@ -314,7 +326,7 @@ export function useTutorials() {
         // only include docs with current language
         .filter((doc) => doc.lang === undefined || doc.lang === i18n.locale.value)
         .map((doc) => {
-          const regex = pathToRegex(doc.route);
+          const regex = pathToRegex(doc.route, doc.exact);
           return {
             ...doc,
             match: (path: string) => (regex ? regex.test(path) : true)
@@ -373,9 +385,9 @@ export function useTutorials() {
  * Vue uses path-to-regexp 1.7.0 (wildcard asterisk support)
  * @see https://router.vuejs.org/guide/essentials/dynamic-matching.html#advanced-matching-patterns
  */
-function pathToRegex(route?: string) {
+function pathToRegex(route?: string, exact: boolean = false) {
   try {
-    return route && pathToRegexp.default(route);
+    return route && pathToRegexp.default(route, { end: exact });
   } catch (e) {
     throw new Error(`${e} while parsing route: ${route}`);
   }

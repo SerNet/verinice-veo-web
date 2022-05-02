@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2021  Markus Werner
+ * Copyright (C) 2021  Markus Werner, Jonas Heitmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,7 +17,9 @@
  */
 import { FetchReturn } from '@nuxt/content/types/query-builder';
 import { useAsync, useContext, computed } from '@nuxtjs/composition-api';
+import { cloneDeep } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
+
 import { onContentUpdate } from './utils';
 
 export interface DocPage {
@@ -27,7 +29,7 @@ export interface DocPage {
   isDir?: boolean;
 }
 
-type DocPageFetchReturn = FetchReturn & DocPage;
+export type DocPageFetchReturn = FetchReturn & DocPage;
 
 type ContentOptions = { path?: string; locale?: string; localeSeparator?: string; fallbackLocale?: string; where?: object };
 const getOptions = (params: ContentOptions) => {
@@ -41,6 +43,43 @@ const ensureArray = <T>(result: T[] | T): T[] => {
   return result && Array.isArray(result) ? result : [result];
 };
 
+/**
+ * Why a special function only to sort? Docs don't only get sorted by their level or their position alone, they always get sorted relative to their parents.
+ *
+ * @param docs The docs to sort
+ * @returns The sorted docs
+ */
+const sortDocs = (docs: (readonly [string, DocPageFetchReturn])[]) => {
+  // Avoid mutation the original docs, to make the function clearer
+  const localDocs = cloneDeep(docs);
+
+  // We create a map with all paths as keys to make lookup easier
+  const docsAsPathMap = new Map(localDocs);
+
+  return localDocs.sort(([_pathA, itemA], [_pathB, itemB]) => {
+    let segmentIndex = 1; // The first segment is always "", so we ignore it
+    let joinedSegmentsOfItemA = '';
+    let joinedSegmentsOfItemB = '';
+
+    // Iterate over the path of the two items to compare as long as they have the same path
+    do {
+      // If either item no longer has a segment at this depth, it has to be the parent of the other item, as all previous segments are the same.
+      if (itemA.segments[segmentIndex] === undefined) {
+        return -1;
+      } else if (itemB.segments[segmentIndex] === undefined) {
+        return 1;
+      }
+
+      joinedSegmentsOfItemA += '/' + itemA.segments[segmentIndex];
+      joinedSegmentsOfItemB += '/' + itemB.segments[segmentIndex];
+      segmentIndex++;
+    } while (joinedSegmentsOfItemA === joinedSegmentsOfItemB);
+
+    // If the paths are no longer the same, the items are on the same level, so we can simply compare them by their position
+    return (docsAsPathMap.get(joinedSegmentsOfItemA) as DocPageFetchReturn).position - (docsAsPathMap.get(joinedSegmentsOfItemB) as DocPageFetchReturn).position;
+  });
+};
+
 export const useDoc = (params: { path: string; locale?: string; localeSeparator?: string; fallbackLocale?: string }) => {
   const { localeSeparator, path, fallbackLocale, locale } = getOptions(params);
   const { $content } = useContext();
@@ -48,7 +87,13 @@ export const useDoc = (params: { path: string; locale?: string; localeSeparator?
   const fetchDoc = async () => {
     const fetchResult = await $content({ deep: true })
       .where({
-        $or: [{ path: path + localeSeparator + locale }, { path: path + fallbackLocale }, { path }],
+        $or: [
+          { path: path + localeSeparator + locale },
+          { path: path + localeSeparator + fallbackLocale },
+          { path: path + '/index' + localeSeparator + locale },
+          { path: path + '/index' + localeSeparator + fallbackLocale },
+          { path }
+        ],
         extension: '.md'
       })
       .limit(1)
@@ -74,25 +119,29 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   createDirs?: boolean;
   buildItem?: (item: DocPageFetchReturn) => T;
 }) => {
+  const { app } = useContext();
+  const locales: any = app.i18n.locales;
+
   const { localeSeparator, locale } = getOptions(params);
   const normalizePath = (path: string) => (path.split(localeSeparator).shift() || path).replace(/\/index(?:\.\w+)?$/i, '') || '/';
   const { $content } = useContext();
   const buildItem = params.buildItem ?? ((v) => v);
   const fetchDocs = async () => {
+    // The nuxt content queries are using lokiJS, however they aren't properly implemented and most operators aren't working. To circumvent undefinedIn (checking for a key or its value), we use nin to only check for the value
+    // In addition, lang: { $eq: undefined } or lang: undefined seems to unset the filter, so we have to take all possible other values expect the current language and undefined and check if the page does have one of those
     const fetchResult = await (params.root ? $content(params.root, { deep: true }) : $content({ deep: true }))
-      .where({ lang: { $undefinedin: [locale, undefined] }, extension: '.md' })
+      .where({ lang: { $nin: locales.filter((_locale: any) => _locale.code !== locale).map((_locale: any) => _locale.code) }, extension: '.md' })
       .sortBy('path', 'asc')
       .fetch<DocPage>();
 
-    const docs = ensureArray(fetchResult)
-      .map((item) => {
+    const docs = sortDocs(
+      ensureArray(fetchResult).map((item) => {
         const path = normalizePath(item.path); // Remove language extension from path
         const segments = path.split('/');
         const dir = path === item.dir ? segments.slice(0, -1).join('/') || '/' : item.dir; // Correct dir
         return [path, buildItem({ ...item, path, dir, level: segments.length - 1, segments })] as const;
       })
-      // Sort by normalized path and move documents with matching locale to the end
-      .sort(([pathA, a], [pathB, b]) => pathA.localeCompare(pathB) || ((a.lang || b.lang || locale) === locale ? 0 : -1));
+    );
 
     // Filter duplicates by path
     const list = Array.from(new Map(docs).values());
@@ -129,6 +178,7 @@ export const useDocs = <T extends DocPageFetchReturn>(params: {
   return docs;
 };
 export const useDocTree = <T extends DocPageFetchReturn, ChildrenKey extends string = 'children'>(params: {
+  root?: string;
   locale?: string;
   localeSeparator?: string;
   fallbackLocale?: string;
@@ -140,7 +190,8 @@ export const useDocTree = <T extends DocPageFetchReturn, ChildrenKey extends str
 
   return computed(() => {
     const files = docs.value || [];
-    const tree = new Map(files.map((item) => [item.path, item]));
+    const tree = new Map(files.sort((itemA, itemB) => itemA.position - itemB.position).map((item) => [item.path, item]));
+
     tree.forEach((item) => {
       const parentPath = item.dir;
       const parent = tree.get(parentPath);

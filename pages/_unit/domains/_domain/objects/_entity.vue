@@ -21,17 +21,22 @@
     v-else
     collapsable-left
     collapsable-right
-    :title="(object && object.displayName) || ''"
     :loading="loading"
     :page-widths="pageWidths"
+    :page-widths-xl="pageWidthsXl"
+    :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
+    class="veo-page-wrapper-white"
+    data-component-name="object-details-page"
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
-      <VeoPage
-        fullsize
+      <VeoPage        
         sticky-header
         sticky-footer
+        color="#ffffff"
+        :title="(object && object.displayName) || ''"
+        data-component-name="object-details-details"
       >
         <template #default>
           <VeoObjectDetails
@@ -42,10 +47,11 @@
             :active-tab.sync="activeTab"
             :dense="!!pageWidths[1]"
             @reload="loadObject"
+            @new-object-created="onChildObjectCreated"
           />
         </template>
         <template #footer>
-          <VeoObjectDetailsActionMenu
+          <VeoObjectActionMenu
             :object="object"
             :type="activeTab"
             @reload="loadObject"
@@ -54,9 +60,10 @@
         </template>
       </VeoPage>
       <VeoPage
-        fullsize
         content-class="fill-height"
         no-padding
+        :title="!pageWidths[1] ? (object && object.displayName) : undefined"
+        data-component-name="object-details-form"
       >
         <template #default>
           <VeoObjectForm
@@ -89,6 +96,7 @@
               <div
                 class="d-flex pt-2 pb-4 white"
                 style="border-top: 1px solid #efefef"
+                data-component-name="object-details-actions"
               >
                 <template v-if="!formDataIsRevision">
                   <v-btn
@@ -184,14 +192,20 @@ export default defineComponent({
     const notFoundError = computed(() => (fetchState.error as any)?.statusCode === 404);
 
     // Display stuff
-    const pageWidths = ref<Number[]>([5, 7]);
+    const pageWidths = ref<Number[]>([3, 9]);
+    const pageWidthsLg = ref<Number[]>([5, 7]);
+    const pageWidthsXl = ref<Number[]>([5, 7]);
     const pageTitles = ref<string[]>([t('objectInfo').toString(), t('objectForm').toString()]);
 
     const onPageCollapsed = (collapsedPages: Boolean[]) => {
       if (collapsedPages.some((page) => page)) {
         pageWidths.value = [12, 0];
+        pageWidthsLg.value = [12, 0];
+        pageWidthsXl.value = [12, 0];
       } else {
-        pageWidths.value = [5, 7];
+        pageWidths.value = [3, 9];
+        pageWidthsLg.value = [4, 8];
+        pageWidthsXl.value = [5, 7];
       }
     };
 
@@ -233,8 +247,18 @@ export default defineComponent({
           formDataIsRevision.value = false;
           displaySuccessMessage(successText);
         }
-      } catch (e) {
-        displayErrorMessage(errorText, JSON.stringify(e));
+      } catch (e: any) {
+        if (e.code === 412) {
+          displayErrorMessage(errorText, t('outdatedObject').toString(), {
+            objectModified: true,
+            buttonText: t('global.button.no').toString(),
+            eventCallbacks: {
+              refetch: () => loadObject()
+            }
+          });
+        } else {
+          displayErrorMessage(errorText, e.message);
+        }
       }
     }
 
@@ -296,8 +320,8 @@ export default defineComponent({
         try {
           await $api.entity.update(object.value.type, object.value.id, _editedEntity);
           loadObject();
-        } catch (error: any) {
-          displayErrorMessage(upperFirst(t('errors.link').toString()), error?.toString());
+        } catch (e: any) {
+          displayErrorMessage(upperFirst(t('errors.link').toString()), e.message);
         }
       }
     };
@@ -319,6 +343,8 @@ export default defineComponent({
       saveObject,
       t,
       pageWidths,
+      pageWidthsLg,
+      pageWidthsXl,
       pageTitles,
       version,
       onPageCollapsed,
@@ -346,6 +372,7 @@ export default defineComponent({
     "objectRestored": "\"{name}\" was restored successfully!",
     "objectSaved": "\"{name}\" was updated successfully!",
     "oldVersionAlert": "You are currently viewing an old and readonly version of this object. If you want to update the object based on this data, please click \"restore\" first and then make your changes.",
+    "outdatedObject": "This dataset has been edited by another user. Do you want to load the changes?",
     "restore": "restore",
     "version": "version {version}",
     "subEntities": "components",
@@ -360,6 +387,7 @@ export default defineComponent({
     "objectRestored": "\"{name}\" wurde wiederhergestellt!",
     "objectSaved": "\"{name}\" wurde aktualisiert!",
     "oldVersionAlert": "Ihnen wird eine alte, schreibgeschützte Version dieses Objektes angezeigt. Bitte klicken Sie auf \"Wiederherstellen\", wenn Sie Ihr Objekt basierend auf diesen Daten aktualisieren möchten.",
+    "outdatedObject": "Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?",
     "restore": "wiederherstellen",
     "version": "version {version}",
     "subEntities": "Bestandteile",

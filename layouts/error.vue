@@ -23,19 +23,29 @@
         max-height="300px"
         contain
       />
-      <h1 class="mt-8">
+      <h1 class="text-h1 mt-8">
         {{ is404 ? '404' : '' }} {{ upperFirst(t(is404 ? 'notFound' : 'unknownError').toString()) }}
       </h1>
       <p class="mt-2">
         {{ t(is404 ? 'pageNotFound' : 'unknownErrorOccured') }}
       </p>
-      <v-btn
-        text
-        color="primary"
-        @click="$router.push('/')"
-      >
-        {{ t('goToHomepage') }}
-      </v-btn>
+      <div>
+        <v-btn
+          v-if="is404"
+          text
+          color="primary"
+          @click="$router.back()"
+        >
+          {{ t('global.button.previous') }}
+        </v-btn>
+        <v-btn
+          text
+          color="primary"
+          @click="$router.push('/')"
+        >
+          {{ t('goToHomepage') }}
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>

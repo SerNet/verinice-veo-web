@@ -18,11 +18,11 @@
 <template>
   <VeoPage
     :title="upperFirst(t('risks').toString())"
-    fullsize
+    data-component-name="risk-page"
   >
     <template #default>
       <div>
-        <p class="pt-3 mb-0">
+        <p class="pt-3 mb-0 text-body-1">
           {{ t('selectRiskMatrixToView') }}
         </p>
         <VeoTabs>
@@ -33,6 +33,7 @@
             <v-tab
               v-for="riskDefinition of domain.riskDefinitions"
               :key="riskDefinition.id"
+              :data-component-name="`risk-definition-${riskDefinition.id}`"
             >
               {{ riskDefinition.id }}
             </v-tab>

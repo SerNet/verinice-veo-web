@@ -19,44 +19,20 @@
   <v-app>
     <v-app-bar
       class="veo-app-bar"
+      data-component-name="app-bar"
       app
-      clipped-left
       flat
     >
       <v-app-bar-nav-icon
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <nuxt-link
-        :to="homeLink"
-        class="text-decoration-none fill-height"
-      >
-        <VeoAppBarLogo />
-      </nuxt-link>
-      <div class="ml-6 fill-height">
-        <VeoDomainSelect v-if="$route.params.unit" />
-      </div>
+      <VeoBreadcrumbs :key="breadcrumbsKey" />
       <v-spacer />
-      <VeoDemoUnitButton />
       <VeoLanguageSwitch />
-      <v-tooltip bottom>
-        <template #activator="{ on, attrs }">
-          <v-btn
-            class="veo-list-searchbar__button mx-3"
-            color="black"
-            icon
-            role="submit"
-            type="submit"
-            :disabled="!hasTutorials"
-            v-bind="attrs"
-            @click="tutorialVisible?stopTutorial():startTutorial()"
-            v-on="on"
-          >
-            <v-icon v-text="tutorialVisible?'mdi-information-off-outline':'mdi-information-outline'" />
-          </v-btn>
-        </template>
-        <span v-text="t(tutorialVisible?'hideHelp':'showHelp')" />
-      </v-tooltip>
+      <div class="mx-3">
+        <VeoTutorialButton />
+      </div>
       <VeoAppAccountBtn
         v-if="$user.auth.profile"
         :username="$user.auth.profile.username"
@@ -70,12 +46,37 @@
       v-model="drawer"
       :domain-id="domainId"
       :unit-id="unitId"
-    />
+      data-component-name="primary-navigation"
+    >
+      <template #header="{ miniVariant }">
+        <div>
+          <div
+            class="d-flex align-end"
+            :class="{
+              'ml-4': !miniVariant,
+              'ml-2': miniVariant
+            }"
+            style="min-height: 65px;"
+            data-component-name="logo"
+          >
+            <nuxt-link
+              :to="homeLink"
+              class="text-decoration-none"
+            >
+              <VeoAppBarLogo :size="miniVariant ? 'small' : 'large'" />
+            </nuxt-link>
+          </div>
+          <VeoDomainSelect v-if="$route.params.unit" />
+        </div>
+      </template>
+      <template #append-content="{ miniVariant }">
+        <VeoDemoUnitButton :icon-only="miniVariant" />
+      </template>
+    </VeoPrimaryNavigation>
     <v-main
       style="max-height: 100vh;"
       class="overflow-hidden"
     >
-      <VeoBreadcrumbs :key="breadcrumbsKey" />
       <nuxt />
     </v-main>
     <VeoGlobalAlert
@@ -94,22 +95,20 @@ import { computed, defineComponent, onMounted, Ref, ref, useContext, useRoute, u
 
 import { useI18n } from 'nuxt-i18n-composable';
 import { VeoEvents } from '~/types/VeoGlobalEvents';
-import { createUUIDUrlParam, separateUUIDParam } from '~/lib/utils';
+import { createUUIDUrlParam, getFirstDomainDomaindId, separateUUIDParam } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useTutorials } from '~/composables/intro';
 
 import 'intro.js/minified/introjs.min.css';
 
 export default defineComponent({
   setup(_props, context) {
-    const { $user, params, $api } = useContext();
+    const { params, $api } = useContext();
     const route = useRoute();
     const router = useRouter();
 
     const { alerts, listenToRootEvents } = useVeoAlerts();
     const { t } = useI18n();
     listenToRootEvents(context.root);
-    const { load: startTutorial, stop: stopTutorial, hasTutorials, visible: tutorialVisible } = useTutorials();
     //
     // Global navigation
     //
@@ -134,21 +133,26 @@ export default defineComponent({
       const units = await getUnits();
       if (units.length === 0) {
         const data = await $api.unit.create({ name: t('unit.default.name'), description: t('unit.default.description') });
-        const unit = data.resourceId;
+        const unit = await $api.unit.fetch(data.resourceId);
         const { displaySuccessMessage } = useVeoAlerts();
         displaySuccessMessage(t('unit.created').toString());
         context.root.$emit(VeoEvents.UNIT_CREATED);
-        context.root.$emit(VeoEvents.UNIT_CHANGED, unit);
+        const domainId = getFirstDomainDomaindId(unit);
+        if (domainId) {
+          router.push({
+            name: 'unit-domains-domain',
+            params: {
+              unit: createUUIDUrlParam('unit', unit.id),
+              domain: createUUIDUrlParam('domain', domainId)
+            }
+          });
+        }
       }
     });
 
     // UI related events (unit switch/creation)
     context.root.$on(VeoEvents.UNIT_CREATE, (persistent: boolean) => {
       createUnit(persistent);
-    });
-
-    context.root.$on(VeoEvents.UNIT_CHANGED, (newUnit: string) => {
-      router.push('/' + createUUIDUrlParam('unit', newUnit));
     });
 
     // Breadcrumbs related events
@@ -161,18 +165,13 @@ export default defineComponent({
     });
 
     // Starting with VEO-692, we don't always want to redirect to the unit selection (in fact we always want to redirect to the last used unit and possibly domain)
-    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : `/${params.value.unit}`));
-
-    const domain = computed((): string | undefined => separateUUIDParam(route.value.params.domain).id);
+    const homeLink = computed(() => (params.value.domain ? `/${params.value.unit}/domains/${params.value.domain}` : params.value.unit ? `/${params.value.unit}` : '/'));
 
     const domainId = computed((): string | undefined => {
       if (route.value.name === 'unit-domains-more') {
         return undefined;
       }
-      if (!domain.value) {
-        return unitId && unitId.value === $user.lastUnit ? $user.lastDomain : undefined;
-      }
-      return domain.value;
+      return separateUUIDParam(route.value.params.domain).id;
     });
 
     const unitId = computed(() => (separateUUIDParam(route.value.params.unit).id.length > 0 ? separateUUIDParam(route.value.params.unit).id : undefined));
@@ -184,12 +183,7 @@ export default defineComponent({
       newUnitDialog,
       breadcrumbsKey,
       homeLink,
-      alerts,
-      hasTutorials,
-      startTutorial,
-      stopTutorial,
-      tutorialVisible,
-      t
+      alerts
     };
   },
   head() {
@@ -202,32 +196,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .veo-app-bar {
-  background-color: $background-primary !important;
-}
-
-::v-deep.v-main {
-  background: $background-primary;
+  background-color: $background-accent !important;
+  border-bottom: 1px solid $medium-grey;
 }
 
 ::v-deep.v-main > .v-main__wrap {
-  background: white;
-  border-left: 1px solid $medium-grey;
-  border-top: 1px solid $medium-grey;
-  border-top-left-radius: 32px;
+  background: $background-primary;
   display: flex;
   flex-direction: column;
+  padding-top: 8px;
 }
 </style>
-
-<i18n>
-{
-  "de": {
-    "showHelp": "Kontext-Hilfe anzeigen",
-    "hideHelp": "Kontext-Hilfe ausblenden"
-  },
-  "en": {
-    "showHelp": "Show contextual help",
-    "hideHelp": "Hide contextual help"
-  }
-}
-</i18n>

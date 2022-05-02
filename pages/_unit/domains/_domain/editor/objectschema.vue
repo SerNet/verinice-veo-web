@@ -17,6 +17,7 @@
 -->
 <template>
   <VeoPageWrapper
+    class="veo-page-wrapper-white"
     collapsable-right
     :page-widths="pageWidths"
     @page-collapsed="onPageCollapsed"
@@ -24,11 +25,14 @@
     <template #default>
       <VeoPage
         v-if="objectSchemaHelper"
+        color="#ffffff"
         sticky-header
       >
         <template #header>
           <div class="d-flex flex-row align-center">
-            <h1>{{ $t('editor.objectschema.headline') }}</h1>
+            <h1 class="text-h1">
+              {{ $t('editor.objectschema.headline') }}
+            </h1>
             <v-tooltip bottom>
               <template #activator="{on}">
                 <a
@@ -140,7 +144,7 @@
                 </div>
               </template>
               <template #default>
-                <span v-if="isContentCreator">{{ upperFirst(t('save')) }}</span>
+                <span v-if="isContentCreator">{{ upperFirst($t('save')) }}</span>
                 <span v-else>{{ $t('saveContentCreator') }}</span>
               </template>
             </v-tooltip>
@@ -193,7 +197,7 @@
                 dense
                 clearable
                 flat
-                solo-inverted
+                filled
                 hide-details
                 :prepend-inner-icon="mdiMagnify"
                 :label="$t('search')"
@@ -237,7 +241,9 @@
               cols="auto"
               class="text-left"
             >
-              <h3>{{ $t('invalidObjectSchema') }}</h3>
+              <h3 class="text-h3">
+                {{ $t('invalidObjectSchema') }}
+              </h3>
               <v-list-item
                 v-for="(error, index) of schemaIsValid.errors"
                 :key="`e_${index}`"
@@ -448,8 +454,8 @@ export default Vue.extend({
       try {
         await this.$api.domain.updateTypeDefinition(this.domainId, this.title, this.objectSchemaHelper?.toSchema());
         displaySuccessMessage(this.$t('saveSchemaSuccess'));
-      } catch (e) {
-        displayErrorMessage(this.$t('error.title'), this.$t('saveSchemaError'));
+      } catch (e: any) {
+        displayErrorMessage(this.$t('error.title'), `${this.$t('saveSchemaError').toString()}: ${e.message}`);
       }
     },
     upperFirst
@@ -484,7 +490,7 @@ export default Vue.extend({
     "help": "Hilfe",
     "save": "speichern",
     "saveSchemaSuccess": "Schema wurde gespeichert!",
-    "saveSchemaError": "Schema konnte nicht gespeichert werden!",
+    "saveSchemaError": "Schema konnte nicht gespeichert werden",
     "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Objektschema zu speichern."
   }
 }

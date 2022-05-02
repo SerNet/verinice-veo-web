@@ -1,0 +1,37 @@
+title: Dashboard-Tutorial
+description: Das veo.Dashboard
+route: /unit-:unit/domains/domain-:domain
+exact: true
+steps:
+  - title: 'Das Dashboard'
+    element: '[data-component-name=domain-dashboard-page]'
+    intro: Das Dashboard zeigt Ihre zuletzt bearbeiteten Objekte sowie eine graphische Darstellung aller Objekte. Durch Mausklick in den Balkendiagrammen navigieren Sie direkt zur Objektübersicht für alle Subtypen im jeweiligen Status bzw. zu dem zuletzt bearbeiteten Objekt.
+  - title: 'Meine zuletzt bearbeiteten Objekte'
+    element: '[data-component-name=domain-dashboard-latest-revisions-widget]'
+    intro: In diesem Bereich navigieren Sie schnell zu Ihren zuletzt bearbeiteten Objekten.
+  - title: 'Scopes'
+    element: '[data-component-name=domain-dashboard-scope-widget]'
+    intro: In diesem Bereich werden Subtypen eins Objekttyps dargestellt, hier die verfügbaren Scopes.
+  - title: 'Prozesse'
+    element: '[data-component-name=domain-dashboard-process-widget]'
+    intro: Die Subtypen dienen der unterschiedlichen Darstellung der Objekte eines Typs in speziellen Formularen. Prozesse können so z.B. als Verarbeitungstätigkeiten, Datenübertragungen oder Datenschutzfolgenabschätzung präsentiert werden.
+  - title: 'Assets'
+    element: '[data-component-name=domain-dashboard-asset-widget]'
+    intro: Jeder Subtyp kann einen spezifischen Status besitzen. Standardmäßig wird ein Lebenszyklus der einzelnen Objekte dargestellt, z.B. für die Assets.
+  - title: 'Personen'
+    element: '[data-component-name=domain-dashboard-person-widget]'
+    intro: Die Status der Objekte sind farblich codiert - rot = neu, gelb = in Bearbeitung, blau = in Prüfung, grün = freigegeben und grau = archiviert.
+  - title: 'Controls'
+    element: '[data-component-name=domain-dashboard-control-widget]'
+    intro: Rote, gelbe und blaue Objekte bedürfen weiterer Dokumentation, grüne und graue haben Sie als hinreichend dokumentiert definiert.
+  - title: 'Incidents'
+    element: '[data-component-name=domain-dashboard-incident-widget]'
+    intro: Ein neuer Datenschutzvorfall, der eine fristgerechte Reaktion erfordert, wird Ihnen im Bereich Incidents rot dargestellt.
+  - title: 'Documents'
+    element: '[data-component-name=domain-dashboard-document-widget]'
+    intro: Oder steht ein Vertrag zur Prüfung an, so finden Sie diesen blau im Balkendiagramm im Bereich Dokumente.
+  - title: 'Scenarios'
+    element: '[data-component-name=domain-dashboard-scenario-widget]'
+    intro: Navigieren Sie vom Dashboard direkt zu den "gelben" Gefährdungen, die weiter betrachtet werden müssen.
+  - title: 'Geschafft'
+    intro: Weitere Informationen zum Dashboard finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>

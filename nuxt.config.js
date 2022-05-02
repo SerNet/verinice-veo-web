@@ -60,7 +60,7 @@ export default {
     formsApiUrl: process.env.VEO_FORMS_API_URL || 'https://api.develop.verinice.com/forms',
     historyApiUrl: process.env.VEO_HISTORY_API_URL || 'https://api.develop.verinice.com/history',
     reportsApiUrl: process.env.VEO_REPORTING_API_URL || 'https://api.develop.verinice.com/reporting',
-    oidcUrl: process.env.VEO_OIDC_URL || 'https://keycloak.staging.verinice.com/auth',
+    oidcUrl: process.env.VEO_OIDC_URL || 'https://auth.staging.verinice.com/auth',
     oidcRealm: process.env.VEO_OIDC_REALM || 'verinice-veo',
     oidcClient: process.env.VEO_OIDC_CLIENT || 'veo-development-client'
   },
@@ -68,7 +68,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['~/plugins/vee-validate', '~/plugins/user', '~/plugins/api', '~/plugins/utils'],
+  plugins: ['~/plugins/vee-validate', '~/plugins/user', '~/plugins/api', '~/plugins/utils', '~/plugins/navigationHelper'],
 
   /**
    *
@@ -84,7 +84,7 @@ export default {
   },
 
   router: {
-    middleware: ['authentication', 'unitValidation', 'navigationHelper']
+    middleware: ['authentication', 'unitValidation']
   },
   /*
    ** Nuxt.js modules
@@ -165,6 +165,10 @@ export default {
       {
         require: 'intersection-observer',
         detect: () => 'IntersectionObserver' in window
+      },
+      {
+        require: 'resize-observer',
+        detect: () => 'ResizeObserver' in window
       }
     ]
   },
@@ -187,7 +191,7 @@ export default {
   /**
    *
    */
-  css: ['~/assets/main.scss', '~/assets/util.scss', '~/assets/intro.scss'],
+  css: ['~/assets/main.scss', '~/assets/intro.scss'],
 
   /**
    *

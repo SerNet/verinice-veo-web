@@ -43,9 +43,6 @@ export default {
   'error.title': 'Es ist ein Fehler aufgetreten',
   error404: '404 - Nicht gefunden',
 
-  'global.appstate.alert.object_modified': 'Dieser Datensatz wurde bearbeitet nachdem Sie ihn geöffnet haben. Möchten Sie die Daten neu laden?',
-  'global.appstate.alert.success': 'Erfolgreich durchgeführt!',
-  'global.appstate.alert.error': 'Ein Fehler ist aufgetreten!',
   'global.button.cancel': 'Abbrechen',
   'global.button.close': 'Schließen',
   'global.button.delete': 'Löschen',
@@ -71,13 +68,9 @@ export default {
     designator: 'Designator',
     description: 'Beschreibung',
     hasChildObjects: 'hat Bestandteile',
-    hasLinks: 'hat Links',
     name: 'Objektname',
     notPartOfGroup: 'nicht Teil eines anderen Objektes',
     objectType: 'Objekttyp',
-    scenario: {
-      displayName: 'Risiko'
-    },
     status: 'Status',
     subType: 'Subtyp',
     updatedAt: 'Letzte Änderung',

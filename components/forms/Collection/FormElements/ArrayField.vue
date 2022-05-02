@@ -63,7 +63,7 @@
             class="vf-btn-remove"
             @click="removeRow(i)"
           >
-            <v-icon>mdi-delete</v-icon>
+            <v-icon>mdi-trash-can-outline</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>

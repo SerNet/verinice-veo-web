@@ -16,11 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <VeoPage fullsize>
+  <VeoPage
+    title="Disabled"
+    fixed-header
+  >
     <v-row justify="center">
-      <v-col cols="12">
-        <PageHeader>Disable</PageHeader>
-      </v-col>
       <v-col
         cols="12"
         sm="6"
@@ -46,6 +46,7 @@
 import Vue from 'vue';
 
 export default Vue.extend({
+  layout: 'plain',
   data() {
     return {
       form: {

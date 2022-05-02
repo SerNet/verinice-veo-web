@@ -16,36 +16,39 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
-    <div class="d-flex align-center mb-4">
-      <span class="text-body-1 mr-2">
-        {{ upperFirst(t('protectionGoal').toString()) }}:
-      </span>
-      <v-select
-        v-model="protectionGoal"
-        :items="protectionGoals"
-        :loading="$fetchState.pending"
-        class="flex-grow-0"
-        hide-details
-        dense
-      />
-    </div>
-    <VeoRiskMatrix
-      v-if="!$fetchState.pending"
-      :value="matrixValues"
-      :probabilities="probabilities"
-      :impacts="impacts"
-    />
-    <v-skeleton-loader
-      v-else
-      type="image"
-      width="600px"
-    />
-  </div>
+  <v-row
+    class="mb-2"
+    data-component-name="risk-matrix-wrapper"
+  >
+    <v-col
+      v-for="protectionGoal of protectionGoals"
+      :key="protectionGoal.id"
+      cols="12"
+      md="6"
+    >
+      <VeoCard style="margin-right: 1px">
+        <v-card-text>
+          <h3
+            class="text-h3"
+            v-text="protectionGoal.text"
+          />
+        </v-card-text>
+        <VeoRiskMatrix
+          v-if="!$fetchState.pending"
+          v-bind="getMatrixData(protectionGoal.id)"
+        />
+        <v-skeleton-loader
+          v-else
+          type="image"
+          width="600px"
+        />
+      </VeoCard>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, useContext, useFetch, useRoute, useRouter } from '@nuxtjs/composition-api';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute } from '@nuxtjs/composition-api';
 import { useI18n } from 'nuxt-i18n-composable';
 import { cloneDeep, reverse, upperFirst } from 'lodash';
 
@@ -59,7 +62,6 @@ export default defineComponent({
     const { $api } = useContext();
     const { t } = useI18n();
     const route = useRoute();
-    const router = useRouter();
 
     const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
     const riskDefinition = computed(() => route.value.params.matrix);
@@ -67,37 +69,24 @@ export default defineComponent({
     const data = ref<undefined | IVeoDomain['riskDefinitions']['x']>(undefined);
     useFetch(async () => {
       data.value = (await $api.domain.fetch(domainId.value)).riskDefinitions[riskDefinition.value];
-      protectionGoal.value = data.value.categories[0].id;
     });
 
     // Matrix selection
-    const protectionGoal = computed({
-      get() {
-        return route.value.query.protectionGoal as string;
-      },
-      set(newValue: string) {
-        router.push({
-          params: route.value.params,
-          query: {
-            protectionGoal: newValue
-          }
-        });
-      }
-    });
-    const protectionGoals = computed(() => (data.value?.categories || []).map((category) => ({ text: category.name, value: category.id })));
+    const protectionGoals = computed(() => (data.value?.categories || []).map((category) => ({ text: category.name, id: category.id })));
 
     // Matrix stuff
-    const probabilities = computed(() => data.value?.probability.levels || []);
-    const currentCategory = computed(() => data.value?.categories.find((category) => category.id === protectionGoal.value));
-    const impacts = computed(() => reverse(cloneDeep(currentCategory.value?.potentialImpacts || [])));
+    const getMatrixData = (protectionGoal: string) => {
+      const category = data.value?.categories.find((category) => category.id === protectionGoal);
 
-    const matrixValues = computed(() => reverse(cloneDeep(currentCategory.value?.valueMatrix || [])));
+      return {
+        impacts: reverse(cloneDeep(category?.potentialImpacts || [])),
+        value: reverse(cloneDeep(category?.valueMatrix || [])),
+        probabilities: data.value?.probability.levels || []
+      };
+    };
 
     return {
-      impacts,
-      matrixValues,
-      probabilities,
-      protectionGoal,
+      getMatrixData,
       protectionGoals,
 
       t,

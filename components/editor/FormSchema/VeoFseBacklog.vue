@@ -19,191 +19,192 @@
   <div
     style="height: 100%"
   >
-    <v-card
-      flat
-      style="height: 100%"
+    <div
+      v-show="!controlElementsVisible && searchQuery"
+      class="text-center mt-1"
     >
-      <div
-        v-show="!controlElementsVisible && searchQuery"
-        class="text-center mt-1"
+      <span class="text--disabled">{{ t('searchNoMatch') }}</span>
+    </div>
+    <div
+      v-show="controlElementsVisible"
+      class="pt-4 text-center"
+    >
+      <v-btn
+        text
+        small
+        @click="onExpandAll"
       >
-        <span class="text--disabled">{{ t('searchNoMatch') }}</span>
-      </div>
-      <div
-        v-show="controlElementsVisible"
-        class="pt-4 text-center"
+        {{ t('expand') }}
+      </v-btn>
+      <v-btn
+        text
+        small
+        @click="onCollapseAll"
       >
-        <v-btn
-          text
-          small
-          @click="onExpandAll"
-        >
-          {{ t('expand') }}
-        </v-btn>
-        <v-btn
-          text
-          small
-          @click="onCollapseAll"
-        >
-          {{ t('collapse') }}
-        </v-btn>
-      </div>
-      <v-expansion-panels
-        v-model="expansionPanels"
-        accordion
-        multiple
-        flat
-      >
-        <v-expansion-panel v-show="filteredFormElements.length">
-          <v-expansion-panel-header class="overline px-0">
-            {{ t('formElements') }} ({{ filteredFormElements.length }})
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-card outlined>
-              <v-list
-                dense
-                class="py-0"
-              >
-                <Draggable
-                  class="drag-form-elements"
-                  tag="div"
-                  style="overflow: auto; min-width:300;"
-                  :list="filteredFormElements"
-                  :group="{ name: 'g1', pull: 'clone', put: false }"
-                  :sort="false"
-                  :clone="onCloneFormElement"
-                >
-                  <v-sheet
-                    v-for="(el, i) in filteredFormElements"
-                    :key="i"
-                  >
-                    <VeoFseListItem
-                      :title="el.description.title"
-                      :styling="el.description"
-                      translate
-                    />
-                  </v-sheet>
-                </Draggable>
-              </v-list>
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-
-        <v-expansion-panel v-show="filteredBasics.length">
-          <v-expansion-panel-header class="overline px-0">
-            {{ t('editor.basicproperties') }} ({{ filteredBasics.length }})
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-card
-              v-show="filteredBasics.length"
-              outlined
+        {{ t('collapse') }}
+      </v-btn>
+    </div>
+    <v-expansion-panels
+      v-model="expansionPanels"
+      accordion
+      multiple
+      flat
+    >
+      <v-expansion-panel v-show="filteredFormElements.length">
+        <v-expansion-panel-header class="overline px-0">
+          {{ t('formElements') }} ({{ filteredFormElements.length }})
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-card
+            outlined
+            class="overflow-hidden"
+          >
+            <v-list
+              dense
+              class="py-0"
             >
-              <v-list
-                dense
-                class="py-0"
+              <Draggable
+                class="drag-form-elements"
+                tag="div"
+                style="overflow: auto; min-width:300;"
+                :list="filteredFormElements"
+                :group="{ name: 'g1', pull: 'clone', put: false }"
+                :sort="false"
+                :clone="onCloneFormElement"
               >
-                <Draggable
-                  class="drag-unused-basic-properties"
-                  tag="div"
-                  style="overflow: auto; min-width:300;"
-                  :list="filteredBasics"
-                  :group="{ name: 'g1', pull: 'clone', put: false }"
-                  :sort="false"
-                  :clone="onCloneControl"
+                <v-sheet
+                  v-for="(el, i) in filteredFormElements"
+                  :key="i"
                 >
-                  <v-sheet
-                    v-for="(el, i) in filteredBasics"
-                    :key="i"
-                  >
-                    <VeoFseListItem
-                      :title="el.backlogTitle"
-                      :styling="typeMap[el.type]"
-                      translate
-                    />
-                  </v-sheet>
-                </Draggable>
-              </v-list>
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
+                  <VeoFseListItem
+                    :title="el.description.title"
+                    :styling="el.description"
+                    translate
+                  />
+                </v-sheet>
+              </Draggable>
+            </v-list>
+          </v-card>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
-        <v-expansion-panel v-show="filteredAspects.length">
-          <v-expansion-panel-header class="overline px-0">
-            {{ t('editor.customaspects') }} ({{ filteredAspects.length }})
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-card
-              v-if="filteredAspects.length"
-              outlined
+      <v-expansion-panel v-show="filteredBasics.length">
+        <v-expansion-panel-header class="overline px-0">
+          {{ t('editor.basicproperties') }} ({{ filteredBasics.length }})
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-card
+            v-show="filteredBasics.length"
+            outlined
+            class="overflow-hidden"
+          >
+            <v-list
+              dense
+              class="py-0"
             >
-              <v-list
-                dense
-                class="py-0"
+              <Draggable
+                class="drag-unused-basic-properties"
+                tag="div"
+                style="overflow: auto; min-width:300;"
+                :list="filteredBasics"
+                :group="{ name: 'g1', pull: 'clone', put: false }"
+                :sort="false"
+                :clone="onCloneControl"
               >
-                <Draggable
-                  class="drag-unused-aspects"
-                  tag="div"
-                  style="overflow: auto; min-width:300;"
-                  :list="filteredAspects"
-                  :group="{ name: 'g1', pull: 'clone', put: false }"
-                  :sort="false"
-                  :clone="onCloneControl"
+                <v-sheet
+                  v-for="(el, i) in filteredBasics"
+                  :key="i"
                 >
-                  <v-sheet
-                    v-for="(el, i) in filteredAspects"
-                    :key="i"
-                  >
-                    <VeoFseListItem
-                      :title="el.backlogTitle"
-                      :styling="typeMap[el.type]"
-                      translate
-                    />
-                  </v-sheet>
-                </Draggable>
-              </v-list>
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
+                  <VeoFseListItem
+                    :title="el.backlogTitle"
+                    :styling="typeMap[el.type]"
+                    translate
+                  />
+                </v-sheet>
+              </Draggable>
+            </v-list>
+          </v-card>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
-        <v-expansion-panel v-show="filteredLinks.length">
-          <v-expansion-panel-header class="overline px-0">
-            {{ t('editor.customlinks') }} ({{ filteredLinks.length }})
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-card
-              v-if="filteredLinks.length"
-              outlined
+      <v-expansion-panel v-show="filteredAspects.length">
+        <v-expansion-panel-header class="overline px-0">
+          {{ t('editor.customaspects') }} ({{ filteredAspects.length }})
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-card
+            v-if="filteredAspects.length"
+            outlined
+            class="overflow-hidden"
+          >
+            <v-list
+              dense
+              class="py-0"
             >
-              <v-list
-                dense
-                class="py-0"
+              <Draggable
+                class="drag-unused-aspects"
+                tag="div"
+                style="overflow: auto; min-width:300;"
+                :list="filteredAspects"
+                :group="{ name: 'g1', pull: 'clone', put: false }"
+                :sort="false"
+                :clone="onCloneControl"
               >
-                <Draggable
-                  class="drag-unused-links"
-                  tag="div"
-                  style="overflow: auto; min-width:300;"
-                  :list="filteredLinks"
-                  :group="{ name: 'g1', pull: 'clone', put: false }"
-                  :sort="false"
-                  :clone="onCloneControl"
+                <v-sheet
+                  v-for="(el, i) in filteredAspects"
+                  :key="i"
                 >
-                  <v-sheet
-                    v-for="(el, i) in filteredLinks"
-                    :key="i"
-                  >
-                    <VeoFseListItem
-                      :title="el.backlogTitle"
-                      :styling="typeMap[el.type]"
-                      translate
-                    />
-                  </v-sheet>
-                </Draggable>
-              </v-list>
-            </v-card>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </v-card>
+                  <VeoFseListItem
+                    :title="el.backlogTitle"
+                    :styling="typeMap[el.type]"
+                    translate
+                  />
+                </v-sheet>
+              </Draggable>
+            </v-list>
+          </v-card>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+
+      <v-expansion-panel v-show="filteredLinks.length">
+        <v-expansion-panel-header class="overline px-0">
+          {{ t('editor.customlinks') }} ({{ filteredLinks.length }})
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-card
+            v-if="filteredLinks.length"
+            outlined
+            class="overflow-hidden"
+          >
+            <v-list
+              dense
+              class="py-0"
+            >
+              <Draggable
+                class="drag-unused-links"
+                tag="div"
+                style="overflow: auto; min-width:300;"
+                :list="filteredLinks"
+                :group="{ name: 'g1', pull: 'clone', put: false }"
+                :sort="false"
+                :clone="onCloneControl"
+              >
+                <v-sheet
+                  v-for="(el, i) in filteredLinks"
+                  :key="i"
+                >
+                  <VeoFseListItem
+                    :title="el.backlogTitle"
+                    :styling="typeMap[el.type]"
+                    translate
+                  />
+                </v-sheet>
+              </Draggable>
+            </v-list>
+          </v-card>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </div>
 </template>
 <script lang="ts">

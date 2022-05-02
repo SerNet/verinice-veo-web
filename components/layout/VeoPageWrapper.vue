@@ -16,11 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
+import { isObject } from 'lodash';
 import Vue from 'vue';
 import { PropType } from 'vue/types/options';
 import { VSkeletonLoader } from 'vuetify/lib';
 
 import VeoCollapseButton from '~/components/layout/VeoCollapseButton.vue';
+import { IBaseObject } from '~/lib/utils';
 
 export default Vue.extend({
   components: {
@@ -50,6 +52,10 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
+    headingLevel: {
+      type: Number,
+      default: 1
+    },
     pageWidths: {
       type: Array as PropType<(String | Number)[]>,
       default: () => []
@@ -65,6 +71,10 @@ export default Vue.extend({
     pageTitles: {
       type: Array as PropType<String[]>,
       default: () => []
+    },
+    unresponsivePageWidths: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -189,33 +199,66 @@ export default Vue.extend({
      *
      * @param index The index of the page to look for values for
      */
-    localPageWidth(index: number): string[] {
+    localPageWidth(index: number): { classes: string[]; styles: IBaseObject } {
       const classes = [];
+      let styles = {};
 
       if (this.pageWidths[index]) {
         classes.push(`col-${this.pageWidths[index]}`);
+
+        if (this.unresponsivePageWidths) {
+          if (isObject(this.pageWidths[index])) {
+            styles = this.pageWidths[index];
+          } else {
+            styles = {
+              width: this.pageWidths[index],
+              minWidth: this.pageWidths[index]
+            };
+          }
+        }
       }
 
       if (this.pageWidthsLg[index]) {
         classes.push(`col-lg-${this.pageWidthsLg[index]}`);
+        if (this.unresponsivePageWidths && this.$vuetify.breakpoint.lgAndUp) {
+          if (isObject(this.pageWidthsLg[index])) {
+            styles = this.pageWidthsLg[index];
+          } else {
+            styles = {
+              width: this.pageWidthsLg[index],
+              minWidth: this.pageWidthsLg[index]
+            };
+          }
+        }
       }
 
       if (this.pageWidthsXl[index]) {
         classes.push(`col-xl-${this.pageWidthsXl[index]}`);
+        if (this.unresponsivePageWidths && this.$vuetify.breakpoint.xl) {
+          if (isObject(this.pageWidthsXl[index])) {
+            styles = this.pageWidthsXl[index];
+          } else {
+            styles = {
+              width: this.pageWidthsXl[index],
+              minWidth: this.pageWidthsXl[index]
+            };
+          }
+        }
       }
 
       if (classes.length === 0) {
         classes.push(`col-${Math.floor(12 / (this.currentPagesCount - this.pagesCollapsedStates.filter((page) => page).length))}`);
       }
 
-      return classes;
+      return { classes: this.unresponsivePageWidths ? [] : classes, styles: this.unresponsivePageWidths ? styles : {} };
     }
   },
   render(h): any {
     return h(
       'div',
       {
-        class: 'fill-width fill-height d-flex flex-column overflow-hidden'
+        class: 'fill-width fill-height d-flex flex-column overflow-hidden',
+        ...this.$attrs
       },
       [
         h(
@@ -227,12 +270,16 @@ export default Vue.extend({
             ...(this.$props.loading
               ? [h(VSkeletonLoader, { props: { type: 'text' }, class: 'skeleton-title px-10 py-1' })]
               : [
-                  h('h1', {
-                    domProps: {
-                      innerText: this.$props.title
-                    },
-                    class: 'd-inline px-10 py-1 flex-grow-0'
-                  }),
+                  ...(this.$props.title
+                    ? [
+                        h(`h${this.$props.headingLevel}`, {
+                          domProps: {
+                            innerText: this.$props.title
+                          },
+                          class: `d-inline px-10 py-1 flex-grow-0 text-h${this.$props.headingLevel}`
+                        })
+                      ]
+                    : []),
                   ...(this.$slots.title ? [this.$slots.title] : [])
                 ]),
             this.$slots.header ? this.$slots.header : []
@@ -252,8 +299,9 @@ export default Vue.extend({
             .map((slotItem, index) => {
               if (slotItem.componentOptions?.propsData) {
                 (slotItem.componentOptions.propsData as any).isPageWrapperChild = true;
-                (slotItem.componentOptions.propsData as any).fullsize = true;
               }
+
+              const { classes, styles } = this.localPageWidth(index);
 
               return [
                 h(
@@ -261,9 +309,10 @@ export default Vue.extend({
                   {
                     style: {
                       position: 'relative',
-                      display: this.pagesCollapsedStates[index] ? 'none' : 'flex'
+                      display: this.pagesCollapsedStates[index] ? 'none' : 'flex',
+                      ...styles
                     },
-                    class: ['flex-row', ...this.localPageWidth(index), 'pa-0']
+                    class: ['flex-row', classes, 'pa-0']
                   },
                   [
                     ...(index > 0 && !this.previousPageIsCollapsed(index) && index < this.pagesCollapsedStates.length
@@ -271,33 +320,44 @@ export default Vue.extend({
                       : []),
                     ...((index === this.collapsablePages.length - 1 && this.collapsablePages[index]) || this.previousPageIsCollapsed(index)
                       ? [
-                          h(VeoCollapseButton, {
-                            props: {
-                              value: this.previousPageIsCollapsed(index),
-                              right: false,
-                              elementName: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
-                              index: this.previousPageIsCollapsed(index) ? index - 1 : index
+                          h(
+                            'div',
+                            {
+                              style: 'width: 20px',
+                              class: 'fill-height'
                             },
-                            on: {
-                              input: () => this.togglePage(this.previousPageIsCollapsed(index) ? index - 1 : index)
-                            }
-                          })
+                            [
+                              h(VeoCollapseButton, {
+                                props: {
+                                  value: this.previousPageIsCollapsed(index),
+                                  right: false,
+                                  elementName: this.previousPageIsCollapsed(index) ? this.pageTitles[index - 1] : this.pageTitles[index],
+                                  index: this.previousPageIsCollapsed(index) ? index - 1 : index
+                                },
+                                on: {
+                                  input: () => this.togglePage(this.previousPageIsCollapsed(index) ? index - 1 : index)
+                                }
+                              })
+                            ]
+                          )
                         ]
                       : []),
                     slotItem,
                     ...((index === 0 && this.collapsablePages[index]) || this.nextPageIsCollapsed(index)
                       ? [
-                          h(VeoCollapseButton, {
-                            props: {
-                              value: this.nextPageIsCollapsed(index),
-                              right: true,
-                              elementName: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
-                              index: this.nextPageIsCollapsed(index) ? index + 1 : index
-                            },
-                            on: {
-                              input: () => this.togglePage(this.nextPageIsCollapsed(index) ? index + 1 : index)
-                            }
-                          })
+                          h('div', { style: 'width: 20px', class: 'fill-height' }, [
+                            h(VeoCollapseButton, {
+                              props: {
+                                value: this.nextPageIsCollapsed(index),
+                                right: true,
+                                elementName: this.nextPageIsCollapsed(index) ? this.pageTitles[index + 1] : this.pageTitles[index],
+                                index: this.nextPageIsCollapsed(index) ? index + 1 : index
+                              },
+                              on: {
+                                input: () => this.togglePage(this.nextPageIsCollapsed(index) ? index + 1 : index)
+                              }
+                            })
+                          ])
                         ]
                       : [])
                   ]

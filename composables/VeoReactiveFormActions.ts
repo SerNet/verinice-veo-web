@@ -15,33 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useContext } from '@nuxtjs/composition-api';
+import { computed, useRoute } from '@nuxtjs/composition-api';
 import { trim } from 'lodash';
 import vjp from 'vue-json-pointer';
 
-import { IBaseObject } from '~/lib/utils';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoReactiveFormAction } from '~/types/VeoTypes';
 
 export function useVeoReactiveFormActions() {
-  const { $user } = useContext();
+  const route = useRoute();
+
+  const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
 
   function defaultReactiveFormActions(): IVeoReactiveFormAction[] {
     return [
-      {
-        attributeName: '/domains/patternProperties',
-        handler: (newValue: any, newObject) => {
-          newObject.domains[$user.lastDomain as string] = { ...newObject.domains[$user.lastDomain as string], ...newValue[Object.keys(newValue)[0]] };
-          delete newObject.domains.patternProperties;
-        }
-      },
-      {
-        attributeName: `/domains/${$user?.lastDomain}/subType`,
-        handler: (newValue: any, newObject) => {
-          if (!newValue && $user.lastDomain) {
-            delete newObject.domains[$user.lastDomain].status;
-          }
-        }
-      }
+      ...(domainId.value
+        ? [
+            {
+              attributeName: `/domains/${domainId.value}/subType`,
+              handler: (newValue: any, newObject: any) => {
+                if (domainId.value && !!newValue) {
+                  delete newObject.domains[domainId.value].status;
+                }
+              }
+            }
+          ]
+        : [])
     ];
   }
 

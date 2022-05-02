@@ -20,46 +20,56 @@
     <v-app-bar
       class="veo-app-bar"
       app
-      clipped-left
       flat
     >
       <v-app-bar-nav-icon
         v-if="$vuetify.breakpoint.xs"
         @click="drawer = true"
       />
-      <nuxt-link
-        to="/docs"
-        class="text-decoration-none fill-height"
-      >
-        <VeoAppBarLogo />
-      </nuxt-link>
       <v-spacer />
-      <v-btn
-        depressed
-        to="/docs?print"
-        color="primary"
-        class="mr-2"
+      <v-tooltip
+        bottom
+        :disabled="pdfExists"
       >
-        Print
-      </v-btn>
+        <template #activator="{ on }">
+          <div v-on="on">
+            <v-btn
+              depressed
+              :disabled="!pdfExists"
+              :to="pdfPath"
+              color="primary"
+              class="mr-2"
+              target="_blank"
+            >
+              {{ t('exportAsPDF') }}
+            </v-btn>            
+          </div>
+        </template>
+        <template #default>
+          {{ t('noPdfExists') }}
+        </template>
+      </v-tooltip>
       <VeoLanguageSwitch />
     </v-app-bar>
     <v-navigation-drawer
       :width="290"
       app
       class="veo-docs-navigation"
-      clipped
       floating
       v-on="$listeners"
     >
-      <v-treeview
-        dense
-        :items="items"
-        activatable
-        item-key="to"
-        open-on-click
-        @update:active="openItem"
-      />
+      <div
+        class="d-flex align-end ml-4"
+        style="min-height: 65px"
+      >
+        <nuxt-link
+          to="/docs"
+          class="text-decoration-none"
+        >
+          <VeoAppBarLogo />
+        </nuxt-link>
+      </div>
+      <VeoDocNavigation :items="items" />
     </v-navigation-drawer>
     <v-main
       style="max-height: 100vh;"
@@ -73,13 +83,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref, useContext } from '@nuxtjs/composition-api';
+import { computed, defineComponent, onMounted, Ref, ref } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
+import { useI18n } from 'nuxt-i18n-composable';
 import { useDocTree } from '~/composables/docs';
 
 export default defineComponent({
   setup() {
-    const { app } = useContext();
+    const { t, locale } = useI18n();
     //
     // Global navigation
     //
@@ -90,25 +101,28 @@ export default defineComponent({
       buildItem(item) {
         return {
           ...item,
-          disabled: false,
           name: `${item.isDir ? upperFirst(item.dir.split('/').pop()) : item.title || upperFirst(item.slug)}`,
-          exact: true,
           to: `/docs${item.path}`
         };
       }
     });
 
-    const openItem = (items: string[]) => {
-      const item = items.shift();
-      if (item) {
-        app.router?.push(item);
-      }
-    };
+    const pdfExists = ref(false);
+    const pdfPath = computed(() => `/Documentation_${locale.value}.pdf`);
+    onMounted(async () => {
+      try {
+        const response = await fetch(pdfPath.value);
+        pdfExists.value = !!response.headers.get('content-type')?.startsWith('application/pdf');
+      } catch (_) {}
+    });
 
     return {
-      openItem,
       drawer,
-      items
+      items,
+      pdfPath,
+      pdfExists,
+
+      t
     };
   },
   head() {
@@ -119,25 +133,41 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
-.veo-app-bar {
-  background-color: $background-primary !important;
-}
+<i18n>
+{
+  "en": {
+    "exportAsPDF": "download as pdf",
+    "noPdfExists": "There is no downloadable pdf for this language"
+  },
+  "de": {
+    "exportAsPDF": "Als PDF herunterladen",
+    "noPdfExists": "Für diese Sprache existiert keine PDF"
+  }
+}  
+</i18n>
 
-::v-deep.v-main {
-  background: $background-primary;
+<style lang="scss" scoped>
+@import '~/assets/docs.scss';
+
+.veo-app-bar {
+  background-color: $background-accent !important;
+  border-bottom: 1px solid $medium-grey;
 }
 
 ::v-deep.v-main > .v-main__wrap {
-  background: white;
-  border-left: 1px solid $medium-grey;
-  border-top: 1px solid $medium-grey;
-  border-top-left-radius: 32px;
+  background: $background-primary;
   display: flex;
   flex-direction: column;
+  padding-top: 8px;
 }
 
 .veo-docs-navigation.v-navigation-drawer {
-  background-color: $background-primary;
+  background-color: $background-accent;
+  border-right: 1px solid $medium-grey;
+
+  .v-treeview,
+  .v-treeview ::v-deep.v-icon {
+    color: #000000;
+  }
 }
 </style>

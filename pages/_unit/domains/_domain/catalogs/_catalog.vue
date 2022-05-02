@@ -17,255 +17,81 @@
 -->
 <template>
   <VeoPage
-    fullsize
-    :loading="$fetchState.pending"
     :title="title"
+    data-component-name="catalog-page"
   >
-    <template
-      v-if="state === CATALOG_STATE.CHOOSE_TOMS"
-      #default
-    >
-      <h2>
-        {{ $t('selectTOMs') }}
-      </h2>
-      <v-row dense>
-        <v-spacer />
-        <v-col class="flex-grow-0 d-flex">
-          <v-btn
-            outlined
-            class="mr-2"
-            :disabled="selectedToms.length === 0"
-            @click="selectedToms = []"
-          >
-            {{ $t('global.button.cancel') }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            :disabled="selectedToms.length === 0"
-            outlined
-            @click="chooseEntities"
-          >
-            {{ $t('global.button.next') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-      <p>{{ $t('selectTOMCTA') }}</p>
-      <VeoCatalogSelectionList
-        v-model="selectedToms"
-        :items="formattedTomItems"
-        :headers="tomSelectionHeaders"
-        selectable
-      />
-    </template>
-    <template
-      v-else-if="state === CATALOG_STATE.CHOOSE_ENTITIES"
-      #default
-    >
-      <h2>
-        {{ $t('applyTOMs') }}
-      </h2>
-      <v-row dense>
-        <v-spacer />
-        <v-col class="flex-grow-0 d-flex">
-          <v-btn
-            outlined
-            class="mr-2"
-            :disabled="selectedToms.length === 0"
-            @click="selectedToms = []"
-          >
-            {{ $t('global.button.cancel') }}
-          </v-btn>
-          <v-btn
-            outlined
-            class="mr-2"
-            @click="chooseToms"
-          >
-            {{ $t('global.button.previous') }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            :disabled="selectedEntities.length === 0"
-            outlined
-            @click="apply"
-          >
-            {{ $t('apply') }}
-          </v-btn>
-        </v-col>
-      </v-row>
-      <p>{{ upperFirst($t('selectedTOMs').toString()) }}</p>
-      <VeoCatalogSelectionList
-        :items="formattedSelectedToms"
-        :headers="tomSelectionHeaders"
-        :selectable="false"
-      />
-      <p class="mt-6">
-        {{ $t('selectDPEntitiesCTA') }}
-      </p>
-      <VeoEntitySelectionList
-        v-model="selectedEntities"
-        :items="entities"
-        :loading="loadingEntities"
-        @page-change="onPageChange"
-      />
+    <template #default>
+      <VeoTabs class="mt-6">
+        <template #tabs>
+          <v-tab>{{ t('applyEntries') }}</v-tab>
+          <v-tab v-if="catalogContainsTOMs">
+            {{ t('applyTOMs') }}
+          </v-tab>
+        </template>
+        <template #items>
+          <v-tab-item>
+            <VeoDefaultCatalog
+              :catalog-items="catalogItems"
+              :loading="$fetchState.pending"
+            />
+          </v-tab-item>
+          <v-tab-item>
+            <VeoTOMCatalog
+              :catalog-items="catalogItems"
+              :loading="$fetchState.pending"
+            />
+          </v-tab-item>
+        </template>
+      </VeoTabs>
     </template>
   </VeoPage>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { cloneDeep, upperFirst } from 'lodash';
+import { computed, defineComponent, ref, useContext, useFetch, useRoute, watch } from '@nuxtjs/composition-api';
+import { useI18n } from 'nuxt-i18n-composable';
 
-import { IVeoCatalogSelectionListHeader } from '~/components/catalogs/VeoCatalogSelectionList.vue';
 import { separateUUIDParam } from '~/lib/utils';
-import { IVeoCatalogItem, IVeoEntity, IVeoPaginatedResponse, IVeoPaginationOptions } from '~/types/VeoTypes';
-import { getSchemaEndpoint, IVeoSchemaEndpoint } from '~/plugins/api/schema';
-import { VeoEvents } from '~/types/VeoGlobalEvents';
-
-enum CATALOG_STATE {
-  CHOOSE_TOMS,
-  CHOOSE_ENTITIES
-}
+import { IVeoCatalogItem } from '~/types/VeoTypes';
 
 export const ROUTE_NAME = 'unit-domains-domain-catalogs-catalog';
 
-export default Vue.extend({
+export default defineComponent({
   name: 'VeoCatalogPage',
-  data() {
+  setup() {
+    const { $api } = useContext();
+    const { t } = useI18n();
+    const route = useRoute();
+
+    const title = computed(() => t('catalog', { name: catalogItems.value?.[0]?.catalog?.displayName || '' }));
+
+    const domainId = computed(() => separateUUIDParam(route.value.params.domain).id);
+    const catalogId = computed(() => separateUUIDParam(route.value.params.catalog).id);
+
+    const catalogItems = ref<IVeoCatalogItem[]>([]);
+
+    const catalogContainsTOMs = computed(() => catalogItems.value.some((item) => item.tailoringReferences.length > 0));
+
+    const { fetch } = useFetch(async () => {
+      catalogItems.value = await $api.catalog.fetchItems(catalogId.value, domainId.value);
+    });
+
+    watch(
+      () => domainId.value,
+      () => fetch()
+    );
+    watch(
+      () => catalogId.value,
+      () => fetch()
+    );
+
     return {
-      items: [] as IVeoCatalogItem[],
-      entities: { items: [], page: 1, pageCount: 0, totalItemCount: 0 } as IVeoPaginatedResponse<IVeoEntity[]>,
-      selectedToms: [] as string[],
-      selectedEntities: [] as { id: string; type: string }[],
-      loadingEntities: false as boolean,
-      applying: false as boolean,
-      schemas: [] as IVeoSchemaEndpoint[],
-      state: CATALOG_STATE.CHOOSE_TOMS as CATALOG_STATE,
-      CATALOG_STATE
+      catalogContainsTOMs,
+      catalogItems,
+      title,
+
+      t
     };
-  },
-  async fetch() {
-    this.items = await this.$api.catalog.fetchItems(this.catalogId, this.domainId);
-  },
-  computed: {
-    domainId(): string {
-      return separateUUIDParam(this.$route.params.domain).id;
-    },
-    catalogId(): string {
-      return separateUUIDParam(this.$route.params.catalog).id;
-    },
-    title(): string {
-      return this.items.length > 0 && this.items[0].catalog ? this.$t('catalog', { name: this.items[0].catalog.displayName }).toString() : '';
-    },
-    formattedTomItems(): { designator: string; abbreviation: string; title: string; id: string }[] {
-      return (
-        this.items
-          // .filter((item) => item.tailoringReferences.length > 0) VEO-1182
-          .map((item) => {
-            const displayNameParts = (item.element.displayName as string).split(' ');
-            const designator = displayNameParts.shift() as string;
-            const abbreviation = displayNameParts.shift() as string;
-            const title = displayNameParts.join(' ') as string;
-
-            return { designator, abbreviation, title, id: item.id, description: item.description };
-          })
-      );
-    },
-    formattedSelectedToms(): { designator: string; abbreviation: string; title: string; id: string }[] {
-      return this.formattedTomItems.filter((item) => this.selectedToms.includes(item.id));
-    },
-    tomSelectionHeaders(): IVeoCatalogSelectionListHeader[] {
-      return [
-        {
-          filterable: true,
-          sortable: true,
-          text: this.$t('abbreviation').toString(),
-          value: 'item.abbreviation',
-          width: 150
-        },
-        {
-          filterable: true,
-          sortable: true,
-          text: this.$t('objectlist.name').toString(),
-          value: 'item.title'
-        },
-        {
-          filterable: true,
-          sortable: false,
-          text: this.$t('objectlist.description').toString(),
-          value: 'item.description'
-        }
-      ];
-    }
-  },
-  watch: {
-    state(newValue) {
-      if (newValue === CATALOG_STATE.CHOOSE_ENTITIES && this.entities.items.length === 0) {
-        this.fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
-      }
-    }
-  },
-  methods: {
-    chooseEntities() {
-      this.state = CATALOG_STATE.CHOOSE_ENTITIES;
-    },
-    chooseToms() {
-      this.state = CATALOG_STATE.CHOOSE_TOMS;
-    },
-    async fetchEntities(options: { page: number; sortBy: string; sortDesc: boolean }) {
-      this.loadingEntities = true;
-
-      try {
-        this.entities = (await this.$api.entity.fetchAll('process', options.page, {
-          subType: 'PRO_DataProcessing',
-          size: this.$user.tablePageSize,
-          sortBy: options.sortBy,
-          sortOrder: options.sortDesc ? 'desc' : 'asc'
-        } as IVeoPaginationOptions)) as IVeoPaginatedResponse<IVeoEntity[]>;
-      } finally {
-        this.loadingEntities = false;
-      }
-    },
-    async apply() {
-      this.applying = true;
-
-      try {
-        if (this.schemas.length === 0) {
-          this.schemas = await this.$api.schema.fetchAll();
-        }
-
-        // Fetch incarnations for all selected toms
-        const incarnations = await this.$api.unit.fetchIncarnations(this.selectedToms);
-
-        // Add a reference for every selected entity to every incarnation
-        for (const entity of this.selectedEntities) {
-          const incarnationsToModify = cloneDeep(incarnations);
-          for (const incarnation of incarnationsToModify.parameters) {
-            incarnation.references = [
-              {
-                referencedElement: {
-                  targetUri: `/${getSchemaEndpoint(this.schemas, entity.type)}/${entity.id}`
-                } as any,
-                referenceType: incarnation.references[0].referenceType
-              }
-            ];
-          }
-          await this.$api.unit.updateIncarnations(incarnationsToModify);
-          this.$root.$emit(VeoEvents.SNACKBAR_SUCCESS, { text: this.$t('incarnationsApplied') });
-          this.selectedToms = [];
-          this.selectedEntities = [];
-          this.chooseToms();
-        }
-      } catch (e: any) {
-        this.$root.$emit(VeoEvents.ALERT_ERROR, { title: this.$t('applyIncarnaionError'), text: JSON.stringify(e.message || e) });
-      } finally {
-        this.applying = false;
-      }
-    },
-    // refetch on page or sort changes (in VeoObjectTable)
-    async onPageChange(opts: { newPage: number; sortBy: string; sortDesc?: boolean }) {
-      await this.fetchEntities({ page: opts.newPage, sortBy: opts.sortBy, sortDesc: !!opts.sortDesc });
-    },
-    upperFirst
   }
 });
 </script>
@@ -273,36 +99,14 @@ export default Vue.extend({
 <i18n>
 {
   "en": {
-    "abbreviation": "Abbreviation",
-    "apply": "apply",
-    "applyIncarnaionError": "Couldn't apply TOMs.",
-    "applyTOMs": "Apply TOMs",
-    "catalog": "Catalog {name}",
-    "incarnationsApplied": "TOMs were applied",
-    "selectTOMs": "Select TOMs",
-    "selectedTOMs": "Selected TOMs",
-    "selectTOMCTA": "Please choose one or more technical organizational measures to apply",
-    "selectDPEntitiesCTA": "Please choose data processes to apply the technical organizational measures to."
+    "applyEntries": "apply scenarios",
+    "applyTOMs": "apply TOMs",
+    "catalog": "Catalog {name}"
   },
   "de": {
-    "abbreviation": "Abkürzung",
-    "apply": "anwenden",
-    "applyIncarnaionError": "Die TOMs konnten nicht angewendet werden.",
+    "applyEntries": "Gefährdungen anwenden",
     "applyTOMs": "TOMs anwenden",
-    "catalog": "Katalog {name}",
-    "incarnationsApplied": "TOMs wurden angewendet.",
-    "selectTOMs": "TOMs auswählen",
-    "selectedTOMs": "Ausgewählte TOMs",
-    "selectTOMCTA": "Wählen Sie eine oder mehrere technische und organisatorische Maßnahmen aus, die angewendet werden sollen.",
-    "selectDPEntitiesCTA": "Wählen Sie die Verarbeitungstätigkeiten aus, auf die die TOMs angewendet werden sollen."
+    "catalog": "Katalog {name}"
   }
 }
 </i18n>
-
-<style lang="scss" scoped>
-@import '~/assets/vuetify.scss';
-
-.v-card.border {
-  border: 1px solid $medium-grey;
-}
-</style>

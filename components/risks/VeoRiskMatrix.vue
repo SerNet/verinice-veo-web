@@ -209,11 +209,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 table {
-  border-spacing: 4px;
+  border-collapse: collapse;
 }
 
 td,
 th {
+  border: 2px solid #ffffff;
   font-weight: normal;
   height: 100px;
   text-align: center;

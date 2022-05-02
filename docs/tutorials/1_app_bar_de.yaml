@@ -1,0 +1,28 @@
+title: Tutorial Anwendungsleiste
+description: Beschreibung der Anwendungsleiste
+route: /
+steps:
+  - title: 'Anwendungsleiste'
+    element: '[data-component-name=app-bar]'
+    intro: Über die Anwendungsleiste steuern Sie die grundlegenden Funktionen. Sie steht in allen Ansichten zur Verfügung.
+  - title: 'Logo'
+    element: '[data-component-name=logo]'
+    intro: Über das Logo kommen Sie immer zurück auf das Dashboard der aktiven Unit
+# Das Element Domain Selector ist auf der Seite Unitauswahl nicht verfügbar!
+  - title: 'Domain Selector'
+    element: '[data-component-name=domain-select]'
+    intro: Wählen Sie aus den zur Verfügung stehenden Domänen aus.
+  - title: 'Demo'
+    element: '[data-component-name=demo-unit-button]'
+    intro: Die Demo stellt Ihnen schreibgeschützt alle Funktionen und Inhalte zur Verfügung.
+  - title: 'Sprachauswahl'
+    element: '[data-component-name=language-select]'
+    intro: Mit dem Sprachumschalter wählen Sie aus den verfügbaren Sprachen.
+  - title: 'Kontext-Hilfe'
+    element: '[data-component-name=tutorial-select]'
+    intro: Über die Kontext-Hilfe rufen Sie alle verfügbaren Tutorials auf.
+  - title: 'Account Button'
+    element: '[data-component-name=account-menu-button]'
+    intro: Über den Account Button können Sie sich abmelden und weitere Informationen zu verinice.veo abrufen.
+  - title: 'Geschafft'
+    intro: Weitere Informationen finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>

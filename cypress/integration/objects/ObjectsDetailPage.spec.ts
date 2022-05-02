@@ -105,10 +105,12 @@ describe('Objects details', () => {
     cy.get('.vf-wrapper').contains('.v-text-field', 'Beschreibung').find('input').focus().should('have.value', 'Prozess mit Subtype Datenübertragung');
 
     // Open history and select second newest version
-    cy.get('[data-cy=veo-object-form-form-tabs] > .v-tabs > .v-item-group > .v-slide-group__prev').click();
     cy.get('[data-cy=veo-object-form-history-tab]').click({ force: true });
     cy.get('[data-cy=veo-object-history-history-list]').should('be.visible');
-    cy.get('[data-cy=veo-object-history-history-list]').find('.v-item-group').children().eq(1).click();
+    // If we don't wait, for some reason the v-list-item is detached from dom
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
+    cy.get('[data-cy=veo-object-history-history-list]').find('.v-item-group').find('.v-list-item').eq(1).click();
     cy.get('[data-cy=veo-objects-index-page-old-version-alert]').should('be.visible');
     cy.get('.vf-wrapper')
       .contains('.v-text-field', 'Beschreibung')
@@ -130,8 +132,8 @@ describe('Objects details', () => {
 
   it('should create and link an object', function () {
     cy.wait(5000); // needed to wait for previous snackbar to be dismissed
-    cy.get('[data-cy=veo-object-details-action-menu-show-actions-button]').click();
-    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(1).click();
+    cy.get('[data-cy=veo-object-action-menu-show-actions-button]').click();
+    cy.get('[data-cy=veo-object-action-menu-action-list').children().eq(1).click();
 
     cy.get('.v-dialog .vf-control').contains('Name*').parents('.v-input').type('Testobjekt{enter}');
     cy.get('[data-cy=veo-create-object-dialog-save-button]').click();
@@ -146,8 +148,8 @@ describe('Objects details', () => {
 
   it('should link an object', function () {
     cy.wait(5000); // needed to wait for previous snackbar to be dismissed
-    cy.get('[data-cy=veo-object-details-action-menu-show-actions-button]').click();
-    cy.get('[data-cy=veo-object-details-action-menu-action-list').children().eq(0).click();
+    cy.get('[data-cy=veo-object-action-menu-show-actions-button]').click();
+    cy.get('[data-cy=veo-object-action-menu-action-list').children().eq(0).click();
 
     cy.wait('@G_fetchObjects')
       .wait('@G_fetchTranslations')

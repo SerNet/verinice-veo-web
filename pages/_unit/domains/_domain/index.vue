@@ -20,11 +20,11 @@
     :title="title"
     :loading="!domain"
     padding
-    fullsize
+    data-component-name="domain-dashboard-page"
   >
     <p
       v-if="domain"
-      class="mt-n2 accent--text"
+      class="mt-n2 accent--text text-body-1"
     >
       <span v-if="domain.description">{{ domain.description }}</span>
       <i v-else>{{ t('unit.details.nodescription') }}</i>
@@ -34,33 +34,32 @@
       class="mt-n2 mb-4 skeleton-subtitle"
       type="text"
     />
-    <v-row
-      no-gutters
-      class="mb-4"
-    >
+    <v-row class="mb-4">
       <v-col
         v-for="(rows, rowIndex) of WIDGET_LAYOUT"
         :key="rowIndex"
         cols="12"
         lg="6"
       >
-        <v-sheet
+        <div
           v-for="(widget, widgetIndex) of rows"
           :key="widgetIndex"
           v-cy-name="widget !== 'my_latest_widget' ? 'status-bar-chart-widget' : ''"
-          class="my-4 px-2"
+          class="my-4"
         >
           <VeoMyLatestRevisionsWidget
             v-if="widget === 'my_latest_widget'"
+            data-component-name="domain-dashboard-latest-revisions-widget"
           />
           <VeoStackedStatusBarChartWidget
             v-else
             chart-height="30"
             :data="widgets[widget]"
             :loading="$fetchState.pending"
+            :data-component-name="`domain-dashboard-${widget}-widget`"
             @click="onBarClick"
           />
-        </v-sheet>
+        </div>
       </v-col>
     </v-row>
     <VeoWelcomeDialog

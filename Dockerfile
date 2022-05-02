@@ -41,9 +41,28 @@ RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > static/
 
 RUN npm run generate
 
+FROM ghcr.io/drpayyne/chrome-puppeteer:latest AS printer
+
+# copy generated application and install dependencies
+WORKDIR /usr/src/veo
+COPY --from=builder /usr/src/app/.npmrc /usr/src/app/package.json /usr/src/app/package-lock.json /usr/src/app/nuxt.config.js ./
+COPY --chown=chrome --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+# copy print.js
+WORKDIR /usr/src/app
+COPY print.js .
+RUN mkdir dist
+
+# Start nuxt app in background, wait for startup and generate pdf documentation
+RUN nohup sh -c "(cd /usr/src/veo && (./node_modules/nuxt/bin/nuxt.js start&))" && sleep 5 && node print.js
+
+# Copy files to veo dist folder to bundle it with application
+RUN cp /usr/src/app/dist/*.pdf /usr/src/veo/dist/
+
 FROM nginx:1.21 AS release
 
-COPY --from=builder /usr/src/app/dist /usr/src/app
+COPY --from=printer /usr/src/veo/dist /usr/src/app
 
 # Add custom config to serve the index.html as entrypoint if the server would otherwise return a 404
 COPY  nginx.conf /etc/nginx/conf.d/custom.conf

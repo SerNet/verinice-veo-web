@@ -17,42 +17,52 @@
 -->
 <template>
   <VeoPage :title="$t('breadcrumbs.index')">
-    <div class="body-1 mb-4">
-      {{ $t('unitpicker') }}:
+    <div class="text-body-1 my-4">
+      {{ $t('unitpicker') }}
     </div>
-    <v-data-iterator
-      :search="search"
-      :items="units"
-      item-key="id"
-    >
-      <template #header>
-        <v-text-field
-          v-model="search"
-          dense
-          clearable
-          flat
-          solo-inverted
-          hide-details
-          prepend-inner-icon="mdi-magnify"
-          :label="$t('unitpickerPlaceholder')"
-        />
-      </template>
-      <template #default="{ items }">
-        <v-list dense>
-          <v-list-item
-            v-for="item in items"
-            :key="item.id"
-            two-line
-            :to="'/' + createUUIDUrlParam('unit', item.id)"
-          >
-            <v-list-item-content>
-              <v-list-item-title v-text="item.name" />
-              <v-list-item-subtitle v-text="item.description" />
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </template>
-    </v-data-iterator>
+    <div class="d-flex justify-center">
+      <VeoCard style="width: 70%; max-width: 1000px;">
+        <v-data-iterator
+          :search="search"
+          :items="units"
+          item-key="id"
+        >
+          <template #header>
+            <div data-component-name="unit-selection-search">
+              <v-text-field
+                v-model="search"
+                dense
+                clearable
+                filled
+                hide-details
+                color="black"
+                prepend-inner-icon="mdi-magnify"
+                :label="$t('unitpickerPlaceholder')"
+              />
+            </div>
+          </template>
+          <template #default="{ items }">
+            <v-list
+              dense
+              data-component-name="unit-selection-available-units"
+            >
+              <v-list-item
+                v-for="item in items"
+                :key="item.id"
+                two-line
+                :disabled="!generateUnitDashboardLink(item.id)"
+                :to="generateUnitDashboardLink(item.id)"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.name" />
+                  <v-list-item-subtitle v-text="item.description" />
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </template>
+        </v-data-iterator>
+      </VeoCard>
+    </div>
     <VeoWelcomeDialog
       v-if="showWelcomeDialog"
       v-model="showWelcomeDialog"
@@ -63,7 +73,7 @@
 <script lang="ts">
 import Vue from 'vue';
 
-import { createUUIDUrlParam } from '~/lib/utils';
+import { createUUIDUrlParam, getFirstDomainDomaindId } from '~/lib/utils';
 import { IVeoUnit } from '~/types/VeoTypes';
 import LocalStorage from '~/util/LocalStorage';
 
@@ -90,14 +100,38 @@ export default Vue.extend({
       // Auto-redirect the user to his non demo unit upon visting the app. If it doesn't exist, create it and then redirect
       if (nonDemoUnits.length > 0) {
         // Try redirecting the user to the first unit found that was created by him, else redirect him to a unit created by someone else.
-        const id = myNonDemoUnit ? myNonDemoUnit.id : nonDemoUnits[0].id;
-        this.$router.push(createUUIDUrlParam('unit', id));
+        const unitToRedirectTo = myNonDemoUnit ?? nonDemoUnits[0];
+
+        if (unitToRedirectTo) {
+          const domainId = getFirstDomainDomaindId(unitToRedirectTo);
+
+          if (domainId) {
+            this.$router.push({
+              name: 'unit-domains-domain',
+              params: {
+                unit: createUUIDUrlParam('unit', unitToRedirectTo.id),
+                domain: createUUIDUrlParam('domain', domainId)
+              }
+            });
+          }
+        }
       } else {
         const result = await this.$api.unit.create({
           name: 'Unit 1',
           description: this.$t('firstUnitDescription')
         });
-        this.$router.push(createUUIDUrlParam('unit', result.resourceId));
+        const unit = await this.$api.unit.fetch(result.resourceId);
+        const domainId = getFirstDomainDomaindId(unit);
+
+        if (domainId) {
+          this.$router.push({
+            name: 'unit-domains-domain',
+            params: {
+              unit: createUUIDUrlParam('unit', unit.id),
+              domain: createUUIDUrlParam('domain', domainId)
+            }
+          });
+        }
       }
     }
 
@@ -119,7 +153,16 @@ export default Vue.extend({
     this.showWelcomeDialog = !LocalStorage.firstStepsCompleted;
   },
   methods: {
-    createUUIDUrlParam
+    generateUnitDashboardLink(unitId: string) {
+      const unitToLinkTo = this.units.find((unit) => unit.id === unitId);
+      let domainId;
+
+      if (unitToLinkTo) {
+        domainId = getFirstDomainDomaindId(unitToLinkTo);
+      }
+
+      return unitToLinkTo && domainId ? `/${createUUIDUrlParam('unit', unitToLinkTo.id)}/domains/${createUUIDUrlParam('domain', domainId)}` : undefined;
+    }
   }
 });
 </script>

@@ -25,6 +25,15 @@ export const HISTORY_API_MY_LATEST_REVISIONS = /https:\/\/api.(.+)\/history\/rev
 export const HISTORY_API_ENTITY_REVISIONS = /https:\/\/api.(.+)\/history\/revisions\/\?uri=(.+)$/;
 export const REPORTING_API_ALL_REPORTS_REGEX = /https:\/\/api.(.+)\/reporting\/reports$/;
 
+// Ignore resizeObserver loop limit exceeded error @see https://stackoverflow.com/a/63519375
+const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
+Cypress.on('uncaught:exception', (err) => {
+  /* returning false here prevents Cypress from failing the test */
+  if (resizeObserverLoopErrRe.test(err.message)) {
+    return false;
+  }
+});
+
 function createJWT(payload) {
   const header = {
     alg: 'RS256',
@@ -42,7 +51,7 @@ Cypress.Commands.add('auth', () => {
   cy.intercept(
     {
       method: 'GET', // intercept all requests to auth endpoint
-      url: 'https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/auth*'
+      url: 'https://auth.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/auth*'
     },
     (req) => {
       const query = new URL(req.url).searchParams;
@@ -65,7 +74,7 @@ Cypress.Commands.add('auth', () => {
   cy.intercept(
     {
       method: 'POST', // intercept all requests to token endpoint
-      url: 'https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/token'
+      url: 'https://auth.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/token'
     },
     (req) => {
       const response = {
@@ -91,7 +100,7 @@ Cypress.Commands.add('auth', () => {
   cy.intercept(
     {
       method: 'GET', // intercept all requests to account endpoint
-      url: 'https://keycloak.staging.verinice.com/auth/realms/verinice-veo/account'
+      url: 'https://auth.staging.verinice.com/auth/realms/verinice-veo/account'
     },
     (req) => {
       // and reply currently logged in user

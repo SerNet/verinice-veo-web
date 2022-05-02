@@ -1,0 +1,18 @@
+title: Die Unitauswahl
+description: Beschreibung der Unitauswahl
+route: /
+exact: true
+steps:
+  - title: 'Die Unitauswahl'
+    intro: Auf der Seite Unitauswahl können Sie eine der verfügbaren Units zur weiteren Bearbeitung auswählen.
+  - title: 'Verfügbare Units'
+    element: '[data-component-name=unit-selection-available-units]'
+    intro: Wählen Sie die gewünschte Unit aus.
+  - title: 'Paginierung'
+    element: 'div.v-data-iterator > div.v-data-footer'
+    intro: Existieren viele Units können Sie durch die Paginierung die Anzahl der je Seite dargestellten Units anpassen und zwischen den einzelnen Seiten navigieren.
+  - title: 'Unit suchen'
+    element: '[data-component-name=unit-selection-search]'
+    intro: Unit suchen
+  - title: 'Geschafft'
+    intro: Weitere Informationen zur Units finden Sie auch in der <a href="http://localhost:3000/docs/Bedienung/Kapitel_1">Online Dokumentation</a>
