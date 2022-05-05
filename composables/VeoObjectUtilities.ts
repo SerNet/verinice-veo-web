@@ -16,13 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { useContext } from '@nuxtjs/composition-api';
-import { cloneDeep, isString } from 'lodash';
+import { cloneDeep, isArray, isString } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
+import { getSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoEntity } from '~/types/VeoTypes';
+
+export interface IVeoAPIObjectIdentifier {
+  objectId: string;
+  objectType: string;
+}
 
 export function useVeoObjectUtilities() {
   const { t } = useI18n();
-  const { $api } = useContext();
+  const { $api, $config } = useContext();
 
   /**
    * Duplicates an object, including adding its children to the new object.
@@ -31,7 +37,7 @@ export function useVeoObjectUtilities() {
    * @param object The object to clone
    * @returns Returns a promise that resolves if the object was cloned successfully and rejects if the object couldn't be cloned
    */
-  async function cloneObject(object: IVeoEntity) {
+  const cloneObject = async (object: IVeoEntity) => {
     const newEntity = cloneDeep(object);
     newEntity.name = `${object.name} (${t('clone').toString()})`;
 
@@ -44,7 +50,7 @@ export function useVeoObjectUtilities() {
     delete newEntity.designator;
 
     return await $api.entity.create(newEntity.type, newEntity);
-  }
+  };
 
   /**
    * Removes an object as the member of another object.
@@ -54,7 +60,7 @@ export function useVeoObjectUtilities() {
    * @param parentType If object is a string, the type of the object to remove the child from has to be specified
    * @returns Returns a promise that resolves if the child was removed successfully and rejects if the child couldn't be removed
    */
-  async function unlinkObject(object: IVeoEntity | string, objectToRemove: IVeoEntity | string, parentType?: string) {
+  const unlinkObject = async (object: IVeoEntity | string, objectToRemove: IVeoEntity | string, parentType?: string) => {
     if (isString(object) && !parentType) {
       throw new Error('VeoObjectUtilities::unlinkObject: "parentType" has to be specified if object is a uuid');
     }
@@ -67,10 +73,60 @@ export function useVeoObjectUtilities() {
       _object.parts = _object.parts.filter((part) => !part.targetUri.includes(objcectToRemoveUUID));
     }
     return await $api.entity.update(_object.type, _object.id, _object);
-  }
+  };
+
+  /**
+   * Link an object to another object, either as its parent or its child
+   *
+   * @param hierarchicalContext Specifies whether to link the new object as a parent or a child
+   * @param objectToModify If you want to link a child, put here the object parent, if you want to link as a child, if you want to link as a parent, put here the child
+   * @param objectToAdd If you want to link a child put here the object to link as child, if you want to link as a parent, put here the object that should be the parent
+   * @param batchReplace If set to true and an array is passed to objectToAdd, the previous children of objectToModify get overwritten by the new object, else they get appended. Only applies for hierarchicalContext=child
+   */
+  const linkObject = async (
+    hierarchicalContext: 'child' | 'parent',
+    objectToModify: IVeoAPIObjectIdentifier,
+    objectToAdd: IVeoAPIObjectIdentifier | IVeoAPIObjectIdentifier[],
+    batchReplace: boolean = true
+  ) => {
+    const schemas = await $api.schema.fetchAll();
+    if (hierarchicalContext === 'parent' && isArray(objectToAdd)) {
+      // eslint-disable-next-line no-console
+      console.warn('VeoObjectUtilities::linkObject: Batch entity updates are only supported for child links. Exiting');
+      return;
+    }
+
+    if (hierarchicalContext === 'parent') {
+      objectToAdd = objectToAdd as IVeoAPIObjectIdentifier;
+      const editedEntity = await $api.entity.fetch(objectToAdd.objectType, objectToAdd.objectId);
+      const childrenProperty = editedEntity.type === 'scope' ? 'members' : 'parts';
+
+      const newLink = {
+        targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, objectToModify.objectType) || objectToModify.objectType}/${objectToModify.objectId}`
+      };
+
+      editedEntity[childrenProperty].push(newLink);
+
+      await $api.entity.update(editedEntity.type, editedEntity.id, editedEntity);
+    } else {
+      const editedEntity = await $api.entity.fetch(objectToModify.objectType, objectToModify.objectId);
+      const childrenProperty = editedEntity.type === 'scope' ? 'members' : 'parts';
+
+      const newLinkEntries = (isArray(objectToAdd) ? objectToAdd : [objectToAdd]).map((object) => ({
+        targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas, object.objectType) || object.objectType}/${object.objectId}`
+      }));
+
+      if (batchReplace && isArray(objectToAdd)) {
+        editedEntity[childrenProperty] = [];
+      }
+      editedEntity[childrenProperty].push(...newLinkEntries);
+      await $api.entity.update(editedEntity.type, editedEntity.id, editedEntity);
+    }
+  };
 
   return {
     cloneObject,
+    linkObject,
     unlinkObject
   };
 }

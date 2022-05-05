@@ -17,20 +17,6 @@
 -->
 <template>
   <div>
-    <v-select
-      v-if="type === 'parents'"
-      v-model="parentType"
-      background-color="rgb(0, 0, 0, 0.06)"
-      dense
-      :disabled="object.type === 'scope'"
-      flat
-      hide-details
-      :items="parentTypeItems"
-      :label="upperFirst(t('parentType').toString())"
-      :menu-props="{ offsetY: true, bottom: true }"
-      solo
-      style="width: 150px"
-    />
     <VeoObjectTable
       :additional-headers="additionalHeaders"
       :default-headers="defaultHeaders"
@@ -74,7 +60,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch, useAsync } from '@nuxtjs/composition-api';
+import { defineComponent, useRoute, ref, computed, PropOptions, useContext, useFetch, useRouter, watch } from '@nuxtjs/composition-api';
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiContentCopy, mdiLinkOff, mdiTrashCanOutline } from '@mdi/js';
@@ -112,42 +98,33 @@ export default defineComponent({
     const items = ref<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>();
 
     /**
-     * Stuff for fetching parents
+     * Fetch table data based on selected tab
      */
-    const objectTypes = useAsync(() => $api.schema.fetchAll());
-    const parentTypeItems = computed(() =>
-      (objectTypes.value || [])
-        .map((type) => ({ text: upperFirst(type.schemaName), value: type.schemaName }))
-        .filter((item) => item.value === 'scope' || item.value === props.object?.type)
-    );
-    const parentType = ref(props.object?.type);
-
-    watch(
-      () => parentType.value,
-      () => fetch()
-    );
-
-    /**
-     * fetch sub entities or links
-     * and execute fetch on mounted
-     */
-
     const { fetchState, fetch } = useFetch(async () => {
-      if (props.type === 'subEntities' && props.object) {
-        items.value = await $api.entity.fetchSubEntities(props.object.type, props.object.id);
-      } else if (props.type === 'parents' && props.object && parentType.value) {
-        items.value = await $api.entity.fetchParents(parentType.value, props.object.id);
-      } else if (props.type === 'risks' && props.object) {
-        items.value = await $api.entity.fetchRisks(props.object.type, props.object.id);
-      } else {
-        // create entities for table from links
-        const links: Partial<IVeoEntity>[] = [];
-        for (const linkName in props.object?.links) {
-          (props.object?.links[linkName] as any).forEach((link: IVeoCustomLink) => {
-            links.push(createEntityFromLink(link));
-          });
+      if (props.object) {
+        switch (props.type) {
+          case 'childScopes':
+            items.value = (await $api.entity.fetchSubEntities(props.object.type, props.object.id)).filter((entity) => entity.type === 'scope');
+            break;
+          case 'childObjects':
+            items.value = (await $api.entity.fetchSubEntities(props.object.type, props.object.id)).filter((entity) => entity.type !== 'scope');
+            break;
+          case 'parentScopes':
+            items.value = await $api.entity.fetchParents('scope', props.object.id);
+            break;
+          case 'parentObjects':
+            items.value = await $api.entity.fetchParents(props.object.type, props.object.id);
+            break;
+          case 'risks':
+            items.value = await $api.entity.fetchRisks(props.object.type, props.object.id);
+            break;
+          case 'links':
+            // create entities for table from links
+            items.value = Object.values(props.object.links).reduce((linkArray: { id: string; name?: string; type: string }[], link: IVeoCustomLink) => {
+              linkArray.push(createEntityFromLink(link));
+              return linkArray;
+            }, []) as any;
         }
-        items.value = links as any;
       }
     });
 
@@ -169,7 +146,7 @@ export default defineComponent({
     );
 
     const defaultHeaders = computed(() =>
-      props.type === 'parents' || props.type === 'subEntities'
+      props.type !== 'risks' && props.type !== 'links'
         ? ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt', 'actions']
         : props.type === 'links'
         ? ['icon', 'name']
@@ -306,8 +283,6 @@ export default defineComponent({
       actions,
       fetch,
       items,
-      parentType,
-      parentTypeItems,
 
       t,
       upperFirst

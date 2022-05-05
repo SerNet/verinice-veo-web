@@ -19,13 +19,24 @@
   <VeoDialog
     v-model="dialog"
     large
-    :headline="t('headline')"
+    :headline="t('headline', [linkedObjectType])"
     :persistent="saving"
     :close-disabled="saving"
     fixed-footer
   >
     <template #default>
-      {{ t('link_subentities', { displayName: entityDisplayName }) }}
+      <p
+        v-if="hierarchicalContext === 'child'"
+        class="text-body-1"
+      >
+        {{ t('linkChildExplanation', { displayName: entityDisplayName, linkedObjectType }) }}
+      </p>
+      <p
+        v-else
+        class="text-body-1"
+      >
+        {{ t('linkParentExplanation', { displayName: entityDisplayName, linkedObjectType }) }}
+      </p>
       <v-row no-gutters>
         <v-col
           cols="auto"
@@ -80,10 +91,10 @@
         text
         color="primary"
         :data-cy="$utils.prefixCyData($options, 'save-button')"
-        :disabled="saving"
+        :loading="saving"
         @click="addEntities"
       >
-        {{ t('link') }}
+        {{ t('global.button.save') }}
       </v-btn>
       <VeoFilterDialog
         v-model="filterDialogVisible"
@@ -98,16 +109,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useRoute, ref, computed, useContext, useFetch, watch, PropOptions } from '@nuxtjs/composition-api';
-import { upperFirst } from 'lodash';
+import { defineComponent, useRoute, ref, computed, useContext, useFetch, watch, PropOptions, PropType } from '@nuxtjs/composition-api';
+import { cloneDeep, differenceBy, upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiFilter } from '@mdi/js';
 import { getEntityDetailsFromLink, IBaseObject, separateUUIDParam } from '~/lib/utils';
-import { getSchemaEndpoint, getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
+import { getSchemaName, IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { IVeoEntity, IVeoFormSchemaMeta, IVeoLink, IVeoPaginatedResponse, IVeoTranslations } from '~/types/VeoTypes';
+import { useVeoObjectUtilities } from '~/composables/VeoObjectUtilities';
 
 export default defineComponent({
-  name: 'VeoAddEntityDialog',
+  name: 'VeoLinkObjectDialog',
   props: {
     value: {
       type: Boolean,
@@ -120,15 +132,21 @@ export default defineComponent({
     editedEntity: {
       type: [Object, undefined],
       default: undefined
-    } as PropOptions<IVeoEntity | undefined>
+    } as PropOptions<IVeoEntity | undefined>,
+    hierarchicalContext: {
+      type: String as PropType<'parent' | 'child'>,
+      default: 'child'
+    }
   },
   setup(props, { emit }) {
     const route = useRoute();
     const { t, locale } = useI18n();
-    const { $api, $config, $user } = useContext();
+    const { $api, $user } = useContext();
+    const { linkObject, unlinkObject } = useVeoObjectUtilities();
 
     const filter = ref<IBaseObject>({});
     const selectedItems = ref<{ id: string; type: string }[]>([]);
+    const originalSelectedItems = ref<{ id: string; type: string }[]>([]); // Doesn't get modified to compare which parents have been added removed
     const saving = ref(false); // saving status for adding entities
     const loading = ref(false); // loading status for fetch entities
     const entities = ref<IVeoPaginatedResponse<IVeoEntity[]>>({ items: [], page: 1, pageCount: 0, totalItemCount: 0 });
@@ -167,31 +185,39 @@ export default defineComponent({
     // on open dialog do ...
     watch(
       () => props.value,
-      (newValue: boolean) => {
+      async (newValue: boolean) => {
         if (newValue) {
           filter.value = { objectType: allowedObjectTypes.value[0].schemaName };
           fetchEntities({ page: 1, sortBy: 'name', sortDesc: false });
 
-          let presetEntities: IVeoLink[];
-          if (!props.editedEntity) {
-            presetEntities = [];
-          } else if (props.editedEntity.type === 'scope') {
-            presetEntities = props.editedEntity.members;
-          } else {
-            presetEntities = props.editedEntity.parts;
+          if (props.editedEntity) {
+            if (props.hierarchicalContext === 'parent') {
+              const parentType = props.addType === 'entity' ? props.editedEntity.type : 'scope';
+
+              selectedItems.value = (await $api.entity.fetchParents(parentType, props.editedEntity.id)).items.map((item) => ({ id: item.id, type: item.type }));
+            } else {
+              const childrenProperty = props.editedEntity.type === 'scope' ? 'members' : 'parts';
+              selectedItems.value = props.editedEntity[childrenProperty].map((child: IVeoLink) => {
+                const details = getEntityDetailsFromLink(child);
+                const id = details.id;
+                let type = details.type;
+                type = getSchemaName(schemas.value, type) || type;
+
+                return { id, type };
+              });
+            }
+            originalSelectedItems.value = cloneDeep(selectedItems.value);
           }
-
-          selectedItems.value = presetEntities.map((member) => {
-            const details = getEntityDetailsFromLink(member);
-            const id = details.id;
-            let type = details.type;
-            type = getSchemaName(schemas.value, type) || type;
-
-            return { id, type };
-          });
         }
       }
     );
+
+    /**
+     * Common stuff
+     */
+    const linkedObjectType = computed(() => {
+      return props.addType === 'scope' ? ['Scope'] : props.editedEntity?.type === 'scope' ? t('object').toString() : upperFirst(props.editedEntity?.type);
+    });
 
     /**
      * filter stuff
@@ -244,20 +270,30 @@ export default defineComponent({
 
     // get allowed filter-objectTypes for current parent and child type
     const allowedObjectTypes = computed(() => {
-      let _schemas = [...schemas.value];
-      // Filter out scopes if the user wants to add objects and the parent is a scope
-      if (props.editedEntity?.type === 'scope' && props.addType === 'entity') {
-        _schemas = _schemas.filter((item) => item.endpoint !== 'scopes');
+      if (props.hierarchicalContext === 'parent') {
+        if (props.addType === 'entity') {
+          // Only allow the same schema for the parent as the one of the current element...
+          return schemas.value.filter((item) => item.schemaName === props.editedEntity?.type);
+        } else {
+          // ...or a scope
+          return schemas.value.filter((item) => item.endpoint === 'scopes');
+        }
+      } else {
+        // Filter out scopes if the user wants to add objects and the parent is a scope
+        if (props.editedEntity?.type === 'scope' && props.addType === 'entity') {
+          return schemas.value.filter((item) => item.endpoint !== 'scopes');
+        }
+        // Only scope if the user wants to add scopes and the parent is a scope
+        if (props.editedEntity?.type === 'scope' && props.addType === 'scope') {
+          return schemas.value.filter((item) => item.endpoint === 'scopes');
+        }
+        // Only own object type if the user wants to add objects and the parent is a object
+        if (props.editedEntity?.type !== 'scope' && props.addType === 'entity') {
+          return schemas.value.filter((item) => item.schemaName === props.editedEntity?.type);
+        }
       }
-      // Only scope if the user wants to add scopes and the parent is a scope
-      if (props.editedEntity?.type === 'scope' && props.addType === 'scope') {
-        _schemas = _schemas.filter((item) => item.endpoint === 'scopes');
-      }
-      // Only own object type if the user wants to add objects and the parent is a object
-      if (props.editedEntity?.type !== 'scope' && props.addType === 'entity') {
-        _schemas = _schemas.filter((item) => item.schemaName === props.editedEntity?.type);
-      }
-      return _schemas;
+
+      return [];
     });
 
     /**
@@ -288,32 +324,29 @@ export default defineComponent({
       }
 
       saving.value = true;
-      const _editedEntity = await $api.entity.fetch(props.editedEntity.type, props.editedEntity.id);
-
-      const children = selectedItems.value.map((item) => {
-        return {
-          targetUri: `${$config.apiUrl}/${getSchemaEndpoint(schemas.value, item.type) || item.type}/${item.id}`
-        };
-      });
-      if (props.editedEntity.type === 'scope') {
-        // @ts-ignore
-        _editedEntity.members = children;
-      } else {
-        // @ts-ignore
-        _editedEntity.parts = children;
+      try {
+        if (props.hierarchicalContext === 'parent') {
+          const parentsToAdd = differenceBy(selectedItems.value, originalSelectedItems.value, 'id');
+          const parentsToRemove = differenceBy(originalSelectedItems.value, selectedItems.value, 'id');
+          for (const parent of parentsToAdd) {
+            await linkObject('parent', { objectId: props.editedEntity.id, objectType: props.editedEntity.type }, { objectId: parent.id, objectType: parent.type });
+          }
+          for (const parent of parentsToRemove) {
+            await unlinkObject(parent.id, props.editedEntity.id, parent.type);
+          }
+        } else {
+          await linkObject(
+            props.hierarchicalContext,
+            { objectType: props.editedEntity.type, objectId: props.editedEntity.id },
+            selectedItems.value.map((item) => ({ objectId: item.id, objectType: item.type }))
+          );
+        }
+        emit('success');
+      } catch (error: any) {
+        emit('error', error);
+      } finally {
+        saving.value = false;
       }
-
-      $api.entity
-        .update(props.editedEntity.type, props.editedEntity.id, _editedEntity)
-        .then(() => {
-          emit('success');
-        })
-        .catch((error: any) => {
-          emit('error', error);
-        })
-        .finally(() => {
-          saving.value = false;
-        });
     };
 
     return {
@@ -329,6 +362,7 @@ export default defineComponent({
       entityDisplayName,
       allowedObjectTypes,
       filterDialogVisible,
+      linkedObjectType,
 
       addEntities,
       formatLabel,
@@ -348,16 +382,18 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "link": "link",
-    "link_subentities": "link components to \"{displayName}\"",
-    "headline": "Edit components",
-    "filter": "filter"
+    "filter": "filter",
+    "headline": "select {0}",
+    "linkChildEntityExplanation": "Add {linkedObjectType} as a part to \"{parentName}\"",
+    "linkParentExplanation": "Add {linkedObjectType} as a parent to \"{parentName}\"",
+    "object": "object"
   },
   "de": {
-    "link": "verknüpfen",
-    "link_subentities": "Bestandteile zu \"{displayName}\" verknüpfen",
-    "headline": "Bestandteile bearbeiten",
-    "filter": "filter"
+    "filter": "filter",
+    "headline": "{0} auswählen",
+    "linkChildExplanation": "{linkedObjectType} unter \"{displayName}\" einfügen",
+    "linkParentExplanation": "{linkedObjectType} über \"{displayName}\" einfügen",
+    "object": "Objekt"
   }
 }
 </i18n>

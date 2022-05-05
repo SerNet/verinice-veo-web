@@ -41,7 +41,7 @@
           >
             <VeoObjectDetailsActionMenu
               :object="object"
-              @new-object-created="onCreateObjectSuccess"
+              @reload="$emit('reload')"
             />
           </v-col>
         </v-row>
@@ -72,21 +72,22 @@
           <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
           <v-tab
             v-for="tab in tabs"
-            v-show="tab !== 'risks' || (object && object.type === 'process')"
-            :key="tab"
-            :data-component-name="`object-details-${tab}-tab`"
+            v-show="!tab.hidden"
+            :key="tab.key"
+            :disabled="tab.disabled"
+            :data-component-name="`object-details-${tab.key}-tab`"
           >
-            {{ t(tab) }}
+            {{ t(tab.key) }}
           </v-tab>
         </template>
         <template #items>
           <v-tab-item
             v-for="tab in tabs"
-            :key="tab"
+            :key="tab.key"
           >
             <VeoObjectDetailsTab
               v-if="object"
-              :type="tab"
+              :type="tab.key"
               :object="object"
               :dense="dense"
               :domain-id="domainId"
@@ -121,7 +122,7 @@ export default defineComponent({
     },
     activeTab: {
       type: String,
-      default: 'subEntities'
+      default: 'childObjects'
     },
     domainId: {
       type: String,
@@ -135,7 +136,31 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const tabs = ['subEntities', 'parents', 'links', 'risks'];
+    const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => {
+      return [
+        {
+          key: 'childScopes',
+          disabled: props.object?.type !== 'scope'
+        },
+        {
+          key: 'childObjects'
+        },
+        {
+          key: 'parentScopes'
+        },
+        {
+          key: 'parentObjects',
+          disabled: props.object?.type === 'scope'
+        },
+        {
+          key: 'links'
+        },
+        {
+          key: 'risks',
+          hidden: !props.loading && props.object?.type !== 'process'
+        }
+      ];
+    });
 
     const subType = computed(() => props.object?.domains[props.domainId]?.subType);
 
@@ -144,7 +169,7 @@ export default defineComponent({
       () => props.loading,
       (newValue, previousValue) => {
         if (previousValue && !newValue && subType.value !== 'PRO_DataProcessing' && props.activeTab === 'risks') {
-          emit('update:activeTab', 'subEntities');
+          emit('update:activeTab', 'childObjects');
         }
       }
     );
@@ -153,26 +178,20 @@ export default defineComponent({
       get() {
         return Math.max(
           0,
-          tabs.findIndex((tab) => tab === props.activeTab)
+          tabs.value.findIndex((tab) => tab.key === props.activeTab)
         );
       },
       set(newValue: number) {
-        emit('update:activeTab', tabs[newValue] || 'subEntities');
+        emit('update:activeTab', tabs.value[newValue].key || 'childObjects');
       }
     });
 
     // format date time to show updated at & created at
     const formatDateTime = (date: string) => formatDate(new Date(date)) + ' ' + formatTime(new Date(date));
 
-    // emit after new object creation
-    const onCreateObjectSuccess = (newObjectId: string, objectType: string) => {
-      emit('new-object-created', newObjectId, objectType);
-    };
-
     const showCreateDPIAMenu = computed(() => props.object?.type === 'process' && subType.value === 'PRO_DataProcessing');
 
     return {
-      onCreateObjectSuccess,
       internalActiveTab,
       showCreateDPIAMenu,
       subType,
@@ -191,22 +210,26 @@ export default defineComponent({
 {
   "en": {
     "by": "by",
+    "childObjects": "Parts",
+    "childScopes": "Scopes",
     "createdAt": "created",
     "links": "links",
     "noDescription": "No description provided",
-    "parents": "part of",
+    "parentObjects": "Part of",
+    "parentScopes": "in Scope",
     "risks": "risks",
-    "subEntities": "parts",
     "updatedAt": "last change"
   },
   "de": {
     "by": "von",
+    "childObjects": "Teile",
+    "childScopes": "Scopes",
     "createdAt": "erstellt",
     "links": "links",
     "noDescription": "Keine Beschreibung vorhanden",
-    "parents": "teil von",
+    "parentObjects": "Teil von",
+    "parentScopes": "in Scope",
     "risks": "Risiken",
-    "subEntities": "bestandteile",
     "updatedAt": "letzte Änderung"
   }
 }
