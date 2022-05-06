@@ -69,7 +69,7 @@
             color="grey"
             @click="action.action"
           >
-            {{ upperFirst(t(action.key).toString()) }}
+            {{ action.title }}
             <v-icon right>
               {{ action.icon }}
             </v-icon>
@@ -169,9 +169,10 @@ export default defineComponent({
     });
 
     // configure possible action items
-    const actions = [
+    const actions = computed(() => [
       {
         key: 'createObject',
+        title: t('createObject', [props.object?.type !== 'scope' ? props.object?.type : t('object')]).toString(),
         icon: mdiPlus,
         tab: ['childObjects', 'parentObjects'],
         objectTypes: ['entity'],
@@ -179,6 +180,7 @@ export default defineComponent({
       },
       {
         key: 'linkObject',
+        title: t('linkObject', [props.object?.type !== 'scope' ? props.object?.type : t('object')]).toString(),
         icon: mdiLinkPlus,
         tab: ['childObjects', 'parentObjects'],
         objectTypes: ['entity'],
@@ -186,6 +188,7 @@ export default defineComponent({
       },
       {
         key: 'createScope',
+        title: t('createScope').toString(),
         icon: mdiPlus,
         tab: ['childScopes', 'parentScopes'],
         objectTypes: ['scope', 'entity'],
@@ -193,6 +196,7 @@ export default defineComponent({
       },
       {
         key: 'linkScope',
+        title: t('linkScope').toString(),
         icon: mdiLinkPlus,
         tab: ['childScopes', 'parentScopes'],
         objectTypes: ['scope', 'entity'],
@@ -200,15 +204,16 @@ export default defineComponent({
       },
       {
         key: 'createRisk',
+        title: t('createRisk').toString(),
         icon: mdiPlus,
         tab: ['risks'],
         objectTypes: ['entity'],
         action: () => onCreateRisk()
       }
-    ];
+    ]);
     // filter allowed actions for current type
     const allowedActions = computed(() => {
-      let allowed = actions.filter((a) => a.tab.includes(props.type)); // filter by type
+      let allowed = actions.value.filter((a) => a.tab.includes(props.type)); // filter by type
       if (props.object?.type !== 'scope') {
         allowed = allowed.filter((a) => a.objectTypes.includes('entity')); // filter by objecttype if scope
       }
@@ -356,29 +361,25 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createObject": "create object",
+    "createObject": "create {0}",
     "createRisk": "create risk",
-    "linkObject": "select object",
+    "linkObject": "select {0}",
     "createScope": "create scope",
     "linkScope": "select scope",
-    "subEntities": "components",
-    "parents": "part of",
+    "object": "object",
     "objectLinked": "The links were successfully updated.",
     "objectNotLinked": "The links could not be updated.",
-    "createType": "create {0}",
     "parentScopeNoRiskDefinition": "This object needs a parent scope with a risk definition to create a risk"
   },
   "de": {
-    "createObject": "Objekt erstellen",
+    "createObject": "{0} erstellen",
     "createRisk": "Risiko hinzufügen",
-    "linkObject": "Objekt auswählen",
+    "linkObject": "{0} auswählen",
     "createScope": "Scope erstellen",
     "linkScope": "Scope auswählen",
-    "subEntities": "Bestandteile",
-    "parents": "Teil von",
+    "object": "Objekt",
     "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
     "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden.",
-    "createType": "{0} erstellen",
     "parentScopeNoRiskDefinition": "Dieses Objekt muss Teil eines Scopes mit Risikodefinition sein, um ein Risiko zu erstellen"
   }
 }
