@@ -39,7 +39,7 @@
         text
         color="primary"
         :disabled="!type"
-        @click="$emit('create-entity', type, eventPayload)"
+        @click="$emit('create-entity', { type, ...eventPayload })"
       >
         {{ $t('create') }}
       </v-btn>

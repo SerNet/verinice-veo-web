@@ -85,9 +85,10 @@
       @error="onAddEntityError"
     />
     <VeoCreateEntityDialog
-      v-model="createEntityDialog"
+      v-model="createEntityDialog.value"
       :schemas="createEntitySchemas"
-      @create-entity="openCreateObjectDialog($event[0], $event[1])"
+      :v-bind="createEntityDialog"
+      @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)"
     />
     <VeoCreateObjectDialog
       v-if="createObjectDialog.objectType"
@@ -111,7 +112,7 @@ import { defineComponent, onMounted, useRoute, ref, computed, useContext, watch,
 import { upperFirst } from 'lodash';
 import { useI18n } from 'nuxt-i18n-composable';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
-import { separateUUIDParam } from '~/lib/utils';
+import { IBaseObject, separateUUIDParam } from '~/lib/utils';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { IVeoSchemaEndpoint } from '~/plugins/api/schema';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -242,7 +243,10 @@ export default defineComponent({
       });
     });
 
-    const createEntityDialog = ref(false);
+    const createEntityDialog = ref({
+      value: false,
+      eventPayload: undefined as undefined | IBaseObject
+    });
     const createObjectDialog = ref({
       value: false as boolean,
       objectType: undefined as undefined | string,
@@ -252,12 +256,16 @@ export default defineComponent({
     // control dialogs
     const openCreateObjectDialog = (objectType?: string, addAsChild?: boolean) => {
       if (!objectType) {
-        createEntityDialog.value = true;
+        createEntityDialog.value = {
+          value: true,
+          eventPayload: { objectType, addAsChild }
+        };
       } else {
+        createEntityDialog.value.value = false;
         createObjectDialog.value = {
           objectType,
           value: true,
-          hierarchicalContext: addAsChild === undefined || addAsChild ? 'parent' : 'child'
+          hierarchicalContext: addAsChild === undefined || addAsChild ? 'child' : 'parent'
         };
       }
     };
@@ -288,10 +296,10 @@ export default defineComponent({
      */
 
     // emit after new object creation for linking
-    const onCreateObjectSuccess = (newObjectId: string) => {
+    const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
         try {
-          linkObject(
+          await linkObject(
             createObjectDialog.value.hierarchicalContext as any,
             { objectType: props.object.type, objectId: props.object.id },
             { objectType: createObjectDialog.value.objectType as string, objectId: newObjectId }
