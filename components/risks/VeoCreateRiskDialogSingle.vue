@@ -35,15 +35,20 @@
         </h2>
         <VeoCard>
           <v-card-text>
-            <VeoObjectSelect
-              v-model="data.scenario"
-              object-type="scenario"
-              required
-              sub-type="SCN_Scenario"
-              :domain-id="domainId"
-              value-as-link
-            />
             <v-row>
+              <v-col
+                xs="12"
+                md="6"
+              >
+                <VeoObjectSelect
+                  v-model="data.scenario"
+                  object-type="scenario"
+                  required
+                  sub-type="SCN_Scenario"
+                  :domain-id="domainId"
+                  value-as-link
+                />
+              </v-col>
               <v-col
                 xs="12"
                 md="6"
@@ -55,17 +60,6 @@
                   value-as-link
                 />
               </v-col>
-              <v-col
-                xs="12"
-                md="6"
-              >
-                <VeoObjectSelect
-                  v-model="data.mitigation"
-                  object-type="control"
-                  :label="t('mitigation')"
-                  value-as-link
-                />
-              </v-col>
             </v-row>
           </v-card-text>
         </VeoCard>
@@ -73,6 +67,19 @@
           v-model="data.domains[domainId].riskDefinitions"
           :domain="domain"
         />
+        <h2 class="text-h2 mt-4">
+          {{ upperFirst(t('mitigationSection').toString()) }}
+        </h2>
+        <VeoCard>
+          <v-card-text>
+            <VeoObjectSelect
+              v-model="data.mitigation"
+              object-type="control"
+              :label="t('mitigation')"
+              value-as-link
+            />
+          </v-card-text>
+        </VeoCard>
       </v-form>
     </template>
     <template #dialog-options>
@@ -304,6 +311,7 @@ const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition:
     "createRisk": "create risk",
     "editRisk": "edit risk \"{0}\"",
     "mitigation": "mitigation",
+    "mitigationSection": "risk reduction actions (mitigating actions)",
     "riskCreated": "the risk was created successfully",
     "riskUpdated": "the risk was edited successfully",
     "riskNotSaved": "the risk couldn't be saved",
@@ -314,6 +322,7 @@ const makeRiskObject = (initialData: IVeoRisk, domainId: string, riskDefinition:
     "createRisk": "Risiko erstellen",
     "editRisk": "Risiko \"{0}\" bearbeiten",
     "mitigation": "Gegenmaßnahme",
+    "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
     "riskCreated": "das Risiko wurde erfolgreich erstellt",
     "riskUpdated": "das Risiko wurde erfolgreich bearbeitet",
     "riskNotSaved": "das Risiko konnte nicht gespeichert werden",

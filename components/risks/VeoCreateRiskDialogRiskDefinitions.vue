@@ -17,9 +17,9 @@
 -->
 <template>
   <div>
-    <h2 class="text-h2 mb-2 mt-6">
-      {{ upperFirst(t('riskDefinitions').toString()) }}
-    </h2>
+    <div class="text-body-1 mt-4">
+      {{ upperFirst(t('riskDefinitions').toString()) }}:
+    </div>
     <div class="risk-definitions">
       <VeoTabs v-model="activeTab">
         <template
@@ -57,114 +57,172 @@
           <v-tab-item
             v-for="riskDefinition of domain.riskDefinitions"
             :key="riskDefinition.id"
-            class="px-4"
           >
-            <v-row no-gutters>
-              <v-col
-                xs="12"
-                md="6"
-              >
-                <v-select
-                  v-model="internalValue[riskDefinition.id].probability.specificProbability"
-                  color="primary"
-                  :label="upperFirst(t('specificProbability').toString())"
-                  :items="probabilities"
-                  clearable
-                />
-              </v-col>
-              <v-col
-                xs="12"
-                md="12"
-              >
-                <v-text-field
-                  v-model="internalValue[riskDefinition.id].probability.specificProbabilityExplanation"
-                  :label="upperFirst(t('explanation').toString())"
-                  clearable
-                />
-              </v-col>
-            </v-row>
-            <div
-              v-for="(protectionGoal, index) of riskDefinition.categories"
-              :key="protectionGoal.id"
-              class="mt-8"
-            >
-              <h3 class="text-h3">
-                {{ protectionGoal.name }}
-              </h3>
-              <v-row no-gutters>
-                <v-col
-                  xs="12"
-                  md="6"
-                >
-                  <v-select
-                    v-model="internalValue[riskDefinition.id].impactValues[index].specificImpact"
-                    color="primary"
-                    :label="upperFirst(t('specificImpact').toString())"
-                    :items="impacts[protectionGoal.id]"
-                    clearable
-                  />
-                </v-col>
-                <v-col
-                  xs="12"
-                  md="12"
-                >
-                  <v-text-field
-                    v-model="internalValue[riskDefinition.id].impactValues[index].specificImpactExplanation"
-                    :label="upperFirst(t('explanation').toString())"
-                    clearable
-                  />
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col
-                  xs="12"
-                  md="6"
-                >
-                  <v-select
-                    v-model="internalValue[riskDefinition.id].riskValues[index].riskTreatments"
-                    multiple
-                    color="primary"
-                    :label="upperFirst(t('riskTreatment').toString())"
-                    :items="treatmentOptions"
-                    clearable
-                  />
-                </v-col>
-                <v-col
-                  xs="12"
-                  md="12"
-                >
-                  <v-text-field
-                    v-model="internalValue[riskDefinition.id].riskValues[index].riskTreatmentExplanation"
-                    :label="upperFirst(t('explanation').toString())"
-                    clearable
-                  />
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col
-                  xs="12"
-                  md="6"
-                >
-                  <v-select
-                    v-model="internalValue[riskDefinition.id].riskValues[index].residualRisk"
-                    color="primary"
-                    :label="upperFirst(t('residualRisk').toString())"
-                    :items="riskValues"
-                    clearable
-                  />
-                </v-col>
-                <v-col
-                  xs="12"
-                  md="12"
-                >
-                  <v-text-field
-                    v-model="internalValue[riskDefinition.id].riskValues[index].residualRiskExplanation"
-                    :label="upperFirst(t('explanation').toString())"
-                    clearable
-                  />
-                </v-col>
-              </v-row>
-            </div>
+            <h2 class="text-h2">
+              {{ upperFirst(t('probability').toString()) }}
+            </h2>
+            <VeoCard>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    xs="12"
+                    md="4"
+                  >
+                    <v-select
+                      v-model="internalValue[riskDefinition.id].probability.specificProbability"
+                      color="primary"
+                      :label="upperFirst(t('potentialProbability').toString())"
+                      disabled
+                    />
+                  </v-col>
+                  <v-col
+                    xs="12"
+                    md="4"
+                  >
+                    <v-select
+                      v-model="internalValue[riskDefinition.id].probability.specificProbability"
+                      color="primary"
+                      :label="upperFirst(t('specificProbability').toString())"
+                      :items="probabilities"
+                      clearable
+                    />
+                  </v-col>
+                  <v-col
+                    xs="12"
+                    md="4"
+                  >
+                    <v-select
+                      v-model="internalValue[riskDefinition.id].probability.specificProbability"
+                      color="primary"
+                      :label="upperFirst(t('effectiveProbability').toString())"
+                      disabled
+                    />
+                  </v-col>
+                  <v-col
+                    xs="12"
+                    md="12"
+                  >
+                    <v-textarea
+                      v-model="internalValue[riskDefinition.id].probability.specificProbabilityExplanation"
+                      :label="upperFirst(t('explanation').toString())"
+                      clearable
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </VeoCard>
+            <h2 class="text-h2 mt-4">
+              {{ upperFirst(t('probability').toString()) }}
+            </h2>
+            <VeoCard>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    v-for="(protectionGoal, index) of riskDefinition.categories"
+                    :key="protectionGoal.id"
+                    cols="6"
+                    md="3"
+                  >
+                    <h3 class="text-h3">
+                      {{ protectionGoal.name }}
+                    </h3>
+                    <v-select
+                      v-model="internalValue[riskDefinition.id].impactValues[index].specificImpact"
+                      color="primary"
+                      :label="upperFirst(t('potentialImpact').toString())"
+                      disabled
+                    />
+                    <v-select
+                      v-model="internalValue[riskDefinition.id].impactValues[index].specificImpact"
+                      color="primary"
+                      :label="upperFirst(t('specificImpact').toString())"
+                      :items="impacts[protectionGoal.id]"
+                      clearable
+                    />
+                    <v-textarea
+                      v-model="internalValue[riskDefinition.id].impactValues[index].specificImpactExplanation"
+                      :label="upperFirst(t('explanation').toString())"
+                      clearable
+                    />
+                    <v-select
+                      v-model="internalValue[riskDefinition.id].impactValues[index].specificImpact"
+                      color="primary"
+                      :label="upperFirst(t('effectiveImpact').toString())"
+                      disabled
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </VeoCard>
+            <h2 class="text-h2 mt-4">
+              {{ upperFirst(t('inherentRisk').toString()) }}
+            </h2>
+            <VeoCard>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    v-for="(protectionGoal, index) of riskDefinition.categories"
+                    :key="protectionGoal.id"
+                    cols="6"
+                    md="3"
+                  >
+                    <h3 class="text-h3">
+                      {{ protectionGoal.name }}
+                    </h3>
+                    <v-select
+                      v-model="internalValue[riskDefinition.id].impactValues[index].specificImpact"
+                      color="primary"
+                      :label="upperFirst(t('inherentRisk').toString())"
+                      disabled
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </VeoCard>
+            <h2 class="text-h2">
+              {{ upperFirst(t('residualRisk').toString()) }}
+            </h2>
+            <VeoCard>
+              <v-card-text>
+                <v-row>
+                  <v-col
+                    v-for="(protectionGoal, index) of riskDefinition.categories"
+                    :key="protectionGoal.id"
+                    cols="6"
+                    md="3"
+                  >
+                    <h3 class="text-h3">
+                      {{ protectionGoal.name }}
+                    </h3>
+                    <v-select
+                      v-model="internalValue[riskDefinition.id].riskValues[index].riskTreatments"
+                      multiple
+                      color="primary"
+                      :label="upperFirst(t('riskTreatment').toString())"
+                      :items="treatmentOptions"
+                      clearable
+                    />
+                    <v-textarea
+                      v-model="internalValue[riskDefinition.id].riskValues[index].riskTreatmentExplanation"
+                      :label="upperFirst(t('explanation').toString())"
+                      clearable
+                    />
+                    <v-select
+                      v-model="internalValue[riskDefinition.id].riskValues[index].residualRisk"
+                      color="primary"
+                      :label="upperFirst(t('residualRisk').toString())"
+                      :items="riskValues"
+                      clearable
+                    />
+                    <v-textarea
+                      v-model="internalValue[riskDefinition.id].riskValues[index].residualRiskExplanation"
+                      :label="upperFirst(t('explanation').toString())"
+                      clearable
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </VeoCard>
           </v-tab-item>
         </template>
       </VeoTabs>
@@ -242,6 +300,9 @@ export default defineComponent({
 {
   "en": {
     "explanation": "explanation",
+    "impact": "impact",
+    "inherentRisk": "inherent risk",
+    "probability": "probability",
     "protectionGoals": "protection goals",
     "residualRisk": "residual risk",
     "riskDefinitions": "risk definitions",
@@ -258,8 +319,11 @@ export default defineComponent({
   },
   "de": {
     "explanation": "Erklärung",
-    "residualRisk": "verbleibendes Risiko",
+    "impact": "Auswirkung",
+    "inherentRisk": "Brutto-Risiko",
+    "probability": "Eintrittswahrscheinlichkeit",
     "protectionGoals": "Schutzziele",
+    "residualRisk": "verbleibendes Risiko",
     "riskDefinitions": "Risikodefinitionen",
     "riskTreatment": "Risikobehandlung",
     "riskTreatments": {
